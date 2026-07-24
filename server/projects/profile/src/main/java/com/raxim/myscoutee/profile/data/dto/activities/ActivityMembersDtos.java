@@ -17,7 +17,16 @@ public final class ActivityMembersDtos {
             ActivityMemberOwnerRefDto owner,
             List<ActivityMemberEntryDto> members,
             Integer capacityTotal,
-            String actorUserId) {
+            String actorUserId,
+            String eventId,
+            String subEventId) {
+        public ActivityMembersReplaceRequestDto(
+                ActivityMemberOwnerRefDto owner,
+                List<ActivityMemberEntryDto> members,
+                Integer capacityTotal,
+                String actorUserId) {
+            this(owner, members, capacityTotal, actorUserId, null, null);
+        }
     }
 
     public record ActivityMemberActionRequestDto(
@@ -25,6 +34,16 @@ public final class ActivityMembersDtos {
             String actorUserId,
             String targetUserId,
             String action,
-            String reason) {
+            String reason,
+            String eventId,
+            String subEventId) {
+        public ActivityMemberActionRequestDto(
+                ActivityMemberOwnerRefDto owner,
+                String actorUserId,
+                String targetUserId,
+                String action,
+                String reason) {
+            this(owner, actorUserId, targetUserId, action, reason, null, null);
+        }
     }
 }

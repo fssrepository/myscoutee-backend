@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
@@ -56,7 +57,7 @@ public class ActivityEventMapper {
                 safeText(record.getSubtitle()),
                 safeText(record.getTimeframe()),
                 StringUtils.hasText(record.getInviter()) ? record.getInviter().trim() : null,
-                normalizeCount(record.getActivity()),
+                aggregateRuntimeActivity(record),
                 normalizeId(record.getCreatorUserId()),
                 safeText(record.getCreatorName()),
                 safeText(record.getCreatorInitials()),
@@ -85,6 +86,24 @@ public class ActivityEventMapper {
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()));
+    }
+
+    private int aggregateRuntimeActivity(ActivityEvent record) {
+        int pending = 0;
+        for (SubEventItem item : record == null || record.getSubEvents() == null
+                ? List.<SubEventItem>of()
+                : record.getSubEvents()) {
+            if (item == null) {
+                continue;
+            }
+            if (Boolean.TRUE.equals(item.optional())) {
+                pending += normalizeCount(item.membersPending());
+            }
+            pending += normalizeCount(item.carsPending());
+            pending += normalizeCount(item.accommodationPending());
+            pending += normalizeCount(item.suppliesPending());
+        }
+        return Math.max(normalizeCount(record == null ? null : record.getActivity()), pending);
     }
 
     private String resolveCheckoutResultState(ActivityEvent record, MappingContext context) {

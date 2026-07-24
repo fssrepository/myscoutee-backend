@@ -41,6 +41,9 @@ public class Chat {
     private String dateIso;
     private String channelType;
     private String ownerId;
+    private String eventId;
+    private String subEventId;
+    private String groupId;
     private Double distanceKm;
     private Integer distanceMetersExact;
     private SupportCaseRecord supportCase;
@@ -142,6 +145,30 @@ public class Chat {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getSubEventId() {
+        return subEventId;
+    }
+
+    public void setSubEventId(String subEventId) {
+        this.subEventId = subEventId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public Double getDistanceKm() {

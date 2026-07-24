@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.events;
 
 import java.util.List;
+import java.util.Map;
 
 public final class EventLeaderboardDtos {
     private EventLeaderboardDtos() {
@@ -28,7 +29,25 @@ public final class EventLeaderboardDtos {
             Integer capacityMin,
             Integer capacityMax,
             Integer membersAccepted,
-            Integer membersPending) {
+            Integer membersPending,
+            Map<String, EventTournamentResourceMetricDto> resourceMetricsByType) {
+        public EventTournamentGroupDto(
+                String id,
+                String name,
+                String source,
+                Integer capacityMin,
+                Integer capacityMax,
+                Integer membersAccepted,
+                Integer membersPending) {
+            this(id, name, source, capacityMin, capacityMax, membersAccepted, membersPending, Map.of());
+        }
+    }
+
+    public record EventTournamentResourceMetricDto(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
     }
 
     public record EventTournamentStageDto(

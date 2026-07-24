@@ -152,7 +152,7 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     public boolean canSubmitEventResourceAssignment(Authentication authentication, ActivitySubEventResourceStateDto request) {
-        String eventId = normalizeId(request == null ? null : request.ownerId());
+        String eventId = normalizeId(request == null ? null : request.authorizationEventId());
         String subEventId = normalizeId(request == null ? null : request.subEventId());
         String assetOwnerUserId = normalizeId(request == null ? null : request.assetOwnerUserId());
         if (!StringUtils.hasText(eventId)
@@ -427,7 +427,7 @@ public class AccessControlService implements AccessPolicyData {
     }
 
     public boolean canCurrentActorManageEventResourceAssignment(ActivitySubEventResourceStateDto request) {
-        String eventId = normalizeId(request == null ? null : request.ownerId());
+        String eventId = normalizeId(request == null ? null : request.authorizationEventId());
         if (!StringUtils.hasText(eventId)) {
             return false;
         }

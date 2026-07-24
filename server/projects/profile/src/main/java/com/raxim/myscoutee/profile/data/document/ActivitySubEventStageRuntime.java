@@ -1,5 +1,8 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -29,6 +32,7 @@ public class ActivitySubEventStageRuntime {
     private String stageFinalizedAt;
     private String stageFinalizedByUserId;
     private Integer groupsCount;
+    private Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> groupResourceMetricsByAssetOwnerId = new LinkedHashMap<>();
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -58,6 +62,10 @@ public class ActivitySubEventStageRuntime {
     public void setStageFinalizedByUserId(String stageFinalizedByUserId) { this.stageFinalizedByUserId = stageFinalizedByUserId; }
     public Integer getGroupsCount() { return groupsCount; }
     public void setGroupsCount(Integer groupsCount) { this.groupsCount = groupsCount; }
+    public Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> getGroupResourceMetricsByAssetOwnerId() { return groupResourceMetricsByAssetOwnerId; }
+    public void setGroupResourceMetricsByAssetOwnerId(Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> groupResourceMetricsByAssetOwnerId) {
+        this.groupResourceMetricsByAssetOwnerId = groupResourceMetricsByAssetOwnerId == null ? new LinkedHashMap<>() : groupResourceMetricsByAssetOwnerId;
+    }
     public String getCreatedDate() { return createdDate; }
     public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }
     public String getCreatedUser() { return createdUser; }
@@ -66,4 +74,11 @@ public class ActivitySubEventStageRuntime {
     public void setUpdatedDate(String updatedDate) { this.updatedDate = updatedDate; }
     public String getUpdatedUser() { return updatedUser; }
     public void setUpdatedUser(String updatedUser) { this.updatedUser = updatedUser; }
+
+    public record GroupResourceMetricRecord(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
+    }
 }

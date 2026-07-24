@@ -60,11 +60,13 @@ public final class SubEventItemMapper {
                 item.slotStartOffsetMinutes(),
                 item.slotDurationMinutes(),
                 null,
+                item.groupsPending(),
                 item.stageStatus(),
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId());
+                item.stageFinalizedByUserId(),
+                item.groups() == null ? List.of() : new ArrayList<>(item.groups()));
     }
 
     public static List<SubEventItem> toRecordList(List<SubEventItemDto> items) {
@@ -102,6 +104,7 @@ public final class SubEventItemMapper {
                 item.capacityMax(),
                 item.membersAccepted(),
                 item.membersPending(),
+                item.groupsPending(),
                 item.carsPending(),
                 item.accommodationPending(),
                 item.suppliesPending(),
@@ -120,6 +123,7 @@ public final class SubEventItemMapper {
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId());
+                item.stageFinalizedByUserId(),
+                item.groups() == null ? List.of() : new ArrayList<>(item.groups()));
     }
 }

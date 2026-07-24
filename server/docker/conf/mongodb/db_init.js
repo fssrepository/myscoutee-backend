@@ -6,6 +6,7 @@ const requiredCollections = [
   'activityMembers',
   'activityResources',
   'eventCheckoutBasketItems',
+  'payments',
   'accessPolicyDefinitions',
   'accessGrants',
   'chats',
@@ -254,12 +255,37 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'checkout_basket_user_source_status' }
   );
   portalDb.eventCheckoutBasketItems.createIndex(
+    { userId: 1, sourceId: 1, status: 1, resultState: 1, updatedAtIso: -1 },
+    { name: 'checkout_basket_user_source_result_status' }
+  );
+  portalDb.eventCheckoutBasketItems.createIndex(
     { userId: 1, sourceId: 1, itemId: 1 },
     { name: 'checkout_basket_user_source_item', unique: true, sparse: true }
   );
   portalDb.eventCheckoutBasketItems.createIndex(
     { expiresAtIso: 1, status: 1 },
     { name: 'checkout_basket_expiry_status' }
+  );
+
+  portalDb.payments.createIndex(
+    { userId: 1, sourceId: 1, createdDate: -1 },
+    { name: 'payment_user_source' }
+  );
+  portalDb.payments.createIndex(
+    { userId: 1, sourceId: 1, bookingStatus: 1, createdDate: -1 },
+    { name: 'payment_user_source_booking' }
+  );
+  portalDb.payments.createIndex(
+    { revisionRootSessionId: 1, revisionNumber: -1, createdDate: -1 },
+    { name: 'payment_revision_root' }
+  );
+  portalDb.payments.createIndex(
+    { checkoutSessionId: 1 },
+    { name: 'payment_checkout_session', unique: true, sparse: true }
+  );
+  portalDb.payments.createIndex(
+    { gatewaySessionId: 1 },
+    { name: 'payment_gateway_session', unique: true, sparse: true }
   );
 
   portalDb.activityResources.createIndex(
@@ -326,6 +352,30 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'event_owner_source' }
   );
   portalDb.events.createIndex(
+    { creatorUserId: 1, startAtIso: 1 },
+    { name: 'event_creator_start' }
+  );
+  portalDb.events.createIndex(
+    { admins: 1, startAtIso: 1 },
+    { name: 'event_admins_lookup' }
+  );
+  portalDb.events.createIndex(
+    { admins: 1, sourceId: 1 },
+    { name: 'event_admins_source' }
+  );
+  portalDb.events.createIndex(
+    { acceptedMemberUserIds: 1, status: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_accepted_member_start' }
+  );
+  portalDb.events.createIndex(
+    { invitedMemberUserIds: 1, status: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_invited_member_start' }
+  );
+  portalDb.events.createIndex(
+    { pendingRequestMemberUserIds: 1, status: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_pending_request_member_start' }
+  );
+  portalDb.events.createIndex(
     { sourceId: 1, type: 1 },
     { name: 'event_source_lookup' }
   );
@@ -344,10 +394,6 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.events.createIndex(
     { type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 },
     { name: 'event_explore_feed_status' }
-  );
-  portalDb.events.createIndex(
-    { parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 },
-    { name: 'event_slot_parent_start' }
   );
   portalDb.events.createIndex(
     { expired: 1, endAtIso: 1, sourceId: 1 },

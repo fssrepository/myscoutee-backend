@@ -81,6 +81,18 @@ public class EventParticipationTicketService {
         flushChanges(toSave);
     }
 
+    public void syncParticipationTicketForUser(String sourceId, String userId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedSourceId) || !StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+
+        List<ActivityEvent> toSave = new ArrayList<>();
+        reconcileSource(normalizedSourceId, Set.of(normalizedUserId), toSave);
+        flushChanges(toSave);
+    }
+
     private void reconcileSource(
             String sourceId,
             Set<String> limitedUserIds,
@@ -95,8 +107,8 @@ public class EventParticipationTicketService {
             candidateUserIds.addAll(limitedUserIds);
         } else {
             candidateUserIds.addAll(snapshot.acceptedMemberUserIds());
+            candidateUserIds.addAll(snapshot.existingOverlayByOwnerUserId().keySet());
         }
-        candidateUserIds.addAll(snapshot.existingOverlayByOwnerUserId().keySet());
         candidateUserIds.remove(snapshot.creatorUserId());
 
         for (String ownerUserId : candidateUserIds) {

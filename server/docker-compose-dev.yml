@@ -49,9 +49,14 @@ services:
     networks:
       - myscoutee
     depends_on:
-      - mongodb
-      - redis
-      - profilemanagement
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      profilemanagement:
+        condition: service_started
+      frontend-sync:
+        condition: service_healthy
       #- certbot
     #command: ["/scripts/wait-for-it.sh", "-t", "0", "profilemanagement:8080", "--", "nginx", "-g", "daemon off;"]
   mongodb:
@@ -261,7 +266,8 @@ services:
     hostname: frontend-sync
     user: "${UID:-1000}:${GID:-1000}"
     command: >
-      bash -c "while true; do
+      bash -c "rm -f /workspace/nginx-html/.frontend-ready;
+      while true; do
       bash /scripts/frontend_auto_watch.sh || true;
       echo 'frontend-sync watcher restarting in 3s...';
       sleep 3;
@@ -288,3 +294,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /workspace/nginx-html/.frontend-ready"]
+      interval: 2s
+      timeout: 2s
+      retries: 90

@@ -13,7 +13,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPrici
 
 @Document(collection = "eventCheckoutBasketItems")
 @CompoundIndexes({
-        @CompoundIndex(name = "checkout_basket_user_source_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'resultState': 1, 'updatedAtIso': -1}"),
+        @CompoundIndex(name = "checkout_basket_user_source_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'updatedAtIso': -1}"),
+        @CompoundIndex(name = "checkout_basket_user_source_result_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'resultState': 1, 'updatedAtIso': -1}"),
         @CompoundIndex(name = "checkout_basket_user_source_item", def = "{'userId': 1, 'sourceId': 1, 'itemId': 1}", unique = true, sparse = true),
         @CompoundIndex(name = "checkout_basket_expiry_status", def = "{'expiresAtIso': 1, 'status': 1}")
 })

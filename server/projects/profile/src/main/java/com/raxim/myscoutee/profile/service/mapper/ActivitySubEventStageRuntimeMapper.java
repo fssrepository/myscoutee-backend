@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.service.mapper;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 
 @Component
@@ -87,11 +90,29 @@ public class ActivitySubEventStageRuntimeMapper {
         clone.setStageFinalizedAt(source.getStageFinalizedAt());
         clone.setStageFinalizedByUserId(source.getStageFinalizedByUserId());
         clone.setGroupsCount(source.getGroupsCount());
+        clone.setGroupResourceMetricsByAssetOwnerId(cloneGroupResourceMetrics(
+                source.getGroupResourceMetricsByAssetOwnerId()));
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
         clone.setUpdatedUser(source.getUpdatedUser());
         return clone;
+    }
+
+    private Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> cloneGroupResourceMetrics(
+            Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> source) {
+        Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Map<String, Map<String, GroupResourceMetricRecord>>> groupEntry :
+                (source == null ? Map.<String, Map<String, Map<String, GroupResourceMetricRecord>>>of() : source).entrySet()) {
+            Map<String, Map<String, GroupResourceMetricRecord>> byAssetOwner = new LinkedHashMap<>();
+            for (Map.Entry<String, Map<String, GroupResourceMetricRecord>> ownerEntry :
+                    (groupEntry.getValue() == null ? Map.<String, Map<String, GroupResourceMetricRecord>>of() : groupEntry.getValue()).entrySet()) {
+                byAssetOwner.put(ownerEntry.getKey(), new LinkedHashMap<>(
+                        ownerEntry.getValue() == null ? Map.of() : ownerEntry.getValue()));
+            }
+            result.put(groupEntry.getKey(), byAssetOwner);
+        }
+        return result;
     }
 
     private String firstNonBlank(String... values) {

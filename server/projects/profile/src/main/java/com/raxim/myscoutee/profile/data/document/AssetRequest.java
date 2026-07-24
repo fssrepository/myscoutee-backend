@@ -16,6 +16,7 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord
 })
 public record AssetRequest(
         @Id String id,
+        String requestId,
         String assetId,
         String ownerUserId,
         String ownerKey,

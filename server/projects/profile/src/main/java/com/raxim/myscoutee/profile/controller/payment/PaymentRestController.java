@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPromoCodeValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPromoCodeValidationResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
@@ -44,6 +45,14 @@ public class PaymentRestController {
             @RequestParam("userId") String userId,
             @RequestParam("sourceId") String sourceId) {
         return basketService.loadBasketByEvent(userId, sourceId);
+    }
+
+    @GetMapping("/checkout/payment-audit")
+    public EventCheckoutPaymentAuditDto paymentAudit(
+            @RequestParam("userId") String userId,
+            @RequestParam("sourceId") String sourceId,
+            @RequestParam("paymentSessionId") String paymentSessionId) {
+        return paymentService.loadPaymentAudit(userId, sourceId, paymentSessionId);
     }
 
     @PostMapping("/checkout/basket")

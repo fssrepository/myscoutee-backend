@@ -29,8 +29,10 @@ public class ActivitiesMembersController {
     public List<ActivityMemberEntryDto> queryMembers(
             @RequestParam("ownerType") String ownerType,
             @RequestParam("ownerId") String ownerId,
-            @RequestParam(value = "pendingOnly", required = false) Boolean pendingOnly) {
-        return activitiesMembersService.queryMembers(ownerType, ownerId, pendingOnly);
+            @RequestParam(value = "pendingOnly", required = false) Boolean pendingOnly,
+            @RequestParam(value = "eventId", required = false) String eventId,
+            @RequestParam(value = "subEventId", required = false) String subEventId) {
+        return activitiesMembersService.queryMembers(ownerType, ownerId, pendingOnly, eventId, subEventId);
     }
 
     @PostMapping("/summaries")

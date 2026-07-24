@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPromoCodeValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPromoCodeValidationResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
@@ -24,18 +26,56 @@ import com.raxim.myscoutee.profile.service.EventCheckoutPricingService;
 import com.raxim.myscoutee.profile.service.PaymentService;
 
 class PaymentRestControllerTest {
+    private PaymentService paymentService;
     private EventCheckoutPricingService pricingService;
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
+        paymentService = mock(PaymentService.class);
         pricingService = mock(EventCheckoutPricingService.class);
         mockMvc = MockMvcBuilders.standaloneSetup(new PaymentRestController(
-                mock(PaymentService.class),
+                paymentService,
                 mock(EventCheckoutBasketService.class),
                 pricingService,
                 mock(ActivitiesEventsService.class)))
                 .build();
+    }
+
+    @Test
+    void paymentAuditEndpointReturnsThePersistedChargeForTheExactSession() throws Exception {
+        when(paymentService.loadPaymentAudit("borrower-1", "asset-1", "checkout-1"))
+                .thenReturn(new EventCheckoutPaymentAuditDto(
+                        "payment-1",
+                        "borrower-1",
+                        "asset-1",
+                        "checkout-1",
+                        "dummy",
+                        "approved",
+                        "joined",
+                        "payment",
+                        0,
+                        null,
+                        null,
+                        null,
+                        12d,
+                        "USD",
+                        java.util.List.of(),
+                        java.util.List.of(),
+                        java.util.List.of(),
+                        "2026-07-23T18:02:06Z",
+                        "2026-07-23T18:02:05Z"));
+
+        mockMvc.perform(get("/activities/events/checkout/payment-audit")
+                        .param("userId", "borrower-1")
+                        .param("sourceId", "asset-1")
+                        .param("paymentSessionId", "checkout-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.amount").value(12d))
+                .andExpect(jsonPath("$.status").value("approved"))
+                .andExpect(jsonPath("$.bookingStatus").value("joined"));
+
+        verify(paymentService).loadPaymentAudit("borrower-1", "asset-1", "checkout-1");
     }
 
     @Test

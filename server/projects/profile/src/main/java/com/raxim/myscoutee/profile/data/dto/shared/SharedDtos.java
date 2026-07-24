@@ -3,6 +3,8 @@ package com.raxim.myscoutee.profile.data.dto.shared;
 import java.util.List;
 import java.util.Map;
 
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
+
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
@@ -28,6 +30,7 @@ public final class SharedDtos {
     }
 
     public record PricingSlotOverrideDto(
+            @Field("id")
             String id,
             String slotId,
             String label,
@@ -38,12 +41,14 @@ public final class SharedDtos {
     }
 
     public record PricingQuantityRuleDto(
+            @Field("id")
             String id,
             Integer minQuantity,
             PricingActionDto action) {
     }
 
     public record PricingDemandRuleDto(
+            @Field("id")
             String id,
             String operator,
             Integer capacityFilledPercent,
@@ -53,6 +58,7 @@ public final class SharedDtos {
     }
 
     public record PricingTimeRuleDto(
+            @Field("id")
             String id,
             String trigger,
             Integer offsetValue,
@@ -64,6 +70,7 @@ public final class SharedDtos {
     }
 
     public record PricingCancellationRuleDto(
+            @Field("id")
             String id,
             String offsetUnit,
             Integer offsetValue,
@@ -77,6 +84,7 @@ public final class SharedDtos {
     }
 
     public record PricingPromoCodeDto(
+            @Field("id")
             String id,
             String code,
             PricingActionDto action) {
@@ -216,11 +224,66 @@ public final class SharedDtos {
             Integer slotStartOffsetMinutes,
             Integer slotDurationMinutes,
             Integer groupsCount,
+            Integer groupsPending,
             String stageStatus,
             String stageStatusReason,
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
-            String stageFinalizedByUserId) {
+            String stageFinalizedByUserId,
+            List<SubEventGroupItemDto> groups) {
+
+        public SubEventItemDto(
+                String id,
+                String name,
+                String description,
+                String startAt,
+                String endAt,
+                String location,
+                String createdByUserId,
+                Integer tournamentGroupCapacityMin,
+                Integer tournamentGroupCapacityMax,
+                String tournamentLeaderboardType,
+                Integer tournamentAdvancePerGroup,
+                Boolean optional,
+                PricingConfigDto pricing,
+                Integer capacityMin,
+                Integer capacityMax,
+                Integer membersAccepted,
+                Integer membersPending,
+                Integer carsPending,
+                Integer accommodationPending,
+                Integer suppliesPending,
+                Integer carsAccepted,
+                Integer accommodationAccepted,
+                Integer suppliesAccepted,
+                Integer carsCapacityMin,
+                Integer carsCapacityMax,
+                Integer accommodationCapacityMin,
+                Integer accommodationCapacityMax,
+                Integer suppliesCapacityMin,
+                Integer suppliesCapacityMax,
+                Integer slotStartOffsetMinutes,
+                Integer slotDurationMinutes,
+                Integer groupsCount,
+                String stageStatus,
+                String stageStatusReason,
+                String stageStatusUpdatedAt,
+                String stageFinalizedAt,
+                String stageFinalizedByUserId) {
+            this(
+                    id, name, description, startAt, endAt, location, createdByUserId,
+                    tournamentGroupCapacityMin, tournamentGroupCapacityMax,
+                    tournamentLeaderboardType, tournamentAdvancePerGroup, optional, pricing,
+                    capacityMin, capacityMax, membersAccepted, membersPending,
+                    carsPending, accommodationPending, suppliesPending,
+                    carsAccepted, accommodationAccepted, suppliesAccepted,
+                    carsCapacityMin, carsCapacityMax,
+                    accommodationCapacityMin, accommodationCapacityMax,
+                    suppliesCapacityMin, suppliesCapacityMax,
+                    slotStartOffsetMinutes, slotDurationMinutes, groupsCount, null,
+                    stageStatus, stageStatusReason, stageStatusUpdatedAt,
+                    stageFinalizedAt, stageFinalizedByUserId, List.of());
+        }
 
         public SubEventItemDto(
                 String id,
@@ -291,7 +354,95 @@ public final class SharedDtos {
                     null,
                     null,
                     null,
-                    null);
+                    null,
+                    null,
+                    List.of());
+        }
+
+        public SubEventItemDto withMemberCounts(Integer accepted, Integer pending) {
+            return new SubEventItemDto(
+                    id,
+                    name,
+                    description,
+                    startAt,
+                    endAt,
+                    location,
+                    createdByUserId,
+                    tournamentGroupCapacityMin,
+                    tournamentGroupCapacityMax,
+                    tournamentLeaderboardType,
+                    tournamentAdvancePerGroup,
+                    optional,
+                    pricing,
+                    capacityMin,
+                    capacityMax,
+                    accepted,
+                    pending,
+                    carsPending,
+                    accommodationPending,
+                    suppliesPending,
+                    carsAccepted,
+                    accommodationAccepted,
+                    suppliesAccepted,
+                    carsCapacityMin,
+                    carsCapacityMax,
+                    accommodationCapacityMin,
+                    accommodationCapacityMax,
+                    suppliesCapacityMin,
+                    suppliesCapacityMax,
+                    slotStartOffsetMinutes,
+                    slotDurationMinutes,
+                    groupsCount,
+                    groupsPending,
+                    stageStatus,
+                    stageStatusReason,
+                    stageStatusUpdatedAt,
+                    stageFinalizedAt,
+                    stageFinalizedByUserId,
+                    groups);
+        }
+
+        public SubEventItemDto withGroupsPending(Integer pending) {
+            return new SubEventItemDto(
+                    id,
+                    name,
+                    description,
+                    startAt,
+                    endAt,
+                    location,
+                    createdByUserId,
+                    tournamentGroupCapacityMin,
+                    tournamentGroupCapacityMax,
+                    tournamentLeaderboardType,
+                    tournamentAdvancePerGroup,
+                    optional,
+                    pricing,
+                    capacityMin,
+                    capacityMax,
+                    membersAccepted,
+                    membersPending,
+                    carsPending,
+                    accommodationPending,
+                    suppliesPending,
+                    carsAccepted,
+                    accommodationAccepted,
+                    suppliesAccepted,
+                    carsCapacityMin,
+                    carsCapacityMax,
+                    accommodationCapacityMin,
+                    accommodationCapacityMax,
+                    suppliesCapacityMin,
+                    suppliesCapacityMax,
+                    slotStartOffsetMinutes,
+                    slotDurationMinutes,
+                    groupsCount,
+                    Math.max(0, pending == null ? 0 : pending),
+                    stageStatus,
+                    stageStatusReason,
+                    stageStatusUpdatedAt,
+                    stageFinalizedAt,
+                    stageFinalizedByUserId,
+                    groups);
         }
     }
 
@@ -387,13 +538,54 @@ public final class SharedDtos {
             Integer pageSize) {
     }
 
+    public record SubEventResourceMetricDto(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
+    }
+
     public record ActivitySubEventResourceStateDto(
             String ownerId,
             String subEventId,
             String assetOwnerUserId,
             Map<String, List<String>> assetAssignmentIds,
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
-            Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId) {
+            Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId,
+            Map<String, List<AssetDetailDto>> fallbackAssetCardsByType,
+            Map<String, SubEventResourceMetricDto> resourceMetricsByType) {
+        public ActivitySubEventResourceStateDto(
+                String ownerId,
+                String subEventId,
+                String assetOwnerUserId,
+                Map<String, List<String>> assetAssignmentIds,
+                Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
+                Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId,
+                Map<String, List<AssetDetailDto>> fallbackAssetCardsByType) {
+            this(
+                    ownerId,
+                    subEventId,
+                    assetOwnerUserId,
+                    assetAssignmentIds,
+                    assetSettingsByType,
+                    supplyContributionEntriesByAssetId,
+                    fallbackAssetCardsByType,
+                    Map.of());
+        }
+
+        public String authorizationEventId() {
+            String normalizedOwnerId = ownerId == null ? "" : ownerId.trim();
+            String normalizedSubEventId = subEventId == null ? "" : subEventId.trim();
+            String runtimeOwnerId = normalizedOwnerId;
+            if (!normalizedSubEventId.isEmpty()) {
+                int groupOwnerMarker = normalizedOwnerId.indexOf(":" + normalizedSubEventId + ":");
+                if (groupOwnerMarker > 0) {
+                    runtimeOwnerId = normalizedOwnerId.substring(0, groupOwnerMarker);
+                }
+            }
+            int slotMarker = runtimeOwnerId.indexOf(":slot:");
+            return slotMarker > 0 ? runtimeOwnerId.substring(0, slotMarker) : runtimeOwnerId;
+        }
     }
 
     public record ActivitySubEventStageRuntimeStateDto(
@@ -426,10 +618,45 @@ public final class SharedDtos {
             String endAtIso,
             Integer quantity,
             Double totalAmount,
+            Double previousTotalAmount,
             String currency,
             List<String> acceptedPolicyIds,
             String paymentSessionId,
             Boolean inventoryApplied) {
+        public AssetRequestBookingDto(
+                String eventId,
+                String eventTitle,
+                String subEventId,
+                String subEventTitle,
+                String slotKey,
+                String slotLabel,
+                String timeframe,
+                String startAtIso,
+                String endAtIso,
+                Integer quantity,
+                Double totalAmount,
+                String currency,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean inventoryApplied) {
+            this(
+                    eventId,
+                    eventTitle,
+                    subEventId,
+                    subEventTitle,
+                    slotKey,
+                    slotLabel,
+                    timeframe,
+                    startAtIso,
+                    endAtIso,
+                    quantity,
+                    totalAmount,
+                    null,
+                    currency,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    inventoryApplied);
+        }
     }
 
     public record AssetMemberRequestDto(

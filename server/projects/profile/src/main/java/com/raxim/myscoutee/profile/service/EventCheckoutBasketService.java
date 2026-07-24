@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -120,6 +121,49 @@ public class EventCheckoutBasketService {
                         .filter(Objects::nonNull)
                         .flatMap(item -> (item.getAppliedPromoCodes() == null ? List.<String>of() : item.getAppliedPromoCodes()).stream())
                         .toList()));
+    }
+
+    public Map<String, String> loadResultStatesByEvent(String userId, Collection<String> sourceIds) {
+        String normalizedUserId = normalizeId(userId);
+        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        if (!StringUtils.hasText(normalizedUserId) || normalizedSourceIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, List<EventCheckoutBasketItem>> itemsBySourceId = repository
+                .findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                        normalizedUserId,
+                        normalizedSourceIds,
+                        ACTIVE_STATUSES,
+                        DISPLAY_RESULT_STATES)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(item -> StringUtils.hasText(normalizeId(item.getSourceId())))
+                .collect(
+                        LinkedHashMap::new,
+                        (result, item) -> result
+                                .computeIfAbsent(normalizeId(item.getSourceId()), ignored -> new java.util.ArrayList<>())
+                                .add(item),
+                        Map::putAll);
+        if (itemsBySourceId.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, String> result = new LinkedHashMap<>();
+        itemsBySourceId.forEach((sourceId, items) -> result.put(sourceId, checkoutResultState(items)));
+        return result;
+    }
+
+    private String checkoutResultState(List<EventCheckoutBasketItem> items) {
+        List<String> resultStates = (items == null ? List.<EventCheckoutBasketItem>of() : items).stream()
+                .map(item -> safeText(item == null ? null : item.getResultState()))
+                .map(value -> StringUtils.hasText(value) ? value : "pending")
+                .toList();
+        if (resultStates.stream().anyMatch("failed"::equals)) {
+            return "failed";
+        }
+        if (!resultStates.isEmpty() && resultStates.stream().allMatch("succeeded"::equals)) {
+            return "succeeded";
+        }
+        return "pending";
     }
 
     public Map<String, Integer> activeSlotReservationCountsByEvent(String sourceId) {
@@ -453,6 +497,17 @@ public class EventCheckoutBasketService {
 
     private String normalizeId(String value) {
         return safeText(value);
+    }
+
+    private List<String> normalizeIds(Collection<String> values) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        return values.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
     }
 
     private String safeText(String value) {

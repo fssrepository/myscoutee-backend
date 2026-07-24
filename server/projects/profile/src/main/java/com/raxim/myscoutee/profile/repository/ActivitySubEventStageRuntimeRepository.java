@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 
@@ -16,4 +17,10 @@ public interface ActivitySubEventStageRuntimeRepository extends MongoRepository<
     List<ActivitySubEventStageRuntime> findByOwnerIdInAndStatusNot(Collection<String> ownerIds, String status);
 
     Optional<ActivitySubEventStageRuntime> findByOwnerIdAndSubEventId(String ownerId, String subEventId);
+
+    @Query("{ 'ownerId': { '$regex': ?0 }, 'subEventId': ?1, 'status': { '$ne': ?2 } }")
+    List<ActivitySubEventStageRuntime> findByOwnerPatternAndSubEventIdAndStatusNot(
+            String ownerIdPattern,
+            String subEventId,
+            String status);
 }

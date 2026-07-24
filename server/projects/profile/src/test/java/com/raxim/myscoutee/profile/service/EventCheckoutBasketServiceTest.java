@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +78,38 @@ class EventCheckoutBasketServiceTest {
         Document setValues = (Document) updateCaptor.getValue().getUpdateObject().get("$set");
         assertThat(setValues.get("appliedPromoCodes"))
                 .isEqualTo(List.of("VIP20", "SAVE10"));
+    }
+
+    @Test
+    void resultStatesForVisibleCardsAreLoadedInOneBatch() {
+        EventCheckoutBasketItem pending = persistedItem();
+        pending.setSourceId("event-1");
+        pending.setResultState("pending");
+        EventCheckoutBasketItem failed = persistedItem();
+        failed.setSourceId("event-1");
+        failed.setResultState("failed");
+        EventCheckoutBasketItem succeeded = persistedItem();
+        succeeded.setSourceId("event-2");
+        succeeded.setResultState("succeeded");
+        when(repository.findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                eq("user-1"),
+                eq(List.of("event-1", "event-2")),
+                anyList(),
+                anyList()))
+                .thenReturn(List.of(pending, failed, succeeded));
+
+        Map<String, String> result = service.loadResultStatesByEvent(
+                " user-1 ",
+                List.of(" event-1 ", "event-2", "event-1"));
+
+        assertThat(result).containsExactlyInAnyOrderEntriesOf(Map.of(
+                "event-1", "failed",
+                "event-2", "succeeded"));
+        verify(repository).findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
+                eq("user-1"),
+                eq(List.of("event-1", "event-2")),
+                anyList(),
+                anyList());
     }
 
     private EventCheckoutBasketItem persistedItem() {

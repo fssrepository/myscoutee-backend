@@ -407,6 +407,20 @@ db.getCollection('chatMessages').createIndex({ pollVoterUserIds: 1, sentAtIso: -
         --quiet \
         "${target_db}" \
         --eval "
+db.getCollection('events').deleteMany({
+  \$or: [
+    { generated: true },
+    { parentEventId: { \$exists: true, \$nin: [null, ''] } }
+  ]
+});
+db.getCollection('events').updateMany({}, {
+  \$unset: {
+    generated: '',
+    parentEventId: '',
+    slotTemplateId: '',
+    upcomingSlots: ''
+  }
+});
 db.getCollection('events').createIndex({ syncKey: 1 }, { name: 'event_sync_key', unique: true, sparse: true });
 db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, sourceId: 1 }, { name: 'event_owner_type_source', unique: true });
 db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, startAtIso: 1 }, { name: 'event_owner_type' });
@@ -418,7 +432,6 @@ db.getCollection('events').createIndex({ sourceId: 1, startAtIso: 1, type: 1 }, 
 db.getCollection('events').createIndex({ status: 1, creatorUserId: 1, visibility: 1 }, { name: 'event_explore_visibility' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 }, { name: 'event_explore_candidates_status' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_explore_feed_status' });
-db.getCollection('events').createIndex({ parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_slot_parent_start' });
 db.getCollection('events').createIndex({ expired: 1, endAtIso: 1, sourceId: 1 }, { name: 'event_expired_end' });
 db.getCollection('events').createIndex({ expired: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_expired_start' });
 db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });

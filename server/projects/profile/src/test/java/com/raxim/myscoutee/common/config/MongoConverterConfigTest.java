@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.convert.NoOpDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import com.raxim.myscoutee.profile.data.document.AdminStatsSnapshot;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
 
 class MongoConverterConfigTest {
     @Test
@@ -28,6 +30,24 @@ class MongoConverterConfigTest {
 
         assertThat(document.get("counters", Document.class))
                 .containsEntry("profile.registered", 3L);
+    }
+
+    @Test
+    void preservesEmbeddedPricingRuleIdsAsRegularIdFields() {
+        MappingMongoConverter converter = mappingMongoConverter();
+        PricingPromoCodeDto promoCode = new PricingPromoCodeDto(
+                "promo-code-1",
+                "EARLY",
+                new PricingActionDto("decrease_percent", 10D));
+
+        Document document = new Document();
+        converter.write(promoCode, document);
+        PricingPromoCodeDto restored = converter.read(PricingPromoCodeDto.class, document);
+
+        assertThat(document)
+                .containsEntry("id", "promo-code-1")
+                .doesNotContainKey("_id");
+        assertThat(restored.id()).isEqualTo("promo-code-1");
     }
 
     private MappingMongoConverter mappingMongoConverter() {

@@ -1033,9 +1033,17 @@ public class EventScheduler {
 
         Set<String> eligibleUserIdSet = new LinkedHashSet<>(normalizeUserIds(eligibleUserIds));
         List<GroupAssignmentTarget> targets = new ArrayList<>();
+        Map<String, String> memberOwnerIdByGroupId = groups.stream()
+                .filter(Objects::nonNull)
+                .collect(LinkedHashMap::new, (map, group) -> {
+                    String groupId = normalizeId(group.id());
+                    if (StringUtils.hasText(groupId)) {
+                        map.put(groupId, canonicalGroupOwnerId(eventId, subEventId, groupId));
+                    }
+                }, Map::putAll);
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByGroupId = preserveAnchors
                 ? activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, groups.stream()
-                        .map(group -> normalizeId(group == null ? null : group.id()))
+                        .map(group -> memberOwnerIdByGroupId.get(normalizeId(group == null ? null : group.id())))
                         .filter(StringUtils::hasText)
                         .toList())
                 : Map.of();
@@ -1054,7 +1062,7 @@ public class EventScheduler {
             }
             List<String> lockedUserIds = List.of();
             if (preserveAnchors) {
-                ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByGroupId.get(groupId);
+                ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByGroupId.get(memberOwnerIdByGroupId.get(groupId));
                 lockedUserIds = snapshot == null
                         ? List.of()
                         : snapshot.acceptedMemberUserIds().stream()
@@ -1063,7 +1071,11 @@ public class EventScheduler {
                                 .distinct()
                                 .toList();
             }
-            targets.add(new GroupAssignmentTarget(groupId, groupRange, lockedUserIds));
+            targets.add(new GroupAssignmentTarget(
+                    groupId,
+                    memberOwnerIdByGroupId.get(groupId),
+                    groupRange,
+                    lockedUserIds));
         }
         return targets;
     }
@@ -1140,7 +1152,11 @@ public class EventScheduler {
                 }
                 dedupedLockedUserIds.add(normalizedUserId);
             }
-            normalizedTargets.add(new GroupAssignmentTarget(target.groupId(), target.range(), dedupedLockedUserIds));
+            normalizedTargets.add(new GroupAssignmentTarget(
+                    target.groupId(),
+                    target.memberOwnerId(),
+                    target.range(),
+                    dedupedLockedUserIds));
         }
 
         Set<String> remainingUserIds = new LinkedHashSet<>(normalizedPoolUserIds);
@@ -1201,9 +1217,13 @@ public class EventScheduler {
         }
 
         List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
+        Map<String, String> memberOwnerIdByGroupId = normalizedTargets.stream()
+                .collect(LinkedHashMap::new,
+                        (map, target) -> map.put(target.groupId(), target.memberOwnerId()),
+                        Map::putAll);
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByPlannedGroupId =
                 activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, plannedGroups.stream()
-                        .map(GeneratedEventPlan::seedId)
+                        .map(plan -> memberOwnerIdByGroupId.get(plan.seedId()))
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
                         .toList());
@@ -1215,7 +1235,10 @@ public class EventScheduler {
         }
         for (GeneratedEventPlan plannedGroup : plannedGroups) {
             List<String> normalizedPlannedUserIds = normalizeUserIds(plannedGroup.memberUserIds());
-            ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(normalizeId(plannedGroup.seedId()));
+            String memberOwnerId = memberOwnerIdByGroupId.getOrDefault(
+                    normalizeId(plannedGroup.seedId()),
+                    normalizeId(plannedGroup.seedId()));
+            ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
             if (hasSameAcceptedMembers(groupSnapshot, normalizedPlannedUserIds)) {
                 rememberPlanMarkerIfMissing(
                         wrapperType,
@@ -1226,7 +1249,7 @@ public class EventScheduler {
                 continue;
             }
             List<String> syncedUserIds = activitiesMembersService.syncGroupMembers(
-                    plannedGroup.seedId(),
+                    memberOwnerId,
                     resolveInviterUserId(event),
                     normalizedPlannedUserIds);
             incrementObservedQueries(observedQueries);
@@ -1435,6 +1458,23 @@ public class EventScheduler {
         return normalizeId(event == null ? null : event.getCreatorUserId());
     }
 
+    private String canonicalGroupOwnerId(String eventId, String subEventId, String groupId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedGroupId)) {
+            return "";
+        }
+        if (StringUtils.hasText(normalizedEventId)
+                && (normalizedGroupId.equals(normalizedEventId)
+                        || normalizedGroupId.startsWith(normalizedEventId + ":"))) {
+            return normalizedGroupId;
+        }
+        return StringUtils.hasText(normalizedEventId) && StringUtils.hasText(normalizedSubEventId)
+                ? normalizedEventId + ":" + normalizedSubEventId + ":" + normalizedGroupId
+                : normalizedGroupId;
+    }
+
     private String normalizeId(String value) {
         return value == null ? "" : value.trim();
     }
@@ -1462,6 +1502,7 @@ public class EventScheduler {
 
     private record GroupAssignmentTarget(
             String groupId,
+            String memberOwnerId,
             Range range,
             List<String> lockedUserIds) {
     }

@@ -189,6 +189,16 @@ public class AssetsController {
         return assetsService.makeManager(request);
     }
 
+    @PostMapping("/revoke-manager")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId()",
+            skipWhenAuthenticationOptional = true)
+    public AssetDto revokeManager(@RequestBody AssetMakeManagerRequestDto request) {
+        return assetsService.revokeManager(request);
+    }
+
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
     }

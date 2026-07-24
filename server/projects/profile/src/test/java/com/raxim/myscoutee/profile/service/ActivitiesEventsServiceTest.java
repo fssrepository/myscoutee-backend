@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.lenient;
@@ -30,6 +31,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
@@ -37,11 +39,14 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequest
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
@@ -77,6 +82,8 @@ class ActivitiesEventsServiceTest {
     private HomeUserProfileService homeUserProfileService;
     @Mock
     private ActivitiesMembersService activitiesMembersService;
+    @Mock
+    private ActivitiesResourcesService activitiesResourcesService;
     @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
@@ -128,6 +135,7 @@ class ActivitiesEventsServiceTest {
                 userAffinityEdgesRepository,
                 homeUserProfileService,
                 activitiesMembersService,
+                activitiesResourcesService,
                 eventParticipationTicketService,
                 paymentService,
                 eventCheckoutBasketService,
@@ -191,6 +199,92 @@ class ActivitiesEventsServiceTest {
                 .containsExactly("known-event", "cold-event");
         verify(activityEventsRepository, never()).findAll();
         verify(userAffinityEdgesRepository).findRelevantByUserIds(anyList());
+    }
+
+    @Test
+    void subEventReloadUsesEmbeddedCounterProjectionWithoutCounterQueries() {
+        Users viewer = new Users();
+        viewer.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        parent.setSubEventsEnabled(true);
+        parent.setSlotsEnabled(false);
+        parent.setSubEventDefinitions(List.of(new SubEventDefinitionDto(
+                "optional-1",
+                "Optional activity",
+                "",
+                "During",
+                0,
+                60,
+                "",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                null)));
+        parent.setSubEvents(List.of(new SubEventItem(
+                "optional-1",
+                "Optional activity",
+                "",
+                null,
+                null,
+                "",
+                "host",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                1,
+                1,
+                2,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                24,
+                0,
+                0,
+                0,
+                0,
+                0,
+                60)));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
+
+        EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
+                "host",
+                "event-1",
+                "upcoming",
+                "day",
+                null,
+                null,
+                null,
+                false));
+
+        assertThat(result.slots()).singleElement().satisfies(slot ->
+                assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
+                    assertThat(item.membersAccepted()).isEqualTo(1);
+                    assertThat(item.membersPending()).isEqualTo(1);
+                    assertThat(item.carsAccepted()).isEqualTo(2);
+                    assertThat(item.carsPending()).isEqualTo(2);
+                    assertThat(item.carsCapacityMin()).isZero();
+                    assertThat(item.carsCapacityMax()).isEqualTo(24);
+                }));
+        verify(activitySubEventResourcesRepository, never())
+                .findByOwnerIdInAndStatusNot(anyCollection(), anyString());
+        verify(activitiesResourcesService, never()).queryState(anyString(), anyString(), anyString());
+        verify(activitiesMembersService, never())
+                .buildBatchOwnerSnapshots(anyString(), anyCollection());
     }
 
     @Test
@@ -442,16 +536,120 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.empty());
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("draft-1");
             assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
             assertThat(record.getPublished()).isFalse();
         });
+    }
+
+    @Test
+    void eventEditPersistsExplicitlyClearedImage() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("draft-1", "host", 0d);
+        existing.setImageUrl("https://example.test/old-event-image.jpg");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(record ->
+                assertThat(record.getImageUrl()).isEmpty());
+        assertThat(result).isNotNull();
+        assertThat(result.imageUrl()).isEmpty();
+    }
+
+    @Test
+    void enablingTicketingCreatesTicketsUpdatesCountersAndNotifiesAcceptedParticipants() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("event-1", "host", 0d);
+        existing.setTicketing(false);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "member-1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        10);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(members);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "event-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventDto result = service.sync(eventPayload("sync-event-1", "event-1", "host", true, true));
+
+        assertThat(result).isNotNull();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getTicketing()).isTrue());
+        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        verify(userActivityCountersService).refreshEventCountersForDocuments(anyList());
+        ArgumentCaptor<NotificationOutboxService.NotificationIntent> notificationCaptor =
+                ArgumentCaptor.forClass(NotificationOutboxService.NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notificationCaptor.capture());
+        assertThat(notificationCaptor.getValue()).satisfies(intent -> {
+            assertThat(intent.type()).isEqualTo("event-ticketing-enabled");
+            assertThat(intent.recipientUserIds()).containsExactly("member-1");
+            assertThat(intent.payload()).containsEntry("eventScope", "tickets");
+        });
+    }
+
+    @Test
+    void eventDetailUsesCanonicalEditorDocumentInsteadOfRicherMembershipSnapshot() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+
+        ActivityEvent canonical = event("event-1", "host", 0d);
+        canonical.setSubEventDefinitions(List.of(new SubEventDefinitionDto(
+                "stage-1", "Opening round", "Saved definition", "After previous",
+                0, 30, "Arena", 2, 8, "Score", 1, false, null, 2, 8, null)));
+        canonical.setSourceLink("https://example.test/event");
+        canonical.setImageUrl("");
+        ActivityEvent scoped = event("event-1", "host", 0d);
+        scoped.setId("event-1-scoped-document");
+        scoped.setOwnerUserId("member-1");
+        scoped.setAcceptedMembers(99);
+        scoped.setSubEventDefinitions(List.of());
+        scoped.setSourceLink(null);
+        scoped.setImageUrl("https://example.test/stale-event-image.jpg");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(scoped, canonical));
+
+        EventDetailDto result = service.loadEventDetailById("host", "event-1");
+
+        assertThat(result).isNotNull();
+        assertThat(result.imageUrl()).isEmpty();
+        assertThat(result.sourceLink()).isEqualTo("https://example.test/event");
+        assertThat(result.subEventDefinitions())
+                .extracting(SubEventDefinitionDto::id)
+                .containsExactly("stage-1");
     }
 
     @Test
@@ -566,6 +764,8 @@ class ActivitiesEventsServiceTest {
         hosting.setStatus(ActivityEvent.STATUS_ACTIVE);
 
         ActivityEvent invitation = event("invite-1", "other-host", 0d);
+        invitation.setOwnerUserId("accepted-member");
+        invitation.setAdmins(List.of("accepted-member", "other-host"));
         invitation.setStatus(ActivityEvent.STATUS_ACTIVE);
         invitation.setInvitedMemberUserIds(List.of("host"));
 
@@ -578,7 +778,8 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findActiveInvitationEvents("host"))
                 .thenReturn(List.of(invitation));
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(hosting, invitation, trashed));
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host", false)).thenReturn(Map.of());
+        lenient().when(activitiesMembersService.findTrackedEventMembershipStatusesForUser(eq("host"), anyBoolean()))
+                .thenReturn(Map.of());
 
         EventsExplorePageDto hostingResponse = service.queryHostingPage("host", 2, null);
         EventsExplorePageDto invitationResponse = service.queryInvitationsPage("host", 2, null);
@@ -588,8 +789,32 @@ class ActivitiesEventsServiceTest {
                 .containsExactly("hosting-1");
         assertThat(invitationResponse.records()).extracting(EventDto::id)
                 .containsExactly("invite-1");
+        assertThat(invitationResponse.records()).singleElement().satisfies(record ->
+                assertThat(record.adminIds())
+                        .containsExactly("other-host", "accepted-member")
+                        .doesNotContain("host"));
         assertThat(trashResponse.records()).extracting(EventDto::id)
                 .containsExactly("trash-1");
+    }
+
+    @Test
+    void trashPageIncludesEventLeftByViewerThroughDeletedMembership() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+
+        ActivityEvent leftEvent = event("left-event", "host", 0d);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", true))
+                .thenReturn(Map.of("left-event", "deleted"));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(), List.of(leftEvent));
+
+        EventsExplorePageDto trashResponse = service.queryTrashPage("viewer", 12, null);
+
+        assertThat(trashResponse.records()).extracting(EventDto::id)
+                .containsExactly("left-event");
     }
 
     @Test
@@ -646,39 +871,26 @@ class ActivitiesEventsServiceTest {
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findAll();
         verify(activityEventsRepository, never()).saveAll(anyList());
-        verify(activitiesMembersService).buildBatchEventSnapshots(anyMap());
+        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
     }
 
     @Test
-    void activeFilterUsesMemberSnapshotWhenProjectionLooksLikeViewerAdmin() {
+    void activeFilterUsesEmbeddedParentMembershipWithoutSnapshotProjection() {
         Users viewer = new Users();
         viewer.setId("viewer");
         viewer.setName("Viewer User");
 
         ActivityEvent staleProjection = event("event-1", "host", 0d);
         staleProjection.setOwnerUserId("viewer");
-        staleProjection.setAdmins(List.of("viewer", "host"));
+        staleProjection.setAdmins(List.of("host"));
         staleProjection.setAcceptedMemberUserIds(List.of("host", "viewer"));
-
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
-                "event",
-                "event-1",
-                List.of(),
-                List.of("host", "viewer"),
-                List.of(),
-                List.of(),
-                List.of(),
-                Set.of("host"),
-                10);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1"));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(staleProjection));
-        when(activitiesMembersService.buildBatchEventSnapshots(anyMap()))
-                .thenReturn(Map.of("event-1", snapshot));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -694,6 +906,7 @@ class ActivitiesEventsServiceTest {
             assertThat(record.userId()).isEqualTo("viewer");
             assertThat(record.adminIds()).containsExactly("host");
         });
+        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
     }
 
     @Test
@@ -766,6 +979,15 @@ class ActivitiesEventsServiceTest {
             String id,
             String creatorUserId,
             Boolean published) {
+        return eventPayload(syncKey, id, creatorUserId, published, false);
+    }
+
+    private EventDetailDto eventPayload(
+            String syncKey,
+            String id,
+            String creatorUserId,
+            Boolean published,
+            Boolean ticketing) {
         return new EventDetailDto(
                 syncKey,
                 id,
@@ -803,7 +1025,7 @@ class ActivitiesEventsServiceTest {
                 false,
                 false,
                 "One-time",
-                false,
+                ticketing,
                 false,
                 null,
                 false,

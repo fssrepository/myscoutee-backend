@@ -17,6 +17,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMemberDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatNavigationContextDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseAssigneeDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseDto;
 
@@ -52,7 +53,11 @@ public class ChatMapper {
                 record.getDistanceKm(),
                 record.getDistanceMetersExact(),
                 null,
-                toSupportCaseDto(record));
+                toSupportCaseDto(record),
+                normalizeId(record.getEventId()),
+                normalizeId(record.getSubEventId()),
+                normalizeId(record.getGroupId()),
+                null);
     }
 
     public Map<String, ChatDto> toMap(Collection<Chat> records) {
@@ -90,7 +95,68 @@ public class ChatMapper {
                 dto.distanceKm(),
                 dto.distanceMetersExact(),
                 metrics,
-                dto.supportCase());
+                dto.supportCase(),
+                dto.eventId(),
+                dto.subEventId(),
+                dto.groupId(),
+                dto.navigationContext());
+    }
+
+    public ChatDto withMembers(ChatDto dto, List<String> memberIds, Map<String, Users> usersById) {
+        if (dto == null) {
+            return null;
+        }
+        List<String> normalizedMemberIds = new ArrayList<>(memberIds == null ? List.of() : memberIds);
+        List<ChatMemberDto> members = toMemberDtos(normalizedMemberIds, usersById);
+        if (Objects.equals(dto.memberIds(), normalizedMemberIds) && Objects.equals(dto.members(), members)) {
+            return dto;
+        }
+        return new ChatDto(
+                dto.id(),
+                dto.avatar(),
+                dto.title(),
+                dto.lastMessage(),
+                dto.lastSenderId(),
+                normalizedMemberIds,
+                members,
+                dto.unread(),
+                dto.dateIso(),
+                dto.channelType(),
+                dto.ownerId(),
+                dto.distanceKm(),
+                dto.distanceMetersExact(),
+                dto.metrics(),
+                dto.supportCase(),
+                dto.eventId(),
+                dto.subEventId(),
+                dto.groupId(),
+                dto.navigationContext());
+    }
+
+    public ChatDto withNavigationContext(ChatDto dto, ChatNavigationContextDto navigationContext) {
+        if (dto == null || Objects.equals(dto.navigationContext(), navigationContext)) {
+            return dto;
+        }
+        return new ChatDto(
+                dto.id(),
+                dto.avatar(),
+                dto.title(),
+                dto.lastMessage(),
+                dto.lastSenderId(),
+                new ArrayList<>(dto.memberIds() == null ? List.of() : dto.memberIds()),
+                new ArrayList<>(dto.members() == null ? List.of() : dto.members()),
+                dto.unread(),
+                dto.dateIso(),
+                dto.channelType(),
+                dto.ownerId(),
+                dto.distanceKm(),
+                dto.distanceMetersExact(),
+                dto.metrics(),
+                dto.supportCase(),
+                dto.eventId(),
+                dto.subEventId(),
+                dto.groupId(),
+                navigationContext);
     }
 
     private List<ChatMemberDto> toMemberDtos(List<String> memberIds, Map<String, Users> usersById) {

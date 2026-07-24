@@ -415,6 +415,11 @@ public final class EventsDtos {
             List<EventFeedbackCardDto> cards) {
     }
 
+    public record EventFeedbackSubmitRequestDto(
+            String userId,
+            EventFeedbackDetailDto feedback) {
+    }
+
     public record EventDto(
             String id,
             String userId,
@@ -551,7 +556,21 @@ public final class EventsDtos {
             String anchorDate,
             String rangeStart,
             String rangeEnd,
-            Boolean participantOnly) {
+            Boolean participantOnly,
+            Integer page,
+            Integer pageSize,
+            String cursor) {
+        public EventSubEventsQueryDto(
+                String userId,
+                String eventId,
+                String order,
+                String view,
+                String anchorDate,
+                String rangeStart,
+                String rangeEnd,
+                Boolean participantOnly) {
+            this(userId, eventId, order, view, anchorDate, rangeStart, rangeEnd, participantOnly, null, null, null);
+        }
     }
 
     public record EventSubEventsSlotDto(
@@ -568,7 +587,18 @@ public final class EventsDtos {
 
     public record EventSubEventsResultDto(
             String mode,
-            List<EventSubEventsSlotDto> slots) {
+            List<EventSubEventsSlotDto> slots,
+            Integer total,
+            String nextCursor) {
+        public EventSubEventsResultDto(String mode, List<EventSubEventsSlotDto> slots) {
+            this(mode, slots, slots == null ? 0 : slots.size(), null);
+        }
+    }
+
+    public record EventSubEventsSlotPage(
+            List<EventSubEventsSlotDto> slots,
+            Integer total,
+            String nextCursor) {
     }
 
     public record EventCheckoutSlotsQueryDto(
@@ -837,5 +867,27 @@ public final class EventsDtos {
             Double amount,
             String currency,
             String paymentUrl) {
+    }
+
+    public record EventCheckoutPaymentAuditDto(
+            String id,
+            String userId,
+            String sourceId,
+            String checkoutSessionId,
+            String provider,
+            String status,
+            String bookingStatus,
+            String auditKind,
+            Integer revisionNumber,
+            Double adjustmentAmount,
+            Integer bookingQuantity,
+            String supersedesPaymentId,
+            Double amount,
+            String currency,
+            List<EventCheckoutBasketItemDto> basketItems,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            List<EventCheckoutLineItemDto> lineItems,
+            String joinedAtIso,
+            String createdAtIso) {
     }
 }

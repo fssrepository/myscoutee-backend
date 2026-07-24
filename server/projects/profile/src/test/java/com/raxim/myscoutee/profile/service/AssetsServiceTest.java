@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,6 +23,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.document.AssetRequest;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
@@ -29,8 +31,19 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingAudienceSettingsDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingDemandRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingQuantityRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingSlotOverrideDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -39,6 +52,141 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void scopedAssetMemberManagementRequiresOwnerOrAcceptedBorrower() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        Asset asset = assetWithEventRequest();
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u1")).isTrue();
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u2")).isTrue();
+
+        asset.setRequests(assetWithPendingBorrowRequest().getRequests());
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u2")).isFalse();
+
+        AssetRequestRecord acceptedRequest = assetWithEventRequest().getRequests().get(0);
+        AssetRequestBookingRecord acceptedBooking = acceptedRequest.booking();
+        asset.setRequests(List.of(new AssetRequestRecord(
+                acceptedRequest.id(),
+                acceptedRequest.userId(),
+                acceptedRequest.name(),
+                acceptedRequest.initials(),
+                acceptedRequest.gender(),
+                acceptedRequest.status(),
+                acceptedRequest.note(),
+                acceptedRequest.requestKind(),
+                acceptedRequest.requestedAtIso(),
+                new AssetRequestBookingRecord(
+                        acceptedBooking.eventId(),
+                        acceptedBooking.eventTitle(),
+                        "another-subevent",
+                        acceptedBooking.subEventTitle(),
+                        acceptedBooking.slotKey(),
+                        acceptedBooking.slotLabel(),
+                        acceptedBooking.timeframe(),
+                        acceptedBooking.startAtIso(),
+                        acceptedBooking.endAtIso(),
+                        acceptedBooking.quantity(),
+                        acceptedBooking.totalAmount(),
+                        acceptedBooking.previousTotalAmount(),
+                        acceptedBooking.currency(),
+                        acceptedBooking.acceptedPolicyIds(),
+                        acceptedBooking.paymentSessionId(),
+                        acceptedBooking.inventoryApplied()))));
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u2")).isFalse();
+    }
+
+    @Test
+    void syncScopedMembersOnlyChangesRequestsForTheSelectedGroup() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset asset = asset();
+        AssetRequestBookingRecord groupABooking = new AssetRequestBookingRecord(
+                "event-1:subevent-1:group-a", "Event", "subevent-1", "Stage", "subevent-1", "Stage",
+                null, null, null, 1, null, null, List.of(), null, null);
+        AssetRequestBookingRecord groupBBooking = new AssetRequestBookingRecord(
+                "event-1:subevent-1:group-b", "Event", "subevent-1", "Stage", "subevent-1", "Stage",
+                null, null, null, 1, null, null, List.of(), null, null);
+        asset.setRequests(List.of(
+                new AssetRequestRecord(
+                        "group-a-old", "u2", "Old Group A", "OA", "man", "accepted", "", "borrow",
+                        "2026-05-11T10:00:00Z", groupABooking),
+                new AssetRequestRecord(
+                        "group-b-kept", "u3", "Group B", "GB", "man", "accepted", "", "borrow",
+                        "2026-05-11T10:00:00Z", groupBBooking)));
+        Users invitedUser = user("u4", "New Group A", "NA");
+        ActivityMemberEntryDto invited = new ActivityMemberEntryDto(
+                null, "u4", "New Group A", "NA", "man", "", "Waiting", "Member", "pending",
+                "admin", "invite", "u1", true, "2026-05-12T10:00:00Z", "2026-05-12T10:00:00Z",
+                "", null, null, List.of());
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(invitedUser));
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        String assetOwnerUserId = service.syncScopedRequestsFromMemberEntries(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                List.of(invited));
+
+        assertThat(assetOwnerUserId).isEqualTo("u1");
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getRequests())
+                .extracting(AssetRequestRecord::id)
+                .contains("group-b-kept")
+                .doesNotContain("group-a-old");
+        assertThat(savedAsset.getValue().getRequests())
+                .filteredOn(request -> "u4".equals(request.userId()))
+                .singleElement()
+                .satisfies(request -> {
+                    assertThat(request.status()).isEqualTo("pending");
+                    assertThat(request.booking().eventId()).isEqualTo("event-1:subevent-1:group-a");
+                    assertThat(request.booking().subEventId()).isEqualTo("subevent-1");
+                });
+    }
+
     @Test
     void makeManagerPersistsRoleAndReturnsRefreshedAssetCard() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
@@ -103,7 +251,7 @@ class AssetsServiceTest {
     }
 
     @Test
-    void makeManagerRejectsEventBorrowWhenRequesterIsNotEventMember() {
+    void makeManagerAllowsAcceptedAssetParticipantWithoutChangingEventMembership() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
@@ -123,7 +271,12 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
-        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(false);
+        when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(member("asset-1", "u2", "Manager", "accepted")));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -142,12 +295,11 @@ class AssetsServiceTest {
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
-        assertThat(card).isNull();
-        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
-        verify(mongoTemplate, never()).updateFirst(any(), any(), eq(Asset.class));
-        verify(affinityRecomputeTaskService, never()).enqueueAssetChanged(any(), any());
-        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
-        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
+        assertThat(card).isNotNull();
+        verify(activityMembersRepository).save(any(ActivityMember.class));
+        verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
+        verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+        verify(accessControlService, never()).canReceiveEventAssetManagerRole(any(), any());
     }
 
     @Test
@@ -569,6 +721,104 @@ class AssetsServiceTest {
     }
 
     @Test
+    void upsertPersistsTheCompleteAssetPricingConfiguration() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Users owner = user("u1", "Owner One", "OO");
+        PricingConfigDto pricing = new PricingConfigDto(
+                "hybrid",
+                37.5d,
+                "EUR",
+                "included",
+                "per_attendee",
+                true,
+                List.of(new PricingQuantityRuleDto(
+                        "quantity-1",
+                        3,
+                        new PricingActionDto("decrease_amount", 2.5d))),
+                12d,
+                80d,
+                "half",
+                true,
+                List.of(new PricingDemandRuleDto(
+                        "demand-1",
+                        "lte",
+                        65,
+                        new PricingActionDto("increase_percent", 7d),
+                        "all_slots",
+                        List.of())),
+                true,
+                List.of(new PricingTimeRuleDto(
+                        "time-1",
+                        "specific_date",
+                        null,
+                        "2026-08-01",
+                        "2026-08-10",
+                        new PricingActionDto("decrease_percent", 11d),
+                        "selected_slots",
+                        List.of("slot-1"))),
+                new PricingCancellationPolicyDto(
+                        true,
+                        List.of(new PricingCancellationRuleDto(
+                                "cancel-1",
+                                "weeks",
+                                2,
+                                "fixed_amount",
+                                18.25d))),
+                true,
+                List.of(new PricingSlotOverrideDto(
+                        "override-1",
+                        "slot-1",
+                        "Morning",
+                        "2026-08-01T09:00:00",
+                        "2026-08-01T11:00:00",
+                        29d,
+                        "EUR")),
+                new PricingAudienceSettingsDto(
+                        true,
+                        31d,
+                        25d,
+                        9,
+                        List.of(new PricingPromoCodeDto(
+                                "promo-1",
+                                "SAVE9",
+                                new PricingActionDto("decrease_percent", 9d))),
+                        "Show \"Waitlist\""),
+                true);
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.empty());
+        when(accessControlService.canCurrentActorCreateAsset("u1", "asset-1")).thenReturn(true);
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
+        when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        service.upsert(new AssetUpsertRequestDto("u1", assetCardWithPricing("asset-1", pricing)));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getPricing()).isEqualTo(pricing);
+    }
+
+    @Test
     void upsertUsesEditPolicyForExistingAssetAndStopsWhenDenied() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
@@ -601,8 +851,8 @@ class AssetsServiceTest {
     void upsertAllowsPendingBorrowRequestWithoutFullAssetEditAndIgnoresAssetFieldChanges() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset existing = asset();
-        existing.setRequests(List.of());
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
@@ -613,7 +863,7 @@ class AssetsServiceTest {
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
-                mock(MongoTemplate.class),
+                mongoTemplate,
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -634,8 +884,20 @@ class AssetsServiceTest {
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
         assertThat(savedAsset.getValue().getQuantity()).isEqualTo(1);
-        assertThat(savedAsset.getValue().getRequests()).hasSize(1);
-        assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("pending");
+        assertThat(savedAsset.getValue().getRequests()).hasSize(2);
+        assertThat(savedAsset.getValue().getRequests())
+                .anySatisfy(request -> {
+                    assertThat(request.id()).isEqualTo("request-2");
+                    assertThat(request.status()).isEqualTo("pending");
+                });
+        ArgumentCaptor<AssetRequest> projectedRequest = ArgumentCaptor.forClass(AssetRequest.class);
+        verify(mongoTemplate, times(2)).save(projectedRequest.capture());
+        assertThat(projectedRequest.getAllValues())
+                .anySatisfy(request -> {
+                    assertThat(request.id()).isEqualTo("asset-1:request:request-2");
+                    assertThat(request.assetId()).isEqualTo("asset-1");
+                    assertThat(request.ownerUserId()).isEqualTo("u1");
+                });
         verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
         verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
     }
@@ -816,6 +1078,105 @@ class AssetsServiceTest {
         verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
     }
 
+    @Test
+    void upsertUsesCalculatedPreviousTotalWhenLegacyBookingAggregateIsZero() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        PaymentService paymentService = mock(PaymentService.class);
+        Asset existing = assetWithEventRequest();
+        AssetRequestRecord previousRequest = existing.getRequests().get(0);
+        existing.setRequests(List.of(new AssetRequestRecord(
+                previousRequest.id(),
+                previousRequest.userId(),
+                previousRequest.name(),
+                previousRequest.initials(),
+                previousRequest.gender(),
+                previousRequest.status(),
+                previousRequest.note(),
+                previousRequest.requestKind(),
+                previousRequest.requestedAtIso(),
+                new AssetRequestBookingRecord(
+                        "event-1",
+                        "Weekend Transport",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2026-05-12T09:00:00Z",
+                        "2026-05-12T11:00:00Z",
+                        2,
+                        0d,
+                        "USD",
+                        List.of(),
+                        "checkout-root",
+                        true))));
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1"))
+                .thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                paymentService,
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        AssetMemberRequestDto updatedRequest = new AssetMemberRequestDto(
+                "request-1",
+                "u2",
+                "Member Two",
+                "MT",
+                "man",
+                "accepted",
+                "Accepted for this asset.",
+                "borrow",
+                "2026-05-11T10:00:00Z",
+                new AssetRequestBookingDto(
+                        "event-1",
+                        "Weekend Transport",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2026-05-12T09:00:00Z",
+                        "2026-05-12T11:00:00Z",
+                        3,
+                        36d,
+                        24d,
+                        "USD",
+                        List.of(),
+                        "checkout-root",
+                        true),
+                List.of());
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard("asset-1", "Camp Kit", 0, List.of(updatedRequest))));
+
+        verify(paymentService).recordAssetBookingPriceRevision(
+                "checkout-root",
+                "u2",
+                "asset-1",
+                "Camp Kit",
+                "morning",
+                2,
+                3,
+                24d,
+                36d,
+                "USD");
+    }
+
     private Asset asset() {
         Asset asset = new Asset();
         asset.setId("asset-doc-1");
@@ -891,6 +1252,32 @@ class AssetsServiceTest {
 
     private AssetDetailDto assetCard(String assetId) {
         return assetCard(assetId, "Camp Kit", 2, List.of());
+    }
+
+    private AssetDetailDto assetCardWithPricing(String assetId, PricingConfigDto pricing) {
+        AssetDetailDto card = assetCard(assetId);
+        return new AssetDetailDto(
+                card.id(),
+                card.type(),
+                card.title(),
+                card.subtitle(),
+                card.category(),
+                card.city(),
+                card.capacityTotal(),
+                card.quantity(),
+                card.details(),
+                card.imageUrl(),
+                card.sourceLink(),
+                card.routes(),
+                card.policiesEnabled(),
+                card.policies(),
+                pricing,
+                card.visibility(),
+                card.status(),
+                card.ownerUserId(),
+                card.ownerName(),
+                card.requests(),
+                card.menuActions());
     }
 
     private AssetDetailDto assetCard(

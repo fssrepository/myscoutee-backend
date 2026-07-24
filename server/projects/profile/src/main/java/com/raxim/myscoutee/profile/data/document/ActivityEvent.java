@@ -37,7 +37,6 @@ import com.raxim.myscoutee.profile.data.document.SubEventItem;
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
         @CompoundIndex(name = "event_explore_candidates_status", def = "{'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_explore_feed_status", def = "{'status': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
-        @CompoundIndex(name = "event_slot_parent_start", def = "{'parentEventId': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_end", def = "{'expired': 1, 'endAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_start", def = "{'expired': 1, 'startAtIso': 1, 'sourceId': 1}")
 })
@@ -324,7 +323,6 @@ public class ActivityEvent {
 
     private List<String> normalizeAdminIds(List<String> values) {
         ArrayList<String> normalized = new ArrayList<>();
-        addAdminId(normalized, ownerUserId);
         addAdminId(normalized, creatorUserId);
         for (String value : values == null ? List.<String>of() : values) {
             addAdminId(normalized, value);

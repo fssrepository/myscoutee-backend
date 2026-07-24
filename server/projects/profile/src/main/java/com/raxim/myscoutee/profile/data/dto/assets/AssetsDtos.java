@@ -257,6 +257,7 @@ public final class AssetsDtos {
             String id,
             String assetId,
             String ownerUserId,
+            String userId,
             String dateIso,
             String startAtIso,
             String endAtIso,

@@ -317,10 +317,45 @@ public class Asset {
             String endAtIso,
             Integer quantity,
             Double totalAmount,
+            Double previousTotalAmount,
             String currency,
             List<String> acceptedPolicyIds,
             String paymentSessionId,
             Boolean inventoryApplied) {
+        public AssetRequestBookingRecord(
+                String eventId,
+                String eventTitle,
+                String subEventId,
+                String subEventTitle,
+                String slotKey,
+                String slotLabel,
+                String timeframe,
+                String startAtIso,
+                String endAtIso,
+                Integer quantity,
+                Double totalAmount,
+                String currency,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean inventoryApplied) {
+            this(
+                    eventId,
+                    eventTitle,
+                    subEventId,
+                    subEventTitle,
+                    slotKey,
+                    slotLabel,
+                    timeframe,
+                    startAtIso,
+                    endAtIso,
+                    quantity,
+                    totalAmount,
+                    null,
+                    currency,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    inventoryApplied);
+        }
     }
 
     public record AssetPolicyRecord(

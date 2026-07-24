@@ -44,10 +44,13 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatMessageAttachmentRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatMessageReactionRecord;
@@ -55,13 +58,16 @@ import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatMessageReplyRec
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseAssigneeRecord;
 import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseRecord;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatGroupContextDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricBucketDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatNavigationContextDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMemberDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMembersPageResponseDto;
@@ -71,6 +77,8 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPage
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadReceiptDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatServiceEnsureRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -81,6 +89,7 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
 import com.raxim.myscoutee.profile.service.mapper.ChatMessageMapper;
+import com.raxim.myscoutee.profile.service.mapper.SubEventItemMapper;
 
 @Service
 public class ChatService {
@@ -240,6 +249,132 @@ public class ChatService {
         return new ChatPageResponseDto(items, safePageTotal(total), nextCursor);
     }
 
+    public ChatDto ensureServiceChat(ChatServiceEnsureRequestDto request, String requestedUserId) {
+        String userId = requireResolvedUserId(requestedUserId);
+        if (request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service chat request is required.");
+        }
+        String serviceContext = safeText(request.serviceContext()).toLowerCase(Locale.US);
+        if (!"event".equals(serviceContext) && !"asset".equals(serviceContext)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported service chat context.");
+        }
+        String eventId = normalizeId(request.eventId());
+        if (!StringUtils.hasText(eventId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event id is required.");
+        }
+        ActivityEvent event = findServiceChatEvent(eventId);
+        if (event == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found.");
+        }
+
+        String subEventId = normalizeId(request.subEventId());
+        String assetId = normalizeId(request.assetId());
+        String requestedTargetUserId = normalizeId(request.targetUserId());
+        Asset asset = null;
+        String targetUserId;
+        String chatId;
+        if ("asset".equals(serviceContext)) {
+            if (!StringUtils.hasText(assetId) || !StringUtils.hasText(subEventId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Asset and sub-event ids are required.");
+            }
+            asset = findServiceChatAsset(assetId, requestedTargetUserId);
+            if (asset == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Asset not found.");
+            }
+            targetUserId = normalizeId(asset.getOwnerUserId());
+            chatId = "c-service-asset-" + assetId + "-" + subEventId + "-" + userId;
+        } else {
+            targetUserId = normalizeId(event.getCreatorUserId());
+            if (!StringUtils.hasText(targetUserId)) {
+                targetUserId = normalizeId(event.getOwnerUserId());
+            }
+            chatId = "c-service-event-" + eventId + "-" + userId;
+        }
+        if (!StringUtils.hasText(targetUserId) || findUser(targetUserId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service chat recipient not found.");
+        }
+        if (StringUtils.hasText(requestedTargetUserId) && !targetUserId.equals(requestedTargetUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The selected service chat recipient is not the resource owner.");
+        }
+        if (targetUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The resource owner cannot open a service chat with themselves.");
+        }
+
+        List<Chat> chatDocuments = chatsRepository.findByChatId(chatId);
+        if (chatDocuments.isEmpty()) {
+            Users targetUser = findUser(targetUserId);
+            Chat baseChat = new Chat();
+            baseChat.setMongoId(buildMongoId(userId, chatId));
+            baseChat.setChatId(chatId);
+            baseChat.setOwnerUserId(userId);
+            baseChat.setAvatar(resolveUserInitials(targetUser, targetUserId));
+            baseChat.setTitle(serviceChatTitle(request.title(), serviceContext, asset, event));
+            baseChat.setLastMessage(serviceChatLastMessage(request.lastMessage(), serviceContext, asset, event));
+            baseChat.setLastSenderId(targetUserId);
+            baseChat.setMemberIds(List.of(userId, targetUserId));
+            baseChat.setUnread(0);
+            baseChat.setDateIso(Instant.now().toString());
+            baseChat.setChannelType(CHAT_CHANNEL_SERVICE_EVENT);
+            baseChat.setOwnerId(eventId);
+            baseChat.setEventId(eventId);
+            baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
+            chatsRepository.save(baseChat);
+            chatDocuments = List.of(baseChat);
+        }
+        chatDocuments = ensureOwnerCopies(chatDocuments);
+        Chat viewerChat = findOwnerChat(chatDocuments, userId);
+        Chat responseChat = viewerChat == null ? chatDocuments.get(0) : viewerChat;
+        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
+    }
+
+    private ActivityEvent findServiceChatEvent(String eventId) {
+        Criteria identity = new Criteria().orOperator(
+                Criteria.where("_id").is(eventId),
+                Criteria.where("sourceId").is(eventId));
+        return mongoTemplate.findOne(Query.query(identity), ActivityEvent.class);
+    }
+
+    private Asset findServiceChatAsset(String assetId, String ownerUserId) {
+        Criteria identity = new Criteria().orOperator(
+                Criteria.where("_id").is(assetId),
+                Criteria.where("assetId").is(assetId));
+        Criteria criteria = StringUtils.hasText(ownerUserId)
+                ? new Criteria().andOperator(identity, Criteria.where("ownerUserId").is(ownerUserId))
+                : identity;
+        return mongoTemplate.findOne(Query.query(criteria), Asset.class);
+    }
+
+    private String serviceChatTitle(
+            String requestedTitle,
+            String serviceContext,
+            Asset asset,
+            ActivityEvent event) {
+        String title = safeText(requestedTitle);
+        if (StringUtils.hasText(title)) {
+            return title;
+        }
+        String subject = "asset".equals(serviceContext)
+                ? safeText(asset == null ? null : asset.getTitle())
+                : safeText(event == null ? null : event.getTitle());
+        return ("asset".equals(serviceContext) ? "Asset Service" : "Event Service")
+                + (StringUtils.hasText(subject) ? " · " + subject : "");
+    }
+
+    private String serviceChatLastMessage(
+            String requestedLastMessage,
+            String serviceContext,
+            Asset asset,
+            ActivityEvent event) {
+        String lastMessage = safeText(requestedLastMessage);
+        if (StringUtils.hasText(lastMessage)) {
+            return lastMessage;
+        }
+        String subject = "asset".equals(serviceContext)
+                ? safeText(asset == null ? null : asset.getTitle())
+                : safeText(event == null ? null : event.getTitle());
+        return "Service chat for " + (StringUtils.hasText(subject) ? subject : serviceContext) + ".";
+    }
+
     private ChatPageResponseDto querySupportCasePage(
             String userId,
             String sort,
@@ -333,7 +468,9 @@ public class ChatService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .toList();
-        ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, loadedMessageIds, messages);
+        ChatReadUpdate readUpdate = startIndex == 0
+                ? markChannelRead(snapshot, userId, messages)
+                : markMessagesRead(snapshot, userId, loadedMessageIds, messages);
         Map<String, Users> userCache = new LinkedHashMap<>();
         List<ChatMessageDto> items = messages.stream()
                 .map(message -> chatMessageMapper.toDto(message, userId, userCache))
@@ -357,6 +494,47 @@ public class ChatService {
         Chat memberSource = snapshot.viewerChat() == null
                 ? snapshot.chatDocuments().get(0)
                 : snapshot.viewerChat();
+        String memberOwnerType = memberOwnerType(chatChannelType(memberSource));
+        String memberOwnerId = normalizeId(memberSource.getOwnerId());
+        int limit = normalizeChatPageLimit(limitValue);
+        int offset = parseChatCursorOffset(cursor);
+        if (StringUtils.hasText(memberOwnerType) && StringUtils.hasText(memberOwnerId)) {
+            Criteria criteria = Criteria.where("ownerType").is(memberOwnerType)
+                    .and("ownerId").is(memberOwnerId)
+                    .and("status").in(Boolean.TRUE.equals(pendingOnly)
+                            ? List.of(MEMBER_STATUS_PENDING)
+                            : List.of(MEMBER_STATUS_ACCEPTED, MEMBER_STATUS_PENDING));
+            long total = mongoTemplate.count(new Query(criteria), ActivityMember.class);
+            Query memberPageQuery = new Query(criteria)
+                    .with(Sort.by(Sort.Direction.ASC, "userId"))
+                    .skip(offset)
+                    .limit(limit);
+            List<ActivityMember> memberRecords = mongoTemplate.find(memberPageQuery, ActivityMember.class);
+            Set<String> pageMemberIds = memberRecords.stream()
+                    .map(ActivityMember::getUserId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+            Map<String, Users> usersById = new LinkedHashMap<>();
+            for (Users user : usersRepository.findByUserIdIn(pageMemberIds)) {
+                String memberUserId = normalizeId(user == null ? null : user.getUserId());
+                if (StringUtils.hasText(memberUserId)) {
+                    usersById.put(memberUserId, user);
+                }
+            }
+            List<ChatMemberDto> items = memberRecords.stream()
+                    .map(record -> chatMapper.toMemberDto(
+                            usersById.get(normalizeId(record.getUserId())),
+                            safeText(record.getStatus()).toLowerCase(Locale.ROOT)))
+                    .filter(Objects::nonNull)
+                    .toList();
+            int nextOffset = offset + memberRecords.size();
+            return new ChatMembersPageResponseDto(
+                    items,
+                    safePageTotal(total),
+                    nextOffset < total && !memberRecords.isEmpty() ? Integer.toString(nextOffset) : null);
+        }
+
         List<String> memberIds = safeMemberIds(memberSource.getMemberIds()).stream()
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -366,29 +544,9 @@ public class ChatService {
             return new ChatMembersPageResponseDto(List.of(), 0, null);
         }
 
-        int limit = normalizeChatPageLimit(limitValue);
-        int offset = parseChatCursorOffset(cursor);
         long total;
         List<String> pageMemberIds;
-        String memberOwnerType = memberOwnerType(chatChannelType(memberSource));
-        if (Boolean.TRUE.equals(pendingOnly)
-                && StringUtils.hasText(memberOwnerType)
-                && StringUtils.hasText(normalizeId(memberSource.getOwnerId()))) {
-            Page<ActivityMember> memberPage = activityMembersRepository
-                    .findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn(
-                            memberOwnerType,
-                            normalizeId(memberSource.getOwnerId()),
-                            MEMBER_STATUS_PENDING,
-                            memberIds,
-                            PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.ASC, "userId")));
-            total = memberPage.getTotalElements();
-            pageMemberIds = memberPage.getContent().stream()
-                    .map(ActivityMember::getUserId)
-                    .map(this::normalizeId)
-                    .filter(StringUtils::hasText)
-                    .distinct()
-                    .toList();
-        } else if (Boolean.TRUE.equals(pendingOnly)) {
+        if (Boolean.TRUE.equals(pendingOnly)) {
             return new ChatMembersPageResponseDto(List.of(), 0, null);
         } else {
             total = mongoTemplate.count(new Query(Criteria.where("userId").in(memberIds)), Users.class);
@@ -398,13 +556,11 @@ public class ChatService {
         Query pageQuery = new Query(memberCriteria)
                 .with(Sort.by(Sort.Direction.ASC, "userId"))
                 .limit(limit);
-        if (!Boolean.TRUE.equals(pendingOnly)) {
-            pageQuery.skip(offset);
-        }
+        pageQuery.skip(offset);
         List<ChatMemberDto> items = mongoTemplate.find(pageQuery, Users.class).stream()
                 .map(user -> chatMapper.toMemberDto(
                         user,
-                        Boolean.TRUE.equals(pendingOnly) ? MEMBER_STATUS_PENDING : MEMBER_STATUS_ACCEPTED))
+                        MEMBER_STATUS_ACCEPTED))
                 .filter(Objects::nonNull)
                 .toList();
         int nextOffset = offset + items.size();
@@ -860,7 +1016,61 @@ public class ChatService {
                 List.copyOf(readMessageIds),
                 reader == null ? chatMessageMapper.emptyReadAvatarDto() : chatMessageMapper.toReadAvatarDto(reader, viewer),
                 readAtIso,
-                viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread()));
+                viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread()),
+                !changedMessages.isEmpty());
+    }
+
+    private ChatReadUpdate markChannelRead(
+            ChatDocumentsSnapshot snapshot,
+            String viewerUserId,
+            List<ChatMessage> loadedMessages) {
+        String readAtIso = Instant.now().toString();
+        List<String> loadedUnreadIds = (loadedMessages == null ? List.<ChatMessage>of() : loadedMessages).stream()
+                .filter(Objects::nonNull)
+                .filter(message -> message.getSenderAvatar() == null
+                        || !viewerUserId.equals(normalizeId(message.getSenderAvatar().getId())))
+                .filter(message -> !hasReader(message, viewerUserId))
+                .map(ChatMessage::getId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .toList();
+        Chat viewerChat = snapshot.viewerChat();
+        int previousUnread = viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread());
+        if (previousUnread == 0 && loadedUnreadIds.isEmpty()) {
+            return new ChatReadUpdate(
+                    viewerChat,
+                    List.of(),
+                    chatMessageMapper.emptyReadAvatarDto(),
+                    readAtIso,
+                    0,
+                    false);
+        }
+        Users viewer = findUser(viewerUserId);
+        ChatReadAvatarRecord reader = buildReadAvatarRecord(viewer, viewerUserId);
+        Query unreadMessages = new Query(Criteria.where("chatId").is(snapshot.chatId())
+                .and("senderAvatar.id").ne(viewerUserId)
+                .and("messageReadByUserIds").ne(viewerUserId));
+        Update readUpdate = new Update()
+                .addToSet("readBy", reader)
+                .addToSet("messageReadByUserIds", viewerUserId);
+        var updateResult = mongoTemplate.updateMulti(unreadMessages, readUpdate, ChatMessage.class);
+        long changedMessageCount = updateResult == null ? 0 : updateResult.getModifiedCount();
+
+        if (viewerChat != null && previousUnread > 0) {
+            Chat nextViewerChat = copyChat(viewerChat);
+            nextViewerChat.setUnread(0);
+            viewerChat = chatsRepository.save(nextViewerChat);
+            incrementStoredChatCounters(nextViewerChat, -previousUnread);
+            homeUserProfileService.evictUserReadCaches(viewerUserId);
+        }
+        boolean changed = changedMessageCount > 0 || previousUnread > 0;
+        return new ChatReadUpdate(
+                viewerChat,
+                loadedUnreadIds,
+                chatMessageMapper.toReadAvatarDto(reader, viewer),
+                readAtIso,
+                0,
+                changed);
     }
 
     private ChatMessageDto mutateMessage(
@@ -1096,7 +1306,122 @@ public class ChatService {
                 result.add(dto);
             }
         }
+        return patchChatDtosWithNavigationContext(safeRecords, result);
+    }
+
+    private List<ChatDto> patchChatDtosWithNavigationContext(List<Chat> records, List<ChatDto> dtos) {
+        if (records == null || records.isEmpty() || dtos == null || dtos.isEmpty()) {
+            return dtos == null ? List.of() : dtos;
+        }
+        Set<String> eventIds = new LinkedHashSet<>();
+        for (Chat record : records) {
+            ChatOwnerParts parts = chatOwnerParts(record);
+            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(chatChannelType(record))
+                    || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(chatChannelType(record)))
+                    && StringUtils.hasText(parts.eventId())
+                    && StringUtils.hasText(parts.subEventId())) {
+                eventIds.add(parts.eventId());
+            }
+        }
+        if (eventIds.isEmpty()) {
+            return dtos;
+        }
+
+        Query eventQuery = Query.query(Criteria.where("sourceId").in(eventIds));
+        eventQuery.fields()
+                .include("sourceId")
+                .include("ownerUserId")
+                .include("creatorUserId")
+                .include("admins")
+                .include("title")
+                .include("pendingMembers")
+                .include("subEvents");
+        List<ActivityEvent> eventRecords = mongoTemplate.find(eventQuery, ActivityEvent.class);
+        Map<String, ActivityEvent> eventsByViewerAndId = new LinkedHashMap<>();
+        Map<String, ActivityEvent> fallbackEventsById = new LinkedHashMap<>();
+        for (ActivityEvent event : eventRecords == null ? List.<ActivityEvent>of() : eventRecords) {
+            String eventId = normalizeId(event == null ? null : event.getSourceId());
+            if (!StringUtils.hasText(eventId)) {
+                continue;
+            }
+            fallbackEventsById.putIfAbsent(eventId, event);
+            String ownerUserId = normalizeId(event.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                eventsByViewerAndId.put(ownerUserId + ":" + eventId, event);
+            }
+        }
+
+        List<ChatDto> result = new ArrayList<>(dtos.size());
+        for (int index = 0; index < dtos.size(); index += 1) {
+            ChatDto dto = dtos.get(index);
+            Chat record = index < records.size() ? records.get(index) : null;
+            ChatOwnerParts parts = chatOwnerParts(record);
+            ActivityEvent event = eventsByViewerAndId.get(normalizeId(record == null ? null : record.getOwnerUserId())
+                    + ":" + parts.eventId());
+            if (event == null) {
+                event = fallbackEventsById.get(parts.eventId());
+            }
+            result.add(chatMapper.withNavigationContext(dto, chatNavigationContext(record, dto, event, parts)));
+        }
         return result;
+    }
+
+    private ChatNavigationContextDto chatNavigationContext(
+            Chat chat,
+            ChatDto dto,
+            ActivityEvent event,
+            ChatOwnerParts parts) {
+        String channelType = chatChannelType(chat);
+        if (event == null
+                || (!CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
+                        && !CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))) {
+            return null;
+        }
+        SubEventItem subEvent = (event.getSubEvents() == null ? List.<SubEventItem>of() : event.getSubEvents())
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(item -> parts.subEventId().equals(normalizeId(item.id())))
+                .findFirst()
+                .orElse(null);
+        if (subEvent == null) {
+            return null;
+        }
+        String viewerUserId = normalizeId(chat == null ? null : chat.getOwnerUserId());
+        boolean canManage = viewerUserId.equals(normalizeId(event.getCreatorUserId()))
+                || (event.getAdmins() != null && event.getAdmins().stream()
+                        .map(this::normalizeId)
+                        .anyMatch(viewerUserId::equals));
+        return new ChatNavigationContextDto(
+                parts.eventId(),
+                safeText(event.getTitle()),
+                canManage ? "hosting" : "events",
+                normalizeCount(event.getPendingMembers()),
+                SubEventItemMapper.toDto(subEvent),
+                CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
+                        ? toChatGroupContext(subEvent, parts.groupId(), dto == null ? null : dto.metrics())
+                        : null);
+    }
+
+    private ChatGroupContextDto toChatGroupContext(SubEventItem subEvent, String groupId, ChatMetricsDto metrics) {
+        ChatMetricBucketDto members = metrics == null ? null : metrics.members();
+        SubEventGroupItemDto group = (subEvent == null || subEvent.groups() == null
+                ? List.<SubEventGroupItemDto>of()
+                : subEvent.groups()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> normalizeId(groupId).equals(normalizeId(item.id())))
+                .findFirst()
+                .orElse(null);
+        if (group == null) {
+            return null;
+        }
+        return new ChatGroupContextDto(
+                normalizeId(group.id()),
+                safeText(group.name()),
+                safeText(group.source()),
+                members == null ? 0 : members.accepted(),
+                members == null ? 0 : members.pending(),
+                normalizeCount(group.capacityMin()),
+                normalizeCount(group.capacityMax()));
     }
 
     private Map<String, Users> chatMemberUsers(Collection<Chat> records) {
@@ -1129,6 +1454,7 @@ public class ChatService {
         Map<String, ChatMetricLookup> lookupByOwnerId = new LinkedHashMap<>();
         Map<String, MemberOwnerLookup> memberOwnersByKey = new LinkedHashMap<>();
         Set<String> resourceOwnerIds = new LinkedHashSet<>();
+        Set<String> resourceViewerUserIds = new LinkedHashSet<>();
         Set<String> stageRuntimeOwnerIds = new LinkedHashSet<>();
 
         for (Chat record : records) {
@@ -1140,7 +1466,8 @@ public class ChatService {
                 continue;
             }
             ChatOwnerParts parts = chatOwnerParts(record);
-            lookupByOwnerId.put(ownerId, new ChatMetricLookup(channelType, ownerId, parts));
+            String viewerUserId = normalizeId(record.getOwnerUserId());
+            lookupByOwnerId.put(ownerId, new ChatMetricLookup(channelType, ownerId, viewerUserId, parts));
 
             String memberOwnerType = memberOwnerType(channelType);
             if (StringUtils.hasText(memberOwnerType)) {
@@ -1153,12 +1480,35 @@ public class ChatService {
                     stageRuntimeOwnerIds.add(parts.eventId());
                 }
                 resourceOwnerIds.add(ownerId);
+                if (StringUtils.hasText(viewerUserId)) {
+                    resourceViewerUserIds.add(viewerUserId);
+                }
                 stageRuntimeOwnerIds.add(ownerId);
             }
         }
 
         Map<String, List<ActivityMember>> membersByOwnerKey = activityMembersByOwnerKey(memberOwnersByKey.values());
-        Map<String, List<ActivitySubEventResource>> resourcesByMetricKey = resourceRecordsByMetricKey(resourceOwnerIds);
+        Set<String> acceptedMemberIds = membersByOwnerKey.values().stream()
+                .flatMap(Collection::stream)
+                .filter(record -> MEMBER_STATUS_ACCEPTED.equals(
+                        safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT)))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        Map<String, Users> activityMemberUsersById = new LinkedHashMap<>();
+        if (!acceptedMemberIds.isEmpty()) {
+            for (Users user : usersRepository.findByUserIdIn(acceptedMemberIds)) {
+                String memberUserId = normalizeId(user == null ? null : user.getUserId());
+                if (StringUtils.hasText(memberUserId)) {
+                    activityMemberUsersById.put(memberUserId, user);
+                }
+            }
+        }
+        Map<String, List<ActivitySubEventResource>> resourcesByMetricKey = resourceRecordsByMetricKey(
+                resourceOwnerIds,
+                resourceViewerUserIds);
+        Map<String, Asset> assetsByOwnerAndId = assetsByOwnerAndId(resourcesByMetricKey.values());
         Map<String, ActivitySubEventStageRuntime> stageRuntimeByMetricKey = stageRuntimeByMetricKey(stageRuntimeOwnerIds);
 
         for (Map.Entry<String, ChatMetricLookup> entry : lookupByOwnerId.entrySet()) {
@@ -1168,10 +1518,28 @@ public class ChatService {
             ChatMetricBucketDto members = StringUtils.hasText(memberOwnerType)
                     ? memberBucket(membersByOwnerKey.getOrDefault(memberOwnerType + ":" + lookup.ownerId(), List.of()))
                     : null;
-            ChatMetricsDto metrics = buildChatMetrics(lookup, members, resourcesByMetricKey, stageRuntimeByMetricKey);
+            ChatMetricsDto metrics = buildChatMetrics(
+                    lookup,
+                    members,
+                    resourcesByMetricKey,
+                    assetsByOwnerAndId,
+                    stageRuntimeByMetricKey);
             ChatDto dto = dtoByOwnerId.get(ownerIdKey);
             if (dto != null) {
-                dtoByOwnerId.put(ownerIdKey, chatMapper.withMetrics(dto, metrics));
+                List<String> authoritativeMemberIds = StringUtils.hasText(memberOwnerType)
+                        ? membersByOwnerKey.getOrDefault(
+                                        memberOwnerType + ":" + lookup.ownerId(),
+                                        List.of()).stream()
+                                .filter(record -> MEMBER_STATUS_ACCEPTED.equals(
+                                        safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT)))
+                                .map(ActivityMember::getUserId)
+                                .map(this::normalizeId)
+                                .filter(StringUtils::hasText)
+                                .distinct()
+                                .toList()
+                        : dto.memberIds();
+                ChatDto withMembers = chatMapper.withMembers(dto, authoritativeMemberIds, activityMemberUsersById);
+                dtoByOwnerId.put(ownerIdKey, chatMapper.withMetrics(withMembers, metrics));
             }
         }
     }
@@ -1180,6 +1548,7 @@ public class ChatService {
             ChatMetricLookup lookup,
             ChatMetricBucketDto members,
             Map<String, List<ActivitySubEventResource>> resourcesByMetricKey,
+            Map<String, Asset> assetsByOwnerAndId,
             Map<String, ActivitySubEventStageRuntime> stageRuntimeByMetricKey) {
         ChatMetricBucketDto transport = null;
         ChatMetricBucketDto accommodation = null;
@@ -1193,12 +1562,13 @@ public class ChatService {
                 && StringUtils.hasText(lookup.parts().subEventId())) {
             List<ActivitySubEventResource> resources = metricResourceRecords(
                     resourcesByMetricKey,
-                    lookup.parts().eventId(),
+                    lookup.viewerUserId(),
+                    CHAT_CHANNEL_GROUP_SUB_EVENT.equals(lookup.channelType()) ? "" : lookup.parts().eventId(),
                     lookup.ownerId(),
                     lookup.parts().subEventId());
-            transport = assetBucket(resources, ASSET_TYPE_TRANSPORT);
-            accommodation = assetBucket(resources, ASSET_TYPE_ACCOMMODATION);
-            supplies = assetBucket(resources, ASSET_TYPE_SUPPLIES);
+            transport = assetBucket(resources, ASSET_TYPE_TRANSPORT, assetsByOwnerAndId);
+            accommodation = assetBucket(resources, ASSET_TYPE_ACCOMMODATION, assetsByOwnerAndId);
+            supplies = assetBucket(resources, ASSET_TYPE_SUPPLIES, assetsByOwnerAndId);
             ActivitySubEventStageRuntime stageRuntime = firstStageRuntime(
                     stageRuntimeByMetricKey,
                     lookup.parts().eventId(),
@@ -1246,11 +1616,17 @@ public class ChatService {
         return result;
     }
 
-    private Map<String, List<ActivitySubEventResource>> resourceRecordsByMetricKey(Set<String> ownerIds) {
-        if (ownerIds == null || ownerIds.isEmpty()) {
+    private Map<String, List<ActivitySubEventResource>> resourceRecordsByMetricKey(
+            Set<String> ownerIds,
+            Set<String> viewerUserIds) {
+        if (ownerIds == null || ownerIds.isEmpty() || viewerUserIds == null || viewerUserIds.isEmpty()) {
             return Map.of();
         }
-        List<ActivitySubEventResource> records = activitySubEventResourcesRepository.findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
+        List<ActivitySubEventResource> records = activitySubEventResourcesRepository
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        ownerIds,
+                        viewerUserIds,
+                        RUNTIME_STATUS_DELETED);
         Map<String, List<ActivitySubEventResource>> result = new LinkedHashMap<>();
         for (ActivitySubEventResource record : records == null ? List.<ActivitySubEventResource>of() : records) {
             String ownerId = normalizeId(record == null ? null : record.getOwnerId());
@@ -1258,7 +1634,48 @@ public class ChatService {
             if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId)) {
                 continue;
             }
-            result.computeIfAbsent(ownerId + ":" + subEventId, ignored -> new ArrayList<>()).add(record);
+            String assetOwnerUserId = normalizeId(record.getAssetOwnerUserId());
+            if (StringUtils.hasText(assetOwnerUserId)) {
+                result.computeIfAbsent(
+                        assetOwnerUserId + ":" + ownerId + ":" + subEventId,
+                        ignored -> new ArrayList<>()).add(record);
+            }
+        }
+        return result;
+    }
+
+    private Map<String, Asset> assetsByOwnerAndId(Collection<List<ActivitySubEventResource>> resourceBuckets) {
+        Set<String> ownerUserIds = new LinkedHashSet<>();
+        Set<String> assetIds = new LinkedHashSet<>();
+        for (List<ActivitySubEventResource> bucket : resourceBuckets == null
+                ? List.<List<ActivitySubEventResource>>of()
+                : resourceBuckets) {
+            for (ActivitySubEventResource record : bucket == null ? List.<ActivitySubEventResource>of() : bucket) {
+                String ownerUserId = normalizeId(record == null ? null : record.getAssetOwnerUserId());
+                if (StringUtils.hasText(ownerUserId)) {
+                    ownerUserIds.add(ownerUserId);
+                }
+                if (record != null && record.getAssetAssignmentIds() != null) {
+                    record.getAssetAssignmentIds().values().stream()
+                            .filter(Objects::nonNull)
+                            .flatMap(Collection::stream)
+                            .map(this::normalizeId)
+                            .filter(StringUtils::hasText)
+                            .forEach(assetIds::add);
+                }
+            }
+        }
+        if (ownerUserIds.isEmpty() || assetIds.isEmpty()) {
+            return Map.of();
+        }
+        Query query = new Query(Criteria.where("ownerUserId").in(ownerUserIds).and("assetId").in(assetIds));
+        Map<String, Asset> result = new LinkedHashMap<>();
+        for (Asset asset : mongoTemplate.find(query, Asset.class)) {
+            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
+            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(assetId)) {
+                result.put(ownerUserId + ":" + assetId, asset);
+            }
         }
         return result;
     }
@@ -1281,16 +1698,17 @@ public class ChatService {
 
     private List<ActivitySubEventResource> metricResourceRecords(
             Map<String, List<ActivitySubEventResource>> recordsByKey,
+            String viewerUserId,
             String eventId,
             String ownerId,
             String subEventId) {
         Map<String, ActivitySubEventResource> result = new LinkedHashMap<>();
         List<String> keys = new ArrayList<>();
         if (StringUtils.hasText(eventId)) {
-            keys.add(eventId + ":" + subEventId);
+            keys.add(viewerUserId + ":" + eventId + ":" + subEventId);
         }
         if (StringUtils.hasText(ownerId)) {
-            keys.add(ownerId + ":" + subEventId);
+            keys.add(viewerUserId + ":" + ownerId + ":" + subEventId);
         }
         for (String key : keys) {
             for (ActivitySubEventResource record : recordsByKey.getOrDefault(key, List.of())) {
@@ -1334,8 +1752,12 @@ public class ChatService {
         return new ChatMetricBucketDto(accepted, pending, 0, Math.max(accepted, accepted + pending));
     }
 
-    private ChatMetricBucketDto assetBucket(List<ActivitySubEventResource> records, String type) {
+    private ChatMetricBucketDto assetBucket(
+            List<ActivitySubEventResource> records,
+            String type,
+            Map<String, Asset> assetsByOwnerAndId) {
         int accepted = 0;
+        int pending = 0;
         int capacityMin = 0;
         int capacityMax = 0;
         for (ActivitySubEventResource record : records == null ? List.<ActivitySubEventResource>of() : records) {
@@ -1353,13 +1775,67 @@ public class ChatService {
             for (String assetId : assetIds) {
                 SubEventAssignedAssetSettingsRecord settings = settingsByAssetId.get(assetId);
                 capacityMin += countValue(settings == null ? null : settings.capacityMin());
-                capacityMax += countValue(settings == null ? null : settings.capacityMax());
+                Asset asset = assetsByOwnerAndId.get(
+                        normalizeId(record.getAssetOwnerUserId()) + ":" + normalizeId(assetId));
+                capacityMax += countValue(settings != null && settings.capacityMax() != null
+                        ? settings.capacityMax()
+                        : asset == null ? null : asset.getCapacityTotal());
                 if (ASSET_TYPE_SUPPLIES.equals(type)) {
                     accepted += supplyContributionQuantity(record, assetId);
+                } else if (asset != null) {
+                    int[] requestCounts = assetRequestCountsForMetric(
+                            asset,
+                            record.getSubEventId(),
+                            record.getOwnerId());
+                    accepted += requestCounts[0];
+                    pending += requestCounts[1];
                 }
             }
         }
-        return new ChatMetricBucketDto(accepted, 0, capacityMin, Math.max(Math.max(capacityMin, capacityMax), accepted));
+        return new ChatMetricBucketDto(
+                accepted,
+                pending,
+                capacityMin,
+                Math.max(Math.max(capacityMin, capacityMax), accepted + pending));
+    }
+
+    private int[] assetRequestCountsForMetric(Asset asset, String subEventId, String ownerId) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedOwnerId = normalizeId(ownerId);
+        Map<String, String> statusByMemberIdentity = new LinkedHashMap<>();
+        for (AssetRequestRecord request : asset == null || asset.getRequests() == null
+                ? List.<AssetRequestRecord>of()
+                : asset.getRequests()) {
+            String bookingSubEventId = normalizeId(
+                    request == null || request.booking() == null ? null : request.booking().subEventId());
+            String bookingOwnerId = normalizeId(
+                    request == null || request.booking() == null ? null : request.booking().eventId());
+            if (!normalizedSubEventId.equals(bookingSubEventId)
+                    || !normalizedOwnerId.equals(bookingOwnerId)) {
+                continue;
+            }
+            String status = safeText(request.status()).toLowerCase(Locale.ROOT);
+            if (!MEMBER_STATUS_ACCEPTED.equals(status) && !MEMBER_STATUS_PENDING.equals(status)) {
+                continue;
+            }
+            String identity = firstNonBlank(
+                    normalizeId(request.userId()),
+                    normalizeId(request.id()));
+            if (!StringUtils.hasText(identity)) {
+                continue;
+            }
+            String existing = statusByMemberIdentity.get(identity);
+            if (!MEMBER_STATUS_ACCEPTED.equals(existing) || MEMBER_STATUS_ACCEPTED.equals(status)) {
+                statusByMemberIdentity.put(identity, status);
+            }
+        }
+        int accepted = (int) statusByMemberIdentity.values().stream()
+                .filter(MEMBER_STATUS_ACCEPTED::equals)
+                .count();
+        int pending = (int) statusByMemberIdentity.values().stream()
+                .filter(MEMBER_STATUS_PENDING::equals)
+                .count();
+        return new int[] {accepted, pending};
     }
 
     private int supplyContributionQuantity(ActivitySubEventResource record, String assetId) {
@@ -1432,7 +1908,7 @@ public class ChatService {
     }
 
     private ChatReadReceiptDto toReadReceiptDto(ChatReadUpdate readUpdate) {
-        if (readUpdate == null || readUpdate.readMessageIds().isEmpty()) {
+        if (readUpdate == null || !readUpdate.changed()) {
             return null;
         }
         return new ChatReadReceiptDto(
@@ -1566,6 +2042,9 @@ public class ChatService {
         copy.setDateIso(source.getDateIso());
         copy.setChannelType(source.getChannelType());
         copy.setOwnerId(source.getOwnerId());
+        copy.setEventId(source.getEventId());
+        copy.setSubEventId(source.getSubEventId());
+        copy.setGroupId(source.getGroupId());
         copy.setDistanceKm(null);
         copy.setDistanceMetersExact(null);
         copy.setSupportCase(copySupportCase(source.getSupportCase()));
@@ -1900,21 +2379,28 @@ public class ChatService {
     private ChatOwnerParts chatOwnerParts(Chat record) {
         String channelType = chatChannelType(record);
         String ownerId = normalizeId(record == null ? null : record.getOwnerId());
+        String eventId = normalizeId(record == null ? null : record.getEventId());
+        String subEventId = normalizeId(record == null ? null : record.getSubEventId());
+        String groupId = normalizeId(record == null ? null : record.getGroupId());
         List<String> parts = splitOwnerId(ownerId);
         if (CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)) {
             return new ChatOwnerParts(
-                    parts.isEmpty() ? "" : parts.get(0),
-                    parts.size() > 1 ? parts.get(1) : "",
-                    parts.size() > 2 ? String.join(":", parts.subList(2, parts.size())) : "");
+                    StringUtils.hasText(eventId) ? eventId : parts.isEmpty() ? "" : parts.get(0),
+                    StringUtils.hasText(subEventId) ? subEventId : parts.size() > 1 ? parts.get(1) : "",
+                    StringUtils.hasText(groupId)
+                            ? groupId
+                            : parts.size() > 2 ? String.join(":", parts.subList(2, parts.size())) : "");
         }
         if (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)) {
             return new ChatOwnerParts(
-                    parts.size() > 1 ? parts.get(0) : "",
-                    parts.size() > 1 ? String.join(":", parts.subList(1, parts.size())) : ownerId,
+                    StringUtils.hasText(eventId) ? eventId : parts.size() > 1 ? parts.get(0) : "",
+                    StringUtils.hasText(subEventId)
+                            ? subEventId
+                            : parts.size() > 1 ? String.join(":", parts.subList(1, parts.size())) : ownerId,
                     "");
         }
         if (CHAT_CHANNEL_MAIN_EVENT.equals(channelType)) {
-            return new ChatOwnerParts(ownerId, "", "");
+            return new ChatOwnerParts(StringUtils.hasText(eventId) ? eventId : ownerId, "", "");
         }
         return new ChatOwnerParts("", "", "");
     }
@@ -2240,6 +2726,7 @@ public class ChatService {
     private record ChatMetricLookup(
             String channelType,
             String ownerId,
+            String viewerUserId,
             ChatOwnerParts parts) {
     }
 
@@ -2259,7 +2746,8 @@ public class ChatService {
             List<String> readMessageIds,
             ChatReadAvatarDto reader,
             String readAtIso,
-            Integer unread) {
+            Integer unread,
+            boolean changed) {
     }
 
     private record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {

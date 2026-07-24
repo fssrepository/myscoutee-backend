@@ -470,6 +470,21 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void resourceAssignmentUsesParentEventPolicyForGeneratedSlot() {
+        authenticateAs("admin");
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canCurrentActorManageEventResourceAssignment(request(
+                "event-1:slot:slot-1:2026-07-22T13:30:00Z",
+                "sub-1",
+                "member"));
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
     void assetOwnerPoliciesRequireCurrentActorToMatchRequestUser() {
         authenticateAs("u1");
 
@@ -944,7 +959,7 @@ class AccessControlServiceTest {
     }
 
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {
-        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of());
+        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpStatus;
@@ -34,14 +35,22 @@ import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
@@ -56,6 +65,8 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    @Mock
     private AssetsService assetsService;
     @Mock
     private ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
@@ -65,6 +76,8 @@ class ActivitiesResourcesServiceTest {
     private ActivityMembersRepository activityMembersRepository;
     @Mock
     private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private EventSlotReadModelService eventSlotReadModelService;
     @Mock
     private ChatsRepository chatsRepository;
     @Mock
@@ -77,6 +90,8 @@ class ActivitiesResourcesServiceTest {
     private AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
     @Mock
     private AdminMenuCounterService adminMenuCounterService;
+    @Mock
+    private ActivityTournamentGroupCounterService tournamentGroupCounterService;
 
     private ActivitiesResourcesService service;
     private AccessControlService accessControlService;
@@ -97,10 +112,14 @@ class ActivitiesResourcesServiceTest {
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository,
+                activityEventsRepository,
                 assetsService,
                 activitiesMembersServiceProvider,
                 accessControlService,
-                new ActivitySubEventResourceMapper());
+                new ActivitySubEventResourceMapper(),
+                eventSlotReadModelService,
+                tournamentGroupCounterService);
     }
 
     @AfterEach
@@ -141,6 +160,28 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void queryStateUsesNaturalAssignmentScopeInsteadOfGeneratedRecordId() {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setRecordId("legacy-generated-record-id");
+        resource.setStatus("A");
+        resource.setOwnerId("event-1");
+        resource.setSubEventId("sub-1");
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of());
+        resource.setAssetSettingsByType(Map.of());
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
+
+        ActivitySubEventResourceStateDto state = service.queryState("event-1", "sub-1", "u1");
+
+        assertThat(state).isNotNull();
+        assertThat(state.ownerId()).isEqualTo("event-1");
+        assertThat(state.subEventId()).isEqualTo("sub-1");
+        assertThat(state.assetOwnerUserId()).isEqualTo("u1");
+    }
+
+    @Test
     void replaceKeepsEventMembershipInvariantAfterActorPolicyPasses() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
@@ -159,8 +200,8 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -170,6 +211,308 @@ class ActivitiesResourcesServiceTest {
         assertThat(saved.ownerId()).isEqualTo("event-1");
         assertThat(saved.assetOwnerUserId()).isEqualTo("u1");
         verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+        verify(activitySubEventResourcesRepository)
+                .findByOwnerIdAndSubEventIdAndStatusNot("event-1", "sub-1", "D");
+        verify(activitiesMembersService)
+                .refreshSubEventParticipationProjection("event-1", "sub-1");
+    }
+
+    @Test
+    void replaceAuthorizesGeneratedSlotAssignmentAgainstParentEvent() {
+        authenticateAs("u1");
+        String slotOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                slotOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitySubEventResourceStateDto saved = service.replace(request(slotOwnerId, "sub-1", "u1"));
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.ownerId()).isEqualTo(slotOwnerId);
+        verify(assetsService).queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of());
+        verify(activitiesMembersService).refreshEventParticipationProjection(slotOwnerId);
+    }
+
+    @Test
+    void replaceKeepsGeneratedGroupScopeButAuthorizesAgainstParentEvent() {
+        authenticateAs("u1");
+        String slotOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        String groupOwnerId = slotOwnerId + ":sub-1:sub-1:group:1";
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitySubEventResourceStateDto saved = service.replace(request(groupOwnerId, "sub-1", "u1"));
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.ownerId()).isEqualTo(groupOwnerId);
+        verify(assetsService).queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of());
+        verify(activitiesMembersService).refreshEventParticipationProjection(groupOwnerId);
+    }
+
+    @Test
+    void replacePersistsBorrowedAssetAndReturnsCanonicalFallbackCard() {
+        authenticateAs("u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        AssetDetailDto borrowedAsset = assetDetail("borrowed-asset", "transport", "owner-2");
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("borrowed-asset")))
+                .thenReturn(Map.of("borrowed-asset", borrowedAsset));
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                "event-1",
+                "sub-1",
+                "u1",
+                Map.of("transport", List.of("borrowed-asset")),
+                Map.of(),
+                Map.of(),
+                Map.of());
+
+        ActivitySubEventResourceStateDto saved = service.replace(request);
+
+        assertThat(saved.assetAssignmentIds()).containsEntry("transport", List.of("borrowed-asset"));
+        assertThat(saved.fallbackAssetCardsByType()).containsEntry("transport", List.of(borrowedAsset));
+    }
+
+    @Test
+    void replacePersistsCalculatedMetricsInGroupRuntimeWithinSameServiceCall() {
+        authenticateAs("u1");
+        String runtimeOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        String groupId = "sub-1:group:1";
+        String groupOwnerId = runtimeOwnerId + ":sub-1:" + groupId;
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        AssetDetailDto ownedAsset = assetDetail("owned-asset", "Transport", "u1");
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("owned-asset")))
+                .thenReturn(Map.of("owned-asset", ownedAsset));
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId(runtimeOwnerId, "sub-1"))
+                .thenReturn(Optional.empty());
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                groupOwnerId,
+                "sub-1",
+                "u1",
+                Map.of("Transport", List.of("owned-asset")),
+                Map.of("Transport", Map.of("owned-asset", new SubEventAssignedAssetSettingsDto(
+                        0, 4, 1, "u1", false, List.of()))),
+                Map.of(),
+                Map.of());
+
+        ActivitySubEventResourceStateDto saved = service.replace(request);
+
+        assertThat(saved.resourceMetricsByType().get("Transport").capacityMax()).isEqualTo(4);
+        verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+        ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventStageRuntime.class);
+        verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
+        ActivitySubEventStageRuntime runtime = runtimeCaptor.getValue();
+        assertThat(runtime.getOwnerId()).isEqualTo(runtimeOwnerId);
+        assertThat(runtime.getSubEventId()).isEqualTo("sub-1");
+        assertThat(runtime.getGroupResourceMetricsByAssetOwnerId()
+                .get(groupId)
+                .get("u1")
+                .get("Transport")
+                .capacityMax()).isEqualTo(4);
+        verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
+    }
+
+    @Test
+    void refreshGroupRuntimeResourceMetricsPersistsCurrentScopedRequestCount() {
+        String runtimeOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        String groupId = "sub-1:group:1";
+        String groupOwnerId = runtimeOwnerId + ":sub-1:" + groupId;
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setRecordId("resource-1");
+        resource.setStatus("A");
+        resource.setOwnerId(groupOwnerId);
+        resource.setSubEventId("sub-1");
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of("Transport", List.of("owned-asset")));
+        resource.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("owned-asset", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 8, 1, "u1", false, List.of()))));
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
+        AssetRequestBookingDto booking = new AssetRequestBookingDto(
+                groupOwnerId,
+                "Group A",
+                "sub-1",
+                "Kickoff",
+                null,
+                null,
+                null,
+                null,
+                null,
+                1,
+                null,
+                null,
+                List.of(),
+                null,
+                null);
+        AssetDetailDto ownedAsset = assetDetail(
+                "owned-asset",
+                "Transport",
+                "u1",
+                List.of(
+                        assetRequest("request-1", "member-1", booking),
+                        assetRequest("request-2", "member-2", booking)));
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("owned-asset")))
+                .thenReturn(Map.of("owned-asset", ownedAsset));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId(runtimeOwnerId, "sub-1"))
+                .thenReturn(Optional.empty());
+        when(activitySubEventStageRuntimeRepository.save(any(ActivitySubEventStageRuntime.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Map<String, SubEventResourceMetricDto> metrics = service.refreshGroupRuntimeResourceMetrics(
+                groupOwnerId,
+                "sub-1",
+                "u1",
+                "admin");
+
+        assertThat(metrics.get("Transport").pending()).isEqualTo(2);
+        ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventStageRuntime.class);
+        verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue().getGroupResourceMetricsByAssetOwnerId()
+                .get(groupId)
+                .get("u1")
+                .get("Transport")
+                .pending()).isEqualTo(2);
+        verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
+    }
+
+    @Test
+    void refreshEventProjectionPersistsCanonicalRangeAndPendingBadgeCount() {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setStatus("A");
+        resource.setOwnerId("event-1");
+        resource.setSubEventId("sub-1");
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of(
+                "Transport",
+                List.of("owned-1", "owned-2", "borrowed-1", "borrowed-2")));
+        resource.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of(
+                        "owned-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 1, "u1", false, List.of()),
+                        "owned-2", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 1, "u1", false, List.of()),
+                        "borrowed-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 2, "u1", false, List.of()),
+                        "borrowed-2", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 2, "u1", false, List.of()))));
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        AssetRequestBookingDto booking = new AssetRequestBookingDto(
+                "event-1",
+                "Event",
+                "sub-1",
+                "Optional activity",
+                null,
+                null,
+                null,
+                null,
+                null,
+                2,
+                null,
+                null,
+                List.of(),
+                null,
+                null);
+        Map<String, AssetDetailDto> details = Map.of(
+                "owned-1", assetDetail("owned-1", "Transport", "u1", 4, List.of()),
+                "owned-2", assetDetail("owned-2", "Transport", "u1", 4, List.of()),
+                "borrowed-1", assetDetail(
+                        "borrowed-1",
+                        "Transport",
+                        "other-1",
+                        4,
+                        List.of(assetRequest("borrow-1", "u1", booking))),
+                "borrowed-2", assetDetail(
+                        "borrowed-2",
+                        "Transport",
+                        "other-2",
+                        4,
+                        List.of(assetRequest("borrow-2", "u1", booking))));
+        ActivityEvent event = event("event-1", "u1", "u1");
+        event.setSubEvents(List.of(new SubEventItem(
+                "sub-1",
+                "Optional activity",
+                "",
+                null,
+                null,
+                "",
+                "u1",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                0,
+                16,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                16,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null)));
+
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(resource));
+        when(assetsService.queryAssignableAssetDetails(
+                "u1",
+                "event-1",
+                "sub-1",
+                Set.of("owned-1", "owned-2", "borrowed-1", "borrowed-2")))
+                .thenReturn(details);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+
+        service.refreshEventSubEventResourceProjection("event-1", "sub-1");
+
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getSubEvents()).singleElement().satisfies(subEvent -> {
+                    assertThat(subEvent.carsAccepted()).isEqualTo(2);
+                    assertThat(subEvent.carsPending()).isEqualTo(2);
+                    assertThat(subEvent.carsCapacityMin()).isZero();
+                    assertThat(subEvent.carsCapacityMax()).isEqualTo(24);
+                }));
+        verify(activitiesMembersService).refreshSubEventParticipationProjection("event-1", "sub-1");
     }
 
     @Test
@@ -180,8 +523,8 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.empty());
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -203,8 +546,8 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted", "Member")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -248,7 +591,7 @@ class ActivitiesResourcesServiceTest {
     }
 
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {
-        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of());
+        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {
@@ -280,6 +623,67 @@ class ActivitiesResourcesServiceTest {
         user.setStatus("A");
         user.setProfileStatus("public");
         return user;
+    }
+
+    private AssetDetailDto assetDetail(String id, String type, String ownerUserId) {
+        return assetDetail(id, type, ownerUserId, List.of());
+    }
+
+    private AssetDetailDto assetDetail(
+            String id,
+            String type,
+            String ownerUserId,
+            List<AssetMemberRequestDto> requests) {
+        return assetDetail(id, type, ownerUserId, 4, requests);
+    }
+
+    private AssetDetailDto assetDetail(
+            String id,
+            String type,
+            String ownerUserId,
+            int capacityTotal,
+            List<AssetMemberRequestDto> requests) {
+        return new AssetDetailDto(
+                id,
+                type,
+                "Borrowed asset",
+                "",
+                "",
+                "",
+                capacityTotal,
+                4,
+                "",
+                "",
+                "",
+                List.of(),
+                false,
+                List.of(),
+                null,
+                "public",
+                "A",
+                ownerUserId,
+                "Other owner",
+                requests,
+                null,
+                List.of());
+    }
+
+    private AssetMemberRequestDto assetRequest(
+            String requestId,
+            String userId,
+            AssetRequestBookingDto booking) {
+        return new AssetMemberRequestDto(
+                requestId,
+                userId,
+                userId,
+                "M",
+                "unknown",
+                "pending",
+                "",
+                "borrow",
+                "2026-07-22T23:26:50Z",
+                booking,
+                List.of());
     }
 
     private List<AccessPolicyDefinition> defaultPolicyDefinitions() {
