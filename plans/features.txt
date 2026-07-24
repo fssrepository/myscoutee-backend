@@ -10,3 +10,5 @@ https://developers.facebook.com/ -> business verfication is needed
 needs a different server and project, practically a dashboard
 go server with minimal memory, connecting to server, gets the key and the user
 can register with that key to a virtual company
+
+3) replace logo to make a rebrand
