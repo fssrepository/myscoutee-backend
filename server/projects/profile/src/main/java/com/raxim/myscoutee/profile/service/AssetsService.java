@@ -49,6 +49,8 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
@@ -323,6 +325,135 @@ public class AssetsService {
         }
         Asset saved = saveOwnedAsset(normalizeId(request.userId()), request.asset());
         return saved == null ? null : toAssetDto(saved, resolveOwnerNamesByUserId(List.of(saved)), normalizeId(request.userId()));
+    }
+
+    public AssetMemberStatusChangeDto applyMemberStatusChange(AssetMemberStatusChangeRequestDto request) {
+        if (request == null) {
+            return null;
+        }
+        String assetId = normalizeId(request.assetId());
+        String eventId = normalizeId(request.eventId());
+        String subEventId = normalizeId(request.subEventId());
+        String actorUserId = normalizeId(request.actorUserId());
+        String action = safeText(request.action()).toLowerCase(Locale.ROOT);
+        if (!StringUtils.hasText(assetId)
+                || !StringUtils.hasText(eventId)
+                || !StringUtils.hasText(subEventId)
+                || !StringUtils.hasText(actorUserId)
+                || (!"join".equals(action) && !"leave".equals(action))) {
+            return null;
+        }
+
+        Asset current = findAssetByAssetId(assetId).orElse(null);
+        if (current == null || STATUS_TRASHED.equals(safeText(current.getStatus()))) {
+            return null;
+        }
+        AssetRequestRecord previous = safeRequests(current.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> !"manual".equals(normalizeAssetRequestKind(item.requestKind())))
+                .filter(item -> actorUserId.equals(normalizeId(item.userId())))
+                .filter(item -> isRequestInScope(item, eventId, subEventId))
+                .findFirst()
+                .orElse(null);
+        String previousStatus = previous == null ? null : normalizeRequestStatus(previous.status());
+
+        if ("leave".equals(action) && previous == null) {
+            return null;
+        }
+        if ("join".equals(action) && previous != null) {
+            return memberStatusChange(
+                    assetId,
+                    eventId,
+                    subEventId,
+                    actorUserId,
+                    previousStatus,
+                    previousStatus,
+                    0,
+                    0);
+        }
+
+        AssetRequestRecord joinedRequest = null;
+        if ("join".equals(action)) {
+            if (request.request() == null) {
+                return null;
+            }
+            joinedRequest = normalizeRequests(List.of(request.request())).stream().findFirst().orElse(null);
+            AssetRequestBookingRecord booking = joinedRequest == null ? null : joinedRequest.booking();
+            if (joinedRequest == null
+                    || !actorUserId.equals(normalizeId(joinedRequest.userId()))
+                    || !"borrow".equals(normalizeAssetRequestKind(joinedRequest.requestKind()))
+                    || !"pending".equals(normalizeRequestStatus(joinedRequest.status()))
+                    || booking == null
+                    || !eventId.equals(normalizeId(booking.eventId()))
+                    || !subEventId.equals(normalizeId(booking.subEventId()))) {
+                return null;
+            }
+        }
+
+        List<AssetRequestRecord> nextRequests = new ArrayList<>();
+        for (AssetRequestRecord item : safeRequests(current.getRequests())) {
+            if (item == null || item == previous) {
+                continue;
+            }
+            nextRequests.add(item);
+        }
+        if (joinedRequest != null) {
+            nextRequests.add(joinedRequest);
+        }
+
+        Asset next = cloneAsset(current);
+        next.setRequests(deduplicateRequests(nextRequests));
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(actorUserId);
+        next.setAffinity(resolveAssetAffinity(next, actorUserId));
+        next.setBoost(resolveAssetBoost(next, actorUserId));
+        if (!canApplyAssetRequestPolicies(current, next, false)) {
+            return null;
+        }
+
+        assetsRepository.save(next);
+        syncAssetRequestProjection(current, next);
+        syncAssetRequestPayments(current, next);
+        affinityRecomputeTaskService.enqueueAssetRequestsChanged(assetId, actorUserId);
+        adminTelemetryService.record("asset.requests.changed", "assets", assetId, actorUserId);
+        userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
+
+        String nextStatus = "join".equals(action) ? "pending" : "deleted";
+        return memberStatusChange(
+                assetId,
+                eventId,
+                subEventId,
+                actorUserId,
+                previousStatus,
+                nextStatus,
+                statusDelta(previousStatus, nextStatus, MEMBER_STATUS_ACCEPTED),
+                statusDelta(previousStatus, nextStatus, "pending"));
+    }
+
+    private AssetMemberStatusChangeDto memberStatusChange(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            int acceptedMemberDelta,
+            int pendingMemberDelta) {
+        return new AssetMemberStatusChangeDto(
+                assetId,
+                eventId,
+                subEventId,
+                userId,
+                previousStatus,
+                status,
+                acceptedMemberDelta,
+                pendingMemberDelta);
+    }
+
+    private int statusDelta(String previousStatus, String nextStatus, String countedStatus) {
+        int previous = countedStatus.equals(safeText(previousStatus)) ? 1 : 0;
+        int next = countedStatus.equals(safeText(nextStatus)) ? 1 : 0;
+        return next - previous;
     }
 
     public void replace(AssetReplaceRequestDto request) {

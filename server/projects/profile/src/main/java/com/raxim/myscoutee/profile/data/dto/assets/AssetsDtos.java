@@ -19,6 +19,26 @@ public final class AssetsDtos {
             Integer pendingItems) {
     }
 
+    public record AssetMemberStatusChangeRequestDto(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String actorUserId,
+            String action,
+            AssetMemberRequestDto request) {
+    }
+
+    public record AssetMemberStatusChangeDto(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId,
+            String previousStatus,
+            String status,
+            Integer acceptedMemberDelta,
+            Integer pendingMemberDelta) {
+    }
+
     public record AssetDto(
             String id,
             String type,

@@ -15,6 +15,8 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyStatsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
@@ -137,6 +139,12 @@ public class AssetsController {
     @PostMapping("/upsert")
     public AssetDto upsert(@RequestBody AssetUpsertRequestDto request) {
         return assetsService.upsert(request);
+    }
+
+    @PostMapping("/members/action")
+    public AssetMemberStatusChangeDto applyMemberStatusChange(
+            @RequestBody AssetMemberStatusChangeRequestDto request) {
+        return assetsService.applyMemberStatusChange(request);
     }
 
     @PostMapping("/replace")
