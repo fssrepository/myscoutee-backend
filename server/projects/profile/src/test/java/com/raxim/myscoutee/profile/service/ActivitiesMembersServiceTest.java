@@ -233,6 +233,41 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void acceptedEventMemberCanOnlyAddPendingInvitations() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember inviter = member("inviter-sync", "event-1", "member-inviter", "Member", "accepted");
+
+        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(accessControlService.canManageEventMembers("event-1", "member-inviter")).thenReturn(false);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(inviter));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.replace(new ActivityMembersReplaceRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                List.of(
+                        entry("member-inviter"),
+                        invitationEntry("target", "member-inviter")),
+                10,
+                "member-inviter"));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue())
+                .filteredOn(member -> "target".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("admin");
+                    assertThat(member.getRequestKind()).isEqualTo("invite");
+                    assertThat(member.getInvitedByUserId()).isEqualTo("member-inviter");
+                });
+    }
+
+    @Test
     void replaceEventMembersUsesRequestActorAndPersistsAcceptedMembership() {
         ActivityEvent event = event("event-1", "admin", "admin");
         Users targetUser = new Users();
@@ -914,6 +949,38 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void childMemberCanWithdrawOwnPendingApprovalRequest() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember approval = member("approval-sync", ownerId, "target", "Member", "pending");
+        approval.setOwnerType("subEvent");
+        approval.setPendingSource("member");
+        approval.setRequestKind("approval");
+        approval.setInvitedByUserId("member-inviter");
+        AtomicReference<ActivityMember> storedApproval = new AtomicReference<>(approval);
+
+        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(storedApproval.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(storedApproval.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedApproval.set(saved);
+            return saved;
+        });
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "target",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result).noneMatch(entry -> "target".equals(entry.userId()));
+        assertThat(storedApproval.get().getStatus()).isEqualTo("deleted");
+    }
+
+    @Test
     void unrelatedChildMemberCannotDeleteAnotherMembersInvitation() {
         String ownerId = "event-1:sub-1";
         ActivityMember invitation = member("invite-sync", ownerId, "target", "Member", "pending");
@@ -1489,6 +1556,29 @@ class ActivitiesMembersServiceTest {
                 null,
                 null,
                 false,
+                "2026-05-12T10:00:00Z",
+                "2026-05-12T10:00:00Z",
+                "",
+                null,
+                null,
+                List.of());
+    }
+
+    private ActivityMemberEntryDto invitationEntry(String userId, String inviterUserId) {
+        return new ActivityMemberEntryDto(
+                null,
+                userId,
+                userId,
+                "TU",
+                "man",
+                "",
+                "Invitation pending.",
+                "Member",
+                "pending",
+                "admin",
+                "invite",
+                inviterUserId,
+                true,
                 "2026-05-12T10:00:00Z",
                 "2026-05-12T10:00:00Z",
                 "",

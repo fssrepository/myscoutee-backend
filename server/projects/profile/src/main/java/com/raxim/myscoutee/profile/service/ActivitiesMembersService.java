@@ -591,12 +591,6 @@ public class ActivitiesMembersService {
             }
             return;
         }
-        if (OWNER_TYPE_EVENT.equals(ownerType) && !accessControlService.canManageEventMembers(ownerId, actorUserId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Authenticated user is not allowed to replace members for this event.");
-        }
-
         String nowIso = Instant.now().toString();
         List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
         List<ActivityMember> existingVisibleMembers = existing;
@@ -613,6 +607,17 @@ public class ActivitiesMembersService {
             if (StringUtils.hasText(memberUserId)) {
                 existingByUserId.put(memberUserId, member);
             }
+        }
+        if (OWNER_TYPE_EVENT.equals(ownerType)
+                && !accessControlService.canManageEventMembers(ownerId, actorUserId)
+                && !isAcceptedMemberInvitationOnlyReplacement(
+                    ownerId,
+                    actorUserId,
+                    request.members(),
+                    existingByUserId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Authenticated user may only add invitations for this event.");
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             validateEventMemberReplacement(ownerId, actorUserId, request.members(), existingByUserId);
@@ -786,6 +791,11 @@ public class ActivitiesMembersService {
                 && actorUserId.equals(targetUserId)
                 && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                 && isInvitationMembership(current);
+        boolean withdrawingOwnApprovalRequest = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && actorUserId.equals(targetUserId)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isAdminApprovalMembership(current);
         boolean managingPendingApproval = !OWNER_TYPE_EVENT.equals(ownerType)
                 && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                 && isAdminApprovalMembership(current)
@@ -806,6 +816,7 @@ public class ActivitiesMembersService {
                 && !acceptingOwnManagedInvitation
                 && !cancellingOwnManagedInvitation
                 && !rejectingOwnManagedInvitation
+                && !withdrawingOwnApprovalRequest
                 && !managingPendingApproval
                 && !steppingDownOwnManagedRole
                 && !leavingOwnManagedMembership
@@ -1351,6 +1362,79 @@ public class ActivitiesMembersService {
                         "Only an event admin may promote another member to admin.");
             }
         }
+    }
+
+    private boolean isAcceptedMemberInvitationOnlyReplacement(
+            String eventId,
+            String actorUserId,
+            List<ActivityMemberEntryDto> requestedMembers,
+            Map<String, ActivityMember> existingByUserId) {
+        String normalizedActorUserId = normalizeId(actorUserId);
+        ActivityMember actor = existingByUserId == null
+                ? null
+                : existingByUserId.get(normalizedActorUserId);
+        if (actor == null || !STATUS_ACCEPTED.equals(normalizeStatus(actor.getStatus()))) {
+            return false;
+        }
+
+        Map<String, ActivityMemberEntryDto> requestedByUserId = new LinkedHashMap<>();
+        for (ActivityMemberEntryDto entry : safeMembers(requestedMembers)) {
+            String userId = normalizeId(entry == null ? null : entry.userId());
+            if (StringUtils.hasText(userId)) {
+                requestedByUserId.put(userId, entry);
+            }
+        }
+
+        for (Map.Entry<String, ActivityMember> existingEntry :
+                (existingByUserId == null ? Map.<String, ActivityMember>of() : existingByUserId).entrySet()) {
+            ActivityMember current = existingEntry.getValue();
+            if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                continue;
+            }
+            ActivityMemberEntryDto requested = requestedByUserId.get(existingEntry.getKey());
+            if (requested == null
+                    || !normalizeStatus(current.getStatus()).equals(normalizeStatus(requested.status()))
+                    || !resolveStoredRole(current, OWNER_TYPE_EVENT, eventId).equals(safeText(requested.role()))
+                    || !safeText(current.getPendingSource()).equals(safeText(requested.pendingSource()))
+                    || !safeText(current.getRequestKind()).equals(safeText(requested.requestKind()))
+                    || !normalizeId(current.getInvitedByUserId()).equals(normalizeId(requested.invitedByUserId()))) {
+                return false;
+            }
+        }
+
+        boolean invitationAdded = false;
+        for (Map.Entry<String, ActivityMemberEntryDto> requestedEntry : requestedByUserId.entrySet()) {
+            ActivityMember current = existingByUserId == null
+                    ? null
+                    : existingByUserId.get(requestedEntry.getKey());
+            if (current != null && !STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                continue;
+            }
+            ActivityMemberEntryDto requested = requestedEntry.getValue();
+            String status = normalizeStatus(requested == null ? null : requested.status());
+            String pendingSource = resolvePendingSource(
+                    requested == null ? null : requested.pendingSource(),
+                    status);
+            String requestKind = resolveRequestKind(
+                    requested == null ? null : requested.requestKind(),
+                    status,
+                    pendingSource);
+            String requestedRole = safeText(requested == null ? null : requested.role());
+            String requestedInviterUserId = normalizeId(
+                    requested == null ? null : requested.invitedByUserId());
+            boolean isInvitation = STATUS_PENDING.equals(status)
+                    && "admin".equals(pendingSource)
+                    && (REQUEST_KIND_INVITE.equals(requestKind)
+                        || REQUEST_KIND_WAITLIST_INVITE.equals(requestKind))
+                    && !MANAGER_ROLES.contains(requestedRole)
+                    && (!StringUtils.hasText(requestedInviterUserId)
+                        || normalizedActorUserId.equals(requestedInviterUserId));
+            if (!isInvitation) {
+                return false;
+            }
+            invitationAdded = true;
+        }
+        return invitationAdded;
     }
 
     private void validateManagedOwnerMemberReplacement(
