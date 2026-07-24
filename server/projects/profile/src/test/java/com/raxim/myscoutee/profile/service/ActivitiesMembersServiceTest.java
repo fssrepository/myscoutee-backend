@@ -339,6 +339,32 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void replaceSubEventMembersCannotDirectlyRemoveItsAdmin() {
+        String eventId = "event-1";
+        String subEventId = "subevent-1";
+        String ownerId = eventId + ":" + subEventId;
+        ActivityMember admin = member("admin-sync", ownerId, "admin", "Admin", "accepted");
+        admin.setOwnerType("subEvent");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenReturn(List.of(admin));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                service.replace(new ActivityMembersReplaceRequestDto(
+                        new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                        List.of(),
+                        6,
+                        "admin",
+                        eventId,
+                        subEventId)));
+
+        assertThat(exception.getStatusCode().value()).isEqualTo(403);
+        assertThat(exception.getReason()).contains("managed step-down");
+        verify(activityMembersRepository, never()).saveAll(anyList());
+    }
+
+    @Test
     void queryMembersReturnsEmptyWhenViewPolicyDenies() {
         when(accessControlService.canCurrentActorViewEventMembers("event-1")).thenReturn(false);
 
@@ -735,6 +761,177 @@ class ActivitiesMembersServiceTest {
             assertThat(subEvent.membersPending()).isZero();
         });
         verify(activityEventsRepository).saveAll(anyList());
+    }
+
+    @Test
+    void invitedMemberCanAcceptOwnPendingSubEventInvitation() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember invitation = member("invite-sync", ownerId, "target", "Member", "pending");
+        invitation.setOwnerType("subEvent");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("admin");
+        AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
+        ActivityEvent event = event("event-1", "admin", "admin");
+        event.setSubEvents(List.of(new SubEventItem(
+                "sub-1",
+                "Optional activity",
+                "",
+                null,
+                null,
+                "",
+                "admin",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null)));
+
+        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedInvitation.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "target",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.pendingSource()).isNull();
+                    assertThat(entry.requestKind()).isNull();
+                });
+        assertThat(event.getSubEvents()).singleElement().satisfies(subEvent -> {
+            assertThat(subEvent.membersAccepted()).isEqualTo(1);
+            assertThat(subEvent.membersPending()).isZero();
+        });
+        verify(activityMembersRepository).save(any(ActivityMember.class));
+        verify(activityEventsRepository).saveAll(anyList());
+    }
+
+    @Test
+    void invitedMemberCanAcceptOwnPendingAssetInvitation() {
+        String ownerId = "car-1";
+        ActivityMember invitation = member("asset-invite-sync", ownerId, "target", "Member", "pending");
+        invitation.setOwnerType("asset");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("manager");
+        AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
+
+        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", ownerId))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("asset", ownerId))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedInvitation.set(saved);
+            return saved;
+        });
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("asset", ownerId),
+                "target",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.pendingSource()).isNull();
+                    assertThat(entry.requestKind()).isNull();
+                });
+        verify(activityMembersRepository).save(any(ActivityMember.class));
+        verify(assetsService).syncRequestsFromMembers(anyString(), anyList());
+    }
+
+    @Test
+    void subEventAdminCanStepDownAndLeaveAfterAnotherManagerExists() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember currentAdmin = member("admin-sync", ownerId, "admin", "Admin", "accepted");
+        currentAdmin.setOwnerType("subEvent");
+        ActivityMember successor = member("successor-sync", ownerId, "successor", "Manager", "accepted");
+        successor.setOwnerType("subEvent");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(currentAdmin, successor));
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "admin",
+                "admin",
+                "step-down-admin",
+                null));
+
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "admin".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("accepted");
+                    assertThat(member.getRole()).isEqualTo("Member");
+                });
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "admin",
+                "admin",
+                "remove",
+                null));
+
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "admin".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
     }
 
     @Test

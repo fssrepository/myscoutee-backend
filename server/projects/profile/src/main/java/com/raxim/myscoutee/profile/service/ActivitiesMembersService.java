@@ -613,6 +613,8 @@ public class ActivitiesMembersService {
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             validateEventMemberReplacement(ownerId, actorUserId, request.members(), existingByUserId);
+        } else {
+            validateManagedOwnerMemberReplacement(ownerType, ownerId, request.members(), existingByUserId);
         }
 
         List<ActivityMember> nextDocuments = new ArrayList<>();
@@ -732,12 +734,7 @@ public class ActivitiesMembersService {
                 removeEventParticipation(ownerId, targetUserId, actorUserId);
                 return queryMembers(ownerType, ownerId);
             }
-        } else if (!canManageOwnerMembers(ownerType, ownerId, actorUserId)
-                || actorUserId.equals(targetUserId)
-                || isProtectedOwnerMember(ownerType, ownerId, targetUserId)) {
-            return queryMembers(ownerType, ownerId);
         }
-
         List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
         ActivityMember current = existing.stream()
                 .filter(Objects::nonNull)
@@ -747,11 +744,39 @@ public class ActivitiesMembersService {
         if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
             return queryMembers(ownerType, ownerId);
         }
+        String currentRole = resolveStoredRole(current, ownerType, ownerId);
+        boolean acceptingOwnManagedInvitation = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_ACCEPT.equals(action)
+                && actorUserId.equals(targetUserId)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current);
+        boolean steppingDownOwnManagedRole = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_STEP_DOWN_ADMIN.equals(action)
+                && actorUserId.equals(targetUserId)
+                && STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
+                && MANAGER_ROLES.contains(currentRole)
+                && hasAcceptedManagerSuccessor(existing, targetUserId, ownerType, ownerId);
+        boolean leavingOwnManagedMembership = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && actorUserId.equals(targetUserId)
+                && STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
+                && !MANAGER_ROLES.contains(currentRole)
+                && !isProtectedOwnerMember(ownerType, ownerId, targetUserId);
+        if (!OWNER_TYPE_EVENT.equals(ownerType)
+                && !acceptingOwnManagedInvitation
+                && !steppingDownOwnManagedRole
+                && !leavingOwnManagedMembership
+                && (!canManageOwnerMembers(ownerType, ownerId, actorUserId)
+                    || actorUserId.equals(targetUserId)
+                    || isProtectedOwnerMember(ownerType, ownerId, targetUserId))) {
+            return queryMembers(ownerType, ownerId);
+        }
 
         String currentStatus = normalizeStatus(current.getStatus());
         String nextStatus;
         if (ACTION_ACCEPT.equals(action)) {
-            if (!STATUS_PENDING.equals(currentStatus) || !isAdminApprovalMembership(current)) {
+            if (!STATUS_PENDING.equals(currentStatus)
+                    || (!acceptingOwnManagedInvitation && !isAdminApprovalMembership(current))) {
                 return queryMembers(ownerType, ownerId);
             }
             nextStatus = STATUS_ACCEPTED;
@@ -773,7 +798,7 @@ public class ActivitiesMembersService {
             }
             nextStatus = STATUS_ACCEPTED;
         } else if (ACTION_STEP_DOWN_ADMIN.equals(action)) {
-            if (!STATUS_ACCEPTED.equals(currentStatus) || !"Admin".equals(safeText(current.getRole()))) {
+            if (!STATUS_ACCEPTED.equals(currentStatus) || !MANAGER_ROLES.contains(currentRole)) {
                 return queryMembers(ownerType, ownerId);
             }
             nextStatus = STATUS_ACCEPTED;
@@ -1255,6 +1280,41 @@ public class ActivitiesMembersService {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
                         "Only an event admin may promote another member to admin.");
+            }
+        }
+    }
+
+    private void validateManagedOwnerMemberReplacement(
+            String ownerType,
+            String ownerId,
+            List<ActivityMemberEntryDto> requestedMembers,
+            Map<String, ActivityMember> existingByUserId) {
+        if (existingByUserId == null || existingByUserId.isEmpty()) {
+            return;
+        }
+        Map<String, ActivityMemberEntryDto> requestedByUserId = new LinkedHashMap<>();
+        for (ActivityMemberEntryDto entry : safeMembers(requestedMembers)) {
+            String userId = normalizeId(entry == null ? null : entry.userId());
+            if (StringUtils.hasText(userId)) {
+                requestedByUserId.put(userId, entry);
+            }
+        }
+        for (Map.Entry<String, ActivityMember> existingEntry : existingByUserId.entrySet()) {
+            ActivityMember current = existingEntry.getValue();
+            if (current == null
+                    || !STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
+                    || !MANAGER_ROLES.contains(resolveStoredRole(current, ownerType, ownerId))) {
+                continue;
+            }
+            ActivityMemberEntryDto requested = requestedByUserId.get(existingEntry.getKey());
+            boolean removed = requested == null
+                    || !STATUS_ACCEPTED.equals(normalizeStatus(requested.status()));
+            boolean roleChanged = requested != null
+                    && !resolveStoredRole(current, ownerType, ownerId).equals(safeText(requested.role()));
+            if (removed || roleChanged) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "An admin or manager must use a managed step-down or ownership-transfer action.");
             }
         }
     }
@@ -2488,6 +2548,20 @@ public class ActivitiesMembersService {
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
                 .map(ActivityMember::getRole)
                 .map(this::safeText)
+                .anyMatch(MANAGER_ROLES::contains);
+    }
+
+    private boolean hasAcceptedManagerSuccessor(
+            List<ActivityMember> members,
+            String targetUserId,
+            String ownerType,
+            String ownerId) {
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        return (members == null ? List.<ActivityMember>of() : members).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !normalizedTargetUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .map(member -> resolveStoredRole(member, ownerType, ownerId))
                 .anyMatch(MANAGER_ROLES::contains);
     }
 

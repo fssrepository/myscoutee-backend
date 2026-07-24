@@ -45,7 +45,7 @@ public class ActivityEventDetailMapper {
                 safeText(record.getTimeframe()),
                 StringUtils.hasText(record.getInviter()) ? record.getInviter().trim() : null,
                 normalizeCount(record.getUnread()),
-                normalizeCount(record.getActivity()),
+                aggregateRuntimeActivity(record),
                 StringUtils.hasText(record.getTrashedAtIso()) ? record.getTrashedAtIso().trim() : null,
                 normalizeId(record.getCreatorUserId()),
                 safeText(record.getCreatorName()),
@@ -97,6 +97,29 @@ public class ActivityEventDetailMapper {
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()),
                 null);
+    }
+
+    private int aggregateRuntimeActivity(ActivityEvent record) {
+        int pending = 0;
+        boolean tournament = "Tournament".equalsIgnoreCase(safeText(record == null ? null : record.getMode()));
+        for (SubEventItem item : record == null || record.getSubEvents() == null
+                ? List.<SubEventItem>of()
+                : record.getSubEvents()) {
+            if (item == null) {
+                continue;
+            }
+            if (tournament) {
+                pending += item.groups() == null ? 0 : item.groups().size();
+                continue;
+            }
+            if (Boolean.TRUE.equals(item.optional())) {
+                pending += normalizeCount(item.membersPending());
+            }
+            pending += normalizeCount(item.carsPending());
+            pending += normalizeCount(item.accommodationPending());
+            pending += normalizeCount(item.suppliesPending());
+        }
+        return Math.max(normalizeCount(record == null ? null : record.getActivity()), pending);
     }
 
     private Boolean resolveEventFull(ActivityEvent record, List<EventSlotOccurrenceDto> upcomingSlots) {
