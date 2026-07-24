@@ -997,9 +997,9 @@ public class ActivitiesMembersService {
             if (accepted) {
                 processEventWaitlist(normalizedEventId, eventRecord, true);
             }
-            eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
+            eventParticipationTicketService.syncParticipationTicketForUser(normalizedEventId, viewerUserId);
             refreshEmbeddedEventMembers(normalizedEventId);
-            userActivityCountersService.refreshEventCountersForSourceIds(List.of(normalizedEventId));
+            userActivityCountersService.refreshEventCountersForUsers(List.of(viewerUserId));
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
