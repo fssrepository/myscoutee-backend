@@ -214,13 +214,17 @@ public class AdminController {
     }
 
     @GetMapping("/notifications")
-    public AdminNotificationCenterStateDto notifications(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return adminNotificationService.state(adminUserId);
+    public AdminNotificationCenterStateDto notifications(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "filter", required = false) String filter) {
+        return adminNotificationService.state(adminUserId, filter);
     }
 
     @PostMapping("/notifications")
-    public AdminNotificationCenterStateDto saveNotifications(@RequestBody(required = false) AdminNotificationRuleSaveRequestDto request) {
-        return adminNotificationService.save(request);
+    public AdminNotificationCenterStateDto saveNotifications(
+            @RequestBody(required = false) AdminNotificationRuleSaveRequestDto request,
+            @RequestParam(value = "filter", required = false) String filter) {
+        return adminNotificationService.save(request, filter);
     }
 
     @PostMapping("/notifications/{ruleKey}/run")

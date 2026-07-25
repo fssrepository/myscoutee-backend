@@ -72,6 +72,7 @@ public final class AdminDtos {
     public record AdminNotificationCenterStateDto(
             List<AdminNotificationRuleDto> rules,
             List<AdminNotificationTemplateOptionDto> emailTemplates,
+            Map<String, Long> filterCounts,
             String updatedDate) {}
     public record AdminNotificationRuleSaveRequestDto(
             String adminUserId,

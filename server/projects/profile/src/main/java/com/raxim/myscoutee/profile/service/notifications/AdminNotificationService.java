@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +47,16 @@ public class AdminNotificationService {
     private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
     private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
     private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
+    private static final String PROCESS_FILTER_ALL = "all";
+    private static final String PROCESS_FILTER_ACTIVE = "active";
+    private static final String PROCESS_FILTER_SUSPENDED = "suspended";
+    private static final String PROCESS_FILTER_RUNNING = "running";
+    private static final String PROCESS_FILTER_FAILED = "failed";
+    private static final String PROCESS_STATUS_RUNNING = "running";
+    private static final String PROCESS_STATUS_SUSPENDED = "suspended";
+    private static final String PROCESS_STATUS_FAILED = "failed";
+    private static final String PROCESS_STATUS_READY = "ready";
+    private static final Set<String> PROCESS_PROBLEM_STATUSES = Set.of("failed", "error", "missed", "skipped");
 
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final EmailTemplatesRepository emailTemplatesRepository;
@@ -82,9 +94,9 @@ public class AdminNotificationService {
         progressHeartbeatExecutor.shutdownNow();
     }
 
-    public AdminNotificationCenterStateDto state(String adminUserId) {
+    public AdminNotificationCenterStateDto state(String adminUserId, String filter) {
         adminModerationService.resolveAdminActor(adminUserId);
-        return toState(notificationRuleRegistryService.rules());
+        return toState(notificationRuleRegistryService.rules(), filter);
     }
 
     public AdminNotificationRuleDto ruleState(String ruleKey, String adminUserId) {
@@ -93,12 +105,14 @@ public class AdminNotificationService {
         return rule == null ? null : toDto(rule);
     }
 
-    public AdminNotificationCenterStateDto save(AdminNotificationRuleSaveRequestDto request) {
+    public AdminNotificationCenterStateDto save(AdminNotificationRuleSaveRequestDto request, String filter) {
         AdminUserDto admin = adminModerationService.resolveAdminActor(request == null ? null : request.adminUserId());
         List<NotificationRuleConfig> documents = request == null || request.rules() == null
                 ? List.of()
                 : request.rules().stream().map(this::toDocument).toList();
-        AdminNotificationCenterStateDto state = toState(notificationRuleRegistryService.saveRules(documents, admin.id()));
+        AdminNotificationCenterStateDto state = toState(
+                notificationRuleRegistryService.saveRules(documents, admin.id()),
+                filter);
         adminTelemetryService.record("jobs.config.saved", "jobs", "", admin.id(), documents.size());
         return state;
     }
@@ -210,6 +224,9 @@ public class AdminNotificationService {
             });
             int affectedUsers = affectedUsers(plans);
             String detail = "Generated " + plans.size() + " random group plan(s) for " + affectedUsers + " user(s).";
+            if (progress != null) {
+                progress.close();
+            }
             notificationRuleRegistryService.recordRun(
                     ruleKey,
                     affectedUsers,
@@ -219,6 +236,9 @@ public class AdminNotificationService {
                     progress == null ? null : progress.startedAt());
             adminTelemetryService.record("jobs.run.completed", "jobs", ruleKey, adminUserId, Math.max(1, affectedUsers));
         } catch (Exception exception) {
+            if (progress != null) {
+                progress.close();
+            }
             notificationRuleRegistryService.recordRun(
                     ruleKey,
                     0,
@@ -271,6 +291,7 @@ public class AdminNotificationService {
         private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual matched room assignment started.");
         private volatile String adminUserId;
         private volatile List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory = List.of();
+        private boolean closed;
         private final ScheduledFuture<?> heartbeat;
 
         RandomRunProgress(String ruleKey, String adminUserId) {
@@ -324,7 +345,10 @@ public class AdminNotificationService {
             }
         }
 
-        private void tick() {
+        private synchronized void tick() {
+            if (closed) {
+                return;
+            }
             try {
                 latestPercent.updateAndGet(current -> Math.max(current, timedProgressPercent()));
                 long elapsedSeconds = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toSeconds());
@@ -350,7 +374,11 @@ public class AdminNotificationService {
         }
 
         @Override
-        public void close() {
+        public synchronized void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
             heartbeat.cancel(false);
             recordRandomRunMillis(java.time.Duration.between(startedAt, Instant.now()).toMillis());
         }
@@ -400,13 +428,94 @@ public class AdminNotificationService {
         return userIds.size();
     }
 
-    private AdminNotificationCenterStateDto toState(List<NotificationRuleConfig> rules) {
+    private AdminNotificationCenterStateDto toState(List<NotificationRuleConfig> rules, String filter) {
+        List<NotificationRuleConfig> allRules = rules == null ? List.of() : rules;
         return new AdminNotificationCenterStateDto(
-                rules.stream().map(this::toDto).toList(),
+                filteredProcessRules(allRules, normalizeProcessFilter(filter)).stream().map(this::toDto).toList(),
                 emailTemplatesRepository.findByEnabledTrueOrderByTemplateKeyAsc().stream()
                         .map(this::toTemplateOption)
                         .toList(),
+                processFilterCounts(allRules),
                 Instant.now().toString());
+    }
+
+    private Map<String, Long> processFilterCounts(List<NotificationRuleConfig> rules) {
+        List<NotificationRuleConfig> processRules = scheduledProcessRules(rules);
+        Map<String, Long> counts = new LinkedHashMap<>();
+        counts.put(PROCESS_FILTER_ALL, (long) processRules.size());
+        counts.put(PROCESS_FILTER_ACTIVE, processRules.stream()
+                .filter(rule -> Boolean.TRUE.equals(rule.getEnabled()))
+                .filter(rule -> !PROCESS_STATUS_FAILED.equals(processStatusKind(rule)))
+                .count());
+        counts.put(PROCESS_FILTER_SUSPENDED, processRules.stream()
+                .filter(rule -> PROCESS_STATUS_SUSPENDED.equals(processStatusKind(rule)))
+                .count());
+        counts.put(PROCESS_FILTER_RUNNING, processRules.stream()
+                .filter(rule -> PROCESS_STATUS_RUNNING.equals(processStatusKind(rule)))
+                .count());
+        counts.put(PROCESS_FILTER_FAILED, processRules.stream()
+                .filter(rule -> PROCESS_STATUS_FAILED.equals(processStatusKind(rule)))
+                .count());
+        return counts;
+    }
+
+    private List<NotificationRuleConfig> filteredProcessRules(
+            List<NotificationRuleConfig> rules,
+            String filter) {
+        if (PROCESS_FILTER_ALL.equals(filter)) {
+            return rules;
+        }
+        return scheduledProcessRules(rules).stream()
+                .filter(rule -> matchesProcessFilter(rule, filter))
+                .toList();
+    }
+
+    private List<NotificationRuleConfig> scheduledProcessRules(List<NotificationRuleConfig> rules) {
+        return (rules == null ? List.<NotificationRuleConfig>of() : rules).stream()
+                .filter(rule -> rule != null && "scheduled_process".equals(safeText(rule.getTriggerKind())))
+                .toList();
+    }
+
+    private boolean matchesProcessFilter(NotificationRuleConfig rule, String filter) {
+        String status = processStatusKind(rule);
+        return switch (filter) {
+            case PROCESS_FILTER_ACTIVE -> Boolean.TRUE.equals(rule.getEnabled())
+                    && !PROCESS_STATUS_FAILED.equals(status);
+            case PROCESS_FILTER_SUSPENDED -> PROCESS_STATUS_SUSPENDED.equals(status);
+            case PROCESS_FILTER_RUNNING -> PROCESS_STATUS_RUNNING.equals(status);
+            case PROCESS_FILTER_FAILED -> PROCESS_STATUS_FAILED.equals(status);
+            default -> true;
+        };
+    }
+
+    private String processStatusKind(NotificationRuleConfig rule) {
+        NotificationRuleConfig.RunState runState = rule == null ? null : rule.getRunState();
+        String currentStatus = safeText(runState == null ? null : runState.getCurrentStatus()).toLowerCase();
+        if (PROCESS_STATUS_RUNNING.equals(currentStatus)) {
+            return PROCESS_STATUS_RUNNING;
+        }
+        String lastStatus = safeText(runState == null ? null : runState.getLastRunStatus()).toLowerCase();
+        if (lastStatus.isEmpty()) {
+            lastStatus = currentStatus;
+        }
+        if (PROCESS_PROBLEM_STATUSES.contains(lastStatus)) {
+            return PROCESS_STATUS_FAILED;
+        }
+        if (!Boolean.TRUE.equals(rule == null ? null : rule.getEnabled())
+                || PROCESS_STATUS_SUSPENDED.equals(currentStatus)) {
+            return PROCESS_STATUS_SUSPENDED;
+        }
+        return PROCESS_STATUS_READY;
+    }
+
+    private String normalizeProcessFilter(String filter) {
+        return switch (safeText(filter).toLowerCase()) {
+            case PROCESS_FILTER_ACTIVE,
+                    PROCESS_FILTER_SUSPENDED,
+                    PROCESS_FILTER_RUNNING,
+                    PROCESS_FILTER_FAILED -> safeText(filter).toLowerCase();
+            default -> PROCESS_FILTER_ALL;
+        };
     }
 
     private AdminNotificationRuleDto toDto(NotificationRuleConfig rule) {
