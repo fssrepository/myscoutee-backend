@@ -15,5 +15,6 @@ feature
 -------
 1) as we have lots of popup which hides the avatar menu button,
 create a dragable button, it can be closed, dragged has a red counter badge,
-and shows messages when it opens (it's a popup)
+and shows messages when it opens (it's a popup) -
+the popup has a mute button
 2) background process tests, e.g.: purge, algorithm
