@@ -314,6 +314,7 @@ public class EventTicketSyncService {
         clone.setSourceId(source.getSourceId());
         clone.setOwnerUserId(source.getOwnerUserId());
         clone.setStatus(source.getStatus());
+        clone.setStatusBeforeSuppression(source.getStatusBeforeSuppression());
         clone.setAvatar(source.getAvatar());
         clone.setTitle(source.getTitle());
         clone.setSubtitle(source.getSubtitle());

@@ -49,6 +49,12 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
     @Query("{ 'status': 'A', 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findCanonicalExploreCandidates();
 
+    @Query(
+            value = "{ 'acceptedMemberUserIds.0': { $exists: true } }",
+            fields = "{ 'sourceId': 1, 'title': 1, 'startAtIso': 1, 'endAtIso': 1,"
+                    + " 'createdDate': 1, 'updatedDate': 1, 'acceptedMemberUserIds': 1 }")
+    List<ActivityEvent> findHomeGameMemberProjections();
+
     boolean existsByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 
     List<ActivityEvent> findByAutoInviterTrue();

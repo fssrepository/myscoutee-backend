@@ -34,22 +34,22 @@ public final class AccessPolicyKeys {
     // 10. User may view event member list or summaries.
     public static final String EVENT_MEMBER_VIEW = "event.member.view";
 
-    // 11. Owner/admin/manager may replace event member list.
+    // 11. Owner/admin may replace event member list.
     public static final String EVENT_MEMBER_MANAGE = "event.member.manage";
 
-    // 12. Owner/admin/manager may accept pending member.
+    // 12. Owner/admin may accept pending member.
     public static final String EVENT_MEMBER_ACCEPT = "event.member.accept";
 
-    // 13. Owner/admin/manager may remove member.
+    // 13. Owner/admin may remove member.
     public static final String EVENT_MEMBER_REMOVE = "event.member.remove";
 
-    // 14. Owner/admin/manager may disqualify member.
+    // 14. Owner/admin may disqualify member.
     public static final String EVENT_MEMBER_DISQUALIFY = "event.member.disqualify";
 
-    // 15. Owner/admin/manager may reinstate member.
+    // 15. Owner/admin may reinstate member.
     public static final String EVENT_MEMBER_REINSTATE = "event.member.reinstate";
 
-    // 16. Owner/admin/manager may invite users.
+    // 16. Owner/admin/manager or any accepted participant may invite users.
     public static final String EVENT_MEMBER_INVITE = "event.member.invite";
 
     // 17. Actor may submit an event resource assignment for their own asset-owner row.

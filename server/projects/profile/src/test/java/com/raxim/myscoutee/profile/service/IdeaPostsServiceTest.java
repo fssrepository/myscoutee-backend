@@ -3,23 +3,33 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.IdeaPost;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostPublicPageDto;
 import com.raxim.myscoutee.profile.repository.IdeaPostsRepository;
 import com.raxim.myscoutee.profile.repository.LandingArticlesRepository;
@@ -46,6 +56,7 @@ class IdeaPostsServiceTest {
 
     @BeforeEach
     void setUp() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new IdeaPostsService(
                 configProperties,
                 ideaPostsRepository,
@@ -54,6 +65,11 @@ class IdeaPostsServiceTest {
                 appSettingsService,
                 landingArticlesRepository,
                 new IdeaPostMapper());
+    }
+
+    @AfterEach
+    void tearDown() {
+        MongoSessionModeContext.clear();
     }
 
     @Test
@@ -158,6 +174,66 @@ class IdeaPostsServiceTest {
                         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
 
         verifyNoInteractions(landingArticlesRepository);
+    }
+
+    @Test
+    void adminPostsPageUsesAStableSortKeyCursorWithoutOffsetPaging() {
+        IdeaPost first = post("article-c", "en", "2026-07-20T10:00:00Z");
+        IdeaPost second = post("article-b", "en", "2026-07-20T10:00:00Z");
+        IdeaPost lookahead = post("article-a", "en", "2026-07-19T10:00:00Z");
+        when(mongoTemplate.count(any(Query.class), eq(IdeaPost.class))).thenReturn(3L);
+        when(mongoTemplate.find(any(Query.class), eq(IdeaPost.class)))
+                .thenReturn(List.of(first, second, lookahead));
+
+        IdeaPostAdminPageDto result = service.adminPostsPage("admin", "en", "all", 2, null);
+
+        assertThat(result.records()).extracting(record -> record.id())
+                .containsExactly("article-c", "article-b");
+        assertThat(result.nextCursor())
+                .contains("\"submittedAtIso\":\"2026-07-20T10:00:00Z\"")
+                .contains("\"id\":\"article-b\"");
+
+        ArgumentCaptor<Query> pageQuery = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).find(pageQuery.capture(), eq(IdeaPost.class));
+        assertThat(pageQuery.getValue().getSkip()).isZero();
+        assertThat(pageQuery.getValue().getLimit()).isEqualTo(3);
+        assertThat(pageQuery.getValue().getSortObject().toJson())
+                .isEqualTo("{\"submittedAtIso\": -1, \"_id\": -1}");
+    }
+
+    @Test
+    void adminPostsPageContinuesAfterTheCursorTuple() {
+        when(mongoTemplate.find(any(Query.class), eq(IdeaPost.class)))
+                .thenReturn(List.of(post("article-a", "en", "2026-07-19T10:00:00Z")));
+
+        service.adminPostsPage(
+                "admin",
+                "en",
+                "all",
+                10,
+                "{\"lang\":\"en\",\"status\":\"all\",\"submittedAtIso\":\"2026-07-20T10:00:00Z\",\"id\":\"article-b\"}");
+
+        ArgumentCaptor<Query> pageQuery = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).find(pageQuery.capture(), eq(IdeaPost.class));
+        assertThat(pageQuery.getValue().getSkip()).isZero();
+        assertThat(pageQuery.getValue().getQueryObject().toJson())
+                .contains("\"submittedAtIso\": {\"$lt\": \"2026-07-20T10:00:00Z\"}")
+                .contains("\"submittedAtIso\": \"2026-07-20T10:00:00Z\"")
+                .contains("\"_id\": {\"$lt\": \"article-b\"}");
+    }
+
+    @Test
+    void deletePostReturnsTheSavedMutationWithoutReloadingTheCollection() {
+        IdeaPost existing = post("article-a", "en", "2026-07-20T10:00:00Z");
+        when(ideaPostsRepository.findById("article-a")).thenReturn(Optional.of(existing));
+        when(ideaPostsRepository.save(existing)).thenReturn(existing);
+
+        var result = service.deletePost("article-a", new IdeaPostAdminActionRequestDto("admin"));
+
+        assertThat(result.id()).isEqualTo("article-a");
+        assertThat(result.trashed()).isTrue();
+        verify(ideaPostsRepository).save(existing);
+        verify(ideaPostsRepository, never()).findAllByOrderBySubmittedAtIsoDesc();
     }
 
     private IdeaPost post(String id, String lang, String submittedAtIso) {

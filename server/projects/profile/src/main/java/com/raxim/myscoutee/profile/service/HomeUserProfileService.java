@@ -116,6 +116,7 @@ public class HomeUserProfileService {
     private static final double HOME_FRESHNESS_HALF_LIFE_DAYS = 14d;
     private static final long MILLIS_PER_DAY = 24L * 60L * 60L * 1000L;
     private static final long USER_READ_SNAPSHOT_CACHE_TTL_MS = 5_000L;
+    static final int HOME_GAME_RATE_PROJECTION_VERSION = 1;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -525,10 +526,10 @@ public class HomeUserProfileService {
         if (!accessControlService.canCurrentActorEditProfile(normalizedUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
         }
-        evictUserReadCaches(normalizedUserId);
         Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
+        evictUserReadCaches(normalizedUserId);
         affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
         String resolvedUserId = normalizeId(resolved == null ? null : resolved.getId());
         adminTelemetryService.record(
@@ -700,12 +701,12 @@ public class HomeUserProfileService {
         }
 
         String previousProfileStatus = resolveProfileStatus(user);
-        evictUserReadCaches(resolvedUserId);
         user.setStatus("D");
         user.setProfileStatus("deleted");
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
+        evictUserReadCaches(resolvedUserId);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
         adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
@@ -723,7 +724,7 @@ public class HomeUserProfileService {
             return List.of();
         }
 
-        Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
+        Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId, activeUser);
         Set<String> metUserIds = snapshot.socialGraph().neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
         Set<String> friendsInCommonCandidateIds = queryFriendsInCommonCandidateIds(
                 normalizedUserId,
@@ -747,8 +748,13 @@ public class HomeUserProfileService {
     }
 
     public List<GameSocialCardCandidate> querySeparatedFriendCards(String activeUserId) {
-        List<Users> users = orderedUsers();
-        return querySeparatedFriendCards(activeUserId, users, buildActivitySocialGraph(), queryAffinityEdgeWeights(userIds(users)));
+        GameStackSnapshot snapshot = resolveGameStackSnapshot();
+        List<Users> users = snapshot.visibleGameUsers();
+        return querySeparatedFriendCards(
+                activeUserId,
+                users,
+                snapshot.socialGraph(),
+                queryAffinityEdgeWeights(userIds(users)));
     }
 
     List<GameSocialCardCandidate> querySeparatedFriendCards(
@@ -778,7 +784,7 @@ public class HomeUserProfileService {
                 .sorted((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)))
                 .toList();
 
-        Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId);
+        Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId, usersById.get(normalizedUserId));
         List<GameSocialCardCandidate> candidates = new ArrayList<>();
         for (int leftIndex = 0; leftIndex < neighbors.size(); leftIndex += 1) {
             String leftUserId = neighbors.get(leftIndex);
@@ -821,13 +827,18 @@ public class HomeUserProfileService {
     }
 
     public List<GameSocialCardCandidate> queryFriendsInCommonCards(String activeUserId) {
-        List<Users> users = orderedUsers();
-        return queryFriendsInCommonCards(activeUserId, users, buildActivitySocialGraph(), queryAffinityEdgeWeights(userIds(users)));
+        GameStackSnapshot snapshot = resolveGameStackSnapshot();
+        List<Users> users = snapshot.visibleGameUsers();
+        return queryFriendsInCommonCards(
+                activeUserId,
+                users,
+                snapshot.socialGraph(),
+                queryAffinityEdgeWeights(userIds(users)));
     }
 
     public List<GameSocialCardCandidate> queryOutsideNetworkCards(String activeUserId) {
-        List<Users> users = orderedUsers();
-        return queryOutsideNetworkCards(activeUserId, users, buildActivitySocialGraph());
+        GameStackSnapshot snapshot = resolveGameStackSnapshot();
+        return queryOutsideNetworkCards(activeUserId, snapshot.visibleGameUsers(), snapshot.socialGraph());
     }
 
     List<GameSocialCardCandidate> queryFriendsInCommonCards(
@@ -856,7 +867,7 @@ public class HomeUserProfileService {
             return List.of();
         }
 
-        Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
+        Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId, usersById.get(normalizedUserId));
         List<GameSocialCardCandidate> candidates = new ArrayList<>();
         for (Users user : users) {
             String candidateUserId = normalizeId(user.getId());
@@ -935,7 +946,7 @@ public class HomeUserProfileService {
         }
 
         Set<String> activeNeighbors = graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
-        Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId);
+        Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId, usersById.get(normalizedUserId));
         List<String> publicUserIds = (users == null ? List.<Users>of() : users).stream()
                 .map(user -> normalizeId(user == null ? null : user.getId()))
                 .filter(StringUtils::hasText)
@@ -1037,11 +1048,11 @@ public class HomeUserProfileService {
     }
 
     List<Users> queryOrderedUserRecords() {
-        return orderedUsers();
+        return resolveGameStackSnapshot().visibleGameUsers();
     }
 
     ActivitySocialGraph queryActivitySocialGraph() {
-        return buildActivitySocialGraph();
+        return resolveGameStackSnapshot().socialGraph();
     }
 
     @Cacheable(value = "demo_users", key = "'all'")
@@ -1340,34 +1351,60 @@ public class HomeUserProfileService {
         return resolved;
     }
 
-    private Map<String, Long> queryLatestHomeActivityMsByUserId() {
+    private Map<String, Long> queryLatestHomeActivityMsByUserId(
+            List<Users> visibleGameUsers,
+            List<ActivityEvent> memberProjections) {
         Map<String, Long> latestByUserId = new LinkedHashMap<>();
-        for (UserRate record : userRatesRepository.findAll()) {
-            if (record == null) {
-                continue;
+        boolean allRateProjectionsCurrent = visibleGameUsers != null
+                && !visibleGameUsers.isEmpty()
+                && visibleGameUsers.stream().allMatch(this::hasCurrentHomeGameRateProjection);
+        if (allRateProjectionsCurrent) {
+            for (Users user : visibleGameUsers) {
+                rememberLatestActivityMs(
+                        latestByUserId,
+                        user == null ? null : user.getId(),
+                        user == null || user.getHomeGameLastRateActivityMs() == null
+                                ? 0L
+                                : user.getHomeGameLastRateActivityMs().longValue());
             }
-            long timestampMs = parseIsoMillis(firstNonBlank(
-                    record.getUpdatedDate(),
-                    record.getCreatedDate()));
-            if (timestampMs <= 0L) {
-                continue;
+        } else {
+            for (UserRate record : userRatesRepository.findAll()) {
+                if (record == null) {
+                    continue;
+                }
+                long timestampMs = parseIsoMillis(firstNonBlank(
+                        record.getUpdatedDate(),
+                        record.getCreatedDate()));
+                if (timestampMs <= 0L) {
+                    continue;
+                }
+                rememberLatestActivityMs(latestByUserId, record.getOwnerUserId(), timestampMs);
+                rememberLatestActivityMs(latestByUserId, record.getRelatedUserId(), timestampMs);
+                rememberLatestActivityMs(latestByUserId, record.getSecondaryRelatedUserId(), timestampMs);
             }
-            rememberLatestActivityMs(latestByUserId, record.getOwnerUserId(), timestampMs);
-            rememberLatestActivityMs(latestByUserId, record.getRelatedUserId(), timestampMs);
-            rememberLatestActivityMs(latestByUserId, record.getSecondaryRelatedUserId(), timestampMs);
         }
-        for (ActivityMember member : activityMembersRepository.findAll()) {
-            if (member == null) {
-                continue;
+
+        if (hasHomeGameMemberProjections(memberProjections)) {
+            for (ActivityEvent event : memberProjections) {
+                long timestampMs = homeGameEventActivityMillis(event);
+                for (String userId : normalizeStrings(event == null ? null : event.getAcceptedMemberUserIds())) {
+                    rememberLatestActivityMs(latestByUserId, userId, timestampMs);
+                }
             }
-            long timestampMs = parseIsoMillis(firstNonBlank(
-                    member.getActionAtIso(),
-                    member.getUpdatedDate(),
-                    member.getCreatedDate()));
-            if (timestampMs <= 0L) {
-                continue;
+        } else {
+            for (ActivityMember member : activityMembersRepository.findAll()) {
+                if (member == null) {
+                    continue;
+                }
+                long timestampMs = parseIsoMillis(firstNonBlank(
+                        member.getActionAtIso(),
+                        member.getUpdatedDate(),
+                        member.getCreatedDate()));
+                if (timestampMs <= 0L) {
+                    continue;
+                }
+                rememberLatestActivityMs(latestByUserId, member.getUserId(), timestampMs);
             }
-            rememberLatestActivityMs(latestByUserId, member.getUserId(), timestampMs);
         }
         return latestByUserId;
     }
@@ -1518,13 +1555,19 @@ public class HomeUserProfileService {
                 .orElse(null);
     }
 
-    private Set<String> queryRatedUserIds(String raterUserId) {
+    private Set<String> queryRatedUserIds(String raterUserId, Users rater) {
         String normalizedRaterUserId = normalizeId(raterUserId);
         if (!StringUtils.hasText(normalizedRaterUserId)) {
             return Set.of();
         }
+        if (hasCurrentHomeGameRateProjection(rater)) {
+            return normalizeStrings(rater.getHomeGameRatedUserIds()).stream()
+                    .filter(userId -> !normalizedRaterUserId.equals(userId))
+                    .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        }
+
         Set<String> ratedUserIds = new LinkedHashSet<>();
-        for (UserRate record : userRatesRepository.findByOwnerUserId(normalizedRaterUserId)) {
+        for (UserRate record : userRatesRepository.findHomeGameExclusionProjections(normalizedRaterUserId)) {
             if (!hasOwnRecordedActivityRate(record, normalizedRaterUserId)) {
                 continue;
             }
@@ -1534,12 +1577,28 @@ public class HomeUserProfileService {
         return Set.copyOf(ratedUserIds);
     }
 
-    private Set<String> queryRatedPairKeys(String raterUserId) {
+    private Set<String> queryRatedPairKeys(String raterUserId, Users rater) {
         Set<String> ratedPairKeys = new LinkedHashSet<>();
         if (!StringUtils.hasText(raterUserId)) {
             return ratedPairKeys;
         }
-        for (UserRate record : userRatesRepository.findByOwnerUserIdAndMode(raterUserId, "pair")) {
+        if (hasCurrentHomeGameRateProjection(rater)) {
+            for (String ratedPairKey : normalizeStrings(rater.getHomeGameRatedPairKeys())) {
+                int separator = ratedPairKey.indexOf(':');
+                if (separator <= 0 || separator >= ratedPairKey.length() - 1) {
+                    continue;
+                }
+                ratedPairKeys.add(pairKey(
+                        ratedPairKey.substring(0, separator),
+                        ratedPairKey.substring(separator + 1)));
+            }
+            return Set.copyOf(ratedPairKeys);
+        }
+
+        for (UserRate record : userRatesRepository.findHomeGameExclusionProjections(raterUserId)) {
+            if (!"pair".equals(safeText(record == null ? null : record.getMode()))) {
+                continue;
+            }
             if (!hasOwnRecordedActivityRate(record, raterUserId)) {
                 continue;
             }
@@ -1553,6 +1612,14 @@ public class HomeUserProfileService {
             ratedPairKeys.add(pairKey(firstUserId, secondUserId));
         }
         return ratedPairKeys;
+    }
+
+    private boolean hasCurrentHomeGameRateProjection(Users user) {
+        return user != null
+                && user.getHomeGameRateProjectionVersion() != null
+                && user.getHomeGameRateProjectionVersion().intValue() == HOME_GAME_RATE_PROJECTION_VERSION
+                && user.getHomeGameRatedUserIds() != null
+                && user.getHomeGameRatedPairKeys() != null;
     }
 
     private void addRatedUserId(Set<String> ratedUserIds, String ownerUserId, String candidateUserId) {
@@ -1573,7 +1640,46 @@ public class HomeUserProfileService {
         return scoreGiven != null && scoreGiven > 0;
     }
 
-    private ActivitySocialGraph buildActivitySocialGraph() {
+    private ActivitySocialGraph buildActivitySocialGraph(List<ActivityEvent> memberProjections) {
+        if (!hasHomeGameMemberProjections(memberProjections)) {
+            return buildLegacyActivitySocialGraph();
+        }
+
+        Map<String, Set<String>> neighborsByUserId = new LinkedHashMap<>();
+        Map<String, String> latestEventNameByEdgeKey = new LinkedHashMap<>();
+        Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
+        for (ActivityEvent event : memberProjections) {
+            List<String> acceptedUserIds = normalizeStrings(
+                    event == null ? null : event.getAcceptedMemberUserIds()).stream()
+                    .distinct()
+                    .toList();
+            long eventActivityMs = homeGameEventActivityMillis(event);
+            for (int leftIndex = 0; leftIndex < acceptedUserIds.size(); leftIndex += 1) {
+                for (int rightIndex = leftIndex + 1; rightIndex < acceptedUserIds.size(); rightIndex += 1) {
+                    registerSocialEdge(
+                            neighborsByUserId,
+                            latestEventNameByEdgeKey,
+                            latestTimestampByEdgeKey,
+                            acceptedUserIds.get(leftIndex),
+                            acceptedUserIds.get(rightIndex),
+                            event == null ? null : event.getTitle(),
+                            eventActivityMs);
+                }
+            }
+        }
+        return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
+    }
+
+    private boolean hasHomeGameMemberProjections(List<ActivityEvent> memberProjections) {
+        return memberProjections != null
+                && memberProjections.stream()
+                        .filter(Objects::nonNull)
+                        .map(ActivityEvent::getAcceptedMemberUserIds)
+                        .filter(Objects::nonNull)
+                        .anyMatch(userIds -> !userIds.isEmpty());
+    }
+
+    private ActivitySocialGraph buildLegacyActivitySocialGraph() {
         Map<String, Set<String>> neighborsByUserId = new LinkedHashMap<>();
         Map<String, String> latestEventNameByEdgeKey = new LinkedHashMap<>();
         Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
@@ -1614,6 +1720,14 @@ public class HomeUserProfileService {
         return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
     }
 
+    private long homeGameEventActivityMillis(ActivityEvent event) {
+        return parseIsoMillis(firstNonBlank(
+                event == null ? null : event.getStartAtIso(),
+                event == null ? null : event.getUpdatedDate(),
+                event == null ? null : event.getCreatedDate(),
+                event == null ? null : event.getEndAtIso()));
+    }
+
     private boolean isSocialGraphMemberOwner(String ownerType) {
         String normalizedOwnerType = safeText(ownerType);
         return OWNER_TYPE_EVENT.equals(normalizedOwnerType)
@@ -1638,11 +1752,14 @@ public class HomeUserProfileService {
                     .filter(Objects::nonNull)
                     .filter(this::isUsableUserDocument)
                     .toList();
+            List<ActivityEvent> homeGameMemberProjections = activityEventsRepository.findHomeGameMemberProjections();
             GameStackSnapshot snapshot = new GameStackSnapshot(
                     List.copyOf(visibleGameUsers),
                     indexUsersById(visibleGameUsers),
-                    buildActivitySocialGraph(),
-                    Map.copyOf(queryLatestHomeActivityMsByUserId()));
+                    buildActivitySocialGraph(homeGameMemberProjections),
+                    Map.copyOf(queryLatestHomeActivityMsByUserId(
+                            visibleGameUsers,
+                            homeGameMemberProjections)));
             gameStackSnapshotCache = new CacheEntry<>(snapshot, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS);
             return snapshot;
         }
@@ -1970,6 +2087,12 @@ public class HomeUserProfileService {
             document.setDeletedAtIso(null);
         }
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
+        if (current == null) {
+            document.setHomeGameRatedUserIds(List.of());
+            document.setHomeGameRatedPairKeys(List.of());
+            document.setHomeGameRateProjectionVersion(HOME_GAME_RATE_PROJECTION_VERSION);
+            document.setHomeGameRateProjectionUpdatedAtIso(Instant.now().toString());
+        }
         return document;
     }
 
@@ -2234,13 +2357,16 @@ public class HomeUserProfileService {
 
     private String normalizeMemberStatus(String status) {
         String normalizedStatus = safeText(status);
+        if (STATUS_ACCEPTED.equals(normalizedStatus)) {
+            return STATUS_ACCEPTED;
+        }
         if (STATUS_PENDING.equals(normalizedStatus)) {
             return STATUS_PENDING;
         }
         if (STATUS_DELETED.equals(normalizedStatus)) {
             return STATUS_DELETED;
         }
-        return STATUS_ACCEPTED;
+        return normalizedStatus;
     }
 
     private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {

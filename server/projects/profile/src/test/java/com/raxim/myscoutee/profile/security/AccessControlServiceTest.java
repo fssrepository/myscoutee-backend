@@ -438,6 +438,18 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void eventMemberRemoveRejectsAcceptedManagerActor() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
+                .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
+
+        boolean allowed = service.canRemoveEventMember("event-1", "manager", "target");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
     void eventMemberRemoveRejectsProtectedCreatorTarget() {
         when(activityEventsRepository.findBySourceId("event-1"))
                 .thenReturn(List.of(event("event-1", "creator", "admin")));
@@ -454,6 +466,29 @@ class AccessControlServiceTest {
                 .thenReturn(List.of(event("event-1", "creator", "admin")));
 
         boolean allowed = service.canInviteEventMembers("event-1", "admin");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberInviteAllowsAcceptedManagerRole() {
+        when(usersRepository.findByUserId("manager")).thenReturn(Optional.of(user("manager")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
+                .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
+
+        boolean allowed = service.canInviteEventMembers("event-1", "manager");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberInviteAllowsAcceptedParticipant() {
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "member"))
+                .thenReturn(Optional.of(member("event-1", "member", "accepted", "Member")));
+
+        boolean allowed = service.canInviteEventMembers("event-1", "member");
 
         assertThat(allowed).isTrue();
     }
@@ -773,14 +808,14 @@ class AccessControlServiceTest {
     }
 
     @Test
-    void eventMemberManageAllowsAcceptedManagerRole() {
+    void eventMemberManageRejectsAcceptedManagerRole() {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of());
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
                 .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
 
         boolean allowed = service.canManageEventMembers("event-1", "manager");
 
-        assertThat(allowed).isTrue();
+        assertThat(allowed).isFalse();
     }
 
     @Test
@@ -828,7 +863,7 @@ class AccessControlServiceTest {
     }
 
     @Test
-    void eventMemberDisqualifyRejectsProtectedManagerTarget() {
+    void eventMemberDisqualifyAllowsManagerRoleTarget() {
         when(activityEventsRepository.findBySourceId("event-1"))
                 .thenReturn(List.of(event("event-1", "creator", "admin")));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
@@ -836,7 +871,7 @@ class AccessControlServiceTest {
 
         boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "target");
 
-        assertThat(allowed).isFalse();
+        assertThat(allowed).isTrue();
     }
 
     @Test
@@ -1357,8 +1392,8 @@ class AccessControlServiceTest {
                         AccessPolicyKeys.EVENT_MEMBER_INVITE,
                         "event.member.invite",
                         "event",
-                        List.of("noExplicitDeny", "actorCanManageEvent"),
-                        List.of(),
+                        List.of("noExplicitDeny"),
+                        List.of("actorCanManageEvent", "acceptedParticipation"),
                         null),
                 policy(
                         AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,

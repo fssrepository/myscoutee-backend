@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +26,16 @@ public interface UserRatesRepository extends MongoRepository<UserRate, String> {
     List<UserRate> findByOwnerUserId(String ownerUserId);
 
     List<UserRate> findByOwnerUserIdAndMode(String ownerUserId, String mode);
+
+    @Query(
+            value = "{ 'ownerUserId': ?0, '$or': [ { 'met': true }, { 'scoreGiven': { '$gt': 0 } } ] }",
+            fields = "{ 'ownerUserId': 1, 'mode': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1,"
+                    + " 'scoreGiven': 1, 'met': 1 }")
+    List<UserRate> findHomeGameExclusionProjections(String ownerUserId);
+
+    @Query(
+            value = "{ 'ownerUserId': { '$in': ?0 } }",
+            fields = "{ 'ownerUserId': 1, 'mode': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1,"
+                    + " 'scoreGiven': 1, 'met': 1, 'createdDate': 1, 'updatedDate': 1 }")
+    List<UserRate> findHomeGameRateProjectionsByOwnerUserIdIn(Collection<String> ownerUserIds);
 }

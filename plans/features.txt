@@ -4,11 +4,17 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-1) check admin ui-s
-
-2) configured server - where metrics can be uploaded, so virtual shares can be calculated
+1) configured server - where metrics can be uploaded, so virtual shares can be calculated
 needs a different server and project, practically a dashboard
 go server with minimal memory, connecting to server, gets the key and the user
 can register with that key to a virtual company
+2) replace logo to make a rebrand
+3) repackage the project to npm (like the shared ui etc. - to be able to reuse on market place)
 
-3) replace logo to make a rebrand
+feature
+-------
+1) as we have lots of popup which hides the avatar menu button,
+create a dragable button, it can be closed, dragged has a red counter badge,
+and shows messages when it opens (it's a popup) -
+the popup has a mute button
+2) background process tests, e.g.: purge, algorithm

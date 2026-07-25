@@ -170,8 +170,8 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/restore")
-    public void restore(@RequestBody EventActionRequestDto request) {
-        activitiesEventsService.restore(request);
+    public EventParticipationActionResultDto restore(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.restore(request);
     }
 
     @PostMapping("/take-over")

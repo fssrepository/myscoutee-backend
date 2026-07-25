@@ -118,6 +118,7 @@ class HomeUserProfileServiceTest {
     void setUp() {
         lenient().when(userRatesRepository.findByOwnerUserId("active")).thenReturn(List.of());
         lenient().when(userRatesRepository.findByOwnerUserIdAndMode("active", "pair")).thenReturn(List.of());
+        lenient().when(userRatesRepository.findHomeGameExclusionProjections("active")).thenReturn(List.of());
         lenient().when(activityMembersRepository.findAll()).thenReturn(List.of());
         lenient().when(assetsRepository.findByOwnerUserId("active")).thenReturn(List.of());
         lenient().when(accessControlService.canCurrentActorEditProfile(anyString())).thenReturn(true);
@@ -209,6 +210,32 @@ class HomeUserProfileServiceTest {
 
         assertThat(response.submitted()).isFalse();
         assertThat(response.message()).contains("event organizer or a member you shared an event with");
+        verify(userReportSubmissionsRepository, never()).save(any());
+    }
+
+    @Test
+    void submitReportDoesNotTreatSuppressedParticipationAsAccepted() {
+        Users reporter = user("reporter", 0d);
+        when(usersRepository.findByUserId("reporter")).thenReturn(Optional.of(reporter));
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setOwnerUserId("organizer");
+        event.setCreatorUserId("organizer");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+
+        ActivityMember suppressedReporter = acceptedMember("event-1", "reporter");
+        suppressedReporter.setStatus("suppressed");
+        ActivityMember target = acceptedMember("event-1", "other-member");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "reporter")).thenReturn(Optional.of(suppressedReporter));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "other-member")).thenReturn(Optional.of(target));
+
+        var response = service.submitReport(reportRequest("reporter", "other-member", "event-1"));
+
+        assertThat(response.submitted()).isFalse();
         verify(userReportSubmissionsRepository, never()).save(any());
     }
 
@@ -323,8 +350,90 @@ class HomeUserProfileServiceTest {
         verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
         verify(userRatesRepository, times(1)).findAll();
         verify(activityMembersRepository, times(2)).findAll();
-        verify(userRatesRepository, times(2)).findByOwnerUserId("active");
+        verify(userRatesRepository, times(2)).findHomeGameExclusionProjections("active");
         verify(userAffinityEdgesRepository, times(1)).findRelevantByUserIds(List.of("active"));
+    }
+
+    @Test
+    void gameStackUsesCurrentParentRateProjectionWithoutReadingRates() {
+        Users active = projectedUser("active", 0d);
+        active.setHomeGameRatedUserIds(List.of("rated-candidate"));
+        Users ratedCandidate = projectedUser("rated-candidate", 10d);
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(List.of(active, ratedCandidate));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
+
+        List<Users> cards = service.queryGameStackUserRecords("active");
+
+        assertThat(cards).isEmpty();
+        verify(userRatesRepository, never()).findAll();
+        verify(userRatesRepository, never()).findHomeGameExclusionProjections("active");
+    }
+
+    @Test
+    void gameStackAppliesDifferentParentProjectionForEachViewer() {
+        Users firstViewer = projectedUser("viewer-a", 0d);
+        firstViewer.setHomeGameRatedUserIds(List.of("candidate-x"));
+        Users secondViewer = projectedUser("viewer-b", 0d);
+        secondViewer.setHomeGameRatedUserIds(List.of("candidate-y"));
+        Users firstCandidate = projectedUser("candidate-x", 20d);
+        Users secondCandidate = projectedUser("candidate-y", 10d);
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(List.of(firstViewer, secondViewer, firstCandidate, secondCandidate));
+
+        List<Users> firstViewerCards = service.queryGameStackUserRecords("viewer-a");
+        List<Users> secondViewerCards = service.queryGameStackUserRecords("viewer-b");
+
+        assertThat(firstViewerCards).extracting(Users::getId)
+                .contains("candidate-y")
+                .doesNotContain("candidate-x", "viewer-a");
+        assertThat(secondViewerCards).extracting(Users::getId)
+                .contains("candidate-x")
+                .doesNotContain("candidate-y", "viewer-b");
+        verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
+        verify(userRatesRepository, never()).findHomeGameExclusionProjections("viewer-a");
+        verify(userRatesRepository, never()).findHomeGameExclusionProjections("viewer-b");
+    }
+
+    @Test
+    void pairBucketUsesCurrentParentProjectionWithoutReadingRates() {
+        Users active = projectedUser("active", 0d);
+        active.setHomeGameRatedPairKeys(List.of("left:right"));
+        Users left = projectedUser("left", 10d);
+        Users right = projectedUser("right", 20d);
+        HomeUserProfileService.ActivitySocialGraph graph = graph(Map.of(
+                "active", Set.of("left", "right"),
+                "left", Set.of("active"),
+                "right", Set.of("active")));
+
+        List<HomeUserProfileService.GameSocialCardCandidate> cards =
+                service.querySeparatedFriendCards("active", List.of(active, left, right), graph);
+
+        assertThat(cards).isEmpty();
+        verify(userRatesRepository, never()).findHomeGameExclusionProjections("active");
+    }
+
+    @Test
+    void socialBucketsShareEventParentProjectionSnapshot() {
+        Users active = projectedUser("active", 0d);
+        Users friend = projectedUser("friend", 10d);
+        friend.setProfileStatus("friends only");
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Coffee Social");
+        event.setStartAtIso("2026-03-22T18:30:00Z");
+        event.setAcceptedMemberUserIds(List.of("active", "friend"));
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(List.of(active, friend));
+        when(activityEventsRepository.findHomeGameMemberProjections()).thenReturn(List.of(event));
+
+        assertThat(service.queryOrderedUserRecords()).containsExactly(active, friend);
+        assertThat(service.queryActivitySocialGraph().neighborsByUserId().get("active"))
+                .containsExactly("friend");
+        verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
+        verify(activityEventsRepository, times(1)).findHomeGameMemberProjections();
+        verify(activityMembersRepository, never()).findAll();
+        verify(userRatesRepository, never()).findAll();
     }
 
     @Test
@@ -400,6 +509,29 @@ class HomeUserProfileServiceTest {
 
         assertThat(saved.profileStatus()).isEqualTo("onboarding");
         assertThat(saved.deletedAtIso()).isEqualTo("2026-05-01T00:00:00Z");
+    }
+
+    @Test
+    void registeringPublicUserInvalidatesGameStackSnapshot() {
+        Users active = projectedUser("active", 0d);
+        Users existingCandidate = projectedUser("existing-candidate", 10d);
+        Users registeredCandidate = projectedUser("newly-registered", 20d);
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(
+                        List.of(active, existingCandidate),
+                        List.of(active, existingCandidate, registeredCandidate));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
+        when(usersRepository.findByUserId("newly-registered")).thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThat(service.queryGameStackUserRecords("active")).extracting(Users::getId)
+                .containsExactly("existing-candidate");
+
+        service.saveUserProfile(service.toGameCardUserDto(registeredCandidate));
+
+        assertThat(service.queryGameStackUserRecords("active")).extracting(Users::getId)
+                .contains("existing-candidate", "newly-registered");
+        verify(usersRepository, times(2)).findByProfileStatusIn(List.of("public", "friends only"));
     }
 
     @Test
@@ -502,6 +634,15 @@ class HomeUserProfileServiceTest {
         user.setId(userId);
         user.setName(userId);
         user.setAffinity(affinity);
+        return user;
+    }
+
+    private Users projectedUser(String userId, double affinity) {
+        Users user = user(userId, affinity);
+        user.setProfileStatus("public");
+        user.setHomeGameRatedUserIds(List.of());
+        user.setHomeGameRatedPairKeys(List.of());
+        user.setHomeGameRateProjectionVersion(HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION);
         return user;
     }
 

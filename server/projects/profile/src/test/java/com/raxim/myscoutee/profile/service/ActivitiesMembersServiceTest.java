@@ -11,7 +11,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -411,6 +413,26 @@ class ActivitiesMembersServiceTest {
         assertThat(result).isEmpty();
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
         verify(activityMembersRepository, never()).findManagementOrderedByOwner(anyString(), anyString());
+    }
+
+    @Test
+    void memberQueriesAndSnapshotsHideSuppressedParticipationRows() {
+        ActivityMember visible = member("visible-sync", "event-1", "visible", "Member", "accepted");
+        ActivityMember suppressed = suppressedMember(
+                member("suppressed-sync", "event-1", "suppressed", "Member", "accepted"),
+                "accepted",
+                "event-1");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("visible");
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(List.of(visible, suppressed));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(visible, suppressed));
+
+        assertThat(service.queryMembers("event", "event-1"))
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("visible");
+        assertThat(service.queryOwnerSnapshot("event", "event-1").acceptedMemberUserIds())
+                .containsExactly("visible");
     }
 
     @Test
@@ -1274,6 +1296,48 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void eventMemberCanCancelInvitationTheySentWithoutMemberModerationPermission() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
+
+        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("member-inviter");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenAnswer(invocation -> Optional.of(storedInvitation.get()));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedInvitation.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "member-inviter",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result).isEmpty();
+        assertThat(storedInvitation.get().getStatus()).isEqualTo("deleted");
+        verify(accessControlService, never()).canRemoveEventMember("event-1", "member-inviter", "target");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(eventParticipationTicketService, never()).syncParticipationTicketForUser(anyString(), anyString());
+        verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
+        verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
+    }
+
+    @Test
     void removeMemberUsesPolicyAndRunsCleanupBeforeReturningMembers() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
@@ -1327,6 +1391,397 @@ class ActivitiesMembersServiceTest {
 
         assertThat(result.acceptedMemberUserIds()).contains("owner");
         verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+        verify(activityMembersRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void acceptedEventManagerCanLeaveWithoutMemberModerationPermission() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember manager = member("manager-sync", "event-1", "manager", "Manager", "accepted");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(owner, manager));
+
+        when(homeUserProfileService.resolveSelectedUserId("manager")).thenReturn("manager");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("manager");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getUserId().equals(next.getUserId()))
+                            .findFirst()
+                            .orElse(member))
+                    .toList());
+            return saved;
+        });
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "manager",
+                "manager",
+                "remove",
+                null));
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("owner");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "manager".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("suppressed");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "manager".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatusBeforeSuppression()).isEqualTo("accepted");
+                    assertThat(member.getSuppressionRootOwnerId()).isEqualTo("event-1");
+                    assertThat(member.getSuppressedAtIso()).isNotBlank();
+                });
+        verify(accessControlService, never()).canRemoveEventMember(anyString(), anyString(), anyString());
+        verify(eventParticipationTicketService).syncParticipationTicketForUser("event-1", "manager");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("manager"));
+    }
+
+    @Test
+    void selfLeaveSuppressesTheParticipationTreeAndCreatesViewerTrashOverlays() {
+        ActivityEvent rootEvent = event("event-1", "owner", "owner");
+        ActivityEvent slotEvent = event("event-1:slot:morning", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember root = member("root-sync", "event-1", "viewer", "Member", "accepted");
+        ActivityMember slot = member(
+                "slot-sync",
+                "event-1:slot:morning",
+                "viewer",
+                "Member",
+                "accepted");
+        ActivityMember subEvent = member(
+                "sub-sync",
+                "event-1:slot:morning:sub-1",
+                "viewer",
+                "Member",
+                "pending");
+        subEvent.setOwnerType("subEvent");
+        subEvent.setPendingSource("member");
+        subEvent.setRequestKind("join");
+        ActivityMember group = member(
+                "accepted-group-sync",
+                "event-1:slot:morning:sub-1:group:1",
+                "viewer",
+                "Member",
+                "accepted");
+        group.setOwnerType("group");
+        ActivityMember disqualifiedGroup = member(
+                "group-sync",
+                "event-1:slot:morning:sub-1:group:2",
+                "viewer",
+                "Member",
+                "disqualified");
+        disqualifiedGroup.setOwnerType("group");
+        ActivityMember deletedGroup = member(
+                "deleted-group-sync",
+                "event-1:slot:morning:sub-1:group:3",
+                "viewer",
+                "Member",
+                "deleted");
+        deletedGroup.setOwnerType("group");
+        AtomicReference<List<ActivityMember>> rootMembers =
+                new AtomicReference<>(List.of(owner, root));
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> rootMembers.get());
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(
+                        List.of(root, slot, subEvent, group, disqualifiedGroup, deletedGroup));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            rootMembers.set(rootMembers.get().stream()
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getId().equals(next.getId()))
+                            .findFirst()
+                            .orElse(member))
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(rootEvent));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(rootEvent, slotEvent));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.suppressEventParticipationTree("event-1", "viewer", "viewer");
+
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue())
+                .extracting(ActivityMember::getId)
+                .containsExactlyInAnyOrder(
+                        root.getId(),
+                        slot.getId(),
+                        subEvent.getId(),
+                        group.getId(),
+                        disqualifiedGroup.getId());
+        assertThat(savedMembers.getValue()).allSatisfy(member -> {
+            assertThat(member.getStatus()).isEqualTo("suppressed");
+            assertThat(member.getSuppressionRootOwnerId()).isEqualTo("event-1");
+            assertThat(member.getSuppressedAtIso()).isNotBlank();
+        });
+        assertThat(savedMembers.getValue())
+                .filteredOn(member -> subEvent.getId().equals(member.getId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatusBeforeSuppression()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("member");
+                    assertThat(member.getRequestKind()).isEqualTo("join");
+        });
+        assertThat(savedMembers.getValue())
+                .filteredOn(member -> disqualifiedGroup.getId().equals(member.getId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatusBeforeSuppression)
+                .isEqualTo("disqualified");
+        assertThat(deletedGroup.getStatus()).isEqualTo("deleted");
+
+        ArgumentCaptor<List<ActivityEvent>> savedEvents = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository, atLeastOnce()).saveAll(savedEvents.capture());
+        assertThat(savedEvents.getAllValues()).anySatisfy(batch ->
+                assertThat(batch)
+                        .filteredOn(document -> "viewer".equals(document.getOwnerUserId())
+                                && ActivityEvent.STATUS_TRASHED.equals(document.getStatus()))
+                        .extracting(ActivityEvent::getSourceId)
+                        .containsExactlyInAnyOrder("event-1", "event-1:slot:morning"));
+        verify(eventParticipationTicketService).syncParticipationTicketForUser("event-1", "viewer");
+        verify(eventParticipationTicketService).syncParticipationTicketForUser(
+                "event-1:slot:morning",
+                "viewer");
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("viewer"));
+        verify(tournamentGroupCounterService).syncParent("event-1:slot:morning", "sub-1");
+    }
+
+    @Test
+    void restoreParticipationTreeRestoresOnlyMatchingSuppressionAndViewerTrashOverlays() {
+        ActivityEvent rootCanonical = event("event-1", "owner", "owner");
+        ActivityEvent slotCanonical = event("event-1:slot:morning", "owner", "owner");
+        ActivityEvent rootOverlay = event("event-1", "owner", "owner");
+        rootOverlay.setId("event-1-viewer-overlay");
+        rootOverlay.setOwnerUserId("viewer");
+        rootOverlay.setStatus(ActivityEvent.STATUS_TRASHED);
+        rootOverlay.setStatusBeforeSuppression(ActivityEvent.STATUS_ACTIVE);
+        ActivityEvent slotOverlay = event("event-1:slot:morning", "owner", "owner");
+        slotOverlay.setId("event-1-slot-viewer-overlay");
+        slotOverlay.setOwnerUserId("viewer");
+        slotOverlay.setStatus(ActivityEvent.STATUS_TRASHED);
+        slotOverlay.setStatusBeforeSuppression(ActivityEvent.STATUS_ACTIVE);
+        AtomicReference<List<ActivityEvent>> eventDocuments = new AtomicReference<>(
+                List.of(rootCanonical, rootOverlay, slotCanonical, slotOverlay));
+
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember root = suppressedMember(
+                member("root-sync", "event-1", "viewer", "Member", "accepted"),
+                "accepted",
+                "event-1");
+        ActivityMember slot = suppressedMember(
+                member("slot-sync", "event-1:slot:morning", "viewer", "Member", "accepted"),
+                "I",
+                "event-1");
+        ActivityMember subEvent = suppressedMember(
+                member("sub-sync", "event-1:slot:morning:sub-1", "viewer", "Member", "accepted"),
+                "pending",
+                "event-1");
+        subEvent.setOwnerType("subEvent");
+        subEvent.setPendingSource("member");
+        subEvent.setRequestKind("join");
+        ActivityMember disqualifiedGroup = suppressedMember(
+                member(
+                        "group-sync",
+                        "event-1:slot:morning:sub-1:group-1",
+                        "viewer",
+                        "Member",
+                        "accepted"),
+                "disqualified",
+                "event-1");
+        disqualifiedGroup.setOwnerType("group");
+        ActivityMember differentRoot = suppressedMember(
+                member("other-sync", "event-1:other", "viewer", "Member", "accepted"),
+                "accepted",
+                "other-event");
+        differentRoot.setOwnerType("group");
+        AtomicReference<List<ActivityMember>> rootMembers =
+                new AtomicReference<>(List.of(owner, root));
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> rootMembers.get());
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(List.of(root, slot, subEvent, disqualifiedGroup, differentRoot));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            rootMembers.set(rootMembers.get().stream()
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getId().equals(next.getId()))
+                            .findFirst()
+                            .orElse(member))
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceIdIn(any())).thenAnswer(invocation -> eventDocuments.get());
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> saved = invocation.getArgument(0);
+            Map<String, ActivityEvent> merged = eventDocuments.get().stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                            ActivityEvent::getId,
+                            document -> document,
+                            (left, right) -> right,
+                            LinkedHashMap::new));
+            saved.forEach(document -> merged.put(document.getId(), document));
+            eventDocuments.set(List.copyOf(merged.values()));
+            return saved;
+        });
+
+        boolean restored = service.restoreEventParticipationTree("event-1", "viewer", "viewer");
+
+        assertThat(restored).isTrue();
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue())
+                .extracting(ActivityMember::getStatus)
+                .containsExactlyInAnyOrder("accepted", "I", "pending", "disqualified");
+        assertThat(savedMembers.getValue()).allSatisfy(member -> {
+            assertThat(member.getStatusBeforeSuppression()).isNull();
+            assertThat(member.getSuppressionRootOwnerId()).isNull();
+            assertThat(member.getSuppressedAtIso()).isNull();
+        });
+        assertThat(differentRoot.getStatus()).isEqualTo("suppressed");
+
+        ArgumentCaptor<List<ActivityEvent>> savedEvents = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository, atLeastOnce()).saveAll(savedEvents.capture());
+        assertThat(savedEvents.getAllValues()).anySatisfy(batch ->
+                assertThat(batch)
+                        .filteredOn(document -> "viewer".equals(document.getOwnerUserId())
+                                && ActivityEvent.STATUS_ACTIVE.equals(document.getStatus()))
+                        .extracting(ActivityEvent::getSourceId)
+                        .containsExactlyInAnyOrder("event-1", "event-1:slot:morning"));
+        assertThat(eventDocuments.get())
+                .filteredOn(document -> "viewer".equals(document.getOwnerUserId()))
+                .allSatisfy(document -> assertThat(document.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE));
+        verify(eventParticipationTicketService).syncParticipationTicketForUser("event-1", "viewer");
+        verify(eventParticipationTicketService).syncParticipationTicketForUser(
+                "event-1:slot:morning",
+                "viewer");
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("viewer"));
+    }
+
+    @Test
+    void restoreDoesNotReviveLegacyDeletedMembershipWithoutViewerTrashOverlay() {
+        ActivityMember legacyDeleted = member(
+                "legacy-sync",
+                "event-1",
+                "viewer",
+                "Member",
+                "deleted");
+        legacyDeleted.setUpdatedUser("viewer");
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(legacyDeleted));
+
+        boolean restored = service.restoreEventParticipationTree("event-1", "viewer", "viewer");
+
+        assertThat(restored).isFalse();
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void restoreDoesNotReactivateViewerTrashOverlayWithoutSuppressedRoot() {
+        ActivityMember activeRoot =
+                member("root-sync", "event-1", "viewer", "Member", "accepted");
+        ActivityEvent canonical = event("event-1", "owner", "owner");
+        ActivityEvent viewerOverlay = event("event-1", "owner", "owner");
+        viewerOverlay.setId("event-1-viewer-overlay");
+        viewerOverlay.setOwnerUserId("viewer");
+        viewerOverlay.setStatus(ActivityEvent.STATUS_TRASHED);
+        viewerOverlay.setStatusBeforeSuppression(ActivityEvent.STATUS_ACTIVE);
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(activeRoot));
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(List.of(activeRoot));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(canonical, viewerOverlay));
+
+        boolean restored = service.restoreEventParticipationTree("event-1", "viewer", "viewer");
+
+        assertThat(restored).isFalse();
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void restoreDoesNotReviveParticipationWhileCanonicalEventIsTrashed() {
+        ActivityMember suppressedRoot = suppressedMember(
+                member("root-sync", "event-1", "viewer", "Member", "accepted"),
+                "accepted",
+                "event-1");
+        ActivityEvent canonical = event("event-1", "owner", "owner");
+        canonical.setStatus(ActivityEvent.STATUS_TRASHED);
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(suppressedRoot));
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(List.of(suppressedRoot));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(canonical));
+
+        boolean restored = service.restoreEventParticipationTree("event-1", "viewer", "viewer");
+
+        assertThat(restored).isFalse();
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void restoreDoesNotOverbookAnAcceptedParticipationAfterSeatWasFilled() {
+        ActivityMember owner =
+                member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember suppressedRoot = suppressedMember(
+                member("root-sync", "event-1", "viewer", "Member", "accepted"),
+                "accepted",
+                "event-1");
+        ActivityEvent canonical = event("event-1", "owner", "owner");
+        canonical.setCapacityTotal(1);
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(owner, suppressedRoot));
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(List.of(suppressedRoot));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(canonical));
+
+        boolean restored = service.restoreEventParticipationTree("event-1", "viewer", "viewer");
+
+        assertThat(restored).isFalse();
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(activityEventsRepository, never()).saveAll(anyList());
     }
 
     @Test
@@ -1351,10 +1806,13 @@ class ActivitiesMembersServiceTest {
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenAnswer(invocation -> storedMembers.get());
-        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
-            ActivityMember saved = invocation.getArgument(0);
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
             storedMembers.set(storedMembers.get().stream()
-                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getUserId().equals(next.getUserId()))
+                            .findFirst()
+                            .orElse(member))
                     .toList());
             return saved;
         });
@@ -1378,8 +1836,9 @@ class ActivitiesMembersServiceTest {
                 .filteredOn(member -> "owner".equals(member.getUserId()))
                 .singleElement()
                 .extracting(ActivityMember::getStatus)
-                .isEqualTo("deleted");
-        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+                .isEqualTo("suppressed");
+        verify(eventParticipationTicketService).syncParticipationTicketForUser("event-1", "owner");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
     }
 
     @Test
@@ -1391,13 +1850,15 @@ class ActivitiesMembersServiceTest {
 
         when(homeUserProfileService.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
-        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> storedMembers.get());
-        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
-            ActivityMember saved = invocation.getArgument(0);
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
             storedMembers.set(storedMembers.get().stream()
-                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getUserId().equals(next.getUserId()))
+                            .findFirst()
+                            .orElse(member))
                     .toList());
             return saved;
         });
@@ -1414,7 +1875,7 @@ class ActivitiesMembersServiceTest {
                 .filteredOn(member -> "promoted-admin".equals(member.getUserId()))
                 .singleElement()
                 .extracting(ActivityMember::getStatus)
-                .isEqualTo("deleted");
+                .isEqualTo("suppressed");
     }
 
     @Test
@@ -1509,6 +1970,10 @@ class ActivitiesMembersServiceTest {
             assertThat(saved.getRequestKind()).isEqualTo("invite");
             assertThat(saved.getInvitedByUserId()).isEqualTo("admin");
         });
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
+        verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {
@@ -1538,6 +2003,18 @@ class ActivitiesMembersServiceTest {
         member.setCreatedUser("host");
         member.setUpdatedDate("2026-05-12T10:00:00Z");
         member.setUpdatedUser("host");
+        return member;
+    }
+
+    private ActivityMember suppressedMember(
+            ActivityMember member,
+            String statusBeforeSuppression,
+            String suppressionRootOwnerId) {
+        member.setStatus("suppressed");
+        member.setStatusBeforeSuppression(statusBeforeSuppression);
+        member.setSuppressionRootOwnerId(suppressionRootOwnerId);
+        member.setSuppressedAtIso("2026-07-25T00:00:00Z");
+        member.setUpdatedUser(member.getUserId());
         return member;
     }
 

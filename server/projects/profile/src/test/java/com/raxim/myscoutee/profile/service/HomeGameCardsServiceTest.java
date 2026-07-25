@@ -94,6 +94,37 @@ class HomeGameCardsServiceTest {
         verify(homeUserProfileService, never()).queryOutsideNetworkCards(anyString(), anyList(), any());
     }
 
+    @Test
+    void newlyEligibleUserChangesTotalWhilePageSizeRemainsTen() {
+        HomeGameCardsService service = new HomeGameCardsService(homeUserProfileService);
+        List<Users> firstTen = java.util.stream.IntStream.rangeClosed(1, 10)
+                .mapToObj(index -> user("candidate-" + index))
+                .toList();
+        List<Users> afterRegistration = java.util.stream.Stream.concat(
+                        firstTen.stream(),
+                        java.util.stream.Stream.of(user("newly-registered")))
+                .toList();
+        when(homeUserProfileService.resolveSelectedUserId("active")).thenReturn("active");
+        when(homeUserProfileService.queryGameStackUserRecords("active"))
+                .thenReturn(firstTen, afterRegistration);
+        when(homeUserProfileService.toGameCardUserDto(any(Users.class))).thenAnswer(invocation -> {
+            Users candidate = invocation.getArgument(0);
+            return userDto(candidate.getId());
+        });
+
+        var beforeRegistration = service.queryPage(new UserGameCardsQueryRequestDto(
+                "active", "single", null, null, null, null, 10));
+        var afterNewUser = service.queryPage(new UserGameCardsQueryRequestDto(
+                "active", "single", null, null, null, null, 10));
+
+        assertThat(beforeRegistration.filterCount()).isEqualTo(10);
+        assertThat(beforeRegistration.cardUserIds()).hasSize(10);
+        assertThat(beforeRegistration.nextCursor()).isNull();
+        assertThat(afterNewUser.filterCount()).isEqualTo(11);
+        assertThat(afterNewUser.cardUserIds()).hasSize(10);
+        assertThat(afterNewUser.nextCursor()).isEqualTo("10");
+    }
+
     private Users user(String id) {
         Users user = new Users();
         user.setId(id);

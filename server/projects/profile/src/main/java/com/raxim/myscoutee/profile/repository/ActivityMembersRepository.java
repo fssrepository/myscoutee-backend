@@ -30,7 +30,7 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
             String status);
 
     @Aggregation(pipeline = {
-            "{ '$match': { 'ownerType': ?0, 'ownerId': ?1, 'status': { '$ne': 'deleted' } } }",
+            "{ '$match': { 'ownerType': ?0, 'ownerId': ?1, 'status': { '$nin': [ 'deleted', 'suppressed' ] } } }",
             "{ '$set': { '_managementPriority': { '$switch': { 'branches': ["
                     + "{ 'case': { '$eq': [ '$status', 'pending' ] }, 'then': 0 },"
                     + "{ 'case': { '$and': [ { '$eq': [ '$status', 'accepted' ] },"
@@ -61,12 +61,22 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
 
     List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String ownerType, Collection<String> ownerIds);
 
-    @Query("{ 'userId': { $in: ?0 }, 'status': { $ne: ?1 }, '$or': [ { 'ownerType': ?2, 'ownerId': ?3 }, { 'ownerId': { '$regex': ?4 } } ] }")
+    @Query("{ 'userId': { $in: ?0 }, 'status': { $nin: ?1 }, '$or': [ { 'ownerType': ?2, 'ownerId': ?3 }, { 'ownerId': { '$regex': ?4 } } ] }")
     List<ActivityMember> findInvolvementRecordsByUserIdsAndOwnerScope(
             Collection<String> userIds,
-            String deletedStatus,
+            Collection<String> excludedStatuses,
             String ownerType,
             String ownerId,
+            String ownerIdPrefixRegex);
+
+    @Query("{ 'userId': ?0, '$or': ["
+            + " { 'ownerType': 'event', 'ownerId': ?1 },"
+            + " { 'ownerType': { $in: ?2 }, 'ownerId': { '$regex': ?3 } }"
+            + " ] }")
+    List<ActivityMember> findParticipationTreeForUser(
+            String userId,
+            String rootEventId,
+            Collection<String> descendantOwnerTypes,
             String ownerIdPrefixRegex);
 
     @Query("{ 'ownerType': ?0, 'ownerId': { $in: ?1 }, 'userId': ?2, 'status': ?3 }")

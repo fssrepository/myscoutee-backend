@@ -181,7 +181,7 @@
     "required": ["noExplicitDeny", "actorCanManageMembers"],
     "anyOf": [],
     "status": "active",
-    "description": "Owner/admin/manager may replace event member list.",
+    "description": "Owner/admin may replace event member list.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -201,7 +201,7 @@
     ],
     "anyOf": [],
     "status": "active",
-    "description": "Owner/admin/manager may accept pending member.",
+    "description": "Owner/admin may accept pending member.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -224,7 +224,7 @@
       "disqualifiedParticipation"
     ],
     "status": "active",
-    "description": "Owner/admin/manager may remove member.",
+    "description": "Owner/admin may remove member.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -238,7 +238,7 @@
     "required": ["noExplicitDeny", "actorCanManageMembers", "actorDiffersFromSubject", "subjectIsNotProtectedMember", "acceptedParticipation"],
     "anyOf": [],
     "status": "active",
-    "description": "Owner/admin/manager may disqualify member.",
+    "description": "Owner/admin may disqualify member.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -252,7 +252,7 @@
     "required": ["noExplicitDeny", "actorCanManageMembers", "actorDiffersFromSubject", "subjectIsNotProtectedMember", "disqualifiedParticipation"],
     "anyOf": [],
     "status": "active",
-    "description": "Owner/admin/manager may reinstate member.",
+    "description": "Owner/admin may reinstate member.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -264,12 +264,14 @@
     "permission": "event.member.invite",
     "resourceType": "event",
     "required": [
-      "noExplicitDeny",
-      "actorCanManageEvent"
+      "noExplicitDeny"
     ],
-    "anyOf": [],
+    "anyOf": [
+      "actorCanManageEvent",
+      "acceptedParticipation"
+    ],
     "status": "active",
-    "description": "Owner/admin/manager may invite users.",
+    "description": "Owner/admin/manager or accepted participant may invite users.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"

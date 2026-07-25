@@ -15,6 +15,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.mongodb.client.result.UpdateResult;
 
@@ -29,6 +31,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequest
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
@@ -52,6 +55,71 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void resourceMemberActionsReturnOnlyStatusTransitionsAndCounterDeltas() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset asset = asset();
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> {
+            Asset saved = invocation.getArgument(0);
+            asset.setRequests(saved.getRequests());
+            return saved;
+        });
+        when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+        var authentication = new TestingAuthenticationToken("firebase-principal", null);
+        when(accessControlService.resolveActorUserId(authentication)).thenReturn("firebase-principal");
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            var joined = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                    "asset-1",
+                    "event-1",
+                    "subevent-1",
+                    "u2",
+                    "join",
+                    borrowRequestDto("request-2", "u2", "pending", "event-1")));
+
+            assertThat(joined.status()).isEqualTo("pending");
+            assertThat(joined.previousStatus()).isNull();
+            assertThat(joined.acceptedMemberDelta()).isZero();
+            assertThat(joined.pendingMemberDelta()).isEqualTo(1);
+
+            var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
+                    "asset-1",
+                    "event-1",
+                    "subevent-1",
+                    "u2",
+                    "leave",
+                    null));
+
+            assertThat(left.status()).isEqualTo("deleted");
+            assertThat(left.previousStatus()).isEqualTo("pending");
+            assertThat(left.acceptedMemberDelta()).isZero();
+            assertThat(left.pendingMemberDelta()).isEqualTo(-1);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }
+
     @Test
     void scopedAssetMemberManagementRequiresOwnerOrAcceptedBorrower() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);

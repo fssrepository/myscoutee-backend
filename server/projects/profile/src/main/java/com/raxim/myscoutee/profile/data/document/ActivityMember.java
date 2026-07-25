@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "activity_member_owner_action", def = "{'ownerType': 1, 'ownerId': 1, 'actionAtIso': -1}"),
         @CompoundIndex(name = "activity_member_owner_status", def = "{'ownerType': 1, 'ownerId': 1, 'status': 1, 'actionAtIso': -1}"),
         @CompoundIndex(name = "activity_member_user_action", def = "{'ownerType': 1, 'userId': 1, 'actionAtIso': -1}"),
+        @CompoundIndex(name = "activity_member_user_owner_status", def = "{'userId': 1, 'ownerId': 1, 'status': 1}"),
         @CompoundIndex(name = "activity_member_status_request", def = "{'ownerType': 1, 'status': 1, 'requestKind': 1}")
 })
 public class ActivityMember {
@@ -26,6 +27,9 @@ public class ActivityMember {
     private String userId;
     private String role;
     private String status;
+    private String statusBeforeSuppression;
+    private String suppressionRootOwnerId;
+    private String suppressedAtIso;
     private String pendingSource;
     private String requestKind;
     private String invitedByUserId;
@@ -91,6 +95,30 @@ public class ActivityMember {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatusBeforeSuppression() {
+        return statusBeforeSuppression;
+    }
+
+    public void setStatusBeforeSuppression(String statusBeforeSuppression) {
+        this.statusBeforeSuppression = statusBeforeSuppression;
+    }
+
+    public String getSuppressionRootOwnerId() {
+        return suppressionRootOwnerId;
+    }
+
+    public void setSuppressionRootOwnerId(String suppressionRootOwnerId) {
+        this.suppressionRootOwnerId = suppressionRootOwnerId;
+    }
+
+    public String getSuppressedAtIso() {
+        return suppressedAtIso;
+    }
+
+    public void setSuppressedAtIso(String suppressedAtIso) {
+        this.suppressedAtIso = suppressedAtIso;
     }
 
     public String getPendingSource() {

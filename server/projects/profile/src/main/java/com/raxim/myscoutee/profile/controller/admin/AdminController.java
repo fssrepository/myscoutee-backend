@@ -214,13 +214,17 @@ public class AdminController {
     }
 
     @GetMapping("/notifications")
-    public AdminNotificationCenterStateDto notifications(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return adminNotificationService.state(adminUserId);
+    public AdminNotificationCenterStateDto notifications(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "filter", required = false) String filter) {
+        return adminNotificationService.state(adminUserId, filter);
     }
 
     @PostMapping("/notifications")
-    public AdminNotificationCenterStateDto saveNotifications(@RequestBody(required = false) AdminNotificationRuleSaveRequestDto request) {
-        return adminNotificationService.save(request);
+    public AdminNotificationCenterStateDto saveNotifications(
+            @RequestBody(required = false) AdminNotificationRuleSaveRequestDto request,
+            @RequestParam(value = "filter", required = false) String filter) {
+        return adminNotificationService.save(request, filter);
     }
 
     @PostMapping("/notifications/{ruleKey}/run")
@@ -349,15 +353,14 @@ public class AdminController {
         return ideaPostsService.adminPosts(adminUserId, lang);
     }
 
-    @GetMapping(value = "/ideas", params = {"page", "pageSize"})
+    @GetMapping(value = "/ideas", params = {"pageSize"})
     public IdeaPostAdminPageDto ideasPage(
             @RequestParam(value = "adminUserId", required = false) String adminUserId,
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "status", required = false) String status,
-            @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "cursor", required = false) String cursor) {
-        return ideaPostsService.adminPostsPage(adminUserId, lang, status, page, pageSize, cursor);
+        return ideaPostsService.adminPostsPage(adminUserId, lang, status, pageSize, cursor);
     }
 
     @PostMapping("/ideas")
@@ -366,7 +369,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/ideas/{postId}")
-    public List<IdeaPostDto> deleteIdea(
+    public IdeaPostDto deleteIdea(
             @PathVariable String postId,
             @RequestBody(required = false) IdeaPostAdminActionRequestDto request) {
         return ideaPostsService.deletePost(postId, request);

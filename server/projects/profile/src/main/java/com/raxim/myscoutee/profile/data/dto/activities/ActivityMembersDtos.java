@@ -29,6 +29,12 @@ public final class ActivityMembersDtos {
         }
     }
 
+    public record ActivityMembersInviteRequestDto(
+            ActivityMemberOwnerRefDto owner,
+            List<String> userIds,
+            String actorUserId) {
+    }
+
     public record ActivityMemberActionRequestDto(
             ActivityMemberOwnerRefDto owner,
             String actorUserId,

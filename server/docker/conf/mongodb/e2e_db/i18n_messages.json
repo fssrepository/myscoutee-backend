@@ -1689,7 +1689,7 @@
     "_id": "i18n-message-en-admin-jobs-timing-description",
     "key": "admin.jobs.timing.description",
     "lang": "en",
-    "value": "Set the process start time and repeat rule. Save is handled by the main check button."
+    "value": "Set the process start time and repeat rule. The checkmark saves these values immediately."
   },
   {
     "_id": "i18n-message-en-admin-jobs-timing-rule",
@@ -2022,6 +2022,12 @@
     "value": "years"
   },
   {
+    "_id": "i18n-message-en-admin-jobs-interval-unit",
+    "key": "admin.jobs.interval.unit",
+    "lang": "en",
+    "value": "Interval unit"
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-progress-ready",
     "key": "admin.jobs.progress.ready",
     "lang": "en",
@@ -2184,6 +2190,18 @@
     "value": "Expires past event records and refreshes affected user activity counters every five minutes."
   },
   {
+    "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge",
+    "key": "admin.jobs.rule.event.checkout.basket.purge",
+    "lang": "en",
+    "value": "Checkout basket cleanup"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge-description",
+    "key": "admin.jobs.rule.event.checkout.basket.purge.description",
+    "lang": "en",
+    "value": "Removes expired checkout basket drafts before they can be reused."
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "en",
@@ -2230,6 +2248,180 @@
     "key": "admin.jobs.rule.account.purge.description",
     "lang": "en",
     "value": "Purges user activity and private media after the configured deleted-account grace window expires."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-rule-not-found",
+    "key": "admin.jobs.run.detail.rule.not.found",
+    "lang": "en",
+    "value": "Rule was not found."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-manual-requested",
+    "key": "admin.jobs.run.detail.manual.requested",
+    "lang": "en",
+    "value": "Manual start requested."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-matched-started",
+    "key": "admin.jobs.run.detail.matched.started",
+    "lang": "en",
+    "value": "Manual matched room assignment started."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-action-no-manual-worker",
+    "key": "admin.jobs.run.detail.action.no.manual.worker",
+    "lang": "en",
+    "value": "This rule is action driven and has no manual worker."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-loading-published",
+    "key": "admin.jobs.run.detail.loading.published",
+    "lang": "en",
+    "value": "Loading published events for matched rooms."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-scheduled-running",
+    "key": "admin.jobs.run.detail.scheduled.running",
+    "lang": "en",
+    "value": "Scheduled process is running."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-scheduled-starting",
+    "key": "admin.jobs.run.detail.scheduled.starting",
+    "lang": "en",
+    "value": "Starting scheduled process."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-scheduled-random-started",
+    "key": "admin.jobs.run.detail.scheduled.random.started",
+    "lang": "en",
+    "value": "Scheduled random grouping started."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-loaded-records",
+    "key": "admin.jobs.run.detail.loaded.records",
+    "lang": "en",
+    "value": "Loaded {events} event record(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-queried-no-eligible",
+    "key": "admin.jobs.run.detail.queried.no.eligible",
+    "lang": "en",
+    "value": "Queried {queries} backend lookup(s); event has no eligible accepted members."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-queried-candidates",
+    "key": "admin.jobs.run.detail.queried.candidates",
+    "lang": "en",
+    "value": "Queried {queries} backend lookup(s); found {users} candidate user(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-loaded-eligible",
+    "key": "admin.jobs.run.detail.loaded.eligible",
+    "lang": "en",
+    "value": "Loaded eligible random events."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-no-candidate-graph",
+    "key": "admin.jobs.run.detail.no.candidate.graph",
+    "lang": "en",
+    "value": "No candidate user graph was available after {queries} backend lookup(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-built-candidate-graph",
+    "key": "admin.jobs.run.detail.built.candidate.graph",
+    "lang": "en",
+    "value": "Built candidate user graph after {queries} backend lookup(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-starting-assignment",
+    "key": "admin.jobs.run.detail.starting.assignment",
+    "lang": "en",
+    "value": "Starting random assignment for {subEvents} sub-event(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-processing-sub-event",
+    "key": "admin.jobs.run.detail.processing.sub.event",
+    "lang": "en",
+    "value": "Processing sub-event {current}/{total}."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-skipped-sub-event",
+    "key": "admin.jobs.run.detail.skipped.sub.event",
+    "lang": "en",
+    "value": "Skipped sub-event {current}/{total}; no target groups."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-processed-sub-event",
+    "key": "admin.jobs.run.detail.processed.sub.event",
+    "lang": "en",
+    "value": "Processed sub-event {current}/{total}, {users} candidate user(s), {queries} backend lookup(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-processed-events",
+    "key": "admin.jobs.run.detail.processed.events",
+    "lang": "en",
+    "value": "Processed {current}/{total} random event(s), {users} candidate user(s), {queries} backend lookup(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-finalizing",
+    "key": "admin.jobs.run.detail.finalizing",
+    "lang": "en",
+    "value": "Finalizing random event groups after {queries} backend lookup(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-generated",
+    "key": "admin.jobs.run.detail.generated",
+    "lang": "en",
+    "value": "Generated {plans} random group plan(s) for {users} user(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-generated-scheduled",
+    "key": "admin.jobs.run.detail.generated.scheduled",
+    "lang": "en",
+    "value": "Generated random event group plans."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-running-for",
+    "key": "admin.jobs.run.detail.running.for",
+    "lang": "en",
+    "value": "{detail} Running for {seconds}s."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-counter-scanning",
+    "key": "admin.jobs.run.detail.counter.scanning",
+    "lang": "en",
+    "value": "Scanning expired event counters."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-counter-none-due",
+    "key": "admin.jobs.run.detail.counter.none.due",
+    "lang": "en",
+    "value": "No expired event counters or ticket records were due."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-counter-expired",
+    "key": "admin.jobs.run.detail.counter.expired",
+    "lang": "en",
+    "value": "Expired {sources} event source(s), refreshed {updatedUsers}/{affectedUsers} affected user counter document(s), marked {eventRecords} event record(s), and marked {ticketRecords} ticket record(s)."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-checkout-scanning",
+    "key": "admin.jobs.run.detail.checkout.scanning",
+    "lang": "en",
+    "value": "Scanning expired checkout basket drafts."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-checkout-none-due",
+    "key": "admin.jobs.run.detail.checkout.none.due",
+    "lang": "en",
+    "value": "No expired checkout basket items were due."
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-run-detail-checkout-marked",
+    "key": "admin.jobs.run.detail.checkout.marked",
+    "lang": "en",
+    "value": "Marked {count} expired checkout basket item(s) as deleted."
   },
   {
     "_id": "i18n-message-en-admin-monitoring-subtitle",
@@ -12180,6 +12372,12 @@
     "value": "Demo payment"
   },
   {
+    "_id": "i18n-message-en-event-editor-payment-recorded",
+    "key": "event.editor.payment.recorded",
+    "lang": "en",
+    "value": "Recorded payment"
+  },
+  {
     "_id": "i18n-message-en-event-editor-payment-ready-redirect",
     "key": "event.editor.payment.ready.redirect",
     "lang": "en",
@@ -12192,6 +12390,18 @@
     "value": "Review before confirm"
   },
   {
+    "_id": "i18n-message-en-event-editor-payment-recorded-approved",
+    "key": "event.editor.payment.recorded.approved",
+    "lang": "en",
+    "value": "Paid and recorded"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-recorded-revised",
+    "key": "event.editor.payment.recorded.revised",
+    "lang": "en",
+    "value": "Price revision recorded"
+  },
+  {
     "_id": "i18n-message-en-event-editor-payment-gateway-note",
     "key": "event.editor.payment.gateway.note",
     "lang": "en",
@@ -12202,6 +12412,18 @@
     "key": "event.editor.payment.demo.note",
     "lang": "en",
     "value": "Demo payment form. The fields are locked, but the payment step can still be completed."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-recorded-note",
+    "key": "event.editor.payment.recorded.note",
+    "lang": "en",
+    "value": "This amount and its line items come from the payment audit captured when the booking was paid."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-recorded-revision-note",
+    "key": "event.editor.payment.recorded.revision.note",
+    "lang": "en",
+    "value": "This is the latest immutable price revision. The original payment audit remains unchanged."
   },
   {
     "_id": "i18n-message-en-event-editor-slot-override-close-aria",
@@ -13636,6 +13858,24 @@
     "key": "asset.assignment.available",
     "lang": "en",
     "value": "Available to add: {count}"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-available-price",
+    "key": "asset.assignment.available.price",
+    "lang": "en",
+    "value": "{available} · {price}"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-payment-previous-total",
+    "key": "asset.borrow.payment.previous.total",
+    "lang": "en",
+    "value": "Previous recorded total"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-payment-quantity-adjustment",
+    "key": "asset.borrow.payment.quantity.adjustment",
+    "lang": "en",
+    "value": "Quantity adjustment"
   },
   {
     "_id": "i18n-message-en-asset-assignment-route-subtitle",
@@ -15669,7 +15909,7 @@
     "_id": "i18n-message-hu-admin-jobs-timing-description",
     "key": "admin.jobs.timing.description",
     "lang": "hu",
-    "value": "A folyamat kezdőideje és ismétlődési szabálya. A mentés a fő pipával történik."
+    "value": "Állítsd be a folyamat kezdőidejét és ismétlődési szabályát. A pipa azonnal menti ezeket az értékeket."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-timing-rule",
@@ -16002,6 +16242,12 @@
     "value": "év"
   },
   {
+    "_id": "i18n-message-hu-admin-jobs-interval-unit",
+    "key": "admin.jobs.interval.unit",
+    "lang": "hu",
+    "value": "Időköz egysége"
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-progress-ready",
     "key": "admin.jobs.progress.ready",
     "lang": "hu",
@@ -16164,6 +16410,18 @@
     "value": "Ötpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
   },
   {
+    "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge",
+    "key": "admin.jobs.rule.event.checkout.basket.purge",
+    "lang": "hu",
+    "value": "Pénztárkosár-tisztítás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge-description",
+    "key": "admin.jobs.rule.event.checkout.basket.purge.description",
+    "lang": "hu",
+    "value": "Eltávolítja a lejárt pénztárkosár-piszkozatokat, mielőtt újra felhasználhatók lennének."
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "hu",
@@ -16210,6 +16468,180 @@
     "key": "admin.jobs.rule.account.purge.description",
     "lang": "hu",
     "value": "A törölt fiók türelmi ideje után törli a felhasználói aktivitást és privát médiát."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-rule-not-found",
+    "key": "admin.jobs.run.detail.rule.not.found",
+    "lang": "hu",
+    "value": "A szabály nem található."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-manual-requested",
+    "key": "admin.jobs.run.detail.manual.requested",
+    "lang": "hu",
+    "value": "Kézi indítás kérve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-matched-started",
+    "key": "admin.jobs.run.detail.matched.started",
+    "lang": "hu",
+    "value": "Az illesztett szobák kézi létrehozása elindult."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-action-no-manual-worker",
+    "key": "admin.jobs.run.detail.action.no.manual.worker",
+    "lang": "hu",
+    "value": "Ezt a szabályt esemény vezérli, és nincs kézi feldolgozója."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-loading-published",
+    "key": "admin.jobs.run.detail.loading.published",
+    "lang": "hu",
+    "value": "Közzétett események betöltése az illesztett szobákhoz."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-scheduled-running",
+    "key": "admin.jobs.run.detail.scheduled.running",
+    "lang": "hu",
+    "value": "Az ütemezett folyamat fut."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-scheduled-starting",
+    "key": "admin.jobs.run.detail.scheduled.starting",
+    "lang": "hu",
+    "value": "Az ütemezett folyamat indítása."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-scheduled-random-started",
+    "key": "admin.jobs.run.detail.scheduled.random.started",
+    "lang": "hu",
+    "value": "Az ütemezett szobabeosztás elindult."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-loaded-records",
+    "key": "admin.jobs.run.detail.loaded.records",
+    "lang": "hu",
+    "value": "{events} eseményrekord betöltve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-queried-no-eligible",
+    "key": "admin.jobs.run.detail.queried.no.eligible",
+    "lang": "hu",
+    "value": "{queries} háttérlekérdezés; az eseménynek nincs alkalmas elfogadott tagja."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-queried-candidates",
+    "key": "admin.jobs.run.detail.queried.candidates",
+    "lang": "hu",
+    "value": "{queries} háttérlekérdezés; {users} jelölt felhasználó található."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-loaded-eligible",
+    "key": "admin.jobs.run.detail.loaded.eligible",
+    "lang": "hu",
+    "value": "Az alkalmas véletlenszerű események betöltve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-no-candidate-graph",
+    "key": "admin.jobs.run.detail.no.candidate.graph",
+    "lang": "hu",
+    "value": "{queries} háttérlekérdezés után sem állt rendelkezésre jelölt felhasználói gráf."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-built-candidate-graph",
+    "key": "admin.jobs.run.detail.built.candidate.graph",
+    "lang": "hu",
+    "value": "A jelölt felhasználói gráf {queries} háttérlekérdezés után elkészült."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-starting-assignment",
+    "key": "admin.jobs.run.detail.starting.assignment",
+    "lang": "hu",
+    "value": "{subEvents} alesemény véletlenszerű beosztása elindult."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-processing-sub-event",
+    "key": "admin.jobs.run.detail.processing.sub.event",
+    "lang": "hu",
+    "value": "A(z) {current}/{total}. alesemény feldolgozása."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-skipped-sub-event",
+    "key": "admin.jobs.run.detail.skipped.sub.event",
+    "lang": "hu",
+    "value": "A(z) {current}/{total}. alesemény kihagyva; nincs célcsoport."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-processed-sub-event",
+    "key": "admin.jobs.run.detail.processed.sub.event",
+    "lang": "hu",
+    "value": "A(z) {current}/{total}. alesemény feldolgozva, {users} jelölt felhasználóval és {queries} háttérlekérdezéssel."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-processed-events",
+    "key": "admin.jobs.run.detail.processed.events",
+    "lang": "hu",
+    "value": "A(z) {current}/{total}. véletlenszerű esemény feldolgozva, {users} jelölt felhasználóval és {queries} háttérlekérdezéssel."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-finalizing",
+    "key": "admin.jobs.run.detail.finalizing",
+    "lang": "hu",
+    "value": "A véletlenszerű eseménycsoportok véglegesítése {queries} háttérlekérdezés után."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-generated",
+    "key": "admin.jobs.run.detail.generated",
+    "lang": "hu",
+    "value": "{plans} szobabeosztás létrehozva {users} felhasználóhoz."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-generated-scheduled",
+    "key": "admin.jobs.run.detail.generated.scheduled",
+    "lang": "hu",
+    "value": "A véletlenszerű eseménycsoport-tervek elkészültek."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-running-for",
+    "key": "admin.jobs.run.detail.running.for",
+    "lang": "hu",
+    "value": "{detail} Futási idő: {seconds} mp."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-counter-scanning",
+    "key": "admin.jobs.run.detail.counter.scanning",
+    "lang": "hu",
+    "value": "Lejárt eseményszámlálók keresése."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-counter-none-due",
+    "key": "admin.jobs.run.detail.counter.none.due",
+    "lang": "hu",
+    "value": "Nincs esedékes lejárt eseményszámláló vagy jegyrekord."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-counter-expired",
+    "key": "admin.jobs.run.detail.counter.expired",
+    "lang": "hu",
+    "value": "{sources} eseményforrás lejáratva, {updatedUsers}/{affectedUsers} érintett felhasználói számlálódokumentum frissítve, {eventRecords} eseményrekord és {ticketRecords} jegyrekord megjelölve."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-checkout-scanning",
+    "key": "admin.jobs.run.detail.checkout.scanning",
+    "lang": "hu",
+    "value": "Lejárt pénztárkosár-piszkozatok keresése."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-checkout-none-due",
+    "key": "admin.jobs.run.detail.checkout.none.due",
+    "lang": "hu",
+    "value": "Nincs esedékes lejárt pénztárkosár-elem."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-run-detail-checkout-marked",
+    "key": "admin.jobs.run.detail.checkout.marked",
+    "lang": "hu",
+    "value": "{count} lejárt pénztárkosár-elem töröltként megjelölve."
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-subtitle",
@@ -26160,6 +26592,12 @@
     "value": "Demó fizetés"
   },
   {
+    "_id": "i18n-message-hu-event-editor-payment-recorded",
+    "key": "event.editor.payment.recorded",
+    "lang": "hu",
+    "value": "Rögzített fizetés"
+  },
+  {
     "_id": "i18n-message-hu-event-editor-payment-ready-redirect",
     "key": "event.editor.payment.ready.redirect",
     "lang": "hu",
@@ -26172,6 +26610,18 @@
     "value": "Ellenőrzés megerősítés előtt"
   },
   {
+    "_id": "i18n-message-hu-event-editor-payment-recorded-approved",
+    "key": "event.editor.payment.recorded.approved",
+    "lang": "hu",
+    "value": "Kifizetve és rögzítve"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-recorded-revised",
+    "key": "event.editor.payment.recorded.revised",
+    "lang": "hu",
+    "value": "Árfrissítés rögzítve"
+  },
+  {
     "_id": "i18n-message-hu-event-editor-payment-gateway-note",
     "key": "event.editor.payment.gateway.note",
     "lang": "hu",
@@ -26182,6 +26632,18 @@
     "key": "event.editor.payment.demo.note",
     "lang": "hu",
     "value": "Demó fizetési felület. A mezők zároltak, de a fizetési lépés ugyanúgy végigvihető."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-recorded-note",
+    "key": "event.editor.payment.recorded.note",
+    "lang": "hu",
+    "value": "Az összeg és a tételek a foglalás kifizetésekor rögzített fizetési auditból származnak."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-recorded-revision-note",
+    "key": "event.editor.payment.recorded.revision.note",
+    "lang": "hu",
+    "value": "Ez a legutóbbi megváltoztathatatlan árfrissítés. Az eredeti fizetési audit változatlan marad."
   },
   {
     "_id": "i18n-message-hu-event-editor-slot-override-close-aria",
@@ -27616,6 +28078,24 @@
     "key": "asset.assignment.available",
     "lang": "hu",
     "value": "Még hozzáadható: {count}"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-available-price",
+    "key": "asset.assignment.available.price",
+    "lang": "hu",
+    "value": "{available} · {price}"
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-payment-previous-total",
+    "key": "asset.borrow.payment.previous.total",
+    "lang": "hu",
+    "value": "Korábban rögzített végösszeg"
+  },
+  {
+    "_id": "i18n-message-hu-asset-borrow-payment-quantity-adjustment",
+    "key": "asset.borrow.payment.quantity.adjustment",
+    "lang": "hu",
+    "value": "Mennyiségi módosítás"
   },
   {
     "_id": "i18n-message-hu-asset-assignment-route-subtitle",

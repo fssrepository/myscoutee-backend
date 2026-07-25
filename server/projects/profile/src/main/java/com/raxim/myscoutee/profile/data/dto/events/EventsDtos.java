@@ -231,7 +231,9 @@ public final class EventsDtos {
             Integer pendingMembers,
             Integer capacityTotal,
             Boolean full,
-            String paymentSessionId) {
+            String paymentSessionId,
+            Boolean changed,
+            String reason) {
     }
 
     public record EventStageActionRequestDto(

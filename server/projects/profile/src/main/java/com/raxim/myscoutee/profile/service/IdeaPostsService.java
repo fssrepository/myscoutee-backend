@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
@@ -20,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
+
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
@@ -40,6 +44,7 @@ import com.raxim.myscoutee.profile.service.mapper.IdeaPostMapper;
 
 @Service
 public class IdeaPostsService {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DEFAULT_LANG = "en";
     private static final int EXCERPT_MAX_LENGTH = 180;
     private static final int MAX_IMAGE_URLS = 24;
@@ -169,31 +174,45 @@ public class IdeaPostsService {
             String adminUserId,
             String lang,
             String status,
-            Integer page,
             Integer pageSize,
             String cursor) {
         ensureAdmin(adminUserId);
         String language = contentLang(lang);
         String normalizedStatus = adminStatus(status);
         int limit = normalizePageSize(pageSize);
-        long offset = resolvePageOffset(page, limit, cursor);
-        Criteria pageCriteria = adminPostsCriteria(language, normalizedStatus);
-        long total = mongoTemplate.count(Query.query(pageCriteria), IdeaPost.class);
-        List<IdeaPostDto> records = mongoTemplate.find(
+        AdminIdeaPostCursor decodedCursor = parseAdminCursor(cursor, language, normalizedStatus);
+        Criteria filterCriteria = adminPostsCriteria(language, normalizedStatus);
+        long total = mongoTemplate.count(Query.query(filterCriteria), IdeaPost.class);
+        Criteria pageCriteria = decodedCursor == null
+                ? filterCriteria
+                : new Criteria().andOperator(
+                        filterCriteria,
+                        new Criteria().orOperator(
+                                Criteria.where("submittedAtIso").lt(decodedCursor.submittedAtIso()),
+                                new Criteria().andOperator(
+                                        Criteria.where("submittedAtIso").is(decodedCursor.submittedAtIso()),
+                                        Criteria.where("_id").lt(decodedCursor.id()))));
+        List<IdeaPost> matches = mongoTemplate.find(
                 Query.query(pageCriteria)
                         .with(Sort.by(
                                 Sort.Order.desc("submittedAtIso"),
                                 Sort.Order.desc("_id")))
-                        .skip(Math.min(offset, total))
-                        .limit(limit),
-                IdeaPost.class).stream()
+                        .limit(limit + 1),
+                IdeaPost.class);
+        boolean hasNext = matches.size() > limit;
+        List<IdeaPost> pageRecords = hasNext
+                ? List.copyOf(matches.subList(0, limit))
+                : List.copyOf(matches);
+        List<IdeaPostDto> records = pageRecords.stream()
                 .map(ideaPostMapper::toDto)
                 .toList();
-        long nextOffset = Math.min(offset, total) + records.size();
+        String nextCursor = hasNext && !pageRecords.isEmpty()
+                ? serializeAdminCursor(language, normalizedStatus, pageRecords.get(pageRecords.size() - 1))
+                : null;
         return new IdeaPostAdminPageDto(
                 records,
                 toSafeInt(total),
-                nextOffset < total ? String.valueOf(nextOffset) : null,
+                nextCursor,
                 adminPostCounts(language));
     }
 
@@ -243,26 +262,27 @@ public class IdeaPostsService {
         return ideaPostMapper.toDto(saved);
     }
 
-    public List<IdeaPostDto> deletePost(String postId, IdeaPostAdminActionRequestDto request) {
+    public IdeaPostDto deletePost(String postId, IdeaPostAdminActionRequestDto request) {
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
         String normalizedPostId = normalize(postId);
-        if (StringUtils.hasText(normalizedPostId)) {
-            ideaPostsRepository.findById(normalizedPostId).ifPresent(post -> {
-                String nowIso = Instant.now().toString();
-                post.setFeatured(false);
-                post.setPublished(false);
-                post.setTrashed(true);
-                post.setTrashedAtIso(nowIso);
-                post.setTrashedByUserId(actorUserId);
-                post.setUpdatedDate(nowIso);
-                post.setUpdatedUser(actorUserId);
-                ideaPostsRepository.save(post);
-                adminTelemetryService.record("article.deleted", "content", post.getId(), actorUserId);
-            });
+        IdeaPost post = StringUtils.hasText(normalizedPostId)
+                ? ideaPostsRepository.findById(normalizedPostId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found."))
+                : null;
+        if (post == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
         }
-        return ideaPostsRepository.findAllByOrderBySubmittedAtIsoDesc().stream()
-                .map(ideaPostMapper::toDto)
-                .toList();
+        String nowIso = Instant.now().toString();
+        post.setFeatured(false);
+        post.setPublished(false);
+        post.setTrashed(true);
+        post.setTrashedAtIso(nowIso);
+        post.setTrashedByUserId(actorUserId);
+        post.setUpdatedDate(nowIso);
+        post.setUpdatedUser(actorUserId);
+        IdeaPost saved = ideaPostsRepository.save(post);
+        adminTelemetryService.record("article.deleted", "content", saved.getId(), actorUserId);
+        return ideaPostMapper.toDto(saved);
     }
 
     public IdeaPostDto restorePost(String postId, IdeaPostAdminActionRequestDto request) {
@@ -452,16 +472,40 @@ public class IdeaPostsService {
         return normalizedCursorLanguage;
     }
 
-    private long resolvePageOffset(Integer page, int pageSize, String cursor) {
+    private AdminIdeaPostCursor parseAdminCursor(String cursor, String lang, String status) {
         String normalizedCursor = normalize(cursor);
-        if (StringUtils.hasText(normalizedCursor)) {
-            try {
-                return Math.max(0L, Long.parseLong(normalizedCursor));
-            } catch (NumberFormatException ignored) {
-                return 0L;
-            }
+        if (!StringUtils.hasText(normalizedCursor)) {
+            return null;
         }
-        return Math.max(0L, page == null ? 0L : page.longValue()) * Math.max(1L, pageSize);
+        try {
+            Map<String, String> parsed = OBJECT_MAPPER.readValue(normalizedCursor, new TypeReference<>() { });
+            AdminIdeaPostCursor parsedCursor = new AdminIdeaPostCursor(
+                    normalize(parsed.get("lang")),
+                    adminStatus(parsed.get("status")),
+                    normalize(parsed.get("submittedAtIso")),
+                    normalize(parsed.get("id")));
+            if (!lang.equals(parsedCursor.lang())
+                    || !status.equals(parsedCursor.status())
+                    || !StringUtils.hasText(parsedCursor.submittedAtIso())
+                    || !StringUtils.hasText(parsedCursor.id())) {
+                throw new IllegalArgumentException("Cursor does not match the article list.");
+            }
+            return parsedCursor;
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid article cursor.", exception);
+        }
+    }
+
+    private String serializeAdminCursor(String lang, String status, IdeaPost post) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(Map.of(
+                    "lang", contentLang(lang),
+                    "status", adminStatus(status),
+                    "submittedAtIso", normalize(post == null ? null : post.getSubmittedAtIso()),
+                    "id", normalize(post == null ? null : post.getId())));
+        } catch (Exception exception) {
+            throw new IllegalStateException("Article cursor could not be serialized.", exception);
+        }
     }
 
     private int toSafeInt(long value) {
@@ -469,6 +513,13 @@ public class IdeaPostsService {
             return 0;
         }
         return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
+    }
+
+    private record AdminIdeaPostCursor(
+            String lang,
+            String status,
+            String submittedAtIso,
+            String id) {
     }
 
     private String ensureAdmin(String adminUserId) {
