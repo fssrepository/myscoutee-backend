@@ -9,3 +9,7 @@ needs a different server and project, practically a dashboard
 go server with minimal memory, connecting to server, gets the key and the user
 can register with that key to a virtual company
 2) replace logo to make a rebrand
+
+bug
+---
+1) rate query is a little bit slow on home screen
