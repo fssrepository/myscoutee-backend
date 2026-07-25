@@ -11,8 +11,9 @@ can register with that key to a virtual company
 2) replace logo to make a rebrand
 3) repackage the project to npm (like the shared ui etc. - to be able to reuse on market place)
 
-bug
----
+feature
+-------
 1) as we have lots of popup which hides the avatar menu button,
 create a dragable button, it can be closed, dragged has a red counter badge,
 and shows messages when it opens (it's a popup)
+2) background process tests, e.g.: purge, algorithm
