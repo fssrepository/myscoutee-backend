@@ -39,6 +39,7 @@ public class EventCounterExpiryService {
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String MEMBER_STATUS_INVITED = "I";
     private static final String MEMBER_STATUS_DELETED = "deleted";
+    private static final String MEMBER_STATUS_SUPPRESSED = "suppressed";
     private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
     private static final String REQUEST_KIND_INVITE = "invite";
     private static final String REQUEST_KIND_WAITLIST_INVITE = "waitlist-invite";
@@ -567,6 +568,9 @@ public class EventCounterExpiryService {
         }
         if (MEMBER_STATUS_DELETED.equals(normalized)) {
             return MEMBER_STATUS_DELETED;
+        }
+        if (MEMBER_STATUS_SUPPRESSED.equals(normalized)) {
+            return MEMBER_STATUS_SUPPRESSED;
         }
         if (MEMBER_STATUS_DISQUALIFIED.equals(normalized)) {
             return MEMBER_STATUS_DISQUALIFIED;

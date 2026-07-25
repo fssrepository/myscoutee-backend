@@ -138,7 +138,9 @@ public class EventParticipationTicketService {
                 continue;
             }
             String memberStatus = normalizeMemberStatus(member.getStatus());
-            if ("deleted".equals(memberStatus) || "disqualified".equals(memberStatus)) {
+            if ("deleted".equals(memberStatus)
+                    || "suppressed".equals(memberStatus)
+                    || "disqualified".equals(memberStatus)) {
                 continue;
             }
             if ("pending".equals(memberStatus)) {
@@ -231,6 +233,18 @@ public class EventParticipationTicketService {
         }
 
         ActivityEvent preferred = snapshot.preferredRecord();
+        boolean participantSuppressed = Boolean.TRUE.equals(existing.getIsTrashed())
+                && StringUtils.hasText(existing.getStatusBeforeSuppression());
+        if (participantSuppressed
+                && (preferred == null || !Boolean.TRUE.equals(preferred.getIsTrashed()))) {
+            ActivityEvent next = cloneDocument(existing);
+            next.setTicketing(false);
+            next.setApprovalRequired(false);
+            next.setUpdatedDate(Instant.now().toString());
+            next.setUpdatedUser(ownerUserId);
+            next.normalizeLifecycleState();
+            return next;
+        }
         ActivityEvent next = preferred == null
                 ? cloneDocument(existing)
                 : buildParticipationOverlay(snapshot, ownerUserId, existing);
@@ -532,6 +546,9 @@ public class EventParticipationTicketService {
         String normalized = safeText(value);
         if ("pending".equals(normalized)) {
             return "pending";
+        }
+        if ("suppressed".equals(normalized)) {
+            return "suppressed";
         }
         if ("deleted".equals(normalized)) {
             return "deleted";

@@ -484,6 +484,16 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void eventMemberInviteAllowsAcceptedParticipant() {
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "member"))
+                .thenReturn(Optional.of(member("event-1", "member", "accepted", "Member")));
+
+        boolean allowed = service.canInviteEventMembers("event-1", "member");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
     void resourceAssignmentManageAndCleanupAllowEventManager() {
         authenticateAs("admin");
         when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
@@ -1382,8 +1392,8 @@ class AccessControlServiceTest {
                         AccessPolicyKeys.EVENT_MEMBER_INVITE,
                         "event.member.invite",
                         "event",
-                        List.of("noExplicitDeny", "actorCanManageEvent"),
-                        List.of(),
+                        List.of("noExplicitDeny"),
+                        List.of("actorCanManageEvent", "acceptedParticipation"),
                         null),
                 policy(
                         AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,

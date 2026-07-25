@@ -49,7 +49,7 @@ public final class AccessPolicyKeys {
     // 15. Owner/admin may reinstate member.
     public static final String EVENT_MEMBER_REINSTATE = "event.member.reinstate";
 
-    // 16. Owner/admin/manager may invite users.
+    // 16. Owner/admin/manager or any accepted participant may invite users.
     public static final String EVENT_MEMBER_INVITE = "event.member.invite";
 
     // 17. Actor may submit an event resource assignment for their own asset-owner row.

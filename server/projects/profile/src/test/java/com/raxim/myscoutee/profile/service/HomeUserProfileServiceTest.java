@@ -213,6 +213,32 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void submitReportDoesNotTreatSuppressedParticipationAsAccepted() {
+        Users reporter = user("reporter", 0d);
+        when(usersRepository.findByUserId("reporter")).thenReturn(Optional.of(reporter));
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setOwnerUserId("organizer");
+        event.setCreatorUserId("organizer");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+
+        ActivityMember suppressedReporter = acceptedMember("event-1", "reporter");
+        suppressedReporter.setStatus("suppressed");
+        ActivityMember target = acceptedMember("event-1", "other-member");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "reporter")).thenReturn(Optional.of(suppressedReporter));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "other-member")).thenReturn(Optional.of(target));
+
+        var response = service.submitReport(reportRequest("reporter", "other-member", "event-1"));
+
+        assertThat(response.submitted()).isFalse();
+        verify(userReportSubmissionsRepository, never()).save(any());
+    }
+
+    @Test
     void friendsInCommonUsesKnownEdgeWeightBeforeColdStartAffinityWhenBridgeCountTies() {
         List<Users> users = List.of(
                 user("active", 0d),

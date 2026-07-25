@@ -1884,73 +1884,41 @@ public class ActivitiesEventsService {
             return null;
         }
 
-        String checkoutState = safeText(request == null ? null : request.checkoutState());
-        if (StringUtils.hasText(checkoutState)) {
-            String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
-            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
-                    viewer.userId(),
-                    normalizedSourceId,
-                    slotSourceId,
-                    checkoutState,
-                    firstNonBlank(request.checkoutResultState(), "deleted"),
-                    pendingReason,
-                    firstNonBlank(request.checkoutSessionId(), request.paymentSessionId(), null),
-                    request.counterDelta()));
-        }
-
-        LinkedHashSet<String> membershipSourceIds = new LinkedHashSet<>();
-        membershipSourceIds.add(normalizedSourceId);
-        if (StringUtils.hasText(slotSourceId) && !normalizedSourceId.equals(slotSourceId)) {
-            membershipSourceIds.add(slotSourceId);
-        } else {
-            membershipSourceIds.addAll(generatedSlotSourceIdsForParent(normalizedSourceId));
-            membershipSourceIds.addAll(activeGeneratedSlotMembershipSourceIdsForUser(normalizedSourceId, viewer.userId()));
-        }
-
-        ActivitiesMembersService.OwnerMembersSnapshot sourceSnapshot = null;
-        for (String membershipSourceId : membershipSourceIds) {
-            ActivitiesMembersService.OwnerMembersSnapshot snapshot =
-                    activitiesMembersService.removeEventParticipation(membershipSourceId, viewer.userId(), viewer.userId());
-            if (normalizedSourceId.equals(membershipSourceId)) {
-                sourceSnapshot = snapshot;
+        ActivitiesMembersService.OwnerMembersSnapshot sourceSnapshot =
+                activitiesMembersService.suppressEventParticipationTree(
+                        normalizedSourceId,
+                        viewer.userId(),
+                        viewer.userId());
+        boolean membershipChanged = sourceSnapshot != null && sourceSnapshot.mutationApplied();
+        boolean alreadyApplied = !membershipChanged
+                && sourceSnapshot != null
+                && !sourceSnapshot.hasParticipation(viewer.userId())
+                && !sourceSnapshot.hasInvitation(viewer.userId());
+        if (membershipChanged || alreadyApplied) {
+            String checkoutState = safeText(request == null ? null : request.checkoutState());
+            if (StringUtils.hasText(checkoutState)) {
+                String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
+                eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                        viewer.userId(),
+                        normalizedSourceId,
+                        slotSourceId,
+                        checkoutState,
+                        firstNonBlank(request.checkoutResultState(), "deleted"),
+                        pendingReason,
+                        firstNonBlank(request.checkoutSessionId(), request.paymentSessionId(), null),
+                        null));
             }
         }
 
         ActivityEvent refreshed = findPreferredEventRecord(normalizedSourceId);
-        return toParticipationLeaveResult(normalizedSourceId, slotSourceId, refreshed, sourceSnapshot, request);
-    }
-
-    private List<String> generatedSlotSourceIdsForParent(String parentSourceId) {
-        String normalizedParentSourceId = normalizeId(parentSourceId);
-        if (!StringUtils.hasText(normalizedParentSourceId)) {
-            return List.of();
-        }
-        List<ActivityEvent> slotDocuments = activityEventsRepository.findByParentEventIdIn(List.of(normalizedParentSourceId));
-        return computePreferredEventRecords(slotDocuments == null ? List.of() : slotDocuments).stream()
-                .filter(this::isGeneratedSlotRecord)
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
-    }
-
-    private List<String> activeGeneratedSlotMembershipSourceIdsForUser(String parentSourceId, String userId) {
-        String normalizedParentSourceId = normalizeId(parentSourceId);
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedParentSourceId) || !StringUtils.hasText(normalizedUserId)) {
-            return List.of();
-        }
-        String generatedSlotPrefix = normalizedParentSourceId + ":slot:";
-        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
-                .filter(Objects::nonNull)
-                .filter(member -> !MEMBER_STATUS_DELETED.equals(safeText(member.getStatus())))
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .filter(ownerId -> ownerId.startsWith(generatedSlotPrefix))
-                .distinct()
-                .toList();
+        return toParticipationLeaveResult(
+                normalizedSourceId,
+                slotSourceId,
+                refreshed,
+                sourceSnapshot,
+                request,
+                membershipChanged,
+                alreadyApplied ? "already-applied" : membershipChanged ? null : "leave-not-allowed");
     }
 
     public void publish(EventActionRequestDto request) {
@@ -1984,10 +1952,41 @@ public class ActivitiesEventsService {
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
-    public void restore(EventActionRequestDto request) {
-        if (isOrganizerLifecycleRequest(request)
-                && !accessControlService.canCurrentActorRestoreEvent(request == null ? null : request.sourceId())) {
-            return;
+    public EventParticipationActionResultDto restore(EventActionRequestDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        boolean organizerLifecycleRequest = preferred != null && isViewerAdmin(preferred, viewer.userId());
+        if (!organizerLifecycleRequest) {
+            boolean restored =
+                    activitiesMembersService.restoreEventParticipationTree(
+                            sourceId,
+                            viewer.userId(),
+                            viewer.userId());
+            ActivityEvent refreshed = findPreferredEventRecord(sourceId);
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                    activitiesMembersService.queryOwnerSnapshot("event", sourceId);
+            return toParticipationRestoreResult(
+                    sourceId,
+                    viewer.userId(),
+                    refreshed,
+                    snapshot,
+                    restored,
+                    restored ? null : "restore-unavailable");
+        }
+        if (!accessControlService.canCurrentActorRestoreEvent(sourceId)) {
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                    activitiesMembersService.queryOwnerSnapshot("event", sourceId);
+            return toParticipationRestoreResult(
+                    sourceId,
+                    viewer.userId(),
+                    preferred,
+                    snapshot,
+                    false,
+                    "forbidden");
         }
         List<ActivityEvent> updated = updateItemState(request, current -> {
             String restoredStatus = safeText(current.getStatusBeforeSuppression());
@@ -2001,6 +2000,16 @@ public class ActivitiesEventsService {
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsAvailable(updated);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
+        ActivityEvent refreshed = findPreferredEventRecord(sourceId);
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.queryOwnerSnapshot("event", sourceId);
+        return toParticipationRestoreResult(
+                sourceId,
+                viewer.userId(),
+                refreshed,
+                snapshot,
+                true,
+                null);
     }
 
     public void takeOver(EventActionRequestDto request) {
@@ -2811,7 +2820,9 @@ public class ActivitiesEventsService {
                 pendingMembers,
                 Math.max(acceptedMembers, capacityTotal),
                 resolveFullForActionResult(record, acceptedMembers, capacityTotal),
-                normalizeId(request == null ? null : request.paymentSessionId()));
+                normalizeId(request == null ? null : request.paymentSessionId()),
+                true,
+                null);
     }
 
     private EventParticipationActionResultDto toParticipationLeaveResult(
@@ -2819,7 +2830,9 @@ public class ActivitiesEventsService {
             String slotSourceId,
             ActivityEvent record,
             ActivitiesMembersService.OwnerMembersSnapshot snapshot,
-            EventActionRequestDto request) {
+            EventActionRequestDto request,
+            boolean membershipChanged,
+            String reason) {
         int acceptedMembers = snapshot == null
                 ? normalizeCount(record == null ? null : record.getAcceptedMembers())
                 : snapshot.acceptedMembers();
@@ -2833,7 +2846,7 @@ public class ActivitiesEventsService {
                 normalizeId(sourceId),
                 StringUtils.hasText(slotSourceId) ? normalizeId(slotSourceId) : null,
                 "leave",
-                "trashed",
+                membershipChanged || "already-applied".equals(reason) ? "trashed" : "unchanged",
                 null,
                 acceptedMembers,
                 pendingMembers,
@@ -2842,7 +2855,53 @@ public class ActivitiesEventsService {
                 normalizeId(firstNonBlank(
                         request == null ? null : request.checkoutSessionId(),
                         request == null ? null : request.paymentSessionId(),
-                        null)));
+                        null)),
+                membershipChanged,
+                reason);
+    }
+
+    private EventParticipationActionResultDto toParticipationRestoreResult(
+            String sourceId,
+            String restoredUserId,
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            boolean restored,
+            String reason) {
+        int acceptedMembers = snapshot == null
+                ? normalizeCount(record == null ? null : record.getAcceptedMembers())
+                : snapshot.acceptedMembers();
+        int pendingMembers = snapshot == null
+                ? normalizeCount(record == null ? null : record.getPendingMembers())
+                : snapshot.pendingMembers();
+        int capacityTotal = snapshot == null || snapshot.capacityTotal() == null
+                ? normalizeCount(record == null ? null : record.getCapacityTotal())
+                : Math.max(0, snapshot.capacityTotal());
+        String normalizedRestoredUserId = normalizeId(restoredUserId);
+        String membershipStatus = "unchanged";
+        if (restored) {
+            if (snapshot != null && snapshot.acceptedMemberUserIds().contains(normalizedRestoredUserId)) {
+                membershipStatus = "accepted";
+            } else if (snapshot != null && snapshot.pendingMemberUserIds().contains(normalizedRestoredUserId)) {
+                membershipStatus = "pending";
+            } else if (snapshot != null && snapshot.invitedMemberUserIds().contains(normalizedRestoredUserId)) {
+                membershipStatus = "invited";
+            } else {
+                membershipStatus = "restored";
+            }
+        }
+        return new EventParticipationActionResultDto(
+                normalizeId(sourceId),
+                null,
+                "restore",
+                membershipStatus,
+                null,
+                acceptedMembers,
+                pendingMembers,
+                Math.max(acceptedMembers, capacityTotal),
+                resolveFullForActionResult(record, acceptedMembers, capacityTotal),
+                null,
+                restored,
+                reason);
     }
 
     private String pendingReasonForAction(boolean waitingList, boolean approvalRequested) {
@@ -4538,6 +4597,9 @@ public class ActivitiesEventsService {
         if (record == null) {
             return false;
         }
+        if (userId.equals(normalizeId(record.getOwnerUserId())) && isTrashStatus(record)) {
+            return true;
+        }
         if (userId.equals(normalizeId(record.getCreatorUserId())) || isViewerAdmin(record, userId)) {
             return true;
         }
@@ -5454,6 +5516,9 @@ public class ActivitiesEventsService {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         String sourceId = normalizeId(record.getSourceId());
         if (ctx != null && StringUtils.hasText(sourceId)) {
+            if (ctx.trackedEventSourceIds().contains(sourceId)) {
+                return true;
+            }
             String status = safeText(ctx.trackedEventStatusesBySourceId().get(sourceId));
             return MEMBER_STATUS_ACCEPTED.equals(status)
                     || MEMBER_STATUS_PENDING.equals(status)

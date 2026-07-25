@@ -264,12 +264,14 @@
     "permission": "event.member.invite",
     "resourceType": "event",
     "required": [
-      "noExplicitDeny",
-      "actorCanManageEvent"
+      "noExplicitDeny"
     ],
-    "anyOf": [],
+    "anyOf": [
+      "actorCanManageEvent",
+      "acceptedParticipation"
+    ],
     "status": "active",
-    "description": "Owner/admin/manager may invite users.",
+    "description": "Owner/admin/manager or accepted participant may invite users.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"

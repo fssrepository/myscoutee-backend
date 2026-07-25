@@ -2234,13 +2234,16 @@ public class HomeUserProfileService {
 
     private String normalizeMemberStatus(String status) {
         String normalizedStatus = safeText(status);
+        if (STATUS_ACCEPTED.equals(normalizedStatus)) {
+            return STATUS_ACCEPTED;
+        }
         if (STATUS_PENDING.equals(normalizedStatus)) {
             return STATUS_PENDING;
         }
         if (STATUS_DELETED.equals(normalizedStatus)) {
             return STATUS_DELETED;
         }
-        return STATUS_ACCEPTED;
+        return normalizedStatus;
     }
 
     private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {

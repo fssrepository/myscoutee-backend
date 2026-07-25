@@ -392,6 +392,61 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void participantLeaveSuppressesTheWholeParticipationTreeOnce() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent event = event("event-1", "host", 0d);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        10,
+                        true);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.suppressEventParticipationTree("event-1", "viewer", "viewer"))
+                .thenReturn(members);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+
+        EventParticipationActionResultDto result = service.trash(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                "slot-1",
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                true,
+                null,
+                null,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.sourceId()).isEqualTo("event-1");
+        assertThat(result.slotSourceId()).isEqualTo("slot-1");
+        assertThat(result.membershipStatus()).isEqualTo("trashed");
+        assertThat(result.changed()).isTrue();
+        assertThat(result.acceptedMembers()).isEqualTo(1);
+        verify(activitiesMembersService).suppressEventParticipationTree("event-1", "viewer", "viewer");
+        verify(activitiesMembersService, never()).removeEventParticipation(anyString(), anyString(), anyString());
+        verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
+    }
+
+    @Test
     void organizerRestoreStopsBeforeSaveWhenPolicyDenies() {
         Users host = new Users();
         host.setId("host");
@@ -401,7 +456,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
         when(accessControlService.canCurrentActorRestoreEvent("event-1")).thenReturn(false);
 
-        service.restore(new EventActionRequestDto(
+        EventParticipationActionResultDto result = service.restore(new EventActionRequestDto(
                 "host",
                 "event-1",
                 null,
@@ -412,8 +467,44 @@ class ActivitiesEventsServiceTest {
                 null,
                 null));
 
+        assertThat(result).isNotNull();
+        assertThat(result.changed()).isFalse();
+        assertThat(result.reason()).isEqualTo("forbidden");
         verify(activityEventsRepository, never()).saveAll(anyList());
         verify(chatAttachmentLifecycleService, never()).markEventAvailable(anyString());
+        verify(activitiesMembersService, never()).restoreEventParticipationTree(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void participantRestoreDelegatesToTheParticipationTreeWithoutLifecycleWrites() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent event = event("event-1", "host", 0d);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(activitiesMembersService.restoreEventParticipationTree("event-1", "viewer", "viewer"))
+                .thenReturn(true);
+
+        EventParticipationActionResultDto result = service.restore(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.changed()).isTrue();
+        assertThat(result.action()).isEqualTo("restore");
+        verify(activitiesMembersService).restoreEventParticipationTree("event-1", "viewer", "viewer");
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(scheduledMessageTaskService, never()).scheduleEventStageReminders(any(), anyString());
+        verify(chatAttachmentLifecycleService, never()).markEventAvailable(anyString());
+        verify(userActivityCountersService, never()).refreshEventCountersForDocuments(anyList());
     }
 
     @Test
@@ -815,6 +906,36 @@ class ActivitiesEventsServiceTest {
 
         assertThat(trashResponse.records()).extracting(EventDto::id)
                 .containsExactly("left-event");
+    }
+
+    @Test
+    void trashPageUsesViewerOwnedSuppressionRecordWithoutDeletedMembershipInference() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+
+        ActivityEvent canonical = event("left-event", "host", 0d);
+        ActivityEvent suppressed = event("left-event", "host", 0d);
+        suppressed.setId("left-event-viewer-suppression");
+        suppressed.setOwnerUserId("viewer");
+        suppressed.setStatus(ActivityEvent.STATUS_TRASHED);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", true))
+                .thenReturn(Map.of("left-event", "suppressed"));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(suppressed));
+        when(activityEventsRepository.findBySourceIdIn(List.of("left-event")))
+                .thenReturn(List.of(canonical, suppressed));
+
+        EventsExplorePageDto trashResponse = service.queryTrashPage("viewer", 12, null);
+
+        assertThat(trashResponse.total()).isEqualTo(1);
+        assertThat(trashResponse.records()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("left-event");
+            assertThat(record.userId()).isEqualTo("viewer");
+            assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_TRASHED);
+        });
     }
 
     @Test
