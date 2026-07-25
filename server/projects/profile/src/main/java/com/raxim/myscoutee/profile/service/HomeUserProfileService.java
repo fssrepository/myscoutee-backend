@@ -526,10 +526,10 @@ public class HomeUserProfileService {
         if (!accessControlService.canCurrentActorEditProfile(normalizedUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
         }
-        evictUserReadCaches(normalizedUserId);
         Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
+        evictUserReadCaches(normalizedUserId);
         affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
         String resolvedUserId = normalizeId(resolved == null ? null : resolved.getId());
         adminTelemetryService.record(
@@ -701,12 +701,12 @@ public class HomeUserProfileService {
         }
 
         String previousProfileStatus = resolveProfileStatus(user);
-        evictUserReadCaches(resolvedUserId);
         user.setStatus("D");
         user.setProfileStatus("deleted");
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
+        evictUserReadCaches(resolvedUserId);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
         adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);

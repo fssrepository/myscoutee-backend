@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -277,6 +279,74 @@ class UserRatesServiceTest {
         assertThat(wrongPairSocial.getSocialContext()).isNull();
         assertThat(wrongPairSocial.getMutuallyRated()).isFalse();
         assertThat(wrongPairSocial.getAffinityScore()).isNotNull();
+    }
+
+    @Test
+    void syncWritesViewerPairExclusionsToParentProjection() {
+        Users owner = user("owner", "Owner", List.of("music"));
+        Users first = user("u1", "First", List.of("music"));
+        Users second = user("u2", "Second", List.of("music"));
+        UserRate projectedRate = pairRate("projected", "owner", "u1", "u2", 8, "separated-friends");
+        UserRatesService service = syncService(
+                Map.of("owner", owner, "u1", first, "u2", second),
+                List.of());
+        when(userRatesRepository.findBySyncKey("sync-pair")).thenReturn(Optional.empty());
+        when(userRatesRepository.findHomeGameRateProjectionsByOwnerUserIdIn(anyCollection()))
+                .thenReturn(List.of(projectedRate));
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "sync-pair",
+                "u1",
+                "u2",
+                8,
+                "pair",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "owner",
+                null,
+                "given",
+                "separated-friends",
+                null,
+                2,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        ArgumentCaptor<org.springframework.data.mongodb.core.query.Query> queryCaptor =
+                ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Query.class);
+        ArgumentCaptor<org.springframework.data.mongodb.core.query.Update> updateCaptor =
+                ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
+        verify(mongoTemplate, atLeastOnce()).updateFirst(
+                queryCaptor.capture(),
+                updateCaptor.capture(),
+                eq(Users.class));
+
+        int projectionUpdateIndex = -1;
+        for (int index = 0; index < updateCaptor.getAllValues().size(); index += 1) {
+            org.bson.Document setFields = (org.bson.Document) updateCaptor.getAllValues()
+                    .get(index)
+                    .getUpdateObject()
+                    .get("$set");
+            if (setFields != null && setFields.containsKey("homeGameRatedPairKeys")) {
+                projectionUpdateIndex = index;
+                assertThat(setFields.getList("homeGameRatedUserIds", String.class))
+                        .containsExactly("u1", "u2");
+                assertThat(setFields.getList("homeGameRatedPairKeys", String.class))
+                        .containsExactly("u1:u2");
+                assertThat(setFields.getInteger("homeGameRateProjectionVersion"))
+                        .isEqualTo(HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION);
+            }
+        }
+        assertThat(projectionUpdateIndex).isNotNegative();
+        assertThat(queryCaptor.getAllValues().get(projectionUpdateIndex).getQueryObject().getString("userId"))
+                .isEqualTo("owner");
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> evictedUserIdsCaptor =
+                ArgumentCaptor.forClass(Collection.class);
+        verify(homeUserProfileService).evictUserReadCaches(evictedUserIdsCaptor.capture());
+        assertThat(evictedUserIdsCaptor.getValue()).contains("owner", "u1", "u2");
     }
 
     @Test
