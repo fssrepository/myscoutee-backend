@@ -13,3 +13,6 @@ can register with that key to a virtual company
 bug
 ---
 1) rate query is a little bit slow on home screen
+2) repackage the project to npm (like the shared ui etc. - to be able to reuse on market place)
+3) avatar side menu can be opened any time, even on popup
+or making overlay at ottom right corner like facebook, if anything chnages

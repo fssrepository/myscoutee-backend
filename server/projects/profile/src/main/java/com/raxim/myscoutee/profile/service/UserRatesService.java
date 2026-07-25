@@ -17,9 +17,13 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -91,6 +95,7 @@ public class UserRatesService {
     @PostConstruct
     void ensureUserRateIndexes() {
         ensureCanonicalUserRateIndexes();
+        backfillHomeGameRateProjections();
     }
 
     public List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId) {
@@ -168,10 +173,11 @@ public class UserRatesService {
         }
 
         Map<String, UserRate> normalizedRatesByNaturalKey = new LinkedHashMap<>();
+        Set<String> affectedHomeProjectionOwnerIds = new LinkedHashSet<>();
         List<String> syncedRateIds = new ArrayList<>();
         List<String> failedRateIds = new ArrayList<>();
         for (UserRateRecordDto rate : request.rates()) {
-            UserRate normalized = normalizeRecord(rate);
+            UserRate normalized = normalizeRecord(rate, affectedHomeProjectionOwnerIds);
             if (normalized == null) {
                 String failedId = rate == null ? "" : normalizeId(rate.id());
                 if (StringUtils.hasText(failedId)) {
@@ -188,8 +194,10 @@ public class UserRatesService {
             affinityCalculationService.applyAffinity(normalizedRates);
             List<UserRate> savedRates = new ArrayList<>();
             userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
-            userAffinityEdgeService.recomputeForRates(savedRates.isEmpty() ? normalizedRates : savedRates);
-            enqueueRateRecomputeTasks(savedRates.isEmpty() ? normalizedRates : savedRates);
+            List<UserRate> persistedRates = savedRates.isEmpty() ? normalizedRates : savedRates;
+            userAffinityEdgeService.recomputeForRates(persistedRates);
+            refreshHomeGameRateProjections(affectedHomeProjectionOwnerIds, persistedRates);
+            enqueueRateRecomputeTasks(persistedRates);
             adminTelemetryService.record("rates.synced", "matching", "", normalizedRates.get(0).getOwnerUserId(), normalizedRates.size());
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
@@ -218,6 +226,178 @@ public class UserRatesService {
         if (target != null && StringUtils.hasText(normalized)) {
             target.add(normalized);
         }
+    }
+
+    private void backfillHomeGameRateProjections() {
+        Query staleUsersQuery = Query.query(Criteria.where("homeGameRateProjectionVersion")
+                .ne(HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION));
+        staleUsersQuery.fields().include("userId");
+        List<Users> staleUsers = mongoTemplate.find(staleUsersQuery, Users.class);
+        if (staleUsers == null || staleUsers.isEmpty()) {
+            return;
+        }
+
+        Set<String> staleUserIds = staleUsers.stream()
+                .map(user -> normalizeId(user == null ? null : user.getId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (staleUserIds.isEmpty()) {
+            return;
+        }
+
+        List<UserRate> rates = userRatesRepository.findHomeGameRateProjectionsByOwnerUserIdIn(staleUserIds);
+        Map<String, List<UserRate>> ratesByOwnerUserId = ratesByOwnerUserId(rates);
+        Map<String, Long> latestActivityMsByUserId = latestRateActivityMsByUserId(rates);
+        String nowIso = Instant.now().toString();
+        BulkOperations updates = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class);
+        for (String userId : staleUserIds) {
+            HomeGameRateProjection projection = buildHomeGameRateProjection(
+                    userId,
+                    ratesByOwnerUserId.getOrDefault(userId, List.of()));
+            Update update = new Update()
+                    .set("homeGameRatedUserIds", projection.ratedUserIds())
+                    .set("homeGameRatedPairKeys", projection.ratedPairKeys())
+                    .set("homeGameRateProjectionVersion", HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION)
+                    .set("homeGameRateProjectionUpdatedAtIso", nowIso);
+            Long latestActivityMs = latestActivityMsByUserId.get(userId);
+            if (latestActivityMs != null && latestActivityMs.longValue() > 0L) {
+                update.max("homeGameLastRateActivityMs", latestActivityMs);
+            }
+            updates.updateOne(Query.query(Criteria.where("userId").is(userId)), update);
+        }
+        updates.execute();
+    }
+
+    private void refreshHomeGameRateProjections(
+            Set<String> affectedOwnerUserIds,
+            List<UserRate> persistedRates) {
+        LinkedHashSet<String> ownerUserIds = affectedOwnerUserIds == null
+                ? new LinkedHashSet<>()
+                : affectedOwnerUserIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        for (UserRate rate : persistedRates == null ? List.<UserRate>of() : persistedRates) {
+            addIfText(ownerUserIds, rate == null ? null : rate.getOwnerUserId());
+        }
+        if (ownerUserIds.isEmpty()) {
+            return;
+        }
+
+        List<UserRate> currentOwnerRates =
+                userRatesRepository.findHomeGameRateProjectionsByOwnerUserIdIn(ownerUserIds);
+        Map<String, List<UserRate>> ratesByOwnerUserId = ratesByOwnerUserId(currentOwnerRates);
+        String nowIso = Instant.now().toString();
+        for (String ownerUserId : ownerUserIds) {
+            HomeGameRateProjection projection = buildHomeGameRateProjection(
+                    ownerUserId,
+                    ratesByOwnerUserId.getOrDefault(ownerUserId, List.of()));
+            mongoTemplate.updateFirst(
+                    Query.query(Criteria.where("userId").is(ownerUserId)),
+                    new Update()
+                            .set("homeGameRatedUserIds", projection.ratedUserIds())
+                            .set("homeGameRatedPairKeys", projection.ratedPairKeys())
+                            .set("homeGameRateProjectionVersion", HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION)
+                            .set("homeGameRateProjectionUpdatedAtIso", nowIso),
+                    Users.class);
+        }
+
+        LinkedHashSet<String> affectedUserIds = new LinkedHashSet<>(ownerUserIds);
+        for (UserRate rate : persistedRates == null ? List.<UserRate>of() : persistedRates) {
+            if (rate == null) {
+                continue;
+            }
+            long activityMs = rateDateMillis(firstNonBlank(rate.getUpdatedDate(), rate.getCreatedDate()));
+            LinkedHashSet<String> rateUserIds = new LinkedHashSet<>();
+            addIfText(rateUserIds, rate.getOwnerUserId());
+            addIfText(rateUserIds, rate.getRelatedUserId());
+            addIfText(rateUserIds, rate.getSecondaryRelatedUserId());
+            affectedUserIds.addAll(rateUserIds);
+            if (activityMs <= 0L) {
+                continue;
+            }
+            for (String userId : rateUserIds) {
+                mongoTemplate.updateFirst(
+                        Query.query(Criteria.where("userId").is(userId)),
+                        new Update().max("homeGameLastRateActivityMs", activityMs),
+                        Users.class);
+            }
+        }
+        homeUserProfileService.evictUserReadCaches(affectedUserIds);
+    }
+
+    private Map<String, List<UserRate>> ratesByOwnerUserId(List<UserRate> rates) {
+        Map<String, List<UserRate>> ratesByOwnerUserId = new LinkedHashMap<>();
+        for (UserRate rate : rates == null ? List.<UserRate>of() : rates) {
+            String ownerUserId = normalizeId(rate == null ? null : rate.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                ratesByOwnerUserId.computeIfAbsent(ownerUserId, ignored -> new ArrayList<>()).add(rate);
+            }
+        }
+        return ratesByOwnerUserId;
+    }
+
+    private Map<String, Long> latestRateActivityMsByUserId(List<UserRate> rates) {
+        Map<String, Long> latestActivityMsByUserId = new LinkedHashMap<>();
+        for (UserRate rate : rates == null ? List.<UserRate>of() : rates) {
+            if (rate == null) {
+                continue;
+            }
+            long activityMs = rateDateMillis(firstNonBlank(rate.getUpdatedDate(), rate.getCreatedDate()));
+            rememberLatestRateActivity(latestActivityMsByUserId, rate.getOwnerUserId(), activityMs);
+            rememberLatestRateActivity(latestActivityMsByUserId, rate.getRelatedUserId(), activityMs);
+            rememberLatestRateActivity(latestActivityMsByUserId, rate.getSecondaryRelatedUserId(), activityMs);
+        }
+        return latestActivityMsByUserId;
+    }
+
+    private void rememberLatestRateActivity(Map<String, Long> latestByUserId, String userId, long activityMs) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || activityMs <= 0L) {
+            return;
+        }
+        latestByUserId.merge(normalizedUserId, activityMs, Math::max);
+    }
+
+    private HomeGameRateProjection buildHomeGameRateProjection(String ownerUserId, List<UserRate> rates) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        LinkedHashSet<String> ratedUserIds = new LinkedHashSet<>();
+        LinkedHashSet<String> ratedPairKeys = new LinkedHashSet<>();
+        for (UserRate rate : rates == null ? List.<UserRate>of() : rates) {
+            if (!isHomeGameExclusionRate(rate, normalizedOwnerUserId)) {
+                continue;
+            }
+            String relatedUserId = normalizeId(rate.getRelatedUserId());
+            String secondaryRelatedUserId = normalizeId(rate.getSecondaryRelatedUserId());
+            if (StringUtils.hasText(relatedUserId) && !normalizedOwnerUserId.equals(relatedUserId)) {
+                ratedUserIds.add(relatedUserId);
+            }
+            if (StringUtils.hasText(secondaryRelatedUserId) && !normalizedOwnerUserId.equals(secondaryRelatedUserId)) {
+                ratedUserIds.add(secondaryRelatedUserId);
+            }
+            if ("pair".equals(normalizeId(rate.getMode()))
+                    && StringUtils.hasText(relatedUserId)
+                    && StringUtils.hasText(secondaryRelatedUserId)
+                    && !relatedUserId.equals(secondaryRelatedUserId)) {
+                ratedPairKeys.add(homeGamePairKey(relatedUserId, secondaryRelatedUserId));
+            }
+        }
+        return new HomeGameRateProjection(List.copyOf(ratedUserIds), List.copyOf(ratedPairKeys));
+    }
+
+    private boolean isHomeGameExclusionRate(UserRate rate, String ownerUserId) {
+        return rate != null
+                && ownerUserId.equals(normalizeId(rate.getOwnerUserId()))
+                && (Boolean.TRUE.equals(rate.getMet())
+                        || (rate.getScoreGiven() != null && rate.getScoreGiven().intValue() > 0));
+    }
+
+    private String homeGamePairKey(String firstUserId, String secondUserId) {
+        String normalizedFirstUserId = normalizeId(firstUserId);
+        String normalizedSecondUserId = normalizeId(secondUserId);
+        return normalizedFirstUserId.compareTo(normalizedSecondUserId) <= 0
+                ? normalizedFirstUserId + ":" + normalizedSecondUserId
+                : normalizedSecondUserId + ":" + normalizedFirstUserId;
     }
 
     private void ensureCanonicalUserRateIndexes() {
@@ -389,7 +569,7 @@ public class UserRatesService {
         return new ArrayList<>(deduped.values());
     }
 
-    private UserRate normalizeRecord(UserRateRecordDto rate) {
+    private UserRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
         if (rate == null) {
             return null;
         }
@@ -410,6 +590,9 @@ public class UserRatesService {
         }
         UserRate syncKeyRecord = userRatesRepository.findBySyncKey(syncKey).orElse(null);
         UserRate naturalKeyRecord = findByNaturalKey(ownerUserId, mode, relatedUserId, secondaryRelatedUserId);
+        addIfText(affectedHomeProjectionOwnerIds, syncKeyRecord == null ? null : syncKeyRecord.getOwnerUserId());
+        addIfText(affectedHomeProjectionOwnerIds, naturalKeyRecord == null ? null : naturalKeyRecord.getOwnerUserId());
+        addIfText(affectedHomeProjectionOwnerIds, ownerUserId);
         UserRate existing = naturalKeyRecord != null ? naturalKeyRecord : syncKeyRecord;
         boolean syncKeyBelongsToDifferentRecord = naturalKeyRecord != null
                 && syncKeyRecord != null
@@ -1256,6 +1439,20 @@ public class UserRatesService {
 
     private static String safeText(String value) {
         return value == null ? "" : value;
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String value : values == null ? new String[0] : values) {
+            if (StringUtils.hasText(value)) {
+                return value.trim();
+            }
+        }
+        return null;
+    }
+
+    private record HomeGameRateProjection(
+            List<String> ratedUserIds,
+            List<String> ratedPairKeys) {
     }
 
     private record RatePageProjection(

@@ -118,6 +118,7 @@ class HomeUserProfileServiceTest {
     void setUp() {
         lenient().when(userRatesRepository.findByOwnerUserId("active")).thenReturn(List.of());
         lenient().when(userRatesRepository.findByOwnerUserIdAndMode("active", "pair")).thenReturn(List.of());
+        lenient().when(userRatesRepository.findHomeGameExclusionProjections("active")).thenReturn(List.of());
         lenient().when(activityMembersRepository.findAll()).thenReturn(List.of());
         lenient().when(assetsRepository.findByOwnerUserId("active")).thenReturn(List.of());
         lenient().when(accessControlService.canCurrentActorEditProfile(anyString())).thenReturn(true);
@@ -349,7 +350,7 @@ class HomeUserProfileServiceTest {
         verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
         verify(userRatesRepository, times(1)).findAll();
         verify(activityMembersRepository, times(2)).findAll();
-        verify(userRatesRepository, times(2)).findByOwnerUserId("active");
+        verify(userRatesRepository, times(2)).findHomeGameExclusionProjections("active");
         verify(userAffinityEdgesRepository, times(1)).findRelevantByUserIds(List.of("active"));
     }
 

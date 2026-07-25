@@ -71,6 +71,11 @@ public class Users {
     private String deletedAtIso;
     private UserActivitiesRecord activities;
     private List<UserDeviceRecord> devices = new ArrayList<>();
+    private List<String> homeGameRatedUserIds;
+    private List<String> homeGameRatedPairKeys;
+    private Integer homeGameRateProjectionVersion;
+    private String homeGameRateProjectionUpdatedAtIso;
+    private Long homeGameLastRateActivityMs;
 
     public String getMongoId() {
         return mongoId;
@@ -366,6 +371,46 @@ public class Users {
 
     public void setDevices(List<UserDeviceRecord> devices) {
         this.devices = devices == null ? new ArrayList<>() : devices;
+    }
+
+    public List<String> getHomeGameRatedUserIds() {
+        return homeGameRatedUserIds;
+    }
+
+    public void setHomeGameRatedUserIds(List<String> homeGameRatedUserIds) {
+        this.homeGameRatedUserIds = homeGameRatedUserIds == null ? null : new ArrayList<>(homeGameRatedUserIds);
+    }
+
+    public List<String> getHomeGameRatedPairKeys() {
+        return homeGameRatedPairKeys;
+    }
+
+    public void setHomeGameRatedPairKeys(List<String> homeGameRatedPairKeys) {
+        this.homeGameRatedPairKeys = homeGameRatedPairKeys == null ? null : new ArrayList<>(homeGameRatedPairKeys);
+    }
+
+    public Integer getHomeGameRateProjectionVersion() {
+        return homeGameRateProjectionVersion;
+    }
+
+    public void setHomeGameRateProjectionVersion(Integer homeGameRateProjectionVersion) {
+        this.homeGameRateProjectionVersion = homeGameRateProjectionVersion;
+    }
+
+    public String getHomeGameRateProjectionUpdatedAtIso() {
+        return homeGameRateProjectionUpdatedAtIso;
+    }
+
+    public void setHomeGameRateProjectionUpdatedAtIso(String homeGameRateProjectionUpdatedAtIso) {
+        this.homeGameRateProjectionUpdatedAtIso = homeGameRateProjectionUpdatedAtIso;
+    }
+
+    public Long getHomeGameLastRateActivityMs() {
+        return homeGameLastRateActivityMs;
+    }
+
+    public void setHomeGameLastRateActivityMs(Long homeGameLastRateActivityMs) {
+        this.homeGameLastRateActivityMs = homeGameLastRateActivityMs;
     }
 
     public record LocationCoordinatesRecord(
