@@ -18,3 +18,5 @@ create a dragable button, it can be closed, dragged has a red counter badge,
 and shows messages when it opens (it's a popup) -
 the popup has a mute button
 2) background process tests, e.g.: purge, algorithm
+3) business button on landing site next to the three which explains the business model and direct to the page of the marketplace
+rate bar - who suggested icon is above the mobille sheet menu
