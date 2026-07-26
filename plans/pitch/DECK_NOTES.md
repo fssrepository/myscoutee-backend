@@ -30,6 +30,11 @@ controls its own merchant/payment account and remains responsible for pricing,
 partners, customer funds, refunds, tax, and the customer relationship. The founder
 does not collect end-customer payments on an operator's behalf.
 
+If an operator recruits a venue, festival, activity, travel, or experience
+partner for its VPS, the attributable affiliate/referral commission belongs to
+that operator. It is local operator revenue, not MyScoutee/founder revenue and
+is excluded from the founder's separate 10M/no-exit fallback base.
+
 Each registered operator receives a share based on verified claimed network weight.
 The founder starts with 100,000 contribution units, so an earlier exit can produce
 a founder share above 10%. At 1 million total units, the founder share reaches and
@@ -103,14 +108,20 @@ then remains fixed at 10%; operators share the other 90%.
    - This should be a contractual success pool, not casually described as equity or shares.
    - If venture capital is required, consider a disclosed Core/IP hurdle before the 90/10 network-uplift split.
 
-6. **At 10M MAU, the fallback is a 5% network commission.**
+6. **At 10M MAU with no exit, a separate 5% network share activates.**
    - This deck assumes the trigger uses verified aggregate reach from all deployments and activates only if that network reaches 10M MAU and no defined exit has occurred.
-   - The founder receives 5% of the contractually defined operator monetization base.
+   - The founder receives 5% of the contractually defined combined member-contribution base.
+   - The combined member-contribution base excludes operator-owned local partner commissions.
+   - This is a network-level fallback share, not a take rate on a local venue,
+     event, travel, or experience partner commission.
+   - Local affiliate/referral commission belongs to the operator that acquired
+     the partner for its VPS.
    - The local software handles checkout/payment logic, but each operator connects its own payment account and remains the independent merchant.
    - Customer funds do not flow through the founder; each operator retains control of its pricing, partners, billing configuration, proceeds, refunds, tax, and customer relationship.
    - MyScoutee does not prescribe an affiliate program, shared central checkout, conversion model, basket size, or method for generating revenue.
-   - The 5% can be calculated/reported by the software without turning the founder into a payment intermediary.
-   - The participation agreement still has to define the commission base: gross revenue, cash received, or another measure; attribution; exclusions; reporting; audit; and settlement timing.
+   - The software can calculate/report the separate member-contribution base without turning the founder into a payment intermediary.
+   - The participation agreement still has to define what members contribute to
+     the combined base, as well as exclusions, reporting, audit, and settlement timing.
 
 7. **Install freely. Claim optionally. Let verified scale compound.**
    - Every operator can install under any brand without applying, registering, or joining a cohort.
@@ -151,7 +162,10 @@ then remains fixed at 10%; operators share the other 90%.
 - Treatment of unclaimed weight: the deck recommends that it proves total scale but has no beneficiary and does not dilute valid claims.
 - Contractual reach of the 5% fallback over unclaimed operators that have no registry participation agreement.
 - Independent verification of the stated 10,000 concurrent-chat-connection ceiling and the scaling path beyond it.
-- The exact 5% commission base, exclusions, attribution, reporting, audit, and settlement timing.
+- The exact combined member-contribution base for the 5% fallback, exclusions,
+  reporting, audit, and settlement timing.
+- Explicit separation of operator-owned local partner commission from the
+  founder's network-level fallback share.
 - Payment-account ownership, payment-provider integration, and confirmation that each operator—not the founder—is the merchant for its customers.
 - Backend EULA, trademark license, update/support terms, data roles, privacy notice, and change-of-control assignment.
 - Evidence and sensitivity ranges for the proposed superlinear relationship between verified reach and strategic network value.

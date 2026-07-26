@@ -75,22 +75,34 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
    - Group rather than pair as the matching unit.
    - Match as the start of a meeting workflow.
    - Editable graph and meeting-linked evidence.
-   - Planned meeting-aligned monetization.
+   - Planned, operator-owned and meeting-aligned monetization.
    - Raw AI-generated code is not presented as the moat.
 
-7. **Planned revenue begins with real-world action.**
-   - Primary hypothesis: affiliate/referral commission from attributable venue,
-     festival, activity, travel or experience bookings.
-   - Expansion hypotheses: event commerce fees and B2B branded deployment/support.
-   - No take rate, revenue, forecast or affiliate conversion is claimed.
-   - This product revenue model is separate from the proposed network-level
-     exit-participation and 5% fallback model.
+7. **Local operators earn when groups create real-world action.**
+   - Every VPS is an independent local business.
+   - An operator can sign its own venue, festival, activity, travel, or
+     experience partners.
+   - When a group makes an attributable booking, the agreed partner commission
+     belongs to that operator—not to MyScoutee or the founder.
+   - The operator may also choose local ticketing, checkout, organizer-service,
+     promotion, or other commercial fees.
+   - The operator controls its partners, pricing, payout account, proceeds,
+     refunds, tax, and customer relationship; the software executes the
+     configured local payment workflow.
+   - No take rate, operator revenue, forecast, or affiliate conversion is claimed.
+   - This local operator economy is completely separate from the proposed
+     network-level fallback: only if the verified network reaches 10M MAU and no
+     defined exit occurs, the founder seeks 5% of the contract-defined combined
+     member-contribution base.
+   - The founder's 5% network share is not the operator's affiliate commission
+     and must not be described as a slice of a local partner booking.
 
 8. **Prove the meeting loop, then scale distribution.**
    - Harden performance, mobile efficiency, safety and testing.
    - Pilot in one dense community.
    - Measure group proposal → acceptance → chat → event → attendance → feedback.
-   - Validate partner attribution and contribution margin.
+   - Validate whether local partner attribution produces sustainable commission
+     for the operator.
    - Build a repeatable community/city/operator launch playbook.
 
 ## Repository evidence

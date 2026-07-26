@@ -796,8 +796,8 @@ def slide_6() -> Image.Image:
         image,
         "05",
         "10M fallback",
-        "At 10M MAU, the fallback is a 5% network commission.",
-        "Each deployment handles its own payment flow; operators stay independent and the founder only receives the agreed commission.",
+        "At 10M MAU with no exit, a separate 5% network share activates.",
+        "Local partner commission stays with each operator; the founder’s fallback applies only to the defined combined member-contribution base.",
         status="MODEL — NOT TRACTION",
     )
 
@@ -808,7 +808,7 @@ def slide_6() -> Image.Image:
     trigger_items = [
         ("01", "VERIFIED NETWORK REACH", "The combined network reaches 10M verified MAU.", BLUE),
         ("02", "NO DEFINED EXIT", "No qualifying sale or other agreed liquidity event has occurred.", PINK),
-        ("03", "FALLBACK ACTIVATES", "The founder receives a recurring 5% network commission.", ORANGE),
+        ("03", "NETWORK FALLBACK", "The founder receives 5% of the defined combined member-contribution base.", ORANGE),
     ]
     y = 382
     for idx, (number, heading, body, accent) in enumerate(trigger_items):
@@ -830,79 +830,78 @@ def slide_6() -> Image.Image:
         y += 136
 
     rounded_card(image, (120, 806, 900, 914), fill="#302031", radius=20, outline="#75405F", shadow=False)
-    text(image, (146, 828), "NO REVENUE FORECAST HERE", size=14, color=PINK, weight="bold")
+    text(image, (146, 828), "NOT A PARTNER TAKE RATE", size=14, color=PINK, weight="bold")
     text(
         image,
         (146, 860),
-        "The operator—not the founder—owns the business, customer funds and commercial decisions.",
+        "Local partner commission belongs to the operator that acquired the partner for its VPS.",
         size=20,
         color=TEXT,
         max_width=700,
     )
 
     rounded_card(image, (980, 230, 1832, 944), fill=CARD, radius=30)
-    text(image, (1014, 260), "WHAT THE RULE MEANS", size=17, color=ORANGE, weight="bold")
-    text(image, (1014, 308), "Operator autonomy", size=34, weight="bold")
-    bullet_list(
-        image,
-        [
-            "Local MyScoutee software handles checkout and payment workflow",
-            "Each operator connects and controls its own payment account",
-            "Customer funds never pass through the founder",
-            "Operator owns pricing, partners, refunds, tax and customer relationship",
-        ],
-        x=1016,
-        y=366,
-        width=750,
-        size=20,
-        gap=17,
-        bullet_color=GREEN,
-    )
+    text(image, (1014, 260), "TWO INDEPENDENT ECONOMIES", size=17, color=ORANGE, weight="bold")
 
-    text(image, (1014, 584), "ECONOMIC RESULT", size=16, color=GREEN, weight="bold")
-    bar_x1, bar_y1, bar_x2, bar_y2 = 1014, 626, 1798, 714
-    split = bar_x1 + int((bar_x2 - bar_x1) * 0.95)
-    draw.rounded_rectangle((bar_x1, bar_y1, bar_x2, bar_y2), radius=24, fill=rgb(ORANGE))
-    draw.rounded_rectangle((bar_x1, bar_y1, split + 18, bar_y2), radius=24, fill=rgb(GREEN))
+    rounded_card(image, (1012, 310, 1800, 514), fill="#102D30", radius=22, outline="#2E7168", shadow=False)
+    pill(image, (1038, 334), "LOCAL VPS / OPERATOR", fill="#17463F", color=GREEN, size=14, height=32, outline=GREEN)
+    text(image, (1038, 386), "Partner commission", size=27, weight="bold")
     text(
         image,
-        ((bar_x1 + split) // 2, (bar_y1 + bar_y2) // 2),
-        "95% REMAINS WITH OPERATOR",
-        size=24,
-        color=BG,
-        weight="bold",
-        anchor="mm",
-    )
-    text(
-        image,
-        ((split + bar_x2) // 2, (bar_y1 + bar_y2) // 2),
-        "5%",
-        size=24,
-        color=BG,
-        weight="bold",
-        anchor="mm",
-    )
-    text(
-        image,
-        (1014, 742),
-        "founder commission_i = 5% × defined monetization base_i",
-        size=21,
-        color=WHITE,
-        weight="bold",
-        mono=True,
-        max_width=760,
-    )
-    rounded_card(image, (1012, 802, 1800, 914), fill="#33202D", radius=20, outline="#7B405D", shadow=False)
-    text(image, (1038, 824), "COMMISSION — NOT PAYMENT CONTROL", size=14, color=PINK, weight="bold")
-    text(
-        image,
-        (1038, 856),
-        "Software can calculate/report the defined 5% base; the operator remains the independent merchant.",
-        size=19,
+        (1038, 430),
+        "Operator signs the partner; local software handles the transaction; commission is paid to the operator’s account.",
+        size=18,
         color=TEXT,
         max_width=720,
     )
-    footer(image, 6, note="Local payment software • independent operator accounts • no central collection by the founder")
+    text(
+        image,
+        (1038, 484),
+        "local partner booking  >  operator commission",
+        size=17,
+        color=GREEN,
+        weight="bold",
+        mono=True,
+    )
+
+    rounded_card(image, (1012, 536, 1800, 752), fill="#322333", radius=22, outline="#7B405D", shadow=False)
+    pill(image, (1038, 560), "NETWORK / 10M + NO EXIT", fill="#4A2C1D", color=ORANGE, size=14, height=32, outline=ORANGE)
+    text(image, (1038, 612), "Founder 5% network share", size=27, weight="bold")
+    text(
+        image,
+        (1038, 654),
+        "Calculated only from the contract-defined combined member-contribution base—not from the local affiliate commission.",
+        size=18,
+        color=TEXT,
+        max_width=720,
+    )
+    text(
+        image,
+        (1038, 716),
+        "founder share = 5% × defined combined member base",
+        size=17,
+        color=ORANGE,
+        weight="bold",
+        mono=True,
+    )
+
+    rounded_card(image, (1012, 774, 1800, 914), fill="#171D35", radius=20, outline="#455071", shadow=False)
+    text(image, (1038, 796), "OPERATOR INDEPENDENCE NEVER CHANGES", size=14, color=BLUE, weight="bold")
+    bullet_list(
+        image,
+        [
+            "Own partners, payment account, pricing and customer funds",
+            "Own refunds, tax, commercial terms and customer relationship",
+            "Founder never collects end-customer payments",
+        ],
+        x=1038,
+        y=830,
+        width=720,
+        size=16,
+        gap=7,
+        bullet_color=BLUE,
+    )
+    footer(image, 6, note="Operator partner commission ≠ founder’s proposed 10M/no-exit 5% network share")
     return image
 
 

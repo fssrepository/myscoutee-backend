@@ -553,7 +553,7 @@ def slide_6(assets: dict[str, Path]) -> Image.Image:
         ("Immediate one-to-one chat", "Contextual group interaction"),
         ("Repeated feed decisions", "Continuously editable social graph"),
         ("Optimize matches and messages", "Optimize accepted groups and meetings"),
-        ("Monetize access or attention", "Plan revenue around real-world action"),
+        ("Monetize access or attention", "Let local operators earn from real-world action"),
     ]
     y = 312
     for index, (left, right) in enumerate(rows):
@@ -597,29 +597,29 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
     ui.section_header(
         image,
         "06",
-        "Planned revenue",
-        "Revenue begins when connection creates real-world action.",
-        "The model is meeting-aligned, unvalidated and separate from the network-level exit/commission framework.",
+        "Operator economics",
+        "Local operators earn when groups create real-world action.",
+        "Each VPS is an independent business: partner commission belongs to its operator—not to MyScoutee or the founder.",
         status="PLANNED",
     )
 
     revenue_rails = [
         (
             "PRIMARY HYPOTHESIS",
-            "Affiliate / referral commission",
-            "A group chooses a venue, festival, activity, travel or experience offer; MyScoutee earns an agreed attributable commission.",
+            "Operator partner commission",
+            "An operator signs venues, festivals, activities, travel or experience partners for its own VPS; attributable bookings pay commission to that operator.",
             GREEN,
         ),
         (
             "EXPANSION",
-            "Event commerce fees",
-            "Ticketing, checkout or organizer service fees where MyScoutee directly facilitates the transaction.",
+            "Operator event commerce",
+            "The operator may earn ticketing, checkout or organizer service fees from transactions handled by its local deployment.",
             ORANGE,
         ),
         (
-            "B2B RAIL",
-            "Branded deployment + support",
-            "Licensing, deployment, updates and operational support for community or local operators.",
+            "LOCAL CONTROL",
+            "Independent commercial model",
+            "The operator chooses partners, pricing, payout account, tax and refunds. The software executes the configured payment flow.",
             PURPLE,
         ),
     ]
@@ -629,18 +629,17 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
         y += 228
 
     ui.rounded_card(image, (936, 250, 1832, 944), fill=CARD, radius=30)
-    ui.text(image, (970, 282), "WHY THE INCENTIVES FIT", size=16, color=GREEN, weight="bold")
+    ui.text(image, (970, 282), "LOCAL OPERATOR REVENUE LOOP", size=16, color=GREEN, weight="bold")
     funnel = [
         ("BETTER GROUP", BLUE),
-        ("EVENT SELECTED", PURPLE),
+        ("LOCAL PARTNER", PURPLE),
         ("REAL MEETING", PINK),
-        ("PARTNER CONVERSION", ORANGE),
-        ("REVENUE", GREEN),
+        ("BOOKING", ORANGE),
+        ("OPERATOR EARNS", GREEN),
     ]
     x = 972
-    for idx, (label, accent) in enumerate(funnel):
-        width = 152 if idx < 4 else 130
-        ui.pill(
+    for label, accent in funnel:
+        box = ui.pill(
             image,
             (x, 330),
             label,
@@ -650,46 +649,46 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
             height=34,
             pad_x=12,
         )
-        x += width + 20
+        x = box[2] + 12
 
-    ui.rounded_card(image, (970, 406, 1798, 548), fill="#27203D", radius=22, outline="#5A476E", shadow=False)
-    ui.text(image, (998, 430), "WORKING REVENUE EQUATION", size=14, color=PURPLE, weight="bold")
+    ui.rounded_card(image, (970, 406, 1798, 566), fill="#27203D", radius=22, outline="#5A476E", shadow=False)
+    ui.text(image, (998, 430), "LOCAL OPERATOR REVENUE MODEL", size=14, color=PURPLE, weight="bold")
     equation = (
-        "partner bookings × agreed commission\n"
-        "+ facilitated GMV × service fee\n"
-        "+ operator licensing / support"
+        "operator revenue\n"
+        "= local partner bookings × agreed commission\n"
+        "+ local facilitated GMV × operator-set fee"
     )
-    ui.text(image, (998, 468), equation, size=22, color=WHITE, weight="bold", mono=True, spacing=7)
+    ui.text(image, (998, 468), equation, size=20, color=WHITE, weight="bold", mono=True, spacing=7)
 
-    ui.text(image, (970, 584), "WHAT EXISTS TODAY", size=14, color=BLUE, weight="bold")
+    ui.text(image, (970, 600), "WHAT EXISTS TODAY", size=14, color=BLUE, weight="bold")
     ui.bullet_list(
         image,
         [
             "Event creation, resources, pricing, basket, promo and ticket surfaces",
             "Stripe and Barion adapter code plus payment audit workflow",
-            "Production card charging remains disabled",
+            "Operator-owned payout flow is planned; production charging remains disabled",
         ],
         x=972,
-        y=620,
+        y=636,
         width=790,
-        size=18,
-        gap=12,
+        size=17,
+        gap=10,
         bullet_color=BLUE,
     )
-    ui.text(image, (970, 774), "VALIDATION GATES", size=14, color=PINK, weight="bold")
+
+    ui.rounded_card(image, (970, 782, 1798, 922), fill="#33202D", radius=18, outline="#7B405D", shadow=False)
+    ui.text(image, (994, 802), "SEPARATE NETWORK FALLBACK", size=14, color=PINK, weight="bold")
     ui.text(
         image,
-        (970, 812),
-        "Partner demand • attribution window • take rate • refunds/tax • contribution margin • "
-        "whether group discovery improves booking conversion",
-        size=19,
-        color=MUTED,
-        max_width=790,
-        spacing=7,
+        (994, 836),
+        "Only at 10M verified MAU with no exit: the founder seeks 5% of the contract-defined "
+        "combined member-contribution base. It is not the operator’s local partner commission.",
+        size=17,
+        color=TEXT,
+        max_width=770,
+        spacing=6,
     )
-    ui.rounded_card(image, (970, 882, 1798, 922), fill="#33202D", radius=14, outline="#7B405D", shadow=False)
-    ui.text(image, (992, 892), "NO CURRENT REVENUE OR FORECAST CLAIM", size=14, color=PINK, weight="bold")
-    footer(image, 7, note="Product revenue model ≠ proposed 5% network fallback")
+    footer(image, 7, note="Operator partner commission ≠ founder’s proposed 10M/no-exit 5% network share")
     return image
 
 
@@ -711,7 +710,7 @@ def slide_8(assets: dict[str, Path]) -> Image.Image:
         ("NOW", "HARDEN THE CORE", "Performance • mobile CPU • safety • tests • independent chat-load validation", GREEN),
         ("PILOT", "ONE DENSE COMMUNITY", "Enough reciprocal signals, group inventory and relevant events to test the loop", BLUE),
         ("MEASURE", "FULL OUTCOME FUNNEL", "Group proposed > accepted > active chat > event > attendance > feedback", PURPLE),
-        ("REVENUE", "PARTNER CONVERSION", "Test attributable venue/experience bookings and contribution margin", ORANGE),
+        ("REVENUE", "OPERATOR COMMISSION", "Test whether local bookings create attributable operator commission", ORANGE),
         ("REPEAT", "LAUNCH PLAYBOOK", "Expand by community, city, partner and—where useful—branded deployment", PINK),
     ]
     line_x = 162
@@ -737,7 +736,7 @@ def slide_8(assets: dict[str, Path]) -> Image.Image:
     ui.rounded_card(image, (1192, 230, 1832, 962), fill="#182445", radius=30, outline="#3C518C")
     ui.text(image, (1226, 260), "THE ASK", size=16, color=GREEN, weight="bold")
     ask_items = [
-        ("PILOT", "founding community", "dense enough to test group formation", BLUE),
+        ("PILOT", "test community", "dense enough to test group formation", BLUE),
         ("PARTNERS", "venues + experiences", "inventory and attributable booking tests", ORANGE),
         ("EXPERTISE", "safety + graph advisors", "privacy, trust and behavioral validation", PURPLE),
         ("CAPITAL", "strategic build funding", "hardening, product validation and distribution", GREEN),
@@ -760,7 +759,7 @@ def slide_8(assets: dict[str, Path]) -> Image.Image:
         weight="bold",
         max_width=520,
     )
-    footer(image, 8, note="Next conversation: pilot density, meeting funnel and partner attribution")
+    footer(image, 8, note="Next version: refine pilot density, meeting funnel and operator partner attribution")
     return image
 
 
