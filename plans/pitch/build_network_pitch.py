@@ -445,8 +445,8 @@ def slide_1() -> Image.Image:
     text(
         image,
         (282, 920),
-        "Local trust acquires communities. A common core preserves compatibility. "
-        "Auditable telemetry plus verified registry claims becomes a fair exit cap table.",
+        "Local brands acquire communities. A common core makes verified reach more valuable together "
+        "than apart—and registry claims allocate that compounding exit upside.",
         size=25,
         weight="medium",
         max_width=1475,
@@ -517,7 +517,7 @@ def slide_3() -> Image.Image:
     text(image, (126, 266), "COMMON CORE / LOCAL CONTROL", size=17, color=GREEN, weight="bold")
 
     rounded_card(image, (394, 320, 902, 456), fill="#222B52", radius=24, outline="#6578CE")
-    text(image, (648, 346), "MYSCOUTEE CORECO", size=25, weight="bold", anchor="ma", align="center")
+    text(image, (648, 346), "MYSCOUTEE CORE", size=25, weight="bold", anchor="ma", align="center")
     text(
         image,
         (648, 389),
@@ -564,10 +564,10 @@ def slide_3() -> Image.Image:
     bullet_list(
         image,
         [
-            "Brand, domain and community relationship",
-            "Hosting choice and local operational control",
-            "Profiles, messages, events and sensitive data",
-            "Local positioning, partnerships and sales",
+            "Brand, domain and customer/community relationship",
+            "Hosting, local data and operational control",
+            "Own merchant/payment account, pricing and proceeds",
+            "Partners, refunds, tax and commercial responsibility",
         ],
         x=1290,
         y=518,
@@ -596,7 +596,7 @@ def slide_3() -> Image.Image:
     text(
         image,
         (1408, 878),
-        "Brandable foundation today; one-command brand kit is planned.",
+        "Software executes the payment flow; the operator owns the account and funds.",
         size=16,
         color=TEXT,
         max_width=370,
@@ -797,7 +797,7 @@ def slide_6() -> Image.Image:
         "05",
         "10M fallback",
         "At 10M MAU, the fallback is a 5% network commission.",
-        "If no defined exit has happened, operators keep commercial freedom and founder/CoreCo receives 5% under the participation agreement.",
+        "Each deployment handles its own payment flow; operators stay independent and the founder only receives the agreed commission.",
         status="MODEL — NOT TRACTION",
     )
 
@@ -808,7 +808,7 @@ def slide_6() -> Image.Image:
     trigger_items = [
         ("01", "VERIFIED NETWORK REACH", "The combined network reaches 10M verified MAU.", BLUE),
         ("02", "NO DEFINED EXIT", "No qualifying sale or other agreed liquidity event has occurred.", PINK),
-        ("03", "FALLBACK ACTIVATES", "Founder/CoreCo receives a recurring 5% network commission.", ORANGE),
+        ("03", "FALLBACK ACTIVATES", "The founder receives a recurring 5% network commission.", ORANGE),
     ]
     y = 382
     for idx, (number, heading, body, accent) in enumerate(trigger_items):
@@ -834,7 +834,7 @@ def slide_6() -> Image.Image:
     text(
         image,
         (146, 860),
-        "The operator—not MyScoutee—decides how its brand makes money.",
+        "The operator—not the founder—owns the business, customer funds and commercial decisions.",
         size=20,
         color=TEXT,
         max_width=700,
@@ -846,10 +846,10 @@ def slide_6() -> Image.Image:
     bullet_list(
         image,
         [
-            "Operator chooses its business model and revenue streams",
-            "Operator controls pricing, partners, billing and customer relationships",
-            "No mandatory affiliate program, shared checkout or central offer",
-            "Founder/CoreCo does not prescribe how revenue is generated",
+            "Local MyScoutee software handles checkout and payment workflow",
+            "Each operator connects and controls its own payment account",
+            "Customer funds never pass through the founder",
+            "Operator owns pricing, partners, refunds, tax and customer relationship",
         ],
         x=1016,
         y=366,
@@ -893,16 +893,16 @@ def slide_6() -> Image.Image:
         max_width=760,
     )
     rounded_card(image, (1012, 802, 1800, 914), fill="#33202D", radius=20, outline="#7B405D", shadow=False)
-    text(image, (1038, 824), "TERM TO LOCK", size=14, color=PINK, weight="bold")
+    text(image, (1038, 824), "COMMISSION — NOT PAYMENT CONTROL", size=14, color=PINK, weight="bold")
     text(
         image,
         (1038, 856),
-        "Define the 5% base, attribution, exclusions, refunds, tax, reporting, audit and settlement timing.",
+        "Software can calculate/report the defined 5% base; the operator remains the independent merchant.",
         size=19,
         color=TEXT,
         max_width=720,
     )
-    footer(image, 6, note="Operators choose the money model; the participation agreement defines only the 5% base")
+    footer(image, 6, note="Local payment software • independent operator accounts • no central collection by the founder")
     return image
 
 
@@ -912,58 +912,92 @@ def slide_7() -> Image.Image:
     section_header(
         image,
         "06",
-        "Roadmap + ask",
-        "Launch the registry. Prove the claims. Let the network scale.",
-        "Telemetry is automatic; claiming a deployment and identifying its operator remain optional.",
+        "Participation + value",
+        "Install freely. Claim optionally. Let verified scale compound.",
+        "No application or founding cohort: registration only activates identity and economic participation.",
     )
 
-    rounded_card(image, (88, 230, 1210, 962), fill=CARD, radius=30)
-    text(image, (120, 260), "GATED EXECUTION PLAN", size=17, color=GREEN, weight="bold")
-    phases = [
-        ("NOW", "BUILT BASE", "Meeting-first product • local telemetry • v1.0.0 Debian artifact", GREEN),
-        ("0–90 DAYS", "REGISTRY MVP", "Deploy-code issue/claim • automatic signed ingest • live weight/share view • legal term sheet", BLUE),
-        ("3–6 MONTHS", "FOUNDING PILOTS", "3–5 branded operators • first claimed-weight statement • verified cohort", PURPLE),
-        ("6–18 MONTHS", "REPEATABLE RAIL", "25–100 operators • audit/fraud standard • >10k chat scaling path • settlement dry-run", PINK),
-        ("1M+ / 10M", "ECONOMIC TRIGGERS", "90/10 exit pool fixes at 1M • if no exit at 10M, founder commission becomes 5%", ORANGE),
+    rounded_card(image, (88, 230, 1190, 962), fill=CARD, radius=30)
+    text(image, (120, 260), "SELF-SERVE PARTICIPATION", size=17, color=GREEN, weight="bold")
+    stages = [
+        ("01", "INSTALL", "Run the packaged .deb under any brand—without applying, registering or naming the operator.", GREEN),
+        ("02", "MEASURE", "Automatic aggregate telemetry starts under the unique deployment code issued at deployment.", BLUE),
+        ("03", "CLAIM — OPTIONAL", "Register the code whenever you want its measured history attributed to a company or operator.", PURPLE),
+        ("04", "TRACK", "The dashboard shows verified claimed weight and the indicative exit allocation over time.", ORANGE),
+        ("05", "STAY INDEPENDENT", "Leave it unclaimed: the deployment keeps running, while its exit allocation remains zero.", PINK),
     ]
-    line_x = 170
+    line_x = 164
     draw = ImageDraw.Draw(image)
-    draw.line((line_x, 342, line_x, 852), fill=rgb("#35446F"), width=5)
-    y = 330
-    for timing, heading, body, accent in phases:
-        draw.ellipse((line_x - 16, y + 12, line_x + 16, y + 44), fill=rgb(accent), outline=rgb(WHITE), width=2)
-        pill(image, (216, y), timing, fill="#242E52", color=accent, size=14, height=32, outline=accent)
-        text(image, (216, y + 44), heading, size=22, weight="bold")
-        text(image, (520, y + 43), body, size=18, color=MUTED, max_width=620, spacing=5)
-        y += 113
-    rounded_card(image, (120, 884, 1178, 932), fill="#102D30", radius=15, outline="#2E7168", shadow=False)
-    text(image, (144, 899), "Each gate has an auditable output; MAU milestones and the 5% fallback remain models until triggered.", size=16, color=GREEN, weight="medium")
+    draw.line((line_x, 330, line_x, 830), fill=rgb("#35446F"), width=5)
+    y = 318
+    for number, heading, body, accent in stages:
+        draw.ellipse((line_x - 18, y + 11, line_x + 18, y + 47), fill=rgb(accent), outline=rgb(WHITE), width=2)
+        text(image, (line_x, y + 29), number, size=13, color=WHITE, weight="bold", anchor="mm")
+        text(image, (216, y), heading, size=22, color=accent, weight="bold")
+        text(image, (216, y + 38), body, size=18, color=TEXT, max_width=900, spacing=5)
+        y += 112
+    rounded_card(image, (120, 884, 1158, 932), fill="#102D30", radius=15, outline="#2E7168", shadow=False)
+    text(
+        image,
+        (144, 899),
+        "NO APPLICATION  •  NO INVITATION  •  CLAIM WHEN READY",
+        size=16,
+        color=GREEN,
+        weight="bold",
+    )
 
-    rounded_card(image, (1260, 230, 1832, 962), fill="#182445", radius=30, outline="#3C518C")
-    text(image, (1294, 260), "THE ASK", size=17, color=GREEN, weight="bold")
-    ask_items = [
-        ("3–5", "founding operators", "trusted communities + local execution", BLUE),
-        ("1", "legal/privacy design team", "success pool, telemetry and data roles", PURPLE),
-        ("1", "audit/settlement partner", "transparent commission basis and payout", ORANGE),
-        ("CAPITAL", "strategic build funding", "telemetry, brand automation, audit and support", GREEN),
-    ]
-    y = 312
-    for value, label, note, accent in ask_items:
-        rounded_card(image, (1292, y, 1800, y + 108), fill=CARD, radius=19, outline=accent, shadow=False)
-        value_size = 24 if value == "CAPITAL" else 28
-        text(image, (1316, y + 18), value, size=value_size, color=accent, weight="bold")
-        text(image, (1465, y + 18), label, size=20, weight="bold", max_width=310)
-        text(image, (1465, y + 54), note, size=15, color=MUTED, max_width=310)
-        y += 119
+    rounded_card(image, (1220, 230, 1832, 962), fill="#182445", radius=30, outline="#3C518C")
+    text(image, (1252, 260), "FEDERATED VALUE THESIS", size=17, color=GREEN, weight="bold")
+    pill(
+        image,
+        (1252, 298),
+        "MODEL — NOT VALUATION",
+        fill="#3C331B",
+        color=ORANGE,
+        size=14,
+        height=34,
+        outline=ORANGE,
+    )
 
-    text(image, (1294, 802), "ONE MEASUREMENT • TWO STATUS STATES", size=14, color=BLUE, weight="bold")
-    rounded_card(image, (1292, 830, 1800, 878), fill="#12362F", radius=14, outline="#2D7A6A", shadow=False)
-    text(image, (1314, 844), "CLAIMED", size=14, color=GREEN, weight="bold")
-    text(image, (1418, 842), "named owner • traceable weight • exit-eligible", size=15, color=TEXT)
-    rounded_card(image, (1292, 890, 1800, 938), fill="#282134", radius=14, outline="#665070", shadow=False)
-    text(image, (1314, 904), "UNCLAIMED", size=14, color=PINK, weight="bold")
-    text(image, (1432, 902), "no share • independence • larger competition ahead", size=15, color=TEXT)
-    footer(image, 7, note="Next conversation: lock the metric, registry claim terms and exit record date")
+    chart_left, chart_top, chart_right, chart_bottom = 1284, 380, 1778, 642
+    draw.line((chart_left, chart_bottom, chart_right, chart_bottom), fill=rgb("#65729B"), width=3)
+    draw.line((chart_left, chart_bottom, chart_left, chart_top), fill=rgb("#65729B"), width=3)
+    curve_points = []
+    for index in range(81):
+        progress = index / 80
+        x = chart_left + round(progress * (chart_right - chart_left))
+        y = chart_bottom - round((progress**2.25) * (chart_bottom - chart_top - 18))
+        curve_points.append((x, y))
+    draw.line(curve_points, fill=rgb(GREEN), width=8, joint="curve")
+    for progress in (0.25, 0.58, 1.0):
+        point_index = min(80, round(progress * 80))
+        cx, cy = curve_points[point_index]
+        draw.ellipse((cx - 7, cy - 7, cx + 7, cy + 7), fill=rgb(WHITE), outline=rgb(GREEN), width=3)
+    text(image, (1284, 348), "STRATEGIC NETWORK VALUE", size=13, color=MUTED_2, weight="bold")
+    text(image, (1778, 657), "VERIFIED REACH", size=13, color=MUTED_2, weight="bold", anchor="ra")
+    text(image, (1510, 443), "SUPERLINEAR /\nCOMPOUNDING", size=18, color=GREEN, weight="bold", align="center")
+
+    rounded_card(image, (1252, 692, 1800, 770), fill="#111A34", radius=17, outline="#45568C", shadow=False)
+    text(image, (1278, 710), "V(network)  ~  verified_reach ^ alpha", size=19, color=WHITE, weight="bold", mono=True)
+    text(image, (1278, 742), "working hypothesis: alpha > 1", size=15, color=ORANGE, weight="bold", mono=True)
+
+    text(image, (1252, 800), "WHY VALUE CAN COMPOUND", size=14, color=BLUE, weight="bold")
+    bullet_list(
+        image,
+        [
+            "More local distribution and verified usage",
+            "A larger compatible operating standard",
+            "Greater reach, scarcity and strategic relevance",
+        ],
+        x=1252,
+        y=832,
+        width=540,
+        size=16,
+        gap=8,
+        bullet_color=BLUE,
+    )
+    text(image, (1252, 934), "Value hypothesis—not a guaranteed price curve.", size=14, color=MUTED_2, weight="medium")
+    footer(image, 7, note="Next version: refine the metric, claim rules and exit record date")
     return image
 
 

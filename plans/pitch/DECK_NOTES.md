@@ -1,6 +1,6 @@
 # MyScoutee Network pitch deck
 
-Audience: founding operators, strategic partners, and investors who understand an operator-led network.
+Audience: independent operators, strategic partners, and investors who understand an operator-led network.
 
 Core pitch:
 
@@ -14,6 +14,7 @@ then shows its claimed network weight and indicative exit share. At an exit
 record date, eligible claims and their verified weights become the actual
 allocation basis.
 
+No application, invitation, pilot cohort, or negotiation is required to install.
 Telemetry is automatic; claiming is optional. An operator that leaves its code
 unclaimed can keep using and monetizing the branded deployment independently,
 but the telemetry remains unattributed and the operator receives no Network
@@ -22,6 +23,12 @@ in the registry therefore gives up exit participation. An exit is not mandatory;
 the network can continue operating indefinitely. The strategic tradeoff is that
 independent deployments may eventually compete with a much larger coordinated
 network.
+
+Every operator is a commercially independent business. The local MyScoutee
+software handles the checkout/payment workflow, while the operator connects and
+controls its own merchant/payment account and remains responsible for pricing,
+partners, customer funds, refunds, tax, and the customer relationship. The founder
+does not collect end-customer payments on an operator's behalf.
 
 Each registered operator receives a share based on verified claimed network weight.
 The founder starts with 100,000 contribution units, so an earlier exit can produce
@@ -51,6 +58,8 @@ then remains fixed at 10%; operators share the other 90%.
    - Open AGPL frontend; proprietary/licensed backend should be described only after an EULA is added.
    - The existing Debian artifact is `myscoutee_1.0.0_amd64.deb`, 193,096,630 bytes.
    - Rebranding is a credible foundation, but the one-command brand kit is still planned.
+   - The software provides the local checkout/payment workflow; every operator uses its own payment account and keeps commercial control.
+   - The founder supplies the software and shared network rail, but is not the central merchant or collector of operator customer funds.
 
 4. **Every deployment is measured; only claimed weight participates.**
    - The current repository records telemetry locally; the planned deployed architecture automatically sends signed aggregates to the registry.
@@ -96,14 +105,20 @@ then remains fixed at 10%; operators share the other 90%.
 
 6. **At 10M MAU, the fallback is a 5% network commission.**
    - This deck assumes the trigger uses verified aggregate reach from all deployments and activates only if that network reaches 10M MAU and no defined exit has occurred.
-   - The founder/CoreCo receives 5% of the contractually defined operator monetization base.
-   - Each operator retains the other 95% and remains free to choose its own business model, pricing, partners, billing, and revenue streams.
-   - MyScoutee does not prescribe an affiliate program, shared checkout, conversion model, basket size, or method for generating revenue.
-   - The contract still has to define the commission base: gross revenue, cash received, or another measure; attribution; exclusions; refunds; tax; reporting; audit; and settlement timing.
+   - The founder receives 5% of the contractually defined operator monetization base.
+   - The local software handles checkout/payment logic, but each operator connects its own payment account and remains the independent merchant.
+   - Customer funds do not flow through the founder; each operator retains control of its pricing, partners, billing configuration, proceeds, refunds, tax, and customer relationship.
+   - MyScoutee does not prescribe an affiliate program, shared central checkout, conversion model, basket size, or method for generating revenue.
+   - The 5% can be calculated/reported by the software without turning the founder into a payment intermediary.
+   - The participation agreement still has to define the commission base: gross revenue, cash received, or another measure; attribution; exclusions; reporting; audit; and settlement timing.
 
-7. **Launch the registry. Prove the claims. Scale the rail.**
-   - Immediate ask: 3–5 founding operators, legal/privacy design partners, an audit/settlement partner, and strategic build capital.
-   - Telemetry is automatic, while identifying the operator and claiming exit participation remain optional.
+7. **Install freely. Claim optionally. Let verified scale compound.**
+   - Every operator can install under any brand without applying, registering, or joining a cohort.
+   - Automatic aggregate telemetry starts under the unique code issued at deployment.
+   - Claiming can happen later; it binds the measurable history to a named company/operator and activates traceable exit participation.
+   - An unclaimed deployment remains operational and independent, while its exit allocation remains zero.
+   - The value thesis is superlinear: more verified reach can create more-than-linear strategic value through distribution, usage proof, compatibility, scarcity, and network relevance.
+   - `V(network) ~ verified_reach ^ alpha, alpha > 1` is a working network-effects hypothesis—not a current valuation, forecast, or guaranteed exponential price curve.
 
 ## Evidence behind “built”
 
@@ -122,7 +137,7 @@ then remains fixed at 10%; operators share the other 90%.
   `.e2e-artifacts/stress-ramp/backend/server-events-read-2026-06-01T11-04-34-928Z/ramp-summary.md`
   and `.e2e-artifacts/stress/websocket-room-2026-05-24T06-46-40-953Z/index.md`.
 
-## Terms to settle before external circulation
+## Items for the next, more precise specification version
 
 - Founder units: real verified MAU or an economic credit.
 - Deduplicated network MAU versus deployment-level activity.
@@ -137,4 +152,6 @@ then remains fixed at 10%; operators share the other 90%.
 - Contractual reach of the 5% fallback over unclaimed operators that have no registry participation agreement.
 - Independent verification of the stated 10,000 concurrent-chat-connection ceiling and the scaling path beyond it.
 - The exact 5% commission base, exclusions, attribution, reporting, audit, and settlement timing.
+- Payment-account ownership, payment-provider integration, and confirmation that each operator—not the founder—is the merchant for its customers.
 - Backend EULA, trademark license, update/support terms, data roles, privacy notice, and change-of-control assignment.
+- Evidence and sensitivity ranges for the proposed superlinear relationship between verified reach and strategic network value.

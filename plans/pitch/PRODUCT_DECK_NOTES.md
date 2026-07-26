@@ -14,12 +14,12 @@ The product is designed around a different success event: a completed, mutually
 welcomed real-world meeting. The deck does not claim users, revenue, retention,
 product-market fit, or proven matching superiority.
 
-## Founder story and code-size wording
+## Product history and code-size wording
 
-Peter Pal Szabo, MSc describes the product as a ten-year concept that became
-materially implementable during the AI-assisted development wave, backed by more
-than twenty years of full-stack engineering experience. The current reproducible
-scope is approximately 350,000 physical source lines:
+The core product idea originated in 2016, before the current AI-assisted
+implementation phase. This is an idea-origin date, not a claim of continuous
+development since 2016. The current reproducible scope is approximately 350,000
+physical source lines:
 
 ```text
 frontend/src/app
@@ -36,8 +36,8 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
 ## Eight-slide narrative
 
 1. **Designed for the meeting. Not the swipe.**
-   - Ten-year product thesis, AI-assisted construction, and the shift to
-     senior-engineer-led hardening and validation.
+   - 2016 idea origin, later AI-assisted construction, and the shift to
+     engineering-led hardening and validation.
    - Product definition: ranked intent → mutual graph → group → event.
 
 2. **The category stops at a match. MyScoutee is designed for the meeting.**
@@ -66,7 +66,7 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
      but production payment charging is disabled.
    - Debian-packaged Docker deployment exists.
    - Repository benchmark evidence validates 500 simultaneous WebSocket room
-     clients delivering 10,000 frames. The founder-stated 10,000-connection
+     clients delivering 10,000 frames. The stated 10,000-connection
      per-deployment ceiling remains an external validation item; it is not the
      repository benchmark and is not MAU.
 

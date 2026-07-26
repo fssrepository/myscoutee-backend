@@ -195,15 +195,7 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
         max_width=720,
         spacing=8,
     )
-    ui.pill(image, (94, 482), "10 YEARS IN THE MAKING", fill=PURPLE, size=16, height=38)
-    ui.text(
-        image,
-        (96, 542),
-        "FOUNDER: PETER PAL SZABO, MSc  •  20+ YEARS FULL-STACK ENGINEERING",
-        size=15,
-        color=MUTED,
-        weight="medium",
-    )
+    ui.pill(image, (94, 482), "IDEA ORIGIN: 2016", fill=PURPLE, size=16, height=38)
 
     hero = ROOT / "plans/img/facebook_header.png"
     ui.paste_cover(image, hero, (850, 150, 1832, 535), radius=30, outline="#596BC2", darken=5)
@@ -219,9 +211,9 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
 
     timeline = [
         (
-            "c. 2016",
+            "2016 • IDEA",
             "The product thesis",
-            "Ranked preferences, reciprocal weighting and group formation instead of binary swipes.",
+            "The ranked-priority, reciprocal and group-first concept predates the AI-assisted build phase.",
             BLUE,
         ),
         (
@@ -257,7 +249,7 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
         size=15,
         color=MUTED_2,
     )
-    footer(image, 1, note="Founder-reported 10-year origin; source count is reproducible, not a moat")
+    footer(image, 1, note="Idea originated in 2016; implementation accelerated later")
     return image
 
 
@@ -312,11 +304,11 @@ def slide_2(assets: dict[str, Path]) -> Image.Image:
         bullet_color=BLUE,
     )
     ui.rounded_card(image, (994, 760, 1796, 920), fill="#252044", radius=22, outline=PURPLE, shadow=False)
-    ui.text(image, (1022, 784), "FOUNDER THESIS", size=14, color=PURPLE, weight="bold")
+    ui.text(image, (1022, 784), "BUILD PRINCIPLE", size=14, color=PURPLE, weight="bold")
     ui.text(
         image,
         (1022, 822),
-        "AI accelerated construction. It did not replace a decade of product reasoning—or "
+        "AI accelerated construction. It did not invent the product thesis—or replace "
         "the engineering needed for architecture, performance and quality.",
         size=21,
         color=TEXT,
@@ -575,7 +567,7 @@ def slide_6(assets: dict[str, Path]) -> Image.Image:
     ui.rounded_card(image, (1290, 232, 1832, 932), fill="#192445", radius=30, outline="#40548F")
     ui.text(image, (1324, 264), "WHAT CAN BECOME DEFENSIBLE", size=16, color=PURPLE, weight="bold")
     defensibility = [
-        ("01", "Behavioral model", "A decade of logic around ranked, reciprocal and group-centric discovery.", BLUE),
+        ("01", "Behavioral model", "A pre-AI product thesis around ranked, reciprocal and group-centric discovery.", BLUE),
         ("02", "Integrated workflow", "Graph > group > chat > event > feedback in one operating layer.", PURPLE),
         ("03", "Outcome loop", "Future meeting evidence can connect graph quality to real-world results.", GREEN),
         ("04", "Delivery rail", "A packaged product can serve direct, community and branded deployments.", ORANGE),
