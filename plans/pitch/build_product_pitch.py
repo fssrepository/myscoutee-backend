@@ -168,7 +168,7 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
     ui.pill(
         image,
         (1530, 64),
-        "MVP IN REFINEMENT",
+        "PRODUCT IN REFINEMENT",
         fill=GOLD,
         color=INK,
         size=15,
@@ -213,13 +213,13 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
         (
             "2016 • IDEA",
             "The product thesis",
-            "The ranked-priority, reciprocal and group-first concept predates the AI-assisted build phase.",
+            "The ranked-priority, reciprocal and group-first concept predates the later build phase.",
             BLUE,
         ),
         (
             "AI BUILD PHASE",
             "Breadth became possible",
-            "AI-assisted delivery compressed implementation time across the full product workflow.",
+            "Artificial intelligence (AI)-assisted delivery compressed implementation time across the full workflow.",
             PURPLE,
         ),
         (
@@ -245,7 +245,7 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
     ui.text(
         image,
         (122, 958),
-        "≈350k physical source lines in the current scoped product • AI-assisted build • no commercial traction claimed",
+        "≈350,000 physical source lines in the current scoped product • AI-assisted build • no commercial traction claimed",
         size=15,
         color=MUTED_2,
     )
@@ -420,8 +420,8 @@ def slide_4(assets: dict[str, Path]) -> Image.Image:
 
     visuals = [
         ("GROUP CHAT", "Shared context before the meeting", assets["chat"], BLUE),
-        ("EVENT WORKFLOW", "Invitation > checkout/QR > feedback", assets["event_join"], ORANGE),
-        ("VERIFIED ARRIVAL", "Ticket and QR check-in surfaces", assets["ticket_scan"], GREEN),
+        ("EVENT WORKFLOW", "Invitation > checkout > check-in > feedback", assets["event_join"], ORANGE),
+        ("VERIFIED ARRIVAL", "Ticket and quick-response (QR) check-in", assets["ticket_scan"], GREEN),
     ]
     for x, (title, subtitle, path, accent) in zip((88, 680, 1272), visuals):
         ui.rounded_card(image, (x, 468, x + 560, 914), fill=CARD, radius=26, outline=accent)
@@ -501,7 +501,7 @@ def slide_5(assets: dict[str, Path]) -> Image.Image:
     ui.rounded_card(image, (1280, 242, 1832, 970), fill="#182445", radius=30, outline="#3C518C")
     ui.text(image, (1314, 272), "DELIVERY FOUNDATION", size=16, color=GREEN, weight="bold")
     stack = [
-        ("FRONTEND", "Angular PWA", BLUE),
+        ("FRONTEND", "Angular web app", BLUE),
         ("BACKEND", "Java / Spring services", PURPLE),
         ("DATA + REALTIME", "MongoDB • Redis • WebSocket", PINK),
         ("DEPLOYMENT", "Debian-packaged Docker stack", ORANGE),
@@ -518,7 +518,7 @@ def slide_5(assets: dict[str, Path]) -> Image.Image:
     ui.text(image, (1336, 811), "500 concurrent clients validated", size=19, weight="bold")
     ui.rounded_card(image, (1312, 858, 1800, 938), fill="#33202D", radius=17, outline="#7B405D", shadow=False)
     ui.text(image, (1336, 875), "BOUNDARY TO VALIDATE", size=13, color=PINK, weight="bold")
-    ui.text(image, (1336, 905), "10k connections / deployment stated ceiling", size=17, weight="bold")
+    ui.text(image, (1336, 905), "10,000 connections / deployment stated ceiling", size=17, weight="bold")
 
     ui.text(
         image,
@@ -528,7 +528,7 @@ def slide_5(assets: dict[str, Path]) -> Image.Image:
         color=MUTED_2,
         max_width=1150,
     )
-    footer(image, 5, note="MVP breadth is implemented; product-market fit and commercial traction are not demonstrated")
+    footer(image, 5, note="Product breadth is implemented; product-market fit and commercial traction are not demonstrated")
     return image
 
 
@@ -599,7 +599,7 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
         "06",
         "Operator economics",
         "Local operators earn when groups create real-world action.",
-        "Each VPS is an independent business: partner commission belongs to its operator—not to MyScoutee or the founder.",
+        "A virtual private server (VPS) is an operator-hosted deployment; its partner commission belongs to that operator.",
         status="PLANNED",
     )
 
@@ -607,7 +607,7 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
         (
             "PRIMARY HYPOTHESIS",
             "Operator partner commission",
-            "An operator signs venues, festivals, activities, travel or experience partners for its own VPS; attributable bookings pay commission to that operator.",
+            "An operator signs venues, festivals, activities, travel or experience partners for its own private deployment; attributable bookings pay that operator.",
             GREEN,
         ),
         (
@@ -656,7 +656,7 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
     equation = (
         "operator revenue\n"
         "= local partner bookings × agreed commission\n"
-        "+ local facilitated GMV × operator-set fee"
+        "+ local transaction value × operator-set fee"
     )
     ui.text(image, (998, 468), equation, size=20, color=WHITE, weight="bold", mono=True, spacing=7)
 
@@ -681,14 +681,14 @@ def slide_7(assets: dict[str, Path]) -> Image.Image:
     ui.text(
         image,
         (994, 836),
-        "Only at 10M verified MAU with no exit: the founder seeks 5% of the contract-defined "
+        "Only at 10 million verified monthly active users (MAU) with no exit: the founder seeks 5% of the contract-defined "
         "combined member-contribution base. It is not the operator’s local partner commission.",
         size=17,
         color=TEXT,
         max_width=770,
         spacing=6,
     )
-    footer(image, 7, note="Operator partner commission ≠ founder’s proposed 10M/no-exit 5% network share")
+    footer(image, 7, note="Operator partner commission ≠ founder’s proposed 10-million/no-exit 5% network share")
     return image
 
 
@@ -707,7 +707,7 @@ def slide_8(assets: dict[str, Path]) -> Image.Image:
     ui.rounded_card(image, (88, 230, 1160, 962), fill=CARD, radius=30)
     ui.text(image, (120, 260), "GATED PRODUCT PLAN", size=16, color=GREEN, weight="bold")
     phases = [
-        ("NOW", "HARDEN THE CORE", "Performance • mobile CPU • safety • tests • independent chat-load validation", GREEN),
+        ("NOW", "HARDEN THE CORE", "Performance • mobile processor • safety • tests • independent chat-load validation", GREEN),
         ("PILOT", "ONE DENSE COMMUNITY", "Enough reciprocal signals, group inventory and relevant events to test the loop", BLUE),
         ("MEASURE", "FULL OUTCOME FUNNEL", "Group proposed > accepted > active chat > event > attendance > feedback", PURPLE),
         ("REVENUE", "OPERATOR COMMISSION", "Test whether local bookings create attributable operator commission", ORANGE),

@@ -14,6 +14,13 @@ The product is designed around a different success event: a completed, mutually
 welcomed real-world meeting. The deck does not claim users, revenue, retention,
 product-market fit, or proven matching superiority.
 
+## Plain-language abbreviations
+
+- **AI** = artificial intelligence.
+- **MAU** = monthly active user(s).
+- **VPS** = virtual private server; in the deck this means an
+  operator-hosted private deployment.
+
 ## Product history and code-size wording
 
 The core product idea originated in 2016, before the current AI-assisted
@@ -30,7 +37,7 @@ frontend/src/assets/admin/affinity-graph/app.js
 At the time of deck creation, those paths contain approximately 349,887 physical
 lines. `cloc` reports roughly 318,000 logical code lines depending on exact
 inclusion rules. The older LinkedIn article body referenced roughly 240,000
-Angular lines; use the current scoped method when quoting the updated 350k figure.
+Angular lines; use the current scoped method when quoting the updated 350,000 figure.
 Code volume demonstrates implementation breadth, not traction or defensibility.
 
 ## Eight-slide narrative
@@ -68,7 +75,7 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
    - Repository benchmark evidence validates 500 simultaneous WebSocket room
      clients delivering 10,000 frames. The stated 10,000-connection
      per-deployment ceiling remains an external validation item; it is not the
-     repository benchmark and is not MAU.
+     repository benchmark and is not monthly active users (MAU).
 
 6. **Why it is different.**
    - Graded rather than binary input.
@@ -79,7 +86,7 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
    - Raw AI-generated code is not presented as the moat.
 
 7. **Local operators earn when groups create real-world action.**
-   - Every VPS is an independent local business.
+   - Every operator-hosted virtual private server (VPS) is an independent local business.
    - An operator can sign its own venue, festival, activity, travel, or
      experience partners.
    - When a group makes an attributable booking, the agreed partner commission
@@ -91,7 +98,8 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
      configured local payment workflow.
    - No take rate, operator revenue, forecast, or affiliate conversion is claimed.
    - This local operator economy is completely separate from the proposed
-     network-level fallback: only if the verified network reaches 10M MAU and no
+     network-level fallback: only if the verified network reaches 10 million
+     monthly active users (MAU) and no
      defined exit occurs, the founder seeks 5% of the contract-defined combined
      member-contribution base.
    - The founder's 5% network share is not the operator's affiliate commission

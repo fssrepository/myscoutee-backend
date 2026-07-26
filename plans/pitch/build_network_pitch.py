@@ -422,9 +422,17 @@ def slide_1() -> Image.Image:
 
     cards = [
         ("BUILT", "Meeting-first product", "Affinity matching, groups, chats, events, resources and feedback."),
-        ("BUILT", "Packaged self-hosting", "An installable Debian artifact runs the production stack on the operator’s VPS."),
+        (
+            "BUILT",
+            "Packaged self-hosting",
+            "The Debian package runs the full stack on an operator-hosted virtual private server (VPS).",
+        ),
         ("PLANNED", "Claim registry", "Every deployment reports aggregates; a claimed code links weight to an exit-eligible operator."),
-        ("PROPOSED", "Shared success pool", "100k founder units; at 1M total units, 10% founder / 90% operator pool."),
+        (
+            "PROPOSED",
+            "Shared success pool",
+            "100,000 founder units; at 1 million total units, 10% founder / 90% operator pool.",
+        ),
     ]
     x_positions = [90, 530, 970, 1410]
     accent_by_status = {"BUILT": GREEN, "PLANNED": BLUE, "PROPOSED": PURPLE}
@@ -451,7 +459,7 @@ def slide_1() -> Image.Image:
         weight="medium",
         max_width=1475,
     )
-    footer(image, 1, note="100k / 1M / 10M are economic milestones, not current users")
+    footer(image, 1, note="100,000 / 1 million / 10 million are economic milestones, not current users")
     return image
 
 
@@ -486,14 +494,21 @@ def slide_2() -> Image.Image:
         y += 126
 
     text(image, (90, 752), "CODEBASE EVIDENCE + CURRENT CAPACITY BOUNDARY  •  NOT CUSTOMER TRACTION", size=16, color=GREEN, weight="bold")
-    metric_card(image, (90, 786, 390, 990), "22", "REST controllers", accent=BLUE, note="current Java code")
-    metric_card(image, (410, 786, 710, 990), "162", "HTTP endpoint mappings", accent=PURPLE, note="current Java code")
+    metric_card(image, (90, 786, 390, 990), "22", "backend controllers", accent=BLUE, note="current Java code")
+    metric_card(image, (410, 786, 710, 990), "162", "backend endpoints", accent=PURPLE, note="current Java code")
     metric_card(image, (730, 786, 1030, 990), "51", "product help explainers", accent=PINK, note="editable SVG guides")
-    metric_card(image, (1050, 786, 1350, 990), "225/s", "event-read requests", accent=ORANGE, note="32 VUs • 0% errors • local")
+    metric_card(
+        image,
+        (1050, 786, 1350, 990),
+        "225/s",
+        "event-read requests",
+        accent=ORANGE,
+        note="32 simulated users • 0% errors • local",
+    )
     metric_card(
         image,
         (1370, 786, 1832, 990),
-        "10k max",
+        "10,000 max",
         "chat connections / deployment",
         accent=GREEN,
         note="current stated ceiling • validate externally",
@@ -521,7 +536,7 @@ def slide_3() -> Image.Image:
     text(
         image,
         (648, 389),
-        "backend IP • signed releases • updates • support • common API",
+        "backend intellectual property • signed releases • updates • support • common interface",
         size=18,
         color=MUTED,
         anchor="ma",
@@ -541,7 +556,7 @@ def slide_3() -> Image.Image:
         pill(image, (x1 + 24, 584), name, fill=accent, color=BG if accent in (ORANGE,) else WHITE, size=16, height=34)
         text(image, (x1 + 24, 632), domain, size=17, color=MUTED, weight="medium")
         rounded_card(image, (x1 + 22, 676, x2 - 22, 740), fill="#24315A", radius=16, shadow=False, outline=None)
-        text(image, (cx, 708), "OPEN FRONTEND  •  PWA", size=17, weight="bold", anchor="mm")
+        text(image, (cx, 708), "OPEN FRONTEND  •  WEB APP", size=17, weight="bold", anchor="mm")
         rounded_card(image, (x1 + 22, 754, x2 - 22, 818), fill="#202A4C", radius=16, shadow=False, outline=None)
         text(image, (cx, 786), "LOCAL .DEB CORE", size=17, weight="bold", anchor="mm")
         text(image, (cx, 851), "profiles • chats • events • payments", size=14, color=MUTED, anchor="ma", align="center")
@@ -613,7 +628,7 @@ def slide_4() -> Image.Image:
         "03",
         "Telemetry + claim registry",
         "Every deployment is measured. Only claimed weight participates.",
-        "Automatic aggregate telemetry proves scale; a deployment code binds measured history to a verified operator and exit rights.",
+        "A deployment code binds aggregate telemetry to an operator; QMAU means qualified monthly active users.",
         status="PLANNED",
     )
 
@@ -621,9 +636,9 @@ def slide_4() -> Image.Image:
     text(image, (120, 260), "DEPLOYMENTS  >  AGGREGATE TELEMETRY  >  CLAIM REGISTRY", size=17, color=GREEN, weight="bold")
 
     instances = [
-        ("CAMPUS", "50k QMAU", BLUE, 332),
-        ("CITY", "30k QMAU", PINK, 522),
-        ("CLUB", "20k QMAU", ORANGE, 712),
+        ("CAMPUS", "50,000 QMAU", BLUE, 332),
+        ("CITY", "30,000 QMAU", PINK, 522),
+        ("CLUB", "20,000 QMAU", ORANGE, 712),
     ]
     for name, value, accent, cy in instances:
         rounded_card(image, (122, cy, 420, cy + 132), fill=CARD_2, radius=22, outline=accent, shadow=False)
@@ -637,7 +652,7 @@ def slide_4() -> Image.Image:
     text(image, (628, 498), "CLAIM REGISTRY", size=29, weight="bold")
     text(image, (628, 542), "telemetry measures  •  code claim attributes", size=17, color="#A9E9D4", weight="medium")
     payload = (
-        "verified network MAU\n"
+        "verified network users / month\n"
         "deployment code + status\n"
         "registered operator\n"
         "claimed eligible weight\n"
@@ -654,8 +669,8 @@ def slide_4() -> Image.Image:
     text(image, (534, 902), "telemetry remains • no beneficiary • no exit share", size=15, color=TEXT, weight="medium")
 
     rounded_card(image, (1122, 230, 1832, 972), fill=CARD, radius=30)
-    text(image, (1156, 260), "V1 CONTRACT METRIC", size=16, color=GREEN, weight="bold")
-    text(image, (1156, 302), "Qualified MAU", size=36, weight="bold")
+    text(image, (1156, 260), "INITIAL CONTRACT METRIC", size=16, color=GREEN, weight="bold")
+    text(image, (1156, 302), "Qualified monthly active users (QMAU)", size=30, weight="bold")
     text(
         image,
         (1156, 356),
@@ -723,8 +738,14 @@ def slide_5() -> Image.Image:
     for x, y in points:
         draw.ellipse((x - 12, y - 12, x + 12, y + 12), fill=rgb(PURPLE), outline=rgb(WHITE), width=3)
     draw.line((xs[2], y1, xs[2], y2), fill=rgb(GREEN), width=3)
-    pill(image, (xs[2] - 94, y1 - 28), "1M TRIGGER", fill=GREEN, color=BG, size=15, height=34)
-    text(image, (x1, 770), "Total contribution units", size=15, color=MUTED_2)
+    pill(image, (xs[2] - 112, y1 - 28), "1 MILLION TRIGGER", fill=GREEN, color=BG, size=15, height=34)
+    text(
+        image,
+        (x1, 770),
+        "Total contribution units  •  k = thousand  •  M = million",
+        size=15,
+        color=MUTED_2,
+    )
 
     rows = [("200k", "50%", "50%"), ("500k", "20%", "80%"), ("1M", "10%", "90%"), ("10M", "10%", "90%")]
     text(image, (124, 812), "TOTAL", size=14, color=MUTED_2, weight="bold")
@@ -747,7 +768,7 @@ def slide_5() -> Image.Image:
         "operator_i = (1 - F) × claimed_i / C"
     )
     text(image, (1122, 316), formula, size=18, color=WHITE, weight="bold", mono=True, spacing=5)
-    text(image, (1094, 482), "AT 1M+ TOTAL UNITS", size=16, color=GREEN, weight="bold")
+    text(image, (1094, 482), "AT 1 MILLION+ TOTAL UNITS", size=16, color=GREEN, weight="bold")
     bar_x1, bar_y1, bar_x2, bar_y2 = 1094, 524, 1798, 604
     split = bar_x1 + int((bar_x2 - bar_x1) * 0.10)
     draw.rounded_rectangle((bar_x1, bar_y1, bar_x2, bar_y2), radius=22, fill=rgb(GREEN))
@@ -760,7 +781,7 @@ def slide_5() -> Image.Image:
     text(
         image,
         (1118, 694),
-        "At 1M+, an operator with 12% of claimed eligible weight receives 10.8% of defined net exit proceeds.",
+        "At 1 million+, an operator with 12% of claimed eligible weight receives 10.8% of defined net exit proceeds.",
         size=21,
         color=TEXT,
         max_width=650,
@@ -795,9 +816,9 @@ def slide_6() -> Image.Image:
     section_header(
         image,
         "05",
-        "10M fallback",
-        "At 10M MAU with no exit, a separate 5% network share activates.",
-        "Local partner commission stays with each operator; the founder’s fallback applies only to the defined combined member-contribution base.",
+        "10 million fallback",
+        "At 10 million MAU with no exit, a separate 5% network share activates.",
+        "MAU means monthly active users. Local partner commission stays with each operator; the founder’s fallback uses a separate member base.",
         status="MODEL — NOT TRACTION",
     )
 
@@ -806,7 +827,7 @@ def slide_6() -> Image.Image:
     text(image, (120, 314), "THE TRIGGER", size=29, weight="bold")
 
     trigger_items = [
-        ("01", "VERIFIED NETWORK REACH", "The combined network reaches 10M verified MAU.", BLUE),
+        ("01", "VERIFIED NETWORK REACH", "The network reaches 10 million verified monthly active users.", BLUE),
         ("02", "NO DEFINED EXIT", "No qualifying sale or other agreed liquidity event has occurred.", PINK),
         ("03", "NETWORK FALLBACK", "The founder receives 5% of the defined combined member-contribution base.", ORANGE),
     ]
@@ -834,7 +855,7 @@ def slide_6() -> Image.Image:
     text(
         image,
         (146, 860),
-        "Local partner commission belongs to the operator that acquired the partner for its VPS.",
+        "Local partner commission belongs to the operator that acquired the partner for its private deployment.",
         size=20,
         color=TEXT,
         max_width=700,
@@ -844,7 +865,7 @@ def slide_6() -> Image.Image:
     text(image, (1014, 260), "TWO INDEPENDENT ECONOMIES", size=17, color=ORANGE, weight="bold")
 
     rounded_card(image, (1012, 310, 1800, 514), fill="#102D30", radius=22, outline="#2E7168", shadow=False)
-    pill(image, (1038, 334), "LOCAL VPS / OPERATOR", fill="#17463F", color=GREEN, size=14, height=32, outline=GREEN)
+    pill(image, (1038, 334), "LOCAL PRIVATE SERVER / OPERATOR", fill="#17463F", color=GREEN, size=14, height=32, outline=GREEN)
     text(image, (1038, 386), "Partner commission", size=27, weight="bold")
     text(
         image,
@@ -865,7 +886,16 @@ def slide_6() -> Image.Image:
     )
 
     rounded_card(image, (1012, 536, 1800, 752), fill="#322333", radius=22, outline="#7B405D", shadow=False)
-    pill(image, (1038, 560), "NETWORK / 10M + NO EXIT", fill="#4A2C1D", color=ORANGE, size=14, height=32, outline=ORANGE)
+    pill(
+        image,
+        (1038, 560),
+        "NETWORK / 10 MILLION + NO EXIT",
+        fill="#4A2C1D",
+        color=ORANGE,
+        size=14,
+        height=32,
+        outline=ORANGE,
+    )
     text(image, (1038, 612), "Founder 5% network share", size=27, weight="bold")
     text(
         image,
@@ -901,7 +931,7 @@ def slide_6() -> Image.Image:
         gap=7,
         bullet_color=BLUE,
     )
-    footer(image, 6, note="Operator partner commission ≠ founder’s proposed 10M/no-exit 5% network share")
+    footer(image, 6, note="Operator partner commission ≠ founder’s proposed 10-million/no-exit 5% network share")
     return image
 
 

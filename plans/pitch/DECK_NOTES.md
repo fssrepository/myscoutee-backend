@@ -6,6 +6,13 @@ Core pitch:
 
 > Keep your brand and community. Run a supported MyScoutee core. Prove your contribution with privacy-safe telemetry. Share the value the network creates.
 
+## Plain-language abbreviations
+
+- **MAU** = monthly active user(s).
+- **QMAU** = qualified monthly active user(s), using the deck's activity rule.
+- **VPS** = virtual private server; in the deck this means an
+  operator-hosted private deployment.
+
 The new product is deliberately narrow: every deployment sends privacy-safe,
 signed aggregate telemetry to a central registry and receives a unique deployment
 code. An operator claims that code and registers the company/operator identity to
@@ -31,9 +38,9 @@ partners, customer funds, refunds, tax, and the customer relationship. The found
 does not collect end-customer payments on an operator's behalf.
 
 If an operator recruits a venue, festival, activity, travel, or experience
-partner for its VPS, the attributable affiliate/referral commission belongs to
+partner for its operator-hosted virtual private server (VPS), the attributable affiliate/referral commission belongs to
 that operator. It is local operator revenue, not MyScoutee/founder revenue and
-is excluded from the founder's separate 10M/no-exit fallback base.
+is excluded from the founder's separate 10-million/no-exit fallback base.
 
 Each registered operator receives a share based on verified claimed network weight.
 The founder starts with 100,000 contribution units, so an earlier exit can produce
@@ -56,7 +63,7 @@ then remains fixed at 10%; operators share the other 90%.
 2. **The product closes the gap between matching and meeting.**
    - Preference signal → affinity graph → optimized group → event → feedback.
    - Product breadth is evidenced by the current codebase; code counts are not customer traction.
-   - Current stated chat ceiling is approximately 10,000 concurrent connections per deployment. This is not the same as network MAU and must be independently validated before an external capacity claim.
+   - Current stated chat ceiling is approximately 10,000 concurrent connections per deployment. This is not the same as network monthly active users (MAU) and must be independently validated before an external capacity claim.
    - Aggregate network scale comes from many independently hosted deployments; a single brand that exceeds this ceiling needs a documented horizontal-scaling or sharding path.
 
 3. **Open distribution surface. Licensed, packaged core.**
@@ -103,19 +110,19 @@ then remains fixed at 10%; operators share the other 90%.
 
    - At 1 million total contribution units, the founder reaches a fixed 10%; operators share 90%.
    - This working rule lets unclaimed telemetry prove total scale, while reallocating the operator pool only across valid claims. Confirm that treatment in the participation agreement.
-   - “Fixed at 10% after 1M” is clearer than “capped at 10%,” because the rule is economically a floor after the threshold.
+   - “Fixed at 10% after 1 million” is clearer than “capped at 10%,” because the rule is economically a floor after the threshold.
    - Decide whether the founder’s 100,000 units are verified users or an economic credit. If they are a credit, do not include them in public network MAU.
    - This should be a contractual success pool, not casually described as equity or shares.
-   - If venture capital is required, consider a disclosed Core/IP hurdle before the 90/10 network-uplift split.
+   - If venture capital is required, consider a disclosed Core/intellectual-property hurdle before the 90/10 network-uplift split.
 
-6. **At 10M MAU with no exit, a separate 5% network share activates.**
-   - This deck assumes the trigger uses verified aggregate reach from all deployments and activates only if that network reaches 10M MAU and no defined exit has occurred.
+6. **At 10 million monthly active users (MAU) with no exit, a separate 5% network share activates.**
+   - This deck assumes the trigger uses verified aggregate reach from all deployments and activates only if that network reaches 10 million MAU and no defined exit has occurred.
    - The founder receives 5% of the contractually defined combined member-contribution base.
    - The combined member-contribution base excludes operator-owned local partner commissions.
    - This is a network-level fallback share, not a take rate on a local venue,
      event, travel, or experience partner commission.
    - Local affiliate/referral commission belongs to the operator that acquired
-     the partner for its VPS.
+     the partner for its private deployment.
    - The local software handles checkout/payment logic, but each operator connects its own payment account and remains the independent merchant.
    - Customer funds do not flow through the founder; each operator retains control of its pricing, partners, billing configuration, proceeds, refunds, tax, and customer relationship.
    - MyScoutee does not prescribe an affiliate program, shared central checkout, conversion model, basket size, or method for generating revenue.
@@ -152,7 +159,7 @@ then remains fixed at 10%; operators share the other 90%.
 
 - Founder units: real verified MAU or an economic credit.
 - Deduplicated network MAU versus deployment-level activity.
-- Whether the 1M and 10M milestones use all measured weight or only claimed weight; the deck currently uses all measured weight for network scale.
+- Whether the 1 million and 10 million milestones use all measured weight or only claimed weight; the deck currently uses all measured weight for network scale.
 - Current six-month average versus vested lifetime contribution.
 - Exact qualifying actions and fraud exclusions.
 - Exit definition, net distributable proceeds, record date, audit, dispute, clawback, tax, and treatment of investor preferences.
