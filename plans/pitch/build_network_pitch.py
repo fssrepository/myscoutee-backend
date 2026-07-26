@@ -285,6 +285,38 @@ def paste_cover(
     draw.rounded_rectangle(box, radius=radius, outline=rgb(outline), width=3)
 
 
+def paste_brand_logo(image: Image.Image, box: tuple[int, int, int, int]) -> None:
+    """Place the trimmed transparent brand mark inside a clean badge.
+
+    The older 1024px app-icon source includes a soft floor glow that turns into
+    a white strip at small sizes. The dedicated heart mark is already trimmed,
+    so it scales without that edge artifact.
+    """
+    rounded_card(
+        image,
+        box,
+        fill="#0D1430",
+        alpha=255,
+        radius=20,
+        outline="#6174D5",
+        outline_width=3,
+        shadow=False,
+    )
+    x1, y1, x2, y2 = box
+    inset = 7
+    target_w = x2 - x1 - inset * 2
+    target_h = y2 - y1 - inset * 2
+    source = Image.open(ROOT / "frontend/src/assets/logo/heart.png").convert("RGBA")
+    scale = min(target_w / source.width, target_h / source.height)
+    resized = source.resize(
+        (max(1, round(source.width * scale)), max(1, round(source.height * scale))),
+        RESAMPLE_LANCZOS,
+    )
+    px = x1 + (x2 - x1 - resized.width) // 2
+    py = y1 + (y2 - y1 - resized.height) // 2
+    image.alpha_composite(resized, (px, py))
+
+
 def draw_arrow(
     image: Image.Image,
     start: tuple[int, int],
@@ -359,8 +391,7 @@ def slide_1() -> Image.Image:
     image = vertical_gradient("#070B1C", "#12183A")
     add_glow(image, (-240, -250, 900, 900), PURPLE, blur=160, alpha=100)
     add_glow(image, (1320, -200, 2200, 700), PINK, blur=170, alpha=75)
-    logo = ROOT / "frontend/src/assets/icon/myscoutee-meta-app-icon-1024.png"
-    paste_cover(image, logo, (90, 58, 164, 132), radius=20, crop="contain", outline="#6174D5")
+    paste_brand_logo(image, (90, 58, 164, 132))
     text(image, (184, 66), "MYSCOUTEE NETWORK", size=24, weight="bold")
     text(image, (184, 100), "OPERATOR + STRATEGIC PARTNER DECK", size=14, color=MUTED, weight="medium")
     status_pill(image, (1585, 64), "MODEL — NOT TRACTION")
