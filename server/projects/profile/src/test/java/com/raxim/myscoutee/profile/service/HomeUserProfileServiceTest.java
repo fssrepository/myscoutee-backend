@@ -827,6 +827,7 @@ class HomeUserProfileServiceTest {
                 "",
                 null,
                 false,
+                null,
                 null);
     }
 }

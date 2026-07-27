@@ -29,3 +29,5 @@ can register with that key to a virtual company
 2) replace logo to make a rebrand
 
 following deployed version on central server, uodate url etc.
+
+theme selection so the landing site colour tones can be changed

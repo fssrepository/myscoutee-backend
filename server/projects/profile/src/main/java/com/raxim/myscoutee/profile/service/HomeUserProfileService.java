@@ -61,6 +61,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileDetailRowDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserNotificationPreferencesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPersonalityTraitDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
@@ -317,6 +318,7 @@ public class HomeUserProfileService {
                 userDto.deletedAtIso(),
                 isCurrentRequestAdmin(),
                 userDto.activities(),
+                userDto.notificationPreferences(),
                 filterCount,
                 filterPreferences,
                 menuCounters);
@@ -380,6 +382,7 @@ public class HomeUserProfileService {
                 "",
                 true,
                 activities,
+                new UserNotificationPreferencesDto(false),
                 0,
                 null,
                 menuCounters);
@@ -415,7 +418,8 @@ public class HomeUserProfileService {
                 response.previousProfileStatus(),
                 response.deletedAtIso(),
                 response.admin(),
-                response.activities());
+                response.activities(),
+                response.notificationPreferences());
     }
 
     private List<ExperienceEntryDto> queryUserExperienceEntries(String userId) {
@@ -1142,7 +1146,12 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getPreviousProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()),
                 false,
-                toUserActivitiesDto(user.getActivities()));
+                toUserActivitiesDto(user.getActivities()),
+                includeImpressions
+                        ? new UserNotificationPreferencesDto(
+                                user.getNotificationPreferences() != null
+                                        && Boolean.TRUE.equals(user.getNotificationPreferences().muted()))
+                        : null);
     }
 
     private boolean isCurrentRequestAdmin() {

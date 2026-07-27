@@ -127,6 +127,10 @@ public final class AuthDtos {
             Integer removed) {
     }
 
+    public record UserNotificationPreferencesDto(
+            Boolean muted) {
+    }
+
     public record UserRealtimeCountersDto(
             Integer game,
             Integer chats,
@@ -316,7 +320,8 @@ public final class AuthDtos {
             String previousProfileStatus,
             String deletedAtIso,
             Boolean admin,
-            UserActivitiesDto activities) {
+            UserActivitiesDto activities,
+            UserNotificationPreferencesDto notificationPreferences) {
     }
 
     public record ProfileExtDto(
@@ -361,6 +366,7 @@ public final class AuthDtos {
             String deletedAtIso,
             Boolean admin,
             UserActivitiesDto activities,
+            UserNotificationPreferencesDto notificationPreferences,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,
             UserMenuCountersDto counterOverrides) {
