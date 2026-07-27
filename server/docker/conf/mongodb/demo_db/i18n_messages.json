@@ -7170,6 +7170,216 @@
     "value": "Report Bugs"
   },
   {
+    "_id": "i18n-message-en-landing-partners-open-aria",
+    "key": "landing.partners.open.aria",
+    "lang": "en",
+    "value": "Open partner overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-header-label",
+    "key": "landing.partners.header.label",
+    "lang": "en",
+    "value": "Independent operator network"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-header-badge",
+    "key": "landing.partners.header.badge",
+    "lang": "en",
+    "value": "Planned model"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-title",
+    "key": "landing.partners.title",
+    "lang": "en",
+    "value": "For Partners"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-subtitle",
+    "key": "landing.partners.subtitle",
+    "lang": "en",
+    "value": "Four ways to participate. Every operator stays independent."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-aria",
+    "key": "landing.partners.aria",
+    "lang": "en",
+    "value": "For Partners role overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-close-aria",
+    "key": "landing.partners.close.aria",
+    "lang": "en",
+    "value": "Close partner overview"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-roles-aria",
+    "key": "landing.partners.roles.aria",
+    "lang": "en",
+    "value": "Partner roles"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-operator-label",
+    "key": "landing.partners.role.operator.label",
+    "lang": "en",
+    "value": "Run it"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-operator-title",
+    "key": "landing.partners.role.operator.title",
+    "lang": "en",
+    "value": "Independent operator"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-operator-description",
+    "key": "landing.partners.role.operator.description",
+    "lang": "en",
+    "value": "In the planned model, run a branded deployment on a virtual private server (VPS). You own the community, partners and payment account; the software routes local funds directly to you."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-commercial-label",
+    "key": "landing.partners.role.commercial.label",
+    "lang": "en",
+    "value": "Supply experiences"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-commercial-title",
+    "key": "landing.partners.role.commercial.title",
+    "lang": "en",
+    "value": "Venue or experience partner"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-commercial-description",
+    "key": "landing.partners.role.commercial.description",
+    "lang": "en",
+    "value": "Offer venues, festivals, activities, travel or experiences through a local operator. Booking commission belongs to that operator—not the network owner."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-community-label",
+    "key": "landing.partners.role.community.label",
+    "lang": "en",
+    "value": "Bring a community"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-community-title",
+    "key": "landing.partners.role.community.title",
+    "lang": "en",
+    "value": "Community partner"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-community-description",
+    "key": "landing.partners.role.community.description",
+    "lang": "en",
+    "value": "Bring an active local community and help turn mutual interest into group chats, events, attendance and feedback."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-strategic-label",
+    "key": "landing.partners.role.strategic.label",
+    "lang": "en",
+    "value": "Build with us"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-strategic-title",
+    "key": "landing.partners.role.strategic.title",
+    "lang": "en",
+    "value": "Strategic collaborator"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-role-strategic-description",
+    "key": "landing.partners.role.strategic.description",
+    "lang": "en",
+    "value": "Contribute safety, privacy or graph expertise, product hardening, distribution or strategic funding."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-network-title",
+    "key": "landing.partners.network.title",
+    "lang": "en",
+    "value": "Optional network claim · planned"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-network-description",
+    "key": "landing.partners.network.description",
+    "lang": "en",
+    "value": "Aggregate telemetry is sent either way, creating verifiable network weight. A deployment may stay unnamed and independent."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-network-claimed-label",
+    "key": "landing.partners.network.claimed.label",
+    "lang": "en",
+    "value": "Claimed"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-network-claimed-description",
+    "key": "landing.partners.network.claimed.description",
+    "lang": "en",
+    "value": "The deployment code connects verified history to a named operator, making its weight eligible for a proposed exit allocation."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-network-unclaimed-label",
+    "key": "landing.partners.network.unclaimed.label",
+    "lang": "en",
+    "value": "Unclaimed"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-network-unclaimed-description",
+    "key": "landing.partners.network.unclaimed.description",
+    "lang": "en",
+    "value": "The deployment still operates and earns locally, but its weight receives no exit allocation."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-exit-title",
+    "key": "landing.partners.exit.title",
+    "lang": "en",
+    "value": "Proposed exit allocation"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-exit-dedicated-definition",
+    "key": "landing.partners.exit.dedicated.definition",
+    "lang": "en",
+    "value": "The founder-dedicated 100,000 monthly active users (MAU) are an allocation weight used only for exit math—not users owned by or transferred to the founder."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-exit-before-cap",
+    "key": "landing.partners.exit.before.cap",
+    "lang": "en",
+    "value": "Founder percentage = 100,000 ÷ total verified MAU. Example: an exit at 500,000 MAU means 20% for the founder and 80% for eligible operators."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-exit-at-cap",
+    "key": "landing.partners.exit.at.cap",
+    "lang": "en",
+    "value": "Founder share is capped at 10%; the remaining 90% is distributed among eligible claimed operators by verified network weight."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-economics-title",
+    "key": "landing.partners.economics.title",
+    "lang": "en",
+    "value": "Economics stay separate"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-economics-local-label",
+    "key": "landing.partners.economics.local.label",
+    "lang": "en",
+    "value": "Local commerce:"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-economics-local-description",
+    "key": "landing.partners.economics.local.description",
+    "lang": "en",
+    "value": "Partner booking commission is paid to the operator's own account."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-economics-no-exit-label",
+    "key": "landing.partners.economics.no.exit.label",
+    "lang": "en",
+    "value": "Proposed no-exit fallback:"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-economics-no-exit-description",
+    "key": "landing.partners.economics.no.exit.description",
+    "lang": "en",
+    "value": "At 10 million verified monthly active users (MAU), if no exit is defined, the founder seeks 5% of contract-defined member contributions—never operator commissions."
+  },
+  {
     "_id": "i18n-message-en-articles",
     "key": "articles",
     "lang": "en",
@@ -21388,6 +21598,216 @@
     "key": "landing.preview.guide.report.button",
     "lang": "hu",
     "value": "Hibák jelentése"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-open-aria",
+    "key": "landing.partners.open.aria",
+    "lang": "hu",
+    "value": "Partneri áttekintő megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-header-label",
+    "key": "landing.partners.header.label",
+    "lang": "hu",
+    "value": "Független operátori hálózat"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-header-badge",
+    "key": "landing.partners.header.badge",
+    "lang": "hu",
+    "value": "Tervezett modell"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-title",
+    "key": "landing.partners.title",
+    "lang": "hu",
+    "value": "Partnereknek"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-subtitle",
+    "key": "landing.partners.subtitle",
+    "lang": "hu",
+    "value": "Négy részvételi forma. Minden operátor független marad."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-aria",
+    "key": "landing.partners.aria",
+    "lang": "hu",
+    "value": "Partneri szerepkörök áttekintése"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-close-aria",
+    "key": "landing.partners.close.aria",
+    "lang": "hu",
+    "value": "Partneri áttekintő bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-roles-aria",
+    "key": "landing.partners.roles.aria",
+    "lang": "hu",
+    "value": "Partneri szerepkörök"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-operator-label",
+    "key": "landing.partners.role.operator.label",
+    "lang": "hu",
+    "value": "Üzemeltesd"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-operator-title",
+    "key": "landing.partners.role.operator.title",
+    "lang": "hu",
+    "value": "Független operátor"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-operator-description",
+    "key": "landing.partners.role.operator.description",
+    "lang": "hu",
+    "value": "A tervezett modellben saját márkás példányt futtathatsz egy virtuális privát szerveren (VPS). A közösség, a partnerek és a fizetési számla az operátoré; a szoftver közvetlenül hozzá irányítja a helyi bevételeket."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-commercial-label",
+    "key": "landing.partners.role.commercial.label",
+    "lang": "hu",
+    "value": "Kínálj élményeket"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-commercial-title",
+    "key": "landing.partners.role.commercial.title",
+    "lang": "hu",
+    "value": "Helyszín- vagy élménypartner"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-commercial-description",
+    "key": "landing.partners.role.commercial.description",
+    "lang": "hu",
+    "value": "Helyszínt, fesztivált, programot, utazást vagy élményt kínálhatsz egy helyi operátoron keresztül. A foglalási jutalék az operátoré, nem a hálózat tulajdonosáé."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-community-label",
+    "key": "landing.partners.role.community.label",
+    "lang": "hu",
+    "value": "Hozz közösséget"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-community-title",
+    "key": "landing.partners.role.community.title",
+    "lang": "hu",
+    "value": "Közösségi partner"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-community-description",
+    "key": "landing.partners.role.community.description",
+    "lang": "hu",
+    "value": "Hozz aktív helyi közösséget, és segíts a kölcsönös érdeklődést csoportos csevegéssé, eseménnyé, részvétellé és visszajelzéssé alakítani."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-strategic-label",
+    "key": "landing.partners.role.strategic.label",
+    "lang": "hu",
+    "value": "Építs velünk"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-strategic-title",
+    "key": "landing.partners.role.strategic.title",
+    "lang": "hu",
+    "value": "Stratégiai együttműködő"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-role-strategic-description",
+    "key": "landing.partners.role.strategic.description",
+    "lang": "hu",
+    "value": "Járulj hozzá biztonsági, adatvédelmi vagy gráfszakértelemmel, termékfejlesztéssel, terjesztéssel vagy stratégiai finanszírozással."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-network-title",
+    "key": "landing.partners.network.title",
+    "lang": "hu",
+    "value": "Opcionális hálózati regisztráció · tervezett"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-network-description",
+    "key": "landing.partners.network.description",
+    "lang": "hu",
+    "value": "Az összesített telemetria mindenképpen elküldésre kerül, így ellenőrizhető hálózati súly keletkezik. A telepítés név nélkül és függetlenül is működhet."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-network-claimed-label",
+    "key": "landing.partners.network.claimed.label",
+    "lang": "hu",
+    "value": "Névhez rendelt"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-network-claimed-description",
+    "key": "landing.partners.network.claimed.description",
+    "lang": "hu",
+    "value": "A telepítési kód az ellenőrzött előzményeket egy megnevezett operátorhoz köti, így a súly jogosult lehet a javasolt exit-felosztásra."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-network-unclaimed-label",
+    "key": "landing.partners.network.unclaimed.label",
+    "lang": "hu",
+    "value": "Nincs névhez rendelve"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-network-unclaimed-description",
+    "key": "landing.partners.network.unclaimed.description",
+    "lang": "hu",
+    "value": "A telepítés továbbra is működik és helyben termel bevételt, de a súlya nem részesül az exit felosztásából."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-exit-title",
+    "key": "landing.partners.exit.title",
+    "lang": "hu",
+    "value": "Javasolt exit-felosztás"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-exit-dedicated-definition",
+    "key": "landing.partners.exit.dedicated.definition",
+    "lang": "hu",
+    "value": "Az alapítónak fenntartott 100 000 havi aktív felhasználó (MAU) kizárólag az exit-felosztás számítási súlya; nem az alapító tulajdonában álló vagy hozzá átadott felhasználókat jelent."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-exit-before-cap",
+    "key": "landing.partners.exit.before.cap",
+    "lang": "hu",
+    "value": "Alapítói százalék = 100 000 ÷ összes ellenőrzött MAU. Példa: 500 000 MAU-nál történő exit esetén 20% az alapítóé és 80% a jogosult operátoroké."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-exit-at-cap",
+    "key": "landing.partners.exit.at.cap",
+    "lang": "hu",
+    "value": "1 millió MAU-tól az alapítói részesedés legfeljebb 10%; a fennmaradó 90% a jogosult, névhez rendelt operátorok között oszlik meg az ellenőrzött hálózati súlyuk alapján."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-economics-title",
+    "key": "landing.partners.economics.title",
+    "lang": "hu",
+    "value": "A bevételek elkülönülnek"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-economics-local-label",
+    "key": "landing.partners.economics.local.label",
+    "lang": "hu",
+    "value": "Helyi kereskedelem:"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-economics-local-description",
+    "key": "landing.partners.economics.local.description",
+    "lang": "hu",
+    "value": "A partnerfoglalási jutalék az operátor saját számlájára érkezik."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-economics-no-exit-label",
+    "key": "landing.partners.economics.no.exit.label",
+    "lang": "hu",
+    "value": "Javasolt exit nélküli tartalékmodell:"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-economics-no-exit-description",
+    "key": "landing.partners.economics.no.exit.description",
+    "lang": "hu",
+    "value": "10 millió ellenőrzött havi aktív felhasználónál (MAU), ha nincs meghatározott exit, az alapító a szerződésben meghatározott tagi hozzájárulások 5%-át kéri—soha nem az operátori jutalékokból."
   },
   {
     "_id": "i18n-message-hu-articles",
