@@ -643,6 +643,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("scheduledMessageRuns", List.of("createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("emailOutbox", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("notificationOutbox", List.of("recipientUserIds", "createdUser", "updatedUser"), userId);
+        purgeUserNotifications(userId);
         deleteDocumentsByAnyField("shareTokens", List.of("ownerUserId"), userId);
         deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);
@@ -656,6 +657,28 @@ public class DeletedAccountPurgeService {
         anonymizeUserFieldsByAnyField("emailCampaignRules", List.of("createdUser", "updatedUser"), userId);
         anonymizeUserFieldsByAnyField("notificationRuleConfigs", List.of("createdUser", "updatedUser"), userId);
         anonymizeUserFieldsByAnyField("affinityConfigs", List.of("changedUser"), userId);
+    }
+
+    private void purgeUserNotifications(String userId) {
+        mongoTemplate.remove(
+                Query.query(Criteria.where("recipientUserId").is(userId)),
+                "userNotifications");
+        Update senderRedaction = new Update()
+                .set("senderUserId", "deleted-user")
+                .set("title", "Notification from a deleted user")
+                .set("message", "This notification was sent by a deleted user.")
+                .set("payload", new Document());
+        mongoTemplate.updateMulti(
+                Query.query(new Criteria().orOperator(
+                        Criteria.where("senderUserId").is(userId),
+                        Criteria.where("payload.senderUserId").is(userId),
+                        Criteria.where("payload.actorUserId").is(userId))),
+                senderRedaction,
+                "userNotifications");
+        anonymizeUserFieldsByAnyField(
+                "userNotifications",
+                List.of("createdUser", "updatedUser"),
+                userId);
     }
 
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {

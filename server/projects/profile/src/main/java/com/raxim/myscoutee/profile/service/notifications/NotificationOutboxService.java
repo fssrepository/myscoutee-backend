@@ -47,17 +47,33 @@ public class NotificationOutboxService {
     private final StringRedisTemplate stringRedisTemplate;
     private final PlatformParametersService platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
+    private final ObjectProvider<UserNotificationService> userNotificationServiceProvider;
 
     @Autowired
     public NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
             PlatformParametersService platformParametersService,
-            RedisStreamRetentionService redisStreamRetentionService) {
+            RedisStreamRetentionService redisStreamRetentionService,
+            ObjectProvider<UserNotificationService> userNotificationServiceProvider) {
         this.notificationOutboxRepository = notificationOutboxRepository;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
         this.platformParametersService = platformParametersService;
         this.redisStreamRetentionService = redisStreamRetentionService;
+        this.userNotificationServiceProvider = userNotificationServiceProvider;
+    }
+
+    public NotificationOutboxService(
+            NotificationOutboxRepository notificationOutboxRepository,
+            ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
+            PlatformParametersService platformParametersService,
+            RedisStreamRetentionService redisStreamRetentionService) {
+        this(
+                notificationOutboxRepository,
+                stringRedisTemplateProvider,
+                platformParametersService,
+                redisStreamRetentionService,
+                null);
     }
 
     NotificationOutboxService(
@@ -107,7 +123,18 @@ public class NotificationOutboxService {
                 .orElseGet(() -> newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso));
         NotificationOutboxItem saved = notificationOutboxRepository.save(item);
         publishWakeup(saved);
+        materializeInbox(saved);
         return Optional.of(saved);
+    }
+
+    private void materializeInbox(NotificationOutboxItem item) {
+        if (userNotificationServiceProvider == null || item == null) {
+            return;
+        }
+        UserNotificationService userNotificationService = userNotificationServiceProvider.getIfAvailable();
+        if (userNotificationService != null) {
+            userNotificationService.materialize(item);
+        }
     }
 
     private NotificationOutboxItem newItem(

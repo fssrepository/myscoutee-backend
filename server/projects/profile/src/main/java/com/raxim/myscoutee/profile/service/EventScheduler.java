@@ -53,6 +53,8 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
@@ -70,6 +72,9 @@ public class EventScheduler {
     private static final String STAGE_STATUS_SUSPENDED = "S";
     private static final String STAGE_STATUS_ERROR = "E";
     private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
+    private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
+    private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
+    private static final String DEFAULT_CLICK_URL = "/game";
 
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
@@ -82,6 +87,7 @@ public class EventScheduler {
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
+    private final NotificationOutboxService notificationOutboxService;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
@@ -105,7 +111,8 @@ public class EventScheduler {
             EventCounterExpiryService eventCounterExpiryService,
             EventCheckoutBasketService eventCheckoutBasketService,
             NotificationRuleRegistryService notificationRuleRegistryService,
-            PlatformParametersService platformParametersService) {
+            PlatformParametersService platformParametersService,
+            NotificationOutboxService notificationOutboxService) {
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -117,6 +124,7 @@ public class EventScheduler {
         this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.platformParametersService = platformParametersService;
+        this.notificationOutboxService = notificationOutboxService;
     }
 
     @Scheduled(fixedDelayString = "${events.scheduler.check-delay-ms:60000}")
@@ -753,7 +761,10 @@ public class EventScheduler {
                     
             if (!persistedInviteUserIds.isEmpty()) {
                 recordPlanMarker("priority", MARKER_ACTION_INVITE_BATCH, eventId, eventId, persistedInviteUserIds);
-                eventInviteNotificationService.notifyInvitees(event, persistedInviteUserIds);
+                eventInviteNotificationService.notifyInvitees(
+                        event,
+                        persistedInviteUserIds,
+                        resolveInviterUserId(event));
                 
                 // Thread-safe addition
                 plans.add(new InviteBatchPlan(eventId, persistedInviteUserIds));
@@ -1263,7 +1274,55 @@ public class EventScheduler {
                 syncedGroups.add(new GeneratedEventPlan(plannedGroup.seedId(), syncedUserIds));
             }
         }
+        notifyChangedRandomGroupAssignments(event, wrapperType, context, syncedGroups);
         return syncedGroups;
+    }
+
+    private void notifyChangedRandomGroupAssignments(
+            ActivityEvent event,
+            String wrapperType,
+            String assignmentScope,
+            List<GeneratedEventPlan> syncedGroups) {
+        if (notificationOutboxService == null
+                || !"random".equals(normalizeId(wrapperType))
+                || syncedGroups == null
+                || syncedGroups.isEmpty()) {
+            return;
+        }
+        List<String> recipientUserIds = syncedGroups.stream()
+                .filter(Objects::nonNull)
+                .flatMap(plan -> normalizeUserIds(plan.memberUserIds()).stream())
+                .distinct()
+                .toList();
+        if (recipientUserIds.isEmpty()) {
+            return;
+        }
+
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "your event");
+        String title = "Room assignment ready";
+        String body = "Your room assignment for " + eventTitle + " is ready.";
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "random-groups");
+        payload.put("assignmentScope", safeText(assignmentScope));
+        payload.put("assignmentFingerprint", fingerprintAssignments(syncedGroups));
+
+        notificationOutboxService.enqueue(new NotificationIntent(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                OWNER_TYPE_EVENT,
+                eventId,
+                "random-room-participants",
+                recipientUserIds,
+                title,
+                body,
+                DEFAULT_CLICK_URL,
+                firstNonBlank(event == null ? null : event.getImageUrl(), APP_FALLBACK_ICON_URL),
+                APP_BADGE_URL,
+                "event-random-groups-" + eventId,
+                payload,
+                MARKER_UPDATED_BY));
     }
 
     private int incrementObservedQueries(AtomicInteger observedQueries) {
@@ -1373,6 +1432,24 @@ public class EventScheduler {
 
     private String fingerprintUserIds(Collection<String> userIds) {
         String normalized = String.join("|", normalizeUserIds(userIds).stream().sorted().toList());
+        return fingerprintText(normalized);
+    }
+
+    private String fingerprintAssignments(Collection<GeneratedEventPlan> plans) {
+        if (plans == null || plans.isEmpty()) {
+            return "";
+        }
+        List<String> normalizedAssignments = plans.stream()
+                .filter(Objects::nonNull)
+                .map(plan -> normalizeId(plan.seedId())
+                        + "="
+                        + String.join(",", normalizeUserIds(plan.memberUserIds()).stream().sorted().toList()))
+                .sorted()
+                .toList();
+        return fingerprintText(String.join("|", normalizedAssignments));
+    }
+
+    private String fingerprintText(String normalized) {
         if (!StringUtils.hasText(normalized)) {
             return "";
         }

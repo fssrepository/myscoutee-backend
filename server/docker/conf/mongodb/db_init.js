@@ -20,6 +20,7 @@ const requiredCollections = [
   'emailTemplates',
   'emailCampaignRules',
   'notificationTemplates',
+  'userNotifications',
   'scheduledMessageTasks',
   'affinityConfigs',
   'adminStats',
@@ -144,6 +145,22 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.notificationTemplates.createIndex(
     { templateKey: 1 },
     { name: 'notification_template_key', unique: true }
+  );
+  portalDb.userNotifications.createIndex(
+    { syncKey: 1 },
+    { name: 'user_notifications_sync_key', unique: true, sparse: true }
+  );
+  portalDb.userNotifications.createIndex(
+    { recipientUserId: 1, readAtIso: 1, createdDate: -1, _id: -1 },
+    { name: 'user_notifications_recipient_read_created' }
+  );
+  portalDb.userNotifications.createIndex(
+    { recipientUserId: 1, createdDate: -1, _id: -1 },
+    { name: 'user_notifications_recipient_created' }
+  );
+  portalDb.userNotifications.createIndex(
+    { sourceType: 1, sourceId: 1, createdDate: -1 },
+    { name: 'user_notifications_source_created' }
   );
   portalDb.scheduledMessageTasks.createIndex(
     { syncKey: 1 },

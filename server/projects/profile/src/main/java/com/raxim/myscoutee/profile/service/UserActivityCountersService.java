@@ -334,7 +334,8 @@ public class UserActivityCountersService {
                         count(ticketCount)),
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
-                count(safe.adminMetrics()));
+                count(safe.adminMetrics()),
+                count(safe.notifications()));
     }
 
     private void updateEventCounters(String userId, Users.UserActivitiesRecord next) {
@@ -382,7 +383,8 @@ public class UserActivityCountersService {
                         count(safe.asset() == null ? null : safe.asset().tickets())),
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
-                count(safe.adminMetrics()));
+                count(safe.adminMetrics()),
+                count(safe.notifications()));
     }
 
     private void updateAssetCounters(String userId, Users.UserActivitiesRecord next) {
@@ -425,7 +427,8 @@ public class UserActivityCountersService {
                         counters.feedbacked(),
                         counters.removed()),
                 count(safe.adminJobs()),
-                count(safe.adminMetrics()));
+                count(safe.adminMetrics()),
+                count(safe.notifications()));
     }
 
     private void updateFeedbackCounters(String userId, Users.UserActivitiesRecord next) {
@@ -459,7 +462,7 @@ public class UserActivityCountersService {
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
-                0, 0);
+                0, 0, 0);
     }
 
     private FeedbackCounters currentFeedbackCounters(Users.UserActivitiesRecord current) {

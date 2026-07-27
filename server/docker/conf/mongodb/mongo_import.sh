@@ -242,6 +242,22 @@ db.getCollection('notificationTemplates').createIndex({ syncKey: 1 }, { name: 'n
 db.getCollection('notificationTemplates').createIndex({ templateKey: 1 }, { name: 'notification_template_key', unique: true });
 " >/dev/null
       ;;
+    userNotifications)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('userNotifications').createIndex({ syncKey: 1 }, { name: 'user_notifications_sync_key', unique: true, sparse: true });
+db.getCollection('userNotifications').createIndex({ recipientUserId: 1, readAtIso: 1, createdDate: -1, _id: -1 }, { name: 'user_notifications_recipient_read_created' });
+db.getCollection('userNotifications').createIndex({ recipientUserId: 1, createdDate: -1, _id: -1 }, { name: 'user_notifications_recipient_created' });
+db.getCollection('userNotifications').createIndex({ sourceType: 1, sourceId: 1, createdDate: -1 }, { name: 'user_notifications_source_created' });
+" >/dev/null
+      ;;
     scheduledMessageTasks)
       mongosh \
         --host "${mongo_host}" \

@@ -125,7 +125,8 @@ public class AdminMenuCounterService {
                 existing == null ? null : existing.asset(),
                 existing == null ? null : existing.eventFeedback(),
                 counters.jobs(),
-                counters.metrics());
+                counters.metrics(),
+                count(existing == null ? null : existing.notifications()));
         if (activitiesEqual(existing, next)) {
             return user;
         }
@@ -256,7 +257,8 @@ public class AdminMenuCounterService {
                 && Objects.equals(count(first.contacts()), count(second.contacts()))
                 && Objects.equals(count(first.feedback()), count(second.feedback()))
                 && Objects.equals(count(first.adminJobs()), count(second.adminJobs()))
-                && Objects.equals(count(first.adminMetrics()), count(second.adminMetrics()));
+                && Objects.equals(count(first.adminMetrics()), count(second.adminMetrics()))
+                && Objects.equals(count(first.notifications()), count(second.notifications()));
     }
 
     private Map<String, Long> safeMap(Map<String, Long> source) {

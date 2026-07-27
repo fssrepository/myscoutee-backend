@@ -684,28 +684,32 @@ class HomeUserProfileServiceTest {
                 new Users.UserAssetCountersRecord(8, 9, 10, 11),
                 new Users.UserEventFeedbackCountersRecord(4, 13, 14, 2),
                 15,
-                16);
+                16,
+                17);
     }
 
     private void assertFlatCounters(UserRealtimeCountersDto counters) {
         assertFlatCounters(
                 counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
-                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics(),
+                counters.notifications());
     }
 
     private void assertFlatCounters(UserMenuCountersDto counters) {
         assertFlatCounters(
                 counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
-                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics(),
+                counters.notifications());
     }
 
     private void assertFlatCounters(UserActivitiesDto counters) {
         assertFlatCounters(
                 counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
-                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics(),
+                counters.notifications());
     }
 
     private void assertFlatCounters(
@@ -721,7 +725,8 @@ class HomeUserProfileServiceTest {
             Integer contacts,
             Integer feedback,
             Integer adminJobs,
-            Integer adminMetrics) {
+            Integer adminMetrics,
+            Integer notifications) {
         assertThat(game).isEqualTo(3);
         assertThat(chat).isEqualTo(4);
         assertThat(invitations).isEqualTo(5);
@@ -735,6 +740,7 @@ class HomeUserProfileServiceTest {
         assertThat(feedback).isEqualTo(13);
         assertThat(adminJobs).isEqualTo(15);
         assertThat(adminMetrics).isEqualTo(16);
+        assertThat(notifications).isEqualTo(17);
     }
 
     private void assertNestedCounters(UserRealtimeCountersDto counters) {

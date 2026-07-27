@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -37,6 +38,8 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,6 +66,8 @@ class EventSchedulerTest {
     private NotificationRuleRegistryService notificationRuleRegistryService;
     @Mock
     private PlatformParametersService platformParametersService;
+    @Mock
+    private NotificationOutboxService notificationOutboxService;
 
     @Test
     void runScheduledWrappersRunsCounterExpiryWhenAdminRuleIsDue() {
@@ -132,7 +137,10 @@ class EventSchedulerTest {
             assertThat(plan.invitedUserIds()).containsExactly("u1", "u2");
         });
         verify(activitiesMembersService).inviteUsers("event-1", "creator-1", List.of("u1", "u2"), event);
-        verify(eventInviteNotificationService).notifyInvitees(event, List.of("u1", "u2"));
+        verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("u1", "u2"),
+                "creator-1");
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -144,6 +152,7 @@ class EventSchedulerTest {
         event.setSourceId("event-1");
         event.setStatus("A");
         event.setCreatorUserId("creator-1");
+        event.setTitle("Board Game Night");
         event.setSubEvents(List.of(subEvent("sub-1", 2, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
@@ -194,6 +203,22 @@ class EventSchedulerTest {
         verify(activitiesMembersService).syncGroupMembers("event-1:sub-1:sub-1:group:1", "creator-1", List.of("u1", "u2"));
         verify(activitiesMembersService).syncGroupMembers("event-1:sub-1:sub-1:group:2", "creator-1", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        assertThat(intentCaptor.getValue()).satisfies(intent -> {
+            assertThat(intent.type()).isEqualTo(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+            assertThat(intent.entityType()).isEqualTo("event");
+            assertThat(intent.entityId()).isEqualTo("event-1");
+            assertThat(intent.recipientUserIds()).containsExactly("u1", "u2", "u3", "u4");
+            assertThat(intent.title()).isEqualTo("Room assignment ready");
+            assertThat(intent.body()).isEqualTo("Your room assignment for Board Game Night is ready.");
+            assertThat(intent.payload()).containsKeys(
+                    "eventId",
+                    "eventTitle",
+                    "eventScope",
+                    "assignmentScope",
+                    "assignmentFingerprint");
+        });
     }
 
     @Test
@@ -436,6 +461,7 @@ class EventSchedulerTest {
 
         assertThat(plans).isEmpty();
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
 
     @Test
@@ -474,7 +500,8 @@ class EventSchedulerTest {
                 eventCounterExpiryService,
                 eventCheckoutBasketService,
                 notificationRuleRegistryService,
-                platformParametersService);
+                platformParametersService,
+                notificationOutboxService);
     }
 
     private Users user(String userId) {

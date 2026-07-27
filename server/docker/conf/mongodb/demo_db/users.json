@@ -305,7 +305,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 24
     },
     "affinity": 581523,
     "age": 30,
@@ -429,6 +430,9 @@
     "profileStatus": "public",
     "statusText": "Recently Active",
     "traitLabel": "Kreatív",
+    "notificationPreferences": {
+      "muted": false
+    },
     "syncKey": "9b85707e-468c-5f08-ab3c-a5068cde1346",
     "partitionKey": "country:hu",
     "userId": "9f3b3f085e23af6c89dbc432",

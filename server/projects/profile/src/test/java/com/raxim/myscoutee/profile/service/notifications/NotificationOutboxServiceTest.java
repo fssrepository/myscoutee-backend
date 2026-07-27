@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.ObjectProvider;
 
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
@@ -153,6 +154,30 @@ class NotificationOutboxServiceTest {
         verify(repository).save(savedItem.capture());
         assertThat(savedItem.getValue().getRecipientUserIds()).containsExactly("u1", "u2", "u3");
         assertThat(savedItem.getValue().getDeliveryStrategy()).isEqualTo("multicast");
+    }
+
+    @Test
+    void enqueueMaterializesTheSavedOutboxItemIntoTheUserInbox() {
+        NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
+                anyString(),
+                anyCollection(),
+                anyString())).thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        UserNotificationService userNotificationService = org.mockito.Mockito.mock(UserNotificationService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<UserNotificationService> provider = org.mockito.Mockito.mock(ObjectProvider.class);
+        when(provider.getIfAvailable()).thenReturn(userNotificationService);
+        NotificationOutboxService service = new NotificationOutboxService(
+                repository,
+                null,
+                null,
+                null,
+                provider);
+
+        NotificationOutboxItem saved = service.enqueue(intent(List.of("u1"), Map.of())).orElseThrow();
+
+        verify(userNotificationService).materialize(saved);
     }
 
     private NotificationIntent intent(List<String> recipientUserIds, Map<String, String> payload) {

@@ -23,15 +23,12 @@ public class ChatPushNotificationService {
     private static final String DEFAULT_CLICK_URL = "/game";
 
     private final UsersRepository usersRepository;
-    private final ChatWebSocketSessionRegistry sessionRegistry;
     private final NotificationOutboxService notificationOutboxService;
 
     public ChatPushNotificationService(
             UsersRepository usersRepository,
-            ChatWebSocketSessionRegistry sessionRegistry,
             NotificationOutboxService notificationOutboxService) {
         this.usersRepository = usersRepository;
-        this.sessionRegistry = sessionRegistry;
         this.notificationOutboxService = notificationOutboxService;
     }
 
@@ -47,9 +44,7 @@ public class ChatPushNotificationService {
         String clickUrl = buildClickUrl(event);
         String notificationTag = buildNotificationTag(event);
         long timestampMillis = resolveTimestampMillis(event.sentAtIso());
-        List<String> recipients = resolveRecipientUserIds(chatDocuments, event.senderId()).stream()
-                .filter(userId -> !sessionRegistry.isUserConnected(event.chatId(), userId))
-                .toList();
+        List<String> recipients = List.copyOf(resolveRecipientUserIds(chatDocuments, event.senderId()));
         if (recipients.isEmpty()) {
             return;
         }

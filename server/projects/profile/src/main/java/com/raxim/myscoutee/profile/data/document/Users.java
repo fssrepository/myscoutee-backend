@@ -70,6 +70,7 @@ public class Users {
     private String previousProfileStatus;
     private String deletedAtIso;
     private UserActivitiesRecord activities;
+    private UserNotificationPreferencesRecord notificationPreferences;
     private List<UserDeviceRecord> devices = new ArrayList<>();
     private List<String> homeGameRatedUserIds;
     private List<String> homeGameRatedPairKeys;
@@ -365,6 +366,14 @@ public class Users {
         this.activities = activities;
     }
 
+    public UserNotificationPreferencesRecord getNotificationPreferences() {
+        return notificationPreferences;
+    }
+
+    public void setNotificationPreferences(UserNotificationPreferencesRecord notificationPreferences) {
+        this.notificationPreferences = notificationPreferences;
+    }
+
     public List<UserDeviceRecord> getDevices() {
         return devices;
     }
@@ -435,7 +444,49 @@ public class Users {
             UserAssetCountersRecord asset,
             UserEventFeedbackCountersRecord eventFeedback,
             Integer adminJobs,
-            Integer adminMetrics) {
+            Integer adminMetrics,
+            Integer notifications) {
+        public UserActivitiesRecord(
+                Integer game,
+                Integer chats,
+                Integer invitations,
+                Integer events,
+                Integer hosting,
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets,
+                Integer contacts,
+                Integer feedback,
+                UserChatCountersRecord chat,
+                UserEventCountersRecord event,
+                UserAssetCountersRecord asset,
+                UserEventFeedbackCountersRecord eventFeedback,
+                Integer adminJobs,
+                Integer adminMetrics) {
+            this(
+                    game,
+                    chats,
+                    invitations,
+                    events,
+                    hosting,
+                    cars,
+                    accommodation,
+                    supplies,
+                    tickets,
+                    contacts,
+                    feedback,
+                    chat,
+                    event,
+                    asset,
+                    eventFeedback,
+                    adminJobs,
+                    adminMetrics,
+                    0);
+        }
+    }
+
+    public record UserNotificationPreferencesRecord(Boolean muted) {
     }
 
     public record UserChatCountersRecord(

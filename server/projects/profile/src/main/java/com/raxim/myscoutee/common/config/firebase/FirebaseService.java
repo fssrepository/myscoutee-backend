@@ -150,7 +150,7 @@ public class FirebaseService {
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
-                0, 0));
+                0, 0, 0));
         try {
             return usersRepository.save(user);
         } catch (DataIntegrityViolationException exception) {

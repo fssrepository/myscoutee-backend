@@ -1980,7 +1980,8 @@ public class HomeUserProfileService {
                 toUserAssetCountersDto(activities == null ? null : activities.asset()),
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
-                activities == null ? 0 : normalizeCount(activities.adminMetrics()));
+                activities == null ? 0 : normalizeCount(activities.adminMetrics()),
+                activities == null ? 0 : normalizeCount(activities.notifications()));
     }
 
     private UserMenuCountersDto emptyMenuCounters() {
@@ -1990,7 +1991,7 @@ public class HomeUserProfileService {
                 new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                 new UserAssetCountersDto(0, 0, 0, 0),
                 new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                0, 0);
+                0, 0, 0);
     }
 
     private String adminDisplayName(String email) {
@@ -2415,7 +2416,9 @@ public class HomeUserProfileService {
             UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
+        int fingerprintOffset = cursorPartCount >= 38
+                ? 36
+                : cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
         String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
         String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
         String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
@@ -2438,6 +2441,7 @@ public class HomeUserProfileService {
                 counters.eventFeedback(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
+                counters.notifications(),
                 StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
                 StringUtils.hasText(previousMemberHash) && !Objects.equals(previousMemberHash, nextMemberHash));
     }
@@ -2482,6 +2486,7 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().removed())),
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
+                String.valueOf(normalizeCount(counters.notifications())),
                 impressionsFingerprint(impressions == null ? null : impressions.host()),
                 impressionsFingerprint(impressions == null ? null : impressions.member()));
     }
@@ -2600,7 +2605,7 @@ public class HomeUserProfileService {
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
                     new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                    0, 0);
+                    0, 0, 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2619,7 +2624,8 @@ public class HomeUserProfileService {
                 toUserAssetCountersDto(activities.asset()),
                 toUserEventFeedbackCountersDto(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
-                normalizeCount(activities.adminMetrics()));
+                normalizeCount(activities.adminMetrics()),
+                normalizeCount(activities.notifications()));
     }
 
     private Users.UserActivitiesRecord toUserActivitiesRecord(UserActivitiesDto activities) {
@@ -2630,7 +2636,7 @@ public class HomeUserProfileService {
                     new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                     new Users.UserAssetCountersRecord(0, 0, 0, 0),
                     new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
-                    0, 0);
+                    0, 0, 0);
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
@@ -2649,7 +2655,8 @@ public class HomeUserProfileService {
                 toUserAssetCountersRecord(activities.asset()),
                 toUserEventFeedbackCountersRecord(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
-                normalizeCount(activities.adminMetrics()));
+                normalizeCount(activities.adminMetrics()),
+                normalizeCount(activities.notifications()));
     }
 
     private UserEventCountersDto toUserEventCountersDto(Users.UserEventCountersRecord event) {
