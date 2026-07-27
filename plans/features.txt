@@ -31,3 +31,4 @@ can register with that key to a virtual company
 following deployed version on central server, uodate url etc.
 
 theme selection so the landing site colour tones can be changed
+maybe a forum also and a help on that operator page (like some community)
