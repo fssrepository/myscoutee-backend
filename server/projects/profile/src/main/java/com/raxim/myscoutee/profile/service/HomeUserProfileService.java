@@ -423,6 +423,7 @@ public class HomeUserProfileService {
                 response.previousProfileStatus(),
                 response.deletedAtIso(),
                 response.admin(),
+                response.operator(),
                 response.activities(),
                 response.notificationPreferences());
     }
@@ -1151,6 +1152,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getPreviousProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()),
                 false,
+                user.isOperator(),
                 toUserActivitiesDto(user.getActivities()),
                 includeImpressions
                         ? new UserNotificationPreferencesDto(
@@ -1553,9 +1555,7 @@ public class HomeUserProfileService {
     }
 
     private boolean isDemoOperatorUserDocument(Users user) {
-        return user != null
-                && (user.isOperator()
-                        || "operator".equalsIgnoreCase(safeText(user.getHostTier())));
+        return user != null && user.isOperator();
     }
 
     private String normalizeDemoSelectorRole(String role) {
@@ -1568,16 +1568,19 @@ public class HomeUserProfileService {
 
     boolean isPublicGameUser(Users user) {
         return isUsableUserDocument(user)
+                && !isDemoOperatorUserDocument(user)
                 && "public".equals(resolveProfileStatus(user));
     }
 
     boolean isInsideNetworkGameUser(Users user) {
         return isUsableUserDocument(user)
+                && !isDemoOperatorUserDocument(user)
                 && INSIDE_NETWORK_GAME_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
     boolean isActivityRateVisibleUser(Users user) {
         return isUsableUserDocument(user)
+                && !isDemoOperatorUserDocument(user)
                 && !HARD_HIDDEN_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 

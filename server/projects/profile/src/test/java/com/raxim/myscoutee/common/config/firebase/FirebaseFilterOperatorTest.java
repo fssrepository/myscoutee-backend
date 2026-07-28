@@ -59,7 +59,7 @@ class FirebaseFilterOperatorTest {
         FirebasePrincipal principal = new FirebasePrincipal(
                 "operator-demo-dev",
                 "operator@myscoutee.local",
-                List.of("O"),
+                List.of("U", "O"),
                 user);
         when(firebaseService.loadDemoOperatorById("operator-demo-dev")).thenReturn(principal);
         FirebaseFilter filter = new FirebaseFilter(

@@ -320,6 +320,7 @@ public final class AuthDtos {
             String previousProfileStatus,
             String deletedAtIso,
             Boolean admin,
+            Boolean operator,
             UserActivitiesDto activities,
             UserNotificationPreferencesDto notificationPreferences) {
     }

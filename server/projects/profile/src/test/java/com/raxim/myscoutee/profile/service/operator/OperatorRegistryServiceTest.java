@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -206,11 +207,13 @@ class OperatorRegistryServiceTest {
 
         when(operations.inspectNodeIdentity(any()))
                 .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
-        when(operations.synchronize(any())).thenReturn(new EnrollmentOutcome(
+        doReturn(new EnrollmentOutcome(
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L));
+                1L))
+                .when(operations)
+                .synchronize(any());
 
         var explicitlyRetried = service.retry("operator-demo-dev");
 

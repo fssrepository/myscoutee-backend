@@ -31,7 +31,6 @@ public class FirebasePrincipal implements UserDetails {
         this.userId = userId;
         this.email = email;
         LinkedHashSet<String> normalized = new LinkedHashSet<>();
-        normalized.add("U");
         if (authorities != null) {
             authorities.stream()
                     .filter(java.util.Objects::nonNull)

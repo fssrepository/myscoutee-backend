@@ -86,7 +86,7 @@ class FirebaseServiceTest {
         assertThat(userDetails).isInstanceOf(FirebasePrincipal.class);
         FirebasePrincipal principal = (FirebasePrincipal) userDetails;
         assertThat(principal.getUserId()).isEqualTo(expectedUserId);
-        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("U", "A");
+        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("A");
         assertThat(principal.getUser()).isNull();
         verify(usersRepository, never()).save(any(Users.class));
     }
@@ -112,9 +112,32 @@ class FirebaseServiceTest {
 
         FirebasePrincipal principal = (FirebasePrincipal) userDetails;
         assertThat(principal.getUserId()).isEqualTo(expectedUserId);
-        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("U", "A");
+        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("A");
         assertThat(principal.getUser()).isNull();
         verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    void devLookupKeepsLegacyIdentityAndMemberAuthorityForOrdinaryStoredUser() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setDevUser("dev@myscoutee.local");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        Users ordinary = new Users();
+        ordinary.setUserId("ordinary");
+        ordinary.setEmail("stored.admin-looking@example.com");
+        ordinary.setHostTier("Operator");
+        when(usersRepository.findByUserId("ordinary")).thenReturn(Optional.of(ordinary));
+
+        FirebasePrincipal principal = (FirebasePrincipal) new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService)
+                .loadUserById("ordinary");
+
+        assertThat(principal.getEmail()).isEqualTo("dev@myscoutee.local");
+        assertThat(principal.getAuthorities()).extracting(Object::toString)
+                .containsExactly("U");
     }
 
     @Test
@@ -198,6 +221,29 @@ class FirebaseServiceTest {
 
         assertThat(service.loadDemoOperatorById("missing")).isNull();
         assertThat(service.loadDemoOperatorById("ordinary")).isNull();
+    }
+
+    @Test
+    void storedOperatorFlagAddsOperatorAuthorityWithoutChangingLegacyBaseRole() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setDevUser("dev@myscoutee.local");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        Users operator = new Users();
+        operator.setUserId("operator");
+        operator.setEmail("operator@example.com");
+        operator.setOperator(true);
+        when(usersRepository.findByUserId("operator")).thenReturn(Optional.of(operator));
+
+        FirebasePrincipal principal = (FirebasePrincipal) new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService)
+                .loadUserById("operator");
+
+        assertThat(principal.getEmail()).isEqualTo("operator@example.com");
+        assertThat(principal.getAuthorities()).extracting(Object::toString)
+                .containsExactly("U", "O");
     }
 
     @Test

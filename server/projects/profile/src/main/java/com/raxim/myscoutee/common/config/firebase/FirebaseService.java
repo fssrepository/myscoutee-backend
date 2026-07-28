@@ -39,9 +39,15 @@ public class FirebaseService {
     public UserDetails loadUserById(String profileId) {
         Users user = findUser(profileId);
         String normalizedProfileId = user != null ? normalizeId(user.getId()) : normalizeId(profileId);
-        String email = normalizeEmail(user != null && StringUtils.hasText(user.getEmail())
-                ? user.getEmail()
-                : config.getDevUser());
+        String legacyDevEmail = normalizeEmail(config.getDevUser());
+        String storedEmail = user != null && StringUtils.hasText(user.getEmail())
+                ? normalizeEmail(user.getEmail())
+                : "";
+        boolean explicitOperator = isStoredOperator(user)
+                || (StringUtils.hasText(storedEmail) && config.isOperatorUser(storedEmail));
+        String email = explicitOperator && StringUtils.hasText(storedEmail)
+                ? storedEmail
+                : legacyDevEmail;
         return new FirebasePrincipal(normalizedProfileId, email, resolveAuthorities(email, user), user);
     }
 
@@ -339,9 +345,10 @@ public class FirebaseService {
     private List<String> resolveAuthorities(String email, Users user) {
         String normalizedEmail = normalizeEmail(email);
         LinkedHashSet<String> authorities = new LinkedHashSet<>();
-        authorities.add("U");
         if (isAdminEmail(normalizedEmail)) {
             authorities.add("A");
+        } else {
+            authorities.add("U");
         }
         if (config.isOperatorUser(normalizedEmail) || isStoredOperator(user)) {
             authorities.add("O");
