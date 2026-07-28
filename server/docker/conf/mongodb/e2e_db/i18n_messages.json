@@ -14910,6 +14910,12 @@
     "value": "Last updated"
   },
   {
+    "_id": "i18n-message-en-operator-update-refresh",
+    "key": "operator.update.refresh",
+    "lang": "en",
+    "value": "Check for updates"
+  },
+  {
     "_id": "i18n-message-en-operator-update-apply",
     "key": "operator.update.apply",
     "lang": "en",
@@ -15046,6 +15052,108 @@
     "key": "operator.claim.error.profile.required",
     "lang": "en",
     "value": "Complete the operator profile name before claiming this node."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-instructions",
+    "key": "operator.claim.verification.instructions",
+    "lang": "en",
+    "value": "Submit the registered company details and an authorized contact for formal verification."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-legal-name",
+    "key": "operator.claim.verification.legal.name",
+    "lang": "en",
+    "value": "Legal company or operator name"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-registration-number",
+    "key": "operator.claim.verification.registration.number",
+    "lang": "en",
+    "value": "Company registration number"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-jurisdiction",
+    "key": "operator.claim.verification.jurisdiction",
+    "lang": "en",
+    "value": "Jurisdiction or country"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-registered-address",
+    "key": "operator.claim.verification.registered.address",
+    "lang": "en",
+    "value": "Registered address"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-website",
+    "key": "operator.claim.verification.website",
+    "lang": "en",
+    "value": "Public website"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-contact-name",
+    "key": "operator.claim.verification.contact.name",
+    "lang": "en",
+    "value": "Verification contact name"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-contact-role",
+    "key": "operator.claim.verification.contact.role",
+    "lang": "en",
+    "value": "Role or title"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-contact-email",
+    "key": "operator.claim.verification.contact.email",
+    "lang": "en",
+    "value": "Contact email"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-attestation",
+    "key": "operator.claim.verification.attestation",
+    "lang": "en",
+    "value": "I attest that I am authorized to submit this claim for the named company or operator."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-submitted",
+    "key": "operator.claim.verification.submitted",
+    "lang": "en",
+    "value": "The node was claimed and company verification is pending registry review."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-pending",
+    "key": "operator.claim.verification.pending",
+    "lang": "en",
+    "value": "Company verification is pending review"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-pending-instructions",
+    "key": "operator.claim.verification.pending.instructions",
+    "lang": "en",
+    "value": "Email the MyScoutee Network to approve the claim. Approval is completed through the registry CLI; this screen does not send an email."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-approved",
+    "key": "operator.claim.verification.approved",
+    "lang": "en",
+    "value": "Company verification approved"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-backend-unavailable",
+    "key": "operator.claim.verification.backend.unavailable",
+    "lang": "en",
+    "value": "This server does not expose the structured company-verification claim contract yet."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-error-required",
+    "key": "operator.claim.verification.error.required",
+    "lang": "en",
+    "value": "Complete every required company and contact field, enter a valid email and website, and confirm the attestation."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-error-website",
+    "key": "operator.claim.verification.error.website",
+    "lang": "en",
+    "value": "Enter a valid public website URL beginning with http:// or https://."
   },
   {
     "_id": "i18n-message-en-operator-group-instructions",
@@ -15444,10 +15552,22 @@
     "value": "Test login"
   },
   {
+    "_id": "i18n-message-en-operator-configuration-test-authentication-short",
+    "key": "operator.configuration.test.authentication.short",
+    "lang": "en",
+    "value": "Auth Test"
+  },
+  {
     "_id": "i18n-message-en-operator-configuration-test-messaging",
     "key": "operator.configuration.test.messaging",
     "lang": "en",
     "value": "Send test notification"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging-short",
+    "key": "operator.configuration.test.messaging.short",
+    "lang": "en",
+    "value": "Message Test"
   },
   {
     "_id": "i18n-message-en-operator-configuration-testing",
@@ -15478,6 +15598,18 @@
     "key": "operator.community.subtitle",
     "lang": "en",
     "value": "Community providers and announcements"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-menu-detail",
+    "key": "operator.community.menu.detail",
+    "lang": "en",
+    "value": "Providers and announcements"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-menu-open",
+    "key": "operator.community.menu.open",
+    "lang": "en",
+    "value": "Community is open"
   },
   {
     "_id": "i18n-message-en-operator-community-current",
@@ -30852,6 +30984,12 @@
     "value": "Utolsó frissítés"
   },
   {
+    "_id": "i18n-message-hu-operator-update-refresh",
+    "key": "operator.update.refresh",
+    "lang": "hu",
+    "value": "Frissítések keresése"
+  },
+  {
     "_id": "i18n-message-hu-operator-update-apply",
     "key": "operator.update.apply",
     "lang": "hu",
@@ -30988,6 +31126,108 @@
     "key": "operator.claim.error.profile.required",
     "lang": "hu",
     "value": "A csomópont igénylése előtt add meg az operátori profil nevét."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-instructions",
+    "key": "operator.claim.verification.instructions",
+    "lang": "hu",
+    "value": "Add meg a bejegyzett vállalkozás adatait és egy jogosult kapcsolattartót a hivatalos ellenőrzéshez."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-legal-name",
+    "key": "operator.claim.verification.legal.name",
+    "lang": "hu",
+    "value": "A vállalkozás vagy operátor hivatalos neve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-registration-number",
+    "key": "operator.claim.verification.registration.number",
+    "lang": "hu",
+    "value": "Cégjegyzékszám"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-jurisdiction",
+    "key": "operator.claim.verification.jurisdiction",
+    "lang": "hu",
+    "value": "Joghatóság vagy ország"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-registered-address",
+    "key": "operator.claim.verification.registered.address",
+    "lang": "hu",
+    "value": "Bejegyzett székhely"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-website",
+    "key": "operator.claim.verification.website",
+    "lang": "hu",
+    "value": "Nyilvános webhely"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-contact-name",
+    "key": "operator.claim.verification.contact.name",
+    "lang": "hu",
+    "value": "Ellenőrzési kapcsolattartó neve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-contact-role",
+    "key": "operator.claim.verification.contact.role",
+    "lang": "hu",
+    "value": "Beosztás vagy tisztség"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-contact-email",
+    "key": "operator.claim.verification.contact.email",
+    "lang": "hu",
+    "value": "Kapcsolattartói e-mail-cím"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-attestation",
+    "key": "operator.claim.verification.attestation",
+    "lang": "hu",
+    "value": "Kijelentem, hogy jogosult vagyok az igénylést a megnevezett vállalkozás vagy operátor nevében benyújtani."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-submitted",
+    "key": "operator.claim.verification.submitted",
+    "lang": "hu",
+    "value": "A csomópont igénylése megtörtént, a cégellenőrzés a nyilvántartás felülvizsgálatára vár."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-pending",
+    "key": "operator.claim.verification.pending",
+    "lang": "hu",
+    "value": "A cégellenőrzés felülvizsgálatra vár"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-pending-instructions",
+    "key": "operator.claim.verification.pending.instructions",
+    "lang": "hu",
+    "value": "Az igénylés jóváhagyásához írj e-mailt a MyScoutee Networknek. A jóváhagyás a nyilvántartási CLI-ben történik; ez a képernyő nem küld e-mailt."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-approved",
+    "key": "operator.claim.verification.approved",
+    "lang": "hu",
+    "value": "A cégellenőrzés jóváhagyva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-backend-unavailable",
+    "key": "operator.claim.verification.backend.unavailable",
+    "lang": "hu",
+    "value": "Ez a szerver még nem biztosítja a strukturált cégellenőrzési igénylés szerződését."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-error-required",
+    "key": "operator.claim.verification.error.required",
+    "lang": "hu",
+    "value": "Tölts ki minden kötelező cég- és kapcsolattartói mezőt, adj meg érvényes e-mail-címet és webhelyet, majd erősítsd meg a nyilatkozatot."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-error-website",
+    "key": "operator.claim.verification.error.website",
+    "lang": "hu",
+    "value": "Adj meg érvényes, http:// vagy https:// kezdetű nyilvános webhelycímet."
   },
   {
     "_id": "i18n-message-hu-operator-group-instructions",
@@ -31386,10 +31626,22 @@
     "value": "Bejelentkezés tesztelése"
   },
   {
+    "_id": "i18n-message-hu-operator-configuration-test-authentication-short",
+    "key": "operator.configuration.test.authentication.short",
+    "lang": "hu",
+    "value": "Hitelesítés teszt"
+  },
+  {
     "_id": "i18n-message-hu-operator-configuration-test-messaging",
     "key": "operator.configuration.test.messaging",
     "lang": "hu",
     "value": "Tesztértesítés küldése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging-short",
+    "key": "operator.configuration.test.messaging.short",
+    "lang": "hu",
+    "value": "Üzenet teszt"
   },
   {
     "_id": "i18n-message-hu-operator-configuration-testing",
@@ -31420,6 +31672,18 @@
     "key": "operator.community.subtitle",
     "lang": "hu",
     "value": "Közösségi szolgáltatók és közlemények"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-menu-detail",
+    "key": "operator.community.menu.detail",
+    "lang": "hu",
+    "value": "Szolgáltatók és közlemények"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-menu-open",
+    "key": "operator.community.menu.open",
+    "lang": "hu",
+    "value": "A közösség meg van nyitva"
   },
   {
     "_id": "i18n-message-hu-operator-community-current",

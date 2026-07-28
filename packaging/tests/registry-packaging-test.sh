@@ -284,6 +284,9 @@ ln -s "${CONFIG_SOURCE_DIR}/myscoutee.secrets.env" "${SERVER_DIR}/.env.secrets"
 
 cat > "${STUB_DIR}/docker" <<'STUB'
 #!/usr/bin/env bash
+if [[ "${1:-}" == "ps" ]]; then
+  printf '%s\n' mongodb
+fi
 exit 0
 STUB
 cat > "${STUB_DIR}/systemctl" <<'STUB'
@@ -346,6 +349,27 @@ if PATH="${STUB_DIR}:${PATH}" \
   MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true \
     bash "${BACKUP_SCRIPT}" >/dev/null 2>&1; then
   fail "required-complete backup accepted missing MongoDB, MinIO, or configuration"
+fi
+
+EMBEDDED_NEWLINE_BACKUP_DIR="${TEST_ROOT}/embedded-newline-backup"
+EMBEDDED_NEWLINE_BACKUP_PATH="${TEST_ROOT}/embedded-newline-backup.tar.gz"
+mkdir -p "${EMBEDDED_NEWLINE_BACKUP_DIR}"
+cp -a "${BACKUP_INSPECT_DIR}/." "${EMBEDDED_NEWLINE_BACKUP_DIR}/"
+printf '8%.0s' {1..32} \
+  > "${EMBEDDED_NEWLINE_BACKUP_DIR}/configuration/deployment-master-key"
+printf '\n' \
+  >> "${EMBEDDED_NEWLINE_BACKUP_DIR}/configuration/deployment-master-key"
+printf '8%.0s' {1..32} \
+  >> "${EMBEDDED_NEWLINE_BACKUP_DIR}/configuration/deployment-master-key"
+tar -C "${EMBEDDED_NEWLINE_BACKUP_DIR}" \
+  -czf "${EMBEDDED_NEWLINE_BACKUP_PATH}" .
+if PATH="${STUB_DIR}:${PATH}" \
+  CONFIRM_RESTORE=true \
+  MYSCOUTEE_SERVER_DIR="${TEST_ROOT}/embedded-newline-restore" \
+  MYSCOUTEE_CONFIGURATION_KEY_DIR="${TEST_ROOT}/embedded-newline-target" \
+    bash "${RESTORE_SCRIPT}" "${EMBEDDED_NEWLINE_BACKUP_PATH}" \
+      >/dev/null 2>&1; then
+  fail "restore accepted an operator configuration key with an embedded newline"
 fi
 
 INCOMPLETE_BACKUP_DIR="${TEST_ROOT}/incomplete-backup"
@@ -487,6 +511,54 @@ grep -q 'dep_0123456789abcdef0123456789abcdef' "${RESTORE_STATE_DIR}/deployment-
 assert_file_mode 600 "${RESTORE_KEY_DIR}/deployment-private-key.pem"
 assert_file_mode 644 "${RESTORE_KEY_DIR}/deployment-public-key.der"
 
+FAILED_RESTORE_STUB_DIR="${TEST_ROOT}/failed-restore-stubs"
+FAILED_RESTORE_SERVER_DIR="${TEST_ROOT}/failed-restore-server"
+FAILED_RESTORE_KEY_DIR="${TEST_ROOT}/failed-restore-configuration"
+FAILED_RESTORE_LOG="${TEST_ROOT}/failed-restore-docker.log"
+mkdir -p \
+  "${FAILED_RESTORE_STUB_DIR}" \
+  "${FAILED_RESTORE_SERVER_DIR}" \
+  "${FAILED_RESTORE_KEY_DIR}"
+printf '%s\n' 'FIREBASE_ENABLED=false' \
+  > "${FAILED_RESTORE_SERVER_DIR}/.env"
+printf '7%.0s' {1..64} > "${FAILED_RESTORE_KEY_DIR}/deployment-master-key"
+printf '\n' >> "${FAILED_RESTORE_KEY_DIR}/deployment-master-key"
+cat > "${FAILED_RESTORE_STUB_DIR}/docker" <<'STUB'
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${1:-}" == "ps" ]]; then
+  printf '%s\n' myscoutee mongodb
+  exit 0
+fi
+if [[ "${1:-}" == "exec" ]]; then
+  exit 1
+fi
+if [[ "${1:-}" == "compose" && " $* " == *" stop profilemanagement "* ]]; then
+  printf '%s\n' stop >> "${CONFIGURATION_RESTORE_TEST_LOG}"
+  exit 0
+fi
+if [[ "${1:-}" == "compose" && " $* " == *" up -d --force-recreate profilemanagement "* ]]; then
+  printf '%s\n' start >> "${CONFIGURATION_RESTORE_TEST_LOG}"
+  exit 0
+fi
+exit 0
+STUB
+chmod 0755 "${FAILED_RESTORE_STUB_DIR}/docker"
+if PATH="${FAILED_RESTORE_STUB_DIR}:${PATH}" \
+  CONFIRM_RESTORE=true \
+  CONFIGURATION_RESTORE_TEST_LOG="${FAILED_RESTORE_LOG}" \
+  MYSCOUTEE_SERVER_DIR="${FAILED_RESTORE_SERVER_DIR}" \
+  MYSCOUTEE_CONFIGURATION_KEY_DIR="${FAILED_RESTORE_KEY_DIR}" \
+    bash "${RESTORE_SCRIPT}" "${backup_path}" >/dev/null 2>&1; then
+  fail "restore accepted a failed MongoDB replacement"
+fi
+[[ "$(cat "${FAILED_RESTORE_LOG}")" == "stop" ]] \
+  || fail "failed MongoDB restore restarted the backend"
+[[ "$(tr -d '\n' < "${FAILED_RESTORE_KEY_DIR}/deployment-master-key")" \
+  == "$(printf '7%.0s' {1..64})" ]] \
+  || fail "failed MongoDB restore activated the backup encryption key"
+
 SYMLINK_TARGET="${TEST_ROOT}/symlink-target"
 SYMLINK_KEY_DIR="${TEST_ROOT}/symlink-identity"
 mkdir -p "${SYMLINK_TARGET}"
@@ -513,7 +585,7 @@ cat > "${RACE_STUB_DIR}/docker" <<'STUB'
 set -euo pipefail
 
 if [[ "${1:-}" == "ps" ]]; then
-  printf '%s\n' myscoutee
+  printf '%s\n' myscoutee mongodb
   exit 0
 fi
 if [[ "${1:-}" == "compose" && " $* " == *" stop profilemanagement "* ]]; then
@@ -669,10 +741,24 @@ if docker compose version >/dev/null 2>&1; then
     config >/dev/null \
     || fail "packaged production Compose configuration does not render"
 
-  (
-    cd "${REPO_ROOT}/server"
-    docker compose --env-file .env -f docker-compose-prod.yml config >/dev/null
-  ) || fail "source production Compose configuration does not render"
+  SOURCE_COMPOSE_STAGE="${TEST_ROOT}/source-compose-stage"
+  mkdir -p "${SOURCE_COMPOSE_STAGE}/projects/profile/secrets"
+  cp "${REPO_ROOT}/server/docker-compose-prod.yml" \
+    "${SOURCE_COMPOSE_STAGE}/docker-compose-prod.yml"
+  cp "${REPO_ROOT}/server/.env.secrets.example" \
+    "${SOURCE_COMPOSE_STAGE}/.env.secrets"
+  cp "${REPO_ROOT}/server/projects/profile/secrets/firebase-service-account.json.example" \
+    "${SOURCE_COMPOSE_STAGE}/projects/profile/secrets/firebase-service-account.json"
+  cmp -s \
+    "${REPO_ROOT}/server/docker-compose-prod.yml" \
+    "${SOURCE_COMPOSE_STAGE}/docker-compose-prod.yml" \
+    || fail "isolated source production Compose fixture differs from source"
+  docker compose \
+    --project-directory "${SOURCE_COMPOSE_STAGE}" \
+    --env-file "${REPO_ROOT}/packaging/templates/myscoutee.env" \
+    -f "${SOURCE_COMPOSE_STAGE}/docker-compose-prod.yml" \
+    config >/dev/null \
+    || fail "source production Compose configuration does not render with dummy secrets"
 
   DEV_COMPOSE_JSON="$(
     cd "${REPO_ROOT}/server"

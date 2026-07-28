@@ -8,7 +8,7 @@ OWNER_UID="${MYSCOUTEE_CONFIGURATION_OWNER_UID:-0}"
 OWNER_GID="${MYSCOUTEE_CONFIGURATION_OWNER_GID:-10001}"
 
 validate_key() {
-  local value
+  local value size
 
   [[ -f "${KEY_PATH}" && ! -L "${KEY_PATH}" ]] || {
     echo "Operator configuration master key must be a regular non-symlink file." >&2
@@ -18,9 +18,10 @@ validate_key() {
     echo "Operator configuration master key must not be hard-linked." >&2
     return 1
   }
-  value="$(tr -d '\n' < "${KEY_PATH}")"
+  value="$(< "${KEY_PATH}")"
+  size="$(stat -c '%s' "${KEY_PATH}")"
   [[ "${value}" =~ ^[0-9a-f]{64}$ \
-    && "$(wc -c < "${KEY_PATH}")" -le 65 ]] || {
+    && ( "${size}" == "64" || "${size}" == "65" ) ]] || {
     echo "Operator configuration master key must contain exactly 64 lowercase hexadecimal characters." >&2
     return 1
   }

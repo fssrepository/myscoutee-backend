@@ -21,6 +21,8 @@ DATABASE_NAME="${MONGO_DATABASE:-myscoutee_db}"
 WORK_DIR="$(mktemp -d)"
 COMPOSE_WRAPPER="${SCRIPT_DIR}/myscoutee-compose.sh"
 REGISTRY_BACKEND_RESTART_REQUIRED=false
+RESTORE_INCOMPLETE=false
+STAGED_CONFIGURATION_KEY=""
 
 read_env_file_value() {
   local key="$1"
@@ -80,16 +82,17 @@ default_configuration_key_dir() {
 
 validate_configuration_key() {
   local key_file="$1"
-  local encoded
+  local encoded size
 
   if [[ ! -f "${key_file}" || -L "${key_file}" \
     || "$(stat -c '%h' "${key_file}")" != "1" ]]; then
     echo "Backup operator configuration master key is unsafe." >&2
     return 1
   fi
-  encoded="$(tr -d '\n' < "${key_file}")"
+  encoded="$(< "${key_file}")"
+  size="$(stat -c '%s' "${key_file}")"
   if [[ ! "${encoded}" =~ ^[0-9a-f]{64}$ \
-    || "$(wc -c < "${key_file}")" -gt 65 ]]; then
+    || ( "${size}" != "64" && "${size}" != "65" ) ]]; then
     echo "Backup operator configuration master key is invalid." >&2
     return 1
   fi
@@ -564,9 +567,9 @@ restore_registry_identity() {
   sync -f "${REGISTRY_STATE_DIR}"
 }
 
-restore_configuration_key() {
+stage_configuration_key() {
   local backup_key="$1"
-  local target_key temporary_key
+  local target_key
 
   target_key="${CONFIGURATION_KEY_DIR}/deployment-master-key"
   if [[ -L "${CONFIGURATION_KEY_DIR}" || -L "${target_key}" ]]; then
@@ -574,15 +577,32 @@ restore_configuration_key() {
     return 1
   fi
   install -d -m 0750 "${CONFIGURATION_KEY_DIR}"
-  temporary_key="$(mktemp "${CONFIGURATION_KEY_DIR}/.deployment-master-key.restore.XXXXXX")"
-  install -m 0640 "${backup_key}" "${temporary_key}"
-  mv -f -- "${temporary_key}" "${target_key}"
+  STAGED_CONFIGURATION_KEY="$(
+    mktemp "${CONFIGURATION_KEY_DIR}/.deployment-master-key.restore.XXXXXX"
+  )"
+  install -m 0640 "${backup_key}" "${STAGED_CONFIGURATION_KEY}"
   chmod 0750 "${CONFIGURATION_KEY_DIR}"
-  chmod 0640 "${target_key}"
+  chmod 0640 "${STAGED_CONFIGURATION_KEY}"
   if [[ "${EUID}" -eq 0 ]]; then
     chown root:"${MYSCOUTEE_API_GID:-10001}" \
-      "${CONFIGURATION_KEY_DIR}" "${target_key}"
+      "${CONFIGURATION_KEY_DIR}" "${STAGED_CONFIGURATION_KEY}"
   fi
+  sync -f "${STAGED_CONFIGURATION_KEY}"
+  sync -f "${CONFIGURATION_KEY_DIR}"
+}
+
+activate_staged_configuration_key() {
+  local target_key
+
+  [[ -n "${STAGED_CONFIGURATION_KEY}" \
+    && -f "${STAGED_CONFIGURATION_KEY}" \
+    && ! -L "${STAGED_CONFIGURATION_KEY}" ]] || {
+    echo "Staged operator configuration master key is unavailable." >&2
+    return 1
+  }
+  target_key="${CONFIGURATION_KEY_DIR}/deployment-master-key"
+  mv -f -- "${STAGED_CONFIGURATION_KEY}" "${target_key}"
+  STAGED_CONFIGURATION_KEY=""
   sync -f "${target_key}"
   sync -f "${CONFIGURATION_KEY_DIR}"
 }
@@ -591,7 +611,13 @@ cleanup() {
   local exit_status=$?
 
   trap - EXIT
-  if [[ "${REGISTRY_BACKEND_RESTART_REQUIRED}" == "true" ]]; then
+  if [[ -n "${STAGED_CONFIGURATION_KEY}" ]]; then
+    rm -f -- "${STAGED_CONFIGURATION_KEY}"
+  fi
+  if [[ "${REGISTRY_BACKEND_RESTART_REQUIRED}" == "true" \
+    && "${RESTORE_INCOMPLETE}" == "true" ]]; then
+    echo "WARNING: restore is incomplete; profilemanagement remains stopped." >&2
+  elif [[ "${REGISTRY_BACKEND_RESTART_REQUIRED}" == "true" ]]; then
     if ! restart_registry_backend; then
       echo "WARNING: unable to restart profilemanagement after registry restore failure." >&2
     fi
@@ -609,11 +635,20 @@ REGISTRY_KEY_DIR="${MYSCOUTEE_REGISTRY_KEY_DIR:-$(resolve_host_path "${registry_
 REGISTRY_STATE_DIR="${MYSCOUTEE_REGISTRY_STATE_DIR:-$(resolve_host_path "${registry_state_dir_value:-$(default_registry_state_dir)}")}"
 CONFIGURATION_KEY_DIR="${MYSCOUTEE_CONFIGURATION_KEY_DIR:-$(resolve_host_path "${configuration_key_dir_value:-$(default_configuration_key_dir)}")}"
 
-tar -C "${WORK_DIR}" -xzf "${BACKUP_ARCHIVE}"
+tar --no-same-owner --no-same-permissions \
+  -C "${WORK_DIR}" -xzf "${BACKUP_ARCHIVE}"
+if find "${WORK_DIR}" -mindepth 1 \
+  \( -type l -o \( ! -type f ! -type d \) -o \( -type f -links +1 \) \) \
+  -print -quit | grep -q .; then
+  echo "Backup archive contains links or non-regular recovery entries." >&2
+  exit 1
+fi
 
 if [[ -f "${WORK_DIR}/mongo/${DATABASE_NAME}.archive.gz" \
-  && ! -f "${WORK_DIR}/configuration/deployment-master-key" ]]; then
-  echo "Backup has MongoDB data but no operator configuration master key; restoring it could make encrypted deployment secrets unreadable." >&2
+  && ! -f "${WORK_DIR}/configuration/deployment-master-key" ]] \
+  || [[ ! -f "${WORK_DIR}/mongo/${DATABASE_NAME}.archive.gz" \
+    && -f "${WORK_DIR}/configuration/deployment-master-key" ]]; then
+  echo "MongoDB data and its operator configuration master key must be restored together." >&2
   exit 1
 fi
 if [[ -e "${WORK_DIR}/configuration/deployment-master-key" \
@@ -630,12 +665,6 @@ if [[ "${RESTORE_REGISTRY:-false}" == "true" ]]; then
   validate_registry_restore "${WORK_DIR}/registry/keys" "${WORK_DIR}/registry/state"
 fi
 
-if [[ -f "${WORK_DIR}/configuration/deployment-master-key" ]]; then
-  stop_registry_backend
-  restore_configuration_key \
-    "${WORK_DIR}/configuration/deployment-master-key"
-fi
-
 if [[ "${RESTORE_CONFIG:-false}" == "true" && -d "${WORK_DIR}/config" ]]; then
   cp -a "${WORK_DIR}/config/." "${SERVER_DIR}/"
 fi
@@ -645,7 +674,13 @@ if [[ -f "${WORK_DIR}/mongo/${DATABASE_NAME}.archive.gz" ]]; then
     echo "mongodb container is not running; start the production stack before restore." >&2
     exit 1
   fi
+  stage_configuration_key \
+    "${WORK_DIR}/configuration/deployment-master-key"
+  stop_registry_backend
+  RESTORE_INCOMPLETE=true
   docker exec -i mongodb sh -lc "mongorestore --username \"\${MONGO_APP_USERNAME:-guest}\" --password \"\${MONGO_APP_PASSWORD:-guest}\" --authenticationDatabase \"\${MONGO_APP_DATABASE:-${DATABASE_NAME}}\" --db \"\${MONGO_APP_DATABASE:-${DATABASE_NAME}}\" --drop --archive --gzip" < "${WORK_DIR}/mongo/${DATABASE_NAME}.archive.gz"
+  activate_staged_configuration_key
+  RESTORE_INCOMPLETE=false
 fi
 
 if [[ "${RESTORE_MINIO:-false}" == "true" && -f "${WORK_DIR}/minio-data.tar.gz" ]]; then
@@ -658,7 +693,9 @@ fi
 
 if [[ "${RESTORE_REGISTRY:-false}" == "true" ]]; then
   stop_registry_backend
+  RESTORE_INCOMPLETE=true
   restore_registry_identity "${WORK_DIR}/registry/keys" "${WORK_DIR}/registry/state"
+  RESTORE_INCOMPLETE=false
 fi
 
 restart_registry_backend

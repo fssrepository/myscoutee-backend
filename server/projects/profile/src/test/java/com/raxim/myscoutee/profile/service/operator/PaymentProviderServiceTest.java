@@ -58,6 +58,23 @@ class PaymentProviderServiceTest {
     }
 
     @Test
+    void catalogRejectsAMissingProductionSeedInsteadOfReturningAnEmptyList() {
+        PaymentProviderRepository repository = mock(PaymentProviderRepository.class);
+        when(repository.findByEnabledTrueOrderBySortOrderAscLabelAscIdAsc())
+                .thenReturn(List.of());
+        PaymentProviderService service = new PaymentProviderService(
+                repository,
+                new PaymentProviderMapper(),
+                paymentImplementations());
+
+        assertThatThrownBy(service::availableProviders)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("missing from")
+                .hasMessageContaining("stripe")
+                .hasMessageContaining("barion");
+    }
+
+    @Test
     void realDemoAndE2eSeedsExactlyMatchImplementedProviderIds() throws Exception {
         Set<String> implementedIds = paymentImplementations().stream()
                 .map(PaymentProcessor::getType)

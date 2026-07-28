@@ -141,16 +141,23 @@ if [[ -L "${CONFIGURATION_KEY_DIR}" || -L "${configuration_key}" ]]; then
   echo "Operator configuration master-key backup path must not be symbolic." >&2
   exit 1
 elif [[ -f "${configuration_key}" \
-  && "$(stat -c '%h' "${configuration_key}")" == "1" \
-  && "$(tr -d '\n' < "${configuration_key}")" =~ ^[0-9a-f]{64}$ \
-  && "$(wc -c < "${configuration_key}")" -le 65 ]]; then
-  install -m 0640 \
-    "${configuration_key}" \
-    "${WORK_DIR}/configuration/deployment-master-key"
-  configuration_key_complete=true
+  && "$(stat -c '%h' "${configuration_key}")" == "1" ]]; then
+  configuration_key_value="$(< "${configuration_key}")"
+  configuration_key_size="$(stat -c '%s' "${configuration_key}")"
+  if [[ "${configuration_key_value}" =~ ^[0-9a-f]{64}$ \
+    && ( "${configuration_key_size}" == "64" \
+      || "${configuration_key_size}" == "65" ) ]]; then
+    install -m 0640 \
+      "${configuration_key}" \
+      "${WORK_DIR}/configuration/deployment-master-key"
+    configuration_key_complete=true
+  else
+    missing_components+=("operator-configuration-key")
+    echo "Warning: operator configuration master key is invalid." >&2
+  fi
 else
   missing_components+=("operator-configuration-key")
-  echo "Warning: operator configuration master key is missing or invalid." >&2
+  echo "Warning: operator configuration master key is missing or unsafe." >&2
 fi
 
 if [[ -L "${REGISTRY_KEY_DIR}" \
@@ -160,6 +167,10 @@ if [[ -L "${REGISTRY_KEY_DIR}" \
   exit 1
 elif [[ -f "${REGISTRY_KEY_DIR}/deployment-private-key.pem" \
   && -f "${REGISTRY_KEY_DIR}/deployment-public-key.der" ]]; then
+  if find "${REGISTRY_KEY_DIR}" -type l -print -quit | grep -q .; then
+    echo "Deployment registry key directory must not contain symbolic links." >&2
+    exit 1
+  fi
   mkdir -p "${WORK_DIR}/registry/keys"
   cp -a "${REGISTRY_KEY_DIR}/." "${WORK_DIR}/registry/keys/"
   registry_keys_complete=true
@@ -185,7 +196,10 @@ else
 fi
 
 if [[ -d "${SERVER_DIR}/data/minio" ]]; then
-  if tar -C "${SERVER_DIR}/data" -czf "${WORK_DIR}/minio-data.tar.gz" minio; then
+  if find "${SERVER_DIR}/data/minio" -type l -print -quit | grep -q .; then
+    echo "MinIO backup path must not contain symbolic links." >&2
+    exit 1
+  elif tar -C "${SERVER_DIR}/data" -czf "${WORK_DIR}/minio-data.tar.gz" minio; then
     minio_complete=true
   else
     rm -f -- "${WORK_DIR}/minio-data.tar.gz"

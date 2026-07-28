@@ -83,18 +83,20 @@ Those are the container paths. They map to the fixed host inbox paths
 `/var/lib/myscoutee/update/inbox/requests`. The JSON contains only the fixed
 relative artifact name `myscoutee.deb`; it cannot supply a host path.
 
-The local `myscoutee-update.path` unit detects that request and starts the
-root-only `myscoutee-update.service`. This worker accepts no URL and no shell
-command. It first atomically claims every inbox entry into a root-only
-processing directory. A packaged Python helper opens each source path
-component with directory file descriptors and `O_NOFOLLOW`, then performs a
-bounded, mutation-detecting copy. The worker independently checks the package
-name, plain SemVer, architecture, size, digest, release-signing key ID,
-signature, bundled-image manifest, and cache capacity before requiring a
-complete production backup and calling `apt-get install` on the local `.deb`.
-Managed compose services use `pull_policy: never`; after restart the worker
-verifies every running managed container has the exact packaged image
-reference and image ID and reports healthy.
+The local `myscoutee-update.path` unit watches whether the request directory is
+non-empty and starts the root-only `myscoutee-update.service` for any entry,
+including malformed names and hidden files. This worker accepts no URL and no
+shell command. It first atomically claims every inbox entry into a root-only
+processing directory, quarantining anything that is not a valid request. A
+packaged Python helper opens each source path component with directory file
+descriptors and `O_NOFOLLOW`, then performs a bounded, mutation-detecting copy.
+The worker independently checks the package name, plain SemVer, architecture,
+size, digest, release-signing key ID, signature, bundled-image manifest, and
+cache capacity before requiring a complete production backup and calling
+`apt-get install` on the local `.deb`. Managed compose services use
+`pull_policy: never`; after restart the worker verifies every running managed
+container has the exact packaged image reference and image ID and reports
+healthy.
 
 Install the vendor release-signing public key only after checking its full
 SPKI DER fingerprint through an independent channel:
@@ -328,6 +330,12 @@ the key and MongoDB snapshot as one recovery set because encrypted deployment
 credentials cannot be decrypted with a different key. Replacing or rotating
 this file without atomically re-encrypting every stored credential is invalid
 and will make those credentials unreadable.
+
+Restore validates and stages the backup key, stops the API, restores MongoDB,
+and activates the key only after `mongorestore` succeeds. If MongoDB/key or
+registry identity/state replacement is incomplete, the API deliberately
+remains stopped for operator recovery instead of restarting with mismatched
+cryptographic state.
 
 `apt purge myscoutee` deliberately removes both
 `/etc/myscoutee/registry` and `/var/lib/myscoutee/registry`. Back up the

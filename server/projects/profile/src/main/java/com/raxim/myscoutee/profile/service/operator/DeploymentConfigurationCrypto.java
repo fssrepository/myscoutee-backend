@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
+import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration.EncryptedSecret;
 
 @Component
@@ -61,6 +62,34 @@ public class DeploymentConfigurationCrypto {
             loadKey();
             return null;
         } catch (IllegalStateException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    public String unavailableReason(DeploymentConfiguration configuration) {
+        try {
+            loadKey();
+            if (configuration == null) {
+                return null;
+            }
+            DeploymentConfiguration.Payment payment = configuration.getPayment();
+            if (payment != null && payment.getCredentialEnvelope() != null) {
+                verify(
+                        DeploymentPaymentCredentialResolver.credentialPurpose(
+                                payment.getProviderId()),
+                        payment.getCredentialEnvelope());
+            }
+            DeploymentConfiguration.Firebase firebase = configuration.getFirebase();
+            if (firebase != null) {
+                verify(
+                        OperatorConfigurationService.FIREBASE_AUTHENTICATION_PURPOSE,
+                        firebase.getAuthenticationCredentialEnvelope());
+                verify(
+                        OperatorConfigurationService.FIREBASE_MESSAGING_PURPOSE,
+                        firebase.getMessagingCredentialEnvelope());
+            }
+            return null;
+        } catch (IllegalStateException | IllegalArgumentException exception) {
             return exception.getMessage();
         }
     }
@@ -100,6 +129,28 @@ public class DeploymentConfigurationCrypto {
     }
 
     public String decrypt(String purpose, EncryptedSecret envelope) {
+        byte[] plaintext = decryptBytes(purpose, envelope);
+        if (plaintext == null) {
+            return null;
+        }
+        try {
+            return new String(plaintext, StandardCharsets.UTF_8);
+        } finally {
+            Arrays.fill(plaintext, (byte) 0);
+        }
+    }
+
+    private void verify(String purpose, EncryptedSecret envelope) {
+        if (envelope == null) {
+            return;
+        }
+        byte[] plaintext = decryptBytes(purpose, envelope);
+        if (plaintext != null) {
+            Arrays.fill(plaintext, (byte) 0);
+        }
+    }
+
+    private byte[] decryptBytes(String purpose, EncryptedSecret envelope) {
         if (envelope == null) {
             return null;
         }
@@ -111,27 +162,32 @@ public class DeploymentConfigurationCrypto {
         }
         byte[] nonce = null;
         byte[] ciphertext = null;
-        byte[] plaintext = null;
         try {
+            if (!StringUtils.hasText(envelope.getNonce())
+                    || !StringUtils.hasText(envelope.getCiphertext())) {
+                throw new IllegalArgumentException(
+                        "Invalid encrypted secret envelope.");
+            }
             nonce = Base64.getDecoder().decode(envelope.getNonce());
             ciphertext = Base64.getDecoder().decode(envelope.getCiphertext());
-            if (nonce.length != NONCE_BYTES || ciphertext.length <= GCM_TAG_BITS / Byte.SIZE) {
-                throw new IllegalArgumentException("Invalid encrypted secret envelope.");
+            if (nonce.length != NONCE_BYTES
+                    || ciphertext.length <= GCM_TAG_BITS / Byte.SIZE) {
+                throw new IllegalArgumentException(
+                        "Invalid encrypted secret envelope.");
             }
 
             Cipher cipher = Cipher.getInstance(CIPHER);
-            cipher.init(Cipher.DECRYPT_MODE, key.key(), new GCMParameterSpec(GCM_TAG_BITS, nonce));
+            cipher.init(
+                    Cipher.DECRYPT_MODE,
+                    key.key(),
+                    new GCMParameterSpec(GCM_TAG_BITS, nonce));
             cipher.updateAAD(aad(purpose));
-            plaintext = cipher.doFinal(ciphertext);
-            return new String(plaintext, StandardCharsets.UTF_8);
+            return cipher.doFinal(ciphertext);
         } catch (GeneralSecurityException | IllegalArgumentException exception) {
             throw new IllegalStateException(
                     "Deployment configuration secret could not be decrypted.",
                     exception);
         } finally {
-            if (plaintext != null) {
-                Arrays.fill(plaintext, (byte) 0);
-            }
             if (nonce != null) {
                 Arrays.fill(nonce, (byte) 0);
             }

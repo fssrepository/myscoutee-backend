@@ -24,7 +24,12 @@ CACHE_RETENTION_JOBS="${MYSCOUTEE_UPDATE_CACHE_RETENTION_JOBS:-2}"
 UPDATE_ENABLED="${MYSCOUTEE_UPDATE_ENABLED:-false}"
 API_USER_ID="${MYSCOUTEE_API_USER_ID:-10001}"
 API_GROUP_ID="${MYSCOUTEE_API_GROUP_ID:-10001}"
-WORKER_USER_ID="${MYSCOUTEE_UPDATE_WORKER_USER_ID:-0}"
+WORKER_USER_ID=0
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  # Tests source the worker without root; production execution never accepts
+  # an override for the owner of privileged state.
+  WORKER_USER_ID="${MYSCOUTEE_UPDATE_WORKER_USER_ID:-0}"
+fi
 
 INBOX_DIR="${STATE_DIR}/inbox"
 STAGING_DIR="${INBOX_DIR}/staging"
@@ -466,23 +471,6 @@ verify_and_cache_artifact() {
     return 1
   }
 
-  package_name="$(dpkg-deb -f "${cached_artifact}" Package 2>/dev/null || true)"
-  package_version="$(dpkg-deb -f "${cached_artifact}" Version 2>/dev/null || true)"
-  package_arch="$(dpkg-deb -f "${cached_artifact}" Architecture 2>/dev/null || true)"
-  host_arch="$(dpkg --print-architecture)"
-  [[ "${package_name}" == "${PACKAGE_NAME}" ]] || {
-    fail_job "The signed artifact is not the MyScoutee package."
-    return 1
-  }
-  [[ "${package_version}" == "${CURRENT_RELEASE_VERSION}" ]] || {
-    fail_job "The Debian package version does not match the signed manifest."
-    return 1
-  }
-  if [[ "${package_arch}" != "all" && "${package_arch}" != "${host_arch}" ]]; then
-    fail_job "The Debian package architecture is incompatible with this host."
-    return 1
-  fi
-
   if [[ ! -f "${RELEASE_PUBLIC_KEY}" || -L "${RELEASE_PUBLIC_KEY}" ]]; then
     fail_job "The pinned release-signing public key is unavailable."
     return 1
@@ -537,6 +525,26 @@ verify_and_cache_artifact() {
     -rawin -in "${message_file}" -sigfile "${signature_file}" \
     >/dev/null 2>&1; then
     fail_job "The detached package signature is invalid."
+    return 1
+  fi
+
+  # Do not ask dpkg-deb or tar to parse attacker-controlled package structure
+  # until the complete artifact digest has been authenticated by the pinned
+  # release key.
+  package_name="$(dpkg-deb -f "${cached_artifact}" Package 2>/dev/null || true)"
+  package_version="$(dpkg-deb -f "${cached_artifact}" Version 2>/dev/null || true)"
+  package_arch="$(dpkg-deb -f "${cached_artifact}" Architecture 2>/dev/null || true)"
+  host_arch="$(dpkg --print-architecture)"
+  [[ "${package_name}" == "${PACKAGE_NAME}" ]] || {
+    fail_job "The signed artifact is not the MyScoutee package."
+    return 1
+  }
+  [[ "${package_version}" == "${CURRENT_RELEASE_VERSION}" ]] || {
+    fail_job "The Debian package version does not match the signed manifest."
+    return 1
+  }
+  if [[ "${package_arch}" != "all" && "${package_arch}" != "${host_arch}" ]]; then
+    fail_job "The Debian package architecture is incompatible with this host."
     return 1
   fi
 
@@ -758,6 +766,8 @@ quarantine_claim() {
   if [[ -d "${claim_dir}" && ! -L "${claim_dir}" ]]; then
     printf '%s\n' "${reason}" > "${claim_dir}/rejection.txt"
     chmod 0600 "${claim_dir}/rejection.txt"
+  fi
+  if [[ -e "${claim_dir}" || -L "${claim_dir}" ]]; then
     destination="${REJECTED_DIR}/$(date -u '+%Y%m%dT%H%M%SZ')-$(basename -- "${claim_dir}")"
     mv -- "${claim_dir}" "${destination}"
     fsync_path "${REJECTED_DIR}"
@@ -859,7 +869,7 @@ main() {
   prepare_directories
 
   shopt -s nullglob dotglob
-  claims=("${PROCESSING_DIR}"/claim.*)
+  claims=("${PROCESSING_DIR}"/*)
   shopt -u dotglob
   for claim_dir in "${claims[@]}"; do
     process_claim "${claim_dir}" || true

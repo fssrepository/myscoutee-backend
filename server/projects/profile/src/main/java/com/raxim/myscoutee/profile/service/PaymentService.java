@@ -29,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessi
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 
 @Service
 public class PaymentService {
@@ -46,6 +47,7 @@ public class PaymentService {
     private final PaymentsRepository paymentsRepository;
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final EventCheckoutPricingService eventCheckoutPricingService;
+    private final DeploymentPaymentProviderResolver paymentProviderResolver;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
@@ -54,17 +56,19 @@ public class PaymentService {
             List<PaymentProcessor> processorList,
             PaymentsRepository paymentsRepository,
             EventCheckoutBasketService eventCheckoutBasketService,
-            EventCheckoutPricingService eventCheckoutPricingService) {
+            EventCheckoutPricingService eventCheckoutPricingService,
+            DeploymentPaymentProviderResolver paymentProviderResolver) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.eventCheckoutPricingService = eventCheckoutPricingService;
+        this.paymentProviderResolver = paymentProviderResolver;
     }
 
     public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request, String provider) {
         EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
-        String normalizedProvider = normalizeProvider(provider);
+        String normalizedProvider = resolveConfiguredProvider(provider);
         EventCheckoutSessionDto sessionDto = !enablePay
                 ? createDummySession(authoritativeRequest, null)
                 : resolveProcessor(normalizedProvider).checkout(authoritativeRequest);
@@ -86,7 +90,7 @@ public class PaymentService {
     }
 
     public EventCheckoutSessionDto pay(EventCheckoutRequestDto request, String paymentSessionId, String provider) {
-        String normalizedProvider = normalizeProvider(provider);
+        String normalizedProvider = resolveConfiguredProvider(provider);
         Payment payment = findByAnySessionId(paymentSessionId).orElseGet(Payment::new);
         EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
         ensurePaymentRequestCompatible(payment, authoritativeRequest);
@@ -108,7 +112,7 @@ public class PaymentService {
 
     public EventCheckoutSessionDto payCheckout(EventCheckoutRequestDto request, String provider) {
         EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
-        String normalizedProvider = normalizeProvider(provider);
+        String normalizedProvider = resolveConfiguredProvider(provider);
         EventCheckoutSessionDto sessionDto = !enablePay
                 ? createDummySession(authoritativeRequest, null)
                 : resolveProcessor(normalizedProvider).pay(authoritativeRequest, null);
@@ -721,6 +725,12 @@ public class PaymentService {
     private String normalizeProvider(String provider) {
         String normalized = safeText(provider).toLowerCase();
         return hasText(normalized) ? normalized : "stripe";
+    }
+
+    private String resolveConfiguredProvider(String requestedProvider) {
+        return enablePay
+                ? paymentProviderResolver.resolveActiveProvider(requestedProvider)
+                : normalizeProvider(requestedProvider);
     }
 
     private String safeCurrency(String currency) {

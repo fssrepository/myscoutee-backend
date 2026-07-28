@@ -98,7 +98,7 @@ public class OperatorConfigurationService {
         synchronized (modeLocks.get(mode)) {
             DeploymentConfiguration configuration = loadPersisted();
             List<PaymentProviderDto> providers;
-            String unavailableReason = crypto.unavailableReason();
+            String unavailableReason = crypto.unavailableReason(configuration);
             try {
                 providers = paymentProviderService.availableProviders();
             } catch (RuntimeException exception) {
@@ -121,7 +121,8 @@ public class OperatorConfigurationService {
             if (request == null || request.branding() == null) {
                 throw badRequest("Branding configuration is required.");
             }
-            String cryptoGap = crypto.unavailableReason();
+            DeploymentConfiguration configuration = loadPersisted();
+            String cryptoGap = crypto.unavailableReason(configuration);
             if (StringUtils.hasText(cryptoGap)) {
                 throw new ResponseStatusException(
                         HttpStatus.SERVICE_UNAVAILABLE,
@@ -137,8 +138,6 @@ public class OperatorConfigurationService {
                                 + safeMessage(exception),
                         exception);
             }
-
-            DeploymentConfiguration configuration = loadPersisted();
             applyBranding(configuration, request.branding());
             applyPayment(configuration, request.payment(), providers);
             applyFirebase(configuration, request.firebase());

@@ -347,6 +347,11 @@ mkfifo "${FIFO_REQUEST}"
 if run_request "${FIFO_REQUEST}"; then
   fail "request FIFO was accepted"
 fi
+PREEXISTING_UNSAFE_CLAIM="${PROCESSING_DIR}/orphaned-claim"
+ln -s "${TEST_ROOT}/does-not-exist" "${PREEXISTING_UNSAFE_CLAIM}"
+if process_claim "${PREEXISTING_UNSAFE_CLAIM}"; then
+  fail "unsafe preexisting claim was accepted"
+fi
 [[ -z "$(find "${PROCESSING_DIR}" -mindepth 1 -maxdepth 1 -print -quit)" ]] \
   || fail "a claimed adversarial input remained in processing"
 [[ "$(find "${REJECTED_DIR}" -mindepth 1 -maxdepth 1 | wc -l)" -ge 3 ]] \

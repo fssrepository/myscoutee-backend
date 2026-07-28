@@ -46,6 +46,18 @@ public class PaymentProviderService {
                                 + "' has no registered PaymentProcessor.");
             }
         });
+        Set<String> seededIds = providers.stream()
+                .map(PaymentProviderDto::id)
+                .collect(Collectors.toUnmodifiableSet());
+        Set<String> missingSeeds = processorIds.stream()
+                .filter(id -> !seededIds.contains(id))
+                .collect(Collectors.toUnmodifiableSet());
+        if (!missingSeeds.isEmpty()) {
+            throw new IllegalStateException(
+                    "Registered PaymentProcessor implementations are missing from "
+                            + "the enabled Mongo payment-provider catalog: "
+                            + missingSeeds.stream().sorted().toList() + ".");
+        }
         return providers;
     }
 

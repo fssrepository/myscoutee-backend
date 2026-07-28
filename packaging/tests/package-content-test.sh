@@ -70,6 +70,14 @@ jq -e \
   || fail "test-only unbundled manifest is invalid"
 [[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/myscoutee-safe-copy.py" ]] \
   || fail "safe-copy helper is not executable"
+UPDATE_PATH_UNIT="${EXTRACTED}/lib/systemd/system/myscoutee-update.path"
+grep -Fxq \
+  'DirectoryNotEmpty=/var/lib/myscoutee/update/inbox/requests' \
+  "${UPDATE_PATH_UNIT}" \
+  || fail "packaged update path unit does not watch every inbox entry"
+if grep -Eq '^[[:space:]]*PathExistsGlob=' "${UPDATE_PATH_UNIT}"; then
+  fail "packaged update path unit still filters inbox entries by glob"
+fi
 
 KEY_HELPER="${EXTRACTED}/opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh"
 KEY_DIR="${TEST_ROOT}/configuration"
@@ -89,6 +97,17 @@ MYSCOUTEE_CONFIGURATION_OWNER_GID="$(id -g)" \
 [[ "$(stat -c '%a' "${KEY_DIR}")" == "750" \
   && "$(stat -c '%a' "${KEY_DIR}/deployment-master-key")" == "640" ]] \
   || fail "operator configuration key permissions are incorrect"
+INVALID_KEY_DIR="${TEST_ROOT}/invalid-configuration"
+mkdir "${INVALID_KEY_DIR}"
+printf '6%.0s' {1..32} > "${INVALID_KEY_DIR}/deployment-master-key"
+printf '\n' >> "${INVALID_KEY_DIR}/deployment-master-key"
+printf '6%.0s' {1..32} >> "${INVALID_KEY_DIR}/deployment-master-key"
+if MYSCOUTEE_OPERATOR_CONFIGURATION_KEY_DIR="${INVALID_KEY_DIR}" \
+  MYSCOUTEE_CONFIGURATION_OWNER_UID="$(id -u)" \
+  MYSCOUTEE_CONFIGURATION_OWNER_GID="$(id -g)" \
+    "${KEY_HELPER}" >/dev/null 2>&1; then
+  fail "operator configuration helper accepted an embedded newline"
+fi
 grep -Fq \
   '/opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh' \
   "${REPO_ROOT}/packaging/debian/postinst" \
