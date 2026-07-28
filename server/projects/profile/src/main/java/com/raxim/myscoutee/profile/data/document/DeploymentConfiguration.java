@@ -77,6 +77,7 @@ public class DeploymentConfiguration {
 
     public static class Branding {
         private String productName;
+        private Integer logoCharacterIndex;
         private String homeLabel;
         private String logoUrl;
         private String themePreset;
@@ -88,6 +89,14 @@ public class DeploymentConfiguration {
 
         public void setProductName(String productName) {
             this.productName = productName;
+        }
+
+        public Integer getLogoCharacterIndex() {
+            return logoCharacterIndex;
+        }
+
+        public void setLogoCharacterIndex(Integer logoCharacterIndex) {
+            this.logoCharacterIndex = logoCharacterIndex;
         }
 
         public String getHomeLabel() {

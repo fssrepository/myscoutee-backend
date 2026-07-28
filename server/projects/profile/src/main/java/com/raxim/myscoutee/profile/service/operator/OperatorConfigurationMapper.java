@@ -19,6 +19,7 @@ public class OperatorConfigurationMapper {
         DeploymentConfiguration.Branding branding = configuration.getBranding();
         return new DeploymentBrandingDto(
                 requireText(branding.getProductName(), "Deployment product name"),
+                branding.getLogoCharacterIndex(),
                 requireText(branding.getHomeLabel(), "Deployment home label"),
                 safeText(branding.getLogoUrl()),
                 theme(branding.getThemePreset()),

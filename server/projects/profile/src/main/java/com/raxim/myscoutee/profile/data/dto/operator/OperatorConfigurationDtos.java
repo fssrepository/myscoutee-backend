@@ -35,6 +35,7 @@ public final class OperatorConfigurationDtos {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     public record DeploymentBrandingDto(
             String productName,
+            Integer logoCharacterIndex,
             String homeLabel,
             String logoUrl,
             DeploymentThemePreset themePreset,
@@ -77,6 +78,7 @@ public final class OperatorConfigurationDtos {
 
     public record BrandingUpdateDto(
             @NotBlank @Size(max = 80) String productName,
+            Integer logoCharacterIndex,
             @NotBlank @Size(max = 120) String homeLabel,
             @NotNull @Size(max = 2048) String logoUrl,
             @NotNull DeploymentThemePreset themePreset) {

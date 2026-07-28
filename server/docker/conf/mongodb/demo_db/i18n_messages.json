@@ -15105,13 +15105,13 @@
     "_id": "i18n-message-en-operator-claim-subtitle",
     "key": "operator.claim.subtitle",
     "lang": "en",
-    "value": "Claim the eligible share for this node"
+    "value": "Claim this node with company details or a client code"
   },
   {
     "_id": "i18n-message-en-operator-claim-instructions",
     "key": "operator.claim.instructions",
     "lang": "en",
-    "value": "Claim this registered deployment explicitly. Grouping tokens become available only after the claim succeeds."
+    "value": "Claim this registered deployment with full company details or a temporary registry-issued client code."
   },
   {
     "_id": "i18n-message-en-operator-claim-apply",
@@ -15150,10 +15150,46 @@
     "value": "Complete the operator profile name before claiming this node."
   },
   {
+    "_id": "i18n-message-en-operator-claim-path-company",
+    "key": "operator.claim.path.company",
+    "lang": "en",
+    "value": "Company details"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-path-company-description",
+    "key": "operator.claim.path.company.description",
+    "lang": "en",
+    "value": "Submit the full legal-company and authorized-contact form."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-path-client-code",
+    "key": "operator.claim.path.client.code",
+    "lang": "en",
+    "value": "Client code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-path-client-code-description",
+    "key": "operator.claim.path.client.code.description",
+    "lang": "en",
+    "value": "Redeem a temporary code issued by an approved deployment."
+  },
+  {
     "_id": "i18n-message-en-operator-claim-verification-instructions",
     "key": "operator.claim.verification.instructions",
     "lang": "en",
     "value": "Submit the registered company details and an authorized contact for formal verification."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-company",
+    "key": "operator.claim.verification.company",
+    "lang": "en",
+    "value": "Legal company"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-authority",
+    "key": "operator.claim.verification.authority",
+    "lang": "en",
+    "value": "Authorized contact"
   },
   {
     "_id": "i18n-message-en-operator-claim-verification-legal-name",
@@ -15250,6 +15286,78 @@
     "key": "operator.claim.verification.error.website",
     "lang": "en",
     "value": "Enter a valid public website URL beginning with https://."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code",
+    "key": "operator.claim.client.code",
+    "lang": "en",
+    "value": "Client code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-dialog-title",
+    "key": "operator.claim.client.code.dialog.title",
+    "lang": "en",
+    "value": "Client code for another deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-instructions",
+    "key": "operator.claim.client.code.instructions",
+    "lang": "en",
+    "value": "Enter the temporary client code issued by an approved deployment. The registry will create a linked claim for review; leaderboard grouping starts only after approval."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-placeholder",
+    "key": "operator.claim.client.code.placeholder",
+    "lang": "en",
+    "value": "Paste the temporary client code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-copy",
+    "key": "operator.claim.client.code.copy",
+    "lang": "en",
+    "value": "Copy code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-copying",
+    "key": "operator.claim.client.code.copying",
+    "lang": "en",
+    "value": "Copying code…"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-copy-unavailable",
+    "key": "operator.claim.client.code.copy.unavailable",
+    "lang": "en",
+    "value": "Clipboard access is unavailable. Select and copy the code manually."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-issuing",
+    "key": "operator.claim.client.code.issuing",
+    "lang": "en",
+    "value": "Issuing client code…"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-redeem",
+    "key": "operator.claim.client.code.redeem",
+    "lang": "en",
+    "value": "Submit client code"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-redeeming",
+    "key": "operator.claim.client.code.redeeming",
+    "lang": "en",
+    "value": "Submitting client code…"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-required",
+    "key": "operator.claim.client.code.required",
+    "lang": "en",
+    "value": "Enter a temporary client code."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-client-code-submitted",
+    "key": "operator.claim.client.code.submitted",
+    "lang": "en",
+    "value": "The linked claim was submitted and is pending registry review."
   },
   {
     "_id": "i18n-message-en-operator-group-instructions",
@@ -31281,13 +31389,13 @@
     "_id": "i18n-message-hu-operator-claim-subtitle",
     "key": "operator.claim.subtitle",
     "lang": "hu",
-    "value": "A csomópont jogosult részesedésének igénylése"
+    "value": "A csomópont igénylése cégadatokkal vagy klienskóddal"
   },
   {
     "_id": "i18n-message-hu-operator-claim-instructions",
     "key": "operator.claim.instructions",
     "lang": "hu",
-    "value": "Igényeld ezt a regisztrált telepítést közvetlenül. A csoportosító tokenek csak a sikeres igénylés után érhetők el."
+    "value": "Igényeld ezt a regisztrált telepítést teljes cégadatokkal vagy a nyilvántartás által kiadott ideiglenes klienskóddal."
   },
   {
     "_id": "i18n-message-hu-operator-claim-apply",
@@ -31326,10 +31434,46 @@
     "value": "A csomópont igénylése előtt add meg az operátori profil nevét."
   },
   {
+    "_id": "i18n-message-hu-operator-claim-path-company",
+    "key": "operator.claim.path.company",
+    "lang": "hu",
+    "value": "Cégadatok"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-path-company-description",
+    "key": "operator.claim.path.company.description",
+    "lang": "hu",
+    "value": "A teljes jogi cég- és jogosult kapcsolattartói űrlap beküldése."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-path-client-code",
+    "key": "operator.claim.path.client.code",
+    "lang": "hu",
+    "value": "Klienskód"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-path-client-code-description",
+    "key": "operator.claim.path.client.code.description",
+    "lang": "hu",
+    "value": "Egy jóváhagyott telepítés ideiglenes kódjának beváltása."
+  },
+  {
     "_id": "i18n-message-hu-operator-claim-verification-instructions",
     "key": "operator.claim.verification.instructions",
     "lang": "hu",
     "value": "Add meg a bejegyzett vállalkozás adatait és egy jogosult kapcsolattartót a hivatalos ellenőrzéshez."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-company",
+    "key": "operator.claim.verification.company",
+    "lang": "hu",
+    "value": "Jogi vállalkozás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-authority",
+    "key": "operator.claim.verification.authority",
+    "lang": "hu",
+    "value": "Jogosult kapcsolattartó"
   },
   {
     "_id": "i18n-message-hu-operator-claim-verification-legal-name",
@@ -31426,6 +31570,78 @@
     "key": "operator.claim.verification.error.website",
     "lang": "hu",
     "value": "Adj meg érvényes, https:// kezdetű nyilvános webhelycímet."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code",
+    "key": "operator.claim.client.code",
+    "lang": "hu",
+    "value": "Klienskód"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-dialog-title",
+    "key": "operator.claim.client.code.dialog.title",
+    "lang": "hu",
+    "value": "Klienskód egy másik telepítéshez"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-instructions",
+    "key": "operator.claim.client.code.instructions",
+    "lang": "hu",
+    "value": "Add meg egy jóváhagyott telepítés ideiglenes klienskódját. A nyilvántartás felülvizsgálatra váró kapcsolt igénylést hoz létre; a ranglista-csoportosítás csak jóváhagyás után indul."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-placeholder",
+    "key": "operator.claim.client.code.placeholder",
+    "lang": "hu",
+    "value": "Illeszd be az ideiglenes klienskódot"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-copy",
+    "key": "operator.claim.client.code.copy",
+    "lang": "hu",
+    "value": "Kód másolása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-copying",
+    "key": "operator.claim.client.code.copying",
+    "lang": "hu",
+    "value": "Kód másolása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-copy-unavailable",
+    "key": "operator.claim.client.code.copy.unavailable",
+    "lang": "hu",
+    "value": "A vágólap nem érhető el. Jelöld ki és másold ki kézzel a kódot."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-issuing",
+    "key": "operator.claim.client.code.issuing",
+    "lang": "hu",
+    "value": "Klienskód kiadása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-redeem",
+    "key": "operator.claim.client.code.redeem",
+    "lang": "hu",
+    "value": "Klienskód beküldése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-redeeming",
+    "key": "operator.claim.client.code.redeeming",
+    "lang": "hu",
+    "value": "Klienskód beküldése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-required",
+    "key": "operator.claim.client.code.required",
+    "lang": "hu",
+    "value": "Adj meg egy ideiglenes klienskódot."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-client-code-submitted",
+    "key": "operator.claim.client.code.submitted",
+    "lang": "hu",
+    "value": "A kapcsolt igénylés beküldve, a nyilvántartás felülvizsgálatára vár."
   },
   {
     "_id": "i18n-message-hu-operator-group-instructions",

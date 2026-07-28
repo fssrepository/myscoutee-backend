@@ -228,6 +228,12 @@ public class OperatorConfigurationService {
             throw unavailable(
                     "Deployment branding seed is incomplete.");
         }
+        if (!validLogoCharacterIndex(
+                branding.getProductName().trim(),
+                branding.getLogoCharacterIndex())) {
+            throw unavailable(
+                    "Deployment branding seed has an invalid logo character index.");
+        }
         try {
             DeploymentThemePreset.valueOf(branding.getThemePreset());
         } catch (IllegalArgumentException exception) {
@@ -268,6 +274,12 @@ public class OperatorConfigurationService {
                 request.productName(),
                 "Product name",
                 PRODUCT_NAME_MAX);
+        Integer logoCharacterIndex = request.logoCharacterIndex();
+        if (!validLogoCharacterIndex(productName, logoCharacterIndex)) {
+            throw badRequest(
+                    "Logo character index must identify a Unicode character "
+                            + "in the product name.");
+        }
         String homeLabel = requiredTrimmed(
                 request.homeLabel(),
                 "Home label",
@@ -279,6 +291,7 @@ public class OperatorConfigurationService {
 
         DeploymentConfiguration.Branding branding = configuration.getBranding();
         branding.setProductName(productName);
+        branding.setLogoCharacterIndex(logoCharacterIndex);
         branding.setHomeLabel(homeLabel);
         branding.setLogoUrl(logoUrl);
         branding.setThemePreset(request.themePreset().name());
@@ -289,6 +302,19 @@ public class OperatorConfigurationService {
                     "Branding revision cannot be advanced.");
         }
         branding.setRevision(currentRevision + 1L);
+    }
+
+    private boolean validLogoCharacterIndex(
+            String productName,
+            Integer logoCharacterIndex) {
+        if (logoCharacterIndex == null) {
+            return true;
+        }
+        int characterCount = productName.codePointCount(
+                0,
+                productName.length());
+        return logoCharacterIndex >= 0
+                && logoCharacterIndex < characterCount;
     }
 
     private void applyPayment(
