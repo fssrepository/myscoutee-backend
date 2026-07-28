@@ -1,0 +1,25 @@
+[
+  {
+    "_id": "deployment-configuration",
+    "version": 0,
+    "schemaVersion": 1,
+    "branding": {
+      "productName": "MyScoutee",
+      "homeLabel": "Your preferences come first",
+      "logoUrl": "assets/logo/heart.webp",
+      "themePreset": "AURORA",
+      "revision": 0
+    },
+    "payment": {
+      "providerId": null,
+      "credentialEnvelope": null,
+      "credentialMask": null
+    },
+    "firebase": {
+      "projectId": "",
+      "authenticationCredentialEnvelope": null,
+      "messagingCredentialEnvelope": null
+    },
+    "updatedAt": null
+  }
+]

@@ -1,11 +1,15 @@
 package com.raxim.myscoutee.profile.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentCredentialResolver;
 
 import java.util.List;
 import java.util.Map;
@@ -13,10 +17,16 @@ import java.util.Map;
 @Service
 public class BarionPaymentProcessor implements PaymentProcessor {
 
-    @Value("${payment.barion.apiKey:}")
-    private String posKey;
-
+    private final DeploymentPaymentCredentialResolver credentialResolver;
+    private final String environmentPosKey;
     private final RestTemplate restTemplate = new RestTemplate();
+
+    public BarionPaymentProcessor(
+            DeploymentPaymentCredentialResolver credentialResolver,
+            @Value("${payment.barion.apiKey:}") String environmentPosKey) {
+        this.credentialResolver = credentialResolver;
+        this.environmentPosKey = environmentPosKey;
+    }
 
     @Override
     public String getType() {
@@ -39,6 +49,12 @@ public class BarionPaymentProcessor implements PaymentProcessor {
     @Override
     public EventCheckoutSessionDto pay(EventCheckoutRequestDto request, String paymentSessionId) {
         String barionUrl = "https://api.barion.com/v2/Payment/Start";
+        String posKey = credentialResolver.resolve(getType(), environmentPosKey);
+        if (!StringUtils.hasText(posKey)) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Barion payment credential is not configured.");
+        }
 
         Map<String, Object> barionRequest = Map.of(
             "POSKey", posKey,

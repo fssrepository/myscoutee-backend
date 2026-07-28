@@ -1,0 +1,14 @@
+[
+  {
+    "_id": "stripe",
+    "label": "Stripe",
+    "enabled": true,
+    "sortOrder": 10
+  },
+  {
+    "_id": "barion",
+    "label": "Barion",
+    "enabled": true,
+    "sortOrder": 20
+  }
+]

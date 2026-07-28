@@ -3642,6 +3642,66 @@
     "value": "Only users with moderation reports are visible here."
   },
   {
+    "_id": "i18n-message-en-operator-action-claim-share",
+    "key": "operator.action.claim.share",
+    "lang": "en",
+    "value": "Claim share"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-configuration",
+    "key": "operator.action.configuration",
+    "lang": "en",
+    "value": "Configuration"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-node-registration",
+    "key": "operator.action.node.registration",
+    "lang": "en",
+    "value": "Node registration"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-updates",
+    "key": "operator.action.updates",
+    "lang": "en",
+    "value": "Updates"
+  },
+  {
+    "_id": "i18n-message-en-operator-community",
+    "key": "operator.community",
+    "lang": "en",
+    "value": "Community"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-open",
+    "key": "operator.community.open",
+    "lang": "en",
+    "value": "Open community"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard",
+    "key": "operator.leaderboard",
+    "lang": "en",
+    "value": "Leaderboard"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-group-claimed-nodes",
+    "key": "operator.leaderboard.group.claimed.nodes",
+    "lang": "en",
+    "value": "Claimed nodes"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-group-founder",
+    "key": "operator.leaderboard.group.founder",
+    "lang": "en",
+    "value": "Founder"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-group-unclaimed-nodes",
+    "key": "operator.leaderboard.group.unclaimed.nodes",
+    "lang": "en",
+    "value": "Unclaimed nodes"
+  },
+  {
     "_id": "i18n-message-en-opening",
     "key": "opening",
     "lang": "en",
@@ -14430,6 +14490,1458 @@
     "value": "Awaiting owner confirmation."
   },
   {
+    "_id": "i18n-message-en-operator",
+    "key": "operator",
+    "lang": "en",
+    "value": "Operator"
+  },
+  {
+    "_id": "i18n-message-en-operator-brand-aria",
+    "key": "operator.brand.aria",
+    "lang": "en",
+    "value": "MyScoutee operator"
+  },
+  {
+    "_id": "i18n-message-en-operator-brand-logo-alt",
+    "key": "operator.brand.logo.alt",
+    "lang": "en",
+    "value": "MyScoutee logo"
+  },
+  {
+    "_id": "i18n-message-en-operator-actions",
+    "key": "operator.actions",
+    "lang": "en",
+    "value": "Operator actions"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-updates-detail",
+    "key": "operator.action.updates.detail",
+    "lang": "en",
+    "value": "Update this deployment at any time"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-updates-available",
+    "key": "operator.action.updates.available",
+    "lang": "en",
+    "value": "A deployment update is available"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-node-registration-detail",
+    "key": "operator.action.node.registration.detail",
+    "lang": "en",
+    "value": "Choose a registry and register this node"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-node-registration-registered",
+    "key": "operator.action.node.registration.registered",
+    "lang": "en",
+    "value": "This node is registered"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-claim-share-detail",
+    "key": "operator.action.claim.share.detail",
+    "lang": "en",
+    "value": "Claim this node's eligible network share"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-claim-share-claimed",
+    "key": "operator.action.claim.share.claimed",
+    "lang": "en",
+    "value": "This node's share is claimed"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-configuration-detail",
+    "key": "operator.action.configuration.detail",
+    "lang": "en",
+    "value": "Check authentication and messaging"
+  },
+  {
+    "_id": "i18n-message-en-operator-workspace-title",
+    "key": "operator.workspace.title",
+    "lang": "en",
+    "value": "Operator workspace"
+  },
+  {
+    "_id": "i18n-message-en-operator-workspace-offline",
+    "key": "operator.workspace.offline",
+    "lang": "en",
+    "value": "Offline mode is active. Registry operations wait for the connection to return."
+  },
+  {
+    "_id": "i18n-message-en-operator-profile-open",
+    "key": "operator.profile.open",
+    "lang": "en",
+    "value": "Open operator profile"
+  },
+  {
+    "_id": "i18n-message-en-operator-workspace-loading",
+    "key": "operator.workspace.loading",
+    "lang": "en",
+    "value": "Loading operator workspace…"
+  },
+  {
+    "_id": "i18n-message-en-operator-loading",
+    "key": "operator.loading",
+    "lang": "en",
+    "value": "Loading…"
+  },
+  {
+    "_id": "i18n-message-en-operator-popup-close",
+    "key": "operator.popup.close",
+    "lang": "en",
+    "value": "Close operator window"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-subtitle",
+    "key": "operator.registration.subtitle",
+    "lang": "en",
+    "value": "Choose a registry server and register explicitly"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-loading",
+    "key": "operator.registration.loading",
+    "lang": "en",
+    "value": "Loading registry options…"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-unavailable",
+    "key": "operator.registration.unavailable",
+    "lang": "en",
+    "value": "Registry state is unavailable."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-refresh",
+    "key": "operator.registration.refresh",
+    "lang": "en",
+    "value": "Refresh registry state"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-current-status",
+    "key": "operator.registration.current.status",
+    "lang": "en",
+    "value": "Current registration"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-registry-url",
+    "key": "operator.registration.registry.url",
+    "lang": "en",
+    "value": "Registry server URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-registry-options",
+    "key": "operator.registration.registry.options",
+    "lang": "en",
+    "value": "Select an available registry URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-registry-scope",
+    "key": "operator.registration.registry.scope",
+    "lang": "en",
+    "value": "Expected registry scope (optional)"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-seed-registry-primary",
+    "key": "operator.registration.seed.registry.primary",
+    "lang": "en",
+    "value": "MyScoutee registry"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-seed-registry-primary-description",
+    "key": "operator.registration.seed.registry.primary.description",
+    "lang": "en",
+    "value": "Default registry for this deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-seed-registry-europe",
+    "key": "operator.registration.seed.registry.europe",
+    "lang": "en",
+    "value": "Europe registry"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-seed-registry-europe-description",
+    "key": "operator.registration.seed.registry.europe.description",
+    "lang": "en",
+    "value": "European operator registry"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-seed-registry-community",
+    "key": "operator.registration.seed.registry.community",
+    "lang": "en",
+    "value": "Community registry"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-seed-registry-community-description",
+    "key": "operator.registration.seed.registry.community.description",
+    "lang": "en",
+    "value": "Independent community registry"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-url-paste",
+    "key": "operator.registration.url.paste",
+    "lang": "en",
+    "value": "Paste registry URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-url-open",
+    "key": "operator.registration.url.open",
+    "lang": "en",
+    "value": "Open registry URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-url-clear",
+    "key": "operator.registration.url.clear",
+    "lang": "en",
+    "value": "Clear registry URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-register",
+    "key": "operator.registration.register",
+    "lang": "en",
+    "value": "Register node"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-registering",
+    "key": "operator.registration.registering",
+    "lang": "en",
+    "value": "Registering node…"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-disable",
+    "key": "operator.registration.disable",
+    "lang": "en",
+    "value": "Disable connection"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-disabling",
+    "key": "operator.registration.disabling",
+    "lang": "en",
+    "value": "Disabling connection…"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-completed",
+    "key": "operator.registration.completed",
+    "lang": "en",
+    "value": "Node registration completed."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-disabled",
+    "key": "operator.registration.disabled",
+    "lang": "en",
+    "value": "Registry connection disabled."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-status-registered",
+    "key": "operator.registration.status.registered",
+    "lang": "en",
+    "value": "Registered"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-status-registering",
+    "key": "operator.registration.status.registering",
+    "lang": "en",
+    "value": "Registering"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-status-configured",
+    "key": "operator.registration.status.configured",
+    "lang": "en",
+    "value": "Configured"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-status-disabled",
+    "key": "operator.registration.status.disabled",
+    "lang": "en",
+    "value": "Disabled"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-status-error",
+    "key": "operator.registration.status.error",
+    "lang": "en",
+    "value": "Registration needs attention"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-status-not-registered",
+    "key": "operator.registration.status.not.registered",
+    "lang": "en",
+    "value": "Not registered"
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-url-required",
+    "key": "operator.registration.error.url.required",
+    "lang": "en",
+    "value": "Enter the registry server URL."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-url-origin",
+    "key": "operator.registration.error.url.origin",
+    "lang": "en",
+    "value": "Enter an origin-only registry URL without a path, query, or fragment."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-url-protocol",
+    "key": "operator.registration.error.url.protocol",
+    "lang": "en",
+    "value": "The registry URL must use HTTP or HTTPS."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-url-credentials",
+    "key": "operator.registration.error.url.credentials",
+    "lang": "en",
+    "value": "The registry URL must not contain credentials."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-url-https-required",
+    "key": "operator.registration.error.url.https.required",
+    "lang": "en",
+    "value": "Real operator registry connections require HTTPS."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-url-invalid",
+    "key": "operator.registration.error.url.invalid",
+    "lang": "en",
+    "value": "Enter a valid absolute registry URL."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-scope-invalid",
+    "key": "operator.registration.error.scope.invalid",
+    "lang": "en",
+    "value": "The registry scope must be 3–128 lowercase ASCII letters, digits, dots, colons, underscores, or hyphens, and begin with a letter or digit."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-scope-required",
+    "key": "operator.registration.error.scope.required",
+    "lang": "en",
+    "value": "Enter the registry scope for this URL."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-inspection-missing",
+    "key": "operator.registration.error.inspection.missing",
+    "lang": "en",
+    "value": "Registry inspection could not be created."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-inspection-expired",
+    "key": "operator.registration.error.inspection.expired",
+    "lang": "en",
+    "value": "The registry inspection expired. Inspect it again before configuring."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-inspection-required",
+    "key": "operator.registration.error.inspection.required",
+    "lang": "en",
+    "value": "Inspect the registry identity again before confirming."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-registry-required",
+    "key": "operator.registration.error.registry.required",
+    "lang": "en",
+    "value": "Choose a registry server before registering the node."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-load",
+    "key": "operator.registration.error.load",
+    "lang": "en",
+    "value": "Unable to load the operator registry state."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-inspect",
+    "key": "operator.registration.error.inspect",
+    "lang": "en",
+    "value": "Registry inspection failed."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-confirm",
+    "key": "operator.registration.error.confirm",
+    "lang": "en",
+    "value": "Deployment registration failed."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-register",
+    "key": "operator.registration.error.register",
+    "lang": "en",
+    "value": "Node registration failed."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-retry",
+    "key": "operator.registration.error.retry",
+    "lang": "en",
+    "value": "Registry retry failed."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-disconnect",
+    "key": "operator.registration.error.disconnect",
+    "lang": "en",
+    "value": "Unable to disable the registry connection."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-timeout",
+    "key": "operator.registration.error.timeout",
+    "lang": "en",
+    "value": "The registry operation timed out. Retry is safe."
+  },
+  {
+    "_id": "i18n-message-en-operator-registration-error-response-unavailable",
+    "key": "operator.registration.error.response.unavailable",
+    "lang": "en",
+    "value": "The operator registry response is unavailable."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-subtitle",
+    "key": "operator.update.subtitle",
+    "lang": "en",
+    "value": "Check and update this deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-current-version",
+    "key": "operator.update.current.version",
+    "lang": "en",
+    "value": "Current version"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-available-version",
+    "key": "operator.update.available.version",
+    "lang": "en",
+    "value": "Available version"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-last-updated",
+    "key": "operator.update.last.updated",
+    "lang": "en",
+    "value": "Last updated"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-apply",
+    "key": "operator.update.apply",
+    "lang": "en",
+    "value": "Update deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-current",
+    "key": "operator.update.current",
+    "lang": "en",
+    "value": "Deployment is current"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-applying",
+    "key": "operator.update.applying",
+    "lang": "en",
+    "value": "Updating deployment…"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-completed",
+    "key": "operator.update.completed",
+    "lang": "en",
+    "value": "Deployment update completed."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-idle",
+    "key": "operator.update.phase.idle",
+    "lang": "en",
+    "value": "Ready to check"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-checking",
+    "key": "operator.update.phase.checking",
+    "lang": "en",
+    "value": "Checking release"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-downloading",
+    "key": "operator.update.phase.downloading",
+    "lang": "en",
+    "value": "Downloading update"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-verifying",
+    "key": "operator.update.phase.verifying",
+    "lang": "en",
+    "value": "Verifying download"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-installing",
+    "key": "operator.update.phase.installing",
+    "lang": "en",
+    "value": "Installing update"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-completed",
+    "key": "operator.update.phase.completed",
+    "lang": "en",
+    "value": "Update completed"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-phase-failed",
+    "key": "operator.update.phase.failed",
+    "lang": "en",
+    "value": "Update failed"
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-failed",
+    "key": "operator.update.error.failed",
+    "lang": "en",
+    "value": "Deployment update failed."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-recovery-required",
+    "key": "operator.update.error.recovery.required",
+    "lang": "en",
+    "value": "The update stopped in an uncertain state. Follow the recovery procedure before retrying."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-unavailable",
+    "key": "operator.update.error.unavailable",
+    "lang": "en",
+    "value": "No verified deployment update is available."
+  },
+  {
+    "_id": "i18n-message-en-operator-update-error-response",
+    "key": "operator.update.error.response",
+    "lang": "en",
+    "value": "The deployment update response is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-subtitle",
+    "key": "operator.claim.subtitle",
+    "lang": "en",
+    "value": "Claim the eligible share for this node"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-instructions",
+    "key": "operator.claim.instructions",
+    "lang": "en",
+    "value": "Claim this registered deployment explicitly. Grouping tokens become available only after the claim succeeds."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-apply",
+    "key": "operator.claim.apply",
+    "lang": "en",
+    "value": "Claim this node"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-applying",
+    "key": "operator.claim.applying",
+    "lang": "en",
+    "value": "Claiming node share…"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-completed",
+    "key": "operator.claim.completed",
+    "lang": "en",
+    "value": "Node share claimed."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-claimed",
+    "key": "operator.claim.claimed",
+    "lang": "en",
+    "value": "Share claimed"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-error-registration-required",
+    "key": "operator.claim.error.registration.required",
+    "lang": "en",
+    "value": "Register this node before claiming its share."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-error-profile-required",
+    "key": "operator.claim.error.profile.required",
+    "lang": "en",
+    "value": "Complete the operator profile name before claiming this node."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-instructions",
+    "key": "operator.group.instructions",
+    "lang": "en",
+    "value": "Issue a temporary token for another already claimed deployment, or paste a token from one to join its virtual group. Grouping does not change claim ownership or measured activity."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-temporary-token",
+    "key": "operator.group.temporary.token",
+    "lang": "en",
+    "value": "Temporary grouping token"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-expires",
+    "key": "operator.group.expires",
+    "lang": "en",
+    "value": "Expires"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-token-from-another-deployment",
+    "key": "operator.group.token.from.another.deployment",
+    "lang": "en",
+    "value": "Token from another claimed deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-token-request",
+    "key": "operator.group.token.request",
+    "lang": "en",
+    "value": "Issue grouping token"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-token-refresh",
+    "key": "operator.group.token.refresh",
+    "lang": "en",
+    "value": "Issue a new token"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-token-issuing",
+    "key": "operator.group.token.issuing",
+    "lang": "en",
+    "value": "Issuing grouping token…"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-token-issued",
+    "key": "operator.group.token.issued",
+    "lang": "en",
+    "value": "Temporary grouping token issued."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-token-required",
+    "key": "operator.group.token.required",
+    "lang": "en",
+    "value": "Paste a grouping token from another claimed deployment."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-redeem",
+    "key": "operator.group.redeem",
+    "lang": "en",
+    "value": "Join group"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-linking",
+    "key": "operator.group.linking",
+    "lang": "en",
+    "value": "Joining operator group…"
+  },
+  {
+    "_id": "i18n-message-en-operator-group-linked",
+    "key": "operator.group.linked",
+    "lang": "en",
+    "value": "Deployment joined the operator group."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-error-claim-required",
+    "key": "operator.group.error.claim.required",
+    "lang": "en",
+    "value": "Claim this deployment before using grouping tokens."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-error-token-invalid",
+    "key": "operator.group.error.token.invalid",
+    "lang": "en",
+    "value": "The grouping token is invalid or expired."
+  },
+  {
+    "_id": "i18n-message-en-operator-group-error-token-response",
+    "key": "operator.group.error.token.response",
+    "lang": "en",
+    "value": "The registry did not return a valid grouping token."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-subtitle",
+    "key": "operator.configuration.subtitle",
+    "lang": "en",
+    "value": "Branding, payments, and Firebase"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-instructions",
+    "key": "operator.configuration.instructions",
+    "lang": "en",
+    "value": "Manage the deployment-owned product configuration."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-configured",
+    "key": "operator.configuration.configured",
+    "lang": "en",
+    "value": "Configured"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-not-configured",
+    "key": "operator.configuration.not.configured",
+    "lang": "en",
+    "value": "Credentials missing"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-saving",
+    "key": "operator.configuration.saving",
+    "lang": "en",
+    "value": "Registering configuration…"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-saved",
+    "key": "operator.configuration.saved",
+    "lang": "en",
+    "value": "Configuration registered."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-backend-unavailable",
+    "key": "operator.configuration.backend.unavailable",
+    "lang": "en",
+    "value": "This deployment does not expose operator configuration endpoints yet."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-eyebrow",
+    "key": "operator.configuration.branding.eyebrow",
+    "lang": "en",
+    "value": "Deployment identity"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding",
+    "key": "operator.configuration.branding",
+    "lang": "en",
+    "value": "Branding"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-product-name",
+    "key": "operator.configuration.branding.product.name",
+    "lang": "en",
+    "value": "Product name"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-home-label",
+    "key": "operator.configuration.branding.home.label",
+    "lang": "en",
+    "value": "Landing label"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme",
+    "key": "operator.configuration.branding.theme",
+    "lang": "en",
+    "value": "Landing theme"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-logo",
+    "key": "operator.configuration.branding.logo",
+    "lang": "en",
+    "value": "Logo"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-logo-heart-webp",
+    "key": "operator.configuration.branding.logo.heart.webp",
+    "lang": "en",
+    "value": "MyScoutee heart (WebP)"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-logo-heart-png",
+    "key": "operator.configuration.branding.logo.heart.png",
+    "lang": "en",
+    "value": "MyScoutee heart (PNG)"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-save",
+    "key": "operator.configuration.branding.save",
+    "lang": "en",
+    "value": "Save branding"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-saved",
+    "key": "operator.configuration.branding.saved",
+    "lang": "en",
+    "value": "Deployment branding saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-label-required",
+    "key": "operator.configuration.branding.label.required",
+    "lang": "en",
+    "value": "Product name and landing label are required."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-aurora",
+    "key": "operator.configuration.branding.theme.aurora",
+    "lang": "en",
+    "value": "Aurora"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-ocean",
+    "key": "operator.configuration.branding.theme.ocean",
+    "lang": "en",
+    "value": "Ocean"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-forest",
+    "key": "operator.configuration.branding.theme.forest",
+    "lang": "en",
+    "value": "Forest"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-sunset",
+    "key": "operator.configuration.branding.theme.sunset",
+    "lang": "en",
+    "value": "Sunset"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-violet",
+    "key": "operator.configuration.branding.theme.violet",
+    "lang": "en",
+    "value": "Violet"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-rose",
+    "key": "operator.configuration.branding.theme.rose",
+    "lang": "en",
+    "value": "Rose"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-amber",
+    "key": "operator.configuration.branding.theme.amber",
+    "lang": "en",
+    "value": "Amber"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-slate",
+    "key": "operator.configuration.branding.theme.slate",
+    "lang": "en",
+    "value": "Slate"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-aquarius",
+    "key": "operator.configuration.branding.theme.aquarius",
+    "lang": "en",
+    "value": "Aquarius"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-theme-monochrome",
+    "key": "operator.configuration.branding.theme.monochrome",
+    "lang": "en",
+    "value": "Monochrome"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-eyebrow",
+    "key": "operator.configuration.payment.eyebrow",
+    "lang": "en",
+    "value": "Commerce integration"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment",
+    "key": "operator.configuration.payment",
+    "lang": "en",
+    "value": "Payment provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-provider",
+    "key": "operator.configuration.payment.provider",
+    "lang": "en",
+    "value": "Available provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-provider-none",
+    "key": "operator.configuration.payment.provider.none",
+    "lang": "en",
+    "value": "No payment provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-credential",
+    "key": "operator.configuration.payment.credential",
+    "lang": "en",
+    "value": "Provider token or credentials"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-register",
+    "key": "operator.configuration.payment.register",
+    "lang": "en",
+    "value": "Register payment"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-update",
+    "key": "operator.configuration.payment.update",
+    "lang": "en",
+    "value": "Update payment"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-remove",
+    "key": "operator.configuration.payment.remove",
+    "lang": "en",
+    "value": "Remove payment"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-registered",
+    "key": "operator.configuration.payment.registered",
+    "lang": "en",
+    "value": "Payment provider credentials registered."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-register-completed",
+    "key": "operator.configuration.payment.register.completed",
+    "lang": "en",
+    "value": "Payment provider credentials registered."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-update-completed",
+    "key": "operator.configuration.payment.update.completed",
+    "lang": "en",
+    "value": "Payment provider credentials updated."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-remove-completed",
+    "key": "operator.configuration.payment.remove.completed",
+    "lang": "en",
+    "value": "Payment provider removed."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-eyebrow",
+    "key": "operator.configuration.firebase.eyebrow",
+    "lang": "en",
+    "value": "Identity and notifications"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-project-id",
+    "key": "operator.configuration.firebase.project.id",
+    "lang": "en",
+    "value": "Firebase project ID"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-authentication-credential",
+    "key": "operator.configuration.firebase.authentication.credential",
+    "lang": "en",
+    "value": "Authentication credential"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-messaging-credential",
+    "key": "operator.configuration.firebase.messaging.credential",
+    "lang": "en",
+    "value": "Messaging credential"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-register",
+    "key": "operator.configuration.firebase.register",
+    "lang": "en",
+    "value": "Register Firebase"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-save",
+    "key": "operator.configuration.firebase.save",
+    "lang": "en",
+    "value": "Save Firebase"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-registered",
+    "key": "operator.configuration.firebase.registered",
+    "lang": "en",
+    "value": "Firebase credentials registered."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-saved",
+    "key": "operator.configuration.firebase.saved",
+    "lang": "en",
+    "value": "Firebase configuration saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-credential-placeholder",
+    "key": "operator.configuration.credential.placeholder",
+    "lang": "en",
+    "value": "Enter a new credential"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-credential-registered",
+    "key": "operator.configuration.credential.registered",
+    "lang": "en",
+    "value": "Registered — enter a value to rotate"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-authentication",
+    "key": "operator.configuration.test.authentication",
+    "lang": "en",
+    "value": "Test login"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging",
+    "key": "operator.configuration.test.messaging",
+    "lang": "en",
+    "value": "Send test notification"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-testing",
+    "key": "operator.configuration.testing",
+    "lang": "en",
+    "value": "Testing configuration…"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-success",
+    "key": "operator.configuration.test.success",
+    "lang": "en",
+    "value": "Configuration check completed successfully."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-failed",
+    "key": "operator.configuration.test.failed",
+    "lang": "en",
+    "value": "Configuration check failed."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-credentials-missing",
+    "key": "operator.configuration.credentials.missing",
+    "lang": "en",
+    "value": "Credentials are not configured."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-subtitle",
+    "key": "operator.community.subtitle",
+    "lang": "en",
+    "value": "Community providers and announcements"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-current",
+    "key": "operator.community.current",
+    "lang": "en",
+    "value": "Current availability"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-online",
+    "key": "operator.community.online",
+    "lang": "en",
+    "value": "Online"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-available",
+    "key": "operator.community.available",
+    "lang": "en",
+    "value": "Available"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-busy",
+    "key": "operator.community.busy",
+    "lang": "en",
+    "value": "Busy"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-invisible",
+    "key": "operator.community.invisible",
+    "lang": "en",
+    "value": "Invisible"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-updating",
+    "key": "operator.community.updating",
+    "lang": "en",
+    "value": "Updating availability…"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-updated",
+    "key": "operator.community.updated",
+    "lang": "en",
+    "value": "Availability updated."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-discord-purpose",
+    "key": "operator.community.provider.discord.purpose",
+    "lang": "en",
+    "value": "Live operator chat and community coordination"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-join",
+    "key": "operator.community.provider.join",
+    "lang": "en",
+    "value": "Open"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-discourse-purpose",
+    "key": "operator.community.provider.discourse.purpose",
+    "lang": "en",
+    "value": "Searchable forum, support, and knowledge discussion"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-configured",
+    "key": "operator.community.provider.configured",
+    "lang": "en",
+    "value": "Configured"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-not-configured",
+    "key": "operator.community.provider.not.configured",
+    "lang": "en",
+    "value": "Not configured"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-available",
+    "key": "operator.community.provider.available",
+    "lang": "en",
+    "value": "Available"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-unavailable",
+    "key": "operator.community.provider.unavailable",
+    "lang": "en",
+    "value": "Unavailable"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-provider-open",
+    "key": "operator.community.provider.open",
+    "lang": "en",
+    "value": "Open provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-providers-empty",
+    "key": "operator.community.providers.empty",
+    "lang": "en",
+    "value": "No community providers are configured."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcements",
+    "key": "operator.community.announcements",
+    "lang": "en",
+    "value": "Community announcements"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-kind-general",
+    "key": "operator.community.announcement.kind.general",
+    "lang": "en",
+    "value": "General"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-kind-update",
+    "key": "operator.community.announcement.kind.update",
+    "lang": "en",
+    "value": "Update"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-kind-maintenance",
+    "key": "operator.community.announcement.kind.maintenance",
+    "lang": "en",
+    "value": "Maintenance"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-kind-security",
+    "key": "operator.community.announcement.kind.security",
+    "lang": "en",
+    "value": "Security"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-severity-info",
+    "key": "operator.community.announcement.severity.info",
+    "lang": "en",
+    "value": "Info"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-severity-success",
+    "key": "operator.community.announcement.severity.success",
+    "lang": "en",
+    "value": "Verified"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-severity-warning",
+    "key": "operator.community.announcement.severity.warning",
+    "lang": "en",
+    "value": "Warning"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-severity-critical",
+    "key": "operator.community.announcement.severity.critical",
+    "lang": "en",
+    "value": "Critical"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-unread",
+    "key": "operator.community.announcement.unread",
+    "lang": "en",
+    "value": "Unread announcement"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-details",
+    "key": "operator.community.announcement.details",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-published",
+    "key": "operator.community.announcement.published",
+    "lang": "en",
+    "value": "Published"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-expires",
+    "key": "operator.community.announcement.expires",
+    "lang": "en",
+    "value": "Expires"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-status-published",
+    "key": "operator.community.announcement.status.published",
+    "lang": "en",
+    "value": "Published"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-status-archived",
+    "key": "operator.community.announcement.status.archived",
+    "lang": "en",
+    "value": "Archived"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-status-withdrawn",
+    "key": "operator.community.announcement.status.withdrawn",
+    "lang": "en",
+    "value": "Withdrawn"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-version",
+    "key": "operator.community.announcement.version",
+    "lang": "en",
+    "value": "Version"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-download",
+    "key": "operator.community.announcement.download",
+    "lang": "en",
+    "value": "Verified download URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-download-open",
+    "key": "operator.community.announcement.download.open",
+    "lang": "en",
+    "value": "Open verified release download"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-download-verified",
+    "key": "operator.community.announcement.download.verified",
+    "lang": "en",
+    "value": "Verified release URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-download-unverified",
+    "key": "operator.community.announcement.download.unverified",
+    "lang": "en",
+    "value": "Unverified release URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-size",
+    "key": "operator.community.announcement.artifact.size",
+    "lang": "en",
+    "value": "Artifact size"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-compatibility",
+    "key": "operator.community.announcement.artifact.compatibility",
+    "lang": "en",
+    "value": "Compatibility"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-signature",
+    "key": "operator.community.announcement.artifact.signature",
+    "lang": "en",
+    "value": "Signature"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-link-release-notes",
+    "key": "operator.community.announcement.link.release.notes",
+    "lang": "en",
+    "value": "Release notes"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-link-project",
+    "key": "operator.community.announcement.link.project",
+    "lang": "en",
+    "value": "Project status"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-link-open",
+    "key": "operator.community.announcement.link.open",
+    "lang": "en",
+    "value": "Open announcement"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-verified-purpose",
+    "key": "operator.community.announcement.update.verified.purpose",
+    "lang": "en",
+    "value": "Verified deployment package from the registered network"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-1-1-0-title",
+    "key": "operator.community.announcement.update.1_1_0.title",
+    "lang": "en",
+    "value": "MyScoutee 1.1.0 is available"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-1-1-0-body",
+    "key": "operator.community.announcement.update.1_1_0.body",
+    "lang": "en",
+    "value": "Operators can review the signed artifact metadata and start the deployment update from the Updates tool."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-1-1-0-purpose",
+    "key": "operator.community.announcement.update.1_1_0.purpose",
+    "lang": "en",
+    "value": "A focused operator workspace and a clearer registry workflow."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-1-1-0-note-registry",
+    "key": "operator.community.announcement.update.1_1_0.note.registry",
+    "lang": "en",
+    "value": "Adds explicit registry selection and node registration."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-1-1-0-note-workspace",
+    "key": "operator.community.announcement.update.1_1_0.note.workspace",
+    "lang": "en",
+    "value": "Adds compact operator tools, grouped leaderboard rows, and streamed update progress."
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-update-1-1-0-compatibility",
+    "key": "operator.community.announcement.update.1_1_0.compatibility",
+    "lang": "en",
+    "value": "Debian 12 or Ubuntu 24.04 · amd64"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-maintenance-registry-title",
+    "key": "operator.community.announcement.maintenance.registry.title",
+    "lang": "en",
+    "value": "Registry maintenance window"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-maintenance-registry-body",
+    "key": "operator.community.announcement.maintenance.registry.body",
+    "lang": "en",
+    "value": "A short registry maintenance window is planned. Registered deployments keep their identity and measurement history."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-network",
+    "key": "operator.leaderboard.network",
+    "lang": "en",
+    "value": "Network contribution"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-share",
+    "key": "operator.leaderboard.share",
+    "lang": "en",
+    "value": "share"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-contribution-units",
+    "key": "operator.leaderboard.contribution.units",
+    "lang": "en",
+    "value": "contribution units"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployment",
+    "key": "operator.leaderboard.deployment",
+    "lang": "en",
+    "value": "deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments",
+    "key": "operator.leaderboard.deployments",
+    "lang": "en",
+    "value": "deployments"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-claimed-node",
+    "key": "operator.leaderboard.claimed.node",
+    "lang": "en",
+    "value": "Claimed node"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-unclaimed-node",
+    "key": "operator.leaderboard.unclaimed.node",
+    "lang": "en",
+    "value": "Unclaimed node"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-founder",
+    "key": "operator.leaderboard.seed.founder",
+    "lang": "en",
+    "value": "MyScoutee founder contribution"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-campus",
+    "key": "operator.leaderboard.seed.campus",
+    "lang": "en",
+    "value": "Campus community"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-campus-east",
+    "key": "operator.leaderboard.seed.campus.east",
+    "lang": "en",
+    "value": "Campus east deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-city",
+    "key": "operator.leaderboard.seed.city",
+    "lang": "en",
+    "value": "City network"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-club",
+    "key": "operator.leaderboard.seed.club",
+    "lang": "en",
+    "value": "Club network"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-this-deployment",
+    "key": "operator.leaderboard.seed.this.deployment",
+    "lang": "en",
+    "value": "This deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-north",
+    "key": "operator.leaderboard.seed.north",
+    "lang": "en",
+    "value": "North deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-east",
+    "key": "operator.leaderboard.seed.east",
+    "lang": "en",
+    "value": "East deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-empty",
+    "key": "operator.leaderboard.empty",
+    "lang": "en",
+    "value": "No network entries"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-empty-description",
+    "key": "operator.leaderboard.empty.description",
+    "lang": "en",
+    "value": "Verified nodes will appear here."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-pagination",
+    "key": "operator.leaderboard.error.pagination",
+    "lang": "en",
+    "value": "The leaderboard could not continue from the registry cursor."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-response",
+    "key": "operator.leaderboard.error.response",
+    "lang": "en",
+    "value": "The registry returned a mismatched leaderboard page."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-cursor-invalid",
+    "key": "operator.leaderboard.error.cursor.invalid",
+    "lang": "en",
+    "value": "The leaderboard cursor is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-workspace-error-unavailable",
+    "key": "operator.workspace.error.unavailable",
+    "lang": "en",
+    "value": "Operator workspace data is unavailable."
+  },
+  {
+    "_id": "i18n-message-en-operator-remote-capability-unavailable",
+    "key": "operator.remote.capability.unavailable",
+    "lang": "en",
+    "value": "This operator capability is not available from the server yet."
+  },
+  {
+    "_id": "i18n-message-en-operator-request-aborted",
+    "key": "operator.request.aborted",
+    "lang": "en",
+    "value": "The operator request was cancelled."
+  },
+  {
+    "_id": "i18n-message-en-operator-request-timeout",
+    "key": "operator.request.timeout",
+    "lang": "en",
+    "value": "The operator request timed out."
+  },
+  {
+    "_id": "i18n-message-en-operator-request-failed",
+    "key": "operator.request.failed",
+    "lang": "en",
+    "value": "The operator request failed."
+  },
+  {
     "_id": "i18n-message-hu-about",
     "key": "about",
     "lang": "hu",
@@ -18070,6 +19582,66 @@
     "key": "only.users.with.moderation.reports.are.visible.here",
     "lang": "hu",
     "value": "Itt csak a moderációs jelentéssel rendelkező felhasználók láthatók."
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-claim-share",
+    "key": "operator.action.claim.share",
+    "lang": "hu",
+    "value": "Részesedés igénylése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-configuration",
+    "key": "operator.action.configuration",
+    "lang": "hu",
+    "value": "Konfiguráció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-node-registration",
+    "key": "operator.action.node.registration",
+    "lang": "hu",
+    "value": "Csomópont regisztráció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-updates",
+    "key": "operator.action.updates",
+    "lang": "hu",
+    "value": "Frissítések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community",
+    "key": "operator.community",
+    "lang": "hu",
+    "value": "Közösség"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-open",
+    "key": "operator.community.open",
+    "lang": "hu",
+    "value": "Közösség megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard",
+    "key": "operator.leaderboard",
+    "lang": "hu",
+    "value": "Ranglista"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-group-claimed-nodes",
+    "key": "operator.leaderboard.group.claimed.nodes",
+    "lang": "hu",
+    "value": "Igényelt csomópontok"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-group-founder",
+    "key": "operator.leaderboard.group.founder",
+    "lang": "hu",
+    "value": "Alapító"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-group-unclaimed-nodes",
+    "key": "operator.leaderboard.group.unclaimed.nodes",
+    "lang": "hu",
+    "value": "Nem igényelt csomópontok"
   },
   {
     "_id": "i18n-message-hu-opening",
@@ -28858,5 +30430,1457 @@
     "key": "asset.borrow.note.awaiting.owner",
     "lang": "hu",
     "value": "Tulajdonosi megerősítésre vár."
+  },
+  {
+    "_id": "i18n-message-hu-operator",
+    "key": "operator",
+    "lang": "hu",
+    "value": "Operátor"
+  },
+  {
+    "_id": "i18n-message-hu-operator-brand-aria",
+    "key": "operator.brand.aria",
+    "lang": "hu",
+    "value": "MyScoutee operátor"
+  },
+  {
+    "_id": "i18n-message-hu-operator-brand-logo-alt",
+    "key": "operator.brand.logo.alt",
+    "lang": "hu",
+    "value": "MyScoutee logó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-actions",
+    "key": "operator.actions",
+    "lang": "hu",
+    "value": "Operátori műveletek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-updates-detail",
+    "key": "operator.action.updates.detail",
+    "lang": "hu",
+    "value": "A telepítés bármikor frissíthető"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-updates-available",
+    "key": "operator.action.updates.available",
+    "lang": "hu",
+    "value": "Telepítési frissítés érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-node-registration-detail",
+    "key": "operator.action.node.registration.detail",
+    "lang": "hu",
+    "value": "Válassz nyilvántartást és regisztráld a csomópontot"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-node-registration-registered",
+    "key": "operator.action.node.registration.registered",
+    "lang": "hu",
+    "value": "A csomópont regisztrálva van"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-claim-share-detail",
+    "key": "operator.action.claim.share.detail",
+    "lang": "hu",
+    "value": "Igényeld a csomópont hálózati részesedését"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-claim-share-claimed",
+    "key": "operator.action.claim.share.claimed",
+    "lang": "hu",
+    "value": "A csomópont részesedését már igényelték"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-configuration-detail",
+    "key": "operator.action.configuration.detail",
+    "lang": "hu",
+    "value": "Hitelesítés és üzenetküldés ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-workspace-title",
+    "key": "operator.workspace.title",
+    "lang": "hu",
+    "value": "Operátori munkaterület"
+  },
+  {
+    "_id": "i18n-message-hu-operator-workspace-offline",
+    "key": "operator.workspace.offline",
+    "lang": "hu",
+    "value": "Az offline mód aktív. A nyilvántartási műveletek megvárják a kapcsolat helyreállását."
+  },
+  {
+    "_id": "i18n-message-hu-operator-profile-open",
+    "key": "operator.profile.open",
+    "lang": "hu",
+    "value": "Operátori profil megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-workspace-loading",
+    "key": "operator.workspace.loading",
+    "lang": "hu",
+    "value": "Operátori munkaterület betöltése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-loading",
+    "key": "operator.loading",
+    "lang": "hu",
+    "value": "Betöltés…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-popup-close",
+    "key": "operator.popup.close",
+    "lang": "hu",
+    "value": "Operátori ablak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-subtitle",
+    "key": "operator.registration.subtitle",
+    "lang": "hu",
+    "value": "Válassz nyilvántartó szervert, majd regisztrálj"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-loading",
+    "key": "operator.registration.loading",
+    "lang": "hu",
+    "value": "Nyilvántartási lehetőségek betöltése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-unavailable",
+    "key": "operator.registration.unavailable",
+    "lang": "hu",
+    "value": "A nyilvántartási állapot nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-refresh",
+    "key": "operator.registration.refresh",
+    "lang": "hu",
+    "value": "Nyilvántartási állapot frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-current-status",
+    "key": "operator.registration.current.status",
+    "lang": "hu",
+    "value": "Jelenlegi regisztráció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-registry-url",
+    "key": "operator.registration.registry.url",
+    "lang": "hu",
+    "value": "Nyilvántartó szerver URL-je"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-registry-options",
+    "key": "operator.registration.registry.options",
+    "lang": "hu",
+    "value": "Elérhető nyilvántartási URL választása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-registry-scope",
+    "key": "operator.registration.registry.scope",
+    "lang": "hu",
+    "value": "Várt nyilvántartási hatókör (opcionális)"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-seed-registry-primary",
+    "key": "operator.registration.seed.registry.primary",
+    "lang": "hu",
+    "value": "MyScoutee nyilvántartás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-seed-registry-primary-description",
+    "key": "operator.registration.seed.registry.primary.description",
+    "lang": "hu",
+    "value": "A telepítés alapértelmezett nyilvántartása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-seed-registry-europe",
+    "key": "operator.registration.seed.registry.europe",
+    "lang": "hu",
+    "value": "Európai nyilvántartás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-seed-registry-europe-description",
+    "key": "operator.registration.seed.registry.europe.description",
+    "lang": "hu",
+    "value": "Európai operátori nyilvántartás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-seed-registry-community",
+    "key": "operator.registration.seed.registry.community",
+    "lang": "hu",
+    "value": "Közösségi nyilvántartás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-seed-registry-community-description",
+    "key": "operator.registration.seed.registry.community.description",
+    "lang": "hu",
+    "value": "Független közösségi nyilvántartás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-url-paste",
+    "key": "operator.registration.url.paste",
+    "lang": "hu",
+    "value": "Nyilvántartási URL beillesztése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-url-open",
+    "key": "operator.registration.url.open",
+    "lang": "hu",
+    "value": "Nyilvántartási URL megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-url-clear",
+    "key": "operator.registration.url.clear",
+    "lang": "hu",
+    "value": "Nyilvántartási URL törlése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-register",
+    "key": "operator.registration.register",
+    "lang": "hu",
+    "value": "Csomópont regisztrálása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-registering",
+    "key": "operator.registration.registering",
+    "lang": "hu",
+    "value": "Csomópont regisztrálása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-disable",
+    "key": "operator.registration.disable",
+    "lang": "hu",
+    "value": "Kapcsolat letiltása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-disabling",
+    "key": "operator.registration.disabling",
+    "lang": "hu",
+    "value": "Kapcsolat letiltása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-completed",
+    "key": "operator.registration.completed",
+    "lang": "hu",
+    "value": "A csomópont regisztrációja befejeződött."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-disabled",
+    "key": "operator.registration.disabled",
+    "lang": "hu",
+    "value": "A nyilvántartási kapcsolat letiltva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-status-registered",
+    "key": "operator.registration.status.registered",
+    "lang": "hu",
+    "value": "Regisztrálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-status-registering",
+    "key": "operator.registration.status.registering",
+    "lang": "hu",
+    "value": "Regisztráció folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-status-configured",
+    "key": "operator.registration.status.configured",
+    "lang": "hu",
+    "value": "Konfigurálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-status-disabled",
+    "key": "operator.registration.status.disabled",
+    "lang": "hu",
+    "value": "Letiltva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-status-error",
+    "key": "operator.registration.status.error",
+    "lang": "hu",
+    "value": "A regisztráció beavatkozást igényel"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-status-not-registered",
+    "key": "operator.registration.status.not.registered",
+    "lang": "hu",
+    "value": "Nincs regisztrálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-url-required",
+    "key": "operator.registration.error.url.required",
+    "lang": "hu",
+    "value": "Add meg a nyilvántartó szerver URL-jét."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-url-origin",
+    "key": "operator.registration.error.url.origin",
+    "lang": "hu",
+    "value": "Útvonal, lekérdezés és töredék nélküli nyilvántartási eredet-URL-t adj meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-url-protocol",
+    "key": "operator.registration.error.url.protocol",
+    "lang": "hu",
+    "value": "A nyilvántartási URL-nek HTTP vagy HTTPS protokollt kell használnia."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-url-credentials",
+    "key": "operator.registration.error.url.credentials",
+    "lang": "hu",
+    "value": "A nyilvántartási URL nem tartalmazhat hitelesítő adatokat."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-url-https-required",
+    "key": "operator.registration.error.url.https.required",
+    "lang": "hu",
+    "value": "A valós operátori nyilvántartási kapcsolatokhoz HTTPS szükséges."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-url-invalid",
+    "key": "operator.registration.error.url.invalid",
+    "lang": "hu",
+    "value": "Érvényes abszolút nyilvántartási URL-t adj meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-scope-invalid",
+    "key": "operator.registration.error.scope.invalid",
+    "lang": "hu",
+    "value": "A nyilvántartási hatókör 3–128 kisbetűs ASCII betűből, számból, pontból, kettőspontból, aláhúzásjelből vagy kötőjelből állhat, és betűvel vagy számmal kezdődhet."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-scope-required",
+    "key": "operator.registration.error.scope.required",
+    "lang": "hu",
+    "value": "Add meg az URL nyilvántartási hatókörét."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-inspection-missing",
+    "key": "operator.registration.error.inspection.missing",
+    "lang": "hu",
+    "value": "A nyilvántartás ellenőrzése nem hozható létre."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-inspection-expired",
+    "key": "operator.registration.error.inspection.expired",
+    "lang": "hu",
+    "value": "A nyilvántartás ellenőrzése lejárt. Konfigurálás előtt ellenőrizd újra."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-inspection-required",
+    "key": "operator.registration.error.inspection.required",
+    "lang": "hu",
+    "value": "Megerősítés előtt ellenőrizd újra a nyilvántartás identitását."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-registry-required",
+    "key": "operator.registration.error.registry.required",
+    "lang": "hu",
+    "value": "A csomópont regisztrálása előtt válassz nyilvántartó szervert."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-load",
+    "key": "operator.registration.error.load",
+    "lang": "hu",
+    "value": "Az operátori nyilvántartási állapot nem tölthető be."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-inspect",
+    "key": "operator.registration.error.inspect",
+    "lang": "hu",
+    "value": "A nyilvántartás ellenőrzése sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-confirm",
+    "key": "operator.registration.error.confirm",
+    "lang": "hu",
+    "value": "A telepítés regisztrációja sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-register",
+    "key": "operator.registration.error.register",
+    "lang": "hu",
+    "value": "A csomópont regisztrációja sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-retry",
+    "key": "operator.registration.error.retry",
+    "lang": "hu",
+    "value": "A nyilvántartási újrapróbálkozás sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-disconnect",
+    "key": "operator.registration.error.disconnect",
+    "lang": "hu",
+    "value": "A nyilvántartási kapcsolat nem tiltható le."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-timeout",
+    "key": "operator.registration.error.timeout",
+    "lang": "hu",
+    "value": "A nyilvántartási művelet időtúllépés miatt megszakadt. Biztonságosan újrapróbálható."
+  },
+  {
+    "_id": "i18n-message-hu-operator-registration-error-response-unavailable",
+    "key": "operator.registration.error.response.unavailable",
+    "lang": "hu",
+    "value": "Az operátori nyilvántartás válasza nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-subtitle",
+    "key": "operator.update.subtitle",
+    "lang": "hu",
+    "value": "A telepítés ellenőrzése és frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-current-version",
+    "key": "operator.update.current.version",
+    "lang": "hu",
+    "value": "Jelenlegi verzió"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-available-version",
+    "key": "operator.update.available.version",
+    "lang": "hu",
+    "value": "Elérhető verzió"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-last-updated",
+    "key": "operator.update.last.updated",
+    "lang": "hu",
+    "value": "Utolsó frissítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-apply",
+    "key": "operator.update.apply",
+    "lang": "hu",
+    "value": "Telepítés frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-current",
+    "key": "operator.update.current",
+    "lang": "hu",
+    "value": "A telepítés naprakész"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-applying",
+    "key": "operator.update.applying",
+    "lang": "hu",
+    "value": "Telepítés frissítése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-completed",
+    "key": "operator.update.completed",
+    "lang": "hu",
+    "value": "A telepítés frissítése befejeződött."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-idle",
+    "key": "operator.update.phase.idle",
+    "lang": "hu",
+    "value": "Ellenőrzésre kész"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-checking",
+    "key": "operator.update.phase.checking",
+    "lang": "hu",
+    "value": "Kiadás ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-downloading",
+    "key": "operator.update.phase.downloading",
+    "lang": "hu",
+    "value": "Frissítés letöltése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-verifying",
+    "key": "operator.update.phase.verifying",
+    "lang": "hu",
+    "value": "Letöltés ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-installing",
+    "key": "operator.update.phase.installing",
+    "lang": "hu",
+    "value": "Frissítés telepítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-completed",
+    "key": "operator.update.phase.completed",
+    "lang": "hu",
+    "value": "Frissítés befejezve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-phase-failed",
+    "key": "operator.update.phase.failed",
+    "lang": "hu",
+    "value": "A frissítés sikertelen"
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-failed",
+    "key": "operator.update.error.failed",
+    "lang": "hu",
+    "value": "A telepítés frissítése sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-recovery-required",
+    "key": "operator.update.error.recovery.required",
+    "lang": "hu",
+    "value": "A frissítés bizonytalan állapotban állt le. Újrapróbálás előtt kövesd a helyreállítási eljárást."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-unavailable",
+    "key": "operator.update.error.unavailable",
+    "lang": "hu",
+    "value": "Nem érhető el ellenőrzött telepítési frissítés."
+  },
+  {
+    "_id": "i18n-message-hu-operator-update-error-response",
+    "key": "operator.update.error.response",
+    "lang": "hu",
+    "value": "A telepítési frissítés válasza érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-subtitle",
+    "key": "operator.claim.subtitle",
+    "lang": "hu",
+    "value": "A csomópont jogosult részesedésének igénylése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-instructions",
+    "key": "operator.claim.instructions",
+    "lang": "hu",
+    "value": "Igényeld ezt a regisztrált telepítést közvetlenül. A csoportosító tokenek csak a sikeres igénylés után érhetők el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-apply",
+    "key": "operator.claim.apply",
+    "lang": "hu",
+    "value": "Csomópont igénylése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-applying",
+    "key": "operator.claim.applying",
+    "lang": "hu",
+    "value": "Csomópont részesedésének igénylése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-completed",
+    "key": "operator.claim.completed",
+    "lang": "hu",
+    "value": "A csomópont részesedése igényelve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-claimed",
+    "key": "operator.claim.claimed",
+    "lang": "hu",
+    "value": "Részesedés igényelve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-error-registration-required",
+    "key": "operator.claim.error.registration.required",
+    "lang": "hu",
+    "value": "A részesedés igénylése előtt regisztráld a csomópontot."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-error-profile-required",
+    "key": "operator.claim.error.profile.required",
+    "lang": "hu",
+    "value": "A csomópont igénylése előtt add meg az operátori profil nevét."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-instructions",
+    "key": "operator.group.instructions",
+    "lang": "hu",
+    "value": "Ideiglenes tokent adhatsz ki egy másik, már igényelt telepítés számára, vagy egy másik telepítés tokenjét beillesztve csatlakozhatsz annak virtuális csoportjához. A csoportosítás nem változtatja meg az igénylés tulajdonosát vagy a mért aktivitást."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-temporary-token",
+    "key": "operator.group.temporary.token",
+    "lang": "hu",
+    "value": "Ideiglenes csoportosító token"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-expires",
+    "key": "operator.group.expires",
+    "lang": "hu",
+    "value": "Lejárat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-token-from-another-deployment",
+    "key": "operator.group.token.from.another.deployment",
+    "lang": "hu",
+    "value": "Token egy másik igényelt telepítésről"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-token-request",
+    "key": "operator.group.token.request",
+    "lang": "hu",
+    "value": "Csoportosító token kiadása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-token-refresh",
+    "key": "operator.group.token.refresh",
+    "lang": "hu",
+    "value": "Új token kiadása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-token-issuing",
+    "key": "operator.group.token.issuing",
+    "lang": "hu",
+    "value": "Csoportosító token kiadása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-token-issued",
+    "key": "operator.group.token.issued",
+    "lang": "hu",
+    "value": "Az ideiglenes csoportosító token elkészült."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-token-required",
+    "key": "operator.group.token.required",
+    "lang": "hu",
+    "value": "Illessz be csoportosító tokent egy másik igényelt telepítésről."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-redeem",
+    "key": "operator.group.redeem",
+    "lang": "hu",
+    "value": "Csatlakozás a csoporthoz"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-linking",
+    "key": "operator.group.linking",
+    "lang": "hu",
+    "value": "Csatlakozás az operátori csoporthoz…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-linked",
+    "key": "operator.group.linked",
+    "lang": "hu",
+    "value": "A telepítés csatlakozott az operátori csoporthoz."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-error-claim-required",
+    "key": "operator.group.error.claim.required",
+    "lang": "hu",
+    "value": "A csoportosító tokenek használata előtt igényeld ezt a telepítést."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-error-token-invalid",
+    "key": "operator.group.error.token.invalid",
+    "lang": "hu",
+    "value": "A csoportosító token érvénytelen vagy lejárt."
+  },
+  {
+    "_id": "i18n-message-hu-operator-group-error-token-response",
+    "key": "operator.group.error.token.response",
+    "lang": "hu",
+    "value": "A nyilvántartás nem adott vissza érvényes csoportosító tokent."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-subtitle",
+    "key": "operator.configuration.subtitle",
+    "lang": "hu",
+    "value": "Arculat, fizetés és Firebase"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-instructions",
+    "key": "operator.configuration.instructions",
+    "lang": "hu",
+    "value": "A telepítés saját termékkonfigurációjának kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-configured",
+    "key": "operator.configuration.configured",
+    "lang": "hu",
+    "value": "Konfigurálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-not-configured",
+    "key": "operator.configuration.not.configured",
+    "lang": "hu",
+    "value": "Hiányzó hitelesítő adatok"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-saving",
+    "key": "operator.configuration.saving",
+    "lang": "hu",
+    "value": "Konfiguráció regisztrálása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-saved",
+    "key": "operator.configuration.saved",
+    "lang": "hu",
+    "value": "A konfiguráció regisztrálva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-backend-unavailable",
+    "key": "operator.configuration.backend.unavailable",
+    "lang": "hu",
+    "value": "Ez a telepítés még nem biztosít operátori konfigurációs végpontokat."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-eyebrow",
+    "key": "operator.configuration.branding.eyebrow",
+    "lang": "hu",
+    "value": "Telepítési identitás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding",
+    "key": "operator.configuration.branding",
+    "lang": "hu",
+    "value": "Arculat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-product-name",
+    "key": "operator.configuration.branding.product.name",
+    "lang": "hu",
+    "value": "Terméknév"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-home-label",
+    "key": "operator.configuration.branding.home.label",
+    "lang": "hu",
+    "value": "Nyitóoldali felirat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme",
+    "key": "operator.configuration.branding.theme",
+    "lang": "hu",
+    "value": "Nyitóoldali téma"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-logo",
+    "key": "operator.configuration.branding.logo",
+    "lang": "hu",
+    "value": "Logó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-logo-heart-webp",
+    "key": "operator.configuration.branding.logo.heart.webp",
+    "lang": "hu",
+    "value": "MyScoutee szív (WebP)"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-logo-heart-png",
+    "key": "operator.configuration.branding.logo.heart.png",
+    "lang": "hu",
+    "value": "MyScoutee szív (PNG)"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-save",
+    "key": "operator.configuration.branding.save",
+    "lang": "hu",
+    "value": "Arculat mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-saved",
+    "key": "operator.configuration.branding.saved",
+    "lang": "hu",
+    "value": "A telepítés arculata elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-label-required",
+    "key": "operator.configuration.branding.label.required",
+    "lang": "hu",
+    "value": "A terméknév és a nyitóoldali felirat kötelező."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-aurora",
+    "key": "operator.configuration.branding.theme.aurora",
+    "lang": "hu",
+    "value": "Auróra"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-ocean",
+    "key": "operator.configuration.branding.theme.ocean",
+    "lang": "hu",
+    "value": "Óceán"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-forest",
+    "key": "operator.configuration.branding.theme.forest",
+    "lang": "hu",
+    "value": "Erdő"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-sunset",
+    "key": "operator.configuration.branding.theme.sunset",
+    "lang": "hu",
+    "value": "Naplemente"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-violet",
+    "key": "operator.configuration.branding.theme.violet",
+    "lang": "hu",
+    "value": "Ibolya"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-rose",
+    "key": "operator.configuration.branding.theme.rose",
+    "lang": "hu",
+    "value": "Rózsa"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-amber",
+    "key": "operator.configuration.branding.theme.amber",
+    "lang": "hu",
+    "value": "Borostyán"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-slate",
+    "key": "operator.configuration.branding.theme.slate",
+    "lang": "hu",
+    "value": "Pala"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-aquarius",
+    "key": "operator.configuration.branding.theme.aquarius",
+    "lang": "hu",
+    "value": "Vízöntő"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-theme-monochrome",
+    "key": "operator.configuration.branding.theme.monochrome",
+    "lang": "hu",
+    "value": "Monokróm"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-eyebrow",
+    "key": "operator.configuration.payment.eyebrow",
+    "lang": "hu",
+    "value": "Kereskedelmi integráció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment",
+    "key": "operator.configuration.payment",
+    "lang": "hu",
+    "value": "Fizetési szolgáltató"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-provider",
+    "key": "operator.configuration.payment.provider",
+    "lang": "hu",
+    "value": "Elérhető szolgáltató"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-provider-none",
+    "key": "operator.configuration.payment.provider.none",
+    "lang": "hu",
+    "value": "Nincs fizetési szolgáltató"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-credential",
+    "key": "operator.configuration.payment.credential",
+    "lang": "hu",
+    "value": "Szolgáltatói token vagy hitelesítő adat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-register",
+    "key": "operator.configuration.payment.register",
+    "lang": "hu",
+    "value": "Fizetés regisztrálása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-update",
+    "key": "operator.configuration.payment.update",
+    "lang": "hu",
+    "value": "Fizetés frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-remove",
+    "key": "operator.configuration.payment.remove",
+    "lang": "hu",
+    "value": "Fizetés eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-registered",
+    "key": "operator.configuration.payment.registered",
+    "lang": "hu",
+    "value": "A fizetési szolgáltató hitelesítő adatai regisztrálva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-register-completed",
+    "key": "operator.configuration.payment.register.completed",
+    "lang": "hu",
+    "value": "A fizetési szolgáltató hitelesítő adatai regisztrálva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-update-completed",
+    "key": "operator.configuration.payment.update.completed",
+    "lang": "hu",
+    "value": "A fizetési szolgáltató hitelesítő adatai frissítve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-remove-completed",
+    "key": "operator.configuration.payment.remove.completed",
+    "lang": "hu",
+    "value": "A fizetési szolgáltató eltávolítva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-eyebrow",
+    "key": "operator.configuration.firebase.eyebrow",
+    "lang": "hu",
+    "value": "Identitás és értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-project-id",
+    "key": "operator.configuration.firebase.project.id",
+    "lang": "hu",
+    "value": "Firebase projektazonosító"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-authentication-credential",
+    "key": "operator.configuration.firebase.authentication.credential",
+    "lang": "hu",
+    "value": "Hitelesítési adat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-messaging-credential",
+    "key": "operator.configuration.firebase.messaging.credential",
+    "lang": "hu",
+    "value": "Üzenetküldési hitelesítő adat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-register",
+    "key": "operator.configuration.firebase.register",
+    "lang": "hu",
+    "value": "Firebase regisztrálása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-save",
+    "key": "operator.configuration.firebase.save",
+    "lang": "hu",
+    "value": "Firebase mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-registered",
+    "key": "operator.configuration.firebase.registered",
+    "lang": "hu",
+    "value": "A Firebase hitelesítő adatok regisztrálva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-saved",
+    "key": "operator.configuration.firebase.saved",
+    "lang": "hu",
+    "value": "A Firebase konfiguráció elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-credential-placeholder",
+    "key": "operator.configuration.credential.placeholder",
+    "lang": "hu",
+    "value": "Új hitelesítő adat megadása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-credential-registered",
+    "key": "operator.configuration.credential.registered",
+    "lang": "hu",
+    "value": "Regisztrálva — új értékkel cserélhető"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-authentication",
+    "key": "operator.configuration.test.authentication",
+    "lang": "hu",
+    "value": "Bejelentkezés tesztelése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging",
+    "key": "operator.configuration.test.messaging",
+    "lang": "hu",
+    "value": "Tesztértesítés küldése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-testing",
+    "key": "operator.configuration.testing",
+    "lang": "hu",
+    "value": "Konfiguráció tesztelése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-success",
+    "key": "operator.configuration.test.success",
+    "lang": "hu",
+    "value": "A konfiguráció ellenőrzése sikeres."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-failed",
+    "key": "operator.configuration.test.failed",
+    "lang": "hu",
+    "value": "A konfiguráció ellenőrzése sikertelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-credentials-missing",
+    "key": "operator.configuration.credentials.missing",
+    "lang": "hu",
+    "value": "A hitelesítő adatok nincsenek konfigurálva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-subtitle",
+    "key": "operator.community.subtitle",
+    "lang": "hu",
+    "value": "Közösségi szolgáltatók és közlemények"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-current",
+    "key": "operator.community.current",
+    "lang": "hu",
+    "value": "Jelenlegi elérhetőség"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-online",
+    "key": "operator.community.online",
+    "lang": "hu",
+    "value": "Online"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-available",
+    "key": "operator.community.available",
+    "lang": "hu",
+    "value": "Elérhető"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-busy",
+    "key": "operator.community.busy",
+    "lang": "hu",
+    "value": "Elfoglalt"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-invisible",
+    "key": "operator.community.invisible",
+    "lang": "hu",
+    "value": "Láthatatlan"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-updating",
+    "key": "operator.community.updating",
+    "lang": "hu",
+    "value": "Elérhetőség frissítése…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-updated",
+    "key": "operator.community.updated",
+    "lang": "hu",
+    "value": "Az elérhetőség frissítve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-discord-purpose",
+    "key": "operator.community.provider.discord.purpose",
+    "lang": "hu",
+    "value": "Élő operátori csevegés és közösségi koordináció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-join",
+    "key": "operator.community.provider.join",
+    "lang": "hu",
+    "value": "Megnyitás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-discourse-purpose",
+    "key": "operator.community.provider.discourse.purpose",
+    "lang": "hu",
+    "value": "Kereshető fórum, támogatás és tudásmegosztó beszélgetés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-configured",
+    "key": "operator.community.provider.configured",
+    "lang": "hu",
+    "value": "Konfigurálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-not-configured",
+    "key": "operator.community.provider.not.configured",
+    "lang": "hu",
+    "value": "Nincs konfigurálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-available",
+    "key": "operator.community.provider.available",
+    "lang": "hu",
+    "value": "Elérhető"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-unavailable",
+    "key": "operator.community.provider.unavailable",
+    "lang": "hu",
+    "value": "Nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-provider-open",
+    "key": "operator.community.provider.open",
+    "lang": "hu",
+    "value": "Szolgáltató megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-providers-empty",
+    "key": "operator.community.providers.empty",
+    "lang": "hu",
+    "value": "Nincs konfigurált közösségi szolgáltató."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcements",
+    "key": "operator.community.announcements",
+    "lang": "hu",
+    "value": "Közösségi közlemények"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-kind-general",
+    "key": "operator.community.announcement.kind.general",
+    "lang": "hu",
+    "value": "Általános"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-kind-update",
+    "key": "operator.community.announcement.kind.update",
+    "lang": "hu",
+    "value": "Frissítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-kind-maintenance",
+    "key": "operator.community.announcement.kind.maintenance",
+    "lang": "hu",
+    "value": "Karbantartás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-kind-security",
+    "key": "operator.community.announcement.kind.security",
+    "lang": "hu",
+    "value": "Biztonság"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-severity-info",
+    "key": "operator.community.announcement.severity.info",
+    "lang": "hu",
+    "value": "Információ"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-severity-success",
+    "key": "operator.community.announcement.severity.success",
+    "lang": "hu",
+    "value": "Ellenőrzött"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-severity-warning",
+    "key": "operator.community.announcement.severity.warning",
+    "lang": "hu",
+    "value": "Figyelmeztetés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-severity-critical",
+    "key": "operator.community.announcement.severity.critical",
+    "lang": "hu",
+    "value": "Kritikus"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-unread",
+    "key": "operator.community.announcement.unread",
+    "lang": "hu",
+    "value": "Olvasatlan közlemény"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-details",
+    "key": "operator.community.announcement.details",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-published",
+    "key": "operator.community.announcement.published",
+    "lang": "hu",
+    "value": "Közzétéve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-expires",
+    "key": "operator.community.announcement.expires",
+    "lang": "hu",
+    "value": "Lejár"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-status-published",
+    "key": "operator.community.announcement.status.published",
+    "lang": "hu",
+    "value": "Közzétéve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-status-archived",
+    "key": "operator.community.announcement.status.archived",
+    "lang": "hu",
+    "value": "Archiválva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-status-withdrawn",
+    "key": "operator.community.announcement.status.withdrawn",
+    "lang": "hu",
+    "value": "Visszavonva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-version",
+    "key": "operator.community.announcement.version",
+    "lang": "hu",
+    "value": "Verzió"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-download",
+    "key": "operator.community.announcement.download",
+    "lang": "hu",
+    "value": "Ellenőrzött letöltési URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-download-open",
+    "key": "operator.community.announcement.download.open",
+    "lang": "hu",
+    "value": "Ellenőrzött kiadás megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-download-verified",
+    "key": "operator.community.announcement.download.verified",
+    "lang": "hu",
+    "value": "Ellenőrzött kiadási URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-download-unverified",
+    "key": "operator.community.announcement.download.unverified",
+    "lang": "hu",
+    "value": "Nem ellenőrzött kiadási URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-size",
+    "key": "operator.community.announcement.artifact.size",
+    "lang": "hu",
+    "value": "Csomagméret"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-compatibility",
+    "key": "operator.community.announcement.artifact.compatibility",
+    "lang": "hu",
+    "value": "Kompatibilitás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-signature",
+    "key": "operator.community.announcement.artifact.signature",
+    "lang": "hu",
+    "value": "Aláírás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-link-release-notes",
+    "key": "operator.community.announcement.link.release.notes",
+    "lang": "hu",
+    "value": "Kiadási megjegyzések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-link-project",
+    "key": "operator.community.announcement.link.project",
+    "lang": "hu",
+    "value": "Projektállapot"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-link-open",
+    "key": "operator.community.announcement.link.open",
+    "lang": "hu",
+    "value": "Közlemény megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-verified-purpose",
+    "key": "operator.community.announcement.update.verified.purpose",
+    "lang": "hu",
+    "value": "Ellenőrzött telepítési csomag a regisztrált hálózattól"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-1-1-0-title",
+    "key": "operator.community.announcement.update.1_1_0.title",
+    "lang": "hu",
+    "value": "Elérhető a MyScoutee 1.1.0"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-1-1-0-body",
+    "key": "operator.community.announcement.update.1_1_0.body",
+    "lang": "hu",
+    "value": "Az operátorok ellenőrizhetik az aláírt csomag metaadatait, majd a Frissítések eszközből indíthatják a telepítési frissítést."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-1-1-0-purpose",
+    "key": "operator.community.announcement.update.1_1_0.purpose",
+    "lang": "hu",
+    "value": "Fókuszált operátori munkaterület és egyértelműbb nyilvántartási folyamat."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-1-1-0-note-registry",
+    "key": "operator.community.announcement.update.1_1_0.note.registry",
+    "lang": "hu",
+    "value": "Közvetlen nyilvántartó-választást és csomópont-regisztrációt ad hozzá."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-1-1-0-note-workspace",
+    "key": "operator.community.announcement.update.1_1_0.note.workspace",
+    "lang": "hu",
+    "value": "Kompakt operátori eszközöket, csoportosított ranglistasorokat és folyamatos frissítési állapotot ad hozzá."
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-update-1-1-0-compatibility",
+    "key": "operator.community.announcement.update.1_1_0.compatibility",
+    "lang": "hu",
+    "value": "Debian 12 vagy Ubuntu 24.04 · amd64"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-maintenance-registry-title",
+    "key": "operator.community.announcement.maintenance.registry.title",
+    "lang": "hu",
+    "value": "Nyilvántartási karbantartási időablak"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-maintenance-registry-body",
+    "key": "operator.community.announcement.maintenance.registry.body",
+    "lang": "hu",
+    "value": "Rövid nyilvántartási karbantartás várható. A regisztrált telepítések identitása és mérési előzménye megmarad."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-network",
+    "key": "operator.leaderboard.network",
+    "lang": "hu",
+    "value": "Hálózati hozzájárulás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-share",
+    "key": "operator.leaderboard.share",
+    "lang": "hu",
+    "value": "részesedés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-contribution-units",
+    "key": "operator.leaderboard.contribution.units",
+    "lang": "hu",
+    "value": "hozzájárulási egység"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployment",
+    "key": "operator.leaderboard.deployment",
+    "lang": "hu",
+    "value": "telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments",
+    "key": "operator.leaderboard.deployments",
+    "lang": "hu",
+    "value": "telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-claimed-node",
+    "key": "operator.leaderboard.claimed.node",
+    "lang": "hu",
+    "value": "Igényelt csomópont"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-unclaimed-node",
+    "key": "operator.leaderboard.unclaimed.node",
+    "lang": "hu",
+    "value": "Nem igényelt csomópont"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-founder",
+    "key": "operator.leaderboard.seed.founder",
+    "lang": "hu",
+    "value": "MyScoutee alapítói hozzájárulás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-campus",
+    "key": "operator.leaderboard.seed.campus",
+    "lang": "hu",
+    "value": "Campus közösség"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-campus-east",
+    "key": "operator.leaderboard.seed.campus.east",
+    "lang": "hu",
+    "value": "Campus keleti telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-city",
+    "key": "operator.leaderboard.seed.city",
+    "lang": "hu",
+    "value": "Városi hálózat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-club",
+    "key": "operator.leaderboard.seed.club",
+    "lang": "hu",
+    "value": "Klubhálózat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-this-deployment",
+    "key": "operator.leaderboard.seed.this.deployment",
+    "lang": "hu",
+    "value": "Ez a telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-north",
+    "key": "operator.leaderboard.seed.north",
+    "lang": "hu",
+    "value": "Északi telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-east",
+    "key": "operator.leaderboard.seed.east",
+    "lang": "hu",
+    "value": "Keleti telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-empty",
+    "key": "operator.leaderboard.empty",
+    "lang": "hu",
+    "value": "Nincs hálózati bejegyzés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-empty-description",
+    "key": "operator.leaderboard.empty.description",
+    "lang": "hu",
+    "value": "Az ellenőrzött csomópontok itt jelennek meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-pagination",
+    "key": "operator.leaderboard.error.pagination",
+    "lang": "hu",
+    "value": "A ranglista nem folytatható a nyilvántartási kurzortól."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-response",
+    "key": "operator.leaderboard.error.response",
+    "lang": "hu",
+    "value": "A nyilvántartás nem egyező ranglistaoldalt adott vissza."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-cursor-invalid",
+    "key": "operator.leaderboard.error.cursor.invalid",
+    "lang": "hu",
+    "value": "A ranglista kurzora érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-workspace-error-unavailable",
+    "key": "operator.workspace.error.unavailable",
+    "lang": "hu",
+    "value": "Az operátori munkaterület adatai nem érhetők el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-remote-capability-unavailable",
+    "key": "operator.remote.capability.unavailable",
+    "lang": "hu",
+    "value": "Ez az operátori funkció még nem érhető el a szerverről."
+  },
+  {
+    "_id": "i18n-message-hu-operator-request-aborted",
+    "key": "operator.request.aborted",
+    "lang": "hu",
+    "value": "Az operátori kérés megszakadt."
+  },
+  {
+    "_id": "i18n-message-hu-operator-request-timeout",
+    "key": "operator.request.timeout",
+    "lang": "hu",
+    "value": "Az operátori kérés időtúllépés miatt megszakadt."
+  },
+  {
+    "_id": "i18n-message-hu-operator-request-failed",
+    "key": "operator.request.failed",
+    "lang": "hu",
+    "value": "Az operátori kérés sikertelen."
   }
 ]

@@ -1,0 +1,1453 @@
+package com.raxim.myscoutee.registry;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.springframework.util.StringUtils;
+
+import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
+import com.raxim.myscoutee.registry.RegistryLocalStore.OperatorActionJournalEntry;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeployment;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeploymentPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardSnapshot;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionRequest;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionResponse;
+import com.raxim.myscoutee.registry.RegistryProtocol.RegistrationResponse;
+import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementEntry;
+import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementLink;
+import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementLocalization;
+import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementSnapshot;
+import com.raxim.myscoutee.registry.RegistryProtocol.UpdateManifest;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
+/**
+ * Explicit signed operator control-plane client.
+ *
+ * <p>This operation never creates a deployment identity and never enrolls a
+ * deployment. Every call requires an already registered local state, uses that
+ * deployment's Ed25519 key, verifies the pinned registry key, and persists
+ * signed mutation receipts before returning.</p>
+ */
+public final class RegistryOperatorNetworkService {
+    private static final int DEFAULT_CLIENT_TOKEN_TTL_SECONDS = 300;
+    private static final int MAX_CURSOR_LENGTH = 4096;
+    private static final Pattern NON_NEGATIVE_INTEGER = Pattern.compile("0|[1-9][0-9]*");
+    private static final Pattern UPDATE_CHANNEL =
+            Pattern.compile("^[a-z][a-z0-9._-]{0,31}$");
+    private static final Set<String> ACTIONS = Set.of(
+            RegistryProtocol.OPERATOR_ACTION_CLAIM,
+            RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
+            RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN,
+            RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN,
+            RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+            RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK,
+            RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+            RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT);
+
+    private final RegistryProperties properties;
+    private final RegistryLocalStore localStore;
+    private final RegistryHttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    private final Clock clock;
+    private final SecureRandom secureRandom;
+
+    public RegistryOperatorNetworkService(
+            RegistryProperties properties,
+            ObjectMapper objectMapper) {
+        this(
+                properties,
+                new RegistryLocalStore(properties, objectMapper),
+                new RegistryHttpClient(properties, objectMapper),
+                objectMapper,
+                Clock.systemUTC(),
+                new SecureRandom());
+    }
+
+    RegistryOperatorNetworkService(
+            RegistryProperties properties,
+            RegistryLocalStore localStore,
+            RegistryHttpClient httpClient,
+            ObjectMapper objectMapper,
+            Clock clock,
+            SecureRandom secureRandom) {
+        this.properties = Objects.requireNonNull(properties, "Registry properties must not be null.");
+        this.localStore = Objects.requireNonNull(localStore, "Registry local store must not be null.");
+        this.httpClient = Objects.requireNonNull(httpClient, "Registry HTTP client must not be null.");
+        this.objectMapper = Objects.requireNonNull(objectMapper, "Object mapper must not be null.");
+        this.clock = Objects.requireNonNull(clock, "Clock must not be null.");
+        this.secureRandom = Objects.requireNonNull(secureRandom, "Secure random must not be null.");
+    }
+
+    public ActionOutcome apply(ActionCommand suppliedCommand) {
+        ActionCommand command = normalizeAction(suppliedCommand);
+        TrustedDeployment trusted = trustedDeployment();
+        Instant now = clock.instant();
+        String timestamp = now.toString();
+        String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
+        String idempotencyKey = StringUtils.hasText(command.idempotencyKey())
+                ? RegistryProtocol.requireToken(command.idempotencyKey(), "idempotency_key")
+                : RegistryProtocol.randomToken("operator_", secureRandom);
+        String clientTokenHash = RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(command.action())
+                ? RegistryProtocol.sha256(command.clientToken().getBytes(StandardCharsets.UTF_8))
+                : "";
+        long ttl = command.tokenTtlSeconds() == null ? 0L : command.tokenTtlSeconds();
+        String payloadHash = RegistryProtocol.sha256(RegistryProtocol.operatorActionPayload(
+                command.action(),
+                command.operatorName(),
+                command.operatorAvatarUrl(),
+                clientTokenHash,
+                ttl,
+                command.tokenId(),
+                command.linkId()));
+        String signature = trusted.deploymentCrypto().signBase64(RegistryProtocol.signedRequest(
+                "POST",
+                RegistryProtocol.OPERATOR_ACTION_PATH,
+                RegistryProtocol.PROTOCOL_VERSION,
+                trusted.state().registryScope(),
+                trusted.state().deploymentId(),
+                timestamp,
+                nonce,
+                idempotencyKey,
+                payloadHash));
+        OperatorActionRequest request = new OperatorActionRequest(
+                RegistryProtocol.PROTOCOL_VERSION,
+                trusted.state().registryScope(),
+                trusted.state().deploymentId(),
+                timestamp,
+                nonce,
+                idempotencyKey,
+                command.action(),
+                emptyToNull(command.operatorName()),
+                emptyToNull(command.operatorAvatarUrl()),
+                emptyToNull(command.clientToken()),
+                ttl == 0L ? null : ttl,
+                emptyToNull(command.tokenId()),
+                emptyToNull(command.linkId()),
+                payloadHash,
+                signature);
+
+        OperatorActionResponse response = httpClient.applyOperatorAction(request);
+        verifyActionResponse(trusted, request, clientTokenHash, response);
+        OperatorActionReceipt durableReceipt = response.receipt().withoutPlaintextClientToken();
+        Path receiptPath = localStore.saveOperatorActionReceipt(
+                request,
+                clientTokenHash,
+                durableReceipt);
+        String plaintextClientToken =
+                RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN.equals(command.action())
+                        ? safeText(response.receipt().clientToken())
+                        : "";
+        return new ActionOutcome(
+                response,
+                idempotencyKey,
+                emptyToNull(plaintextClientToken),
+                receiptPath);
+    }
+
+    public LeaderboardPage leaderboard(
+            String view,
+            String throughPeriod,
+            Integer limit,
+            String cursor) {
+        TrustedDeployment trusted = trustedDeployment();
+        String normalizedView = safeText(view);
+        if (!Set.of("founder", "claimed", "unclaimed").contains(normalizedView)) {
+            throw new IllegalArgumentException("Leaderboard view must be founder, claimed, or unclaimed.");
+        }
+        validateLeaderboardQuery(throughPeriod, limit);
+        CursorClaims suppliedCursor = verifyCursor(
+                trusted,
+                cursor,
+                "rows",
+                normalizedView,
+                "",
+                null);
+        LeaderboardPage response = httpClient.leaderboard(
+                normalizedView,
+                emptyToNull(safeText(throughPeriod)),
+                limit,
+                emptyToNull(safeText(cursor)));
+        verifyLeaderboardPage(trusted, normalizedView, suppliedCursor, response);
+        return response;
+    }
+
+    public LeaderboardDeploymentPage leaderboardDeployments(
+            String groupId,
+            String throughPeriod,
+            Integer limit,
+            String cursor) {
+        TrustedDeployment trusted = trustedDeployment();
+        String normalizedGroupId = RegistryProtocol.requireOperatorGroupId(safeText(groupId));
+        validateLeaderboardQuery(throughPeriod, limit);
+        CursorClaims suppliedCursor = verifyCursor(
+                trusted,
+                cursor,
+                "deployments",
+                "claimed",
+                normalizedGroupId,
+                null);
+        LeaderboardDeploymentPage response = httpClient.leaderboardDeployments(
+                normalizedGroupId,
+                emptyToNull(safeText(throughPeriod)),
+                limit,
+                emptyToNull(safeText(cursor)));
+        verifyLeaderboardDeploymentPage(
+                trusted,
+                normalizedGroupId,
+                suppliedCursor,
+                response);
+        return response;
+    }
+
+    public ClaimStatus claimStatus() {
+        TrustedDeployment trusted = trustedDeployment();
+        boolean claimed = false;
+        String claimedAt = "";
+        String operatorName = "";
+        String operatorAvatarUrl = "";
+        String ownClaimGroupId = "";
+        String currentGroupId = "";
+        String activeLinkId = "";
+        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            OperatorActionReceipt receipt = entry.receipt();
+            switch (entry.action()) {
+                case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
+                    claimed = true;
+                    claimedAt = receipt.acceptedAt();
+                    operatorName = safeText(entry.operatorName());
+                    operatorAvatarUrl = safeText(entry.operatorAvatarUrl());
+                    ownClaimGroupId = safeText(receipt.groupId());
+                    currentGroupId = ownClaimGroupId;
+                    activeLinkId = "";
+                }
+                case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> {
+                    claimed = false;
+                    claimedAt = "";
+                    currentGroupId = safeText(receipt.groupId());
+                    activeLinkId = "";
+                }
+                case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> {
+                    claimed = true;
+                    currentGroupId = safeText(receipt.groupId());
+                    activeLinkId = safeText(receipt.linkId());
+                }
+                case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK -> {
+                    if (trusted.state().deploymentId().equals(receipt.subjectDeploymentId())) {
+                        currentGroupId = ownClaimGroupId;
+                        activeLinkId = "";
+                    }
+                }
+                default -> {
+                    // Token and deployment-lifecycle actions do not change claim ownership.
+                }
+            }
+        }
+        String shareNumerator = "0";
+        String shareDenominator = "1";
+        if (claimed && StringUtils.hasText(currentGroupId)) {
+            String cursor = "";
+            int pageCount = 0;
+            boolean found = false;
+            do {
+                if (++pageCount > 1_000) {
+                    throw new IllegalStateException(
+                            "Claimed operator group was not found within the bounded leaderboard scan.");
+                }
+                LeaderboardPage page = leaderboard("claimed", null, 100, cursor);
+                for (LeaderboardRow row : page.items()) {
+                    if (currentGroupId.equals(row.groupId())) {
+                        shareNumerator = row.shareNumerator();
+                        shareDenominator = row.shareDenominator();
+                        found = true;
+                        break;
+                    }
+                }
+                cursor = safeText(page.nextCursor());
+            } while (!found && !cursor.isEmpty());
+        }
+        return new ClaimStatus(
+                claimed,
+                emptyToNull(claimedAt),
+                emptyToNull(operatorName),
+                emptyToNull(operatorAvatarUrl),
+                emptyToNull(currentGroupId),
+                emptyToNull(activeLinkId),
+                shareNumerator,
+                shareDenominator);
+    }
+
+    public AnnouncementOutcome announcements(
+            String kind,
+            String severity,
+            String channel,
+            boolean includeExpired,
+            Integer limit,
+            String cursor) {
+        TrustedDeployment trusted = trustedDeployment();
+        String normalizedKind = safeText(kind);
+        String normalizedSeverity = safeText(severity);
+        String normalizedChannel = safeText(channel);
+        validateAnnouncementQuery(
+                normalizedKind,
+                normalizedSeverity,
+                normalizedChannel,
+                limit);
+        AnnouncementCursorClaims suppliedCursor = verifyAnnouncementCursor(
+                trusted,
+                cursor,
+                normalizedKind,
+                normalizedSeverity,
+                normalizedChannel,
+                includeExpired,
+                null);
+        AnnouncementPage page = httpClient.announcements(
+                emptyToNull(normalizedKind),
+                emptyToNull(normalizedSeverity),
+                emptyToNull(normalizedChannel),
+                includeExpired,
+                limit,
+                emptyToNull(safeText(cursor)));
+        List<PackageVerification> packageVerifications = verifyAnnouncementPage(
+                trusted,
+                normalizedKind,
+                normalizedSeverity,
+                normalizedChannel,
+                includeExpired,
+                suppliedCursor,
+                page);
+        return new AnnouncementOutcome(page, packageVerifications);
+    }
+
+    private TrustedDeployment trustedDeployment() {
+        if (!properties.isEnabled() || !properties.isOutboundAllowed()) {
+            throw new IllegalStateException("Outbound registry communication is disabled.");
+        }
+        httpClient.endpoint(RegistryProtocol.OPERATOR_ACTION_PATH);
+        LocalState state = localStore.load().orElseThrow(() ->
+                new IllegalStateException(
+                        "This deployment is not registered; register it explicitly before using operator actions."));
+        if (state.registration() == null || state.registration().receipt() == null
+                || !StringUtils.hasText(state.deploymentId())) {
+            throw new IllegalStateException(
+                    "This deployment is not registered; register it explicitly before using operator actions.");
+        }
+        String configuredScope = RegistryProtocol.requireRegistryScope(properties.getRegistryScope());
+        if (!configuredScope.equals(state.registryScope())) {
+            throw new IllegalStateException(
+                    "Configured registry scope differs from the registered local deployment state.");
+        }
+        RegistryCrypto deploymentCrypto = RegistryCrypto.load(properties);
+        if (!deploymentCrypto.deploymentPublicKeyFingerprint().equals(state.publicKeyFingerprint())) {
+            throw new IllegalStateException(
+                    "Deployment signing key differs from the registered local deployment state.");
+        }
+
+        RegistrationResponse registration = state.registration().receipt();
+        if (!RegistryProtocol.PROTOCOL_VERSION.equals(registration.protocolVersion())
+                || !state.registryScope().equals(registration.registryScope())
+                || !state.deploymentId().equals(registration.deploymentId())
+                || !state.publicKeyFingerprint().equals(registration.publicKeyFingerprint())) {
+            throw new IllegalStateException("Persisted registry registration receipt is inconsistent.");
+        }
+        RegistryProtocol.requireUtcTimestamp(registration.registeredAt(), "registered_at");
+        if (registration.duplicate() == null) {
+            throw new IllegalStateException("Persisted registry registration receipt is incomplete.");
+        }
+        PublicKey registryPublicKey = RegistryCrypto.parseRegistryPublicKey(
+                registration.registryPublicKey());
+        String registryFingerprint =
+                RegistryProtocol.publicKeyFingerprint(registryPublicKey.getEncoded());
+        String registryKeyId = RegistryProtocol.registryKeyId(registryFingerprint);
+        if (!registryKeyId.equals(registration.registryKeyId())) {
+            throw new IllegalStateException("Persisted registry key ID is inconsistent.");
+        }
+        String storedFingerprint = RegistryProtocol.requireHash(
+                state.trustedRegistryKeyFingerprint(),
+                "trusted registry public-key fingerprint");
+        String configuredFingerprint = RegistryProtocol.requireHash(
+                properties.getExpectedRegistryKeyFingerprint(),
+                "configured registry public-key fingerprint");
+        if (!registryFingerprint.equals(storedFingerprint)
+                || !registryFingerprint.equals(configuredFingerprint)) {
+            throw new IllegalStateException(
+                    "Registry key differs from the explicitly pinned registration key.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                registryPublicKey,
+                RegistryProtocol.registrationReceipt(registration),
+                registration.receiptSignature())) {
+            throw new IllegalStateException("Persisted registry registration signature is invalid.");
+        }
+        return new TrustedDeployment(state, deploymentCrypto, registryPublicKey, registryKeyId);
+    }
+
+    private ActionCommand normalizeAction(ActionCommand supplied) {
+        Objects.requireNonNull(supplied, "Operator action must not be null.");
+        String action = safeText(supplied.action());
+        if (!ACTIONS.contains(action)) {
+            throw new IllegalArgumentException("Operator action is not supported.");
+        }
+        String operatorName = safeText(supplied.operatorName());
+        String avatarUrl = safeText(supplied.operatorAvatarUrl());
+        String clientToken = safeText(supplied.clientToken());
+        String tokenId = safeText(supplied.tokenId());
+        String linkId = safeText(supplied.linkId());
+        Long ttl = supplied.tokenTtlSeconds();
+
+        switch (action) {
+            case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
+                requireText(operatorName, "operator_name", 160);
+                if (!avatarUrl.isEmpty()) {
+                    requireHttpsUrl(avatarUrl, "operator_avatar_url");
+                }
+                requireAbsent(clientToken, ttl, tokenId, linkId);
+            }
+            case RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN -> {
+                requireAbsent(operatorName, avatarUrl, clientToken, tokenId, linkId);
+                long normalizedTtl = ttl == null || ttl.longValue() == 0L
+                        ? DEFAULT_CLIENT_TOKEN_TTL_SECONDS
+                        : ttl.longValue();
+                if (normalizedTtl < 60L || normalizedTtl > 3600L) {
+                    throw new IllegalArgumentException(
+                            "token_ttl_seconds must be between 60 and 3600.");
+                }
+                ttl = normalizedTtl;
+            }
+            case RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN -> {
+                requireAbsent(operatorName, avatarUrl, clientToken, ttl, linkId);
+                RegistryProtocol.requireOperatorTokenId(tokenId);
+            }
+            case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> {
+                requireAbsent(operatorName, avatarUrl, ttl, tokenId, linkId);
+                RegistryProtocol.requireToken(clientToken, "client_token");
+            }
+            case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK -> {
+                requireAbsent(operatorName, avatarUrl, clientToken, ttl, tokenId);
+                RegistryProtocol.requireOperatorLinkId(linkId);
+            }
+            case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
+                    RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                    RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT ->
+                    requireAbsent(operatorName, avatarUrl, clientToken, ttl, tokenId, linkId);
+            default -> throw new IllegalArgumentException("Operator action is not supported.");
+        }
+        return new ActionCommand(
+                action,
+                operatorName,
+                avatarUrl,
+                clientToken,
+                ttl,
+                tokenId,
+                linkId,
+                safeText(supplied.idempotencyKey()));
+    }
+
+    private void verifyJournalEntry(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry entry) {
+        if (entry == null || entry.schemaVersion() == null
+                || entry.schemaVersion() != 1 || entry.receipt() == null
+                || !RegistryProtocol.PROTOCOL_VERSION.equals(entry.protocolVersion())
+                || !trusted.state().registryScope().equals(entry.registryScope())
+                || !trusted.state().deploymentId().equals(entry.deploymentId())
+                || !Objects.equals(entry.action(), entry.receipt().action())) {
+            throw new IllegalStateException("Registry operator receipt journal is inconsistent.");
+        }
+        RegistryProtocol.requireUtcTimestamp(entry.requestTimestamp(), "request_timestamp");
+        RegistryProtocol.requireToken(entry.nonce(), "nonce");
+        RegistryProtocol.requireToken(entry.idempotencyKey(), "idempotency_key");
+        long ttl = entry.tokenTtlSeconds() == null ? 0L : entry.tokenTtlSeconds();
+        String clientTokenHash = safeText(entry.clientTokenHash());
+        if (!clientTokenHash.isEmpty()) {
+            RegistryProtocol.requireHash(clientTokenHash, "client_token_hash");
+        }
+        String expectedPayloadHash = RegistryProtocol.sha256(
+                RegistryProtocol.operatorActionPayload(
+                        entry.action(),
+                        safeText(entry.operatorName()),
+                        safeText(entry.operatorAvatarUrl()),
+                        clientTokenHash,
+                        ttl,
+                        safeText(entry.tokenId()),
+                        safeText(entry.linkId())));
+        if (!RegistryProtocol.hashEquals(expectedPayloadHash, entry.payloadHash())) {
+            throw new IllegalStateException(
+                    "Registry operator journal payload hash is invalid.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                trusted.deploymentCrypto().deploymentPublicKey(),
+                RegistryProtocol.signedRequest(
+                        "POST",
+                        RegistryProtocol.OPERATOR_ACTION_PATH,
+                        entry.protocolVersion(),
+                        entry.registryScope(),
+                        entry.deploymentId(),
+                        entry.requestTimestamp(),
+                        entry.nonce(),
+                        entry.idempotencyKey(),
+                        entry.payloadHash()),
+                entry.requestSignature())) {
+            throw new IllegalStateException(
+                    "Registry operator journal request signature is invalid.");
+        }
+        OperatorActionRequest request = new OperatorActionRequest(
+                entry.protocolVersion(),
+                entry.registryScope(),
+                entry.deploymentId(),
+                entry.requestTimestamp(),
+                entry.nonce(),
+                entry.idempotencyKey(),
+                entry.action(),
+                entry.operatorName(),
+                entry.operatorAvatarUrl(),
+                null,
+                entry.tokenTtlSeconds(),
+                entry.tokenId(),
+                entry.linkId(),
+                entry.payloadHash(),
+                entry.requestSignature());
+        try {
+            verifyActionResponse(
+                    trusted,
+                    request,
+                    clientTokenHash,
+                    new OperatorActionResponse(
+                            entry.protocolVersion(),
+                            entry.registryScope(),
+                            true,
+                            entry.receipt()));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException(
+                    "Registry operator journal receipt verification failed.",
+                    exception);
+        }
+    }
+
+    private void verifyActionResponse(
+            TrustedDeployment trusted,
+            OperatorActionRequest request,
+            String expectedClientTokenHash,
+            OperatorActionResponse response) {
+        if (response == null || response.receipt() == null || response.duplicate() == null) {
+            throw new IllegalArgumentException("Registry operator action receipt is missing.");
+        }
+        if (!RegistryProtocol.PROTOCOL_VERSION.equals(response.protocolVersion())
+                || !trusted.state().registryScope().equals(response.registryScope())) {
+            throw new IllegalArgumentException("Registry operator response has a mismatched protocol or scope.");
+        }
+        OperatorActionReceipt receipt = response.receipt();
+        if (receipt.auditIndex() == null || receipt.auditIndex() <= 0L) {
+            throw new IllegalArgumentException("Registry operator audit index must be positive.");
+        }
+        RegistryProtocol.requireHash(receipt.auditHash(), "audit_hash");
+        RegistryProtocol.requireHash(receipt.previousAuditHash(), "previous_audit_hash");
+        RegistryProtocol.requireOperatorActionId(receipt.actionId());
+        RegistryProtocol.requireDeploymentId(receipt.deploymentId());
+        RegistryProtocol.requireDeploymentId(receipt.subjectDeploymentId());
+        if (StringUtils.hasText(receipt.relatedDeploymentId())) {
+            RegistryProtocol.requireDeploymentId(receipt.relatedDeploymentId());
+        }
+        RegistryProtocol.requireUtcTimestamp(receipt.acceptedAt(), "accepted_at");
+        if (!trusted.state().deploymentId().equals(receipt.deploymentId())
+                || !request.action().equals(receipt.action())
+                || !trusted.state().registryScope().equals(receipt.registryScope())
+                || !trusted.registryKeyId().equals(receipt.registryKeyId())) {
+            throw new IllegalArgumentException(
+                    "Registry operator receipt does not match the signed request or pinned registry.");
+        }
+        validateOptionalOperatorIds(receipt);
+        if (StringUtils.hasText(receipt.tokenExpiresAt())) {
+            RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
+        }
+        if (StringUtils.hasText(receipt.clientTokenHash())) {
+            RegistryProtocol.requireHash(receipt.clientTokenHash(), "client_token_hash");
+        }
+        String expectedAuditHash = RegistryProtocol.sha256(
+                RegistryProtocol.operatorAudit(receipt, request.payloadHash()));
+        if (!RegistryProtocol.hashEquals(expectedAuditHash, receipt.auditHash())) {
+            throw new IllegalArgumentException("Registry operator audit hash is invalid.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                trusted.registryPublicKey(),
+                RegistryProtocol.operatorActionReceipt(receipt),
+                receipt.signature())) {
+            throw new IllegalArgumentException("Registry operator receipt signature is invalid.");
+        }
+
+        String plaintextToken = safeText(receipt.clientToken());
+        if (!RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN.equals(request.action())
+                && !plaintextToken.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Registry returned a plaintext client token for an incompatible action.");
+        }
+        if (RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN.equals(request.action())) {
+            RegistryProtocol.requireOperatorTokenId(receipt.tokenId());
+            RegistryProtocol.requireHash(receipt.clientTokenHash(), "client_token_hash");
+            RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
+            if (!response.duplicate()) {
+                RegistryProtocol.requireToken(plaintextToken, "client_token");
+                String actualHash = RegistryProtocol.sha256(
+                        plaintextToken.getBytes(StandardCharsets.UTF_8));
+                if (!RegistryProtocol.hashEquals(actualHash, receipt.clientTokenHash())) {
+                    throw new IllegalArgumentException(
+                            "Registry plaintext client token does not match its signed hash.");
+                }
+            } else if (!plaintextToken.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Registry repeated a plaintext client token for a duplicate request.");
+            }
+        }
+        if (RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(request.action())
+                && !RegistryProtocol.hashEquals(expectedClientTokenHash, receipt.clientTokenHash())) {
+            throw new IllegalArgumentException(
+                    "Registry redemption receipt does not match the submitted client token.");
+        }
+    }
+
+    private void verifyLeaderboardPage(
+            TrustedDeployment trusted,
+            String expectedView,
+            CursorClaims suppliedCursor,
+            LeaderboardPage page) {
+        if (page == null || page.snapshot() == null || page.items() == null
+                || !expectedView.equals(page.view())) {
+            throw new IllegalArgumentException("Registry leaderboard page is incomplete.");
+        }
+        verifySnapshot(trusted, page.snapshot());
+        requireCursorSnapshot(suppliedCursor, page.snapshot());
+        for (LeaderboardRow row : page.items()) {
+            if (row == null || !expectedView.equals(row.view())) {
+                throw new IllegalArgumentException("Registry leaderboard row has a mismatched view.");
+            }
+            RegistryProtocol.requireCanonical(row.rowId(), "leaderboard row_id");
+            RegistryProtocol.requireCanonical(row.label(), "leaderboard label");
+            requireCanonicalOptional(row.avatarUrl(), "leaderboard avatar_url");
+            RegistryProtocol.requireCanonical(row.claimState(), "leaderboard claim_state");
+            if (row.deploymentCount() == null || row.deploymentCount() < 0L) {
+                throw new IllegalArgumentException("leaderboard deployment_count must be non-negative.");
+            }
+            if (StringUtils.hasText(row.groupId())) {
+                RegistryProtocol.requireOperatorGroupId(row.groupId());
+            }
+            requireRational(row.weightNumerator(), row.weightDenominator(), "leaderboard weight");
+            requireRational(row.shareNumerator(), row.shareDenominator(), "leaderboard share");
+        }
+        verifyCursor(
+                trusted,
+                page.nextCursor(),
+                "rows",
+                expectedView,
+                "",
+                page.snapshot());
+    }
+
+    private void verifyLeaderboardDeploymentPage(
+            TrustedDeployment trusted,
+            String expectedGroupId,
+            CursorClaims suppliedCursor,
+            LeaderboardDeploymentPage page) {
+        if (page == null || page.snapshot() == null || page.items() == null
+                || !expectedGroupId.equals(page.groupId())) {
+            throw new IllegalArgumentException("Registry leaderboard deployment page is incomplete.");
+        }
+        verifySnapshot(trusted, page.snapshot());
+        requireCursorSnapshot(suppliedCursor, page.snapshot());
+        for (LeaderboardDeployment deployment : page.items()) {
+            if (deployment == null) {
+                throw new IllegalArgumentException("Registry leaderboard deployment is missing.");
+            }
+            RegistryProtocol.requireDeploymentId(deployment.deploymentId());
+            if (StringUtils.hasText(deployment.groupId())) {
+                RegistryProtocol.requireOperatorGroupId(deployment.groupId());
+            }
+            RegistryProtocol.requireCanonical(deployment.claimState(), "leaderboard claim_state");
+            RegistryProtocol.requireCanonical(
+                    deployment.membershipState(),
+                    "leaderboard membership_state");
+            requireRational(
+                    deployment.weightNumerator(),
+                    deployment.weightDenominator(),
+                    "leaderboard deployment weight");
+            requireRational(
+                    deployment.shareNumerator(),
+                    deployment.shareDenominator(),
+                    "leaderboard deployment share");
+        }
+        verifyCursor(
+                trusted,
+                page.nextCursor(),
+                "deployments",
+                "claimed",
+                expectedGroupId,
+                page.snapshot());
+    }
+
+    private void verifySnapshot(TrustedDeployment trusted, LeaderboardSnapshot snapshot) {
+        RegistryProtocol.requireSnapshotId(snapshot.snapshotId());
+        if (!RegistryProtocol.LEADERBOARD_FORMULA_VERSION.equals(snapshot.formulaVersion())
+                || !RegistryProtocol.LEADERBOARD_RULESET_VERSION.equals(snapshot.rulesetVersion())) {
+            throw new IllegalArgumentException("Registry leaderboard formula or ruleset is unsupported.");
+        }
+        RegistryProtocol.requirePeriod(snapshot.throughPeriod());
+        requireNonNegative(snapshot.throughLedgerIndex(), "through_ledger_index");
+        requireNonNegative(snapshot.throughAuditIndex(), "through_audit_index");
+        RegistryProtocol.requireHash(snapshot.ledgerHeadHash(), "ledger_head_hash");
+        RegistryProtocol.requireHash(snapshot.auditHeadHash(), "audit_head_hash");
+        requireRational(
+                snapshot.founderUnitsNumerator(),
+                snapshot.founderUnitsDenominator(),
+                "founder units");
+        requireRational(
+                snapshot.founderShareNumerator(),
+                snapshot.founderShareDenominator(),
+                "founder share");
+        requireRational(
+                snapshot.measuredWeightNumerator(),
+                snapshot.measuredWeightDenominator(),
+                "measured weight");
+        requireRational(
+                snapshot.claimedWeightNumerator(),
+                snapshot.claimedWeightDenominator(),
+                "claimed weight");
+        RegistryProtocol.requireUtcTimestamp(snapshot.createdAt(), "snapshot created_at");
+        RegistryProtocol.requireHash(snapshot.snapshotHash(), "snapshot_hash");
+        if (!trusted.state().registryScope().equals(snapshot.registryScope())
+                || !trusted.registryKeyId().equals(snapshot.registryKeyId())) {
+            throw new IllegalArgumentException(
+                    "Registry leaderboard snapshot does not match the pinned registry.");
+        }
+        String expectedHash = RegistryProtocol.sha256(
+                RegistryProtocol.leaderboardSnapshotHash(snapshot));
+        if (!RegistryProtocol.hashEquals(expectedHash, snapshot.snapshotHash())) {
+            throw new IllegalArgumentException("Registry leaderboard snapshot hash is invalid.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                trusted.registryPublicKey(),
+                RegistryProtocol.leaderboardSnapshotReceipt(snapshot),
+                snapshot.signature())) {
+            throw new IllegalArgumentException("Registry leaderboard snapshot signature is invalid.");
+        }
+    }
+
+    private List<PackageVerification> verifyAnnouncementPage(
+            TrustedDeployment trusted,
+            String expectedKind,
+            String expectedSeverity,
+            String expectedChannel,
+            boolean expectedIncludeExpired,
+            AnnouncementCursorClaims suppliedCursor,
+            AnnouncementPage page) {
+        if (page == null || page.snapshot() == null || page.items() == null) {
+            throw new IllegalArgumentException("Registry announcement page is incomplete.");
+        }
+        AnnouncementSnapshot snapshot = page.snapshot();
+        RegistryProtocol.requireAnnouncementSnapshotId(snapshot.snapshotId());
+        RegistryProtocol.requireUtcTimestamp(snapshot.asOf(), "announcement snapshot as_of");
+        requireNonNegative(snapshot.throughSequence(), "announcement through_sequence");
+        RegistryProtocol.requireHash(
+                snapshot.announcementHeadHash(),
+                "announcement_head_hash");
+        if (!expectedKind.equals(safeText(snapshot.kind()))
+                || !expectedSeverity.equals(safeText(snapshot.severity()))
+                || !expectedChannel.equals(safeText(snapshot.channel()))
+                || snapshot.includeExpired() == null
+                || snapshot.includeExpired() != expectedIncludeExpired
+                || !trusted.state().registryScope().equals(snapshot.registryScope())
+                || !trusted.registryKeyId().equals(snapshot.registryKeyId())) {
+            throw new IllegalArgumentException(
+                    "Registry announcement snapshot does not match the requested filters or pinned registry.");
+        }
+        RegistryProtocol.requireUtcTimestamp(
+                snapshot.createdAt(),
+                "announcement snapshot created_at");
+        RegistryProtocol.requireHash(snapshot.snapshotHash(), "announcement snapshot_hash");
+        String expectedSnapshotHash = RegistryProtocol.sha256(
+                RegistryProtocol.announcementSnapshotHash(snapshot));
+        if (!RegistryProtocol.hashEquals(
+                expectedSnapshotHash,
+                snapshot.snapshotHash())) {
+            throw new IllegalArgumentException(
+                    "Registry announcement snapshot hash is invalid.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                trusted.registryPublicKey(),
+                RegistryProtocol.announcementSnapshotReceipt(snapshot),
+                snapshot.signature())) {
+            throw new IllegalArgumentException(
+                    "Registry announcement snapshot signature is invalid.");
+        }
+        requireAnnouncementCursorSnapshot(suppliedCursor, snapshot);
+
+        PublicKey packageSigningKey = loadPackageSigningKey();
+        String configuredPackageKeyId = packageSigningKey == null
+                ? ""
+                : RegistryProtocol.packageSigningKeyId(packageSigningKey.getEncoded());
+        java.util.ArrayList<PackageVerification> verifications =
+                new java.util.ArrayList<>();
+        long previousSequence = Long.MAX_VALUE;
+        for (AnnouncementEntry entry : page.items()) {
+            verifyAnnouncementEntry(trusted, snapshot, entry);
+            if (entry.sequence() >= previousSequence) {
+                throw new IllegalArgumentException(
+                        "Registry announcement page ordering is invalid.");
+            }
+            previousSequence = entry.sequence();
+            if (entry.updateManifest() != null) {
+                UpdateManifest manifest = entry.updateManifest();
+                boolean keyMatches = packageSigningKey != null
+                        && manifest.packageSigningKeyId().equals(configuredPackageKeyId);
+                boolean signatureVerified = keyMatches && RegistryCrypto.verifyBase64(
+                        packageSigningKey,
+                        RegistryProtocol.releasePackage(manifest),
+                        manifest.packageSignature());
+                verifications.add(new PackageVerification(
+                        entry.announcementId(),
+                        packageSigningKey != null,
+                        keyMatches,
+                        signatureVerified));
+            }
+        }
+        verifyAnnouncementCursor(
+                trusted,
+                page.nextCursor(),
+                expectedKind,
+                expectedSeverity,
+                expectedChannel,
+                expectedIncludeExpired,
+                snapshot);
+        return List.copyOf(verifications);
+    }
+
+    private void verifyAnnouncementEntry(
+            TrustedDeployment trusted,
+            AnnouncementSnapshot snapshot,
+            AnnouncementEntry entry) {
+        if (entry == null || entry.sequence() == null || entry.sequence() <= 0L
+                || entry.sequence() > snapshot.throughSequence()) {
+            throw new IllegalArgumentException("Registry announcement sequence is invalid.");
+        }
+        if (!RegistryProtocol.PROTOCOL_VERSION.equals(entry.protocolVersion())
+                || !trusted.state().registryScope().equals(entry.registryScope())
+                || !trusted.registryKeyId().equals(entry.registryKeyId())) {
+            throw new IllegalArgumentException(
+                    "Registry announcement does not match the pinned registry.");
+        }
+        RegistryProtocol.requireAnnouncementId(entry.announcementId());
+        RegistryProtocol.requireToken(entry.publicationId(), "publication_id");
+        requireAnnouncementKind(entry.kind());
+        requireAnnouncementSeverity(entry.severity());
+        RegistryProtocol.requireUtcTimestamp(entry.publishedAt(), "announcement published_at");
+        if (StringUtils.hasText(entry.expiresAt())) {
+            RegistryProtocol.requireUtcTimestamp(entry.expiresAt(), "announcement expires_at");
+        }
+        RegistryProtocol.requireUtcTimestamp(entry.acceptedAt(), "announcement accepted_at");
+        List<AnnouncementLocalization> localizations =
+                entry.localizations() == null ? List.of() : entry.localizations();
+        List<AnnouncementLink> links =
+                entry.links() == null ? List.of() : entry.links();
+        String expectedContentHash = RegistryProtocol.sha256(
+                RegistryProtocol.announcementContent(
+                        entry.titleKey(),
+                        entry.bodyKey(),
+                        localizations));
+        String expectedLinksHash = RegistryProtocol.sha256(
+                RegistryProtocol.announcementLinks(links));
+        String expectedManifestHash = RegistryProtocol.ZERO_HASH;
+        if (entry.updateManifest() != null) {
+            if (!"UPDATE".equals(entry.kind())) {
+                throw new IllegalArgumentException(
+                        "Only UPDATE announcements may contain an update manifest.");
+            }
+            validateUpdateManifest(entry.updateManifest(), entry.publishedAt());
+            expectedManifestHash = RegistryProtocol.sha256(
+                    RegistryProtocol.updateManifest(entry.updateManifest()));
+        } else if ("UPDATE".equals(entry.kind())) {
+            throw new IllegalArgumentException(
+                    "UPDATE announcement is missing its update manifest.");
+        }
+        if (!RegistryProtocol.hashEquals(expectedContentHash, entry.contentHash())
+                || !RegistryProtocol.hashEquals(expectedLinksHash, entry.linksHash())
+                || !RegistryProtocol.hashEquals(
+                        expectedManifestHash,
+                        entry.updateManifestHash())) {
+            throw new IllegalArgumentException(
+                    "Registry announcement nested content hash is invalid.");
+        }
+        RegistryProtocol.requireHash(
+                entry.previousAnnouncementHash(),
+                "previous_announcement_hash");
+        RegistryProtocol.requireHash(entry.announcementHash(), "announcement_hash");
+        String expectedAnnouncementHash = RegistryProtocol.sha256(
+                RegistryProtocol.announcementEntry(entry));
+        if (!RegistryProtocol.hashEquals(
+                expectedAnnouncementHash,
+                entry.announcementHash())) {
+            throw new IllegalArgumentException("Registry announcement hash is invalid.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                trusted.registryPublicKey(),
+                RegistryProtocol.announcementReceipt(entry),
+                entry.signature())) {
+            throw new IllegalArgumentException(
+                    "Registry announcement signature is invalid.");
+        }
+    }
+
+    private void validateUpdateManifest(
+            UpdateManifest manifest,
+            String announcementPublishedAt) {
+        if (!RegistryProtocol.UPDATE_MANIFEST_VERSION.equals(
+                manifest.manifestVersion())) {
+            throw new IllegalArgumentException(
+                    "Update manifest version is unsupported.");
+        }
+        RegistryProtocol.SemanticVersion release =
+                RegistryProtocol.requireSemanticVersion(
+                        manifest.releaseVersion(),
+                        "release_version");
+        RegistryProtocol.SemanticVersion minimum =
+                RegistryProtocol.requireSemanticVersion(
+                        manifest.minimumCompatibleVersion(),
+                        "minimum_compatible_version");
+        RegistryProtocol.SemanticVersion maximum =
+                RegistryProtocol.requireSemanticVersion(
+                        manifest.maximumCompatibleVersion(),
+                        "maximum_compatible_version");
+        if (RegistryProtocol.compareSemanticVersions(minimum, maximum) > 0) {
+            throw new IllegalArgumentException(
+                    "Minimum compatible version exceeds maximum compatible version.");
+        }
+        if (!UPDATE_CHANNEL.matcher(safeText(manifest.channel())).matches()) {
+            throw new IllegalArgumentException(
+                    "Update channel is invalid.");
+        }
+        if (!announcementPublishedAt.equals(manifest.publishedAt())) {
+            throw new IllegalArgumentException(
+                    "Update manifest publication time differs from its announcement.");
+        }
+        RegistryProtocol.requireUtcTimestamp(manifest.publishedAt(), "update published_at");
+        requireHttpsUrl(manifest.artifactUrl(), "artifact_url");
+        if (!URI.create(manifest.artifactUrl()).getPath().toLowerCase().endsWith(".deb")) {
+            throw new IllegalArgumentException(
+                    "Update artifact URL must identify a Debian package.");
+        }
+        if (manifest.artifactSizeBytes() == null
+                || manifest.artifactSizeBytes() < 1L
+                || manifest.artifactSizeBytes() > 17_179_869_184L) {
+            throw new IllegalArgumentException(
+                    "Update artifact size must be between 1 byte and 16 GiB.");
+        }
+        RegistryProtocol.requireHash(manifest.artifactSha256(), "artifact_sha256");
+        RegistryProtocol.requirePackageSigningKeyId(manifest.packageSigningKeyId());
+        byte[] packageSignature = RegistryProtocol.decodeStandardBase64(
+                manifest.packageSignature(),
+                "package_signature");
+        if (packageSignature.length != 64) {
+            throw new IllegalArgumentException(
+                    "Update package signature must be an Ed25519 signature.");
+        }
+        requireHttpsUrl(manifest.releaseNotesUrl(), "release_notes_url");
+        if (manifest.backupRequired() == null
+                || manifest.expectedDowntimeSeconds() == null
+                || manifest.expectedDowntimeSeconds() < 0L
+                || manifest.expectedDowntimeSeconds() > 86_400L) {
+            throw new IllegalArgumentException("Update manifest status metadata is invalid.");
+        }
+        String supersedes = safeText(manifest.supersedesVersion());
+        String supersededBy = safeText(manifest.supersededByVersion());
+        String revocation = safeText(manifest.revocationReason());
+        switch (safeText(manifest.status())) {
+            case "AVAILABLE" -> {
+                if (!supersededBy.isEmpty() || !revocation.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Available update manifest has invalid status metadata.");
+                }
+                if (!supersedes.isEmpty()) {
+                    RegistryProtocol.SemanticVersion previous =
+                            RegistryProtocol.requireSemanticVersion(
+                                    supersedes,
+                                    "supersedes_version");
+                    if (RegistryProtocol.compareSemanticVersions(
+                            release,
+                            previous) == 0) {
+                        throw new IllegalArgumentException(
+                                "An update cannot supersede its own release version.");
+                    }
+                }
+            }
+            case "REVOKED" -> {
+                if (!supersedes.isEmpty()
+                        || !supersededBy.isEmpty()
+                        || revocation.isEmpty()
+                        || revocation.length() > 1_000
+                        || revocation.indexOf('\r') >= 0
+                        || revocation.indexOf('\n') >= 0) {
+                    throw new IllegalArgumentException(
+                            "Revoked update manifest has invalid status metadata.");
+                }
+            }
+            case "SUPERSEDED" -> {
+                if (!supersedes.isEmpty()
+                        || !revocation.isEmpty()
+                        || supersededBy.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Superseded update manifest has invalid status metadata.");
+                }
+                RegistryProtocol.SemanticVersion replacement =
+                        RegistryProtocol.requireSemanticVersion(
+                                supersededBy,
+                                "superseded_by_version");
+                if (RegistryProtocol.compareSemanticVersions(
+                        release,
+                        replacement) == 0) {
+                    throw new IllegalArgumentException(
+                            "An update cannot be superseded by its own release version.");
+                }
+            }
+            default -> throw new IllegalArgumentException(
+                    "Update manifest status metadata is invalid.");
+        }
+    }
+
+    private PublicKey loadPackageSigningKey() {
+        Path path = properties.getPackageSigningPublicKeyPath();
+        if (path == null) {
+            return null;
+        }
+        Path normalized = path.toAbsolutePath().normalize();
+        if (!Files.exists(normalized, LinkOption.NOFOLLOW_LINKS)) {
+            return null;
+        }
+        if (Files.isSymbolicLink(normalized)
+                || !Files.isRegularFile(normalized, LinkOption.NOFOLLOW_LINKS)) {
+            throw new IllegalStateException(
+                    "Package-signing public key must be a regular non-symlink file.");
+        }
+        try {
+            long size = Files.size(normalized);
+            if (size <= 0L || size > 4_096L) {
+                throw new IllegalStateException(
+                        "Package-signing public key file has an invalid size.");
+            }
+            return RegistryCrypto.parsePublicKeyPemOrDer(
+                    Files.readAllBytes(normalized),
+                    "package-signing public key");
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to read the pinned package-signing public key.",
+                    exception);
+        }
+    }
+
+    private AnnouncementCursorClaims verifyAnnouncementCursor(
+            TrustedDeployment trusted,
+            String value,
+            String expectedKind,
+            String expectedSeverity,
+            String expectedChannel,
+            boolean expectedIncludeExpired,
+            AnnouncementSnapshot snapshot) {
+        String cursor = safeText(value);
+        if (cursor.isEmpty()) {
+            return null;
+        }
+        if (cursor.length() > MAX_CURSOR_LENGTH) {
+            throw new IllegalArgumentException("Announcement cursor is too long.");
+        }
+        int separator = cursor.indexOf('.');
+        if (separator <= 0 || separator != cursor.lastIndexOf('.')
+                || separator == cursor.length() - 1) {
+            throw new IllegalArgumentException("Announcement cursor is malformed.");
+        }
+        byte[] payload = decodeCanonicalUrlBase64(
+                cursor.substring(0, separator),
+                "announcement cursor payload");
+        byte[] signature = decodeCanonicalUrlBase64(
+                cursor.substring(separator + 1),
+                "announcement cursor signature");
+        if (signature.length != 64 || !RegistryCrypto.verify(
+                trusted.registryPublicKey(),
+                RegistryProtocol.announcementCursor(payload),
+                signature)) {
+            throw new IllegalArgumentException("Announcement cursor signature is invalid.");
+        }
+        JsonNode node = objectMapper.readTree(payload);
+        AnnouncementCursorClaims claims = new AnnouncementCursorClaims(
+                node.path("version").asInt(-1),
+                node.path("snapshot_id").asText(""),
+                node.path("as_of").asText(""),
+                node.path("through_sequence").asLong(-1L),
+                node.path("announcement_head_hash").asText(""),
+                node.path("kind").asText(""),
+                node.path("severity").asText(""),
+                node.path("channel").asText(""),
+                node.path("include_expired").asBoolean(false),
+                node.path("created_at").asText(""),
+                node.path("after_sequence").asLong(-1L));
+        if (claims.version() != 1
+                || !expectedKind.equals(claims.kind())
+                || !expectedSeverity.equals(claims.severity())
+                || !expectedChannel.equals(claims.channel())
+                || expectedIncludeExpired != claims.includeExpired()
+                || claims.afterSequence() <= 0L
+                || claims.afterSequence() > claims.throughSequence()) {
+            throw new IllegalArgumentException(
+                    "Announcement cursor does not belong to this request.");
+        }
+        RegistryProtocol.requireAnnouncementSnapshotId(claims.snapshotId());
+        RegistryProtocol.requireUtcTimestamp(claims.asOf(), "announcement cursor as_of");
+        requireNonNegative(claims.throughSequence(), "announcement cursor through_sequence");
+        RegistryProtocol.requireHash(
+                claims.announcementHeadHash(),
+                "announcement cursor head hash");
+        RegistryProtocol.requireUtcTimestamp(
+                claims.createdAt(),
+                "announcement cursor created_at");
+        if (snapshot != null) {
+            requireAnnouncementCursorSnapshot(claims, snapshot);
+        }
+        return claims;
+    }
+
+    private void requireAnnouncementCursorSnapshot(
+            AnnouncementCursorClaims cursor,
+            AnnouncementSnapshot snapshot) {
+        if (cursor == null) {
+            return;
+        }
+        if (!cursor.snapshotId().equals(snapshot.snapshotId())
+                || !cursor.asOf().equals(snapshot.asOf())
+                || cursor.throughSequence() != snapshot.throughSequence()
+                || !cursor.announcementHeadHash().equals(snapshot.announcementHeadHash())
+                || !cursor.createdAt().equals(snapshot.createdAt())) {
+            throw new IllegalArgumentException(
+                    "Announcement cursor and signed snapshot boundaries differ.");
+        }
+    }
+
+    private static void validateAnnouncementQuery(
+            String kind,
+            String severity,
+            String channel,
+            Integer limit) {
+        if (!kind.isEmpty()) {
+            requireAnnouncementKind(kind);
+        }
+        if (!severity.isEmpty()) {
+            requireAnnouncementSeverity(severity);
+        }
+        if (!channel.isEmpty()) {
+            RegistryProtocol.requireCanonical(channel, "announcement channel");
+            if (!kind.isEmpty() && !"UPDATE".equals(kind)) {
+                throw new IllegalArgumentException(
+                        "Announcement channel may be combined only with kind UPDATE.");
+            }
+        }
+        if (limit != null && (limit < 1 || limit > 100)) {
+            throw new IllegalArgumentException(
+                    "Announcement limit must be between 1 and 100.");
+        }
+    }
+
+    private static void requireAnnouncementKind(String kind) {
+        if (!Set.of("GENERAL", "UPDATE", "MAINTENANCE", "SECURITY").contains(kind)) {
+            throw new IllegalArgumentException("Announcement kind is unsupported.");
+        }
+    }
+
+    private static void requireAnnouncementSeverity(String severity) {
+        if (!Set.of("INFO", "NOTICE", "WARNING", "CRITICAL").contains(severity)) {
+            throw new IllegalArgumentException("Announcement severity is unsupported.");
+        }
+    }
+
+    private CursorClaims verifyCursor(
+            TrustedDeployment trusted,
+            String value,
+            String expectedKind,
+            String expectedView,
+            String expectedGroupId,
+            LeaderboardSnapshot snapshot) {
+        String cursor = safeText(value);
+        if (cursor.isEmpty()) {
+            return null;
+        }
+        if (cursor.length() > MAX_CURSOR_LENGTH) {
+            throw new IllegalArgumentException("Leaderboard cursor is too long.");
+        }
+        int separator = cursor.indexOf('.');
+        if (separator <= 0 || separator != cursor.lastIndexOf('.')
+                || separator == cursor.length() - 1) {
+            throw new IllegalArgumentException("Leaderboard cursor is malformed.");
+        }
+        byte[] payload = decodeCanonicalUrlBase64(
+                cursor.substring(0, separator),
+                "leaderboard cursor payload");
+        byte[] signature = decodeCanonicalUrlBase64(
+                cursor.substring(separator + 1),
+                "leaderboard cursor signature");
+        if (signature.length != 64 || !RegistryCrypto.verify(
+                trusted.registryPublicKey(),
+                RegistryProtocol.leaderboardCursor(payload),
+                signature)) {
+            throw new IllegalArgumentException("Leaderboard cursor signature is invalid.");
+        }
+        JsonNode node;
+        try {
+            node = objectMapper.readTree(payload);
+        } catch (RuntimeException exception) {
+            throw new IllegalArgumentException("Leaderboard cursor payload is invalid.", exception);
+        }
+        CursorClaims claims = new CursorClaims(
+                node.path("version").asInt(-1),
+                node.path("kind").asText(""),
+                node.path("view").asText(""),
+                node.path("group_id").asText(""),
+                node.path("snapshot_id").asText(""),
+                node.path("from_period").asText(""),
+                node.path("through_period").asText(""),
+                node.path("through_ledger_index").asLong(-1L),
+                node.path("through_audit_index").asLong(-1L),
+                node.path("ledger_head_hash").asText(""),
+                node.path("audit_head_hash").asText(""),
+                node.path("created_at").asText(""),
+                node.path("after_weight").asLong(-1L),
+                node.path("after_id").asText(""));
+        if (claims.version() != 1
+                || !expectedKind.equals(claims.kind())
+                || !expectedView.equals(claims.view())
+                || !expectedGroupId.equals(claims.groupId())
+                || claims.afterWeight() < 0L
+                || !StringUtils.hasText(claims.afterId())) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor does not belong to this request.");
+        }
+        RegistryProtocol.requireSnapshotId(claims.snapshotId());
+        RegistryProtocol.requirePeriod(claims.fromPeriod());
+        RegistryProtocol.requirePeriod(claims.throughPeriod());
+        requireNonNegative(claims.throughLedgerIndex(), "cursor through_ledger_index");
+        requireNonNegative(claims.throughAuditIndex(), "cursor through_audit_index");
+        RegistryProtocol.requireHash(claims.ledgerHeadHash(), "cursor ledger_head_hash");
+        RegistryProtocol.requireHash(claims.auditHeadHash(), "cursor audit_head_hash");
+        RegistryProtocol.requireUtcTimestamp(claims.createdAt(), "cursor created_at");
+        if (snapshot != null) {
+            requireCursorSnapshot(claims, snapshot);
+        }
+        return claims;
+    }
+
+    private void requireCursorSnapshot(CursorClaims cursor, LeaderboardSnapshot snapshot) {
+        if (cursor == null) {
+            return;
+        }
+        if (!cursor.snapshotId().equals(snapshot.snapshotId())
+                || !cursor.throughPeriod().equals(snapshot.throughPeriod())
+                || cursor.throughLedgerIndex() != snapshot.throughLedgerIndex()
+                || cursor.throughAuditIndex() != snapshot.throughAuditIndex()
+                || !cursor.ledgerHeadHash().equals(snapshot.ledgerHeadHash())
+                || !cursor.auditHeadHash().equals(snapshot.auditHeadHash())
+                || !cursor.createdAt().equals(snapshot.createdAt())) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor and signed snapshot boundaries differ.");
+        }
+    }
+
+    private static void validateOptionalOperatorIds(OperatorActionReceipt receipt) {
+        if (StringUtils.hasText(receipt.groupId())) {
+            RegistryProtocol.requireOperatorGroupId(receipt.groupId());
+        }
+        if (StringUtils.hasText(receipt.linkId())) {
+            RegistryProtocol.requireOperatorLinkId(receipt.linkId());
+        }
+        if (StringUtils.hasText(receipt.tokenId())) {
+            RegistryProtocol.requireOperatorTokenId(receipt.tokenId());
+        }
+        requireCanonicalOptional(receipt.claimState(), "claim_state");
+    }
+
+    private static void validateLeaderboardQuery(String throughPeriod, Integer limit) {
+        if (StringUtils.hasText(throughPeriod)) {
+            RegistryProtocol.requirePeriod(throughPeriod.trim());
+        }
+        if (limit != null && (limit < 1 || limit > 100)) {
+            throw new IllegalArgumentException("Leaderboard limit must be between 1 and 100.");
+        }
+    }
+
+    private static void requireRational(String numerator, String denominator, String fieldName) {
+        if (!NON_NEGATIVE_INTEGER.matcher(safeText(numerator)).matches()
+                || !NON_NEGATIVE_INTEGER.matcher(safeText(denominator)).matches()
+                || "0".equals(denominator)) {
+            throw new IllegalArgumentException(fieldName + " must be a non-negative rational value.");
+        }
+    }
+
+    private static long requireNonNegative(Long value, String fieldName) {
+        if (value == null || value < 0L) {
+            throw new IllegalArgumentException(fieldName + " must be non-negative.");
+        }
+        return value;
+    }
+
+    private static byte[] decodeCanonicalUrlBase64(String value, String fieldName) {
+        try {
+            byte[] decoded = Base64.getUrlDecoder().decode(value);
+            if (!Base64.getUrlEncoder().withoutPadding().encodeToString(decoded).equals(value)) {
+                throw new IllegalArgumentException(fieldName + " is not canonical base64url.");
+            }
+            return decoded;
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(fieldName + " is invalid.", exception);
+        }
+    }
+
+    private static void requireText(String value, String fieldName, int maxUtf8Bytes) {
+        RegistryProtocol.requireCanonical(value, fieldName);
+        if (value.getBytes(StandardCharsets.UTF_8).length > maxUtf8Bytes) {
+            throw new IllegalArgumentException(fieldName + " is too long.");
+        }
+    }
+
+    private static void requireHttpsUrl(String value, String fieldName) {
+        requireText(value, fieldName, 2048);
+        try {
+            URI uri = URI.create(value);
+            if (!"https".equalsIgnoreCase(uri.getScheme())
+                    || uri.getHost() == null
+                    || uri.getUserInfo() != null
+                    || uri.getFragment() != null) {
+                throw new IllegalArgumentException(fieldName + " must be an absolute HTTPS URL.");
+            }
+        } catch (RuntimeException exception) {
+            throw new IllegalArgumentException(fieldName + " must be an absolute HTTPS URL.", exception);
+        }
+    }
+
+    private static void requireCanonicalOptional(String value, String fieldName) {
+        String normalized = value == null ? "" : value;
+        if (normalized.indexOf('\r') >= 0 || normalized.indexOf('\n') >= 0) {
+            throw new IllegalArgumentException(fieldName + " must not contain CR or LF.");
+        }
+    }
+
+    private static void requireAbsent(Object... values) {
+        for (Object value : values) {
+            if (value instanceof String text && !text.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Operator action contains fields that are not valid for this action.");
+            }
+            if (value instanceof Number number && number.longValue() != 0L) {
+                throw new IllegalArgumentException(
+                        "Operator action contains fields that are not valid for this action.");
+            }
+        }
+    }
+
+    private static String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private static String emptyToNull(String value) {
+        return StringUtils.hasText(value) ? value : null;
+    }
+
+    public record ActionCommand(
+            String action,
+            String operatorName,
+            String operatorAvatarUrl,
+            String clientToken,
+            Long tokenTtlSeconds,
+            String tokenId,
+            String linkId,
+            String idempotencyKey) {
+    }
+
+    public record ActionOutcome(
+            OperatorActionResponse response,
+            String idempotencyKey,
+            String plaintextClientToken,
+            Path receiptPath) {
+    }
+
+    public record ClaimStatus(
+            boolean claimed,
+            String claimedAt,
+            String operatorName,
+            String operatorAvatarUrl,
+            String groupId,
+            String activeLinkId,
+            String shareNumerator,
+            String shareDenominator) {
+    }
+
+    public record PackageVerification(
+            String announcementId,
+            boolean packageSigningKeyConfigured,
+            boolean packageSigningKeyMatches,
+            boolean packageSignatureVerified) {
+    }
+
+    public record AnnouncementOutcome(
+            AnnouncementPage page,
+            List<PackageVerification> packageVerifications) {
+    }
+
+    private record TrustedDeployment(
+            LocalState state,
+            RegistryCrypto deploymentCrypto,
+            PublicKey registryPublicKey,
+            String registryKeyId) {
+    }
+
+    private record CursorClaims(
+            int version,
+            String kind,
+            String view,
+            String groupId,
+            String snapshotId,
+            String fromPeriod,
+            String throughPeriod,
+            long throughLedgerIndex,
+            long throughAuditIndex,
+            String ledgerHeadHash,
+            String auditHeadHash,
+            String createdAt,
+            long afterWeight,
+            String afterId) {
+    }
+
+    private record AnnouncementCursorClaims(
+            int version,
+            String snapshotId,
+            String asOf,
+            long throughSequence,
+            String announcementHeadHash,
+            String kind,
+            String severity,
+            String channel,
+            boolean includeExpired,
+            String createdAt,
+            long afterSequence) {
+    }
+}

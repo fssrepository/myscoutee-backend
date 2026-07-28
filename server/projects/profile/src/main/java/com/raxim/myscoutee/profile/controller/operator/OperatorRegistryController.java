@@ -13,6 +13,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Operat
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryConfirmRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectionDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorRegistryService;
 
 @RestController
@@ -44,6 +45,13 @@ public class OperatorRegistryController {
         return service.confirm(
                 request == null ? null : request.inspectionToken(),
                 actorUserId(authentication));
+    }
+
+    @PostMapping("/register")
+    public OperatorRegistryStatusDto register(
+            @RequestBody(required = false) RegistryRegisterRequestDto request,
+            Authentication authentication) {
+        return service.register(request, actorUserId(authentication));
     }
 
     @PostMapping("/retry")

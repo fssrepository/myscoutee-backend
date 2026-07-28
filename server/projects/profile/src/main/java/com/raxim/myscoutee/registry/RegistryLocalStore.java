@@ -14,6 +14,10 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -156,6 +160,108 @@ public final class RegistryLocalStore {
         }
     }
 
+    public synchronized Path saveOperatorActionReceipt(
+            RegistryProtocol.OperatorActionReceipt suppliedReceipt) {
+        Objects.requireNonNull(suppliedReceipt, "Operator action receipt must not be null.");
+        RegistryProtocol.OperatorActionReceipt receipt =
+                suppliedReceipt.withoutPlaintextClientToken();
+        String actionId = RegistryProtocol.requireOperatorActionId(receipt.actionId());
+        return saveOperatorActionDocument(actionId, receipt);
+    }
+
+    public synchronized Path saveOperatorActionReceipt(
+            RegistryProtocol.OperatorActionRequest request,
+            String clientTokenHash,
+            RegistryProtocol.OperatorActionReceipt suppliedReceipt) {
+        Objects.requireNonNull(request, "Operator action request must not be null.");
+        Objects.requireNonNull(suppliedReceipt, "Operator action receipt must not be null.");
+        RegistryProtocol.OperatorActionReceipt receipt =
+                suppliedReceipt.withoutPlaintextClientToken();
+        String actionId = RegistryProtocol.requireOperatorActionId(receipt.actionId());
+        OperatorActionJournalEntry entry = new OperatorActionJournalEntry(
+                1,
+                request.protocolVersion(),
+                request.registryScope(),
+                request.deploymentId(),
+                request.timestamp(),
+                request.nonce(),
+                request.idempotencyKey(),
+                request.action(),
+                request.operatorName(),
+                request.operatorAvatarUrl(),
+                emptyToNull(clientTokenHash),
+                request.tokenTtlSeconds(),
+                request.tokenId(),
+                request.linkId(),
+                request.payloadHash(),
+                request.signature(),
+                receipt);
+        return saveOperatorActionDocument(actionId, entry);
+    }
+
+    public List<OperatorActionJournalEntry> loadOperatorActionJournal() {
+        requireWritableStateDirectory();
+        List<OperatorActionJournalEntry> entries = new ArrayList<>();
+        try (var paths = Files.newDirectoryStream(
+                receiptDirectory,
+                "operator-action-*.json")) {
+            for (Path receiptPath : paths) {
+                requireRegularNonSymlink(receiptPath, "registry operator receipt");
+                OperatorActionJournalEntry entry = objectMapper.readValue(
+                        readLimited(receiptPath, MAX_STATE_BYTES),
+                        OperatorActionJournalEntry.class);
+                if (entry == null || entry.schemaVersion() == null
+                        || entry.schemaVersion() != 1 || entry.receipt() == null) {
+                    throw new IllegalStateException(
+                            "Registry operator receipt journal entry is invalid: " + receiptPath);
+                }
+                entries.add(entry);
+            }
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to read the registry operator receipt journal.",
+                    exception);
+        }
+        entries.sort(Comparator.comparingLong(entry -> {
+            Long auditIndex = entry.receipt().auditIndex();
+            if (auditIndex == null || auditIndex <= 0L) {
+                throw new IllegalStateException(
+                        "Registry operator receipt journal contains an invalid audit index.");
+            }
+            return auditIndex;
+        }));
+        return List.copyOf(entries);
+    }
+
+    private Path saveOperatorActionDocument(String actionId, Object document) {
+        Path receiptPath = receiptDirectory.resolve("operator-action-" + actionId + ".json").normalize();
+        if (!receiptPath.getParent().equals(receiptDirectory)) {
+            throw new IllegalArgumentException("Receipt path escaped the registry receipt directory.");
+        }
+        requireWritableStateDirectory();
+        try {
+            byte[] json = objectMapper.writeValueAsString(document).getBytes(StandardCharsets.UTF_8);
+            if (json.length > MAX_STATE_BYTES) {
+                throw new IllegalStateException("Registry receipt exceeds the local size limit.");
+            }
+            if (Files.exists(receiptPath, LinkOption.NOFOLLOW_LINKS)) {
+                requireRegularNonSymlink(receiptPath, "registry operator receipt");
+                byte[] existing = readLimited(receiptPath, MAX_STATE_BYTES);
+                if (!Arrays.equals(existing, json)) {
+                    throw new IllegalStateException(
+                            "A different operator receipt already exists for " + actionId + ".");
+                }
+                return receiptPath;
+            }
+            atomicCreate(receiptPath, json);
+            return receiptPath;
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to persist registry operator receipt to " + receiptPath + ".",
+                    exception);
+        }
+    }
+
     public Path statePath() {
         return statePath;
     }
@@ -265,6 +371,40 @@ public final class RegistryLocalStore {
         }
     }
 
+    private void atomicCreate(Path target, byte[] bytes) throws IOException {
+        Path parent = Objects.requireNonNull(target.getParent(), "Registry receipt target must have a parent.");
+        Path temporary = Files.createTempFile(parent, "." + target.getFileName() + ".", ".tmp");
+        boolean moved = false;
+        try {
+            setPosixPermissions(temporary, FILE_PERMISSIONS);
+            try (FileChannel channel = FileChannel.open(
+                    temporary,
+                    StandardOpenOption.WRITE,
+                    StandardOpenOption.TRUNCATE_EXISTING)) {
+                ByteBuffer buffer = ByteBuffer.wrap(bytes);
+                while (buffer.hasRemaining()) {
+                    channel.write(buffer);
+                }
+                channel.force(true);
+            }
+            if (Files.exists(target, LinkOption.NOFOLLOW_LINKS)) {
+                throw new IOException("Registry receipt already exists: " + target);
+            }
+            try {
+                Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException exception) {
+                throw new IOException("Atomic registry receipt creation is not supported for " + target + ".", exception);
+            }
+            moved = true;
+            setPosixPermissions(target, FILE_PERMISSIONS);
+            forceDirectory(parent);
+        } finally {
+            if (!moved) {
+                Files.deleteIfExists(temporary);
+            }
+        }
+    }
+
     private static void forceDirectory(Path directory) throws IOException {
         try (FileChannel channel = FileChannel.open(directory, StandardOpenOption.READ)) {
             channel.force(true);
@@ -357,5 +497,29 @@ public final class RegistryLocalStore {
         public String deploymentId() {
             return receipt == null ? null : receipt.deploymentId();
         }
+    }
+
+    public record OperatorActionJournalEntry(
+            @JsonProperty("schema_version") Integer schemaVersion,
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("request_timestamp") String requestTimestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            String action,
+            @JsonProperty("operator_name") String operatorName,
+            @JsonProperty("operator_avatar_url") String operatorAvatarUrl,
+            @JsonProperty("client_token_hash") String clientTokenHash,
+            @JsonProperty("token_ttl_seconds") Long tokenTtlSeconds,
+            @JsonProperty("token_id") String tokenId,
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("payload_hash") String payloadHash,
+            @JsonProperty("request_signature") String requestSignature,
+            RegistryProtocol.OperatorActionReceipt receipt) {
+    }
+
+    private static String emptyToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
     }
 }

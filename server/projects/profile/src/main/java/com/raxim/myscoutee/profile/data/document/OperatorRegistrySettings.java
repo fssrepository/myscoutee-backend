@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "operatorRegistrySettings")
 public class OperatorRegistrySettings {
     public static final String SINGLETON_ID = "deployment-registry";
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
 
     @Id
     private String id = SINGLETON_ID;
@@ -16,9 +16,9 @@ public class OperatorRegistrySettings {
     private Integer schemaVersion = SCHEMA_VERSION;
     private String lifecycle = "UNCONFIGURED";
     private Boolean enabled = false;
-    private Boolean simulation = false;
     private DraftInspection draftInspection;
     private RegistrySelection selection;
+    private RegistrationRequest registrationRequest;
     private NodeIdentity nodeIdentity;
     private EnrollmentSummary enrollment;
     private Audit audit = new Audit();
@@ -64,14 +64,6 @@ public class OperatorRegistrySettings {
         this.enabled = enabled;
     }
 
-    public Boolean getSimulation() {
-        return simulation;
-    }
-
-    public void setSimulation(Boolean simulation) {
-        this.simulation = simulation;
-    }
-
     public DraftInspection getDraftInspection() {
         return draftInspection;
     }
@@ -86,6 +78,14 @@ public class OperatorRegistrySettings {
 
     public void setSelection(RegistrySelection selection) {
         this.selection = selection;
+    }
+
+    public RegistrationRequest getRegistrationRequest() {
+        return registrationRequest;
+    }
+
+    public void setRegistrationRequest(RegistrationRequest registrationRequest) {
+        this.registrationRequest = registrationRequest;
     }
 
     public NodeIdentity getNodeIdentity() {
@@ -180,6 +180,32 @@ public class OperatorRegistrySettings {
         public void setConfirmedAt(String confirmedAt) { this.confirmedAt = confirmedAt; }
         public String getConfirmedBy() { return confirmedBy; }
         public void setConfirmedBy(String confirmedBy) { this.confirmedBy = confirmedBy; }
+    }
+
+    public static class RegistrationRequest {
+        private String baseUrl;
+        private String registryScope;
+        private String registryKeyId;
+        private String registryPublicKeyFingerprint;
+        private String requestedAt;
+        private String requestedBy;
+
+        public String getBaseUrl() { return baseUrl; }
+        public void setBaseUrl(String baseUrl) { this.baseUrl = baseUrl; }
+        public String getRegistryScope() { return registryScope; }
+        public void setRegistryScope(String registryScope) { this.registryScope = registryScope; }
+        public String getRegistryKeyId() { return registryKeyId; }
+        public void setRegistryKeyId(String registryKeyId) { this.registryKeyId = registryKeyId; }
+        public String getRegistryPublicKeyFingerprint() {
+            return registryPublicKeyFingerprint;
+        }
+        public void setRegistryPublicKeyFingerprint(String value) {
+            this.registryPublicKeyFingerprint = value;
+        }
+        public String getRequestedAt() { return requestedAt; }
+        public void setRequestedAt(String requestedAt) { this.requestedAt = requestedAt; }
+        public String getRequestedBy() { return requestedBy; }
+        public void setRequestedBy(String requestedBy) { this.requestedBy = requestedBy; }
     }
 
     public static class NodeIdentity {

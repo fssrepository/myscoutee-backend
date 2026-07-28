@@ -70,6 +70,31 @@ default_registry_state_dir() {
   fi
 }
 
+default_configuration_key_dir() {
+  if [[ "${SERVER_DIR}" == "/opt/myscoutee/server" ]]; then
+    printf '/etc/myscoutee/configuration'
+  else
+    printf '%s/data/configuration' "${SERVER_DIR}"
+  fi
+}
+
+validate_configuration_key() {
+  local key_file="$1"
+  local encoded
+
+  if [[ ! -f "${key_file}" || -L "${key_file}" \
+    || "$(stat -c '%h' "${key_file}")" != "1" ]]; then
+    echo "Backup operator configuration master key is unsafe." >&2
+    return 1
+  fi
+  encoded="$(tr -d '\n' < "${key_file}")"
+  if [[ ! "${encoded}" =~ ^[0-9a-f]{64}$ \
+    || "$(wc -c < "${key_file}")" -gt 65 ]]; then
+    echo "Backup operator configuration master key is invalid." >&2
+    return 1
+  fi
+}
+
 validate_registry_keypair() {
   local key_dir="$1"
   local derived_public
@@ -473,6 +498,9 @@ validate_registry_restore() {
 }
 
 stop_registry_backend() {
+  if [[ "${REGISTRY_BACKEND_RESTART_REQUIRED}" == "true" ]]; then
+    return 0
+  fi
   if ! command -v docker >/dev/null 2>&1 \
     || ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx myscoutee; then
     return 0
@@ -524,7 +552,9 @@ restore_registry_identity() {
     chmod 0700 "${REGISTRY_STATE_DIR}/receipts"
   fi
   if [[ "${EUID}" -eq 0 ]]; then
-    chown -R root:root "${REGISTRY_KEY_DIR}" "${REGISTRY_STATE_DIR}"
+    chown -R --no-dereference \
+      "${MYSCOUTEE_API_UID:-10001}:${MYSCOUTEE_API_GID:-10001}" \
+      "${REGISTRY_KEY_DIR}" "${REGISTRY_STATE_DIR}"
   fi
 
   sync -f "${REGISTRY_KEY_DIR}/deployment-private-key.pem"
@@ -532,6 +562,29 @@ restore_registry_identity() {
   sync -f "${REGISTRY_STATE_DIR}/deployment-state.json"
   sync -f "${REGISTRY_KEY_DIR}"
   sync -f "${REGISTRY_STATE_DIR}"
+}
+
+restore_configuration_key() {
+  local backup_key="$1"
+  local target_key temporary_key
+
+  target_key="${CONFIGURATION_KEY_DIR}/deployment-master-key"
+  if [[ -L "${CONFIGURATION_KEY_DIR}" || -L "${target_key}" ]]; then
+    echo "Operator configuration master-key restore target is unsafe." >&2
+    return 1
+  fi
+  install -d -m 0750 "${CONFIGURATION_KEY_DIR}"
+  temporary_key="$(mktemp "${CONFIGURATION_KEY_DIR}/.deployment-master-key.restore.XXXXXX")"
+  install -m 0640 "${backup_key}" "${temporary_key}"
+  mv -f -- "${temporary_key}" "${target_key}"
+  chmod 0750 "${CONFIGURATION_KEY_DIR}"
+  chmod 0640 "${target_key}"
+  if [[ "${EUID}" -eq 0 ]]; then
+    chown root:"${MYSCOUTEE_API_GID:-10001}" \
+      "${CONFIGURATION_KEY_DIR}" "${target_key}"
+  fi
+  sync -f "${target_key}"
+  sync -f "${CONFIGURATION_KEY_DIR}"
 }
 
 cleanup() {
@@ -551,10 +604,23 @@ trap cleanup EXIT
 ENV_FILE="${SERVER_DIR}/.env"
 registry_key_dir_value="${REGISTRY_KEY_DIR_HOST:-$(read_env_file_value REGISTRY_KEY_DIR_HOST "${ENV_FILE}" || true)}"
 registry_state_dir_value="${REGISTRY_STATE_DIR_HOST:-$(read_env_file_value REGISTRY_STATE_DIR_HOST "${ENV_FILE}" || true)}"
+configuration_key_dir_value="${OPERATOR_CONFIGURATION_KEY_DIR_HOST:-$(read_env_file_value OPERATOR_CONFIGURATION_KEY_DIR_HOST "${ENV_FILE}" || true)}"
 REGISTRY_KEY_DIR="${MYSCOUTEE_REGISTRY_KEY_DIR:-$(resolve_host_path "${registry_key_dir_value:-$(default_registry_key_dir)}")}"
 REGISTRY_STATE_DIR="${MYSCOUTEE_REGISTRY_STATE_DIR:-$(resolve_host_path "${registry_state_dir_value:-$(default_registry_state_dir)}")}"
+CONFIGURATION_KEY_DIR="${MYSCOUTEE_CONFIGURATION_KEY_DIR:-$(resolve_host_path "${configuration_key_dir_value:-$(default_configuration_key_dir)}")}"
 
 tar -C "${WORK_DIR}" -xzf "${BACKUP_ARCHIVE}"
+
+if [[ -f "${WORK_DIR}/mongo/${DATABASE_NAME}.archive.gz" \
+  && ! -f "${WORK_DIR}/configuration/deployment-master-key" ]]; then
+  echo "Backup has MongoDB data but no operator configuration master key; restoring it could make encrypted deployment secrets unreadable." >&2
+  exit 1
+fi
+if [[ -e "${WORK_DIR}/configuration/deployment-master-key" \
+  || -L "${WORK_DIR}/configuration/deployment-master-key" ]]; then
+  validate_configuration_key \
+    "${WORK_DIR}/configuration/deployment-master-key"
+fi
 
 if [[ "${RESTORE_REGISTRY:-false}" == "true" ]]; then
   if [[ ! -d "${WORK_DIR}/registry/keys" ]]; then
@@ -562,6 +628,12 @@ if [[ "${RESTORE_REGISTRY:-false}" == "true" ]]; then
     exit 1
   fi
   validate_registry_restore "${WORK_DIR}/registry/keys" "${WORK_DIR}/registry/state"
+fi
+
+if [[ -f "${WORK_DIR}/configuration/deployment-master-key" ]]; then
+  stop_registry_backend
+  restore_configuration_key \
+    "${WORK_DIR}/configuration/deployment-master-key"
 fi
 
 if [[ "${RESTORE_CONFIG:-false}" == "true" && -d "${WORK_DIR}/config" ]]; then
@@ -587,7 +659,8 @@ fi
 if [[ "${RESTORE_REGISTRY:-false}" == "true" ]]; then
   stop_registry_backend
   restore_registry_identity "${WORK_DIR}/registry/keys" "${WORK_DIR}/registry/state"
-  restart_registry_backend
 fi
+
+restart_registry_backend
 
 echo "Restore complete."

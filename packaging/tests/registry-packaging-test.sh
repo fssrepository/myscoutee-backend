@@ -265,7 +265,16 @@ SERVER_DIR="${TEST_ROOT}/server"
 BACKUP_DIR="${TEST_ROOT}/backups"
 STUB_DIR="${TEST_ROOT}/stubs"
 CONFIG_SOURCE_DIR="${TEST_ROOT}/config-source"
-mkdir -p "${SERVER_DIR}" "${BACKUP_DIR}" "${STUB_DIR}" "${CONFIG_SOURCE_DIR}"
+CONFIGURATION_KEY_DIR="${TEST_ROOT}/configuration-key"
+mkdir -p \
+  "${SERVER_DIR}" \
+  "${BACKUP_DIR}" \
+  "${STUB_DIR}" \
+  "${CONFIG_SOURCE_DIR}" \
+  "${CONFIGURATION_KEY_DIR}"
+printf '5%.0s' {1..64} > "${CONFIGURATION_KEY_DIR}/deployment-master-key"
+printf '\n' >> "${CONFIGURATION_KEY_DIR}/deployment-master-key"
+chmod 0640 "${CONFIGURATION_KEY_DIR}/deployment-master-key"
 printf '%s\n' 'REGISTRY_EXPECTED_KEY_FINGERPRINT=sha256:test-only' \
   > "${CONFIG_SOURCE_DIR}/myscoutee.env"
 printf '%s\n' 'MONGO_APP_PASSWORD=test-only' \
@@ -287,6 +296,7 @@ backup_path="$(
   PATH="${STUB_DIR}:${PATH}" \
   MYSCOUTEE_SERVER_DIR="${SERVER_DIR}" \
   MYSCOUTEE_BACKUP_DIR="${BACKUP_DIR}" \
+  MYSCOUTEE_CONFIGURATION_KEY_DIR="${CONFIGURATION_KEY_DIR}" \
   MYSCOUTEE_REGISTRY_KEY_DIR="${KEY_DIR}" \
   MYSCOUTEE_REGISTRY_STATE_DIR="${STATE_DIR}" \
     bash "${BACKUP_SCRIPT}" 2>/dev/null
@@ -296,6 +306,9 @@ backup_path="$(
 assert_file_mode 600 "${backup_path}"
 tar -tzf "${backup_path}" | grep -q './registry/keys/deployment-private-key.pem' \
   || fail "backup omitted the deployment private key"
+tar -tzf "${backup_path}" \
+  | grep -q './configuration/deployment-master-key' \
+  || fail "backup omitted the operator configuration master key"
 tar -tzf "${backup_path}" | grep -q './registry/keys/deployment-public-key.der' \
   || fail "backup omitted the deployment public key"
 tar -tzf "${backup_path}" | grep -q './registry/state/deployment-state.json' \
@@ -318,6 +331,22 @@ grep -q 'REGISTRY_EXPECTED_KEY_FINGERPRINT=sha256:test-only' \
 grep -q 'MONGO_APP_PASSWORD=test-only' \
   "${BACKUP_INSPECT_DIR}/config/.env.secrets" \
   || fail "backup omitted installed credentials"
+jq -e \
+  '.schemaVersion == 1
+    and .complete == false
+    and .components.operatorConfigurationKey == true' \
+  "${BACKUP_INSPECT_DIR}/backup-manifest.json" >/dev/null \
+  || fail "backup does not report its incomplete recovery components honestly"
+if PATH="${STUB_DIR}:${PATH}" \
+  MYSCOUTEE_SERVER_DIR="${SERVER_DIR}" \
+  MYSCOUTEE_BACKUP_DIR="${TEST_ROOT}/required-complete-backups" \
+  MYSCOUTEE_CONFIGURATION_KEY_DIR="${CONFIGURATION_KEY_DIR}" \
+  MYSCOUTEE_REGISTRY_KEY_DIR="${KEY_DIR}" \
+  MYSCOUTEE_REGISTRY_STATE_DIR="${STATE_DIR}" \
+  MYSCOUTEE_BACKUP_REQUIRE_COMPLETE=true \
+    bash "${BACKUP_SCRIPT}" >/dev/null 2>&1; then
+  fail "required-complete backup accepted missing MongoDB, MinIO, or configuration"
+fi
 
 INCOMPLETE_BACKUP_DIR="${TEST_ROOT}/incomplete-backup"
 INCOMPLETE_BACKUP_PATH="${TEST_ROOT}/incomplete-registry-backup.tar.gz"
@@ -433,18 +462,24 @@ fi
 RESTORE_SERVER_DIR="${TEST_ROOT}/restore-server"
 RESTORE_KEY_DIR="${TEST_ROOT}/restored-identity"
 RESTORE_STATE_DIR="${TEST_ROOT}/restored-state"
+RESTORE_CONFIGURATION_KEY_DIR="${TEST_ROOT}/restored-configuration-key"
 mkdir -p "${RESTORE_SERVER_DIR}"
 
 PATH="${STUB_DIR}:${PATH}" \
 CONFIRM_RESTORE=true \
 RESTORE_REGISTRY=true \
 MYSCOUTEE_SERVER_DIR="${RESTORE_SERVER_DIR}" \
+MYSCOUTEE_CONFIGURATION_KEY_DIR="${RESTORE_CONFIGURATION_KEY_DIR}" \
 MYSCOUTEE_REGISTRY_KEY_DIR="${RESTORE_KEY_DIR}" \
 MYSCOUTEE_REGISTRY_STATE_DIR="${RESTORE_STATE_DIR}" \
   bash "${RESTORE_SCRIPT}" "${backup_path}" >/dev/null
 
 cmp -s "${PRIVATE_KEY}" "${RESTORE_KEY_DIR}/deployment-private-key.pem" \
   || fail "restore changed the deployment private key"
+cmp -s \
+  "${CONFIGURATION_KEY_DIR}/deployment-master-key" \
+  "${RESTORE_CONFIGURATION_KEY_DIR}/deployment-master-key" \
+  || fail "restore changed the operator configuration master key"
 cmp -s "${TEST_ROOT}/expected-public.der" "${RESTORE_KEY_DIR}/deployment-public-key.der" \
   || fail "restore changed the deployment public key"
 grep -q 'dep_0123456789abcdef0123456789abcdef' "${RESTORE_STATE_DIR}/deployment-state.json" \
@@ -514,12 +549,12 @@ if grep -Fxq '/opt/myscoutee/packaging/scripts/ensure-deployment-identity.sh' \
   "${REPO_ROOT}/packaging/debian/postinst"; then
   fail "postinst initializes a node identity before operator consent"
 fi
-grep -Fq 'install -d -m 0700 /etc/myscoutee/registry' \
+grep -Fq 'install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry' \
   "${REPO_ROOT}/packaging/debian/postinst" \
-  || fail "postinst does not create the empty deployment-key directory with mode 0700"
-grep -Fq 'install -d -m 0700 /var/lib/myscoutee/registry' \
+  || fail "postinst does not create the API-owned deployment-key directory with mode 0700"
+grep -Fq 'install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry' \
   "${REPO_ROOT}/packaging/debian/postinst" \
-  || fail "postinst does not create the empty registry-state directory with mode 0700"
+  || fail "postinst does not create the API-owned registry-state directory with mode 0700"
 grep -Eq '^Depends:.*openssl' "${REPO_ROOT}/packaging/debian/control" \
   || fail "openssl is not a hard package dependency"
 grep -Eq '^Depends:.*jq' "${REPO_ROOT}/packaging/debian/control" \
@@ -555,7 +590,7 @@ fi
 grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \
   "${REPO_ROOT}/packaging/scripts/package-production.sh" \
   || fail "package staging does not include the deployment identity helper"
-grep -Fq 'packaging/scripts" -type f -name "*.sh" -exec chmod 0755' \
+grep -Fq 'find "${STAGING_DIR}/opt/myscoutee/packaging/scripts"' \
   "${REPO_ROOT}/packaging/scripts/package-production.sh" \
   || fail "package staging does not make the deployment identity helper executable"
 grep -Fq 'sync -f "${KEY_DIR}"' "${IDENTITY_SCRIPT}" \
@@ -590,8 +625,9 @@ grep -Fq -- '- docker-compose-dev.yml' "${CANONICAL_DEV_COMPOSE}" \
 if grep -Fq 'docker-compose.registry-local.yml' "${CANONICAL_DEV_COMPOSE}"; then
   fail "canonical dev Compose still depends on the removed registry overlay"
 fi
-grep -Fq 'REGISTRY_DEMO_MODE: "live"' "${DEMO_DEV_COMPOSE}" \
-  || fail "normal dev Compose is not explicitly restricted to live DEMO registry mode"
+if grep -Fq 'REGISTRY_DEMO_MODE' "${DEMO_DEV_COMPOSE}"; then
+  fail "normal dev Compose still exposes the removed Java registry simulation mode"
+fi
 grep -Fq 'myscoutee-registry-dev-demo-data-v1' "${DEMO_DEV_COMPOSE}" \
   || fail "normal dev Compose does not use its explicit demo SQLite/signing-key volume"
 grep -Fq '/workspace/data/registry-demo-keys/' "${DEMO_DEV_COMPOSE}" \
@@ -651,9 +687,6 @@ if docker compose version >/dev/null 2>&1; then
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"
     and .services.profilemanagement.environment.MONGODB_DATABASE == "demo_db"
     and .services.profilemanagement.environment.OPERATOR_USER == "dev@myscoutee.local"
-    and .services.profilemanagement.environment.REGISTRY_DEMO_MODE == "live"
-    and .services.profilemanagement.environment.REGISTRY_DEMO_CANDIDATE_BASE_URL == "http://registry:8080"
-    and .services.profilemanagement.environment.REGISTRY_DEMO_CANDIDATE_SCOPE == "demo:local-registry"
     and .services.profilemanagement.environment.REGISTRY_DEMO_PRIVATE_KEY_PATH
       == "/workspace/data/registry-demo-keys/deployment-private-key.pem"
     and .services.profilemanagement.environment.REGISTRY_DEMO_STATE_DIR
@@ -665,6 +698,13 @@ if docker compose version >/dev/null 2>&1; then
       | not)
     and (.services.profilemanagement.environment | has("REGISTRY_PRIVATE_KEY_PATH") | not)
     and (.services.profilemanagement.environment | has("REGISTRY_STATE_DIR") | not)
+    and (.services.profilemanagement.environment | has("REGISTRY_DEMO_MODE") | not)
+    and (.services.profilemanagement.environment
+      | has("REGISTRY_DEMO_CANDIDATE_BASE_URL")
+      | not)
+    and (.services.profilemanagement.environment
+      | has("REGISTRY_DEMO_CANDIDATE_SCOPE")
+      | not)
   ' <<<"${DEV_COMPOSE_JSON}" >/dev/null \
     || fail "canonical dev Compose mixes demo registry state with real registry configuration"
 fi

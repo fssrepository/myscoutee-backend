@@ -23,6 +23,8 @@ public final class RegistryCrypto {
     private static final int MAX_PUBLIC_KEY_FILE_BYTES = 4_096;
     private static final String PRIVATE_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";
     private static final String PRIVATE_KEY_END = "-----END PRIVATE KEY-----";
+    private static final String PUBLIC_KEY_BEGIN = "-----BEGIN PUBLIC KEY-----";
+    private static final String PUBLIC_KEY_END = "-----END PUBLIC KEY-----";
     private static final byte[] KEY_PAIR_CHECK =
             "myscoutee-registry-key-pair-check-v1\n".getBytes(StandardCharsets.UTF_8);
 
@@ -74,6 +76,10 @@ public final class RegistryCrypto {
         return deploymentPublicKeyDer.clone();
     }
 
+    PublicKey deploymentPublicKey() {
+        return deploymentPublicKey;
+    }
+
     public String signBase64(byte[] canonicalMessage) {
         return RegistryProtocol.standardBase64(sign(canonicalMessage));
     }
@@ -108,6 +114,31 @@ public final class RegistryCrypto {
             return publicKey;
         } catch (GeneralSecurityException exception) {
             throw new IllegalArgumentException(fieldName + " is not an Ed25519 SPKI public key.", exception);
+        }
+    }
+
+    public static PublicKey parsePublicKeyPemOrDer(
+            byte[] publicKeyFile,
+            String fieldName) {
+        byte[] supplied = Objects.requireNonNull(
+                publicKeyFile,
+                fieldName + " must not be null.");
+        String text = new String(supplied, StandardCharsets.US_ASCII).trim();
+        if (!text.startsWith(PUBLIC_KEY_BEGIN)
+                || !text.endsWith(PUBLIC_KEY_END)) {
+            return parsePublicKeyDer(supplied, fieldName);
+        }
+        String encoded = text.substring(
+                        PUBLIC_KEY_BEGIN.length(),
+                        text.length() - PUBLIC_KEY_END.length())
+                .replaceAll("\\s", "");
+        try {
+            byte[] publicDer = Base64.getDecoder().decode(encoded);
+            return parsePublicKeyDer(publicDer, fieldName);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                    fieldName + " is not a canonical Ed25519 PUBLIC KEY PEM.",
+                    exception);
         }
     }
 

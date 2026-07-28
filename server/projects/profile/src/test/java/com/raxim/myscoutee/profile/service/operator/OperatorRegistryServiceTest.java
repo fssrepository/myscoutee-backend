@@ -16,6 +16,7 @@ import java.security.SecureRandom;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -33,6 +34,8 @@ import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectRequestDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.registry.RegistryNodeIdentityService.NodeIdentity;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations;
@@ -55,12 +58,14 @@ class OperatorRegistryServiceTest {
     private RegistryOperatorOperations operations;
     private RegistryProperties realProperties;
     private RegistryDemoProperties demoProperties;
+    private OperatorRegistryEndpointService endpointService;
     private AtomicReference<OperatorRegistrySettings> stored;
 
     @BeforeEach
     void setUp() {
         repository = mock(OperatorRegistrySettingsRepository.class);
         operations = mock(RegistryOperatorOperations.class);
+        endpointService = mock(OperatorRegistryEndpointService.class);
         realProperties = new RegistryProperties();
         realProperties.setPrivateKeyPath(tempDirectory.resolve("real/key.pem"));
         realProperties.setPublicKeyPath(tempDirectory.resolve("real/key.der"));
@@ -87,27 +92,64 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void sampleExploreNeverTouchesNetworkKeysOrRegistryState() {
-        demoProperties.setMode("sample");
+    void demoHttpConfigurationNeverInitializesOrRegistersTheNode() {
+        configureLiveDemo();
+        when(operations.inspect(any())).thenReturn(registryInspection());
+        when(operations.inspectNodeIdentity(any())).thenReturn(new NodeStatus("MISSING", null));
         OperatorRegistryService service = service();
 
         var initial = service.status();
         var inspection = service.inspect(
-                new RegistryInspectRequestDto(null, null),
+                new RegistryInspectRequestDto(
+                        "http://registry:8080",
+                        "demo:local-registry"),
                 "operator-demo-dev");
-        var confirmed = service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+        var configured = service.confirm(inspection.inspectionToken(), "operator-demo-dev");
 
         assertThat(initial.nodeIdentity().state()).isEqualTo("MISSING");
-        assertThat(inspection.simulation()).isTrue();
-        assertThat(confirmed.simulation()).isTrue();
-        assertThat(confirmed.lifecycle()).isEqualTo("REGISTERED");
-        assertThat(confirmed.nodeIdentity().state()).isEqualTo("SIMULATED");
-        assertThat(confirmed.enrollment().deploymentCode()).startsWith("dep_");
+        assertThat(inspection.simulation()).isFalse();
+        assertThat(configured.simulation()).isFalse();
+        assertThat(configured.lifecycle()).isEqualTo("CONFIGURED");
+        assertThat(configured.nodeIdentity().state()).isEqualTo("MISSING");
+        assertThat(configured.enrollment()).isNull();
         assertThat(tempDirectory.resolve("demo/key.pem")).doesNotExist();
         assertThat(tempDirectory.resolve("demo/state")).doesNotExist();
+        verify(operations, never()).initializeNodeIdentity(any());
+        verify(operations, never()).synchronize(any());
+        verify(operations, times(2)).inspect(any());
+    }
+
+    @Test
+    void demoInspectionWithoutARequestDoesNotInventRegistryData() {
+        OperatorRegistryService service = service();
+
+        assertThatThrownBy(() -> service.inspect(null, "operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Registry base URL is required");
+        assertThat(stored.get()).isNull();
         verify(operations, never()).inspect(any());
         verify(operations, never()).initializeNodeIdentity(any());
         verify(operations, never()).synchronize(any());
+    }
+
+    @Test
+    void statusCandidateComesFromTheMongoEndpointCatalog() {
+        RegistryOptionDto seededOption = new RegistryOptionDto(
+                "registry-demo-local",
+                "Local registry",
+                "http://registry:8080",
+                "demo:local-registry",
+                false);
+        when(endpointService.options(null)).thenReturn(List.of(seededOption));
+        when(operations.inspectNodeIdentity(any())).thenReturn(new NodeStatus("MISSING", null));
+        OperatorRegistryService service = service();
+
+        var status = service.status();
+
+        assertThat(status.registryOptions()).containsExactly(seededOption);
+        assertThat(status.candidateDefaults().baseUrl()).isEqualTo(seededOption.baseUrl());
+        assertThat(status.candidateDefaults().registryScope())
+                .isEqualTo(seededOption.registryScope());
     }
 
     @Test
@@ -120,7 +162,7 @@ class OperatorRegistryServiceTest {
                 new RegistryInspectRequestDto("http://registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
 
-        assertThat(response.registryIdentity().registryKeyId()).isEqualTo("rkey_test");
+        assertThat(response.registryIdentity().registryScope()).isEqualTo("demo:local-registry");
         assertThat(stored.get().getDraftInspection()).isNotNull();
         assertThat(stored.get().getSelection()).isNull();
         assertThat(stored.get().getNodeIdentity()).isNull();
@@ -132,10 +174,11 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void failedConfirmStaysRetryableAndRetryCompletesIdempotently() {
+    void failedExplicitRegistrationStaysRetryableAndRetryCompletesIdempotently() {
         configureLiveDemo();
         when(operations.inspect(any())).thenReturn(registryInspection());
         when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("MISSING", null))
                 .thenReturn(new NodeStatus("MISSING", null))
                 .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
         when(operations.initializeNodeIdentity(any())).thenReturn(new NodeIdentity(NODE_FINGERPRINT));
@@ -151,7 +194,14 @@ class OperatorRegistryServiceTest {
                 new RegistryInspectRequestDto("http://registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
 
-        var failed = service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+        var configured = service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+        assertThat(configured.lifecycle()).isEqualTo("CONFIGURED");
+        verify(operations, never()).initializeNodeIdentity(any());
+        verify(operations, never()).synchronize(any());
+
+        var failed = service.register(
+                registerRequest("http://registry:8080", "demo:local-registry"),
+                "operator-demo-dev");
         var completed = service.retry("operator-demo-dev");
         var repeated = service.retry("operator-demo-dev");
 
@@ -176,10 +226,30 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void automaticRetrySkipsTerminalErrorsButExplicitRetryRemainsAvailable() {
+    void manualRetryRequiresAnExplicitRegistrationRequest() {
+        configureLiveDemo();
+        when(operations.inspect(any())).thenReturn(registryInspection());
+        when(operations.inspectNodeIdentity(any())).thenReturn(new NodeStatus("MISSING", null));
+        OperatorRegistryService service = service();
+        var inspection = service.inspect(
+                new RegistryInspectRequestDto("http://registry:8080", "demo:local-registry"),
+                "operator-demo-dev");
+
+        service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+
+        assertThatThrownBy(() -> service.retry("operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("No explicitly requested pending registration");
+        verify(operations, never()).initializeNodeIdentity(any());
+        verify(operations, never()).synchronize(any());
+    }
+
+    @Test
+    void explicitlyRequestedRegistrationCanBeRetriedAfterATerminalLocalError() {
         configureLiveDemo();
         when(operations.inspect(any())).thenReturn(registryInspection());
         when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("MISSING", null))
                 .thenReturn(new NodeStatus("MISSING", null))
                 .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT))
                 .thenReturn(new NodeStatus("MISSING", null));
@@ -191,6 +261,9 @@ class OperatorRegistryServiceTest {
                 "operator-demo-dev");
 
         service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+        service.register(
+                registerRequest("http://registry:8080", "demo:local-registry"),
+                "operator-demo-dev");
         var retry = service.retry("operator-demo-dev");
 
         assertThat(retry.lifecycle()).isEqualTo("ERROR");
@@ -200,11 +273,6 @@ class OperatorRegistryServiceTest {
         verify(operations).synchronize(any());
 
         clearInvocations(operations);
-        service.retryPendingSelections();
-        verify(operations, never()).inspectNodeIdentity(any());
-        verify(operations, never()).initializeNodeIdentity(any());
-        verify(operations, never()).synchronize(any());
-
         when(operations.inspectNodeIdentity(any()))
                 .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
         doReturn(new EnrollmentOutcome(
@@ -237,7 +305,7 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void realOperatorConfirmationSuppliesConsentButPreservesHostOutboundPolicy() {
+    void explicitRealRegistrationSuppliesConsentButPreservesHostOutboundPolicy() {
         MongoSessionModeContext.set(MongoSessionMode.REAL);
         realProperties.setOutboundAllowed(true);
         when(operations.inspect(any())).thenReturn(new RegistryInspection(
@@ -248,6 +316,7 @@ class OperatorRegistryServiceTest {
                 REGISTRY_FINGERPRINT,
                 "public-key"));
         when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("MISSING", null))
                 .thenReturn(new NodeStatus("MISSING", null))
                 .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
         when(operations.initializeNodeIdentity(any())).thenReturn(new NodeIdentity(NODE_FINGERPRINT));
@@ -261,14 +330,22 @@ class OperatorRegistryServiceTest {
         var inspection = service.inspect(
                 new RegistryInspectRequestDto("https://registry.example", "prod:one"),
                 "operator");
-        var confirmed = service.confirm(inspection.inspectionToken(), "operator");
+        var configured = service.confirm(inspection.inspectionToken(), "operator");
 
-        assertThat(confirmed.lifecycle()).isEqualTo("REGISTERED");
+        assertThat(configured.lifecycle()).isEqualTo("CONFIGURED");
+        verify(operations, never()).initializeNodeIdentity(any());
+        verify(operations, never()).synchronize(any());
+
+        var registered = service.register(
+                registerRequest("https://registry.example", "prod:one"),
+                "operator");
+
+        assertThat(registered.lifecycle()).isEqualTo("REGISTERED");
         assertThat(realProperties.isOperatorRegistrationConfirmed()).isFalse();
 
         ArgumentCaptor<RegistryProperties> inspections =
                 ArgumentCaptor.forClass(RegistryProperties.class);
-        verify(operations, times(2)).inspect(inspections.capture());
+        verify(operations, times(3)).inspect(inspections.capture());
         assertThat(inspections.getAllValues())
                 .allSatisfy(properties -> {
                     assertThat(properties.isEnabled()).isTrue();
@@ -313,10 +390,26 @@ class OperatorRegistryServiceTest {
 
     @Test
     void disconnectPreservesDeploymentCodeAndDisablesRetry() {
-        demoProperties.setMode("sample");
+        configureLiveDemo();
+        when(operations.inspect(any())).thenReturn(registryInspection());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("MISSING", null))
+                .thenReturn(new NodeStatus("MISSING", null))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(operations.initializeNodeIdentity(any())).thenReturn(new NodeIdentity(NODE_FINGERPRINT));
+        when(operations.synchronize(any())).thenReturn(enrollmentOutcome());
         OperatorRegistryService service = service();
-        var inspection = service.inspect(new RegistryInspectRequestDto(null, null), "operator-demo-dev");
-        var registered = service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+        var inspection = service.inspect(
+                new RegistryInspectRequestDto(
+                        "http://registry:8080",
+                        "demo:local-registry"),
+                "operator-demo-dev");
+        var configured = service.confirm(inspection.inspectionToken(), "operator-demo-dev");
+        var registered = service.register(
+                registerRequest(
+                        configured.selection().baseUrl(),
+                        configured.selection().registryIdentity().registryScope()),
+                "operator-demo-dev");
 
         var disconnected = service.disconnect("operator-demo-dev");
 
@@ -330,31 +423,99 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void sameSignedRegistryCanBeReconfirmedAfterItsBaseUrlChanges() {
-        demoProperties.setMode("sample");
+    void sameSignedRegistryCanMoveToANewBaseUrlFromTheRegisterAction() {
+        configureLiveDemo();
+        when(operations.inspect(any())).thenAnswer(invocation -> {
+            RegistryProperties properties = invocation.getArgument(0);
+            return registryInspection(
+                    properties.getBaseUrl(),
+                    "demo:local-registry",
+                    REGISTRY_FINGERPRINT);
+        });
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("MISSING", null))
+                .thenReturn(new NodeStatus("MISSING", null))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(operations.initializeNodeIdentity(any())).thenReturn(new NodeIdentity(NODE_FINGERPRINT));
+        when(operations.synchronize(any())).thenReturn(enrollmentOutcome());
         OperatorRegistryService service = service();
         var firstInspection =
-                service.inspect(new RegistryInspectRequestDto(null, null), "operator-demo-dev");
+                service.inspect(new RegistryInspectRequestDto(
+                        "http://registry:8080",
+                        "demo:local-registry"), "operator-demo-dev");
         service.confirm(firstInspection.inspectionToken(), "operator-demo-dev");
 
-        var movedInspection = service.inspect(
-                new RegistryInspectRequestDto("https://moved-registry.example", SAMPLE_SCOPE),
+        var moved = service.register(
+                registerRequest("http://moved-registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
-        var moved = service.confirm(movedInspection.inspectionToken(), "operator-demo-dev");
 
         assertThat(moved.lifecycle()).isEqualTo("REGISTERED");
-        assertThat(moved.selection().baseUrl()).isEqualTo("https://moved-registry.example");
+        assertThat(moved.selection().baseUrl()).isEqualTo("http://moved-registry:8080");
+    }
+
+    @Test
+    void differentSignedRegistryRequiresCentralUnregisterBeforeSelectionChanges() {
+        configureLiveDemo();
+        String otherFingerprint =
+                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+        when(operations.inspect(any()))
+                .thenReturn(registryInspection())
+                .thenReturn(registryInspection())
+                .thenReturn(registryInspection(
+                        "http://another-registry:8080",
+                        "demo:another-registry",
+                        otherFingerprint));
+        when(operations.inspectNodeIdentity(any())).thenReturn(new NodeStatus("MISSING", null));
+        OperatorRegistryService service = service();
+        var firstInspection =
+                service.inspect(new RegistryInspectRequestDto(
+                        "http://registry:8080",
+                        "demo:local-registry"), "operator-demo-dev");
+        service.confirm(firstInspection.inspectionToken(), "operator-demo-dev");
+
+        assertThatThrownBy(() -> service.register(
+                registerRequest(
+                        "http://another-registry:8080",
+                        "demo:another-registry"),
+                "operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("EXPLICIT_UNREGISTER_REQUIRED");
+        assertThat(stored.get().getSelection().getRegistryScope())
+                .isEqualTo("demo:local-registry");
+    }
+
+    @Test
+    void explicitRegisterCanSelectATargetWithoutSeparateConfiguration() {
+        configureLiveDemo();
+        when(operations.inspect(any())).thenReturn(registryInspection());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("MISSING", null))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(operations.initializeNodeIdentity(any())).thenReturn(new NodeIdentity(NODE_FINGERPRINT));
+        when(operations.synchronize(any())).thenReturn(enrollmentOutcome());
+        OperatorRegistryService service = service();
+
+        var registered = service.register(
+                registerRequest("http://registry:8080", "demo:local-registry"),
+                "operator-demo-dev");
+
+        assertThat(registered.lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.selection().baseUrl()).isEqualTo("http://registry:8080");
+        assertThat(stored.get().getRegistrationRequest()).isNotNull();
     }
 
     @Test
     void optimisticConflictDoesNotOverwriteAnotherInstancesSelection() {
-        demoProperties.setMode("sample");
+        configureLiveDemo();
+        when(operations.inspect(any())).thenReturn(registryInspection());
         when(repository.save(any(OperatorRegistrySettings.class)))
                 .thenThrow(new OptimisticLockingFailureException("stale version"));
         OperatorRegistryService service = service();
 
         assertThatThrownBy(() -> service.inspect(
-                new RegistryInspectRequestDto(null, null),
+                new RegistryInspectRequestDto(
+                        "http://registry:8080",
+                        "demo:local-registry"),
                 "operator-demo-dev"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("409 CONFLICT");
@@ -379,28 +540,46 @@ class OperatorRegistryServiceTest {
                 realProperties,
                 demoProperties,
                 operations,
+                endpointService,
                 new OperatorRegistryMapper(),
                 Clock.fixed(NOW, ZoneOffset.UTC),
                 new SecureRandom());
     }
 
     private void configureLiveDemo() {
-        demoProperties.setMode("live");
-        demoProperties.setCandidateBaseUrl("http://registry:8080");
-        demoProperties.setCandidateScope("demo:local-registry");
         demoProperties.setAllowInsecureHttp(true);
         demoProperties.setInsecureHttpAllowedHosts("registry");
     }
 
     private RegistryInspection registryInspection() {
-        return new RegistryInspection(
-                "http://registry:8080" + RegistryProtocol.REGISTRY_IDENTITY_PATH,
-                RegistryProtocol.PROTOCOL_VERSION,
+        return registryInspection(
+                "http://registry:8080",
                 "demo:local-registry",
+                REGISTRY_FINGERPRINT);
+    }
+
+    private RegistryInspection registryInspection(
+            String baseUrl,
+            String registryScope,
+            String registryFingerprint) {
+        return new RegistryInspection(
+                baseUrl + RegistryProtocol.REGISTRY_IDENTITY_PATH,
+                RegistryProtocol.PROTOCOL_VERSION,
+                registryScope,
                 "rkey_test",
-                REGISTRY_FINGERPRINT,
+                registryFingerprint,
                 "public-key");
     }
 
-    private static final String SAMPLE_SCOPE = "demo:sample";
+    private EnrollmentOutcome enrollmentOutcome() {
+        return new EnrollmentOutcome(
+                "dep_0123456789abcdef0123456789abcdef",
+                "batch_0123456789abcdef0123456789abcdef",
+                NOW.plusSeconds(1).toString(),
+                1L);
+    }
+
+    private RegistryRegisterRequestDto registerRequest(String baseUrl, String registryScope) {
+        return new RegistryRegisterRequestDto(baseUrl, registryScope);
+    }
 }

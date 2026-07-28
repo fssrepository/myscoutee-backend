@@ -1,0 +1,217 @@
+package com.raxim.myscoutee.profile.service.operator;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.raxim.myscoutee.common.config.JsonConfig;
+import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
+class OperatorConfigurationMapperTest {
+    private final ObjectMapper objectMapper = new JsonConfig().objectMapper();
+
+    @Test
+    void themeWhitelistContainsExactlyTheTenDeploymentPresets() {
+        assertThat(DeploymentThemePreset.values())
+                .extracting(Enum::name)
+                .containsExactly(
+                        "AURORA",
+                        "OCEAN",
+                        "FOREST",
+                        "SUNSET",
+                        "VIOLET",
+                        "ROSE",
+                        "AMBER",
+                        "SLATE",
+                        "AQUARIUS",
+                        "MONOCHROME");
+    }
+
+    @Test
+    void configurationUsesOneVersionedDeploymentSingletonCollection() throws Exception {
+        Document document = DeploymentConfiguration.class.getAnnotation(Document.class);
+        Field version = DeploymentConfiguration.class.getDeclaredField("version");
+
+        assertThat(document.collection()).isEqualTo("deploymentConfigurations");
+        assertThat(version.getAnnotation(Version.class)).isNotNull();
+        assertThat(new DeploymentConfiguration().getId()).isNull();
+    }
+
+    @Test
+    void configurationDefaultsLiveOnlyInIdenticalMongoSeeds() throws Exception {
+        DeploymentConfiguration empty = new DeploymentConfiguration();
+        assertThat(empty.getSchemaVersion()).isNull();
+        assertThat(empty.getBranding()).isNull();
+        assertThat(empty.getPayment()).isNull();
+        assertThat(empty.getFirebase()).isNull();
+
+        Path seedRoot = locateSeedRoot();
+        String expected = null;
+        for (String database : List.of("myscoutee_db", "demo_db", "e2e_db")) {
+            String seedJson = Files.readString(
+                    seedRoot.resolve(database)
+                            .resolve("deploymentConfigurations.json"));
+            if (expected == null) {
+                expected = seedJson;
+            } else {
+                assertThat(seedJson)
+                        .as(database + " deployment configuration seed")
+                        .isEqualTo(expected);
+            }
+            JsonNode seed = objectMapper.readTree(seedJson);
+            assertThat(seed.size()).isEqualTo(1);
+            JsonNode singleton = seed.get(0);
+            assertThat(singleton.path("_id").asText())
+                    .isEqualTo(DeploymentConfiguration.SINGLETON_ID);
+            assertThat(singleton.path("schemaVersion").asInt())
+                    .isEqualTo(DeploymentConfiguration.SCHEMA_VERSION);
+            assertThat(singleton.path("version").asLong()).isZero();
+            assertThat(singleton.path("branding").path("themePreset").asText())
+                    .isEqualTo(DeploymentThemePreset.AURORA.name());
+        }
+    }
+
+    @Test
+    void publicBrandingJsonContainsExactlyTheFivePublicFields() throws Exception {
+        DeploymentConfiguration configuration = seededConfiguration();
+        configuration.getBranding().setLogoUrl(
+                "/media/public?key=images%2Foperator%2Flogo%2Fmedium");
+        OperatorConfigurationMapper mapper = new OperatorConfigurationMapper();
+
+        var json = objectMapper.readTree(
+                objectMapper.writeValueAsString(mapper.toBranding(configuration)));
+
+        assertThat(json.propertyNames())
+                .containsExactlyInAnyOrder(
+                        "productName",
+                        "homeLabel",
+                        "logoUrl",
+                        "themePreset",
+                        "revision");
+    }
+
+    @Test
+    void operatorMappingReportsOnlySecretPresenceAndSafeMask() throws Exception {
+        DeploymentConfiguration configuration = seededConfiguration();
+        DeploymentConfiguration.EncryptedSecret encrypted =
+                new DeploymentConfiguration.EncryptedSecret();
+        encrypted.setAlgorithm("AES-256-GCM");
+        encrypted.setKeyId("sha256:key");
+        encrypted.setNonce("nonce");
+        encrypted.setCiphertext("ciphertext");
+        configuration.getPayment().setProviderId("stripe");
+        configuration.getPayment().setCredentialEnvelope(encrypted);
+        configuration.getPayment().setCredentialMask("••••1234");
+        configuration.getFirebase().setAuthenticationCredentialEnvelope(encrypted);
+        configuration.getFirebase().setMessagingCredentialEnvelope(encrypted);
+
+        var dto = new OperatorConfigurationMapper().toOperatorConfiguration(
+                configuration,
+                List.of(new PaymentProviderDto("stripe", "Stripe")),
+                null);
+        String json = objectMapper.writeValueAsString(dto);
+
+        assertThat(dto.payment().credentialConfigured()).isTrue();
+        assertThat(dto.payment().credentialMask()).isEqualTo("••••1234");
+        assertThat(dto.firebase().authenticationCredentialConfigured()).isTrue();
+        assertThat(dto.firebase().messagingCredentialConfigured()).isTrue();
+        assertThat(json)
+                .doesNotContain("ciphertext")
+                .doesNotContain("nonce")
+                .doesNotContain("keyId")
+                .doesNotContain("\"authenticationCredential\":")
+                .doesNotContain("\"messagingCredential\":");
+    }
+
+    @Test
+    void operatorJsonKeepsTheExactNullableStatusFields() throws Exception {
+        var dto = new OperatorConfigurationMapper().toOperatorConfiguration(
+                seededConfiguration(),
+                List.of(),
+                null);
+        var json = objectMapper.readTree(objectMapper.writeValueAsString(dto));
+
+        assertThat(json.propertyNames()).containsExactlyInAnyOrder(
+                "capability",
+                "unavailableReason",
+                "branding",
+                "payment",
+                "firebase",
+                "updatedAt");
+        assertThat(json.get("unavailableReason").isNull()).isTrue();
+        assertThat(json.get("updatedAt").isNull()).isTrue();
+        assertThat(json.get("payment").propertyNames()).containsExactlyInAnyOrder(
+                "availableProviders",
+                "providerId",
+                "credentialConfigured",
+                "credentialMask");
+        assertThat(json.get("payment").get("providerId").isNull()).isTrue();
+        assertThat(json.get("payment").get("credentialMask").isNull()).isTrue();
+    }
+
+    @Test
+    void requestSecretFieldsAreWriteOnlyEvenIfRequestObjectsAreSerialized() throws Exception {
+        PaymentUpdateDto payment = new PaymentUpdateDto("stripe", "payment-secret");
+        FirebaseUpdateDto firebase =
+                new FirebaseUpdateDto("project", "auth-secret", "message-secret");
+
+        assertThat(objectMapper.writeValueAsString(payment))
+                .doesNotContain("payment-secret")
+                .doesNotContain("credential");
+        assertThat(objectMapper.writeValueAsString(firebase))
+                .doesNotContain("auth-secret")
+                .doesNotContain("message-secret")
+                .doesNotContain("authenticationCredential")
+                .doesNotContain("messagingCredential");
+    }
+
+    private DeploymentConfiguration seededConfiguration() {
+        DeploymentConfiguration configuration = new DeploymentConfiguration();
+        configuration.setId(DeploymentConfiguration.SINGLETON_ID);
+        configuration.setVersion(0L);
+        configuration.setSchemaVersion(DeploymentConfiguration.SCHEMA_VERSION);
+        DeploymentConfiguration.Branding branding =
+                new DeploymentConfiguration.Branding();
+        branding.setProductName("MyScoutee");
+        branding.setHomeLabel("Your preferences come first");
+        branding.setLogoUrl("assets/logo/heart.webp");
+        branding.setThemePreset(DeploymentThemePreset.AURORA.name());
+        branding.setRevision(0L);
+        configuration.setBranding(branding);
+        configuration.setPayment(new DeploymentConfiguration.Payment());
+        DeploymentConfiguration.Firebase firebase =
+                new DeploymentConfiguration.Firebase();
+        firebase.setProjectId("");
+        configuration.setFirebase(firebase);
+        return configuration;
+    }
+
+    private Path locateSeedRoot() {
+        Path current = Path.of("").toAbsolutePath().normalize();
+        for (Path candidate = current; candidate != null; candidate = candidate.getParent()) {
+            Path fromRepository = candidate.resolve("server/docker/conf/mongodb");
+            if (Files.isDirectory(fromRepository)) {
+                return fromRepository;
+            }
+            Path fromServer = candidate.resolve("docker/conf/mongodb");
+            if (Files.isDirectory(fromServer)) {
+                return fromServer;
+            }
+        }
+        throw new IllegalStateException("Mongo seed root could not be located.");
+    }
+}

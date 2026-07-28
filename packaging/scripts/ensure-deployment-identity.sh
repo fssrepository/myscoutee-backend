@@ -6,6 +6,8 @@ KEY_DIR="${MYSCOUTEE_REGISTRY_KEY_DIR:-/etc/myscoutee/registry}"
 STATE_DIR="${MYSCOUTEE_REGISTRY_STATE_DIR:-/var/lib/myscoutee/registry}"
 PRIVATE_KEY="${KEY_DIR}/deployment-private-key.pem"
 PUBLIC_KEY="${KEY_DIR}/deployment-public-key.der"
+API_UID="${MYSCOUTEE_API_UID:-10001}"
+API_GID="${MYSCOUTEE_API_GID:-10001}"
 
 fail() {
   echo "Deployment identity error: $1" >&2
@@ -91,7 +93,9 @@ chmod 0700 "${KEY_DIR}" "${STATE_DIR}" "${STATE_DIR}/receipts"
 chmod 0600 "${PRIVATE_KEY}"
 chmod 0644 "${PUBLIC_KEY}"
 if [[ "${EUID}" -eq 0 ]]; then
-  chown root:root "${KEY_DIR}" "${STATE_DIR}" "${STATE_DIR}/receipts" "${PRIVATE_KEY}" "${PUBLIC_KEY}"
+  chown "${API_UID}:${API_GID}" \
+    "${KEY_DIR}" "${STATE_DIR}" "${STATE_DIR}/receipts" \
+    "${PRIVATE_KEY}" "${PUBLIC_KEY}"
 fi
 
 # Make first-install identity publication durable before the installer reports

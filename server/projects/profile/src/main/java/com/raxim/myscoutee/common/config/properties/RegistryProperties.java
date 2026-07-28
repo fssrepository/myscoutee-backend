@@ -15,6 +15,8 @@ public class RegistryProperties {
     private Path privateKeyPath = Path.of("/etc/myscoutee/registry/deployment-private-key.pem");
     private Path publicKeyPath = Path.of("/etc/myscoutee/registry/deployment-public-key.der");
     private Path stateDir = Path.of("/var/lib/myscoutee/registry");
+    private Path packageSigningPublicKeyPath =
+            Path.of("/etc/myscoutee/update/release-public-key.pem");
     private Duration connectTimeout = Duration.ofSeconds(5);
     private Duration requestTimeout = Duration.ofSeconds(20);
     private Duration retryDelay = Duration.ofMinutes(1);
@@ -95,6 +97,16 @@ public class RegistryProperties {
 
     public Path getStateDir() {
         return stateDir;
+    }
+
+    public Path getPackageSigningPublicKeyPath() {
+        return packageSigningPublicKeyPath;
+    }
+
+    public void setPackageSigningPublicKeyPath(Path packageSigningPublicKeyPath) {
+        if (packageSigningPublicKeyPath != null) {
+            this.packageSigningPublicKeyPath = packageSigningPublicKeyPath;
+        }
     }
 
     public void setStateDir(Path stateDir) {

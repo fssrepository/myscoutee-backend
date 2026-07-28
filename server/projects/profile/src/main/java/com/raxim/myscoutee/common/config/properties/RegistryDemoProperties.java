@@ -1,56 +1,23 @@
 package com.raxim.myscoutee.common.config.properties;
 
 import java.nio.file.Path;
-import java.util.Locale;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Isolated registry configuration for the Explore/demo operator workspace.
+ * Isolated registry configuration for HTTP demo operator sessions.
  *
- * <p>The default is deliberately {@code sample}: production Explore must not
- * contact a registry or touch deployment identity files. Development may opt
- * into {@code live} and must provide its own endpoint, key paths, state path,
- * and exact insecure-HTTP allowlist.</p>
+ * <p>HTTP sessions use the real signed registry protocol with separate key and
+ * state paths. The browser-only Explore workspace is implemented by the
+ * frontend local data source and does not pass through this configuration.</p>
  */
 @ConfigurationProperties("registry.demo")
 public class RegistryDemoProperties {
-    private String mode = "sample";
-    private String candidateBaseUrl = "";
-    private String candidateScope = "";
     private Path privateKeyPath = Path.of("/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem");
     private Path publicKeyPath = Path.of("/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der");
     private Path stateDir = Path.of("/var/lib/myscoutee/registry-demo/state");
     private boolean allowInsecureHttp;
     private String insecureHttpAllowedHosts = "";
-
-    public String getMode() {
-        return mode;
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode == null ? "sample" : mode.trim().toLowerCase(Locale.ROOT);
-    }
-
-    public boolean isLive() {
-        return "live".equals(mode);
-    }
-
-    public String getCandidateBaseUrl() {
-        return candidateBaseUrl;
-    }
-
-    public void setCandidateBaseUrl(String candidateBaseUrl) {
-        this.candidateBaseUrl = candidateBaseUrl == null ? "" : candidateBaseUrl.trim();
-    }
-
-    public String getCandidateScope() {
-        return candidateScope;
-    }
-
-    public void setCandidateScope(String candidateScope) {
-        this.candidateScope = candidateScope == null ? "" : candidateScope.trim();
-    }
 
     public Path getPrivateKeyPath() {
         return privateKeyPath;

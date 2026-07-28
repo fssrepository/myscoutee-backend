@@ -12,6 +12,10 @@ read_version() {
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
 VERSION="${VERSION:-1.0.0}"
+if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+  echo "MYSCOUTEE_VERSION must be a plain SemVer core such as 1.0.0." >&2
+  exit 1
+fi
 
 export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"

@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.registry;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,6 +12,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -22,11 +24,25 @@ public final class RegistryProtocol {
     public static final String REGISTRY_IDENTITY_PATH = "/v1/registry/identity";
     public static final String REGISTRATION_PATH = "/v1/deployments/register";
     public static final String MAU_BATCH_PATH = "/v1/mau/batches";
+    public static final String OPERATOR_ACTION_PATH = "/v1/operator/actions";
+    public static final String LEADERBOARD_PATH = "/v1/leaderboard";
+    public static final String ANNOUNCEMENT_PATH = "/v1/announcements";
     public static final String KEY_ALGORITHM = "Ed25519";
     public static final String INSTALLATION_KIND = "installation-test";
     public static final String INSTALLATION_RULESET = "installation-test-v1";
     public static final long INSTALLATION_MAU_COUNT = 0L;
     public static final String INSTALLATION_ENTRY_TYPE = "INSTALLATION_TEST_BATCH_ACCEPTED";
+    public static final String LEADERBOARD_FORMULA_VERSION = "six-complete-month-average-v1";
+    public static final String LEADERBOARD_RULESET_VERSION = "qmau-v1";
+    public static final String UPDATE_MANIFEST_VERSION = "1";
+    public static final String OPERATOR_ACTION_CLAIM = "claim";
+    public static final String OPERATOR_ACTION_WITHDRAW_CLAIM = "withdraw-claim";
+    public static final String OPERATOR_ACTION_ISSUE_CLIENT_TOKEN = "issue-client-token";
+    public static final String OPERATOR_ACTION_REVOKE_CLIENT_TOKEN = "revoke-client-token";
+    public static final String OPERATOR_ACTION_REDEEM_CLIENT_TOKEN = "redeem-client-token";
+    public static final String OPERATOR_ACTION_REVOKE_GROUP_LINK = "revoke-group-link";
+    public static final String OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT = "deactivate-deployment";
+    public static final String OPERATOR_ACTION_REACTIVATE_DEPLOYMENT = "reactivate-deployment";
     public static final String ZERO_HASH =
             "sha256:0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -38,6 +54,16 @@ public final class RegistryProtocol {
     private static final Pattern DEPLOYMENT_ID_PATTERN = Pattern.compile("dep_[0-9a-f]{32}");
     private static final Pattern BATCH_ID_PATTERN = Pattern.compile("batch_[0-9a-f]{32}");
     private static final Pattern REGISTRY_KEY_ID_PATTERN = Pattern.compile("rkey_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_ACTION_ID_PATTERN = Pattern.compile("opa_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_GROUP_ID_PATTERN = Pattern.compile("opg_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_LINK_ID_PATTERN = Pattern.compile("opl_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_TOKEN_ID_PATTERN = Pattern.compile("opt_[0-9a-f]{32}");
+    private static final Pattern SNAPSHOT_ID_PATTERN = Pattern.compile("snap_[0-9a-f]{32}");
+    private static final Pattern ANNOUNCEMENT_ID_PATTERN = Pattern.compile("ann_[0-9a-f]{32}");
+    private static final Pattern ANNOUNCEMENT_SNAPSHOT_ID_PATTERN =
+            Pattern.compile("annsnap_[0-9a-f]{32}");
+    private static final Pattern PACKAGE_SIGNING_KEY_ID_PATTERN =
+            Pattern.compile("pkey_[0-9a-f]{32}");
 
     private RegistryProtocol() {
     }
@@ -173,6 +199,247 @@ public final class RegistryProtocol {
                 receipt.registryKeyId());
     }
 
+    public static byte[] operatorActionPayload(
+            String action,
+            String operatorName,
+            String operatorAvatarUrl,
+            String clientTokenHash,
+            long tokenTtlSeconds,
+            String tokenId,
+            String linkId) {
+        return canonicalAllowEmpty(
+                "myscoutee-registry-operator-action-payload-v1",
+                action,
+                operatorName,
+                operatorAvatarUrl,
+                clientTokenHash,
+                Long.toString(tokenTtlSeconds),
+                tokenId,
+                linkId);
+    }
+
+    public static byte[] operatorActionReceipt(OperatorActionReceipt receipt) {
+        Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-operator-action-receipt-v1",
+                requiredLong(receipt.auditIndex(), "audit_index"),
+                receipt.auditHash(),
+                receipt.previousAuditHash(),
+                receipt.actionId(),
+                receipt.deploymentId(),
+                receipt.subjectDeploymentId(),
+                receipt.relatedDeploymentId(),
+                receipt.action(),
+                receipt.acceptedAt(),
+                receipt.claimState(),
+                receipt.groupId(),
+                receipt.linkId(),
+                receipt.tokenId(),
+                receipt.clientTokenHash(),
+                receipt.tokenExpiresAt(),
+                receipt.registryScope(),
+                receipt.registryKeyId());
+    }
+
+    public static byte[] operatorAudit(
+            OperatorActionReceipt receipt,
+            String payloadHash) {
+        Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-operator-audit-v1",
+                requiredLong(receipt.auditIndex(), "audit_index"),
+                receipt.actionId(),
+                receipt.deploymentId(),
+                receipt.subjectDeploymentId(),
+                receipt.relatedDeploymentId(),
+                receipt.action(),
+                payloadHash,
+                receipt.acceptedAt(),
+                receipt.claimState(),
+                receipt.groupId(),
+                receipt.linkId(),
+                receipt.tokenId(),
+                receipt.clientTokenHash(),
+                receipt.tokenExpiresAt(),
+                receipt.previousAuditHash());
+    }
+
+    public static byte[] leaderboardSnapshotHash(LeaderboardSnapshot snapshot) {
+        Objects.requireNonNull(snapshot, "Leaderboard snapshot must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-leaderboard-snapshot-hash-v1",
+                snapshot.snapshotId(),
+                snapshot.formulaVersion(),
+                snapshot.rulesetVersion(),
+                snapshot.throughPeriod(),
+                requiredLong(snapshot.throughLedgerIndex(), "through_ledger_index"),
+                requiredLong(snapshot.throughAuditIndex(), "through_audit_index"),
+                snapshot.ledgerHeadHash(),
+                snapshot.auditHeadHash(),
+                snapshot.founderUnitsNumerator(),
+                snapshot.founderUnitsDenominator(),
+                snapshot.founderShareNumerator(),
+                snapshot.founderShareDenominator(),
+                snapshot.measuredWeightNumerator(),
+                snapshot.measuredWeightDenominator(),
+                snapshot.claimedWeightNumerator(),
+                snapshot.claimedWeightDenominator(),
+                snapshot.createdAt(),
+                snapshot.registryScope(),
+                snapshot.registryKeyId());
+    }
+
+    public static byte[] leaderboardSnapshotReceipt(LeaderboardSnapshot snapshot) {
+        Objects.requireNonNull(snapshot, "Leaderboard snapshot must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-leaderboard-snapshot-receipt-v1",
+                snapshot.snapshotHash(),
+                snapshot.registryKeyId());
+    }
+
+    public static byte[] leaderboardCursor(byte[] cursorPayload) {
+        byte[] prefix = "myscoutee-registry-leaderboard-cursor-v1\n"
+                .getBytes(StandardCharsets.UTF_8);
+        byte[] payload = Objects.requireNonNull(cursorPayload, "Leaderboard cursor payload must not be null.");
+        byte[] message = new byte[prefix.length + payload.length];
+        System.arraycopy(prefix, 0, message, 0, prefix.length);
+        System.arraycopy(payload, 0, message, prefix.length, payload.length);
+        return message;
+    }
+
+    public static byte[] announcementContent(
+            String titleKey,
+            String bodyKey,
+            List<AnnouncementLocalization> localizations) {
+        List<AnnouncementLocalization> safeLocalizations =
+                localizations == null ? List.of() : localizations;
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-announcement-content-v1");
+        values.add(nullToEmpty(titleKey));
+        values.add(nullToEmpty(bodyKey));
+        values.add(Integer.toString(safeLocalizations.size()));
+        for (AnnouncementLocalization localization : safeLocalizations) {
+            Objects.requireNonNull(localization, "Announcement localization must not be null.");
+            values.add(localization.locale());
+            values.add(sha256(nullToEmpty(localization.title()).getBytes(StandardCharsets.UTF_8)));
+            values.add(sha256(nullToEmpty(localization.body()).getBytes(StandardCharsets.UTF_8)));
+        }
+        return canonicalAllowEmpty(values.toArray(String[]::new));
+    }
+
+    public static byte[] announcementLinks(List<AnnouncementLink> links) {
+        List<AnnouncementLink> safeLinks = links == null ? List.of() : links;
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-announcement-links-v1");
+        values.add(Integer.toString(safeLinks.size()));
+        for (AnnouncementLink link : safeLinks) {
+            Objects.requireNonNull(link, "Announcement link must not be null.");
+            values.add(link.relation());
+            values.add(link.url());
+        }
+        return canonicalAllowEmpty(values.toArray(String[]::new));
+    }
+
+    public static byte[] updateManifest(UpdateManifest manifest) {
+        Objects.requireNonNull(manifest, "Update manifest must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-update-manifest-v1",
+                manifest.manifestVersion(),
+                manifest.releaseVersion(),
+                manifest.channel(),
+                manifest.publishedAt(),
+                manifest.minimumCompatibleVersion(),
+                manifest.maximumCompatibleVersion(),
+                manifest.artifactUrl(),
+                requiredLong(manifest.artifactSizeBytes(), "artifact_size_bytes"),
+                manifest.artifactSha256(),
+                manifest.packageSigningKeyId(),
+                manifest.packageSignature(),
+                manifest.releaseNotesUrl(),
+                Boolean.toString(Boolean.TRUE.equals(manifest.backupRequired())),
+                requiredLong(manifest.expectedDowntimeSeconds(), "expected_downtime_seconds"),
+                manifest.status(),
+                manifest.supersedesVersion(),
+                manifest.supersededByVersion(),
+                manifest.revocationReason());
+    }
+
+    public static byte[] releasePackage(UpdateManifest manifest) {
+        Objects.requireNonNull(manifest, "Update manifest must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-release-package-v1",
+                manifest.releaseVersion(),
+                manifest.channel(),
+                requiredLong(manifest.artifactSizeBytes(), "artifact_size_bytes"),
+                manifest.artifactSha256());
+    }
+
+    public static byte[] announcementEntry(AnnouncementEntry entry) {
+        Objects.requireNonNull(entry, "Announcement entry must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-announcement-entry-v1",
+                entry.protocolVersion(),
+                entry.registryScope(),
+                requiredLong(entry.sequence(), "announcement sequence"),
+                entry.announcementId(),
+                entry.publicationId(),
+                entry.kind(),
+                entry.severity(),
+                entry.publishedAt(),
+                entry.expiresAt(),
+                entry.contentHash(),
+                entry.linksHash(),
+                entry.updateManifestHash(),
+                entry.previousAnnouncementHash(),
+                entry.acceptedAt(),
+                entry.registryKeyId());
+    }
+
+    public static byte[] announcementReceipt(AnnouncementEntry entry) {
+        Objects.requireNonNull(entry, "Announcement entry must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-announcement-receipt-v1",
+                entry.announcementHash(),
+                entry.registryScope(),
+                entry.registryKeyId());
+    }
+
+    public static byte[] announcementSnapshotHash(AnnouncementSnapshot snapshot) {
+        Objects.requireNonNull(snapshot, "Announcement snapshot must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-announcement-snapshot-hash-v1",
+                snapshot.snapshotId(),
+                snapshot.asOf(),
+                requiredLong(snapshot.throughSequence(), "through_sequence"),
+                snapshot.announcementHeadHash(),
+                snapshot.kind(),
+                snapshot.severity(),
+                snapshot.channel(),
+                Boolean.toString(Boolean.TRUE.equals(snapshot.includeExpired())),
+                snapshot.createdAt(),
+                snapshot.registryScope(),
+                snapshot.registryKeyId());
+    }
+
+    public static byte[] announcementSnapshotReceipt(AnnouncementSnapshot snapshot) {
+        Objects.requireNonNull(snapshot, "Announcement snapshot must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-announcement-snapshot-receipt-v1",
+                snapshot.snapshotHash(),
+                snapshot.registryScope(),
+                snapshot.registryKeyId());
+    }
+
+    public static byte[] announcementCursor(byte[] cursorPayload) {
+        byte[] prefix = "myscoutee-registry-announcement-cursor-v1\n"
+                .getBytes(StandardCharsets.UTF_8);
+        byte[] payload = Objects.requireNonNull(cursorPayload, "Announcement cursor payload must not be null.");
+        byte[] message = new byte[prefix.length + payload.length];
+        System.arraycopy(prefix, 0, message, 0, prefix.length);
+        System.arraycopy(payload, 0, message, prefix.length, payload.length);
+        return message;
+    }
+
     public static byte[] checkpoint(CheckpointResponse checkpoint) {
         Objects.requireNonNull(checkpoint, "Checkpoint must not be null.");
         return canonical(
@@ -191,6 +458,19 @@ public final class RegistryProtocol {
         StringBuilder canonical = new StringBuilder();
         for (int index = 0; index < values.length; index++) {
             String value = requireCanonical(values[index], "canonical field " + index);
+            canonical.append(value).append('\n');
+        }
+        return canonical.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static byte[] canonicalAllowEmpty(String... values) {
+        StringBuilder canonical = new StringBuilder();
+        for (int index = 0; index < values.length; index++) {
+            String value = values[index] == null ? "" : values[index];
+            if (value.indexOf('\r') >= 0 || value.indexOf('\n') >= 0) {
+                throw new IllegalArgumentException(
+                        "canonical field " + index + " must not contain CR or LF.");
+            }
             canonical.append(value).append('\n');
         }
         return canonical.toString().getBytes(StandardCharsets.UTF_8);
@@ -301,6 +581,214 @@ public final class RegistryProtocol {
         return value;
     }
 
+    public static String requireOperatorActionId(String value) {
+        return requirePattern(value, "action_id", OPERATOR_ACTION_ID_PATTERN);
+    }
+
+    public static String requireOperatorGroupId(String value) {
+        return requirePattern(value, "group_id", OPERATOR_GROUP_ID_PATTERN);
+    }
+
+    public static String requireOperatorLinkId(String value) {
+        return requirePattern(value, "link_id", OPERATOR_LINK_ID_PATTERN);
+    }
+
+    public static String requireOperatorTokenId(String value) {
+        return requirePattern(value, "token_id", OPERATOR_TOKEN_ID_PATTERN);
+    }
+
+    public static String requireSnapshotId(String value) {
+        return requirePattern(value, "snapshot_id", SNAPSHOT_ID_PATTERN);
+    }
+
+    public static String requireAnnouncementId(String value) {
+        return requirePattern(value, "announcement_id", ANNOUNCEMENT_ID_PATTERN);
+    }
+
+    public static String requireAnnouncementSnapshotId(String value) {
+        return requirePattern(
+                value,
+                "announcement snapshot_id",
+                ANNOUNCEMENT_SNAPSHOT_ID_PATTERN);
+    }
+
+    public static String requirePackageSigningKeyId(String value) {
+        return requirePattern(
+                value,
+                "package_signing_key_id",
+                PACKAGE_SIGNING_KEY_ID_PATTERN);
+    }
+
+    public static String packageSigningKeyId(byte[] publicKeyDer) {
+        String fingerprint = publicKeyFingerprint(publicKeyDer);
+        return "pkey_" + fingerprint.substring(
+                "sha256:".length(),
+                "sha256:".length() + 32);
+    }
+
+    public static SemanticVersion requireSemanticVersion(
+            String value,
+            String fieldName) {
+        String supplied = Objects.requireNonNull(
+                value,
+                fieldName + " must not be null.");
+        if (supplied.length() < 5
+                || supplied.length() > 128
+                || supplied.indexOf('\n') >= 0
+                || supplied.indexOf('\r') >= 0) {
+            throw invalidSemanticVersion(fieldName);
+        }
+        String[] buildParts = supplied.split("\\+", -1);
+        if (buildParts.length > 2
+                || (buildParts.length == 2
+                        && !validSemanticIdentifiers(buildParts[1], false))) {
+            throw invalidSemanticVersion(fieldName);
+        }
+        String[] prereleaseParts = buildParts[0].split("-", 2);
+        if (prereleaseParts.length == 2
+                && !validSemanticIdentifiers(prereleaseParts[1], true)) {
+            throw invalidSemanticVersion(fieldName);
+        }
+        String[] core = prereleaseParts[0].split("\\.", -1);
+        if (core.length != 3) {
+            throw invalidSemanticVersion(fieldName);
+        }
+        BigInteger[] numbers = new BigInteger[3];
+        for (int index = 0; index < core.length; index++) {
+            String part = core[index];
+            if (part.isEmpty()
+                    || (part.length() > 1 && part.charAt(0) == '0')
+                    || !allAsciiDigits(part)) {
+                throw invalidSemanticVersion(fieldName);
+            }
+            numbers[index] = new BigInteger(part);
+            if (numbers[index].bitLength() > 64) {
+                throw invalidSemanticVersion(fieldName);
+            }
+        }
+        return new SemanticVersion(
+                numbers[0],
+                numbers[1],
+                numbers[2],
+                prereleaseParts.length == 2
+                        ? List.of(prereleaseParts[1].split("\\.", -1))
+                        : List.of());
+    }
+
+    public static int compareSemanticVersions(
+            SemanticVersion left,
+            SemanticVersion right) {
+        Objects.requireNonNull(left, "Left semantic version must not be null.");
+        Objects.requireNonNull(right, "Right semantic version must not be null.");
+        int comparison = left.major().compareTo(right.major());
+        if (comparison == 0) {
+            comparison = left.minor().compareTo(right.minor());
+        }
+        if (comparison == 0) {
+            comparison = left.patch().compareTo(right.patch());
+        }
+        if (comparison != 0) {
+            return comparison;
+        }
+        if (left.prerelease().isEmpty() && right.prerelease().isEmpty()) {
+            return 0;
+        }
+        if (left.prerelease().isEmpty()) {
+            return 1;
+        }
+        if (right.prerelease().isEmpty()) {
+            return -1;
+        }
+        int length = Math.min(
+                left.prerelease().size(),
+                right.prerelease().size());
+        for (int index = 0; index < length; index++) {
+            String leftPart = left.prerelease().get(index);
+            String rightPart = right.prerelease().get(index);
+            if (leftPart.equals(rightPart)) {
+                continue;
+            }
+            boolean leftNumeric = allAsciiDigits(leftPart);
+            boolean rightNumeric = allAsciiDigits(rightPart);
+            if (leftNumeric && rightNumeric) {
+                int numeric = new BigInteger(leftPart)
+                        .compareTo(new BigInteger(rightPart));
+                if (numeric != 0) {
+                    return numeric;
+                }
+            } else if (leftNumeric) {
+                return -1;
+            } else if (rightNumeric) {
+                return 1;
+            } else {
+                return leftPart.compareTo(rightPart);
+            }
+        }
+        return Integer.compare(
+                left.prerelease().size(),
+                right.prerelease().size());
+    }
+
+    private static boolean validSemanticIdentifiers(
+            String value,
+            boolean rejectNumericLeadingZero) {
+        if (value.isEmpty()) {
+            return false;
+        }
+        for (String identifier : value.split("\\.", -1)) {
+            if (identifier.isEmpty()) {
+                return false;
+            }
+            boolean numeric = true;
+            for (int index = 0; index < identifier.length(); index++) {
+                char character = identifier.charAt(index);
+                if (!((character >= '0' && character <= '9')
+                        || (character >= 'A' && character <= 'Z')
+                        || (character >= 'a' && character <= 'z')
+                        || character == '-')) {
+                    return false;
+                }
+                if (character < '0' || character > '9') {
+                    numeric = false;
+                }
+            }
+            if (rejectNumericLeadingZero
+                    && numeric
+                    && identifier.length() > 1
+                    && identifier.charAt(0) == '0') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean allAsciiDigits(String value) {
+        if (value.isEmpty()) {
+            return false;
+        }
+        for (int index = 0; index < value.length(); index++) {
+            char character = value.charAt(index);
+            if (character < '0' || character > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static IllegalArgumentException invalidSemanticVersion(
+            String fieldName) {
+        return new IllegalArgumentException(
+                fieldName + " must be a canonical semantic version.");
+    }
+
+    private static String requirePattern(String value, String fieldName, Pattern pattern) {
+        requireCanonical(value, fieldName);
+        if (!pattern.matcher(value).matches()) {
+            throw new IllegalArgumentException(fieldName + " is malformed.");
+        }
+        return value;
+    }
+
     public static Instant requireUtcTimestamp(String value, String fieldName) {
         requireCanonical(value, fieldName);
         if (!value.endsWith("Z")) {
@@ -353,6 +841,10 @@ public final class RegistryProtocol {
             throw new IllegalArgumentException(fieldName + " must not be null.");
         }
         return Long.toString(value);
+    }
+
+    private static String nullToEmpty(String value) {
+        return value == null ? "" : value;
     }
 
     public record RegistryIdentityResponse(
@@ -443,5 +935,229 @@ public final class RegistryProtocol {
             @JsonProperty("registry_key_id") String registryKeyId,
             @JsonProperty("registry_public_key") String registryPublicKey,
             String signature) {
+    }
+
+    public record OperatorActionRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            String action,
+            @JsonProperty("operator_name") String operatorName,
+            @JsonProperty("operator_avatar_url") String operatorAvatarUrl,
+            @JsonProperty("client_token") String clientToken,
+            @JsonProperty("token_ttl_seconds") Long tokenTtlSeconds,
+            @JsonProperty("token_id") String tokenId,
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record OperatorActionReceipt(
+            @JsonProperty("audit_index") Long auditIndex,
+            @JsonProperty("audit_hash") String auditHash,
+            @JsonProperty("previous_audit_hash") String previousAuditHash,
+            @JsonProperty("action_id") String actionId,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("subject_deployment_id") String subjectDeploymentId,
+            @JsonProperty("related_deployment_id") String relatedDeploymentId,
+            String action,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("claim_state") String claimState,
+            @JsonProperty("group_id") String groupId,
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("token_id") String tokenId,
+            @JsonProperty("client_token") String clientToken,
+            @JsonProperty("client_token_hash") String clientTokenHash,
+            @JsonProperty("token_expires_at") String tokenExpiresAt,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+
+        public OperatorActionReceipt withoutPlaintextClientToken() {
+            return new OperatorActionReceipt(
+                    auditIndex,
+                    auditHash,
+                    previousAuditHash,
+                    actionId,
+                    deploymentId,
+                    subjectDeploymentId,
+                    relatedDeploymentId,
+                    action,
+                    acceptedAt,
+                    claimState,
+                    groupId,
+                    linkId,
+                    tokenId,
+                    null,
+                    clientTokenHash,
+                    tokenExpiresAt,
+                    registryScope,
+                    registryKeyId,
+                    signature);
+        }
+    }
+
+    public record OperatorActionResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            Boolean duplicate,
+            OperatorActionReceipt receipt) {
+    }
+
+    public record LeaderboardSnapshot(
+            @JsonProperty("snapshot_id") String snapshotId,
+            @JsonProperty("formula_version") String formulaVersion,
+            @JsonProperty("ruleset_version") String rulesetVersion,
+            @JsonProperty("through_period") String throughPeriod,
+            @JsonProperty("through_ledger_index") Long throughLedgerIndex,
+            @JsonProperty("through_audit_index") Long throughAuditIndex,
+            @JsonProperty("ledger_head_hash") String ledgerHeadHash,
+            @JsonProperty("audit_head_hash") String auditHeadHash,
+            @JsonProperty("founder_units_numerator") String founderUnitsNumerator,
+            @JsonProperty("founder_units_denominator") String founderUnitsDenominator,
+            @JsonProperty("founder_share_numerator") String founderShareNumerator,
+            @JsonProperty("founder_share_denominator") String founderShareDenominator,
+            @JsonProperty("measured_weight_numerator") String measuredWeightNumerator,
+            @JsonProperty("measured_weight_denominator") String measuredWeightDenominator,
+            @JsonProperty("claimed_weight_numerator") String claimedWeightNumerator,
+            @JsonProperty("claimed_weight_denominator") String claimedWeightDenominator,
+            @JsonProperty("created_at") String createdAt,
+            @JsonProperty("snapshot_hash") String snapshotHash,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+    }
+
+    public record LeaderboardRow(
+            @JsonProperty("row_id") String rowId,
+            String view,
+            @JsonProperty("group_id") String groupId,
+            String label,
+            @JsonProperty("avatar_url") String avatarUrl,
+            @JsonProperty("claim_state") String claimState,
+            @JsonProperty("deployment_count") Long deploymentCount,
+            @JsonProperty("weight_numerator") String weightNumerator,
+            @JsonProperty("weight_denominator") String weightDenominator,
+            @JsonProperty("share_numerator") String shareNumerator,
+            @JsonProperty("share_denominator") String shareDenominator) {
+    }
+
+    public record LeaderboardPage(
+            LeaderboardSnapshot snapshot,
+            String view,
+            List<LeaderboardRow> items,
+            @JsonProperty("next_cursor") String nextCursor) {
+    }
+
+    public record LeaderboardDeployment(
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("group_id") String groupId,
+            @JsonProperty("claim_state") String claimState,
+            @JsonProperty("membership_state") String membershipState,
+            @JsonProperty("weight_numerator") String weightNumerator,
+            @JsonProperty("weight_denominator") String weightDenominator,
+            @JsonProperty("share_numerator") String shareNumerator,
+            @JsonProperty("share_denominator") String shareDenominator) {
+    }
+
+    public record LeaderboardDeploymentPage(
+            LeaderboardSnapshot snapshot,
+            @JsonProperty("group_id") String groupId,
+            List<LeaderboardDeployment> items,
+            @JsonProperty("next_cursor") String nextCursor) {
+    }
+
+    public record AnnouncementLocalization(
+            String locale,
+            String title,
+            String body) {
+    }
+
+    public record AnnouncementLink(
+            String relation,
+            String url) {
+    }
+
+    public record UpdateManifest(
+            @JsonProperty("manifest_version") String manifestVersion,
+            @JsonProperty("release_version") String releaseVersion,
+            String channel,
+            @JsonProperty("published_at") String publishedAt,
+            @JsonProperty("minimum_compatible_version") String minimumCompatibleVersion,
+            @JsonProperty("maximum_compatible_version") String maximumCompatibleVersion,
+            @JsonProperty("artifact_url") String artifactUrl,
+            @JsonProperty("artifact_size_bytes") Long artifactSizeBytes,
+            @JsonProperty("artifact_sha256") String artifactSha256,
+            @JsonProperty("package_signing_key_id") String packageSigningKeyId,
+            @JsonProperty("package_signature") String packageSignature,
+            @JsonProperty("release_notes_url") String releaseNotesUrl,
+            @JsonProperty("backup_required") Boolean backupRequired,
+            @JsonProperty("expected_downtime_seconds") Long expectedDowntimeSeconds,
+            String status,
+            @JsonProperty("supersedes_version") String supersedesVersion,
+            @JsonProperty("superseded_by_version") String supersededByVersion,
+            @JsonProperty("revocation_reason") String revocationReason) {
+    }
+
+    public record AnnouncementEntry(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            Long sequence,
+            @JsonProperty("announcement_id") String announcementId,
+            @JsonProperty("publication_id") String publicationId,
+            String kind,
+            String severity,
+            @JsonProperty("published_at") String publishedAt,
+            @JsonProperty("expires_at") String expiresAt,
+            @JsonProperty("title_key") String titleKey,
+            @JsonProperty("body_key") String bodyKey,
+            List<AnnouncementLocalization> localizations,
+            List<AnnouncementLink> links,
+            @JsonProperty("update_manifest") UpdateManifest updateManifest,
+            @JsonProperty("content_hash") String contentHash,
+            @JsonProperty("links_hash") String linksHash,
+            @JsonProperty("update_manifest_hash") String updateManifestHash,
+            @JsonProperty("previous_announcement_hash") String previousAnnouncementHash,
+            @JsonProperty("announcement_hash") String announcementHash,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+    }
+
+    public record AnnouncementSnapshot(
+            @JsonProperty("snapshot_id") String snapshotId,
+            @JsonProperty("as_of") String asOf,
+            @JsonProperty("through_sequence") Long throughSequence,
+            @JsonProperty("announcement_head_hash") String announcementHeadHash,
+            String kind,
+            String severity,
+            String channel,
+            @JsonProperty("include_expired") Boolean includeExpired,
+            @JsonProperty("created_at") String createdAt,
+            @JsonProperty("snapshot_hash") String snapshotHash,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+    }
+
+    public record AnnouncementPage(
+            AnnouncementSnapshot snapshot,
+            List<AnnouncementEntry> items,
+            @JsonProperty("next_cursor") String nextCursor) {
+    }
+
+    public record SemanticVersion(
+            BigInteger major,
+            BigInteger minor,
+            BigInteger patch,
+            List<String> prerelease) {
+        public SemanticVersion {
+            prerelease = prerelease == null
+                    ? List.of()
+                    : List.copyOf(prerelease);
+        }
     }
 }

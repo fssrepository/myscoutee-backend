@@ -1,0 +1,211 @@
+package com.raxim.myscoutee.profile.data.dto.operator;
+
+import java.util.List;
+
+public final class OperatorNetworkDtos {
+    private OperatorNetworkDtos() {
+    }
+
+    public record OperatorActionRequestDto(
+            String action,
+            String operatorName,
+            String operatorAvatarUrl,
+            String clientToken,
+            Long tokenTtlSeconds,
+            String tokenId,
+            String linkId,
+            String idempotencyKey) {
+    }
+
+    public record OperatorClaimRequestDto(
+            String operatorName,
+            String operatorAvatarUrl,
+            String idempotencyKey) {
+    }
+
+    public record OperatorClientTokenRequestDto(
+            Long tokenTtlSeconds,
+            String idempotencyKey) {
+    }
+
+    public record OperatorRedeemClientTokenRequestDto(
+            String clientToken,
+            String idempotencyKey) {
+    }
+
+    public record OperatorActionReferenceRequestDto(
+            String referenceId,
+            String idempotencyKey) {
+    }
+
+    public record OperatorIdempotencyRequestDto(
+            String idempotencyKey) {
+    }
+
+    public record OperatorActionReceiptDto(
+            long auditIndex,
+            String auditHash,
+            String previousAuditHash,
+            String actionId,
+            String deploymentId,
+            String subjectDeploymentId,
+            String relatedDeploymentId,
+            String action,
+            String acceptedAt,
+            String claimState,
+            String groupId,
+            String linkId,
+            String tokenId,
+            String tokenExpiresAt) {
+    }
+
+    public record OperatorActionResultDto(
+            boolean duplicate,
+            String idempotencyKey,
+            String clientToken,
+            OperatorActionReceiptDto receipt) {
+    }
+
+    public record OperatorClaimStatusDto(
+            boolean claimed,
+            String claimedAt,
+            String claimantUserId,
+            String claimantName,
+            String claimantAvatarUrl,
+            String operatorGroupId,
+            String activeLinkId,
+            double sharePercent,
+            String shareNumerator,
+            String shareDenominator) {
+    }
+
+    public record OperatorLeaderboardSnapshotDto(
+            String snapshotId,
+            String formulaVersion,
+            String rulesetVersion,
+            String throughPeriod,
+            long throughLedgerIndex,
+            long throughAuditIndex,
+            String ledgerHeadHash,
+            String auditHeadHash,
+            String founderUnitsNumerator,
+            String founderUnitsDenominator,
+            String founderShareNumerator,
+            String founderShareDenominator,
+            String measuredWeightNumerator,
+            String measuredWeightDenominator,
+            String claimedWeightNumerator,
+            String claimedWeightDenominator,
+            String createdAt,
+            String snapshotHash) {
+    }
+
+    public record OperatorLeaderboardRowDto(
+            String rowId,
+            String view,
+            String groupId,
+            String label,
+            String avatarUrl,
+            String claimState,
+            long deploymentCount,
+            String weightNumerator,
+            String weightDenominator,
+            String shareNumerator,
+            String shareDenominator) {
+    }
+
+    public record OperatorLeaderboardPageDto(
+            OperatorLeaderboardSnapshotDto snapshot,
+            String view,
+            List<OperatorLeaderboardRowDto> items,
+            String nextCursor) {
+    }
+
+    public record OperatorLeaderboardDeploymentDto(
+            String deploymentId,
+            String groupId,
+            String claimState,
+            String membershipState,
+            String weightNumerator,
+            String weightDenominator,
+            String shareNumerator,
+            String shareDenominator) {
+    }
+
+    public record OperatorLeaderboardDeploymentPageDto(
+            OperatorLeaderboardSnapshotDto snapshot,
+            String groupId,
+            List<OperatorLeaderboardDeploymentDto> items,
+            String nextCursor) {
+    }
+
+    public record OperatorAnnouncementLocalizationDto(
+            String locale,
+            String title,
+            String body) {
+    }
+
+    public record OperatorAnnouncementLinkDto(
+            String relation,
+            String url) {
+    }
+
+    public record OperatorUpdateManifestDto(
+            String manifestVersion,
+            String releaseVersion,
+            String channel,
+            String publishedAt,
+            String minimumCompatibleVersion,
+            String maximumCompatibleVersion,
+            String artifactUrl,
+            long artifactSizeBytes,
+            String artifactSha256,
+            String packageSigningKeyId,
+            String packageSignature,
+            String releaseNotesUrl,
+            boolean backupRequired,
+            long expectedDowntimeSeconds,
+            String status,
+            String supersedesVersion,
+            String supersededByVersion,
+            String revocationReason,
+            boolean packageSigningKeyConfigured,
+            boolean packageSigningKeyMatches,
+            boolean packageSignatureVerified) {
+    }
+
+    public record OperatorAnnouncementDto(
+            long sequence,
+            String announcementId,
+            String kind,
+            String severity,
+            String publishedAt,
+            String expiresAt,
+            String titleKey,
+            String bodyKey,
+            List<OperatorAnnouncementLocalizationDto> localizations,
+            List<OperatorAnnouncementLinkDto> links,
+            OperatorUpdateManifestDto updateManifest,
+            String updateManifestHash,
+            String announcementHash) {
+    }
+
+    public record OperatorAnnouncementSnapshotDto(
+            String snapshotId,
+            String asOf,
+            long throughSequence,
+            String announcementHeadHash,
+            String kind,
+            String severity,
+            String channel,
+            boolean includeExpired,
+            String createdAt,
+            String snapshotHash) {
+    }
+
+    public record OperatorAnnouncementPageDto(
+            OperatorAnnouncementSnapshotDto snapshot,
+            List<OperatorAnnouncementDto> items,
+            String nextCursor) {
+    }
+}

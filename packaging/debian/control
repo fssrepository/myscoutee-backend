@@ -4,7 +4,7 @@ Section: web
 Priority: optional
 Architecture: amd64
 Maintainer: MyScoutee <admin@myscoutee.local>
-Depends: bash, coreutils, jq, openssl, docker.io | docker-ce, docker-compose-plugin | docker-compose-v2
+Depends: bash, coreutils, jq, openssl, python3, systemd, tar, util-linux, docker.io | docker-ce, docker-compose-plugin | docker-compose-v2
 Recommends: curl, gnupg, ufw, ncdu, iotop, redis-tools
 Description: MyScoutee production bundle
  Production packaging metadata for the MyScoutee Docker-based VPS deploy.

@@ -175,6 +175,7 @@ services:
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com,raxim.uk@gmail.com,myscoutee1@gmail.com"
       OPERATOR_USER: "${OPERATOR_USER:-}"
+      OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/etc/myscoutee/configuration/deployment-master-key"
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
@@ -199,14 +200,24 @@ services:
       REGISTRY_TRUST_ON_FIRST_USE: "${REGISTRY_TRUST_ON_FIRST_USE:-false}"
       REGISTRY_ALLOW_INSECURE_HTTP: "${REGISTRY_ALLOW_INSECURE_HTTP:-false}"
       REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS: "${REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS:-}"
+      OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
+      OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
+      OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "/etc/myscoutee/update/release-public-key.pem"
+      OPERATOR_UPDATE_MAX_ARTIFACT_BYTES: "${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
+      OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES: "${MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES:-536870912}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     secrets:
       - source: firebase-service-account
         target: firebase-service-account.json
     volumes:
+      - "${OPERATOR_CONFIGURATION_KEY_DIR_HOST:-./data/configuration}:/etc/myscoutee/configuration:ro"
       - "${REGISTRY_KEY_DIR_HOST:-./data/registry-keys}:/etc/myscoutee/registry:rw"
       - "${REGISTRY_STATE_DIR_HOST:-./data/registry}:/var/lib/myscoutee/registry"
+      - "${MYSCOUTEE_UPDATE_STATE_DIR_HOST:-./data/update}/inbox/staging:/var/lib/myscoutee/update/staging:rw"
+      - "${MYSCOUTEE_UPDATE_STATE_DIR_HOST:-./data/update}/inbox/requests:/var/lib/myscoutee/update/requests:rw"
+      - "${MYSCOUTEE_UPDATE_STATE_DIR_HOST:-./data/update}/runtime/jobs:/var/lib/myscoutee/update/jobs:ro"
+      - "${MYSCOUTEE_UPDATE_CONFIG_DIR_HOST:-./data/update-config}:/etc/myscoutee/update:ro"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:

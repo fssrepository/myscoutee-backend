@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.operator;
 
+import java.util.List;
+
 public final class OperatorRegistryDtos {
     private OperatorRegistryDtos() {
     }
@@ -13,12 +15,15 @@ public final class OperatorRegistryDtos {
             String inspectionToken) {
     }
 
+    public record RegistryRegisterRequestDto(
+            String registryBaseUrl,
+            String expectedRegistryScope) {
+    }
+
     public record RegistryIdentityDto(
             String identityEndpoint,
             String protocolVersion,
-            String registryScope,
-            String registryKeyId,
-            String registryPublicKeyFingerprint) {
+            String registryScope) {
     }
 
     public record RegistryInspectionDto(
@@ -37,8 +42,6 @@ public final class OperatorRegistryDtos {
     public record DraftInspectionDto(
             String baseUrl,
             String registryScope,
-            String registryKeyId,
-            String registryPublicKeyFingerprint,
             String inspectedAt,
             String expiresAt) {
     }
@@ -51,8 +54,15 @@ public final class OperatorRegistryDtos {
 
     public record NodeIdentityDto(
             String state,
-            String publicKeyFingerprint,
             String initializedAt) {
+    }
+
+    public record RegistryOptionDto(
+            String id,
+            String label,
+            String baseUrl,
+            String registryScope,
+            boolean selected) {
     }
 
     public record EnrollmentDto(
@@ -84,6 +94,7 @@ public final class OperatorRegistryDtos {
             String lifecycle,
             boolean enabled,
             boolean simulation,
+            List<RegistryOptionDto> registryOptions,
             CandidateDefaultsDto candidateDefaults,
             DraftInspectionDto draftInspection,
             RegistrySelectionDto selection,

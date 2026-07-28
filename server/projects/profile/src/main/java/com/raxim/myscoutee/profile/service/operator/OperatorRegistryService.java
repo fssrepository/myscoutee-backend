@@ -11,13 +11,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,6 +32,8 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.NodeId
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectionDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations;
 import com.raxim.myscoutee.registry.RegistryPreflightService.RegistryInspection;
@@ -40,13 +42,12 @@ import com.raxim.myscoutee.registry.RegistryProtocol;
 @Service
 public class OperatorRegistryService {
     private static final Duration INSPECTION_TTL = Duration.ofMinutes(30);
-    private static final String SAMPLE_BASE_URL = "https://registry-demo.example.invalid";
-    private static final String SAMPLE_SCOPE = "demo:sample";
 
     private final OperatorRegistrySettingsRepository repository;
     private final RegistryProperties realProperties;
     private final RegistryDemoProperties demoProperties;
     private final RegistryOperatorOperations operations;
+    private final OperatorRegistryEndpointService endpointService;
     private final OperatorRegistryMapper mapper;
     private final Clock clock;
     private final SecureRandom secureRandom;
@@ -58,12 +59,14 @@ public class OperatorRegistryService {
             RegistryProperties realProperties,
             RegistryDemoProperties demoProperties,
             RegistryOperatorOperations operations,
+            OperatorRegistryEndpointService endpointService,
             OperatorRegistryMapper mapper) {
         this(
                 repository,
                 realProperties,
                 demoProperties,
                 operations,
+                endpointService,
                 mapper,
                 Clock.systemUTC(),
                 new SecureRandom());
@@ -74,6 +77,7 @@ public class OperatorRegistryService {
             RegistryProperties realProperties,
             RegistryDemoProperties demoProperties,
             RegistryOperatorOperations operations,
+            OperatorRegistryEndpointService endpointService,
             OperatorRegistryMapper mapper,
             Clock clock,
             SecureRandom secureRandom) {
@@ -81,6 +85,7 @@ public class OperatorRegistryService {
         this.realProperties = Objects.requireNonNull(realProperties);
         this.demoProperties = Objects.requireNonNull(demoProperties);
         this.operations = Objects.requireNonNull(operations);
+        this.endpointService = Objects.requireNonNull(endpointService);
         this.mapper = Objects.requireNonNull(mapper);
         this.clock = Objects.requireNonNull(clock);
         this.secureRandom = Objects.requireNonNull(secureRandom);
@@ -100,14 +105,10 @@ public class OperatorRegistryService {
     public RegistryInspectionDto inspect(RegistryInspectRequestDto request, String actorUserId) {
         MongoSessionMode mode = currentMode();
         synchronized (modeLocks.get(mode)) {
-            boolean simulation = isSimulation(mode);
             String baseUrl = resolveCandidateBaseUrl(request == null ? null : request.baseUrl(), mode);
             String expectedScope = resolveExpectedScope(
-                    request == null ? null : request.expectedScope(),
-                    mode);
-            RegistryInspection inspection = simulation
-                    ? sampleInspection(baseUrl, expectedScope)
-                    : inspectLive(mode, baseUrl, expectedScope, "");
+                    request == null ? null : request.expectedScope());
+            RegistryInspection inspection = inspectLive(mode, baseUrl, expectedScope, "");
 
             Instant now = clock.instant();
             String token = randomInspectionToken();
@@ -120,13 +121,12 @@ public class OperatorRegistryService {
                     now,
                     actorUserId);
             settings.setDraftInspection(draft);
-            settings.setSimulation(simulation);
             if (settings.getSelection() == null) {
                 settings.setLifecycle("INSPECTED");
             }
             touch(settings, now, actorUserId);
             save(settings);
-            return mapper.toInspection(draft, token, simulation);
+            return mapper.toInspection(draft, token);
         }
     }
 
@@ -136,31 +136,61 @@ public class OperatorRegistryService {
             OperatorRegistrySettings settings = requireSettings();
             OperatorRegistrySettings.DraftInspection draft =
                     requireValidDraft(settings, inspectionToken);
-            RegistryInspection fresh = isSimulation(mode)
-                    ? sampleInspection(draft.getBaseUrl(), draft.getRegistryScope())
-                    : inspectLive(
-                            mode,
-                            draft.getBaseUrl(),
-                            draft.getRegistryScope(),
-                            draft.getRegistryPublicKeyFingerprint());
+            RegistryInspection fresh = inspectLive(
+                    mode,
+                    draft.getBaseUrl(),
+                    draft.getRegistryScope(),
+                    draft.getRegistryPublicKeyFingerprint());
             requireSameIdentity(draft, fresh);
             requireCompatibleSelection(settings.getSelection(), draft);
 
             Instant now = clock.instant();
             settings.setSelection(selection(draft, now, actorUserId));
             settings.setDraftInspection(null);
+            settings.setRegistrationRequest(null);
             settings.setEnabled(true);
-            settings.setSimulation(isSimulation(mode));
-            settings.setLifecycle("PENDING");
+            settings.setLifecycle("CONFIGURED");
+            settings.setLastError(null);
+            touch(settings, now, actorUserId);
+            save(settings);
+            return toStatus(settings, mode);
+        }
+    }
+
+    public OperatorRegistryStatusDto register(
+            RegistryRegisterRequestDto request,
+            String actorUserId) {
+        MongoSessionMode mode = currentMode();
+        synchronized (modeLocks.get(mode)) {
+            RegistrationTarget target = requireRegistrationTarget(request, mode);
+            RegistryInspection fresh = inspectLive(
+                    mode,
+                    target.baseUrl(),
+                    target.registryScope(),
+                    "");
+
+            Instant now = clock.instant();
+            OperatorRegistrySettings settings = load().orElseGet(OperatorRegistrySettings::new);
+            initializeAudit(settings, now);
+            OperatorRegistrySettings.DraftInspection inspectedTarget = draft(
+                    target.baseUrl(),
+                    fresh,
+                    "",
+                    now,
+                    actorUserId);
+            requireCompatibleSelection(settings.getSelection(), inspectedTarget);
+            OperatorRegistrySettings.RegistrySelection selection =
+                    selection(inspectedTarget, now, actorUserId);
+            settings.setSelection(selection);
+            settings.setDraftInspection(null);
+            settings.setRegistrationRequest(registrationRequest(selection, now, actorUserId));
+            settings.setEnabled(true);
+            settings.setLifecycle("REGISTERING");
             settings.setLastError(null);
             touch(settings, now, actorUserId);
             save(settings);
 
-            if (isSimulation(mode)) {
-                completeSample(settings, now, actorUserId);
-            } else {
-                synchronizeLive(settings, mode, actorUserId);
-            }
+            synchronizeLive(settings, mode, actorUserId);
             return toStatus(settings, mode);
         }
     }
@@ -182,11 +212,8 @@ public class OperatorRegistryService {
             if ("REGISTERED".equals(settings.getLifecycle())) {
                 return toStatus(settings, mode);
             }
-            if (isSimulation(mode)) {
-                completeSample(settings, clock.instant(), actorUserId);
-            } else {
-                synchronizeLive(settings, mode, actorUserId);
-            }
+            requirePendingRegistrationRequest(settings);
+            synchronizeLive(settings, mode, actorUserId);
             return toStatus(settings, mode);
         }
     }
@@ -200,54 +227,13 @@ public class OperatorRegistryService {
             settings.setEnabled(false);
             settings.setLifecycle(settings.getSelection() == null ? "UNCONFIGURED" : "DISABLED");
             settings.setDraftInspection(null);
+            settings.setRegistrationRequest(null);
             OperatorRegistrySettings.Audit audit = settings.getAudit();
             audit.setDisabledAt(now.toString());
             audit.setDisabledBy(safeActor(actorUserId));
             touch(settings, now, actorUserId);
             save(settings);
             return toStatus(settings, mode);
-        }
-    }
-
-    @Scheduled(
-            initialDelayString = "${registry.retry-delay:1m}",
-            fixedDelayString = "${registry.retry-delay:1m}")
-    public void retryPendingSelections() {
-        MongoSessionMode previous = MongoSessionModeContext.currentMode();
-        try {
-            for (MongoSessionMode mode : MongoSessionMode.values()) {
-                MongoSessionModeContext.set(mode);
-                synchronized (modeLocks.get(mode)) {
-                    OperatorRegistrySettings settings = load().orElse(null);
-                    if (settings == null
-                            || !Boolean.TRUE.equals(settings.getEnabled())
-                            || settings.getSelection() == null
-                            || (!"PENDING".equals(settings.getLifecycle())
-                                    && !"ERROR".equals(settings.getLifecycle()))
-                            || isTerminalError(settings)) {
-                        continue;
-                    }
-                    if (isSimulation(mode)) {
-                        try {
-                            completeSample(settings, clock.instant(), "system");
-                        } catch (ResponseStatusException exception) {
-                            if (exception.getStatusCode().value() != HttpStatus.CONFLICT.value()) {
-                                throw exception;
-                            }
-                        }
-                    } else {
-                        try {
-                            synchronizeLive(settings, mode, "system");
-                        } catch (ResponseStatusException exception) {
-                            if (exception.getStatusCode().value() != HttpStatus.CONFLICT.value()) {
-                                throw exception;
-                            }
-                        }
-                    }
-                }
-            }
-        } finally {
-            MongoSessionModeContext.set(previous);
         }
     }
 
@@ -265,7 +251,7 @@ public class OperatorRegistryService {
         try {
             OperatorRegistrySettings.Audit audit = settings.getAudit();
             audit.setLastAttemptAt(now.toString());
-            settings.setLifecycle("PENDING");
+            settings.setLifecycle("REGISTERING");
             settings.setLastError(null);
             touch(settings, now, actorUserId);
             save(settings);
@@ -353,76 +339,46 @@ public class OperatorRegistryService {
         }
     }
 
-    private void completeSample(
-            OperatorRegistrySettings settings,
-            Instant now,
-            String actorUserId) {
-        String nodeHash = RegistryProtocol.sha256(
-                "myscoutee-demo-node-sample-v1".getBytes(StandardCharsets.UTF_8));
-        OperatorRegistrySettings.NodeIdentity node = new OperatorRegistrySettings.NodeIdentity();
-        node.setState("SIMULATED");
-        node.setPublicKeyFingerprint(nodeHash);
-        node.setInitializedAt(now.toString());
-        settings.setNodeIdentity(node);
-
-        OperatorRegistrySettings.EnrollmentSummary enrollment =
-                new OperatorRegistrySettings.EnrollmentSummary();
-        enrollment.setDeploymentCode(sampleId("dep_", "deployment"));
-        enrollment.setInstallationTestBatchId(sampleId("batch_", "batch"));
-        enrollment.setInstallationTestAcceptedAt(now.toString());
-        enrollment.setInstallationTestLedgerIndex(1L);
-        enrollment.setCompletedAt(now.toString());
-        settings.setEnrollment(enrollment);
-        settings.setLifecycle("REGISTERED");
-        settings.setEnabled(true);
-        settings.setSimulation(true);
-        settings.setLastError(null);
-        settings.getAudit().setLastAttemptAt(now.toString());
-        settings.getAudit().setLastSuccessAt(now.toString());
-        touch(settings, now, actorUserId);
-        save(settings);
-    }
-
     private OperatorRegistryStatusDto toStatus(
             OperatorRegistrySettings settings,
             MongoSessionMode mode) {
-        boolean simulation = isSimulation(mode);
+        List<RegistryOptionDto> options =
+                endpointService.options(settings == null ? null : settings.getSelection());
+        CandidateDefaultsDto candidateDefaults = options.isEmpty()
+                ? new CandidateDefaultsDto(null, null)
+                : new CandidateDefaultsDto(
+                        options.getFirst().baseUrl(),
+                        options.getFirst().registryScope());
         NodeIdentityDto observed = null;
-        if (simulation) {
-            if (settings == null || settings.getNodeIdentity() == null) {
-                observed = new NodeIdentityDto("MISSING", null, null);
-            }
-        } else {
-            RegistryProperties runtime = runtimeProperties(
-                    mode,
-                    settings != null && settings.getSelection() != null
-                            ? settings.getSelection().getBaseUrl()
-                            : candidateDefaults(mode).baseUrl(),
-                    settings != null && settings.getSelection() != null
-                            ? settings.getSelection().getRegistryScope()
-                            : candidateDefaults(mode).registryScope(),
-                    settings != null && settings.getSelection() != null
-                            ? settings.getSelection().getRegistryPublicKeyFingerprint()
-                            : "",
-                    settings != null && settings.getSelection() != null);
-            try {
-                RegistryOperatorOperations.NodeStatus node = operations.inspectNodeIdentity(runtime);
-                String initializedAt = settings != null && settings.getNodeIdentity() != null
-                        ? settings.getNodeIdentity().getInitializedAt()
-                        : null;
-                observed = new NodeIdentityDto(node.state(), node.publicKeyFingerprint(), initializedAt);
-            } catch (RuntimeException exception) {
-                observed = new NodeIdentityDto("INCOMPLETE", null,
-                        settings != null && settings.getNodeIdentity() != null
-                                ? settings.getNodeIdentity().getInitializedAt()
-                                : null);
-            }
+        RegistryProperties runtime = runtimeProperties(
+                mode,
+                settings != null && settings.getSelection() != null
+                        ? settings.getSelection().getBaseUrl()
+                        : "",
+                settings != null && settings.getSelection() != null
+                        ? settings.getSelection().getRegistryScope()
+                        : "",
+                settings != null && settings.getSelection() != null
+                        ? settings.getSelection().getRegistryPublicKeyFingerprint()
+                        : "",
+                settings != null && settings.getSelection() != null);
+        try {
+            RegistryOperatorOperations.NodeStatus node = operations.inspectNodeIdentity(runtime);
+            String initializedAt = settings != null && settings.getNodeIdentity() != null
+                    ? settings.getNodeIdentity().getInitializedAt()
+                    : null;
+            observed = new NodeIdentityDto(node.state(), initializedAt);
+        } catch (RuntimeException exception) {
+            observed = new NodeIdentityDto("INCOMPLETE",
+                    settings != null && settings.getNodeIdentity() != null
+                            ? settings.getNodeIdentity().getInitializedAt()
+                            : null);
         }
         return mapper.toStatus(
                 settings,
                 mode.name(),
-                simulation,
-                candidateDefaults(mode),
+                options,
+                candidateDefaults,
                 observed);
     }
 
@@ -445,20 +401,6 @@ public class OperatorRegistryService {
         }
     }
 
-    private RegistryInspection sampleInspection(String baseUrl, String expectedScope) {
-        String scope = RegistryProtocol.requireRegistryScope(
-                StringUtils.hasText(expectedScope) ? expectedScope : SAMPLE_SCOPE);
-        String fingerprint = RegistryProtocol.sha256(
-                "myscoutee-demo-registry-sample-v1".getBytes(StandardCharsets.UTF_8));
-        return new RegistryInspection(
-                normalizeBaseUrl(baseUrl) + RegistryProtocol.REGISTRY_IDENTITY_PATH,
-                RegistryProtocol.PROTOCOL_VERSION,
-                scope,
-                RegistryProtocol.registryKeyId(fingerprint),
-                fingerprint,
-                "");
-    }
-
     private RegistryProperties runtimeProperties(
             MongoSessionMode mode,
             String baseUrl,
@@ -466,13 +408,12 @@ public class OperatorRegistryService {
             String fingerprint,
             boolean operatorConfirmed) {
         RegistryProperties runtime = new RegistryProperties();
-        // A persisted operator selection is the runtime enable/consent source.
-        // The environment-driven enrollment service is intentionally not a
-        // Spring control plane anymore.
+        // operatorConfirmed is true only for an explicit register/retry action.
+        // A persisted selection alone is configuration, never enrollment consent.
         runtime.setEnabled(true);
         runtime.setOperatorRegistrationConfirmed(operatorConfirmed);
         // Production egress remains subject to the host policy kill switch.
-        // The isolated DEMO-live topology is explicitly enabled by its own
+        // The isolated local DEMO topology is explicitly enabled by its own
         // local-only configuration below.
         runtime.setOutboundAllowed(
                 mode == MongoSessionMode.DEMO || realProperties.isOutboundAllowed());
@@ -499,12 +440,6 @@ public class OperatorRegistryService {
             runtime.setInsecureHttpAllowedHosts("");
         }
         return runtime;
-    }
-
-    private boolean isTerminalError(OperatorRegistrySettings settings) {
-        return "ERROR".equals(settings.getLifecycle())
-                && settings.getLastError() != null
-                && Boolean.FALSE.equals(settings.getLastError().getRetryable());
     }
 
     private OperatorRegistrySettings.DraftInspection draft(
@@ -543,6 +478,21 @@ public class OperatorRegistryService {
         selection.setConfirmedAt(now.toString());
         selection.setConfirmedBy(safeActor(actorUserId));
         return selection;
+    }
+
+    private OperatorRegistrySettings.RegistrationRequest registrationRequest(
+            OperatorRegistrySettings.RegistrySelection selection,
+            Instant now,
+            String actorUserId) {
+        OperatorRegistrySettings.RegistrationRequest request =
+                new OperatorRegistrySettings.RegistrationRequest();
+        request.setBaseUrl(selection.getBaseUrl());
+        request.setRegistryScope(selection.getRegistryScope());
+        request.setRegistryKeyId(selection.getRegistryKeyId());
+        request.setRegistryPublicKeyFingerprint(selection.getRegistryPublicKeyFingerprint());
+        request.setRequestedAt(now.toString());
+        request.setRequestedBy(safeActor(actorUserId));
+        return request;
     }
 
     private OperatorRegistrySettings.DraftInspection requireValidDraft(
@@ -597,7 +547,42 @@ public class OperatorRegistryService {
                         draft.getRegistryPublicKeyFingerprint())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "This deployment is already bound to a different registry selection.");
+                    "EXPLICIT_UNREGISTER_REQUIRED: This deployment is already bound to a "
+                            + "different signed registry. Central unregister is not available yet.");
+        }
+    }
+
+    private RegistrationTarget requireRegistrationTarget(
+            RegistryRegisterRequestDto request,
+            MongoSessionMode mode) {
+        if (request == null
+                || !StringUtils.hasText(request.registryBaseUrl())
+                || !StringUtils.hasText(request.expectedRegistryScope())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Selected registry URL and scope are required.");
+        }
+        String requestedBaseUrl = resolveCandidateBaseUrl(request.registryBaseUrl(), mode);
+        String requestedScope = resolveExpectedScope(request.expectedRegistryScope());
+        return new RegistrationTarget(requestedBaseUrl, requestedScope);
+    }
+
+    private void requirePendingRegistrationRequest(OperatorRegistrySettings settings) {
+        OperatorRegistrySettings.RegistrationRequest request = settings.getRegistrationRequest();
+        OperatorRegistrySettings.RegistrySelection selection = settings.getSelection();
+        if (request == null
+                || selection == null
+                || (!"REGISTERING".equals(settings.getLifecycle())
+                        && !"ERROR".equals(settings.getLifecycle()))
+                || !Objects.equals(request.getBaseUrl(), selection.getBaseUrl())
+                || !Objects.equals(request.getRegistryScope(), selection.getRegistryScope())
+                || !Objects.equals(request.getRegistryKeyId(), selection.getRegistryKeyId())
+                || !Objects.equals(
+                        request.getRegistryPublicKeyFingerprint(),
+                        selection.getRegistryPublicKeyFingerprint())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "No explicitly requested pending registration is available to retry.");
         }
     }
 
@@ -656,7 +641,7 @@ public class OperatorRegistryService {
     private OperatorRegistrySettings requireSettings() {
         return load().orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.CONFLICT,
-                "Inspect a registry before confirming or retrying."));
+                "Inspect a registry before configuring or retrying."));
     }
 
     private OperatorRegistrySettings save(OperatorRegistrySettings settings) {
@@ -684,29 +669,13 @@ public class OperatorRegistryService {
             Instant now,
             String actorUserId) {
         initializeAudit(settings, now);
+        settings.setSchemaVersion(OperatorRegistrySettings.SCHEMA_VERSION);
         settings.getAudit().setUpdatedAt(now.toString());
         settings.getAudit().setUpdatedBy(safeActor(actorUserId));
     }
 
-    private CandidateDefaultsDto candidateDefaults(MongoSessionMode mode) {
-        if (mode == MongoSessionMode.DEMO) {
-            return new CandidateDefaultsDto(
-                    StringUtils.hasText(demoProperties.getCandidateBaseUrl())
-                            ? demoProperties.getCandidateBaseUrl()
-                            : SAMPLE_BASE_URL,
-                    StringUtils.hasText(demoProperties.getCandidateScope())
-                            ? demoProperties.getCandidateScope()
-                            : SAMPLE_SCOPE);
-        }
-        return new CandidateDefaultsDto(
-                safeText(realProperties.getBaseUrl()),
-                safeText(realProperties.getRegistryScope()));
-    }
-
     private String resolveCandidateBaseUrl(String requested, MongoSessionMode mode) {
-        String candidate = StringUtils.hasText(requested)
-                ? requested.trim()
-                : candidateDefaults(mode).baseUrl();
+        String candidate = StringUtils.hasText(requested) ? requested.trim() : "";
         if (!StringUtils.hasText(candidate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registry base URL is required.");
         }
@@ -720,10 +689,8 @@ public class OperatorRegistryService {
         return normalized;
     }
 
-    private String resolveExpectedScope(String requested, MongoSessionMode mode) {
-        String scope = StringUtils.hasText(requested)
-                ? requested.trim()
-                : candidateDefaults(mode).registryScope();
+    private String resolveExpectedScope(String requested) {
+        String scope = StringUtils.hasText(requested) ? requested.trim() : "";
         if (!StringUtils.hasText(scope)) {
             return "";
         }
@@ -755,10 +722,6 @@ public class OperatorRegistryService {
         }
     }
 
-    private boolean isSimulation(MongoSessionMode mode) {
-        return mode == MongoSessionMode.DEMO && !demoProperties.isLive();
-    }
-
     private MongoSessionMode currentMode() {
         return MongoSessionModeContext.currentMode();
     }
@@ -773,12 +736,6 @@ public class OperatorRegistryService {
         return RegistryProtocol.sha256(safeText(token).getBytes(StandardCharsets.UTF_8));
     }
 
-    private String sampleId(String prefix, String purpose) {
-        String hash = RegistryProtocol.sha256(
-                ("myscoutee-demo-" + purpose + "-sample-v1").getBytes(StandardCharsets.UTF_8));
-        return prefix + hash.substring("sha256:".length(), "sha256:".length() + 32);
-    }
-
     private String safeActor(String value) {
         String actor = safeText(value);
         return StringUtils.hasText(actor) ? actor : "operator";
@@ -786,5 +743,10 @@ public class OperatorRegistryService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private record RegistrationTarget(
+            String baseUrl,
+            String registryScope) {
     }
 }

@@ -31,6 +31,9 @@ const requiredCollections = [
   'userExperienceProfiles',
   'navigatorContacts',
   'countryPartitions',
+  'operatorRegistryEndpoints',
+  'paymentProviders',
+  'deploymentConfigurations',
   'i18n_bundles',
   'i18n_messages'
 ];
@@ -569,6 +572,19 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.navigatorContacts.createIndex(
     { userId: 1 },
     { name: 'navigator_contacts_user_id', unique: true }
+  );
+
+  portalDb.operatorRegistryEndpoints.createIndex(
+    { enabled: 1, sortOrder: 1, label: 1, _id: 1 },
+    { name: 'operator_registry_endpoint_enabled_sort' }
+  );
+  portalDb.operatorRegistryEndpoints.createIndex(
+    { baseUrl: 1, registryScope: 1 },
+    { name: 'operator_registry_endpoint_base_scope', unique: true }
+  );
+  portalDb.paymentProviders.createIndex(
+    { enabled: 1, sortOrder: 1, label: 1, _id: 1 },
+    { name: 'payment_provider_enabled_sort' }
   );
 
   portalDb.i18n_bundles.createIndex(

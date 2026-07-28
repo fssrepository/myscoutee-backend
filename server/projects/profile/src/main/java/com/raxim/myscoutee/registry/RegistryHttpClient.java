@@ -3,12 +3,15 @@ package com.raxim.myscoutee.registry;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
@@ -58,6 +61,74 @@ public final class RegistryHttpClient {
                 RegistryProtocol.MAU_BATCH_PATH,
                 request,
                 RegistryProtocol.BatchResponse.class);
+    }
+
+    public RegistryProtocol.OperatorActionResponse applyOperatorAction(
+            RegistryProtocol.OperatorActionRequest request) {
+        return post(
+                RegistryProtocol.OPERATOR_ACTION_PATH,
+                request,
+                RegistryProtocol.OperatorActionResponse.class);
+    }
+
+    public RegistryProtocol.LeaderboardPage leaderboard(
+            String view,
+            String throughPeriod,
+            Integer limit,
+            String cursor) {
+        Map<String, String> query = new LinkedHashMap<>();
+        putQuery(query, "view", view);
+        putQuery(query, "through_period", throughPeriod);
+        if (limit != null) {
+            putQuery(query, "limit", Integer.toString(limit));
+        }
+        putQuery(query, "cursor", cursor);
+        return get(
+                RegistryProtocol.LEADERBOARD_PATH,
+                query,
+                RegistryProtocol.LeaderboardPage.class);
+    }
+
+    public RegistryProtocol.LeaderboardDeploymentPage leaderboardDeployments(
+            String groupId,
+            String throughPeriod,
+            Integer limit,
+            String cursor) {
+        String normalizedGroupId = RegistryProtocol.requireOperatorGroupId(groupId);
+        Map<String, String> query = new LinkedHashMap<>();
+        putQuery(query, "through_period", throughPeriod);
+        if (limit != null) {
+            putQuery(query, "limit", Integer.toString(limit));
+        }
+        putQuery(query, "cursor", cursor);
+        return get(
+                RegistryProtocol.LEADERBOARD_PATH + "/groups/" + normalizedGroupId + "/deployments",
+                query,
+                RegistryProtocol.LeaderboardDeploymentPage.class);
+    }
+
+    public RegistryProtocol.AnnouncementPage announcements(
+            String kind,
+            String severity,
+            String channel,
+            boolean includeExpired,
+            Integer limit,
+            String cursor) {
+        Map<String, String> query = new LinkedHashMap<>();
+        putQuery(query, "kind", kind);
+        putQuery(query, "severity", severity);
+        putQuery(query, "channel", channel);
+        if (includeExpired) {
+            putQuery(query, "include_expired", "true");
+        }
+        if (limit != null) {
+            putQuery(query, "limit", Integer.toString(limit));
+        }
+        putQuery(query, "cursor", cursor);
+        return get(
+                RegistryProtocol.ANNOUNCEMENT_PATH,
+                query,
+                RegistryProtocol.AnnouncementPage.class);
     }
 
     public URI endpoint(String path) {
@@ -111,6 +182,26 @@ public final class RegistryHttpClient {
         return send(request, responseType);
     }
 
+    private <T> T get(String path, Map<String, String> query, Class<T> responseType) {
+        URI endpoint = endpoint(path);
+        StringBuilder queryString = new StringBuilder();
+        for (Map.Entry<String, String> entry : query.entrySet()) {
+            if (queryString.length() > 0) {
+                queryString.append('&');
+            }
+            queryString.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8))
+                    .append('=')
+                    .append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
+        }
+        URI requestUri = queryString.isEmpty()
+                ? endpoint
+                : URI.create(endpoint.toASCIIString() + "?" + queryString);
+        HttpRequest request = requestBuilder(requestUri)
+                .GET()
+                .build();
+        return send(request, responseType);
+    }
+
     private <T> T post(String path, Object requestBody, Class<T> responseType) {
         try {
             String json = objectMapper.writeValueAsString(requestBody);
@@ -131,10 +222,21 @@ public final class RegistryHttpClient {
     }
 
     private HttpRequest.Builder requestBuilder(String path) {
-        return HttpRequest.newBuilder(endpoint(path))
+        return requestBuilder(endpoint(path));
+    }
+
+    private HttpRequest.Builder requestBuilder(URI endpoint) {
+        return HttpRequest.newBuilder(endpoint)
                 .timeout(positive(properties.getRequestTimeout(), "registry request timeout"))
                 .header("Accept", "application/json")
                 .header("User-Agent", "myscoutee-backend/" + safeSoftwareVersion());
+    }
+
+    private static void putQuery(Map<String, String> query, String key, String value) {
+        String normalized = safeText(value);
+        if (!normalized.isEmpty()) {
+            query.put(key, normalized);
+        }
     }
 
     private <T> T send(HttpRequest request, Class<T> responseType) {

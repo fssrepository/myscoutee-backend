@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.service.operator;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
@@ -11,6 +13,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Operat
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryAuditDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryIdentityDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectionDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistrySelectionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.SafeRegistryErrorDto;
 
@@ -19,43 +22,40 @@ public class OperatorRegistryMapper {
     public OperatorRegistryStatusDto toStatus(
             OperatorRegistrySettings settings,
             String mode,
-            boolean simulation,
+            List<RegistryOptionDto> registryOptions,
             CandidateDefaultsDto candidateDefaults,
             NodeIdentityDto observedNodeIdentity) {
-        OperatorRegistrySettings source = settings == null
-                ? new OperatorRegistrySettings()
-                : settings;
         return new OperatorRegistryStatusDto(
                 mode,
-                textOr(source.getLifecycle(), "UNCONFIGURED"),
-                Boolean.TRUE.equals(source.getEnabled()),
-                simulation,
+                settings == null
+                        ? "UNCONFIGURED"
+                        : requireText(settings.getLifecycle(), "Registry lifecycle"),
+                settings != null && Boolean.TRUE.equals(settings.getEnabled()),
+                false,
+                registryOptions == null ? List.of() : List.copyOf(registryOptions),
                 candidateDefaults,
-                toDraft(source.getDraftInspection()),
-                toSelection(source.getSelection()),
+                toDraft(settings == null ? null : settings.getDraftInspection()),
+                toSelection(settings == null ? null : settings.getSelection()),
                 observedNodeIdentity != null
                         ? observedNodeIdentity
-                        : toNodeIdentity(source.getNodeIdentity()),
-                toEnrollment(source.getEnrollment()),
-                toAudit(source.getAudit()),
-                toFailure(source.getLastError()));
+                        : toNodeIdentity(settings == null ? null : settings.getNodeIdentity()),
+                toEnrollment(settings == null ? null : settings.getEnrollment()),
+                toAudit(settings == null ? null : settings.getAudit()),
+                toFailure(settings == null ? null : settings.getLastError()));
     }
 
     public RegistryInspectionDto toInspection(
             OperatorRegistrySettings.DraftInspection draft,
-            String rawToken,
-            boolean simulation) {
+            String rawToken) {
         return new RegistryInspectionDto(
                 rawToken,
                 draft.getExpiresAt(),
                 draft.getBaseUrl(),
-                simulation,
+                false,
                 new RegistryIdentityDto(
                         draft.getIdentityEndpoint(),
                         draft.getProtocolVersion(),
-                        draft.getRegistryScope(),
-                        draft.getRegistryKeyId(),
-                        draft.getRegistryPublicKeyFingerprint()));
+                        draft.getRegistryScope()));
     }
 
     private DraftInspectionDto toDraft(OperatorRegistrySettings.DraftInspection value) {
@@ -65,8 +65,6 @@ public class OperatorRegistryMapper {
         return new DraftInspectionDto(
                 value.getBaseUrl(),
                 value.getRegistryScope(),
-                value.getRegistryKeyId(),
-                value.getRegistryPublicKeyFingerprint(),
                 value.getInspectedAt(),
                 value.getExpiresAt());
     }
@@ -80,19 +78,16 @@ public class OperatorRegistryMapper {
                 new RegistryIdentityDto(
                         value.getIdentityEndpoint(),
                         value.getProtocolVersion(),
-                        value.getRegistryScope(),
-                        value.getRegistryKeyId(),
-                        value.getRegistryPublicKeyFingerprint()),
+                        value.getRegistryScope()),
                 value.getConfirmedAt());
     }
 
     private NodeIdentityDto toNodeIdentity(OperatorRegistrySettings.NodeIdentity value) {
         if (value == null) {
-            return new NodeIdentityDto("MISSING", null, null);
+            return new NodeIdentityDto("MISSING", null);
         }
         return new NodeIdentityDto(
-                textOr(value.getState(), "MISSING"),
-                value.getPublicKeyFingerprint(),
+                requireText(value.getState(), "Node identity state"),
                 value.getInitializedAt());
     }
 
@@ -132,7 +127,10 @@ public class OperatorRegistryMapper {
                 Boolean.TRUE.equals(value.getRetryable()));
     }
 
-    private String textOr(String value, String fallback) {
-        return value == null || value.isBlank() ? fallback : value.trim();
+    private String requireText(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(fieldName + " is missing.");
+        }
+        return value.trim();
     }
 }

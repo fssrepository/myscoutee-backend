@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -110,7 +110,8 @@ clear_collection() {
 collection_should_replace_on_import() {
   local collection_name="$1"
 
-  if [ "${collection_name}" = "adminUsers" ]; then
+  if [ "${collection_name}" = "adminUsers" ] \
+      || [ "${collection_name}" = "deploymentConfigurations" ]; then
     return 1
   fi
 
@@ -126,6 +127,63 @@ target_collection_name() {
   fi
 
   printf '%s\n' "${collection_name}"
+}
+
+deployment_configuration_exists() {
+  local target_db="$1"
+
+  mongosh \
+    --host "${mongo_host}" \
+    --port "${mongo_port}" \
+    --username "${mongo_username}" \
+    --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" \
+    --quiet \
+    "${target_db}" \
+    --eval "
+if (db.getCollection('deploymentConfigurations').countDocuments(
+      { _id: 'deployment-configuration' },
+      { limit: 1 }
+    ) > 0) {
+  quit(0);
+}
+quit(1);
+" >/dev/null
+}
+
+import_deployment_configuration_seed() {
+  local target_db="$1"
+  local jsonfile="$2"
+
+  if deployment_configuration_exists "${target_db}"; then
+    echo "Preserving existing ${target_db}.deploymentConfigurations singleton."
+    return 0
+  fi
+
+  # This singleton is mutable operator state after its first import. Insert
+  # mode is deliberate: a concurrent importer/operator write can only make
+  # this insert fail with a duplicate key; it can never overwrite that state.
+  if mongoimport \
+      -h "${mongo_host}" \
+      --port "${mongo_port}" \
+      -d "${target_db}" \
+      -c "deploymentConfigurations" \
+      -u "${mongo_username}" \
+      -p "${mongo_password}" \
+      --mode=insert \
+      --file "${jsonfile}" \
+      --jsonArray \
+      --type json; then
+    return 0
+  fi
+
+  if deployment_configuration_exists "${target_db}"; then
+    echo "Preserving concurrently created ${target_db}.deploymentConfigurations singleton."
+    return 0
+  fi
+
+  echo "Failed to insert ${target_db}.deploymentConfigurations singleton." >&2
+  return 1
 }
 
 ensure_collection_indexes() {
@@ -479,6 +537,33 @@ db.getCollection('userExperienceProfiles').createIndex({ userId: 1 }, { name: 'u
 db.getCollection('navigatorContacts').createIndex({ userId: 1 }, { name: 'navigator_contacts_user_id', unique: true });
 " >/dev/null
       ;;
+    operatorRegistryEndpoints)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('operatorRegistryEndpoints').createIndex({ enabled: 1, sortOrder: 1, label: 1, _id: 1 }, { name: 'operator_registry_endpoint_enabled_sort' });
+db.getCollection('operatorRegistryEndpoints').createIndex({ baseUrl: 1, registryScope: 1 }, { name: 'operator_registry_endpoint_base_scope', unique: true });
+" >/dev/null
+      ;;
+    paymentProviders)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('paymentProviders').createIndex({ enabled: 1, sortOrder: 1, label: 1, _id: 1 }, { name: 'payment_provider_enabled_sort' });
+" >/dev/null
+      ;;
     eventFeedbackStates)
       mongosh \
         --host "${mongo_host}" \
@@ -679,6 +764,8 @@ db.getCollection('helpCenterRevisions').createIndex({ active: 1 }, { name: 'help
 ensure_runtime_indexes() {
   local target_db="$1"
 
+  ensure_collection_indexes "${target_db}" "operatorRegistryEndpoints"
+  ensure_collection_indexes "${target_db}" "paymentProviders"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphLayouts"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphNodes"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphEdges"
@@ -709,6 +796,11 @@ import_json_file() {
     fi
 
     echo "Skipping empty JSON array seed ${jsonfile}"
+    return 0
+  fi
+
+  if [ "${collection_name}" = "deploymentConfigurations" ]; then
+    import_deployment_configuration_seed "${target_db}" "${jsonfile}"
     return 0
   fi
 

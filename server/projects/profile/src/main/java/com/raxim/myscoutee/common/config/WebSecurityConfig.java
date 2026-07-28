@@ -62,6 +62,8 @@ public class WebSecurityConfig {
                             "/auth/facebook/data-deletion/status",
                             "/i18n/bundle",
                             "/api/i18n/bundle",
+                            "/deployment/configuration",
+                            "/api/deployment/configuration",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",

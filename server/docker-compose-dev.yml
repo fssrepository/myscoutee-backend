@@ -213,7 +213,7 @@ services:
     command:
       - sh
       - -lc
-      - BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; if [ "$${PROFILEMANAGEMENT_HOT_RELOAD}" = "true" ]; then ./gradlew :projects:profile:classes --continuous & fi; exec ./gradlew $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
+      - set -e; /bin/sh /workspace/docker/scripts/ensure_operator_configuration_master_key.sh; BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; if [ "$${PROFILEMANAGEMENT_HOT_RELOAD}" = "true" ]; then ./gradlew :projects:profile:classes --continuous & fi; exec ./gradlew $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
     environment:
       HOME: /workspace
       GRADLE_USER_HOME: /workspace/.gradle
@@ -231,6 +231,7 @@ services:
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
       OPERATOR_USER: "${OPERATOR_USER:-dev@myscoutee.local}"
+      OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/workspace/data/configuration/deployment-master-key"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
       MEDIA_OBJECT_STORE_REGION: "eu-central-1"
@@ -238,9 +239,6 @@ services:
       MEDIA_OBJECT_STORE_PATH_STYLE: "true"
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
-      REGISTRY_DEMO_MODE: "live"
-      REGISTRY_DEMO_CANDIDATE_BASE_URL: "http://registry:8080"
-      REGISTRY_DEMO_CANDIDATE_SCOPE: "${REGISTRY_DEMO_CANDIDATE_SCOPE:-demo:local-registry}"
       REGISTRY_DEMO_PRIVATE_KEY_PATH: "/workspace/data/registry-demo-keys/deployment-private-key.pem"
       REGISTRY_DEMO_PUBLIC_KEY_PATH: "/workspace/data/registry-demo-keys/deployment-public-key.der"
       REGISTRY_DEMO_STATE_DIR: "/workspace/data/registry-demo-state"
@@ -320,7 +318,7 @@ services:
     restart: unless-stopped
     environment:
       REGISTRY_LISTEN_ADDR: ":8080"
-      REGISTRY_SCOPE: "${REGISTRY_DEMO_CANDIDATE_SCOPE:-demo:local-registry}"
+      REGISTRY_SCOPE: "demo:local-registry"
       REGISTRY_DATABASE_PATH: "/data/registry.db"
       REGISTRY_SIGNING_KEY_PATH: "/data/registry-signing-key.pem"
       REGISTRY_GENERATE_SIGNING_KEY: "true"

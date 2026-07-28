@@ -20,6 +20,8 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
 import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
+import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
+import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
@@ -33,6 +35,8 @@ import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
         AdminStatsProperties.class,
         AffinityRecomputeProperties.class,
         RegionSecurityProperties.class,
+        OperatorConfigurationProperties.class,
+        OperatorUpdateProperties.class,
         RegistryProperties.class,
         RegistryDemoProperties.class
 })
