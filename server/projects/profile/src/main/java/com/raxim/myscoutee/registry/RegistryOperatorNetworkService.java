@@ -224,22 +224,18 @@ public final class RegistryOperatorNetworkService {
         String activeMatchingKey = "";
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
-            switch (entry.action()) {
-                case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
-                    generationBoundary = entry.receipt().auditHash();
-                    activeMatchingKey = RegistryProtocol.hashEquals(
-                                    payloadHash,
-                                    entry.payloadHash())
-                            ? entry.idempotencyKey()
-                            : "";
-                }
-                case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> {
-                    generationBoundary = entry.receipt().auditHash();
-                    activeMatchingKey = "";
-                }
-                default -> {
-                    // Non-ownership actions do not begin a new claim generation.
-                }
+            if (isClaimVerificationBoundary(entry)) {
+                generationBoundary = entry.receipt().auditHash();
+                activeMatchingKey = isStructuredClaim(entry)
+                                && RegistryProtocol.hashEquals(
+                                        payloadHash,
+                                        entry.payloadHash())
+                        ? entry.idempotencyKey()
+                        : "";
+            } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(
+                    entry.action())) {
+                generationBoundary = entry.receipt().auditHash();
+                activeMatchingKey = "";
             }
         }
         if (StringUtils.hasText(activeMatchingKey)) {
@@ -275,7 +271,7 @@ public final class RegistryOperatorNetworkService {
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
             if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(command.action())) {
-                if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())) {
+                if (isClaimVerificationBoundary(entry)) {
                     activeWithdrawalKey = "";
                 } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(entry.action())
                         && RegistryProtocol.hashEquals(payloadHash, entry.payloadHash())) {
@@ -316,7 +312,7 @@ public final class RegistryOperatorNetworkService {
         OperatorActionJournalEntry latestClaim = null;
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
-            if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())) {
+            if (isClaimVerificationBoundary(entry)) {
                 latestClaim = entry;
             }
         }
@@ -405,8 +401,8 @@ public final class RegistryOperatorNetworkService {
         String ownClaimGroupId = "";
         String currentGroupId = "";
         String activeLinkId = "";
-        OperatorActionJournalEntry structuredClaim = null;
-        boolean structuredClaimLocallyWithdrawn = false;
+        OperatorActionJournalEntry claimVerificationBoundary = null;
+        boolean claimVerificationLocallyWithdrawn = false;
         List<OperatorActionJournalEntry> journal =
                 localStore.loadOperatorActionJournal();
         for (OperatorActionJournalEntry entry : journal) {
@@ -417,12 +413,12 @@ public final class RegistryOperatorNetworkService {
                     claimed = true;
                     claimedAt = receipt.acceptedAt();
                     if (isStructuredClaim(entry)) {
-                        structuredClaim = entry;
-                        structuredClaimLocallyWithdrawn = false;
+                        claimVerificationBoundary = entry;
+                        claimVerificationLocallyWithdrawn = false;
                         operatorName = safeText(entry.legalName());
                     } else {
-                        structuredClaim = null;
-                        structuredClaimLocallyWithdrawn = false;
+                        claimVerificationBoundary = null;
+                        claimVerificationLocallyWithdrawn = false;
                         operatorName = safeText(entry.operatorName());
                     }
                     operatorAvatarUrl = safeText(entry.operatorAvatarUrl());
@@ -435,14 +431,20 @@ public final class RegistryOperatorNetworkService {
                     claimedAt = "";
                     currentGroupId = safeText(receipt.groupId());
                     activeLinkId = "";
-                    if (structuredClaim != null) {
-                        structuredClaimLocallyWithdrawn = true;
+                    if (claimVerificationBoundary != null) {
+                        claimVerificationLocallyWithdrawn = true;
                     }
                 }
                 case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> {
                     claimed = true;
                     currentGroupId = safeText(receipt.groupId());
                     activeLinkId = safeText(receipt.linkId());
+                    if (isTokenDerivedClaim(entry)) {
+                        claimedAt = receipt.acceptedAt();
+                        claimVerificationBoundary = entry;
+                        claimVerificationLocallyWithdrawn = false;
+                        ownClaimGroupId = currentGroupId;
+                    }
                 }
                 case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK -> {
                     if (trusted.state().deploymentId().equals(receipt.subjectDeploymentId())) {
@@ -460,13 +462,16 @@ public final class RegistryOperatorNetworkService {
         String legalName = "";
         String verificationCapability = "AVAILABLE";
         String verificationUnavailableReason = null;
-        if (structuredClaim != null) {
-            verificationStatus = structuredClaimLocallyWithdrawn
+        if (claimVerificationBoundary != null) {
+            verificationStatus = claimVerificationLocallyWithdrawn
                     ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                     : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW;
-            verificationSubmittedAt = structuredClaim.receipt().acceptedAt();
-            legalName = safeText(structuredClaim.legalName());
-            operatorName = legalName;
+            verificationSubmittedAt =
+                    claimVerificationBoundary.receipt().acceptedAt();
+            if (isStructuredClaim(claimVerificationBoundary)) {
+                legalName = safeText(claimVerificationBoundary.legalName());
+                operatorName = legalName;
+            }
             OperatorClaimStatusReceipt previousStatus =
                     loadVerifiedClaimStatusEvidence(trusted, journal);
             if (previousStatus != null) {
@@ -489,12 +494,12 @@ public final class RegistryOperatorNetworkService {
                 try {
                     registryStatus = verifyClaimStatus(
                             trusted,
-                            structuredClaim,
+                            claimVerificationBoundary,
                             response);
                     requireMonotonicClaimStatus(
                             previousStatus,
                             registryStatus);
-                    if (structuredClaimLocallyWithdrawn
+                    if (claimVerificationLocallyWithdrawn
                             && !RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                                     .equals(registryStatus.verificationStatus())) {
                         throw new IllegalArgumentException(
@@ -990,6 +995,18 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry redemption receipt does not match the submitted client token.");
         }
+        if (RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(request.action())
+                && RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                        receipt.claimState())
+                && !StringUtils.hasText(receipt.linkId())
+                && (!trusted.state().deploymentId().equals(
+                                receipt.subjectDeploymentId())
+                        || !StringUtils.hasText(receipt.groupId())
+                        || !StringUtils.hasText(receipt.relatedDeploymentId())
+                        || !StringUtils.hasText(receipt.tokenId()))) {
+            throw new IllegalArgumentException(
+                    "Token-derived claim receipt has an invalid pending-review boundary.");
+        }
     }
 
     private OperatorClaimStatusReceipt verifyClaimStatus(
@@ -1059,13 +1076,20 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Pending operator claim status unexpectedly has a review boundary.");
         }
+        if (!isClaimVerificationBoundary(claim)) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status has no matching durable claim boundary.");
+        }
         OperatorActionReceipt claimReceipt = claim.receipt();
+        boolean structuredClaim = isStructuredClaim(claim);
         if (!trusted.state().deploymentId().equals(status.deploymentId())
                 || !claimReceipt.actionId().equals(status.claimActionId())
                 || !claimReceipt.auditIndex().equals(status.claimAuditIndex())
                 || !claimReceipt.auditHash().equals(status.claimAuditHash())
                 || !claimReceipt.groupId().equals(status.groupId())
-                || !safeText(claim.legalName()).equals(status.legalName())
+                || (structuredClaim
+                        && !safeText(claim.legalName()).equals(
+                                status.legalName()))
                 || !claimReceipt.acceptedAt().equals(status.submittedAt())
                 || !trusted.state().registryScope().equals(status.registryScope())
                 || !trusted.registryKeyId().equals(status.registryKeyId())) {
@@ -1092,7 +1116,7 @@ public final class RegistryOperatorNetworkService {
         }
         OperatorActionJournalEntry storedClaim = null;
         for (OperatorActionJournalEntry entry : journal) {
-            if (isStructuredClaim(entry)
+            if (isClaimVerificationBoundary(entry)
                     && Objects.equals(
                             entry.receipt().actionId(),
                             stored.claimActionId())) {
@@ -1904,9 +1928,11 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "website must not have surrounding whitespace.");
         }
-        if (!website.isEmpty()) {
-            requireHttpsUrl(website, "website");
+        if (website.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "website is required.");
         }
+        requireHttpsUrl(website, "website");
         String contactName = requireClaimText(
                 supplied.verificationContactName(),
                 "verification_contact_name",
@@ -1976,6 +2002,28 @@ public final class RegistryOperatorNetworkService {
         return entry != null
                 && RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())
                 && StringUtils.hasText(entry.legalName());
+    }
+
+    private static boolean isTokenDerivedClaim(
+            OperatorActionJournalEntry entry) {
+        if (entry == null
+                || !RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(
+                        entry.action())
+                || entry.receipt() == null) {
+            return false;
+        }
+        OperatorActionReceipt receipt = entry.receipt();
+        return RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                        receipt.claimState())
+                && StringUtils.hasText(receipt.groupId())
+                && StringUtils.hasText(receipt.relatedDeploymentId())
+                && StringUtils.hasText(receipt.tokenId())
+                && !StringUtils.hasText(receipt.linkId());
+    }
+
+    private static boolean isClaimVerificationBoundary(
+            OperatorActionJournalEntry entry) {
+        return isStructuredClaim(entry) || isTokenDerivedClaim(entry);
     }
 
     private static void requireAbsentClaimVerification(ClaimVerification verification) {

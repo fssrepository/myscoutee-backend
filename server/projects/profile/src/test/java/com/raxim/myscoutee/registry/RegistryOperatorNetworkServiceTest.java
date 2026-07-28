@@ -54,6 +54,8 @@ import tools.jackson.databind.ObjectMapper;
 class RegistryOperatorNetworkServiceTest {
     private static final String SCOPE = "operator-test:parent-a";
     private static final String DEPLOYMENT_ID = "dep_0123456789abcdef0123456789abcdef";
+    private static final String ISSUER_DEPLOYMENT_ID =
+            "dep_fedcba9876543210fedcba9876543210";
     private static final String GROUP_ID = "opg_0123456789abcdef0123456789abcdef";
     private static final String TOKEN_ID = "opt_0123456789abcdef0123456789abcdef";
     private static final String LINK_ID = "opl_0123456789abcdef0123456789abcdef";
@@ -185,6 +187,111 @@ class RegistryOperatorNetworkServiceTest {
     }
 
     @Test
+    void tokenDerivedPendingClaimUsesSignedRedeemBoundaryWithoutLocalPii()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry =
+                new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties =
+                    registeredProperties(registry, objectMapper);
+            registry.redeemAsTokenDerivedClaim = true;
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+
+            RegistryOperatorNetworkService.ActionOutcome redemption =
+                    service.apply(new ActionCommand(
+                            RegistryProtocol
+                                    .OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                            null,
+                            null,
+                            CLIENT_TOKEN,
+                            null,
+                            null,
+                            null,
+                            null));
+            RegistryOperatorNetworkService.ClaimStatus status =
+                    service.claimStatus();
+
+            assertThat(status.claimed()).isTrue();
+            assertThat(status.claimedAt())
+                    .isEqualTo("2026-07-28T00:00:03Z");
+            assertThat(status.operatorName())
+                    .isEqualTo("Token Source Cooperative");
+            assertThat(status.groupId()).isEqualTo(GROUP_ID);
+            assertThat(status.activeLinkId()).isNull();
+            assertThat(status.verificationStatus())
+                    .isEqualTo("PENDING_REVIEW");
+            assertThat(status.legalName())
+                    .isEqualTo("Token Source Cooperative");
+            assertThat(redemption.response().receipt().relatedDeploymentId())
+                    .isEqualTo(ISSUER_DEPLOYMENT_ID);
+            assertThat(redemption.response().receipt().tokenId())
+                    .isEqualTo(TOKEN_ID);
+            assertThat(redemption.response().receipt().linkId()).isNull();
+
+            RegistryLocalStore.OperatorActionJournalEntry durable =
+                    new RegistryLocalStore(properties, objectMapper)
+                            .loadOperatorActionJournal()
+                            .getFirst();
+            assertThat(durable.action()).isEqualTo(
+                    RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN);
+            assertThat(durable.legalName()).isNull();
+            assertThat(durable.registrationNumber()).isNull();
+            assertThat(durable.registeredAddress()).isNull();
+            assertThat(durable.website()).isNull();
+            assertThat(durable.verificationContactEmail()).isNull();
+            RegistryOperatorNetworkService restarted =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+            assertThat(restarted.claimStatus().verificationStatus())
+                    .isEqualTo("PENDING_REVIEW");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void structuredClaimRequiresWebsiteBeforeCallingRegistry()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry =
+                new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties =
+                    registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+
+            assertThatThrownBy(() -> service.apply(new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ClaimVerification(
+                            "Website Required Cooperative",
+                            "REG-WEBSITE",
+                            "Slovakia",
+                            "Main Street 5",
+                            null,
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true))))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("website is required.");
+            assertThat(registry.actionRequests).hasValue(0);
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
     void rejectsTamperedSignedClaimStatus() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
@@ -205,7 +312,7 @@ class RegistryOperatorNetworkServiceTest {
                             "REG-42",
                             "Slovakia",
                             "Main Street 1",
-                            null,
+                            "https://operator.example.test",
                             "Alex Reviewer",
                             "Director",
                             "alex@example.test",
@@ -241,7 +348,7 @@ class RegistryOperatorNetworkServiceTest {
                             "REG-APPROVED",
                             "Slovakia",
                             "Main Street 3",
-                            null,
+                            "https://approved.example.test",
                             "Alex Reviewer",
                             "Director",
                             "alex@example.test",
@@ -525,7 +632,7 @@ class RegistryOperatorNetworkServiceTest {
                             "REG-RETRY",
                             "Slovakia",
                             "Main Street 2",
-                            null,
+                            "https://retry.example.test",
                             "Alex Reviewer",
                             "Director",
                             "alex@example.test",
@@ -571,7 +678,7 @@ class RegistryOperatorNetworkServiceTest {
                             "REG-DURABLE",
                             "Slovakia",
                             "Main Street 4",
-                            null,
+                            "https://durable.example.test",
                             "Alex Reviewer",
                             "Director",
                             "alex@example.test",
@@ -672,7 +779,7 @@ class RegistryOperatorNetworkServiceTest {
                             "REG-42",
                             "Slovakia",
                             "Main Street 1",
-                            null,
+                            "https://operator.example.test",
                             "Alex Reviewer",
                             "Director",
                             "alex@example.test",
@@ -699,7 +806,7 @@ class RegistryOperatorNetworkServiceTest {
                         "REG-42",
                         "Slovakia",
                         "Main Street 1",
-                        null,
+                        "https://operator.example.test",
                         "Alex Reviewer",
                         "Director",
                         "alex@example.test",
@@ -801,6 +908,8 @@ class RegistryOperatorNetworkServiceTest {
         private final AtomicReference<String> lastAuditHash = new AtomicReference<>();
         private final AtomicReference<OperatorActionRequest> lastClaimRequest = new AtomicReference<>();
         private final AtomicReference<OperatorActionReceipt> lastClaimReceipt = new AtomicReference<>();
+        private final AtomicReference<String> lastClaimLegalName =
+                new AtomicReference<>();
         private final AtomicReference<String> firstClaimIdempotency = new AtomicReference<>();
         private final AtomicReference<String> lastClaimIdempotency = new AtomicReference<>();
         private final AtomicReference<String> firstWithdrawalIdempotency = new AtomicReference<>();
@@ -824,6 +933,7 @@ class RegistryOperatorNetworkServiceTest {
         private volatile boolean failClaimStatusOnce;
         private volatile boolean failLeaderboard;
         private volatile boolean unsupportedClaimStatusEndpoint;
+        private volatile boolean redeemAsTokenDerivedClaim;
         private volatile String loseFirstResponseForAction;
 
         private TestOperatorRegistry(ObjectMapper objectMapper) throws IOException {
@@ -934,6 +1044,8 @@ class RegistryOperatorNetworkServiceTest {
                         .equals(request.action());
                 boolean redeemToken = RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN
                         .equals(request.action());
+                boolean tokenDerivedClaim =
+                        redeemToken && redeemAsTokenDerivedClaim;
                 String submittedClientTokenHash = redeemToken
                         ? RegistryProtocol.sha256(
                                 request.clientToken().getBytes(StandardCharsets.UTF_8))
@@ -1016,19 +1128,28 @@ class RegistryOperatorNetworkServiceTest {
                 String actionId = issueToken
                         ? ACTION_ID
                         : "opa_" + String.format("%032x", auditIndex);
-                String claimState = switch (request.action()) {
-                    case RegistryProtocol.OPERATOR_ACTION_CLAIM ->
-                            RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW;
-                    case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> "withdrawn";
-                    default -> "claimed";
-                };
-                String linkId = Set.of(
-                                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
-                                RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK)
-                        .contains(request.action())
-                                ? LINK_ID
-                                : null;
-                String tokenId = issueToken
+                String claimState = tokenDerivedClaim
+                        ? RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW
+                        : switch (request.action()) {
+                            case RegistryProtocol.OPERATOR_ACTION_CLAIM ->
+                                    RegistryProtocol
+                                            .OPERATOR_CLAIM_STATE_PENDING_REVIEW;
+                            case RegistryProtocol
+                                    .OPERATOR_ACTION_WITHDRAW_CLAIM ->
+                                            "withdrawn";
+                            default -> "claimed";
+                        };
+                String linkId = tokenDerivedClaim
+                        ? null
+                        : Set.of(
+                                        RegistryProtocol
+                                                .OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                                        RegistryProtocol
+                                                .OPERATOR_ACTION_REVOKE_GROUP_LINK)
+                                .contains(request.action())
+                                        ? LINK_ID
+                                        : null;
+                String tokenId = issueToken || redeemToken
                         ? TOKEN_ID
                         : RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN
                                 .equals(request.action())
@@ -1041,7 +1162,7 @@ class RegistryOperatorNetworkServiceTest {
                         actionId,
                         DEPLOYMENT_ID,
                         DEPLOYMENT_ID,
-                        null,
+                        tokenDerivedClaim ? ISSUER_DEPLOYMENT_ID : null,
                         request.action(),
                         "2026-07-28T00:00:03Z",
                         claimState,
@@ -1099,9 +1220,12 @@ class RegistryOperatorNetworkServiceTest {
                                 RegistryTestIdentity.sign(
                                         registryKeyPair.getPrivate(),
                                         RegistryProtocol.operatorActionReceipt(unsigned)));
-                if (structuredClaim) {
+                if (structuredClaim || tokenDerivedClaim) {
                     lastClaimRequest.set(request);
                     lastClaimReceipt.set(signed);
+                    lastClaimLegalName.set(structuredClaim
+                            ? request.legalName()
+                            : "Token Source Cooperative");
                     approvedClaimStatus = false;
                     withdrawnClaimStatus = false;
                 } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM
@@ -1168,7 +1292,10 @@ class RegistryOperatorNetworkServiceTest {
                 }
                 OperatorActionRequest request = lastClaimRequest.get();
                 OperatorActionReceipt claimReceipt = lastClaimReceipt.get();
-                if (request == null || claimReceipt == null) {
+                String claimLegalName = lastClaimLegalName.get();
+                if (request == null
+                        || claimReceipt == null
+                        || claimLegalName == null) {
                     sendJson(exchange, 404, Map.of(
                             "error",
                             Map.of(
@@ -1188,7 +1315,7 @@ class RegistryOperatorNetworkServiceTest {
                         claimReceipt.auditIndex(),
                         claimReceipt.auditHash(),
                         claimReceipt.groupId(),
-                        request.legalName(),
+                        claimLegalName,
                         verificationStatus,
                         claimReceipt.acceptedAt(),
                         hasReview
