@@ -424,22 +424,23 @@ class RegistryProtocolTest {
     }
 
     @Test
-    void operatorActionMessagesRejectPartialSourceAnchors() {
+    void partialSourceAnchorSelectsV2ForDeterministicRejectionByVerifier() {
         RegistryProtocol.OperatorActionReceipt receipt =
                 operatorReceipt(
                         "opa_22222222222222222222222222222222",
                         null);
 
-        assertThatThrownBy(() ->
-                        RegistryProtocol.operatorActionReceipt(receipt))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("both absent or both present");
-        assertThatThrownBy(() ->
+        assertThat(new String(
+                        RegistryProtocol.operatorActionReceipt(receipt),
+                        StandardCharsets.UTF_8))
+                .startsWith(
+                        "myscoutee-registry-operator-action-receipt-v2\n");
+        assertThat(new String(
                         RegistryProtocol.operatorAudit(
                                 receipt,
-                                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("both absent or both present");
+                                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"),
+                        StandardCharsets.UTF_8))
+                .startsWith("myscoutee-registry-operator-audit-v2\n");
     }
 
     @Test

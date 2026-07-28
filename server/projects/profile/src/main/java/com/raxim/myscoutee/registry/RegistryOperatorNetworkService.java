@@ -1870,12 +1870,24 @@ public final class RegistryOperatorNetworkService {
             RegistryProtocol.requireOperatorTokenId(receipt.tokenId());
         }
         boolean hasSourceClaimActionId =
-                StringUtils.hasText(receipt.sourceClaimActionId());
+                receipt.sourceClaimActionId() != null
+                        && !receipt.sourceClaimActionId().isEmpty();
         boolean hasSourcePrivateRecordHash =
-                StringUtils.hasText(receipt.sourcePrivateRecordHash());
+                receipt.sourcePrivateRecordHash() != null
+                        && !receipt.sourcePrivateRecordHash().isEmpty();
         if (hasSourceClaimActionId != hasSourcePrivateRecordHash) {
             throw new IllegalArgumentException(
                     "Registry operator source claim anchors must be both absent or both present.");
+        }
+        boolean tokenDerivedPendingClaim =
+                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(
+                                receipt.action())
+                        && RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                                receipt.claimState())
+                        && !StringUtils.hasText(receipt.linkId());
+        if (tokenDerivedPendingClaim && !hasSourceClaimActionId) {
+            throw new IllegalArgumentException(
+                    "Token-derived pending claim receipt has no signed source claim anchors.");
         }
         if (hasSourceClaimActionId) {
             RegistryProtocol.requireOperatorActionId(
@@ -1883,11 +1895,7 @@ public final class RegistryOperatorNetworkService {
             RegistryProtocol.requireHash(
                     receipt.sourcePrivateRecordHash(),
                     "source_private_record_hash");
-            if (!RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(
-                            receipt.action())
-                    || !RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
-                            receipt.claimState())
-                    || StringUtils.hasText(receipt.linkId())
+            if (!tokenDerivedPendingClaim
                     || !StringUtils.hasText(receipt.groupId())
                     || !StringUtils.hasText(receipt.relatedDeploymentId())) {
                 throw new IllegalArgumentException(
@@ -2043,6 +2051,8 @@ public final class RegistryOperatorNetworkService {
                 && StringUtils.hasText(receipt.groupId())
                 && StringUtils.hasText(receipt.relatedDeploymentId())
                 && StringUtils.hasText(receipt.tokenId())
+                && StringUtils.hasText(receipt.sourceClaimActionId())
+                && StringUtils.hasText(receipt.sourcePrivateRecordHash())
                 && !StringUtils.hasText(receipt.linkId());
     }
 

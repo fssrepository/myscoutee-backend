@@ -248,12 +248,77 @@ class RegistryOperatorNetworkServiceTest {
             assertThat(durable.registeredAddress()).isNull();
             assertThat(durable.website()).isNull();
             assertThat(durable.verificationContactEmail()).isNull();
+            assertThat(durable.receipt().sourceClaimActionId())
+                    .isEqualTo(ACTION_ID);
+            assertThat(durable.receipt().sourcePrivateRecordHash())
+                    .isEqualTo(SOURCE_PRIVATE_RECORD_HASH);
             RegistryOperatorNetworkService restarted =
                     new RegistryOperatorNetworkService(
                             properties,
                             objectMapper);
             assertThat(restarted.claimStatus().verificationStatus())
                     .isEqualTo("PENDING_REVIEW");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void rejectsSourceClaimAnchorsOnAnUnrelatedOperatorAction()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry =
+                new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties =
+                    registeredProperties(registry, objectMapper);
+            registry.sourceAnchorsForOrdinaryAction = true;
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+
+            assertThatThrownBy(() -> service.apply(new ActionCommand(
+                            RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN,
+                            null,
+                            null,
+                            null,
+                            300L,
+                            null,
+                            null,
+                            "operator_issue_12345678")))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(
+                            "source claim anchors are invalid");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void rejectsTokenDerivedPendingClaimWithoutSignedSourceAnchors()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry =
+                new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties =
+                    registeredProperties(registry, objectMapper);
+            registry.redeemAsTokenDerivedClaim = true;
+            registry.omitTokenDerivedSourceAnchors = true;
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+
+            assertThatThrownBy(() -> service.apply(new ActionCommand(
+                            RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                            null,
+                            null,
+                            CLIENT_TOKEN,
+                            null,
+                            null,
+                            null,
+                            null)))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(
+                            "no signed source claim anchors");
             registry.assertHealthy();
         }
     }
@@ -547,6 +612,10 @@ class RegistryOperatorNetworkServiceTest {
                     service.apply(redeem);
             assertThat(redeemed.response().duplicate()).isTrue();
             assertThat(redeemed.idempotencyKey()).startsWith("redeem_");
+            assertThat(redeemed.response().receipt().sourceClaimActionId())
+                    .isNull();
+            assertThat(redeemed.response().receipt().sourcePrivateRecordHash())
+                    .isNull();
 
             ActionCommand revoke = new ActionCommand(
                     RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK,
@@ -940,6 +1009,8 @@ class RegistryOperatorNetworkServiceTest {
         private volatile boolean failLeaderboard;
         private volatile boolean unsupportedClaimStatusEndpoint;
         private volatile boolean redeemAsTokenDerivedClaim;
+        private volatile boolean omitTokenDerivedSourceAnchors;
+        private volatile boolean sourceAnchorsForOrdinaryAction;
         private volatile String loseFirstResponseForAction;
 
         private TestOperatorRegistry(ObjectMapper objectMapper) throws IOException {
@@ -1161,6 +1232,10 @@ class RegistryOperatorNetworkServiceTest {
                                 .equals(request.action())
                                         ? request.tokenId()
                                         : null;
+                boolean sourceAnchored =
+                        (tokenDerivedClaim
+                                && !omitTokenDerivedSourceAnchors)
+                                || sourceAnchorsForOrdinaryAction;
                 OperatorActionReceipt auditSeed = new OperatorActionReceipt(
                         auditIndex,
                         null,
@@ -1177,8 +1252,8 @@ class RegistryOperatorNetworkServiceTest {
                         tokenId,
                         issueToken ? CLIENT_TOKEN : null,
                         tokenHash,
-                        tokenDerivedClaim ? ACTION_ID : null,
-                        tokenDerivedClaim
+                        sourceAnchored ? ACTION_ID : null,
+                        sourceAnchored
                                 ? SOURCE_PRIVATE_RECORD_HASH
                                 : null,
                         issueToken ? "2026-07-28T00:05:03Z" : null,

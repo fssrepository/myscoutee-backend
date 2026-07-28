@@ -410,7 +410,7 @@ public final class RegistryProtocol {
 
     public static byte[] operatorActionReceipt(OperatorActionReceipt receipt) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
-        boolean sourceAnchored = requireCompleteOperatorSourceAnchors(receipt);
+        boolean sourceAnchored = hasOperatorSourceAnchor(receipt);
         if (!sourceAnchored) {
             return canonicalAllowEmpty(
                     "myscoutee-registry-operator-action-receipt-v1",
@@ -459,7 +459,7 @@ public final class RegistryProtocol {
             OperatorActionReceipt receipt,
             String payloadHash) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
-        boolean sourceAnchored = requireCompleteOperatorSourceAnchors(receipt);
+        boolean sourceAnchored = hasOperatorSourceAnchor(receipt);
         if (!sourceAnchored) {
             return canonicalAllowEmpty(
                     "myscoutee-registry-operator-audit-v1",
@@ -500,17 +500,12 @@ public final class RegistryProtocol {
                 receipt.previousAuditHash());
     }
 
-    private static boolean requireCompleteOperatorSourceAnchors(
+    private static boolean hasOperatorSourceAnchor(
             OperatorActionReceipt receipt) {
-        boolean hasClaimAction = receipt.sourceClaimActionId() != null
-                && !receipt.sourceClaimActionId().isEmpty();
-        boolean hasPrivateRecordHash = receipt.sourcePrivateRecordHash() != null
-                && !receipt.sourcePrivateRecordHash().isEmpty();
-        if (hasClaimAction != hasPrivateRecordHash) {
-            throw new IllegalArgumentException(
-                    "Operator source claim anchors must be both absent or both present.");
-        }
-        return hasClaimAction;
+        return (receipt.sourceClaimActionId() != null
+                        && !receipt.sourceClaimActionId().isEmpty())
+                || (receipt.sourcePrivateRecordHash() != null
+                        && !receipt.sourcePrivateRecordHash().isEmpty());
     }
 
     public static byte[] operatorClaimStatusReceipt(OperatorClaimStatusReceipt status) {
