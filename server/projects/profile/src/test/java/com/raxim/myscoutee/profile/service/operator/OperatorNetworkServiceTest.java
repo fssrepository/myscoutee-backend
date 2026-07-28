@@ -3,11 +3,14 @@ package com.raxim.myscoutee.profile.service.operator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -17,16 +20,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.profile.data.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
+import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimStatus;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
 import com.raxim.myscoutee.registry.RegistryProtocolException;
 
 class OperatorNetworkServiceTest {
@@ -34,6 +43,8 @@ class OperatorNetworkServiceTest {
     void submitsStructuredClaimThenReturnsVerifiedRegistryStatus() {
         OperatorRegistrySettingsRepository settingsRepository =
                 mock(OperatorRegistrySettingsRepository.class);
+        OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository =
+                mock(OperatorClaimSubmissionSnapshotRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);
         RegistryOperatorNetworkOperations operations =
                 mock(RegistryOperatorNetworkOperations.class);
@@ -42,7 +53,22 @@ class OperatorNetworkServiceTest {
         properties.setOutboundAllowed(true);
         when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
                 .thenReturn(Optional.of(registeredSettings()));
+        when(claimSubmissionRepository.findById(
+                OperatorClaimSubmissionSnapshot.SINGLETON_ID))
+                .thenReturn(Optional.empty());
+        when(claimSubmissionRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
         when(usersRepository.findByUserId("operator-1")).thenReturn(Optional.empty());
+        OperatorClaimRequestDto request = new OperatorClaimRequestDto(
+                "Example Cooperative",
+                "REG-42",
+                "Slovakia",
+                "Main Street 1",
+                "https://example.test",
+                "Alex Reviewer",
+                "Director",
+                "alex@example.test",
+                true);
 
         ClaimStatus registryStatus = new ClaimStatus(
                 true,
@@ -74,30 +100,66 @@ class OperatorNetworkServiceTest {
                 "PENDING_REVIEW",
                 "2026-07-28T12:00:00Z",
                 "Example Cooperative");
+        LeaderboardRow registryLeaderboardEntry = new LeaderboardRow(
+                "opg_0123456789abcdef0123456789abcdef",
+                "claimed",
+                "opg_0123456789abcdef0123456789abcdef",
+                "Example Cooperative",
+                "",
+                "pending-review",
+                1L,
+                "0",
+                "1",
+                "0",
+                "1");
+        OperatorClaimMutationResultDto publicMutation =
+                new OperatorClaimMutationResultDto(
+                        publicStatus,
+                        request,
+                        new OperatorLeaderboardRowDto(
+                                "opg_0123456789abcdef0123456789abcdef",
+                                "claimed",
+                                "opg_0123456789abcdef0123456789abcdef",
+                                "Example Cooperative",
+                                "",
+                                "pending-review",
+                                1L,
+                                "0",
+                                "1",
+                                "0",
+                                "1"),
+                        List.of("dep_0123456789abcdef0123456789abcdef"));
         when(operations.claimStatus(any())).thenReturn(registryStatus);
-        when(mapper.toClaimStatus(registryStatus, "operator-1")).thenReturn(publicStatus);
+        when(operations.leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("")))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(registryLeaderboardEntry),
+                        null));
+        when(mapper.toClaimMutation(
+                eq(registryStatus),
+                eq("operator-1"),
+                any(OperatorClaimSubmissionSnapshot.class),
+                eq(registryLeaderboardEntry),
+                eq("dep_0123456789abcdef0123456789abcdef")))
+                .thenReturn(publicMutation);
         OperatorNetworkService service = new OperatorNetworkService(
                 settingsRepository,
+                claimSubmissionRepository,
                 usersRepository,
                 properties,
                 new RegistryDemoProperties(),
                 operations,
                 mapper);
-        OperatorClaimRequestDto request = new OperatorClaimRequestDto(
-                "Example Cooperative",
-                "REG-42",
-                "Slovakia",
-                "Main Street 1",
-                "https://example.test",
-                "Alex Reviewer",
-                "Director",
-                "alex@example.test",
-                true);
-
         assertThat(service.submitClaim(
                 request,
                 "operator-1",
-                "claim-request-12345678")).isSameAs(publicStatus);
+                "claim-request-12345678")).isSameAs(publicMutation);
 
         ArgumentCaptor<ActionCommand> command = ArgumentCaptor.forClass(ActionCommand.class);
         verify(operations).apply(any(), command.capture());
@@ -110,17 +172,45 @@ class OperatorNetworkServiceTest {
                 .isEqualTo("alex@example.test");
         assertThat(command.getValue().claimVerification().authorityAttested()).isTrue();
         verify(operations).claimStatus(any());
+        verify(operations).leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq(""));
+        ArgumentCaptor<OperatorClaimSubmissionSnapshot> submission =
+                ArgumentCaptor.forClass(OperatorClaimSubmissionSnapshot.class);
+        verify(claimSubmissionRepository).save(submission.capture());
+        assertThat(submission.getValue().getLegalName())
+                .isEqualTo(request.legalName());
+        assertThat(submission.getValue().getRegisteredAddress())
+                .isEqualTo(request.registeredAddress());
+        assertThat(submission.getValue().getVerificationContactEmail())
+                .isEqualTo(request.verificationContactEmail());
+        assertThat(submission.getValue().getOperatorGroupId())
+                .isEqualTo(registryStatus.groupId());
+        assertThat(submission.getValue().getSubmittedAt())
+                .isEqualTo(registryStatus.verificationSubmittedAt());
+        verify(mapper).toClaimMutation(
+                registryStatus,
+                "operator-1",
+                submission.getValue(),
+                registryLeaderboardEntry,
+                "dep_0123456789abcdef0123456789abcdef");
     }
 
     @Test
     void genericActionRouteCannotBypassStructuredClaimValidation() {
         OperatorRegistrySettingsRepository settingsRepository =
                 mock(OperatorRegistrySettingsRepository.class);
+        OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository =
+                mock(OperatorClaimSubmissionSnapshotRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);
         RegistryOperatorNetworkOperations operations =
                 mock(RegistryOperatorNetworkOperations.class);
         OperatorNetworkService service = new OperatorNetworkService(
                 settingsRepository,
+                claimSubmissionRepository,
                 usersRepository,
                 new RegistryProperties(),
                 new RegistryDemoProperties(),
@@ -142,7 +232,11 @@ class OperatorNetworkServiceTest {
                         ResponseStatusException.class,
                         exception -> assertThat(exception.getStatusCode())
                                 .isEqualTo(HttpStatus.BAD_REQUEST));
-        verifyNoInteractions(settingsRepository, usersRepository, operations);
+        verifyNoInteractions(
+                settingsRepository,
+                claimSubmissionRepository,
+                usersRepository,
+                operations);
     }
 
     @Test
@@ -212,6 +306,7 @@ class OperatorNetworkServiceTest {
                 .thenReturn(Optional.of(registeredSettings()));
         return new OperatorNetworkService(
                 settingsRepository,
+                mock(OperatorClaimSubmissionSnapshotRepository.class),
                 mock(UsersRepository.class),
                 properties,
                 new RegistryDemoProperties(),

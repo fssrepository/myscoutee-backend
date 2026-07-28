@@ -13,27 +13,34 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.profile.data.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimOverviewDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
+import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.registry.RegistryHttpClient.RegistryHttpException;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimVerification;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimStatus;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
 import com.raxim.myscoutee.registry.RegistryProtocolException;
 
 @Service
 public class OperatorNetworkService {
     private final OperatorRegistrySettingsRepository settingsRepository;
+    private final OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
     private final UsersRepository usersRepository;
     private final RegistryProperties realProperties;
     private final RegistryDemoProperties demoProperties;
@@ -44,12 +51,15 @@ public class OperatorNetworkService {
 
     public OperatorNetworkService(
             OperatorRegistrySettingsRepository settingsRepository,
+            OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
             UsersRepository usersRepository,
             RegistryProperties realProperties,
             RegistryDemoProperties demoProperties,
             RegistryOperatorNetworkOperations operations,
             OperatorNetworkMapper mapper) {
         this.settingsRepository = Objects.requireNonNull(settingsRepository);
+        this.claimSubmissionRepository =
+                Objects.requireNonNull(claimSubmissionRepository);
         this.usersRepository = Objects.requireNonNull(usersRepository);
         this.realProperties = Objects.requireNonNull(realProperties);
         this.demoProperties = Objects.requireNonNull(demoProperties);
@@ -105,7 +115,7 @@ public class OperatorNetworkService {
         }
     }
 
-    public OperatorClaimStatusDto submitClaim(
+    public OperatorClaimMutationResultDto submitClaim(
             OperatorClaimRequestDto request,
             String actorUserId,
             String idempotencyKey) {
@@ -117,7 +127,8 @@ public class OperatorNetworkService {
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
             try {
-                RegistryProperties runtime = requireRegisteredRuntime(mode);
+                RegisteredRuntime registered = requireRegisteredContext(mode);
+                RegistryProperties runtime = registered.properties();
                 String avatarUrl = operatorAvatar(actorUserId);
                 operations.apply(
                         runtime,
@@ -140,9 +151,23 @@ public class OperatorNetworkService {
                                         request.verificationContactRole(),
                                         request.verificationContactEmail(),
                                         request.authorityAttested())));
-                return mapper.toClaimStatus(
-                        operations.claimStatus(runtime),
-                        safeText(actorUserId));
+                ClaimStatus status = operations.claimStatus(runtime);
+                requireRegistryVerifiedClaimStatus(status);
+                LeaderboardRow leaderboardEntry = requireClaimedLeaderboardRow(
+                        runtime,
+                        status.groupId());
+                OperatorClaimSubmissionSnapshot submission =
+                        persistClaimSubmission(
+                                request,
+                                status,
+                                actorUserId,
+                                registered);
+                return mapper.toClaimMutation(
+                        status,
+                        safeText(actorUserId),
+                        submission,
+                        leaderboardEntry,
+                        registered.deploymentId());
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
             } catch (RegistryProtocolException exception) {
@@ -229,13 +254,17 @@ public class OperatorNetworkService {
         }
     }
 
-    public OperatorClaimStatusDto claimStatus(String actorUserId) {
+    public OperatorClaimOverviewDto claimStatus(String actorUserId) {
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
             try {
-                return mapper.toClaimStatus(
-                        operations.claimStatus(requireRegisteredRuntime(mode)),
-                        safeText(actorUserId));
+                RegisteredRuntime registered = requireRegisteredContext(mode);
+                ClaimStatus status = operations.claimStatus(
+                        registered.properties());
+                return mapper.toClaimOverview(
+                        status,
+                        safeText(actorUserId),
+                        loadClaimSubmission(registered, status));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
             } catch (RegistryProtocolException exception) {
@@ -299,6 +328,10 @@ public class OperatorNetworkService {
     }
 
     private RegistryProperties requireRegisteredRuntime(MongoSessionMode mode) {
+        return requireRegisteredContext(mode).properties();
+    }
+
+    private RegisteredRuntime requireRegisteredContext(MongoSessionMode mode) {
         OperatorRegistrySettings settings = settingsRepository
                 .findById(OperatorRegistrySettings.SINGLETON_ID)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -349,7 +382,129 @@ public class OperatorNetworkService {
                     HttpStatus.CONFLICT,
                     "Outbound registry communication is disabled.");
         }
-        return runtime;
+        return new RegisteredRuntime(
+                runtime,
+                settings.getEnrollment().getDeploymentCode().trim(),
+                selection.getRegistryScope().trim());
+    }
+
+    private LeaderboardRow requireClaimedLeaderboardRow(
+            RegistryProperties runtime,
+            String groupId) {
+        if (!StringUtils.hasText(groupId)) {
+            throw new RegistryProtocolException(
+                    "Registry claim status has no operator group.");
+        }
+        String cursor = "";
+        int pageCount = 0;
+        do {
+            if (++pageCount > 1_000) {
+                break;
+            }
+            LeaderboardPage page = operations.leaderboard(
+                    runtime,
+                    "claimed",
+                    null,
+                    100,
+                    cursor);
+            for (LeaderboardRow row : page.items()) {
+                if (groupId.equals(row.groupId())) {
+                    return row;
+                }
+            }
+            cursor = safeText(page.nextCursor());
+        } while (!cursor.isEmpty());
+        throw new RegistryProtocolException(
+                "Registry claim status has no canonical claimed leaderboard row.");
+    }
+
+    private static void requireRegistryVerifiedClaimStatus(ClaimStatus status) {
+        if (status == null
+                || !"AVAILABLE".equals(status.verificationCapability())
+                || !StringUtils.hasText(status.verificationStatus())) {
+            throw new RegistryProtocolException(
+                    "Registry did not return a verified operator claim status.");
+        }
+    }
+
+    private OperatorClaimSubmissionSnapshot persistClaimSubmission(
+            OperatorClaimRequestDto request,
+            ClaimStatus status,
+            String actorUserId,
+            RegisteredRuntime registered) {
+        OperatorClaimSubmissionSnapshot submission = claimSubmissionRepository
+                .findById(OperatorClaimSubmissionSnapshot.SINGLETON_ID)
+                .orElseGet(OperatorClaimSubmissionSnapshot::new);
+        submission.setId(OperatorClaimSubmissionSnapshot.SINGLETON_ID);
+        submission.setSchemaVersion(
+                OperatorClaimSubmissionSnapshot.SCHEMA_VERSION);
+        submission.setLegalName(request.legalName());
+        submission.setRegistrationNumber(request.registrationNumber());
+        submission.setJurisdiction(request.jurisdiction());
+        submission.setRegisteredAddress(request.registeredAddress());
+        submission.setWebsite(request.website());
+        submission.setVerificationContactName(
+                request.verificationContactName());
+        submission.setVerificationContactRole(
+                request.verificationContactRole());
+        submission.setVerificationContactEmail(
+                request.verificationContactEmail());
+        submission.setAuthorityAttested(request.authorityAttested());
+        submission.setRegistryScope(registered.registryScope());
+        submission.setDeploymentId(registered.deploymentId());
+        submission.setOperatorGroupId(status.groupId());
+        submission.setSubmittedAt(status.verificationSubmittedAt());
+        submission.setSubmittedBy(safeText(actorUserId));
+        return claimSubmissionRepository.save(submission);
+    }
+
+    private OperatorClaimSubmissionSnapshot loadClaimSubmission(
+            RegisteredRuntime registered,
+            ClaimStatus status) {
+        return claimSubmissionRepository
+                .findById(OperatorClaimSubmissionSnapshot.SINGLETON_ID)
+                .map(OperatorNetworkService::requireSupportedClaimSubmission)
+                .filter(submission -> currentClaimOwnsSubmission(
+                        submission,
+                        registered,
+                        status))
+                .orElse(null);
+    }
+
+    private static boolean currentClaimOwnsSubmission(
+            OperatorClaimSubmissionSnapshot submission,
+            RegisteredRuntime registered,
+            ClaimStatus status) {
+        return status != null
+                && status.claimed()
+                && "AVAILABLE".equals(status.verificationCapability())
+                && StringUtils.hasText(status.groupId())
+                && StringUtils.hasText(status.verificationSubmittedAt())
+                && Objects.equals(
+                        submission.getRegistryScope(),
+                        registered.registryScope())
+                && Objects.equals(
+                        submission.getDeploymentId(),
+                        registered.deploymentId())
+                && Objects.equals(
+                        submission.getOperatorGroupId(),
+                        status.groupId())
+                && Objects.equals(
+                        submission.getSubmittedAt(),
+                        status.verificationSubmittedAt());
+    }
+
+    private static OperatorClaimSubmissionSnapshot requireSupportedClaimSubmission(
+            OperatorClaimSubmissionSnapshot submission) {
+        if (!OperatorClaimSubmissionSnapshot.SINGLETON_ID.equals(
+                        submission.getId())
+                || submission.getSchemaVersion() == null
+                || submission.getSchemaVersion()
+                        != OperatorClaimSubmissionSnapshot.SCHEMA_VERSION) {
+            throw new IllegalStateException(
+                    "Operator claim submission snapshot is unsupported.");
+        }
+        return submission;
     }
 
     private ResponseStatusException registryHttpFailure(RegistryHttpException exception) {
@@ -391,5 +546,11 @@ public class OperatorNetworkService {
 
     private static String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private record RegisteredRuntime(
+            RegistryProperties properties,
+            String deploymentId,
+            String registryScope) {
     }
 }

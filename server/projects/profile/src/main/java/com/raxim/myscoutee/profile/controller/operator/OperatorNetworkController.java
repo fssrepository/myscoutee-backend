@@ -16,8 +16,9 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimOverviewDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClientTokenRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorIdempotencyRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentPageDto;
@@ -44,7 +45,7 @@ public class OperatorNetworkController {
     }
 
     @PostMapping("/claim")
-    public OperatorClaimStatusDto claim(
+    public OperatorClaimMutationResultDto claim(
             @RequestBody OperatorClaimRequestDto request,
             @RequestHeader(name = "Idempotency-Key", required = false) String idempotencyKey,
             Authentication authentication) {
@@ -55,7 +56,7 @@ public class OperatorNetworkController {
     }
 
     @GetMapping("/claim")
-    public OperatorClaimStatusDto claimStatus(Authentication authentication) {
+    public OperatorClaimOverviewDto claimStatus(Authentication authentication) {
         return service.claimStatus(actorUserId(authentication));
     }
 

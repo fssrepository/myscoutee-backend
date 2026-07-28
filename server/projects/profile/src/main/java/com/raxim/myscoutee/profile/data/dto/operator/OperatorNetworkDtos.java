@@ -92,6 +92,18 @@ public final class OperatorNetworkDtos {
             String legalName) {
     }
 
+    public record OperatorClaimOverviewDto(
+            OperatorClaimStatusDto status,
+            OperatorClaimRequestDto submission) {
+    }
+
+    public record OperatorClaimMutationResultDto(
+            OperatorClaimStatusDto status,
+            OperatorClaimRequestDto submission,
+            OperatorLeaderboardRowDto leaderboardEntry,
+            List<String> removedLeaderboardEntryIds) {
+    }
+
     public record OperatorLeaderboardSnapshotDto(
             String snapshotId,
             String formulaVersion,

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.raxim.myscoutee.profile.data.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionReceiptDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto;
@@ -13,6 +14,9 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementLocalizationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementSnapshotDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimOverviewDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentPageDto;
@@ -82,6 +86,50 @@ public class OperatorNetworkMapper {
                 status.verificationStatus(),
                 status.verificationSubmittedAt(),
                 status.legalName());
+    }
+
+    public OperatorClaimMutationResultDto toClaimMutation(
+            ClaimStatus status,
+            String claimantUserId,
+            OperatorClaimSubmissionSnapshot submission,
+            LeaderboardRow leaderboardEntry,
+            String removedLeaderboardEntryId) {
+        return new OperatorClaimMutationResultDto(
+                toClaimStatus(status, claimantUserId),
+                toClaimSubmission(submission),
+                leaderboardEntry == null
+                        ? null
+                        : toLeaderboardRow(leaderboardEntry),
+                removedLeaderboardEntryId == null
+                        || removedLeaderboardEntryId.isBlank()
+                        ? List.of()
+                        : List.of(removedLeaderboardEntryId.trim()));
+    }
+
+    public OperatorClaimOverviewDto toClaimOverview(
+            ClaimStatus status,
+            String claimantUserId,
+            OperatorClaimSubmissionSnapshot submission) {
+        return new OperatorClaimOverviewDto(
+                toClaimStatus(status, claimantUserId),
+                toClaimSubmission(submission));
+    }
+
+    private OperatorClaimRequestDto toClaimSubmission(
+            OperatorClaimSubmissionSnapshot submission) {
+        if (submission == null) {
+            return null;
+        }
+        return new OperatorClaimRequestDto(
+                submission.getLegalName(),
+                submission.getRegistrationNumber(),
+                submission.getJurisdiction(),
+                submission.getRegisteredAddress(),
+                submission.getWebsite(),
+                submission.getVerificationContactName(),
+                submission.getVerificationContactRole(),
+                submission.getVerificationContactEmail(),
+                Boolean.TRUE.equals(submission.getAuthorityAttested()));
     }
 
     public OperatorAnnouncementPageDto toAnnouncementPage(

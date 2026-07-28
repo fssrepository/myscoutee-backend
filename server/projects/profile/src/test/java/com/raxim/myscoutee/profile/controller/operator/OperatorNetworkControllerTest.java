@@ -15,9 +15,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimOverviewDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardSnapshotDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorNetworkService;
 
@@ -68,7 +71,7 @@ class OperatorNetworkControllerTest {
     void claimStatusUsesAuthenticatedOperatorIdentity() {
         OperatorNetworkService service = mock(OperatorNetworkService.class);
         OperatorNetworkController controller = new OperatorNetworkController(service);
-        OperatorClaimStatusDto expected = new OperatorClaimStatusDto(
+        OperatorClaimStatusDto expectedStatus = new OperatorClaimStatusDto(
                 true,
                 "2026-07-28T00:00:00Z",
                 "operator-1",
@@ -84,6 +87,18 @@ class OperatorNetworkControllerTest {
                 "APPROVED",
                 "2026-07-28T00:00:00Z",
                 "Operator");
+        OperatorClaimRequestDto submission = new OperatorClaimRequestDto(
+                "Operator",
+                "REG-42",
+                "Slovakia",
+                "Main Street 1",
+                "https://example.test",
+                "Alex Reviewer",
+                "Director",
+                "alex@example.test",
+                true);
+        OperatorClaimOverviewDto expected =
+                new OperatorClaimOverviewDto(expectedStatus, submission);
         var authentication = new UsernamePasswordAuthenticationToken(
                 "operator-1",
                 null,
@@ -95,7 +110,7 @@ class OperatorNetworkControllerTest {
     }
 
     @Test
-    void structuredClaimForwardsOnlyCompanyVerificationAndReturnsStatus() {
+    void structuredClaimReturnsStatusAndCanonicalLeaderboardMutation() {
         OperatorNetworkService service = mock(OperatorNetworkService.class);
         OperatorNetworkController controller = new OperatorNetworkController(service);
         OperatorClaimRequestDto request = new OperatorClaimRequestDto(
@@ -108,7 +123,7 @@ class OperatorNetworkControllerTest {
                 "Director",
                 "alex@example.test",
                 true);
-        OperatorClaimStatusDto expected = new OperatorClaimStatusDto(
+        OperatorClaimStatusDto expectedStatus = new OperatorClaimStatusDto(
                 true,
                 "2026-07-28T00:00:00Z",
                 "operator-1",
@@ -124,6 +139,22 @@ class OperatorNetworkControllerTest {
                 "PENDING_REVIEW",
                 "2026-07-28T00:00:00Z",
                 "Example Cooperative");
+        OperatorClaimMutationResultDto expected = new OperatorClaimMutationResultDto(
+                expectedStatus,
+                request,
+                new OperatorLeaderboardRowDto(
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "claimed",
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "Example Cooperative",
+                        "",
+                        "pending-review",
+                        1L,
+                        "0",
+                        "1",
+                        "0",
+                        "1"),
+                List.of("dep_0123456789abcdef0123456789abcdef"));
         var authentication = new UsernamePasswordAuthenticationToken(
                 "operator-1",
                 null,
