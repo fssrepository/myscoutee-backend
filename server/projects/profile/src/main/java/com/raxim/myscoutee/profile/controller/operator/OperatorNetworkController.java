@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,20 +44,14 @@ public class OperatorNetworkController {
     }
 
     @PostMapping("/claim")
-    public OperatorActionResultDto claim(
-            @RequestBody(required = false) OperatorClaimRequestDto request,
+    public OperatorClaimStatusDto claim(
+            @RequestBody OperatorClaimRequestDto request,
+            @RequestHeader(name = "Idempotency-Key", required = false) String idempotencyKey,
             Authentication authentication) {
-        return service.apply(
-                new OperatorActionRequestDto(
-                        RegistryProtocol.OPERATOR_ACTION_CLAIM,
-                        request == null ? null : request.operatorName(),
-                        request == null ? null : request.operatorAvatarUrl(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        request == null ? null : request.idempotencyKey()),
-                actorUserId(authentication));
+        return service.submitClaim(
+                request,
+                actorUserId(authentication),
+                idempotencyKey);
     }
 
     @GetMapping("/claim")

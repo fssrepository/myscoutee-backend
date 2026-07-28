@@ -15153,7 +15153,7 @@
     "_id": "i18n-message-en-operator-claim-verification-error-website",
     "key": "operator.claim.verification.error.website",
     "lang": "en",
-    "value": "Enter a valid public website URL beginning with http:// or https://."
+    "value": "Enter a valid public website URL beginning with https://."
   },
   {
     "_id": "i18n-message-en-operator-group-instructions",
@@ -15322,6 +15322,12 @@
     "key": "operator.configuration.branding.logo",
     "lang": "en",
     "value": "Logo"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-logo-guidance",
+    "key": "operator.configuration.branding.logo.guidance",
+    "lang": "en",
+    "value": "Recommended 512 × 512 px (1:1). JPEG, PNG, WebP or GIF; PNG/WebP preferred for transparency. Max 10 MB."
   },
   {
     "_id": "i18n-message-en-operator-configuration-branding-logo-heart-webp",
@@ -31227,7 +31233,7 @@
     "_id": "i18n-message-hu-operator-claim-verification-error-website",
     "key": "operator.claim.verification.error.website",
     "lang": "hu",
-    "value": "Adj meg érvényes, http:// vagy https:// kezdetű nyilvános webhelycímet."
+    "value": "Adj meg érvényes, https:// kezdetű nyilvános webhelycímet."
   },
   {
     "_id": "i18n-message-hu-operator-group-instructions",
@@ -31396,6 +31402,12 @@
     "key": "operator.configuration.branding.logo",
     "lang": "hu",
     "value": "Logó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-logo-guidance",
+    "key": "operator.configuration.branding.logo.guidance",
+    "lang": "hu",
+    "value": "Javasolt méret: 512 × 512 px (1:1). JPEG, PNG, WebP vagy GIF; átlátszó háttérhez PNG/WebP ajánlott. Legfeljebb 10 MB."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-branding-logo-heart-webp",

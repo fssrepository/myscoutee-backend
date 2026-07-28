@@ -29,6 +29,8 @@ import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardSnapshot;
 import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionReceipt;
 import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionRequest;
 import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionResponse;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorClaimStatusReceipt;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorClaimStatusResponse;
 import com.raxim.myscoutee.registry.RegistryProtocol.RegistrationResponse;
 import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementEntry;
 import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementLink;
@@ -52,6 +54,10 @@ public final class RegistryOperatorNetworkService {
     private static final int DEFAULT_CLIENT_TOKEN_TTL_SECONDS = 300;
     private static final int MAX_CURSOR_LENGTH = 4096;
     private static final Pattern NON_NEGATIVE_INTEGER = Pattern.compile("0|[1-9][0-9]*");
+    private static final Pattern EMAIL_LOCAL =
+            Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~.-]+");
+    private static final Pattern EMAIL_DOMAIN_LABEL =
+            Pattern.compile("[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?");
     private static final Pattern UPDATE_CHANNEL =
             Pattern.compile("^[a-z][a-z0-9._-]{0,31}$");
     private static final Set<String> ACTIONS = Set.of(
@@ -104,21 +110,47 @@ public final class RegistryOperatorNetworkService {
         Instant now = clock.instant();
         String timestamp = now.toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
-        String idempotencyKey = StringUtils.hasText(command.idempotencyKey())
-                ? RegistryProtocol.requireToken(command.idempotencyKey(), "idempotency_key")
-                : RegistryProtocol.randomToken("operator_", secureRandom);
         String clientTokenHash = RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(command.action())
                 ? RegistryProtocol.sha256(command.clientToken().getBytes(StandardCharsets.UTF_8))
                 : "";
         long ttl = command.tokenTtlSeconds() == null ? 0L : command.tokenTtlSeconds();
-        String payloadHash = RegistryProtocol.sha256(RegistryProtocol.operatorActionPayload(
-                command.action(),
-                command.operatorName(),
-                command.operatorAvatarUrl(),
-                clientTokenHash,
-                ttl,
-                command.tokenId(),
-                command.linkId()));
+        ClaimVerification claimVerification = command.claimVerification();
+        String payloadHash = RegistryProtocol.sha256(
+                claimVerification == null
+                        ? RegistryProtocol.operatorActionPayload(
+                                command.action(),
+                                command.operatorName(),
+                                command.operatorAvatarUrl(),
+                                clientTokenHash,
+                                ttl,
+                                command.tokenId(),
+                                command.linkId())
+                        : RegistryProtocol.operatorClaimPayload(
+                                claimVerification.legalName(),
+                                claimVerification.registrationNumber(),
+                                claimVerification.jurisdiction(),
+                                claimVerification.registeredAddress(),
+                                claimVerification.website(),
+                                claimVerification.verificationContactName(),
+                                claimVerification.verificationContactRole(),
+                                claimVerification.verificationContactEmail(),
+                                claimVerification.authorityAttested(),
+                                command.operatorAvatarUrl()));
+        String idempotencyKey;
+        if (StringUtils.hasText(command.idempotencyKey())) {
+            idempotencyKey = RegistryProtocol.requireToken(
+                    command.idempotencyKey(),
+                    "idempotency_key");
+        } else if (claimVerification != null) {
+            String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+                    "myscoutee-registry-operator-claim-idempotency-v1",
+                    trusted.state().registryScope(),
+                    trusted.state().deploymentId(),
+                    payloadHash));
+            idempotencyKey = "claim_" + digest.substring("sha256:".length());
+        } else {
+            idempotencyKey = RegistryProtocol.randomToken("operator_", secureRandom);
+        }
         String signature = trusted.deploymentCrypto().signBase64(RegistryProtocol.signedRequest(
                 "POST",
                 RegistryProtocol.OPERATOR_ACTION_PATH,
@@ -139,6 +171,15 @@ public final class RegistryOperatorNetworkService {
                 command.action(),
                 emptyToNull(command.operatorName()),
                 emptyToNull(command.operatorAvatarUrl()),
+                claimVerification == null ? null : claimVerification.legalName(),
+                claimVerification == null ? null : claimVerification.registrationNumber(),
+                claimVerification == null ? null : claimVerification.jurisdiction(),
+                claimVerification == null ? null : claimVerification.registeredAddress(),
+                claimVerification == null ? null : emptyToNull(claimVerification.website()),
+                claimVerification == null ? null : claimVerification.verificationContactName(),
+                claimVerification == null ? null : claimVerification.verificationContactRole(),
+                claimVerification == null ? null : claimVerification.verificationContactEmail(),
+                claimVerification == null ? null : claimVerification.authorityAttested(),
                 emptyToNull(command.clientToken()),
                 ttl == 0L ? null : ttl,
                 emptyToNull(command.tokenId()),
@@ -228,6 +269,7 @@ public final class RegistryOperatorNetworkService {
         String ownClaimGroupId = "";
         String currentGroupId = "";
         String activeLinkId = "";
+        OperatorActionJournalEntry structuredClaim = null;
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
             OperatorActionReceipt receipt = entry.receipt();
@@ -235,7 +277,13 @@ public final class RegistryOperatorNetworkService {
                 case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
                     claimed = true;
                     claimedAt = receipt.acceptedAt();
-                    operatorName = safeText(entry.operatorName());
+                    if (isStructuredClaim(entry)) {
+                        structuredClaim = entry;
+                        operatorName = safeText(entry.legalName());
+                    } else {
+                        structuredClaim = null;
+                        operatorName = safeText(entry.operatorName());
+                    }
                     operatorAvatarUrl = safeText(entry.operatorAvatarUrl());
                     ownClaimGroupId = safeText(receipt.groupId());
                     currentGroupId = ownClaimGroupId;
@@ -262,6 +310,19 @@ public final class RegistryOperatorNetworkService {
                     // Token and deployment-lifecycle actions do not change claim ownership.
                 }
             }
+        }
+        String verificationStatus = claimed ? "VERIFIED" : "NOT_SUBMITTED";
+        String verificationSubmittedAt = "";
+        String legalName = "";
+        if (structuredClaim != null) {
+            OperatorClaimStatusReceipt registryStatus = verifyClaimStatus(
+                    trusted,
+                    structuredClaim,
+                    httpClient.operatorClaimStatus(trusted.state().deploymentId()));
+            verificationStatus = registryStatus.verificationStatus();
+            verificationSubmittedAt = registryStatus.submittedAt();
+            legalName = registryStatus.legalName();
+            operatorName = legalName;
         }
         String shareNumerator = "0";
         String shareDenominator = "1";
@@ -294,7 +355,12 @@ public final class RegistryOperatorNetworkService {
                 emptyToNull(currentGroupId),
                 emptyToNull(activeLinkId),
                 shareNumerator,
-                shareDenominator);
+                shareDenominator,
+                "AVAILABLE",
+                null,
+                verificationStatus,
+                emptyToNull(verificationSubmittedAt),
+                emptyToNull(legalName));
     }
 
     public AnnouncementOutcome announcements(
@@ -414,16 +480,23 @@ public final class RegistryOperatorNetworkService {
         String tokenId = safeText(supplied.tokenId());
         String linkId = safeText(supplied.linkId());
         Long ttl = supplied.tokenTtlSeconds();
+        ClaimVerification verification = supplied.claimVerification();
 
         switch (action) {
             case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
-                requireText(operatorName, "operator_name", 160);
+                if (verification == null) {
+                    throw new IllegalArgumentException(
+                            "Structured company verification fields are required.");
+                }
+                requireAbsent(operatorName);
+                verification = normalizeClaimVerification(verification);
                 if (!avatarUrl.isEmpty()) {
                     requireHttpsUrl(avatarUrl, "operator_avatar_url");
                 }
                 requireAbsent(clientToken, ttl, tokenId, linkId);
             }
             case RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN -> {
+                requireAbsentClaimVerification(verification);
                 requireAbsent(operatorName, avatarUrl, clientToken, tokenId, linkId);
                 long normalizedTtl = ttl == null || ttl.longValue() == 0L
                         ? DEFAULT_CLIENT_TOKEN_TTL_SECONDS
@@ -435,21 +508,26 @@ public final class RegistryOperatorNetworkService {
                 ttl = normalizedTtl;
             }
             case RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN -> {
+                requireAbsentClaimVerification(verification);
                 requireAbsent(operatorName, avatarUrl, clientToken, ttl, linkId);
                 RegistryProtocol.requireOperatorTokenId(tokenId);
             }
             case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> {
+                requireAbsentClaimVerification(verification);
                 requireAbsent(operatorName, avatarUrl, ttl, tokenId, linkId);
                 RegistryProtocol.requireToken(clientToken, "client_token");
             }
             case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK -> {
+                requireAbsentClaimVerification(verification);
                 requireAbsent(operatorName, avatarUrl, clientToken, ttl, tokenId);
                 RegistryProtocol.requireOperatorLinkId(linkId);
             }
             case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
                     RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
-                    RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT ->
+                    RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT -> {
+                requireAbsentClaimVerification(verification);
                     requireAbsent(operatorName, avatarUrl, clientToken, ttl, tokenId, linkId);
+            }
             default -> throw new IllegalArgumentException("Operator action is not supported.");
         }
         return new ActionCommand(
@@ -460,7 +538,8 @@ public final class RegistryOperatorNetworkService {
                 ttl,
                 tokenId,
                 linkId,
-                safeText(supplied.idempotencyKey()));
+                safeText(supplied.idempotencyKey()),
+                verification);
     }
 
     private void verifyJournalEntry(
@@ -483,14 +562,26 @@ public final class RegistryOperatorNetworkService {
             RegistryProtocol.requireHash(clientTokenHash, "client_token_hash");
         }
         String expectedPayloadHash = RegistryProtocol.sha256(
-                RegistryProtocol.operatorActionPayload(
-                        entry.action(),
-                        safeText(entry.operatorName()),
-                        safeText(entry.operatorAvatarUrl()),
-                        clientTokenHash,
-                        ttl,
-                        safeText(entry.tokenId()),
-                        safeText(entry.linkId())));
+                isStructuredClaim(entry)
+                        ? RegistryProtocol.operatorClaimPayload(
+                                safeText(entry.legalName()),
+                                safeText(entry.registrationNumber()),
+                                safeText(entry.jurisdiction()),
+                                safeText(entry.registeredAddress()),
+                                safeText(entry.website()),
+                                safeText(entry.verificationContactName()),
+                                safeText(entry.verificationContactRole()),
+                                safeText(entry.verificationContactEmail()),
+                                Boolean.TRUE.equals(entry.authorityAttested()),
+                                safeText(entry.operatorAvatarUrl()))
+                        : RegistryProtocol.operatorActionPayload(
+                                entry.action(),
+                                safeText(entry.operatorName()),
+                                safeText(entry.operatorAvatarUrl()),
+                                clientTokenHash,
+                                ttl,
+                                safeText(entry.tokenId()),
+                                safeText(entry.linkId())));
         if (!RegistryProtocol.hashEquals(expectedPayloadHash, entry.payloadHash())) {
             throw new IllegalStateException(
                     "Registry operator journal payload hash is invalid.");
@@ -521,6 +612,15 @@ public final class RegistryOperatorNetworkService {
                 entry.action(),
                 entry.operatorName(),
                 entry.operatorAvatarUrl(),
+                entry.legalName(),
+                entry.registrationNumber(),
+                entry.jurisdiction(),
+                entry.registeredAddress(),
+                entry.website(),
+                entry.verificationContactName(),
+                entry.verificationContactRole(),
+                entry.verificationContactEmail(),
+                entry.authorityAttested(),
                 null,
                 entry.tokenTtlSeconds(),
                 entry.tokenId(),
@@ -577,6 +677,13 @@ public final class RegistryOperatorNetworkService {
                     "Registry operator receipt does not match the signed request or pinned registry.");
         }
         validateOptionalOperatorIds(receipt);
+        if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(request.action())
+                && StringUtils.hasText(request.legalName())
+                && (!RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(receipt.claimState())
+                        || !StringUtils.hasText(receipt.groupId()))) {
+            throw new IllegalArgumentException(
+                    "Structured operator claim receipt is not pending review or has no group.");
+        }
         if (StringUtils.hasText(receipt.tokenExpiresAt())) {
             RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
         }
@@ -623,6 +730,86 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry redemption receipt does not match the submitted client token.");
         }
+    }
+
+    private OperatorClaimStatusReceipt verifyClaimStatus(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry claim,
+            OperatorClaimStatusResponse response) {
+        if (response == null || response.status() == null
+                || !RegistryProtocol.PROTOCOL_VERSION.equals(response.protocolVersion())
+                || !trusted.state().registryScope().equals(response.registryScope())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status response is incomplete or has a mismatched scope.");
+        }
+        OperatorClaimStatusReceipt status = response.status();
+        RegistryProtocol.requireDeploymentId(status.deploymentId());
+        RegistryProtocol.requireOperatorActionId(status.claimActionId());
+        if (status.claimAuditIndex() == null || status.claimAuditIndex() <= 0L) {
+            throw new IllegalArgumentException("claim_audit_index must be positive.");
+        }
+        RegistryProtocol.requireHash(status.claimAuditHash(), "claim_audit_hash");
+        RegistryProtocol.requireOperatorGroupId(status.groupId());
+        requireText(status.legalName(), "legal_name", 160);
+        RegistryProtocol.requireUtcTimestamp(status.submittedAt(), "submitted_at");
+        RegistryProtocol.requireHash(status.reviewHash(), "review_hash");
+        if (!Set.of(
+                        RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
+                        RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED,
+                        RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN)
+                .contains(status.verificationStatus())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim verification status is unsupported.");
+        }
+        boolean hasReview = StringUtils.hasText(status.reviewId());
+        if (hasReview) {
+            RegistryProtocol.requireOperatorReviewId(status.reviewId());
+            if (status.reviewIndex() == null || status.reviewIndex() <= 0L
+                    || RegistryProtocol.ZERO_HASH.equals(status.reviewHash())
+                    || !StringUtils.hasText(status.approvedAt())) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim review boundary is incomplete.");
+            }
+            RegistryProtocol.requireUtcTimestamp(status.approvedAt(), "approved_at");
+        } else if ((status.reviewIndex() != null && status.reviewIndex() != 0L)
+                || !RegistryProtocol.ZERO_HASH.equals(status.reviewHash())
+                || StringUtils.hasText(status.approvedAt())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim review boundary is inconsistent.");
+        }
+        if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
+                        .equals(status.verificationStatus())
+                && !hasReview) {
+            throw new IllegalArgumentException(
+                    "Approved operator claim status has no signed review boundary.");
+        }
+        if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW
+                        .equals(status.verificationStatus())
+                && hasReview) {
+            throw new IllegalArgumentException(
+                    "Pending operator claim status unexpectedly has a review boundary.");
+        }
+        OperatorActionReceipt claimReceipt = claim.receipt();
+        if (!trusted.state().deploymentId().equals(status.deploymentId())
+                || !claimReceipt.actionId().equals(status.claimActionId())
+                || !claimReceipt.auditIndex().equals(status.claimAuditIndex())
+                || !claimReceipt.auditHash().equals(status.claimAuditHash())
+                || !claimReceipt.groupId().equals(status.groupId())
+                || !safeText(claim.legalName()).equals(status.legalName())
+                || !claimReceipt.acceptedAt().equals(status.submittedAt())
+                || !trusted.state().registryScope().equals(status.registryScope())
+                || !trusted.registryKeyId().equals(status.registryKeyId())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status does not match the durable claim receipt.");
+        }
+        if (!RegistryCrypto.verifyBase64(
+                trusted.registryPublicKey(),
+                RegistryProtocol.operatorClaimStatusReceipt(status),
+                status.signature())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status signature is invalid.");
+        }
+        return status;
     }
 
     private void verifyLeaderboardPage(
@@ -1322,6 +1509,107 @@ public final class RegistryOperatorNetworkService {
         }
     }
 
+    private static ClaimVerification normalizeClaimVerification(
+            ClaimVerification supplied) {
+        String legalName = requireClaimText(supplied.legalName(), "legal_name", 160);
+        String registrationNumber = requireClaimText(
+                supplied.registrationNumber(),
+                "registration_number",
+                80);
+        String jurisdiction = requireClaimText(
+                supplied.jurisdiction(),
+                "jurisdiction",
+                80);
+        String registeredAddress = requireClaimText(
+                supplied.registeredAddress(),
+                "registered_address",
+                500);
+        String website = safeText(supplied.website());
+        if (!Objects.equals(supplied.website() == null ? "" : supplied.website(), website)) {
+            throw new IllegalArgumentException(
+                    "website must not have surrounding whitespace.");
+        }
+        if (!website.isEmpty()) {
+            requireHttpsUrl(website, "website");
+        }
+        String contactName = requireClaimText(
+                supplied.verificationContactName(),
+                "verification_contact_name",
+                120);
+        String contactRole = requireClaimText(
+                supplied.verificationContactRole(),
+                "verification_contact_role",
+                120);
+        String contactEmail = requireClaimEmail(supplied.verificationContactEmail());
+        if (!supplied.authorityAttested()) {
+            throw new IllegalArgumentException("authority_attested must be true.");
+        }
+        return new ClaimVerification(
+                legalName,
+                registrationNumber,
+                jurisdiction,
+                registeredAddress,
+                website,
+                contactName,
+                contactRole,
+                contactEmail,
+                true);
+    }
+
+    private static String requireClaimText(
+            String value,
+            String fieldName,
+            int maxUtf8Bytes) {
+        String normalized = safeText(value);
+        if (!Objects.equals(value, normalized)) {
+            throw new IllegalArgumentException(
+                    fieldName + " must not have surrounding whitespace.");
+        }
+        requireText(normalized, fieldName, maxUtf8Bytes);
+        return normalized;
+    }
+
+    private static String requireClaimEmail(String value) {
+        String email = requireClaimText(value, "verification_contact_email", 254);
+        if (!email.equals(email.toLowerCase(java.util.Locale.ROOT))) {
+            throw new IllegalArgumentException(
+                    "verification_contact_email must be a canonical lowercase email address.");
+        }
+        int at = email.indexOf('@');
+        if (at <= 0 || at != email.lastIndexOf('@') || at > 64
+                || email.charAt(0) == '.' || email.charAt(at - 1) == '.'
+                || email.substring(0, at).contains("..")
+                || !EMAIL_LOCAL.matcher(email.substring(0, at)).matches()) {
+            throw new IllegalArgumentException(
+                    "verification_contact_email must be a canonical lowercase email address.");
+        }
+        String[] labels = email.substring(at + 1).split("\\.", -1);
+        if (labels.length < 2) {
+            throw new IllegalArgumentException(
+                    "verification_contact_email must be a canonical lowercase email address.");
+        }
+        for (String label : labels) {
+            if (!EMAIL_DOMAIN_LABEL.matcher(label).matches()) {
+                throw new IllegalArgumentException(
+                        "verification_contact_email must be a canonical lowercase email address.");
+            }
+        }
+        return email;
+    }
+
+    private static boolean isStructuredClaim(OperatorActionJournalEntry entry) {
+        return entry != null
+                && RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())
+                && StringUtils.hasText(entry.legalName());
+    }
+
+    private static void requireAbsentClaimVerification(ClaimVerification verification) {
+        if (verification != null) {
+            throw new IllegalArgumentException(
+                    "Operator action contains fields that are not valid for this action.");
+        }
+    }
+
     private static void requireText(String value, String fieldName, int maxUtf8Bytes) {
         RegistryProtocol.requireCanonical(value, fieldName);
         if (value.getBytes(StandardCharsets.UTF_8).length > maxUtf8Bytes) {
@@ -1333,7 +1621,7 @@ public final class RegistryOperatorNetworkService {
         requireText(value, fieldName, 2048);
         try {
             URI uri = URI.create(value);
-            if (!"https".equalsIgnoreCase(uri.getScheme())
+            if (!"https".equals(uri.getScheme())
                     || uri.getHost() == null
                     || uri.getUserInfo() != null
                     || uri.getFragment() != null) {
@@ -1380,7 +1668,41 @@ public final class RegistryOperatorNetworkService {
             Long tokenTtlSeconds,
             String tokenId,
             String linkId,
-            String idempotencyKey) {
+            String idempotencyKey,
+            ClaimVerification claimVerification) {
+
+        public ActionCommand(
+                String action,
+                String operatorName,
+                String operatorAvatarUrl,
+                String clientToken,
+                Long tokenTtlSeconds,
+                String tokenId,
+                String linkId,
+                String idempotencyKey) {
+            this(
+                    action,
+                    operatorName,
+                    operatorAvatarUrl,
+                    clientToken,
+                    tokenTtlSeconds,
+                    tokenId,
+                    linkId,
+                    idempotencyKey,
+                    null);
+        }
+    }
+
+    public record ClaimVerification(
+            String legalName,
+            String registrationNumber,
+            String jurisdiction,
+            String registeredAddress,
+            String website,
+            String verificationContactName,
+            String verificationContactRole,
+            String verificationContactEmail,
+            boolean authorityAttested) {
     }
 
     public record ActionOutcome(
@@ -1398,7 +1720,12 @@ public final class RegistryOperatorNetworkService {
             String groupId,
             String activeLinkId,
             String shareNumerator,
-            String shareDenominator) {
+            String shareDenominator,
+            String verificationCapability,
+            String verificationUnavailableReason,
+            String verificationStatus,
+            String verificationSubmittedAt,
+            String legalName) {
     }
 
     public record PackageVerification(

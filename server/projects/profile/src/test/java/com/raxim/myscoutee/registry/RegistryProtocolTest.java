@@ -96,6 +96,79 @@ class RegistryProtocolTest {
     }
 
     @Test
+    void structuredOperatorClaimPayloadMatchesTheGoProtocolExactly() {
+        assertThat(new String(
+                        RegistryProtocol.operatorClaimPayload(
+                                "Example Cooperative",
+                                "REG-42",
+                                "Slovakia",
+                                "Main Street 1",
+                                "https://example.test",
+                                "Alex Reviewer",
+                                "Director",
+                                "alex@example.test",
+                                true,
+                                "https://example.test/avatar.png"),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-claim-payload-v2
+                        claim
+                        Example Cooperative
+                        REG-42
+                        Slovakia
+                        Main Street 1
+                        https://example.test
+                        Alex Reviewer
+                        Director
+                        alex@example.test
+                        true
+                        https://example.test/avatar.png
+                        """);
+    }
+
+    @Test
+    void operatorClaimStatusReceiptMatchesTheGoProtocolExactly() {
+        RegistryProtocol.OperatorClaimStatusReceipt status =
+                new RegistryProtocol.OperatorClaimStatusReceipt(
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "opa_0123456789abcdef0123456789abcdef",
+                        7L,
+                        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "Example Cooperative",
+                        "PENDING_REVIEW",
+                        "2026-07-28T00:00:03Z",
+                        null,
+                        null,
+                        RegistryProtocol.ZERO_HASH,
+                        null,
+                        "test-program:parent-b",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        null);
+
+        assertThat(new String(
+                        RegistryProtocol.operatorClaimStatusReceipt(status),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-claim-status-receipt-v1
+                        dep_0123456789abcdef0123456789abcdef
+                        opa_0123456789abcdef0123456789abcdef
+                        7
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        opg_0123456789abcdef0123456789abcdef
+                        Example Cooperative
+                        PENDING_REVIEW
+                        2026-07-28T00:00:03Z
+
+                        0
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
     void centralMessagesBindTheScopeInTheGoProtocolFieldOrder() {
         String scope = "test-program:parent-b";
         String deploymentId = "dep_0123456789abcdef";

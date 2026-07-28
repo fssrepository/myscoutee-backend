@@ -26,6 +26,7 @@ import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimVerification;
 import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementEntry;
 import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementLink;
 import com.raxim.myscoutee.registry.RegistryProtocol.AnnouncementLocalization;
@@ -37,6 +38,8 @@ import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardSnapshot;
 import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionReceipt;
 import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionRequest;
 import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionResponse;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorClaimStatusReceipt;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorClaimStatusResponse;
 import com.raxim.myscoutee.registry.RegistryProtocol.RegistrationResponse;
 import com.raxim.myscoutee.registry.RegistryProtocol.UpdateManifest;
 import com.sun.net.httpserver.HttpExchange;
@@ -137,25 +140,159 @@ class RegistryOperatorNetworkServiceTest {
 
             service.apply(new ActionCommand(
                     RegistryProtocol.OPERATOR_ACTION_CLAIM,
-                    "Verified Operator",
+                    null,
                     "https://cdn.example.test/operator.png",
                     null,
                     null,
                     null,
                     null,
-                    "operator_claim_12345678"));
+                    "operator_claim_12345678",
+                    new ClaimVerification(
+                            "Verified Operator Ltd",
+                            "REG-42",
+                            "Slovakia",
+                            "Main Street 1",
+                            "https://operator.example.test",
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true)));
 
             RegistryOperatorNetworkService.ClaimStatus status = service.claimStatus();
 
             assertThat(status.claimed()).isTrue();
             assertThat(status.claimedAt()).isEqualTo("2026-07-28T00:00:03Z");
-            assertThat(status.operatorName()).isEqualTo("Verified Operator");
+            assertThat(status.operatorName()).isEqualTo("Verified Operator Ltd");
             assertThat(status.operatorAvatarUrl())
                     .isEqualTo("https://cdn.example.test/operator.png");
             assertThat(status.groupId()).isEqualTo(GROUP_ID);
             assertThat(status.shareNumerator()).isEqualTo("7");
             assertThat(status.shareDenominator()).isEqualTo("20");
+            assertThat(status.verificationCapability()).isEqualTo("AVAILABLE");
+            assertThat(status.verificationStatus()).isEqualTo("PENDING_REVIEW");
+            assertThat(status.verificationSubmittedAt())
+                    .isEqualTo("2026-07-28T00:00:03Z");
+            assertThat(status.legalName()).isEqualTo("Verified Operator Ltd");
+            assertThat(registry.claimStatusRequests).hasValue(1);
             assertThat(registry.leaderboardRequests).hasValue(1);
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void rejectsTamperedSignedClaimStatus() throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            service.apply(new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "operator_claim_tamper_12345678",
+                    new ClaimVerification(
+                            "Verified Operator Ltd",
+                            "REG-42",
+                            "Slovakia",
+                            "Main Street 1",
+                            null,
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true)));
+            registry.tamperClaimStatus = true;
+
+            assertThatThrownBy(service::claimStatus)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("signature");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void approvedStatusComesOnlyFromVerifiedRegistryReceipt() throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            service.apply(new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ClaimVerification(
+                            "Approved Cooperative",
+                            "REG-APPROVED",
+                            "Slovakia",
+                            "Main Street 3",
+                            null,
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true)));
+            registry.approvedClaimStatus = true;
+
+            RegistryOperatorNetworkService.ClaimStatus status = service.claimStatus();
+
+            assertThat(status.verificationStatus()).isEqualTo("APPROVED");
+            assertThat(status.claimed()).isTrue();
+            assertThat(status.legalName()).isEqualTo("Approved Cooperative");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void structuredClaimRetryAfterLostResponseReusesDeterministicIdempotencyKey()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            ActionCommand claim = new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ClaimVerification(
+                            "Retry Cooperative",
+                            "REG-RETRY",
+                            "Slovakia",
+                            "Main Street 2",
+                            null,
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true));
+            registry.loseFirstClaimResponse = true;
+
+            assertThatThrownBy(() -> service.apply(claim))
+                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class)
+                    .hasMessageContaining("communicate");
+            RegistryOperatorNetworkService.ActionOutcome retry = service.apply(claim);
+
+            assertThat(retry.response().duplicate()).isTrue();
+            assertThat(registry.firstClaimIdempotency.get())
+                    .startsWith("claim_")
+                    .isEqualTo(registry.lastClaimIdempotency.get());
+            assertThat(retry.idempotencyKey())
+                    .isEqualTo(registry.firstClaimIdempotency.get());
+            assertThat(service.claimStatus().verificationStatus())
+                    .isEqualTo("PENDING_REVIEW");
             registry.assertHealthy();
         }
     }
@@ -223,13 +360,23 @@ class RegistryOperatorNetworkServiceTest {
 
             assertThatThrownBy(() -> service.apply(new ActionCommand(
                     RegistryProtocol.OPERATOR_ACTION_CLAIM,
-                    "Operator",
                     null,
                     null,
                     null,
                     null,
                     null,
-                    null)))
+                    null,
+                    null,
+                    new ClaimVerification(
+                            "Operator Ltd",
+                            "REG-42",
+                            "Slovakia",
+                            "Main Street 1",
+                            null,
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true))))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessageContaining("not registered");
             assertThat(registry.actionRequests).hasValue(0);
@@ -330,13 +477,21 @@ class RegistryOperatorNetworkServiceTest {
                 RegistryProtocol.registryKeyId(registryFingerprint);
         private final AtomicReference<Throwable> handlerFailure = new AtomicReference<>();
         private final AtomicReference<String> lastAuditHash = new AtomicReference<>();
+        private final AtomicReference<OperatorActionRequest> lastClaimRequest = new AtomicReference<>();
+        private final AtomicReference<OperatorActionReceipt> lastClaimReceipt = new AtomicReference<>();
+        private final AtomicReference<String> firstClaimIdempotency = new AtomicReference<>();
+        private final AtomicReference<String> lastClaimIdempotency = new AtomicReference<>();
         private final AtomicInteger actionRequests = new AtomicInteger();
+        private final AtomicInteger claimStatusRequests = new AtomicInteger();
         private final AtomicInteger leaderboardRequests = new AtomicInteger();
         private final AtomicInteger announcementRequests = new AtomicInteger();
         private final LeaderboardSnapshot snapshot;
         private final String cursor;
         private final AnnouncementEntry announcement;
         private final AnnouncementSnapshot announcementSnapshot;
+        private volatile boolean tamperClaimStatus;
+        private volatile boolean loseFirstClaimResponse;
+        private volatile boolean approvedClaimStatus;
 
         private TestOperatorRegistry(ObjectMapper objectMapper) throws IOException {
             this.objectMapper = objectMapper;
@@ -420,6 +575,9 @@ class RegistryOperatorNetworkServiceTest {
                     RegistryProtocol.OPERATOR_ACTION_PATH,
                     this::handleAction);
             server.createContext(
+                    RegistryProtocol.OPERATOR_CLAIM_STATUS_PATH_PREFIX,
+                    this::handleClaimStatus);
+            server.createContext(
                     RegistryProtocol.LEADERBOARD_PATH,
                     this::handleLeaderboard);
             server.createContext(
@@ -439,17 +597,31 @@ class RegistryOperatorNetworkServiceTest {
                 OperatorActionRequest request = objectMapper.readValue(
                         exchange.getRequestBody().readAllBytes(),
                         OperatorActionRequest.class);
+                boolean structuredClaim = RegistryProtocol.OPERATOR_ACTION_CLAIM
+                        .equals(request.action());
                 String expectedPayloadHash = RegistryProtocol.sha256(
-                        RegistryProtocol.operatorActionPayload(
-                                request.action(),
-                                request.operatorName(),
-                                request.operatorAvatarUrl(),
-                                "",
-                                request.tokenTtlSeconds() == null
-                                        ? 0L
-                                        : request.tokenTtlSeconds(),
-                                request.tokenId(),
-                                request.linkId()));
+                        structuredClaim
+                                ? RegistryProtocol.operatorClaimPayload(
+                                        request.legalName(),
+                                        request.registrationNumber(),
+                                        request.jurisdiction(),
+                                        request.registeredAddress(),
+                                        request.website(),
+                                        request.verificationContactName(),
+                                        request.verificationContactRole(),
+                                        request.verificationContactEmail(),
+                                        Boolean.TRUE.equals(request.authorityAttested()),
+                                        request.operatorAvatarUrl())
+                                : RegistryProtocol.operatorActionPayload(
+                                        request.action(),
+                                        request.operatorName(),
+                                        request.operatorAvatarUrl(),
+                                        "",
+                                        request.tokenTtlSeconds() == null
+                                                ? 0L
+                                                : request.tokenTtlSeconds(),
+                                        request.tokenId(),
+                                        request.linkId()));
                 require(expectedPayloadHash.equals(request.payloadHash()), "Action payload hash was invalid.");
                 require(RegistryCrypto.verifyBase64(
                                 deploymentKeyPair.getPublic(),
@@ -465,6 +637,23 @@ class RegistryOperatorNetworkServiceTest {
                                         request.payloadHash()),
                                 request.signature()),
                         "Action signature was invalid.");
+                if (structuredClaim) {
+                    firstClaimIdempotency.compareAndSet(null, request.idempotencyKey());
+                    lastClaimIdempotency.set(request.idempotencyKey());
+                    OperatorActionRequest acceptedRequest = lastClaimRequest.get();
+                    if (acceptedRequest != null
+                            && acceptedRequest.idempotencyKey().equals(request.idempotencyKey())) {
+                        require(
+                                acceptedRequest.payloadHash().equals(request.payloadHash()),
+                                "Duplicate claim changed its payload.");
+                        sendJson(exchange, 200, new OperatorActionResponse(
+                                RegistryProtocol.PROTOCOL_VERSION,
+                                SCOPE,
+                                true,
+                                lastClaimReceipt.get()));
+                        return;
+                    }
+                }
                 boolean issueToken = RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN
                         .equals(request.action());
                 String tokenHash = issueToken
@@ -488,7 +677,9 @@ class RegistryOperatorNetworkServiceTest {
                         null,
                         request.action(),
                         "2026-07-28T00:00:03Z",
-                        "claimed",
+                        structuredClaim
+                                ? RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW
+                                : "claimed",
                         GROUP_ID,
                         null,
                         issueToken ? TOKEN_ID : null,
@@ -543,10 +734,88 @@ class RegistryOperatorNetworkServiceTest {
                         RegistryTestIdentity.sign(
                                 registryKeyPair.getPrivate(),
                                 RegistryProtocol.operatorActionReceipt(unsigned)));
+                if (structuredClaim) {
+                    lastClaimRequest.set(request);
+                    lastClaimReceipt.set(signed);
+                    if (loseFirstClaimResponse) {
+                        loseFirstClaimResponse = false;
+                        exchange.close();
+                        return;
+                    }
+                }
                 sendJson(exchange, 201, new OperatorActionResponse(
                         RegistryProtocol.PROTOCOL_VERSION,
                         SCOPE,
                         false,
+                        signed));
+            } catch (Throwable failure) {
+                failExchange(exchange, failure);
+            }
+        }
+
+        private void handleClaimStatus(HttpExchange exchange) throws IOException {
+            try {
+                claimStatusRequests.incrementAndGet();
+                require(
+                        "GET".equals(exchange.getRequestMethod()),
+                        "Claim status method was not GET.");
+                require(
+                        exchange.getRequestURI().getPath().equals(
+                                RegistryProtocol.OPERATOR_CLAIM_STATUS_PATH_PREFIX
+                                        + DEPLOYMENT_ID),
+                        "Claim status deployment path was invalid.");
+                OperatorActionRequest request = lastClaimRequest.get();
+                OperatorActionReceipt claimReceipt = lastClaimReceipt.get();
+                require(request != null && claimReceipt != null, "Claim status was requested before a claim.");
+                OperatorClaimStatusReceipt unsigned = new OperatorClaimStatusReceipt(
+                        DEPLOYMENT_ID,
+                        claimReceipt.actionId(),
+                        claimReceipt.auditIndex(),
+                        claimReceipt.auditHash(),
+                        claimReceipt.groupId(),
+                        request.legalName(),
+                        approvedClaimStatus
+                                ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
+                                : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
+                        claimReceipt.acceptedAt(),
+                        approvedClaimStatus
+                                ? "opr_0123456789abcdef0123456789abcdef"
+                                : null,
+                        approvedClaimStatus ? 1L : null,
+                        approvedClaimStatus
+                                ? "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                                : RegistryProtocol.ZERO_HASH,
+                        approvedClaimStatus ? "2026-07-28T00:00:04Z" : null,
+                        SCOPE,
+                        registryKeyId,
+                        null);
+                String signature = RegistryTestIdentity.sign(
+                        registryKeyPair.getPrivate(),
+                        RegistryProtocol.operatorClaimStatusReceipt(unsigned));
+                if (tamperClaimStatus) {
+                    byte[] decoded = Base64.getDecoder().decode(signature);
+                    decoded[0] ^= 0x01;
+                    signature = Base64.getEncoder().encodeToString(decoded);
+                }
+                OperatorClaimStatusReceipt signed = new OperatorClaimStatusReceipt(
+                        unsigned.deploymentId(),
+                        unsigned.claimActionId(),
+                        unsigned.claimAuditIndex(),
+                        unsigned.claimAuditHash(),
+                        unsigned.groupId(),
+                        unsigned.legalName(),
+                        unsigned.verificationStatus(),
+                        unsigned.submittedAt(),
+                        unsigned.reviewId(),
+                        unsigned.reviewIndex(),
+                        unsigned.reviewHash(),
+                        unsigned.approvedAt(),
+                        unsigned.registryScope(),
+                        unsigned.registryKeyId(),
+                        signature);
+                sendJson(exchange, 200, new OperatorClaimStatusResponse(
+                        RegistryProtocol.PROTOCOL_VERSION,
+                        SCOPE,
                         signed));
             } catch (Throwable failure) {
                 failExchange(exchange, failure);

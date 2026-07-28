@@ -71,6 +71,14 @@ public final class RegistryHttpClient {
                 RegistryProtocol.OperatorActionResponse.class);
     }
 
+    public RegistryProtocol.OperatorClaimStatusResponse operatorClaimStatus(
+            String deploymentId) {
+        String normalizedDeploymentId = RegistryProtocol.requireDeploymentId(deploymentId);
+        return get(
+                RegistryProtocol.OPERATOR_CLAIM_STATUS_PATH_PREFIX + normalizedDeploymentId,
+                RegistryProtocol.OperatorClaimStatusResponse.class);
+    }
+
     public RegistryProtocol.LeaderboardPage leaderboard(
             String view,
             String throughPeriod,

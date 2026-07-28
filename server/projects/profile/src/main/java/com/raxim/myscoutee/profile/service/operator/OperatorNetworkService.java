@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
@@ -26,6 +27,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.registry.RegistryHttpClient.RegistryHttpException;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimVerification;
 import com.raxim.myscoutee.registry.RegistryProtocol;
 
 @Service
@@ -65,21 +67,79 @@ public class OperatorNetworkService {
                     HttpStatus.BAD_REQUEST,
                     "Operator action request is required.");
         }
+        if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(safeText(request.action()))) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Submit structured company claims through /operator/claim.");
+        }
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
-            OperatorActionRequestDto resolved = resolveClaimProfile(request, actorUserId);
             try {
                 return mapper.toActionResult(operations.apply(
                         requireRegisteredRuntime(mode),
                         new ActionCommand(
-                                resolved.action(),
-                                resolved.operatorName(),
-                                resolved.operatorAvatarUrl(),
-                                resolved.clientToken(),
-                                resolved.tokenTtlSeconds(),
-                                resolved.tokenId(),
-                                resolved.linkId(),
-                                resolved.idempotencyKey())));
+                                request.action(),
+                                request.operatorName(),
+                                request.operatorAvatarUrl(),
+                                request.clientToken(),
+                                request.tokenTtlSeconds(),
+                                request.tokenId(),
+                                request.linkId(),
+                                request.idempotencyKey())));
+            } catch (RegistryHttpException exception) {
+                throw registryHttpFailure(exception);
+            } catch (IllegalArgumentException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        safeMessage(exception),
+                        exception);
+            } catch (IllegalStateException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        safeMessage(exception),
+                        exception);
+            }
+        }
+    }
+
+    public OperatorClaimStatusDto submitClaim(
+            OperatorClaimRequestDto request,
+            String actorUserId,
+            String idempotencyKey) {
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Operator company verification request is required.");
+        }
+        MongoSessionMode mode = MongoSessionModeContext.currentMode();
+        synchronized (modeLocks.get(mode)) {
+            try {
+                RegistryProperties runtime = requireRegisteredRuntime(mode);
+                String avatarUrl = operatorAvatar(actorUserId);
+                operations.apply(
+                        runtime,
+                        new ActionCommand(
+                                RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                                null,
+                                avatarUrl,
+                                null,
+                                null,
+                                null,
+                                null,
+                                safeText(idempotencyKey),
+                                new ClaimVerification(
+                                        request.legalName(),
+                                        request.registrationNumber(),
+                                        request.jurisdiction(),
+                                        request.registeredAddress(),
+                                        request.website(),
+                                        request.verificationContactName(),
+                                        request.verificationContactRole(),
+                                        request.verificationContactEmail(),
+                                        request.authorityAttested())));
+                return mapper.toClaimStatus(
+                        operations.claimStatus(runtime),
+                        safeText(actorUserId));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
             } catch (IllegalArgumentException exception) {
@@ -214,37 +274,15 @@ public class OperatorNetworkService {
         }
     }
 
-    private OperatorActionRequestDto resolveClaimProfile(
-            OperatorActionRequestDto request,
-            String actorUserId) {
-        if (!RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(safeText(request.action()))
-                || StringUtils.hasText(request.operatorName())) {
-            return request;
-        }
+    private String operatorAvatar(String actorUserId) {
         String userId = safeText(actorUserId);
         if (!StringUtils.hasText(userId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "The authenticated operator profile is unavailable.");
+            return "";
         }
-        Users operator = usersRepository.findByUserId(userId).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "The authenticated operator profile is unavailable."));
-        if (!StringUtils.hasText(operator.getName())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Set the operator profile name before claiming this deployment.");
-        }
-        return new OperatorActionRequestDto(
-                request.action(),
-                operator.getName().trim(),
-                firstAbsoluteHttpsImage(operator.getImages()),
-                request.clientToken(),
-                request.tokenTtlSeconds(),
-                request.tokenId(),
-                request.linkId(),
-                request.idempotencyKey());
+        return usersRepository.findByUserId(userId)
+                .map(Users::getImages)
+                .map(OperatorNetworkService::firstAbsoluteHttpsImage)
+                .orElse("");
     }
 
     private RegistryProperties requireRegisteredRuntime(MongoSessionMode mode) {

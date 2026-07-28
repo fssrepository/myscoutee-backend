@@ -18,9 +18,15 @@ public final class OperatorNetworkDtos {
     }
 
     public record OperatorClaimRequestDto(
-            String operatorName,
-            String operatorAvatarUrl,
-            String idempotencyKey) {
+            String legalName,
+            String registrationNumber,
+            String jurisdiction,
+            String registeredAddress,
+            String website,
+            String verificationContactName,
+            String verificationContactRole,
+            String verificationContactEmail,
+            boolean authorityAttested) {
     }
 
     public record OperatorClientTokenRequestDto(
@@ -76,7 +82,12 @@ public final class OperatorNetworkDtos {
             String activeLinkId,
             double sharePercent,
             String shareNumerator,
-            String shareDenominator) {
+            String shareDenominator,
+            String verificationCapability,
+            String verificationUnavailableReason,
+            String verificationStatus,
+            String verificationSubmittedAt,
+            String legalName) {
     }
 
     public record OperatorLeaderboardSnapshotDto(

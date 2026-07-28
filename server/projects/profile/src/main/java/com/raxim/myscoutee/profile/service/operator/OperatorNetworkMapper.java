@@ -76,7 +76,12 @@ public class OperatorNetworkMapper {
                 status.activeLinkId(),
                 sharePercent,
                 status.shareNumerator(),
-                status.shareDenominator());
+                status.shareDenominator(),
+                status.verificationCapability(),
+                status.verificationUnavailableReason(),
+                status.verificationStatus(),
+                status.verificationSubmittedAt(),
+                status.legalName());
     }
 
     public OperatorAnnouncementPageDto toAnnouncementPage(

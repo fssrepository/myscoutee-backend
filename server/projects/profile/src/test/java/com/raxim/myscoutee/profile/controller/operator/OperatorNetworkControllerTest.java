@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardSnapshotDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorNetworkService;
@@ -77,7 +78,12 @@ class OperatorNetworkControllerTest {
                 null,
                 25D,
                 "1",
-                "4");
+                "4",
+                "AVAILABLE",
+                null,
+                "APPROVED",
+                "2026-07-28T00:00:00Z",
+                "Operator");
         var authentication = new UsernamePasswordAuthenticationToken(
                 "operator-1",
                 null,
@@ -86,6 +92,50 @@ class OperatorNetworkControllerTest {
 
         assertThat(controller.claimStatus(authentication)).isSameAs(expected);
         verify(service).claimStatus("operator-1");
+    }
+
+    @Test
+    void structuredClaimForwardsOnlyCompanyVerificationAndReturnsStatus() {
+        OperatorNetworkService service = mock(OperatorNetworkService.class);
+        OperatorNetworkController controller = new OperatorNetworkController(service);
+        OperatorClaimRequestDto request = new OperatorClaimRequestDto(
+                "Example Cooperative",
+                "REG-42",
+                "Slovakia",
+                "Main Street 1",
+                "https://example.test",
+                "Alex Reviewer",
+                "Director",
+                "alex@example.test",
+                true);
+        OperatorClaimStatusDto expected = new OperatorClaimStatusDto(
+                true,
+                "2026-07-28T00:00:00Z",
+                "operator-1",
+                "Example Cooperative",
+                null,
+                "opg_0123456789abcdef0123456789abcdef",
+                null,
+                0D,
+                "0",
+                "1",
+                "AVAILABLE",
+                null,
+                "PENDING_REVIEW",
+                "2026-07-28T00:00:00Z",
+                "Example Cooperative");
+        var authentication = new UsernamePasswordAuthenticationToken(
+                "operator-1",
+                null,
+                List.of(new SimpleGrantedAuthority("O")));
+        when(service.submitClaim(request, "operator-1", "claim-request-12345678"))
+                .thenReturn(expected);
+
+        assertThat(controller.claim(
+                request,
+                "claim-request-12345678",
+                authentication)).isSameAs(expected);
+        verify(service).submitClaim(request, "operator-1", "claim-request-12345678");
     }
 
     @Test

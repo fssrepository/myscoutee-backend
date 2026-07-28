@@ -25,6 +25,7 @@ public final class RegistryProtocol {
     public static final String REGISTRATION_PATH = "/v1/deployments/register";
     public static final String MAU_BATCH_PATH = "/v1/mau/batches";
     public static final String OPERATOR_ACTION_PATH = "/v1/operator/actions";
+    public static final String OPERATOR_CLAIM_STATUS_PATH_PREFIX = "/v1/operator/claims/";
     public static final String LEADERBOARD_PATH = "/v1/leaderboard";
     public static final String ANNOUNCEMENT_PATH = "/v1/announcements";
     public static final String KEY_ALGORITHM = "Ed25519";
@@ -43,6 +44,10 @@ public final class RegistryProtocol {
     public static final String OPERATOR_ACTION_REVOKE_GROUP_LINK = "revoke-group-link";
     public static final String OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT = "deactivate-deployment";
     public static final String OPERATOR_ACTION_REACTIVATE_DEPLOYMENT = "reactivate-deployment";
+    public static final String OPERATOR_CLAIM_STATE_PENDING_REVIEW = "pending-review";
+    public static final String OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW = "PENDING_REVIEW";
+    public static final String OPERATOR_VERIFICATION_STATUS_APPROVED = "APPROVED";
+    public static final String OPERATOR_VERIFICATION_STATUS_WITHDRAWN = "WITHDRAWN";
     public static final String ZERO_HASH =
             "sha256:0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -55,6 +60,7 @@ public final class RegistryProtocol {
     private static final Pattern BATCH_ID_PATTERN = Pattern.compile("batch_[0-9a-f]{32}");
     private static final Pattern REGISTRY_KEY_ID_PATTERN = Pattern.compile("rkey_[0-9a-f]{32}");
     private static final Pattern OPERATOR_ACTION_ID_PATTERN = Pattern.compile("opa_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_REVIEW_ID_PATTERN = Pattern.compile("opr_[0-9a-f]{32}");
     private static final Pattern OPERATOR_GROUP_ID_PATTERN = Pattern.compile("opg_[0-9a-f]{32}");
     private static final Pattern OPERATOR_LINK_ID_PATTERN = Pattern.compile("opl_[0-9a-f]{32}");
     private static final Pattern OPERATOR_TOKEN_ID_PATTERN = Pattern.compile("opt_[0-9a-f]{32}");
@@ -218,6 +224,32 @@ public final class RegistryProtocol {
                 linkId);
     }
 
+    public static byte[] operatorClaimPayload(
+            String legalName,
+            String registrationNumber,
+            String jurisdiction,
+            String registeredAddress,
+            String website,
+            String verificationContactName,
+            String verificationContactRole,
+            String verificationContactEmail,
+            boolean authorityAttested,
+            String operatorAvatarUrl) {
+        return canonicalAllowEmpty(
+                "myscoutee-registry-operator-claim-payload-v2",
+                OPERATOR_ACTION_CLAIM,
+                legalName,
+                registrationNumber,
+                jurisdiction,
+                registeredAddress,
+                website,
+                verificationContactName,
+                verificationContactRole,
+                verificationContactEmail,
+                Boolean.toString(authorityAttested),
+                operatorAvatarUrl);
+    }
+
     public static byte[] operatorActionReceipt(OperatorActionReceipt receipt) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
         return canonicalAllowEmpty(
@@ -262,6 +294,26 @@ public final class RegistryProtocol {
                 receipt.clientTokenHash(),
                 receipt.tokenExpiresAt(),
                 receipt.previousAuditHash());
+    }
+
+    public static byte[] operatorClaimStatusReceipt(OperatorClaimStatusReceipt status) {
+        Objects.requireNonNull(status, "Operator claim status receipt must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-operator-claim-status-receipt-v1",
+                status.deploymentId(),
+                status.claimActionId(),
+                requiredLong(status.claimAuditIndex(), "claim_audit_index"),
+                status.claimAuditHash(),
+                status.groupId(),
+                status.legalName(),
+                status.verificationStatus(),
+                status.submittedAt(),
+                status.reviewId(),
+                status.reviewIndex() == null ? "0" : Long.toString(status.reviewIndex()),
+                status.reviewHash(),
+                status.approvedAt(),
+                status.registryScope(),
+                status.registryKeyId());
     }
 
     public static byte[] leaderboardSnapshotHash(LeaderboardSnapshot snapshot) {
@@ -583,6 +635,10 @@ public final class RegistryProtocol {
 
     public static String requireOperatorActionId(String value) {
         return requirePattern(value, "action_id", OPERATOR_ACTION_ID_PATTERN);
+    }
+
+    public static String requireOperatorReviewId(String value) {
+        return requirePattern(value, "review_id", OPERATOR_REVIEW_ID_PATTERN);
     }
 
     public static String requireOperatorGroupId(String value) {
@@ -947,12 +1003,64 @@ public final class RegistryProtocol {
             String action,
             @JsonProperty("operator_name") String operatorName,
             @JsonProperty("operator_avatar_url") String operatorAvatarUrl,
+            @JsonProperty("legal_name") String legalName,
+            @JsonProperty("registration_number") String registrationNumber,
+            String jurisdiction,
+            @JsonProperty("registered_address") String registeredAddress,
+            String website,
+            @JsonProperty("verification_contact_name") String verificationContactName,
+            @JsonProperty("verification_contact_role") String verificationContactRole,
+            @JsonProperty("verification_contact_email") String verificationContactEmail,
+            @JsonProperty("authority_attested") Boolean authorityAttested,
             @JsonProperty("client_token") String clientToken,
             @JsonProperty("token_ttl_seconds") Long tokenTtlSeconds,
             @JsonProperty("token_id") String tokenId,
             @JsonProperty("link_id") String linkId,
             @JsonProperty("payload_hash") String payloadHash,
             String signature) {
+
+        public OperatorActionRequest(
+                String protocolVersion,
+                String registryScope,
+                String deploymentId,
+                String timestamp,
+                String nonce,
+                String idempotencyKey,
+                String action,
+                String operatorName,
+                String operatorAvatarUrl,
+                String clientToken,
+                Long tokenTtlSeconds,
+                String tokenId,
+                String linkId,
+                String payloadHash,
+                String signature) {
+            this(
+                    protocolVersion,
+                    registryScope,
+                    deploymentId,
+                    timestamp,
+                    nonce,
+                    idempotencyKey,
+                    action,
+                    operatorName,
+                    operatorAvatarUrl,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    clientToken,
+                    tokenTtlSeconds,
+                    tokenId,
+                    linkId,
+                    payloadHash,
+                    signature);
+        }
     }
 
     public record OperatorActionReceipt(
@@ -1005,6 +1113,30 @@ public final class RegistryProtocol {
             @JsonProperty("registry_scope") String registryScope,
             Boolean duplicate,
             OperatorActionReceipt receipt) {
+    }
+
+    public record OperatorClaimStatusReceipt(
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("claim_action_id") String claimActionId,
+            @JsonProperty("claim_audit_index") Long claimAuditIndex,
+            @JsonProperty("claim_audit_hash") String claimAuditHash,
+            @JsonProperty("group_id") String groupId,
+            @JsonProperty("legal_name") String legalName,
+            @JsonProperty("verification_status") String verificationStatus,
+            @JsonProperty("submitted_at") String submittedAt,
+            @JsonProperty("review_id") String reviewId,
+            @JsonProperty("review_index") Long reviewIndex,
+            @JsonProperty("review_hash") String reviewHash,
+            @JsonProperty("approved_at") String approvedAt,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+    }
+
+    public record OperatorClaimStatusResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            OperatorClaimStatusReceipt status) {
     }
 
     public record LeaderboardSnapshot(
