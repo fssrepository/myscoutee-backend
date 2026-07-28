@@ -58,4 +58,16 @@ public final class OperatorRevenueDtos {
             long paymentCount,
             long payingUsers) {
     }
+
+    public record OperatorRevenueSyncDto(
+            String state,
+            String code,
+            String message,
+            int materialized,
+            int submitted,
+            int accepted,
+            long pending,
+            long blocked,
+            String synchronizedAtIso) {
+    }
 }

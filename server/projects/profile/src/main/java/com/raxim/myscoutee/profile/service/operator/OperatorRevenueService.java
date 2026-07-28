@@ -111,9 +111,62 @@ public class OperatorRevenueService {
      */
     DailyRevenueSnapshot dailyRevenue(LocalDate period) {
         Objects.requireNonNull(period, "Revenue period must not be null.");
-        Accumulation accumulation = new Accumulation(clock.instant());
-        accumulatePayments(accumulation, paymentsRepository.findAll(), period);
-        OperatorRevenueSnapshot snapshot = accumulation.snapshot();
+        return dailyRevenueHistory(Set.of(period)).stream()
+                .filter(snapshot -> period.equals(snapshot.period()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    /**
+     * Builds finalized-payment aggregates for the requested days with one
+     * repository read. Every requested period is materialized even when it
+     * contains no payments.
+     */
+    List<DailyRevenueSnapshot> dailyRevenueHistory(
+            Set<LocalDate> requiredPeriods) {
+        Instant generatedAt = clock.instant();
+        Map<LocalDate, Accumulation> byPeriod = new TreeMap<>();
+        for (LocalDate period : requiredPeriods == null
+                ? Set.<LocalDate>of()
+                : requiredPeriods) {
+            if (period != null) {
+                byPeriod.put(period, new Accumulation(generatedAt));
+            }
+        }
+        long unmappedTimestampRecords = 0L;
+        for (Payment payment : nonNull(paymentsRepository.findAll())) {
+            if (isPaymentRevision(payment)
+                    || !FINALIZED_PAYMENT_STATUSES.contains(
+                            normalize(payment.getStatus()))) {
+                continue;
+            }
+            Optional<LocalDate> originalDay = parseUtcDay(
+                    payment.getCreatedDate());
+            if (originalDay.isEmpty()) {
+                unmappedTimestampRecords++;
+                continue;
+            }
+            Accumulation accumulation = byPeriod.get(originalDay.get());
+            if (accumulation == null) {
+                continue;
+            }
+            accumulatePayment(accumulation, payment, originalDay.get());
+        }
+        if (unmappedTimestampRecords > 0L) {
+            LOGGER.warn(
+                    "Operator daily revenue ignored {} finalized payment(s) with invalid UTC timestamps.",
+                    unmappedTimestampRecords);
+        }
+        return byPeriod.entrySet().stream()
+                .map(entry -> dailySnapshot(
+                        entry.getKey(),
+                        entry.getValue().snapshot()))
+                .toList();
+    }
+
+    private DailyRevenueSnapshot dailySnapshot(
+            LocalDate period,
+            OperatorRevenueSnapshot snapshot) {
         logRejectedRecords(snapshot.diagnostics());
         return new DailyRevenueSnapshot(
                 period,
@@ -293,110 +346,115 @@ public class OperatorRevenueService {
             List<Payment> payments,
             LocalDate onlyOriginalPaymentDay) {
         for (Payment payment : nonNull(payments)) {
-            if (isPaymentRevision(payment)) {
-                accumulation.diagnostics.excludedPaymentRevisions++;
-                continue;
-            }
-            String status = normalize(payment.getStatus());
-            if (!FINALIZED_PAYMENT_STATUSES.contains(status)) {
-                accumulation.diagnostics.excludedUnfinalizedPayments++;
-                continue;
-            }
-            Optional<LocalDate> createdDay = parseUtcDay(payment.getCreatedDate());
-            if (createdDay.isEmpty()) {
-                accumulation.diagnostics.invalidTimestampRecords++;
-                if (onlyOriginalPaymentDay != null) {
-                    continue;
-                }
-            }
-            if (onlyOriginalPaymentDay != null
-                    && !onlyOriginalPaymentDay.equals(createdDay.orElse(null))) {
-                continue;
-            }
-            Optional<CurrencyKey> currencyKey = currency(
-                    payment.getCurrency(),
-                    accumulation.diagnostics);
-            if (currencyKey.isEmpty()) {
-                continue;
-            }
-            Optional<Long> capturedMinor = moneyToMinor(
-                    payment.getAmount(),
-                    currencyKey.get(),
-                    accumulation.diagnostics);
-            if (capturedMinor.isEmpty() || capturedMinor.get() <= 0L) {
-                if (capturedMinor.isPresent()) {
-                    accumulation.diagnostics.invalidMonetaryRecords++;
-                }
-                continue;
-            }
-            Optional<Long> refundedMinor = refundMinor(
+            accumulatePayment(
+                    accumulation,
                     payment,
-                    status,
-                    currencyKey.get(),
-                    capturedMinor.get(),
-                    accumulation.diagnostics);
-            if (refundedMinor.isEmpty()) {
-                continue;
+                    onlyOriginalPaymentDay);
+        }
+    }
+
+    private void accumulatePayment(
+            Accumulation accumulation,
+            Payment payment,
+            LocalDate onlyOriginalPaymentDay) {
+        if (isPaymentRevision(payment)) {
+            accumulation.diagnostics.excludedPaymentRevisions++;
+            return;
+        }
+        String status = normalize(payment.getStatus());
+        if (!FINALIZED_PAYMENT_STATUSES.contains(status)) {
+            accumulation.diagnostics.excludedUnfinalizedPayments++;
+            return;
+        }
+        Optional<LocalDate> createdDay = parseUtcDay(payment.getCreatedDate());
+        if (createdDay.isEmpty()) {
+            accumulation.diagnostics.invalidTimestampRecords++;
+            if (onlyOriginalPaymentDay != null) {
+                return;
             }
-            long netMinor = Math.subtractExact(
-                    capturedMinor.get(),
-                    refundedMinor.get());
-            CurrencyAccumulator currency =
-                    accumulation.currency(currencyKey.get());
-            TimelineAccumulator timeline =
-                    createdDay.map(currency::timeline).orElse(null);
-            try {
-                long nextCapturedPaymentMinor = Math.addExact(
-                        currency.capturedPaymentMinor,
-                        capturedMinor.get());
-                long nextRefundedPaymentMinor = Math.addExact(
-                        currency.refundedPaymentMinor,
-                        refundedMinor.get());
-                long nextPaymentCount =
-                        Math.addExact(currency.paymentCount, 1L);
-                long nextTimelineCapturedPaymentMinor = timeline == null
-                        ? 0L
-                        : Math.addExact(
-                                timeline.capturedPaymentMinor,
-                                capturedMinor.get());
-                long nextTimelineRefundedPaymentMinor = timeline == null
-                        ? 0L
-                        : Math.addExact(
-                                timeline.refundedPaymentMinor,
-                                refundedMinor.get());
-                long nextTimelinePaymentCount = timeline == null
-                        ? 0L
-                        : Math.addExact(timeline.paymentCount, 1L);
-                currency.capturedPaymentMinor = nextCapturedPaymentMinor;
-                currency.refundedPaymentMinor = nextRefundedPaymentMinor;
-                currency.paymentCount = nextPaymentCount;
-                if (timeline != null) {
-                    timeline.capturedPaymentMinor =
-                            nextTimelineCapturedPaymentMinor;
-                    timeline.refundedPaymentMinor =
-                            nextTimelineRefundedPaymentMinor;
-                    timeline.paymentCount = nextTimelinePaymentCount;
-                }
-            } catch (ArithmeticException exception) {
+        }
+        if (onlyOriginalPaymentDay != null
+                && !onlyOriginalPaymentDay.equals(createdDay.orElse(null))) {
+            return;
+        }
+        Optional<CurrencyKey> currencyKey = currency(
+                payment.getCurrency(),
+                accumulation.diagnostics);
+        if (currencyKey.isEmpty()) {
+            return;
+        }
+        Optional<Long> capturedMinor = moneyToMinor(
+                payment.getAmount(),
+                currencyKey.get(),
+                accumulation.diagnostics);
+        if (capturedMinor.isEmpty() || capturedMinor.get() <= 0L) {
+            if (capturedMinor.isPresent()) {
                 accumulation.diagnostics.invalidMonetaryRecords++;
-                continue;
             }
-            String userId = safeText(payment.getUserId());
-            if (StringUtils.hasText(userId)) {
-                currency.payingUsers.add(userId);
-                String sourceId = safeText(payment.getSourceId());
-                if (accumulation.eventSourceIds.contains(sourceId)) {
-                    currency.eventBuyers.add(userId);
-                }
-                if (accumulation.assetIds.contains(sourceId)) {
-                    currency.assetBorrowers.add(userId);
-                }
-            }
+            return;
+        }
+        Optional<Long> refundedMinor = refundMinor(
+                payment,
+                status,
+                currencyKey.get(),
+                capturedMinor.get(),
+                accumulation.diagnostics);
+        if (refundedMinor.isEmpty()) {
+            return;
+        }
+        CurrencyAccumulator currency =
+                accumulation.currency(currencyKey.get());
+        TimelineAccumulator timeline =
+                createdDay.map(currency::timeline).orElse(null);
+        try {
+            long nextCapturedPaymentMinor = Math.addExact(
+                    currency.capturedPaymentMinor,
+                    capturedMinor.get());
+            long nextRefundedPaymentMinor = Math.addExact(
+                    currency.refundedPaymentMinor,
+                    refundedMinor.get());
+            long nextPaymentCount =
+                    Math.addExact(currency.paymentCount, 1L);
+            long nextTimelineCapturedPaymentMinor = timeline == null
+                    ? 0L
+                    : Math.addExact(
+                            timeline.capturedPaymentMinor,
+                            capturedMinor.get());
+            long nextTimelineRefundedPaymentMinor = timeline == null
+                    ? 0L
+                    : Math.addExact(
+                            timeline.refundedPaymentMinor,
+                            refundedMinor.get());
+            long nextTimelinePaymentCount = timeline == null
+                    ? 0L
+                    : Math.addExact(timeline.paymentCount, 1L);
+            currency.capturedPaymentMinor = nextCapturedPaymentMinor;
+            currency.refundedPaymentMinor = nextRefundedPaymentMinor;
+            currency.paymentCount = nextPaymentCount;
             if (timeline != null) {
-                if (StringUtils.hasText(userId)) {
-                    timeline.payingUsers.add(userId);
-                }
+                timeline.capturedPaymentMinor =
+                        nextTimelineCapturedPaymentMinor;
+                timeline.refundedPaymentMinor =
+                        nextTimelineRefundedPaymentMinor;
+                timeline.paymentCount = nextTimelinePaymentCount;
             }
+        } catch (ArithmeticException exception) {
+            accumulation.diagnostics.invalidMonetaryRecords++;
+            return;
+        }
+        String userId = safeText(payment.getUserId());
+        if (StringUtils.hasText(userId)) {
+            currency.payingUsers.add(userId);
+            String sourceId = safeText(payment.getSourceId());
+            if (accumulation.eventSourceIds.contains(sourceId)) {
+                currency.eventBuyers.add(userId);
+            }
+            if (accumulation.assetIds.contains(sourceId)) {
+                currency.assetBorrowers.add(userId);
+            }
+        }
+        if (timeline != null && StringUtils.hasText(userId)) {
+            timeline.payingUsers.add(userId);
         }
     }
 
