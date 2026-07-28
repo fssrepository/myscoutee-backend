@@ -53,6 +53,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
                     authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
+                    authorizeRequests.requestMatchers("/operator/**", "/api/operator/**").hasAuthority("O");
                     authorizeRequests.requestMatchers(
                             "/health",
                             "/error",

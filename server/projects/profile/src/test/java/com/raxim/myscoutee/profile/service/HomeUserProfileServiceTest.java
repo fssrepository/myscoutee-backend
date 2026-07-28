@@ -461,7 +461,11 @@ class HomeUserProfileServiceTest {
         Users member = user("member", 30d);
         Users admin = user("admin-demo-ava", 20d);
         admin.setHostTier("Admin");
-        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(admin, member));
+        Users operator = user("operator-demo-dev", 10d);
+        operator.setOperator(true);
+        operator.setHostTier("Operator");
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc())
+                .thenReturn(List.of(admin, member, operator));
 
         assertThat(service.queryDemoUserListItems(null, "member"))
                 .extracting(item -> item.id())
@@ -469,6 +473,9 @@ class HomeUserProfileServiceTest {
         assertThat(service.queryDemoUserListItems(null, "admin"))
                 .extracting(item -> item.id())
                 .containsExactly("admin-demo-ava");
+        assertThat(service.queryDemoUserListItems(null, "operator"))
+                .extracting(item -> item.id())
+                .containsExactly("operator-demo-dev");
     }
 
     @Test

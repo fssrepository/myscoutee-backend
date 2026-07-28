@@ -60,6 +60,16 @@ The live smoke URL is derived from `REMOTE_HOST`:
 http://${REMOTE_HOST}
 ```
 
+The remote installer does not initialize a node, choose a registry, or write a
+registry URL/scope. Registry configuration belongs to the authenticated local
+operator workflow after the product is running.
+
+Explore mode on an installed production node may display the sample Operator
+workspace, but it never contacts a registry or creates deployment keys/state.
+The package does not install a local Go registry. Real registration is
+available only to an authenticated Operator and uses the separately deployed
+registry's HTTPS endpoint.
+
 Remote Install
 --------------
 
@@ -68,6 +78,11 @@ For a fresh-install check, purge the remote package, config, data directories, c
 ```bash
 tools/install/purge.sh
 ```
+
+This purge also removes `/etc/myscoutee/registry` and
+`/var/lib/myscoutee/registry`. Use the production backup script first if the
+registered deployment identity, deployment code, or receipt history must be
+recoverable.
 
 Run the install:
 
@@ -90,9 +105,15 @@ The install flow is:
 5. restart `myscoutee` with systemd
 6. run `/opt/myscoutee/packaging/scripts/smoke-mongo-compatibility.sh` against `http://${REMOTE_HOST}`
 7. `curl http://${REMOTE_HOST}/api/i18n/bundle?lang=hu` and verify a bundle payload comes back
-8. check for MyScoutee Docker containers stuck in `Restarting`
+8. report whether the node is uninitialized, initialized but unregistered, or
+   already has a preserved deployment code
+9. check for MyScoutee Docker containers stuck in `Restarting`
 
 The script is fail-safe by default. If install, start, smoke test, or restart-loop detection fails, the remote script prints `systemctl`, Docker, compose, and journal diagnostics to the terminal, then stops `myscoutee`. Set `STOP_ON_FAILURE=false` only when you explicitly want to leave the failed service running for manual inspection.
+
+Registry availability is irrelevant to installation because installation
+makes no registry request. If a node was initialized and registered earlier,
+upgrades preserve its identity, local state, and receipts.
 
 Local Forward
 -------------

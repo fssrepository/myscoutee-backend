@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -272,12 +273,12 @@ public class HomeUserProfileService {
     public UserByIdResponseDto queryUserById(String requestedUserId) {
         String resolvedUserId = resolveSelectedUserId(requestedUserId);
         if (!StringUtils.hasText(resolvedUserId)) {
-            return StringUtils.hasText(requestedUserId) ? null : buildCurrentAdminPrincipalResponse();
+            return StringUtils.hasText(requestedUserId) ? null : buildCurrentPrivilegedPrincipalResponse();
         }
 
         Users user = findUser(resolvedUserId);
         if (user == null) {
-            return buildCurrentAdminPrincipalResponse();
+            return buildCurrentPrivilegedPrincipalResponse();
         }
         if (!StringUtils.hasText(requestedUserId)) {
             scheduledMessageTaskService.touchUserActivity(resolvedUserId);
@@ -317,6 +318,7 @@ public class HomeUserProfileService {
                 userDto.previousProfileStatus(),
                 userDto.deletedAtIso(),
                 isCurrentRequestAdmin(),
+                isCurrentRequestOperator(),
                 userDto.activities(),
                 userDto.notificationPreferences(),
                 filterCount,
@@ -337,11 +339,13 @@ public class HomeUserProfileService {
                 response.counterOverrides());
     }
 
-    private UserByIdResponseDto buildCurrentAdminPrincipalResponse() {
+    private UserByIdResponseDto buildCurrentPrivilegedPrincipalResponse() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean admin = isCurrentRequestAdmin();
+        boolean operator = isCurrentRequestOperator();
         if (authentication == null
                 || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)
-                || !isCurrentRequestAdmin()) {
+                || (!admin && !operator)) {
             return null;
         }
         String userId = normalizeId(firebasePrincipal.getUserId());
@@ -349,7 +353,7 @@ public class HomeUserProfileService {
             return null;
         }
         String email = safeText(firebasePrincipal.getEmail());
-        String name = adminDisplayName(email);
+        String name = admin ? adminDisplayName(email) : "Operator";
         UserActivitiesDto activities = toUserActivitiesDto(null);
         UserMenuCountersDto menuCounters = emptyMenuCounters();
         return new UserByIdResponseDto(
@@ -364,8 +368,8 @@ public class HomeUserProfileService {
                 "",
                 adminInitials(name),
                 "man",
-                "",
-                "",
+                operator ? "Operator workspace" : "",
+                operator ? "Operator" : "",
                 "",
                 0,
                 0,
@@ -380,7 +384,8 @@ public class HomeUserProfileService {
                 "public",
                 "",
                 "",
-                true,
+                admin,
+                operator,
                 activities,
                 new UserNotificationPreferencesDto(false),
                 0,
@@ -1163,6 +1168,15 @@ public class HomeUserProfileService {
                 .anyMatch(authority -> "A".equals(authority.getAuthority()));
     }
 
+    private boolean isCurrentRequestOperator() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> "O".equals(authority.getAuthority()));
+    }
+
     private DemoUserListItemDto toDemoUserListItemDto(Users user) {
         if (user == null) {
             return null;
@@ -1521,9 +1535,15 @@ public class HomeUserProfileService {
     }
 
     private boolean isSelectableDemoUserDocument(Users user, String selectorRole) {
-        return isUsableUserDocument(user)
-                && !PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))
-                && ("admin".equals(selectorRole) == isDemoAdminUserDocument(user));
+        if (!isUsableUserDocument(user)
+                || PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))) {
+            return false;
+        }
+        return switch (selectorRole) {
+            case "admin" -> isDemoAdminUserDocument(user);
+            case "operator" -> isDemoOperatorUserDocument(user);
+            default -> !isDemoAdminUserDocument(user) && !isDemoOperatorUserDocument(user);
+        };
     }
 
     private boolean isDemoAdminUserDocument(Users user) {
@@ -1532,8 +1552,18 @@ public class HomeUserProfileService {
                         || "admin".equalsIgnoreCase(safeText(user.getHostTier())));
     }
 
+    private boolean isDemoOperatorUserDocument(Users user) {
+        return user != null
+                && (user.isOperator()
+                        || "operator".equalsIgnoreCase(safeText(user.getHostTier())));
+    }
+
     private String normalizeDemoSelectorRole(String role) {
-        return "admin".equalsIgnoreCase(safeText(role)) ? "admin" : "member";
+        String normalized = safeText(role).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "admin", "operator" -> normalized;
+            default -> "member";
+        };
     }
 
     boolean isPublicGameUser(Users user) {

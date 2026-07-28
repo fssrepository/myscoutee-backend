@@ -13,6 +13,7 @@ management:
 
 config:
   adminUser: ${ADMIN_USER:myscoutee@gmail.com}
+  operator-user: ${OPERATOR_USER:}
   firebase-enabled: ${FIREBASE_ENABLED:false}
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:./secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}

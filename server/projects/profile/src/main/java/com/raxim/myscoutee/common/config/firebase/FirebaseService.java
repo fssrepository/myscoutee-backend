@@ -3,6 +3,8 @@ package com.raxim.myscoutee.common.config.firebase;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Locale;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
@@ -37,8 +39,25 @@ public class FirebaseService {
     public UserDetails loadUserById(String profileId) {
         Users user = findUser(profileId);
         String normalizedProfileId = user != null ? normalizeId(user.getId()) : normalizeId(profileId);
-        String email = normalizeEmail(config.getDevUser());
-        return new FirebasePrincipal(normalizedProfileId, email, resolveRole(email), user);
+        String email = normalizeEmail(user != null && StringUtils.hasText(user.getEmail())
+                ? user.getEmail()
+                : config.getDevUser());
+        return new FirebasePrincipal(normalizedProfileId, email, resolveAuthorities(email, user), user);
+    }
+
+    public UserDetails loadDemoOperatorById(String profileId) {
+        Users user = findUser(profileId);
+        if (user == null || !isStoredOperator(user)) {
+            return null;
+        }
+        String email = normalizeEmail(StringUtils.hasText(user.getEmail())
+                ? user.getEmail()
+                : user.getId() + "@demo.local");
+        return new FirebasePrincipal(
+                normalizeId(user.getId()),
+                email,
+                resolveAuthorities(email, user),
+                user);
     }
 
     public UserDetails loadUserByUsername(String username, String xLink, String currentPage) {
@@ -48,13 +67,17 @@ public class FirebaseService {
             user = findUser(username);
         }
         String resolvedUserId = user != null ? normalizeId(user.getId()) : stableUserId(normalizedEmail);
-        return new FirebasePrincipal(resolvedUserId, normalizedEmail, resolveRole(normalizedEmail), user);
+        return new FirebasePrincipal(
+                resolvedUserId,
+                normalizedEmail,
+                resolveAuthorities(normalizedEmail, user),
+                user);
     }
 
     public UserDetails loadUserByCredential(FirebaseCredential credential, String xLink, String currentPage) {
         String normalizedEmail = normalizeCredentialEmail(credential);
-        String role = resolveRole(normalizedEmail);
-        Users user = "A".equals(role) ? findUser(normalizedEmail) : null;
+        boolean configuredAdmin = isAdminEmail(normalizedEmail);
+        Users user = configuredAdmin ? findUser(normalizedEmail) : null;
         if (user == null) {
             user = findUserByEmail(normalizedEmail);
         }
@@ -64,13 +87,19 @@ public class FirebaseService {
         if (user == null) {
             user = findUser(stableUserId(normalizedEmail));
         }
-        if (user == null && "U".equals(role)) {
+        if (user == null && config.isOperatorUser(normalizedEmail)) {
+            user = createOperatorUser(normalizedEmail, credential);
+        } else if (user == null && !configuredAdmin) {
             user = createOnboardingUser(normalizedEmail, credential);
         } else if (user != null) {
             user = syncFirebaseIdentity(user, credential);
         }
         String resolvedUserId = user != null ? normalizeId(user.getId()) : stableUserId(normalizedEmail);
-        return new FirebasePrincipal(resolvedUserId, normalizedEmail, role, user);
+        return new FirebasePrincipal(
+                resolvedUserId,
+                normalizedEmail,
+                resolveAuthorities(normalizedEmail, user),
+                user);
     }
 
     private Users findUser(String userId) {
@@ -156,6 +185,59 @@ public class FirebaseService {
         } catch (DataIntegrityViolationException exception) {
             Users racedUser = findUser(userId);
             if (racedUser != null) {
+                return syncFirebaseIdentity(racedUser, credential);
+            }
+            throw exception;
+        }
+    }
+
+    private Users createOperatorUser(String email, FirebaseCredential credential) {
+        String normalizedEmail = normalizeEmail(email);
+        String userId = stableUserId(normalizedEmail);
+        Users existing = findUser(userId);
+        if (existing != null) {
+            if (!existing.isOperator()) {
+                existing.setOperator(true);
+                existing.setHostTier("Operator");
+                return usersRepository.save(existing);
+            }
+            return syncFirebaseIdentity(existing, credential);
+        }
+
+        String displayName = credential == null ? null : credential.getName();
+        Users user = new Users();
+        user.setMongoId(new ObjectId().toHexString());
+        user.setSyncKey(UUID.randomUUID().toString());
+        user.setUserId(userId);
+        user.setEmail(normalizedEmail);
+        applyFirebaseIdentity(user, credential);
+        user.setName(StringUtils.hasText(displayName) ? displayName.trim() : "Operator");
+        user.setInitials(resolveInitials(StringUtils.hasText(displayName) ? displayName : normalizedEmail));
+        user.setGender("");
+        user.setStatus("A");
+        user.setProfileStatus("public");
+        user.setStatusText("Operator workspace");
+        user.setHostTier("Operator");
+        user.setOperator(true);
+        user.setCompletion(0);
+        user.setProfileFormVersion(0);
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0, 0));
+        try {
+            return usersRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            Users racedUser = findUser(userId);
+            if (racedUser != null) {
+                if (!racedUser.isOperator()) {
+                    racedUser.setOperator(true);
+                    racedUser.setHostTier("Operator");
+                    return usersRepository.save(racedUser);
+                }
                 return syncFirebaseIdentity(racedUser, credential);
             }
             throw exception;
@@ -254,11 +336,25 @@ public class FirebaseService {
         return UUID.nameUUIDFromBytes(normalizeEmail(email).getBytes(StandardCharsets.UTF_8)).toString();
     }
 
-    private String resolveRole(String email) {
+    private List<String> resolveAuthorities(String email, Users user) {
         String normalizedEmail = normalizeEmail(email);
-        if (config.isAdminUser(normalizedEmail) || appSettingsService.isAdminEmail(normalizedEmail)) {
-            return "A";
+        LinkedHashSet<String> authorities = new LinkedHashSet<>();
+        authorities.add("U");
+        if (isAdminEmail(normalizedEmail)) {
+            authorities.add("A");
         }
-        return "U";
+        if (config.isOperatorUser(normalizedEmail) || isStoredOperator(user)) {
+            authorities.add("O");
+        }
+        return List.copyOf(authorities);
+    }
+
+    private boolean isAdminEmail(String normalizedEmail) {
+        return config.isAdminUser(normalizedEmail)
+                || appSettingsService.isAdminEmail(normalizedEmail);
+    }
+
+    private boolean isStoredOperator(Users user) {
+        return user != null && user.isOperator();
     }
 }

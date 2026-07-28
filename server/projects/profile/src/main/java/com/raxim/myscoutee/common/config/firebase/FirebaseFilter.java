@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
+import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 
 import jakarta.servlet.FilterChain;
@@ -21,6 +22,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
     private static final String AUTH_FIREBASE = "X-Authorization-Firebase";
     private static final String AUTH_LINK = "X-Authorization-Link";
     private static final String AUTHORIZATION = "Authorization";
+    private static final String DEMO_USER_ID = "X-Demo-User-Id";
 
     private final FirebaseService firebaseService;
     private final ConfigProperties configProperties;
@@ -40,6 +42,14 @@ public class FirebaseFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        if (DemoSessionRequestSupport.isOperatorRequest(request)
+                && (DemoSessionRequestSupport.isDemoSessionRequest(request)
+                        || !configProperties.isFirebaseEnabled())) {
+            authenticateDemoOperator(request);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (!configProperties.isFirebaseEnabled()) {
             authenticateWithoutFirebase(request);
             filterChain.doFilter(request, response);
@@ -83,6 +93,20 @@ public class FirebaseFilter extends OncePerRequestFilter {
                     devUser,
                     request.getHeader(AUTH_LINK),
                     request.getRequestURI());
+        }
+        setAuthentication(userDetails, null);
+    }
+
+    private void authenticateDemoOperator(HttpServletRequest request) {
+        String requestedUserId = request == null ? null : request.getHeader(DEMO_USER_ID);
+        if (!StringUtils.hasText(requestedUserId)) {
+            return;
+        }
+        UserDetails userDetails = firebaseService.loadDemoOperatorById(requestedUserId.trim());
+        if (userDetails == null
+                || userDetails.getAuthorities().stream()
+                        .noneMatch(authority -> "O".equals(authority.getAuthority()))) {
+            return;
         }
         setAuthentication(userDetails, null);
     }

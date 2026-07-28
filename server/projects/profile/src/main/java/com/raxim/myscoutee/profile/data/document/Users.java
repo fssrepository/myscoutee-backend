@@ -53,6 +53,7 @@ public class Users {
     private String gender;
     private String statusText;
     private String hostTier;
+    private Boolean operator;
     private String traitLabel;
     private Integer completion;
     private Integer profileFormVersion;
@@ -236,6 +237,18 @@ public class Users {
 
     public void setHostTier(String hostTier) {
         this.hostTier = hostTier;
+    }
+
+    public Boolean getOperator() {
+        return operator;
+    }
+
+    public boolean isOperator() {
+        return Boolean.TRUE.equals(operator);
+    }
+
+    public void setOperator(Boolean operator) {
+        this.operator = operator;
     }
 
     public String getTraitLabel() {

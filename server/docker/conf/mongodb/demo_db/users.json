@@ -4787,5 +4787,70 @@
       "adminJobs": 0,
       "adminMetrics": 0
     }
+  },
+  {
+    "_id": "operator-demo-dev",
+    "syncKey": "operator-demo-dev",
+    "userId": "operator-demo-dev",
+    "email": "operator@myscoutee.local",
+    "name": "Demo Operator",
+    "city": "Deployment sandbox",
+    "initials": "DO",
+    "gender": "woman",
+    "statusText": "Operator workspace",
+    "hostTier": "Operator",
+    "traitLabel": "Infrastructure",
+    "completion": 100,
+    "profileFormVersion": 1,
+    "headline": "Local deployment operator",
+    "about": "Configures the isolated demonstration deployment and registry.",
+    "operator": true,
+    "status": "A",
+    "profileStatus": "public",
+    "images": [],
+    "activities": {
+      "game": 0,
+      "chats": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      },
+      "asset": {
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
+        "tickets": 0
+      },
+      "eventFeedback": {
+        "ownEvents": 0,
+        "pending": 0,
+        "feedbacked": 0,
+        "removed": 0
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
+    }
   }
 ]

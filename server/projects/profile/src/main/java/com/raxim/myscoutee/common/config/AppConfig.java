@@ -20,6 +20,8 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
 import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
+import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 
 @Configuration
@@ -30,7 +32,9 @@ import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
         MediaStorageProperties.class,
         AdminStatsProperties.class,
         AffinityRecomputeProperties.class,
-        RegionSecurityProperties.class
+        RegionSecurityProperties.class,
+        RegistryProperties.class,
+        RegistryDemoProperties.class
 })
 @EnableSpringDataWebSupport
 @EnableScheduling

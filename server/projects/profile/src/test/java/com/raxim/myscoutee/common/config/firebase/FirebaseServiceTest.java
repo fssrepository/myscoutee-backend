@@ -86,7 +86,7 @@ class FirebaseServiceTest {
         assertThat(userDetails).isInstanceOf(FirebasePrincipal.class);
         FirebasePrincipal principal = (FirebasePrincipal) userDetails;
         assertThat(principal.getUserId()).isEqualTo(expectedUserId);
-        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("A");
+        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("U", "A");
         assertThat(principal.getUser()).isNull();
         verify(usersRepository, never()).save(any(Users.class));
     }
@@ -112,7 +112,7 @@ class FirebaseServiceTest {
 
         FirebasePrincipal principal = (FirebasePrincipal) userDetails;
         assertThat(principal.getUserId()).isEqualTo(expectedUserId);
-        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("A");
+        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("U", "A");
         assertThat(principal.getUser()).isNull();
         verify(usersRepository, never()).save(any(Users.class));
     }
@@ -147,6 +147,57 @@ class FirebaseServiceTest {
         assertThat(principal.getUser().getFirebaseUid()).isEqualTo("facebook-uid-1");
         assertThat(principal.getUser().getFacebookId()).isEqualTo("facebook-provider-1");
         assertThat(principal.getUser().getInitials()).isEqualTo("FU");
+    }
+
+    @Test
+    void configuredOperatorGetsAdditiveAuthorityAndAnOperatorRecord() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setOperatorUser("operator@example.com");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        FirebaseCredential credential = mock(FirebaseCredential.class);
+        String expectedUserId = stableUserId("operator@example.com");
+        when(credential.getEmail()).thenReturn("operator@example.com");
+        when(credential.getName()).thenReturn("Configured Operator");
+        when(usersRepository.findFirstByEmail("operator@example.com")).thenReturn(Optional.empty());
+        when(usersRepository.findByUserId(expectedUserId)).thenReturn(Optional.empty());
+        when(usersRepository.findById(expectedUserId)).thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        FirebasePrincipal principal = (FirebasePrincipal) new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService)
+                .loadUserByCredential(credential, null, "/api/operator/registry");
+
+        assertThat(principal.getAuthorities()).extracting(Object::toString)
+                .containsExactly("U", "O");
+        assertThat(principal.getUser()).isNotNull();
+        assertThat(principal.getUser().isOperator()).isTrue();
+        assertThat(principal.getUser().getHostTier()).isEqualTo("Operator");
+        assertThat(principal.getUser().getProfileStatus()).isEqualTo("public");
+    }
+
+    @Test
+    void demoOperatorLookupFailsClosedForMissingOrOrdinaryUsers() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setOperatorUser("dev@myscoutee.local");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        Users ordinary = new Users();
+        ordinary.setUserId("ordinary");
+        ordinary.setEmail("ordinary@example.com");
+        when(usersRepository.findByUserId("missing")).thenReturn(Optional.empty());
+        when(usersRepository.findById("missing")).thenReturn(Optional.empty());
+        when(usersRepository.findByUserId("ordinary")).thenReturn(Optional.of(ordinary));
+
+        FirebaseService service = new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService);
+
+        assertThat(service.loadDemoOperatorById("missing")).isNull();
+        assertThat(service.loadDemoOperatorById("ordinary")).isNull();
     }
 
     @Test

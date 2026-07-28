@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.common.config.firebase.dto;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +12,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 public class FirebasePrincipal implements UserDetails {
     private final String userId;
     private final String email;
-    private final String role;
+    private final List<String> authorities;
     private final Users user;
 
     public FirebasePrincipal(String userId, String email, String role) {
@@ -19,15 +20,34 @@ public class FirebasePrincipal implements UserDetails {
     }
 
     public FirebasePrincipal(String userId, String email, String role, Users user) {
+        this(userId, email, role == null ? List.of() : List.of(role), user);
+    }
+
+    public FirebasePrincipal(
+            String userId,
+            String email,
+            Collection<String> authorities,
+            Users user) {
         this.userId = userId;
         this.email = email;
-        this.role = role;
+        LinkedHashSet<String> normalized = new LinkedHashSet<>();
+        normalized.add("U");
+        if (authorities != null) {
+            authorities.stream()
+                    .filter(java.util.Objects::nonNull)
+                    .map(String::trim)
+                    .filter(authority -> !authority.isEmpty())
+                    .forEach(normalized::add);
+        }
+        this.authorities = List.copyOf(normalized);
         this.user = user;
     }
 
     @Override
     public Collection<SimpleGrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        return authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 
     public String getUserId() {

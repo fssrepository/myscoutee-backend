@@ -10,5 +10,4 @@ if [[ "${1:-}" = "purge" ]]; then
   rm -rf /opt/myscoutee
   rm -rf /var/lib/myscoutee
   rm -rf /var/log/myscoutee
-  rm -rf /var/backups/myscoutee
 fi

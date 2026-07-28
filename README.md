@@ -44,6 +44,9 @@ Production Compose
 * Build the frontend production bundle first:
 * `(cd frontend && npm run build:prod)`
 * Run standalone production compose:
+* Before using operator-driven node initialization, create its dedicated host
+  directories with owner-only permissions:
+* `(cd server && install -d -m 0700 data/registry-keys data/registry)`
 * `(cd server && docker compose -f docker-compose-prod.yml up --build)`
 * Build standalone production images only:
 * `(cd server && docker compose -f docker-compose-prod.yml build)`
@@ -61,3 +64,43 @@ Full Integration E2E Collections
 * Safe contract checks against the normal dev stack: `node e2e/server/run.mjs`
 * Disposable mutation/stress checks use `e2e_db`: `cd server && docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build`
 * Details: `./e2e/README.md`
+
+Local Signed Registry
+---------------------
+The canonical development stack includes the real Go registry sandbox. Keep
+the `myscoutee-registry` repository beside this repository, then start the
+normal stack:
+
+```bash
+cd server
+docker compose up --build
+```
+
+The landing Explore popup can select `Operator`, then the seeded
+`Demo Operator`. Frontend assets still rebuild through `frontend-sync`; the
+application data comes from Mongo `demo_db`; and Operator registry actions use
+the live local Go service. Node initialization and registration happen only
+when the Operator performs those UI actions. Starting Compose does not create a
+Java node identity or silently enroll it.
+
+The three demo stores are deliberately separate:
+
+- application demo data: `server/data/mongodb/demo-data-v8-0` (`demo_db`)
+- registry SQLite and registry signing identity:
+  `myscoutee-registry-dev-demo-data-v1` Docker volume
+- demo deployment identity and verified client state:
+  `server/data/registry-demo-keys` and
+  `server/data/registry-demo-state`
+
+The registry health endpoint is
+`http://127.0.0.1:${LOCAL_REGISTRY_PORT:-8081}/healthz`. The default signed
+scope is the generic `demo:local-registry`; set
+`REGISTRY_DEMO_CANDIDATE_SCOPE` before `docker compose up` to exercise another
+explicit scope. No geography or parent is built in.
+
+Plain HTTP is enabled only for the exact Compose hostname `registry` in this
+development sandbox. A production Explore session uses sample Operator state
+and performs no registry network, key, or ledger mutation. An authenticated
+production Operator uses the independently deployed registry's HTTPS endpoint;
+that central Go deployment has its own nginx/TLS configuration and is not
+bundled into the MyScoutee production stack.

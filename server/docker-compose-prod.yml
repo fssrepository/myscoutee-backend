@@ -164,6 +164,7 @@ services:
       - .env.secrets
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.0.0}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
@@ -173,6 +174,7 @@ services:
       FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com,raxim.uk@gmail.com,myscoutee1@gmail.com"
+      OPERATOR_USER: "${OPERATOR_USER:-}"
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
@@ -181,12 +183,30 @@ services:
       MEDIA_OBJECT_STORE_PATH_STYLE: "true"
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
+      REGISTRY_ENABLED: "${REGISTRY_ENABLED:-false}"
+      REGISTRY_OUTBOUND_ALLOWED: "${REGISTRY_OUTBOUND_ALLOWED:-false}"
+      REGISTRY_OPERATOR_REGISTRATION_CONFIRMED: "${REGISTRY_OPERATOR_REGISTRATION_CONFIRMED:-false}"
+      REGISTRY_BASE_URL: "${REGISTRY_BASE_URL:-}"
+      REGISTRY_SCOPE: "${REGISTRY_SCOPE:-}"
+      REGISTRY_PRIVATE_KEY_PATH: "${REGISTRY_PRIVATE_KEY_PATH:-/etc/myscoutee/registry/deployment-private-key.pem}"
+      REGISTRY_PUBLIC_KEY_PATH: "${REGISTRY_PUBLIC_KEY_PATH:-/etc/myscoutee/registry/deployment-public-key.der}"
+      REGISTRY_STATE_DIR: "${REGISTRY_STATE_DIR:-/var/lib/myscoutee/registry}"
+      REGISTRY_CONNECT_TIMEOUT: "${REGISTRY_CONNECT_TIMEOUT:-5s}"
+      REGISTRY_REQUEST_TIMEOUT: "${REGISTRY_REQUEST_TIMEOUT:-15s}"
+      REGISTRY_RETRY_DELAY: "${REGISTRY_RETRY_DELAY:-15m}"
+      REGISTRY_MAX_RESPONSE_BYTES: "${REGISTRY_MAX_RESPONSE_BYTES:-1048576}"
+      REGISTRY_EXPECTED_KEY_FINGERPRINT: "${REGISTRY_EXPECTED_KEY_FINGERPRINT:-}"
+      REGISTRY_TRUST_ON_FIRST_USE: "${REGISTRY_TRUST_ON_FIRST_USE:-false}"
+      REGISTRY_ALLOW_INSECURE_HTTP: "${REGISTRY_ALLOW_INSECURE_HTTP:-false}"
+      REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS: "${REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS:-}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     secrets:
       - source: firebase-service-account
         target: firebase-service-account.json
     volumes:
+      - "${REGISTRY_KEY_DIR_HOST:-./data/registry-keys}:/etc/myscoutee/registry:rw"
+      - "${REGISTRY_STATE_DIR_HOST:-./data/registry}:/var/lib/myscoutee/registry"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:

@@ -359,6 +359,64 @@ installed_package_version() {
   printf '%s' "${version}"
 }
 
+read_myscoutee_env_value() {
+  local key="$1"
+  local file="/etc/myscoutee/myscoutee.env"
+  local line value
+
+  [[ -f "${file}" ]] || return 1
+  line="$(sudo_run sed -n "s/^[[:space:]]*${key}[[:space:]]*=[[:space:]]*//p" "${file}" | tail -n 1)"
+  [[ -n "${line}" ]] || return 1
+
+  value="${line%$'\r'}"
+  if [[ "${value}" == \"*\" && "${value}" == *\" ]]; then
+    value="${value:1:${#value}-2}"
+  elif [[ "${value}" == \'*\' && "${value}" == *\' ]]; then
+    value="${value:1:${#value}-2}"
+  fi
+  printf '%s' "${value}"
+}
+
+report_registry_status() {
+  local registry_url state_dir key_dir state_file
+  local deployment_id public_key fingerprint
+
+  registry_url="$(read_myscoutee_env_value REGISTRY_BASE_URL || true)"
+  state_dir="$(read_myscoutee_env_value REGISTRY_STATE_DIR_HOST || true)"
+  key_dir="$(read_myscoutee_env_value REGISTRY_KEY_DIR_HOST || true)"
+  state_dir="${state_dir:-/var/lib/myscoutee/registry}"
+  key_dir="${key_dir:-/etc/myscoutee/registry}"
+  state_file="${state_dir}/deployment-state.json"
+  public_key="${key_dir}/deployment-public-key.der"
+
+  deployment_id=""
+  if sudo_run test -s "${state_file}"; then
+    if command -v jq >/dev/null 2>&1; then
+      deployment_id="$(sudo_run jq -r '.deployment_id // empty' "${state_file}" 2>/dev/null || true)"
+    else
+      deployment_id="$(sudo_run sed -n 's/.*"deployment_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "${state_file}" | head -n 1)"
+    fi
+  fi
+  if [[ ! "${deployment_id}" =~ ^dep_[0-9a-f]{32}$ ]]; then
+    deployment_id=""
+  fi
+
+  fingerprint=""
+  if command -v openssl >/dev/null 2>&1 && sudo_run test -s "${public_key}"; then
+    fingerprint="$(sudo_run openssl dgst -sha256 -r "${public_key}" | awk '{ print $1 }')"
+  fi
+
+  if [[ -n "${deployment_id}" ]]; then
+    log "deployment code: ${deployment_id}"
+    log "deployment registry: registered at ${registry_url:-configured registry}"
+  elif [[ -n "${fingerprint}" ]]; then
+    log "node identity is initialized but unregistered; select and confirm a registry in the operator workspace"
+    log "deployment public-key fingerprint: sha256:${fingerprint}"
+  else
+    log "node is uninitialized; installation did not create an identity or select/contact a registry"
+  fi
+}
+
 stage="package install"
 if is_truthy "${RUN_APT_UPDATE}"; then
   sudo_run apt-get update
@@ -402,6 +460,9 @@ if [[ "${bundle_body}" != *'"lang":"hu"'* || "${bundle_body}" != *'"data":{'* ]]
   fail_remote "i18n bundle smoke failed for ${SMOKE_BASE_URL%/}/api/i18n/bundle?lang=hu"
 fi
 log "i18n bundle smoke passed"
+
+stage="registry status"
+report_registry_status
 
 log "install and smoke test passed"
 REMOTE_SCRIPT

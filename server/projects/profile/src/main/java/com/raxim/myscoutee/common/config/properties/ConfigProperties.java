@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 @ConfigurationProperties("config")
 public class ConfigProperties {
     private String adminUser;
+    private String operatorUser;
     private String firebaseServiceAccountPath;
     private boolean firebaseEnabled = false;
     private boolean chatOnlyMode = false;
@@ -36,6 +37,28 @@ public class ConfigProperties {
         String normalized = value == null ? "" : value.trim();
         return StringUtils.hasText(normalized)
                 && getAdminUsers().stream().anyMatch(admin -> admin.equalsIgnoreCase(normalized));
+    }
+
+    public String getOperatorUser() {
+        return operatorUser;
+    }
+
+    public void setOperatorUser(String operatorUser) {
+        this.operatorUser = operatorUser;
+    }
+
+    public List<String> getOperatorUsers() {
+        return Arrays.stream((operatorUser == null ? "" : operatorUser).split("[,;]"))
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    public boolean isOperatorUser(String value) {
+        String normalized = value == null ? "" : value.trim();
+        return StringUtils.hasText(normalized)
+                && getOperatorUsers().stream().anyMatch(operator -> operator.equalsIgnoreCase(normalized));
     }
 
     public String getFirebaseServiceAccountPath() {
