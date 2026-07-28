@@ -643,7 +643,9 @@ if docker compose version >/dev/null 2>&1; then
     docker compose config --format json
   )" || fail "canonical development Compose configuration does not render"
   jq -e '
-    .services.registry.environment.REGISTRY_SCOPE == "demo:local-registry"
+    .services.registry.container_name == "registry"
+    and .services.registry.image == "myscoutee-registry:1.0.0-dev"
+    and .services.registry.environment.REGISTRY_SCOPE == "demo:local-registry"
     and .services.registry.environment.REGISTRY_DATABASE_PATH == "/data/registry.db"
     and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-signing-key.pem"
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"

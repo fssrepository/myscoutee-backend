@@ -311,7 +311,8 @@ services:
       timeout: 2s
       retries: 90
   registry:
-    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:dev-demo}
+    container_name: registry
+    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:1.0.0-dev}
     pull_policy: build
     build:
       context: ../../myscoutee-registry
