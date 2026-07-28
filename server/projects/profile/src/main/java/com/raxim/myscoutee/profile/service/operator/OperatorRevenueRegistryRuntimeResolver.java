@@ -11,6 +11,7 @@ import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.registry.RegistryCrypto;
+import com.raxim.myscoutee.registry.RegistryHttpClient;
 import com.raxim.myscoutee.registry.RegistryLocalStore;
 import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
 import com.raxim.myscoutee.registry.RegistryProtocol;
@@ -75,6 +76,8 @@ class OperatorRevenueRegistryRuntimeResolver {
 
         try {
             RegistryProperties runtime = runtimeProperties(settings.getSelection());
+            new RegistryHttpClient(runtime, objectMapper).endpoint(
+                    RegistryProtocol.REVENUE_BATCH_PATH);
             RegistryCrypto crypto = RegistryCrypto.load(runtime);
             RegistryLocalStore localStore =
                     new RegistryLocalStore(runtime, objectMapper);
@@ -269,11 +272,44 @@ class OperatorRevenueRegistryRuntimeResolver {
         RegistryProtocol.requireHash(
                 receipt.previousEntryHash(),
                 "previous_entry_hash");
+        RegistryProtocol.requirePeriod(receipt.period());
+        String commitmentHash = RegistryProtocol.sha256(
+                RegistryProtocol.installationCommitment(
+                        state.deploymentId(),
+                        state.installationIdempotencyKey()));
+        String expectedBatchHash = RegistryProtocol.sha256(
+                RegistryProtocol.mauBatchPayload(
+                        RegistryProtocol.INSTALLATION_KIND,
+                        state.installationPeriod(),
+                        RegistryProtocol.INSTALLATION_RULESET,
+                        RegistryProtocol.INSTALLATION_MAU_COUNT,
+                        commitmentHash));
         var acceptedAt = RegistryProtocol.requireUtcTimestamp(
                 receipt.acceptedAt(),
                 "accepted_at");
         RegistryProtocol.requireCheckpointDate(receipt.checkpointDate());
-        if (!RegistryProtocol.checkpointDateAt(acceptedAt).equals(
+        String expectedEntryHash = RegistryProtocol.sha256(
+                RegistryProtocol.ledgerEntry(
+                        RegistryProtocol.PROTOCOL_VERSION,
+                        state.registryScope(),
+                        receipt.ledgerIndex(),
+                        RegistryProtocol.INSTALLATION_ENTRY_TYPE,
+                        state.deploymentId(),
+                        response.batchId(),
+                        receipt.kind(),
+                        receipt.period(),
+                        receipt.rulesetVersion(),
+                        receipt.qualifiedMauCount(),
+                        receipt.batchHash(),
+                        receipt.previousEntryHash(),
+                        receipt.acceptedAt()));
+        if (!RegistryProtocol.hashEquals(
+                    expectedBatchHash,
+                    receipt.batchHash())
+                || !RegistryProtocol.hashEquals(
+                        expectedEntryHash,
+                        receipt.entryHash())
+                || !RegistryProtocol.checkpointDateAt(acceptedAt).equals(
                     receipt.checkpointDate())
                 || !RegistryCrypto.verifyBase64(
                         registryPublicKey,

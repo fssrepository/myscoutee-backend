@@ -50,6 +50,7 @@ public class OperatorRevenueReportService {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(OperatorRevenueReportService.class);
     private static final int MAX_CORRECTION_ROUNDS = 2;
+    private static final int MAX_CATCH_UP_DAYS_PER_ROUND = 31;
     private static final Duration MAX_RETRY_DELAY = Duration.ofHours(24);
 
     private final OperatorRevenueRegistryRuntimeResolver runtimeResolver;
@@ -243,7 +244,23 @@ public class OperatorRevenueReportService {
         LocalDate currentDay = now.atZone(ZoneOffset.UTC).toLocalDate();
         Set<LocalDate> reportPeriods =
                 new LinkedHashSet<>(latestByPeriod.keySet());
-        reportPeriods.add(currentDay.minusDays(1L));
+        LocalDate previousCompletedDay = currentDay.minusDays(1L);
+        if (!latestByPeriod.isEmpty()) {
+            LocalDate catchUpDay = latestByPeriod.keySet().stream()
+                    .min(Comparator.naturalOrder())
+                    .orElseThrow()
+                    .plusDays(1L);
+            int catchUpCount = 0;
+            while (!catchUpDay.isAfter(previousCompletedDay)
+                    && catchUpCount < MAX_CATCH_UP_DAYS_PER_ROUND) {
+                if (!latestByPeriod.containsKey(catchUpDay)) {
+                    reportPeriods.add(catchUpDay);
+                    catchUpCount++;
+                }
+                catchUpDay = catchUpDay.plusDays(1L);
+            }
+        }
+        reportPeriods.add(previousCompletedDay);
 
         int materialized = 0;
         for (OperatorRevenueService.DailyRevenueSnapshot daily
