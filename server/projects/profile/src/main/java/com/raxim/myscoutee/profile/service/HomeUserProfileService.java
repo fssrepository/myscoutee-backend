@@ -1179,6 +1179,18 @@ public class HomeUserProfileService {
                 .anyMatch(authority -> "O".equals(authority.getAuthority()));
     }
 
+    private boolean isCurrentRequestOperatorForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || !isCurrentRequestOperator()) {
+            return false;
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)) {
+            return false;
+        }
+        return normalizedUserId.equals(normalizeId(firebasePrincipal.getUserId()));
+    }
+
     private DemoUserListItemDto toDemoUserListItemDto(Users user) {
         if (user == null) {
             return null;
@@ -2080,6 +2092,8 @@ public class HomeUserProfileService {
         document.setGender(nullToEmpty(user.gender()));
         document.setStatusText(nullToEmpty(user.statusText()));
         document.setHostTier(nullToEmpty(user.hostTier()));
+        document.setOperator((current != null && current.isOperator())
+                || isCurrentRequestOperatorForUser(user.id()));
         document.setTraitLabel(nullToEmpty(user.traitLabel()));
         document.setCompletion(normalizeCount(user.completion()));
         document.setProfileFormVersion(normalizeCount(user.profileFormVersion()));

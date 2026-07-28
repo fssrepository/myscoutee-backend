@@ -596,6 +596,47 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void firstOperatorProfileSavePersistsTrustedOperatorAuthority() {
+        when(usersRepository.findByUserId("operator-new")).thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        FirebasePrincipal principal = new FirebasePrincipal(
+                "operator-new",
+                "operator@example.com",
+                List.of("U", "O"),
+                null);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        principal,
+                        "",
+                        principal.getAuthorities()));
+
+        try {
+            UserDto saved = service.saveUserProfile(onboardingDraftUser("operator-new"));
+
+            assertThat(saved.operator()).isTrue();
+            ArgumentCaptor<Users> userCaptor = ArgumentCaptor.forClass(Users.class);
+            verify(usersRepository).save(userCaptor.capture());
+            assertThat(userCaptor.getValue().isOperator()).isTrue();
+            assertThat(userCaptor.getValue().getEmail()).isEqualTo("operator@example.com");
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    @Test
+    void profileSaveKeepsPersistedOperatorRoleWhenEditableDtoDoesNotCarryAuthority() {
+        Users operator = user("operator", 0d);
+        operator.setOperator(true);
+        when(usersRepository.findByUserId("operator")).thenReturn(Optional.of(operator));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto saved = service.saveUserProfile(onboardingDraftUser("operator"));
+
+        assertThat(saved.operator()).isTrue();
+        assertThat(operator.isOperator()).isTrue();
+    }
+
+    @Test
     void deleteUserRejectsDeniedUserBeforeSchedulingDeletion() {
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
         when(accessControlService.canCurrentActorDeleteProfile("active")).thenReturn(false);
