@@ -2,6 +2,8 @@ package com.raxim.myscoutee.profile.data.dto.operator;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
+
 public final class OperatorRegistryDtos {
     private OperatorRegistryDtos() {
     }
@@ -102,5 +104,12 @@ public final class OperatorRegistryDtos {
             EnrollmentDto enrollment,
             RegistryAuditDto audit,
             SafeRegistryErrorDto lastError) {
+    }
+
+    public record OperatorRegistryMutationResultDto(
+            OperatorRegistryStatusDto status,
+            OperatorLeaderboardRowDto leaderboardEntry,
+            List<String> removedLeaderboardEntryIds,
+            boolean created) {
     }
 }

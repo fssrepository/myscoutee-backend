@@ -188,7 +188,8 @@ class OperatorRegistryServiceTest {
                         "dep_0123456789abcdef0123456789abcdef",
                         "batch_0123456789abcdef0123456789abcdef",
                         NOW.plusSeconds(1).toString(),
-                        1L));
+                        1L,
+                        false));
         OperatorRegistryService service = service();
         var inspection = service.inspect(
                 new RegistryInspectRequestDto("http://registry:8080", "demo:local-registry"),
@@ -205,8 +206,10 @@ class OperatorRegistryServiceTest {
         var completed = service.retry("operator-demo-dev");
         var repeated = service.retry("operator-demo-dev");
 
-        assertThat(failed.lifecycle()).isEqualTo("ERROR");
-        assertThat(failed.lastError().retryable()).isTrue();
+        assertThat(failed.status().lifecycle()).isEqualTo("ERROR");
+        assertThat(failed.status().lastError().retryable()).isTrue();
+        assertThat(failed.created()).isFalse();
+        assertThat(failed.leaderboardEntry()).isNull();
         assertThat(completed.lifecycle()).isEqualTo("REGISTERED");
         assertThat(completed.enrollment().deploymentCode())
                 .isEqualTo("dep_0123456789abcdef0123456789abcdef");
@@ -279,7 +282,8 @@ class OperatorRegistryServiceTest {
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L))
+                1L,
+                false))
                 .when(operations)
                 .synchronize(any());
 
@@ -324,7 +328,8 @@ class OperatorRegistryServiceTest {
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L));
+                1L,
+                false));
         OperatorRegistryService service = service();
 
         var inspection = service.inspect(
@@ -340,7 +345,10 @@ class OperatorRegistryServiceTest {
                 registerRequest("https://registry.example", "prod:one"),
                 "operator");
 
-        assertThat(registered.lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.status().lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.created()).isTrue();
+        assertThat(registered.leaderboardEntry().rowId())
+                .isEqualTo("dep_0123456789abcdef0123456789abcdef");
         assertThat(realProperties.isOperatorRegistrationConfirmed()).isFalse();
 
         ArgumentCaptor<RegistryProperties> inspections =
@@ -413,10 +421,12 @@ class OperatorRegistryServiceTest {
 
         var disconnected = service.disconnect("operator-demo-dev");
 
-        assertThat(disconnected.lifecycle()).isEqualTo("DISABLED");
-        assertThat(disconnected.enabled()).isFalse();
-        assertThat(disconnected.enrollment().deploymentCode())
-                .isEqualTo(registered.enrollment().deploymentCode());
+        assertThat(disconnected.status().lifecycle()).isEqualTo("DISABLED");
+        assertThat(disconnected.status().enabled()).isFalse();
+        assertThat(disconnected.status().enrollment().deploymentCode())
+                .isEqualTo(registered.status().enrollment().deploymentCode());
+        assertThat(disconnected.removedLeaderboardEntryIds())
+                .containsExactly(registered.status().enrollment().deploymentCode());
         assertThatThrownBy(() -> service.retry("operator-demo-dev"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("409 CONFLICT");
@@ -449,8 +459,9 @@ class OperatorRegistryServiceTest {
                 registerRequest("http://moved-registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
 
-        assertThat(moved.lifecycle()).isEqualTo("REGISTERED");
-        assertThat(moved.selection().baseUrl()).isEqualTo("http://moved-registry:8080");
+        assertThat(moved.status().lifecycle()).isEqualTo("REGISTERED");
+        assertThat(moved.status().selection().baseUrl())
+                .isEqualTo("http://moved-registry:8080");
     }
 
     @Test
@@ -499,8 +510,9 @@ class OperatorRegistryServiceTest {
                 registerRequest("http://registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
 
-        assertThat(registered.lifecycle()).isEqualTo("REGISTERED");
-        assertThat(registered.selection().baseUrl()).isEqualTo("http://registry:8080");
+        assertThat(registered.status().lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.status().selection().baseUrl())
+                .isEqualTo("http://registry:8080");
         assertThat(stored.get().getRegistrationRequest()).isNotNull();
     }
 
@@ -576,7 +588,8 @@ class OperatorRegistryServiceTest {
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L);
+                1L,
+                false);
     }
 
     private RegistryRegisterRequestDto registerRequest(String baseUrl, String registryScope) {

@@ -88,7 +88,8 @@ public class RegistryOperatorOperations {
                 result.deploymentId(),
                 result.batchId(),
                 receipt.acceptedAt(),
-                receipt.ledgerIndex());
+                receipt.ledgerIndex(),
+                result.registrationDuplicate());
     }
 
     private static void prepareStateDirectory(Path configuredDirectory) {
@@ -134,6 +135,7 @@ public class RegistryOperatorOperations {
             String deploymentCode,
             String installationTestBatchId,
             String installationTestAcceptedAt,
-            Long installationTestLedgerIndex) {
+            Long installationTestLedgerIndex,
+            boolean registrationDuplicate) {
     }
 }

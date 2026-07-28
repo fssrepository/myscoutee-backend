@@ -93,7 +93,7 @@ public class RegistryEnrollmentService {
 
     public SyncResult synchronizeNow() {
         if (!properties.isActive()) {
-            return new SyncResult(false, false, null, null);
+            return new SyncResult(false, false, null, null, false);
         }
         validateActiveConfiguration();
         RegistryCrypto deploymentCrypto = RegistryCrypto.load(properties);
@@ -111,13 +111,16 @@ public class RegistryEnrollmentService {
         requireMatchingConfiguredScope(state, configuredRegistryScope);
 
         TrustedRegistry trustedRegistry;
+        boolean registrationDuplicate;
         if (state.registration() == null) {
             RegistrationRequest request = registrationRequest(state, deploymentCrypto, clock.instant());
             RegistrationResponse response = httpClient.register(request);
             trustedRegistry = verifyRegistrationResponse(state, deploymentCrypto, response);
+            registrationDuplicate = Boolean.TRUE.equals(response.duplicate());
             state = state.withRegistration(response, trustedRegistry.fingerprint(), clock.instant());
             localStore.save(state);
         } else {
+            registrationDuplicate = true;
             trustedRegistry = verifyRegistrationResponse(
                     state,
                     deploymentCrypto,
@@ -151,7 +154,8 @@ public class RegistryEnrollmentService {
                 true,
                 true,
                 state.deploymentId(),
-                state.installationBatch().batchId());
+                state.installationBatch().batchId(),
+                registrationDuplicate);
     }
 
     private void attemptSafely() {
@@ -492,6 +496,7 @@ public class RegistryEnrollmentService {
             boolean active,
             boolean completed,
             String deploymentId,
-            String batchId) {
+            String batchId,
+            boolean registrationDuplicate) {
     }
 }

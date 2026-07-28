@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryMutationResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryConfirmRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectRequestDto;
@@ -48,7 +49,7 @@ public class OperatorRegistryController {
     }
 
     @PostMapping("/register")
-    public OperatorRegistryStatusDto register(
+    public OperatorRegistryMutationResultDto register(
             @RequestBody(required = false) RegistryRegisterRequestDto request,
             Authentication authentication) {
         return service.register(request, actorUserId(authentication));
@@ -60,7 +61,7 @@ public class OperatorRegistryController {
     }
 
     @PostMapping("/disconnect")
-    public OperatorRegistryStatusDto disconnect(Authentication authentication) {
+    public OperatorRegistryMutationResultDto disconnect(Authentication authentication) {
         return service.disconnect(actorUserId(authentication));
     }
 

@@ -29,6 +29,7 @@ import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.CandidateDefaultsDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.NodeIdentityDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryMutationResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectionDto;
@@ -157,7 +158,7 @@ public class OperatorRegistryService {
         }
     }
 
-    public OperatorRegistryStatusDto register(
+    public OperatorRegistryMutationResultDto register(
             RegistryRegisterRequestDto request,
             String actorUserId) {
         MongoSessionMode mode = currentMode();
@@ -190,8 +191,17 @@ public class OperatorRegistryService {
             touch(settings, now, actorUserId);
             save(settings);
 
-            synchronizeLive(settings, mode, actorUserId);
-            return toStatus(settings, mode);
+            RegistryOperatorOperations.EnrollmentOutcome outcome =
+                    synchronizeLive(settings, mode, actorUserId);
+            boolean created = outcome != null
+                    && !outcome.registrationDuplicate()
+                    && "REGISTERED".equals(settings.getLifecycle());
+            return mapper.toRegistrationMutation(
+                    toStatus(settings, mode),
+                    outcome != null && "REGISTERED".equals(settings.getLifecycle())
+                            ? outcome.deploymentCode()
+                            : null,
+                    created);
         }
     }
 
@@ -218,10 +228,15 @@ public class OperatorRegistryService {
         }
     }
 
-    public OperatorRegistryStatusDto disconnect(String actorUserId) {
+    public OperatorRegistryMutationResultDto disconnect(String actorUserId) {
         MongoSessionMode mode = currentMode();
         synchronized (modeLocks.get(mode)) {
             OperatorRegistrySettings settings = load().orElseGet(OperatorRegistrySettings::new);
+            String removedLeaderboardEntryId =
+                    Boolean.TRUE.equals(settings.getEnabled())
+                            && settings.getEnrollment() != null
+                            ? safeText(settings.getEnrollment().getDeploymentCode())
+                            : "";
             Instant now = clock.instant();
             initializeAudit(settings, now);
             settings.setEnabled(false);
@@ -233,11 +248,13 @@ public class OperatorRegistryService {
             audit.setDisabledBy(safeActor(actorUserId));
             touch(settings, now, actorUserId);
             save(settings);
-            return toStatus(settings, mode);
+            return mapper.toDisconnectMutation(
+                    toStatus(settings, mode),
+                    removedLeaderboardEntryId);
         }
     }
 
-    private void synchronizeLive(
+    private RegistryOperatorOperations.EnrollmentOutcome synchronizeLive(
             OperatorRegistrySettings settings,
             MongoSessionMode mode,
             String actorUserId) {
@@ -260,13 +277,13 @@ public class OperatorRegistryService {
             if ("INCOMPLETE".equals(observed.state())) {
                 fail(settings, "NODE_IDENTITY_INCOMPLETE",
                         "Deployment identity is incomplete; restore the matching key files.", false, actorUserId);
-                return;
+                return null;
             }
             if ("MISSING".equals(observed.state())) {
                 if (settings.getNodeIdentity() != null || settings.getEnrollment() != null) {
                     fail(settings, "NODE_IDENTITY_MISSING",
                             "Deployment identity is missing; restore the matching key files.", false, actorUserId);
-                    return;
+                    return null;
                 }
                 var initialized = operations.initializeNodeIdentity(runtime);
                 OperatorRegistrySettings.NodeIdentity node = new OperatorRegistrySettings.NodeIdentity();
@@ -279,7 +296,7 @@ public class OperatorRegistryService {
             } else {
                 requireMatchingPersistedNode(settings, observed.publicKeyFingerprint(), actorUserId);
                 if ("ERROR".equals(settings.getLifecycle())) {
-                    return;
+                    return null;
                 }
                 if (settings.getNodeIdentity() == null) {
                     OperatorRegistrySettings.NodeIdentity node = new OperatorRegistrySettings.NodeIdentity();
@@ -296,7 +313,7 @@ public class OperatorRegistryService {
                 fail(settings, "LOCAL_STATE_MISSING",
                         "Signed registry state is missing; restore the matching state and receipt files.",
                         false, actorUserId);
-                return;
+                return null;
             }
 
             RegistryOperatorOperations.EnrollmentOutcome outcome = operations.synchronize(runtime);
@@ -314,15 +331,18 @@ public class OperatorRegistryService {
             settings.getAudit().setLastSuccessAt(clock.instant().toString());
             touch(settings, clock.instant(), actorUserId);
             save(settings);
+            return outcome;
         } catch (ResponseStatusException exception) {
             if (exception.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
                 throw exception;
             }
             fail(settings, failureCode(exception), failureMessage(exception),
                     failureRetryable(exception), actorUserId);
+            return null;
         } catch (RuntimeException exception) {
             fail(settings, failureCode(exception), failureMessage(exception),
                     failureRetryable(exception), actorUserId);
+            return null;
         }
     }
 
