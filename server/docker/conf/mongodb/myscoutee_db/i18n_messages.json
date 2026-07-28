@@ -14604,6 +14604,12 @@
     "value": "Revenue ruleset"
   },
   {
+    "_id": "i18n-message-en-operator-revenue-ruleset-net-captured-revenue-v1",
+    "key": "operator.revenue.ruleset.net-captured-revenue-v1",
+    "lang": "en",
+    "value": "Net captured revenue (v1)"
+  },
+  {
     "_id": "i18n-message-en-operator-revenue-subtitle",
     "key": "operator.revenue.subtitle",
     "lang": "en",
@@ -15526,6 +15532,18 @@
     "key": "operator.configuration.branding.logo",
     "lang": "en",
     "value": "Logo"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-logo-character-index",
+    "key": "operator.configuration.branding.logo.character.index",
+    "lang": "en",
+    "value": "Logo character position"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-branding-logo-character-index-invalid",
+    "key": "operator.configuration.branding.logo.character.index.invalid",
+    "lang": "en",
+    "value": "Enter a whole number from 0 to the final character position, or leave it empty."
   },
   {
     "_id": "i18n-message-en-operator-configuration-branding-logo-guidance",
@@ -30888,6 +30906,12 @@
     "value": "Bevételi szabályrendszer"
   },
   {
+    "_id": "i18n-message-hu-operator-revenue-ruleset-net-captured-revenue-v1",
+    "key": "operator.revenue.ruleset.net-captured-revenue-v1",
+    "lang": "hu",
+    "value": "Rögzített nettó bevétel (v1)"
+  },
+  {
     "_id": "i18n-message-hu-operator-revenue-subtitle",
     "key": "operator.revenue.subtitle",
     "lang": "hu",
@@ -31810,6 +31834,18 @@
     "key": "operator.configuration.branding.logo",
     "lang": "hu",
     "value": "Logó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-logo-character-index",
+    "key": "operator.configuration.branding.logo.character.index",
+    "lang": "hu",
+    "value": "A logó karakterpozíciója"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-branding-logo-character-index-invalid",
+    "key": "operator.configuration.branding.logo.character.index.invalid",
+    "lang": "hu",
+    "value": "Adj meg egész számot 0 és az utolsó karakter pozíciója között, vagy hagyd üresen."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-branding-logo-guidance",
