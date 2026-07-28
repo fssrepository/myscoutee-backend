@@ -154,6 +154,7 @@ class OperatorConfigurationServiceTest {
                 new OperatorConfigurationUpdateDto(
                         new BrandingUpdateDto(
                                 "Product",
+                                null,
                                 "Home",
                                 "/media/public?key=images%2Flogo",
                                 null),
@@ -162,6 +163,76 @@ class OperatorConfigurationServiceTest {
         assertBadRequest(
                 () -> fixture.service().update(missingTheme),
                 "Theme preset");
+    }
+
+    @Test
+    void persistsNullableLogoCharacterIndexAndUsesUnicodeCodePoints()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        OperatorConfigurationUpdateDto selectedCharacter =
+                brandingOnlyRequest("A🌟B", 1);
+
+        var selected = fixture.service().update(selectedCharacter);
+
+        assertThat(selected.branding().logoCharacterIndex()).isEqualTo(1);
+        assertThat(fixture.persisted()
+                        .get()
+                        .getBranding()
+                        .getLogoCharacterIndex())
+                .isEqualTo(1);
+
+        var fullName = fixture.service().update(
+                brandingOnlyRequest("A🌟B", null));
+        assertThat(fullName.branding().logoCharacterIndex()).isNull();
+        assertThat(fixture.persisted()
+                        .get()
+                        .getBranding()
+                        .getLogoCharacterIndex())
+                .isNull();
+
+        assertBadRequest(
+                () -> fixture.service().update(
+                        brandingOnlyRequest("A🌟B", -1)),
+                "Logo character index");
+        assertBadRequest(
+                () -> fixture.service().update(
+                        brandingOnlyRequest("A🌟B", 3)),
+                "Logo character index");
+        assertThat(fixture.persisted()
+                        .get()
+                        .getBranding()
+                        .getLogoCharacterIndex())
+                .as("invalid indices are rejected rather than clamped")
+                .isNull();
+    }
+
+    @Test
+    void invalidPersistedLogoCharacterIndexIsUnavailableAndNeverRepaired()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        fixture.persisted()
+                .get()
+                .getBranding()
+                .setLogoCharacterIndex(9);
+
+        assertThatThrownBy(fixture.service()::configuration)
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> {
+                            assertThat(exception.getStatusCode())
+                                    .isEqualTo(
+                                            HttpStatus.SERVICE_UNAVAILABLE);
+                            assertThat(exception.getReason())
+                                    .contains(
+                                            "invalid logo character index");
+                        });
+        assertThat(fixture.persisted()
+                        .get()
+                        .getBranding()
+                        .getLogoCharacterIndex())
+                .isEqualTo(9);
+        verify(fixture.repository(), never())
+                .save(any(DeploymentConfiguration.class));
     }
 
     @Test
@@ -329,6 +400,7 @@ class OperatorConfigurationServiceTest {
         return new OperatorConfigurationUpdateDto(
                 new BrandingUpdateDto(
                         productName,
+                        null,
                         "Your community comes first",
                         logoUrl,
                         DeploymentThemePreset.OCEAN),
@@ -339,6 +411,20 @@ class OperatorConfigurationServiceTest {
                         messagingCredential));
     }
 
+    private OperatorConfigurationUpdateDto brandingOnlyRequest(
+            String productName,
+            Integer logoCharacterIndex) {
+        return new OperatorConfigurationUpdateDto(
+                new BrandingUpdateDto(
+                        productName,
+                        logoCharacterIndex,
+                        "Your community comes first",
+                        "/media/public?key=images%2Foperator%2Fbranding",
+                        DeploymentThemePreset.OCEAN),
+                null,
+                null);
+    }
+
     private DeploymentConfiguration seededConfiguration() {
         DeploymentConfiguration configuration = new DeploymentConfiguration();
         configuration.setId(DeploymentConfiguration.SINGLETON_ID);
@@ -347,6 +433,7 @@ class OperatorConfigurationServiceTest {
         DeploymentConfiguration.Branding branding =
                 new DeploymentConfiguration.Branding();
         branding.setProductName("MyScoutee");
+        branding.setLogoCharacterIndex(null);
         branding.setHomeLabel("Your preferences come first");
         branding.setLogoUrl("assets/logo/heart.webp");
         branding.setThemePreset(DeploymentThemePreset.AURORA.name());

@@ -82,11 +82,18 @@ class OperatorConfigurationMapperTest {
             assertThat(singleton.path("version").asLong()).isZero();
             assertThat(singleton.path("branding").path("themePreset").asText())
                     .isEqualTo(DeploymentThemePreset.AURORA.name());
+            assertThat(singleton.path("branding")
+                            .has("logoCharacterIndex"))
+                    .isTrue();
+            assertThat(singleton.path("branding")
+                            .get("logoCharacterIndex")
+                            .isNull())
+                    .isTrue();
         }
     }
 
     @Test
-    void publicBrandingJsonContainsExactlyTheFivePublicFields() throws Exception {
+    void publicBrandingJsonContainsExactlyTheSixPublicFields() throws Exception {
         DeploymentConfiguration configuration = seededConfiguration();
         configuration.getBranding().setLogoUrl(
                 "/media/public?key=images%2Foperator%2Flogo%2Fmedium");
@@ -98,6 +105,7 @@ class OperatorConfigurationMapperTest {
         assertThat(json.propertyNames())
                 .containsExactlyInAnyOrder(
                         "productName",
+                        "logoCharacterIndex",
                         "homeLabel",
                         "logoUrl",
                         "themePreset",
@@ -202,6 +210,7 @@ class OperatorConfigurationMapperTest {
         DeploymentConfiguration.Branding branding =
                 new DeploymentConfiguration.Branding();
         branding.setProductName("MyScoutee");
+        branding.setLogoCharacterIndex(null);
         branding.setHomeLabel("Your preferences come first");
         branding.setLogoUrl("assets/logo/heart.webp");
         branding.setThemePreset(DeploymentThemePreset.AURORA.name());

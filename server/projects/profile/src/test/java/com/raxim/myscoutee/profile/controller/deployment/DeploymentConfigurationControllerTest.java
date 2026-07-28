@@ -20,6 +20,7 @@ class DeploymentConfigurationControllerTest {
         OperatorConfigurationService service = mock(OperatorConfigurationService.class);
         when(service.branding()).thenReturn(new DeploymentBrandingDto(
                 "Community",
+                2,
                 "Welcome home",
                 "/media/public?key=images%2Fbranding%2Fmedium",
                 DeploymentThemePreset.FOREST,
@@ -31,6 +32,7 @@ class DeploymentConfigurationControllerTest {
         mockMvc.perform(get("/deployment/configuration"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productName").value("Community"))
+                .andExpect(jsonPath("$.logoCharacterIndex").value(2))
                 .andExpect(jsonPath("$.homeLabel").value("Welcome home"))
                 .andExpect(jsonPath("$.logoUrl")
                         .value("/media/public?key=images%2Fbranding%2Fmedium"))
