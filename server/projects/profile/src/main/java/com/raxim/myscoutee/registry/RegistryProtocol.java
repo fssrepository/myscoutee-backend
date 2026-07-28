@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -38,6 +39,11 @@ public final class RegistryProtocol {
     public static final String REVENUE_RULESET_VERSION =
             "net-captured-revenue-v1";
     public static final int REVENUE_COMMISSION_RATE_BASIS_POINTS = 500;
+    public static final int REVENUE_MAX_CURRENCY_ROWS = 32;
+    public static final long REVENUE_MAX_MINOR =
+            9_000_000_000_000_000L;
+    public static final long REVENUE_MAX_PAYMENT_COUNT =
+            1_000_000_000_000L;
     public static final String LEADERBOARD_FORMULA_VERSION = "six-complete-month-average-v1";
     public static final String LEADERBOARD_RULESET_VERSION = "qmau-v1";
     public static final String UPDATE_MANIFEST_VERSION = "1";
@@ -77,6 +83,45 @@ public final class RegistryProtocol {
             Pattern.compile("annsnap_[0-9a-f]{32}");
     private static final Pattern PACKAGE_SIGNING_KEY_ID_PATTERN =
             Pattern.compile("pkey_[0-9a-f]{32}");
+    /*
+     * Pinned settlement-currency table for net-captured-revenue-v1. This must
+     * change only with a new accounting ruleset; it deliberately does not use
+     * the JDK's independently updateable runtime currency data.
+     */
+    private static final Map<String, Integer>
+            REVENUE_V1_CURRENCY_FRACTION_DIGITS =
+                    parseRevenueCurrencyFractionDigits("""
+                            AED:2 AFN:2 ALL:2 AMD:2 ANG:2 AOA:2 ARS:2 AUD:2 AWG:2 AZN:2
+                            BAM:2 BBD:2 BDT:2 BGN:2 BHD:3 BIF:0 BMD:2 BND:2 BOB:2 BOV:2 BRL:2 BSD:2
+                            BTN:2 BWP:2 BYN:2 BZD:2
+                            CAD:2 CDF:2 CHE:2 CHF:2 CHW:2 CLF:4 CLP:0 CNY:2 COP:2 COU:2 CRC:2 CUP:2
+                            CVE:2 CZK:2
+                            DJF:0 DKK:2 DOP:2 DZD:2
+                            EGP:2 ERN:2 ETB:2 EUR:2
+                            FJD:2 FKP:2
+                            GBP:2 GEL:2 GHS:2 GIP:2 GMD:2 GNF:0 GTQ:2 GYD:2
+                            HKD:2 HNL:2 HTG:2 HUF:2
+                            IDR:2 ILS:2 INR:2 IQD:3 IRR:2 ISK:0
+                            JMD:2 JOD:3 JPY:0
+                            KES:2 KGS:2 KHR:2 KMF:0 KPW:2 KRW:0 KWD:3 KYD:2 KZT:2
+                            LAK:2 LBP:2 LKR:2 LRD:2 LSL:2 LYD:3
+                            MAD:2 MDL:2 MGA:2 MKD:2 MMK:2 MNT:2 MOP:2 MRU:2 MUR:2 MVR:2 MWK:2 MXN:2
+                            MXV:2 MYR:2 MZN:2
+                            NAD:2 NGN:2 NIO:2 NOK:2 NPR:2 NZD:2
+                            OMR:3
+                            PAB:2 PEN:2 PGK:2 PHP:2 PKR:2 PLN:2 PYG:0
+                            QAR:2
+                            RON:2 RSD:2 RUB:2 RWF:0
+                            SAR:2 SBD:2 SCR:2 SDG:2 SEK:2 SGD:2 SHP:2 SLE:2 SOS:2 SRD:2 SSP:2 STN:2
+                            SVC:2 SYP:2 SZL:2
+                            THB:2 TJS:2 TMT:2 TND:3 TOP:2 TRY:2 TTD:2 TWD:2 TZS:2
+                            UAH:2 UGX:0 USD:2 USN:2 UYI:0 UYU:2 UYW:4 UZS:2
+                            VED:2 VES:2 VND:0 VUV:0
+                            WST:2
+                            XAF:0 XCD:2 XCG:2 XOF:0 XPF:0
+                            YER:2
+                            ZAR:2 ZMW:2 ZWG:2
+                            """);
 
     private RegistryProtocol() {
     }
@@ -132,15 +177,37 @@ public final class RegistryProtocol {
             String rulesetVersion,
             int commissionRateBasisPoints,
             List<RevenueCurrencyRow> currencies) {
-        List<RevenueCurrencyRow> rows = currencies == null
-                ? List.of()
-                : List.copyOf(currencies);
+        List<RevenueCurrencyRow> rows = List.copyOf(
+                Objects.requireNonNull(
+                        currencies,
+                        "Revenue currencies must be an explicit array."));
+        if (!REVENUE_KIND.equals(kind)
+                || !REVENUE_RULESET_VERSION.equals(rulesetVersion)
+                || commissionRateBasisPoints
+                        != REVENUE_COMMISSION_RATE_BASIS_POINTS) {
+            throw new IllegalArgumentException(
+                    "Revenue payload does not use the supported accounting ruleset.");
+        }
+        if (rows.size() > REVENUE_MAX_CURRENCY_ROWS) {
+            throw new IllegalArgumentException(
+                    "Revenue payload contains more than 32 currency rows.");
+        }
+        long normalizedRevision = requirePositive(revision, "revision");
+        String normalizedSupersedes = nullToEmpty(supersedesBatchId);
+        if (normalizedRevision == 1L) {
+            if (!normalizedSupersedes.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Initial revenue revision must not supersede a batch.");
+            }
+        } else {
+            requireRevenueBatchId(normalizedSupersedes);
+        }
         String[] values = new String[7 + rows.size() * 8];
         values[0] = "myscoutee-registry-revenue-batch-payload-v1";
         values[1] = requireCanonical(kind, "revenue kind");
         values[2] = requireRevenuePeriod(period);
-        values[3] = Long.toString(requirePositive(revision, "revision"));
-        values[4] = supersedesBatchId == null ? "" : supersedesBatchId;
+        values[3] = Long.toString(normalizedRevision);
+        values[4] = normalizedSupersedes;
         values[5] = requireCanonical(rulesetVersion, "revenue ruleset_version");
         values[6] = Integer.toString(commissionRateBasisPoints);
         String[] withCount = new String[values.length + 1];
@@ -157,8 +224,10 @@ public final class RegistryProtocol {
             }
             previousCurrency = currencyCode;
             withCount[offset++] = currencyCode;
-            withCount[offset++] = Integer.toString(requireRevenueFractionDigits(
-                    row.fractionDigits()));
+            withCount[offset++] = Integer.toString(
+                    requireRevenueCurrencyFractionDigits(
+                            currencyCode,
+                            row.fractionDigits()));
             withCount[offset++] = Long.toString(requireNonNegative(
                     row.capturedMinor(), "captured_minor"));
             withCount[offset++] = Long.toString(requireNonNegative(
@@ -172,6 +241,7 @@ public final class RegistryProtocol {
                     "estimated_commission_minor"));
             withCount[offset++] = Long.toString(requireNonNegative(
                     row.paymentCount(), "payment_count"));
+            validateRevenueCurrencyRow(row);
         }
         return canonicalAllowEmpty(withCount);
     }
@@ -738,23 +808,12 @@ public final class RegistryProtocol {
 
     public static String requireRevenueCurrencyCode(String value) {
         requireCanonical(value, "currency_code");
-        if (!value.matches("[A-Z]{3}")) {
+        if (!value.matches("[A-Z]{3}")
+                || !REVENUE_V1_CURRENCY_FRACTION_DIGITS.containsKey(value)) {
             throw new IllegalArgumentException(
-                    "currency_code must contain exactly three uppercase ASCII letters.");
+                    "currency_code is not a supported revenue-v1 settlement currency.");
         }
-        try {
-            java.util.Currency currency = java.util.Currency.getInstance(value);
-            if (!currency.getCurrencyCode().equals(value)
-                    || currency.getDefaultFractionDigits() < 0) {
-                throw new IllegalArgumentException(
-                        "currency_code is not an accounting ISO-4217 currency.");
-            }
-            return value;
-        } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException(
-                    "currency_code is not an accounting ISO-4217 currency.",
-                    exception);
-        }
+        return value;
     }
 
     public static int requireRevenueFractionDigits(Integer value) {
@@ -763,6 +822,37 @@ public final class RegistryProtocol {
                     "fraction_digits must be between zero and nine.");
         }
         return value;
+    }
+
+    public static int requireRevenueCurrencyFractionDigits(
+            String currencyCode,
+            Integer value) {
+        String normalizedCode = requireRevenueCurrencyCode(currencyCode);
+        int normalizedValue = requireRevenueFractionDigits(value);
+        if (REVENUE_V1_CURRENCY_FRACTION_DIGITS.get(normalizedCode)
+                != normalizedValue) {
+            throw new IllegalArgumentException(
+                    "fraction_digits does not match the pinned revenue-v1 currency exponent.");
+        }
+        return normalizedValue;
+    }
+
+    public static int revenueCurrencyFractionDigits(String currencyCode) {
+        String normalizedCode = requireRevenueCurrencyCode(currencyCode);
+        return REVENUE_V1_CURRENCY_FRACTION_DIGITS.get(normalizedCode);
+    }
+
+    public static long revenueCommissionMinor(long commissionBasisMinor) {
+        if (commissionBasisMinor < 0L
+                || commissionBasisMinor > REVENUE_MAX_MINOR) {
+            throw new IllegalArgumentException(
+                    "commission_basis_minor is outside the supported range.");
+        }
+        return (commissionBasisMinor / 10_000L)
+                        * REVENUE_COMMISSION_RATE_BASIS_POINTS
+                + ((commissionBasisMinor % 10_000L)
+                                * REVENUE_COMMISSION_RATE_BASIS_POINTS)
+                        / 10_000L;
     }
 
     public static String requireRegistryKeyId(String value) {
@@ -1046,6 +1136,69 @@ public final class RegistryProtocol {
         return Integer.toString(value);
     }
 
+    private static void validateRevenueCurrencyRow(
+            RevenueCurrencyRow row) {
+        long captured = requireRevenueMinor(
+                row.capturedMinor(),
+                "captured_minor");
+        long refunded = requireRevenueMinor(
+                row.refundedMinor(),
+                "refunded_minor");
+        long net = requireRevenueMinor(row.netMinor(), "net_minor");
+        long commissionBasis = requireRevenueMinor(
+                row.commissionBasisMinor(),
+                "commission_basis_minor");
+        long estimatedCommission = requireRevenueMinor(
+                row.estimatedCommissionMinor(),
+                "estimated_commission_minor");
+        long paymentCount = requireNonNegative(
+                row.paymentCount(),
+                "payment_count");
+        if (paymentCount > REVENUE_MAX_PAYMENT_COUNT
+                || refunded > captured
+                || net != captured - refunded
+                || commissionBasis != net
+                || estimatedCommission
+                        != revenueCommissionMinor(commissionBasis)) {
+            throw new IllegalArgumentException(
+                    "Revenue currency row violates net-captured-revenue-v1.");
+        }
+    }
+
+    private static long requireRevenueMinor(
+            Long value,
+            String fieldName) {
+        long normalized = requireNonNegative(value, fieldName);
+        if (normalized > REVENUE_MAX_MINOR) {
+            throw new IllegalArgumentException(
+                    fieldName + " exceeds the revenue protocol limit.");
+        }
+        return normalized;
+    }
+
+    private static Map<String, Integer>
+            parseRevenueCurrencyFractionDigits(String source) {
+        java.util.LinkedHashMap<String, Integer> result =
+                new java.util.LinkedHashMap<>();
+        for (String entry : source.strip().split("\\s+")) {
+            String[] parts = entry.split(":", -1);
+            if (parts.length != 2
+                    || !parts[0].matches("[A-Z]{3}")) {
+                throw new ExceptionInInitializerError(
+                        "Invalid pinned revenue currency entry: " + entry);
+            }
+            Integer previous = result.put(
+                    parts[0],
+                    Integer.valueOf(parts[1]));
+            if (previous != null) {
+                throw new ExceptionInInitializerError(
+                        "Duplicate pinned revenue currency entry: "
+                                + parts[0]);
+            }
+        }
+        return Map.copyOf(result);
+    }
+
     private static long requirePositive(long value, String fieldName) {
         if (value <= 0L) {
             throw new IllegalArgumentException(fieldName + " must be positive.");
@@ -1168,6 +1321,11 @@ public final class RegistryProtocol {
             List<RevenueCurrencyRow> currencies,
             @JsonProperty("payload_hash") String payloadHash,
             String signature) {
+        public RevenueBatchRequest {
+            currencies = List.copyOf(Objects.requireNonNull(
+                    currencies,
+                    "Revenue currencies must be an explicit array."));
+        }
     }
 
     public record RevenueBatchResponse(
@@ -1181,10 +1339,7 @@ public final class RegistryProtocol {
     }
 
     public record RevenueReceipt(
-            @JsonProperty("protocol_version") String protocolVersion,
             @JsonProperty("registry_scope") String registryScope,
-            @JsonProperty("batch_id") String batchId,
-            @JsonProperty("deployment_id") String deploymentId,
             @JsonProperty("ledger_index") Long ledgerIndex,
             @JsonProperty("entry_hash") String entryHash,
             @JsonProperty("previous_entry_hash") String previousEntryHash,

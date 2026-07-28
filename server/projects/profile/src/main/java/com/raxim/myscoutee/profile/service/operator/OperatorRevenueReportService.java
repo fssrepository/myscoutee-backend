@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -311,28 +312,66 @@ public class OperatorRevenueReportService {
         int submitted = 0;
         int accepted = 0;
         for (RevenueReportOutboxItem item : pending) {
+            RevenueBatchRequest request;
             try {
-                RevenueBatchRequest request =
-                        persistFreshAttempt(runtime, item, now);
-                submitted++;
-                RevenueBatchResponse response =
-                        httpClient.submitRevenueBatch(request);
+                request = persistFreshAttempt(runtime, item, now);
+            } catch (DataAccessException exception) {
+                markDeliveryFailure(
+                        item,
+                        "REVENUE_ATTEMPT_NOT_PERSISTED",
+                        safeMessage(exception),
+                        true,
+                        runtime.properties().getRetryDelay(),
+                        clock.instant());
+                continue;
+            } catch (RuntimeException exception) {
+                markDeliveryFailure(
+                        item,
+                        "INVALID_REVENUE_OUTBOX_ITEM",
+                        safeMessage(exception),
+                        false,
+                        runtime.properties().getRetryDelay(),
+                        clock.instant());
+                continue;
+            }
+            submitted++;
+            RevenueBatchResponse response;
+            try {
+                response = httpClient.submitRevenueBatch(request);
                 verifyResponse(runtime, item, response);
-                markAccepted(item, response, clock.instant());
-                accepted++;
             } catch (RegistryHttpException exception) {
                 markDeliveryFailure(
                         item,
                         exception.getErrorCode(),
                         safeMessage(exception),
                         retryable(exception),
+                        runtime.properties().getRetryDelay(),
                         clock.instant());
+                continue;
             } catch (RuntimeException exception) {
                 markDeliveryFailure(
                         item,
                         "INVALID_REVENUE_RECEIPT",
                         safeMessage(exception),
                         false,
+                        runtime.properties().getRetryDelay(),
+                        clock.instant());
+                continue;
+            }
+            try {
+                markAccepted(item, response, clock.instant());
+                accepted++;
+            } catch (DataAccessException exception) {
+                /*
+                 * Treat this as a lost response. The next attempt uses the
+                 * same logical idempotency key and receives duplicate=true.
+                 */
+                markDeliveryFailure(
+                        item,
+                        "REVENUE_ACCEPTANCE_NOT_PERSISTED",
+                        safeMessage(exception),
+                        true,
+                        runtime.properties().getRetryDelay(),
                         clock.instant());
             }
         }
@@ -427,9 +466,12 @@ public class OperatorRevenueReportService {
             RegistryProtocol.requireRevenueBatchId(
                     item.getSupersedesBatchId());
         }
-        List<RevenueCurrencyRow> currencies = item.getCurrencies() == null
-                ? List.of()
-                : List.copyOf(item.getCurrencies());
+        if (item.getCurrencies() == null) {
+            throw new IllegalStateException(
+                    "Stored revenue currencies must be an explicit array.");
+        }
+        List<RevenueCurrencyRow> currencies =
+                List.copyOf(item.getCurrencies());
         validateRevenueRows(currencies);
         String payloadHash = RegistryProtocol.sha256(
                 RegistryProtocol.revenueBatchPayload(
@@ -456,6 +498,11 @@ public class OperatorRevenueReportService {
     }
 
     private void validateRevenueRows(List<RevenueCurrencyRow> currencies) {
+        if (currencies.size()
+                > RegistryProtocol.REVENUE_MAX_CURRENCY_ROWS) {
+            throw new IllegalStateException(
+                    "Stored revenue report has too many currency rows.");
+        }
         for (RevenueCurrencyRow row : currencies) {
             if (row == null
                     || row.capturedMinor() == null
@@ -467,21 +514,27 @@ public class OperatorRevenueReportService {
                 throw new IllegalStateException(
                         "Stored revenue currency row is incomplete.");
             }
-            RegistryProtocol.requireRevenueCurrencyCode(
-                    row.currencyCode());
-            RegistryProtocol.requireRevenueFractionDigits(
+            RegistryProtocol.requireRevenueCurrencyFractionDigits(
+                    row.currencyCode(),
                     row.fractionDigits());
             long net = Math.subtractExact(
                     row.capturedMinor(),
                     row.refundedMinor());
             if (row.capturedMinor() < 0L
+                    || row.capturedMinor()
+                            > RegistryProtocol.REVENUE_MAX_MINOR
                     || row.refundedMinor() < 0L
+                    || row.refundedMinor()
+                            > RegistryProtocol.REVENUE_MAX_MINOR
                     || row.refundedMinor() > row.capturedMinor()
                     || net != row.netMinor()
                     || net != row.commissionBasisMinor()
                     || OperatorRevenueService.commissionMinor(net)
                             != row.estimatedCommissionMinor()
-                    || row.paymentCount() < 0L) {
+                    || row.paymentCount() < 0L
+                    || row.paymentCount()
+                            > RegistryProtocol
+                                    .REVENUE_MAX_PAYMENT_COUNT) {
                 throw new IllegalStateException(
                         "Stored revenue currency row violates the accounting ruleset.");
             }
@@ -508,12 +561,7 @@ public class OperatorRevenueReportService {
                     "Registry revenue response does not match the submitted report.");
         }
         RevenueReceipt receipt = response.receipt();
-        if (!response.protocolVersion().equals(receipt.protocolVersion())
-                || !response.registryScope().equals(
-                        receipt.registryScope())
-                || !response.batchId().equals(receipt.batchId())
-                || !response.deploymentId().equals(
-                        receipt.deploymentId())
+        if (!response.registryScope().equals(receipt.registryScope())
                 || receipt.ledgerIndex() == null
                 || receipt.ledgerIndex() <= 0L
                 || !item.getKind().equals(receipt.kind())
@@ -579,6 +627,7 @@ public class OperatorRevenueReportService {
             String code,
             String message,
             boolean retryable,
+            Duration retryBase,
             Instant now) {
         Failure failure = new Failure();
         failure.setCode(safeCode(code));
@@ -589,8 +638,12 @@ public class OperatorRevenueReportService {
         item.setStatus(retryable
                 ? RevenueReportOutboxItem.STATUS_PENDING
                 : RevenueReportOutboxItem.STATUS_BLOCKED);
+        if (retryable) {
+            item.setAcceptedResponse(null);
+            item.setAcceptedAt(null);
+        }
         item.setNextRetryAt(retryable
-                ? now.plus(retryDelay(item)).toString()
+                ? now.plus(retryDelay(item, retryBase)).toString()
                 : null);
         item.setUpdatedAt(now.toString());
         try {
@@ -750,12 +803,14 @@ public class OperatorRevenueReportService {
                 || status == 429 || status >= 500;
     }
 
-    private Duration retryDelay(RevenueReportOutboxItem item) {
-        Duration base = item == null
+    private Duration retryDelay(
+            RevenueReportOutboxItem item,
+            Duration configuredBase) {
+        Duration base = configuredBase == null
+                        || configuredBase.isZero()
+                        || configuredBase.isNegative()
                 ? Duration.ofMinutes(1)
-                : item.getAttemptCount() == null
-                        ? Duration.ofMinutes(1)
-                        : Duration.ofMinutes(1);
+                : configuredBase;
         int exponent = Math.min(
                 Math.max(0, valueOrZero(item.getAttemptCount()) - 1),
                 10);

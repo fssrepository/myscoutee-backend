@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.profile.service.operator;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Clock;
 import java.time.Instant;
@@ -10,7 +9,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Currency;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -39,11 +37,14 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingSlotOverrid
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
+import com.raxim.myscoutee.registry.RegistryProtocol;
 
 @Service
 public class OperatorRevenueService {
-    public static final String RULESET_VERSION = "net-captured-revenue-v1";
-    public static final int COMMISSION_RATE_BASIS_POINTS = 500;
+    public static final String RULESET_VERSION =
+            RegistryProtocol.REVENUE_RULESET_VERSION;
+    public static final int COMMISSION_RATE_BASIS_POINTS =
+            RegistryProtocol.REVENUE_COMMISSION_RATE_BASIS_POINTS;
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(OperatorRevenueService.class);
@@ -413,8 +414,18 @@ public class OperatorRevenueService {
             long nextRefundedPaymentMinor = Math.addExact(
                     currency.refundedPaymentMinor,
                     refundedMinor.get());
-            long nextPaymentCount =
-                    Math.addExact(currency.paymentCount, 1L);
+                long nextPaymentCount =
+                        Math.addExact(currency.paymentCount, 1L);
+                if (nextCapturedPaymentMinor
+                                > RegistryProtocol.REVENUE_MAX_MINOR
+                        || nextRefundedPaymentMinor
+                                > RegistryProtocol.REVENUE_MAX_MINOR
+                        || nextPaymentCount
+                                > RegistryProtocol
+                                        .REVENUE_MAX_PAYMENT_COUNT) {
+                    throw new ArithmeticException(
+                            "Revenue protocol aggregate limit exceeded.");
+                }
             long nextTimelineCapturedPaymentMinor = timeline == null
                     ? 0L
                     : Math.addExact(
@@ -551,14 +562,11 @@ public class OperatorRevenueService {
             return Optional.empty();
         }
         try {
-            Currency currency = Currency.getInstance(normalized);
-            int fractionDigits = currency.getDefaultFractionDigits();
-            if (fractionDigits < 0 || fractionDigits > 9) {
-                diagnostics.invalidCurrencyRecords++;
-                return Optional.empty();
-            }
+            int fractionDigits =
+                    RegistryProtocol.revenueCurrencyFractionDigits(
+                            normalized);
             return Optional.of(new CurrencyKey(
-                    currency.getCurrencyCode(),
+                    normalized,
                     fractionDigits));
         } catch (IllegalArgumentException exception) {
             diagnostics.invalidCurrencyRecords++;
@@ -577,10 +585,15 @@ public class OperatorRevenueService {
             return Optional.empty();
         }
         try {
-            return Optional.of(BigDecimal.valueOf(value.doubleValue())
+            long minor = BigDecimal.valueOf(value.doubleValue())
                     .setScale(currency.fractionDigits(), RoundingMode.HALF_EVEN)
                     .movePointRight(currency.fractionDigits())
-                    .longValueExact());
+                    .longValueExact();
+            if (minor > RegistryProtocol.REVENUE_MAX_MINOR) {
+                diagnostics.invalidMonetaryRecords++;
+                return Optional.empty();
+            }
+            return Optional.of(minor);
         } catch (ArithmeticException exception) {
             diagnostics.invalidMonetaryRecords++;
             return Optional.empty();
@@ -592,10 +605,7 @@ public class OperatorRevenueService {
             throw new IllegalArgumentException(
                     "Commission basis must not be negative.");
         }
-        return BigInteger.valueOf(netMinor)
-                .multiply(BigInteger.valueOf(COMMISSION_RATE_BASIS_POINTS))
-                .divide(BigInteger.valueOf(10_000L))
-                .longValueExact();
+        return RegistryProtocol.revenueCommissionMinor(netMinor);
     }
 
     private Optional<LocalDate> parseUtcDay(String value) {

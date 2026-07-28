@@ -5,10 +5,195 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 class RegistryProtocolTest {
+    @Test
+    void revenuePayloadMatchesTheGoProtocolExactly() {
+        List<RegistryProtocol.RevenueCurrencyRow> currencies = List.of(
+                new RegistryProtocol.RevenueCurrencyRow(
+                        "EUR",
+                        2,
+                        12_345L,
+                        345L,
+                        12_000L,
+                        12_000L,
+                        600L,
+                        3L),
+                new RegistryProtocol.RevenueCurrencyRow(
+                        "JPY",
+                        0,
+                        20_000L,
+                        0L,
+                        20_000L,
+                        20_000L,
+                        1_000L,
+                        2L));
+
+        assertThat(new String(
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                RegistryProtocol
+                                        .REVENUE_COMMISSION_RATE_BASIS_POINTS,
+                                currencies),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-revenue-batch-payload-v1
+                        daily-revenue
+                        2026-07-27
+                        1
+
+                        net-captured-revenue-v1
+                        500
+                        2
+                        EUR
+                        2
+                        12345
+                        345
+                        12000
+                        12000
+                        600
+                        3
+                        JPY
+                        0
+                        20000
+                        0
+                        20000
+                        20000
+                        1000
+                        2
+                        """);
+    }
+
+    @Test
+    void revenueReceiptMatchesTheGoProtocolExactly() {
+        String hash =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        RegistryProtocol.RevenueReceipt receipt =
+                new RegistryProtocol.RevenueReceipt(
+                        "test-program:parent-a",
+                        9L,
+                        hash,
+                        RegistryProtocol.ZERO_HASH,
+                        hash,
+                        RegistryProtocol.REVENUE_KIND,
+                        "2026-07-27",
+                        1L,
+                        "",
+                        RegistryProtocol.REVENUE_RULESET_VERSION,
+                        500,
+                        0,
+                        "2026-07-28T00:00:01Z",
+                        "2026-07-28",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        "registry-public-key",
+                        "signature");
+        RegistryProtocol.RevenueBatchResponse response =
+                new RegistryProtocol.RevenueBatchResponse(
+                        "1",
+                        "test-program:parent-a",
+                        "revbatch_0123456789abcdef0123456789abcdef",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "revenue_0123456789abcdef",
+                        false,
+                        receipt);
+
+        assertThat(new String(
+                        RegistryProtocol.revenueReceipt(response),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-revenue-receipt-v1
+                        1
+                        test-program:parent-a
+                        revbatch_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        9
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        daily-revenue
+                        2026-07-27
+                        1
+
+                        net-captured-revenue-v1
+                        500
+                        0
+                        2026-07-28T00:00:01Z
+                        2026-07-28
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void revenueV1UsesPinnedCurrencyExponentsAndAggregateLimits() {
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("JPY"))
+                .isZero();
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("HUF"))
+                .isEqualTo(2);
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("BHD"))
+                .isEqualTo(3);
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("CLF"))
+                .isEqualTo(4);
+        assertThatThrownBy(() ->
+                        RegistryProtocol.requireRevenueCurrencyCode("XXX"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                500,
+                                List.of(new RegistryProtocol.RevenueCurrencyRow(
+                                        "JPY",
+                                        2,
+                                        1L,
+                                        0L,
+                                        1L,
+                                        1L,
+                                        0L,
+                                        1L))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("pinned");
+        assertThatThrownBy(() ->
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                500,
+                                List.of(new RegistryProtocol.RevenueCurrencyRow(
+                                        "EUR",
+                                        2,
+                                        RegistryProtocol.REVENUE_MAX_MINOR + 1L,
+                                        0L,
+                                        RegistryProtocol.REVENUE_MAX_MINOR + 1L,
+                                        RegistryProtocol.REVENUE_MAX_MINOR + 1L,
+                                        0L,
+                                        1L))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("limit");
+        assertThat(new String(
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                500,
+                                List.of()),
+                        StandardCharsets.UTF_8))
+                .endsWith("500\n0\n");
+    }
+
     @Test
     void canonicalRegistryIdentityMatchesTheGoProtocol() {
         RegistryProtocol.RegistryIdentityResponse identity =
