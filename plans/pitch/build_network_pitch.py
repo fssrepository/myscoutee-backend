@@ -230,11 +230,12 @@ def section_header(
     subtitle: str | None = None,
     *,
     status: str | None = None,
+    title_max_width: int = 1580,
 ) -> None:
     text(image, (88, 54), f"{index}  /  {category.upper()}", size=19, color=GREEN, weight="bold")
     if status:
         status_pill(image, (1650, 48), status)
-    text(image, (88, 94), title_value, size=50, weight="bold", max_width=1580, spacing=8)
+    text(image, (88, 94), title_value, size=50, weight="bold", max_width=title_max_width, spacing=8)
     if subtitle:
         text(image, (90, 166), subtitle, size=22, color=MUTED, max_width=1650, spacing=7)
 
@@ -820,6 +821,7 @@ def slide_6() -> Image.Image:
         "At 10 million MAU with no exit, a separate 5% network share activates.",
         "MAU means monthly active users. Local partner commission stays with each operator; the founder’s fallback uses a separate member base.",
         status="MODEL — NOT TRACTION",
+        title_max_width=1744,
     )
 
     rounded_card(image, (88, 230, 932, 944), fill=CARD, radius=30)
