@@ -1869,6 +1869,31 @@ public final class RegistryOperatorNetworkService {
         if (StringUtils.hasText(receipt.tokenId())) {
             RegistryProtocol.requireOperatorTokenId(receipt.tokenId());
         }
+        boolean hasSourceClaimActionId =
+                StringUtils.hasText(receipt.sourceClaimActionId());
+        boolean hasSourcePrivateRecordHash =
+                StringUtils.hasText(receipt.sourcePrivateRecordHash());
+        if (hasSourceClaimActionId != hasSourcePrivateRecordHash) {
+            throw new IllegalArgumentException(
+                    "Registry operator source claim anchors must be both absent or both present.");
+        }
+        if (hasSourceClaimActionId) {
+            RegistryProtocol.requireOperatorActionId(
+                    receipt.sourceClaimActionId());
+            RegistryProtocol.requireHash(
+                    receipt.sourcePrivateRecordHash(),
+                    "source_private_record_hash");
+            if (!RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(
+                            receipt.action())
+                    || !RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                            receipt.claimState())
+                    || StringUtils.hasText(receipt.linkId())
+                    || !StringUtils.hasText(receipt.groupId())
+                    || !StringUtils.hasText(receipt.relatedDeploymentId())) {
+                throw new IllegalArgumentException(
+                        "Registry operator source claim anchors are invalid for this action.");
+            }
+        }
         requireCanonicalOptional(receipt.claimState(), "claim_state");
     }
 

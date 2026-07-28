@@ -62,6 +62,8 @@ class RegistryOperatorNetworkServiceTest {
     private static final String ACTION_ID = "opa_0123456789abcdef0123456789abcdef";
     private static final String CLIENT_TOKEN =
             "opc_0123456789abcdef0123456789abcdef";
+    private static final String SOURCE_PRIVATE_RECORD_HASH =
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
 
     @TempDir
     Path temporaryDirectory;
@@ -230,6 +232,10 @@ class RegistryOperatorNetworkServiceTest {
             assertThat(redemption.response().receipt().tokenId())
                     .isEqualTo(TOKEN_ID);
             assertThat(redemption.response().receipt().linkId()).isNull();
+            assertThat(redemption.response().receipt().sourceClaimActionId())
+                    .isEqualTo(ACTION_ID);
+            assertThat(redemption.response().receipt().sourcePrivateRecordHash())
+                    .isEqualTo(SOURCE_PRIVATE_RECORD_HASH);
 
             RegistryLocalStore.OperatorActionJournalEntry durable =
                     new RegistryLocalStore(properties, objectMapper)
@@ -1171,6 +1177,10 @@ class RegistryOperatorNetworkServiceTest {
                         tokenId,
                         issueToken ? CLIENT_TOKEN : null,
                         tokenHash,
+                        tokenDerivedClaim ? ACTION_ID : null,
+                        tokenDerivedClaim
+                                ? SOURCE_PRIVATE_RECORD_HASH
+                                : null,
                         issueToken ? "2026-07-28T00:05:03Z" : null,
                         SCOPE,
                         registryKeyId,
@@ -1194,6 +1204,8 @@ class RegistryOperatorNetworkServiceTest {
                         auditSeed.tokenId(),
                         auditSeed.clientToken(),
                         auditSeed.clientTokenHash(),
+                        auditSeed.sourceClaimActionId(),
+                        auditSeed.sourcePrivateRecordHash(),
                         auditSeed.tokenExpiresAt(),
                         auditSeed.registryScope(),
                         auditSeed.registryKeyId(),
@@ -1214,6 +1226,8 @@ class RegistryOperatorNetworkServiceTest {
                         unsigned.tokenId(),
                         unsigned.clientToken(),
                         unsigned.clientTokenHash(),
+                        unsigned.sourceClaimActionId(),
+                        unsigned.sourcePrivateRecordHash(),
                         unsigned.tokenExpiresAt(),
                         unsigned.registryScope(),
                         unsigned.registryKeyId(),

@@ -312,6 +312,137 @@ class RegistryProtocolTest {
     }
 
     @Test
+    void legacyOperatorActionMessagesRemainExactlyV1WithoutSourceAnchors() {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                operatorReceipt(null, null);
+        String payloadHash =
+                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+
+        assertThat(new String(
+                        RegistryProtocol.operatorActionReceipt(receipt),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-action-receipt-v1
+                        7
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        2026-07-28T00:00:03Z
+                        PENDING_REVIEW
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+        assertThat(new String(
+                        RegistryProtocol.operatorAudit(receipt, payloadHash),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-audit-v1
+                        7
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        2026-07-28T00:00:03Z
+                        PENDING_REVIEW
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        """);
+    }
+
+    @Test
+    void tokenDerivedClaimMessagesMatchTheGoV2SourceAnchorOrder() {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                operatorReceipt(
+                        "opa_22222222222222222222222222222222",
+                        "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
+        String payloadHash =
+                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+
+        assertThat(new String(
+                        RegistryProtocol.operatorActionReceipt(receipt),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-action-receipt-v2
+                        7
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        2026-07-28T00:00:03Z
+                        PENDING_REVIEW
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        opa_22222222222222222222222222222222
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+        assertThat(new String(
+                        RegistryProtocol.operatorAudit(receipt, payloadHash),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-audit-v2
+                        7
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        2026-07-28T00:00:03Z
+                        PENDING_REVIEW
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        opa_22222222222222222222222222222222
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        """);
+    }
+
+    @Test
+    void operatorActionMessagesRejectPartialSourceAnchors() {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                operatorReceipt(
+                        "opa_22222222222222222222222222222222",
+                        null);
+
+        assertThatThrownBy(() ->
+                        RegistryProtocol.operatorActionReceipt(receipt))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("both absent or both present");
+        assertThatThrownBy(() ->
+                        RegistryProtocol.operatorAudit(
+                                receipt,
+                                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("both absent or both present");
+    }
+
+    @Test
     void operatorClaimStatusReceiptMatchesTheGoProtocolExactly() {
         RegistryProtocol.OperatorClaimStatusReceipt status =
                 new RegistryProtocol.OperatorClaimStatusReceipt(
@@ -514,5 +645,32 @@ class RegistryProtocolTest {
                         "batch_0123456789ABCDEF0123456789ABCDEF"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("malformed");
+    }
+
+    private static RegistryProtocol.OperatorActionReceipt operatorReceipt(
+            String sourceClaimActionId,
+            String sourcePrivateRecordHash) {
+        return new RegistryProtocol.OperatorActionReceipt(
+                7L,
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                RegistryProtocol.ZERO_HASH,
+                "opa_11111111111111111111111111111111",
+                "dep_0123456789abcdef0123456789abcdef",
+                "dep_0123456789abcdef0123456789abcdef",
+                "dep_fedcba9876543210fedcba9876543210",
+                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                "2026-07-28T00:00:03Z",
+                RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW,
+                "opg_0123456789abcdef0123456789abcdef",
+                null,
+                "opt_0123456789abcdef0123456789abcdef",
+                null,
+                "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                sourceClaimActionId,
+                sourcePrivateRecordHash,
+                null,
+                "test-program:parent-b",
+                "rkey_0123456789abcdef0123456789abcdef",
+                null);
     }
 }

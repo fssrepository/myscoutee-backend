@@ -62,6 +62,8 @@ public final class OperatorNetworkDtos {
             String groupId,
             String linkId,
             String tokenId,
+            String sourceClaimActionId,
+            String sourcePrivateRecordHash,
             String tokenExpiresAt) {
     }
 

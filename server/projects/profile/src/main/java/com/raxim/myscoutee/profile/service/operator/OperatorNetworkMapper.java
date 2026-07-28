@@ -128,6 +128,8 @@ public class OperatorNetworkMapper {
                 receipt.groupId(),
                 receipt.linkId(),
                 receipt.tokenId(),
+                receipt.sourceClaimActionId(),
+                receipt.sourcePrivateRecordHash(),
                 receipt.tokenExpiresAt());
     }
 

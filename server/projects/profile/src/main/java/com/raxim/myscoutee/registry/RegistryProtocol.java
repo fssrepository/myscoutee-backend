@@ -410,8 +410,30 @@ public final class RegistryProtocol {
 
     public static byte[] operatorActionReceipt(OperatorActionReceipt receipt) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
+        boolean sourceAnchored = requireCompleteOperatorSourceAnchors(receipt);
+        if (!sourceAnchored) {
+            return canonicalAllowEmpty(
+                    "myscoutee-registry-operator-action-receipt-v1",
+                    requiredLong(receipt.auditIndex(), "audit_index"),
+                    receipt.auditHash(),
+                    receipt.previousAuditHash(),
+                    receipt.actionId(),
+                    receipt.deploymentId(),
+                    receipt.subjectDeploymentId(),
+                    receipt.relatedDeploymentId(),
+                    receipt.action(),
+                    receipt.acceptedAt(),
+                    receipt.claimState(),
+                    receipt.groupId(),
+                    receipt.linkId(),
+                    receipt.tokenId(),
+                    receipt.clientTokenHash(),
+                    receipt.tokenExpiresAt(),
+                    receipt.registryScope(),
+                    receipt.registryKeyId());
+        }
         return canonicalAllowEmpty(
-                "myscoutee-registry-operator-action-receipt-v1",
+                "myscoutee-registry-operator-action-receipt-v2",
                 requiredLong(receipt.auditIndex(), "audit_index"),
                 receipt.auditHash(),
                 receipt.previousAuditHash(),
@@ -426,6 +448,8 @@ public final class RegistryProtocol {
                 receipt.linkId(),
                 receipt.tokenId(),
                 receipt.clientTokenHash(),
+                receipt.sourceClaimActionId(),
+                receipt.sourcePrivateRecordHash(),
                 receipt.tokenExpiresAt(),
                 receipt.registryScope(),
                 receipt.registryKeyId());
@@ -435,8 +459,28 @@ public final class RegistryProtocol {
             OperatorActionReceipt receipt,
             String payloadHash) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
+        boolean sourceAnchored = requireCompleteOperatorSourceAnchors(receipt);
+        if (!sourceAnchored) {
+            return canonicalAllowEmpty(
+                    "myscoutee-registry-operator-audit-v1",
+                    requiredLong(receipt.auditIndex(), "audit_index"),
+                    receipt.actionId(),
+                    receipt.deploymentId(),
+                    receipt.subjectDeploymentId(),
+                    receipt.relatedDeploymentId(),
+                    receipt.action(),
+                    payloadHash,
+                    receipt.acceptedAt(),
+                    receipt.claimState(),
+                    receipt.groupId(),
+                    receipt.linkId(),
+                    receipt.tokenId(),
+                    receipt.clientTokenHash(),
+                    receipt.tokenExpiresAt(),
+                    receipt.previousAuditHash());
+        }
         return canonicalAllowEmpty(
-                "myscoutee-registry-operator-audit-v1",
+                "myscoutee-registry-operator-audit-v2",
                 requiredLong(receipt.auditIndex(), "audit_index"),
                 receipt.actionId(),
                 receipt.deploymentId(),
@@ -450,8 +494,23 @@ public final class RegistryProtocol {
                 receipt.linkId(),
                 receipt.tokenId(),
                 receipt.clientTokenHash(),
+                receipt.sourceClaimActionId(),
+                receipt.sourcePrivateRecordHash(),
                 receipt.tokenExpiresAt(),
                 receipt.previousAuditHash());
+    }
+
+    private static boolean requireCompleteOperatorSourceAnchors(
+            OperatorActionReceipt receipt) {
+        boolean hasClaimAction = receipt.sourceClaimActionId() != null
+                && !receipt.sourceClaimActionId().isEmpty();
+        boolean hasPrivateRecordHash = receipt.sourcePrivateRecordHash() != null
+                && !receipt.sourcePrivateRecordHash().isEmpty();
+        if (hasClaimAction != hasPrivateRecordHash) {
+            throw new IllegalArgumentException(
+                    "Operator source claim anchors must be both absent or both present.");
+        }
+        return hasClaimAction;
     }
 
     public static byte[] operatorClaimStatusReceipt(OperatorClaimStatusReceipt status) {
@@ -1458,6 +1517,8 @@ public final class RegistryProtocol {
             @JsonProperty("token_id") String tokenId,
             @JsonProperty("client_token") String clientToken,
             @JsonProperty("client_token_hash") String clientTokenHash,
+            @JsonProperty("source_claim_action_id") String sourceClaimActionId,
+            @JsonProperty("source_private_record_hash") String sourcePrivateRecordHash,
             @JsonProperty("token_expires_at") String tokenExpiresAt,
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("registry_key_id") String registryKeyId,
@@ -1480,6 +1541,8 @@ public final class RegistryProtocol {
                     tokenId,
                     null,
                     clientTokenHash,
+                    sourceClaimActionId,
+                    sourcePrivateRecordHash,
                     tokenExpiresAt,
                     registryScope,
                     registryKeyId,
