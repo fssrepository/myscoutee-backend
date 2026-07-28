@@ -31,6 +31,7 @@ import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
@@ -1974,6 +1975,33 @@ class ActivitiesMembersServiceTest {
         verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
         verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
         verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
+    }
+
+    @Test
+    void inviteEventMembersNotifiesOnlyNewlyPersistedInvitees() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        ActivityMember existingInvite = member("existing-sync", "event-1", "existing", "Member", "pending");
+        existingInvite.setRequestKind("invite");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(existingInvite));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(List.of(existingInvite));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                List.of("existing", "new-user"),
+                "admin"));
+
+        verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("new-user"),
+                "admin");
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {

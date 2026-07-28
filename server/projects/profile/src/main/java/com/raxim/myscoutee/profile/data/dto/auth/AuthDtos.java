@@ -52,7 +52,46 @@ public final class AuthDtos {
             UserAssetCountersDto asset,
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
-            Integer adminMetrics) {
+            Integer adminMetrics,
+            Integer notifications) {
+        public UserMenuCountersDto(
+                Integer game,
+                Integer chats,
+                Integer invitations,
+                Integer events,
+                Integer hosting,
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets,
+                Integer contacts,
+                Integer feedback,
+                UserChatCountersDto chat,
+                UserEventCountersDto event,
+                UserAssetCountersDto asset,
+                UserEventFeedbackCountersDto eventFeedback,
+                Integer adminJobs,
+                Integer adminMetrics) {
+            this(
+                    game,
+                    chats,
+                    invitations,
+                    events,
+                    hosting,
+                    cars,
+                    accommodation,
+                    supplies,
+                    tickets,
+                    contacts,
+                    feedback,
+                    chat,
+                    event,
+                    asset,
+                    eventFeedback,
+                    adminJobs,
+                    adminMetrics,
+                    0);
+        }
     }
 
     public record UserChatCountersDto(
@@ -88,6 +127,10 @@ public final class AuthDtos {
             Integer removed) {
     }
 
+    public record UserNotificationPreferencesDto(
+            Boolean muted) {
+    }
+
     public record UserRealtimeCountersDto(
             Integer game,
             Integer chats,
@@ -106,8 +149,51 @@ public final class AuthDtos {
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics,
+            Integer notifications,
             Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged) {
+        public UserRealtimeCountersDto(
+                Integer game,
+                Integer chats,
+                Integer invitations,
+                Integer events,
+                Integer hosting,
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets,
+                Integer contacts,
+                Integer feedback,
+                UserChatCountersDto chat,
+                UserEventCountersDto event,
+                UserAssetCountersDto asset,
+                UserEventFeedbackCountersDto eventFeedback,
+                Integer adminJobs,
+                Integer adminMetrics,
+                Boolean impressionsHostChanged,
+                Boolean impressionsMemberChanged) {
+            this(
+                    game,
+                    chats,
+                    invitations,
+                    events,
+                    hosting,
+                    cars,
+                    accommodation,
+                    supplies,
+                    tickets,
+                    contacts,
+                    feedback,
+                    chat,
+                    event,
+                    asset,
+                    eventFeedback,
+                    adminJobs,
+                    adminMetrics,
+                    0,
+                    impressionsHostChanged,
+                    impressionsMemberChanged);
+        }
     }
 
     public record UserGameFilterPreferencesDto(
@@ -151,7 +237,46 @@ public final class AuthDtos {
             UserAssetCountersDto asset,
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
-            Integer adminMetrics) {
+            Integer adminMetrics,
+            Integer notifications) {
+        public UserActivitiesDto(
+                Integer game,
+                Integer chats,
+                Integer invitations,
+                Integer events,
+                Integer hosting,
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets,
+                Integer contacts,
+                Integer feedback,
+                UserChatCountersDto chat,
+                UserEventCountersDto event,
+                UserAssetCountersDto asset,
+                UserEventFeedbackCountersDto eventFeedback,
+                Integer adminJobs,
+                Integer adminMetrics) {
+            this(
+                    game,
+                    chats,
+                    invitations,
+                    events,
+                    hosting,
+                    cars,
+                    accommodation,
+                    supplies,
+                    tickets,
+                    contacts,
+                    feedback,
+                    chat,
+                    event,
+                    asset,
+                    eventFeedback,
+                    adminJobs,
+                    adminMetrics,
+                    0);
+        }
     }
 
     public record ProfileDetailRowDto(
@@ -195,7 +320,9 @@ public final class AuthDtos {
             String previousProfileStatus,
             String deletedAtIso,
             Boolean admin,
-            UserActivitiesDto activities) {
+            Boolean operator,
+            UserActivitiesDto activities,
+            UserNotificationPreferencesDto notificationPreferences) {
     }
 
     public record ProfileExtDto(
@@ -239,7 +366,9 @@ public final class AuthDtos {
             String previousProfileStatus,
             String deletedAtIso,
             Boolean admin,
+            Boolean operator,
             UserActivitiesDto activities,
+            UserNotificationPreferencesDto notificationPreferences,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,
             UserMenuCountersDto counterOverrides) {

@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.UpdateDefinition;
 
 import com.raxim.myscoutee.profile.data.document.AccountPurgeJob;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
@@ -101,6 +102,24 @@ class DeletedAccountPurgeServiceTest {
         verify(activityMembersRepository).deleteAll(argThat(items -> containsExactly(items, purgedEventMembership, purgedAssetMembership)));
         verify(activityEventsRepository).deleteAll(List.of(event));
         verify(assetsRepository).deleteAll(List.of(asset));
+        verify(mongoTemplate).remove(
+                argThat(query -> query.getQueryObject().size() == 1
+                        && "u1".equals(query.getQueryObject().getString("recipientUserId"))),
+                eq("userNotifications"));
+        verify(mongoTemplate).updateMulti(
+                argThat(query -> query.getQueryObject().toJson().contains("\"senderUserId\": \"u1\"")
+                        && query.getQueryObject().toJson().contains("\"payload.senderUserId\": \"u1\"")
+                        && query.getQueryObject().toJson().contains("\"payload.actorUserId\": \"u1\"")),
+                argThat(this::redactsNotificationSender),
+                eq("userNotifications"));
+        verify(mongoTemplate).updateMulti(
+                argThat(query -> "u1".equals(query.getQueryObject().getString("createdUser"))),
+                argThat(update -> updatesFieldToDeletedUser(update, "createdUser")),
+                eq("userNotifications"));
+        verify(mongoTemplate).updateMulti(
+                argThat(query -> "u1".equals(query.getQueryObject().getString("updatedUser"))),
+                argThat(update -> updatesFieldToDeletedUser(update, "updatedUser")),
+                eq("userNotifications"));
         verify(usersRepository).delete(user);
     }
 
@@ -211,5 +230,24 @@ class DeletedAccountPurgeServiceTest {
             list.add(value);
         }
         return list.equals(List.of(expected));
+    }
+
+    private boolean updatesFieldToDeletedUser(UpdateDefinition update, String field) {
+        org.bson.Document set = update == null
+                ? null
+                : update.getUpdateObject().get("$set", org.bson.Document.class);
+        return set != null && "deleted-user".equals(set.getString(field));
+    }
+
+    private boolean redactsNotificationSender(UpdateDefinition update) {
+        org.bson.Document set = update == null
+                ? null
+                : update.getUpdateObject().get("$set", org.bson.Document.class);
+        return set != null
+                && "deleted-user".equals(set.getString("senderUserId"))
+                && "Notification from a deleted user".equals(set.getString("title"))
+                && "This notification was sent by a deleted user.".equals(set.getString("message"))
+                && set.get("payload") instanceof org.bson.Document payload
+                && payload.isEmpty();
     }
 }

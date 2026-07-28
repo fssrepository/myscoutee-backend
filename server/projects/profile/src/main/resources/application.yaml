@@ -7,6 +7,44 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+registry:
+  enabled: ${REGISTRY_ENABLED:false}
+  outbound-allowed: ${REGISTRY_OUTBOUND_ALLOWED:false}
+  operator-registration-confirmed: ${REGISTRY_OPERATOR_REGISTRATION_CONFIRMED:false}
+  base-url: ${REGISTRY_BASE_URL:}
+  registry-scope: ${REGISTRY_SCOPE:}
+  private-key-path: ${REGISTRY_PRIVATE_KEY_PATH:/etc/myscoutee/registry/deployment-private-key.pem}
+  public-key-path: ${REGISTRY_PUBLIC_KEY_PATH:/etc/myscoutee/registry/deployment-public-key.der}
+  state-dir: ${REGISTRY_STATE_DIR:/var/lib/myscoutee/registry}
+  package-signing-public-key-path: ${OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH:/etc/myscoutee/update/release-public-key.pem}
+  connect-timeout: ${REGISTRY_CONNECT_TIMEOUT:5s}
+  request-timeout: ${REGISTRY_REQUEST_TIMEOUT:20s}
+  retry-delay: ${REGISTRY_RETRY_DELAY:1m}
+  max-response-bytes: ${REGISTRY_MAX_RESPONSE_BYTES:1048576}
+  software-version: ${MYSCOUTEE_VERSION:unknown}
+  expected-registry-key-fingerprint: ${REGISTRY_EXPECTED_KEY_FINGERPRINT:}
+  trust-on-first-use: ${REGISTRY_TRUST_ON_FIRST_USE:false}
+  allow-insecure-http: ${REGISTRY_ALLOW_INSECURE_HTTP:false}
+  insecure-http-allowed-hosts: ${REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS:}
+  demo:
+    private-key-path: ${REGISTRY_DEMO_PRIVATE_KEY_PATH:/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem}
+    public-key-path: ${REGISTRY_DEMO_PUBLIC_KEY_PATH:/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der}
+    state-dir: ${REGISTRY_DEMO_STATE_DIR:/var/lib/myscoutee/registry-demo/state}
+    allow-insecure-http: ${REGISTRY_DEMO_ALLOW_INSECURE_HTTP:false}
+    insecure-http-allowed-hosts: ${REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS:}
+
+operator:
+  configuration:
+    master-key-path: ${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:/etc/myscoutee/configuration/deployment-master-key}
+  update:
+    enabled: ${OPERATOR_UPDATE_ENABLED:false}
+    state-dir: ${OPERATOR_UPDATE_STATE_DIR:/var/lib/myscoutee/update}
+    release-public-key-path: ${OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH:/etc/myscoutee/update/release-public-key.pem}
+    max-artifact-bytes: ${OPERATOR_UPDATE_MAX_ARTIFACT_BYTES:4294967296}
+    staging-safety-reserve-bytes: ${OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES:536870912}
+    download-connect-timeout: ${OPERATOR_UPDATE_DOWNLOAD_CONNECT_TIMEOUT:10s}
+    download-timeout: ${OPERATOR_UPDATE_DOWNLOAD_TIMEOUT:30m}
+
 payment:
   enablePay: ${PAYMENT_ENABLE_PAY:false}
   stripe:

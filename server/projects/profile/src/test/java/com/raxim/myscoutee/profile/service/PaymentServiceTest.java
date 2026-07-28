@@ -29,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentProviderResolver;
 
 class PaymentServiceTest {
     @Test
@@ -91,6 +92,36 @@ class PaymentServiceTest {
     }
 
     @Test
+    void enabledPaymentModeUsesTheDeploymentSelectedProviderWhenCallerOmitsIt() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        RecordingPaymentProcessor barion = new RecordingPaymentProcessor("barion");
+        DeploymentPaymentProviderResolver resolver =
+                org.mockito.Mockito.mock(DeploymentPaymentProviderResolver.class);
+        when(resolver.resolveActiveProvider(null)).thenReturn("barion");
+        EventCheckoutPricingService pricingService =
+                org.mockito.Mockito.mock(EventCheckoutPricingService.class);
+        EventCheckoutRequestDto request =
+                checkoutRequest("user-operator", "event-operator", 31.5d, "HUF");
+        when(pricingService.reprice(request)).thenReturn(request);
+        PaymentService service = new PaymentService(
+                List.of(stripe, barion),
+                repository,
+                org.mockito.Mockito.mock(EventCheckoutBasketService.class),
+                pricingService,
+                resolver);
+        ReflectionTestUtils.setField(service, "enablePay", true);
+
+        EventCheckoutSessionDto checkout = service.checkout(request, null);
+
+        assertThat(checkout.provider()).isEqualTo("barion");
+        assertThat(barion.checkoutCalls()).isEqualTo(1);
+        assertThat(stripe.checkoutCalls()).isZero();
+        verify(resolver).resolveActiveProvider(null);
+    }
+
+    @Test
     void providerFailureDoesNotPersistPaymentRequest() {
         PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
         when(repository.findByGatewaySessionId(anyString())).thenReturn(Optional.empty());
@@ -135,7 +166,8 @@ class PaymentServiceTest {
                 List.of(stripe),
                 repository,
                 org.mockito.Mockito.mock(EventCheckoutBasketService.class),
-                pricingService);
+                pricingService,
+                paymentProviderResolver());
         ReflectionTestUtils.setField(service, "enablePay", true);
 
         EventCheckoutSessionDto checkout = service.checkout(forged, "stripe");
@@ -165,7 +197,8 @@ class PaymentServiceTest {
                 List.of(stripe),
                 repository,
                 org.mockito.Mockito.mock(EventCheckoutBasketService.class),
-                pricingService);
+                pricingService,
+                paymentProviderResolver());
         ReflectionTestUtils.setField(service, "enablePay", true);
         EventCheckoutRequestDto resourceRequest = new EventCheckoutRequestDto(
                 "user-resource",
@@ -437,9 +470,18 @@ class PaymentServiceTest {
                 List.of(processors),
                 repository,
                 org.mockito.Mockito.mock(EventCheckoutBasketService.class),
-                pricingService);
+                pricingService,
+                paymentProviderResolver());
         ReflectionTestUtils.setField(service, "enablePay", enablePay);
         return service;
+    }
+
+    private DeploymentPaymentProviderResolver paymentProviderResolver() {
+        DeploymentPaymentProviderResolver resolver =
+                org.mockito.Mockito.mock(DeploymentPaymentProviderResolver.class);
+        when(resolver.resolveActiveProvider(anyString()))
+                .thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        return resolver;
     }
 
     private PaymentsRepository inMemoryRepository(Map<String, Payment> paymentsBySession) {

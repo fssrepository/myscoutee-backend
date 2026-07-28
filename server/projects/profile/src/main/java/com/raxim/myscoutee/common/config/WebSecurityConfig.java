@@ -53,6 +53,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
                     authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
+                    authorizeRequests.requestMatchers("/operator/**", "/api/operator/**").hasAuthority("O");
                     authorizeRequests.requestMatchers(
                             "/health",
                             "/error",
@@ -61,6 +62,8 @@ public class WebSecurityConfig {
                             "/auth/facebook/data-deletion/status",
                             "/i18n/bundle",
                             "/api/i18n/bundle",
+                            "/deployment/configuration",
+                            "/api/deployment/configuration",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",

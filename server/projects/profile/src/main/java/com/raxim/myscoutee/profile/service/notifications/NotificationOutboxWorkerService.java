@@ -47,6 +47,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.AdminTelemetryService;
+import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
 import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway.FirebaseBatchSendResult;
@@ -61,6 +62,7 @@ public class NotificationOutboxWorkerService {
     private final ConfigProperties configProperties;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final UsersRepository usersRepository;
+    private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
     private final MongoTemplate mongoTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final PlatformParametersService platformParametersService;
@@ -81,6 +83,7 @@ public class NotificationOutboxWorkerService {
             ConfigProperties configProperties,
             NotificationOutboxRepository notificationOutboxRepository,
             UsersRepository usersRepository,
+            ChatWebSocketSessionRegistry chatWebSocketSessionRegistry,
             MongoTemplate mongoTemplate,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
             PlatformParametersService platformParametersService,
@@ -97,6 +100,7 @@ public class NotificationOutboxWorkerService {
         this.configProperties = configProperties;
         this.notificationOutboxRepository = notificationOutboxRepository;
         this.usersRepository = usersRepository;
+        this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
         this.mongoTemplate = mongoTemplate;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
         this.platformParametersService = platformParametersService;
@@ -262,7 +266,11 @@ public class NotificationOutboxWorkerService {
             firebaseMessagingGateway.send(buildTopicMessage(item, safeText(item.getTopicName())));
             return new DeliveryResult(1, 0, Set.of());
         }
-        List<Users> users = usersRepository.findByUserIdIn(compactIds(item.getRecipientUserIds()));
+        List<String> recipientUserIds = deliveryRecipientUserIds(item);
+        if (recipientUserIds.isEmpty()) {
+            return new DeliveryResult(0, 0, Set.of());
+        }
+        List<Users> users = usersRepository.findByUserIdIn(recipientUserIds);
         List<TokenRegistration> registrations = tokenRegistrations(users);
         if (registrations.isEmpty()) {
             return new DeliveryResult(0, 0, Set.of());
@@ -272,6 +280,24 @@ public class NotificationOutboxWorkerService {
                 : deliverMulticast(item, registrations);
         removeInvalidTokens(users, result.invalidTokens());
         return result;
+    }
+
+    List<String> deliveryRecipientUserIds(NotificationOutboxItem item) {
+        List<String> recipientUserIds = compactIds(item == null ? null : item.getRecipientUserIds());
+        if (item == null
+                || !"chat-message".equals(safeText(item.getNotificationType()))
+                || chatWebSocketSessionRegistry == null) {
+            return recipientUserIds;
+        }
+        String chatId = firstNonBlank(
+                item.getEntityId(),
+                item.getPayload() == null ? null : item.getPayload().get("chatId"));
+        if (!StringUtils.hasText(chatId)) {
+            return recipientUserIds;
+        }
+        return recipientUserIds.stream()
+                .filter(userId -> !chatWebSocketSessionRegistry.isUserConnected(chatId, userId))
+                .toList();
     }
 
     private DeliveryResult deliverDirect(NotificationOutboxItem item, List<TokenRegistration> registrations)

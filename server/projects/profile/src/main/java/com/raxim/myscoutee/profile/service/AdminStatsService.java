@@ -25,8 +25,6 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardD
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsGraphDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsGraphTimelinePointDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsMetricDto;
-import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsRevenueDto;
-import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsRevenueTimelinePointDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsSegmentDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsTimelinePointDto;
 import com.raxim.myscoutee.profile.repository.AdminStatsRepository;
@@ -42,19 +40,16 @@ public class AdminStatsService {
     private final UsersRepository usersRepository;
     private final AdminModerationService adminModerationService;
     private final AdminGraphScienceService adminGraphScienceService;
-    private final AdminRevenueStatsService adminRevenueStatsService;
 
     public AdminStatsService(
             AdminStatsRepository adminStatsRepository,
             UsersRepository usersRepository,
             AdminModerationService adminModerationService,
-            AdminGraphScienceService adminGraphScienceService,
-            AdminRevenueStatsService adminRevenueStatsService) {
+            AdminGraphScienceService adminGraphScienceService) {
         this.adminStatsRepository = adminStatsRepository;
         this.usersRepository = usersRepository;
         this.adminModerationService = adminModerationService;
         this.adminGraphScienceService = adminGraphScienceService;
-        this.adminRevenueStatsService = adminRevenueStatsService;
     }
 
     public AdminStatsDashboardDto dashboard(String adminUserId) {
@@ -177,7 +172,6 @@ public class AdminStatsService {
             snapshot.setLastTelemetryStreamId(safeText(lastStreamId));
         }
         adminGraphScienceService.refresh(snapshot);
-        adminRevenueStatsService.refresh(snapshot);
         refreshProfileCounts(snapshot);
         adminStatsRepository.save(snapshot);
     }
@@ -185,7 +179,6 @@ public class AdminStatsService {
     public void refreshGraphScienceSnapshot() {
         AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
         adminGraphScienceService.refresh(snapshot);
-        adminRevenueStatsService.refresh(snapshot);
         refreshProfileCounts(snapshot);
         snapshot.setGeneratedAtIso(Instant.now().toString());
         adminStatsRepository.save(snapshot);
@@ -311,84 +304,7 @@ public class AdminStatsService {
                 timelineItems(dailyActivity, dailyActiveUsers),
                 topItems(snapshot.getEventTypes(), "", "category", "green", 6),
                 activityMixItems(segments),
-                graphDto(snapshot),
-                revenueDto(snapshot));
-    }
-
-    private AdminStatsRevenueDto revenueDto(AdminStatsSnapshot snapshot) {
-        Map<String, Long> metrics = safeMap(snapshot.getRevenueMetrics());
-        long payableEvents = metrics.getOrDefault("payable-events", 0L);
-        long projectedEventCents = metrics.getOrDefault("projected-event-cents", 0L);
-        long avgEventTicketCents = metrics.getOrDefault("avg-event-ticket-cents", 0L);
-        long payableAssets = metrics.getOrDefault("payable-assets", 0L);
-        long projectedAssetCents = metrics.getOrDefault("projected-asset-cents", 0L);
-        long avgAssetPriceCents = metrics.getOrDefault("avg-asset-price-cents", 0L);
-        long actualPaymentCents = metrics.getOrDefault("actual-payment-cents", 0L);
-        long payingUsers = metrics.getOrDefault("paying-users", 0L);
-        long eventBuyers = metrics.getOrDefault("event-buyers", 0L);
-        long assetBorrowers = metrics.getOrDefault("asset-borrowers", 0L);
-        long avgPaymentCents = metrics.getOrDefault("avg-payment-cents", 0L);
-        long projectedTotalCents = Math.max(1L, projectedEventCents + projectedAssetCents);
-        List<AdminStatsMetricDto> revenueMetrics = List.of(
-                graphMetric("payable-events", "stats.revenue.metric.payable.events", payableEvents, formatCount(payableEvents), "confirmation_number", "green", pct(payableEvents, 40)),
-                graphMetric("projected-event-revenue", "stats.revenue.metric.projected.events", projectedEventCents, moneyLabel(projectedEventCents), "event_available", "green", pct(projectedEventCents, projectedTotalCents)),
-                graphMetric("avg-event-ticket", "stats.revenue.metric.avg.event.ticket", avgEventTicketCents, moneyLabel(avgEventTicketCents), "sell", "gold", pct(avgEventTicketCents, 10000)),
-                graphMetric("payable-assets", "stats.revenue.metric.payable.assets", payableAssets, formatCount(payableAssets), "inventory_2", "purple", pct(payableAssets, 40)),
-                graphMetric("projected-asset-revenue", "stats.revenue.metric.projected.assets", projectedAssetCents, moneyLabel(projectedAssetCents), "category", "blue", pct(projectedAssetCents, projectedTotalCents)),
-                graphMetric("avg-asset-price", "stats.revenue.metric.avg.asset.price", avgAssetPriceCents, moneyLabel(avgAssetPriceCents), "payments", "slate", pct(avgAssetPriceCents, 10000)),
-                graphMetric("actual-paid", "stats.revenue.metric.actual.paid", actualPaymentCents, moneyLabel(actualPaymentCents), "paid", actualPaymentCents > 0 ? "blue" : "slate", pct(actualPaymentCents, projectedTotalCents)),
-                graphMetric("paying-users", "stats.revenue.metric.paying.users", payingUsers, formatCount(payingUsers), "group", "red", pct(payingUsers, Math.max(1L, metrics.getOrDefault("actual-payments", 0L)))),
-                graphMetric("event-buyers", "stats.revenue.metric.event.buyers", eventBuyers, formatCount(eventBuyers), "local_activity", "green", pct(eventBuyers, Math.max(1L, payingUsers))),
-                graphMetric("asset-borrowers", "stats.revenue.metric.asset.borrowers", assetBorrowers, formatCount(assetBorrowers), "assignment_returned", "gold", pct(assetBorrowers, Math.max(1L, activeAssetCount(snapshot)))),
-                graphMetric("avg-payment", "stats.revenue.metric.avg.payment", avgPaymentCents, moneyLabel(avgPaymentCents), "receipt_long", "purple", pct(avgPaymentCents, 10000))
-        );
-        return new AdminStatsRevenueDto(
-                revenueMetrics,
-                revenueAssetCategoryItems(snapshot.getRevenueAssetCategories()),
-                revenueTimelineItems(snapshot.getDailyRevenueActivity()));
-    }
-
-    private long activeAssetCount(AdminStatsSnapshot snapshot) {
-        return safeStringMap(snapshot == null ? null : snapshot.getActiveAssets()).size();
-    }
-
-    private List<AdminStatsBreakdownItemDto> revenueAssetCategoryItems(Map<String, Long> values) {
-        if (values == null || values.isEmpty()) {
-            return List.of();
-        }
-        long total = values.values().stream().mapToLong(Long::longValue).sum();
-        return values.entrySet().stream()
-                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()).thenComparing(Map.Entry::getKey))
-                .limit(6)
-                .map(entry -> {
-                    String normalized = normalizeKey(entry.getKey());
-                    String labelKey = switch (normalized) {
-                        case "accommodation" -> "accommodation";
-                        case "transport" -> "transport";
-                        case "supplies" -> "supplies";
-                        default -> "";
-                    };
-                    String icon = switch (normalized) {
-                        case "accommodation" -> "hotel";
-                        case "transport" -> "directions_car";
-                        default -> "category";
-                    };
-                    String tone = switch (normalized) {
-                        case "accommodation" -> "gold";
-                        case "transport" -> "blue";
-                        case "supplies" -> "green";
-                        default -> "slate";
-                    };
-                    return new AdminStatsBreakdownItemDto(
-                            normalized,
-                            labelKey,
-                            StringUtils.hasText(labelKey) ? null : entry.getKey(),
-                            entry.getValue(),
-                            Math.max(1L, total),
-                            icon,
-                            tone);
-                })
-                .toList();
+                graphDto(snapshot));
     }
 
     private AdminStatsGraphDto graphDto(AdminStatsSnapshot snapshot) {
@@ -466,27 +382,6 @@ public class AdminStatsService {
                             values.getOrDefault("communities", 0L),
                             values.getOrDefault("networkQuality", 0L),
                             values.getOrDefault("clusterQuality", 0L));
-                })
-                .toList();
-    }
-
-    private List<AdminStatsRevenueTimelinePointDto> revenueTimelineItems(Map<String, Map<String, Long>> dailyRevenueActivity) {
-        Map<String, Map<String, Long>> valuesByDay = copyNestedLongMap(dailyRevenueActivity);
-        LocalDate today = LocalDate.now(ZoneOffset.UTC);
-        return java.util.stream.IntStream.rangeClosed(0, TIMELINE_DAYS - 1)
-                .mapToObj(index -> today.minusDays(TIMELINE_DAYS - 1L - index))
-                .map(day -> {
-                    String key = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
-                    Map<String, Long> values = valuesByDay.getOrDefault(key, Map.of());
-                    return new AdminStatsRevenueTimelinePointDto(
-                            key,
-                            day.format(DateTimeFormatter.ofPattern("MMM d", Locale.US)),
-                            values.getOrDefault("payableEvents", 0L),
-                            values.getOrDefault("payableAssets", 0L),
-                            values.getOrDefault("projectedEventCents", 0L),
-                            values.getOrDefault("projectedAssetCents", 0L),
-                            values.getOrDefault("actualPaymentCents", 0L),
-                            values.getOrDefault("payingUsers", 0L));
                 })
                 .toList();
     }
@@ -841,11 +736,6 @@ public class AdminStatsService {
             return String.format(Locale.US, "%.1fk", value / 1_000d);
         }
         return Long.toString(value);
-    }
-
-    private String moneyLabel(long cents) {
-        long safeCents = Math.max(0L, cents);
-        return String.format(Locale.US, "$%,d.%02d", safeCents / 100L, safeCents % 100L);
     }
 
     private String formatTenths(long value) {

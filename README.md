@@ -44,6 +44,31 @@ Production Compose
 * Build the frontend production bundle first:
 * `(cd frontend && npm run build:prod)`
 * Run standalone production compose:
+* Before using operator-driven node initialization, create its dedicated host
+  directories with owner-only permissions:
+* `(cd server && install -d -m 0700 data/registry-keys data/registry)`
+* Before the first source-production start, create the deployment master key.
+  The creation command refuses to overwrite an existing key:
+
+```bash
+cd server
+sudo install -d -o root -g 10001 -m 0750 data/configuration
+sudo sh -c 'set -euC; umask 0137; dd if=/dev/urandom bs=32 count=1 status=none > "$1"; chown root:10001 "$1"; chmod 0640 "$1"' sh "$PWD/data/configuration/deployment-master-key"
+sudo sh -c 'test "$(wc -c < "$1")" -eq 32' sh "$PWD/data/configuration/deployment-master-key"
+```
+
+The production backend runs as UID/GID `10001:10001`. The commands above leave
+the directory owned by `root:10001` with mode `0750` and the key owned by
+`root:10001` with mode `0640`. `docker-compose-prod.yml` mounts
+`OPERATOR_CONFIGURATION_KEY_DIR_HOST` (default `./data/configuration`) at
+`/etc/myscoutee/configuration` read-only.
+
+Back up `deployment-master-key` to protected off-host storage with every
+database backup. A restore or migration must restore the exact same 32 bytes
+and permissions before the backend starts. Never replace or regenerate the key
+after encrypted operator configuration has been stored; losing it makes those
+credentials unrecoverable.
+
 * `(cd server && docker compose -f docker-compose-prod.yml up --build)`
 * Build standalone production images only:
 * `(cd server && docker compose -f docker-compose-prod.yml build)`
@@ -61,3 +86,70 @@ Full Integration E2E Collections
 * Safe contract checks against the normal dev stack: `node e2e/server/run.mjs`
 * Disposable mutation/stress checks use `e2e_db`: `cd server && docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build`
 * Details: `./e2e/README.md`
+
+Local Signed Registry
+---------------------
+The canonical development stack includes the real Go registry sandbox. Keep
+the `myscoutee-registry` repository beside this repository, then start the
+normal stack:
+
+```bash
+cd server
+docker compose up --build
+```
+
+The landing Explore popup can select `Operator`, then the seeded
+`Demo Operator`. That browser-local workspace is the non-destructive product
+tour and uses the frontend seed store. When login is enabled, an authenticated
+development Operator uses Java and the live local Go service instead. Node
+initialization and registration happen only when that Operator performs the
+corresponding UI actions. Starting Compose does not create a Java node identity
+or silently enroll it.
+
+The three demo stores are deliberately separate:
+
+- application demo data: `server/data/mongodb/demo-data-v8-0` (`demo_db`)
+- registry SQLite and registry signing identity:
+  `myscoutee-registry-dev-demo-data-v1` Docker volume
+- demo deployment identity and verified client state:
+  `server/data/registry-demo-keys` and
+  `server/data/registry-demo-state`
+
+The registry health endpoint is
+`http://127.0.0.1:${LOCAL_REGISTRY_PORT:-8081}/healthz`. The default signed
+scope is the generic `demo:local-registry`. Selectable HTTP-demo endpoints are
+defined in `server/docker/conf/mongodb/demo_db/operatorRegistryEndpoints.json`;
+Java does not manufacture a candidate endpoint, signed identity, or enrollment
+record. No geography or parent is built in.
+
+Plain HTTP is enabled only for the exact Compose hostname `registry` in this
+development sandbox. The browser-local Explore data source is populated only
+by the frontend seed builder and never calls this Java workflow. An
+authenticated production Operator uses the independently deployed registry's
+HTTPS endpoint; that central Go deployment has its own nginx/TLS configuration
+and is not bundled into the MyScoutee production stack.
+
+The registry announcement publisher is also testable against the running dev
+stack. It is a local command in the registry container, not a public write
+endpoint or a frontend mock:
+
+```bash
+cd server
+docker compose -f docker-compose-dev.yml exec -T registry \
+  /registry publish-announcement --file - \
+  < ../../myscoutee-registry/examples/announcement-general.json
+
+curl --fail --show-error \
+  'http://127.0.0.1:8081/v1/announcements?limit=20'
+```
+
+The signed item is immediately visible through the registry feed and remains
+in the isolated `myscoutee-registry-dev-demo-data-v1` volume after a registry
+container restart. Once an authenticated development deployment has selected,
+verified, initialized, and registered against that local registry, reopening
+Közösség loads the same signed feed through Java. An active `UPDATE`
+announcement also drives the update badge; it still requires an explicit
+operator approval before any package is downloaded or installed. Complete
+publisher input, idempotency, update-manifest, cursor, restart, and optional
+dev-volume reset instructions are in
+`../myscoutee-registry/docs/announcements-v1.md`.

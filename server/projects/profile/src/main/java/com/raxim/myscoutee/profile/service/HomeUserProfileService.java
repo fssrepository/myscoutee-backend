@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -61,6 +62,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileDetailRowDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserNotificationPreferencesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPersonalityTraitDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
@@ -271,12 +273,12 @@ public class HomeUserProfileService {
     public UserByIdResponseDto queryUserById(String requestedUserId) {
         String resolvedUserId = resolveSelectedUserId(requestedUserId);
         if (!StringUtils.hasText(resolvedUserId)) {
-            return StringUtils.hasText(requestedUserId) ? null : buildCurrentAdminPrincipalResponse();
+            return StringUtils.hasText(requestedUserId) ? null : buildCurrentPrivilegedPrincipalResponse();
         }
 
         Users user = findUser(resolvedUserId);
         if (user == null) {
-            return buildCurrentAdminPrincipalResponse();
+            return buildCurrentPrivilegedPrincipalResponse();
         }
         if (!StringUtils.hasText(requestedUserId)) {
             scheduledMessageTaskService.touchUserActivity(resolvedUserId);
@@ -316,7 +318,9 @@ public class HomeUserProfileService {
                 userDto.previousProfileStatus(),
                 userDto.deletedAtIso(),
                 isCurrentRequestAdmin(),
+                isCurrentRequestOperator(),
                 userDto.activities(),
+                userDto.notificationPreferences(),
                 filterCount,
                 filterPreferences,
                 menuCounters);
@@ -335,11 +339,13 @@ public class HomeUserProfileService {
                 response.counterOverrides());
     }
 
-    private UserByIdResponseDto buildCurrentAdminPrincipalResponse() {
+    private UserByIdResponseDto buildCurrentPrivilegedPrincipalResponse() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean admin = isCurrentRequestAdmin();
+        boolean operator = isCurrentRequestOperator();
         if (authentication == null
                 || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)
-                || !isCurrentRequestAdmin()) {
+                || (!admin && !operator)) {
             return null;
         }
         String userId = normalizeId(firebasePrincipal.getUserId());
@@ -347,7 +353,7 @@ public class HomeUserProfileService {
             return null;
         }
         String email = safeText(firebasePrincipal.getEmail());
-        String name = adminDisplayName(email);
+        String name = admin ? adminDisplayName(email) : "Operator";
         UserActivitiesDto activities = toUserActivitiesDto(null);
         UserMenuCountersDto menuCounters = emptyMenuCounters();
         return new UserByIdResponseDto(
@@ -362,8 +368,8 @@ public class HomeUserProfileService {
                 "",
                 adminInitials(name),
                 "man",
-                "",
-                "",
+                operator ? "Operator workspace" : "",
+                operator ? "Operator" : "",
                 "",
                 0,
                 0,
@@ -378,8 +384,10 @@ public class HomeUserProfileService {
                 "public",
                 "",
                 "",
-                true,
+                admin,
+                operator,
                 activities,
+                new UserNotificationPreferencesDto(false),
                 0,
                 null,
                 menuCounters);
@@ -415,7 +423,9 @@ public class HomeUserProfileService {
                 response.previousProfileStatus(),
                 response.deletedAtIso(),
                 response.admin(),
-                response.activities());
+                response.operator(),
+                response.activities(),
+                response.notificationPreferences());
     }
 
     private List<ExperienceEntryDto> queryUserExperienceEntries(String userId) {
@@ -1142,7 +1152,13 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getPreviousProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()),
                 false,
-                toUserActivitiesDto(user.getActivities()));
+                user.isOperator(),
+                toUserActivitiesDto(user.getActivities()),
+                includeImpressions
+                        ? new UserNotificationPreferencesDto(
+                                user.getNotificationPreferences() != null
+                                        && Boolean.TRUE.equals(user.getNotificationPreferences().muted()))
+                        : null);
     }
 
     private boolean isCurrentRequestAdmin() {
@@ -1152,6 +1168,27 @@ public class HomeUserProfileService {
         }
         return authentication.getAuthorities().stream()
                 .anyMatch(authority -> "A".equals(authority.getAuthority()));
+    }
+
+    private boolean isCurrentRequestOperator() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> "O".equals(authority.getAuthority()));
+    }
+
+    private boolean isCurrentRequestOperatorForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || !isCurrentRequestOperator()) {
+            return false;
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)) {
+            return false;
+        }
+        return normalizedUserId.equals(normalizeId(firebasePrincipal.getUserId()));
     }
 
     private DemoUserListItemDto toDemoUserListItemDto(Users user) {
@@ -1512,9 +1549,15 @@ public class HomeUserProfileService {
     }
 
     private boolean isSelectableDemoUserDocument(Users user, String selectorRole) {
-        return isUsableUserDocument(user)
-                && !PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))
-                && ("admin".equals(selectorRole) == isDemoAdminUserDocument(user));
+        if (!isUsableUserDocument(user)
+                || PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))) {
+            return false;
+        }
+        return switch (selectorRole) {
+            case "admin" -> isDemoAdminUserDocument(user);
+            case "operator" -> isDemoOperatorUserDocument(user);
+            default -> !isDemoAdminUserDocument(user) && !isDemoOperatorUserDocument(user);
+        };
     }
 
     private boolean isDemoAdminUserDocument(Users user) {
@@ -1523,22 +1566,33 @@ public class HomeUserProfileService {
                         || "admin".equalsIgnoreCase(safeText(user.getHostTier())));
     }
 
+    private boolean isDemoOperatorUserDocument(Users user) {
+        return user != null && user.isOperator();
+    }
+
     private String normalizeDemoSelectorRole(String role) {
-        return "admin".equalsIgnoreCase(safeText(role)) ? "admin" : "member";
+        String normalized = safeText(role).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "admin", "operator" -> normalized;
+            default -> "member";
+        };
     }
 
     boolean isPublicGameUser(Users user) {
         return isUsableUserDocument(user)
+                && !isDemoOperatorUserDocument(user)
                 && "public".equals(resolveProfileStatus(user));
     }
 
     boolean isInsideNetworkGameUser(Users user) {
         return isUsableUserDocument(user)
+                && !isDemoOperatorUserDocument(user)
                 && INSIDE_NETWORK_GAME_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
     boolean isActivityRateVisibleUser(Users user) {
         return isUsableUserDocument(user)
+                && !isDemoOperatorUserDocument(user)
                 && !HARD_HIDDEN_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
@@ -1980,7 +2034,8 @@ public class HomeUserProfileService {
                 toUserAssetCountersDto(activities == null ? null : activities.asset()),
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
-                activities == null ? 0 : normalizeCount(activities.adminMetrics()));
+                activities == null ? 0 : normalizeCount(activities.adminMetrics()),
+                activities == null ? 0 : normalizeCount(activities.notifications()));
     }
 
     private UserMenuCountersDto emptyMenuCounters() {
@@ -1990,7 +2045,7 @@ public class HomeUserProfileService {
                 new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                 new UserAssetCountersDto(0, 0, 0, 0),
                 new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                0, 0);
+                0, 0, 0);
     }
 
     private String adminDisplayName(String email) {
@@ -2037,6 +2092,8 @@ public class HomeUserProfileService {
         document.setGender(nullToEmpty(user.gender()));
         document.setStatusText(nullToEmpty(user.statusText()));
         document.setHostTier(nullToEmpty(user.hostTier()));
+        document.setOperator((current != null && current.isOperator())
+                || isCurrentRequestOperatorForUser(user.id()));
         document.setTraitLabel(nullToEmpty(user.traitLabel()));
         document.setCompletion(normalizeCount(user.completion()));
         document.setProfileFormVersion(normalizeCount(user.profileFormVersion()));
@@ -2415,7 +2472,9 @@ public class HomeUserProfileService {
             UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
+        int fingerprintOffset = cursorPartCount >= 38
+                ? 36
+                : cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
         String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
         String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
         String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
@@ -2438,6 +2497,7 @@ public class HomeUserProfileService {
                 counters.eventFeedback(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
+                counters.notifications(),
                 StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
                 StringUtils.hasText(previousMemberHash) && !Objects.equals(previousMemberHash, nextMemberHash));
     }
@@ -2482,6 +2542,7 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().removed())),
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
+                String.valueOf(normalizeCount(counters.notifications())),
                 impressionsFingerprint(impressions == null ? null : impressions.host()),
                 impressionsFingerprint(impressions == null ? null : impressions.member()));
     }
@@ -2600,7 +2661,7 @@ public class HomeUserProfileService {
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
                     new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                    0, 0);
+                    0, 0, 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2619,7 +2680,8 @@ public class HomeUserProfileService {
                 toUserAssetCountersDto(activities.asset()),
                 toUserEventFeedbackCountersDto(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
-                normalizeCount(activities.adminMetrics()));
+                normalizeCount(activities.adminMetrics()),
+                normalizeCount(activities.notifications()));
     }
 
     private Users.UserActivitiesRecord toUserActivitiesRecord(UserActivitiesDto activities) {
@@ -2630,7 +2692,7 @@ public class HomeUserProfileService {
                     new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                     new Users.UserAssetCountersRecord(0, 0, 0, 0),
                     new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
-                    0, 0);
+                    0, 0, 0);
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
@@ -2649,7 +2711,8 @@ public class HomeUserProfileService {
                 toUserAssetCountersRecord(activities.asset()),
                 toUserEventFeedbackCountersRecord(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
-                normalizeCount(activities.adminMetrics()));
+                normalizeCount(activities.adminMetrics()),
+                normalizeCount(activities.notifications()));
     }
 
     private UserEventCountersDto toUserEventCountersDto(Users.UserEventCountersRecord event) {

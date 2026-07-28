@@ -4,13 +4,14 @@ networks:
 
 secrets:
   firebase-service-account:
-    file: ./projects/profile/secrets/firebase-service-account.json
+    file: ${FIREBASE_SERVICE_ACCOUNT_FILE:-/etc/myscoutee/firebase-service-account.json}
 
 services:
   nginx:
     container_name: nginx
     hostname: nginx
     image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.0-prod}
+    pull_policy: never
     restart: unless-stopped
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -89,6 +90,7 @@ services:
 
   minio:
     image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.0-prod}
+    pull_policy: never
     container_name: minio
     hostname: minio
     restart: unless-stopped
@@ -113,6 +115,7 @@ services:
 
   profilemanagement:
     image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0-prod}
+    pull_policy: never
     container_name: myscoutee
     hostname: myscoutee
     restart: unless-stopped
@@ -120,15 +123,18 @@ services:
       - .env.secrets
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.0.0}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE:-myscoutee_db}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE:-demo_db}"
       SPRING_DATA_REDIS_HOST: "redis"
       SPRING_DATA_REDIS_PORT: "6379"
-      FIREBASE_ENABLED: "${FIREBASE_ENABLED:-true}"
+      FIREBASE_ENABLED: "${FIREBASE_ENABLED:-false}"
       FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com,raxim.uk@gmail.com,myscoutee1@gmail.com"
+      OPERATOR_USER: "${OPERATOR_USER:-}"
+      OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:-/etc/myscoutee/configuration/deployment-master-key}"
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
@@ -140,12 +146,40 @@ services:
       AFFINITY_RECOMPUTE_ENABLED: "${AFFINITY_RECOMPUTE_ENABLED:-true}"
       AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED: "${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:-false}"
       AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: "${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:-true}"
+      REGISTRY_ENABLED: "${REGISTRY_ENABLED:-false}"
+      REGISTRY_OUTBOUND_ALLOWED: "${REGISTRY_OUTBOUND_ALLOWED:-false}"
+      REGISTRY_OPERATOR_REGISTRATION_CONFIRMED: "${REGISTRY_OPERATOR_REGISTRATION_CONFIRMED:-false}"
+      REGISTRY_BASE_URL: "${REGISTRY_BASE_URL:-}"
+      REGISTRY_SCOPE: "${REGISTRY_SCOPE:-}"
+      REGISTRY_PRIVATE_KEY_PATH: "${REGISTRY_PRIVATE_KEY_PATH:-/etc/myscoutee/registry/deployment-private-key.pem}"
+      REGISTRY_PUBLIC_KEY_PATH: "${REGISTRY_PUBLIC_KEY_PATH:-/etc/myscoutee/registry/deployment-public-key.der}"
+      REGISTRY_STATE_DIR: "${REGISTRY_STATE_DIR:-/var/lib/myscoutee/registry}"
+      REGISTRY_CONNECT_TIMEOUT: "${REGISTRY_CONNECT_TIMEOUT:-5s}"
+      REGISTRY_REQUEST_TIMEOUT: "${REGISTRY_REQUEST_TIMEOUT:-15s}"
+      REGISTRY_RETRY_DELAY: "${REGISTRY_RETRY_DELAY:-15m}"
+      REGISTRY_MAX_RESPONSE_BYTES: "${REGISTRY_MAX_RESPONSE_BYTES:-1048576}"
+      REGISTRY_EXPECTED_KEY_FINGERPRINT: "${REGISTRY_EXPECTED_KEY_FINGERPRINT:-}"
+      REGISTRY_TRUST_ON_FIRST_USE: "${REGISTRY_TRUST_ON_FIRST_USE:-false}"
+      REGISTRY_ALLOW_INSECURE_HTTP: "${REGISTRY_ALLOW_INSECURE_HTTP:-false}"
+      REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS: "${REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS:-}"
+      OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
+      OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
+      OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
+      OPERATOR_UPDATE_MAX_ARTIFACT_BYTES: "${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
+      OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES: "${MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES:-536870912}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     secrets:
       - source: firebase-service-account
         target: firebase-service-account.json
     volumes:
+      - "${OPERATOR_CONFIGURATION_KEY_DIR_HOST:-/etc/myscoutee/configuration}:/etc/myscoutee/configuration:ro"
+      - "${REGISTRY_KEY_DIR_HOST:-/etc/myscoutee/registry}:/etc/myscoutee/registry:rw"
+      - "${REGISTRY_STATE_DIR_HOST:-/var/lib/myscoutee/registry}:/var/lib/myscoutee/registry"
+      - /var/lib/myscoutee/update/inbox/staging:/var/lib/myscoutee/update/staging:rw
+      - /var/lib/myscoutee/update/inbox/requests:/var/lib/myscoutee/update/requests:rw
+      - /var/lib/myscoutee/update/runtime/jobs:/var/lib/myscoutee/update/jobs:ro
+      - /etc/myscoutee/update:/etc/myscoutee/update:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee

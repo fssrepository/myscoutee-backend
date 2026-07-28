@@ -38,6 +38,14 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
         if (requestUri != null && requestUri.endsWith(DEMO_USERS_ROUTE)) {
             return MongoSessionMode.DEMO;
         }
+        if (DemoSessionRequestSupport.isOperatorRequest(request)) {
+            if (DemoSessionRequestSupport.isDemoSessionRequest(request)
+                    || configProperties == null
+                    || !configProperties.isFirebaseEnabled()) {
+                return MongoSessionMode.DEMO;
+            }
+            return MongoSessionMode.REAL;
+        }
         if (DemoSessionRequestSupport.isAllowedDemoSessionRequest(request)) {
             return MongoSessionMode.DEMO;
         }

@@ -1,0 +1,147 @@
+package com.raxim.myscoutee.profile.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Repository;
+
+import com.raxim.myscoutee.profile.data.document.UserNotification;
+
+@Repository
+public class UserNotificationPageRepository {
+    private static final Sort NOTIFICATION_SORT = Sort.by(
+            Sort.Order.desc("createdDate"),
+            Sort.Order.desc("_id"));
+
+    private final MongoTemplate mongoTemplate;
+
+    public UserNotificationPageRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public UserNotificationSlice findPage(
+            String recipientUserId,
+            boolean unreadOnly,
+            int limit,
+            UserNotificationCursor cursor) {
+        Criteria baseCriteria = recipientCriteria(recipientUserId, unreadOnly);
+        long total = mongoTemplate.count(Query.query(baseCriteria), UserNotification.class);
+        if (total == 0L) {
+            return new UserNotificationSlice(List.of(), 0L, false);
+        }
+
+        Query query = Query.query(pageCriteria(recipientUserId, unreadOnly, cursor))
+                .with(NOTIFICATION_SORT)
+                .limit(limit + 1);
+        List<UserNotification> matches = mongoTemplate.find(query, UserNotification.class);
+        boolean hasNext = matches.size() > limit;
+        List<UserNotification> records = hasNext
+                ? List.copyOf(matches.subList(0, limit))
+                : List.copyOf(matches);
+        return new UserNotificationSlice(records, total, hasNext);
+    }
+
+    public long countUnread(String recipientUserId) {
+        return mongoTemplate.count(
+                Query.query(recipientCriteria(recipientUserId, true)),
+                UserNotification.class);
+    }
+
+    public boolean insertIfAbsent(UserNotification notification) {
+        if (notification == null) {
+            return false;
+        }
+        try {
+            mongoTemplate.insert(notification);
+            return true;
+        } catch (DuplicateKeyException ignored) {
+            return false;
+        }
+    }
+
+    public Optional<UserNotification> markRead(
+            String notificationId,
+            String recipientUserId,
+            String readAtIso) {
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("_id").is(notificationId),
+                Criteria.where("recipientUserId").is(recipientUserId),
+                unreadCriteria());
+        UserNotification updated = mongoTemplate.findAndModify(
+                Query.query(criteria),
+                new Update()
+                        .set("readAtIso", readAtIso)
+                        .set("updatedDate", readAtIso)
+                        .set("updatedUser", recipientUserId),
+                FindAndModifyOptions.options().returnNew(true),
+                UserNotification.class);
+        return Optional.ofNullable(updated);
+    }
+
+    public void incrementUnreadCounter(String recipientUserId, int delta) {
+        if (delta == 0) {
+            return;
+        }
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(recipientUserId)),
+                new Update().inc("activities.notifications", delta),
+                com.raxim.myscoutee.profile.data.document.Users.class);
+    }
+
+    public void setMutedPreference(String recipientUserId, boolean muted) {
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(recipientUserId)),
+                new Update().set("notificationPreferences.muted", muted),
+                com.raxim.myscoutee.profile.data.document.Users.class);
+    }
+
+    private Criteria pageCriteria(
+            String recipientUserId,
+            boolean unreadOnly,
+            UserNotificationCursor cursor) {
+        Criteria baseCriteria = recipientCriteria(recipientUserId, unreadOnly);
+        if (cursor == null) {
+            return baseCriteria;
+        }
+        Criteria afterCursor = new Criteria().orOperator(
+                Criteria.where("createdDate").lt(cursor.createdDate()),
+                new Criteria().andOperator(
+                        Criteria.where("createdDate").is(cursor.createdDate()),
+                        Criteria.where("_id").lt(cursor.id())));
+        return new Criteria().andOperator(baseCriteria, afterCursor);
+    }
+
+    private Criteria recipientCriteria(String recipientUserId, boolean unreadOnly) {
+        if (!unreadOnly) {
+            return Criteria.where("recipientUserId").is(recipientUserId);
+        }
+        return new Criteria().andOperator(
+                Criteria.where("recipientUserId").is(recipientUserId),
+                unreadCriteria());
+    }
+
+    private Criteria unreadCriteria() {
+        return new Criteria().orOperator(
+                Criteria.where("readAtIso").exists(false),
+                Criteria.where("readAtIso").is(null));
+    }
+
+    public record UserNotificationCursor(
+            String bucket,
+            String createdDate,
+            String id) {
+    }
+
+    public record UserNotificationSlice(
+            List<UserNotification> records,
+            long total,
+            boolean hasNext) {
+    }
+}

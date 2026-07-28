@@ -393,7 +393,8 @@ public class EventCounterExpiryService {
                 existing == null ? null : existing.asset(),
                 existing == null ? null : existing.eventFeedback(),
                 count(existing == null ? null : existing.adminJobs()),
-                count(existing == null ? null : existing.adminMetrics()));
+                count(existing == null ? null : existing.adminMetrics()),
+                count(existing == null ? null : existing.notifications()));
     }
 
     private boolean activitiesEqual(Users.UserActivitiesRecord first, Users.UserActivitiesRecord second) {
@@ -416,7 +417,8 @@ public class EventCounterExpiryService {
                 && Objects.equals(count(first.contacts()), count(second.contacts()))
                 && Objects.equals(count(first.feedback()), count(second.feedback()))
                 && Objects.equals(count(first.adminJobs()), count(second.adminJobs()))
-                && Objects.equals(count(first.adminMetrics()), count(second.adminMetrics()));
+                && Objects.equals(count(first.adminMetrics()), count(second.adminMetrics()))
+                && Objects.equals(count(first.notifications()), count(second.notifications()));
     }
 
     private List<ActivityEvent> loadDirectEventDocuments(Collection<String> userIds) {

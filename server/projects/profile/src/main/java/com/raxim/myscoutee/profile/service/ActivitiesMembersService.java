@@ -1817,11 +1817,16 @@ public class ActivitiesMembersService {
                     "Authenticated user is not allowed to invite members to this event.");
         }
 
-        persistEventInvites(
+        ActivityEvent eventRecord = findPreferredEventRecord(eventId);
+        List<String> newlyInvitedUserIds = persistEventInvites(
                 eventId,
                 actorUserId,
                 request == null ? List.of() : request.userIds(),
-                findPreferredEventRecord(eventId));
+                eventRecord);
+        eventInviteNotificationService.notifyInvitees(
+                eventRecord,
+                newlyInvitedUserIds,
+                actorUserId);
         return queryMembers(OWNER_TYPE_EVENT, eventId, false, null, null);
     }
 
@@ -2765,7 +2770,10 @@ public class ActivitiesMembersService {
 
         activityMembersRepository.saveAll(membersToSave);
         enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, inviterUserId);
-        eventInviteNotificationService.notifyInvitees(preferredEventRecord, promotedUserIds);
+        eventInviteNotificationService.notifyInvitees(
+                preferredEventRecord,
+                promotedUserIds,
+                inviterUserId);
         refreshEmbeddedEventMembers(normalizedEventId);
         return promotedUserIds.size();
     }

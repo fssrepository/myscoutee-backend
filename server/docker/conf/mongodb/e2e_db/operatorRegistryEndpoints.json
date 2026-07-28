@@ -1,0 +1,10 @@
+[
+  {
+    "_id": "registry-demo-local",
+    "label": "Local registry",
+    "baseUrl": "http://registry:8080",
+    "registryScope": "demo:local-registry",
+    "enabled": true,
+    "sortOrder": 10
+  }
+]

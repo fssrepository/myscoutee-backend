@@ -518,6 +518,7 @@ public class ScheduledMessageTaskService {
         int notificationCount = 0;
         int emailQueuedCount = 0;
         int failedCount = 0;
+        int affectedCount = 0;
         String nowIso = Instant.now().toString();
 
         for (Users user : usersRepository.findByUserIdIn(userIds)) {
@@ -525,15 +526,28 @@ public class ScheduledMessageTaskService {
                 continue;
             }
             Map<String, String> variables = stageReminderVariables(task, user);
-            if (firebaseEnabled()
-                    && notificationTemplate != null
+            boolean notificationAccepted = notificationTemplate != null
                     && notificationDeliveryService != null
-                    && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()))) {
+                    && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()));
+            if (notificationAccepted) {
                 notificationCount += 1;
-                scheduledMessageAuditService.recordDelivery(runId, task, user, "notification", "sent", "Firebase notification accepted.");
+                scheduledMessageAuditService.recordDelivery(
+                        runId,
+                        task,
+                        user,
+                        "notification",
+                        "sent",
+                        "Notification accepted.");
+            }
+            if (notificationAccepted && firebaseEnabled()) {
+                affectedCount += 1;
                 continue;
             }
             if (!emailEnabled() || emailTemplate == null || emailTemplateRenderer == null || !StringUtils.hasText(safeText(user.getEmail()))) {
+                if (notificationAccepted) {
+                    affectedCount += 1;
+                    continue;
+                }
                 failedCount += 1;
                 scheduledMessageAuditService.recordDelivery(runId, task, user, "none", STATUS_SKIPPED, "No enabled delivery channel.");
                 continue;
@@ -541,19 +555,22 @@ public class ScheduledMessageTaskService {
 
             EmailOutboxItem outboxItem = buildTemplateOutboxItem(task, user, emailTemplate, emailTemplateRenderer, variables, nowIso);
             if (outboxItem == null) {
+                if (notificationAccepted) {
+                    affectedCount += 1;
+                }
                 failedCount += 1;
                 scheduledMessageAuditService.recordDelivery(runId, task, user, "email", STATUS_FAILED, "Email template rendered empty content.");
                 continue;
             }
             outboxItems.add(outboxItem);
             emailQueuedCount += 1;
+            affectedCount += 1;
             scheduledMessageAuditService.recordDelivery(runId, task, user, "email", "queued", "Email fallback queued.");
         }
         if (!outboxItems.isEmpty()) {
             emailOutboxRepository.saveAll(outboxItems);
         }
 
-        int affectedCount = notificationCount + emailQueuedCount;
         return new TaskResult(
                 STATUS_COMPLETED,
                 affectedCount,
@@ -583,6 +600,7 @@ public class ScheduledMessageTaskService {
         int notificationCount = 0;
         int emailQueuedCount = 0;
         int failedCount = 0;
+        int affectedCount = 0;
         String nowIso = Instant.now().toString();
 
         for (Users user : usersRepository.findByUserIdIn(userIds)) {
@@ -590,15 +608,28 @@ public class ScheduledMessageTaskService {
                 continue;
             }
             Map<String, String> variables = eventDefinitionChangedVariables(task, user);
-            if (firebaseEnabled()
-                    && notificationTemplate != null
+            boolean notificationAccepted = notificationTemplate != null
                     && notificationDeliveryService != null
-                    && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()))) {
+                    && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()));
+            if (notificationAccepted) {
                 notificationCount += 1;
-                scheduledMessageAuditService.recordDelivery(runId, task, user, "notification", "sent", "Firebase notification accepted.");
+                scheduledMessageAuditService.recordDelivery(
+                        runId,
+                        task,
+                        user,
+                        "notification",
+                        "sent",
+                        "Notification accepted.");
+            }
+            if (notificationAccepted && firebaseEnabled()) {
+                affectedCount += 1;
                 continue;
             }
             if (!emailEnabled() || emailTemplate == null || emailTemplateRenderer == null || !StringUtils.hasText(safeText(user.getEmail()))) {
+                if (notificationAccepted) {
+                    affectedCount += 1;
+                    continue;
+                }
                 failedCount += 1;
                 scheduledMessageAuditService.recordDelivery(runId, task, user, "none", STATUS_SKIPPED, "No enabled delivery channel.");
                 continue;
@@ -606,19 +637,22 @@ public class ScheduledMessageTaskService {
 
             EmailOutboxItem outboxItem = buildTemplateOutboxItem(task, user, emailTemplate, emailTemplateRenderer, variables, nowIso);
             if (outboxItem == null) {
+                if (notificationAccepted) {
+                    affectedCount += 1;
+                }
                 failedCount += 1;
                 scheduledMessageAuditService.recordDelivery(runId, task, user, "email", STATUS_FAILED, "Email template rendered empty content.");
                 continue;
             }
             outboxItems.add(outboxItem);
             emailQueuedCount += 1;
+            affectedCount += 1;
             scheduledMessageAuditService.recordDelivery(runId, task, user, "email", "queued", "Email fallback queued.");
         }
         if (!outboxItems.isEmpty()) {
             emailOutboxRepository.saveAll(outboxItems);
         }
 
-        int affectedCount = notificationCount + emailQueuedCount;
         return new TaskResult(
                 STATUS_COMPLETED,
                 affectedCount,

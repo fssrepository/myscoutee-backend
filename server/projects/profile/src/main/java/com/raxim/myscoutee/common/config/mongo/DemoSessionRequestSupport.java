@@ -23,8 +23,22 @@ public final class DemoSessionRequestSupport {
         String normalizedUri = requestUri.trim();
         return !normalizedUri.startsWith("/admin")
                 && !normalizedUri.startsWith("/api/admin")
+                && !isOperatorRequestUri(normalizedUri)
                 && !normalizedUri.startsWith("/metrics")
                 && !normalizedUri.startsWith("/shutdown");
+    }
+
+    public static boolean isOperatorRequest(HttpServletRequest request) {
+        return request != null && isOperatorRequestUri(request.getRequestURI());
+    }
+
+    public static boolean isOperatorRequestUri(String requestUri) {
+        if (!StringUtils.hasText(requestUri)) {
+            return false;
+        }
+        String normalizedUri = requestUri.trim();
+        return normalizedUri.startsWith("/operator")
+                || normalizedUri.startsWith("/api/operator");
     }
 
     public static boolean isDemoSessionRequest(HttpServletRequest request) {

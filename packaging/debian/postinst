@@ -1,13 +1,58 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+MYSCOUTEE_API_UID=10001
+MYSCOUTEE_API_GID=10001
+
 install -d -m 0755 /etc/myscoutee
+install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/configuration
+install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry
 install -d -m 0755 /opt/myscoutee/server
 install -d -m 0755 /opt/myscoutee/server/docker/conf/nginx/keys
 install -d -m 0755 /opt/myscoutee/server/projects/profile/secrets
 install -d -m 0755 /var/lib/myscoutee/data
+install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry
+install -d -m 0700 /var/lib/myscoutee/update
+install -d -m 0700 /var/lib/myscoutee/update/inbox
+install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/inbox/requests
+install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/inbox/staging
+install -d -m 0700 /var/lib/myscoutee/update/archive
+install -d -m 0700 /var/lib/myscoutee/update/archive/processing
+install -d -m 0700 /var/lib/myscoutee/update/archive/completed
+install -d -m 0700 /var/lib/myscoutee/update/archive/failed
+install -d -m 0700 /var/lib/myscoutee/update/archive/rejected
+install -d -m 0700 /var/lib/myscoutee/update/runtime
+install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/runtime/jobs
+install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/update
+install -d -m 0700 /var/cache/myscoutee-update
+install -d -m 0700 /var/cache/myscoutee-update/jobs
 install -d -m 0755 /var/log/myscoutee
+install -d -m 0700 /var/log/myscoutee/update
 install -d -m 0755 /var/backups/myscoutee
+install -m 0644 \
+  /opt/myscoutee/packaging/update/README \
+  /etc/myscoutee/update/README
+
+MYSCOUTEE_CONFIGURATION_OWNER_UID=0 \
+MYSCOUTEE_CONFIGURATION_OWNER_GID="${MYSCOUTEE_API_GID}" \
+  /opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh
+
+# Migrate preserved registry identity/state to the unprivileged production API
+# user. Symlinks are not followed.
+chown -R --no-dereference \
+  "${MYSCOUTEE_API_UID}:${MYSCOUTEE_API_GID}" \
+  /etc/myscoutee/registry \
+  /var/lib/myscoutee/registry
+if [[ -f /etc/myscoutee/update/release-public-key.pem \
+  && ! -L /etc/myscoutee/update/release-public-key.pem ]]; then
+  chown root:"${MYSCOUTEE_API_GID}" /etc/myscoutee/update/release-public-key.pem
+  chmod 0640 /etc/myscoutee/update/release-public-key.pem
+fi
+if [[ -f /etc/myscoutee/firebase-service-account.json \
+  && ! -L /etc/myscoutee/firebase-service-account.json ]]; then
+  chown root:"${MYSCOUTEE_API_GID}" /etc/myscoutee/firebase-service-account.json
+  chmod 0640 /etc/myscoutee/firebase-service-account.json
+fi
 
 generate_secret() {
   if command -v openssl >/dev/null 2>&1; then
@@ -94,11 +139,21 @@ upsert_env_value() {
   printf '\n%s=%s\n' "${key}" "${value}" >> "${file}"
 }
 
+ensure_env_default() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+
+  if ! grep -q "^[[:space:]]*${key}[[:space:]]*=" "${file}"; then
+    printf '\n%s=%s\n' "${key}" "${value}" >> "${file}"
+  fi
+}
+
 ensure_mongo_seed_allow_list() {
   local file current updated required_collections collection
 
   file="/etc/myscoutee/myscoutee.env"
-  required_collections="emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks"
+  required_collections="emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations"
   current="$(read_env_file_value MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB "${file}" || true)"
 
   if [[ -z "${current}" ]]; then
@@ -106,7 +161,10 @@ ensure_mongo_seed_allow_list() {
     return 0
   fi
 
-  for collection in emailTemplates emailCampaignRules notificationTemplates scheduledMessageTasks; do
+  for collection in \
+    emailTemplates emailCampaignRules notificationTemplates \
+    scheduledMessageTasks operatorRegistryEndpoints paymentProviders \
+    deploymentConfigurations; do
     if [[ "${current}" != *"${collection}"* ]]; then
       updated="${current/notificationRuleConfigs/notificationRuleConfigs,${required_collections}}"
       if [[ "${updated}" == "${current}" ]]; then
@@ -119,28 +177,24 @@ ensure_mongo_seed_allow_list() {
 }
 
 normalize_packaged_image_values() {
-  local env_file version
+  local env_file packaged_version
 
   env_file="/etc/myscoutee/myscoutee.env"
-  version="$(read_env_file_value MYSCOUTEE_VERSION "${env_file}" || true)"
-  version="${version:-1.0.0}"
-
-  normalize_packaged_image_value "${env_file}" NGINX_BASE_IMAGE "myscoutee-nginx:${version}-base" \
-    "myscoutee-nginx:${version}" \
-    "myscoutee-nginx:\${MYSCOUTEE_VERSION}" \
-    "myscoutee-nginx:\${MYSCOUTEE_VERSION}-base"
-  normalize_packaged_image_value "${env_file}" NGINX_PRODUCTION_IMAGE "myscoutee-nginx:${version}-prod" \
-    "myscoutee-nginx:${version}" \
-    "myscoutee-nginx:\${MYSCOUTEE_VERSION}" \
-    "myscoutee-nginx:\${MYSCOUTEE_VERSION}-prod"
-  normalize_packaged_image_value "${env_file}" MYSCOUTEE_PRODUCTION_IMAGE "myscoutee-api:${version}-prod" \
-    "myscoutee-api:${version}" \
-    "myscoutee-api:\${MYSCOUTEE_VERSION}" \
-    "myscoutee-api:\${MYSCOUTEE_VERSION}-prod"
-  normalize_packaged_image_value "${env_file}" MINIO_PRODUCTION_IMAGE "myscoutee-minio:${version}-prod" \
-    "myscoutee-minio:${version}" \
-    "myscoutee-minio:\${MYSCOUTEE_VERSION}" \
-    "myscoutee-minio:\${MYSCOUTEE_VERSION}-prod"
+  packaged_version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION 2>/dev/null || true)"
+  if [[ ! "${packaged_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
+    || ! dpkg --validate-version "${packaged_version}" >/dev/null 2>&1; then
+    echo "The installed package version marker is missing or invalid." >&2
+    exit 1
+  fi
+  upsert_env_value "${env_file}" NGINX_BASE_IMAGE \
+    "myscoutee-nginx:${packaged_version}-base"
+  upsert_env_value "${env_file}" NGINX_PRODUCTION_IMAGE \
+    "myscoutee-nginx:${packaged_version}-prod"
+  upsert_env_value "${env_file}" MYSCOUTEE_PRODUCTION_IMAGE \
+    "myscoutee-api:${packaged_version}-prod"
+  upsert_env_value "${env_file}" MINIO_PRODUCTION_IMAGE \
+    "myscoutee-minio:${packaged_version}-prod"
+  upsert_env_value "${env_file}" MYSCOUTEE_VERSION "${packaged_version}"
 }
 
 normalize_packaged_image_value() {
@@ -182,14 +236,94 @@ ensure_service_images() {
   ensure_docker_image "$(config_value REDIS_IMAGE redis:8.6.1-alpine)" "Redis"
 }
 
+verify_packaged_image_manifest() {
+  local manifest version reference expected_id actual_id
+  local -a images=()
+
+  manifest="/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+  version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION)"
+  if [[ ! -f "${manifest}" || -L "${manifest}" ]] \
+    || ! jq -e --arg version "${version}" '
+      .schemaVersion == 1
+      and .releaseVersion == $version
+      and .bundled == true
+      and (.images | type == "array" and length == 4)
+      and ([.images[].service] | sort
+        == ["minio", "nginx", "nginx-base", "profilemanagement"])
+      and all(.images[];
+        (.reference | type == "string")
+        and (.imageId | test("^sha256:[0-9a-f]{64}$")))
+    ' "${manifest}" >/dev/null; then
+    echo "The package bundled-image manifest is missing or invalid." >&2
+    exit 1
+  fi
+
+  mapfile -t images < <(
+    jq -r '.images[] | [.reference, .imageId] | @tsv' "${manifest}"
+  )
+  for image in "${images[@]}"; do
+    IFS=$'\t' read -r reference expected_id <<< "${image}"
+    actual_id="$(docker image inspect --format '{{.Id}}' \
+      "${reference}" 2>/dev/null || true)"
+    if [[ "${actual_id}" != "${expected_id}" ]]; then
+      echo "Bundled image identity mismatch for ${reference}." >&2
+      exit 1
+    fi
+  done
+}
+
 if [[ ! -f /etc/myscoutee/myscoutee.env ]]; then
   install -m 0644 /opt/myscoutee/packaging/templates/myscoutee.env /etc/myscoutee/myscoutee.env
 fi
 
-upsert_env_value /etc/myscoutee/myscoutee.env MINIO_PRODUCTION_IMAGE "myscoutee-minio:$(config_value MYSCOUTEE_VERSION 1.0.0)-prod"
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_ENABLED false
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_OUTBOUND_ALLOWED false
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_OPERATOR_REGISTRATION_CONFIRMED false
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_BASE_URL ""
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_SCOPE ""
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_PRIVATE_KEY_PATH /etc/myscoutee/registry/deployment-private-key.pem
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_PUBLIC_KEY_PATH /etc/myscoutee/registry/deployment-public-key.der
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_STATE_DIR /var/lib/myscoutee/registry
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_KEY_DIR_HOST /etc/myscoutee/registry
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_STATE_DIR_HOST /var/lib/myscoutee/registry
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_CONNECT_TIMEOUT 5s
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_REQUEST_TIMEOUT 15s
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_RETRY_DELAY 15m
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_MAX_RESPONSE_BYTES 1048576
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_EXPECTED_KEY_FINGERPRINT ""
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_TRUST_ON_FIRST_USE false
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_ALLOW_INSECURE_HTTP false
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS ""
+ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_MASTER_KEY_PATH /etc/myscoutee/configuration/deployment-master-key
+ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_KEY_DIR_HOST /etc/myscoutee/configuration
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_ENABLED false
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_CACHE_DIR /var/cache/myscoutee-update
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_AUDIT_DIR /var/log/myscoutee/update
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY /etc/myscoutee/update/release-public-key.pem
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES 4294967296
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES 536870912
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_MIN_FREE_BYTES 536870912
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_HEALTH_TIMEOUT_SECONDS 300
+ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_CACHE_RETENTION_JOBS 2
+ensure_env_default /etc/myscoutee/myscoutee.env FIREBASE_ENABLED false
+
 ensure_mongo_seed_allow_list
 
 normalize_packaged_image_values
+
+firebase_enabled="$(config_value FIREBASE_ENABLED false)"
+if [[ -L /etc/myscoutee/firebase-service-account.json ]]; then
+  echo "Firebase service-account path must not be a symbolic link." >&2
+  exit 1
+elif [[ ! -f /etc/myscoutee/firebase-service-account.json ]]; then
+  if [[ "${firebase_enabled,,}" == "true" ]]; then
+    echo "Firebase is enabled, but /etc/myscoutee/firebase-service-account.json is missing." >&2
+    exit 1
+  fi
+  printf '{}\n' > /etc/myscoutee/firebase-service-account.json
+fi
+chown root:"${MYSCOUTEE_API_GID}" /etc/myscoutee/firebase-service-account.json
+chmod 0640 /etc/myscoutee/firebase-service-account.json
 
 if ! grep -q '^[[:space:]]*MONGO_REPLICA_SET_ENABLED=' /etc/myscoutee/myscoutee.env; then
   cat >> /etc/myscoutee/myscoutee.env <<'EOF'
@@ -257,11 +391,13 @@ if compgen -G "/opt/myscoutee/images/*.tar" >/dev/null; then
   done
 fi
 
+verify_packaged_image_manifest
 ensure_service_images
 
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload || true
   systemctl enable myscoutee.service >/dev/null 2>&1 || true
+  systemctl enable --now myscoutee-update.path >/dev/null 2>&1 || true
 fi
 
 cat <<'MESSAGE'
@@ -270,6 +406,10 @@ MyScoutee is installed.
 Before first start:
   1. Edit /etc/myscoutee/myscoutee.env
   2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)
-  3. Add /opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json if Firebase is enabled
+  3. Add /etc/myscoutee/firebase-service-account.json (root:10001, mode 0640) if Firebase is enabled
   4. Run: systemctl start myscoutee
+
+Registry participation is not selected during installation. The authenticated
+operator workflow inspects a chosen registry, requests explicit confirmation,
+and only then initializes the local node identity and registers it.
 MESSAGE

@@ -74,7 +74,7 @@ public class PaymentRestController {
     @PostMapping("/checkout")
     public EventCheckoutSessionDto checkout(
             @RequestBody EventCheckoutRequestDto request,
-            @RequestParam(value = "provider", defaultValue = "stripe") String provider) {
+            @RequestParam(value = "provider", required = false) String provider) {
         return paymentService.checkout(request, provider);
     }
 
@@ -82,14 +82,14 @@ public class PaymentRestController {
     public EventCheckoutSessionDto pay(
             @RequestBody EventCheckoutRequestDto request,
             @RequestParam("paymentSessionId") String paymentSessionId,
-            @RequestParam(value = "provider", defaultValue = "stripe") String provider) {
+            @RequestParam(value = "provider", required = false) String provider) {
         return paymentService.pay(request, paymentSessionId, provider);
     }
 
     @PostMapping("/checkout/pay")
     public EventParticipationActionResultDto payCheckout(
             @RequestBody EventCheckoutStateChangeRequestDto request,
-            @RequestParam(value = "provider", defaultValue = "stripe") String provider) {
+            @RequestParam(value = "provider", required = false) String provider) {
         return activitiesEventsService.payEventCheckout(request, provider);
     }
 }

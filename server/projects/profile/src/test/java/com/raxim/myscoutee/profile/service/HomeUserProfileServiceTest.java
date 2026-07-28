@@ -25,7 +25,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -461,14 +464,38 @@ class HomeUserProfileServiceTest {
         Users member = user("member", 30d);
         Users admin = user("admin-demo-ava", 20d);
         admin.setHostTier("Admin");
-        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(admin, member));
+        Users operator = user("operator-demo-dev", 10d);
+        operator.setOperator(true);
+        operator.setHostTier("Operator");
+        Users presentationOnly = user("presentation-only", 5d);
+        presentationOnly.setHostTier("Operator");
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc())
+                .thenReturn(List.of(admin, member, presentationOnly, operator));
 
         assertThat(service.queryDemoUserListItems(null, "member"))
                 .extracting(item -> item.id())
-                .containsExactly("member");
+                .containsExactly("member", "presentation-only");
         assertThat(service.queryDemoUserListItems(null, "admin"))
                 .extracting(item -> item.id())
                 .containsExactly("admin-demo-ava");
+        assertThat(service.queryDemoUserListItems(null, "operator"))
+                .extracting(item -> item.id())
+                .containsExactly("operator-demo-dev");
+    }
+
+    @Test
+    void explicitOperatorIsExcludedFromMemberGameAndRatingVisibility() {
+        Users member = user("member", 20d);
+        Users operator = user("operator", 10d);
+        operator.setOperator(true);
+
+        assertThat(service.isPublicGameUser(member)).isTrue();
+        assertThat(service.isInsideNetworkGameUser(member)).isTrue();
+        assertThat(service.isActivityRateVisibleUser(member)).isTrue();
+
+        assertThat(service.isPublicGameUser(operator)).isFalse();
+        assertThat(service.isInsideNetworkGameUser(operator)).isFalse();
+        assertThat(service.isActivityRateVisibleUser(operator)).isFalse();
     }
 
     @Test
@@ -569,6 +596,47 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void firstOperatorProfileSavePersistsTrustedOperatorAuthority() {
+        when(usersRepository.findByUserId("operator-new")).thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        FirebasePrincipal principal = new FirebasePrincipal(
+                "operator-new",
+                "operator@example.com",
+                List.of("U", "O"),
+                null);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        principal,
+                        "",
+                        principal.getAuthorities()));
+
+        try {
+            UserDto saved = service.saveUserProfile(onboardingDraftUser("operator-new"));
+
+            assertThat(saved.operator()).isTrue();
+            ArgumentCaptor<Users> userCaptor = ArgumentCaptor.forClass(Users.class);
+            verify(usersRepository).save(userCaptor.capture());
+            assertThat(userCaptor.getValue().isOperator()).isTrue();
+            assertThat(userCaptor.getValue().getEmail()).isEqualTo("operator@example.com");
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    @Test
+    void profileSaveKeepsPersistedOperatorRoleWhenEditableDtoDoesNotCarryAuthority() {
+        Users operator = user("operator", 0d);
+        operator.setOperator(true);
+        when(usersRepository.findByUserId("operator")).thenReturn(Optional.of(operator));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto saved = service.saveUserProfile(onboardingDraftUser("operator"));
+
+        assertThat(saved.operator()).isTrue();
+        assertThat(operator.isOperator()).isTrue();
+    }
+
+    @Test
     void deleteUserRejectsDeniedUserBeforeSchedulingDeletion() {
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
         when(accessControlService.canCurrentActorDeleteProfile("active")).thenReturn(false);
@@ -620,6 +688,34 @@ class HomeUserProfileServiceTest {
         assertThat(response.filterCount()).isEqualTo(3);
         verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
+    }
+
+    @Test
+    void operatorAuthorityPropagatesThroughNestedProfileDto() {
+        Users operator = user("operator", 0d);
+        operator.setEmail("operator@example.com");
+        operator.setOperator(true);
+        when(usersRepository.findByUserId("operator")).thenReturn(Optional.of(operator));
+        FirebasePrincipal principal = new FirebasePrincipal(
+                "operator",
+                "operator@example.com",
+                List.of("U", "O"),
+                operator);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        principal,
+                        "",
+                        principal.getAuthorities()));
+
+        try {
+            var response = service.loadProfileExtById("operator");
+
+            assertThat(response).isNotNull();
+            assertThat(response.profileExt().profile().operator()).isTrue();
+            assertThat(response.profileExt().profile().admin()).isFalse();
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {
@@ -684,28 +780,32 @@ class HomeUserProfileServiceTest {
                 new Users.UserAssetCountersRecord(8, 9, 10, 11),
                 new Users.UserEventFeedbackCountersRecord(4, 13, 14, 2),
                 15,
-                16);
+                16,
+                17);
     }
 
     private void assertFlatCounters(UserRealtimeCountersDto counters) {
         assertFlatCounters(
                 counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
-                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics(),
+                counters.notifications());
     }
 
     private void assertFlatCounters(UserMenuCountersDto counters) {
         assertFlatCounters(
                 counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
-                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics(),
+                counters.notifications());
     }
 
     private void assertFlatCounters(UserActivitiesDto counters) {
         assertFlatCounters(
                 counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
-                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics(),
+                counters.notifications());
     }
 
     private void assertFlatCounters(
@@ -721,7 +821,8 @@ class HomeUserProfileServiceTest {
             Integer contacts,
             Integer feedback,
             Integer adminJobs,
-            Integer adminMetrics) {
+            Integer adminMetrics,
+            Integer notifications) {
         assertThat(game).isEqualTo(3);
         assertThat(chat).isEqualTo(4);
         assertThat(invitations).isEqualTo(5);
@@ -735,6 +836,7 @@ class HomeUserProfileServiceTest {
         assertThat(feedback).isEqualTo(13);
         assertThat(adminJobs).isEqualTo(15);
         assertThat(adminMetrics).isEqualTo(16);
+        assertThat(notifications).isEqualTo(17);
     }
 
     private void assertNestedCounters(UserRealtimeCountersDto counters) {
@@ -821,6 +923,8 @@ class HomeUserProfileServiceTest {
                 "",
                 null,
                 false,
+                false,
+                null,
                 null);
     }
 }

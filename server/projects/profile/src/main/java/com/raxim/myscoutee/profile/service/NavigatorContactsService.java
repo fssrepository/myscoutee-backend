@@ -254,7 +254,8 @@ public class NavigatorContactsService {
                 safe.asset() == null ? emptyAssetCounters() : safe.asset(),
                 safe.eventFeedback() == null ? emptyEventFeedbackCounters() : safe.eventFeedback(),
                 count(safe.adminJobs()),
-                count(safe.adminMetrics()));
+                count(safe.adminMetrics()),
+                count(safe.notifications()));
     }
 
     private Users.UserActivitiesRecord emptyActivities() {
@@ -274,6 +275,7 @@ public class NavigatorContactsService {
                 emptyEventCounters(),
                 emptyAssetCounters(),
                 emptyEventFeedbackCounters(),
+                0,
                 0,
                 0);
     }

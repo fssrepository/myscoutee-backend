@@ -24,7 +24,10 @@ public class EventInviteNotificationService {
         this.notificationOutboxService = notificationOutboxService;
     }
 
-    public void notifyInvitees(ActivityEvent event, List<String> invitedUserIds) {
+    public void notifyInvitees(
+            ActivityEvent event,
+            List<String> invitedUserIds,
+            String actorUserId) {
         if (event == null || invitedUserIds == null || invitedUserIds.isEmpty()) {
             return;
         }
@@ -50,6 +53,10 @@ public class EventInviteNotificationService {
         payload.put("location", safeText(event.getLocation()));
         payload.put("startAtIso", safeText(event.getStartAtIso()));
         payload.put("eventScope", "invitations");
+        String senderUserId = safeText(actorUserId);
+        if (StringUtils.hasText(senderUserId)) {
+            payload.put("senderUserId", senderUserId);
+        }
         if (timestampMillis > 0L) {
             payload.put("timestampMillis", Long.toString(timestampMillis));
         }
@@ -66,7 +73,7 @@ public class EventInviteNotificationService {
                 APP_BADGE_URL,
                 notificationTag,
                 payload,
-                safeText(event.getUpdatedUser())));
+                StringUtils.hasText(senderUserId) ? senderUserId : null));
     }
 
     private String resolveTitle(ActivityEvent event) {

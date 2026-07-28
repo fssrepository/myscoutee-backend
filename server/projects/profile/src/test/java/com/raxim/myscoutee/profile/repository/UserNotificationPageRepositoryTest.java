@@ -1,0 +1,121 @@
+package com.raxim.myscoutee.profile.repository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+
+import com.raxim.myscoutee.profile.data.document.UserNotification;
+import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationCursor;
+import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationSlice;
+
+@ExtendWith(MockitoExtension.class)
+class UserNotificationPageRepositoryTest {
+    @Mock
+    private MongoTemplate mongoTemplate;
+
+    private UserNotificationPageRepository repository;
+
+    @BeforeEach
+    void setUp() {
+        repository = new UserNotificationPageRepository(mongoTemplate);
+    }
+
+    @Test
+    void findPageUsesUnreadBucketAndStableCreatedDateIdKeyset() {
+        when(mongoTemplate.count(any(Query.class), eq(UserNotification.class))).thenReturn(5L);
+        when(mongoTemplate.find(any(Query.class), eq(UserNotification.class))).thenReturn(List.of(
+                notification("notification-b", "2026-07-27T18:30:00Z"),
+                notification("notification-a", "2026-07-27T18:30:00Z")));
+
+        UserNotificationSlice result = repository.findPage(
+                "viewer-1",
+                true,
+                2,
+                new UserNotificationCursor("new", "2026-07-27T19:00:00Z", "notification-c"));
+
+        assertThat(result.records()).hasSize(2);
+        assertThat(result.total()).isEqualTo(5L);
+        ArgumentCaptor<Query> pageQuery = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).find(pageQuery.capture(), eq(UserNotification.class));
+        Query query = pageQuery.getValue();
+        assertThat(query.getLimit()).isEqualTo(3);
+        assertThat(query.getSortObject().toJson()).isEqualTo("{\"createdDate\": -1, \"_id\": -1}");
+        assertThat(query.getQueryObject().toJson())
+                .contains("\"recipientUserId\": \"viewer-1\"")
+                .contains("\"readAtIso\": {\"$exists\": false}")
+                .contains("\"readAtIso\": null")
+                .contains("\"createdDate\": {\"$lt\": \"2026-07-27T19:00:00Z\"}")
+                .contains("\"createdDate\": \"2026-07-27T19:00:00Z\"")
+                .contains("\"_id\": {\"$lt\": \"notification-c\"}");
+    }
+
+    @Test
+    void findPageUsesLimitPlusOneToSignalAnotherPage() {
+        when(mongoTemplate.count(any(Query.class), eq(UserNotification.class))).thenReturn(3L);
+        when(mongoTemplate.find(any(Query.class), eq(UserNotification.class))).thenReturn(List.of(
+                notification("notification-c", "2026-07-27T19:00:00Z"),
+                notification("notification-b", "2026-07-27T18:00:00Z"),
+                notification("notification-a", "2026-07-27T17:00:00Z")));
+
+        UserNotificationSlice result = repository.findPage("viewer-1", false, 2, null);
+
+        assertThat(result.records()).extracting(UserNotification::getId)
+                .containsExactly("notification-c", "notification-b");
+        assertThat(result.hasNext()).isTrue();
+    }
+
+    @Test
+    void markReadOnlyMutatesAnUnreadNotificationOwnedByTheViewer() {
+        UserNotification marked = notification("notification-1", "2026-07-27T19:00:00Z");
+        marked.setReadAtIso("2026-07-27T20:00:00Z");
+        when(mongoTemplate.findAndModify(
+                any(Query.class),
+                any(Update.class),
+                any(FindAndModifyOptions.class),
+                eq(UserNotification.class))).thenReturn(marked);
+
+        var result = repository.markRead(
+                "notification-1",
+                "viewer-1",
+                "2026-07-27T20:00:00Z");
+
+        assertThat(result).contains(marked);
+        ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> update = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).findAndModify(
+                query.capture(),
+                update.capture(),
+                any(FindAndModifyOptions.class),
+                eq(UserNotification.class));
+        assertThat(query.getValue().getQueryObject().toJson())
+                .contains("\"_id\": \"notification-1\"")
+                .contains("\"recipientUserId\": \"viewer-1\"")
+                .contains("\"readAtIso\": {\"$exists\": false}")
+                .contains("\"readAtIso\": null");
+        assertThat(update.getValue().getUpdateObject().toJson())
+                .contains("\"readAtIso\": \"2026-07-27T20:00:00Z\"");
+    }
+
+    private UserNotification notification(String id, String createdDate) {
+        UserNotification notification = new UserNotification();
+        notification.setId(id);
+        notification.setRecipientUserId("viewer-1");
+        notification.setCreatedDate(createdDate);
+        return notification;
+    }
+}

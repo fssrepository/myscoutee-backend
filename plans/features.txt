@@ -4,19 +4,27 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
+feature
+-------
+1) background process tests, e.g.: purge, algorithm
+
+next to app admin - operator ui where you can rebrand or add payment provider etc.
+or get registry code for clam registry etc.
+maybe a claim button wich sends the operator registration form to the central server
+so practically speaking event the ui won't be published on the central registry, just a "go" api, what you can call
+the ui makes rebrand also (so removing the MyScoutee)
+
+the "go" app is just a container with a lightweight db like sql light
+
+after intalling operator name and password generated and shown in the console, so you can login with that
+
 1) configured server - where metrics can be uploaded, so virtual shares can be calculated
 needs a different server and project, practically a dashboard
 go server with minimal memory, connecting to server, gets the key and the user
 can register with that key to a virtual company
 2) replace logo to make a rebrand
-3) repackage the project to npm (like the shared ui etc. - to be able to reuse on market place)
 
-feature
--------
-1) as we have lots of popup which hides the avatar menu button,
-create a dragable button, it can be closed, dragged has a red counter badge,
-and shows messages when it opens (it's a popup) -
-the popup has a mute button
-2) background process tests, e.g.: purge, algorithm
-3) business button on landing site next to the three which explains the business model and direct to the page of the marketplace
-rate bar - who suggested icon is above the mobille sheet menu
+following deployed version on central server, uodate url etc.
+
+theme selection so the landing site colour tones can be changed
+maybe a forum also and a help on that operator page (like some community)

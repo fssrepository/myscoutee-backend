@@ -51,9 +51,6 @@ public class AdminStatsSnapshot {
     private Map<String, Long> graphCommunities = new LinkedHashMap<>();
     private Map<String, Long> graphSignals = new LinkedHashMap<>();
     private Map<String, Map<String, Long>> dailyGraphActivity = new LinkedHashMap<>();
-    private Map<String, Long> revenueMetrics = new LinkedHashMap<>();
-    private Map<String, Long> revenueAssetCategories = new LinkedHashMap<>();
-    private Map<String, Map<String, Long>> dailyRevenueActivity = new LinkedHashMap<>();
 
     public static AdminStatsSnapshot createDefault(String statsKey) {
         AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
@@ -157,17 +154,5 @@ public class AdminStatsSnapshot {
             return;
         }
         dailyGraphActivity.forEach((key, value) -> this.dailyGraphActivity.put(key, value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value)));
-    }
-    public Map<String, Long> getRevenueMetrics() { return revenueMetrics; }
-    public void setRevenueMetrics(Map<String, Long> revenueMetrics) { this.revenueMetrics = revenueMetrics == null ? new LinkedHashMap<>() : new LinkedHashMap<>(revenueMetrics); }
-    public Map<String, Long> getRevenueAssetCategories() { return revenueAssetCategories; }
-    public void setRevenueAssetCategories(Map<String, Long> revenueAssetCategories) { this.revenueAssetCategories = revenueAssetCategories == null ? new LinkedHashMap<>() : new LinkedHashMap<>(revenueAssetCategories); }
-    public Map<String, Map<String, Long>> getDailyRevenueActivity() { return dailyRevenueActivity; }
-    public void setDailyRevenueActivity(Map<String, Map<String, Long>> dailyRevenueActivity) {
-        this.dailyRevenueActivity = new LinkedHashMap<>();
-        if (dailyRevenueActivity == null) {
-            return;
-        }
-        dailyRevenueActivity.forEach((key, value) -> this.dailyRevenueActivity.put(key, value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value)));
     }
 }
