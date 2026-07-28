@@ -15303,7 +15303,7 @@
     "_id": "i18n-message-en-operator-claim-client-code-instructions",
     "key": "operator.claim.client.code.instructions",
     "lang": "en",
-    "value": "Enter the temporary client code issued by an approved deployment. The registry will create a linked claim for review; leaderboard grouping starts only after approval."
+    "value": "Enter the temporary client code issued by an approved deployment. The copied claim joins its group provisionally and remains pending registry review."
   },
   {
     "_id": "i18n-message-en-operator-claim-client-code-placeholder",
@@ -15357,7 +15357,7 @@
     "_id": "i18n-message-en-operator-claim-client-code-submitted",
     "key": "operator.claim.client.code.submitted",
     "lang": "en",
-    "value": "The linked claim was submitted and is pending registry review."
+    "value": "The linked claim is provisional and pending registry review."
   },
   {
     "_id": "i18n-message-en-operator-group-instructions",
@@ -31587,7 +31587,7 @@
     "_id": "i18n-message-hu-operator-claim-client-code-instructions",
     "key": "operator.claim.client.code.instructions",
     "lang": "hu",
-    "value": "Add meg egy jóváhagyott telepítés ideiglenes klienskódját. A nyilvántartás felülvizsgálatra váró kapcsolt igénylést hoz létre; a ranglista-csoportosítás csak jóváhagyás után indul."
+    "value": "Add meg egy jóváhagyott telepítés ideiglenes klienskódját. A másolt igénylés ideiglenesen csatlakozik a csoporthoz, és a nyilvántartás felülvizsgálatára vár."
   },
   {
     "_id": "i18n-message-hu-operator-claim-client-code-placeholder",
@@ -31641,7 +31641,7 @@
     "_id": "i18n-message-hu-operator-claim-client-code-submitted",
     "key": "operator.claim.client.code.submitted",
     "lang": "hu",
-    "value": "A kapcsolt igénylés beküldve, a nyilvántartás felülvizsgálatára vár."
+    "value": "A kapcsolt igénylés ideiglenes, és a nyilvántartás felülvizsgálatára vár."
   },
   {
     "_id": "i18n-message-hu-operator-group-instructions",
