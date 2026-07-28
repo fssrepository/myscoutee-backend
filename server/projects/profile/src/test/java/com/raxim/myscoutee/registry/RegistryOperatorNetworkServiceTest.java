@@ -214,7 +214,8 @@ class RegistryOperatorNetworkServiceTest {
 
             assertThatThrownBy(service::claimStatus)
                     .isInstanceOf(RegistryProtocolException.class)
-                    .hasMessageContaining("signature");
+                    .hasRootCauseMessage(
+                            "Registry operator claim status signature is invalid.");
             registry.assertHealthy();
         }
     }
@@ -252,6 +253,252 @@ class RegistryOperatorNetworkServiceTest {
             assertThat(status.verificationStatus()).isEqualTo("APPROVED");
             assertThat(status.claimed()).isTrue();
             assertThat(status.legalName()).isEqualTo("Approved Cooperative");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void rejectsSignedStatusRollbackAfterApprovalAndRestart() throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            service.apply(structuredClaim("Restart Cooperative"));
+            registry.approvedClaimStatus = true;
+            assertThat(service.claimStatus().verificationStatus()).isEqualTo("APPROVED");
+
+            RegistryOperatorNetworkService restarted =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            registry.approvedClaimStatus = false;
+
+            assertThatThrownBy(restarted::claimStatus)
+                    .isInstanceOf(RegistryProtocolException.class)
+                    .hasMessageContaining("stale");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void withdrawalIsTerminalAndReconcilesAResponseLostBeforeLocalPersistence()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            service.apply(structuredClaim("Withdrawal Cooperative"));
+            registry.approvedClaimStatus = true;
+            assertThat(service.claimStatus().verificationStatus()).isEqualTo("APPROVED");
+            registry.loseFirstResponseForAction =
+                    RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM;
+            ActionCommand withdraw = new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            assertThatThrownBy(() -> service.apply(withdraw))
+                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
+            RegistryOperatorNetworkService.ClaimStatus reconciled =
+                    service.claimStatus();
+
+            assertThat(reconciled.claimed()).isFalse();
+            assertThat(reconciled.groupId()).isNull();
+            assertThat(reconciled.activeLinkId()).isNull();
+            assertThat(reconciled.shareNumerator()).isEqualTo("0");
+            assertThat(reconciled.shareDenominator()).isEqualTo("1");
+            assertThat(reconciled.verificationStatus()).isEqualTo("WITHDRAWN");
+
+            RegistryOperatorNetworkService.ActionOutcome retry =
+                    service.apply(withdraw);
+            assertThat(retry.response().duplicate()).isTrue();
+            assertThat(registry.firstWithdrawalIdempotency.get())
+                    .startsWith("withdraw_")
+                    .isEqualTo(registry.lastWithdrawalIdempotency.get());
+            assertThat(new RegistryLocalStore(properties, objectMapper)
+                            .loadOperatorActionJournal())
+                    .hasSize(2);
+
+            RegistryOperatorNetworkService restarted =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            registry.withdrawnClaimStatus = false;
+            registry.approvedClaimStatus = true;
+            assertThatThrownBy(restarted::claimStatus)
+                    .isInstanceOf(RegistryProtocolException.class)
+                    .hasMessageContaining("stale");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void sameClaimPayloadAfterWithdrawalStartsANewIdempotencyGeneration()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            ActionCommand claim = structuredClaim("Generation Cooperative");
+            String firstKey = service.apply(claim).idempotencyKey();
+            service.apply(new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null));
+            assertThat(service.claimStatus().verificationStatus())
+                    .isEqualTo("WITHDRAWN");
+
+            String secondKey = service.apply(claim).idempotencyKey();
+
+            assertThat(secondKey).startsWith("claim_").isNotEqualTo(firstKey);
+            assertThat(service.claimStatus().verificationStatus())
+                    .isEqualTo("PENDING_REVIEW");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void claimStatusSurvivesLeaderboardOutageWithoutLosingSignedState()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            service.apply(structuredClaim("Leaderboard Independent Cooperative"));
+            registry.failLeaderboard = true;
+
+            RegistryOperatorNetworkService.ClaimStatus status =
+                    service.claimStatus();
+
+            assertThat(status.claimed()).isTrue();
+            assertThat(status.verificationStatus()).isEqualTo("PENDING_REVIEW");
+            assertThat(status.shareNumerator()).isEqualTo("0");
+            assertThat(status.shareDenominator()).isEqualTo("1");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void legacyRegistryWithoutClaimStatusEndpointReportsUnavailableCapability()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            registry.unsupportedClaimStatusEndpoint = true;
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+
+            RegistryOperatorNetworkService.ClaimStatus status =
+                    service.claimStatus();
+
+            assertThat(status.verificationCapability())
+                    .isEqualTo("BACKEND_UNAVAILABLE");
+            assertThat(status.verificationUnavailableReason())
+                    .isEqualTo("operator.claim.verification.backend.unavailable");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void redeemAndRevokeLinkRetriesUseStableIdempotencyKeys() throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            ActionCommand redeem = new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                    null,
+                    null,
+                    CLIENT_TOKEN,
+                    null,
+                    null,
+                    null,
+                    null);
+            registry.loseFirstResponseForAction =
+                    RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN;
+
+            assertThatThrownBy(() -> service.apply(redeem))
+                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
+            RegistryOperatorNetworkService.ActionOutcome redeemed =
+                    service.apply(redeem);
+            assertThat(redeemed.response().duplicate()).isTrue();
+            assertThat(redeemed.idempotencyKey()).startsWith("redeem_");
+
+            ActionCommand revoke = new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    LINK_ID,
+                    null);
+            registry.loseFirstResponseForAction =
+                    RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK;
+            assertThatThrownBy(() -> service.apply(revoke))
+                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
+            RegistryOperatorNetworkService.ActionOutcome revoked =
+                    service.apply(revoke);
+
+            assertThat(revoked.response().duplicate()).isTrue();
+            assertThat(revoked.idempotencyKey()).startsWith("revoke_link_");
+            assertThat(registry.firstLostActionIdempotency.get())
+                    .isEqualTo(registry.lastRetriedActionIdempotency.get());
+            assertThat(new RegistryLocalStore(properties, objectMapper)
+                            .loadOperatorActionJournal())
+                    .hasSize(2);
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void localRegistryEvidenceUsesPrivatePosixModesAndRepairsReadableFiles()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            RegistryOperatorNetworkService.ActionOutcome claim =
+                    service.apply(structuredClaim("Private Evidence Cooperative"));
+            service.claimStatus();
+            Path statusPath = properties.receiptDirectory()
+                    .resolve("operator-claim-status.json");
+            if (!Files.getFileStore(properties.getStateDir())
+                    .supportsFileAttributeView("posix")) {
+                return;
+            }
+            Set<PosixFilePermission> privateDirectory =
+                    PosixFilePermissions.fromString("rwx------");
+            Set<PosixFilePermission> privateFile =
+                    PosixFilePermissions.fromString("rw-------");
+
+            assertThat(Files.getPosixFilePermissions(properties.getStateDir()))
+                    .isEqualTo(privateDirectory);
+            assertThat(Files.getPosixFilePermissions(properties.receiptDirectory()))
+                    .isEqualTo(privateDirectory);
+            assertThat(Files.getPosixFilePermissions(claim.receiptPath()))
+                    .isEqualTo(privateFile);
+            assertThat(Files.getPosixFilePermissions(statusPath))
+                    .isEqualTo(privateFile);
+
+            Files.setPosixFilePermissions(claim.receiptPath(),
+                    PosixFilePermissions.fromString("rw-r--r--"));
+            new RegistryLocalStore(properties, objectMapper)
+                    .loadOperatorActionJournal();
+            assertThat(Files.getPosixFilePermissions(claim.receiptPath()))
+                    .isEqualTo(privateFile);
             registry.assertHealthy();
         }
     }
@@ -437,6 +684,28 @@ class RegistryOperatorNetworkServiceTest {
         }
     }
 
+    private static ActionCommand structuredClaim(String legalName) {
+        return new ActionCommand(
+                RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ClaimVerification(
+                        legalName,
+                        "REG-42",
+                        "Slovakia",
+                        "Main Street 1",
+                        null,
+                        "Alex Reviewer",
+                        "Director",
+                        "alex@example.test",
+                        true));
+    }
+
     private RegistryProperties registeredProperties(
             TestOperatorRegistry registry,
             ObjectMapper objectMapper) throws IOException {
@@ -534,10 +803,16 @@ class RegistryOperatorNetworkServiceTest {
         private final AtomicReference<OperatorActionReceipt> lastClaimReceipt = new AtomicReference<>();
         private final AtomicReference<String> firstClaimIdempotency = new AtomicReference<>();
         private final AtomicReference<String> lastClaimIdempotency = new AtomicReference<>();
+        private final AtomicReference<String> firstWithdrawalIdempotency = new AtomicReference<>();
+        private final AtomicReference<String> lastWithdrawalIdempotency = new AtomicReference<>();
+        private final AtomicReference<String> firstLostActionIdempotency = new AtomicReference<>();
+        private final AtomicReference<String> lastRetriedActionIdempotency = new AtomicReference<>();
         private final AtomicInteger actionRequests = new AtomicInteger();
+        private final AtomicInteger auditEvents = new AtomicInteger();
         private final AtomicInteger claimStatusRequests = new AtomicInteger();
         private final AtomicInteger leaderboardRequests = new AtomicInteger();
         private final AtomicInteger announcementRequests = new AtomicInteger();
+        private final Map<String, AcceptedAction> acceptedActions = new HashMap<>();
         private final LeaderboardSnapshot snapshot;
         private final String cursor;
         private final AnnouncementEntry announcement;
@@ -545,7 +820,11 @@ class RegistryOperatorNetworkServiceTest {
         private volatile boolean tamperClaimStatus;
         private volatile boolean loseFirstClaimResponse;
         private volatile boolean approvedClaimStatus;
+        private volatile boolean withdrawnClaimStatus;
         private volatile boolean failClaimStatusOnce;
+        private volatile boolean failLeaderboard;
+        private volatile boolean unsupportedClaimStatusEndpoint;
+        private volatile String loseFirstResponseForAction;
 
         private TestOperatorRegistry(ObjectMapper objectMapper) throws IOException {
             this.objectMapper = objectMapper;
@@ -653,6 +932,12 @@ class RegistryOperatorNetworkServiceTest {
                         OperatorActionRequest.class);
                 boolean structuredClaim = RegistryProtocol.OPERATOR_ACTION_CLAIM
                         .equals(request.action());
+                boolean redeemToken = RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN
+                        .equals(request.action());
+                String submittedClientTokenHash = redeemToken
+                        ? RegistryProtocol.sha256(
+                                request.clientToken().getBytes(StandardCharsets.UTF_8))
+                        : "";
                 String expectedPayloadHash = RegistryProtocol.sha256(
                         structuredClaim
                                 ? RegistryProtocol.operatorClaimPayload(
@@ -670,7 +955,7 @@ class RegistryOperatorNetworkServiceTest {
                                         request.action(),
                                         request.operatorName(),
                                         request.operatorAvatarUrl(),
-                                        "",
+                                        submittedClientTokenHash,
                                         request.tokenTtlSeconds() == null
                                                 ? 0L
                                                 : request.tokenTtlSeconds(),
@@ -694,33 +979,61 @@ class RegistryOperatorNetworkServiceTest {
                 if (structuredClaim) {
                     firstClaimIdempotency.compareAndSet(null, request.idempotencyKey());
                     lastClaimIdempotency.set(request.idempotencyKey());
-                    OperatorActionRequest acceptedRequest = lastClaimRequest.get();
-                    if (acceptedRequest != null
-                            && acceptedRequest.idempotencyKey().equals(request.idempotencyKey())) {
-                        require(
-                                acceptedRequest.payloadHash().equals(request.payloadHash()),
-                                "Duplicate claim changed its payload.");
-                        sendJson(exchange, 200, new OperatorActionResponse(
-                                RegistryProtocol.PROTOCOL_VERSION,
-                                SCOPE,
-                                true,
-                                lastClaimReceipt.get()));
-                        return;
+                }
+                if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM
+                        .equals(request.action())) {
+                    firstWithdrawalIdempotency.compareAndSet(
+                            null,
+                            request.idempotencyKey());
+                    lastWithdrawalIdempotency.set(request.idempotencyKey());
+                }
+                AcceptedAction duplicate = acceptedActions.get(request.idempotencyKey());
+                if (duplicate != null) {
+                    require(
+                            duplicate.action().equals(request.action())
+                                    && duplicate.payloadHash().equals(request.payloadHash()),
+                            "Duplicate action changed its canonical request.");
+                    if (duplicate.responseLost()) {
+                        lastRetriedActionIdempotency.set(request.idempotencyKey());
                     }
+                    sendJson(exchange, 200, new OperatorActionResponse(
+                            RegistryProtocol.PROTOCOL_VERSION,
+                            SCOPE,
+                            true,
+                            duplicate.receipt().withoutPlaintextClientToken()));
+                    return;
                 }
                 boolean issueToken = RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN
                         .equals(request.action());
                 String tokenHash = issueToken
                         ? RegistryProtocol.sha256(
                                 CLIENT_TOKEN.getBytes(StandardCharsets.UTF_8))
-                        : null;
-                long auditIndex = actionRequests.get();
+                        : redeemToken ? submittedClientTokenHash : null;
+                long auditIndex = auditEvents.incrementAndGet();
                 String previousAuditHash = lastAuditHash.get() == null
                         ? RegistryProtocol.ZERO_HASH
                         : lastAuditHash.get();
                 String actionId = issueToken
                         ? ACTION_ID
-                        : "opa_11111111111111111111111111111111";
+                        : "opa_" + String.format("%032x", auditIndex);
+                String claimState = switch (request.action()) {
+                    case RegistryProtocol.OPERATOR_ACTION_CLAIM ->
+                            RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW;
+                    case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> "withdrawn";
+                    default -> "claimed";
+                };
+                String linkId = Set.of(
+                                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                                RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK)
+                        .contains(request.action())
+                                ? LINK_ID
+                                : null;
+                String tokenId = issueToken
+                        ? TOKEN_ID
+                        : RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN
+                                .equals(request.action())
+                                        ? request.tokenId()
+                                        : null;
                 OperatorActionReceipt auditSeed = new OperatorActionReceipt(
                         auditIndex,
                         null,
@@ -731,12 +1044,10 @@ class RegistryOperatorNetworkServiceTest {
                         null,
                         request.action(),
                         "2026-07-28T00:00:03Z",
-                        structuredClaim
-                                ? RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW
-                                : "claimed",
+                        claimState,
                         GROUP_ID,
-                        null,
-                        issueToken ? TOKEN_ID : null,
+                        linkId,
+                        tokenId,
                         issueToken ? CLIENT_TOKEN : null,
                         tokenHash,
                         issueToken ? "2026-07-28T00:05:03Z" : null,
@@ -785,17 +1096,37 @@ class RegistryOperatorNetworkServiceTest {
                         unsigned.tokenExpiresAt(),
                         unsigned.registryScope(),
                         unsigned.registryKeyId(),
-                        RegistryTestIdentity.sign(
-                                registryKeyPair.getPrivate(),
-                                RegistryProtocol.operatorActionReceipt(unsigned)));
+                                RegistryTestIdentity.sign(
+                                        registryKeyPair.getPrivate(),
+                                        RegistryProtocol.operatorActionReceipt(unsigned)));
                 if (structuredClaim) {
                     lastClaimRequest.set(request);
                     lastClaimReceipt.set(signed);
-                    if (loseFirstClaimResponse) {
-                        loseFirstClaimResponse = false;
-                        exchange.close();
-                        return;
-                    }
+                    approvedClaimStatus = false;
+                    withdrawnClaimStatus = false;
+                } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM
+                        .equals(request.action())) {
+                    withdrawnClaimStatus = true;
+                }
+                boolean loseResponse = loseFirstClaimResponse && structuredClaim
+                        || request.action().equals(loseFirstResponseForAction);
+                if (loseFirstClaimResponse && structuredClaim) {
+                    loseFirstClaimResponse = false;
+                }
+                if (request.action().equals(loseFirstResponseForAction)) {
+                    loseFirstResponseForAction = null;
+                }
+                acceptedActions.put(
+                        request.idempotencyKey(),
+                        new AcceptedAction(
+                                request.action(),
+                                request.payloadHash(),
+                                signed,
+                                loseResponse));
+                if (loseResponse) {
+                    firstLostActionIdempotency.set(request.idempotencyKey());
+                    exchange.close();
+                    return;
                 }
                 sendJson(exchange, 201, new OperatorActionResponse(
                         RegistryProtocol.PROTOCOL_VERSION,
@@ -818,6 +1149,14 @@ class RegistryOperatorNetworkServiceTest {
                                 RegistryProtocol.OPERATOR_CLAIM_STATUS_PATH_PREFIX
                                         + DEPLOYMENT_ID),
                         "Claim status deployment path was invalid.");
+                if (unsupportedClaimStatusEndpoint) {
+                    sendJson(exchange, 404, Map.of(
+                            "error",
+                            Map.of(
+                                    "code", "not_found",
+                                    "message", "endpoint not found")));
+                    return;
+                }
                 if (failClaimStatusOnce) {
                     failClaimStatusOnce = false;
                     sendJson(exchange, 503, Map.of(
@@ -829,7 +1168,20 @@ class RegistryOperatorNetworkServiceTest {
                 }
                 OperatorActionRequest request = lastClaimRequest.get();
                 OperatorActionReceipt claimReceipt = lastClaimReceipt.get();
-                require(request != null && claimReceipt != null, "Claim status was requested before a claim.");
+                if (request == null || claimReceipt == null) {
+                    sendJson(exchange, 404, Map.of(
+                            "error",
+                            Map.of(
+                                    "code", "operator_claim_not_found",
+                                    "message", "No structured claim.")));
+                    return;
+                }
+                String verificationStatus = withdrawnClaimStatus
+                        ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                        : approvedClaimStatus
+                                ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
+                                : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW;
+                boolean hasReview = approvedClaimStatus;
                 OperatorClaimStatusReceipt unsigned = new OperatorClaimStatusReceipt(
                         DEPLOYMENT_ID,
                         claimReceipt.actionId(),
@@ -837,18 +1189,16 @@ class RegistryOperatorNetworkServiceTest {
                         claimReceipt.auditHash(),
                         claimReceipt.groupId(),
                         request.legalName(),
-                        approvedClaimStatus
-                                ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
-                                : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
+                        verificationStatus,
                         claimReceipt.acceptedAt(),
-                        approvedClaimStatus
+                        hasReview
                                 ? "opr_0123456789abcdef0123456789abcdef"
                                 : null,
-                        approvedClaimStatus ? 1L : null,
-                        approvedClaimStatus
+                        hasReview ? 1L : null,
+                        hasReview
                                 ? "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
                                 : RegistryProtocol.ZERO_HASH,
-                        approvedClaimStatus ? "2026-07-28T00:00:04Z" : null,
+                        hasReview ? "2026-07-28T00:00:04Z" : null,
                         SCOPE,
                         registryKeyId,
                         null);
@@ -889,6 +1239,14 @@ class RegistryOperatorNetworkServiceTest {
             try {
                 leaderboardRequests.incrementAndGet();
                 require("GET".equals(exchange.getRequestMethod()), "Leaderboard method was not GET.");
+                if (failLeaderboard) {
+                    sendJson(exchange, 503, Map.of(
+                            "error",
+                            Map.of(
+                                    "code", "registry_unavailable",
+                                    "message", "Simulated leaderboard outage.")));
+                    return;
+                }
                 LeaderboardPage page = new LeaderboardPage(
                         snapshot,
                         "claimed",
@@ -1164,6 +1522,13 @@ class RegistryOperatorNetworkServiceTest {
 
         private void assertHealthy() {
             assertThat(handlerFailure.get()).isNull();
+        }
+
+        private record AcceptedAction(
+                String action,
+                String payloadHash,
+                OperatorActionReceipt receipt,
+                boolean responseLost) {
         }
 
         private static void require(boolean condition, String message) {

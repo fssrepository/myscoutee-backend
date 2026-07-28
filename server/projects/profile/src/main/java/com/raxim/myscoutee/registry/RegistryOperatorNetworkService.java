@@ -323,10 +323,10 @@ public final class RegistryOperatorNetworkService {
         if (latestClaim == null) {
             return RegistryProtocol.ZERO_HASH;
         }
-        return RegistryProtocol.canonical(
+        return RegistryProtocol.sha256(RegistryProtocol.canonical(
                 latestClaim.receipt().actionId(),
                 Long.toString(latestClaim.receipt().auditIndex()),
-                latestClaim.receipt().auditHash());
+                latestClaim.receipt().auditHash()));
     }
 
     public LeaderboardPage leaderboard(
@@ -467,6 +467,21 @@ public final class RegistryOperatorNetworkService {
             verificationSubmittedAt = structuredClaim.receipt().acceptedAt();
             legalName = safeText(structuredClaim.legalName());
             operatorName = legalName;
+            OperatorClaimStatusReceipt previousStatus =
+                    loadVerifiedClaimStatusEvidence(trusted, journal);
+            if (previousStatus != null) {
+                verificationStatus = previousStatus.verificationStatus();
+                verificationSubmittedAt = previousStatus.submittedAt();
+                legalName = previousStatus.legalName();
+                operatorName = legalName;
+                if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                        .equals(verificationStatus)) {
+                    claimed = false;
+                    claimedAt = "";
+                    currentGroupId = "";
+                    activeLinkId = "";
+                }
+            }
             try {
                 OperatorClaimStatusResponse response =
                         httpClient.operatorClaimStatus(trusted.state().deploymentId());
@@ -477,7 +492,7 @@ public final class RegistryOperatorNetworkService {
                             structuredClaim,
                             response);
                     requireMonotonicClaimStatus(
-                            loadVerifiedClaimStatusEvidence(trusted, journal),
+                            previousStatus,
                             registryStatus);
                     if (structuredClaimLocallyWithdrawn
                             && !RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
@@ -629,6 +644,16 @@ public final class RegistryOperatorNetworkService {
     }
 
     private TrustedDeployment trustedDeployment() {
+        try {
+            return trustedDeploymentContents();
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException(
+                    "Registered local registry trust state is invalid.",
+                    exception);
+        }
+    }
+
+    private TrustedDeployment trustedDeploymentContents() {
         if (!properties.isEnabled() || !properties.isOutboundAllowed()) {
             throw new IllegalStateException("Outbound registry communication is disabled.");
         }
@@ -766,6 +791,18 @@ public final class RegistryOperatorNetworkService {
     }
 
     private void verifyJournalEntry(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry entry) {
+        try {
+            verifyJournalEntryContents(trusted, entry);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException(
+                    "Registry operator receipt journal validation failed.",
+                    exception);
+        }
+    }
+
+    private void verifyJournalEntryContents(
             TrustedDeployment trusted,
             OperatorActionJournalEntry entry) {
         if (entry == null || entry.schemaVersion() == null
