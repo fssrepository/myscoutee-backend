@@ -537,7 +537,7 @@ def slide_3() -> Image.Image:
     text(
         image,
         (648, 389),
-        "backend intellectual property • signed releases • updates • support • common interface",
+        "backend intellectual property • signed releases\nupdates • support • common interface",
         size=18,
         color=MUTED,
         anchor="ma",
