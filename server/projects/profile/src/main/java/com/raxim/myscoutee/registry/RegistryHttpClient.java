@@ -63,6 +63,14 @@ public final class RegistryHttpClient {
                 RegistryProtocol.BatchResponse.class);
     }
 
+    public RegistryProtocol.RevenueBatchResponse submitRevenueBatch(
+            RegistryProtocol.RevenueBatchRequest request) {
+        return post(
+                RegistryProtocol.REVENUE_BATCH_PATH,
+                request,
+                RegistryProtocol.RevenueBatchResponse.class);
+    }
+
     public RegistryProtocol.OperatorActionResponse applyOperatorAction(
             RegistryProtocol.OperatorActionRequest request) {
         return post(

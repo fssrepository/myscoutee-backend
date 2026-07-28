@@ -3660,6 +3660,12 @@
     "value": "Node registration"
   },
   {
+    "_id": "i18n-message-en-operator-action-revenue",
+    "key": "operator.action.revenue",
+    "lang": "en",
+    "value": "Revenue"
+  },
+  {
     "_id": "i18n-message-en-operator-action-updates",
     "key": "operator.action.updates",
     "lang": "en",
@@ -6814,126 +6820,6 @@
     "key": "stats.graph.title",
     "lang": "en",
     "value": "Social graph"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-asset-categories",
-    "key": "stats.revenue.asset.categories",
-    "lang": "en",
-    "value": "Asset revenue mix"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-actual-paid",
-    "key": "stats.revenue.metric.actual.paid",
-    "lang": "en",
-    "value": "Actual paid"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-avg-asset-price",
-    "key": "stats.revenue.metric.avg.asset.price",
-    "lang": "en",
-    "value": "Avg asset price"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-avg-event-ticket",
-    "key": "stats.revenue.metric.avg.event.ticket",
-    "lang": "en",
-    "value": "Avg event ticket"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-avg-payment",
-    "key": "stats.revenue.metric.avg.payment",
-    "lang": "en",
-    "value": "Avg paid amount"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-asset-borrowers",
-    "key": "stats.revenue.metric.asset.borrowers",
-    "lang": "en",
-    "value": "Asset borrowers"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-event-buyers",
-    "key": "stats.revenue.metric.event.buyers",
-    "lang": "en",
-    "value": "Event buyers"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-payable-assets",
-    "key": "stats.revenue.metric.payable.assets",
-    "lang": "en",
-    "value": "Payable assets"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-payable-events",
-    "key": "stats.revenue.metric.payable.events",
-    "lang": "en",
-    "value": "Payable events"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-paying-users",
-    "key": "stats.revenue.metric.paying.users",
-    "lang": "en",
-    "value": "Paying users"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-projected-assets",
-    "key": "stats.revenue.metric.projected.assets",
-    "lang": "en",
-    "value": "Projected asset value"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-metric-projected-events",
-    "key": "stats.revenue.metric.projected.events",
-    "lang": "en",
-    "value": "Projected event value"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-subtitle",
-    "key": "stats.revenue.subtitle",
-    "lang": "en",
-    "value": "Virtual payable value and actual payments, materialized for admin reads."
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-timeline-actual-paid",
-    "key": "stats.revenue.timeline.actual.paid",
-    "lang": "en",
-    "value": "Actual"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-timeline-paying-users",
-    "key": "stats.revenue.timeline.paying.users",
-    "lang": "en",
-    "value": "Payers"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-timeline-projected-assets",
-    "key": "stats.revenue.timeline.projected.assets",
-    "lang": "en",
-    "value": "Assets"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-timeline-projected-events",
-    "key": "stats.revenue.timeline.projected.events",
-    "lang": "en",
-    "value": "Events"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-timeline-title",
-    "key": "stats.revenue.timeline.title",
-    "lang": "en",
-    "value": "Revenue timeline"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-title",
-    "key": "stats.revenue.title",
-    "lang": "en",
-    "value": "Revenue"
-  },
-  {
-    "_id": "i18n-message-en-stats-revenue-window",
-    "key": "stats.revenue.window",
-    "lang": "en",
-    "value": "14 days"
   },
   {
     "_id": "i18n-message-en-stats-kpi-activities",
@@ -14556,6 +14442,216 @@
     "value": "Check authentication and messaging"
   },
   {
+    "_id": "i18n-message-en-operator-action-revenue-detail",
+    "key": "operator.action.revenue.detail",
+    "lang": "en",
+    "value": "Review revenue and the estimated network-pool contribution"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-asset-categories",
+    "key": "operator.revenue.asset.categories",
+    "lang": "en",
+    "value": "Asset revenue mix"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-asset-items",
+    "key": "operator.revenue.asset.items",
+    "lang": "en",
+    "value": "payable assets"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-assets-empty",
+    "key": "operator.revenue.assets.empty",
+    "lang": "en",
+    "value": "No payable asset categories in this currency."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-assets-eyebrow",
+    "key": "operator.revenue.assets.eyebrow",
+    "lang": "en",
+    "value": "Assets"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-category-accommodation",
+    "key": "operator.revenue.category.accommodation",
+    "lang": "en",
+    "value": "Accommodation"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-category-asset",
+    "key": "operator.revenue.category.asset",
+    "lang": "en",
+    "value": "Other assets"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-category-supplies",
+    "key": "operator.revenue.category.supplies",
+    "lang": "en",
+    "value": "Supplies"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-category-transport",
+    "key": "operator.revenue.category.transport",
+    "lang": "en",
+    "value": "Transport"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-commission-rate",
+    "key": "operator.revenue.commission.rate",
+    "lang": "en",
+    "value": "Network-pool estimate rate"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-currency",
+    "key": "operator.revenue.currency",
+    "lang": "en",
+    "value": "Currency"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-currency-select",
+    "key": "operator.revenue.currency.select",
+    "lang": "en",
+    "value": "Select currency"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-empty",
+    "key": "operator.revenue.empty",
+    "lang": "en",
+    "value": "No revenue data is available for this deployment."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-asset-borrowers",
+    "key": "operator.revenue.metric.asset.borrowers",
+    "lang": "en",
+    "value": "Asset borrowers"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-captured-payments",
+    "key": "operator.revenue.metric.captured.payments",
+    "lang": "en",
+    "value": "Captured payments"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-commission-basis",
+    "key": "operator.revenue.metric.commission.basis",
+    "lang": "en",
+    "value": "Verified net basis"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-estimated-commission",
+    "key": "operator.revenue.metric.estimated.commission",
+    "lang": "en",
+    "value": "Estimated network-pool contribution"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-event-buyers",
+    "key": "operator.revenue.metric.event.buyers",
+    "lang": "en",
+    "value": "Event buyers"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-net-payments",
+    "key": "operator.revenue.metric.net.payments",
+    "lang": "en",
+    "value": "Net payments"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-payable-assets",
+    "key": "operator.revenue.metric.payable.assets",
+    "lang": "en",
+    "value": "Payable assets"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-payable-events",
+    "key": "operator.revenue.metric.payable.events",
+    "lang": "en",
+    "value": "Payable events"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-paying-users",
+    "key": "operator.revenue.metric.paying.users",
+    "lang": "en",
+    "value": "Paying users"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-payment-count",
+    "key": "operator.revenue.metric.payment.count",
+    "lang": "en",
+    "value": "Payments"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-projected-assets",
+    "key": "operator.revenue.metric.projected.assets",
+    "lang": "en",
+    "value": "Projected asset value"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-projected-events",
+    "key": "operator.revenue.metric.projected.events",
+    "lang": "en",
+    "value": "Projected event value"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-metric-refunded-payments",
+    "key": "operator.revenue.metric.refunded.payments",
+    "lang": "en",
+    "value": "Refunded payments"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-ruleset",
+    "key": "operator.revenue.ruleset",
+    "lang": "en",
+    "value": "Revenue ruleset"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-subtitle",
+    "key": "operator.revenue.subtitle",
+    "lang": "en",
+    "value": "Currency-specific verified net revenue and an estimated network-pool contribution"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-timeline-estimated-commission",
+    "key": "operator.revenue.timeline.estimated.commission",
+    "lang": "en",
+    "value": "Pool estimate"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-timeline-eyebrow",
+    "key": "operator.revenue.timeline.eyebrow",
+    "lang": "en",
+    "value": "History"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-timeline-net-payments",
+    "key": "operator.revenue.timeline.net.payments",
+    "lang": "en",
+    "value": "Net"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-timeline-projected-assets",
+    "key": "operator.revenue.timeline.projected.assets",
+    "lang": "en",
+    "value": "Assets"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-timeline-projected-events",
+    "key": "operator.revenue.timeline.projected.events",
+    "lang": "en",
+    "value": "Events"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-timeline-title",
+    "key": "operator.revenue.timeline.title",
+    "lang": "en",
+    "value": "Revenue timeline"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-window",
+    "key": "operator.revenue.window",
+    "lang": "en",
+    "value": "14 days"
+  },
+  {
     "_id": "i18n-message-en-operator-workspace-title",
     "key": "operator.workspace.title",
     "lang": "en",
@@ -19740,6 +19836,12 @@
     "value": "Csomópont regisztráció"
   },
   {
+    "_id": "i18n-message-hu-operator-action-revenue",
+    "key": "operator.action.revenue",
+    "lang": "hu",
+    "value": "Bevétel"
+  },
+  {
     "_id": "i18n-message-hu-operator-action-updates",
     "key": "operator.action.updates",
     "lang": "hu",
@@ -22894,126 +22996,6 @@
     "key": "stats.graph.title",
     "lang": "hu",
     "value": "Közösségi gráf"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-asset-categories",
-    "key": "stats.revenue.asset.categories",
-    "lang": "hu",
-    "value": "Eszköz bevételi mix"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-actual-paid",
-    "key": "stats.revenue.metric.actual.paid",
-    "lang": "hu",
-    "value": "Tényleges fizetés"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-avg-asset-price",
-    "key": "stats.revenue.metric.avg.asset.price",
-    "lang": "hu",
-    "value": "Átlagos eszközár"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-avg-event-ticket",
-    "key": "stats.revenue.metric.avg.event.ticket",
-    "lang": "hu",
-    "value": "Átlagos jegyár"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-avg-payment",
-    "key": "stats.revenue.metric.avg.payment",
-    "lang": "hu",
-    "value": "Átlagos fizetés"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-asset-borrowers",
-    "key": "stats.revenue.metric.asset.borrowers",
-    "lang": "hu",
-    "value": "Eszközkölcsönzők"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-event-buyers",
-    "key": "stats.revenue.metric.event.buyers",
-    "lang": "hu",
-    "value": "Eseményvásárlók"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-payable-assets",
-    "key": "stats.revenue.metric.payable.assets",
-    "lang": "hu",
-    "value": "Fizetős eszközök"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-payable-events",
-    "key": "stats.revenue.metric.payable.events",
-    "lang": "hu",
-    "value": "Fizetős események"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-paying-users",
-    "key": "stats.revenue.metric.paying.users",
-    "lang": "hu",
-    "value": "Fizető felhasználók"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-projected-assets",
-    "key": "stats.revenue.metric.projected.assets",
-    "lang": "hu",
-    "value": "Tervezett eszközérték"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-metric-projected-events",
-    "key": "stats.revenue.metric.projected.events",
-    "lang": "hu",
-    "value": "Tervezett eseményérték"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-subtitle",
-    "key": "stats.revenue.subtitle",
-    "lang": "hu",
-    "value": "Virtuális fizetős érték és tényleges fizetések, admin olvasásra materializálva."
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-timeline-actual-paid",
-    "key": "stats.revenue.timeline.actual.paid",
-    "lang": "hu",
-    "value": "Tényleges"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-timeline-paying-users",
-    "key": "stats.revenue.timeline.paying.users",
-    "lang": "hu",
-    "value": "Fizetők"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-timeline-projected-assets",
-    "key": "stats.revenue.timeline.projected.assets",
-    "lang": "hu",
-    "value": "Eszközök"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-timeline-projected-events",
-    "key": "stats.revenue.timeline.projected.events",
-    "lang": "hu",
-    "value": "Események"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-timeline-title",
-    "key": "stats.revenue.timeline.title",
-    "lang": "hu",
-    "value": "Bevételi idősor"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-title",
-    "key": "stats.revenue.title",
-    "lang": "hu",
-    "value": "Bevétel"
-  },
-  {
-    "_id": "i18n-message-hu-stats-revenue-window",
-    "key": "stats.revenue.window",
-    "lang": "hu",
-    "value": "14 nap"
   },
   {
     "_id": "i18n-message-hu-stats-kpi-activities",
@@ -30634,6 +30616,216 @@
     "key": "operator.action.configuration.detail",
     "lang": "hu",
     "value": "Hitelesítés és üzenetküldés ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-revenue-detail",
+    "key": "operator.action.revenue.detail",
+    "lang": "hu",
+    "value": "Bevétel és a becsült hálózati alap-hozzájárulás áttekintése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-asset-categories",
+    "key": "operator.revenue.asset.categories",
+    "lang": "hu",
+    "value": "Eszköz bevételi mix"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-asset-items",
+    "key": "operator.revenue.asset.items",
+    "lang": "hu",
+    "value": "fizetős eszköz"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-assets-empty",
+    "key": "operator.revenue.assets.empty",
+    "lang": "hu",
+    "value": "Ebben a pénznemben nincs fizetős eszközkategória."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-assets-eyebrow",
+    "key": "operator.revenue.assets.eyebrow",
+    "lang": "hu",
+    "value": "Eszközök"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-category-accommodation",
+    "key": "operator.revenue.category.accommodation",
+    "lang": "hu",
+    "value": "Szállás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-category-asset",
+    "key": "operator.revenue.category.asset",
+    "lang": "hu",
+    "value": "Egyéb eszközök"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-category-supplies",
+    "key": "operator.revenue.category.supplies",
+    "lang": "hu",
+    "value": "Kellékek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-category-transport",
+    "key": "operator.revenue.category.transport",
+    "lang": "hu",
+    "value": "Szállítás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-commission-rate",
+    "key": "operator.revenue.commission.rate",
+    "lang": "hu",
+    "value": "Hálózati alap becslési rátája"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-currency",
+    "key": "operator.revenue.currency",
+    "lang": "hu",
+    "value": "Pénznem"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-currency-select",
+    "key": "operator.revenue.currency.select",
+    "lang": "hu",
+    "value": "Pénznem kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-empty",
+    "key": "operator.revenue.empty",
+    "lang": "hu",
+    "value": "Ehhez a telepítéshez nem érhető el bevételi adat."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-asset-borrowers",
+    "key": "operator.revenue.metric.asset.borrowers",
+    "lang": "hu",
+    "value": "Eszközkölcsönzők"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-captured-payments",
+    "key": "operator.revenue.metric.captured.payments",
+    "lang": "hu",
+    "value": "Rögzített fizetések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-commission-basis",
+    "key": "operator.revenue.metric.commission.basis",
+    "lang": "hu",
+    "value": "Ellenőrzött nettó alap"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-estimated-commission",
+    "key": "operator.revenue.metric.estimated.commission",
+    "lang": "hu",
+    "value": "Becsült hálózati alap-hozzájárulás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-event-buyers",
+    "key": "operator.revenue.metric.event.buyers",
+    "lang": "hu",
+    "value": "Eseményvásárlók"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-net-payments",
+    "key": "operator.revenue.metric.net.payments",
+    "lang": "hu",
+    "value": "Nettó fizetések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-payable-assets",
+    "key": "operator.revenue.metric.payable.assets",
+    "lang": "hu",
+    "value": "Fizetős eszközök"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-payable-events",
+    "key": "operator.revenue.metric.payable.events",
+    "lang": "hu",
+    "value": "Fizetős események"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-paying-users",
+    "key": "operator.revenue.metric.paying.users",
+    "lang": "hu",
+    "value": "Fizető felhasználók"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-payment-count",
+    "key": "operator.revenue.metric.payment.count",
+    "lang": "hu",
+    "value": "Fizetések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-projected-assets",
+    "key": "operator.revenue.metric.projected.assets",
+    "lang": "hu",
+    "value": "Tervezett eszközérték"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-projected-events",
+    "key": "operator.revenue.metric.projected.events",
+    "lang": "hu",
+    "value": "Tervezett eseményérték"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-metric-refunded-payments",
+    "key": "operator.revenue.metric.refunded.payments",
+    "lang": "hu",
+    "value": "Visszatérített fizetések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-ruleset",
+    "key": "operator.revenue.ruleset",
+    "lang": "hu",
+    "value": "Bevételi szabályrendszer"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-subtitle",
+    "key": "operator.revenue.subtitle",
+    "lang": "hu",
+    "value": "Pénznemenkénti ellenőrzött nettó bevétel és becsült hálózati alap-hozzájárulás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-timeline-estimated-commission",
+    "key": "operator.revenue.timeline.estimated.commission",
+    "lang": "hu",
+    "value": "Alapbecslés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-timeline-eyebrow",
+    "key": "operator.revenue.timeline.eyebrow",
+    "lang": "hu",
+    "value": "Előzmények"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-timeline-net-payments",
+    "key": "operator.revenue.timeline.net.payments",
+    "lang": "hu",
+    "value": "Nettó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-timeline-projected-assets",
+    "key": "operator.revenue.timeline.projected.assets",
+    "lang": "hu",
+    "value": "Eszközök"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-timeline-projected-events",
+    "key": "operator.revenue.timeline.projected.events",
+    "lang": "hu",
+    "value": "Események"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-timeline-title",
+    "key": "operator.revenue.timeline.title",
+    "lang": "hu",
+    "value": "Bevételi idősor"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-window",
+    "key": "operator.revenue.window",
+    "lang": "hu",
+    "value": "14 nap"
   },
   {
     "_id": "i18n-message-hu-operator-workspace-title",
