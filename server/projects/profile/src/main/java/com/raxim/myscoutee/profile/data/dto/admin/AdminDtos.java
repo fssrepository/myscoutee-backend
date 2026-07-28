@@ -181,8 +181,7 @@ public final class AdminDtos {
             List<AdminStatsTimelinePointDto> timeline,
             List<AdminStatsBreakdownItemDto> eventTypes,
             List<AdminStatsBreakdownItemDto> activityMix,
-            AdminStatsGraphDto graph,
-            AdminStatsRevenueDto revenue) {}
+            AdminStatsGraphDto graph) {}
     public record AdminStatsGraphDto(
             Integer healthScore,
             String healthLabelKey,
@@ -203,10 +202,6 @@ public final class AdminDtos {
             Long communities,
             Long networkQuality,
             Long clusterQuality) {}
-    public record AdminStatsRevenueDto(
-            List<AdminStatsMetricDto> metrics,
-            List<AdminStatsBreakdownItemDto> assetCategories,
-            List<AdminStatsRevenueTimelinePointDto> timeline) {}
     public record AdminAffinityGraphDto(
             String generatedAtIso,
             String source,
@@ -296,15 +291,6 @@ public final class AdminDtos {
             Double weight,
             Double affinityScore,
             String updatedDate) {}
-    public record AdminStatsRevenueTimelinePointDto(
-            String dateKey,
-            String label,
-            Long payableEvents,
-            Long payableAssets,
-            Long projectedEventCents,
-            Long projectedAssetCents,
-            Long actualPaymentCents,
-            Long payingUsers) {}
     public record AdminStatsMetricDto(
             String key,
             String labelKey,

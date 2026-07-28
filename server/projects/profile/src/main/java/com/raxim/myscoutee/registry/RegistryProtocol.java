@@ -24,6 +24,7 @@ public final class RegistryProtocol {
     public static final String REGISTRY_IDENTITY_PATH = "/v1/registry/identity";
     public static final String REGISTRATION_PATH = "/v1/deployments/register";
     public static final String MAU_BATCH_PATH = "/v1/mau/batches";
+    public static final String REVENUE_BATCH_PATH = "/v1/revenue/batches";
     public static final String OPERATOR_ACTION_PATH = "/v1/operator/actions";
     public static final String OPERATOR_CLAIM_STATUS_PATH_PREFIX = "/v1/operator/claims/";
     public static final String LEADERBOARD_PATH = "/v1/leaderboard";
@@ -33,6 +34,10 @@ public final class RegistryProtocol {
     public static final String INSTALLATION_RULESET = "installation-test-v1";
     public static final long INSTALLATION_MAU_COUNT = 0L;
     public static final String INSTALLATION_ENTRY_TYPE = "INSTALLATION_TEST_BATCH_ACCEPTED";
+    public static final String REVENUE_KIND = "daily-revenue";
+    public static final String REVENUE_RULESET_VERSION =
+            "net-captured-revenue-v1";
+    public static final int REVENUE_COMMISSION_RATE_BASIS_POINTS = 500;
     public static final String LEADERBOARD_FORMULA_VERSION = "six-complete-month-average-v1";
     public static final String LEADERBOARD_RULESET_VERSION = "qmau-v1";
     public static final String UPDATE_MANIFEST_VERSION = "1";
@@ -58,6 +63,8 @@ public final class RegistryProtocol {
             Pattern.compile("[a-z0-9][a-z0-9._:-]{2,127}");
     private static final Pattern DEPLOYMENT_ID_PATTERN = Pattern.compile("dep_[0-9a-f]{32}");
     private static final Pattern BATCH_ID_PATTERN = Pattern.compile("batch_[0-9a-f]{32}");
+    private static final Pattern REVENUE_BATCH_ID_PATTERN =
+            Pattern.compile("revbatch_[0-9a-f]{32}");
     private static final Pattern REGISTRY_KEY_ID_PATTERN = Pattern.compile("rkey_[0-9a-f]{32}");
     private static final Pattern OPERATOR_ACTION_ID_PATTERN = Pattern.compile("opa_[0-9a-f]{32}");
     private static final Pattern OPERATOR_REVIEW_ID_PATTERN = Pattern.compile("opr_[0-9a-f]{32}");
@@ -115,6 +122,58 @@ public final class RegistryProtocol {
                 rulesetVersion,
                 Long.toString(qualifiedMauCount),
                 commitmentHash);
+    }
+
+    public static byte[] revenueBatchPayload(
+            String kind,
+            String period,
+            long revision,
+            String supersedesBatchId,
+            String rulesetVersion,
+            int commissionRateBasisPoints,
+            List<RevenueCurrencyRow> currencies) {
+        List<RevenueCurrencyRow> rows = currencies == null
+                ? List.of()
+                : List.copyOf(currencies);
+        String[] values = new String[7 + rows.size() * 8];
+        values[0] = "myscoutee-registry-revenue-batch-payload-v1";
+        values[1] = requireCanonical(kind, "revenue kind");
+        values[2] = requireRevenuePeriod(period);
+        values[3] = Long.toString(requirePositive(revision, "revision"));
+        values[4] = supersedesBatchId == null ? "" : supersedesBatchId;
+        values[5] = requireCanonical(rulesetVersion, "revenue ruleset_version");
+        values[6] = Integer.toString(commissionRateBasisPoints);
+        String[] withCount = new String[values.length + 1];
+        System.arraycopy(values, 0, withCount, 0, 7);
+        withCount[7] = Integer.toString(rows.size());
+        String previousCurrency = "";
+        int offset = 8;
+        for (RevenueCurrencyRow row : rows) {
+            Objects.requireNonNull(row, "Revenue currency row must not be null.");
+            String currencyCode = requireRevenueCurrencyCode(row.currencyCode());
+            if (currencyCode.compareTo(previousCurrency) <= 0) {
+                throw new IllegalArgumentException(
+                        "Revenue currency rows must be sorted and unique.");
+            }
+            previousCurrency = currencyCode;
+            withCount[offset++] = currencyCode;
+            withCount[offset++] = Integer.toString(requireRevenueFractionDigits(
+                    row.fractionDigits()));
+            withCount[offset++] = Long.toString(requireNonNegative(
+                    row.capturedMinor(), "captured_minor"));
+            withCount[offset++] = Long.toString(requireNonNegative(
+                    row.refundedMinor(), "refunded_minor"));
+            withCount[offset++] = Long.toString(requireNonNegative(
+                    row.netMinor(), "net_minor"));
+            withCount[offset++] = Long.toString(requireNonNegative(
+                    row.commissionBasisMinor(), "commission_basis_minor"));
+            withCount[offset++] = Long.toString(requireNonNegative(
+                    row.estimatedCommissionMinor(),
+                    "estimated_commission_minor"));
+            withCount[offset++] = Long.toString(requireNonNegative(
+                    row.paymentCount(), "payment_count"));
+        }
+        return canonicalAllowEmpty(withCount);
     }
 
     public static byte[] signedRequest(
@@ -200,6 +259,35 @@ public final class RegistryProtocol {
                 receipt.period(),
                 receipt.rulesetVersion(),
                 requiredLong(receipt.qualifiedMauCount(), "qualified_mau_count"),
+                receipt.acceptedAt(),
+                receipt.checkpointDate(),
+                receipt.registryKeyId());
+    }
+
+    public static byte[] revenueReceipt(RevenueBatchResponse response) {
+        Objects.requireNonNull(response, "Revenue response must not be null.");
+        RevenueReceipt receipt = Objects.requireNonNull(
+                response.receipt(),
+                "Revenue receipt must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-revenue-receipt-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.batchId(),
+                response.deploymentId(),
+                requiredLong(receipt.ledgerIndex(), "ledger_index"),
+                receipt.entryHash(),
+                receipt.previousEntryHash(),
+                receipt.batchHash(),
+                receipt.kind(),
+                receipt.period(),
+                requiredLong(receipt.revision(), "revision"),
+                nullToEmpty(receipt.supersedesBatchId()),
+                receipt.rulesetVersion(),
+                requiredInteger(
+                        receipt.commissionRateBasisPoints(),
+                        "commission_rate_basis_points"),
+                requiredInteger(receipt.currencyCount(), "currency_count"),
                 receipt.acceptedAt(),
                 receipt.checkpointDate(),
                 receipt.registryKeyId());
@@ -625,6 +713,58 @@ public final class RegistryProtocol {
         return value;
     }
 
+    public static String requireRevenueBatchId(String value) {
+        return requirePattern(
+                value,
+                "revenue batch_id",
+                REVENUE_BATCH_ID_PATTERN);
+    }
+
+    public static String requireRevenuePeriod(String value) {
+        requireCanonical(value, "revenue period");
+        try {
+            String canonical = LocalDate.parse(value).toString();
+            if (!canonical.equals(value)) {
+                throw new IllegalArgumentException(
+                        "revenue period must be a canonical UTC calendar date.");
+            }
+            return value;
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException(
+                    "revenue period must be a canonical UTC calendar date.",
+                    exception);
+        }
+    }
+
+    public static String requireRevenueCurrencyCode(String value) {
+        requireCanonical(value, "currency_code");
+        if (!value.matches("[A-Z]{3}")) {
+            throw new IllegalArgumentException(
+                    "currency_code must contain exactly three uppercase ASCII letters.");
+        }
+        try {
+            java.util.Currency currency = java.util.Currency.getInstance(value);
+            if (!currency.getCurrencyCode().equals(value)
+                    || currency.getDefaultFractionDigits() < 0) {
+                throw new IllegalArgumentException(
+                        "currency_code is not an accounting ISO-4217 currency.");
+            }
+            return value;
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                    "currency_code is not an accounting ISO-4217 currency.",
+                    exception);
+        }
+    }
+
+    public static int requireRevenueFractionDigits(Integer value) {
+        if (value == null || value < 0 || value > 9) {
+            throw new IllegalArgumentException(
+                    "fraction_digits must be between zero and nine.");
+        }
+        return value;
+    }
+
     public static String requireRegistryKeyId(String value) {
         requireCanonical(value, "registry_key_id");
         if (!REGISTRY_KEY_ID_PATTERN.matcher(value).matches()) {
@@ -899,6 +1039,28 @@ public final class RegistryProtocol {
         return Long.toString(value);
     }
 
+    private static String requiredInteger(Integer value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " must not be null.");
+        }
+        return Integer.toString(value);
+    }
+
+    private static long requirePositive(long value, String fieldName) {
+        if (value <= 0L) {
+            throw new IllegalArgumentException(fieldName + " must be positive.");
+        }
+        return value;
+    }
+
+    private static long requireNonNegative(Long value, String fieldName) {
+        if (value == null || value < 0L) {
+            throw new IllegalArgumentException(
+                    fieldName + " must be non-negative.");
+        }
+        return value;
+    }
+
     private static String nullToEmpty(String value) {
         return value == null ? "" : value;
     }
@@ -974,6 +1136,68 @@ public final class RegistryProtocol {
             @JsonProperty("accepted_at") String acceptedAt,
             @JsonProperty("checkpoint_date") String checkpointDate,
             @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            String signature) {
+    }
+
+    public record RevenueCurrencyRow(
+            @JsonProperty("currency_code") String currencyCode,
+            @JsonProperty("fraction_digits") Integer fractionDigits,
+            @JsonProperty("captured_minor") Long capturedMinor,
+            @JsonProperty("refunded_minor") Long refundedMinor,
+            @JsonProperty("net_minor") Long netMinor,
+            @JsonProperty("commission_basis_minor") Long commissionBasisMinor,
+            @JsonProperty("estimated_commission_minor") Long estimatedCommissionMinor,
+            @JsonProperty("payment_count") Long paymentCount) {
+    }
+
+    public record RevenueBatchRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            String kind,
+            String period,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
+            @JsonProperty("ruleset_version") String rulesetVersion,
+            @JsonProperty("commission_rate_basis_points") Integer commissionRateBasisPoints,
+            List<RevenueCurrencyRow> currencies,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record RevenueBatchResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("batch_id") String batchId,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            Boolean duplicate,
+            RevenueReceipt receipt) {
+    }
+
+    public record RevenueReceipt(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("batch_id") String batchId,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("ledger_index") Long ledgerIndex,
+            @JsonProperty("entry_hash") String entryHash,
+            @JsonProperty("previous_entry_hash") String previousEntryHash,
+            @JsonProperty("batch_hash") String batchHash,
+            String kind,
+            String period,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
+            @JsonProperty("ruleset_version") String rulesetVersion,
+            @JsonProperty("commission_rate_basis_points") Integer commissionRateBasisPoints,
+            @JsonProperty("currency_count") Integer currencyCount,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("checkpoint_date") String checkpointDate,
             @JsonProperty("registry_key_id") String registryKeyId,
             @JsonProperty("registry_public_key") String registryPublicKey,
             String signature) {

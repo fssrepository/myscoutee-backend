@@ -71,7 +71,48 @@ Exit criteria:
 - Landing/header branding is resolved centrally rather than hard-coded in
   individual components.
 
-## Phase 3 — reliable deployment-level MAU delivery
+## Phase 3 — reliable signed revenue delivery
+
+Status: in progress.
+
+- Revenue is operator-only. Remove monetary fields from `/admin/stats` and load
+  the dedicated revenue view only when the operator opens it.
+- Group finalized payments by ISO-4217 currency and store integer minor units
+  with that currency's explicit fraction-digit count. Never total or compare
+  unlike currencies.
+- Count only captured/finalized payment states. Pending or action-required
+  sessions are not revenue. Subtract a refund only when its currency exactly
+  matches the captured payment currency.
+- Keep ticket and asset price projections as local display information. The
+  commission basis is finalized net captured revenue only.
+- Version the accounting rule as `net-captured-revenue-v1`. The network
+  commission rate is 500 basis points, calculated independently per currency as
+  `floor(net_minor * 500 / 10000)`.
+- Materialize one immutable UTC-day snapshot per deployment. A later refund
+  creates the next revision for the original payment day and explicitly
+  supersedes the previously accepted batch; accepted history is never edited.
+- Persist the exact signed request in a durable Java outbox before attempting
+  HTTPS delivery. Retry with stable idempotency until the registry-signed
+  receipt is durably stored.
+- Send aggregate currency rows only. User IDs, payment IDs, session IDs, raw
+  transactions, and customer identifiers never leave the deployment.
+- Append each accepted revenue batch to the Go hash-linked ledger and write its
+  immutable currency query rows in the same SQLite transaction. Registry reads
+  select the latest revision directly from those rows; there is no asynchronous
+  projection or repair path.
+
+Exit criteria:
+
+- Java and Go share canonical signing fixtures for payloads and receipts.
+- Duplicate delivery, lost responses, Java/Go restarts, corrections, stale
+  supersedes links, malformed currencies, and cross-currency refunds are
+  covered by tests.
+- Registry verification independently checks every revenue query row against
+  the authoritative batch and ledger entry.
+- An operator can inspect each currency independently and the admin API exposes
+  no revenue data.
+
+## Phase 4 — reliable deployment-level MAU delivery
 
 Status: next protocol milestone.
 
@@ -96,7 +137,7 @@ Exit criteria:
 - Six-complete-month weight calculations have fixed fixtures shared by Java and
   Go.
 
-## Phase 4 — privacy-safe global deduplication
+## Phase 5 — privacy-safe global deduplication
 
 Status: deliberately deferred.
 
@@ -122,7 +163,7 @@ Exit criteria:
 - Test vectors cover the same person on multiple deployments, key rotation,
   deletion, and malicious replay.
 
-## Phase 5 — fraud, claims, and exit audit
+## Phase 6 — fraud, claims, and exit audit
 
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and
   eligibility change in the append-only ledger.
@@ -133,7 +174,7 @@ Exit criteria:
   allocation.
 - Preserve individual deployments beneath an aggregated operator row.
 
-## Phase 6 — registry federation and migration
+## Phase 7 — registry federation and migration
 
 - Define signed capability discovery for multiple compatible registry operators.
 - Define an explicit prepare/confirm migration protocol; never silently register
@@ -145,7 +186,7 @@ Exit criteria:
 - Test split connectivity and independently hosted registries without
   geography-specific branches.
 
-## Phase 7 — signed update channel
+## Phase 8 — signed update channel
 
 - Registry-signed announcement and release manifest.
 - Operator reviews the verified URL/version and explicitly approves.
@@ -157,7 +198,7 @@ Exit criteria:
 - Completion requires the expected package and container versions plus healthy
   Java and nginx services.
 
-## Phase 8 — production qualification
+## Phase 9 — production qualification
 
 - Protocol compatibility matrix for Java, Go, frontend, package, and schema
   versions.
