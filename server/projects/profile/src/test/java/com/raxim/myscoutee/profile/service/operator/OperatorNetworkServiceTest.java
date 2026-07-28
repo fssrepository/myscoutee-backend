@@ -27,6 +27,7 @@ import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimStatus;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocolException;
 
 class OperatorNetworkServiceTest {
     @Test
@@ -142,6 +143,80 @@ class OperatorNetworkServiceTest {
                         exception -> assertThat(exception.getStatusCode())
                                 .isEqualTo(HttpStatus.BAD_REQUEST));
         verifyNoInteractions(settingsRepository, usersRepository, operations);
+    }
+
+    @Test
+    void mapsInvalidRegistryProtocolResponseToBadGateway() {
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        when(operations.claimStatus(any())).thenThrow(
+                new RegistryProtocolException("Registry claim status signature is invalid."));
+        OperatorNetworkService service = registeredService(operations);
+
+        assertThatThrownBy(() -> service.claimStatus("operator-1"))
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> {
+                            assertThat(exception.getStatusCode())
+                                    .isEqualTo(HttpStatus.BAD_GATEWAY);
+                            assertThat(exception.getCause())
+                                    .isInstanceOf(RegistryProtocolException.class);
+                        });
+    }
+
+    @Test
+    void mapsInvalidRequestToBadRequest() {
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        when(operations.claimStatus(any())).thenThrow(
+                new IllegalArgumentException("Invalid leaderboard cursor."));
+        OperatorNetworkService service = registeredService(operations);
+
+        assertThatThrownBy(() -> service.claimStatus("operator-1"))
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> {
+                            assertThat(exception.getStatusCode())
+                                    .isEqualTo(HttpStatus.BAD_REQUEST);
+                            assertThat(exception.getCause())
+                                    .isInstanceOf(IllegalArgumentException.class);
+                        });
+    }
+
+    @Test
+    void mapsLocalIntegrityOrPersistenceFailureToInternalServerError() {
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        when(operations.claimStatus(any())).thenThrow(
+                new IllegalStateException("Registry receipt journal is inconsistent."));
+        OperatorNetworkService service = registeredService(operations);
+
+        assertThatThrownBy(() -> service.claimStatus("operator-1"))
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> {
+                            assertThat(exception.getStatusCode())
+                                    .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+                            assertThat(exception.getCause())
+                                    .isInstanceOf(IllegalStateException.class);
+                        });
+    }
+
+    private static OperatorNetworkService registeredService(
+            RegistryOperatorNetworkOperations operations) {
+        OperatorRegistrySettingsRepository settingsRepository =
+                mock(OperatorRegistrySettingsRepository.class);
+        RegistryProperties properties = new RegistryProperties();
+        properties.setOutboundAllowed(true);
+        when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
+                .thenReturn(Optional.of(registeredSettings()));
+        return new OperatorNetworkService(
+                settingsRepository,
+                mock(UsersRepository.class),
+                properties,
+                new RegistryDemoProperties(),
+                operations,
+                mock(OperatorNetworkMapper.class));
     }
 
     private static OperatorRegistrySettings registeredSettings() {

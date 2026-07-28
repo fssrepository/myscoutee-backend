@@ -39,12 +39,16 @@ public final class RegistryLocalStore {
     private final Path stateDirectory;
     private final Path statePath;
     private final Path receiptDirectory;
+    private final Path operatorClaimStatusPath;
 
     public RegistryLocalStore(RegistryProperties properties, ObjectMapper objectMapper) {
         this.objectMapper = Objects.requireNonNull(objectMapper, "ObjectMapper must not be null.");
         this.stateDirectory = properties.getStateDir().toAbsolutePath().normalize();
         this.statePath = properties.statePath().toAbsolutePath().normalize();
         this.receiptDirectory = properties.receiptDirectory().toAbsolutePath().normalize();
+        this.operatorClaimStatusPath = receiptDirectory
+                .resolve("operator-claim-status.json")
+                .normalize();
     }
 
     public void requireWritableStateDirectory() {
@@ -58,7 +62,15 @@ public final class RegistryLocalStore {
             throw new IllegalStateException(
                     "Registry state path must be a writable non-symlink directory: " + stateDirectory);
         }
-        setPosixPermissions(stateDirectory, DIRECTORY_PERMISSIONS);
+        try {
+            setPosixPermissions(stateDirectory, DIRECTORY_PERMISSIONS);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to enforce private registry state-directory permissions at "
+                            + stateDirectory
+                            + ".",
+                    exception);
+        }
         ensureReceiptDirectory();
     }
 
@@ -242,6 +254,59 @@ public final class RegistryLocalStore {
         return List.copyOf(entries);
     }
 
+    public Optional<RegistryProtocol.OperatorClaimStatusReceipt>
+            loadOperatorClaimStatusReceipt() {
+        requireWritableStateDirectory();
+        if (!Files.exists(operatorClaimStatusPath, LinkOption.NOFOLLOW_LINKS)) {
+            return Optional.empty();
+        }
+        requireRegularNonSymlink(
+                operatorClaimStatusPath,
+                "registry operator claim status");
+        try {
+            OperatorClaimStatusEvidence evidence = objectMapper.readValue(
+                    readLimited(operatorClaimStatusPath, MAX_STATE_BYTES),
+                    OperatorClaimStatusEvidence.class);
+            if (evidence == null
+                    || evidence.schemaVersion() == null
+                    || evidence.schemaVersion() != 1
+                    || evidence.status() == null) {
+                throw new IllegalStateException(
+                        "Registry operator claim status evidence is invalid.");
+            }
+            return Optional.of(evidence.status());
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to read registry operator claim status evidence from "
+                            + operatorClaimStatusPath
+                            + ".",
+                    exception);
+        }
+    }
+
+    public synchronized Path saveOperatorClaimStatusReceipt(
+            RegistryProtocol.OperatorClaimStatusReceipt status) {
+        Objects.requireNonNull(status, "Operator claim status receipt must not be null.");
+        requireWritableStateDirectory();
+        try {
+            byte[] json = objectMapper.writeValueAsString(
+                            new OperatorClaimStatusEvidence(1, status))
+                    .getBytes(StandardCharsets.UTF_8);
+            if (json.length > MAX_STATE_BYTES) {
+                throw new IllegalStateException(
+                        "Registry operator claim status evidence exceeds the local size limit.");
+            }
+            atomicWrite(operatorClaimStatusPath, json);
+            return operatorClaimStatusPath;
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to persist registry operator claim status evidence to "
+                            + operatorClaimStatusPath
+                            + ".",
+                    exception);
+        }
+    }
+
     private Path saveOperatorActionDocument(String actionId, Object document) {
         Path receiptPath = receiptDirectory.resolve("operator-action-" + actionId + ".json").normalize();
         if (!receiptPath.getParent().equals(receiptDirectory)) {
@@ -256,11 +321,19 @@ public final class RegistryLocalStore {
             if (Files.exists(receiptPath, LinkOption.NOFOLLOW_LINKS)) {
                 requireRegularNonSymlink(receiptPath, "registry operator receipt");
                 byte[] existing = readLimited(receiptPath, MAX_STATE_BYTES);
-                if (!Arrays.equals(existing, json)) {
-                    throw new IllegalStateException(
-                            "A different operator receipt already exists for " + actionId + ".");
+                if (Arrays.equals(existing, json)) {
+                    return receiptPath;
                 }
-                return receiptPath;
+                if (document instanceof OperatorActionJournalEntry supplied) {
+                    OperatorActionJournalEntry durable = objectMapper.readValue(
+                            existing,
+                            OperatorActionJournalEntry.class);
+                    if (sameDurableOperatorAction(durable, supplied)) {
+                        return receiptPath;
+                    }
+                }
+                throw new IllegalStateException(
+                        "A different operator receipt already exists for " + actionId + ".");
             }
             atomicCreate(receiptPath, json);
             return receiptPath;
@@ -269,6 +342,42 @@ public final class RegistryLocalStore {
                     "Unable to persist registry operator receipt to " + receiptPath + ".",
                     exception);
         }
+    }
+
+    private static boolean sameDurableOperatorAction(
+            OperatorActionJournalEntry durable,
+            OperatorActionJournalEntry retry) {
+        return durable != null
+                && retry != null
+                && Objects.equals(durable.schemaVersion(), retry.schemaVersion())
+                && Objects.equals(durable.protocolVersion(), retry.protocolVersion())
+                && Objects.equals(durable.registryScope(), retry.registryScope())
+                && Objects.equals(durable.deploymentId(), retry.deploymentId())
+                && Objects.equals(durable.idempotencyKey(), retry.idempotencyKey())
+                && Objects.equals(durable.action(), retry.action())
+                && Objects.equals(durable.operatorName(), retry.operatorName())
+                && Objects.equals(durable.operatorAvatarUrl(), retry.operatorAvatarUrl())
+                && Objects.equals(durable.legalName(), retry.legalName())
+                && Objects.equals(durable.registrationNumber(), retry.registrationNumber())
+                && Objects.equals(durable.jurisdiction(), retry.jurisdiction())
+                && Objects.equals(durable.registeredAddress(), retry.registeredAddress())
+                && Objects.equals(durable.website(), retry.website())
+                && Objects.equals(
+                        durable.verificationContactName(),
+                        retry.verificationContactName())
+                && Objects.equals(
+                        durable.verificationContactRole(),
+                        retry.verificationContactRole())
+                && Objects.equals(
+                        durable.verificationContactEmail(),
+                        retry.verificationContactEmail())
+                && Objects.equals(durable.authorityAttested(), retry.authorityAttested())
+                && Objects.equals(durable.clientTokenHash(), retry.clientTokenHash())
+                && Objects.equals(durable.tokenTtlSeconds(), retry.tokenTtlSeconds())
+                && Objects.equals(durable.tokenId(), retry.tokenId())
+                && Objects.equals(durable.linkId(), retry.linkId())
+                && Objects.equals(durable.payloadHash(), retry.payloadHash())
+                && Objects.equals(durable.receipt(), retry.receipt());
     }
 
     public Path statePath() {
@@ -436,13 +545,52 @@ public final class RegistryLocalStore {
         if (Files.isSymbolicLink(path) || !Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)) {
             throw new IllegalStateException(label + " must be a regular non-symlink file: " + path);
         }
+        try {
+            setPosixPermissions(path, FILE_PERMISSIONS);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to enforce private permissions for " + label + ": " + path,
+                    exception);
+        }
     }
 
-    private static void setPosixPermissions(Path path, Set<PosixFilePermission> permissions) {
+    private static void setPosixPermissions(
+            Path path,
+            Set<PosixFilePermission> permissions) throws IOException {
+        boolean posixSupported;
+        try {
+            posixSupported = Files.getFileStore(path)
+                    .supportsFileAttributeView("posix");
+        } catch (UnsupportedOperationException exception) {
+            // Explicitly permit file systems that genuinely expose no POSIX view.
+            return;
+        }
+        if (!posixSupported) {
+            // Windows and other non-POSIX development file systems rely on
+            // their native ACL model; Linux package targets must pass below.
+            return;
+        }
         try {
             Files.setPosixFilePermissions(path, permissions);
-        } catch (UnsupportedOperationException | IOException ignored) {
-            // POSIX permissions are enforced on the Linux package target. Tests may use another file system.
+            Set<PosixFilePermission> actual = Files.getPosixFilePermissions(
+                    path,
+                    LinkOption.NOFOLLOW_LINKS);
+            if (!actual.equals(permissions)) {
+                throw new IOException(
+                        "POSIX permissions for "
+                                + path
+                                + " are "
+                                + PosixFilePermissions.toString(actual)
+                                + ", expected "
+                                + PosixFilePermissions.toString(permissions)
+                                + ".");
+            }
+        } catch (UnsupportedOperationException exception) {
+            throw new IOException(
+                    "File system advertised POSIX permissions but did not enforce them for "
+                            + path
+                            + ".",
+                    exception);
         }
     }
 
@@ -535,6 +683,11 @@ public final class RegistryLocalStore {
             @JsonProperty("payload_hash") String payloadHash,
             @JsonProperty("request_signature") String requestSignature,
             RegistryProtocol.OperatorActionReceipt receipt) {
+    }
+
+    public record OperatorClaimStatusEvidence(
+            @JsonProperty("schema_version") Integer schemaVersion,
+            RegistryProtocol.OperatorClaimStatusReceipt status) {
     }
 
     private static String emptyToNull(String value) {

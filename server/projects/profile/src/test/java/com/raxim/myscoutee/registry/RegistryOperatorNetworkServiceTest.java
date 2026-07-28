@@ -9,13 +9,17 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -52,6 +56,7 @@ class RegistryOperatorNetworkServiceTest {
     private static final String DEPLOYMENT_ID = "dep_0123456789abcdef0123456789abcdef";
     private static final String GROUP_ID = "opg_0123456789abcdef0123456789abcdef";
     private static final String TOKEN_ID = "opt_0123456789abcdef0123456789abcdef";
+    private static final String LINK_ID = "opl_0123456789abcdef0123456789abcdef";
     private static final String ACTION_ID = "opa_0123456789abcdef0123456789abcdef";
     private static final String CLIENT_TOKEN =
             "opc_0123456789abcdef0123456789abcdef";
@@ -208,7 +213,7 @@ class RegistryOperatorNetworkServiceTest {
             registry.tamperClaimStatus = true;
 
             assertThatThrownBy(service::claimStatus)
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(RegistryProtocolException.class)
                     .hasMessageContaining("signature");
             registry.assertHealthy();
         }
@@ -291,6 +296,54 @@ class RegistryOperatorNetworkServiceTest {
                     .isEqualTo(registry.lastClaimIdempotency.get());
             assertThat(retry.idempotencyKey())
                     .isEqualTo(registry.firstClaimIdempotency.get());
+            assertThat(service.claimStatus().verificationStatus())
+                    .isEqualTo("PENDING_REVIEW");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
+    void retryAfterPostApplyStatusFailureReusesOneDurableJournalEntry()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(properties, objectMapper);
+            ActionCommand claim = new ActionCommand(
+                    RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    new ClaimVerification(
+                            "Durable Retry Cooperative",
+                            "REG-DURABLE",
+                            "Slovakia",
+                            "Main Street 4",
+                            null,
+                            "Alex Reviewer",
+                            "Director",
+                            "alex@example.test",
+                            true));
+
+            RegistryOperatorNetworkService.ActionOutcome first = service.apply(claim);
+            byte[] durableBefore = Files.readAllBytes(first.receiptPath());
+            registry.failClaimStatusOnce = true;
+            assertThatThrownBy(service::claimStatus)
+                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
+
+            RegistryOperatorNetworkService.ActionOutcome retry = service.apply(claim);
+
+            assertThat(retry.response().duplicate()).isTrue();
+            assertThat(retry.receiptPath()).isEqualTo(first.receiptPath());
+            assertThat(Files.readAllBytes(retry.receiptPath())).isEqualTo(durableBefore);
+            assertThat(new RegistryLocalStore(properties, objectMapper)
+                            .loadOperatorActionJournal())
+                    .hasSize(1);
             assertThat(service.claimStatus().verificationStatus())
                     .isEqualTo("PENDING_REVIEW");
             registry.assertHealthy();
@@ -492,6 +545,7 @@ class RegistryOperatorNetworkServiceTest {
         private volatile boolean tamperClaimStatus;
         private volatile boolean loseFirstClaimResponse;
         private volatile boolean approvedClaimStatus;
+        private volatile boolean failClaimStatusOnce;
 
         private TestOperatorRegistry(ObjectMapper objectMapper) throws IOException {
             this.objectMapper = objectMapper;
@@ -764,6 +818,15 @@ class RegistryOperatorNetworkServiceTest {
                                 RegistryProtocol.OPERATOR_CLAIM_STATUS_PATH_PREFIX
                                         + DEPLOYMENT_ID),
                         "Claim status deployment path was invalid.");
+                if (failClaimStatusOnce) {
+                    failClaimStatusOnce = false;
+                    sendJson(exchange, 503, Map.of(
+                            "error",
+                            Map.of(
+                                    "code", "registry_unavailable",
+                                    "message", "Simulated post-apply status failure.")));
+                    return;
+                }
                 OperatorActionRequest request = lastClaimRequest.get();
                 OperatorActionReceipt claimReceipt = lastClaimReceipt.get();
                 require(request != null && claimReceipt != null, "Claim status was requested before a claim.");

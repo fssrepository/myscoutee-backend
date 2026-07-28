@@ -15,6 +15,9 @@ public class PaymentProvider {
     @Id
     private String id;
     private String label;
+    private String logoUrl;
+    private String logoAlt;
+    private String palette;
     private Boolean enabled;
     private Integer sortOrder;
 
@@ -32,6 +35,30 @@ public class PaymentProvider {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public String getLogoAlt() {
+        return logoAlt;
+    }
+
+    public void setLogoAlt(String logoAlt) {
+        this.logoAlt = logoAlt;
+    }
+
+    public String getPalette() {
+        return palette;
+    }
+
+    public void setPalette(String palette) {
+        this.palette = palette;
     }
 
     public Boolean getEnabled() {

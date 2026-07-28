@@ -297,8 +297,18 @@ class OperatorConfigurationServiceTest {
     private PaymentProviderService providerService() {
         PaymentProviderService service = mock(PaymentProviderService.class);
         List<PaymentProviderDto> providers = List.of(
-                new PaymentProviderDto("stripe", "Stripe"),
-                new PaymentProviderDto("barion", "Barion"));
+                new PaymentProviderDto(
+                        "stripe",
+                        "Stripe",
+                        "assets/payment-providers/stripe.svg",
+                        "Stripe",
+                        "violet"),
+                new PaymentProviderDto(
+                        "barion",
+                        "Barion",
+                        "assets/payment-providers/barion.svg",
+                        "Barion",
+                        "blue"));
         when(service.availableProviders()).thenReturn(providers);
         when(service.requireAvailable(eq("stripe"), anyList())).thenReturn("stripe");
         when(service.requireAvailable(eq("barion"), anyList())).thenReturn("barion");

@@ -121,7 +121,12 @@ class OperatorConfigurationMapperTest {
 
         var dto = new OperatorConfigurationMapper().toOperatorConfiguration(
                 configuration,
-                List.of(new PaymentProviderDto("stripe", "Stripe")),
+                List.of(new PaymentProviderDto(
+                        "stripe",
+                        "Stripe",
+                        "assets/payment-providers/stripe.svg",
+                        "Stripe",
+                        "violet")),
                 null);
         String json = objectMapper.writeValueAsString(dto);
 
@@ -135,6 +140,16 @@ class OperatorConfigurationMapperTest {
                 .doesNotContain("keyId")
                 .doesNotContain("\"authenticationCredential\":")
                 .doesNotContain("\"messagingCredential\":");
+        var providerJson = objectMapper.readTree(json)
+                .path("payment")
+                .path("availableProviders")
+                .get(0);
+        assertThat(providerJson.propertyNames()).containsExactlyInAnyOrder(
+                "id",
+                "label",
+                "logoUrl",
+                "logoAlt",
+                "palette");
     }
 
     @Test

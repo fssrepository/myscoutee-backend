@@ -29,6 +29,7 @@ import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimVerification;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocolException;
 
 @Service
 public class OperatorNetworkService {
@@ -88,6 +89,8 @@ public class OperatorNetworkService {
                                 request.idempotencyKey())));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
             } catch (IllegalArgumentException exception) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -95,7 +98,7 @@ public class OperatorNetworkService {
                         exception);
             } catch (IllegalStateException exception) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         safeMessage(exception),
                         exception);
             }
@@ -142,6 +145,8 @@ public class OperatorNetworkService {
                         safeText(actorUserId));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
             } catch (IllegalArgumentException exception) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -149,7 +154,7 @@ public class OperatorNetworkService {
                         exception);
             } catch (IllegalStateException exception) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         safeMessage(exception),
                         exception);
             }
@@ -172,6 +177,8 @@ public class OperatorNetworkService {
                         safeText(cursor)));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
             } catch (IllegalArgumentException exception) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -179,7 +186,7 @@ public class OperatorNetworkService {
                         exception);
             } catch (IllegalStateException exception) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         safeMessage(exception),
                         exception);
             }
@@ -206,6 +213,8 @@ public class OperatorNetworkService {
                         safeText(cursor)));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
             } catch (IllegalArgumentException exception) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -213,7 +222,7 @@ public class OperatorNetworkService {
                         exception);
             } catch (IllegalStateException exception) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         safeMessage(exception),
                         exception);
             }
@@ -229,6 +238,8 @@ public class OperatorNetworkService {
                         safeText(actorUserId));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
             } catch (IllegalArgumentException exception) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -236,7 +247,7 @@ public class OperatorNetworkService {
                         exception);
             } catch (IllegalStateException exception) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         safeMessage(exception),
                         exception);
             }
@@ -260,6 +271,8 @@ public class OperatorNetworkService {
                                 safeText(cursor)));
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
             } catch (IllegalArgumentException exception) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -267,7 +280,7 @@ public class OperatorNetworkService {
                         exception);
             } catch (IllegalStateException exception) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         safeMessage(exception),
                         exception);
             }
@@ -350,6 +363,14 @@ public class OperatorNetworkService {
             default -> HttpStatus.BAD_GATEWAY;
         };
         return new ResponseStatusException(status, safeMessage(exception), exception);
+    }
+
+    private ResponseStatusException registryProtocolFailure(
+            RegistryProtocolException exception) {
+        return new ResponseStatusException(
+                HttpStatus.BAD_GATEWAY,
+                safeMessage(exception),
+                exception);
     }
 
     private static String firstAbsoluteHttpsImage(List<String> images) {

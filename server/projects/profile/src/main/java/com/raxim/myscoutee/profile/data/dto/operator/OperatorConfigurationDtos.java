@@ -44,7 +44,10 @@ public final class OperatorConfigurationDtos {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     public record PaymentProviderDto(
             String id,
-            String label) {
+            String label,
+            String logoUrl,
+            String logoAlt,
+            String palette) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)

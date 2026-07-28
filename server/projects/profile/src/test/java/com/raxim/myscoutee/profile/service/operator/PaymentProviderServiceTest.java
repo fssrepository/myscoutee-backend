@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.profile.data.document.PaymentProvider;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.repository.PaymentProviderRepository;
 import com.raxim.myscoutee.profile.service.BarionPaymentProcessor;
 import com.raxim.myscoutee.profile.service.PaymentProcessor;
@@ -29,8 +30,20 @@ class PaymentProviderServiceTest {
         PaymentProviderRepository repository = mock(PaymentProviderRepository.class);
         when(repository.findByEnabledTrueOrderBySortOrderAscLabelAscIdAsc())
                 .thenReturn(List.of(
-                        provider("stripe", "Stripe", 10),
-                        provider("barion", "Barion", 20)));
+                        provider(
+                                "stripe",
+                                "Stripe",
+                                "assets/payment-providers/stripe.svg",
+                                "Stripe",
+                                "violet",
+                                10),
+                        provider(
+                                "barion",
+                                "Barion",
+                                "assets/payment-providers/barion.svg",
+                                "Barion",
+                                "blue",
+                                20)));
         List<PaymentProcessor> implementations = paymentImplementations();
         PaymentProviderService service = new PaymentProviderService(
                 repository,
@@ -38,8 +51,61 @@ class PaymentProviderServiceTest {
                 implementations);
 
         assertThat(service.availableProviders())
-                .extracting(provider -> provider.id())
-                .containsExactly("stripe", "barion");
+                .containsExactly(
+                        new PaymentProviderDto(
+                                        "stripe",
+                                        "Stripe",
+                                        "assets/payment-providers/stripe.svg",
+                                        "Stripe",
+                                        "violet"),
+                        new PaymentProviderDto(
+                                        "barion",
+                                        "Barion",
+                                        "assets/payment-providers/barion.svg",
+                                        "Barion",
+                                        "blue"));
+    }
+
+    @Test
+    void mapperRejectsMalformedSuppliedIdentityMetadata() {
+        PaymentProvider provider = provider(
+                " CUSTOM ",
+                " Custom ",
+                "javascript:alert(1)",
+                " ",
+                "danger",
+                30);
+
+        assertThatThrownBy(() -> new PaymentProviderMapper().toDto(provider))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("invalid logoUrl");
+    }
+
+    @Test
+    void mapperRejectsAnUnsupportedSuppliedPalette() {
+        PaymentProvider provider = provider(
+                "custom",
+                "Custom",
+                null,
+                null,
+                "danger",
+                30);
+
+        assertThatThrownBy(() -> new PaymentProviderMapper().toDto(provider))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("invalid palette");
+    }
+
+    @Test
+    void mapperLeavesAbsentOptionalIdentityMetadataEmptyForUiFallback() {
+        var result = new PaymentProviderMapper().toDto(
+                provider(" CUSTOM ", " Custom ", 30));
+
+        assertThat(result.id()).isEqualTo("custom");
+        assertThat(result.label()).isEqualTo("Custom");
+        assertThat(result.logoUrl()).isNull();
+        assertThat(result.logoAlt()).isNull();
+        assertThat(result.palette()).isNull();
     }
 
     @Test
@@ -90,6 +156,13 @@ class PaymentProviderServiceTest {
             seed.forEach(record -> {
                 assertThat(record.path("enabled").asBoolean()).isTrue();
                 assertThat(record.path("label").asText()).isNotBlank();
+                assertThat(record.path("logoUrl").asText())
+                        .startsWith("assets/payment-providers/")
+                        .endsWith(".svg");
+                assertThat(record.path("logoAlt").asText())
+                        .isEqualTo(record.path("label").asText());
+                assertThat(record.path("palette").asText())
+                        .isIn("violet", "blue");
                 seededIds.add(record.path("_id").asText());
             });
             assertThat(seededIds)
@@ -114,9 +187,22 @@ class PaymentProviderServiceTest {
     }
 
     private PaymentProvider provider(String id, String label, int sortOrder) {
+        return provider(id, label, null, null, null, sortOrder);
+    }
+
+    private PaymentProvider provider(
+            String id,
+            String label,
+            String logoUrl,
+            String logoAlt,
+            String palette,
+            int sortOrder) {
         PaymentProvider provider = new PaymentProvider();
         provider.setId(id);
         provider.setLabel(label);
+        provider.setLogoUrl(logoUrl);
+        provider.setLogoAlt(logoAlt);
+        provider.setPalette(palette);
         provider.setEnabled(true);
         provider.setSortOrder(sortOrder);
         return provider;

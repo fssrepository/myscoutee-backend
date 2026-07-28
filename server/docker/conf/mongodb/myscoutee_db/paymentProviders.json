@@ -2,12 +2,18 @@
   {
     "_id": "stripe",
     "label": "Stripe",
+    "logoUrl": "assets/payment-providers/stripe.svg",
+    "logoAlt": "Stripe",
+    "palette": "violet",
     "enabled": true,
     "sortOrder": 10
   },
   {
     "_id": "barion",
     "label": "Barion",
+    "logoUrl": "assets/payment-providers/barion.svg",
+    "logoAlt": "Barion",
+    "palette": "blue",
     "enabled": true,
     "sortOrder": 20
   }

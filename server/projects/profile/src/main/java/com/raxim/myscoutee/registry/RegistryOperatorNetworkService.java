@@ -142,12 +142,18 @@ public final class RegistryOperatorNetworkService {
                     command.idempotencyKey(),
                     "idempotency_key");
         } else if (claimVerification != null) {
-            String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
-                    "myscoutee-registry-operator-claim-idempotency-v1",
-                    trusted.state().registryScope(),
-                    trusted.state().deploymentId(),
-                    payloadHash));
-            idempotencyKey = "claim_" + digest.substring("sha256:".length());
+            idempotencyKey = deterministicClaimIdempotencyKey(trusted, payloadHash);
+        } else if (Set.of(
+                        RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
+                        RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                        RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK,
+                        RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN)
+                .contains(command.action())) {
+            idempotencyKey = deterministicReferenceActionIdempotencyKey(
+                    trusted,
+                    command,
+                    clientTokenHash,
+                    payloadHash);
         } else {
             idempotencyKey = RegistryProtocol.randomToken("operator_", secureRandom);
         }
@@ -188,7 +194,13 @@ public final class RegistryOperatorNetworkService {
                 signature);
 
         OperatorActionResponse response = httpClient.applyOperatorAction(request);
-        verifyActionResponse(trusted, request, clientTokenHash, response);
+        try {
+            verifyActionResponse(trusted, request, clientTokenHash, response);
+        } catch (IllegalArgumentException exception) {
+            throw new RegistryProtocolException(
+                    "Registry returned an invalid operator action receipt.",
+                    exception);
+        }
         OperatorActionReceipt durableReceipt = response.receipt().withoutPlaintextClientToken();
         Path receiptPath = localStore.saveOperatorActionReceipt(
                 request,
@@ -203,6 +215,118 @@ public final class RegistryOperatorNetworkService {
                 idempotencyKey,
                 emptyToNull(plaintextClientToken),
                 receiptPath);
+    }
+
+    private String deterministicClaimIdempotencyKey(
+            TrustedDeployment trusted,
+            String payloadHash) {
+        String generationBoundary = RegistryProtocol.ZERO_HASH;
+        String activeMatchingKey = "";
+        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            switch (entry.action()) {
+                case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
+                    generationBoundary = entry.receipt().auditHash();
+                    activeMatchingKey = RegistryProtocol.hashEquals(
+                                    payloadHash,
+                                    entry.payloadHash())
+                            ? entry.idempotencyKey()
+                            : "";
+                }
+                case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> {
+                    generationBoundary = entry.receipt().auditHash();
+                    activeMatchingKey = "";
+                }
+                default -> {
+                    // Non-ownership actions do not begin a new claim generation.
+                }
+            }
+        }
+        if (StringUtils.hasText(activeMatchingKey)) {
+            return RegistryProtocol.requireToken(activeMatchingKey, "idempotency_key");
+        }
+        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+                "myscoutee-registry-operator-claim-idempotency-v1",
+                trusted.state().registryScope(),
+                trusted.state().deploymentId(),
+                payloadHash,
+                generationBoundary));
+        return "claim_" + digest.substring("sha256:".length());
+    }
+
+    private String deterministicReferenceActionIdempotencyKey(
+            TrustedDeployment trusted,
+            ActionCommand command,
+            String clientTokenHash,
+            String payloadHash) {
+        String reference = switch (command.action()) {
+            case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM ->
+                    latestClaimGenerationReference(trusted);
+            case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN ->
+                    RegistryProtocol.requireHash(clientTokenHash, "client_token_hash");
+            case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK ->
+                    RegistryProtocol.requireOperatorLinkId(command.linkId());
+            case RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN ->
+                    RegistryProtocol.requireOperatorTokenId(command.tokenId());
+            default -> throw new IllegalArgumentException(
+                    "Operator action does not support deterministic reference idempotency.");
+        };
+        String activeWithdrawalKey = "";
+        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(command.action())) {
+                if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())) {
+                    activeWithdrawalKey = "";
+                } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(entry.action())
+                        && RegistryProtocol.hashEquals(payloadHash, entry.payloadHash())) {
+                    activeWithdrawalKey = entry.idempotencyKey();
+                }
+                continue;
+            }
+            if (command.action().equals(entry.action())
+                    && RegistryProtocol.hashEquals(payloadHash, entry.payloadHash())) {
+                return RegistryProtocol.requireToken(
+                        entry.idempotencyKey(),
+                        "idempotency_key");
+            }
+        }
+        if (StringUtils.hasText(activeWithdrawalKey)) {
+            return RegistryProtocol.requireToken(
+                    activeWithdrawalKey,
+                    "idempotency_key");
+        }
+        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+                "myscoutee-registry-operator-reference-idempotency-v1",
+                trusted.state().registryScope(),
+                trusted.state().deploymentId(),
+                command.action(),
+                reference,
+                payloadHash));
+        String prefix = switch (command.action()) {
+            case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> "withdraw_";
+            case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> "redeem_";
+            case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK -> "revoke_link_";
+            case RegistryProtocol.OPERATOR_ACTION_REVOKE_CLIENT_TOKEN -> "revoke_token_";
+            default -> "operator_";
+        };
+        return prefix + digest.substring("sha256:".length());
+    }
+
+    private String latestClaimGenerationReference(TrustedDeployment trusted) {
+        OperatorActionJournalEntry latestClaim = null;
+        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())) {
+                latestClaim = entry;
+            }
+        }
+        if (latestClaim == null) {
+            return RegistryProtocol.ZERO_HASH;
+        }
+        return RegistryProtocol.canonical(
+                latestClaim.receipt().actionId(),
+                Long.toString(latestClaim.receipt().auditIndex()),
+                latestClaim.receipt().auditHash());
     }
 
     public LeaderboardPage leaderboard(
@@ -228,7 +352,13 @@ public final class RegistryOperatorNetworkService {
                 emptyToNull(safeText(throughPeriod)),
                 limit,
                 emptyToNull(safeText(cursor)));
-        verifyLeaderboardPage(trusted, normalizedView, suppliedCursor, response);
+        try {
+            verifyLeaderboardPage(trusted, normalizedView, suppliedCursor, response);
+        } catch (IllegalArgumentException exception) {
+            throw new RegistryProtocolException(
+                    "Registry returned an invalid leaderboard page.",
+                    exception);
+        }
         return response;
     }
 
@@ -252,11 +382,17 @@ public final class RegistryOperatorNetworkService {
                 emptyToNull(safeText(throughPeriod)),
                 limit,
                 emptyToNull(safeText(cursor)));
-        verifyLeaderboardDeploymentPage(
-                trusted,
-                normalizedGroupId,
-                suppliedCursor,
-                response);
+        try {
+            verifyLeaderboardDeploymentPage(
+                    trusted,
+                    normalizedGroupId,
+                    suppliedCursor,
+                    response);
+        } catch (IllegalArgumentException exception) {
+            throw new RegistryProtocolException(
+                    "Registry returned an invalid leaderboard deployment page.",
+                    exception);
+        }
         return response;
     }
 
@@ -270,7 +406,10 @@ public final class RegistryOperatorNetworkService {
         String currentGroupId = "";
         String activeLinkId = "";
         OperatorActionJournalEntry structuredClaim = null;
-        for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
+        boolean structuredClaimLocallyWithdrawn = false;
+        List<OperatorActionJournalEntry> journal =
+                localStore.loadOperatorActionJournal();
+        for (OperatorActionJournalEntry entry : journal) {
             verifyJournalEntry(trusted, entry);
             OperatorActionReceipt receipt = entry.receipt();
             switch (entry.action()) {
@@ -279,9 +418,11 @@ public final class RegistryOperatorNetworkService {
                     claimedAt = receipt.acceptedAt();
                     if (isStructuredClaim(entry)) {
                         structuredClaim = entry;
+                        structuredClaimLocallyWithdrawn = false;
                         operatorName = safeText(entry.legalName());
                     } else {
                         structuredClaim = null;
+                        structuredClaimLocallyWithdrawn = false;
                         operatorName = safeText(entry.operatorName());
                     }
                     operatorAvatarUrl = safeText(entry.operatorAvatarUrl());
@@ -294,6 +435,9 @@ public final class RegistryOperatorNetworkService {
                     claimedAt = "";
                     currentGroupId = safeText(receipt.groupId());
                     activeLinkId = "";
+                    if (structuredClaim != null) {
+                        structuredClaimLocallyWithdrawn = true;
+                    }
                 }
                 case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> {
                     claimed = true;
@@ -314,38 +458,110 @@ public final class RegistryOperatorNetworkService {
         String verificationStatus = claimed ? "VERIFIED" : "NOT_SUBMITTED";
         String verificationSubmittedAt = "";
         String legalName = "";
+        String verificationCapability = "AVAILABLE";
+        String verificationUnavailableReason = null;
         if (structuredClaim != null) {
-            OperatorClaimStatusReceipt registryStatus = verifyClaimStatus(
-                    trusted,
-                    structuredClaim,
-                    httpClient.operatorClaimStatus(trusted.state().deploymentId()));
-            verificationStatus = registryStatus.verificationStatus();
-            verificationSubmittedAt = registryStatus.submittedAt();
-            legalName = registryStatus.legalName();
+            verificationStatus = structuredClaimLocallyWithdrawn
+                    ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                    : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW;
+            verificationSubmittedAt = structuredClaim.receipt().acceptedAt();
+            legalName = safeText(structuredClaim.legalName());
             operatorName = legalName;
+            try {
+                OperatorClaimStatusResponse response =
+                        httpClient.operatorClaimStatus(trusted.state().deploymentId());
+                OperatorClaimStatusReceipt registryStatus;
+                try {
+                    registryStatus = verifyClaimStatus(
+                            trusted,
+                            structuredClaim,
+                            response);
+                    requireMonotonicClaimStatus(
+                            loadVerifiedClaimStatusEvidence(trusted, journal),
+                            registryStatus);
+                    if (structuredClaimLocallyWithdrawn
+                            && !RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                                    .equals(registryStatus.verificationStatus())) {
+                        throw new IllegalArgumentException(
+                                "Registry claim status predates the durable local withdrawal.");
+                    }
+                } catch (IllegalArgumentException exception) {
+                    throw new RegistryProtocolException(
+                            "Registry returned an invalid or stale operator claim status.",
+                            exception);
+                }
+                localStore.saveOperatorClaimStatusReceipt(registryStatus);
+                verificationStatus = registryStatus.verificationStatus();
+                verificationSubmittedAt = registryStatus.submittedAt();
+                legalName = registryStatus.legalName();
+                operatorName = legalName;
+                if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                        .equals(verificationStatus)) {
+                    // A signed withdrawn state is also the recovery signal when
+                    // the central withdrawal committed but its action response
+                    // was lost before the local journal could be updated.
+                    claimed = false;
+                    claimedAt = "";
+                    currentGroupId = "";
+                    activeLinkId = "";
+                }
+            } catch (RegistryHttpClient.RegistryHttpException exception) {
+                if (!isUnsupportedClaimStatusEndpoint(exception)) {
+                    throw exception;
+                }
+                verificationCapability = "BACKEND_UNAVAILABLE";
+                verificationUnavailableReason =
+                        "operator.claim.verification.backend.unavailable";
+            }
+        } else {
+            try {
+                OperatorClaimStatusResponse unexpected =
+                        httpClient.operatorClaimStatus(trusted.state().deploymentId());
+                if (unexpected != null && unexpected.status() != null) {
+                    throw new IllegalStateException(
+                            "Registry reports a structured claim without a durable local claim receipt.");
+                }
+                throw new RegistryProtocolException(
+                        "Registry returned an incomplete operator claim capability response.");
+            } catch (RegistryHttpClient.RegistryHttpException exception) {
+                if (isUnsupportedClaimStatusEndpoint(exception)) {
+                    verificationCapability = "BACKEND_UNAVAILABLE";
+                    verificationUnavailableReason =
+                            "operator.claim.verification.backend.unavailable";
+                } else if (!isMissingStructuredClaim(exception)) {
+                    throw exception;
+                }
+            }
         }
         String shareNumerator = "0";
         String shareDenominator = "1";
         if (claimed && StringUtils.hasText(currentGroupId)) {
-            String cursor = "";
-            int pageCount = 0;
-            boolean found = false;
-            do {
-                if (++pageCount > 1_000) {
-                    throw new IllegalStateException(
-                            "Claimed operator group was not found within the bounded leaderboard scan.");
-                }
-                LeaderboardPage page = leaderboard("claimed", null, 100, cursor);
-                for (LeaderboardRow row : page.items()) {
-                    if (currentGroupId.equals(row.groupId())) {
-                        shareNumerator = row.shareNumerator();
-                        shareDenominator = row.shareDenominator();
-                        found = true;
+            try {
+                String cursor = "";
+                int pageCount = 0;
+                boolean found = false;
+                do {
+                    if (++pageCount > 1_000) {
                         break;
                     }
-                }
-                cursor = safeText(page.nextCursor());
-            } while (!found && !cursor.isEmpty());
+                    LeaderboardPage page = leaderboard("claimed", null, 100, cursor);
+                    for (LeaderboardRow row : page.items()) {
+                        if (currentGroupId.equals(row.groupId())) {
+                            shareNumerator = row.shareNumerator();
+                            shareDenominator = row.shareDenominator();
+                            found = true;
+                            break;
+                        }
+                    }
+                    cursor = safeText(page.nextCursor());
+                } while (!found && !cursor.isEmpty());
+            } catch (RegistryHttpClient.RegistryHttpException
+                    | RegistryProtocolException exception) {
+                // Share is optional enrichment. The independently verified
+                // claim status remains usable when leaderboard reads fail.
+                shareNumerator = "0";
+                shareDenominator = "1";
+            }
         }
         return new ClaimStatus(
                 claimed,
@@ -356,8 +572,8 @@ public final class RegistryOperatorNetworkService {
                 emptyToNull(activeLinkId),
                 shareNumerator,
                 shareDenominator,
-                "AVAILABLE",
-                null,
+                verificationCapability,
+                verificationUnavailableReason,
                 verificationStatus,
                 emptyToNull(verificationSubmittedAt),
                 emptyToNull(legalName));
@@ -394,14 +610,21 @@ public final class RegistryOperatorNetworkService {
                 includeExpired,
                 limit,
                 emptyToNull(safeText(cursor)));
-        List<PackageVerification> packageVerifications = verifyAnnouncementPage(
-                trusted,
-                normalizedKind,
-                normalizedSeverity,
-                normalizedChannel,
-                includeExpired,
-                suppliedCursor,
-                page);
+        List<PackageVerification> packageVerifications;
+        try {
+            packageVerifications = verifyAnnouncementPage(
+                    trusted,
+                    normalizedKind,
+                    normalizedSeverity,
+                    normalizedChannel,
+                    includeExpired,
+                    suppliedCursor,
+                    page);
+        } catch (IllegalArgumentException exception) {
+            throw new RegistryProtocolException(
+                    "Registry returned an invalid announcement page.",
+                    exception);
+        }
         return new AnnouncementOutcome(page, packageVerifications);
     }
 
@@ -742,7 +965,17 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry operator claim status response is incomplete or has a mismatched scope.");
         }
-        OperatorClaimStatusReceipt status = response.status();
+        return verifyClaimStatusReceipt(trusted, claim, response.status());
+    }
+
+    private OperatorClaimStatusReceipt verifyClaimStatusReceipt(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry claim,
+            OperatorClaimStatusReceipt status) {
+        if (status == null) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status receipt is missing.");
+        }
         RegistryProtocol.requireDeploymentId(status.deploymentId());
         RegistryProtocol.requireOperatorActionId(status.claimActionId());
         if (status.claimAuditIndex() == null || status.claimAuditIndex() <= 0L) {
@@ -810,6 +1043,111 @@ public final class RegistryOperatorNetworkService {
                     "Registry operator claim status signature is invalid.");
         }
         return status;
+    }
+
+    private OperatorClaimStatusReceipt loadVerifiedClaimStatusEvidence(
+            TrustedDeployment trusted,
+            List<OperatorActionJournalEntry> journal) {
+        OperatorClaimStatusReceipt stored =
+                localStore.loadOperatorClaimStatusReceipt().orElse(null);
+        if (stored == null) {
+            return null;
+        }
+        OperatorActionJournalEntry storedClaim = null;
+        for (OperatorActionJournalEntry entry : journal) {
+            if (isStructuredClaim(entry)
+                    && Objects.equals(
+                            entry.receipt().actionId(),
+                            stored.claimActionId())) {
+                storedClaim = entry;
+                break;
+            }
+        }
+        if (storedClaim == null) {
+            throw new IllegalStateException(
+                    "Durable claim status evidence has no matching local claim receipt.");
+        }
+        try {
+            return verifyClaimStatusReceipt(trusted, storedClaim, stored);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException(
+                    "Durable claim status evidence failed cryptographic verification.",
+                    exception);
+        }
+    }
+
+    private static void requireMonotonicClaimStatus(
+            OperatorClaimStatusReceipt previous,
+            OperatorClaimStatusReceipt incoming) {
+        if (previous == null) {
+            return;
+        }
+        boolean sameClaim = Objects.equals(
+                        previous.claimActionId(),
+                        incoming.claimActionId())
+                && Objects.equals(
+                        previous.claimAuditIndex(),
+                        incoming.claimAuditIndex())
+                && Objects.equals(
+                        previous.claimAuditHash(),
+                        incoming.claimAuditHash());
+        if (!sameClaim) {
+            if (incoming.claimAuditIndex() == null
+                    || previous.claimAuditIndex() == null
+                    || incoming.claimAuditIndex() <= previous.claimAuditIndex()) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim status rolled back to an older claim generation.");
+            }
+            return;
+        }
+
+        int previousRank = claimStatusRank(previous.verificationStatus());
+        int incomingRank = claimStatusRank(incoming.verificationStatus());
+        if (incomingRank < previousRank) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status regressed within the current claim generation.");
+        }
+        boolean previousHasReview = StringUtils.hasText(previous.reviewId());
+        boolean incomingHasReview = StringUtils.hasText(incoming.reviewId());
+        if (previousHasReview
+                && (!incomingHasReview
+                        || !Objects.equals(previous.reviewId(), incoming.reviewId())
+                        || !Objects.equals(previous.reviewIndex(), incoming.reviewIndex())
+                        || !Objects.equals(previous.reviewHash(), incoming.reviewHash())
+                        || !Objects.equals(previous.approvedAt(), incoming.approvedAt()))) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim review boundary changed or rolled back.");
+        }
+        if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                        .equals(previous.verificationStatus())
+                && (!RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                                .equals(incoming.verificationStatus())
+                        || previousHasReview != incomingHasReview)) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status changed after withdrawal.");
+        }
+    }
+
+    private static int claimStatusRank(String status) {
+        return switch (status) {
+            case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW -> 0;
+            case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED -> 1;
+            case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN -> 2;
+            default -> throw new IllegalArgumentException(
+                    "Registry operator claim verification status is unsupported.");
+        };
+    }
+
+    private static boolean isUnsupportedClaimStatusEndpoint(
+            RegistryHttpClient.RegistryHttpException exception) {
+        return exception.getStatusCode() == 404
+                && "not_found".equals(exception.getErrorCode());
+    }
+
+    private static boolean isMissingStructuredClaim(
+            RegistryHttpClient.RegistryHttpException exception) {
+        return exception.getStatusCode() == 404
+                && "operator_claim_not_found".equals(exception.getErrorCode());
     }
 
     private void verifyLeaderboardPage(

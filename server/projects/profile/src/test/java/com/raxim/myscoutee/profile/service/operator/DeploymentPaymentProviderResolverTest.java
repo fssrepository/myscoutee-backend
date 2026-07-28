@@ -20,8 +20,8 @@ class DeploymentPaymentProviderResolverTest {
     @Test
     void selectedProviderIsAuthoritativeWhenCallerOmitsIt() {
         Fixture fixture = fixture("barion", List.of(
-                new PaymentProviderDto("stripe", "Stripe"),
-                new PaymentProviderDto("barion", "Barion")));
+                provider("stripe", "Stripe"),
+                provider("barion", "Barion")));
 
         assertThat(fixture.resolver().resolveActiveProvider(null))
                 .isEqualTo("barion");
@@ -30,8 +30,8 @@ class DeploymentPaymentProviderResolverTest {
     @Test
     void callerCannotOverrideTheOperatorSelectedProvider() {
         Fixture fixture = fixture("barion", List.of(
-                new PaymentProviderDto("stripe", "Stripe"),
-                new PaymentProviderDto("barion", "Barion")));
+                provider("stripe", "Stripe"),
+                provider("barion", "Barion")));
 
         assertThatThrownBy(
                 () -> fixture.resolver().resolveActiveProvider("stripe"))
@@ -48,9 +48,9 @@ class DeploymentPaymentProviderResolverTest {
     @Test
     void missingOrDisabledSelectionFailsClosed() {
         Fixture missing = fixture(null, List.of(
-                new PaymentProviderDto("stripe", "Stripe")));
+                provider("stripe", "Stripe")));
         Fixture disabled = fixture("barion", List.of(
-                new PaymentProviderDto("stripe", "Stripe")));
+                provider("stripe", "Stripe")));
 
         assertUnavailable(
                 () -> missing.resolver().resolveActiveProvider(null),
@@ -79,6 +79,10 @@ class DeploymentPaymentProviderResolverTest {
         return new Fixture(new DeploymentPaymentProviderResolver(
                 repository,
                 providerService));
+    }
+
+    private PaymentProviderDto provider(String id, String label) {
+        return new PaymentProviderDto(id, label, null, null, "teal");
     }
 
     private void assertUnavailable(
