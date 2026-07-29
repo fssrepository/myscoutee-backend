@@ -203,7 +203,7 @@ public class OperatorNetworkMapper {
                 snapshot.snapshotHash());
     }
 
-    private OperatorLeaderboardRowDto toLeaderboardRow(LeaderboardRow row) {
+    public OperatorLeaderboardRowDto toLeaderboardRow(LeaderboardRow row) {
         return new OperatorLeaderboardRowDto(
                 row.rowId(),
                 row.view(),

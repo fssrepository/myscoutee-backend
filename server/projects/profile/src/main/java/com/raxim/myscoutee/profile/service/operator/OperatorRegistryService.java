@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +27,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.profile.data.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.CandidateDefaultsDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.NodeIdentityDto;
@@ -35,10 +37,18 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Regist
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
+import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionOutcome;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimStatus;
 import com.raxim.myscoutee.registry.RegistryPreflightService.RegistryInspection;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionReceipt;
 
 @Service
 public class OperatorRegistryService {
@@ -48,6 +58,8 @@ public class OperatorRegistryService {
     private final RegistryProperties realProperties;
     private final RegistryDemoProperties demoProperties;
     private final RegistryOperatorOperations operations;
+    private final RegistryOperatorNetworkOperations networkOperations;
+    private final OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
     private final OperatorRegistryEndpointService endpointService;
     private final OperatorRegistryMapper mapper;
     private final Clock clock;
@@ -60,6 +72,8 @@ public class OperatorRegistryService {
             RegistryProperties realProperties,
             RegistryDemoProperties demoProperties,
             RegistryOperatorOperations operations,
+            RegistryOperatorNetworkOperations networkOperations,
+            OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
             OperatorRegistryEndpointService endpointService,
             OperatorRegistryMapper mapper) {
         this(
@@ -67,6 +81,8 @@ public class OperatorRegistryService {
                 realProperties,
                 demoProperties,
                 operations,
+                networkOperations,
+                claimSubmissionRepository,
                 endpointService,
                 mapper,
                 Clock.systemUTC(),
@@ -78,6 +94,8 @@ public class OperatorRegistryService {
             RegistryProperties realProperties,
             RegistryDemoProperties demoProperties,
             RegistryOperatorOperations operations,
+            RegistryOperatorNetworkOperations networkOperations,
+            OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
             OperatorRegistryEndpointService endpointService,
             OperatorRegistryMapper mapper,
             Clock clock,
@@ -86,6 +104,9 @@ public class OperatorRegistryService {
         this.realProperties = Objects.requireNonNull(realProperties);
         this.demoProperties = Objects.requireNonNull(demoProperties);
         this.operations = Objects.requireNonNull(operations);
+        this.networkOperations = Objects.requireNonNull(networkOperations);
+        this.claimSubmissionRepository =
+                Objects.requireNonNull(claimSubmissionRepository);
         this.endpointService = Objects.requireNonNull(endpointService);
         this.mapper = Objects.requireNonNull(mapper);
         this.clock = Objects.requireNonNull(clock);
@@ -232,11 +253,58 @@ public class OperatorRegistryService {
         MongoSessionMode mode = currentMode();
         synchronized (modeLocks.get(mode)) {
             OperatorRegistrySettings settings = load().orElseGet(OperatorRegistrySettings::new);
-            String removedLeaderboardEntryId =
-                    Boolean.TRUE.equals(settings.getEnabled())
-                            && settings.getEnrollment() != null
-                            ? safeText(settings.getEnrollment().getDeploymentCode())
-                            : "";
+            LeaderboardRow remainingClaimedGroup = null;
+            LinkedHashSet<String> removedLeaderboardEntryIds =
+                    new LinkedHashSet<>();
+            if (requiresSignedDeactivation(settings)) {
+                RegistryProperties runtime = registeredRuntime(mode, settings);
+                String deploymentId =
+                        settings.getEnrollment().getDeploymentCode().trim();
+                ClaimStatus priorClaim = confirmedClaimStatus(runtime);
+                ActionOutcome outcome = confirmedDeactivation(
+                        runtime,
+                        deploymentId);
+                OperatorActionReceipt receipt = outcome.response().receipt();
+                String priorGroupId = safeText(priorClaim.groupId());
+                String receiptGroupId = safeText(receipt.groupId());
+                if (priorClaim.claimed()
+                        && (!RegistryProtocol.OPERATOR_CLAIM_STATE_WITHDRAWN
+                                        .equals(receipt.claimState())
+                                || !StringUtils.hasText(receiptGroupId))) {
+                    throw deactivationNotConfirmed(
+                            "Registry deactivation did not confirm withdrawal of the deployment claim.",
+                            null);
+                }
+                if (StringUtils.hasText(priorGroupId)
+                        && StringUtils.hasText(receiptGroupId)
+                        && !priorGroupId.equals(receiptGroupId)) {
+                    throw deactivationNotConfirmed(
+                            "Registry deactivation receipt changed the deployment's operator group.",
+                            null);
+                }
+                String groupId = StringUtils.hasText(receiptGroupId)
+                        ? receiptGroupId
+                        : priorGroupId;
+                if (StringUtils.hasText(groupId)) {
+                    remainingClaimedGroup =
+                            findClaimedLeaderboardRow(runtime, groupId);
+                    if (remainingClaimedGroup == null) {
+                        removedLeaderboardEntryIds.add(groupId);
+                    }
+                }
+                removedLeaderboardEntryIds.add(deploymentId);
+                claimSubmissionRepository.deleteById(
+                        OperatorClaimSubmissionSnapshot.SINGLETON_ID);
+            } else if (Boolean.TRUE.equals(settings.getEnabled())
+                    && (settings.getEnrollment() != null
+                            || "REGISTERED".equals(
+                                    settings.getLifecycle()))) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Registered deployment state is incomplete; the local registry connection "
+                                + "remains enabled.");
+            }
+
             Instant now = clock.instant();
             initializeAudit(settings, now);
             settings.setEnabled(false);
@@ -250,8 +318,132 @@ public class OperatorRegistryService {
             save(settings);
             return mapper.toDisconnectMutation(
                     toStatus(settings, mode),
-                    removedLeaderboardEntryId);
+                    remainingClaimedGroup,
+                    List.copyOf(removedLeaderboardEntryIds));
         }
+    }
+
+    private boolean requiresSignedDeactivation(
+            OperatorRegistrySettings settings) {
+        return Boolean.TRUE.equals(settings.getEnabled())
+                && settings.getSelection() != null
+                && settings.getEnrollment() != null
+                && StringUtils.hasText(
+                        settings.getEnrollment().getDeploymentCode());
+    }
+
+    private RegistryProperties registeredRuntime(
+            MongoSessionMode mode,
+            OperatorRegistrySettings settings) {
+        OperatorRegistrySettings.RegistrySelection selection =
+                settings.getSelection();
+        return runtimeProperties(
+                mode,
+                selection.getBaseUrl(),
+                selection.getRegistryScope(),
+                selection.getRegistryPublicKeyFingerprint(),
+                false);
+    }
+
+    private ClaimStatus confirmedClaimStatus(
+            RegistryProperties runtime) {
+        try {
+            ClaimStatus status =
+                    networkOperations.claimStatus(runtime);
+            if (status == null) {
+                throw new IllegalStateException(
+                        "Registry claim status is missing.");
+            }
+            return status;
+        } catch (RuntimeException exception) {
+            throw deactivationNotConfirmed(
+                    "Registry claim state could not be verified before deactivation.",
+                    exception);
+        }
+    }
+
+    private ActionOutcome confirmedDeactivation(
+            RegistryProperties runtime,
+            String deploymentId) {
+        try {
+            ActionOutcome outcome = networkOperations.apply(
+                    runtime,
+                    new ActionCommand(
+                            RegistryProtocol
+                                    .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null));
+            OperatorActionReceipt receipt = outcome == null
+                            || outcome.response() == null
+                    ? null
+                    : outcome.response().receipt();
+            if (receipt == null
+                    || !RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT
+                            .equals(receipt.action())
+                    || !deploymentId.equals(receipt.deploymentId())
+                    || !deploymentId.equals(receipt.subjectDeploymentId())) {
+                throw deactivationNotConfirmed(
+                        "Registry returned an inconsistent deployment deactivation receipt.",
+                        null);
+            }
+            return outcome;
+        } catch (ResponseStatusException exception) {
+            throw exception;
+        } catch (RuntimeException exception) {
+            throw deactivationNotConfirmed(
+                    "Registry did not confirm signed deployment deactivation.",
+                    exception);
+        }
+    }
+
+    private LeaderboardRow findClaimedLeaderboardRow(
+            RegistryProperties runtime,
+            String groupId) {
+        try {
+            String cursor = "";
+            int pageCount = 0;
+            do {
+                if (++pageCount > 1_000) {
+                    throw new IllegalStateException(
+                            "Registry claimed leaderboard pagination exceeded the safety limit.");
+                }
+                LeaderboardPage page = networkOperations.leaderboard(
+                        runtime,
+                        "claimed",
+                        null,
+                        100,
+                        cursor);
+                for (LeaderboardRow row : page.items()) {
+                    if (groupId.equals(row.groupId())) {
+                        return row;
+                    }
+                }
+                cursor = safeText(page.nextCursor());
+            } while (StringUtils.hasText(cursor));
+            return null;
+        } catch (RuntimeException exception) {
+            throw deactivationNotConfirmed(
+                    "Registry leaderboard state could not be verified after deactivation.",
+                    exception);
+        }
+    }
+
+    private ResponseStatusException deactivationNotConfirmed(
+            String detail,
+            RuntimeException cause) {
+        String message = detail
+                + " The local registry connection remains enabled and can be retried.";
+        return cause == null
+                ? new ResponseStatusException(HttpStatus.BAD_GATEWAY, message)
+                : new ResponseStatusException(
+                        HttpStatus.BAD_GATEWAY,
+                        message,
+                        cause);
     }
 
     private RegistryOperatorOperations.EnrollmentOutcome synchronizeLive(

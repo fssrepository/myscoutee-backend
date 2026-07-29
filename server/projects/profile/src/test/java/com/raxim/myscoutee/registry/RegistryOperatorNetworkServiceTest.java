@@ -514,6 +514,71 @@ class RegistryOperatorNetworkServiceTest {
     }
 
     @Test
+    void deactivationIsRetrySafeAndLocallyWithdrawsStaleApprovedClaimState()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry =
+                new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties =
+                    registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+            service.apply(structuredClaim("Deactivation Cooperative"));
+            registry.approvedClaimStatus = true;
+            assertThat(service.claimStatus().verificationStatus())
+                    .isEqualTo("APPROVED");
+            registry.loseFirstResponseForAction =
+                    RegistryProtocol
+                            .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT;
+            ActionCommand deactivate = new ActionCommand(
+                    RegistryProtocol
+                            .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            assertThatThrownBy(() -> service.apply(deactivate))
+                    .isInstanceOf(
+                            RegistryHttpClient
+                                    .RegistryHttpException.class);
+            RegistryOperatorNetworkService.ActionOutcome retry =
+                    service.apply(deactivate);
+
+            assertThat(retry.response().duplicate()).isTrue();
+            assertThat(registry.firstLostActionIdempotency.get())
+                    .startsWith("deactivate_")
+                    .isEqualTo(
+                            registry.lastRetriedActionIdempotency
+                                    .get());
+            registry.unsupportedClaimStatusEndpoint = true;
+            RegistryOperatorNetworkService restarted =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+            RegistryOperatorNetworkService.ClaimStatus status =
+                    restarted.claimStatus();
+
+            assertThat(status.claimed()).isFalse();
+            assertThat(status.groupId()).isNull();
+            assertThat(status.activeLinkId()).isNull();
+            assertThat(status.shareNumerator()).isEqualTo("0");
+            assertThat(status.shareDenominator()).isEqualTo("1");
+            assertThat(status.verificationStatus())
+                    .isEqualTo("WITHDRAWN");
+            assertThat(new RegistryLocalStore(properties, objectMapper)
+                            .loadOperatorActionJournal())
+                    .hasSize(2);
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
     void sameClaimPayloadAfterWithdrawalStartsANewIdempotencyGeneration()
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
@@ -1213,7 +1278,12 @@ class RegistryOperatorNetworkServiceTest {
                                             .OPERATOR_CLAIM_STATE_PENDING_REVIEW;
                             case RegistryProtocol
                                     .OPERATOR_ACTION_WITHDRAW_CLAIM ->
-                                            "withdrawn";
+                                            RegistryProtocol
+                                                    .OPERATOR_CLAIM_STATE_WITHDRAWN;
+                            case RegistryProtocol
+                                    .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT ->
+                                            RegistryProtocol
+                                                    .OPERATOR_CLAIM_STATE_WITHDRAWN;
                             default -> "claimed";
                         };
                 String linkId = tokenDerivedClaim
@@ -1317,8 +1387,12 @@ class RegistryOperatorNetworkServiceTest {
                             : "Token Source Cooperative");
                     approvedClaimStatus = false;
                     withdrawnClaimStatus = false;
-                } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM
-                        .equals(request.action())) {
+                } else if (Set.of(
+                                RegistryProtocol
+                                        .OPERATOR_ACTION_WITHDRAW_CLAIM,
+                                RegistryProtocol
+                                        .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT)
+                        .contains(request.action())) {
                     withdrawnClaimStatus = true;
                 }
                 boolean loseResponse = loseFirstClaimResponse && structuredClaim

@@ -56,6 +56,7 @@ public final class RegistryProtocol {
     public static final String OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT = "deactivate-deployment";
     public static final String OPERATOR_ACTION_REACTIVATE_DEPLOYMENT = "reactivate-deployment";
     public static final String OPERATOR_CLAIM_STATE_PENDING_REVIEW = "pending-review";
+    public static final String OPERATOR_CLAIM_STATE_WITHDRAWN = "withdrawn";
     public static final String OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW = "PENDING_REVIEW";
     public static final String OPERATOR_VERIFICATION_STATUS_APPROVED = "APPROVED";
     public static final String OPERATOR_VERIFICATION_STATUS_WITHDRAWN = "WITHDRAWN";

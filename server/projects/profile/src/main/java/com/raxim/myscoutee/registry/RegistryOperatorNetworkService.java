@@ -154,6 +154,14 @@ public final class RegistryOperatorNetworkService {
                     command,
                     clientTokenHash,
                     payloadHash);
+        } else if (Set.of(
+                        RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                        RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT)
+                .contains(command.action())) {
+            idempotencyKey = deterministicLifecycleActionIdempotencyKey(
+                    trusted,
+                    command.action(),
+                    payloadHash);
         } else {
             idempotencyKey = RegistryProtocol.randomToken("operator_", secureRandom);
         }
@@ -308,6 +316,50 @@ public final class RegistryOperatorNetworkService {
         return prefix + digest.substring("sha256:".length());
     }
 
+    private String deterministicLifecycleActionIdempotencyKey(
+            TrustedDeployment trusted,
+            String action,
+            String payloadHash) {
+        String generationBoundary = RegistryProtocol.ZERO_HASH;
+        String activeMatchingKey = "";
+        for (OperatorActionJournalEntry entry :
+                localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            if (!Set.of(
+                            RegistryProtocol
+                                    .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                            RegistryProtocol
+                                    .OPERATOR_ACTION_REACTIVATE_DEPLOYMENT)
+                    .contains(entry.action())) {
+                continue;
+            }
+            generationBoundary = entry.receipt().auditHash();
+            activeMatchingKey = action.equals(entry.action())
+                            && RegistryProtocol.hashEquals(
+                                    payloadHash,
+                                    entry.payloadHash())
+                    ? entry.idempotencyKey()
+                    : "";
+        }
+        if (StringUtils.hasText(activeMatchingKey)) {
+            return RegistryProtocol.requireToken(
+                    activeMatchingKey,
+                    "idempotency_key");
+        }
+        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+                "myscoutee-registry-operator-lifecycle-idempotency-v1",
+                trusted.state().registryScope(),
+                trusted.state().deploymentId(),
+                action,
+                generationBoundary,
+                payloadHash));
+        String prefix = RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT
+                        .equals(action)
+                ? "deactivate_"
+                : "reactivate_";
+        return prefix + digest.substring("sha256:".length());
+    }
+
     private String latestClaimGenerationReference(TrustedDeployment trusted) {
         OperatorActionJournalEntry latestClaim = null;
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
@@ -452,8 +504,18 @@ public final class RegistryOperatorNetworkService {
                         activeLinkId = "";
                     }
                 }
+                case RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT -> {
+                    claimed = false;
+                    claimedAt = "";
+                    currentGroupId = "";
+                    activeLinkId = "";
+                    if (claimVerificationBoundary != null) {
+                        claimVerificationLocallyWithdrawn = true;
+                    }
+                }
                 default -> {
-                    // Token and deployment-lifecycle actions do not change claim ownership.
+                    // Token issuance/revocation and reactivation do not restore
+                    // or otherwise change claim ownership.
                 }
             }
         }
@@ -475,7 +537,14 @@ public final class RegistryOperatorNetworkService {
             OperatorClaimStatusReceipt previousStatus =
                     loadVerifiedClaimStatusEvidence(trusted, journal);
             if (previousStatus != null) {
-                verificationStatus = previousStatus.verificationStatus();
+                if (!claimVerificationLocallyWithdrawn
+                        || RegistryProtocol
+                                .OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                                .equals(previousStatus
+                                        .verificationStatus())) {
+                    verificationStatus =
+                            previousStatus.verificationStatus();
+                }
                 verificationSubmittedAt = previousStatus.submittedAt();
                 legalName = previousStatus.legalName();
                 operatorName = legalName;
@@ -948,6 +1017,14 @@ public final class RegistryOperatorNetworkService {
                         || !StringUtils.hasText(receipt.groupId()))) {
             throw new IllegalArgumentException(
                     "Structured operator claim receipt is not pending review or has no group.");
+        }
+        if (RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT.equals(
+                        request.action())
+                && (StringUtils.hasText(receipt.groupId())
+                        != RegistryProtocol.OPERATOR_CLAIM_STATE_WITHDRAWN
+                                .equals(receipt.claimState()))) {
+            throw new IllegalArgumentException(
+                    "Deployment deactivation receipt has an inconsistent claim withdrawal boundary.");
         }
         if (StringUtils.hasText(receipt.tokenExpiresAt())) {
             RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");

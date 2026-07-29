@@ -47,7 +47,8 @@ class OperatorRegistryMapperTest {
                 "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         settings.setSelection(selection);
 
-        OperatorRegistryMapper mapper = new OperatorRegistryMapper();
+        OperatorRegistryMapper mapper =
+                new OperatorRegistryMapper(new OperatorNetworkMapper());
         var status = mapper.toStatus(
                 settings,
                 "REAL",

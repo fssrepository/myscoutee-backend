@@ -18,9 +18,17 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Regist
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistrySelectionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.SafeRegistryErrorDto;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
 
 @Component
 public class OperatorRegistryMapper {
+    private final OperatorNetworkMapper networkMapper;
+
+    public OperatorRegistryMapper(
+            OperatorNetworkMapper networkMapper) {
+        this.networkMapper = networkMapper;
+    }
+
     public OperatorRegistryStatusDto toStatus(
             OperatorRegistrySettings settings,
             String mode,
@@ -88,14 +96,21 @@ public class OperatorRegistryMapper {
 
     public OperatorRegistryMutationResultDto toDisconnectMutation(
             OperatorRegistryStatusDto status,
-            String removedLeaderboardEntryId) {
-        List<String> removedIds = removedLeaderboardEntryId == null
-                || removedLeaderboardEntryId.isBlank()
+            LeaderboardRow remainingClaimedGroup,
+            List<String> removedLeaderboardEntryIds) {
+        List<String> removedIds = removedLeaderboardEntryIds == null
                 ? List.of()
-                : List.of(removedLeaderboardEntryId.trim());
+                : removedLeaderboardEntryIds.stream()
+                        .filter(value -> value != null && !value.isBlank())
+                        .map(String::trim)
+                        .distinct()
+                        .toList();
         return new OperatorRegistryMutationResultDto(
                 status,
-                null,
+                remainingClaimedGroup == null
+                        ? null
+                        : networkMapper.toLeaderboardRow(
+                                remainingClaimedGroup),
                 removedIds,
                 false);
     }
