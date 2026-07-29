@@ -153,8 +153,10 @@ services:
     pull_policy: build
     restart: unless-stopped
     build:
-       context: .
-       dockerfile: docker/images/profilemanagement/prod/Dockerfile
+       # Deliberately expose only the compiled JAR to BuildKit. Runtime Mongo,
+       # registry, key, and secret directories must never enter this context.
+       context: projects/profile/build/libs
+       dockerfile: ../../../../docker/images/profilemanagement/prod/Dockerfile
        args:
          TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee

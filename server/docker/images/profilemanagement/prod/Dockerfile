@@ -12,7 +12,7 @@ RUN apk add --no-cache imagemagick && \
       /var/lib/myscoutee/update/requests \
       /var/lib/myscoutee/update/jobs
 
-COPY --chown=myscoutee:myscoutee projects/profile/build/libs/*.jar /app/spring-boot-application.jar
+COPY --chown=myscoutee:myscoutee *.jar /app/spring-boot-application.jar
 
 USER 10001:10001
 
