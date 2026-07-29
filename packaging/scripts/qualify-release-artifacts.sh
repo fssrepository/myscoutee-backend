@@ -40,6 +40,14 @@ EOF
   echo "Oldest-supported Debian package is missing or is a symbolic link." >&2
   exit 2
 }
+[[ "${CANDIDATE_DEB}" != "${OLDEST_SUPPORTED_DEB}" ]] || {
+  echo "Candidate and oldest-supported package paths must differ." >&2
+  exit 2
+}
+if [[ -e "${EVIDENCE_DIR}" && (! -d "${EVIDENCE_DIR}" || -L "${EVIDENCE_DIR}") ]]; then
+  echo "Evidence path must be a real directory, not a file or symbolic link." >&2
+  exit 2
+fi
 
 for command_name in docker dpkg dpkg-deb jq sha256sum stat uname; do
   command -v "${command_name}" >/dev/null 2>&1 || {
@@ -111,6 +119,10 @@ jq -e 'keys == ["8080/tcp"]' <<< "${registry_ports}" >/dev/null || {
   echo "Registry candidate image is not a Linux image." >&2
   exit 1
 }
+[[ "${registry_architecture}" == "${candidate_architecture}" ]] || {
+  echo "Registry image and candidate Debian architectures differ." >&2
+  exit 1
+}
 
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/myscoutee-release-artifacts.XXXXXX")"
 cleanup() {
@@ -119,10 +131,8 @@ cleanup() {
 trap cleanup EXIT
 
 candidate_root="${work_dir}/candidate"
-oldest_root="${work_dir}/oldest"
-install -d "${candidate_root}" "${oldest_root}"
+install -d "${candidate_root}"
 dpkg-deb -x "${CANDIDATE_DEB}" "${candidate_root}"
-dpkg-deb -x "${OLDEST_SUPPORTED_DEB}" "${oldest_root}"
 
 bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${candidate_root}"
 
@@ -163,6 +173,22 @@ source_commit="$(git -C "${REPO_ROOT}" rev-parse HEAD 2>/dev/null || true)"
 registry_source_commit="$(
   git -C "${REPO_ROOT}/../myscoutee-registry" rev-parse HEAD 2>/dev/null || true
 )"
+backend_dirty="$(
+  if [[ -n "$(git -C "${REPO_ROOT}" status --porcelain 2>/dev/null || true)" ]]; then
+    printf 'true'
+  else
+    printf 'false'
+  fi
+)"
+registry_dirty="$(
+  if [[ -n "$(
+    git -C "${REPO_ROOT}/../myscoutee-registry" status --porcelain 2>/dev/null || true
+  )" ]]; then
+    printf 'true'
+  else
+    printf 'false'
+  fi
+)"
 
 install -d -m 0750 "${EVIDENCE_DIR}"
 evidence_path="${EVIDENCE_DIR}/release-artifact-evidence.json"
@@ -173,6 +199,8 @@ jq -n \
   --arg generatedAt "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
   --arg sourceCommit "${source_commit}" \
   --arg registrySourceCommit "${registry_source_commit}" \
+  --argjson backendDirty "${backend_dirty}" \
+  --argjson registryDirty "${registry_dirty}" \
   --arg host "$(uname -srvmo)" \
   --arg candidatePath "${CANDIDATE_DEB}" \
   --arg candidateVersion "${candidate_version}" \
@@ -194,7 +222,10 @@ jq -n \
     generatedAt: $generatedAt,
     source: {
       backendCommit: $sourceCommit,
-      registryCommit: $registrySourceCommit
+      backendCheckoutDirty: $backendDirty,
+      registryCommit: $registrySourceCommit,
+      registryCheckoutDirty: $registryDirty,
+      binding: "checkout context only; package/image hashes are authoritative"
     },
     host: $host,
     artifacts: {
