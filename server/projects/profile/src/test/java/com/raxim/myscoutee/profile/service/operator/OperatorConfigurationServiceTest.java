@@ -545,7 +545,7 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
-    void firebaseActivationRequiresBothCurrentTestsAndPublishesOnlyClientData()
+    void firebaseActivationAllowsNoStorageBucketAndPublishesOnlyClientData()
             throws Exception {
         Fixture fixture = fixtureWithKey();
         fixture.service().update(updateRequest(
@@ -579,6 +579,7 @@ class OperatorConfigurationServiceTest {
                 .isEqualTo("community-project");
         assertThat(publicConfiguration.apiKey())
                 .isEqualTo("browser-api-key");
+        assertThat(publicConfiguration.storageBucket()).isEmpty();
         assertThat(publicConfiguration.vapidKey())
                 .isEqualTo("public-vapid-key");
         assertThat(publicConfiguration.toString())
