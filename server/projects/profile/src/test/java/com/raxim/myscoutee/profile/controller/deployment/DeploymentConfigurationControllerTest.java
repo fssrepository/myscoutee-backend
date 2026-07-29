@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService;
 
 class DeploymentConfigurationControllerTest {
@@ -64,5 +65,40 @@ class DeploymentConfigurationControllerTest {
                 .andExpect(jsonPath("$.credential").doesNotExist());
 
         verify(service).branding();
+    }
+
+    @Test
+    void publicFirebaseRouteReturnsOnlyBrowserBootstrapFields()
+            throws Exception {
+        OperatorConfigurationService service =
+                mock(OperatorConfigurationService.class);
+        when(service.publicFirebaseConfiguration()).thenReturn(
+                new FirebasePublicConfigurationDto(
+                        "browser-api-key",
+                        "community.firebaseapp.com",
+                        "community",
+                        "community.firebasestorage.app",
+                        "123456789",
+                        "1:123456789:web:abc",
+                        "",
+                        "public-vapid-key"));
+        var mockMvc = MockMvcBuilders
+                .standaloneSetup(
+                        new DeploymentConfigurationController(service))
+                .build();
+
+        mockMvc.perform(get(
+                        "/deployment/configuration/firebase-config"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.apiKey")
+                        .value("browser-api-key"))
+                .andExpect(jsonPath("$.projectId")
+                        .value("community"))
+                .andExpect(jsonPath("$.vapidKey")
+                        .value("public-vapid-key"))
+                .andExpect(jsonPath("$.credential").doesNotExist())
+                .andExpect(jsonPath("$.privateKey").doesNotExist());
+
+        verify(service).publicFirebaseConfiguration();
     }
 }

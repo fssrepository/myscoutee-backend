@@ -16,6 +16,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.D
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseConfigurationDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
@@ -44,7 +45,20 @@ public class OperatorConfigurationMapper {
             String unavailableReason) {
         DeploymentConfiguration.Payment payment = configuration.getPayment();
         DeploymentConfiguration.Firebase firebase = configuration.getFirebase();
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase.getPublicClient();
         boolean credentialConfigured = payment.getCredentialEnvelope() != null;
+        long firebaseRevision = firebase.getRevision() == null
+                ? 0L
+                : Math.max(0L, firebase.getRevision());
+        boolean readyToActivate =
+                firebase.getAuthenticationCredentialEnvelope() != null
+                && firebase.getMessagingCredentialEnvelope() != null
+                && completePublicConfiguration(firebase, publicClient)
+                && Long.valueOf(firebaseRevision).equals(
+                        firebase.getAuthenticationTestedRevision())
+                && Long.valueOf(firebaseRevision).equals(
+                        firebase.getMessagingTestedRevision());
         return new OperatorConfigurationDto(
                 StringUtils.hasText(unavailableReason)
                         ? "BACKEND_UNAVAILABLE"
@@ -63,8 +77,23 @@ public class OperatorConfigurationMapper {
                 new FirebaseConfigurationDto(
                         safeText(firebase.getProjectId()),
                         firebase.getAuthenticationCredentialEnvelope() != null,
-                        firebase.getMessagingCredentialEnvelope() != null),
+                        firebase.getMessagingCredentialEnvelope() != null,
+                        toPublicFirebaseConfiguration(firebase, publicClient),
+                        firebase.isActive(),
+                        readyToActivate,
+                        blankToNull(firebase.getAuthenticationTestedAt()),
+                        blankToNull(firebase.getMessagingTestedAt()),
+                        blankToNull(firebase.getActivatedAt())),
                 blankToNull(configuration.getUpdatedAt()));
+    }
+
+    public FirebasePublicConfigurationDto toPublicFirebaseConfiguration(
+            DeploymentConfiguration configuration) {
+        DeploymentConfiguration.Firebase firebase =
+                configuration.getFirebase();
+        return toPublicFirebaseConfiguration(
+                firebase,
+                firebase.getPublicClient());
     }
 
     public List<DeploymentSocialLinkDto> toSocialLinks(
@@ -131,6 +160,48 @@ public class OperatorConfigurationMapper {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private FirebasePublicConfigurationDto toPublicFirebaseConfiguration(
+            DeploymentConfiguration.Firebase firebase,
+            DeploymentConfiguration.FirebasePublicClient publicClient) {
+        return new FirebasePublicConfigurationDto(
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getApiKey()),
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getAuthDomain()),
+                safeText(firebase == null ? null : firebase.getProjectId()),
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getStorageBucket()),
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getMessagingSenderId()),
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getAppId()),
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getMeasurementId()),
+                safeText(publicClient == null
+                        ? null
+                        : publicClient.getVapidKey()));
+    }
+
+    private boolean completePublicConfiguration(
+            DeploymentConfiguration.Firebase firebase,
+            DeploymentConfiguration.FirebasePublicClient publicClient) {
+        return firebase != null
+                && publicClient != null
+                && StringUtils.hasText(firebase.getProjectId())
+                && StringUtils.hasText(publicClient.getApiKey())
+                && StringUtils.hasText(publicClient.getAuthDomain())
+                && StringUtils.hasText(publicClient.getStorageBucket())
+                && StringUtils.hasText(publicClient.getMessagingSenderId())
+                && StringUtils.hasText(publicClient.getAppId())
+                && StringUtils.hasText(publicClient.getVapidKey());
     }
 
     private String requiredSocialText(

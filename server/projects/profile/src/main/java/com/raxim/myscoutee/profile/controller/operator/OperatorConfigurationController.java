@@ -42,4 +42,9 @@ public class OperatorConfigurationController {
             @Valid @RequestBody ConfigurationTestRequestDto request) {
         return service.test(request);
     }
+
+    @PostMapping("/firebase/activate")
+    public OperatorConfigurationDto activateFirebase() {
+        return service.activateFirebase();
+    }
 }

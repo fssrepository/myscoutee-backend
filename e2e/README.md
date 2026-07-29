@@ -11,6 +11,26 @@ e2e/stress/ui           Browser performance/stability scenarios
 e2e/shared              Shared runner/assertion helpers
 ```
 
+## Java-to-Go QMAU/revenue qualification
+
+The registry repository owns the opt-in, no-stack cross-language runner:
+
+```bash
+cd ../myscoutee-registry
+./scripts/qualify-java-rails.sh
+```
+
+If the repositories are not siblings, set `MYSCOUTEE_BACKEND_ROOT` to this
+repository root. The runner builds the standalone Go registry and executes only
+`OperatorGoRegistryRailQualificationTest` against disposable SQLite, registry
+keys, Java deployment keys/state, and embedded Mongo.
+
+The gate covers accepted signed QMAU/revenue delivery, lost-receipt
+idempotency, Java outbox and Go database survival across service/process
+restarts, duplicate responses, correction/supersession, invalid Java
+signatures, and tampered Go receipt rejection. It does not start the backend
+application, Docker, Redis, npm, or the frontend.
+
 Each executable check lives in its own folder:
 
 ```text

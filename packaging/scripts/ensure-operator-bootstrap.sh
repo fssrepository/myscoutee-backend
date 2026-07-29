@@ -214,6 +214,7 @@ printf '%s\n' \
   'Initial deployment-local Operator credential (shown once):' \
   "  Email: ${operator_user}" \
   "  Password: ${password}" \
+  '  The password remains valid for later Operator logins until you explicitly replace or disable it.' \
   '  Protect terminal, package-manager, and automation logs that may capture this output.'
 
 upsert_value "${SECRETS_FILE}" "${PASSWORD_HASH_KEY}" "${password_hash}" 0600

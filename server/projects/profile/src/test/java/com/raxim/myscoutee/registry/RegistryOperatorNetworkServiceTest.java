@@ -436,6 +436,42 @@ class RegistryOperatorNetworkServiceTest {
     }
 
     @Test
+    void rejectedStatusPassesThroughWithoutInferringWithdrawalOrShare()
+            throws Exception {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+        try (TestOperatorRegistry registry =
+                new TestOperatorRegistry(objectMapper)) {
+            RegistryProperties properties =
+                    registeredProperties(registry, objectMapper);
+            RegistryOperatorNetworkService service =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+            service.apply(structuredClaim("Rejected Cooperative"));
+            registry.rejectedClaimStatus = true;
+
+            RegistryOperatorNetworkService.ClaimStatus status =
+                    service.claimStatus();
+
+            assertThat(status.verificationStatus()).isEqualTo("REJECTED");
+            assertThat(status.claimed()).isTrue();
+            assertThat(status.groupId()).isEqualTo(GROUP_ID);
+            assertThat(status.shareNumerator()).isEqualTo("0");
+            assertThat(status.shareDenominator()).isEqualTo("1");
+            assertThat(status.legalName())
+                    .isEqualTo("Rejected Cooperative");
+
+            RegistryOperatorNetworkService restarted =
+                    new RegistryOperatorNetworkService(
+                            properties,
+                            objectMapper);
+            assertThat(restarted.claimStatus().verificationStatus())
+                    .isEqualTo("REJECTED");
+            registry.assertHealthy();
+        }
+    }
+
+    @Test
     void rejectsSignedStatusRollbackAfterApprovalAndRestart() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
@@ -1069,6 +1105,7 @@ class RegistryOperatorNetworkServiceTest {
         private volatile boolean tamperClaimStatus;
         private volatile boolean loseFirstClaimResponse;
         private volatile boolean approvedClaimStatus;
+        private volatile boolean rejectedClaimStatus;
         private volatile boolean withdrawnClaimStatus;
         private volatile boolean failClaimStatusOnce;
         private volatile boolean failLeaderboard;
@@ -1386,6 +1423,7 @@ class RegistryOperatorNetworkServiceTest {
                             ? request.legalName()
                             : "Token Source Cooperative");
                     approvedClaimStatus = false;
+                    rejectedClaimStatus = false;
                     withdrawnClaimStatus = false;
                 } else if (Set.of(
                                 RegistryProtocol
@@ -1470,8 +1508,13 @@ class RegistryOperatorNetworkServiceTest {
                         ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         : approvedClaimStatus
                                 ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
-                                : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW;
-                boolean hasReview = approvedClaimStatus;
+                                : rejectedClaimStatus
+                                        ? RegistryProtocol
+                                                .OPERATOR_VERIFICATION_STATUS_REJECTED
+                                        : RegistryProtocol
+                                                .OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW;
+                boolean hasReview =
+                        approvedClaimStatus || rejectedClaimStatus;
                 OperatorClaimStatusReceipt unsigned = new OperatorClaimStatusReceipt(
                         DEPLOYMENT_ID,
                         claimReceipt.actionId(),
@@ -1488,7 +1531,9 @@ class RegistryOperatorNetworkServiceTest {
                         hasReview
                                 ? "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
                                 : RegistryProtocol.ZERO_HASH,
-                        hasReview ? "2026-07-28T00:00:04Z" : null,
+                        approvedClaimStatus
+                                ? "2026-07-28T00:00:04Z"
+                                : null,
                         SCOPE,
                         registryKeyId,
                         null);
@@ -1546,12 +1591,15 @@ class RegistryOperatorNetworkServiceTest {
                                 GROUP_ID,
                                 "Operator",
                                 null,
-                                "claimed",
+                                rejectedClaimStatus
+                                        ? RegistryProtocol
+                                                .OPERATOR_CLAIM_STATE_REJECTED
+                                        : "claimed",
                                 2L,
                                 "12345",
                                 "2",
-                                "7",
-                                "20")),
+                                rejectedClaimStatus ? "0" : "7",
+                                rejectedClaimStatus ? "1" : "20")),
                         cursor);
                 sendJson(exchange, 200, page);
             } catch (Throwable failure) {

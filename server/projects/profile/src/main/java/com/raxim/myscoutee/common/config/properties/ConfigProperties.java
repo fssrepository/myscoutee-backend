@@ -14,6 +14,7 @@ public class ConfigProperties {
     private boolean operatorBootstrapAllowInsecure;
     private String firebaseServiceAccountPath;
     private boolean firebaseEnabled = false;
+    private volatile boolean deploymentFirebaseEnabled = false;
     private boolean chatOnlyMode = false;
     private String devUser = "dev@myscoutee.local";
     private String facebookAppSecret = "";
@@ -78,11 +79,31 @@ public class ConfigProperties {
     }
 
     public boolean isFirebaseEnabled() {
-        return firebaseEnabled;
+        return firebaseEnabled || deploymentFirebaseEnabled;
     }
 
     public void setFirebaseEnabled(boolean firebaseEnabled) {
         this.firebaseEnabled = firebaseEnabled;
+    }
+
+    /**
+     * Returns the immutable startup flag used by the legacy file-backed
+     * Firebase bootstrap. Operator activation is deliberately excluded so a
+     * runtime deployment configuration never makes startup try to open the
+     * legacy service-account path.
+     */
+    public boolean isStartupFirebaseEnabled() {
+        return firebaseEnabled;
+    }
+
+    /**
+     * Publishes the active deployment capability to the existing feature
+     * gates. The authoritative credentials remain encrypted in MongoDB and are
+     * resolved by the runtime Firebase service; this flag contains no secret.
+     */
+    public void publishDeploymentFirebaseEnabled(
+            boolean deploymentFirebaseEnabled) {
+        this.deploymentFirebaseEnabled = deploymentFirebaseEnabled;
     }
 
     public boolean isChatOnlyMode() {

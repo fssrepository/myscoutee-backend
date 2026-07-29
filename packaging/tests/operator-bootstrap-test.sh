@@ -58,6 +58,10 @@ FIRST_PASSWORD="$(sed -n 's/^  Password: //p' <<< "${FIRST_OUTPUT}")"
   || fail "generated Operator email is invalid"
 [[ "${FIRST_PASSWORD}" =~ ^[0-9a-f]{64}$ ]] \
   || fail "generated Operator password is not a 256-bit printable value"
+grep -Fq \
+  'The password remains valid for later Operator logins until you explicitly replace or disable it.' \
+  <<< "${FIRST_OUTPUT}" \
+  || fail "bootstrap output does not explain that shown-once is not one-time-use"
 
 STORED_EMAIL="$(read_value OPERATOR_USER "${FIRST_FIXTURE}/myscoutee.env")"
 STORED_BOOTSTRAP_EMAIL="$(
@@ -261,6 +265,15 @@ grep -Fq 'MYSCOUTEE_BOOTSTRAP_OWNER_UID=0 \' "${POSTINST}" \
   || fail "postinst does not enforce root ownership for bootstrap files"
 grep -Fq 'MYSCOUTEE_BOOTSTRAP_OWNER_GID=0 \' "${POSTINST}" \
   || fail "postinst does not enforce the root group for bootstrap files"
+grep -Fq 'shown-once deployment-local Operator credential' "${POSTINST}" \
+  || fail "postinst does not distinguish shown-once from single-use"
+grep -Fq 'The password itself is not single-use' "${POSTINST}" \
+  || fail "postinst does not explain ongoing Operator bootstrap login"
+if grep -Fq \
+  'Add /etc/myscoutee/firebase-service-account.json' \
+  "${POSTINST}"; then
+  fail "postinst still requires a legacy external Firebase credential before login"
+fi
 grep -Fxq 'OPERATOR_BOOTSTRAP_EMAIL=' "${SOURCE_SECRETS_EXAMPLE}" \
   || fail "source production secrets example lacks the bootstrap subject placeholder"
 grep -Fxq 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256=' "${SOURCE_SECRETS_EXAMPLE}" \

@@ -1120,6 +1120,7 @@ public final class RegistryOperatorNetworkService {
         if (!Set.of(
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED,
+                        RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED,
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN)
                 .contains(status.verificationStatus())) {
             throw new IllegalArgumentException(
@@ -1129,12 +1130,15 @@ public final class RegistryOperatorNetworkService {
         if (hasReview) {
             RegistryProtocol.requireOperatorReviewId(status.reviewId());
             if (status.reviewIndex() == null || status.reviewIndex() <= 0L
-                    || RegistryProtocol.ZERO_HASH.equals(status.reviewHash())
-                    || !StringUtils.hasText(status.approvedAt())) {
+                    || RegistryProtocol.ZERO_HASH.equals(status.reviewHash())) {
                 throw new IllegalArgumentException(
                         "Registry operator claim review boundary is incomplete.");
             }
-            RegistryProtocol.requireUtcTimestamp(status.approvedAt(), "approved_at");
+            if (StringUtils.hasText(status.approvedAt())) {
+                RegistryProtocol.requireUtcTimestamp(
+                        status.approvedAt(),
+                        "approved_at");
+            }
         } else if ((status.reviewIndex() != null && status.reviewIndex() != 0L)
                 || !RegistryProtocol.ZERO_HASH.equals(status.reviewHash())
                 || StringUtils.hasText(status.approvedAt())) {
@@ -1143,9 +1147,15 @@ public final class RegistryOperatorNetworkService {
         }
         if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
                         .equals(status.verificationStatus())
-                && !hasReview) {
+                && (!hasReview || !StringUtils.hasText(status.approvedAt()))) {
             throw new IllegalArgumentException(
                     "Approved operator claim status has no signed review boundary.");
+        }
+        if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED
+                        .equals(status.verificationStatus())
+                && (!hasReview || StringUtils.hasText(status.approvedAt()))) {
+            throw new IllegalArgumentException(
+                    "Rejected operator claim status has an invalid signed review boundary.");
         }
         if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW
                         .equals(status.verificationStatus())
@@ -1270,6 +1280,7 @@ public final class RegistryOperatorNetworkService {
         return switch (status) {
             case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW -> 0;
             case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED -> 1;
+            case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED -> 1;
             case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN -> 2;
             default -> throw new IllegalArgumentException(
                     "Registry operator claim verification status is unsupported.");

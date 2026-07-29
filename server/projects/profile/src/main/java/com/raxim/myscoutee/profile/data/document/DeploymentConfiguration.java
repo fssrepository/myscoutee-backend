@@ -223,6 +223,14 @@ public class DeploymentConfiguration {
 
     public static class Firebase {
         private String projectId;
+        private Long revision;
+        private boolean active;
+        private Long authenticationTestedRevision;
+        private String authenticationTestedAt;
+        private Long messagingTestedRevision;
+        private String messagingTestedAt;
+        private String activatedAt;
+        private FirebasePublicClient publicClient;
         private EncryptedSecret authenticationCredentialEnvelope;
         private EncryptedSecret messagingCredentialEnvelope;
 
@@ -232,6 +240,74 @@ public class DeploymentConfiguration {
 
         public void setProjectId(String projectId) {
             this.projectId = projectId;
+        }
+
+        public Long getRevision() {
+            return revision;
+        }
+
+        public void setRevision(Long revision) {
+            this.revision = revision;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public Long getAuthenticationTestedRevision() {
+            return authenticationTestedRevision;
+        }
+
+        public void setAuthenticationTestedRevision(
+                Long authenticationTestedRevision) {
+            this.authenticationTestedRevision =
+                    authenticationTestedRevision;
+        }
+
+        public String getAuthenticationTestedAt() {
+            return authenticationTestedAt;
+        }
+
+        public void setAuthenticationTestedAt(
+                String authenticationTestedAt) {
+            this.authenticationTestedAt = authenticationTestedAt;
+        }
+
+        public Long getMessagingTestedRevision() {
+            return messagingTestedRevision;
+        }
+
+        public void setMessagingTestedRevision(
+                Long messagingTestedRevision) {
+            this.messagingTestedRevision = messagingTestedRevision;
+        }
+
+        public String getMessagingTestedAt() {
+            return messagingTestedAt;
+        }
+
+        public void setMessagingTestedAt(String messagingTestedAt) {
+            this.messagingTestedAt = messagingTestedAt;
+        }
+
+        public String getActivatedAt() {
+            return activatedAt;
+        }
+
+        public void setActivatedAt(String activatedAt) {
+            this.activatedAt = activatedAt;
+        }
+
+        public FirebasePublicClient getPublicClient() {
+            return publicClient;
+        }
+
+        public void setPublicClient(FirebasePublicClient publicClient) {
+            this.publicClient = publicClient;
         }
 
         public EncryptedSecret getAuthenticationCredentialEnvelope() {
@@ -250,6 +326,72 @@ public class DeploymentConfiguration {
         public void setMessagingCredentialEnvelope(
                 EncryptedSecret messagingCredentialEnvelope) {
             this.messagingCredentialEnvelope = messagingCredentialEnvelope;
+        }
+    }
+
+    public static class FirebasePublicClient {
+        private String apiKey;
+        private String authDomain;
+        private String storageBucket;
+        private String messagingSenderId;
+        private String appId;
+        private String measurementId;
+        private String vapidKey;
+
+        public String getApiKey() {
+            return apiKey;
+        }
+
+        public void setApiKey(String apiKey) {
+            this.apiKey = apiKey;
+        }
+
+        public String getAuthDomain() {
+            return authDomain;
+        }
+
+        public void setAuthDomain(String authDomain) {
+            this.authDomain = authDomain;
+        }
+
+        public String getStorageBucket() {
+            return storageBucket;
+        }
+
+        public void setStorageBucket(String storageBucket) {
+            this.storageBucket = storageBucket;
+        }
+
+        public String getMessagingSenderId() {
+            return messagingSenderId;
+        }
+
+        public void setMessagingSenderId(String messagingSenderId) {
+            this.messagingSenderId = messagingSenderId;
+        }
+
+        public String getAppId() {
+            return appId;
+        }
+
+        public void setAppId(String appId) {
+            this.appId = appId;
+        }
+
+        public String getMeasurementId() {
+            return measurementId;
+        }
+
+        public void setMeasurementId(String measurementId) {
+            this.measurementId = measurementId;
+        }
+
+        public String getVapidKey() {
+            return vapidKey;
+        }
+
+        public void setVapidKey(String vapidKey) {
+            this.vapidKey = vapidKey;
         }
     }
 

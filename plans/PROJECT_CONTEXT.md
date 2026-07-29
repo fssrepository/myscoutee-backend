@@ -42,9 +42,9 @@ deployment decisions that take precedence over older installer-first sketches.
 - Deployment receipts, claims, virtual operator groups, and eventual global
   identity linking are separate records. Grouping deployments never merges
   their node identities, users, receipts, or histories.
-- A pending claim remains visible as a yellow, under-review leaderboard row and
-  is excluded from approved-share allocation. The row uses the under-review
-  badge instead of an approved percentage.
+- A pending claim remains visible as a yellow leaderboard row with an
+  under-review marker and its measured percentage badge. The percentage is
+  indicative and is excluded from approved-share allocation until approval.
 - On the large operator action tile, the main action remains “Claim share”; only
   its secondary status text changes to “Under review” while approval is
   pending. These two UI rules are complementary.

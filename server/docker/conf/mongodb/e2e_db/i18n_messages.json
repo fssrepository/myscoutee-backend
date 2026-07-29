@@ -16512,6 +16512,54 @@
     "value": "Firebase project ID"
   },
   {
+    "_id": "i18n-message-en-operator-configuration-firebase-api-key",
+    "key": "operator.configuration.firebase.api.key",
+    "lang": "en",
+    "value": "Browser API key"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-auth-domain",
+    "key": "operator.configuration.firebase.auth.domain",
+    "lang": "en",
+    "value": "Authentication domain"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-storage-bucket",
+    "key": "operator.configuration.firebase.storage.bucket",
+    "lang": "en",
+    "value": "Storage bucket"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-messaging-sender-id",
+    "key": "operator.configuration.firebase.messaging.sender.id",
+    "lang": "en",
+    "value": "Messaging sender ID"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-app-id",
+    "key": "operator.configuration.firebase.app.id",
+    "lang": "en",
+    "value": "Browser app ID"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-measurement-id",
+    "key": "operator.configuration.firebase.measurement.id",
+    "lang": "en",
+    "value": "Measurement ID (optional)"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-vapid-key",
+    "key": "operator.configuration.firebase.vapid.key",
+    "lang": "en",
+    "value": "Web Push VAPID public key"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-public-guidance",
+    "key": "operator.configuration.firebase.public.guidance",
+    "lang": "en",
+    "value": "These browser identifiers are public client bootstrap data. Service-account credentials remain write-only."
+  },
+  {
     "_id": "i18n-message-en-operator-configuration-firebase-authentication-credential",
     "key": "operator.configuration.firebase.authentication.credential",
     "lang": "en",
@@ -16546,6 +16594,30 @@
     "key": "operator.configuration.firebase.saved",
     "lang": "en",
     "value": "Firebase configuration saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-activate",
+    "key": "operator.configuration.firebase.activate",
+    "lang": "en",
+    "value": "Activate Firebase"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-active",
+    "key": "operator.configuration.firebase.active",
+    "lang": "en",
+    "value": "Firebase active"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-activated",
+    "key": "operator.configuration.firebase.activated",
+    "lang": "en",
+    "value": "Firebase configuration activated."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-firebase-activation-not-ready",
+    "key": "operator.configuration.firebase.activation.not.ready",
+    "lang": "en",
+    "value": "Save the complete configuration and pass both Firebase tests before activation."
   },
   {
     "_id": "i18n-message-en-operator-configuration-credential-placeholder",
@@ -17068,6 +17140,84 @@
     "key": "operator.leaderboard.empty.description",
     "lang": "en",
     "value": "Verified nodes will appear here."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-title",
+    "key": "operator.leaderboard.deployments.title",
+    "lang": "en",
+    "value": "Operator deployments"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-subtitle",
+    "key": "operator.leaderboard.deployments.subtitle",
+    "lang": "en",
+    "value": "Deployments linked to this claimed operator group."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-open",
+    "key": "operator.leaderboard.deployments.open",
+    "lang": "en",
+    "value": "View operator deployments"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-empty",
+    "key": "operator.leaderboard.deployments.empty",
+    "lang": "en",
+    "value": "No linked deployments"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-empty-description",
+    "key": "operator.leaderboard.deployments.empty.description",
+    "lang": "en",
+    "value": "Linked deployments will appear here when the registry reports them."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-membership-owner",
+    "key": "operator.leaderboard.deployments.membership.owner",
+    "lang": "en",
+    "value": "Group owner"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-membership-linked",
+    "key": "operator.leaderboard.deployments.membership.linked",
+    "lang": "en",
+    "value": "Linked deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-claim-claimed",
+    "key": "operator.leaderboard.deployments.claim.claimed",
+    "lang": "en",
+    "value": "Claimed"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-claim-pending-review",
+    "key": "operator.leaderboard.deployments.claim.pending-review",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-claim-approved",
+    "key": "operator.leaderboard.deployments.claim.approved",
+    "lang": "en",
+    "value": "Approved"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-claim-withdrawn",
+    "key": "operator.leaderboard.deployments.claim.withdrawn",
+    "lang": "en",
+    "value": "Withdrawn"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-error-group-invalid",
+    "key": "operator.leaderboard.deployments.error.group.invalid",
+    "lang": "en",
+    "value": "The operator group identifier is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-error-response",
+    "key": "operator.leaderboard.deployments.error.response",
+    "lang": "en",
+    "value": "The registry returned deployments for a different operator group."
   },
   {
     "_id": "i18n-message-en-operator-leaderboard-error-pagination",
@@ -33630,6 +33780,54 @@
     "value": "Firebase projektazonosító"
   },
   {
+    "_id": "i18n-message-hu-operator-configuration-firebase-api-key",
+    "key": "operator.configuration.firebase.api.key",
+    "lang": "hu",
+    "value": "Böngésző API-kulcsa"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-auth-domain",
+    "key": "operator.configuration.firebase.auth.domain",
+    "lang": "hu",
+    "value": "Hitelesítési tartomány"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-storage-bucket",
+    "key": "operator.configuration.firebase.storage.bucket",
+    "lang": "hu",
+    "value": "Tároló"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-messaging-sender-id",
+    "key": "operator.configuration.firebase.messaging.sender.id",
+    "lang": "hu",
+    "value": "Üzenetküldő azonosítója"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-app-id",
+    "key": "operator.configuration.firebase.app.id",
+    "lang": "hu",
+    "value": "Böngészőalkalmazás azonosítója"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-measurement-id",
+    "key": "operator.configuration.firebase.measurement.id",
+    "lang": "hu",
+    "value": "Mérési azonosító (nem kötelező)"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-vapid-key",
+    "key": "operator.configuration.firebase.vapid.key",
+    "lang": "hu",
+    "value": "Web Push VAPID nyilvános kulcs"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-public-guidance",
+    "key": "operator.configuration.firebase.public.guidance",
+    "lang": "hu",
+    "value": "Ezek nyilvános böngésző-konfigurációs adatok. A szolgáltatásfiók hitelesítő adatai csak írhatók."
+  },
+  {
     "_id": "i18n-message-hu-operator-configuration-firebase-authentication-credential",
     "key": "operator.configuration.firebase.authentication.credential",
     "lang": "hu",
@@ -33664,6 +33862,30 @@
     "key": "operator.configuration.firebase.saved",
     "lang": "hu",
     "value": "A Firebase konfiguráció elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-activate",
+    "key": "operator.configuration.firebase.activate",
+    "lang": "hu",
+    "value": "Firebase aktiválása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-active",
+    "key": "operator.configuration.firebase.active",
+    "lang": "hu",
+    "value": "Firebase aktív"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-activated",
+    "key": "operator.configuration.firebase.activated",
+    "lang": "hu",
+    "value": "A Firebase konfiguráció aktiválva."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-firebase-activation-not-ready",
+    "key": "operator.configuration.firebase.activation.not.ready",
+    "lang": "hu",
+    "value": "Mentsd el a teljes konfigurációt, majd aktiválás előtt teljesítsd mindkét Firebase-tesztet."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-credential-placeholder",
@@ -34186,6 +34408,84 @@
     "key": "operator.leaderboard.empty.description",
     "lang": "hu",
     "value": "Az ellenőrzött csomópontok itt jelennek meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-title",
+    "key": "operator.leaderboard.deployments.title",
+    "lang": "hu",
+    "value": "Operátori telepítések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-subtitle",
+    "key": "operator.leaderboard.deployments.subtitle",
+    "lang": "hu",
+    "value": "Az ehhez az igényelt operátori csoporthoz kapcsolt telepítések."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-open",
+    "key": "operator.leaderboard.deployments.open",
+    "lang": "hu",
+    "value": "Operátori telepítések megtekintése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-empty",
+    "key": "operator.leaderboard.deployments.empty",
+    "lang": "hu",
+    "value": "Nincs kapcsolt telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-empty-description",
+    "key": "operator.leaderboard.deployments.empty.description",
+    "lang": "hu",
+    "value": "A kapcsolt telepítések akkor jelennek meg itt, amikor a nyilvántartás jelenti őket."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-membership-owner",
+    "key": "operator.leaderboard.deployments.membership.owner",
+    "lang": "hu",
+    "value": "Csoporttulajdonos"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-membership-linked",
+    "key": "operator.leaderboard.deployments.membership.linked",
+    "lang": "hu",
+    "value": "Kapcsolt telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-claim-claimed",
+    "key": "operator.leaderboard.deployments.claim.claimed",
+    "lang": "hu",
+    "value": "Igényelt"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-claim-pending-review",
+    "key": "operator.leaderboard.deployments.claim.pending-review",
+    "lang": "hu",
+    "value": "Ellenőrzés alatt"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-claim-approved",
+    "key": "operator.leaderboard.deployments.claim.approved",
+    "lang": "hu",
+    "value": "Jóváhagyva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-claim-withdrawn",
+    "key": "operator.leaderboard.deployments.claim.withdrawn",
+    "lang": "hu",
+    "value": "Visszavonva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-error-group-invalid",
+    "key": "operator.leaderboard.deployments.error.group.invalid",
+    "lang": "hu",
+    "value": "Az operátori csoport azonosítója érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-error-response",
+    "key": "operator.leaderboard.deployments.error.response",
+    "lang": "hu",
+    "value": "A nyilvántartás egy másik operátori csoport telepítéseit adta vissza."
   },
   {
     "_id": "i18n-message-hu-operator-leaderboard-error-pagination",

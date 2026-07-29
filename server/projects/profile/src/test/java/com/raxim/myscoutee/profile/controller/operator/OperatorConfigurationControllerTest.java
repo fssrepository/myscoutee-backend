@@ -75,9 +75,13 @@ class OperatorConfigurationControllerTest {
                                 {"kind":"FIREBASE_MESSAGING"}
                                 """))
                 .andExpect(status().isOk());
+        mockMvc.perform(post(
+                        "/operator/configuration/firebase/activate"))
+                .andExpect(status().isOk());
 
         verify(service).configuration();
         verify(service).update(any(OperatorConfigurationUpdateDto.class));
         verify(service).test(any(ConfigurationTestRequestDto.class));
+        verify(service).activateFirebase();
     }
 }

@@ -80,6 +80,8 @@ public class WebSecurityConfig {
                             "/api/i18n/bundle",
                             "/deployment/configuration",
                             "/api/deployment/configuration",
+                            "/deployment/configuration/firebase-config",
+                            "/api/deployment/configuration/firebase-config",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",

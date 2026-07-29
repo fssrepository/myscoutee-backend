@@ -44,11 +44,12 @@ Status: implemented and under integration validation.
 - Signed, fail-closed deployment disconnect: central deactivation and claim
   withdrawal are confirmed before the active local binding is archived/reset.
 - Cursor-paginated founder, claimed, and unclaimed leaderboard views.
-- Pending claims remain visible as yellow under-review rows and are excluded
-  from approved-share allocation; the row's badge says `Under review` instead
-  of presenting an approved percentage. Independently, the large workspace
-  action keeps `Claim share` as its primary label and changes only its
-  secondary status to `Under review`.
+- Pending claims remain visible as yellow rows with an `Under review` marker
+  and retain their measured percentage badge for transparency. That
+  percentage is indicative only and is excluded from approved-share
+  allocation until approval. Independently, the large workspace action keeps
+  `Claim share` as its primary label and changes only its secondary status to
+  `Under review`.
 - Registration, claim, deactivation, and client-code responses carry targeted
   canonical leaderboard upserts, removals, and a net row-count delta so the
   shared signal store patches and reorders cached rows without reloading the
@@ -85,8 +86,12 @@ model.
   copy, not a hidden operator-editable branding field.
 - Production payment-provider catalog seeded from the implemented processors;
   the operator selects a provider and stores a write-only credential.
-- Firebase credential registration and real capability checks, without silently
-  changing the application's Firebase identity model in this phase.
+- Firebase public browser configuration plus separate write-only authentication
+  and messaging service-account credentials. Saving creates a new inactive
+  revision; both real capability checks must attest that exact revision before
+  a distinct Operator action can activate it. Runtime token verification and
+  notification delivery then use the encrypted active deployment revision,
+  while the deployment-local bootstrap recovery login remains available.
 - Community-provider links are deployment-owned Mongo catalog data. Explore and
   `demo_db` may seed Discord/Discourse examples, while a production deployment
   may intentionally expose an empty provider list; signed announcements still
@@ -203,6 +208,16 @@ Exit criteria:
 
 ## Phase 6 — fraud, claims, and exit audit
 
+Status: the signed claim, independent review, client-code grouping,
+deactivation/withdrawal, immutable audit, direct query-state verification, and
+indicative share foundation are implemented. The registry-local anomaly/case
+rail also supports signed, hash-linked flag/clear events and
+same-transaction query rows without changing eligibility. Rejection,
+suspension, reinstatement, disputes, ownership transfer, evidence policy, exit
+record-date freezing, buyer/auditor decisions, and final legal allocation
+remain open. Contract-dependent payout and valuation rules are deliberately
+not inferred.
+
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and
   eligibility change in the append-only ledger.
 - Add anomaly flags without rewriting measured history.
@@ -226,6 +241,10 @@ Exit criteria:
 
 ## Phase 8 — signed update channel
 
+Status: implemented at the package/control-plane boundary. Release-artifact,
+oldest-supported-version, interruption, restore, and host-operational drills
+remain part of Phase 9 production qualification.
+
 - Registry-signed announcement and release manifest.
 - Operator reviews the verified URL/version and explicitly approves.
 - Java downloads and verifies; a narrow root worker installs only the verified
@@ -237,6 +256,10 @@ Exit criteria:
   Java and nginx services.
 
 ## Phase 9 — production qualification
+
+Status: open. Unit and integration coverage exists, but the complete
+release-artifact compatibility matrix and operational drill set is not yet a
+release sign-off.
 
 - Protocol compatibility matrix for Java, Go, frontend, package, and schema
   versions.

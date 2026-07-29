@@ -427,6 +427,50 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
+    void firebaseActivationRequiresBothCurrentTestsAndPublishesOnlyClientData()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        fixture.service().update(updateRequest(
+                "Product",
+                "/media/public?key=images%2Flogo",
+                "stripe",
+                "payment-secret",
+                "{\"type\":\"service_account\",\"private_key\":\"authentication-secret\"}",
+                "{\"type\":\"service_account\",\"private_key\":\"messaging-secret\"}"));
+
+        assertThatThrownBy(fixture.service()::activateFirebase)
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> assertThat(exception.getStatusCode())
+                                .isEqualTo(HttpStatus.CONFLICT));
+
+        fixture.service().test(new ConfigurationTestRequestDto(
+                ConfigurationTestKind.FIREBASE_AUTHENTICATION));
+        fixture.service().test(new ConfigurationTestRequestDto(
+                ConfigurationTestKind.FIREBASE_MESSAGING,
+                "destination-token"));
+
+        var activated = fixture.service().activateFirebase();
+        var publicConfiguration =
+                fixture.service().publicFirebaseConfiguration();
+
+        assertThat(activated.firebase().active()).isTrue();
+        assertThat(activated.firebase().readyToActivate()).isTrue();
+        assertThat(activated.firebase().activatedAt())
+                .isEqualTo("2026-07-28T12:34:56Z");
+        assertThat(publicConfiguration.projectId())
+                .isEqualTo("community-project");
+        assertThat(publicConfiguration.apiKey())
+                .isEqualTo("browser-api-key");
+        assertThat(publicConfiguration.vapidKey())
+                .isEqualTo("public-vapid-key");
+        assertThat(publicConfiguration.toString())
+                .doesNotContain("private_key")
+                .doesNotContain("authentication-secret")
+                .doesNotContain("messaging-secret");
+    }
+
+    @Test
     void firebaseTestFailuresAreSafeAndMessagingRequiresExplicitDestination()
             throws Exception {
         Fixture fixture = fixtureWithKey();
@@ -635,6 +679,13 @@ class OperatorConfigurationServiceTest {
                 new PaymentUpdateDto(providerId, paymentCredential),
                 new FirebaseUpdateDto(
                         "community-project",
+                        "browser-api-key",
+                        "community-project.firebaseapp.com",
+                        "community-project.firebasestorage.app",
+                        "123456789",
+                        "1:123456789:web:community",
+                        "G-COMMUNITY",
+                        "public-vapid-key",
                         authenticationCredential,
                         messagingCredential));
     }

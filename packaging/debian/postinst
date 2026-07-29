@@ -421,21 +421,22 @@ cat <<'MESSAGE'
 MyScoutee is installed.
 
 Before first start:
-  1. Save the one-time deployment-local Operator credential printed above,
+  1. Save the shown-once deployment-local Operator credential printed above,
      or review the OPERATOR_USER identity you supplied before installation
   2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)
-  3. Add /etc/myscoutee/firebase-service-account.json (root:10001, mode 0640) if Firebase is enabled
-  4. Run: systemctl start myscoutee
+  3. Run: systemctl start myscoutee
 
 No production administrator email is packaged. After the initial Operator
-login, configure the deployment's administrator emails in the Operator
-Configuration screen.
+login, configure Firebase and the deployment's administrator emails in the
+Operator Configuration screen.
 
 The bootstrap password is never deliberately persisted or printed again. Its
 generated subject and SHA-256 hash are kept in the root-only secrets file. The
-one-time terminal output may be retained by package-manager or automation logs,
-so protect those logs. This local credential remains available for ongoing
-Operator login; configuring Firebase does not automatically replace it.
+shown-once terminal output may be retained by package-manager or automation
+logs, so protect those logs. The password itself is not single-use: this local
+credential remains available for ongoing Operator login until it is explicitly
+replaced or disabled, and configuring Firebase does not automatically replace
+it.
 
 Registry participation is not selected during installation. The authenticated
 operator workflow inspects a chosen registry, requests explicit confirmation,

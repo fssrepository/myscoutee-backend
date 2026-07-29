@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService;
 
 @RestController
@@ -19,5 +20,10 @@ public class DeploymentConfigurationController {
     @GetMapping
     public DeploymentBrandingDto configuration() {
         return service.branding();
+    }
+
+    @GetMapping("/firebase-config")
+    public FirebasePublicConfigurationDto firebaseConfiguration() {
+        return service.publicFirebaseConfiguration();
     }
 }

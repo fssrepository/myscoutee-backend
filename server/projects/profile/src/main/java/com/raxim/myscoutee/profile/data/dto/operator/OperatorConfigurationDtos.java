@@ -71,10 +71,28 @@ public final class OperatorConfigurationDtos {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
+    public record FirebasePublicConfigurationDto(
+            String apiKey,
+            String authDomain,
+            String projectId,
+            String storageBucket,
+            String messagingSenderId,
+            String appId,
+            String measurementId,
+            String vapidKey) {
+    }
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     public record FirebaseConfigurationDto(
             String projectId,
             boolean authenticationCredentialConfigured,
-            boolean messagingCredentialConfigured) {
+            boolean messagingCredentialConfigured,
+            FirebasePublicConfigurationDto publicConfiguration,
+            boolean active,
+            boolean readyToActivate,
+            String authenticationTestedAt,
+            String messagingTestedAt,
+            String activatedAt) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -118,10 +136,33 @@ public final class OperatorConfigurationDtos {
 
     public record FirebaseUpdateDto(
             @Size(max = 160) String projectId,
+            @Size(max = 256) String apiKey,
+            @Size(max = 253) String authDomain,
+            @Size(max = 512) String storageBucket,
+            @Size(max = 64) String messagingSenderId,
+            @Size(max = 256) String appId,
+            @Size(max = 64) String measurementId,
+            @Size(max = 512) String vapidKey,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
             @Size(max = 65536) String authenticationCredential,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
             @Size(max = 65536) String messagingCredential) {
+        public FirebaseUpdateDto(
+                String projectId,
+                String authenticationCredential,
+                String messagingCredential) {
+            this(
+                    projectId,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    authenticationCredential,
+                    messagingCredential);
+        }
     }
 
     public record OperatorConfigurationUpdateDto(

@@ -261,7 +261,11 @@ provider credentials:
   release metadata are not credentials and may be packaged. Firebase web-client
   identifiers (including its browser API key) and the VAPID public key are also
   public client bootstrap data; they grant no server authority and are separate
-  from the Firebase service-account private key and provider tokens.
+  from the Firebase service-account private key and provider tokens. MyScoutee
+  stores those public Firebase fields with deployment configuration and serves
+  them from the backend only after the Operator explicitly activates a
+  successfully tested Firebase revision; the frontend does not load a packaged
+  live Firebase configuration.
 - Operator and administrator email addresses are authorization identifiers,
   not secrets. They are nevertheless deployment-owner data, so the generic
   package does not nominate any real operator or administrator. The initial
@@ -270,8 +274,10 @@ provider credentials:
   administrator emails are then maintained as mutable deployment configuration
   through the authenticated Operator workspace.
 - The deployment-local bootstrap password is a 256-bit random printable value,
-  shown once by `postinst`. Its generated subject and lowercase SHA-256 digest
-  are written together to root-only
+  shown once by `postinst`. “Shown once” describes disclosure only: the same
+  password remains valid for later local Operator logins until the deployment
+  owner deliberately replaces or disables that bootstrap access. Its generated
+  subject and lowercase SHA-256 digest are written together to root-only
   `/etc/myscoutee/myscoutee.secrets.env`; Java accepts the digest only when that
   subject exactly equals the sole `OPERATOR_USER`. SHA-256 is appropriate for
   this narrow bootstrap because the input is generated with full cryptographic
@@ -279,8 +285,9 @@ provider credentials:
   persists the plaintext in configuration, images, process arguments, or
   outbound traffic. The explicitly requested terminal print can nevertheless
   be retained by package-manager, terminal, or automation logs, so those logs
-  must be protected. Re-running the installer preserves the subject and digest
-  and prints nothing.
+  must be protected. Activating operator-supplied Firebase does not silently
+  disable this recovery login. Re-running the installer preserves the subject
+  and digest and prints nothing.
 
 `package-production.sh` fails closed if an external credential file, a
 non-empty external-provider value, or private-key material appears in the
@@ -415,7 +422,13 @@ the original subject and digest, warns, and lets the package upgrade continue
 instead of rotating or attaching them to the new identity.
 
 Once authenticated, the operator configures Firebase and the dedicated
-administrator emails in the Configuration screen. Administrator addresses are
+administrator emails in the Configuration screen. Saving Firebase stages the
+configuration but does not switch live authentication or messaging. The
+operator must complete the real authentication and test-notification checks,
+then use the separate activation action; rotating any Firebase field or
+service-account credential invalidates those checks and deactivates that
+revision. The deployment-local bootstrap login remains available throughout.
+Administrator addresses are
 persisted in the deployment database and are not supplied by a packaged
 `ADMIN_USER` fallback. Administrator authority still does not imply Operator
 authority.

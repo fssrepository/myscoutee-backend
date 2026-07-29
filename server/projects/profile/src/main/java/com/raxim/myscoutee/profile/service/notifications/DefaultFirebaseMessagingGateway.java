@@ -5,28 +5,35 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.google.firebase.messaging.BatchResponse;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.SendResponse;
+import com.raxim.myscoutee.profile.service.operator.DeploymentFirebaseRuntime;
 
 @Service
 public class DefaultFirebaseMessagingGateway implements FirebaseMessagingGateway {
+    private final DeploymentFirebaseRuntime firebaseRuntime;
+
+    public DefaultFirebaseMessagingGateway(
+            DeploymentFirebaseRuntime firebaseRuntime) {
+        this.firebaseRuntime = firebaseRuntime;
+    }
+
     @Override
     public void send(Message message) throws FirebaseMessagingException {
-        FirebaseMessaging.getInstance().send(message);
+        firebaseRuntime.messaging().send(message);
     }
 
     @Override
     public FirebaseMessagingGateway.FirebaseBatchSendResult sendAll(List<Message> messages, List<String> tokens) throws FirebaseMessagingException {
-        return toResult(FirebaseMessaging.getInstance().sendAll(messages));
+        return toResult(firebaseRuntime.messaging().sendAll(messages));
     }
 
     @Override
     public FirebaseMessagingGateway.FirebaseBatchSendResult sendMulticast(MulticastMessage message, List<String> tokens) throws FirebaseMessagingException {
-        return toResult(FirebaseMessaging.getInstance().sendMulticast(message));
+        return toResult(firebaseRuntime.messaging().sendMulticast(message));
     }
 
     private FirebaseMessagingGateway.FirebaseBatchSendResult toResult(BatchResponse response) {

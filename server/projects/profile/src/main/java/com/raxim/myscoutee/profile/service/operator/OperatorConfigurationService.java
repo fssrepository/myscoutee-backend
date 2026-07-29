@@ -31,6 +31,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.C
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
@@ -53,6 +54,13 @@ public class OperatorConfigurationService {
     private static final int PROVIDER_ID_MAX = 64;
     private static final int PAYMENT_CREDENTIAL_MAX = 16384;
     private static final int FIREBASE_PROJECT_ID_MAX = 160;
+    private static final int FIREBASE_API_KEY_MAX = 256;
+    private static final int FIREBASE_AUTH_DOMAIN_MAX = 253;
+    private static final int FIREBASE_STORAGE_BUCKET_MAX = 512;
+    private static final int FIREBASE_MESSAGING_SENDER_ID_MAX = 64;
+    private static final int FIREBASE_APP_ID_MAX = 256;
+    private static final int FIREBASE_MEASUREMENT_ID_MAX = 64;
+    private static final int FIREBASE_VAPID_KEY_MAX = 512;
     private static final int FIREBASE_CREDENTIAL_MAX = 65536;
     private static final int ADMIN_EMAIL_MAX = 254;
     private static final int ADMIN_EMAIL_COUNT_MAX = 32;
@@ -68,6 +76,7 @@ public class OperatorConfigurationService {
     private final OperatorConfigurationMapper mapper;
     private final DeploymentConfigurationCrypto crypto;
     private final OperatorFirebaseCapabilityClient firebaseCapabilityClient;
+    private final DeploymentFirebaseRuntime firebaseRuntime;
     private final Clock clock;
     private final EnumMap<MongoSessionMode, Object> modeLocks =
             new EnumMap<>(MongoSessionMode.class);
@@ -79,7 +88,8 @@ public class OperatorConfigurationService {
             PaymentProviderService paymentProviderService,
             OperatorConfigurationMapper mapper,
             DeploymentConfigurationCrypto crypto,
-            OperatorFirebaseCapabilityClient firebaseCapabilityClient) {
+            OperatorFirebaseCapabilityClient firebaseCapabilityClient,
+            DeploymentFirebaseRuntime firebaseRuntime) {
         this(
                 repository,
                 appSettingsService,
@@ -87,7 +97,8 @@ public class OperatorConfigurationService {
                 mapper,
                 crypto,
                 Clock.systemUTC(),
-                firebaseCapabilityClient);
+                firebaseCapabilityClient,
+                firebaseRuntime);
     }
 
     OperatorConfigurationService(
@@ -104,7 +115,8 @@ public class OperatorConfigurationService {
                 mapper,
                 crypto,
                 clock,
-                unavailableFirebaseCapabilityClient());
+                unavailableFirebaseCapabilityClient(),
+                null);
     }
 
     OperatorConfigurationService(
@@ -115,6 +127,26 @@ public class OperatorConfigurationService {
             DeploymentConfigurationCrypto crypto,
             Clock clock,
             OperatorFirebaseCapabilityClient firebaseCapabilityClient) {
+        this(
+                repository,
+                appSettingsService,
+                paymentProviderService,
+                mapper,
+                crypto,
+                clock,
+                firebaseCapabilityClient,
+                null);
+    }
+
+    OperatorConfigurationService(
+            DeploymentConfigurationRepository repository,
+            AppSettingsService appSettingsService,
+            PaymentProviderService paymentProviderService,
+            OperatorConfigurationMapper mapper,
+            DeploymentConfigurationCrypto crypto,
+            Clock clock,
+            OperatorFirebaseCapabilityClient firebaseCapabilityClient,
+            DeploymentFirebaseRuntime firebaseRuntime) {
         this.repository = Objects.requireNonNull(repository);
         this.appSettingsService = Objects.requireNonNull(appSettingsService);
         this.paymentProviderService = Objects.requireNonNull(paymentProviderService);
@@ -123,6 +155,7 @@ public class OperatorConfigurationService {
         this.clock = Objects.requireNonNull(clock);
         this.firebaseCapabilityClient =
                 Objects.requireNonNull(firebaseCapabilityClient);
+        this.firebaseRuntime = firebaseRuntime;
         for (MongoSessionMode mode : MongoSessionMode.values()) {
             modeLocks.put(mode, new Object());
         }
@@ -132,6 +165,40 @@ public class OperatorConfigurationService {
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
             return mapper.toBranding(loadPersisted());
+        }
+    }
+
+    public FirebasePublicConfigurationDto publicFirebaseConfiguration() {
+        MongoSessionMode mode = MongoSessionModeContext.currentMode();
+        synchronized (modeLocks.get(mode)) {
+            if (mode == MongoSessionMode.DEMO) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Firebase client configuration is unavailable in Explore/demo mode.");
+            }
+            DeploymentConfiguration configuration = loadPersisted();
+            DeploymentConfiguration.Firebase firebase =
+                    configuration.getFirebase();
+            try {
+                crypto.decrypt(
+                        FIREBASE_AUTHENTICATION_PURPOSE,
+                        firebase.getAuthenticationCredentialEnvelope());
+                crypto.decrypt(
+                        FIREBASE_MESSAGING_PURPOSE,
+                        firebase.getMessagingCredentialEnvelope());
+            } catch (RuntimeException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        "Firebase client configuration is temporarily unavailable.",
+                        exception);
+            }
+            if (!firebase.isActive()
+                    || !completePublicFirebaseConfiguration(firebase)) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Firebase client configuration has not been activated.");
+            }
+            return mapper.toPublicFirebaseConfiguration(configuration);
         }
     }
 
@@ -192,6 +259,7 @@ public class OperatorConfigurationService {
             configuration.setSchemaVersion(DeploymentConfiguration.SCHEMA_VERSION);
             configuration.setUpdatedAt(clock.instant().toString());
             DeploymentConfiguration saved = saveUpdate(configuration);
+            refreshFirebaseRuntime();
             List<String> savedAdminEmails =
                     appSettingsService.updateAdminEmails(adminEmails);
             return mapper.toOperatorConfiguration(
@@ -202,16 +270,69 @@ public class OperatorConfigurationService {
         }
     }
 
+    public OperatorConfigurationDto activateFirebase() {
+        MongoSessionMode mode = MongoSessionModeContext.currentMode();
+        synchronized (modeLocks.get(mode)) {
+            if (mode == MongoSessionMode.DEMO) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Live Firebase activation is unavailable in Explore/demo mode.");
+            }
+            DeploymentConfiguration configuration = loadPersisted();
+            String cryptoGap = crypto.unavailableReason(configuration);
+            if (StringUtils.hasText(cryptoGap)) {
+                throw new ResponseStatusException(
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        cryptoGap);
+            }
+            DeploymentConfiguration.Firebase firebase =
+                    configuration.getFirebase();
+            long revision = firebaseRevision(firebase);
+            if (!completePublicFirebaseConfiguration(firebase)
+                    || firebase.getAuthenticationCredentialEnvelope() == null
+                    || firebase.getMessagingCredentialEnvelope() == null
+                    || !Long.valueOf(revision).equals(
+                            firebase.getAuthenticationTestedRevision())
+                    || !Long.valueOf(revision).equals(
+                            firebase.getMessagingTestedRevision())) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Save the complete Firebase client configuration and "
+                                + "successfully test authentication and messaging "
+                                + "before activation.");
+            }
+            List<PaymentProviderDto> providers =
+                    availablePaymentProviders();
+            firebase.setActive(true);
+            firebase.setActivatedAt(clock.instant().toString());
+            configuration.setUpdatedAt(clock.instant().toString());
+            DeploymentConfiguration saved = saveUpdate(configuration);
+            refreshFirebaseRuntime();
+            return mapper.toOperatorConfiguration(
+                    saved,
+                    providers,
+                    appSettingsService.adminEmails(),
+                    null);
+        }
+    }
+
     public ConfigurationTestResultDto test(ConfigurationTestRequestDto request) {
         if (request == null || request.kind() == null) {
             throw badRequest("Configuration test kind is required.");
         }
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
+            if (mode == MongoSessionMode.DEMO) {
+                return firebaseTestResult(
+                        request.kind(),
+                        false,
+                        "Live Firebase capability tests are unavailable in Explore/demo mode.",
+                        clock.instant());
+            }
             DeploymentConfiguration configuration = loadPersisted();
             DeploymentConfiguration.Firebase firebase = configuration.getFirebase();
             Instant testedAt = clock.instant();
-            return switch (request.kind()) {
+            ConfigurationTestResultDto result = switch (request.kind()) {
                 case FIREBASE_AUTHENTICATION -> testFirebaseAuthentication(
                         firebase,
                         testedAt);
@@ -221,6 +342,12 @@ public class OperatorConfigurationService {
                         configuration.getBranding().getProductName(),
                         testedAt);
             };
+            recordFirebaseTest(
+                    configuration,
+                    request,
+                    result,
+                    testedAt);
+            return result;
         }
     }
 
@@ -315,6 +442,65 @@ public class OperatorConfigurationService {
                 testedAt.toString());
     }
 
+    private void recordFirebaseTest(
+            DeploymentConfiguration configuration,
+            ConfigurationTestRequestDto request,
+            ConfigurationTestResultDto result,
+            Instant testedAt) {
+        DeploymentConfiguration.Firebase firebase =
+                configuration.getFirebase();
+        long revision = firebaseRevision(firebase);
+        boolean attempted;
+        if (request.kind()
+                == ConfigurationTestKind.FIREBASE_AUTHENTICATION) {
+            attempted = StringUtils.hasText(firebase.getProjectId())
+                    && firebase.getAuthenticationCredentialEnvelope() != null;
+            if (!attempted) {
+                return;
+            }
+            firebase.setAuthenticationTestedRevision(
+                    result.success() ? revision : null);
+            firebase.setAuthenticationTestedAt(
+                    result.success() ? testedAt.toString() : null);
+        } else {
+            attempted = StringUtils.hasText(firebase.getProjectId())
+                    && firebase.getMessagingCredentialEnvelope() != null
+                    && StringUtils.hasText(request.destinationToken());
+            if (!attempted) {
+                return;
+            }
+            firebase.setMessagingTestedRevision(
+                    result.success() ? revision : null);
+            firebase.setMessagingTestedAt(
+                    result.success() ? testedAt.toString() : null);
+        }
+        if (!result.success()) {
+            firebase.setActive(false);
+            firebase.setActivatedAt(null);
+        }
+        configuration.setUpdatedAt(testedAt.toString());
+        saveUpdate(configuration);
+        refreshFirebaseRuntime();
+    }
+
+    private List<PaymentProviderDto> availablePaymentProviders() {
+        try {
+            return paymentProviderService.availableProviders();
+        } catch (RuntimeException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Payment provider catalog is unavailable: "
+                            + safeMessage(exception),
+                    exception);
+        }
+    }
+
+    private void refreshFirebaseRuntime() {
+        if (firebaseRuntime != null) {
+            firebaseRuntime.refreshAfterConfigurationChange();
+        }
+    }
+
     private static OperatorFirebaseCapabilityClient
             unavailableFirebaseCapabilityClient() {
         return new OperatorFirebaseCapabilityClient() {
@@ -385,6 +571,25 @@ public class OperatorConfigurationService {
         if (configuration.getFirebase().getProjectId() == null) {
             throw unavailable(
                     "Deployment Firebase seed is incomplete.");
+        }
+        DeploymentConfiguration.Firebase firebase =
+                configuration.getFirebase();
+        if (firebase.getRevision() != null
+                && firebase.getRevision() < 0L) {
+            throw unavailable(
+                    "Deployment Firebase revision is invalid.");
+        }
+        long firebaseRevision = firebaseRevision(firebase);
+        if (firebase.isActive()
+                && (!completePublicFirebaseConfiguration(firebase)
+                        || firebase.getAuthenticationCredentialEnvelope() == null
+                        || firebase.getMessagingCredentialEnvelope() == null
+                        || !Long.valueOf(firebaseRevision).equals(
+                                firebase.getAuthenticationTestedRevision())
+                        || !Long.valueOf(firebaseRevision).equals(
+                                firebase.getMessagingTestedRevision()))) {
+            throw unavailable(
+                    "Activated deployment Firebase configuration is incomplete or unverified.");
         }
         try {
             mapper.toSocialLinks(configuration);
@@ -532,11 +737,84 @@ public class OperatorConfigurationService {
             return;
         }
         DeploymentConfiguration.Firebase firebase = configuration.getFirebase();
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase.getPublicClient();
+        if (publicClient == null) {
+            publicClient =
+                    new DeploymentConfiguration.FirebasePublicClient();
+            firebase.setPublicClient(publicClient);
+        }
+        boolean changed = false;
         if (request.projectId() != null) {
-            firebase.setProjectId(optionalTrimmed(
+            String projectId = firebasePublicText(
                     request.projectId(),
                     "Firebase project id",
-                    FIREBASE_PROJECT_ID_MAX));
+                    FIREBASE_PROJECT_ID_MAX);
+            changed |= !Objects.equals(firebase.getProjectId(), projectId);
+            firebase.setProjectId(projectId);
+        }
+        if (request.apiKey() != null) {
+            String apiKey = firebasePublicText(
+                    request.apiKey(),
+                    "Firebase browser API key",
+                    FIREBASE_API_KEY_MAX);
+            changed |= !Objects.equals(publicClient.getApiKey(), apiKey);
+            publicClient.setApiKey(apiKey);
+        }
+        if (request.authDomain() != null) {
+            String authDomain = firebaseAuthDomain(request.authDomain());
+            changed |= !Objects.equals(
+                    publicClient.getAuthDomain(),
+                    authDomain);
+            publicClient.setAuthDomain(authDomain);
+        }
+        if (request.storageBucket() != null) {
+            String storageBucket = firebasePublicText(
+                    request.storageBucket(),
+                    "Firebase storage bucket",
+                    FIREBASE_STORAGE_BUCKET_MAX);
+            changed |= !Objects.equals(
+                    publicClient.getStorageBucket(),
+                    storageBucket);
+            publicClient.setStorageBucket(storageBucket);
+        }
+        if (request.messagingSenderId() != null) {
+            String messagingSenderId = firebasePublicText(
+                    request.messagingSenderId(),
+                    "Firebase messaging sender id",
+                    FIREBASE_MESSAGING_SENDER_ID_MAX);
+            changed |= !Objects.equals(
+                    publicClient.getMessagingSenderId(),
+                    messagingSenderId);
+            publicClient.setMessagingSenderId(messagingSenderId);
+        }
+        if (request.appId() != null) {
+            String appId = firebasePublicText(
+                    request.appId(),
+                    "Firebase browser app id",
+                    FIREBASE_APP_ID_MAX);
+            changed |= !Objects.equals(publicClient.getAppId(), appId);
+            publicClient.setAppId(appId);
+        }
+        if (request.measurementId() != null) {
+            String measurementId = firebasePublicText(
+                    request.measurementId(),
+                    "Firebase measurement id",
+                    FIREBASE_MEASUREMENT_ID_MAX);
+            changed |= !Objects.equals(
+                    publicClient.getMeasurementId(),
+                    measurementId);
+            publicClient.setMeasurementId(measurementId);
+        }
+        if (request.vapidKey() != null) {
+            String vapidKey = firebasePublicText(
+                    request.vapidKey(),
+                    "Firebase VAPID public key",
+                    FIREBASE_VAPID_KEY_MAX);
+            changed |= !Objects.equals(
+                    publicClient.getVapidKey(),
+                    vapidKey);
+            publicClient.setVapidKey(vapidKey);
         }
         String authenticationCredential = optionalSecret(
                 request.authenticationCredential(),
@@ -550,12 +828,85 @@ public class OperatorConfigurationService {
             firebase.setAuthenticationCredentialEnvelope(crypto.encrypt(
                     FIREBASE_AUTHENTICATION_PURPOSE,
                     authenticationCredential));
+            changed = true;
         }
         if (StringUtils.hasText(messagingCredential)) {
             firebase.setMessagingCredentialEnvelope(crypto.encrypt(
                     FIREBASE_MESSAGING_PURPOSE,
                     messagingCredential));
+            changed = true;
         }
+        if (changed) {
+            firebase.setRevision(firebaseRevision(firebase) + 1L);
+            firebase.setActive(false);
+            firebase.setAuthenticationTestedRevision(null);
+            firebase.setAuthenticationTestedAt(null);
+            firebase.setMessagingTestedRevision(null);
+            firebase.setMessagingTestedAt(null);
+            firebase.setActivatedAt(null);
+        }
+    }
+
+    private String firebasePublicText(
+            String value,
+            String fieldName,
+            int maximumLength) {
+        String normalized = optionalTrimmed(
+                value,
+                fieldName,
+                maximumLength);
+        if (normalized.chars().anyMatch(Character::isISOControl)) {
+            throw badRequest(fieldName + " contains an invalid character.");
+        }
+        return normalized;
+    }
+
+    private String firebaseAuthDomain(String value) {
+        String normalized = firebasePublicText(
+                value,
+                "Firebase auth domain",
+                FIREBASE_AUTH_DOMAIN_MAX);
+        if (!StringUtils.hasText(normalized)) {
+            return normalized;
+        }
+        try {
+            URI uri = new URI("https://" + normalized);
+            if (!normalized.equals(uri.getHost())
+                    || uri.getUserInfo() != null
+                    || uri.getPort() != -1
+                    || StringUtils.hasText(uri.getPath())
+                    || uri.getQuery() != null
+                    || uri.getFragment() != null) {
+                throw badRequest(
+                        "Firebase auth domain must be a hostname without a scheme or path.");
+            }
+            return normalized.toLowerCase(Locale.ROOT);
+        } catch (URISyntaxException exception) {
+            throw badRequest(
+                    "Firebase auth domain must be a valid hostname.");
+        }
+    }
+
+    private boolean completePublicFirebaseConfiguration(
+            DeploymentConfiguration.Firebase firebase) {
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase == null ? null : firebase.getPublicClient();
+        return firebase != null
+                && publicClient != null
+                && StringUtils.hasText(firebase.getProjectId())
+                && StringUtils.hasText(publicClient.getApiKey())
+                && StringUtils.hasText(publicClient.getAuthDomain())
+                && StringUtils.hasText(publicClient.getStorageBucket())
+                && StringUtils.hasText(publicClient.getMessagingSenderId())
+                && StringUtils.hasText(publicClient.getAppId())
+                && StringUtils.hasText(publicClient.getVapidKey());
+    }
+
+    private long firebaseRevision(
+            DeploymentConfiguration.Firebase firebase) {
+        return firebase == null || firebase.getRevision() == null
+                ? 0L
+                : Math.max(0L, firebase.getRevision());
     }
 
     private String validateLogoUrl(String value) {
