@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 import org.bson.Document;
@@ -88,9 +87,13 @@ class NotificationRuleRegistryServiceTest {
         Document push = updateCaptor.getValue().getUpdateObject().get(
                 "$push",
                 Document.class);
-        Document history = push.get("runHistory", Document.class);
-        List<?> entries = history.getList("$each", Object.class);
-        Object entry = entries.get(0);
+        Update.Modifiers history = (Update.Modifiers) push.get("runHistory");
+        Object[] entries = (Object[]) history.getModifiers().stream()
+                .filter(modifier -> "$each".equals(modifier.getKey()))
+                .findFirst()
+                .orElseThrow()
+                .getValue();
+        Object entry = entries[0];
         if (entry instanceof Document document) {
             return document.getString("trigger");
         }

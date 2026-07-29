@@ -56,6 +56,7 @@ public class GlobalIdentityLinkState {
     private String latestEventHash;
     private PendingOperation pendingOperation;
     private RegistryProtocol.GlobalIdentityMutationResponse acceptedResponse;
+    private String lastOperationIdempotencyKey;
     private Boolean purgeRequested;
     private String purgeTombstoneId;
     private String purgeRequestedAt;
@@ -106,6 +107,8 @@ public class GlobalIdentityLinkState {
     public void setPendingOperation(PendingOperation pendingOperation) { this.pendingOperation = pendingOperation; }
     public RegistryProtocol.GlobalIdentityMutationResponse getAcceptedResponse() { return acceptedResponse; }
     public void setAcceptedResponse(RegistryProtocol.GlobalIdentityMutationResponse acceptedResponse) { this.acceptedResponse = acceptedResponse; }
+    public String getLastOperationIdempotencyKey() { return lastOperationIdempotencyKey; }
+    public void setLastOperationIdempotencyKey(String lastOperationIdempotencyKey) { this.lastOperationIdempotencyKey = lastOperationIdempotencyKey; }
     public Boolean getPurgeRequested() { return purgeRequested; }
     public void setPurgeRequested(Boolean purgeRequested) { this.purgeRequested = purgeRequested; }
     public String getPurgeTombstoneId() { return purgeTombstoneId; }

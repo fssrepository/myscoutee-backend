@@ -50,6 +50,7 @@ import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
+import com.raxim.myscoutee.profile.service.operator.OperatorGlobalIdentityService;
 
 @Service
 public class DeletedAccountPurgeService {
@@ -74,6 +75,7 @@ public class DeletedAccountPurgeService {
     private final PlatformParametersService platformParametersService;
     private NotificationRuleRegistryService notificationRuleRegistryService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
+    private OperatorGlobalIdentityService operatorGlobalIdentityService;
 
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
@@ -106,6 +108,12 @@ public class DeletedAccountPurgeService {
     @Autowired(required = false)
     void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
         this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
+    @Autowired(required = false)
+    void setOperatorGlobalIdentityService(
+            OperatorGlobalIdentityService operatorGlobalIdentityService) {
+        this.operatorGlobalIdentityService = operatorGlobalIdentityService;
     }
 
     @Scheduled(fixedDelayString = "${users.deleted-account-purge-delay-ms:3600000}")
@@ -248,6 +256,11 @@ public class DeletedAccountPurgeService {
 
             markStage(job, "referenced-documents");
             purgeUserReferencedDocuments(userId);
+
+            markStage(job, "global-identity-unlink");
+            if (operatorGlobalIdentityService != null) {
+                operatorGlobalIdentityService.preparePurgeUnlink(userId);
+            }
 
             markStage(job, "delete-user");
             boolean pendingCounterTracked = Boolean.TRUE.equals(user.getAccountPurgePendingCounterTracked());

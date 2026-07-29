@@ -127,7 +127,15 @@ public class OperatorGlobalIdentityService {
                     MongoSessionMode.REAL,
                     MongoSessionMode.DEMO)) {
                 MongoSessionModeContext.set(mode);
-                synchronizePending(mode);
+                try {
+                    synchronizePending(mode);
+                } catch (RuntimeException ignored) {
+                    /*
+                     * Each database owns an independent durable journal.
+                     * One unavailable registry must not prevent the other
+                     * configured database from retrying.
+                     */
+                }
             }
         } finally {
             MongoSessionModeContext.set(previous);
@@ -187,7 +195,7 @@ public class OperatorGlobalIdentityService {
         }
         for (GlobalIdentityLinkState state :
                 linkRepository
-                        .findByPurgeRequestedTrueOrderByUpdatedAtAsc()) {
+                        .findByPurgeRequestedTrueAndPurgedAtIsNullOrderByUpdatedAtAsc()) {
             work.put(state.getId(), state);
         }
         for (GlobalIdentityLinkState state : work.values()) {
@@ -383,6 +391,96 @@ public class OperatorGlobalIdentityService {
         return completePending(runtime, state, null);
     }
 
+    private void processPurgeState(
+            RegisteredRuntime runtime,
+            GlobalIdentityLinkState candidate) {
+        GlobalIdentityLinkState state = linkRepository
+                .findById(candidate.getId())
+                .orElse(candidate);
+        validateStoredLink(runtime, state, state.getLocalUserId());
+        if (state.getPendingOperation() != null) {
+            completePending(runtime, state, null);
+            state = linkRepository.findById(state.getId())
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Global identity purge state disappeared."));
+            validateStoredLink(runtime, state, state.getLocalUserId());
+        }
+        if (GlobalIdentityLinkState.STATUS_ACTIVE.equals(state.getStatus())) {
+            state = queueUnlink(state, "ACCOUNT_PURGED");
+            completePending(runtime, state, null);
+            return;
+        }
+        if (GlobalIdentityLinkState.STATUS_UNLINKED.equals(
+                state.getStatus())) {
+            scrubPurgeTombstone(runtime, state, null);
+        }
+    }
+
+    private GlobalIdentityLinkState queueUnlink(
+            GlobalIdentityLinkState state,
+            String reasonCode) {
+        if (state.getPendingOperation() != null) {
+            return state;
+        }
+        if (!GlobalIdentityLinkState.STATUS_ACTIVE.equals(state.getStatus())
+                || !StringUtils.hasText(state.getLinkId())) {
+            return state;
+        }
+        String now = clock.instant().toString();
+        PendingOperation pending = new PendingOperation();
+        pending.setAction(
+                RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK);
+        pending.setIdempotencyKey(RegistryProtocol.randomToken(
+                "giunlink_",
+                secureRandom));
+        pending.setEffectivePeriod(currentPeriod());
+        pending.setReasonCommitment(reasonCommitment(reasonCode, now));
+        pending.setCreatedAt(now);
+        pending.setPayloadHash(RegistryProtocol.sha256(
+                RegistryProtocol.globalIdentityLinkActionPayload(
+                        pending.getAction(),
+                        state.getLinkId(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        pending.getEffectivePeriod(),
+                        pending.getReasonCommitment())));
+        state.setPendingOperation(pending);
+        state.setUpdatedAt(now);
+        return saveConcurrent(state);
+    }
+
+    private void scrubPurgeTombstone(
+            RegisteredRuntime runtime,
+            GlobalIdentityLinkState state,
+            String unlinkIdempotencyKey) {
+        if (!Boolean.TRUE.equals(state.getPurgeRequested())
+                || !StringUtils.hasText(state.getPurgeTombstoneId())) {
+            return;
+        }
+        applyPurgeTombstoneFields(state, unlinkIdempotencyKey);
+        validateStoredLink(runtime, state, state.getLocalUserId());
+        saveConcurrent(state);
+    }
+
+    private void applyPurgeTombstoneFields(
+            GlobalIdentityLinkState state,
+            String unlinkIdempotencyKey) {
+        String tombstoneId = state.getPurgeTombstoneId();
+        RegistryProtocol.requireToken(tombstoneId, "purge_tombstone_id");
+        state.setLocalUserId(tombstoneId);
+        state.setPurgeTombstoneId(null);
+        state.setPurgeUnlinkIdempotencyKey(
+                StringUtils.hasText(unlinkIdempotencyKey)
+                        ? unlinkIdempotencyKey
+                        : state.getLastOperationIdempotencyKey());
+        state.setPurgedAt(clock.instant().toString());
+        state.setUpdatedAt(clock.instant().toString());
+    }
+
     private GlobalIdentityStatusDto rotate(
             RegisteredRuntime runtime,
             Member member,
@@ -547,6 +645,13 @@ public class OperatorGlobalIdentityService {
         }
         verifyMutationResponse(runtime, state, pending, response);
         applyResponse(state, pending, response);
+        if (RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK.equals(
+                    pending.getAction())
+                && Boolean.TRUE.equals(state.getPurgeRequested())) {
+            applyPurgeTombstoneFields(
+                    state,
+                    pending.getIdempotencyKey());
+        }
         validateStoredLink(runtime, state, state.getLocalUserId());
         state.setUpdatedAt(clock.instant().toString());
         state = saveConcurrent(state);
@@ -579,6 +684,8 @@ public class OperatorGlobalIdentityService {
         state.setLatestEventIndex(link.latestEventIndex());
         state.setLatestEventHash(link.latestEventHash());
         state.setAcceptedResponse(response);
+        state.setLastOperationIdempotencyKey(
+                pending.getIdempotencyKey());
         state.setPendingOperation(null);
     }
 
@@ -907,6 +1014,32 @@ public class OperatorGlobalIdentityService {
                     "Stored global identity state failed its integrity check.");
         }
         PendingOperation pending = state.getPendingOperation();
+        if (Boolean.TRUE.equals(state.getPurgeRequested())) {
+            RegistryProtocol.requireUtcTimestamp(
+                    state.getPurgeRequestedAt(),
+                    "purge_requested_at");
+            if (StringUtils.hasText(state.getPurgedAt())) {
+                RegistryProtocol.requireUtcTimestamp(
+                        state.getPurgedAt(),
+                        "purged_at");
+                if (!state.getLocalUserId().startsWith("gitomb_")
+                        || StringUtils.hasText(
+                                state.getPurgeTombstoneId())
+                        || !StringUtils.hasText(
+                                state.getPurgeUnlinkIdempotencyKey())) {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Purged global identity tombstone is invalid.");
+                }
+                RegistryProtocol.requireToken(
+                        state.getPurgeUnlinkIdempotencyKey(),
+                        "purge_unlink_idempotency_key");
+            } else {
+                RegistryProtocol.requireToken(
+                        state.getPurgeTombstoneId(),
+                        "purge_tombstone_id");
+            }
+        }
         if (pending != null) {
             RegistryProtocol.requireToken(
                     pending.getIdempotencyKey(),
@@ -1001,6 +1134,9 @@ public class OperatorGlobalIdentityService {
         }
         GlobalIdentityMutationResponse accepted = state.getAcceptedResponse();
         if (accepted != null) {
+            RegistryProtocol.requireToken(
+                    state.getLastOperationIdempotencyKey(),
+                    "last_operation_idempotency_key");
             if (!RegistryProtocol.PROTOCOL_VERSION.equals(
                         accepted.protocolVersion())
                     || !runtime.state().registryScope().equals(

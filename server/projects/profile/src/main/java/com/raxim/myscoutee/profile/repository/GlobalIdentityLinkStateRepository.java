@@ -21,7 +21,7 @@ public interface GlobalIdentityLinkStateRepository
             findByPendingOperationIsNotNullOrderByUpdatedAtAsc();
 
     List<GlobalIdentityLinkState>
-            findByPurgeRequestedTrueOrderByUpdatedAtAsc();
+            findByPurgeRequestedTrueAndPurgedAtIsNullOrderByUpdatedAtAsc();
 
     List<GlobalIdentityLinkState>
             findByDeploymentIdAndLocalUserIdInAndStatusInAndKeyVersionAndSuite(
