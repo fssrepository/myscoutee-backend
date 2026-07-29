@@ -86,7 +86,8 @@ public class OperatorNetworkMapper {
                 status.verificationUnavailableReason(),
                 status.verificationStatus(),
                 status.verificationSubmittedAt(),
-                status.legalName());
+                status.legalName(),
+                status.eligibilityStatus());
     }
 
     public OperatorClaimMutationResultDto toClaimMutation(
@@ -224,8 +225,12 @@ public class OperatorNetworkMapper {
                 snapshot.throughPeriod(),
                 snapshot.throughLedgerIndex(),
                 snapshot.throughAuditIndex(),
+                snapshot.throughReviewIndex(),
+                snapshot.throughEligibilityIndex(),
                 snapshot.ledgerHeadHash(),
                 snapshot.auditHeadHash(),
+                snapshot.reviewHeadHash(),
+                snapshot.eligibilityHeadHash(),
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
                 snapshot.founderShareNumerator(),
@@ -246,6 +251,7 @@ public class OperatorNetworkMapper {
                 row.label(),
                 row.avatarUrl(),
                 row.claimState(),
+                row.eligibilityStatus(),
                 row.deploymentCount(),
                 row.weightNumerator(),
                 row.weightDenominator(),
@@ -259,6 +265,7 @@ public class OperatorNetworkMapper {
                 deployment.deploymentId(),
                 deployment.groupId(),
                 deployment.claimState(),
+                deployment.eligibilityStatus(),
                 deployment.membershipState(),
                 deployment.weightNumerator(),
                 deployment.weightDenominator(),

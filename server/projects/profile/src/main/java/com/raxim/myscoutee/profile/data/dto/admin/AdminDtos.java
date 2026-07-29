@@ -151,7 +151,10 @@ public final class AdminDtos {
             String lastRunStatus,
             String lastRunDetail,
             Integer lastRunCount,
-            String lastRunUser) {}
+            String lastRunUser,
+            Integer pendingCount,
+            String pendingCountUnit,
+            String pendingCountUpdatedAtIso) {}
     public record AdminNotificationRunHistoryEntryDto(
             String id,
             String trigger,

@@ -85,7 +85,8 @@ class OperatorNetworkServiceTest {
                 null,
                 "PENDING_REVIEW",
                 "2026-07-28T12:00:00Z",
-                "Example Cooperative");
+                "Example Cooperative",
+                "inactive");
         OperatorClaimStatusDto publicStatus = new OperatorClaimStatusDto(
                 true,
                 "2026-07-28T12:00:00Z",
@@ -101,7 +102,8 @@ class OperatorNetworkServiceTest {
                 null,
                 "PENDING_REVIEW",
                 "2026-07-28T12:00:00Z",
-                "Example Cooperative");
+                "Example Cooperative",
+                "inactive");
         LeaderboardRow registryLeaderboardEntry = new LeaderboardRow(
                 "opg_0123456789abcdef0123456789abcdef",
                 "claimed",
@@ -109,6 +111,7 @@ class OperatorNetworkServiceTest {
                 "Example Cooperative",
                 "",
                 "pending-review",
+                "inactive",
                 1L,
                 "0",
                 "1",
@@ -125,6 +128,7 @@ class OperatorNetworkServiceTest {
                                 "Example Cooperative",
                                 "",
                                 "pending-review",
+                                "inactive",
                                 1L,
                                 "0",
                                 "1",
@@ -240,7 +244,8 @@ class OperatorNetworkServiceTest {
                 null,
                 "PENDING_REVIEW",
                 "2026-07-29T01:00:00Z",
-                "Token Source Cooperative");
+                "Token Source Cooperative",
+                "inactive");
         LeaderboardRow unrelatedRow = new LeaderboardRow(
                 "opg_fedcba9876543210fedcba9876543210",
                 "claimed",
@@ -248,6 +253,7 @@ class OperatorNetworkServiceTest {
                 "Other Operator",
                 "",
                 "approved",
+                "active",
                 2L,
                 "65000",
                 "1",
@@ -260,6 +266,7 @@ class OperatorNetworkServiceTest {
                 "Token Source Cooperative",
                 "https://cdn.example.test/operator.png",
                 "pending-review",
+                "inactive",
                 2L,
                 "12000",
                 "1",
@@ -308,6 +315,8 @@ class OperatorNetworkServiceTest {
         assertThat(mutation.status().operatorGroupId()).isEqualTo(groupId);
         assertThat(mutation.status().verificationStatus())
                 .isEqualTo("PENDING_REVIEW");
+        assertThat(mutation.status().eligibilityStatus())
+                .isEqualTo("inactive");
         assertThat(mutation.submission()).isNull();
         assertThat(mutation.leaderboardEntry())
                 .isEqualTo(new OperatorLeaderboardRowDto(
@@ -317,6 +326,7 @@ class OperatorNetworkServiceTest {
                         "Token Source Cooperative",
                         "https://cdn.example.test/operator.png",
                         "pending-review",
+                        "inactive",
                         2L,
                         "12000",
                         "1",
@@ -679,7 +689,8 @@ class OperatorNetworkServiceTest {
                 null,
                 "PENDING_REVIEW",
                 submittedAt,
-                "Example Cooperative");
+                "Example Cooperative",
+                "inactive");
     }
 
     private static ClaimStatus unclaimedStatus() {
@@ -696,6 +707,7 @@ class OperatorNetworkServiceTest {
                 null,
                 "NOT_SUBMITTED",
                 null,
+                null,
                 null);
     }
 
@@ -710,6 +722,7 @@ class OperatorNetworkServiceTest {
                 "Example Cooperative",
                 "",
                 "pending-review",
+                "inactive",
                 deploymentCount,
                 weightNumerator,
                 "1",

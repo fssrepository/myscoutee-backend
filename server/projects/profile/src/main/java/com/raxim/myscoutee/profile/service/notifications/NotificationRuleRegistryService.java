@@ -18,6 +18,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +36,10 @@ public class NotificationRuleRegistryService {
     public static final String RULE_EVENT_TOURNAMENT_REVIEW = "event-tournament-review";
     public static final String RULE_EVENT_COUNTER_EXPIRY = "event-counter-expiry";
     public static final String RULE_EVENT_CHECKOUT_BASKET_PURGE = "event-checkout-basket-purge";
+    public static final String RULE_NOTIFICATION_OUTBOX = "notification-outbox";
+    public static final String RULE_AFFINITY_RECOMPUTE = "affinity-recompute";
+    public static final String RULE_SCHEDULED_MESSAGES = "scheduled-messages";
+    public static final String RULE_ACCOUNT_PURGE = "account-purge";
 
     private static final String SYSTEM_USER = "notification-registry";
     private static final String INTERVAL_UNIT_SECONDS = "seconds";
@@ -49,14 +58,17 @@ public class NotificationRuleRegistryService {
             RULE_EVENT_CHECKOUT_BASKET_PURGE);
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
     private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
+    private final MongoTemplate mongoTemplate;
 
     private record IntervalSpec(int amount, String unit, int seconds, int minutes) {}
 
     public NotificationRuleRegistryService(
             NotificationRuleConfigsRepository notificationRuleConfigsRepository,
-            AdminNotificationSocketSessionRegistry socketSessionRegistry) {
+            AdminNotificationSocketSessionRegistry socketSessionRegistry,
+            MongoTemplate mongoTemplate) {
         this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
         this.socketSessionRegistry = socketSessionRegistry;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<NotificationRuleConfig> rules() {
@@ -118,11 +130,11 @@ public class NotificationRuleRegistryService {
         return false;
     }
 
-    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
+    public synchronized NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
         return beginRun(ruleKey, detail, actorUserId, Instant.now());
     }
 
-    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId, Instant startedAt) {
+    public synchronized NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId, Instant startedAt) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
@@ -146,11 +158,11 @@ public class NotificationRuleRegistryService {
         return saved;
     }
 
-    public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
+    public synchronized NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
         return recordRun(ruleKey, count, status, detail, actorUserId, null);
     }
 
-    public NotificationRuleConfig recordRun(
+    public synchronized NotificationRuleConfig recordRun(
             String ruleKey,
             int count,
             String status,
@@ -192,7 +204,7 @@ public class NotificationRuleRegistryService {
         return saved;
     }
 
-    public NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {
+    public synchronized NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
@@ -217,6 +229,55 @@ public class NotificationRuleRegistryService {
         return saved;
     }
 
+    public synchronized NotificationRuleConfig adjustPendingCount(String ruleKey, int delta, String unit) {
+        String normalizedRuleKey = safeText(ruleKey);
+        if (!StringUtils.hasText(normalizedRuleKey) || delta == 0) {
+            return findRule(normalizedRuleKey).orElse(null);
+        }
+        Update update = new Update()
+                .inc("runState.pendingCount", delta)
+                .set("runState.pendingCountUnit", firstNonBlank(unit, "records"))
+                .set("runState.pendingCountUpdatedAtIso", Instant.now().toString());
+        NotificationRuleConfig saved = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("ruleKey").is(normalizedRuleKey)),
+                update,
+                FindAndModifyOptions.options().returnNew(true),
+                NotificationRuleConfig.class);
+        if (saved != null) {
+            socketSessionRegistry.broadcastRuleRuntime(saved);
+        }
+        return saved;
+    }
+
+    public synchronized int claimPendingCount(String ruleKey) {
+        String normalizedRuleKey = safeText(ruleKey);
+        if (!StringUtils.hasText(normalizedRuleKey)) {
+            return 0;
+        }
+        String nowIso = Instant.now().toString();
+        NotificationRuleConfig previous = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("ruleKey").is(normalizedRuleKey)),
+                new Update()
+                        .set("runState.pendingCount", 0)
+                        .set("runState.pendingCountUpdatedAtIso", nowIso),
+                FindAndModifyOptions.options().returnNew(false),
+                NotificationRuleConfig.class);
+        NotificationRuleConfig current = findRule(normalizedRuleKey).orElse(null);
+        if (current != null) {
+            socketSessionRegistry.broadcastRuleRuntime(current);
+        }
+        Integer pendingCount = previous == null || previous.getRunState() == null
+                ? null
+                : previous.getRunState().getPendingCount();
+        return Math.max(0, pendingCount == null ? 0 : pendingCount);
+    }
+
+    public synchronized void restoreClaimedPendingCount(String ruleKey, int claimedCount, String unit) {
+        if (claimedCount > 0) {
+            adjustPendingCount(ruleKey, claimedCount, unit);
+        }
+    }
+
     public void broadcastRunProgress(
             String ruleKey,
             NotificationRuleConfig.RunState runState,
@@ -230,7 +291,7 @@ public class NotificationRuleRegistryService {
                 firstNonBlank(actorUserId, SYSTEM_USER));
     }
 
-    public List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
+    public synchronized List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
         if (incomingRules == null || incomingRules.isEmpty()) {
             return rules();
         }

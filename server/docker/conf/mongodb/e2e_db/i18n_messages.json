@@ -1758,6 +1758,18 @@
     "value": "Last changed"
   },
   {
+    "_id": "i18n-message-en-admin-jobs-pending-impact",
+    "key": "admin.jobs.pending.impact",
+    "lang": "en",
+    "value": "Eligible before next run"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-pending-not-calculated",
+    "key": "admin.jobs.pending.not.calculated",
+    "lang": "en",
+    "value": "Not calculated yet"
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-not-run-yet",
     "key": "admin.jobs.not.run.yet",
     "lang": "en",
@@ -16326,6 +16338,108 @@
     "value": "At most 32 dedicated administrator email addresses are allowed."
   },
   {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-eyebrow",
+    "key": "operator.configuration.privacy.contact.eyebrow",
+    "lang": "en",
+    "value": "Public privacy details"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact",
+    "key": "operator.configuration.privacy.contact",
+    "lang": "en",
+    "value": "Privacy contact"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-guidance",
+    "key": "operator.configuration.privacy.contact.guidance",
+    "lang": "en",
+    "value": "Publish the controller and privacy email shown in privacy documents. Leave both blank to publish no contact."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-controller-name",
+    "key": "operator.configuration.privacy.controller.name",
+    "lang": "en",
+    "value": "Data controller name"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-controller-name-placeholder",
+    "key": "operator.configuration.privacy.controller.name.placeholder",
+    "lang": "en",
+    "value": "Example Organization Ltd."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-email",
+    "key": "operator.configuration.privacy.contact.email",
+    "lang": "en",
+    "value": "Privacy contact email"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-email-placeholder",
+    "key": "operator.configuration.privacy.contact.email.placeholder",
+    "lang": "en",
+    "value": "privacy@example.com"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-save",
+    "key": "operator.configuration.privacy.contact.save",
+    "lang": "en",
+    "value": "Save privacy contact"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-saved",
+    "key": "operator.configuration.privacy.contact.saved",
+    "lang": "en",
+    "value": "Public privacy contact saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-contact-incomplete",
+    "key": "operator.configuration.privacy.contact.incomplete",
+    "lang": "en",
+    "value": "Enter both the data controller name and privacy contact email, or leave both blank."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-controller-invalid",
+    "key": "operator.configuration.privacy.controller.invalid",
+    "lang": "en",
+    "value": "Enter a data controller name of at most 160 characters without control characters."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-privacy-email-invalid",
+    "key": "operator.configuration.privacy.email.invalid",
+    "lang": "en",
+    "value": "Enter a valid privacy contact email of at most 254 characters."
+  },
+  {
+    "_id": "i18n-message-en-deployment-privacy-data-controller",
+    "key": "deployment.privacy.data.controller",
+    "lang": "en",
+    "value": "Data controller"
+  },
+  {
+    "_id": "i18n-message-en-deployment-privacy-contact-email",
+    "key": "deployment.privacy.contact.email",
+    "lang": "en",
+    "value": "Privacy contact email"
+  },
+  {
+    "_id": "i18n-message-en-deployment-privacy-contact-not-published",
+    "key": "deployment.privacy.contact.not.published",
+    "lang": "en",
+    "value": "This deployment's operator has not published a privacy contact."
+  },
+  {
+    "_id": "i18n-message-en-deployment-privacy-deletion-email-prefix",
+    "key": "deployment.privacy.deletion.email.prefix",
+    "lang": "en",
+    "value": "You may also send a deletion request from the email address connected to your account to"
+  },
+  {
+    "_id": "i18n-message-en-deployment-privacy-deletion-email-suffix",
+    "key": "deployment.privacy.deletion.email.suffix",
+    "lang": "en",
+    "value": "."
+  },
+  {
     "_id": "i18n-message-en-operator-configuration-social-eyebrow",
     "key": "operator.configuration.social.eyebrow",
     "lang": "en",
@@ -17094,78 +17208,6 @@
     "value": "deployments"
   },
   {
-    "_id": "i18n-message-en-operator-leaderboard-claimed-node",
-    "key": "operator.leaderboard.claimed.node",
-    "lang": "en",
-    "value": "Claimed node"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-unclaimed-node",
-    "key": "operator.leaderboard.unclaimed.node",
-    "lang": "en",
-    "value": "Unclaimed node"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-founder",
-    "key": "operator.leaderboard.seed.founder",
-    "lang": "en",
-    "value": "MyScoutee founder contribution"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-campus",
-    "key": "operator.leaderboard.seed.campus",
-    "lang": "en",
-    "value": "Campus community"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-campus-east",
-    "key": "operator.leaderboard.seed.campus.east",
-    "lang": "en",
-    "value": "Campus east deployment"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-city",
-    "key": "operator.leaderboard.seed.city",
-    "lang": "en",
-    "value": "City network"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-club",
-    "key": "operator.leaderboard.seed.club",
-    "lang": "en",
-    "value": "Club network"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-this-deployment",
-    "key": "operator.leaderboard.seed.this.deployment",
-    "lang": "en",
-    "value": "This deployment"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-north",
-    "key": "operator.leaderboard.seed.north",
-    "lang": "en",
-    "value": "North deployment"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-seed-east",
-    "key": "operator.leaderboard.seed.east",
-    "lang": "en",
-    "value": "East deployment"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-empty",
-    "key": "operator.leaderboard.empty",
-    "lang": "en",
-    "value": "No network entries"
-  },
-  {
-    "_id": "i18n-message-en-operator-leaderboard-empty-description",
-    "key": "operator.leaderboard.empty.description",
-    "lang": "en",
-    "value": "Verified nodes will appear here."
-  },
-  {
     "_id": "i18n-message-en-operator-leaderboard-deployments-title",
     "key": "operator.leaderboard.deployments.title",
     "lang": "en",
@@ -17248,6 +17290,78 @@
     "key": "operator.leaderboard.deployments.error.response",
     "lang": "en",
     "value": "The registry returned deployments for a different operator group."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-claimed-node",
+    "key": "operator.leaderboard.claimed.node",
+    "lang": "en",
+    "value": "Claimed node"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-unclaimed-node",
+    "key": "operator.leaderboard.unclaimed.node",
+    "lang": "en",
+    "value": "Unclaimed node"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-founder",
+    "key": "operator.leaderboard.seed.founder",
+    "lang": "en",
+    "value": "MyScoutee founder contribution"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-campus",
+    "key": "operator.leaderboard.seed.campus",
+    "lang": "en",
+    "value": "Campus community"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-campus-east",
+    "key": "operator.leaderboard.seed.campus.east",
+    "lang": "en",
+    "value": "Campus east deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-city",
+    "key": "operator.leaderboard.seed.city",
+    "lang": "en",
+    "value": "City network"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-club",
+    "key": "operator.leaderboard.seed.club",
+    "lang": "en",
+    "value": "Club network"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-this-deployment",
+    "key": "operator.leaderboard.seed.this.deployment",
+    "lang": "en",
+    "value": "This deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-north",
+    "key": "operator.leaderboard.seed.north",
+    "lang": "en",
+    "value": "North deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-seed-east",
+    "key": "operator.leaderboard.seed.east",
+    "lang": "en",
+    "value": "East deployment"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-empty",
+    "key": "operator.leaderboard.empty",
+    "lang": "en",
+    "value": "No network entries"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-empty-description",
+    "key": "operator.leaderboard.empty.description",
+    "lang": "en",
+    "value": "Verified nodes will appear here."
   },
   {
     "_id": "i18n-message-en-operator-leaderboard-error-pagination",
@@ -19054,6 +19168,18 @@
     "key": "admin.jobs.last.changed",
     "lang": "hu",
     "value": "Utolsó módosítás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-pending-impact",
+    "key": "admin.jobs.pending.impact",
+    "lang": "hu",
+    "value": "Következő futás előtt érinthető"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-pending-not-calculated",
+    "key": "admin.jobs.pending.not.calculated",
+    "lang": "hu",
+    "value": "Még nincs kiszámítva"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-not-run-yet",
@@ -33624,6 +33750,108 @@
     "value": "Legfeljebb 32 kijelölt adminisztrátori e-mail-cím adható meg."
   },
   {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-eyebrow",
+    "key": "operator.configuration.privacy.contact.eyebrow",
+    "lang": "hu",
+    "value": "Nyilvános adatvédelmi adatok"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact",
+    "key": "operator.configuration.privacy.contact",
+    "lang": "hu",
+    "value": "Adatvédelmi kapcsolattartó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-guidance",
+    "key": "operator.configuration.privacy.contact.guidance",
+    "lang": "hu",
+    "value": "Tedd közzé az adatvédelmi dokumentumokban megjelenő adatkezelőt és e-mail-címet. Ha nem teszel közzé kapcsolattartót, hagyd mindkettőt üresen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-controller-name",
+    "key": "operator.configuration.privacy.controller.name",
+    "lang": "hu",
+    "value": "Adatkezelő neve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-controller-name-placeholder",
+    "key": "operator.configuration.privacy.controller.name.placeholder",
+    "lang": "hu",
+    "value": "Példa Szervezet Kft."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-email",
+    "key": "operator.configuration.privacy.contact.email",
+    "lang": "hu",
+    "value": "Adatvédelmi e-mail-cím"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-email-placeholder",
+    "key": "operator.configuration.privacy.contact.email.placeholder",
+    "lang": "hu",
+    "value": "adatvedelem@example.com"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-save",
+    "key": "operator.configuration.privacy.contact.save",
+    "lang": "hu",
+    "value": "Adatvédelmi kapcsolat mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-saved",
+    "key": "operator.configuration.privacy.contact.saved",
+    "lang": "hu",
+    "value": "A nyilvános adatvédelmi kapcsolat elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-contact-incomplete",
+    "key": "operator.configuration.privacy.contact.incomplete",
+    "lang": "hu",
+    "value": "Add meg az adatkezelő nevét és az adatvédelmi e-mail-címet is, vagy hagyd mindkettőt üresen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-controller-invalid",
+    "key": "operator.configuration.privacy.controller.invalid",
+    "lang": "hu",
+    "value": "Legfeljebb 160 karakteres, vezérlőkarakter nélküli adatkezelőnevet adj meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-privacy-email-invalid",
+    "key": "operator.configuration.privacy.email.invalid",
+    "lang": "hu",
+    "value": "Érvényes, legfeljebb 254 karakteres adatvédelmi e-mail-címet adj meg."
+  },
+  {
+    "_id": "i18n-message-hu-deployment-privacy-data-controller",
+    "key": "deployment.privacy.data.controller",
+    "lang": "hu",
+    "value": "Adatkezelő"
+  },
+  {
+    "_id": "i18n-message-hu-deployment-privacy-contact-email",
+    "key": "deployment.privacy.contact.email",
+    "lang": "hu",
+    "value": "Adatvédelmi e-mail-cím"
+  },
+  {
+    "_id": "i18n-message-hu-deployment-privacy-contact-not-published",
+    "key": "deployment.privacy.contact.not.published",
+    "lang": "hu",
+    "value": "A telepítés operátora nem tett közzé adatvédelmi kapcsolattartót."
+  },
+  {
+    "_id": "i18n-message-hu-deployment-privacy-deletion-email-prefix",
+    "key": "deployment.privacy.deletion.email.prefix",
+    "lang": "hu",
+    "value": "A fiókodhoz kapcsolódó e-mail-címről törlési kérelmet is küldhetsz erre a címre:"
+  },
+  {
+    "_id": "i18n-message-hu-deployment-privacy-deletion-email-suffix",
+    "key": "deployment.privacy.deletion.email.suffix",
+    "lang": "hu",
+    "value": "."
+  },
+  {
     "_id": "i18n-message-hu-operator-configuration-social-eyebrow",
     "key": "operator.configuration.social.eyebrow",
     "lang": "hu",
@@ -34392,78 +34620,6 @@
     "value": "telepítés"
   },
   {
-    "_id": "i18n-message-hu-operator-leaderboard-claimed-node",
-    "key": "operator.leaderboard.claimed.node",
-    "lang": "hu",
-    "value": "Igényelt csomópont"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-unclaimed-node",
-    "key": "operator.leaderboard.unclaimed.node",
-    "lang": "hu",
-    "value": "Nem igényelt csomópont"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-founder",
-    "key": "operator.leaderboard.seed.founder",
-    "lang": "hu",
-    "value": "MyScoutee alapítói hozzájárulás"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-campus",
-    "key": "operator.leaderboard.seed.campus",
-    "lang": "hu",
-    "value": "Campus közösség"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-campus-east",
-    "key": "operator.leaderboard.seed.campus.east",
-    "lang": "hu",
-    "value": "Campus keleti telepítés"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-city",
-    "key": "operator.leaderboard.seed.city",
-    "lang": "hu",
-    "value": "Városi hálózat"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-club",
-    "key": "operator.leaderboard.seed.club",
-    "lang": "hu",
-    "value": "Klubhálózat"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-this-deployment",
-    "key": "operator.leaderboard.seed.this.deployment",
-    "lang": "hu",
-    "value": "Ez a telepítés"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-north",
-    "key": "operator.leaderboard.seed.north",
-    "lang": "hu",
-    "value": "Északi telepítés"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-seed-east",
-    "key": "operator.leaderboard.seed.east",
-    "lang": "hu",
-    "value": "Keleti telepítés"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-empty",
-    "key": "operator.leaderboard.empty",
-    "lang": "hu",
-    "value": "Nincs hálózati bejegyzés"
-  },
-  {
-    "_id": "i18n-message-hu-operator-leaderboard-empty-description",
-    "key": "operator.leaderboard.empty.description",
-    "lang": "hu",
-    "value": "Az ellenőrzött csomópontok itt jelennek meg."
-  },
-  {
     "_id": "i18n-message-hu-operator-leaderboard-deployments-title",
     "key": "operator.leaderboard.deployments.title",
     "lang": "hu",
@@ -34546,6 +34702,78 @@
     "key": "operator.leaderboard.deployments.error.response",
     "lang": "hu",
     "value": "A nyilvántartás egy másik operátori csoport telepítéseit adta vissza."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-claimed-node",
+    "key": "operator.leaderboard.claimed.node",
+    "lang": "hu",
+    "value": "Igényelt csomópont"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-unclaimed-node",
+    "key": "operator.leaderboard.unclaimed.node",
+    "lang": "hu",
+    "value": "Nem igényelt csomópont"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-founder",
+    "key": "operator.leaderboard.seed.founder",
+    "lang": "hu",
+    "value": "MyScoutee alapítói hozzájárulás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-campus",
+    "key": "operator.leaderboard.seed.campus",
+    "lang": "hu",
+    "value": "Campus közösség"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-campus-east",
+    "key": "operator.leaderboard.seed.campus.east",
+    "lang": "hu",
+    "value": "Campus keleti telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-city",
+    "key": "operator.leaderboard.seed.city",
+    "lang": "hu",
+    "value": "Városi hálózat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-club",
+    "key": "operator.leaderboard.seed.club",
+    "lang": "hu",
+    "value": "Klubhálózat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-this-deployment",
+    "key": "operator.leaderboard.seed.this.deployment",
+    "lang": "hu",
+    "value": "Ez a telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-north",
+    "key": "operator.leaderboard.seed.north",
+    "lang": "hu",
+    "value": "Északi telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-seed-east",
+    "key": "operator.leaderboard.seed.east",
+    "lang": "hu",
+    "value": "Keleti telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-empty",
+    "key": "operator.leaderboard.empty",
+    "lang": "hu",
+    "value": "Nincs hálózati bejegyzés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-empty-description",
+    "key": "operator.leaderboard.empty.description",
+    "lang": "hu",
+    "value": "Az ellenőrzött csomópontok itt jelennek meg."
   },
   {
     "_id": "i18n-message-hu-operator-leaderboard-error-pagination",

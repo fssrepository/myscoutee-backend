@@ -8,7 +8,7 @@
     "description": "admin.jobs.rule.event.random.groups.description",
     "actionKey": "event.scheduler.random-groups",
     "triggerKind": "scheduled_process",
-    "enabled": false,
+    "enabled": true,
     "manualRunEnabled": true,
     "adminManageable": true,
     "priority": 200,
@@ -65,9 +65,9 @@
     ],
     "message": {},
     "runState": {
-      "currentStatus": "suspended",
+      "currentStatus": "idle",
       "progressPercent": 0,
-      "progressDetail": "Suspended by default."
+      "progressDetail": "Ready for the next scheduled slot."
     },
     "runHistory": [],
     "createdDate": "2026-05-31T00:00:00.000Z",

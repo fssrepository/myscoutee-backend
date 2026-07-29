@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
 import com.raxim.myscoutee.registry.RegistryLocalStore.OperatorActionJournalEntry;
+import com.raxim.myscoutee.registry.RegistryLocalStore.OperatorClaimStatusEvidence;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeployment;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeploymentPage;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
@@ -522,6 +523,7 @@ public final class RegistryOperatorNetworkService {
         String verificationStatus = claimed ? "VERIFIED" : "NOT_SUBMITTED";
         String verificationSubmittedAt = "";
         String legalName = "";
+        String eligibilityStatus = null;
         String verificationCapability = "AVAILABLE";
         String verificationUnavailableReason = null;
         if (claimVerificationBoundary != null) {
@@ -548,12 +550,15 @@ public final class RegistryOperatorNetworkService {
                 verificationSubmittedAt = previousStatus.submittedAt();
                 legalName = previousStatus.legalName();
                 operatorName = legalName;
+                eligibilityStatus = previousStatus.eligibilityStatus();
                 if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         .equals(verificationStatus)) {
                     claimed = false;
                     claimedAt = "";
                     currentGroupId = "";
                     activeLinkId = "";
+                    eligibilityStatus =
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE;
                 }
             }
             try {
@@ -584,6 +589,7 @@ public final class RegistryOperatorNetworkService {
                 verificationSubmittedAt = registryStatus.submittedAt();
                 legalName = registryStatus.legalName();
                 operatorName = legalName;
+                eligibilityStatus = registryStatus.eligibilityStatus();
                 if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         .equals(verificationStatus)) {
                     // A signed withdrawn state is also the recovery signal when
@@ -593,6 +599,8 @@ public final class RegistryOperatorNetworkService {
                     claimedAt = "";
                     currentGroupId = "";
                     activeLinkId = "";
+                    eligibilityStatus =
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE;
                 }
             } catch (RegistryHttpClient.RegistryHttpException exception) {
                 if (!isUnsupportedClaimStatusEndpoint(exception)) {
@@ -665,7 +673,8 @@ public final class RegistryOperatorNetworkService {
                 verificationUnavailableReason,
                 verificationStatus,
                 emptyToNull(verificationSubmittedAt),
-                emptyToNull(legalName));
+                emptyToNull(legalName),
+                emptyToNull(eligibilityStatus));
     }
 
     public AnnouncementOutcome announcements(
@@ -1103,6 +1112,21 @@ public final class RegistryOperatorNetworkService {
             TrustedDeployment trusted,
             OperatorActionJournalEntry claim,
             OperatorClaimStatusReceipt status) {
+        return verifyClaimStatusReceipt(trusted, claim, status, false);
+    }
+
+    private OperatorClaimStatusReceipt verifyLegacyClaimStatusReceipt(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry claim,
+            OperatorClaimStatusReceipt status) {
+        return verifyClaimStatusReceipt(trusted, claim, status, true);
+    }
+
+    private OperatorClaimStatusReceipt verifyClaimStatusReceipt(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry claim,
+            OperatorClaimStatusReceipt status,
+            boolean legacyEvidence) {
         if (status == null) {
             throw new IllegalArgumentException(
                     "Registry operator claim status receipt is missing.");
@@ -1183,9 +1207,17 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry operator claim status does not match the durable claim receipt.");
         }
+        if (legacyEvidence) {
+            requireLegacyEligibilityBoundaryAbsent(status);
+        } else {
+            verifyClaimEligibilityBoundary(status);
+        }
         if (!RegistryCrypto.verifyBase64(
                 trusted.registryPublicKey(),
-                RegistryProtocol.operatorClaimStatusReceipt(status),
+                legacyEvidence
+                        ? RegistryProtocol.legacyOperatorClaimStatusReceipt(
+                                status)
+                        : RegistryProtocol.operatorClaimStatusReceipt(status),
                 status.signature())) {
             throw new IllegalArgumentException(
                     "Registry operator claim status signature is invalid.");
@@ -1196,11 +1228,12 @@ public final class RegistryOperatorNetworkService {
     private OperatorClaimStatusReceipt loadVerifiedClaimStatusEvidence(
             TrustedDeployment trusted,
             List<OperatorActionJournalEntry> journal) {
-        OperatorClaimStatusReceipt stored =
-                localStore.loadOperatorClaimStatusReceipt().orElse(null);
-        if (stored == null) {
+        OperatorClaimStatusEvidence evidence =
+                localStore.loadOperatorClaimStatusEvidence().orElse(null);
+        if (evidence == null) {
             return null;
         }
+        OperatorClaimStatusReceipt stored = evidence.status();
         OperatorActionJournalEntry storedClaim = null;
         for (OperatorActionJournalEntry entry : journal) {
             if (isClaimVerificationBoundary(entry)
@@ -1216,11 +1249,92 @@ public final class RegistryOperatorNetworkService {
                     "Durable claim status evidence has no matching local claim receipt.");
         }
         try {
-            return verifyClaimStatusReceipt(trusted, storedClaim, stored);
+            return evidence.schemaVersion() == 1
+                    ? verifyLegacyClaimStatusReceipt(
+                            trusted,
+                            storedClaim,
+                            stored)
+                    : verifyClaimStatusReceipt(
+                            trusted,
+                            storedClaim,
+                            stored);
         } catch (IllegalArgumentException exception) {
             throw new IllegalStateException(
                     "Durable claim status evidence failed cryptographic verification.",
                     exception);
+        }
+    }
+
+    private static void requireLegacyEligibilityBoundaryAbsent(
+            OperatorClaimStatusReceipt status) {
+        if (status.eligibilityStatus() != null
+                || status.eligibilityId() != null
+                || status.eligibilityIndex() != null
+                || status.eligibilityHash() != null) {
+            throw new IllegalArgumentException(
+                    "Legacy operator claim status evidence unexpectedly contains an eligibility boundary.");
+        }
+    }
+
+    private static void verifyClaimEligibilityBoundary(
+            OperatorClaimStatusReceipt status) {
+        if (!Set.of(
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE)
+                .contains(status.eligibilityStatus())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim eligibility status is unsupported.");
+        }
+        RegistryProtocol.requireHash(
+                status.eligibilityHash(),
+                "eligibility_hash");
+        long eligibilityIndex = status.eligibilityIndex() == null
+                ? 0L
+                : status.eligibilityIndex();
+        if (eligibilityIndex < 0L) {
+            throw new IllegalArgumentException(
+                    "eligibility_index must be non-negative.");
+        }
+        boolean hasEligibilityId = status.eligibilityId() != null
+                && !status.eligibilityId().isEmpty();
+        if (hasEligibilityId) {
+            RegistryProtocol.requireOperatorEligibilityId(
+                    status.eligibilityId());
+        }
+        boolean hasEligibilityBoundary = eligibilityIndex > 0L;
+        if (hasEligibilityBoundary != hasEligibilityId
+                || (hasEligibilityBoundary
+                        == RegistryProtocol.ZERO_HASH.equals(
+                                status.eligibilityHash()))) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim eligibility boundary is inconsistent.");
+        }
+
+        boolean approved = RegistryProtocol
+                .OPERATOR_VERIFICATION_STATUS_APPROVED
+                .equals(status.verificationStatus());
+        if (approved
+                && !Set.of(
+                                RegistryProtocol
+                                        .OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                                RegistryProtocol
+                                        .OPERATOR_ELIGIBILITY_STATUS_SUSPENDED)
+                        .contains(status.eligibilityStatus())) {
+            throw new IllegalArgumentException(
+                    "Approved operator claim status has an invalid eligibility state.");
+        }
+        if (!approved
+                && !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                        .equals(status.eligibilityStatus())) {
+            throw new IllegalArgumentException(
+                    "Non-approved operator claim status must be eligibility-inactive.");
+        }
+        if (RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED
+                        .equals(status.eligibilityStatus())
+                && !hasEligibilityBoundary) {
+            throw new IllegalArgumentException(
+                    "Suspended operator claim status has no signed eligibility decision.");
         }
     }
 
@@ -1265,6 +1379,45 @@ public final class RegistryOperatorNetworkService {
                         || !Objects.equals(previous.approvedAt(), incoming.approvedAt()))) {
             throw new IllegalArgumentException(
                     "Registry operator claim review boundary changed or rolled back.");
+        }
+        if (previous.eligibilityStatus() != null) {
+            long previousEligibilityIndex =
+                    previous.eligibilityIndex() == null
+                            ? 0L
+                            : previous.eligibilityIndex();
+            long incomingEligibilityIndex =
+                    incoming.eligibilityIndex() == null
+                            ? 0L
+                            : incoming.eligibilityIndex();
+            if (incomingEligibilityIndex < previousEligibilityIndex) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim eligibility boundary rolled back.");
+            }
+            if (incomingEligibilityIndex == previousEligibilityIndex
+                    && (!Objects.equals(
+                                    previous.eligibilityId(),
+                                    incoming.eligibilityId())
+                            || !Objects.equals(
+                                    previous.eligibilityHash(),
+                                    incoming.eligibilityHash()))) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim eligibility boundary changed at the same index.");
+            }
+            boolean approvalRemainsCurrent = RegistryProtocol
+                            .OPERATOR_VERIFICATION_STATUS_APPROVED
+                            .equals(previous.verificationStatus())
+                    && RegistryProtocol
+                            .OPERATOR_VERIFICATION_STATUS_APPROVED
+                            .equals(incoming.verificationStatus());
+            if (approvalRemainsCurrent
+                    && incomingEligibilityIndex
+                            == previousEligibilityIndex
+                    && !Objects.equals(
+                            previous.eligibilityStatus(),
+                            incoming.eligibilityStatus())) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim eligibility state changed without a newer decision.");
+            }
         }
         if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         .equals(previous.verificationStatus())

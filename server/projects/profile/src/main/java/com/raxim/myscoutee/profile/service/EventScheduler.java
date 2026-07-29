@@ -41,6 +41,7 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorRequest;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
@@ -88,6 +89,7 @@ public class EventScheduler {
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
     private final NotificationOutboxService notificationOutboxService;
+    private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
@@ -127,35 +129,39 @@ public class EventScheduler {
         this.notificationOutboxService = notificationOutboxService;
     }
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
+        this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
     @Scheduled(fixedDelayString = "${events.scheduler.check-delay-ms:60000}")
     public void runScheduledWrappers() {
+        if (scheduledMongoSessionRunner == null) {
+            runScheduledWrappersForCurrentDatabase();
+            return;
+        }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::runScheduledWrappersForCurrentDatabase);
+    }
+
+    private void runScheduledWrappersForCurrentDatabase() {
         if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
         }
 
         Instant now = Instant.now();
-        if (schedulerEnabled && claimStageSchedulerRun(now)) {
-            int startReviewCount = moveTournamentFirstStagesToStartReview(now);
-            if (startReviewCount > 0) {
-                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
-            }
-            int reviewCount = closeEndedTournamentStagesForReview(now);
-            if (reviewCount > 0) {
-                LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
-            }
+        boolean tournamentRuleConfigured = notificationRuleRegistryService
+                .findRule(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                .isPresent();
+        boolean tournamentReviewDue = tournamentRuleConfigured
+                ? notificationRuleRegistryService.shouldRunScheduledRule(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        now)
+                : schedulerEnabled && claimStageSchedulerRun(now);
+        if (tournamentReviewDue) {
+            runTournamentReview(now, tournamentRuleConfigured);
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                    "Scheduled random grouping started.",
-                    MARKER_UPDATED_BY);
-            List<GeneratedEventPlan> plans = generateRandomPlans();
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                    plans.size(),
-                    "completed",
-                    "Generated random event group plans.",
-                    MARKER_UPDATED_BY);
+            runScheduledRandomGroups();
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, now)) {
             int expiredCount = eventCounterExpiryService.runExpiryPassNow();
@@ -173,22 +179,159 @@ public class EventScheduler {
 
     @Scheduled(fixedDelayString = "${events.waitlist.inviter-check-delay-ms:60000}")
     public void runWaitlistInviter() {
+        if (scheduledMongoSessionRunner == null) {
+            runWaitlistInviterForCurrentDatabase();
+            return;
+        }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::runWaitlistInviterForCurrentDatabase);
+    }
+
+    private void runWaitlistInviterForCurrentDatabase() {
         if (!waitlistInviterEnabled) {
             return;
         }
-        if (!claimAutoInviterRun(Instant.now())) {
+        Instant now = Instant.now();
+        boolean ruleConfigured = notificationRuleRegistryService
+                .findRule(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                .isPresent();
+        boolean due = ruleConfigured
+                ? notificationRuleRegistryService.shouldRunScheduledRule(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        now)
+                : claimAutoInviterRun(now);
+        if (!due) {
             return;
         }
-        int invitedCount = activitiesMembersService.sweepEventWaitlists();
-        if (invitedCount > 0) {
-            LOGGER.info("Promoted {} event wait-list member(s) to invitations.", invitedCount);
+        int claimedPendingCount = ruleConfigured
+                ? notificationRuleRegistryService.claimPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                : 0;
+        try {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.beginRun(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        "Scheduled event auto-inviter started.",
+                        MARKER_UPDATED_BY,
+                        now);
+            }
+            int waitlistInvitedCount = activitiesMembersService.sweepEventWaitlists();
+            if (waitlistInvitedCount > 0) {
+                LOGGER.info("Promoted {} event wait-list member(s) to invitations.", waitlistInvitedCount);
+            }
+            List<InviteBatchPlan> autoInvitePlans = generatePriorityPlans();
+            int autoInvitedCount = autoInvitePlans.stream()
+                    .mapToInt(plan -> plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
+                    .sum();
+            if (autoInvitedCount > 0) {
+                LOGGER.info("Auto-invited {} event candidate(s) across {} event(s).", autoInvitedCount, autoInvitePlans.size());
+            }
+            if (ruleConfigured) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        waitlistInvitedCount + autoInvitedCount,
+                        "completed",
+                        "Processed scheduled wait-list and automatic invitations.",
+                        MARKER_UPDATED_BY,
+                        now);
+            }
+        } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.restoreClaimedPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        claimedPendingCount,
+                        "admin.jobs.table.affected");
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        MARKER_UPDATED_BY,
+                        now);
+            }
+            LOGGER.warn("Scheduled event auto-inviter failed.", exception);
         }
-        List<InviteBatchPlan> autoInvitePlans = generatePriorityPlans();
-        int autoInvitedCount = autoInvitePlans.stream()
-                .mapToInt(plan -> plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
-                .sum();
-        if (autoInvitedCount > 0) {
-            LOGGER.info("Auto-invited {} event candidate(s) across {} event(s).", autoInvitedCount, autoInvitePlans.size());
+    }
+
+    private void runScheduledRandomGroups() {
+        Instant startedAt = Instant.now();
+        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+        try {
+            notificationRuleRegistryService.beginRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    "Scheduled random grouping started.",
+                    MARKER_UPDATED_BY,
+                    startedAt);
+            List<GeneratedEventPlan> plans = generateRandomPlans();
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    plans.size(),
+                    "completed",
+                    "Generated random event group plans.",
+                    MARKER_UPDATED_BY,
+                    startedAt);
+        } catch (RuntimeException exception) {
+            notificationRuleRegistryService.restoreClaimedPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    claimedPendingCount,
+                    "admin.jobs.table.affected");
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    MARKER_UPDATED_BY,
+                    startedAt);
+            LOGGER.warn("Scheduled random grouping failed.", exception);
+        }
+    }
+
+    private void runTournamentReview(Instant now, boolean ruleConfigured) {
+        Instant startedAt = now == null ? Instant.now() : now;
+        int claimedPendingCount = ruleConfigured
+                ? notificationRuleRegistryService.claimPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                : 0;
+        try {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.beginRun(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        "Scheduled tournament review started.",
+                        MARKER_UPDATED_BY,
+                        startedAt);
+            }
+            int startReviewCount = moveTournamentFirstStagesToStartReview(startedAt);
+            if (startReviewCount > 0) {
+                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
+            }
+            int reviewCount = closeEndedTournamentStagesForReview(startedAt);
+            if (reviewCount > 0) {
+                LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
+            }
+            if (ruleConfigured) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        startReviewCount + reviewCount,
+                        "completed",
+                        "Reviewed scheduled tournament stages.",
+                        MARKER_UPDATED_BY,
+                        startedAt);
+            }
+        } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.restoreClaimedPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        claimedPendingCount,
+                        "admin.jobs.table.affected");
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        MARKER_UPDATED_BY,
+                        startedAt);
+            }
+            LOGGER.warn("Scheduled tournament review failed.", exception);
         }
     }
 

@@ -26,22 +26,22 @@ class DeploymentConfigurationControllerTest {
         OperatorConfigurationService service = mock(OperatorConfigurationService.class);
         when(service.publicConfiguration()).thenReturn(
                 new DeploymentPublicConfigurationDto(
-                "Community",
-                2,
-                "Welcome home",
-                "/media/public?key=images%2Fbranding%2Fmedium",
-                DeploymentThemePreset.FOREST,
-                7L,
-                List.of(new DeploymentSocialLinkDto(
-                        "discord",
-                        "Discord",
-                        "https://discord.example.test/community",
-                        "discord",
-                        "@community")),
-                new DeploymentPrivacyContactDto(
-                        true,
-                        "Community Cooperative",
-                        "privacy@community.example")));
+                        "Community",
+                        2,
+                        "Welcome home",
+                        "/media/public?key=images%2Fbranding%2Fmedium",
+                        DeploymentThemePreset.FOREST,
+                        7L,
+                        List.of(new DeploymentSocialLinkDto(
+                                "discord",
+                                "Discord",
+                                "https://discord.example.test/community",
+                                "discord",
+                                "@community")),
+                        new DeploymentPrivacyContactDto(
+                                true,
+                                "Community Cooperative",
+                                "privacy@community.example")));
         var mockMvc = MockMvcBuilders
                 .standaloneSetup(new DeploymentConfigurationController(service))
                 .build();

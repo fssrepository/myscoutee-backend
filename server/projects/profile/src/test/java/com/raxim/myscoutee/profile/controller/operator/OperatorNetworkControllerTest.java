@@ -36,8 +36,12 @@ class OperatorNetworkControllerTest {
                 "2026-06",
                 1L,
                 2L,
+                3L,
+                4L,
                 "ledger",
                 "audit",
+                "review",
+                "eligibility",
                 "100000",
                 "1",
                 "1",
@@ -87,7 +91,8 @@ class OperatorNetworkControllerTest {
                 null,
                 "APPROVED",
                 "2026-07-28T00:00:00Z",
-                "Operator");
+                "Operator",
+                "active");
         OperatorClaimRequestDto submission = new OperatorClaimRequestDto(
                 "Operator",
                 "REG-42",
@@ -139,7 +144,8 @@ class OperatorNetworkControllerTest {
                 null,
                 "PENDING_REVIEW",
                 "2026-07-28T00:00:00Z",
-                "Example Cooperative");
+                "Example Cooperative",
+                "inactive");
         OperatorLeaderboardRowDto leaderboardEntry =
                 new OperatorLeaderboardRowDto(
                         "opg_0123456789abcdef0123456789abcdef",
@@ -148,6 +154,7 @@ class OperatorNetworkControllerTest {
                         "Example Cooperative",
                         "",
                         "pending-review",
+                        "inactive",
                         1L,
                         "0",
                         "1",

@@ -48,6 +48,7 @@ public class NotificationOutboxService {
     private final PlatformParametersService platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
     private final ObjectProvider<UserNotificationService> userNotificationServiceProvider;
+    private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
 
     @Autowired
     public NotificationOutboxService(
@@ -87,6 +88,12 @@ public class NotificationOutboxService {
         this(notificationOutboxRepository, null, null, null);
     }
 
+    @Autowired(required = false)
+    void setNotificationRuleRegistryServiceProvider(
+            ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+        this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
+    }
+
     public Optional<NotificationOutboxItem> enqueue(NotificationIntent intent) {
         if (intent == null) {
             return Optional.empty();
@@ -121,10 +128,28 @@ public class NotificationOutboxService {
                         collapseWindowStartIso(nowIso))
                 .map(existing -> mergeRecipients(existing, recipientUserIds, payload, nowIso, intent.createdUser()))
                 .orElseGet(() -> newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso));
+        boolean newlyTracked = !Boolean.TRUE.equals(item.getPendingCounterTracked());
+        item.setPendingCounterTracked(true);
         NotificationOutboxItem saved = notificationOutboxRepository.save(item);
+        if (newlyTracked) {
+            adjustPendingCount(1);
+        }
         publishWakeup(saved);
         materializeInbox(saved);
         return Optional.of(saved);
+    }
+
+    private void adjustPendingCount(int delta) {
+        if (notificationRuleRegistryServiceProvider == null || delta == 0) {
+            return;
+        }
+        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
+        if (registry != null) {
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                    delta,
+                    "admin.jobs.rule.notification.outbox");
+        }
     }
 
     private void materializeInbox(NotificationOutboxItem item) {

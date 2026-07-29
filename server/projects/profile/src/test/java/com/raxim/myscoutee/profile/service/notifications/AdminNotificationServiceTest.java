@@ -210,7 +210,10 @@ class AdminNotificationServiceTest {
                         "completed",
                         "done",
                         4,
-                        "admin-1"),
+                        "admin-1",
+                        0,
+                        "",
+                        ""),
                 List.of(),
                 "2026-07-25T00:00:01Z",
                 "admin-1");

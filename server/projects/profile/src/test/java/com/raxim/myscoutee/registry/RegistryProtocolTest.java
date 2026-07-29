@@ -543,6 +543,10 @@ class RegistryProtocolTest {
                         null,
                         RegistryProtocol.ZERO_HASH,
                         null,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE,
+                        null,
+                        null,
+                        RegistryProtocol.ZERO_HASH,
                         "test-program:parent-b",
                         "rkey_0123456789abcdef0123456789abcdef",
                         null);
@@ -551,7 +555,7 @@ class RegistryProtocolTest {
                         RegistryProtocol.operatorClaimStatusReceipt(status),
                         StandardCharsets.UTF_8))
                 .isEqualTo("""
-                        myscoutee-registry-operator-claim-status-receipt-v1
+                        myscoutee-registry-operator-claim-status-receipt-v2
                         dep_0123456789abcdef0123456789abcdef
                         opa_0123456789abcdef0123456789abcdef
                         7
@@ -564,9 +568,86 @@ class RegistryProtocolTest {
                         0
                         sha256:0000000000000000000000000000000000000000000000000000000000000000
 
+                        inactive
+
+                        0
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
                         test-program:parent-b
                         rkey_0123456789abcdef0123456789abcdef
                         """);
+    }
+
+    @Test
+    void leaderboardSnapshotHashMatchesTheGoV2BoundaryOrderExactly() {
+        RegistryProtocol.LeaderboardSnapshot snapshot =
+                new RegistryProtocol.LeaderboardSnapshot(
+                        "snap_0123456789abcdef0123456789abcdef",
+                        RegistryProtocol.LEADERBOARD_FORMULA_VERSION,
+                        RegistryProtocol.LEADERBOARD_RULESET_VERSION,
+                        "2026-06",
+                        12L,
+                        4L,
+                        3L,
+                        2L,
+                        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                        "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                        "100000",
+                        "1",
+                        "1",
+                        "4",
+                        "200000",
+                        "1",
+                        "150000",
+                        "1",
+                        "2026-07-28T00:00:05Z",
+                        null,
+                        "test-program:parent-b",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        null);
+
+        assertThat(new String(
+                        RegistryProtocol.leaderboardSnapshotHash(snapshot),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-leaderboard-snapshot-hash-v2
+                        snap_0123456789abcdef0123456789abcdef
+                        six-complete-month-average-v1
+                        qmau-v1
+                        2026-06
+                        12
+                        4
+                        3
+                        2
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+                        sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        100000
+                        1
+                        1
+                        4
+                        200000
+                        1
+                        150000
+                        1
+                        2026-07-28T00:00:05Z
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void leaderboardCursorUsesTheGoV2DomainExactly() {
+        byte[] payload = "{\"version\":2}".getBytes(StandardCharsets.UTF_8);
+
+        assertThat(new String(
+                        RegistryProtocol.leaderboardCursor(payload),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-leaderboard-cursor-v2
+                        {"version":2}""");
     }
 
     @Test
@@ -722,12 +803,19 @@ class RegistryProtocolTest {
         assertThat(RegistryProtocol.requireBatchId(
                         "batch_0123456789abcdef0123456789abcdef"))
                 .isEqualTo("batch_0123456789abcdef0123456789abcdef");
+        assertThat(RegistryProtocol.requireOperatorEligibilityId(
+                        "ope_0123456789abcdef0123456789abcdef"))
+                .isEqualTo("ope_0123456789abcdef0123456789abcdef");
         assertThatThrownBy(() -> RegistryProtocol.requireDeploymentId(
                         "dep_01234567_ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("malformed");
         assertThatThrownBy(() -> RegistryProtocol.requireBatchId(
                         "batch_0123456789ABCDEF0123456789ABCDEF"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("malformed");
+        assertThatThrownBy(() -> RegistryProtocol.requireOperatorEligibilityId(
+                        "ope_0123456789ABCDEF0123456789ABCDEF"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("malformed");
     }

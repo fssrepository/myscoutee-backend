@@ -907,7 +907,8 @@ class OperatorRegistryServiceTest {
                 null,
                 "PENDING_REVIEW",
                 NOW.toString(),
-                "Example Cooperative");
+                "Example Cooperative",
+                "inactive");
     }
 
     private ActionOutcome deactivationOutcome() {
@@ -954,6 +955,7 @@ class OperatorRegistryServiceTest {
                 "Example Cooperative",
                 "",
                 "pending-review",
+                "inactive",
                 deploymentCount,
                 "10",
                 "1",

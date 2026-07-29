@@ -22,6 +22,14 @@ for command_name in dpkg-deb jq python3 tar; do
     || fail "required test command is missing: ${command_name}"
 done
 
+for production_identity_seed in \
+  "${REPO_ROOT}/server/docker/conf/mongodb/myscoutee_db/adminUsers.json" \
+  "${REPO_ROOT}/server/docker/conf/mongodb/myscoutee_db/users.json"; do
+  jq -e 'type == "array" and length == 0' \
+    "${production_identity_seed}" >/dev/null \
+    || fail "production identity source seed is not empty: ${production_identity_seed#${REPO_ROOT}/}"
+done
+
 assert_dockerignore_line() {
   local dockerignore="$1"
   local pattern="$2"
@@ -125,6 +133,39 @@ jq -e '
     and ((.adminEmails // []) | length == 0))
 ' "${PACKAGED_PRODUCTION_SEED}/appSettings.json" >/dev/null \
   || fail "production app settings contain a packaged administrator"
+jq -e '
+  type == "array"
+  and length == 1
+  and .[0]._id == "deployment-configuration"
+  and .[0].schemaVersion == 3
+  and .[0].privacyContact.dataControllerName == ""
+  and .[0].privacyContact.privacyContactEmail == ""
+' "${PACKAGED_PRODUCTION_SEED}/deploymentConfigurations.json" >/dev/null \
+  || fail "production deployment privacy contact is not schema v3 and empty"
+jq -e '
+  [
+    .[]
+    | select(.documentType == "privacy" and .active == true)
+  ] as $documents
+  | ($documents | length == 2)
+  and all($documents[];
+    ([.sections[] | select(.id == "contact-details")] | length == 1)
+    and (
+      [.sections[] | select(.id == "contact-details")][0].contentHtml
+      == "{{deployment.privacy.contactDetails}}"
+    )
+    and ([.sections[] | select(.id == "account-data-deletion")] | length == 1)
+    and (
+      [.sections[] | select(.id == "account-data-deletion")][0].contentHtml
+      | contains("{{deployment.privacy.deletionEmailRoute}}")
+    )
+    and (
+      [.sections[] | .contentHtml // ""] | join(" ")
+      | test("DPO|privacy@myscoutee|myscoutee1@gmail"; "i")
+      | not
+    ))
+' "${PACKAGED_PRODUCTION_SEED}/helpCenterRevisions.json" >/dev/null \
+  || fail "production privacy help seed contains fixed contact data or misses runtime tokens"
 jq -e '
   type == "array"
   and any(.[];
@@ -347,6 +388,24 @@ tar -cf "${IMAGE_ARCHIVE_DIR}/test-only.tar" \
   -C "${IMAGE_BUILD}" manifest.json config.json layer.tar
 bash "${CREDENTIAL_AUDIT}" "${AUDIT_FIXTURE}"
 
+mkdir -p "${IMAGE_LAYER_ROOT}/usr/share/nginx/html"
+printf '%s\n' 'Third-party license contact: jaffathecake@gmail.com' \
+  > "${IMAGE_LAYER_ROOT}/usr/share/nginx/html/3rdpartylicenses.txt"
+tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
+tar -cf "${IMAGE_ARCHIVE_DIR}/test-only.tar" \
+  -C "${IMAGE_BUILD}" manifest.json config.json layer.tar
+bash "${CREDENTIAL_AUDIT}" "${AUDIT_FIXTURE}"
+
+printf '%s\n' 'window.__deploymentOwner = "owner@gmail.com";' \
+  > "${IMAGE_LAYER_ROOT}/usr/share/nginx/html/main.js"
+tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
+tar -cf "${IMAGE_ARCHIVE_DIR}/test-only.tar" \
+  -C "${IMAGE_BUILD}" manifest.json config.json layer.tar
+if bash "${CREDENTIAL_AUDIT}" "${AUDIT_FIXTURE}" >/dev/null 2>&1; then
+  fail "credential audit accepted a personal email in managed frontend application content"
+fi
+rm -f "${IMAGE_LAYER_ROOT}/usr/share/nginx/html/main.js"
+
 mkdir -p "${IMAGE_LAYER_ROOT}/run/secrets"
 printf '%s\n' '{"type":"service_account","private_key":"test-only"}' \
   > "${IMAGE_LAYER_ROOT}/run/secrets/firebase-service-account.json"
@@ -435,6 +494,41 @@ if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
   fail "credential audit accepted a personal production administrator seed"
 fi
 mv "${TEST_ROOT}/appSettings.safe.json" "${PACKAGED_APP_SETTINGS}"
+
+PACKAGED_DEPLOYMENT_CONFIGURATION="${PACKAGED_PRODUCTION_SEED}/deploymentConfigurations.json"
+cp "${PACKAGED_DEPLOYMENT_CONFIGURATION}" \
+  "${TEST_ROOT}/deploymentConfigurations.safe.json"
+jq '.[0].privacyContact = {
+      dataControllerName: "Packaged Operator",
+      privacyContactEmail: "owner@gmail.com"
+    }' \
+  "${TEST_ROOT}/deploymentConfigurations.safe.json" \
+  > "${PACKAGED_DEPLOYMENT_CONFIGURATION}"
+if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
+  fail "credential audit accepted a fixed production privacy contact"
+fi
+mv "${TEST_ROOT}/deploymentConfigurations.safe.json" \
+  "${PACKAGED_DEPLOYMENT_CONFIGURATION}"
+
+PACKAGED_HELP_CENTER="${PACKAGED_PRODUCTION_SEED}/helpCenterRevisions.json"
+cp "${PACKAGED_HELP_CENTER}" "${TEST_ROOT}/helpCenterRevisions.safe.json"
+jq 'map(
+      if .documentType == "privacy" and .lang == "en"
+      then .sections |= map(
+        if .id == "contact-details"
+        then .contentHtml = "<p>DPO: owner@gmail.com</p>"
+        else .
+        end
+      )
+      else .
+      end
+    )' \
+  "${TEST_ROOT}/helpCenterRevisions.safe.json" \
+  > "${PACKAGED_HELP_CENTER}"
+if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then
+  fail "credential audit accepted fixed contact data in production privacy help"
+fi
+mv "${TEST_ROOT}/helpCenterRevisions.safe.json" "${PACKAGED_HELP_CENTER}"
 
 printf '[]\n' > "${PACKAGED_PRODUCTION_SEED}/users.json"
 if bash "${CREDENTIAL_AUDIT}" "${EXTRACTED}" >/dev/null 2>&1; then

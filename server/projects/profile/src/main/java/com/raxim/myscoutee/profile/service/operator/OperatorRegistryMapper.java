@@ -81,6 +81,7 @@ public class OperatorRegistryMapper {
                         requireText(deploymentId, "Deployment ID"),
                         "",
                         "unclaimed",
+                        "inactive",
                         1L,
                         "0",
                         "1",

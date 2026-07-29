@@ -84,6 +84,8 @@ public class EventCounterExpiryService {
             return new ExpiryRunResult(0, 0, 0, 0L, 0L);
         }
         Instant startedAt = Instant.now();
+        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
         try {
             notificationRuleRegistryService.beginRun(
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
@@ -115,6 +117,10 @@ public class EventCounterExpiryService {
             }
             return result;
         } catch (RuntimeException exception) {
+            notificationRuleRegistryService.restoreClaimedPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                    claimedPendingCount,
+                    "admin.jobs.table.affected");
             LOGGER.warn("Event counter expiry pass failed.", exception);
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,

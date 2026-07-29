@@ -65,6 +65,11 @@ public final class RegistryProtocol {
     public static final String OPERATOR_VERIFICATION_STATUS_APPROVED = "APPROVED";
     public static final String OPERATOR_VERIFICATION_STATUS_REJECTED = "REJECTED";
     public static final String OPERATOR_VERIFICATION_STATUS_WITHDRAWN = "WITHDRAWN";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_ACTIVE = "active";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_SUSPENDED = "suspended";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_INACTIVE = "inactive";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_PARTIALLY_SUSPENDED =
+            "partially-suspended";
     public static final String ZERO_HASH =
             "sha256:0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -80,6 +85,8 @@ public final class RegistryProtocol {
     private static final Pattern REGISTRY_KEY_ID_PATTERN = Pattern.compile("rkey_[0-9a-f]{32}");
     private static final Pattern OPERATOR_ACTION_ID_PATTERN = Pattern.compile("opa_[0-9a-f]{32}");
     private static final Pattern OPERATOR_REVIEW_ID_PATTERN = Pattern.compile("opr_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_ELIGIBILITY_ID_PATTERN =
+            Pattern.compile("ope_[0-9a-f]{32}");
     private static final Pattern OPERATOR_GROUP_ID_PATTERN = Pattern.compile("opg_[0-9a-f]{32}");
     private static final Pattern OPERATOR_LINK_ID_PATTERN = Pattern.compile("opl_[0-9a-f]{32}");
     private static final Pattern OPERATOR_TOKEN_ID_PATTERN = Pattern.compile("opt_[0-9a-f]{32}");
@@ -590,6 +597,33 @@ public final class RegistryProtocol {
     public static byte[] operatorClaimStatusReceipt(OperatorClaimStatusReceipt status) {
         Objects.requireNonNull(status, "Operator claim status receipt must not be null.");
         return canonicalAllowEmpty(
+                "myscoutee-registry-operator-claim-status-receipt-v2",
+                status.deploymentId(),
+                status.claimActionId(),
+                requiredLong(status.claimAuditIndex(), "claim_audit_index"),
+                status.claimAuditHash(),
+                status.groupId(),
+                status.legalName(),
+                status.verificationStatus(),
+                status.submittedAt(),
+                status.reviewId(),
+                status.reviewIndex() == null ? "0" : Long.toString(status.reviewIndex()),
+                status.reviewHash(),
+                status.approvedAt(),
+                status.eligibilityStatus(),
+                status.eligibilityId(),
+                status.eligibilityIndex() == null
+                        ? "0"
+                        : Long.toString(status.eligibilityIndex()),
+                status.eligibilityHash(),
+                status.registryScope(),
+                status.registryKeyId());
+    }
+
+    static byte[] legacyOperatorClaimStatusReceipt(
+            OperatorClaimStatusReceipt status) {
+        Objects.requireNonNull(status, "Legacy operator claim status receipt must not be null.");
+        return canonicalAllowEmpty(
                 "myscoutee-registry-operator-claim-status-receipt-v1",
                 status.deploymentId(),
                 status.claimActionId(),
@@ -610,15 +644,21 @@ public final class RegistryProtocol {
     public static byte[] leaderboardSnapshotHash(LeaderboardSnapshot snapshot) {
         Objects.requireNonNull(snapshot, "Leaderboard snapshot must not be null.");
         return canonicalAllowEmpty(
-                "myscoutee-registry-leaderboard-snapshot-hash-v1",
+                "myscoutee-registry-leaderboard-snapshot-hash-v2",
                 snapshot.snapshotId(),
                 snapshot.formulaVersion(),
                 snapshot.rulesetVersion(),
                 snapshot.throughPeriod(),
                 requiredLong(snapshot.throughLedgerIndex(), "through_ledger_index"),
                 requiredLong(snapshot.throughAuditIndex(), "through_audit_index"),
+                requiredLong(snapshot.throughReviewIndex(), "through_review_index"),
+                requiredLong(
+                        snapshot.throughEligibilityIndex(),
+                        "through_eligibility_index"),
                 snapshot.ledgerHeadHash(),
                 snapshot.auditHeadHash(),
+                snapshot.reviewHeadHash(),
+                snapshot.eligibilityHeadHash(),
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
                 snapshot.founderShareNumerator(),
@@ -641,7 +681,7 @@ public final class RegistryProtocol {
     }
 
     public static byte[] leaderboardCursor(byte[] cursorPayload) {
-        byte[] prefix = "myscoutee-registry-leaderboard-cursor-v1\n"
+        byte[] prefix = "myscoutee-registry-leaderboard-cursor-v2\n"
                 .getBytes(StandardCharsets.UTF_8);
         byte[] payload = Objects.requireNonNull(cursorPayload, "Leaderboard cursor payload must not be null.");
         byte[] message = new byte[prefix.length + payload.length];
@@ -1002,6 +1042,13 @@ public final class RegistryProtocol {
 
     public static String requireOperatorReviewId(String value) {
         return requirePattern(value, "review_id", OPERATOR_REVIEW_ID_PATTERN);
+    }
+
+    public static String requireOperatorEligibilityId(String value) {
+        return requirePattern(
+                value,
+                "eligibility_id",
+                OPERATOR_ELIGIBILITY_ID_PATTERN);
     }
 
     public static String requireOperatorGroupId(String value) {
@@ -1714,6 +1761,10 @@ public final class RegistryProtocol {
             @JsonProperty("review_index") Long reviewIndex,
             @JsonProperty("review_hash") String reviewHash,
             @JsonProperty("approved_at") String approvedAt,
+            @JsonProperty("eligibility_status") String eligibilityStatus,
+            @JsonProperty("eligibility_id") String eligibilityId,
+            @JsonProperty("eligibility_index") Long eligibilityIndex,
+            @JsonProperty("eligibility_hash") String eligibilityHash,
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("registry_key_id") String registryKeyId,
             String signature) {
@@ -1732,8 +1783,12 @@ public final class RegistryProtocol {
             @JsonProperty("through_period") String throughPeriod,
             @JsonProperty("through_ledger_index") Long throughLedgerIndex,
             @JsonProperty("through_audit_index") Long throughAuditIndex,
+            @JsonProperty("through_review_index") Long throughReviewIndex,
+            @JsonProperty("through_eligibility_index") Long throughEligibilityIndex,
             @JsonProperty("ledger_head_hash") String ledgerHeadHash,
             @JsonProperty("audit_head_hash") String auditHeadHash,
+            @JsonProperty("review_head_hash") String reviewHeadHash,
+            @JsonProperty("eligibility_head_hash") String eligibilityHeadHash,
             @JsonProperty("founder_units_numerator") String founderUnitsNumerator,
             @JsonProperty("founder_units_denominator") String founderUnitsDenominator,
             @JsonProperty("founder_share_numerator") String founderShareNumerator,
@@ -1756,6 +1811,7 @@ public final class RegistryProtocol {
             String label,
             @JsonProperty("avatar_url") String avatarUrl,
             @JsonProperty("claim_state") String claimState,
+            @JsonProperty("eligibility_status") String eligibilityStatus,
             @JsonProperty("deployment_count") Long deploymentCount,
             @JsonProperty("weight_numerator") String weightNumerator,
             @JsonProperty("weight_denominator") String weightDenominator,
@@ -1774,6 +1830,7 @@ public final class RegistryProtocol {
             @JsonProperty("deployment_id") String deploymentId,
             @JsonProperty("group_id") String groupId,
             @JsonProperty("claim_state") String claimState,
+            @JsonProperty("eligibility_status") String eligibilityStatus,
             @JsonProperty("membership_state") String membershipState,
             @JsonProperty("weight_numerator") String weightNumerator,
             @JsonProperty("weight_denominator") String weightDenominator,

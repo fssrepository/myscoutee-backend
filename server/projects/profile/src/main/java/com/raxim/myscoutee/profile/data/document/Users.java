@@ -70,6 +70,7 @@ public class Users {
     private String profileStatus;
     private String previousProfileStatus;
     private String deletedAtIso;
+    private Boolean accountPurgePendingCounterTracked;
     /*
      * Explicit accounting exclusion for synthetic, automated, test, or other
      * non-human accounts. A missing value means eligible; privileged and
@@ -388,6 +389,14 @@ public class Users {
 
     public void setDeletedAtIso(String deletedAtIso) {
         this.deletedAtIso = deletedAtIso;
+    }
+
+    public Boolean getAccountPurgePendingCounterTracked() {
+        return accountPurgePendingCounterTracked;
+    }
+
+    public void setAccountPurgePendingCounterTracked(Boolean accountPurgePendingCounterTracked) {
+        this.accountPurgePendingCounterTracked = accountPurgePendingCounterTracked;
     }
 
     public String getStatus() {

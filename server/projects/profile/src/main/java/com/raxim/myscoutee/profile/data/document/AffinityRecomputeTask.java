@@ -29,6 +29,7 @@ public class AffinityRecomputeTask {
     private String targetId;
     private List<String> reasons = new ArrayList<>();
     private String status;
+    private Boolean pendingCounterTracked;
     private String availableAtIso;
     private String leaseUntilIso;
     private String workerId;
@@ -54,6 +55,8 @@ public class AffinityRecomputeTask {
     public void setReasons(List<String> reasons) { this.reasons = reasons == null ? new ArrayList<>() : new ArrayList<>(reasons); }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public Boolean getPendingCounterTracked() { return pendingCounterTracked; }
+    public void setPendingCounterTracked(Boolean pendingCounterTracked) { this.pendingCounterTracked = pendingCounterTracked; }
     public String getAvailableAtIso() { return availableAtIso; }
     public void setAvailableAtIso(String availableAtIso) { this.availableAtIso = availableAtIso; }
     public String getLeaseUntilIso() { return leaseUntilIso; }

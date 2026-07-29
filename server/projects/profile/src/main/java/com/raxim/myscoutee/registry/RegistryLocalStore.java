@@ -31,6 +31,8 @@ import tools.jackson.databind.ObjectMapper;
 public final class RegistryLocalStore {
     private static final int STATE_SCHEMA_VERSION = 1;
     private static final int BINDING_ARCHIVE_SCHEMA_VERSION = 1;
+    private static final int LEGACY_OPERATOR_CLAIM_STATUS_SCHEMA_VERSION = 1;
+    private static final int OPERATOR_CLAIM_STATUS_SCHEMA_VERSION = 2;
     private static final int MAX_STATE_BYTES = 1_048_576;
     private static final Set<PosixFilePermission> DIRECTORY_PERMISSIONS =
             PosixFilePermissions.fromString("rwx------");
@@ -262,6 +264,12 @@ public final class RegistryLocalStore {
 
     public Optional<RegistryProtocol.OperatorClaimStatusReceipt>
             loadOperatorClaimStatusReceipt() {
+        return loadOperatorClaimStatusEvidence()
+                .map(OperatorClaimStatusEvidence::status);
+    }
+
+    public Optional<OperatorClaimStatusEvidence>
+            loadOperatorClaimStatusEvidence() {
         requireWritableStateDirectory();
         if (!Files.exists(operatorClaimStatusPath, LinkOption.NOFOLLOW_LINKS)) {
             return Optional.empty();
@@ -275,12 +283,22 @@ public final class RegistryLocalStore {
                     OperatorClaimStatusEvidence.class);
             if (evidence == null
                     || evidence.schemaVersion() == null
-                    || evidence.schemaVersion() != 1
-                    || evidence.status() == null) {
+                    || (evidence.schemaVersion()
+                                    != LEGACY_OPERATOR_CLAIM_STATUS_SCHEMA_VERSION
+                            && evidence.schemaVersion()
+                                    != OPERATOR_CLAIM_STATUS_SCHEMA_VERSION)
+                    || evidence.status() == null
+                    || (evidence.schemaVersion()
+                                    == LEGACY_OPERATOR_CLAIM_STATUS_SCHEMA_VERSION
+                            && !hasLegacyClaimStatusShape(evidence.status()))
+                    || (evidence.schemaVersion()
+                                    == OPERATOR_CLAIM_STATUS_SCHEMA_VERSION
+                            && !hasVersionTwoClaimStatusShape(
+                                    evidence.status()))) {
                 throw new IllegalStateException(
                         "Registry operator claim status evidence is invalid.");
             }
-            return Optional.of(evidence.status());
+            return Optional.of(evidence);
         } catch (IOException exception) {
             throw new IllegalStateException(
                     "Unable to read registry operator claim status evidence from "
@@ -294,9 +312,22 @@ public final class RegistryLocalStore {
             RegistryProtocol.OperatorClaimStatusReceipt status) {
         Objects.requireNonNull(status, "Operator claim status receipt must not be null.");
         requireWritableStateDirectory();
+        if (!hasVersionTwoClaimStatusShape(status)) {
+            throw new IllegalArgumentException(
+                    "Operator claim status receipt has no version-two eligibility boundary.");
+        }
+        OperatorClaimStatusEvidence existing =
+                loadOperatorClaimStatusEvidence().orElse(null);
+        if (existing != null
+                && existing.schemaVersion()
+                        == OPERATOR_CLAIM_STATUS_SCHEMA_VERSION) {
+            requireClaimStatusHighWater(existing.status(), status);
+        }
         try {
             byte[] json = objectMapper.writeValueAsString(
-                            new OperatorClaimStatusEvidence(1, status))
+                            new OperatorClaimStatusEvidence(
+                                    OPERATOR_CLAIM_STATUS_SCHEMA_VERSION,
+                                    status))
                     .getBytes(StandardCharsets.UTF_8);
             if (json.length > MAX_STATE_BYTES) {
                 throw new IllegalStateException(
@@ -310,6 +341,65 @@ public final class RegistryLocalStore {
                             + operatorClaimStatusPath
                             + ".",
                     exception);
+        }
+    }
+
+    private static boolean hasLegacyClaimStatusShape(
+            RegistryProtocol.OperatorClaimStatusReceipt status) {
+        return status.eligibilityStatus() == null
+                && status.eligibilityId() == null
+                && status.eligibilityIndex() == null
+                && status.eligibilityHash() == null;
+    }
+
+    private static boolean hasVersionTwoClaimStatusShape(
+            RegistryProtocol.OperatorClaimStatusReceipt status) {
+        return status.eligibilityStatus() != null
+                && status.eligibilityHash() != null;
+    }
+
+    private static void requireClaimStatusHighWater(
+            RegistryProtocol.OperatorClaimStatusReceipt previous,
+            RegistryProtocol.OperatorClaimStatusReceipt incoming) {
+        if (previous.claimAuditIndex() == null
+                || incoming.claimAuditIndex() == null
+                || incoming.claimAuditIndex() < previous.claimAuditIndex()) {
+            throw new IllegalStateException(
+                    "Refusing to replace durable operator claim status with an older claim generation.");
+        }
+        if (incoming.claimAuditIndex().equals(previous.claimAuditIndex())
+                && !Objects.equals(
+                        incoming.claimActionId(),
+                        previous.claimActionId())) {
+            throw new IllegalStateException(
+                    "Refusing to replace durable operator claim status with a conflicting claim generation.");
+        }
+        if (!Objects.equals(
+                incoming.claimActionId(),
+                previous.claimActionId())) {
+            return;
+        }
+        long previousEligibilityIndex =
+                previous.eligibilityIndex() == null
+                        ? 0L
+                        : previous.eligibilityIndex();
+        long incomingEligibilityIndex =
+                incoming.eligibilityIndex() == null
+                        ? 0L
+                        : incoming.eligibilityIndex();
+        if (incomingEligibilityIndex < previousEligibilityIndex) {
+            throw new IllegalStateException(
+                    "Refusing to roll back the durable operator claim eligibility boundary.");
+        }
+        if (incomingEligibilityIndex == previousEligibilityIndex
+                && (!Objects.equals(
+                                incoming.eligibilityId(),
+                                previous.eligibilityId())
+                        || !Objects.equals(
+                                incoming.eligibilityHash(),
+                                previous.eligibilityHash()))) {
+            throw new IllegalStateException(
+                    "Refusing a conflicting operator claim eligibility boundary at the durable high-water mark.");
         }
     }
 

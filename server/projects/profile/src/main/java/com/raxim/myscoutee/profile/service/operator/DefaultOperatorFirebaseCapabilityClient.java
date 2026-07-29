@@ -307,9 +307,7 @@ public class DefaultOperatorFirebaseCapabilityClient
                 requireText(
                         configuration.authDomain(),
                         "Firebase auth domain"),
-                requireText(
-                        configuration.storageBucket(),
-                        "Firebase storage bucket"),
+                optionalText(configuration.storageBucket()),
                 requireText(
                         configuration.messagingSenderId(),
                         "Firebase messaging sender id"),
@@ -569,7 +567,8 @@ public class DefaultOperatorFirebaseCapabilityClient
                     expected.apiKey(),
                     "browser API key");
             String storageBucket = text(actual, "storageBucket");
-            if (StringUtils.hasText(storageBucket)) {
+            if (StringUtils.hasText(expected.storageBucket())
+                    && StringUtils.hasText(storageBucket)) {
                 requireExact(
                         storageBucket,
                         expected.storageBucket(),

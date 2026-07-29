@@ -112,6 +112,8 @@ class OperatorRegistryMapperTest {
 
         assertThat(created.leaderboardEntry().rowId())
                 .isEqualTo(deploymentId);
+        assertThat(created.leaderboardEntry().eligibilityStatus())
+                .isEqualTo("inactive");
         assertThat(created.leaderboardUpserts())
                 .containsExactly(created.leaderboardEntry());
         assertThat(created.removedLeaderboardEntryIds()).isEmpty();
@@ -139,6 +141,7 @@ class OperatorRegistryMapperTest {
                 "Example Cooperative",
                 "",
                 "approved",
+                "active",
                 1L,
                 "9000",
                 "1",
@@ -162,6 +165,8 @@ class OperatorRegistryMapperTest {
 
         assertThat(patched.leaderboardUpserts())
                 .containsExactly(patched.leaderboardEntry());
+        assertThat(patched.leaderboardEntry().eligibilityStatus())
+                .isEqualTo("active");
         assertThat(patched.removedLeaderboardEntryIds())
                 .containsExactly("dep_0123456789abcdef0123456789abcdef");
         assertThat(patched.leaderboardTotalDelta()).isZero();

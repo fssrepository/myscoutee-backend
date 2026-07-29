@@ -79,6 +79,7 @@ stage_mongo_configuration() {
   local production_source="${source_root}/myscoutee_db"
   local production_target="${target_root}/myscoutee_db"
   local seed_rule collection source_file demo_file demo_admin_emails
+  local production_identity_seed
   local -a production_collections=()
 
   install -d "${target_root}" "${demo_target}" "${production_target}"
@@ -89,6 +90,16 @@ stage_mongo_configuration() {
     install -m 0644 "${source_file}" "${target_root}/$(basename "${source_file}")"
   done < <(find "${source_root}" -maxdepth 1 -type f | sort)
   chmod 0755 "${target_root}/mongo_import.sh"
+
+  for production_identity_seed in \
+    "${production_source}/adminUsers.json" \
+    "${production_source}/users.json"; do
+    if ! jq -e 'type == "array" and length == 0' \
+        "${production_identity_seed}" >/dev/null; then
+      echo "Production identity seeds must remain empty; operators are provisioned after installation." >&2
+      exit 1
+    fi
+  done
 
   # The bundled Explore database is isolated demo state. Derive its admin
   # allow-list only from explicitly synthetic demo users, never from a

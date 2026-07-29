@@ -89,7 +89,8 @@ public final class OperatorNetworkDtos {
             String verificationUnavailableReason,
             String verificationStatus,
             String verificationSubmittedAt,
-            String legalName) {
+            String legalName,
+            String eligibilityStatus) {
     }
 
     public record OperatorClaimOverviewDto(
@@ -128,8 +129,12 @@ public final class OperatorNetworkDtos {
             String throughPeriod,
             long throughLedgerIndex,
             long throughAuditIndex,
+            long throughReviewIndex,
+            long throughEligibilityIndex,
             String ledgerHeadHash,
             String auditHeadHash,
+            String reviewHeadHash,
+            String eligibilityHeadHash,
             String founderUnitsNumerator,
             String founderUnitsDenominator,
             String founderShareNumerator,
@@ -149,6 +154,7 @@ public final class OperatorNetworkDtos {
             String label,
             String avatarUrl,
             String claimState,
+            String eligibilityStatus,
             long deploymentCount,
             String weightNumerator,
             String weightDenominator,
@@ -167,6 +173,7 @@ public final class OperatorNetworkDtos {
             String deploymentId,
             String groupId,
             String claimState,
+            String eligibilityStatus,
             String membershipState,
             String weightNumerator,
             String weightDenominator,

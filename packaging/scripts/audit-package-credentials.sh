@@ -216,6 +216,45 @@ audit_mongo_seed_privacy() {
 
   if ! jq -e '
       type == "array"
+      and length == 1
+      and .[0]._id == "deployment-configuration"
+      and .[0].schemaVersion == 3
+      and (.[0].privacyContact | type == "object")
+      and .[0].privacyContact.dataControllerName == ""
+      and .[0].privacyContact.privacyContactEmail == ""
+    ' "${production_seed}/deploymentConfigurations.json" >/dev/null; then
+    echo "Production deployment privacy contact must be schema v3 and unconfigured." >&2
+    exit 1
+  fi
+  if ! jq -e '
+      [
+        .[]
+        | select(.documentType == "privacy" and .active == true)
+      ] as $documents
+      | ($documents | length == 2)
+      and all($documents[];
+        ([.sections[] | select(.id == "contact-details")] | length == 1)
+        and (
+          [.sections[] | select(.id == "contact-details")][0].contentHtml
+          == "{{deployment.privacy.contactDetails}}"
+        )
+        and ([.sections[] | select(.id == "account-data-deletion")] | length == 1)
+        and (
+          [.sections[] | select(.id == "account-data-deletion")][0].contentHtml
+          | contains("{{deployment.privacy.deletionEmailRoute}}")
+        )
+        and (
+          [.sections[] | .contentHtml // ""] | join(" ")
+          | test("DPO|privacy@myscoutee|myscoutee1@gmail"; "i")
+          | not
+        ))
+    ' "${production_seed}/helpCenterRevisions.json" >/dev/null; then
+    echo "Production privacy help content must use runtime contact tokens without fixed privacy identities." >&2
+    exit 1
+  fi
+
+  if ! jq -e '
+      type == "array"
       and any(.[];
         .settingsKey == "global"
         and ((.adminEmails // []) | length > 0))
@@ -233,9 +272,11 @@ audit_mongo_seed_privacy
 audit_image_archive() {
   local archive="$1"
   local archive_label manifest config layer layer_file offending nested_member
+  local application_member application_member_file
   local -a configs=()
   local -a layers=()
   local -a nested_members=()
+  local -a application_members=()
 
   archive_label="${archive#${STAGING_DIR}/}"
   manifest="${AUDIT_TMP}/manifest.json"
@@ -302,10 +343,32 @@ audit_image_archive() {
       echo "Private key material found in managed image: ${archive_label}" >&2
       exit 1
     fi
-    if grep -aEiq -- "${consumer_email_pattern}" "${layer_file}"; then
-      echo "Personal deployment email found in managed image: ${archive_label}" >&2
-      exit 1
-    fi
+    mapfile -t application_members < <(
+      tar -tf "${layer_file}" \
+        | awk '
+          {
+            path = tolower($0)
+            sub(/^\.\//, "", path)
+            if (path ~ /^usr\/share\/nginx\/html\/.*\.(html|js|json|map)$/ \
+                && path !~ /(^|\/)(3rdpartylicenses|licenses?)(\.|\/|$)/) {
+              print $0
+            }
+          }
+        '
+    )
+    for application_member in "${application_members[@]}"; do
+      application_member_file="${AUDIT_TMP}/application-member"
+      if ! tar -xOf "${layer_file}" "${application_member}" \
+          > "${application_member_file}" 2>/dev/null; then
+        echo "Managed frontend image member could not be audited: ${archive_label}" >&2
+        exit 1
+      fi
+      if grep -aEiq -- "${consumer_email_pattern}" \
+          "${application_member_file}"; then
+        echo "Personal deployment email found in managed frontend application content: ${archive_label}" >&2
+        exit 1
+      fi
+    done
     if (
       set +o pipefail
       sed \

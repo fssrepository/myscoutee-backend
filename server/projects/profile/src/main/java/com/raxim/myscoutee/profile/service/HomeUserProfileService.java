@@ -18,6 +18,7 @@ import org.bson.types.ObjectId;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,6 +44,7 @@ import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
@@ -213,6 +215,7 @@ public class HomeUserProfileService {
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
+    private NotificationRuleRegistryService notificationRuleRegistryService;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -268,6 +271,11 @@ public class HomeUserProfileService {
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
         this.accessControlService = accessControlService;
+    }
+
+    @Autowired(required = false)
+    void setNotificationRuleRegistryService(NotificationRuleRegistryService notificationRuleRegistryService) {
+        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -537,7 +545,15 @@ public class HomeUserProfileService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
         }
         Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
-        Users saved = usersRepository.save(mergeUserDocument(existing, user));
+        boolean wasTrackedForAccountPurge = existing != null
+                && Boolean.TRUE.equals(existing.getAccountPurgePendingCounterTracked());
+        Users merged = mergeUserDocument(existing, user);
+        boolean shouldTrackForAccountPurge = isAccountPurgeCandidate(merged);
+        merged.setAccountPurgePendingCounterTracked(shouldTrackForAccountPurge);
+        Users saved = usersRepository.save(merged);
+        if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
+            adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
+        }
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
         evictUserReadCaches(normalizedUserId);
         affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
@@ -711,11 +727,16 @@ public class HomeUserProfileService {
         }
 
         String previousProfileStatus = resolveProfileStatus(user);
+        boolean newlyTrackedForPurge = !Boolean.TRUE.equals(user.getAccountPurgePendingCounterTracked());
         user.setStatus("D");
         user.setProfileStatus("deleted");
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
+        user.setAccountPurgePendingCounterTracked(true);
         usersRepository.save(user);
+        if (newlyTrackedForPurge) {
+            adjustAccountPurgePendingCount(1);
+        }
         evictUserReadCaches(resolvedUserId);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
@@ -2151,6 +2172,23 @@ public class HomeUserProfileService {
             document.setHomeGameRateProjectionUpdatedAtIso(Instant.now().toString());
         }
         return document;
+    }
+
+    private boolean isAccountPurgeCandidate(Users user) {
+        String profileStatus = safeText(user == null ? null : user.getProfileStatus());
+        return user != null
+                && StringUtils.hasText(safeText(user.getDeletedAtIso()))
+                && ("deleted".equals(profileStatus) || PROFILE_STATUS_ONBOARDING.equals(profileStatus));
+    }
+
+    private void adjustAccountPurgePendingCount(int delta) {
+        if (delta == 0 || notificationRuleRegistryService == null) {
+            return;
+        }
+        notificationRuleRegistryService.adjustPendingCount(
+                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                delta,
+                "admin.jobs.table.affected");
     }
 
     private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
