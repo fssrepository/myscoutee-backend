@@ -203,6 +203,10 @@ global link is a separate consented record and never replaces it.
   presence chunks. Partial submissions remain append-only staging and cannot
   change the current aggregate. The final missing chunk atomically appends one
   aggregate event and one directly queryable dedup snapshot.
+- Java checks the interoperable submission capacity while paging local links.
+  A max-plus-one materialization becomes one durable, non-retryable
+  `GLOBAL_IDENTITY_PRESENCE_CAPACITY_EXCEEDED` status without creating an
+  unsendable 4097th chunk or persisting raw/local identifiers in the error.
 - Exact retries, including a lost final response, return the original signed
   receipt. A submission pins its VOPRF key version on its first accepted chunk,
   so an in-flight submission can finish safely across a rotation.

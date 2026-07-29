@@ -244,6 +244,7 @@ bash packaging/tests/operator-bootstrap-test.sh
 bash packaging/tests/nginx-transport-policy-test.sh
 bash packaging/tests/update-worker-test.sh
 bash packaging/tests/package-content-test.sh
+bash packaging/tests/debian-removal-contract-test.sh
 ```
 
 Before a release drill, bind the evidence to the exact candidate package,

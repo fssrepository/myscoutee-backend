@@ -20,23 +20,13 @@ read_env_file_value() {
   printf '%s' "${value}"
 }
 
-remove_managed_image() {
-  local reference="$1"
-
-  case "${reference}" in
-    myscoutee-api:*|myscoutee-nginx:*|myscoutee-minio:*|myscoutee-registry:*)
-      docker image rm -f "${reference}" >/dev/null 2>&1 || true
-      ;;
-  esac
-}
-
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload >/dev/null 2>&1 || true
 fi
 
 if [[ "${1:-}" = "purge" ]]; then
   if command -v docker >/dev/null 2>&1; then
-    env_file="/etc/myscoutee/myscoutee.env"
+    env_file="${MYSCOUTEE_POSTRM_ENV_FILE:-/etc/myscoutee/myscoutee.env}"
     registry_demo_volume="$(
       read_env_file_value REGISTRY_DEMO_VOLUME_NAME "${env_file}" || true
     )"
@@ -46,25 +36,36 @@ if [[ "${1:-}" = "purge" ]]; then
     registry_demo_volume="${registry_demo_volume:-myscoutee-registry-demo-data-v1}"
     registry_demo_client_volume="${registry_demo_client_volume:-myscoutee-registry-demo-client-data-v1}"
 
-    docker volume rm -f \
+    for registry_volume in \
       "${registry_demo_volume}" \
-      "${registry_demo_client_volume}" >/dev/null 2>&1 || true
+      "${registry_demo_client_volume}"; do
+      if docker volume inspect "${registry_volume}" >/dev/null 2>&1 \
+          && ! docker volume rm -f "${registry_volume}" >/dev/null 2>&1; then
+        echo "Warning: could not remove MyScoutee volume ${registry_volume}." >&2
+      fi
+    done
 
-    remove_managed_image "$(
-      read_env_file_value NGINX_BASE_IMAGE "${env_file}" || true
+    managed_images="$(
+      docker images --format "{{.Repository}}:{{.Tag}}" 2>/dev/null \
+        | awk '
+            /^myscoutee-api:/ ||
+            /^myscoutee-nginx:/ ||
+            /^myscoutee-minio:/ ||
+            /^myscoutee-registry:/ {
+              print
+            }
+          ' \
+        | sort -u \
+        || true
     )"
-    remove_managed_image "$(
-      read_env_file_value NGINX_PRODUCTION_IMAGE "${env_file}" || true
-    )"
-    remove_managed_image "$(
-      read_env_file_value MYSCOUTEE_PRODUCTION_IMAGE "${env_file}" || true
-    )"
-    remove_managed_image "$(
-      read_env_file_value MINIO_PRODUCTION_IMAGE "${env_file}" || true
-    )"
-    remove_managed_image "$(
-      read_env_file_value REGISTRY_DEMO_IMAGE "${env_file}" || true
-    )"
+    if [[ -n "${managed_images}" ]]; then
+      while IFS= read -r managed_image; do
+        [[ -n "${managed_image}" ]] || continue
+        if ! docker image rm -f "${managed_image}" >/dev/null 2>&1; then
+          echo "Warning: could not remove MyScoutee image ${managed_image}." >&2
+        fi
+      done <<< "${managed_images}"
+    fi
   fi
 
   rm -rf /etc/myscoutee

@@ -702,15 +702,14 @@ grep -Fq 'REGISTRY_DEMO_VOLUME_NAME' \
 grep -Fq 'REGISTRY_DEMO_CLIENT_VOLUME_NAME' \
   "${REPO_ROOT}/packaging/debian/postrm" \
   || fail "package purge leaves the demo registry client-state volume behind"
-for managed_image_key in \
-  NGINX_BASE_IMAGE \
-  NGINX_PRODUCTION_IMAGE \
-  MYSCOUTEE_PRODUCTION_IMAGE \
-  MINIO_PRODUCTION_IMAGE \
-  REGISTRY_DEMO_IMAGE; do
-  grep -Fq "${managed_image_key}" \
+for managed_repository in \
+  myscoutee-api \
+  myscoutee-nginx \
+  myscoutee-minio \
+  myscoutee-registry; do
+  grep -Fq "${managed_repository}" \
     "${REPO_ROOT}/packaging/debian/postrm" \
-    || fail "package purge leaves managed image ${managed_image_key} behind"
+    || fail "package purge leaves managed repository ${managed_repository} behind"
 done
 if grep -Fq 'MONGO_IMAGE' "${REPO_ROOT}/packaging/debian/postrm" \
     || grep -Fq 'REDIS_IMAGE' "${REPO_ROOT}/packaging/debian/postrm"; then

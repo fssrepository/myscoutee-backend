@@ -60,6 +60,7 @@ Run these sequentially on a quiet qualification host:
 bash packaging/tests/operator-bootstrap-test.sh
 bash packaging/tests/nginx-transport-policy-test.sh
 bash packaging/tests/package-content-test.sh
+bash packaging/tests/debian-removal-contract-test.sh
 bash packaging/tests/registry-packaging-test.sh
 bash packaging/tests/update-worker-test.sh
 

@@ -17,10 +17,32 @@ fail() {
   exit 1
 }
 
-for command_name in dpkg-deb jq python3 tar; do
+for command_name in dpkg-deb jq python3 rsync tar; do
   command -v "${command_name}" >/dev/null 2>&1 \
     || fail "required test command is missing: ${command_name}"
 done
+
+FRONTEND_SYNC_ROOT="${TEST_ROOT}/frontend-sync"
+FRONTEND_SYNC_TARGET="${TEST_ROOT}/nginx-html"
+install -d \
+  "${FRONTEND_SYNC_ROOT}/prod" \
+  "${FRONTEND_SYNC_ROOT}/docs" \
+  "${FRONTEND_SYNC_TARGET}"
+printf '%s\n' 'production-build' \
+  > "${FRONTEND_SYNC_ROOT}/prod/build-source.txt"
+printf '%s\n' 'github-build' \
+  > "${FRONTEND_SYNC_ROOT}/docs/build-source.txt"
+FRONTEND_ROOT="${FRONTEND_SYNC_ROOT}" \
+NGINX_HTML_DIR="${FRONTEND_SYNC_TARGET}" \
+  bash "${REPO_ROOT}/server/docker/scripts/sync_frontend_assets.sh" prod \
+  >/dev/null
+grep -Fxq 'production-build' \
+  "${FRONTEND_SYNC_TARGET}/build-source.txt" \
+  || fail "production Nginx sync did not use the production Angular output"
+if grep -Fqx 'github-build' \
+    "${FRONTEND_SYNC_TARGET}/build-source.txt"; then
+  fail "production Nginx sync copied the GitHub Pages output"
+fi
 
 for production_identity_seed in \
   "${REPO_ROOT}/server/docker/conf/mongodb/myscoutee_db/adminUsers.json" \

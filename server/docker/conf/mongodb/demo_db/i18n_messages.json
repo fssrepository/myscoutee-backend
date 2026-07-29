@@ -7158,6 +7158,30 @@
     "value": "Report Bugs"
   },
   {
+    "_id": "i18n-message-en-landing-articles-title",
+    "key": "landing.articles.title",
+    "lang": "en",
+    "value": "{productName} articles"
+  },
+  {
+    "_id": "i18n-message-en-landing-articles-count-one",
+    "key": "landing.articles.count.one",
+    "lang": "en",
+    "value": "{count} article"
+  },
+  {
+    "_id": "i18n-message-en-landing-articles-count-many",
+    "key": "landing.articles.count.many",
+    "lang": "en",
+    "value": "{count} articles"
+  },
+  {
+    "_id": "i18n-message-en-landing-articles-empty-description",
+    "key": "landing.articles.empty.description",
+    "lang": "en",
+    "value": "Fresh articles will show here."
+  },
+  {
     "_id": "i18n-message-en-landing-partners-open-aria",
     "key": "landing.partners.open.aria",
     "lang": "en",
@@ -7390,6 +7414,12 @@
     "key": "articles",
     "lang": "en",
     "value": "Articles"
+  },
+  {
+    "_id": "i18n-message-en-close-article",
+    "key": "close.article",
+    "lang": "en",
+    "value": "Close article"
   },
   {
     "_id": "i18n-message-en-close-articles",
@@ -11116,6 +11146,12 @@
     "key": "usage.terms",
     "lang": "en",
     "value": "Usage terms"
+  },
+  {
+    "_id": "i18n-message-en-document-terms-description",
+    "key": "document.terms.description",
+    "lang": "en",
+    "value": "Review the terms that apply when you use MyScoutee features, accounts, events, chats, and community tools."
   },
   {
     "_id": "i18n-message-en-review-the-terms-that-apply-when-you-use-myscoutee-features-accounts-eve",
@@ -25104,6 +25140,30 @@
     "value": "Hibák jelentése"
   },
   {
+    "_id": "i18n-message-hu-landing-articles-title",
+    "key": "landing.articles.title",
+    "lang": "hu",
+    "value": "{productName} cikkek"
+  },
+  {
+    "_id": "i18n-message-hu-landing-articles-count-one",
+    "key": "landing.articles.count.one",
+    "lang": "hu",
+    "value": "{count} cikk"
+  },
+  {
+    "_id": "i18n-message-hu-landing-articles-count-many",
+    "key": "landing.articles.count.many",
+    "lang": "hu",
+    "value": "{count} cikk"
+  },
+  {
+    "_id": "i18n-message-hu-landing-articles-empty-description",
+    "key": "landing.articles.empty.description",
+    "lang": "hu",
+    "value": "Itt jelennek meg a friss cikkek."
+  },
+  {
     "_id": "i18n-message-hu-landing-partners-open-aria",
     "key": "landing.partners.open.aria",
     "lang": "hu",
@@ -25336,6 +25396,12 @@
     "key": "articles",
     "lang": "hu",
     "value": "Cikkek"
+  },
+  {
+    "_id": "i18n-message-hu-close-article",
+    "key": "close.article",
+    "lang": "hu",
+    "value": "Cikk bezárása"
   },
   {
     "_id": "i18n-message-hu-close-articles",
@@ -29062,6 +29128,12 @@
     "key": "usage.terms",
     "lang": "hu",
     "value": "Használati feltételek"
+  },
+  {
+    "_id": "i18n-message-hu-document-terms-description",
+    "key": "document.terms.description",
+    "lang": "hu",
+    "value": "Tekintsd át a MyScoutee funkcióira, fiókjaira, eseményeire, csevegéseire és közösségi eszközeire vonatkozó feltételeket."
   },
   {
     "_id": "i18n-message-hu-review-the-terms-that-apply-when-you-use-myscoutee-features-accounts-eve",
