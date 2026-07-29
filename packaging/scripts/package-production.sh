@@ -25,6 +25,7 @@ if [[ ! "${ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]; then
 fi
 PACKAGE_NAME="myscoutee_${VERSION}_${ARCHITECTURE}"
 DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
+DEB_PARTIAL_PATH="${DIST_DIR}/${PACKAGE_NAME}.partial.deb"
 
 export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
@@ -45,7 +46,7 @@ if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
 fi
 
-rm -rf "${STAGING_DIR}" "${DEB_PATH}"
+rm -rf "${STAGING_DIR}" "${DEB_PARTIAL_PATH}"
 install -d "${STAGING_DIR}/DEBIAN"
 install -d "${STAGING_DIR}/opt/myscoutee/server/docker/conf"
 install -d "${STAGING_DIR}/opt/myscoutee/server/docker/scripts"
@@ -333,5 +334,9 @@ find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" \
 find "${STAGING_DIR}/opt/myscoutee/server/docker" \
   -type f -name "*.sh" -exec chmod 0755 {} +
 
-dpkg-deb --root-owner-group --build "${STAGING_DIR}" "${DEB_PATH}"
+dpkg-deb --root-owner-group -Zzstd -z1 --build \
+  "${STAGING_DIR}" \
+  "${DEB_PARTIAL_PATH}"
+dpkg-deb --info "${DEB_PARTIAL_PATH}" >/dev/null
+mv -f "${DEB_PARTIAL_PATH}" "${DEB_PATH}"
 echo "${DEB_PATH}"
