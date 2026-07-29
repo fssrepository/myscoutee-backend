@@ -116,10 +116,15 @@ class ScheduledMessageTaskServiceIntegrationTest {
             Users user = usersRepository.findByUserId("user-due").orElseThrow();
             assertThat(user.getStatus()).isEqualTo("I");
             assertThat(user.getProfileStatus()).isEqualTo("inactive");
+            assertThat(scheduledMessageTasksRepository
+                            .findByTaskKey(task.getTaskKey())
+                            .orElseThrow()
+                            .getLastRunStatus())
+                    .isEqualTo("completed");
+            assertThat(scheduledMessageDeliveriesRepository.findAll())
+                    .extracting(ScheduledMessageDelivery::getStatus)
+                    .contains("completed");
         });
-        assertThat(scheduledMessageDeliveriesRepository.findAll())
-                .extracting(ScheduledMessageDelivery::getStatus)
-                .contains("completed");
     }
 
     @Test
