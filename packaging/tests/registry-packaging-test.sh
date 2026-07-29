@@ -693,8 +693,47 @@ grep -Fq 'BACKUP_DIR="/var/backups/myscoutee"' \
   "${REPO_ROOT}/packaging/scripts/backup-production.sh" \
   || fail "installed backups do not default outside the purgeable /opt tree"
 if grep -Fq 'rm -rf /var/backups/myscoutee' \
-  "${REPO_ROOT}/packaging/debian/postrm"; then
+    "${REPO_ROOT}/packaging/debian/postrm"; then
   fail "package purge deletes the external deployment recovery archive"
+fi
+grep -Fq 'REGISTRY_DEMO_VOLUME_NAME' \
+  "${REPO_ROOT}/packaging/debian/postrm" \
+  || fail "package purge leaves the seeded demo registry volume behind"
+grep -Fq 'REGISTRY_DEMO_CLIENT_VOLUME_NAME' \
+  "${REPO_ROOT}/packaging/debian/postrm" \
+  || fail "package purge leaves the demo registry client-state volume behind"
+for managed_image_key in \
+  NGINX_BASE_IMAGE \
+  NGINX_PRODUCTION_IMAGE \
+  MYSCOUTEE_PRODUCTION_IMAGE \
+  MINIO_PRODUCTION_IMAGE \
+  REGISTRY_DEMO_IMAGE; do
+  grep -Fq "${managed_image_key}" \
+    "${REPO_ROOT}/packaging/debian/postrm" \
+    || fail "package purge leaves managed image ${managed_image_key} behind"
+done
+if grep -Fq 'MONGO_IMAGE' "${REPO_ROOT}/packaging/debian/postrm" \
+    || grep -Fq 'REDIS_IMAGE' "${REPO_ROOT}/packaging/debian/postrm"; then
+  fail "package purge removes shared upstream MongoDB or Redis images"
+fi
+for managed_repository in \
+  myscoutee-api \
+  myscoutee-nginx \
+  myscoutee-minio \
+  myscoutee-registry; do
+  grep -Fq "${managed_repository}" \
+    "${REPO_ROOT}/tools/install/purge.sh" \
+    || fail "remote purge leaves managed repository ${managed_repository} behind"
+done
+grep -Fq 'registry-demo' \
+  "${REPO_ROOT}/tools/install/purge.sh" \
+  || fail "remote purge does not report a remaining Explore registry container"
+grep -Fq 'myscoutee-registry-demo-' \
+  "${REPO_ROOT}/tools/install/purge.sh" \
+  || fail "remote purge does not report remaining Explore registry volumes"
+if grep -Fq 'rm -rf /var/backups/myscoutee' \
+    "${REPO_ROOT}/tools/install/purge.sh"; then
+  fail "remote purge deletes the external deployment recovery archive"
 fi
 grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \
   "${REPO_ROOT}/packaging/scripts/package-production.sh" \

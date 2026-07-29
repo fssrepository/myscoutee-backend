@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service.operator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,36 @@ import com.raxim.myscoutee.profile.data.document.GlobalIdentityPresenceOutboxIte
 import com.raxim.myscoutee.registry.RegistryProtocol;
 
 class OperatorGlobalIdentityPresenceReportServiceTest {
+
+    @Test
+    void exactPresenceCapacityFitsTheMaximumServerChunkCount() {
+        assertThat(OperatorGlobalIdentityPresenceReportService
+                .requiredChunkCount(
+                        OperatorGlobalIdentityPresenceReportService
+                                .MAX_COMMITMENTS_PER_SUBMISSION))
+                .isEqualTo(OperatorGlobalIdentityPresenceReportService
+                        .SERVER_MAX_CHUNKS_PER_SUBMISSION);
+    }
+
+    @Test
+    void oneCommitmentBeyondPresenceCapacityFailsWithoutMaterializingRows() {
+        long commitmentCount =
+                OperatorGlobalIdentityPresenceReportService
+                        .MAX_COMMITMENTS_PER_SUBMISSION + 1L;
+
+        assertThatThrownBy(() ->
+                OperatorGlobalIdentityPresenceReportService
+                        .requiredChunkCount(commitmentCount))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(Long.toString(commitmentCount))
+                .hasMessageContaining(Long.toString(
+                        OperatorGlobalIdentityPresenceReportService
+                                .MAX_COMMITMENTS_PER_SUBMISSION))
+                .hasMessageContaining(
+                        OperatorGlobalIdentityPresenceReportService
+                                .SERVER_MAX_CHUNKS_PER_SUBMISSION
+                                + " chunks");
+    }
 
     @Test
     void retryHistoryRetainsEverySignedRequestThatMayOwnTheReceipt() {

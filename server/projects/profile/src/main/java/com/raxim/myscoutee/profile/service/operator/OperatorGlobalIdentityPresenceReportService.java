@@ -57,9 +57,13 @@ import tools.jackson.databind.ObjectMapper;
 public class OperatorGlobalIdentityPresenceReportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             OperatorGlobalIdentityPresenceReportService.class);
-    private static final int COMMITMENTS_PER_CHUNK = 512;
+    static final int COMMITMENTS_PER_CHUNK = 512;
     private static final int LOCAL_LINK_QUERY_SIZE = 512;
     private static final int SERVER_MAX_COMMITMENTS_PER_CHUNK = 4_096;
+    static final int SERVER_MAX_CHUNKS_PER_SUBMISSION = 4_096;
+    static final long MAX_COMMITMENTS_PER_SUBMISSION =
+            (long) COMMITMENTS_PER_CHUNK
+                    * SERVER_MAX_CHUNKS_PER_SUBMISSION;
     private static final int MAX_SIGNED_REQUEST_HASHES = 4_096;
     private static final int MAX_DELIVERIES = 16;
     private static final Duration MAX_RETRY_DELAY = Duration.ofHours(24);
@@ -67,6 +71,8 @@ public class OperatorGlobalIdentityPresenceReportService {
             "GLOBAL_IDENTITY_QMAU_EVIDENCE_MISMATCH";
     private static final String FAILURE_SUPERSEDED_BEFORE_PRESENCE =
             "GLOBAL_IDENTITY_SUPERSEDED_BEFORE_PRESENCE";
+    private static final String FAILURE_CAPACITY_EXCEEDED =
+            "GLOBAL_IDENTITY_PRESENCE_CAPACITY_EXCEEDED";
 
     private final OperatorRevenueRegistryRuntimeResolver runtimeResolver;
     private final OperatorGlobalIdentityService globalIdentityService;
@@ -329,11 +335,21 @@ public class OperatorGlobalIdentityPresenceReportService {
             return validateRevision(List.of(marker));
         }
 
-        List<String> commitments = eligibleCommitments(
-                runtime,
-                key,
-                qmau.getPeriod(),
-                detailed.qualifiedUserIds());
+        List<String> commitments;
+        try {
+            commitments = eligibleCommitments(
+                    runtime,
+                    key,
+                    qmau.getPeriod(),
+                    detailed.qualifiedUserIds());
+        } catch (PresenceCapacityExceededException exception) {
+            return blockCapacityExceeded(
+                    runtime,
+                    key,
+                    qmau,
+                    supersedesBatchId,
+                    existing);
+        }
         List<GlobalIdentityPresenceOutboxItem> expected = newChunks(
                 runtime,
                 key,
@@ -381,7 +397,7 @@ public class OperatorGlobalIdentityPresenceReportService {
             int toIndex = Math.min(
                     qualifiedUserIds.size(),
                     offset + LOCAL_LINK_QUERY_SIZE);
-            commitments.addAll(linkRepository
+            List<String> pageCommitments = linkRepository
                     .findByDeploymentIdAndLocalUserIdInAndStatusInAndKeyVersionAndSuite(
                             runtime.state().deploymentId(),
                             qualifiedUserIds.subList(offset, toIndex),
@@ -403,7 +419,10 @@ public class OperatorGlobalIdentityPresenceReportService {
                     .map(commitment -> RegistryProtocol.requireHash(
                             commitment,
                             "network_identity_commitment"))
-                    .toList());
+                    .toList();
+            requiredChunkCount(
+                    (long) commitments.size() + pageCommitments.size());
+            commitments.addAll(pageCommitments);
         }
         commitments.sort(String::compareTo);
         return List.copyOf(commitments);
@@ -430,6 +449,47 @@ public class OperatorGlobalIdentityPresenceReportService {
         item.setUpdatedAt(now);
     }
 
+    private PresenceRevision blockCapacityExceeded(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            QualifiedMauReportOutboxItem qmau,
+            String supersedesBatchId,
+            List<GlobalIdentityPresenceOutboxItem> existing) {
+        String submissionId = "gipsub_" + deterministicHex(
+                "presence-capacity-exceeded",
+                runtime.state().registryScope(),
+                runtime.state().deploymentId(),
+                qmau.getPeriod(),
+                Long.toString(value(qmau.getRevision())),
+                qmau.getCommitmentHash(),
+                Long.toString(key.keyVersion()),
+                key.suite()).substring(0, 32);
+        GlobalIdentityPresenceOutboxItem marker = newChunk(
+                runtime,
+                key,
+                qmau,
+                supersedesBatchId,
+                submissionId,
+                0,
+                1,
+                0L,
+                RegistryProtocol.globalIdentityPresenceSetHash(List.of()),
+                List.of());
+        if (!existing.isEmpty()) {
+            GlobalIdentityPresenceOutboxItem stored = existing.stream()
+                    .min(Comparator.comparingInt(item ->
+                            value(item.getChunkIndex())))
+                    .orElseThrow();
+            marker.setId(stored.getId());
+            marker.setVersion(stored.getVersion());
+            marker.setCreatedAt(stored.getCreatedAt());
+        }
+        blockMaterialization(marker, FAILURE_CAPACITY_EXCEEDED);
+        marker = saveChunk(marker);
+        removeUnattemptedExtras(existing, Set.of(marker.getId()));
+        return validateRevision(List.of(marker));
+    }
+
     private void markSupersededBeforePresence(
             PresenceRevision revision) {
         String now = clock.instant().toString();
@@ -452,6 +512,7 @@ public class OperatorGlobalIdentityPresenceReportService {
             QualifiedMauReportOutboxItem qmau,
             String supersedesBatchId,
             List<String> commitments) {
+        int chunkCount = requiredChunkCount(commitments.size());
         String commitmentSetHash =
                 RegistryProtocol.globalIdentityPresenceSetHash(commitments);
         String submissionId = "gipsub_" + deterministicHex(
@@ -464,10 +525,6 @@ public class OperatorGlobalIdentityPresenceReportService {
                 Long.toString(key.keyVersion()),
                 key.suite(),
                 commitmentSetHash).substring(0, 32);
-        int chunkCount = Math.max(
-                1,
-                (commitments.size() + COMMITMENTS_PER_CHUNK - 1)
-                        / COMMITMENTS_PER_CHUNK);
         List<GlobalIdentityPresenceOutboxItem> chunks =
                 new ArrayList<>(chunkCount);
         for (int chunkIndex = 0;
@@ -925,6 +982,8 @@ public class OperatorGlobalIdentityPresenceReportService {
                 || item.getChunkIndex() < 0
                 || item.getChunkCount() == null
                 || item.getChunkCount() <= 0
+                || item.getChunkCount()
+                        > SERVER_MAX_CHUNKS_PER_SUBMISSION
                 || item.getChunkIndex() >= item.getChunkCount()
                 || item.getTotalCommitmentCount() == null
                 || item.getTotalCommitmentCount() < 0L
@@ -1017,6 +1076,8 @@ public class OperatorGlobalIdentityPresenceReportService {
                     || !Boolean.FALSE.equals(failure.getRetryable())
                     || (!FAILURE_EVIDENCE_MISMATCH.equals(failure.getCode())
                             && !FAILURE_SUPERSEDED_BEFORE_PRESENCE.equals(
+                                    failure.getCode())
+                            && !FAILURE_CAPACITY_EXCEEDED.equals(
                                     failure.getCode()))) {
                 throw new IllegalStateException(
                         "Blocked global identity materialization state is invalid.");
@@ -1169,6 +1230,30 @@ public class OperatorGlobalIdentityPresenceReportService {
         item.setSignedRequestHashes(hashes);
     }
 
+    static int requiredChunkCount(long commitmentCount) {
+        if (commitmentCount < 0L) {
+            throw new IllegalArgumentException(
+                    "Global identity presence commitment count cannot be negative.");
+        }
+        long chunkCount = commitmentCount == 0L
+                ? 1L
+                : 1L + (commitmentCount - 1L) / COMMITMENTS_PER_CHUNK;
+        if (chunkCount > SERVER_MAX_CHUNKS_PER_SUBMISSION) {
+            throw new PresenceCapacityExceededException(
+                    "Global identity presence capacity exceeded: "
+                            + commitmentCount
+                            + " commitments require "
+                            + chunkCount
+                            + " chunks, but at most "
+                            + MAX_COMMITMENTS_PER_SUBMISSION
+                            + " commitments in "
+                            + SERVER_MAX_CHUNKS_PER_SUBMISSION
+                            + " chunks are supported per deployment, period,"
+                            + " and revision.");
+        }
+        return (int) chunkCount;
+    }
+
     static Set<String> signedRequestHashes(
             GlobalIdentityPresenceOutboxItem item) {
         List<String> persisted = item.getSignedRequestHashes();
@@ -1316,6 +1401,14 @@ public class OperatorGlobalIdentityPresenceReportService {
             return items.get(items.size() - 1)
                     .getAcceptedResponse()
                     .batchId();
+        }
+    }
+
+    private static final class PresenceCapacityExceededException
+            extends IllegalStateException {
+
+        private PresenceCapacityExceededException(String message) {
+            super(message);
         }
     }
 }

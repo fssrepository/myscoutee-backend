@@ -109,6 +109,40 @@ remote_script='set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 
+managed_images=""
+if command -v docker >/dev/null 2>&1; then
+  if [[ -f /opt/myscoutee/packaging/IMAGE-MANIFEST.json ]] \
+      && command -v jq >/dev/null 2>&1; then
+    managed_images="$(
+      jq -r \
+        '"'"'.images[]?.reference // empty'"'"' \
+        /opt/myscoutee/packaging/IMAGE-MANIFEST.json \
+        | awk '"'"'
+            /^myscoutee-api:/ ||
+            /^myscoutee-nginx:/ ||
+            /^myscoutee-minio:/ ||
+            /^myscoutee-registry:/ {
+              print
+            }
+          '"'"'
+    )"
+  fi
+
+  if [[ -z "${managed_images}" ]]; then
+    managed_images="$(
+      docker images --format "{{.Repository}}:{{.Tag}}" \
+        | awk '"'"'
+            /^myscoutee-api:/ ||
+            /^myscoutee-nginx:/ ||
+            /^myscoutee-minio:/ ||
+            /^myscoutee-registry:/ {
+              print
+            }
+          '"'"'
+    )"
+  fi
+fi
+
 echo "Stopping MyScoutee service..."
 systemctl stop myscoutee || true
 
@@ -127,14 +161,14 @@ rm -rf /etc/myscoutee
 rm -rf /opt/myscoutee
 rm -rf /var/lib/myscoutee
 rm -rf /var/log/myscoutee
-rm -rf /var/backups/myscoutee
 rm -f "${REMOTE_DEB_PATH}"
 
 echo "Removing MyScoutee-owned Docker images..."
-if command -v docker >/dev/null 2>&1; then
-  docker images --format "{{.Repository}}:{{.Tag}}" \
-    | awk "/^myscoutee-api:/ || /^myscoutee-nginx:/ { print }" \
-    | xargs -r docker image rm -f || true
+if command -v docker >/dev/null 2>&1 && [[ -n "${managed_images}" ]]; then
+  while IFS= read -r managed_image; do
+    [[ -n "${managed_image}" ]] || continue
+    docker image rm -f "${managed_image}" || true
+  done <<< "${managed_images}"
 fi
 
 systemctl daemon-reload || true
@@ -142,12 +176,13 @@ systemctl daemon-reload || true
 echo "Remaining MyScoutee containers:"
 if command -v docker >/dev/null 2>&1; then
   docker ps -a --format "{{.Names}} {{.Image}}" \
-    | awk "\$1 == \"myscoutee\" || \$1 == \"nginx\" || \$1 == \"mongodb\" || \$1 == \"redis\" || \$1 == \"minio\" { print }" || true
+    | awk "\$1 == \"myscoutee\" || \$1 == \"nginx\" || \$1 == \"mongodb\" || \$1 == \"redis\" || \$1 == \"minio\" || \$1 == \"registry-demo\" { print }" || true
 fi
 
 echo "Remaining MyScoutee compose volumes:"
 if command -v docker >/dev/null 2>&1; then
-  docker volume ls --format "{{.Name}}" | awk "/^server_/ { print }" || true
+  docker volume ls --format "{{.Name}}" \
+    | awk "/^server_/ || /^myscoutee-registry-demo-/ { print }" || true
 fi
 
 echo "MyScoutee purge complete."

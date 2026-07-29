@@ -533,11 +533,16 @@ registry identity/state replacement is incomplete, the API deliberately
 remains stopped for operator recovery instead of restarting with mismatched
 cryptographic state.
 
-`apt purge myscoutee` deliberately removes both
-`/etc/myscoutee/registry` and `/var/lib/myscoutee/registry`. Back up the
-deployment identity and registry state before purging; without that backup,
-the deployment cannot recover its signing control and accepted receipt
-history.
+`apt remove myscoutee` stops and removes the Compose containers but preserves
+deployment configuration, bind-mounted data, the two isolated Explore
+registry volumes, and the package-managed image tags for a later reinstall.
+`apt purge myscoutee` deliberately removes `/etc/myscoutee`,
+`/var/lib/myscoutee`, `/var/log/myscoutee`, the Explore registry volumes, and
+the MyScoutee-managed API, Nginx, MinIO, and demo-registry image tags. It does
+not delete shared upstream MongoDB or Redis images, and it preserves
+`/var/backups/myscoutee`. Back up the deployment identity and registry state
+before purging; without that backup, the deployment cannot recover its signing
+control and accepted receipt history.
 
 ## Image Naming
 

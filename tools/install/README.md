@@ -89,9 +89,12 @@ tools/install/purge.sh
 ```
 
 This purge also removes `/etc/myscoutee/registry` and
-`/var/lib/myscoutee/registry`. Use the production backup script first if the
-registered deployment identity, deployment code, or receipt history must be
-recoverable.
+`/var/lib/myscoutee/registry`, the isolated Explore registry volumes, and the
+MyScoutee-managed API, Nginx, MinIO, and demo-registry images. It does not
+remove shared upstream MongoDB or Redis images, and it deliberately preserves
+`/var/backups/myscoutee`. Use the production backup script first if the
+registered deployment identity, deployment code, receipt history, Mongo data,
+or MinIO objects must be recoverable.
 
 Run the install:
 

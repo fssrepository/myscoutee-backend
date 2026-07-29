@@ -1,11 +1,72 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+read_env_file_value() {
+  local key="$1"
+  local file="$2"
+  local line value
+
+  [[ -f "${file}" && ! -L "${file}" ]] || return 1
+  line="$(sed -n "s/^[[:space:]]*${key}[[:space:]]*=[[:space:]]*//p" "${file}" | tail -n 1)"
+  [[ -n "${line}" ]] || return 1
+
+  value="${line%$'\r'}"
+  if [[ "${value}" == \"*\" && "${value}" == *\" ]]; then
+    value="${value:1:${#value}-2}"
+  elif [[ "${value}" == \'*\' && "${value}" == *\' ]]; then
+    value="${value:1:${#value}-2}"
+  fi
+
+  printf '%s' "${value}"
+}
+
+remove_managed_image() {
+  local reference="$1"
+
+  case "${reference}" in
+    myscoutee-api:*|myscoutee-nginx:*|myscoutee-minio:*|myscoutee-registry:*)
+      docker image rm -f "${reference}" >/dev/null 2>&1 || true
+      ;;
+  esac
+}
+
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload >/dev/null 2>&1 || true
 fi
 
 if [[ "${1:-}" = "purge" ]]; then
+  if command -v docker >/dev/null 2>&1; then
+    env_file="/etc/myscoutee/myscoutee.env"
+    registry_demo_volume="$(
+      read_env_file_value REGISTRY_DEMO_VOLUME_NAME "${env_file}" || true
+    )"
+    registry_demo_client_volume="$(
+      read_env_file_value REGISTRY_DEMO_CLIENT_VOLUME_NAME "${env_file}" || true
+    )"
+    registry_demo_volume="${registry_demo_volume:-myscoutee-registry-demo-data-v1}"
+    registry_demo_client_volume="${registry_demo_client_volume:-myscoutee-registry-demo-client-data-v1}"
+
+    docker volume rm -f \
+      "${registry_demo_volume}" \
+      "${registry_demo_client_volume}" >/dev/null 2>&1 || true
+
+    remove_managed_image "$(
+      read_env_file_value NGINX_BASE_IMAGE "${env_file}" || true
+    )"
+    remove_managed_image "$(
+      read_env_file_value NGINX_PRODUCTION_IMAGE "${env_file}" || true
+    )"
+    remove_managed_image "$(
+      read_env_file_value MYSCOUTEE_PRODUCTION_IMAGE "${env_file}" || true
+    )"
+    remove_managed_image "$(
+      read_env_file_value MINIO_PRODUCTION_IMAGE "${env_file}" || true
+    )"
+    remove_managed_image "$(
+      read_env_file_value REGISTRY_DEMO_IMAGE "${env_file}" || true
+    )"
+  fi
+
   rm -rf /etc/myscoutee
   rm -rf /opt/myscoutee
   rm -rf /var/lib/myscoutee
