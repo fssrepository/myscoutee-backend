@@ -71,7 +71,9 @@ Exit criteria:
 
 ## Phase 2 — persisted operator configuration and branding
 
-Status: in progress.
+Status: implemented at the deployment/API boundary. Remaining PWA/offline
+presentation cleanup is tracked separately from the persisted configuration
+model.
 
 - One deployment configuration record serves both the public brand view and the
   authenticated operator editor.
@@ -104,7 +106,8 @@ Exit criteria:
 
 ## Phase 3 — reliable signed revenue delivery
 
-Status: in progress.
+Status: implemented. Exact release-artifact Java-to-Go delivery, interruption,
+restart, and correction drills remain part of Phase 9 production qualification.
 
 - Revenue is operator-only. Remove monetary fields from `/admin/stats` and load
   the dedicated revenue view only when the operator opens it.
@@ -145,7 +148,11 @@ Exit criteria:
 
 ## Phase 4 — reliable deployment-level MAU delivery
 
-Status: next protocol milestone.
+Status: implemented. The `qmau-v1` local evidence calculator, immutable Mongo
+outbox, signed revision/supersession protocol, registry receipt verification,
+same-transaction Go ledger/query/Merkle writes, operator status, and manual
+requeue path are present. Exact release-artifact Java-to-Go restart and lost
+response drills remain part of Phase 9 production qualification.
 
 - Freeze the exact QMAU qualification rule and qualifying action vocabulary.
 - Compute completed periods locally from authoritative activity records.
