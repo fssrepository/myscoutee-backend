@@ -573,6 +573,9 @@ public class NotificationRuleConfig {
         private String lastRunDetail;
         private Integer lastRunCount;
         private String lastRunUser;
+        private Integer pendingCount;
+        private String pendingCountUnit;
+        private String pendingCountUpdatedAtIso;
 
         public String getCurrentStatus() {
             return currentStatus;
@@ -660,6 +663,30 @@ public class NotificationRuleConfig {
 
         public void setLastRunUser(String lastRunUser) {
             this.lastRunUser = lastRunUser;
+        }
+
+        public Integer getPendingCount() {
+            return pendingCount;
+        }
+
+        public void setPendingCount(Integer pendingCount) {
+            this.pendingCount = pendingCount;
+        }
+
+        public String getPendingCountUnit() {
+            return pendingCountUnit;
+        }
+
+        public void setPendingCountUnit(String pendingCountUnit) {
+            this.pendingCountUnit = pendingCountUnit;
+        }
+
+        public String getPendingCountUpdatedAtIso() {
+            return pendingCountUpdatedAtIso;
+        }
+
+        public void setPendingCountUpdatedAtIso(String pendingCountUpdatedAtIso) {
+            this.pendingCountUpdatedAtIso = pendingCountUpdatedAtIso;
         }
     }
 

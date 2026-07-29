@@ -223,6 +223,17 @@ public class EventCheckoutBasketService {
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(ACTIVE_STATUSES),
                 displayResultStateCriteria()));
+        Query trackedStaleQuery = new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(normalizedUserId),
+                Criteria.where("sourceId").is(normalizedSourceId),
+                Criteria.where("status").in(ACTIVE_STATUSES),
+                displayResultStateCriteria(),
+                Criteria.where("pendingCounterTracked").is(true)));
+        UpdateResult trackedStaleResult = mongoTemplate.updateMulti(trackedStaleQuery, new Update()
+                .set("resultState", RESULT_STATE_DELETED)
+                .set("pendingCounterTracked", false)
+                .set("updatedAtIso", nowIso), EventCheckoutBasketItem.class);
+        adjustPendingCount(-modifiedCount(trackedStaleResult));
         mongoTemplate.updateMulti(staleQuery, new Update()
                 .set("resultState", RESULT_STATE_DELETED)
                 .set("updatedAtIso", nowIso), EventCheckoutBasketItem.class);
@@ -242,6 +253,9 @@ public class EventCheckoutBasketService {
             EventCheckoutBasketItem existing = mongoTemplate.findOne(itemQuery, EventCheckoutBasketItem.class);
             String status = mergeStatus(existing == null ? null : existing.getStatus(), firstText(item.status(), requestStatus));
             String resultState = normalizeResultState(item.resultState());
+            boolean shouldTrack = isPurgeCandidate(status, resultState, expiresAtIso);
+            boolean newlyTracked = shouldTrack
+                    && (existing == null || !Boolean.TRUE.equals(existing.getPendingCounterTracked()));
             Update update = new Update()
                     .set("itemId", itemId)
                     .set("userId", normalizedUserId)
@@ -259,13 +273,19 @@ public class EventCheckoutBasketService {
                     .set("quantity", Math.max(1, item.quantity() == null ? 1 : item.quantity()))
                     .set("status", status)
                     .set("resultState", resultState)
+                    .set("pendingCounterTracked", shouldTrack)
                     .set("pricingSummaryRows", item.pricingSummaryRows() == null ? List.of() : List.copyOf(item.pricingSummaryRows()))
                     .set("appliedPromoCodes", appliedPromoCodes)
                     .set("checkoutSessionId", normalizeId(item.checkoutSessionId()))
                     .set("updatedAtIso", nowIso)
                     .set("expiresAtIso", expiresAtIso)
                     .setOnInsert("createdAtIso", firstText(item.createdAtIso(), nowIso));
-            mongoTemplate.upsert(itemQuery, update, EventCheckoutBasketItem.class);
+            UpdateResult updateResult = mongoTemplate.upsert(itemQuery, update, EventCheckoutBasketItem.class);
+            if (newlyTracked
+                    && (modifiedCount(updateResult) > 0
+                            || (updateResult != null && updateResult.getUpsertedId() != null))) {
+                adjustPendingCount(1);
+            }
         }
 
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
@@ -280,6 +300,8 @@ public class EventCheckoutBasketService {
         String checkoutState = normalizeStatus(request.checkoutState());
         String resultState = normalizeResultState(request.resultState());
         String nowIso = Instant.now().toString();
+        boolean terminalState = !PURGEABLE_STATUSES.contains(checkoutState)
+                || (StringUtils.hasText(resultState) && !RESERVATION_RESULT_STATES.contains(resultState));
         Update update = new Update()
                 .set("status", checkoutState)
                 .set("updatedAtIso", nowIso);
@@ -295,25 +317,89 @@ public class EventCheckoutBasketService {
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(ACTIVE_STATUSES),
                 displayResultStateCriteria()));
+        if (terminalState) {
+            Query trackedQuery = new Query(new Criteria().andOperator(
+                    Criteria.where("userId").is(normalizedUserId),
+                    Criteria.where("sourceId").is(normalizedSourceId),
+                    Criteria.where("status").in(ACTIVE_STATUSES),
+                    displayResultStateCriteria(),
+                    Criteria.where("pendingCounterTracked").is(true)));
+            Update trackedUpdate = new Update()
+                    .set("status", checkoutState)
+                    .set("pendingCounterTracked", false)
+                    .set("updatedAtIso", nowIso);
+            if (StringUtils.hasText(resultState)) {
+                trackedUpdate.set("resultState", resultState);
+            }
+            if (StringUtils.hasText(checkoutSessionId)) {
+                trackedUpdate.set("checkoutSessionId", checkoutSessionId);
+            }
+            adjustPendingCount(-modifiedCount(
+                    mongoTemplate.updateMulti(trackedQuery, trackedUpdate, EventCheckoutBasketItem.class)));
+        } else {
+            List<Criteria> trackCriteria = new java.util.ArrayList<>(List.of(
+                    Criteria.where("userId").is(normalizedUserId),
+                    Criteria.where("sourceId").is(normalizedSourceId),
+                    Criteria.where("status").in(ACTIVE_STATUSES),
+                    displayResultStateCriteria(),
+                    Criteria.where("expiresAtIso").exists(true).nin("", null),
+                    Criteria.where("pendingCounterTracked").ne(true)));
+            if (!StringUtils.hasText(resultState)) {
+                trackCriteria.add(reservationResultStateCriteria());
+            }
+            Query untrackedQuery = new Query(new Criteria().andOperator(trackCriteria));
+            Update trackedUpdate = new Update()
+                    .set("status", checkoutState)
+                    .set("pendingCounterTracked", true)
+                    .set("updatedAtIso", nowIso);
+            if (StringUtils.hasText(resultState)) {
+                trackedUpdate.set("resultState", resultState);
+            }
+            if (StringUtils.hasText(checkoutSessionId)) {
+                trackedUpdate.set("checkoutSessionId", checkoutSessionId);
+            }
+            adjustPendingCount(modifiedCount(
+                    mongoTemplate.updateMulti(untrackedQuery, trackedUpdate, EventCheckoutBasketItem.class)));
+        }
         mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class);
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
     }
 
     public int purgeExpiredDraftBasketsNow() {
-        return purgeExpiredDraftBaskets(Instant.now());
+        return purgeExpiredDraftBaskets(Instant.now(), false);
     }
 
     public int purgeExpiredDraftBaskets(Instant now) {
+        return purgeExpiredDraftBaskets(now, false);
+    }
+
+    public int purgeExpiredDraftBasketsScheduled(Instant now) {
+        return purgeExpiredDraftBaskets(now, true);
+    }
+
+    private int purgeExpiredDraftBaskets(Instant now, boolean scheduled) {
         if (!processing.compareAndSet(false, true)) {
             return 0;
         }
-        Instant startedAt = Instant.now();
+        Instant startedAt = now == null ? Instant.now() : now;
+        boolean runStarted = !scheduled;
         try {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
-                    "Scanning expired checkout basket drafts.",
-                    SYSTEM_USER,
-                    startedAt);
+            if (scheduled) {
+                if (notificationRuleRegistryService.beginScheduledRun(
+                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        "Scanning expired checkout basket drafts.",
+                        SYSTEM_USER,
+                        startedAt) == null) {
+                    return 0;
+                }
+            } else {
+                notificationRuleRegistryService.beginRun(
+                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        "Scanning expired checkout basket drafts.",
+                        SYSTEM_USER,
+                        startedAt);
+            }
+            runStarted = true;
             String nowIso = (now == null ? Instant.now() : now).toString();
             Query query = new Query(new Criteria().andOperator(
                     Criteria.where("status").in(PURGEABLE_STATUSES),
@@ -322,9 +408,19 @@ public class EventCheckoutBasketService {
                     Criteria.where("expiresAtIso").lte(nowIso)));
             Update update = new Update()
                     .set("resultState", RESULT_STATE_DELETED)
+                    .set("pendingCounterTracked", false)
                     .set("updatedAtIso", nowIso);
-            UpdateResult result = mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class);
-            int modified = result == null ? 0 : Math.toIntExact(Math.min(Integer.MAX_VALUE, result.getModifiedCount()));
+            Query trackedQuery = new Query(new Criteria().andOperator(
+                    Criteria.where("status").in(PURGEABLE_STATUSES),
+                    reservationResultStateCriteria(),
+                    Criteria.where("expiresAtIso").exists(true).nin("", null),
+                    Criteria.where("expiresAtIso").lte(nowIso),
+                    Criteria.where("pendingCounterTracked").is(true)));
+            int trackedModified = modifiedCount(
+                    mongoTemplate.updateMulti(trackedQuery, update, EventCheckoutBasketItem.class));
+            int modified = trackedModified + modifiedCount(
+                    mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class));
+            adjustPendingCount(-trackedModified);
             String detail = modified == 0
                     ? "No expired checkout basket items were due."
                     : "Marked " + modified + " expired checkout basket item(s) as deleted.";
@@ -338,16 +434,41 @@ public class EventCheckoutBasketService {
             return modified;
         } catch (RuntimeException exception) {
             LOGGER.warn("Checkout basket purge pass failed.", exception);
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
-                    0,
-                    "failed",
-                    safeText(exception.getMessage()),
-                    SYSTEM_USER,
-                    startedAt);
+            if (runStarted) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        SYSTEM_USER,
+                        startedAt);
+            }
             return 0;
         } finally {
             processing.set(false);
+        }
+    }
+
+    private boolean isPurgeCandidate(String status, String resultState, String expiresAtIso) {
+        String normalizedResultState = safeText(resultState);
+        return PURGEABLE_STATUSES.contains(safeText(status))
+                && (!StringUtils.hasText(normalizedResultState)
+                        || RESERVATION_RESULT_STATES.contains(normalizedResultState))
+                && StringUtils.hasText(safeText(expiresAtIso));
+    }
+
+    private int modifiedCount(UpdateResult result) {
+        return result == null
+                ? 0
+                : Math.toIntExact(Math.min(Integer.MAX_VALUE, result.getModifiedCount()));
+    }
+
+    private void adjustPendingCount(int delta) {
+        if (delta != 0) {
+            notificationRuleRegistryService.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                    delta,
+                    "admin.jobs.table.affected");
         }
     }
 

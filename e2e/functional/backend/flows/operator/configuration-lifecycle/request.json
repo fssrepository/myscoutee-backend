@@ -1,0 +1,21 @@
+{
+  "name": "operator configuration save, validation, secret masking and restore",
+  "group": "flows",
+  "tags": [
+    "operator",
+    "configuration",
+    "payment"
+  ],
+  "order": 9200,
+  "method": "GET",
+  "path": "/api/operator/configuration",
+  "script": "operator-configuration-lifecycle.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 12000
+}

@@ -1,24 +1,43 @@
 package com.raxim.myscoutee.common.config.firebase;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
+import com.raxim.myscoutee.profile.service.operator.DeploymentFirebaseRuntime;
 
 @Service
 public class DefaultFirebaseTokenVerifier implements FirebaseTokenVerifier {
+    private final DeploymentFirebaseRuntime firebaseRuntime;
+
+    public DefaultFirebaseTokenVerifier(
+            DeploymentFirebaseRuntime firebaseRuntime) {
+        this.firebaseRuntime = firebaseRuntime;
+    }
+
     @Override
     public FirebaseCredential verify(String firebaseToken) {
-        Objects.requireNonNull(firebaseToken, "FirebaseToken must not be null or blank");
-        try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
-            return new FirebaseCredential(decodedToken);
-        } catch (Exception e) {
-            throw new FirebaseTokenInvalidException(e.getMessage());
+        if (firebaseToken == null || firebaseToken.isBlank()) {
+            throw invalidToken();
         }
+        try {
+            FirebaseToken decodedToken = firebaseRuntime
+                    .authentication()
+                    .verifyIdToken(firebaseToken);
+            return new FirebaseCredential(decodedToken);
+        } catch (Exception exception) {
+            /*
+             * Upstream Firebase failures can contain project identifiers and
+             * provider details. Authentication callers only need a stable,
+             * non-sensitive rejection and must never receive that diagnostic.
+             */
+            throw invalidToken();
+        }
+    }
+
+    private FirebaseTokenInvalidException invalidToken() {
+        return new FirebaseTokenInvalidException(
+                "Invalid Firebase authentication token.");
     }
 }

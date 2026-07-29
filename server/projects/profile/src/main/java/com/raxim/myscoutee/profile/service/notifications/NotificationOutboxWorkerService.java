@@ -41,6 +41,9 @@ import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import com.google.firebase.messaging.WebpushNotification;
 import com.mongodb.client.result.UpdateResult;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -76,6 +79,8 @@ public class NotificationOutboxWorkerService {
     private final Duration retryBaseDelay;
     private final int deliveryWindowStartHour;
     private final int deliveryWindowEndHour;
+    private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
+    private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private String lastWakeupStreamId = "0-0";
     private volatile Instant lastScheduledPollAt = Instant.EPOCH;
 
@@ -116,20 +121,75 @@ public class NotificationOutboxWorkerService {
         this.deliveryWindowEndHour = clampHour(deliveryWindowEndHour, 24);
     }
 
-    @Scheduled(fixedDelayString = "${notifications.outbox.worker-check-delay-ms:5000}")
-    public void processDueNotifications() {
-        if (!configProperties.isFirebaseEnabled()) {
-            return;
-        }
-        if (!claimScheduledPoll(Instant.now())) {
-            return;
-        }
-        processDueNotificationsNow();
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setNotificationRuleRegistryServiceProvider(
+            ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+        this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
     }
 
-    private void processDueNotificationsNow() {
-        if (!configProperties.isFirebaseEnabled() || !isInsideDeliveryWindow()) {
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
+        this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
+    @Scheduled(fixedDelayString = "${notifications.outbox.worker-check-delay-ms:5000}")
+    public void processDueNotifications() {
+        if (scheduledMongoSessionRunner == null) {
+            processDueNotificationsForCurrentDatabase();
             return;
+        }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::processDueNotificationsForCurrentDatabase);
+    }
+
+    private void processDueNotificationsForCurrentDatabase() {
+        Instant startedAt = Instant.now();
+        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        boolean ruleConfigured = registry != null
+                && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent();
+        boolean due = ruleConfigured
+                ? registry.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX, startedAt)
+                : claimScheduledPoll(startedAt);
+        if (!due) {
+            return;
+        }
+        if (ruleConfigured && registry.beginScheduledRun(
+                    NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                    "Scheduled notification outbox delivery started.",
+                    "notification-outbox",
+                    startedAt) == null) {
+            return;
+        }
+        try {
+            int processedCount = processDueNotificationsNow();
+            if (ruleConfigured) {
+                String detail = configProperties.isFirebaseEnabled()
+                        ? "Processed pending notification outbox work."
+                        : "Firebase delivery is inactive; pending notification outbox work was retained.";
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                        processedCount,
+                        "completed",
+                        detail,
+                        "notification-outbox",
+                        startedAt);
+            }
+        } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        "notification-outbox",
+                        startedAt);
+            }
+            throw exception;
+        }
+    }
+
+    private int processDueNotificationsNow() {
+        if (!configProperties.isFirebaseEnabled() || !isInsideDeliveryWindow()) {
+            return 0;
         }
         String nowIso = Instant.now().toString();
         List<NotificationOutboxItem> leasedItems = new ArrayList<>();
@@ -141,6 +201,7 @@ public class NotificationOutboxWorkerService {
             leasedItems.add(leased);
         }
         processLeasedItems(leasedItems);
+        return leasedItems.size();
     }
 
     private void processLeasedItems(List<NotificationOutboxItem> leasedItems) {
@@ -154,10 +215,12 @@ public class NotificationOutboxWorkerService {
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(workerCount);
+        MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
         try {
             List<Future<?>> futures = new ArrayList<>();
             for (NotificationOutboxItem leased : leasedItems) {
-                futures.add(executorService.submit(() -> processLeasedItem(leased)));
+                futures.add(executorService.submit(
+                        () -> withMongoSessionMode(sessionMode, () -> processLeasedItem(leased))));
             }
             for (Future<?> future : futures) {
                 try {
@@ -171,6 +234,16 @@ public class NotificationOutboxWorkerService {
             }
         } finally {
             executorService.shutdown();
+        }
+    }
+
+    private void withMongoSessionMode(MongoSessionMode sessionMode, Runnable action) {
+        MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
+        try {
+            MongoSessionModeContext.set(sessionMode);
+            action.run();
+        } finally {
+            MongoSessionModeContext.set(previousMode);
         }
     }
 
@@ -192,6 +265,16 @@ public class NotificationOutboxWorkerService {
         if (stringRedisTemplate == null) {
             return;
         }
+        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        if (registry != null
+                && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent()
+                && !registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX)
+                        .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
+                        .orElse(false)) {
+            return;
+        }
+        Instant startedAt = null;
+        boolean runStarted = false;
         try {
             List<MapRecord<String, Object, Object>> records = stringRedisTemplate.opsForStream().read(
                     StreamReadOptions.empty().count(effectiveBatchSize()),
@@ -204,9 +287,38 @@ public class NotificationOutboxWorkerService {
                     .filter(StringUtils::hasText)
                     .toList();
             lastWakeupStreamId = records.get(records.size() - 1).getId().getValue();
-            processDueNotificationsNow();
+            startedAt = Instant.now();
+            boolean ruleConfigured = registry != null
+                    && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent();
+            if (ruleConfigured && registry.beginRun(
+                        NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                        "Notification outbox wake-up started.",
+                        "notification-outbox",
+                        startedAt) == null) {
+                return;
+            }
+            runStarted = ruleConfigured;
+            int processedCount = processDueNotificationsNow();
+            if (ruleConfigured) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                        processedCount,
+                        "completed",
+                        "Processed notification outbox wake-up work.",
+                        "notification-outbox",
+                        startedAt);
+            }
             redisStreamRetentionService.deleteRecords(stringRedisTemplate, NotificationOutboxService.WAKEUP_STREAM_KEY, recordIds);
         } catch (RuntimeException exception) {
+            if (runStarted && registry != null && startedAt != null) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        "notification-outbox",
+                        startedAt);
+            }
             LOGGER.debug("Notification outbox Redis wakeup read failed; scheduled polling remains active.", exception);
         }
     }
@@ -471,13 +583,22 @@ public class NotificationOutboxWorkerService {
     private void markSent(NotificationOutboxItem item, DeliveryResult result, String nowIso) {
         Update update = new Update()
                 .set("status", NotificationOutboxItem.STATUS_SENT)
+                .set("pendingCounterTracked", false)
                 .set("sentDate", nowIso)
                 .set("updatedDate", nowIso)
                 .set("tokenSuccessCount", result.successCount())
                 .set("tokenFailureCount", result.failureCount())
                 .unset("lockedUntil")
                 .unset("lastError");
-        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(item.getId())), update, NotificationOutboxItem.class);
+        UpdateResult updateResult = mongoTemplate.updateFirst(
+                Query.query(new Criteria().andOperator(
+                        Criteria.where("_id").is(item.getId()),
+                        Criteria.where("status").is(NotificationOutboxItem.STATUS_RUNNING))),
+                update,
+                NotificationOutboxItem.class);
+        if (updateResult.getModifiedCount() > 0 && Boolean.TRUE.equals(item.getPendingCounterTracked())) {
+            adjustPendingCount(-1);
+        }
     }
 
     private void markFailed(NotificationOutboxItem item, Exception exception, Instant now) {
@@ -491,13 +612,39 @@ public class NotificationOutboxWorkerService {
         String nextRetryAt = now.plus(retryDelay(retryCount)).toString();
         Update update = new Update()
                 .set("status", exhausted ? NotificationOutboxItem.STATUS_FAILED : NotificationOutboxItem.STATUS_PENDING)
+                .set("pendingCounterTracked", exhausted ? false : Boolean.TRUE.equals(item.getPendingCounterTracked()))
                 .set("retryCount", retryCount)
                 .set("nextRetryAt", exhausted ? null : nextRetryAt)
                 .set("lastError", truncateError(exception))
                 .set("updatedDate", nowIso)
                 .unset("lockedUntil");
-        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(item.getId())), update, NotificationOutboxItem.class);
+        UpdateResult updateResult = mongoTemplate.updateFirst(
+                Query.query(new Criteria().andOperator(
+                        Criteria.where("_id").is(item.getId()),
+                        Criteria.where("status").is(NotificationOutboxItem.STATUS_RUNNING))),
+                update,
+                NotificationOutboxItem.class);
+        if (exhausted && updateResult.getModifiedCount() > 0 && Boolean.TRUE.equals(item.getPendingCounterTracked())) {
+            adjustPendingCount(-1);
+        }
         LOGGER.warn("Notification outbox item {} delivery failed.", item.getId(), exception);
+    }
+
+    private void adjustPendingCount(int delta) {
+        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        if (registry == null || delta == 0) {
+            return;
+        }
+        registry.adjustPendingCount(
+                NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                delta,
+                "admin.jobs.rule.notification.outbox");
+    }
+
+    private NotificationRuleRegistryService notificationRuleRegistry() {
+        return notificationRuleRegistryServiceProvider == null
+                ? null
+                : notificationRuleRegistryServiceProvider.getIfAvailable();
     }
 
     private Duration retryDelay(int retryCount) {

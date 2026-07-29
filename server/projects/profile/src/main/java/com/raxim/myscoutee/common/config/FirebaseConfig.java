@@ -24,7 +24,7 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void init() throws IOException {
-        if (!configProperties.isFirebaseEnabled()) {
+        if (!configProperties.isStartupFirebaseEnabled()) {
             return;
         }
 

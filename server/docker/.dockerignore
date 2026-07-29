@@ -1,0 +1,17 @@
+# Nginx uses this directory as its Docker build context. Runtime TLS material
+# is mounted by Compose or generated after installation and must not reach
+# BuildKit.
+conf/nginx/keys/
+conf/nginx/app/myscoutee/
+scripts/admin-job-fixtures/
+
+*.pem
+*.key
+*.p8
+**/*.pem
+**/*.key
+**/*.p8
+**/*private*key*
+**/*service-account*.json
+**/*client-secret*.json
+**/*provider-credentials*.json

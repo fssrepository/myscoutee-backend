@@ -11,6 +11,37 @@ e2e/stress/ui           Browser performance/stability scenarios
 e2e/shared              Shared runner/assertion helpers
 ```
 
+## Java-to-Go QMAU/revenue/settlement qualification
+
+The registry repository owns the opt-in, no-stack cross-language runner:
+
+```bash
+cd ../myscoutee-registry
+./scripts/qualify-java-rails.sh
+```
+
+If the repositories are not siblings, set `MYSCOUTEE_BACKEND_ROOT` to this
+repository root. The runner builds the standalone Go registry and executes only
+`OperatorGoRegistryRailQualificationTest` against disposable SQLite, registry
+keys, Java deployment keys/state, and embedded Mongo.
+
+The gate covers accepted signed QMAU/revenue delivery, lost-receipt
+idempotency, Java outbox and Go database survival across service/process
+restarts, duplicate responses, correction/supersession, invalid Java
+signatures, tampered Go receipt rejection, and a real Java-signed private
+settlement-history query after claim approval and ordinary Go settlement
+calculation. It does not start the backend application, Docker, Redis, npm, or
+the frontend.
+
+The Go registry also has its own Java-independent black-box suite. It builds
+and starts only the real registry binary with a temporary SQLite database,
+signing key, and loopback listener:
+
+```bash
+cd ../myscoutee-registry
+go test -tags=e2e -count=1 -v ./e2e
+```
+
 Each executable check lives in its own folder:
 
 ```text
@@ -44,6 +75,24 @@ node e2e/functional/backend/run.mjs --group events
 node e2e/functional/backend/run.mjs --case profile/auth-me --record
 ```
 
+Operator contracts use the seeded `operator-demo-dev` identity and exercise
+the distinct `O` authority across the operator controllers, bootstrap and
+request-validation boundaries, registry/configuration state, settlement
+queries, local revenue invariants, community providers, update visibility,
+and demo-isolated Firebase capability tests:
+
+```bash
+node e2e/functional/backend/run.mjs --group operator
+```
+
+Override the seeded identity only when a matching operator exists in the
+target database:
+
+```bash
+E2E_OPERATOR_USER_ID=operator-demo-dev \
+node e2e/functional/backend/run.mjs --group operator
+```
+
 Default target:
 
 ```bash
@@ -65,6 +114,35 @@ cd ..
 E2E_SERVER_MODE=e2e \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
+
+The operator mutation flows use the same existing `mutation` and `e2eOnly`
+collection metadata as the other backend flows:
+
+`mutation: true` excludes a case unless `--include-mutations` is supplied.
+`e2eOnly: true` skips execution outside `e2e`/`stress` server mode. These are
+metadata fields, not newly introduced CLI flags.
+
+```bash
+E2E_SERVER_MODE=e2e \
+node e2e/functional/backend/run.mjs \
+  --case flows/operator \
+  --include-mutations
+```
+
+They verify pre-registration fail-closed behavior, dormant report
+synchronization, registry inspection/confirmation/disconnect, and the
+configuration save/validation/secret-masking lifecycle. Configuration changes
+are restored in `finally`, and the e2e reset clears the operator Mongo state
+before reimporting the disposable seed.
+
+Registry selection also covers URL-shape rejection, root-URL normalization,
+replacement of stale inspection tokens, missing/invalid/single-use
+confirmation tokens, and repeated disconnect.
+
+The flow deliberately does not register, claim, deactivate, or install a
+package. Those operations mutate the separately persisted Go registry or host
+update state. The isolated Java-to-Go registration/reporting qualification
+remains available through `../myscoutee-registry/scripts/qualify-java-rails.sh`.
 
 The e2e Mongo seed folder is:
 

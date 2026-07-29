@@ -176,6 +176,48 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void approvingAJoinRequestCannotConsumeReservedOrFullCapacity() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        event.setCapacityTotal(2);
+        ActivityMember accepted =
+                member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember reserved =
+                member("reserved-sync", "event-1", "reserved-user", "Member", "pending");
+        reserved.setPendingSource("admin");
+        reserved.setRequestKind("invite");
+        ActivityMember joinRequest =
+                member("join-sync", "event-1", "target", "Member", "pending");
+        joinRequest.setPendingSource("member");
+        joinRequest.setRequestKind("join");
+        List<ActivityMember> stored = List.of(accepted, reserved, joinRequest);
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canAcceptEventMember("event-1", "admin", "target"))
+                .thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(stored);
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(stored);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("pending");
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+        verify(affinityRecomputeTaskService, never())
+                .enqueueEventMembersChanged(anyString(), anyString());
+    }
+
+    @Test
     void reinstateMemberUsesPolicyAndRestoresAcceptedParticipation() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "disqualified");
@@ -301,6 +343,31 @@ class ActivitiesMembersServiceTest {
                     assertThat(member.getOwnerId()).isEqualTo("event-1");
                     assertThat(member.getStatus()).isEqualTo("accepted");
                 });
+    }
+
+    @Test
+    void replaceEventMembersRejectsAcceptedMembershipBeyondCapacity() {
+        ActivityEvent event = event("event-1", "admin", "admin");
+        event.setCapacityTotal(2);
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of());
+
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> service.replace(new ActivityMembersReplaceRequestDto(
+                        new ActivityMemberOwnerRefDto("event", "event-1"),
+                        List.of(entry("target-1"), entry("target-2")),
+                        10,
+                        "admin")));
+
+        assertThat(exception.getStatusCode().value()).isEqualTo(409);
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(affinityRecomputeTaskService, never())
+                .enqueueEventMembersChanged(anyString(), anyString());
     }
 
     @Test
@@ -1978,6 +2045,125 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void inviteUsersDoesNotReserveMoreSeatsThanTheEventCapacity() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        event.setCapacityTotal(2);
+        ActivityMember accepted =
+                member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(accepted));
+        when(activityMembersRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<String> result = service.inviteUsers(
+                "event-1",
+                "admin",
+                List.of("first-invite", "second-invite"),
+                event);
+
+        assertThat(result).containsExactly("first-invite");
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedCaptor =
+                ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue())
+                .extracting(ActivityMember::getUserId)
+                .containsExactly("first-invite");
+    }
+
+    @Test
+    void confirmedJoinUsesExistingInvitationsAsReservedCapacity() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(2);
+        ActivityMember accepted =
+                member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember reserved =
+                member("reserved-sync", "event-1", "reserved-user", "Member", "pending");
+        reserved.setPendingSource("admin");
+        reserved.setRequestKind("invite");
+        AtomicReference<List<ActivityMember>> stored =
+                new AtomicReference<>(List.of(accepted, reserved));
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> stored.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            List<ActivityMember> next = new java.util.ArrayList<>(stored.get());
+            next.removeIf(member -> saved.getUserId().equals(member.getUserId()));
+            next.add(saved);
+            stored.set(List.copyOf(next));
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.requestJoin("event-1", viewer, event, true, false, false);
+
+        assertThat(stored.get())
+                .filteredOn(member -> "viewer".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("member");
+                    assertThat(member.getRequestKind()).isEqualTo("waitlist");
+                });
+    }
+
+    @Test
+    void inviteeCanAcceptTheSeatAlreadyReservedForThem() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(2);
+        ActivityMember accepted =
+                member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember ownInvitation =
+                member("invite-sync", "event-1", "viewer", "Member", "pending");
+        ownInvitation.setPendingSource("admin");
+        ownInvitation.setRequestKind("invite");
+        ownInvitation.setInvitedByUserId("host");
+        AtomicReference<List<ActivityMember>> stored =
+                new AtomicReference<>(List.of(accepted, ownInvitation));
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> stored.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            stored.set(stored.get().stream()
+                    .map(member -> saved.getUserId().equals(member.getUserId())
+                            ? saved
+                            : member)
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.requestJoin("event-1", viewer, event, true, false, false);
+
+        assertThat(stored.get())
+                .filteredOn(member -> "viewer".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("accepted");
+                    assertThat(member.getPendingSource()).isNull();
+                    assertThat(member.getRequestKind()).isNull();
+                });
+    }
+
+    @Test
     void inviteEventMembersNotifiesOnlyNewlyPersistedInvitees() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember existingInvite = member("existing-sync", "event-1", "existing", "Member", "pending");
@@ -2002,6 +2188,107 @@ class ActivitiesMembersServiceTest {
                 event,
                 List.of("new-user"),
                 "admin");
+    }
+
+    @Test
+    void waitlistSweepPromotesOnlyCapacityNotReservedByExistingInvitations() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(4);
+        ActivityMember accepted = member("accepted", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember reservedInvite = member("reserved", "event-1", "reserved-user", "Member", "pending");
+        reservedInvite.setPendingSource("admin");
+        reservedInvite.setRequestKind("invite");
+        ActivityMember waiting1 = waitlistMember("waiting-1", "wait-1");
+        ActivityMember waiting2 = waitlistMember("waiting-2", "wait-2");
+        ActivityMember waiting3 = waitlistMember("waiting-3", "wait-3");
+        ActivityMember waiting4 = waitlistMember("waiting-4", "wait-4");
+        List<ActivityMember> stored = List.of(
+                accepted,
+                reservedInvite,
+                waiting1,
+                waiting2,
+                waiting3,
+                waiting4);
+
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist"))
+                .thenReturn(List.of(waiting1, waiting2, waiting3, waiting4));
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist-invite"))
+                .thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(stored);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        int promoted = service.sweepEventWaitlists();
+
+        assertThat(promoted).isEqualTo(2);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue())
+                .extracting(ActivityMember::getUserId)
+                .containsExactly("wait-1", "wait-2");
+        assertThat(savedMembers.getValue()).allSatisfy(member -> {
+            assertThat(member.getStatus()).isEqualTo("pending");
+            assertThat(member.getRequestKind()).isEqualTo("waitlist-invite");
+        });
+        verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("wait-1", "wait-2"),
+                "host");
+    }
+
+    @Test
+    void waitlistSweepDemotesOnlyNewestExcessWaitlistInvitation() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(3);
+        ActivityMember accepted = member("accepted", "event-1", "accepted-user", "Member", "accepted");
+        ActivityMember reservedInvite = member("reserved", "event-1", "reserved-user", "Member", "pending");
+        reservedInvite.setPendingSource("admin");
+        reservedInvite.setRequestKind("invite");
+        ActivityMember olderWaitlistInvite = waitlistMember("wait-old", "wait-old");
+        olderWaitlistInvite.setPendingSource("admin");
+        olderWaitlistInvite.setRequestKind("waitlist-invite");
+        olderWaitlistInvite.setActionAtIso("2026-05-12T09:00:00Z");
+        ActivityMember newerWaitlistInvite = waitlistMember("wait-new", "wait-new");
+        newerWaitlistInvite.setPendingSource("admin");
+        newerWaitlistInvite.setRequestKind("waitlist-invite");
+        newerWaitlistInvite.setActionAtIso("2026-05-12T11:00:00Z");
+        List<ActivityMember> stored = List.of(
+                accepted,
+                reservedInvite,
+                olderWaitlistInvite,
+                newerWaitlistInvite);
+
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist"))
+                .thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist-invite"))
+                .thenReturn(List.of(olderWaitlistInvite, newerWaitlistInvite));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(stored);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        int changed = service.sweepEventWaitlists();
+
+        assertThat(changed).isEqualTo(1);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue()).singleElement().satisfies(member -> {
+            assertThat(member.getUserId()).isEqualTo("wait-new");
+            assertThat(member.getStatus()).isEqualTo("pending");
+            assertThat(member.getPendingSource()).isEqualTo("member");
+            assertThat(member.getRequestKind()).isEqualTo("waitlist");
+        });
+        verify(eventInviteNotificationService, never()).notifyInvitees(
+                any(ActivityEvent.class), anyList(), anyString());
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {
@@ -2031,6 +2318,13 @@ class ActivitiesMembersServiceTest {
         member.setCreatedUser("host");
         member.setUpdatedDate("2026-05-12T10:00:00Z");
         member.setUpdatedUser("host");
+        return member;
+    }
+
+    private ActivityMember waitlistMember(String syncKey, String userId) {
+        ActivityMember member = member(syncKey, "event-1", userId, "Member", "pending");
+        member.setPendingSource("member");
+        member.setRequestKind("waitlist");
         return member;
     }
 

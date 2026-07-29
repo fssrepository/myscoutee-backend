@@ -8,36 +8,17 @@ import org.springframework.util.StringUtils;
 
 @ConfigurationProperties("config")
 public class ConfigProperties {
-    private String adminUser;
     private String operatorUser;
+    private String operatorBootstrapEmail;
+    private String operatorBootstrapPasswordSha256;
+    private boolean operatorBootstrapAllowInsecure;
     private String firebaseServiceAccountPath;
     private boolean firebaseEnabled = false;
+    private volatile boolean deploymentFirebaseEnabled = false;
     private boolean chatOnlyMode = false;
     private String devUser = "dev@myscoutee.local";
     private String facebookAppSecret = "";
     private String websocketAllowedOriginPatterns = "http://localhost,http://localhost:4200,https://localhost,https://localhost:4200";
-
-    public String getAdminUser() {
-        return adminUser;
-    }
-
-    public void setAdminUser(String adminUser) {
-        this.adminUser = adminUser;
-    }
-
-    public List<String> getAdminUsers() {
-        return Arrays.stream((adminUser == null ? "" : adminUser).split("[,;]"))
-                .map(String::trim)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
-    }
-
-    public boolean isAdminUser(String value) {
-        String normalized = value == null ? "" : value.trim();
-        return StringUtils.hasText(normalized)
-                && getAdminUsers().stream().anyMatch(admin -> admin.equalsIgnoreCase(normalized));
-    }
 
     public String getOperatorUser() {
         return operatorUser;
@@ -61,6 +42,34 @@ public class ConfigProperties {
                 && getOperatorUsers().stream().anyMatch(operator -> operator.equalsIgnoreCase(normalized));
     }
 
+    public String getOperatorBootstrapPasswordSha256() {
+        return operatorBootstrapPasswordSha256;
+    }
+
+    public String getOperatorBootstrapEmail() {
+        return operatorBootstrapEmail;
+    }
+
+    public void setOperatorBootstrapEmail(String operatorBootstrapEmail) {
+        this.operatorBootstrapEmail = operatorBootstrapEmail;
+    }
+
+    public void setOperatorBootstrapPasswordSha256(
+            String operatorBootstrapPasswordSha256) {
+        this.operatorBootstrapPasswordSha256 =
+                operatorBootstrapPasswordSha256;
+    }
+
+    public boolean isOperatorBootstrapAllowInsecure() {
+        return operatorBootstrapAllowInsecure;
+    }
+
+    public void setOperatorBootstrapAllowInsecure(
+            boolean operatorBootstrapAllowInsecure) {
+        this.operatorBootstrapAllowInsecure =
+                operatorBootstrapAllowInsecure;
+    }
+
     public String getFirebaseServiceAccountPath() {
         return firebaseServiceAccountPath;
     }
@@ -70,11 +79,31 @@ public class ConfigProperties {
     }
 
     public boolean isFirebaseEnabled() {
-        return firebaseEnabled;
+        return firebaseEnabled || deploymentFirebaseEnabled;
     }
 
     public void setFirebaseEnabled(boolean firebaseEnabled) {
         this.firebaseEnabled = firebaseEnabled;
+    }
+
+    /**
+     * Returns the immutable startup flag used by the legacy file-backed
+     * Firebase bootstrap. Operator activation is deliberately excluded so a
+     * runtime deployment configuration never makes startup try to open the
+     * legacy service-account path.
+     */
+    public boolean isStartupFirebaseEnabled() {
+        return firebaseEnabled;
+    }
+
+    /**
+     * Publishes the active deployment capability to the existing feature
+     * gates. The authoritative credentials remain encrypted in MongoDB and are
+     * resolved by the runtime Firebase service; this flag contains no secret.
+     */
+    public void publishDeploymentFirebaseEnabled(
+            boolean deploymentFirebaseEnabled) {
+        this.deploymentFirebaseEnabled = deploymentFirebaseEnabled;
     }
 
     public boolean isChatOnlyMode() {

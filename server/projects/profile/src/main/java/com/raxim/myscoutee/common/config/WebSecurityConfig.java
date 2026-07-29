@@ -13,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
+import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapAuthenticationFilter;
+import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapAuthenticationService;
+import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
@@ -29,15 +32,21 @@ public class WebSecurityConfig {
     private final FirebaseService firebaseService;
     private final FirebaseAuthenticationProvider firebaseProvider;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
+    private final OperatorBootstrapAuthenticationService
+            operatorBootstrapAuthenticationService;
     private final ConfigProperties configProperties;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
             FirebaseTokenVerifier firebaseTokenVerifier,
+            OperatorBootstrapAuthenticationService
+                    operatorBootstrapAuthenticationService,
             ConfigProperties configProperties) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
+        this.operatorBootstrapAuthenticationService =
+                operatorBootstrapAuthenticationService;
         this.configProperties = configProperties;
     }
 
@@ -49,7 +58,12 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(sessionMongoRoutingFilter(), BasicAuthenticationFilter.class)
-                .addFilterAfter(tokenAuthorizationFilter(), SessionMongoRoutingFilter.class)
+                .addFilterAfter(
+                        operatorBootstrapAuthenticationFilter(),
+                        SessionMongoRoutingFilter.class)
+                .addFilterAfter(
+                        tokenAuthorizationFilter(),
+                        OperatorBootstrapAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/shutdown").denyAll();
                     authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
@@ -58,12 +72,16 @@ public class WebSecurityConfig {
                             "/health",
                             "/error",
                             "/auth/eligibility",
+                            OperatorBootstrapRequestSupport.LOGIN_PATH,
+                            OperatorBootstrapRequestSupport.API_LOGIN_PATH,
                             "/auth/facebook/data-deletion",
                             "/auth/facebook/data-deletion/status",
                             "/i18n/bundle",
                             "/api/i18n/bundle",
                             "/deployment/configuration",
                             "/api/deployment/configuration",
+                            "/deployment/configuration/firebase-config",
+                            "/api/deployment/configuration/firebase-config",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",
@@ -82,7 +100,9 @@ public class WebSecurityConfig {
                             "/user/groups/images/**",
                             "/history/events/*/members/*/images/**")
                             .permitAll();
-                    if (!configProperties.isFirebaseEnabled()) {
+                    if (!configProperties.isFirebaseEnabled()
+                            && !operatorBootstrapAuthenticationService
+                                    .isConfigured()) {
                         authorizeRequests.anyRequest().permitAll();
                     } else if (configProperties.isChatOnlyMode()) {
                         authorizeRequests.requestMatchers("/activities/chats/**").authenticated()
@@ -107,6 +127,13 @@ public class WebSecurityConfig {
 
     private FirebaseFilter tokenAuthorizationFilter() {
         return new FirebaseFilter(firebaseService, configProperties, firebaseTokenVerifier);
+    }
+
+    private OperatorBootstrapAuthenticationFilter
+            operatorBootstrapAuthenticationFilter() {
+        return new OperatorBootstrapAuthenticationFilter(
+                operatorBootstrapAuthenticationService,
+                configProperties);
     }
 
     private SessionMongoRoutingFilter sessionMongoRoutingFilter() {

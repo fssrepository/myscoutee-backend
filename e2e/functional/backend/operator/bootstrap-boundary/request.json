@@ -1,0 +1,16 @@
+{
+  "name": "operator bootstrap authentication boundary and secret redaction",
+  "group": "operator",
+  "order": 1310,
+  "method": "POST",
+  "path": "/api/auth/operator-bootstrap",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "email": "bootstrap-probe@example.test",
+    "password": "demo-session-bootstrap-password"
+  },
+  "expectedStatus": 400,
+  "maxMs": 8000
+}

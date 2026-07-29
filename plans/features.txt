@@ -7,24 +7,6 @@ https://developers.facebook.com/ -> business verfication is needed
 feature
 -------
 1) background process tests, e.g.: purge, algorithm
-
-next to app admin - operator ui where you can rebrand or add payment provider etc.
-or get registry code for clam registry etc.
-maybe a claim button wich sends the operator registration form to the central server
-so practically speaking event the ui won't be published on the central registry, just a "go" api, what you can call
-the ui makes rebrand also (so removing the MyScoutee)
-
-the "go" app is just a container with a lightweight db like sql light
-
-after intalling operator name and password generated and shown in the console, so you can login with that
-
-1) configured server - where metrics can be uploaded, so virtual shares can be calculated
-needs a different server and project, practically a dashboard
-go server with minimal memory, connecting to server, gets the key and the user
-can register with that key to a virtual company
-2) replace logo to make a rebrand
-
-following deployed version on central server, uodate url etc.
-
-theme selection so the landing site colour tones can be changed
-maybe a forum also and a help on that operator page (like some community)
+2) operator - configuration popup - http config, auto renewal as a on/off
+on/off for the entire panel like in event editor
+maybe pass signed keys, text the stack - nginx config

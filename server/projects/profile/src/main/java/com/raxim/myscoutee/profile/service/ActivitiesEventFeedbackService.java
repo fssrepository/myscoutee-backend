@@ -49,6 +49,8 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.EventFeedbackStatMapper;
 import com.raxim.myscoutee.profile.service.mapper.EventFeedbackStatMapper.EventFeedbackStatRecord;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @Service
 public class ActivitiesEventFeedbackService {
@@ -66,6 +68,7 @@ public class ActivitiesEventFeedbackService {
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private final EventFeedbackStatMapper eventFeedbackStatMapper;
+    private final NotificationOutboxService notificationOutboxService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -77,7 +80,8 @@ public class ActivitiesEventFeedbackService {
             AdminTelemetryService adminTelemetryService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
-            EventFeedbackStatMapper eventFeedbackStatMapper) {
+            EventFeedbackStatMapper eventFeedbackStatMapper,
+            NotificationOutboxService notificationOutboxService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
@@ -88,6 +92,7 @@ public class ActivitiesEventFeedbackService {
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
         this.eventFeedbackStatMapper = eventFeedbackStatMapper;
+        this.notificationOutboxService = notificationOutboxService;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -203,9 +208,18 @@ public class ActivitiesEventFeedbackService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit feedback for this event.");
         }
         Users activeUser = homeUserProfileService.resolveCurrentUser(userId);
-        if (activeUser == null || findFeedbackEventForDetail(userId, eventId) == null) {
+        ActivityEvent feedbackEvent = findFeedbackEventForDetail(userId, eventId);
+        if (activeUser == null || feedbackEvent == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The feedback event is not available for this user.");
         }
+        Set<String> allowedTargetUserIds = buildFeedbackCards(
+                feedbackEvent,
+                buildFeedbackUsersById(activeUser, List.of(feedbackEvent), List.of()),
+                activeUser).stream()
+                        .map(EventFeedbackCardDto::targetUserId)
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
         String nowIso = firstNonBlank(feedback.submittedAtIso(), Instant.now().toString());
         EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
@@ -251,6 +265,15 @@ public class ActivitiesEventFeedbackService {
         }
         eventFeedbackAnswersRepository.saveAll(answers);
         eventFeedbackStatesRepository.save(state);
+        LinkedHashSet<String> notificationTargetUserIds = new LinkedHashSet<>(changedTargetUserIds);
+        notificationTargetUserIds.retainAll(allowedTargetUserIds);
+        notificationTargetUserIds.remove(userId);
+        enqueueFeedbackNotification(
+                feedbackEvent,
+                userId,
+                notificationTargetUserIds,
+                wasSubmitted,
+                wasRemoved);
         for (String targetUserId : changedTargetUserIds) {
             affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
@@ -258,6 +281,46 @@ public class ActivitiesEventFeedbackService {
         userActivityCountersService.applyFeedbackStateTransition(userId, wasSubmitted, wasRemoved, true, false);
         userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
         return loadDetailForUser(activeUser, userId, eventId);
+    }
+
+    private void enqueueFeedbackNotification(
+            ActivityEvent event,
+            String actorUserId,
+            Collection<String> targetUserIds,
+            boolean wasSubmitted,
+            boolean wasRemoved) {
+        if (notificationOutboxService == null
+                || event == null
+                || (wasSubmitted && !wasRemoved)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = normalizeIds(targetUserIds).stream()
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        recipients.remove(normalizedActorUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        String eventId = normalizeId(event.getSourceId());
+        String eventTitle = firstNonBlank(event.getTitle(), "Event");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("senderUserId", normalizedActorUserId);
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-feedback-submitted",
+                "event",
+                eventId,
+                "feedback-targets",
+                recipients,
+                "New event feedback",
+                "You received feedback for " + eventTitle + ".",
+                "/game",
+                firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "event-feedback-submitted-" + eventId + "-" + normalizedActorUserId,
+                payload,
+                normalizedActorUserId));
     }
 
     public void saveNote(EventFeedbackNoteRequestDto request) {

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,16 +35,28 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
+import com.raxim.myscoutee.profile.data.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryInspectRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
+import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchive;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchiveRequest;
 import com.raxim.myscoutee.registry.RegistryNodeIdentityService.NodeIdentity;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionOutcome;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimStatus;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations.EnrollmentOutcome;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations.NodeStatus;
 import com.raxim.myscoutee.registry.RegistryPreflightService.RegistryInspection;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.registry.RegistryProtocol.OperatorActionResponse;
 
 class OperatorRegistryServiceTest {
     private static final Instant NOW = Instant.parse("2026-07-28T10:15:30Z");
@@ -56,6 +70,8 @@ class OperatorRegistryServiceTest {
 
     private OperatorRegistrySettingsRepository repository;
     private RegistryOperatorOperations operations;
+    private RegistryOperatorNetworkOperations networkOperations;
+    private OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
     private RegistryProperties realProperties;
     private RegistryDemoProperties demoProperties;
     private OperatorRegistryEndpointService endpointService;
@@ -65,6 +81,9 @@ class OperatorRegistryServiceTest {
     void setUp() {
         repository = mock(OperatorRegistrySettingsRepository.class);
         operations = mock(RegistryOperatorOperations.class);
+        networkOperations = mock(RegistryOperatorNetworkOperations.class);
+        claimSubmissionRepository =
+                mock(OperatorClaimSubmissionSnapshotRepository.class);
         endpointService = mock(OperatorRegistryEndpointService.class);
         realProperties = new RegistryProperties();
         realProperties.setPrivateKeyPath(tempDirectory.resolve("real/key.pem"));
@@ -83,6 +102,12 @@ class OperatorRegistryServiceTest {
                     stored.set(value);
                     return value;
                 });
+        when(operations.archiveActiveBinding(any(), any()))
+                .thenReturn(new BindingArchive(
+                        "opa_0123456789abcdef0123456789abcdef",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "demo:local-registry",
+                        tempDirectory.resolve("archived-binding")));
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
     }
 
@@ -188,7 +213,8 @@ class OperatorRegistryServiceTest {
                         "dep_0123456789abcdef0123456789abcdef",
                         "batch_0123456789abcdef0123456789abcdef",
                         NOW.plusSeconds(1).toString(),
-                        1L));
+                        1L,
+                        false));
         OperatorRegistryService service = service();
         var inspection = service.inspect(
                 new RegistryInspectRequestDto("http://registry:8080", "demo:local-registry"),
@@ -205,8 +231,10 @@ class OperatorRegistryServiceTest {
         var completed = service.retry("operator-demo-dev");
         var repeated = service.retry("operator-demo-dev");
 
-        assertThat(failed.lifecycle()).isEqualTo("ERROR");
-        assertThat(failed.lastError().retryable()).isTrue();
+        assertThat(failed.status().lifecycle()).isEqualTo("ERROR");
+        assertThat(failed.status().lastError().retryable()).isTrue();
+        assertThat(failed.created()).isFalse();
+        assertThat(failed.leaderboardEntry()).isNull();
         assertThat(completed.lifecycle()).isEqualTo("REGISTERED");
         assertThat(completed.enrollment().deploymentCode())
                 .isEqualTo("dep_0123456789abcdef0123456789abcdef");
@@ -279,7 +307,8 @@ class OperatorRegistryServiceTest {
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L))
+                1L,
+                false))
                 .when(operations)
                 .synchronize(any());
 
@@ -324,7 +353,8 @@ class OperatorRegistryServiceTest {
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L));
+                1L,
+                false));
         OperatorRegistryService service = service();
 
         var inspection = service.inspect(
@@ -340,7 +370,10 @@ class OperatorRegistryServiceTest {
                 registerRequest("https://registry.example", "prod:one"),
                 "operator");
 
-        assertThat(registered.lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.status().lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.created()).isTrue();
+        assertThat(registered.leaderboardEntry().rowId())
+                .isEqualTo("dep_0123456789abcdef0123456789abcdef");
         assertThat(realProperties.isOperatorRegistrationConfirmed()).isFalse();
 
         ArgumentCaptor<RegistryProperties> inspections =
@@ -389,7 +422,7 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void disconnectPreservesDeploymentCodeAndDisablesRetry() {
+    void disconnectDeactivatesRegistryBeforeLocalDisableAndRemovesClaimedGroup() {
         configureLiveDemo();
         when(operations.inspect(any())).thenReturn(registryInspection());
         when(operations.inspectNodeIdentity(any()))
@@ -398,6 +431,21 @@ class OperatorRegistryServiceTest {
                 .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
         when(operations.initializeNodeIdentity(any())).thenReturn(new NodeIdentity(NODE_FINGERPRINT));
         when(operations.synchronize(any())).thenReturn(enrollmentOutcome());
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenReturn(deactivationOutcome());
+        when(networkOperations.leaderboard(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(),
+                        null));
         OperatorRegistryService service = service();
         var inspection = service.inspect(
                 new RegistryInspectRequestDto(
@@ -411,19 +459,160 @@ class OperatorRegistryServiceTest {
                         configured.selection().registryIdentity().registryScope()),
                 "operator-demo-dev");
 
+        clearInvocations(
+                repository,
+                operations,
+                networkOperations,
+                claimSubmissionRepository);
         var disconnected = service.disconnect("operator-demo-dev");
 
-        assertThat(disconnected.lifecycle()).isEqualTo("DISABLED");
-        assertThat(disconnected.enabled()).isFalse();
-        assertThat(disconnected.enrollment().deploymentCode())
-                .isEqualTo(registered.enrollment().deploymentCode());
+        assertThat(disconnected.status().lifecycle())
+                .isEqualTo("UNCONFIGURED");
+        assertThat(disconnected.status().enabled()).isFalse();
+        assertThat(disconnected.status().selection()).isNull();
+        assertThat(disconnected.status().enrollment()).isNull();
+        assertThat(disconnected.status().nodeIdentity().state())
+                .isEqualTo("READY");
+        assertThat(disconnected.removedLeaderboardEntryIds())
+                .containsExactly(
+                        "opg_0123456789abcdef0123456789abcdef",
+                        registered.status().enrollment().deploymentCode());
+        assertThat(disconnected.leaderboardEntry()).isNull();
+        ArgumentCaptor<ActionCommand> command =
+                ArgumentCaptor.forClass(ActionCommand.class);
+        verify(networkOperations).apply(any(), command.capture());
+        assertThat(command.getValue().action()).isEqualTo(
+                RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT);
+        InOrder committedOrder = inOrder(
+                networkOperations,
+                operations,
+                repository);
+        committedOrder.verify(networkOperations).claimStatus(any());
+        committedOrder.verify(networkOperations).apply(any(), any());
+        committedOrder.verify(networkOperations).leaderboard(
+                any(),
+                any(),
+                any(),
+                any(),
+                any());
+        committedOrder.verify(operations).archiveActiveBinding(
+                any(),
+                any());
+        committedOrder.verify(repository).save(any());
+        verify(claimSubmissionRepository).deleteById(
+                OperatorClaimSubmissionSnapshot.SINGLETON_ID);
         assertThatThrownBy(() -> service.retry("operator-demo-dev"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("409 CONFLICT");
     }
 
     @Test
-    void sameSignedRegistryCanMoveToANewBaseUrlFromTheRegisterAction() {
+    void disconnectReturnsCanonicalClaimedGroupWhenOtherDeploymentsRemain() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenReturn(deactivationOutcome());
+        LeaderboardRow remainingGroup = claimedGroupRow(1L);
+        when(networkOperations.leaderboard(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(remainingGroup),
+                        null));
+        OperatorRegistryService service = service();
+
+        var disconnected = service.disconnect("operator-demo-dev");
+
+        assertThat(disconnected.leaderboardEntry().rowId())
+                .isEqualTo(remainingGroup.rowId());
+        assertThat(disconnected.leaderboardEntry().deploymentCount())
+                .isEqualTo(1L);
+        assertThat(disconnected.removedLeaderboardEntryIds())
+                .containsExactly(
+                        "dep_0123456789abcdef0123456789abcdef");
+    }
+
+    @Test
+    void failedRemoteDeactivationLeavesLocalConnectionAndClaimSnapshotIntact() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenThrow(new IllegalStateException(
+                        "registry unavailable"));
+        OperatorRegistryService service = service();
+        clearInvocations(repository, claimSubmissionRepository);
+
+        assertThatThrownBy(() ->
+                        service.disconnect("operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining(
+                        "local registry connection remains enabled");
+
+        assertThat(stored.get().getEnabled()).isTrue();
+        assertThat(stored.get().getLifecycle())
+                .isEqualTo("REGISTERED");
+        verify(repository, never()).save(any());
+        verify(operations, never()).archiveActiveBinding(any(), any());
+        verify(claimSubmissionRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void localArchiveFailureRetainsTheCurrentBindingForRetry() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenReturn(deactivationOutcome());
+        when(networkOperations.leaderboard(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(),
+                        null));
+        when(operations.archiveActiveBinding(any(), any()))
+                .thenThrow(new IllegalStateException(
+                        "filesystem unavailable"));
+        OperatorRegistryService service = service();
+        clearInvocations(repository, claimSubmissionRepository);
+
+        assertThatThrownBy(() ->
+                        service.disconnect("operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining(
+                        "active selection was retained for retry");
+
+        assertThat(stored.get().getEnabled()).isTrue();
+        assertThat(stored.get().getLifecycle())
+                .isEqualTo("REGISTERED");
+        assertThat(stored.get().getSelection()).isNotNull();
+        assertThat(stored.get().getEnrollment()).isNotNull();
+        verify(repository, never()).save(any());
+        verify(claimSubmissionRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void configuredButUnregisteredSelectionCanMoveToANewBaseUrl() {
         configureLiveDemo();
         when(operations.inspect(any())).thenAnswer(invocation -> {
             RegistryProperties properties = invocation.getArgument(0);
@@ -449,29 +638,121 @@ class OperatorRegistryServiceTest {
                 registerRequest("http://moved-registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
 
-        assertThat(moved.lifecycle()).isEqualTo("REGISTERED");
-        assertThat(moved.selection().baseUrl()).isEqualTo("http://moved-registry:8080");
+        assertThat(moved.status().lifecycle()).isEqualTo("REGISTERED");
+        assertThat(moved.status().selection().baseUrl())
+                .isEqualTo("http://moved-registry:8080");
     }
 
     @Test
-    void differentSignedRegistryRequiresCentralUnregisterBeforeSelectionChanges() {
+    void registeredBindingCannotMoveEvenWhenTheNewUrlUsesTheSameIdentity() {
         configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspect(any())).thenAnswer(invocation -> {
+            RegistryProperties properties = invocation.getArgument(0);
+            return registryInspection(
+                    properties.getBaseUrl(),
+                    "demo:local-registry",
+                    REGISTRY_FINGERPRINT);
+        });
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        OperatorRegistryService service = service();
+
+        assertThatThrownBy(() -> service.register(
+                registerRequest(
+                        "http://moved-registry:8080",
+                        "demo:local-registry"),
+                "operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("EXPLICIT_DISCONNECT_REQUIRED");
+
+        assertThat(stored.get().getSelection().getBaseUrl())
+                .isEqualTo("http://registry:8080");
+        verify(operations, never()).synchronize(any());
+    }
+
+    @Test
+    void signedDisconnectAllowsExplicitRegistrationAtADifferentRegistry() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenReturn(deactivationOutcome());
+        when(networkOperations.leaderboard(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(),
+                        null));
+        String nextFingerprint =
+                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+        when(operations.inspect(any()))
+                .thenReturn(registryInspection(
+                        "http://another-registry:8080",
+                        "demo:another-registry",
+                        nextFingerprint));
+        when(operations.synchronize(any()))
+                .thenReturn(new EnrollmentOutcome(
+                        "dep_ffffffffffffffffffffffffffffffff",
+                        "batch_ffffffffffffffffffffffffffffffff",
+                        NOW.plusSeconds(2).toString(),
+                        1L,
+                        false));
+        OperatorRegistryService service = service();
+
+        var disconnected = service.disconnect(
+                "operator-demo-dev");
+        var registered = service.register(
+                registerRequest(
+                        "http://another-registry:8080",
+                        "demo:another-registry"),
+                "operator-demo-dev");
+
+        assertThat(disconnected.status().selection()).isNull();
+        assertThat(disconnected.status().enrollment()).isNull();
+        assertThat(disconnected.status().nodeIdentity().initializedAt())
+                .isEqualTo(NOW.toString());
+        assertThat(registered.status().selection().registryIdentity()
+                        .registryScope())
+                .isEqualTo("demo:another-registry");
+        assertThat(registered.status().enrollment().deploymentCode())
+                .isEqualTo("dep_ffffffffffffffffffffffffffffffff");
+        assertThat(registered.status().nodeIdentity().initializedAt())
+                .isEqualTo(NOW.toString());
+        ArgumentCaptor<BindingArchiveRequest> archive =
+                ArgumentCaptor.forClass(BindingArchiveRequest.class);
+        verify(operations).archiveActiveBinding(any(), archive.capture());
+        assertThat(archive.getValue().registryScope())
+                .isEqualTo("demo:local-registry");
+        assertThat(archive.getValue().deploymentId())
+                .isEqualTo("dep_0123456789abcdef0123456789abcdef");
+        assertThat(archive.getValue().deactivationReceipt().action())
+                .isEqualTo(
+                        RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT);
+    }
+
+    @Test
+    void differentSignedRegistryRequiresSignedDisconnectBeforeSelectionChanges() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
         String otherFingerprint =
                 "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
         when(operations.inspect(any()))
-                .thenReturn(registryInspection())
-                .thenReturn(registryInspection())
                 .thenReturn(registryInspection(
                         "http://another-registry:8080",
                         "demo:another-registry",
                         otherFingerprint));
-        when(operations.inspectNodeIdentity(any())).thenReturn(new NodeStatus("MISSING", null));
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
         OperatorRegistryService service = service();
-        var firstInspection =
-                service.inspect(new RegistryInspectRequestDto(
-                        "http://registry:8080",
-                        "demo:local-registry"), "operator-demo-dev");
-        service.confirm(firstInspection.inspectionToken(), "operator-demo-dev");
 
         assertThatThrownBy(() -> service.register(
                 registerRequest(
@@ -479,7 +760,7 @@ class OperatorRegistryServiceTest {
                         "demo:another-registry"),
                 "operator-demo-dev"))
                 .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("EXPLICIT_UNREGISTER_REQUIRED");
+                .hasMessageContaining("EXPLICIT_DISCONNECT_REQUIRED");
         assertThat(stored.get().getSelection().getRegistryScope())
                 .isEqualTo("demo:local-registry");
     }
@@ -499,8 +780,9 @@ class OperatorRegistryServiceTest {
                 registerRequest("http://registry:8080", "demo:local-registry"),
                 "operator-demo-dev");
 
-        assertThat(registered.lifecycle()).isEqualTo("REGISTERED");
-        assertThat(registered.selection().baseUrl()).isEqualTo("http://registry:8080");
+        assertThat(registered.status().lifecycle()).isEqualTo("REGISTERED");
+        assertThat(registered.status().selection().baseUrl())
+                .isEqualTo("http://registry:8080");
         assertThat(stored.get().getRegistrationRequest()).isNotNull();
     }
 
@@ -540,8 +822,10 @@ class OperatorRegistryServiceTest {
                 realProperties,
                 demoProperties,
                 operations,
+                networkOperations,
+                claimSubmissionRepository,
                 endpointService,
-                new OperatorRegistryMapper(),
+                new OperatorRegistryMapper(new OperatorNetworkMapper()),
                 Clock.fixed(NOW, ZoneOffset.UTC),
                 new SecureRandom());
     }
@@ -576,7 +860,107 @@ class OperatorRegistryServiceTest {
                 "dep_0123456789abcdef0123456789abcdef",
                 "batch_0123456789abcdef0123456789abcdef",
                 NOW.plusSeconds(1).toString(),
-                1L);
+                1L,
+                false);
+    }
+
+    private OperatorRegistrySettings registeredSettings() {
+        OperatorRegistrySettings settings =
+                new OperatorRegistrySettings();
+        settings.setLifecycle("REGISTERED");
+        settings.setEnabled(true);
+        OperatorRegistrySettings.RegistrySelection selection =
+                new OperatorRegistrySettings.RegistrySelection();
+        selection.setBaseUrl("http://registry:8080");
+        selection.setProtocolVersion(RegistryProtocol.PROTOCOL_VERSION);
+        selection.setRegistryScope("demo:local-registry");
+        selection.setRegistryKeyId("rkey_test");
+        selection.setRegistryPublicKeyFingerprint(
+                REGISTRY_FINGERPRINT);
+        settings.setSelection(selection);
+        OperatorRegistrySettings.NodeIdentity node =
+                new OperatorRegistrySettings.NodeIdentity();
+        node.setState("READY");
+        node.setPublicKeyFingerprint(NODE_FINGERPRINT);
+        node.setInitializedAt(NOW.toString());
+        settings.setNodeIdentity(node);
+        OperatorRegistrySettings.EnrollmentSummary enrollment =
+                new OperatorRegistrySettings.EnrollmentSummary();
+        enrollment.setDeploymentCode(
+                "dep_0123456789abcdef0123456789abcdef");
+        enrollment.setCompletedAt(NOW.toString());
+        settings.setEnrollment(enrollment);
+        return settings;
+    }
+
+    private ClaimStatus claimStatus() {
+        return new ClaimStatus(
+                true,
+                NOW.toString(),
+                "Example Cooperative",
+                null,
+                "opg_0123456789abcdef0123456789abcdef",
+                null,
+                "1",
+                "10",
+                "AVAILABLE",
+                null,
+                "PENDING_REVIEW",
+                NOW.toString(),
+                "Example Cooperative",
+                "inactive");
+    }
+
+    private ActionOutcome deactivationOutcome() {
+        String deploymentId =
+                "dep_0123456789abcdef0123456789abcdef";
+        OperatorActionReceipt receipt = new OperatorActionReceipt(
+                2L,
+                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "opa_0123456789abcdef0123456789abcdef",
+                deploymentId,
+                deploymentId,
+                null,
+                RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                NOW.toString(),
+                RegistryProtocol.OPERATOR_CLAIM_STATE_WITHDRAWN,
+                "opg_0123456789abcdef0123456789abcdef",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "demo:local-registry",
+                "rkey_test",
+                "signature");
+        return new ActionOutcome(
+                new OperatorActionResponse(
+                        RegistryProtocol.PROTOCOL_VERSION,
+                        "demo:local-registry",
+                        false,
+                        receipt),
+                "deactivate_test",
+                null,
+                null);
+    }
+
+    private LeaderboardRow claimedGroupRow(long deploymentCount) {
+        return new LeaderboardRow(
+                "opg_0123456789abcdef0123456789abcdef",
+                "claimed",
+                "opg_0123456789abcdef0123456789abcdef",
+                "Example Cooperative",
+                "",
+                "pending-review",
+                "inactive",
+                deploymentCount,
+                "10",
+                "1",
+                "1",
+                "10");
     }
 
     private RegistryRegisterRequestDto registerRequest(String baseUrl, String registryScope) {

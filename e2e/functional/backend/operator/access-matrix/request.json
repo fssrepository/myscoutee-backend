@@ -1,0 +1,13 @@
+{
+  "name": "operator authority matrix across every controller",
+  "group": "operator",
+  "order": 1280,
+  "method": "GET",
+  "path": "/api/operator/configuration",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

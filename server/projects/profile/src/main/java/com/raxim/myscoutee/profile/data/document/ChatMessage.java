@@ -23,7 +23,8 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
         @CompoundIndex(name = "chat_message_reader_date", def = "{'messageReadByUserIds': 1, 'sentAtIso': -1}"),
         @CompoundIndex(name = "chat_message_reaction_date", def = "{'messageReactionUserIds': 1, 'sentAtIso': -1}"),
         @CompoundIndex(name = "chat_message_attachment_date", def = "{'messageAttachmentKeys': 1, 'sentAtIso': -1}"),
-        @CompoundIndex(name = "chat_poll_voter_date", def = "{'pollVoterUserIds': 1, 'sentAtIso': -1}")
+        @CompoundIndex(name = "chat_poll_voter_date", def = "{'pollVoterUserIds': 1, 'sentAtIso': -1}"),
+        @CompoundIndex(name = "chat_message_qmau_window", def = "{'sentAtIso': 1, 'senderAvatar.id': 1, 'deletedAtIso': 1}")
 })
 public class ChatMessage {
     @MongoId(FieldType.STRING)

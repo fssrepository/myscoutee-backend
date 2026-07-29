@@ -1,0 +1,14 @@
+{
+  "name": "operator Firebase capability validation does not mutate Firebase configuration",
+  "group": "operator",
+  "order": 1290,
+  "method": "POST",
+  "path": "/api/operator/configuration/tests",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "body": {},
+  "expectedStatus": 400,
+  "maxMs": 8000
+}

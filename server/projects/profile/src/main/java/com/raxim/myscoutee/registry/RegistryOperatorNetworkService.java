@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
 import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
 import com.raxim.myscoutee.registry.RegistryLocalStore.OperatorActionJournalEntry;
+import com.raxim.myscoutee.registry.RegistryLocalStore.OperatorClaimStatusEvidence;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeployment;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeploymentPage;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
@@ -60,6 +62,44 @@ public final class RegistryOperatorNetworkService {
             Pattern.compile("[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?");
     private static final Pattern UPDATE_CHANNEL =
             Pattern.compile("^[a-z][a-z0-9._-]{0,31}$");
+    private static final Set<String> LEADERBOARD_CURSOR_V2_FIELDS = Set.of(
+            "version",
+            "kind",
+            "view",
+            "snapshot_id",
+            "from_period",
+            "through_period",
+            "through_ledger_index",
+            "through_audit_index",
+            "through_review_index",
+            "through_eligibility_index",
+            "ledger_head_hash",
+            "audit_head_hash",
+            "review_head_hash",
+            "eligibility_head_hash",
+            "created_at",
+            "after_weight",
+            "after_id");
+    private static final Set<String> LEADERBOARD_CURSOR_V3_FIELDS = Set.of(
+            "version",
+            "kind",
+            "view",
+            "snapshot_id",
+            "from_period",
+            "through_period",
+            "through_ledger_index",
+            "through_audit_index",
+            "through_review_index",
+            "through_eligibility_index",
+            "through_transfer_event_index",
+            "ledger_head_hash",
+            "audit_head_hash",
+            "review_head_hash",
+            "eligibility_head_hash",
+            "transfer_event_head_hash",
+            "created_at",
+            "after_weight",
+            "after_id");
     private static final Set<String> ACTIONS = Set.of(
             RegistryProtocol.OPERATOR_ACTION_CLAIM,
             RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
@@ -154,6 +194,14 @@ public final class RegistryOperatorNetworkService {
                     command,
                     clientTokenHash,
                     payloadHash);
+        } else if (Set.of(
+                        RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                        RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT)
+                .contains(command.action())) {
+            idempotencyKey = deterministicLifecycleActionIdempotencyKey(
+                    trusted,
+                    command.action(),
+                    payloadHash);
         } else {
             idempotencyKey = RegistryProtocol.randomToken("operator_", secureRandom);
         }
@@ -224,22 +272,18 @@ public final class RegistryOperatorNetworkService {
         String activeMatchingKey = "";
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
-            switch (entry.action()) {
-                case RegistryProtocol.OPERATOR_ACTION_CLAIM -> {
-                    generationBoundary = entry.receipt().auditHash();
-                    activeMatchingKey = RegistryProtocol.hashEquals(
-                                    payloadHash,
-                                    entry.payloadHash())
-                            ? entry.idempotencyKey()
-                            : "";
-                }
-                case RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM -> {
-                    generationBoundary = entry.receipt().auditHash();
-                    activeMatchingKey = "";
-                }
-                default -> {
-                    // Non-ownership actions do not begin a new claim generation.
-                }
+            if (isClaimVerificationBoundary(entry)) {
+                generationBoundary = entry.receipt().auditHash();
+                activeMatchingKey = isStructuredClaim(entry)
+                                && RegistryProtocol.hashEquals(
+                                        payloadHash,
+                                        entry.payloadHash())
+                        ? entry.idempotencyKey()
+                        : "";
+            } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(
+                    entry.action())) {
+                generationBoundary = entry.receipt().auditHash();
+                activeMatchingKey = "";
             }
         }
         if (StringUtils.hasText(activeMatchingKey)) {
@@ -275,7 +319,7 @@ public final class RegistryOperatorNetworkService {
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
             if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(command.action())) {
-                if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())) {
+                if (isClaimVerificationBoundary(entry)) {
                     activeWithdrawalKey = "";
                 } else if (RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM.equals(entry.action())
                         && RegistryProtocol.hashEquals(payloadHash, entry.payloadHash())) {
@@ -312,11 +356,55 @@ public final class RegistryOperatorNetworkService {
         return prefix + digest.substring("sha256:".length());
     }
 
+    private String deterministicLifecycleActionIdempotencyKey(
+            TrustedDeployment trusted,
+            String action,
+            String payloadHash) {
+        String generationBoundary = RegistryProtocol.ZERO_HASH;
+        String activeMatchingKey = "";
+        for (OperatorActionJournalEntry entry :
+                localStore.loadOperatorActionJournal()) {
+            verifyJournalEntry(trusted, entry);
+            if (!Set.of(
+                            RegistryProtocol
+                                    .OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
+                            RegistryProtocol
+                                    .OPERATOR_ACTION_REACTIVATE_DEPLOYMENT)
+                    .contains(entry.action())) {
+                continue;
+            }
+            generationBoundary = entry.receipt().auditHash();
+            activeMatchingKey = action.equals(entry.action())
+                            && RegistryProtocol.hashEquals(
+                                    payloadHash,
+                                    entry.payloadHash())
+                    ? entry.idempotencyKey()
+                    : "";
+        }
+        if (StringUtils.hasText(activeMatchingKey)) {
+            return RegistryProtocol.requireToken(
+                    activeMatchingKey,
+                    "idempotency_key");
+        }
+        String digest = RegistryProtocol.sha256(RegistryProtocol.canonical(
+                "myscoutee-registry-operator-lifecycle-idempotency-v1",
+                trusted.state().registryScope(),
+                trusted.state().deploymentId(),
+                action,
+                generationBoundary,
+                payloadHash));
+        String prefix = RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT
+                        .equals(action)
+                ? "deactivate_"
+                : "reactivate_";
+        return prefix + digest.substring("sha256:".length());
+    }
+
     private String latestClaimGenerationReference(TrustedDeployment trusted) {
         OperatorActionJournalEntry latestClaim = null;
         for (OperatorActionJournalEntry entry : localStore.loadOperatorActionJournal()) {
             verifyJournalEntry(trusted, entry);
-            if (RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())) {
+            if (isClaimVerificationBoundary(entry)) {
                 latestClaim = entry;
             }
         }
@@ -405,8 +493,8 @@ public final class RegistryOperatorNetworkService {
         String ownClaimGroupId = "";
         String currentGroupId = "";
         String activeLinkId = "";
-        OperatorActionJournalEntry structuredClaim = null;
-        boolean structuredClaimLocallyWithdrawn = false;
+        OperatorActionJournalEntry claimVerificationBoundary = null;
+        boolean claimVerificationLocallyWithdrawn = false;
         List<OperatorActionJournalEntry> journal =
                 localStore.loadOperatorActionJournal();
         for (OperatorActionJournalEntry entry : journal) {
@@ -417,12 +505,12 @@ public final class RegistryOperatorNetworkService {
                     claimed = true;
                     claimedAt = receipt.acceptedAt();
                     if (isStructuredClaim(entry)) {
-                        structuredClaim = entry;
-                        structuredClaimLocallyWithdrawn = false;
+                        claimVerificationBoundary = entry;
+                        claimVerificationLocallyWithdrawn = false;
                         operatorName = safeText(entry.legalName());
                     } else {
-                        structuredClaim = null;
-                        structuredClaimLocallyWithdrawn = false;
+                        claimVerificationBoundary = null;
+                        claimVerificationLocallyWithdrawn = false;
                         operatorName = safeText(entry.operatorName());
                     }
                     operatorAvatarUrl = safeText(entry.operatorAvatarUrl());
@@ -435,14 +523,20 @@ public final class RegistryOperatorNetworkService {
                     claimedAt = "";
                     currentGroupId = safeText(receipt.groupId());
                     activeLinkId = "";
-                    if (structuredClaim != null) {
-                        structuredClaimLocallyWithdrawn = true;
+                    if (claimVerificationBoundary != null) {
+                        claimVerificationLocallyWithdrawn = true;
                     }
                 }
                 case RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN -> {
                     claimed = true;
                     currentGroupId = safeText(receipt.groupId());
                     activeLinkId = safeText(receipt.linkId());
+                    if (isTokenDerivedClaim(entry)) {
+                        claimedAt = receipt.acceptedAt();
+                        claimVerificationBoundary = entry;
+                        claimVerificationLocallyWithdrawn = false;
+                        ownClaimGroupId = currentGroupId;
+                    }
                 }
                 case RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK -> {
                     if (trusted.state().deploymentId().equals(receipt.subjectDeploymentId())) {
@@ -450,36 +544,60 @@ public final class RegistryOperatorNetworkService {
                         activeLinkId = "";
                     }
                 }
+                case RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT -> {
+                    claimed = false;
+                    claimedAt = "";
+                    currentGroupId = "";
+                    activeLinkId = "";
+                    if (claimVerificationBoundary != null) {
+                        claimVerificationLocallyWithdrawn = true;
+                    }
+                }
                 default -> {
-                    // Token and deployment-lifecycle actions do not change claim ownership.
+                    // Token issuance/revocation and reactivation do not restore
+                    // or otherwise change claim ownership.
                 }
             }
         }
         String verificationStatus = claimed ? "VERIFIED" : "NOT_SUBMITTED";
         String verificationSubmittedAt = "";
         String legalName = "";
+        String eligibilityStatus = null;
         String verificationCapability = "AVAILABLE";
         String verificationUnavailableReason = null;
-        if (structuredClaim != null) {
-            verificationStatus = structuredClaimLocallyWithdrawn
+        if (claimVerificationBoundary != null) {
+            verificationStatus = claimVerificationLocallyWithdrawn
                     ? RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                     : RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW;
-            verificationSubmittedAt = structuredClaim.receipt().acceptedAt();
-            legalName = safeText(structuredClaim.legalName());
-            operatorName = legalName;
+            verificationSubmittedAt =
+                    claimVerificationBoundary.receipt().acceptedAt();
+            if (isStructuredClaim(claimVerificationBoundary)) {
+                legalName = safeText(claimVerificationBoundary.legalName());
+                operatorName = legalName;
+            }
             OperatorClaimStatusReceipt previousStatus =
                     loadVerifiedClaimStatusEvidence(trusted, journal);
             if (previousStatus != null) {
-                verificationStatus = previousStatus.verificationStatus();
+                if (!claimVerificationLocallyWithdrawn
+                        || RegistryProtocol
+                                .OPERATOR_VERIFICATION_STATUS_WITHDRAWN
+                                .equals(previousStatus
+                                        .verificationStatus())) {
+                    verificationStatus =
+                            previousStatus.verificationStatus();
+                }
                 verificationSubmittedAt = previousStatus.submittedAt();
                 legalName = previousStatus.legalName();
                 operatorName = legalName;
+                eligibilityStatus = previousStatus.eligibilityStatus();
                 if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         .equals(verificationStatus)) {
                     claimed = false;
                     claimedAt = "";
                     currentGroupId = "";
                     activeLinkId = "";
+                    eligibilityStatus =
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE;
                 }
             }
             try {
@@ -489,12 +607,12 @@ public final class RegistryOperatorNetworkService {
                 try {
                     registryStatus = verifyClaimStatus(
                             trusted,
-                            structuredClaim,
+                            claimVerificationBoundary,
                             response);
                     requireMonotonicClaimStatus(
                             previousStatus,
                             registryStatus);
-                    if (structuredClaimLocallyWithdrawn
+                    if (claimVerificationLocallyWithdrawn
                             && !RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                                     .equals(registryStatus.verificationStatus())) {
                         throw new IllegalArgumentException(
@@ -510,6 +628,7 @@ public final class RegistryOperatorNetworkService {
                 verificationSubmittedAt = registryStatus.submittedAt();
                 legalName = registryStatus.legalName();
                 operatorName = legalName;
+                eligibilityStatus = registryStatus.eligibilityStatus();
                 if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         .equals(verificationStatus)) {
                     // A signed withdrawn state is also the recovery signal when
@@ -519,6 +638,8 @@ public final class RegistryOperatorNetworkService {
                     claimedAt = "";
                     currentGroupId = "";
                     activeLinkId = "";
+                    eligibilityStatus =
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE;
                 }
             } catch (RegistryHttpClient.RegistryHttpException exception) {
                 if (!isUnsupportedClaimStatusEndpoint(exception)) {
@@ -591,7 +712,8 @@ public final class RegistryOperatorNetworkService {
                 verificationUnavailableReason,
                 verificationStatus,
                 emptyToNull(verificationSubmittedAt),
-                emptyToNull(legalName));
+                emptyToNull(legalName),
+                emptyToNull(eligibilityStatus));
     }
 
     public AnnouncementOutcome announcements(
@@ -944,6 +1066,14 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Structured operator claim receipt is not pending review or has no group.");
         }
+        if (RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT.equals(
+                        request.action())
+                && (StringUtils.hasText(receipt.groupId())
+                        != RegistryProtocol.OPERATOR_CLAIM_STATE_WITHDRAWN
+                                .equals(receipt.claimState()))) {
+            throw new IllegalArgumentException(
+                    "Deployment deactivation receipt has an inconsistent claim withdrawal boundary.");
+        }
         if (StringUtils.hasText(receipt.tokenExpiresAt())) {
             RegistryProtocol.requireUtcTimestamp(receipt.tokenExpiresAt(), "token_expires_at");
         }
@@ -990,6 +1120,18 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry redemption receipt does not match the submitted client token.");
         }
+        if (RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(request.action())
+                && RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                        receipt.claimState())
+                && !StringUtils.hasText(receipt.linkId())
+                && (!trusted.state().deploymentId().equals(
+                                receipt.subjectDeploymentId())
+                        || !StringUtils.hasText(receipt.groupId())
+                        || !StringUtils.hasText(receipt.relatedDeploymentId())
+                        || !StringUtils.hasText(receipt.tokenId()))) {
+            throw new IllegalArgumentException(
+                    "Token-derived claim receipt has an invalid pending-review boundary.");
+        }
     }
 
     private OperatorClaimStatusReceipt verifyClaimStatus(
@@ -1009,6 +1151,21 @@ public final class RegistryOperatorNetworkService {
             TrustedDeployment trusted,
             OperatorActionJournalEntry claim,
             OperatorClaimStatusReceipt status) {
+        return verifyClaimStatusReceipt(trusted, claim, status, false);
+    }
+
+    private OperatorClaimStatusReceipt verifyLegacyClaimStatusReceipt(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry claim,
+            OperatorClaimStatusReceipt status) {
+        return verifyClaimStatusReceipt(trusted, claim, status, true);
+    }
+
+    private OperatorClaimStatusReceipt verifyClaimStatusReceipt(
+            TrustedDeployment trusted,
+            OperatorActionJournalEntry claim,
+            OperatorClaimStatusReceipt status,
+            boolean legacyEvidence) {
         if (status == null) {
             throw new IllegalArgumentException(
                     "Registry operator claim status receipt is missing.");
@@ -1023,9 +1180,11 @@ public final class RegistryOperatorNetworkService {
         requireText(status.legalName(), "legal_name", 160);
         RegistryProtocol.requireUtcTimestamp(status.submittedAt(), "submitted_at");
         RegistryProtocol.requireHash(status.reviewHash(), "review_hash");
-        if (!Set.of(
+        if (status.verificationStatus() == null
+                || !Set.of(
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED,
+                        RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED,
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN)
                 .contains(status.verificationStatus())) {
             throw new IllegalArgumentException(
@@ -1035,12 +1194,15 @@ public final class RegistryOperatorNetworkService {
         if (hasReview) {
             RegistryProtocol.requireOperatorReviewId(status.reviewId());
             if (status.reviewIndex() == null || status.reviewIndex() <= 0L
-                    || RegistryProtocol.ZERO_HASH.equals(status.reviewHash())
-                    || !StringUtils.hasText(status.approvedAt())) {
+                    || RegistryProtocol.ZERO_HASH.equals(status.reviewHash())) {
                 throw new IllegalArgumentException(
                         "Registry operator claim review boundary is incomplete.");
             }
-            RegistryProtocol.requireUtcTimestamp(status.approvedAt(), "approved_at");
+            if (StringUtils.hasText(status.approvedAt())) {
+                RegistryProtocol.requireUtcTimestamp(
+                        status.approvedAt(),
+                        "approved_at");
+            }
         } else if ((status.reviewIndex() != null && status.reviewIndex() != 0L)
                 || !RegistryProtocol.ZERO_HASH.equals(status.reviewHash())
                 || StringUtils.hasText(status.approvedAt())) {
@@ -1049,9 +1211,15 @@ public final class RegistryOperatorNetworkService {
         }
         if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED
                         .equals(status.verificationStatus())
-                && !hasReview) {
+                && (!hasReview || !StringUtils.hasText(status.approvedAt()))) {
             throw new IllegalArgumentException(
                     "Approved operator claim status has no signed review boundary.");
+        }
+        if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED
+                        .equals(status.verificationStatus())
+                && (!hasReview || StringUtils.hasText(status.approvedAt()))) {
+            throw new IllegalArgumentException(
+                    "Rejected operator claim status has an invalid signed review boundary.");
         }
         if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW
                         .equals(status.verificationStatus())
@@ -1059,22 +1227,37 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Pending operator claim status unexpectedly has a review boundary.");
         }
+        if (!isClaimVerificationBoundary(claim)) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim status has no matching durable claim boundary.");
+        }
         OperatorActionReceipt claimReceipt = claim.receipt();
+        boolean structuredClaim = isStructuredClaim(claim);
         if (!trusted.state().deploymentId().equals(status.deploymentId())
                 || !claimReceipt.actionId().equals(status.claimActionId())
                 || !claimReceipt.auditIndex().equals(status.claimAuditIndex())
                 || !claimReceipt.auditHash().equals(status.claimAuditHash())
                 || !claimReceipt.groupId().equals(status.groupId())
-                || !safeText(claim.legalName()).equals(status.legalName())
+                || (structuredClaim
+                        && !safeText(claim.legalName()).equals(
+                                status.legalName()))
                 || !claimReceipt.acceptedAt().equals(status.submittedAt())
                 || !trusted.state().registryScope().equals(status.registryScope())
                 || !trusted.registryKeyId().equals(status.registryKeyId())) {
             throw new IllegalArgumentException(
                     "Registry operator claim status does not match the durable claim receipt.");
         }
+        if (legacyEvidence) {
+            requireLegacyEligibilityBoundaryAbsent(status);
+        } else {
+            verifyClaimEligibilityBoundary(status);
+        }
         if (!RegistryCrypto.verifyBase64(
                 trusted.registryPublicKey(),
-                RegistryProtocol.operatorClaimStatusReceipt(status),
+                legacyEvidence
+                        ? RegistryProtocol.legacyOperatorClaimStatusReceipt(
+                                status)
+                        : RegistryProtocol.operatorClaimStatusReceipt(status),
                 status.signature())) {
             throw new IllegalArgumentException(
                     "Registry operator claim status signature is invalid.");
@@ -1085,14 +1268,15 @@ public final class RegistryOperatorNetworkService {
     private OperatorClaimStatusReceipt loadVerifiedClaimStatusEvidence(
             TrustedDeployment trusted,
             List<OperatorActionJournalEntry> journal) {
-        OperatorClaimStatusReceipt stored =
-                localStore.loadOperatorClaimStatusReceipt().orElse(null);
-        if (stored == null) {
+        OperatorClaimStatusEvidence evidence =
+                localStore.loadOperatorClaimStatusEvidence().orElse(null);
+        if (evidence == null) {
             return null;
         }
+        OperatorClaimStatusReceipt stored = evidence.status();
         OperatorActionJournalEntry storedClaim = null;
         for (OperatorActionJournalEntry entry : journal) {
-            if (isStructuredClaim(entry)
+            if (isClaimVerificationBoundary(entry)
                     && Objects.equals(
                             entry.receipt().actionId(),
                             stored.claimActionId())) {
@@ -1105,11 +1289,93 @@ public final class RegistryOperatorNetworkService {
                     "Durable claim status evidence has no matching local claim receipt.");
         }
         try {
-            return verifyClaimStatusReceipt(trusted, storedClaim, stored);
+            return evidence.schemaVersion() == 1
+                    ? verifyLegacyClaimStatusReceipt(
+                            trusted,
+                            storedClaim,
+                            stored)
+                    : verifyClaimStatusReceipt(
+                            trusted,
+                            storedClaim,
+                            stored);
         } catch (IllegalArgumentException exception) {
             throw new IllegalStateException(
                     "Durable claim status evidence failed cryptographic verification.",
                     exception);
+        }
+    }
+
+    private static void requireLegacyEligibilityBoundaryAbsent(
+            OperatorClaimStatusReceipt status) {
+        if (status.eligibilityStatus() != null
+                || status.eligibilityId() != null
+                || status.eligibilityIndex() != null
+                || status.eligibilityHash() != null) {
+            throw new IllegalArgumentException(
+                    "Legacy operator claim status evidence unexpectedly contains an eligibility boundary.");
+        }
+    }
+
+    private static void verifyClaimEligibilityBoundary(
+            OperatorClaimStatusReceipt status) {
+        if (status.eligibilityStatus() == null
+                || !Set.of(
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE)
+                .contains(status.eligibilityStatus())) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim eligibility status is unsupported.");
+        }
+        RegistryProtocol.requireHash(
+                status.eligibilityHash(),
+                "eligibility_hash");
+        long eligibilityIndex = status.eligibilityIndex() == null
+                ? 0L
+                : status.eligibilityIndex();
+        if (eligibilityIndex < 0L) {
+            throw new IllegalArgumentException(
+                    "eligibility_index must be non-negative.");
+        }
+        boolean hasEligibilityId = status.eligibilityId() != null
+                && !status.eligibilityId().isEmpty();
+        if (hasEligibilityId) {
+            RegistryProtocol.requireOperatorEligibilityId(
+                    status.eligibilityId());
+        }
+        boolean hasEligibilityBoundary = eligibilityIndex > 0L;
+        if (hasEligibilityBoundary != hasEligibilityId
+                || (hasEligibilityBoundary
+                        == RegistryProtocol.ZERO_HASH.equals(
+                                status.eligibilityHash()))) {
+            throw new IllegalArgumentException(
+                    "Registry operator claim eligibility boundary is inconsistent.");
+        }
+
+        boolean approved = RegistryProtocol
+                .OPERATOR_VERIFICATION_STATUS_APPROVED
+                .equals(status.verificationStatus());
+        if (approved
+                && !Set.of(
+                                RegistryProtocol
+                                        .OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                                RegistryProtocol
+                                        .OPERATOR_ELIGIBILITY_STATUS_SUSPENDED)
+                        .contains(status.eligibilityStatus())) {
+            throw new IllegalArgumentException(
+                    "Approved operator claim status has an invalid eligibility state.");
+        }
+        if (!approved
+                && !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                        .equals(status.eligibilityStatus())) {
+            throw new IllegalArgumentException(
+                    "Non-approved operator claim status must be eligibility-inactive.");
+        }
+        if (RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED
+                        .equals(status.eligibilityStatus())
+                && !hasEligibilityBoundary) {
+            throw new IllegalArgumentException(
+                    "Suspended operator claim status has no signed eligibility decision.");
         }
     }
 
@@ -1131,7 +1397,10 @@ public final class RegistryOperatorNetworkService {
         if (!sameClaim) {
             if (incoming.claimAuditIndex() == null
                     || previous.claimAuditIndex() == null
-                    || incoming.claimAuditIndex() <= previous.claimAuditIndex()) {
+                    || incoming.claimAuditIndex() <= previous.claimAuditIndex()
+                    || Objects.equals(
+                            incoming.claimActionId(),
+                            previous.claimActionId())) {
                 throw new IllegalArgumentException(
                         "Registry operator claim status rolled back to an older claim generation.");
             }
@@ -1155,6 +1424,45 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry operator claim review boundary changed or rolled back.");
         }
+        if (previous.eligibilityStatus() != null) {
+            long previousEligibilityIndex =
+                    previous.eligibilityIndex() == null
+                            ? 0L
+                            : previous.eligibilityIndex();
+            long incomingEligibilityIndex =
+                    incoming.eligibilityIndex() == null
+                            ? 0L
+                            : incoming.eligibilityIndex();
+            if (incomingEligibilityIndex < previousEligibilityIndex) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim eligibility boundary rolled back.");
+            }
+            if (incomingEligibilityIndex == previousEligibilityIndex
+                    && (!Objects.equals(
+                                    previous.eligibilityId(),
+                                    incoming.eligibilityId())
+                            || !Objects.equals(
+                                    previous.eligibilityHash(),
+                                    incoming.eligibilityHash()))) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim eligibility boundary changed at the same index.");
+            }
+            boolean approvalRemainsCurrent = RegistryProtocol
+                            .OPERATOR_VERIFICATION_STATUS_APPROVED
+                            .equals(previous.verificationStatus())
+                    && RegistryProtocol
+                            .OPERATOR_VERIFICATION_STATUS_APPROVED
+                            .equals(incoming.verificationStatus());
+            if (approvalRemainsCurrent
+                    && incomingEligibilityIndex
+                            == previousEligibilityIndex
+                    && !Objects.equals(
+                            previous.eligibilityStatus(),
+                            incoming.eligibilityStatus())) {
+                throw new IllegalArgumentException(
+                        "Registry operator claim eligibility state changed without a newer decision.");
+            }
+        }
         if (RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
                         .equals(previous.verificationStatus())
                 && (!RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN
@@ -1169,6 +1477,7 @@ public final class RegistryOperatorNetworkService {
         return switch (status) {
             case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW -> 0;
             case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED -> 1;
+            case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED -> 1;
             case RegistryProtocol.OPERATOR_VERIFICATION_STATUS_WITHDRAWN -> 2;
             default -> throw new IllegalArgumentException(
                     "Registry operator claim verification status is unsupported.");
@@ -1206,6 +1515,7 @@ public final class RegistryOperatorNetworkService {
             RegistryProtocol.requireCanonical(row.label(), "leaderboard label");
             requireCanonicalOptional(row.avatarUrl(), "leaderboard avatar_url");
             RegistryProtocol.requireCanonical(row.claimState(), "leaderboard claim_state");
+            requireLeaderboardRowEligibility(expectedView, row);
             if (row.deploymentCount() == null || row.deploymentCount() < 0L) {
                 throw new IllegalArgumentException("leaderboard deployment_count must be non-negative.");
             }
@@ -1240,10 +1550,13 @@ public final class RegistryOperatorNetworkService {
                 throw new IllegalArgumentException("Registry leaderboard deployment is missing.");
             }
             RegistryProtocol.requireDeploymentId(deployment.deploymentId());
-            if (StringUtils.hasText(deployment.groupId())) {
-                RegistryProtocol.requireOperatorGroupId(deployment.groupId());
+            if (!expectedGroupId.equals(deployment.groupId())) {
+                throw new IllegalArgumentException(
+                        "Registry leaderboard deployment has a mismatched group.");
             }
+            RegistryProtocol.requireOperatorGroupId(deployment.groupId());
             RegistryProtocol.requireCanonical(deployment.claimState(), "leaderboard claim_state");
+            requireLeaderboardDeploymentEligibility(deployment);
             RegistryProtocol.requireCanonical(
                     deployment.membershipState(),
                     "leaderboard membership_state");
@@ -1265,6 +1578,71 @@ public final class RegistryOperatorNetworkService {
                 page.snapshot());
     }
 
+    private static void requireLeaderboardRowEligibility(
+            String view,
+            LeaderboardRow row) {
+        String eligibilityStatus = row.eligibilityStatus();
+        if (eligibilityStatus == null
+                || !Set.of(
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_PARTIALLY_SUSPENDED)
+                .contains(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry leaderboard row eligibility status is unsupported.");
+        }
+        if ("founder".equals(view)
+                && !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE
+                        .equals(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry founder row must be eligibility-active.");
+        }
+        if ("unclaimed".equals(view)
+                && !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                        .equals(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry unclaimed row must be eligibility-inactive.");
+        }
+    }
+
+    private static void requireLeaderboardDeploymentEligibility(
+            LeaderboardDeployment deployment) {
+        String eligibilityStatus = deployment.eligibilityStatus();
+        if (eligibilityStatus == null
+                || !Set.of(
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE)
+                .contains(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry leaderboard deployment eligibility status is unsupported.");
+        }
+        if ("claimed".equals(deployment.claimState())) {
+            if (!RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE
+                    .equals(eligibilityStatus)) {
+                throw new IllegalArgumentException(
+                        "Legacy claimed deployment must be eligibility-active.");
+            }
+            return;
+        }
+        if ("approved".equals(deployment.claimState())) {
+            if (!Set.of(
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED)
+                    .contains(eligibilityStatus)) {
+                throw new IllegalArgumentException(
+                        "Approved deployment has an invalid eligibility status.");
+            }
+            return;
+        }
+        if (!RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                .equals(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Non-approved deployment must be eligibility-inactive.");
+        }
+    }
+
     private void verifySnapshot(TrustedDeployment trusted, LeaderboardSnapshot snapshot) {
         RegistryProtocol.requireSnapshotId(snapshot.snapshotId());
         if (!RegistryProtocol.LEADERBOARD_FORMULA_VERSION.equals(snapshot.formulaVersion())
@@ -1274,8 +1652,34 @@ public final class RegistryOperatorNetworkService {
         RegistryProtocol.requirePeriod(snapshot.throughPeriod());
         requireNonNegative(snapshot.throughLedgerIndex(), "through_ledger_index");
         requireNonNegative(snapshot.throughAuditIndex(), "through_audit_index");
+        requireNonNegative(snapshot.throughReviewIndex(), "through_review_index");
+        requireNonNegative(
+                snapshot.throughEligibilityIndex(),
+                "through_eligibility_index");
+        requireNonNegative(
+                snapshot.throughTransferEventIndex(),
+                "through_transfer_event_index");
         RegistryProtocol.requireHash(snapshot.ledgerHeadHash(), "ledger_head_hash");
         RegistryProtocol.requireHash(snapshot.auditHeadHash(), "audit_head_hash");
+        RegistryProtocol.requireHash(snapshot.reviewHeadHash(), "review_head_hash");
+        RegistryProtocol.requireHash(
+                snapshot.eligibilityHeadHash(),
+                "eligibility_head_hash");
+        RegistryProtocol.requireHash(
+                snapshot.transferEventHeadHash(),
+                "transfer_event_head_hash");
+        requireHeadBoundary(
+                snapshot.throughReviewIndex(),
+                snapshot.reviewHeadHash(),
+                "review");
+        requireHeadBoundary(
+                snapshot.throughEligibilityIndex(),
+                snapshot.eligibilityHeadHash(),
+                "eligibility");
+        requireHeadBoundary(
+                snapshot.throughTransferEventIndex(),
+                snapshot.transferEventHeadHash(),
+                "transfer event");
         requireRational(
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
@@ -1309,6 +1713,18 @@ public final class RegistryOperatorNetworkService {
                 RegistryProtocol.leaderboardSnapshotReceipt(snapshot),
                 snapshot.signature())) {
             throw new IllegalArgumentException("Registry leaderboard snapshot signature is invalid.");
+        }
+    }
+
+    private static void requireHeadBoundary(
+            Long index,
+            String hash,
+            String fieldName) {
+        boolean hasEntries = index != null && index > 0L;
+        boolean hasNonZeroHash = !RegistryProtocol.ZERO_HASH.equals(hash);
+        if (hasEntries != hasNonZeroHash) {
+            throw new IllegalArgumentException(
+                    fieldName + " index and head hash boundary is inconsistent.");
         }
     }
 
@@ -1769,20 +2185,22 @@ public final class RegistryOperatorNetworkService {
         byte[] signature = decodeCanonicalUrlBase64(
                 cursor.substring(separator + 1),
                 "leaderboard cursor signature");
-        if (signature.length != 64 || !RegistryCrypto.verify(
-                trusted.registryPublicKey(),
-                RegistryProtocol.leaderboardCursor(payload),
-                signature)) {
-            throw new IllegalArgumentException("Leaderboard cursor signature is invalid.");
-        }
         JsonNode node;
         try {
             node = objectMapper.readTree(payload);
         } catch (RuntimeException exception) {
             throw new IllegalArgumentException("Leaderboard cursor payload is invalid.", exception);
         }
+        int version = node.path("version").asInt(-1);
+        requireLeaderboardCursorFields(node, version);
+        if (signature.length != 64 || !RegistryCrypto.verify(
+                trusted.registryPublicKey(),
+                RegistryProtocol.leaderboardCursor(version, payload),
+                signature)) {
+            throw new IllegalArgumentException("Leaderboard cursor signature is invalid.");
+        }
         CursorClaims claims = new CursorClaims(
-                node.path("version").asInt(-1),
+                version,
                 node.path("kind").asText(""),
                 node.path("view").asText(""),
                 node.path("group_id").asText(""),
@@ -1791,12 +2209,23 @@ public final class RegistryOperatorNetworkService {
                 node.path("through_period").asText(""),
                 node.path("through_ledger_index").asLong(-1L),
                 node.path("through_audit_index").asLong(-1L),
+                node.path("through_review_index").asLong(-1L),
+                node.path("through_eligibility_index").asLong(-1L),
+                version == 2
+                        ? 0L
+                        : node.path("through_transfer_event_index")
+                                .asLong(-1L),
                 node.path("ledger_head_hash").asText(""),
                 node.path("audit_head_hash").asText(""),
+                node.path("review_head_hash").asText(""),
+                node.path("eligibility_head_hash").asText(""),
+                version == 2
+                        ? RegistryProtocol.ZERO_HASH
+                        : node.path("transfer_event_head_hash").asText(""),
                 node.path("created_at").asText(""),
                 node.path("after_weight").asLong(-1L),
                 node.path("after_id").asText(""));
-        if (claims.version() != 1
+        if ((claims.version() != 2 && claims.version() != 3)
                 || !expectedKind.equals(claims.kind())
                 || !expectedView.equals(claims.view())
                 || !expectedGroupId.equals(claims.groupId())
@@ -1810,13 +2239,60 @@ public final class RegistryOperatorNetworkService {
         RegistryProtocol.requirePeriod(claims.throughPeriod());
         requireNonNegative(claims.throughLedgerIndex(), "cursor through_ledger_index");
         requireNonNegative(claims.throughAuditIndex(), "cursor through_audit_index");
+        requireNonNegative(claims.throughReviewIndex(), "cursor through_review_index");
+        requireNonNegative(
+                claims.throughEligibilityIndex(),
+                "cursor through_eligibility_index");
+        requireNonNegative(
+                claims.throughTransferEventIndex(),
+                "cursor through_transfer_event_index");
         RegistryProtocol.requireHash(claims.ledgerHeadHash(), "cursor ledger_head_hash");
         RegistryProtocol.requireHash(claims.auditHeadHash(), "cursor audit_head_hash");
+        RegistryProtocol.requireHash(claims.reviewHeadHash(), "cursor review_head_hash");
+        RegistryProtocol.requireHash(
+                claims.eligibilityHeadHash(),
+                "cursor eligibility_head_hash");
+        RegistryProtocol.requireHash(
+                claims.transferEventHeadHash(),
+                "cursor transfer_event_head_hash");
+        requireHeadBoundary(
+                claims.throughReviewIndex(),
+                claims.reviewHeadHash(),
+                "cursor review");
+        requireHeadBoundary(
+                claims.throughEligibilityIndex(),
+                claims.eligibilityHeadHash(),
+                "cursor eligibility");
+        requireHeadBoundary(
+                claims.throughTransferEventIndex(),
+                claims.transferEventHeadHash(),
+                "cursor transfer event");
         RegistryProtocol.requireUtcTimestamp(claims.createdAt(), "cursor created_at");
         if (snapshot != null) {
             requireCursorSnapshot(claims, snapshot);
         }
         return claims;
+    }
+
+    private static void requireLeaderboardCursorFields(
+            JsonNode node,
+            int version) {
+        if (node == null || !node.isObject()
+                || (version != 2 && version != 3)) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor version is unsupported.");
+        }
+        Set<String> required = version == 2
+                ? LEADERBOARD_CURSOR_V2_FIELDS
+                : LEADERBOARD_CURSOR_V3_FIELDS;
+        Set<String> actual = new HashSet<>();
+        actual.addAll(node.propertyNames());
+        boolean unknown = actual.stream().anyMatch(field ->
+                !"group_id".equals(field) && !required.contains(field));
+        if (unknown || !actual.containsAll(required)) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor payload fields are invalid.");
+        }
     }
 
     private void requireCursorSnapshot(CursorClaims cursor, LeaderboardSnapshot snapshot) {
@@ -1827,8 +2303,18 @@ public final class RegistryOperatorNetworkService {
                 || !cursor.throughPeriod().equals(snapshot.throughPeriod())
                 || cursor.throughLedgerIndex() != snapshot.throughLedgerIndex()
                 || cursor.throughAuditIndex() != snapshot.throughAuditIndex()
+                || cursor.throughReviewIndex() != snapshot.throughReviewIndex()
+                || cursor.throughEligibilityIndex()
+                        != snapshot.throughEligibilityIndex()
+                || cursor.throughTransferEventIndex()
+                        != snapshot.throughTransferEventIndex()
                 || !cursor.ledgerHeadHash().equals(snapshot.ledgerHeadHash())
                 || !cursor.auditHeadHash().equals(snapshot.auditHeadHash())
+                || !cursor.reviewHeadHash().equals(snapshot.reviewHeadHash())
+                || !cursor.eligibilityHeadHash()
+                        .equals(snapshot.eligibilityHeadHash())
+                || !cursor.transferEventHeadHash()
+                        .equals(snapshot.transferEventHeadHash())
                 || !cursor.createdAt().equals(snapshot.createdAt())) {
             throw new IllegalArgumentException(
                     "Leaderboard cursor and signed snapshot boundaries differ.");
@@ -1844,6 +2330,39 @@ public final class RegistryOperatorNetworkService {
         }
         if (StringUtils.hasText(receipt.tokenId())) {
             RegistryProtocol.requireOperatorTokenId(receipt.tokenId());
+        }
+        boolean hasSourceClaimActionId =
+                receipt.sourceClaimActionId() != null
+                        && !receipt.sourceClaimActionId().isEmpty();
+        boolean hasSourcePrivateRecordHash =
+                receipt.sourcePrivateRecordHash() != null
+                        && !receipt.sourcePrivateRecordHash().isEmpty();
+        if (hasSourceClaimActionId != hasSourcePrivateRecordHash) {
+            throw new IllegalArgumentException(
+                    "Registry operator source claim anchors must be both absent or both present.");
+        }
+        boolean tokenDerivedPendingClaim =
+                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(
+                                receipt.action())
+                        && RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                                receipt.claimState())
+                        && !StringUtils.hasText(receipt.linkId());
+        if (tokenDerivedPendingClaim && !hasSourceClaimActionId) {
+            throw new IllegalArgumentException(
+                    "Token-derived pending claim receipt has no signed source claim anchors.");
+        }
+        if (hasSourceClaimActionId) {
+            RegistryProtocol.requireOperatorActionId(
+                    receipt.sourceClaimActionId());
+            RegistryProtocol.requireHash(
+                    receipt.sourcePrivateRecordHash(),
+                    "source_private_record_hash");
+            if (!tokenDerivedPendingClaim
+                    || !StringUtils.hasText(receipt.groupId())
+                    || !StringUtils.hasText(receipt.relatedDeploymentId())) {
+                throw new IllegalArgumentException(
+                        "Registry operator source claim anchors are invalid for this action.");
+            }
         }
         requireCanonicalOptional(receipt.claimState(), "claim_state");
     }
@@ -1904,9 +2423,11 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "website must not have surrounding whitespace.");
         }
-        if (!website.isEmpty()) {
-            requireHttpsUrl(website, "website");
+        if (website.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "website is required.");
         }
+        requireHttpsUrl(website, "website");
         String contactName = requireClaimText(
                 supplied.verificationContactName(),
                 "verification_contact_name",
@@ -1976,6 +2497,30 @@ public final class RegistryOperatorNetworkService {
         return entry != null
                 && RegistryProtocol.OPERATOR_ACTION_CLAIM.equals(entry.action())
                 && StringUtils.hasText(entry.legalName());
+    }
+
+    private static boolean isTokenDerivedClaim(
+            OperatorActionJournalEntry entry) {
+        if (entry == null
+                || !RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN.equals(
+                        entry.action())
+                || entry.receipt() == null) {
+            return false;
+        }
+        OperatorActionReceipt receipt = entry.receipt();
+        return RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW.equals(
+                        receipt.claimState())
+                && StringUtils.hasText(receipt.groupId())
+                && StringUtils.hasText(receipt.relatedDeploymentId())
+                && StringUtils.hasText(receipt.tokenId())
+                && StringUtils.hasText(receipt.sourceClaimActionId())
+                && StringUtils.hasText(receipt.sourcePrivateRecordHash())
+                && !StringUtils.hasText(receipt.linkId());
+    }
+
+    private static boolean isClaimVerificationBoundary(
+            OperatorActionJournalEntry entry) {
+        return isStructuredClaim(entry) || isTokenDerivedClaim(entry);
     }
 
     private static void requireAbsentClaimVerification(ClaimVerification verification) {
@@ -2100,7 +2645,8 @@ public final class RegistryOperatorNetworkService {
             String verificationUnavailableReason,
             String verificationStatus,
             String verificationSubmittedAt,
-            String legalName) {
+            String legalName,
+            String eligibilityStatus) {
     }
 
     public record PackageVerification(
@@ -2132,8 +2678,14 @@ public final class RegistryOperatorNetworkService {
             String throughPeriod,
             long throughLedgerIndex,
             long throughAuditIndex,
+            long throughReviewIndex,
+            long throughEligibilityIndex,
+            long throughTransferEventIndex,
             String ledgerHeadHash,
             String auditHeadHash,
+            String reviewHeadHash,
+            String eligibilityHeadHash,
+            String transferEventHeadHash,
             String createdAt,
             long afterWeight,
             String afterId) {

@@ -14,13 +14,28 @@ public class FirebasePrincipal implements UserDetails {
     private final String email;
     private final List<String> authorities;
     private final Users user;
+    private final boolean emailVerified;
 
     public FirebasePrincipal(String userId, String email, String role) {
-        this(userId, email, role, null);
+        this(userId, email, role, null, false);
     }
 
     public FirebasePrincipal(String userId, String email, String role, Users user) {
-        this(userId, email, role == null ? List.of() : List.of(role), user);
+        this(userId, email, role, user, false);
+    }
+
+    public FirebasePrincipal(
+            String userId,
+            String email,
+            String role,
+            Users user,
+            boolean emailVerified) {
+        this(
+                userId,
+                email,
+                role == null ? List.of() : List.of(role),
+                user,
+                emailVerified);
     }
 
     public FirebasePrincipal(
@@ -28,6 +43,15 @@ public class FirebasePrincipal implements UserDetails {
             String email,
             Collection<String> authorities,
             Users user) {
+        this(userId, email, authorities, user, false);
+    }
+
+    public FirebasePrincipal(
+            String userId,
+            String email,
+            Collection<String> authorities,
+            Users user,
+            boolean emailVerified) {
         this.userId = userId;
         this.email = email;
         LinkedHashSet<String> normalized = new LinkedHashSet<>();
@@ -40,6 +64,7 @@ public class FirebasePrincipal implements UserDetails {
         }
         this.authorities = List.copyOf(normalized);
         this.user = user;
+        this.emailVerified = emailVerified;
     }
 
     @Override
@@ -58,6 +83,15 @@ public class FirebasePrincipal implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    /**
+     * Returns the verification state asserted by the decoded Firebase token.
+     * Legacy, bootstrap, and non-token principals deliberately default to
+     * {@code false}.
+     */
+    public boolean isEmailVerified() {
+        return emailVerified;
     }
 
     public Users getUser() {

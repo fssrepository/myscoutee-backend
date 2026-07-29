@@ -194,6 +194,8 @@ normalize_packaged_image_values() {
     "myscoutee-api:${packaged_version}-prod"
   upsert_env_value "${env_file}" MINIO_PRODUCTION_IMAGE \
     "myscoutee-minio:${packaged_version}-prod"
+  upsert_env_value "${env_file}" REGISTRY_DEMO_IMAGE \
+    "myscoutee-registry:${packaged_version}-prod"
   upsert_env_value "${env_file}" MYSCOUTEE_VERSION "${packaged_version}"
 }
 
@@ -247,9 +249,9 @@ verify_packaged_image_manifest() {
       .schemaVersion == 1
       and .releaseVersion == $version
       and .bundled == true
-      and (.images | type == "array" and length == 4)
+      and (.images | type == "array" and length == 5)
       and ([.images[].service] | sort
-        == ["minio", "nginx", "nginx-base", "profilemanagement"])
+        == ["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"])
       and all(.images[];
         (.reference | type == "string")
         and (.imageId | test("^sha256:[0-9a-f]{64}$")))
@@ -294,6 +296,15 @@ ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_EXPECTED_KEY_FINGERPRIN
 ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_TRUST_ON_FIRST_USE false
 ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_ALLOW_INSECURE_HTTP false
 ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS ""
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_BASE_URL http://registry:8080
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_SCOPE demo:myscoutee
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_PRIVATE_KEY_PATH /var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_PUBLIC_KEY_PATH /var/lib/myscoutee/registry-demo/keys/deployment-public-key.der
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_STATE_DIR /var/lib/myscoutee/registry-demo/state
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_ALLOW_INSECURE_HTTP true
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS registry
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_VOLUME_NAME myscoutee-registry-demo-data-v1
+ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_CLIENT_VOLUME_NAME myscoutee-registry-demo-client-data-v1
 ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_MASTER_KEY_PATH /etc/myscoutee/configuration/deployment-master-key
 ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_KEY_DIR_HOST /etc/myscoutee/configuration
 ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_ENABLED false
@@ -344,6 +355,12 @@ fi
 if [[ ! -f /etc/myscoutee/myscoutee.secrets.env ]]; then
   install_generated_secrets_file
 fi
+
+MYSCOUTEE_BOOTSTRAP_ENV_FILE=/etc/myscoutee/myscoutee.env \
+MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=/etc/myscoutee/myscoutee.secrets.env \
+MYSCOUTEE_BOOTSTRAP_OWNER_UID=0 \
+MYSCOUTEE_BOOTSTRAP_OWNER_GID=0 \
+  /opt/myscoutee/packaging/scripts/ensure-operator-bootstrap.sh
 
 ln -sfn /etc/myscoutee/myscoutee.env /opt/myscoutee/server/.env
 ln -sfn /etc/myscoutee/myscoutee.secrets.env /opt/myscoutee/server/.env.secrets
@@ -404,10 +421,22 @@ cat <<'MESSAGE'
 MyScoutee is installed.
 
 Before first start:
-  1. Edit /etc/myscoutee/myscoutee.env
+  1. Save the shown-once deployment-local Operator credential printed above,
+     or review the OPERATOR_USER identity you supplied before installation
   2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)
-  3. Add /etc/myscoutee/firebase-service-account.json (root:10001, mode 0640) if Firebase is enabled
-  4. Run: systemctl start myscoutee
+  3. Run: systemctl start myscoutee
+
+No production administrator email is packaged. After the initial Operator
+login, configure Firebase and the deployment's administrator emails in the
+Operator Configuration screen.
+
+The bootstrap password is never deliberately persisted or printed again. Its
+generated subject and SHA-256 hash are kept in the root-only secrets file. The
+shown-once terminal output may be retained by package-manager or automation
+logs, so protect those logs. The password itself is not single-use: this local
+credential remains available for ongoing Operator login until it is explicitly
+replaced or disabled, and configuring Firebase does not automatically replace
+it.
 
 Registry participation is not selected during installation. The authenticated
 operator workflow inspects a chosen registry, requests explicit confirmation,

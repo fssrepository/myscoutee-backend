@@ -51,9 +51,11 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.profile.data.document.PaymentProvider;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
@@ -139,6 +141,7 @@ class BackendPaymentsConcurrencyE2ETest {
         withReal(() -> {
             clearE2eCollections();
             seedUsers();
+            seedPaymentConfiguration("e2e");
         });
     }
 
@@ -194,11 +197,13 @@ class BackendPaymentsConcurrencyE2ETest {
         assertThat(paymentsForEvent(IDEMPOTENT_EVENT_ID)).hasSize(1);
         assertThat(paymentsForEvent("another-event")).isEmpty();
 
+        selectPaymentProvider("e2e-fail");
         HttpResponse<String> failingCheckout = postRaw("/activities/events/checkout?provider=e2e-fail",
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(4), 30d));
         assertThat(failingCheckout.statusCode()).isGreaterThanOrEqualTo(500);
         assertThat(paymentsForUser(userId(4))).isEmpty();
 
+        selectPaymentProvider("e2e");
         HttpResponse<String> missingSessionPay = postRaw("/activities/events/pay?provider=e2e",
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(4), 30d));
         assertThat(missingSessionPay.statusCode()).isEqualTo(400);
@@ -290,6 +295,7 @@ class BackendPaymentsConcurrencyE2ETest {
         JsonNode checkout = postJson("/activities/events/checkout?provider=e2e",
                 checkoutPayload(eventId, userId(6), 12d));
         String paymentSessionId = checkout.path("id").asString();
+        selectPaymentProvider("e2e-fail");
         HttpResponse<String> failedPay = postRaw("/activities/events/pay?provider=e2e-fail&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(eventId, userId(6), 12d));
 
@@ -368,6 +374,37 @@ class BackendPaymentsConcurrencyE2ETest {
         mongoTemplate.remove(new Query(), Payment.class);
         mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), ChatMessage.class);
+        mongoTemplate.remove(new Query(), DeploymentConfiguration.class);
+        mongoTemplate.remove(new Query(), PaymentProvider.class);
+    }
+
+    private void seedPaymentConfiguration(String activeProvider) {
+        for (String providerId : List.of("stripe", "barion", "e2e", "e2e-fail")) {
+            PaymentProvider provider = new PaymentProvider();
+            provider.setId(providerId);
+            provider.setLabel(providerId);
+            provider.setLogoAlt(providerId);
+            provider.setPalette("teal");
+            provider.setEnabled(true);
+            provider.setSortOrder(10);
+            mongoTemplate.save(provider);
+        }
+        selectPaymentProvider(activeProvider);
+    }
+
+    private void selectPaymentProvider(String providerId) {
+        DeploymentConfiguration configuration = mongoTemplate
+                .findById(DeploymentConfiguration.SINGLETON_ID, DeploymentConfiguration.class);
+        if (configuration == null) {
+            configuration = new DeploymentConfiguration();
+            configuration.setId(DeploymentConfiguration.SINGLETON_ID);
+            configuration.setSchemaVersion(DeploymentConfiguration.SCHEMA_VERSION);
+        }
+        DeploymentConfiguration.Payment payment = new DeploymentConfiguration.Payment();
+        payment.setProviderId(providerId);
+        configuration.setPayment(payment);
+        configuration.setUpdatedAt(Instant.now().toString());
+        mongoTemplate.save(configuration);
     }
 
     private void seedUsers() {

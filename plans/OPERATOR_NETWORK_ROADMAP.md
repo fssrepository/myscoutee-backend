@@ -1,9 +1,9 @@
 # Operator network implementation roadmap
 
 This roadmap keeps the installer offline and makes every external relationship an
-explicit operator action. It separates what is safe to ship now from MAU
-qualification and global-user deduplication, which require their own privacy and
-fraud specifications.
+explicit operator action. MAU qualification and privacy-preserving global-person
+linking have their own versioned protocols and remain separate from local
+authentication, profiles, and public leaderboard identities.
 
 ## Non-negotiable deployment model
 
@@ -15,6 +15,15 @@ fraud specifications.
   registry can be selected.
 - A deployment can be unregistered, claimed later, or moved only through an
   explicit audited protocol.
+- Moving to another endpoint is never a URL rewrite: the current registry must
+  first return a verified signed deployment-deactivation receipt, which
+  withdraws the deployment from its claim/group. Java then archives the old
+  signed local state and receipts, clears only the active registry binding, and
+  preserves the deployment key pair. A later Register action creates a fresh
+  enrollment at the newly inspected signed registry.
+- Disconnect does not copy ledger, claim, share, or receipt history into the new
+  registry. Cross-registry history transfer requires the separate signed
+  migration protocol in Phase 7.
 - The Java server owns all outbound registry communication. The browser never
   receives a deployment private key or calls a registry directly.
 - The Go append-only ledger is the audit source of truth. Query tables are
@@ -32,7 +41,19 @@ Status: implemented and under integration validation.
 - Auditable hash-linked ledger and transactionally maintained query tables.
 - Optional deployment claim, temporary single-use grouping client tokens, and
   virtual operator groups that preserve each deployment as an independent node.
+- Signed, fail-closed deployment disconnect: central deactivation and claim
+  withdrawal are confirmed before the active local binding is archived/reset.
 - Cursor-paginated founder, claimed, and unclaimed leaderboard views.
+- Pending claims remain visible as yellow rows with an `Under review` marker
+  and retain their measured percentage badge for transparency. That
+  percentage is indicative only and is excluded from approved-share
+  allocation until approval. Independently, the large workspace action keeps
+  `Claim share` as its primary label and changes only its secondary status to
+  `Under review`.
+- Registration, claim, deactivation, and client-code responses carry targeted
+  canonical leaderboard upserts, removals, and a net row-count delta so the
+  shared signal store patches and reorders cached rows without reloading the
+  complete list.
 - Registry-signed announcements and a local, non-HTTP publisher CLI.
 - No global user deduplication and no Firebase migration in this phase.
 
@@ -42,25 +63,45 @@ Exit criteria:
 - A browser/server restart can rediscover registration and update state.
 - Registry/Java protocol tests cover signatures, replay, cursors, and crash
   boundaries.
-- Dev mode exercises the real Java-to-Go path; Explore mode stays browser-local.
+- Every backend-connected development, E2E, and production Explore session
+  exercises the real Java-to-Go path against a dedicated seeded demo registry.
+  Production uses the stripped production Go image, an internal-only service,
+  and isolated demo SQLite/signing/client-state volumes. The real
+  operator-selected registry remains external and unseeded. Browser-local
+  Explore is retained only as an explicit local/offline fallback.
 
 ## Phase 2 — persisted operator configuration and branding
 
-Status: in progress.
+Status: implemented at the deployment/API boundary. Remaining PWA/offline
+presentation cleanup is tracked separately from the persisted configuration
+model.
 
 - One deployment configuration record serves both the public brand view and the
   authenticated operator editor.
 - Ten supported landing themes:
   `AURORA`, `OCEAN`, `FOREST`, `SUNSET`, `VIOLET`, `ROSE`, `AMBER`, `SLATE`,
   `AQUARIUS`, and `MONOCHROME`.
-- Product name, home label, and one uploaded logo stored in MinIO through the
-  existing image-carousel/media flow.
+- Product name and one uploaded logo stored in MinIO through the existing
+  image-carousel/media flow. The landing eyebrow remains localized product
+  copy, not a hidden operator-editable branding field.
 - Production payment-provider catalog seeded from the implemented processors;
-  the operator selects a provider and stores a write-only credential.
-- Firebase credential registration and real capability checks, without silently
-  changing the application's Firebase identity model in this phase.
-- IndexedDB persistence for Explore and Mongo persistence for authenticated
-  deployments. Reopening the popup reloads the stored state under the normal
+  the operator selects a provider and stores a write-only credential. Public
+  success/cancel/callback routing and any provider-required merchant account
+  are deployment-owned Operator settings as well; no MyScoutee vendor domain
+  or merchant identity is used as a runtime payment fallback.
+- Firebase public browser configuration plus separate write-only authentication
+  and messaging service-account credentials. Saving creates a new inactive
+  revision; both real capability checks must attest that exact revision before
+  a distinct Operator action can activate it. Runtime token verification and
+  notification delivery then use the encrypted active deployment revision,
+  while the deployment-local bootstrap recovery login remains available.
+- Community-provider links are deployment-owned Mongo catalog data. Explore and
+  `demo_db` may seed Discord/Discourse examples, while a production deployment
+  may intentionally expose an empty provider list; signed announcements still
+  come from the selected registry.
+- Mongo persistence for every backend-connected Explore or authenticated
+  deployment; IndexedDB persistence exists only in the explicit local/offline
+  adapter. Reopening the popup reloads the stored state under the normal
   route-delay loading indicator.
 
 Exit criteria:
@@ -73,7 +114,8 @@ Exit criteria:
 
 ## Phase 3 — reliable signed revenue delivery
 
-Status: in progress.
+Status: implemented. Exact release-artifact Java-to-Go delivery, interruption,
+restart, and correction drills remain part of Phase 9 production qualification.
 
 - Revenue is operator-only. Remove monetary fields from `/admin/stats` and load
   the dedicated revenue view only when the operator opens it.
@@ -114,7 +156,11 @@ Exit criteria:
 
 ## Phase 4 — reliable deployment-level MAU delivery
 
-Status: next protocol milestone.
+Status: implemented. The `qmau-v1` local evidence calculator, immutable Mongo
+outbox, signed revision/supersession protocol, registry receipt verification,
+same-transaction Go ledger/query/Merkle writes, operator status, and manual
+requeue path are present. Exact release-artifact Java-to-Go restart and lost
+response drills remain part of Phase 9 production qualification.
 
 - Freeze the exact QMAU qualification rule and qualifying action vocabulary.
 - Compute completed periods locally from authoritative activity records.
@@ -139,31 +185,83 @@ Exit criteria:
 
 ## Phase 5 — privacy-safe global deduplication
 
-Status: deliberately deferred.
+Status: implemented at the protocol, persistence, delivery, consent, and
+aggregate-query boundaries. Independent privacy/security review and stronger
+registry-key separation remain Phase 9 release requirements.
 
-Before implementation, select and document a cross-deployment privacy design.
-Plain email, Firebase UID, phone, profile IDs, or a registry-wide unsalted hash
-must never be sent.
+Each consenting, locally authenticated person may link a verified,
+deployment-scoped identity to a stable opaque network identity. The raw
+identifier is normalized only in Java and evaluated through the versioned RFC
+9497 `P256-SHA256` VOPRF flow. The registry never receives a raw email,
+Firebase UID, phone number, local profile ID, or plain/unsalted identifier
+hash. Local authentication remains `(provider, issuer, subject)` scoped; the
+global link is a separate consented record and never replaces it.
 
-Candidate design work:
-
-- Define the human-account linking and recovery model.
-- Evaluate an OPRF/PSI-style deduplication protocol or another independently
-  reviewed construction.
-- Separate uniqueness evidence from activity/weight evidence.
-- Specify key rotation, deletion, collision, shared-device, bot, and account
-  merger behavior.
-- Obtain privacy, security, and legal review before collecting global linkage
-  evidence.
+- Link, retry, unlink, local-account purge, consent evidence, key rotation, and
+  period-effective immutable link history are implemented.
+- A durable Java outbox sends independently signed, ordered, idempotent
+  presence chunks. Partial submissions remain append-only staging and cannot
+  change the current aggregate. The final missing chunk atomically appends one
+  aggregate event and one directly queryable dedup snapshot.
+- Java checks the interoperable submission capacity while paging local links.
+  A max-plus-one materialization becomes one durable, non-retryable
+  `GLOBAL_IDENTITY_PRESENCE_CAPACITY_EXCEEDED` status without creating an
+  unsendable 4097th chunk or persisting raw/local identifiers in the error.
+- Exact retries, including a lost final response, return the original signed
+  receipt. A submission pins its VOPRF key version on its first accepted chunk,
+  so an in-flight submission can finish safely across a rotation.
+- The Go ingress limits of 4096 commitments per chunk and 4096 chunks per
+  deployment/period/revision submission are memory and abuse-safety bounds,
+  not deployment, network, or user-count limits. Java deliberately sends 512
+  commitments per chunk under the default HTTP body limit, giving a current
+  interoperable ceiling of 2,097,152 linked commitments in one deployment's
+  period submission.
+- Opaque commitments stay in restricted direct/audit tables. Public ledger and
+  Merkle records expose only aggregate counts and commitments.
+- The deduplicated snapshot reports a globally unique network total. It does
+  not silently redistribute already accepted deployment QMAU, leaderboard
+  shares, settlement inputs, or payout eligibility.
+- This is not anonymous PSI. A party controlling both the registry VOPRF secret
+  and restricted commitment storage can test guessed low-entropy identifiers
+  offline. Production hardening therefore requires strict separation and audit
+  of those access paths; threshold or separately governed/HSM-backed OPRF is a
+  future strengthening option, not a property claimed by this version.
 
 Exit criteria:
 
-- The registry can prove the deduplicated total without reconstructing local
-  profiles or exporting raw identifiers.
-- Test vectors cover the same person on multiple deployments, key rotation,
-  deletion, and malicious replay.
+- The registry can reproduce and verify every aggregate from its immutable
+  link/presence history without reconstructing local profiles or receiving raw
+  identifiers.
+- Shared fixtures cover the same person on multiple deployments, consent,
+  unlink/purge, corrections, chunk interruption and retry, key rotation,
+  malicious replay, and persisted-state verification.
+- Privacy, security, retention, and legal review accepts the configured
+  registry key-custody boundary before production collection is enabled.
 
 ## Phase 6 — fraud, claims, and exit audit
+
+Status: the signed claim, independent review, client-code grouping,
+deactivation/withdrawal, immutable audit, direct query-state verification, and
+indicative share foundation are implemented. The signed monthly technical 5%
+allocation and the bounded non-binding TTM value derived from three consecutive
+three-month revenue averages and their acceleration are also implemented. The
+registry-local anomaly/case rail supports signed, hash-linked flag/clear events
+and same-transaction query rows without changing eligibility. Registry-manager
+rejection is an immutable signed review decision with a bounded reason code;
+the rejected claim remains visible but share-ineligible and does not imply
+deployment deactivation. Claim suspension/reinstatement is an independent
+signed eligibility chain. The exit-review rail freezes an exact completed-day
+checkpoint, Merkle root, group membership, claim/eligibility boundaries, and
+settlement revisions; subsequent buyer/auditor verify, reject, dispute, and
+withdraw decisions are immutable and evidence bodies remain in the governed
+external review system behind SHA-256 commitments. The two-phase
+ownership-transfer rail and final exit-allocation rail are implemented: the
+allocation pins the exact verified-eligible exit, a completed transfer or
+explicit no-transfer beneficiary, frozen settlement revisions,
+contract/evidence commitments, and exactly conserved JavaScript-safe minor
+units per currency. It records contractual allocation evidence only; payment
+execution, banking, invoicing, tax treatment, and buyer-side legal enforcement
+remain outside the registry.
 
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and
   eligibility change in the append-only ledger.
@@ -173,20 +271,39 @@ Exit criteria:
   company/person validation, tamper checks, disputes, and final contractual
   allocation.
 - Preserve individual deployments beneath an aggregated operator row.
+- Calculate each completed UTC-month/currency network pool once from accepted
+  revenue revisions, then allocate integer minor units across the founder and
+  approved, active claim groups using the signed leaderboard boundary. Use
+  deterministic largest-remainder rounding and an explicit unallocated reserve
+  so every minor unit is conserved. Revisions are append-only.
+- Publish a per-currency, non-binding trailing-twelve-month indicative network
+  value using a versioned base multiplier plus a bounded adjustment derived
+  from three consecutive three-month revenue averages and their acceleration.
+  Persist every input and the effective multiplier so the result is
+  reproducible; a single spike must not make the adjustment unbounded. It is an
+  operator planning value, not a payment, settlement instruction, legal
+  allocation, or buyer decision.
 
 ## Phase 7 — registry federation and migration
 
 - Define signed capability discovery for multiple compatible registry operators.
-- Define an explicit prepare/confirm migration protocol; never silently register
-  from the installer.
-- Export/import signed deployment history with both registry identities and
-  immutable audit references.
+- Normal registry changes are already handled by signed deactivation at the old
+  registry followed by a fresh registration at the operator-selected registry.
+  The old claim is lost and no ledger history is transferred.
+- A signed history export/import protocol is not required for normal registry
+  selection or moving the same deployment server. It remains an optional future
+  disaster-recovery/federation feature only if a concrete operational need is
+  established.
 - Define parent-registry settlement separately from node enrollment so regional
   or partner infrastructure is reusable by other products.
 - Test split connectivity and independently hosted registries without
   geography-specific branches.
 
 ## Phase 8 — signed update channel
+
+Status: implemented at the package/control-plane boundary. Release-artifact,
+oldest-supported-version, interruption, restore, and host-operational drills
+remain part of Phase 9 production qualification.
 
 - Registry-signed announcement and release manifest.
 - Operator reviews the verified URL/version and explicitly approves.
@@ -199,6 +316,10 @@ Exit criteria:
   Java and nginx services.
 
 ## Phase 9 — production qualification
+
+Status: open. Unit and integration coverage exists, but the complete
+release-artifact compatibility matrix and operational drill set is not yet a
+release sign-off.
 
 - Protocol compatibility matrix for Java, Go, frontend, package, and schema
   versions.

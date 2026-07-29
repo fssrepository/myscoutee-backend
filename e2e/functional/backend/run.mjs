@@ -28,6 +28,9 @@ const ctx = {
   mode,
   vars: {
     adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
+    demoAdminUserId: process.env.E2E_DEMO_ADMIN_USER_ID ?? 'admin-demo-ava',
+    operatorUserId: process.env.E2E_OPERATOR_USER_ID ?? 'operator-demo-dev',
+    nonOperatorUserId: process.env.E2E_NON_OPERATOR_USER_ID ?? 'bf057de7c586eede7e84bdc7',
     e2eUserId: process.env.E2E_USER_ID ?? 'e2e-host',
     e2eSecondUserId: process.env.E2E_SECOND_USER_ID ?? 'e2e-member',
     runId: process.env.E2E_RUN_ID ?? `run-${Date.now()}`
@@ -36,7 +39,7 @@ const ctx = {
   resolveRequirement
 };
 
-if (shouldResetE2eDatabase(mode)) {
+if (!args.listOnly && shouldResetE2eDatabase(mode)) {
   const hooks = await import('./hooks/e2e-db.mjs');
   await hooks.resetE2eDatabase(ctx);
 }

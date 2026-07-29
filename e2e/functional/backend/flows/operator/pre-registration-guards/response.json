@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "body": {
+    "type": "object",
+    "required": [
+      "state",
+      "code",
+      "message",
+      "materialized",
+      "submitted",
+      "accepted",
+      "pending",
+      "blocked",
+      "synchronizedAtIso"
+    ]
+  }
+}

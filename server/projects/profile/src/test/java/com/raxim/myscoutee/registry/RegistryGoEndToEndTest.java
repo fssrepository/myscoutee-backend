@@ -130,7 +130,10 @@ class RegistryGoEndToEndTest {
         assertThat(first.completed()).isTrue();
         assertThat(first.deploymentId()).startsWith("dep_");
         assertThat(first.batchId()).startsWith("batch_");
-        assertThat(second).isEqualTo(first);
+        assertThat(first.registrationDuplicate()).isFalse();
+        assertThat(second.registrationDuplicate()).isTrue();
+        assertThat(second.deploymentId()).isEqualTo(first.deploymentId());
+        assertThat(second.batchId()).isEqualTo(first.batchId());
         assertThat(store.load().orElseThrow().registryScope()).isEqualTo(properties.getRegistryScope());
         assertThat(store.load().orElseThrow().deploymentId()).isEqualTo(first.deploymentId());
         assertThat(store.loadInstallationReceipt(first.batchId())).isPresent();

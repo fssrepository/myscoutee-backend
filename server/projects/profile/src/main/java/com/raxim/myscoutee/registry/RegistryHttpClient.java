@@ -63,6 +63,82 @@ public final class RegistryHttpClient {
                 RegistryProtocol.BatchResponse.class);
     }
 
+    public RegistryProtocol.BatchResponse submitMauBatch(
+            RegistryProtocol.BatchRequest request) {
+        return post(
+                RegistryProtocol.MAU_BATCH_PATH,
+                request,
+                RegistryProtocol.BatchResponse.class);
+    }
+
+    public RegistryProtocol.RevenueBatchResponse submitRevenueBatch(
+            RegistryProtocol.RevenueBatchRequest request) {
+        return post(
+                RegistryProtocol.REVENUE_BATCH_PATH,
+                request,
+                RegistryProtocol.RevenueBatchResponse.class);
+    }
+
+    public RegistryProtocol.SettlementQueryResponse querySettlements(
+            RegistryProtocol.SettlementQueryRequest request) {
+        return post(
+                RegistryProtocol.SETTLEMENT_QUERY_PATH,
+                Objects.requireNonNull(
+                        request,
+                        "Settlement query request must not be null."),
+                RegistryProtocol.SettlementQueryResponse.class);
+    }
+
+    public RegistryProtocol.GlobalIdentityVoprfKey
+            currentGlobalIdentityVoprfKey() {
+        return get(
+                RegistryProtocol.GLOBAL_IDENTITY_VOPRF_KEY_PATH,
+                RegistryProtocol.GlobalIdentityVoprfKey.class);
+    }
+
+    public RegistryProtocol.GlobalIdentityEvaluationResponse
+            evaluateGlobalIdentity(
+                    RegistryProtocol.GlobalIdentityEvaluationRequest request) {
+        return post(
+                RegistryProtocol.GLOBAL_IDENTITY_EVALUATE_PATH,
+                Objects.requireNonNull(
+                        request,
+                        "Global-identity evaluation request must not be null."),
+                RegistryProtocol.GlobalIdentityEvaluationResponse.class);
+    }
+
+    public RegistryProtocol.GlobalIdentityMutationResponse linkGlobalIdentity(
+            RegistryProtocol.GlobalIdentityLinkRequest request) {
+        return post(
+                RegistryProtocol.GLOBAL_IDENTITY_LINK_PATH,
+                Objects.requireNonNull(
+                        request,
+                        "Global-identity link request must not be null."),
+                RegistryProtocol.GlobalIdentityMutationResponse.class);
+    }
+
+    public RegistryProtocol.GlobalIdentityMutationResponse
+            applyGlobalIdentityLinkAction(
+                    RegistryProtocol.GlobalIdentityLinkActionRequest request) {
+        return post(
+                RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_PATH,
+                Objects.requireNonNull(
+                        request,
+                        "Global-identity link action request must not be null."),
+                RegistryProtocol.GlobalIdentityMutationResponse.class);
+    }
+
+    public RegistryProtocol.GlobalIdentityPresenceBatchResponse
+            submitGlobalIdentityPresenceBatch(
+                    RegistryProtocol.GlobalIdentityPresenceBatchRequest request) {
+        return post(
+                RegistryProtocol.GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
+                Objects.requireNonNull(
+                        request,
+                        "Global-identity presence batch request must not be null."),
+                RegistryProtocol.GlobalIdentityPresenceBatchResponse.class);
+    }
+
     public RegistryProtocol.OperatorActionResponse applyOperatorAction(
             RegistryProtocol.OperatorActionRequest request) {
         return post(

@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -47,6 +48,9 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AccountPurgeJobsRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
+import com.raxim.myscoutee.profile.service.operator.OperatorGlobalIdentityService;
 
 @Service
 public class DeletedAccountPurgeService {
@@ -69,6 +73,9 @@ public class DeletedAccountPurgeService {
     private final MediaStorageService mediaStorageService;
     private final MongoTemplate mongoTemplate;
     private final PlatformParametersService platformParametersService;
+    private NotificationRuleRegistryService notificationRuleRegistryService;
+    private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
+    private OperatorGlobalIdentityService operatorGlobalIdentityService;
 
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
@@ -93,20 +100,86 @@ public class DeletedAccountPurgeService {
         this.platformParametersService = platformParametersService;
     }
 
-    @Scheduled(fixedDelayString = "${users.deleted-account-purge-delay-ms:3600000}")
-    public void purgeExpiredDeletedAccounts() {
-        Instant now = Instant.now();
-        String purgeBeforeIso = now.minus(deleteGraceDays(), ChronoUnit.DAYS).toString();
-        purgeExpiredUsers(PROFILE_STATUS_DELETED, purgeBeforeIso, now);
-        purgeExpiredUsers(PROFILE_STATUS_ONBOARDING, purgeBeforeIso, now);
-        resumeDuePurgeJobs(now);
+    @Autowired(required = false)
+    void setNotificationRuleRegistryService(NotificationRuleRegistryService notificationRuleRegistryService) {
+        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
-    private void purgeExpiredUsers(String profileStatus, String purgeBeforeIso, Instant now) {
+    @Autowired(required = false)
+    void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
+        this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
+    @Autowired(required = false)
+    void setOperatorGlobalIdentityService(
+            OperatorGlobalIdentityService operatorGlobalIdentityService) {
+        this.operatorGlobalIdentityService = operatorGlobalIdentityService;
+    }
+
+    @Scheduled(fixedDelayString = "${users.deleted-account-purge-delay-ms:3600000}")
+    public void purgeExpiredDeletedAccounts() {
+        if (scheduledMongoSessionRunner == null) {
+            purgeExpiredDeletedAccountsForCurrentDatabase();
+            return;
+        }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::purgeExpiredDeletedAccountsForCurrentDatabase);
+    }
+
+    private void purgeExpiredDeletedAccountsForCurrentDatabase() {
+        Instant now = Instant.now();
+        boolean ruleConfigured = notificationRuleRegistryService != null
+                && notificationRuleRegistryService
+                        .findRule(NotificationRuleRegistryService.RULE_ACCOUNT_PURGE)
+                        .isPresent();
+        if (ruleConfigured && !notificationRuleRegistryService.shouldRunScheduledRule(
+                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                now)) {
+            return;
+        }
+        if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
+                    NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                    "Scheduled deleted-account purge started.",
+                    "account-purge",
+                    now) == null) {
+            return;
+        }
+        try {
+            String purgeBeforeIso = now.minus(deleteGraceDays(), ChronoUnit.DAYS).toString();
+            int purgedCount = purgeExpiredUsers(PROFILE_STATUS_DELETED, purgeBeforeIso, now)
+                    + purgeExpiredUsers(PROFILE_STATUS_ONBOARDING, purgeBeforeIso, now)
+                    + resumeDuePurgeJobs(now);
+            if (ruleConfigured) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                        purgedCount,
+                        "completed",
+                        "Processed scheduled deleted-account purge work.",
+                        "account-purge",
+                        now);
+            }
+        } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        "account-purge",
+                        now);
+            }
+            throw exception;
+        }
+    }
+
+    private int purgeExpiredUsers(String profileStatus, String purgeBeforeIso, Instant now) {
+        int purgedCount = 0;
         List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(profileStatus, purgeBeforeIso);
         for (Users user : users == null ? List.<Users>of() : users) {
-            purgeUser(user, null, now);
+            if (purgeUser(user, null, now)) {
+                purgedCount += 1;
+            }
         }
+        return purgedCount;
     }
 
     private int deleteGraceDays() {
@@ -115,7 +188,8 @@ public class DeletedAccountPurgeService {
                 : platformParametersService.accountPurgeWindowDays(DELETE_GRACE_DAYS);
     }
 
-    private void resumeDuePurgeJobs(Instant now) {
+    private int resumeDuePurgeJobs(Instant now) {
+        int purgedCount = 0;
         List<AccountPurgeJob> jobs = accountPurgeJobsRepository.findByStatusIn(List.of(
                 AccountPurgeJob.STATUS_PENDING,
                 AccountPurgeJob.STATUS_RUNNING,
@@ -130,18 +204,21 @@ public class DeletedAccountPurgeService {
                 completeJob(job, now);
                 continue;
             }
-            purgeUser(user, job, now);
+            if (purgeUser(user, job, now)) {
+                purgedCount += 1;
+            }
         }
+        return purgedCount;
     }
 
-    private void purgeUser(Users user, AccountPurgeJob existingJob, Instant now) {
+    private boolean purgeUser(Users user, AccountPurgeJob existingJob, Instant now) {
         String userId = user == null ? "" : safeText(user.getId());
         if (!StringUtils.hasText(userId)) {
-            return;
+            return false;
         }
         AccountPurgeJob job = existingJob == null ? loadOrCreatePurgeJob(userId, now) : existingJob;
         if (!shouldRunPurgeJob(job, now)) {
-            return;
+            return false;
         }
         try {
             startJob(job, userId, now);
@@ -180,12 +257,26 @@ public class DeletedAccountPurgeService {
             markStage(job, "referenced-documents");
             purgeUserReferencedDocuments(userId);
 
+            markStage(job, "global-identity-unlink");
+            if (operatorGlobalIdentityService != null) {
+                operatorGlobalIdentityService.preparePurgeUnlink(userId);
+            }
+
             markStage(job, "delete-user");
+            boolean pendingCounterTracked = Boolean.TRUE.equals(user.getAccountPurgePendingCounterTracked());
             usersRepository.delete(user);
+            if (pendingCounterTracked && notificationRuleRegistryService != null) {
+                notificationRuleRegistryService.adjustPendingCount(
+                        NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                        -1,
+                        "admin.jobs.table.affected");
+            }
 
             completeJob(job, Instant.now());
+            return true;
         } catch (RuntimeException exception) {
             failJob(job, exception, Instant.now());
+            return false;
         }
     }
 

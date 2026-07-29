@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.InOrder;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardDto;
@@ -35,6 +38,8 @@ import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.EventFeedbackStatMapper;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventFeedbackServiceTest {
@@ -58,6 +63,8 @@ class ActivitiesEventFeedbackServiceTest {
     private UserActivityCountersService userActivityCountersService;
     @Mock
     private EventFeedbackStatMapper eventFeedbackStatMapper;
+    @Mock
+    private NotificationOutboxService notificationOutboxService;
 
     private ActivitiesEventFeedbackService service;
 
@@ -73,7 +80,8 @@ class ActivitiesEventFeedbackServiceTest {
                 adminTelemetryService,
                 accessControlService,
                 userActivityCountersService,
-                eventFeedbackStatMapper);
+                eventFeedbackStatMapper,
+                notificationOutboxService);
     }
 
     @Test
@@ -111,7 +119,12 @@ class ActivitiesEventFeedbackServiceTest {
                                 List.of("reliable-one")))))))
                 .hasMessageContaining("submit feedback");
 
-        verifyNoInteractions(eventFeedbackStatesRepository, eventFeedbackAnswersRepository, affinityRecomputeTaskService, adminTelemetryService);
+        verifyNoInteractions(
+                eventFeedbackStatesRepository,
+                eventFeedbackAnswersRepository,
+                affinityRecomputeTaskService,
+                adminTelemetryService,
+                notificationOutboxService);
     }
 
     @Test
@@ -247,9 +260,98 @@ class ActivitiesEventFeedbackServiceTest {
         assertThat(persisted.cards().getFirst().answerPrimary()).isEqualTo("excellent");
         assertThat(persisted.cards().getFirst().answerSecondary()).isEqualTo("resources");
 
-        InOrder persistenceOrder = inOrder(eventFeedbackAnswersRepository, eventFeedbackStatesRepository);
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("event-feedback-submitted");
+        assertThat(intent.entityType()).isEqualTo("event");
+        assertThat(intent.entityId()).isEqualTo("event-1");
+        assertThat(intent.recipientScope()).isEqualTo("feedback-targets");
+        assertThat(intent.recipientUserIds()).containsExactly("host");
+        assertThat(intent.recipientUserIds()).doesNotContain("viewer");
+        assertThat(intent.clickUrl()).isEqualTo("/game");
+        assertThat(intent.createdUser()).isEqualTo("viewer");
+        assertThat(intent.payload())
+                .containsEntry("eventId", "event-1")
+                .containsEntry("eventTitle", "Finished Event")
+                .containsEntry("senderUserId", "viewer");
+
+        InOrder persistenceOrder = inOrder(
+                eventFeedbackAnswersRepository,
+                eventFeedbackStatesRepository,
+                notificationOutboxService);
         persistenceOrder.verify(eventFeedbackAnswersRepository).saveAll(anyList());
         persistenceOrder.verify(eventFeedbackStatesRepository).save(any(EventFeedbackState.class));
+        persistenceOrder.verify(notificationOutboxService).enqueue(any(NotificationIntent.class));
+    }
+
+    @Test
+    void resubmittingAlreadySubmittedFeedbackDoesNotDuplicateBellNotification() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setUserId("viewer");
+        Users host = new Users();
+        host.setId("host");
+        host.setUserId("host");
+
+        ActivityEvent source = new ActivityEvent();
+        source.setSourceId("event-1");
+        source.setTitle("Finished Event");
+        source.setCreatorUserId("host");
+        source.setOwnerUserId("host");
+        source.setAcceptedMemberUserIds(List.of("viewer"));
+        source.setStartAtIso("2020-01-01T10:00:00Z");
+
+        EventFeedbackState existingState = new EventFeedbackState();
+        existingState.setViewerUserId("viewer");
+        existingState.setEventId("event-1");
+        existingState.setSubmittedAtIso("2026-07-23T17:00:00Z");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(source));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
+        when(eventFeedbackStatesRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenReturn(Optional.of(existingState));
+        when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventIdAndCardId(
+                "viewer",
+                "event-1",
+                "feedback-event-event-1"))
+                .thenReturn(Optional.empty());
+        when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenReturn(List.of());
+
+        service.submit(new EventFeedbackSubmitRequestDto(
+                "viewer",
+                new EventFeedbackDetailDto(
+                        "event-1",
+                        "Finished Event",
+                        "2026-07-23T18:00:00Z",
+                        List.of(new EventFeedbackCardDto(
+                                "feedback-event-event-1",
+                                "event-1",
+                                "event",
+                                null,
+                                "host",
+                                "Admin",
+                                "Finished Event",
+                                "",
+                                "",
+                                "",
+                                "2020-01-01T10:00:00Z",
+                                "",
+                                "Host",
+                                null,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "excellent",
+                                "resources",
+                                List.of())))));
+
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
 
     @Test

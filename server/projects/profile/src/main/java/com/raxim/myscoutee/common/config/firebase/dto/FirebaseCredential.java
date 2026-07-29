@@ -21,6 +21,15 @@ public class FirebaseCredential {
         return token.getEmail();
     }
 
+    /**
+     * Indicates whether Firebase verified the token email. Callers that derive
+     * a cross-deployment identity must require this flag and must never treat
+     * the mere presence of an email claim as proof of ownership.
+     */
+    public boolean isEmailVerified() {
+        return token.isEmailVerified();
+    }
+
     public String getIssuer() {
         return token.getIssuer();
     }

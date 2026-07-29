@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.function.BiPredicate;
 
 import jakarta.annotation.PreDestroy;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +33,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -390,24 +394,63 @@ public class ChatService {
         }
         int limit = normalizeChatPageLimit(limitValue);
         int offset = parseChatCursorOffset(cursor);
-        Criteria criteria = chatPageCriteria(
-                userId,
-                "appSupport",
-                rangeStartIsoFromMillis(rangeStartMs),
-                rangeEndIsoFromMillis(rangeEndMs),
-                true,
-                normalizeSupportCaseFilter(supportCaseFilterValue));
-        long total = mongoTemplate.count(new Query(criteria), Chat.class);
-        Query pageQuery = new Query(criteria)
-                .with(chatPageSort(sort, sortAscending))
-                .skip(offset)
-                .limit(limit);
-        List<ChatDto> items = chatDtosWithMetrics(mongoTemplate.find(pageQuery, Chat.class));
+        String supportCaseFilter = normalizeSupportCaseFilter(supportCaseFilterValue);
+        List<AggregationOperation> operations = new ArrayList<>();
+        operations.add(context -> new Document("$match", new Document("$and", List.of(
+                new Document("channelType", new Document(
+                        "$in",
+                        List.of(CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE))),
+                new Document("supportCase.status", new Document("$exists", true)),
+                new Document("id", new Document("$type", "string").append("$ne", ""))))));
+        operations.add(context -> new Document("$addFields", new Document(
+                "_supportViewerCopy",
+                new Document("$cond", List.of(
+                        new Document("$eq", List.of("$ownerUserId", userId)),
+                        1,
+                        0)))));
+        operations.add(context -> new Document("$sort", new Document()
+                .append("_supportViewerCopy", -1)
+                .append("dateIso", -1)
+                .append("_id", 1)));
+        operations.add(context -> new Document("$group", new Document()
+                .append("_id", "$id")
+                .append("selected", new Document("$first", "$$ROOT"))));
+        operations.add(context -> new Document("$replaceRoot", new Document("newRoot", "$selected")));
+        Document selectedCaseMatch = supportCaseSelectionMatchDocument(
+                rangeStartMs,
+                rangeEndMs,
+                supportCaseFilter);
+        if (!selectedCaseMatch.isEmpty()) {
+            operations.add(context -> new Document("$match", selectedCaseMatch));
+        }
+        operations.add(context -> new Document("$sort", chatPageSortDocument(sort, sortAscending)));
+        operations.add(context -> new Document("$facet", new Document()
+                .append("metadata", List.of(new Document("$count", "total")))
+                .append("items", List.of(
+                        new Document("$skip", offset),
+                        new Document("$limit", limit)))));
+
+        AggregationResults<Document> aggregationResults = mongoTemplate.aggregate(
+                Aggregation.newAggregation(operations),
+                "chats",
+                Document.class);
+        Document aggregationResult = aggregationResults.getUniqueMappedResult();
+        List<Document> metadata = aggregationDocuments(
+                aggregationResult == null ? null : aggregationResult.get("metadata"));
+        int total = metadata.isEmpty()
+                ? 0
+                : safePageTotal(aggregationNumber(metadata.get(0).get("total")));
+        List<Chat> pageRecords = aggregationDocuments(
+                aggregationResult == null ? null : aggregationResult.get("items")).stream()
+                .map(document -> mongoTemplate.getConverter().read(Chat.class, document))
+                .filter(Objects::nonNull)
+                .toList();
+        List<ChatDto> items = chatDtosWithMetrics(pageRecords);
         int endOffset = offset + items.size();
         String nextCursor = endOffset < total && !items.isEmpty()
                 ? Integer.toString(endOffset)
                 : null;
-        return new ChatPageResponseDto(items, safePageTotal(total), nextCursor);
+        return new ChatPageResponseDto(items, total, nextCursor);
     }
 
     public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
@@ -2657,6 +2700,61 @@ public class ChatService {
         return Sort.by(
                 new Sort.Order(dateDirection, "dateIso"),
                 new Sort.Order(Sort.Direction.ASC, "chatId"));
+    }
+
+    private Document chatPageSortDocument(String sort, boolean ascending) {
+        if ("relevance".equals(sort)) {
+            return new Document()
+                    .append("unread", ascending ? 1 : -1)
+                    .append("dateIso", -1)
+                    .append("id", 1);
+        }
+        return new Document()
+                .append("dateIso", ascending ? 1 : -1)
+                .append("id", 1);
+    }
+
+    private Document supportCaseSelectionMatchDocument(
+            long rangeStartMs,
+            long rangeEndMs,
+            String supportCaseFilter) {
+        List<Document> criteria = new ArrayList<>();
+        String normalizedSupportFilter = normalizeSupportCaseFilter(supportCaseFilter);
+        if (!SUPPORT_CASE_FILTER_ALL.equals(normalizedSupportFilter)) {
+            criteria.add(new Document("supportCase.status", normalizedSupportFilter));
+        }
+        Document dateRange = new Document();
+        String rangeStartIso = rangeStartIsoFromMillis(rangeStartMs);
+        String rangeEndIso = rangeEndIsoFromMillis(rangeEndMs);
+        if (StringUtils.hasText(rangeStartIso)) {
+            dateRange.append("$gte", rangeStartIso);
+        }
+        if (StringUtils.hasText(rangeEndIso)) {
+            dateRange.append("$lte", rangeEndIso);
+        }
+        if (!dateRange.isEmpty()) {
+            criteria.add(new Document("dateIso", dateRange));
+        }
+        if (criteria.isEmpty()) {
+            return new Document();
+        }
+        return criteria.size() == 1
+                ? criteria.get(0)
+                : new Document("$and", criteria);
+    }
+
+    private List<Document> aggregationDocuments(Object value) {
+        if (!(value instanceof List<?> values)) {
+            return List.of();
+        }
+        return values.stream()
+                .filter(Document.class::isInstance)
+                .map(Document.class::cast)
+                .toList();
+    }
+
+    private long aggregationNumber(Object value) {
+        return value instanceof Number number ? Math.max(0L, number.longValue()) : 0L;
     }
 
     private int parseChatCursorOffset(String cursor) {

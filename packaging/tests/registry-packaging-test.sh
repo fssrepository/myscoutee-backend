@@ -652,12 +652,87 @@ grep -Fxq 'REGISTRY_TRUST_ON_FIRST_USE=false' \
 grep -Fxq 'OPERATOR_USER=' \
   "${REPO_ROOT}/packaging/templates/myscoutee.env" \
   || fail "package does not expose an explicit Firebase operator allowlist"
+grep -Fxq 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256=' \
+  "${REPO_ROOT}/packaging/templates/myscoutee.secrets.env" \
+  || fail "package does not expose an empty local Operator bootstrap digest placeholder"
+grep -Fxq 'OPERATOR_BOOTSTRAP_EMAIL=' \
+  "${REPO_ROOT}/packaging/templates/myscoutee.secrets.env" \
+  || fail "package does not expose an empty local Operator bootstrap subject placeholder"
+grep -q 'OPERATOR_BOOTSTRAP_EMAIL' \
+  "${REPO_ROOT}/server/projects/profile/src/main/resources/application-prod.yaml" \
+  || fail "production application does not bind the local Operator bootstrap subject"
+grep -q 'OPERATOR_BOOTSTRAP_EMAIL' \
+  "${REPO_ROOT}/server/projects/profile/src/main/resources/application-dev.yaml" \
+  || fail "development application does not bind the local Operator bootstrap subject"
+grep -q 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256' \
+  "${REPO_ROOT}/server/projects/profile/src/main/resources/application-prod.yaml" \
+  || fail "production application does not bind the local Operator bootstrap digest"
+grep -q 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256' \
+  "${REPO_ROOT}/server/projects/profile/src/main/resources/application-dev.yaml" \
+  || fail "development application does not bind the local Operator bootstrap digest"
+if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' \
+    "${REPO_ROOT}/packaging/compose/docker-compose.production.yml"; then
+  fail "production Compose embeds a deployment administrator/developer identity"
+fi
+if grep -Eq '^[[:space:]]*ADMIN_USER=' \
+    "${REPO_ROOT}/packaging/templates/myscoutee.env"; then
+  fail "package template embeds a legacy administrator allow-list"
+fi
+for compose_file in \
+  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" \
+  "${REPO_ROOT}/server/docker-compose-prod.yml"; do
+  grep -q '^[[:space:]]*- \.env\.secrets$' "${compose_file}" \
+    || fail "${compose_file} does not pass the root-managed bootstrap subject and digest through env_file"
+  if grep -Eq \
+      '^[[:space:]]+OPERATOR_BOOTSTRAP_(EMAIL|PASSWORD_SHA256)[[:space:]]*:' \
+      "${compose_file}"; then
+    fail "${compose_file} shadows bootstrap subject/digest values supplied by .env.secrets"
+  fi
+done
 grep -Fq 'BACKUP_DIR="/var/backups/myscoutee"' \
   "${REPO_ROOT}/packaging/scripts/backup-production.sh" \
   || fail "installed backups do not default outside the purgeable /opt tree"
 if grep -Fq 'rm -rf /var/backups/myscoutee' \
-  "${REPO_ROOT}/packaging/debian/postrm"; then
+    "${REPO_ROOT}/packaging/debian/postrm"; then
   fail "package purge deletes the external deployment recovery archive"
+fi
+grep -Fq 'REGISTRY_DEMO_VOLUME_NAME' \
+  "${REPO_ROOT}/packaging/debian/postrm" \
+  || fail "package purge leaves the seeded demo registry volume behind"
+grep -Fq 'REGISTRY_DEMO_CLIENT_VOLUME_NAME' \
+  "${REPO_ROOT}/packaging/debian/postrm" \
+  || fail "package purge leaves the demo registry client-state volume behind"
+for managed_repository in \
+  myscoutee-api \
+  myscoutee-nginx \
+  myscoutee-minio \
+  myscoutee-registry; do
+  grep -Fq "${managed_repository}" \
+    "${REPO_ROOT}/packaging/debian/postrm" \
+    || fail "package purge leaves managed repository ${managed_repository} behind"
+done
+if grep -Fq 'MONGO_IMAGE' "${REPO_ROOT}/packaging/debian/postrm" \
+    || grep -Fq 'REDIS_IMAGE' "${REPO_ROOT}/packaging/debian/postrm"; then
+  fail "package purge removes shared upstream MongoDB or Redis images"
+fi
+for managed_repository in \
+  myscoutee-api \
+  myscoutee-nginx \
+  myscoutee-minio \
+  myscoutee-registry; do
+  grep -Fq "${managed_repository}" \
+    "${REPO_ROOT}/tools/install/purge.sh" \
+    || fail "remote purge leaves managed repository ${managed_repository} behind"
+done
+grep -Fq 'registry-demo' \
+  "${REPO_ROOT}/tools/install/purge.sh" \
+  || fail "remote purge does not report a remaining Explore registry container"
+grep -Fq 'myscoutee-registry-demo-' \
+  "${REPO_ROOT}/tools/install/purge.sh" \
+  || fail "remote purge does not report remaining Explore registry volumes"
+if grep -Fq 'rm -rf /var/backups/myscoutee' \
+    "${REPO_ROOT}/tools/install/purge.sh"; then
+  fail "remote purge deletes the external deployment recovery archive"
 fi
 grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \
   "${REPO_ROOT}/packaging/scripts/package-production.sh" \
@@ -685,6 +760,18 @@ for compose_file in \
     || fail "${compose_file} does not let the authenticated Java initializer persist registry keys"
   grep -q ':/var/lib/myscoutee/registry' "${compose_file}" \
     || fail "${compose_file} does not mount registry state read-write"
+  grep -q 'REGISTRY_DEMO_BASE_URL.*http://registry:8080' "${compose_file}" \
+    || fail "${compose_file} does not pin Explore to the internal demo registry"
+  grep -q 'REGISTRY_DEMO_SCOPE.*demo:myscoutee' "${compose_file}" \
+    || fail "${compose_file} does not pin the isolated demo registry scope"
+  grep -q 'REGISTRY_DEMO_SEED.*true' "${compose_file}" \
+    || fail "${compose_file} does not use the guarded demo registry seed mode"
+  grep -Fq 'command: ["start-demo"]' "${compose_file}" \
+    || fail "${compose_file} does not use the guarded demo-only entrypoint"
+  grep -q 'registry-demo-data:/data' "${compose_file}" \
+    || fail "${compose_file} does not isolate demo registry SQLite/signing state"
+  grep -q 'registry-demo-client-data:/var/lib/myscoutee/registry-demo' "${compose_file}" \
+    || fail "${compose_file} does not isolate Java Explore registry identity/state"
 done
 
 DEMO_DEV_COMPOSE="${REPO_ROOT}/server/docker-compose-dev.yml"
@@ -707,14 +794,6 @@ grep -Fq '/workspace/data/registry-demo-keys/' "${DEMO_DEV_COMPOSE}" \
 grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
   || fail "local demo deployment state is not separated from production state"
 
-for compose_file in \
-  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" \
-  "${REPO_ROOT}/server/docker-compose-prod.yml"; do
-  if grep -Eq '^[[:space:]]+registry(-demo)?:[[:space:]]*$|REGISTRY_DEMO_' "${compose_file}"; then
-    fail "${compose_file} bundles or configures a demo registry in production"
-  fi
-done
-
 for seed_file in "${DEMO_USERS}" "${E2E_USERS}"; do
   jq -e '
     [.[] | select(
@@ -735,10 +814,12 @@ if docker compose version >/dev/null 2>&1; then
   cp "${REPO_ROOT}/server/.env.secrets.example" "${COMPOSE_STAGE}/.env.secrets"
   cp "${REPO_ROOT}/server/projects/profile/secrets/firebase-service-account.json.example" \
     "${COMPOSE_STAGE}/projects/profile/secrets/firebase-service-account.json"
-  docker compose \
+  PACKAGED_PROD_JSON="$(
+    docker compose \
     --env-file "${REPO_ROOT}/packaging/templates/myscoutee.env" \
     -f "${COMPOSE_STAGE}/docker-compose-prod.yml" \
-    config >/dev/null \
+    config --format json
+  )" \
     || fail "packaged production Compose configuration does not render"
 
   SOURCE_COMPOSE_STAGE="${TEST_ROOT}/source-compose-stage"
@@ -753,12 +834,43 @@ if docker compose version >/dev/null 2>&1; then
     "${REPO_ROOT}/server/docker-compose-prod.yml" \
     "${SOURCE_COMPOSE_STAGE}/docker-compose-prod.yml" \
     || fail "isolated source production Compose fixture differs from source"
-  docker compose \
+  SOURCE_PROD_JSON="$(
+    docker compose \
     --project-directory "${SOURCE_COMPOSE_STAGE}" \
     --env-file "${REPO_ROOT}/packaging/templates/myscoutee.env" \
     -f "${SOURCE_COMPOSE_STAGE}/docker-compose-prod.yml" \
-    config >/dev/null \
+    config --format json
+  )" \
     || fail "source production Compose configuration does not render with dummy secrets"
+
+  for production_json in "${PACKAGED_PROD_JSON}" "${SOURCE_PROD_JSON}"; do
+    jq -e '
+      .services.registry.container_name == "registry-demo"
+      and .services.registry.hostname == "registry"
+      and .services.registry.image == "myscoutee-registry:1.0.0-prod"
+      and .services.registry.command == ["start-demo"]
+      and .services.registry.environment.REGISTRY_DEMO_SEED == "true"
+      and .services.registry.environment.REGISTRY_SCOPE == "demo:myscoutee"
+      and .services.registry.environment.REGISTRY_DATABASE_PATH
+        == "/data/registry-demo.db"
+      and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH
+        == "/data/registry-demo-signing-key.pem"
+      and ((.services.registry.ports // []) | length == 0)
+      and .services.registry.read_only == true
+      and (.services.registry.cap_drop | index("ALL") != null)
+      and .services.profilemanagement.environment.REGISTRY_DEMO_BASE_URL
+        == "http://registry:8080"
+      and .services.profilemanagement.environment.REGISTRY_DEMO_SCOPE
+        == "demo:myscoutee"
+      and .services.profilemanagement.environment.REGISTRY_BASE_URL == ""
+      and .services.profilemanagement.environment.REGISTRY_SCOPE == ""
+      and .volumes["registry-demo-data"].name
+        == "myscoutee-registry-demo-data-v1"
+      and .volumes["registry-demo-client-data"].name
+        == "myscoutee-registry-demo-client-data-v1"
+    ' <<<"${production_json}" >/dev/null \
+      || fail "production Explore registry is not strictly internal and separate from REAL registry state"
+  done
 
   DEV_COMPOSE_JSON="$(
     cd "${REPO_ROOT}/server"
@@ -767,9 +879,11 @@ if docker compose version >/dev/null 2>&1; then
   jq -e '
     .services.registry.container_name == "registry"
     and .services.registry.image == "myscoutee-registry:1.0.0-dev"
-    and .services.registry.environment.REGISTRY_SCOPE == "demo:local-registry"
-    and .services.registry.environment.REGISTRY_DATABASE_PATH == "/data/registry.db"
-    and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-signing-key.pem"
+    and .services.registry.command == ["start-demo"]
+    and .services.registry.environment.REGISTRY_DEMO_SEED == "true"
+    and .services.registry.environment.REGISTRY_SCOPE == "demo:myscoutee"
+    and .services.registry.environment.REGISTRY_DATABASE_PATH == "/data/registry-demo.db"
+    and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-demo-signing-key.pem"
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"
     and .services.profilemanagement.environment.MONGODB_DATABASE == "demo_db"
     and .services.profilemanagement.environment.OPERATOR_USER == "dev@myscoutee.local"
@@ -777,6 +891,10 @@ if docker compose version >/dev/null 2>&1; then
       == "/workspace/data/registry-demo-keys/deployment-private-key.pem"
     and .services.profilemanagement.environment.REGISTRY_DEMO_STATE_DIR
       == "/workspace/data/registry-demo-state"
+    and .services.profilemanagement.environment.REGISTRY_DEMO_BASE_URL
+      == "http://registry:8080"
+    and .services.profilemanagement.environment.REGISTRY_DEMO_SCOPE
+      == "demo:myscoutee"
     and (.services.profilemanagement.environment | has("REGISTRY_ENABLED") | not)
     and (.services.profilemanagement.environment | has("REGISTRY_OUTBOUND_ALLOWED") | not)
     and (.services.profilemanagement.environment
@@ -785,12 +903,6 @@ if docker compose version >/dev/null 2>&1; then
     and (.services.profilemanagement.environment | has("REGISTRY_PRIVATE_KEY_PATH") | not)
     and (.services.profilemanagement.environment | has("REGISTRY_STATE_DIR") | not)
     and (.services.profilemanagement.environment | has("REGISTRY_DEMO_MODE") | not)
-    and (.services.profilemanagement.environment
-      | has("REGISTRY_DEMO_CANDIDATE_BASE_URL")
-      | not)
-    and (.services.profilemanagement.environment
-      | has("REGISTRY_DEMO_CANDIDATE_SCOPE")
-      | not)
   ' <<<"${DEV_COMPOSE_JSON}" >/dev/null \
     || fail "canonical dev Compose mixes demo registry state with real registry configuration"
 fi

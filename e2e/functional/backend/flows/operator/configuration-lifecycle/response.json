@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "body": {
+    "type": "object",
+    "required": [
+      "capability",
+      "adminEmails",
+      "privacyContact",
+      "socialLinks",
+      "branding",
+      "payment",
+      "firebase"
+    ]
+  }
+}

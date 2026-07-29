@@ -31,6 +31,7 @@ Covered groups:
 - `websocket`: chat and admin notification websocket connects.
 - `event-editor`: members, member summaries, invite candidates, subevent resources, leaderboard.
 - `admin`: dashboard, stats, monitoring, params, notifications, notification runtime, help, privacy, explanation, ideas.
+- `operator`: controller-wide operator authorization, bootstrap/request/query validation, registry status, deployment configuration and secret redaction, community providers, local revenue invariants, update overview, and demo-isolated Firebase capability tests.
 - `media`: collected local image URLs from prior API responses are reachable.
 
 Latest local validation:
@@ -38,6 +39,9 @@ Latest local validation:
 ```text
 server e2e: 49 passed, 0 failed, 0 skipped, 49 selected
 ```
+
+This is a historical execution result. The current authored inventory is 76
+safe contracts; 13 of those are the operator cases authored for the later run.
 
 ## E2E Mutation Flows
 
@@ -60,12 +64,19 @@ Covered flows:
 - Chat lifecycle: send, edit, pin, react, update attachments, device upsert/delete, delete message.
 - Help revision: create explanation revision and delete it.
 - Event participation: publish ticketed event, join as accepted member, submit feedback, note, remove, restore.
+- Operator pre-registration guards: dormant QMAU/revenue synchronization, report/network/update/Firebase fail-closed behavior, request-identifier redaction, partial registration rejection, and no implicit registration.
+- Operator configuration lifecycle: save/reload, admin/social normalization, managed branding, public projection, payment routing and credential retention, Stripe/Barion validation, write-only credential masking, provider-switch cleanup, and semantic restore.
+- Operator registry selection: inspect, reject endpoint/scope/URL-shape mismatch, normalize root URLs, invalidate stale tokens, require single-use confirmation and explicit registration, and idempotently disconnect an unregistered selection.
 
 Latest local validation:
 
 ```text
 server e2e: 7 passed, 0 failed, 0 skipped, 7 selected
 ```
+
+This is a historical execution result. The current authored inventory is 14
+mutation cases; 3 of those are the operator state-machine flows authored for
+the later run.
 
 ## Stress Scenarios
 
@@ -94,3 +105,23 @@ two minutes and should be started only when a hard local load probe is wanted.
   media reachability is covered through collected image URLs.
 - Hard destructive admin moderation actions are not in the read-only contract
   run. E2E admin/content mutations are covered by the help revision flow.
+- Operator registration, claims, deployment deactivation/reactivation, and
+  package installation are not run by this collection because the current
+  compose topology persists the Go registry and host update state separately
+  from `e2e_db`. Signed Java-to-Go registration, report delivery,
+  idempotency, restart, and tamper checks are covered by
+  `../myscoutee-registry/scripts/qualify-java-rails.sh`.
+
+## Authored Operator Cases
+
+The operator additions are intentionally not included in the historical
+validation counts above until the full stack is run later. Their collection
+definitions and assertion modules have been syntax-checked only.
+
+The safe `operator` group includes controller-wide access checks, bootstrap
+boundary and secret redaction, request binding validation, settlement query
+validation, Firebase request validation without Firebase configuration
+mutation,
+configuration/registry/community/revenue/update projections, and revenue
+aggregation invariants. The opt-in `flows/operator` collection adds the three
+mutation state-machine scenarios listed above.

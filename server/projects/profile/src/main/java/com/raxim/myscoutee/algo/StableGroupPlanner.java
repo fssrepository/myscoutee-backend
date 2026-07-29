@@ -183,12 +183,28 @@ public class StableGroupPlanner {
         }
 
         List<Range> normalizedRanges = normalizeRanges(ranges);
-        if (normalizedRanges.isEmpty() || !canSatisfyRemainingRanges(eligibleUserIds.size(), normalizedRanges, normalizedTypes, hasAny)) {
+        if (normalizedRanges.isEmpty()) {
             return List.of();
         }
 
-List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds, normalizedRanges, normalizedTypes, hasAny, 0);
-        if (plannedGroups == null) {
+        List<List<String>> plannedGroups = null;
+        for (int targetCount = normalizedRanges.size(); targetCount > 0; targetCount -= 1) {
+            List<Range> targetRanges = normalizedRanges.subList(0, targetCount);
+            if (!canSatisfyRemainingRanges(eligibleUserIds.size(), targetRanges, normalizedTypes, hasAny)) {
+                continue;
+            }
+            plannedGroups = planTargetedGroups(
+                    snapshot,
+                    eligibleUserIds,
+                    targetRanges,
+                    normalizedTypes,
+                    hasAny,
+                    0);
+            if (plannedGroups != null) {
+                break;
+            }
+        }
+        if (plannedGroups == null || plannedGroups.isEmpty()) {
             return List.of();
         }
         
@@ -433,7 +449,10 @@ List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds,
             int index) {
         
         if (index >= ranges.size()) {
-            return remainingUserIds.isEmpty() ? new ArrayList<>() : null;
+            // Explicit targets describe the available room capacity, not a
+            // requirement to place every eligible user. Any capacity overflow
+            // remains unassigned after all target minimums have been met.
+            return new ArrayList<>();
         }
 
         Range range = ranges.get(index);
@@ -505,19 +524,17 @@ List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds,
 
     private boolean canSatisfyRemainingRanges(int remainingUserCount, List<Range> remainingRanges, List<String> types, boolean hasAny) {
         if (remainingRanges == null || remainingRanges.isEmpty()) {
-            return remainingUserCount == 0;
+            return true;
         }
 
         int minimumPossible = 0;
-        int maximumPossible = 0;
         for (Range range : remainingRanges) {
             if (range == null) {
                 continue;
             }
             minimumPossible += hasAny ? 0 : minimumRandomGroupSize(range, types);
-            maximumPossible += Math.max(0, range.getMax());
         }
-        return remainingUserCount >= minimumPossible && remainingUserCount <= maximumPossible;
+        return remainingUserCount >= minimumPossible;
     }
 
     private int resolveInviteTargetSize(GraphSnapshot snapshot, Set<String> availableUserIds, Range range, boolean hasAny, List<String> types) {

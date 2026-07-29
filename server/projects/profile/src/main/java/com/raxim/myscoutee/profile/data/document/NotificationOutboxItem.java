@@ -46,6 +46,7 @@ public class NotificationOutboxItem {
     private String payloadHash;
     private String collapseKey;
     private String status;
+    private Boolean pendingCounterTracked;
     private Integer retryCount;
     private String nextRetryAt;
     private String lockedUntil;
@@ -209,6 +210,14 @@ public class NotificationOutboxItem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Boolean getPendingCounterTracked() {
+        return pendingCounterTracked;
+    }
+
+    public void setPendingCounterTracked(Boolean pendingCounterTracked) {
+        this.pendingCounterTracked = pendingCounterTracked;
     }
 
     public Integer getRetryCount() {

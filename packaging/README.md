@@ -54,6 +54,71 @@ Install the local deb with `apt`, not `dpkg`, so Docker Engine and Docker Compos
 sudo apt install ./packaging/dist/myscoutee_1.0.0_amd64.deb
 ```
 
+## Production TLS
+
+The production Nginx image always renders `DOMAIN` into both virtual servers
+before validating its complete configuration. It supports two explicit
+certificate sources:
+
+- `LETSENCRYPT_ENABLED=false` selects the operator-managed paths
+  `NGINX_TLS_CERTIFICATE_PATH` and `NGINX_TLS_CERTIFICATE_KEY_PATH`. Their
+  defaults are `/etc/nginx/keys/nginx.crt` and
+  `/etc/nginx/keys/nginx-nopass.key`, backed by
+  `/opt/myscoutee/server/docker/conf/nginx/keys` on the host.
+- `LETSENCRYPT_ENABLED=true` selects
+  `/etc/letsencrypt/live/<DOMAIN>/fullchain.pem` and `privkey.pem`, backed by
+  `/var/lib/myscoutee/data/certbot/conf` on an installed host.
+
+Nginx fails startup if the selected files are absent, empty, mismatched, or
+otherwise invalid. `postinst` creates a localhost self-signed pair only so a
+new node can be inspected locally before public TLS is configured. That pair
+is not a valid Internet-facing certificate and must not be treated as one.
+
+For a first Let's Encrypt certificate, point the domain's public DNS at the
+deployment, make TCP port 80 reachable, stop MyScoutee so Certbot can bind that
+port, and provision the mounted certificate directory:
+
+```bash
+sudo systemctl stop myscoutee
+sudo install -d -m 0755 /var/lib/myscoutee/data/certbot/conf
+sudo docker run --rm --name myscoutee-certbot-bootstrap \
+  -p 80:80 \
+  -v /var/lib/myscoutee/data/certbot/conf:/etc/letsencrypt \
+  certbot/certbot:v5.4.0 certonly --standalone \
+  --non-interactive --agree-tos --no-eff-email \
+  --email operator@example.com -d app.example.com
+```
+
+Then set the exact issued name in `/etc/myscoutee/myscoutee.env` and start the
+service:
+
+```bash
+sudo sed -i \
+  -e 's/^DOMAIN=.*/DOMAIN=app.example.com/' \
+  -e 's/^LETSENCRYPT_ENABLED=.*/LETSENCRYPT_ENABLED=true/' \
+  /etc/myscoutee/myscoutee.env
+sudo systemctl start myscoutee
+```
+
+Renewal is deliberately explicit at present:
+
+```bash
+sudo systemctl stop myscoutee
+sudo docker run --rm --name myscoutee-certbot-renew \
+  -p 80:80 \
+  -v /var/lib/myscoutee/data/certbot/conf:/etc/letsencrypt \
+  certbot/certbot:v5.4.0 renew --standalone
+sudo systemctl start myscoutee
+```
+
+`LETSENCRYPT_ENABLED=true` activates an already provisioned certificate; it
+does not silently obtain one or fall back to the self-signed key.
+
+For an operator-managed CA certificate instead, install the full chain and
+unencrypted private key at the configured host-mounted paths, restrict the
+private key to root, leave `LETSENCRYPT_ENABLED=false`, and restart the service.
+The production entrypoint checks the pair with `nginx -t` before serving.
+
 ## Operator-approved package updates
 
 An `UPDATE` announcement only tells the authenticated Operator workspace that
@@ -175,9 +240,101 @@ The worker contract, signature verification, progress journal, unsafe path
 rejection, and tamper rejection can be tested without starting the dev stack:
 
 ```bash
+bash packaging/tests/operator-bootstrap-test.sh
+bash packaging/tests/nginx-transport-policy-test.sh
 bash packaging/tests/update-worker-test.sh
 bash packaging/tests/package-content-test.sh
+bash packaging/tests/debian-removal-contract-test.sh
 ```
+
+Before a release drill, bind the evidence to the exact candidate package,
+oldest-supported package, and production registry image:
+
+```bash
+MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
+  bash packaging/scripts/qualify-release-artifacts.sh \
+    /absolute/myscoutee_1.2.0_amd64.deb \
+    /absolute/myscoutee_1.0.0_amd64.deb \
+    myscoutee-registry:1.2.0-prod
+```
+
+This is a read-only artifact preflight, not an upgrade or restore. The complete
+oldest-supported upgrade, interruption, clean-host restore, multi-registry,
+load, and security procedures are documented in
+`plans/PRODUCTION_QUALIFICATION.md`.
+
+The package separates locally generated deployment secrets from external
+provider credentials:
+
+- Mongo and MinIO passwords, the deployment configuration encryption key, and
+  local node/demo-registry signing keys are internal. They are generated on the
+  installed host or first runtime and are never shipped as reusable fixed
+  secrets.
+- Firebase service accounts, payment-provider tokens, email/social/community
+  credentials, and remote-provider client secrets are external. The `.deb` and
+  its managed images contain only empty templates or examples; the operator
+  supplies real values after installation.
+- Provider endpoints, fingerprints, public verification keys, and public
+  release metadata are not credentials and may be packaged. Firebase web-client
+  identifiers (including its browser API key) and the VAPID public key are also
+  public client bootstrap data; they grant no server authority and are separate
+  from the Firebase service-account private key and provider tokens. MyScoutee
+  stores those public Firebase fields with deployment configuration and serves
+  them from the backend only after the Operator explicitly activates a
+  successfully tested Firebase revision; the frontend does not load a packaged
+  live Firebase configuration.
+- Payment API endpoints supplied by the provider may be part of the product,
+  but the deployment's public success/cancel/callback origin and a
+  provider-required merchant account belong to the deployment. They are saved
+  by the Operator with the selected payment provider; the package and runtime
+  processors contain no vendor-owned MyScoutee return URL or merchant fallback.
+- Operator and administrator email addresses are authorization identifiers,
+  not secrets. They are nevertheless deployment-owner data, so the generic
+  package does not nominate any real operator or administrator. The initial
+  operator allow-list is supplied at runtime or generated locally by the
+  installer as an `operator-<random>@deployment.invalid` identity;
+  administrator emails are then maintained as mutable deployment configuration
+  through the authenticated Operator workspace.
+- The deployment-local bootstrap password is a 256-bit random printable value,
+  shown once by `postinst`. “Shown once” describes disclosure only: the same
+  password remains valid for later local Operator logins until the deployment
+  owner deliberately replaces or disables that bootstrap access. Its generated
+  subject and lowercase SHA-256 digest are written together to root-only
+  `/etc/myscoutee/myscoutee.secrets.env`; Java accepts the digest only when that
+  subject exactly equals the sole `OPERATOR_USER`. SHA-256 is appropriate for
+  this narrow bootstrap because the input is generated with full cryptographic
+  entropy rather than chosen by a person. MyScoutee never embeds or deliberately
+  persists the plaintext in configuration, images, process arguments, or
+  outbound traffic. The explicitly requested terminal print can nevertheless
+  be retained by package-manager, terminal, or automation logs, so those logs
+  must be protected. Activating operator-supplied Firebase does not silently
+  disable this recovery login. Re-running the installer preserves the subject
+  and digest and prints nothing.
+
+`package-production.sh` fails closed if an external credential file, a
+non-empty external-provider value, or private-key material appears in the
+staged Debian payload or any bundled managed-image configuration/layer.
+`package-content-test.sh` independently checks the resulting archive, both
+Docker build-context exclusion policies, and any local Firebase
+service-account identity without printing that identity.
+
+The production package also stages Mongo data through an explicit collection
+allow-list. It contains only system/configuration bootstrap collections for the
+real database: no users, privileged users, personal names, activity/chat
+records, payment records, E2E database, administrator email list, or
+deployment-specific social-page URLs. Explore keeps a separate server-side
+`demo_db`; its identities use visibly synthetic `.local`/`.invalid` or example
+addresses, and its public provider links are demonstration data only. The
+fixed report-issue destination remains a MyScoutee product/support concern,
+not an operator social identity.
+
+Node registration uses no package-wide shared secret. After the operator has
+inspected and confirmed the registry identity, Java generates an Ed25519
+deployment key pair locally, sends only its public key in the signed
+registration request, and verifies the registry-signed receipt against the
+pinned registry public key. The deployment private key and the internal
+Explore registry signing key are persistent runtime-volume data, not `.deb`
+content.
 
 ## Deployment Registry Identity
 
@@ -255,24 +412,64 @@ signing identity, and endpoint without creating a deployment; the confirmation
 step pins that identity and enables the atomic/idempotent registration request.
 
 The production landing page still offers Explore mode, including a sample
-Operator workspace. That demo session is intentionally non-persistent registry
-sample state: it does not create keys, contact a registry, register a
-deployment, or write a ledger. The production package does not contain or
-start a demo Go registry image. Only an authenticated production Operator can
-use the real workflow above, and its selected central registry must be an
-independently deployed HTTPS service.
+Operator workspace. It is a server-side demo session: Angular calls Java, Java
+uses Mongo `demo_db`, and registry actions call an internal Go service built as
+`myscoutee-registry:<version>-prod`. The package contains that stripped image
+and starts it with the explicit guarded `start-demo` command. Its seeded SQLite
+database, signing key, registry identity, and Java demo-client state use
+dedicated volumes, and the service exposes no host port. Demo actions therefore
+exercise real signatures, registration, claims, QMAU/revenue receipts, ledger
+and query-table writes without touching the operator-selected registry.
 
-Set `OPERATOR_USER` in `/etc/myscoutee/myscoutee.env` to the comma-separated
-Firebase email addresses that may enter the real Operator workspace. This is
-independent from `ADMIN_USER`; admin authority does not imply operator
+Only an authenticated production Operator can use the real workflow above.
+That operator's registry remains an independently deployed HTTPS service; its
+URL, keys, identities, receipts, claims, and ledger are never forwarded to or
+stored in the bundled Explore registry.
+
+The `.deb` contains `OPERATOR_USER=`, `OPERATOR_BOOTSTRAP_EMAIL=`, and
+`OPERATOR_BOOTSTRAP_PASSWORD_SHA256=` as empty placeholders. On first install,
+if `OPERATOR_USER` is still empty, `postinst` creates a deployment-local
+`operator-<random>@deployment.invalid` identity and a 256-bit random password,
+prints that pair once, and stores the generated subject plus the password's
+lowercase SHA-256 digest in the root-only secrets file. Save the printed
+credential and protect installation logs: upgrades neither rotate nor reprint
+it. A preconfigured `OPERATOR_USER` is preserved and causes no local credential
+to be generated.
+
+The generated local credential remains an ongoing Operator login. Configuring
+Firebase does not automatically replace, disable, or rebind it. Changing
+`OPERATOR_USER` so it no longer exactly matches the stored bootstrap subject
+causes local bootstrap authentication to fail closed; the installer preserves
+the original subject and digest, warns, and lets the package upgrade continue
+instead of rotating or attaching them to the new identity.
+
+Once authenticated, the operator configures Firebase and the dedicated
+administrator emails in the Configuration screen. Saving Firebase stages the
+configuration but does not switch live authentication or messaging. The
+operator must complete the real authentication and test-notification checks,
+then use the separate activation action; rotating any Firebase field or
+service-account credential invalidates those checks and deactivates that
+revision. The deployment-local bootstrap login remains available throughout.
+Administrator addresses are
+persisted in the deployment database and are not supplied by a packaged
+`ADMIN_USER` fallback. Administrator authority still does not imply Operator
 authority.
 
-The source development stack is different by design: its canonical
-`cd server && docker compose up --build` command includes a real isolated Go
-registry so the complete Operator protocol can be tested against `demo_db`.
-That development registry's SQLite/signing key and Java client identity/state
-are separate from all production paths and are excluded from production
-backup/restore and purge semantics.
+The standalone helper is parameterized for safe verification without touching
+the host installation:
+
+```bash
+MYSCOUTEE_BOOTSTRAP_ENV_FILE=/tmp/myscoutee.env \
+MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=/tmp/myscoutee.secrets.env \
+  packaging/scripts/ensure-operator-bootstrap.sh
+```
+
+The source development and E2E stacks use the same isolation model with the
+`myscoutee-registry:1.0.0-dev` tag and a loopback host port for inspection.
+Every backend-connected development, E2E, and production Explore build
+exercises the complete Operator protocol against `demo_db`; each stack keeps
+its demo SQLite/signing key and Java client identity/state separate from every
+real registry path.
 
 Plain HTTP is rejected unless
 `REGISTRY_ALLOW_INSECURE_HTTP=true`; non-loopback development hosts must also
@@ -337,11 +534,16 @@ registry identity/state replacement is incomplete, the API deliberately
 remains stopped for operator recovery instead of restarting with mismatched
 cryptographic state.
 
-`apt purge myscoutee` deliberately removes both
-`/etc/myscoutee/registry` and `/var/lib/myscoutee/registry`. Back up the
-deployment identity and registry state before purging; without that backup,
-the deployment cannot recover its signing control and accepted receipt
-history.
+`apt remove myscoutee` stops and removes the Compose containers but preserves
+deployment configuration, bind-mounted data, the two isolated Explore
+registry volumes, and the package-managed image tags for a later reinstall.
+`apt purge myscoutee` deliberately removes `/etc/myscoutee`,
+`/var/lib/myscoutee`, `/var/log/myscoutee`, the Explore registry volumes, and
+the MyScoutee-managed API, Nginx, MinIO, and demo-registry image tags. It does
+not delete shared upstream MongoDB or Redis images, and it preserves
+`/var/backups/myscoutee`. Back up the deployment identity and registry state
+before purging; without that backup, the deployment cannot recover its signing
+control and accepted receipt history.
 
 ## Image Naming
 

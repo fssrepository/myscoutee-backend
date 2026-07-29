@@ -105,6 +105,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private ObjectProvider<EventScheduler> eventSchedulerProvider;
     @Mock
+    private EventScheduler eventScheduler;
+    @Mock
     private ChatService chatService;
     @Mock
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
@@ -558,6 +560,70 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void requestJoinLeavesTheSingleDirtySignalToTheMembershipMutation() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent event = event("event-1", "host", 0d);
+        ActivitiesMembersService.OwnerMembersSnapshot before =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of(),
+                        10);
+        ActivitiesMembersService.OwnerMembersSnapshot after =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("viewer"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of(),
+                        10);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(before);
+        when(activitiesMembersService.requestJoin(
+                anyString(),
+                any(Users.class),
+                any(ActivityEvent.class),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean())).thenReturn(after);
+
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                true,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.membershipStatus()).isEqualTo("accepted");
+        verify(activitiesMembersService).requestJoin(
+                anyString(),
+                any(Users.class),
+                any(ActivityEvent.class),
+                anyBoolean(),
+                anyBoolean(),
+                anyBoolean());
+        verify(affinityRecomputeTaskService, never())
+                .enqueueEventMembersChanged(anyString(), anyString());
+    }
+
+    @Test
     void stageActionStopsBeforeLoadWhenPolicyDenies() {
         Users host = new Users();
         host.setId("host");
@@ -577,6 +643,75 @@ class ActivitiesEventsServiceTest {
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).findBySourceId(anyString());
         verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void generatedSlotFinalizeSignalsParentEventForScheduledRecomputation() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        ActivityEvent slot = event("slot-1", "host", 0d);
+        slot.setGenerated(true);
+        slot.setEventType("slot");
+        slot.setParentEventId("event-1");
+        slot.setSubEvents(List.of(stage("stage-1", "SR")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.findBySourceIdIn(List.of("slot-1"))).thenReturn(List.of(slot));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("slot-1", "stage-1"))
+                .thenReturn(Optional.empty());
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        "slot-1",
+                        "stage-1",
+                        0,
+                        "finalize-stage",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.sourceId()).isEqualTo("slot-1");
+        assertThat(result.stageStatus()).isEqualTo("F");
+        verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
+    }
+
+    @Test
+    void generatedSlotStartBuildsRandomPlansForSlotParticipantsNotParentTemplate() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent parent = event("event-1", "host", 0d);
+        ActivityEvent slot = event("slot-1", "host", 0d);
+        slot.setGenerated(true);
+        slot.setEventType("slot");
+        slot.setParentEventId("event-1");
+        slot.setSubEvents(List.of(stage("stage-1", "RS")));
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(activityEventsRepository.findBySourceIdIn(List.of("slot-1"))).thenReturn(List.of(slot));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("slot-1", "stage-1"))
+                .thenReturn(Optional.empty());
+        when(eventSchedulerProvider.getIfAvailable()).thenReturn(eventScheduler);
+
+        EventStageActionResultDto result = service.applyStageAction(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                        "host",
+                        "event-1",
+                        "slot-1",
+                        "stage-1",
+                        0,
+                        "start-tournament",
+                        null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.sourceId()).isEqualTo("slot-1");
+        assertThat(result.stageStatus()).isEqualTo("A");
+        verify(eventScheduler).generateRandomPlansForEvents(List.of("slot-1"));
+        verify(eventScheduler, never()).generateRandomPlansForEvents(List.of("event-1"));
     }
 
     @Test
@@ -1093,6 +1228,47 @@ class ActivitiesEventsServiceTest {
         event.setBoost(0d);
         event.setAffinity(affinity);
         return event;
+    }
+
+    private SubEventItem stage(String id, String stageStatus) {
+        return new SubEventItem(
+                id,
+                id,
+                "",
+                "2026-01-01T10:00:00Z",
+                "2026-01-01T11:00:00Z",
+                "",
+                "host",
+                null,
+                null,
+                "Score",
+                1,
+                false,
+                null,
+                1,
+                10,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                60,
+                stageStatus,
+                null,
+                null,
+                null,
+                null,
+                List.of());
     }
 
     private EventDetailDto eventPayload(

@@ -17,7 +17,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
+import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +39,10 @@ public class NotificationRuleRegistryService {
     public static final String RULE_EVENT_TOURNAMENT_REVIEW = "event-tournament-review";
     public static final String RULE_EVENT_COUNTER_EXPIRY = "event-counter-expiry";
     public static final String RULE_EVENT_CHECKOUT_BASKET_PURGE = "event-checkout-basket-purge";
+    public static final String RULE_NOTIFICATION_OUTBOX = "notification-outbox";
+    public static final String RULE_AFFINITY_RECOMPUTE = "affinity-recompute";
+    public static final String RULE_SCHEDULED_MESSAGES = "scheduled-messages";
+    public static final String RULE_ACCOUNT_PURGE = "account-purge";
 
     private static final String SYSTEM_USER = "notification-registry";
     private static final String INTERVAL_UNIT_SECONDS = "seconds";
@@ -49,14 +61,17 @@ public class NotificationRuleRegistryService {
             RULE_EVENT_CHECKOUT_BASKET_PURGE);
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
     private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
+    private final MongoTemplate mongoTemplate;
 
     private record IntervalSpec(int amount, String unit, int seconds, int minutes) {}
 
     public NotificationRuleRegistryService(
             NotificationRuleConfigsRepository notificationRuleConfigsRepository,
-            AdminNotificationSocketSessionRegistry socketSessionRegistry) {
+            AdminNotificationSocketSessionRegistry socketSessionRegistry,
+            MongoTemplate mongoTemplate) {
         this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
         this.socketSessionRegistry = socketSessionRegistry;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<NotificationRuleConfig> rules() {
@@ -69,6 +84,10 @@ public class NotificationRuleRegistryService {
 
     public boolean shouldRunScheduledRule(String ruleKey, Instant now) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
+        return isScheduledRuleDue(rule, now);
+    }
+
+    private boolean isScheduledRuleDue(NotificationRuleConfig rule, Instant now) {
         if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
             return false;
         }
@@ -118,39 +137,79 @@ public class NotificationRuleRegistryService {
         return false;
     }
 
-    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
+    public synchronized NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
         return beginRun(ruleKey, detail, actorUserId, Instant.now());
     }
 
-    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId, Instant startedAt) {
-        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
-        if (rule == null) {
+    public synchronized NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId, Instant startedAt) {
+        return beginRunAtomic(ruleKey, detail, actorUserId, startedAt, null);
+    }
+
+    public synchronized NotificationRuleConfig beginScheduledRun(
+            String ruleKey,
+            String detail,
+            String actorUserId,
+            Instant startedAt) {
+        Instant effectiveStartedAt = startedAt == null ? Instant.now() : startedAt;
+        NotificationRuleConfig candidate = findRule(ruleKey).orElse(null);
+        if (!isScheduledRuleDue(candidate, effectiveStartedAt)) {
             return null;
         }
+        String expectedLastRunAtIso = candidate.getRunState() == null
+                ? ""
+                : safeText(candidate.getRunState().getLastRunAtIso());
+        return beginRunAtomic(ruleKey, detail, actorUserId, effectiveStartedAt, expectedLastRunAtIso);
+    }
+
+    private NotificationRuleConfig beginRunAtomic(
+            String ruleKey,
+            String detail,
+            String actorUserId,
+            Instant startedAt,
+            String expectedLastRunAtIso) {
         String nowIso = Instant.now().toString();
         String startedAtIso = (startedAt == null ? Instant.now() : startedAt).toString();
-        NotificationRuleConfig.RunState runState = rule.getRunState() == null
-                ? new NotificationRuleConfig.RunState()
-                : rule.getRunState();
-        runState.setCurrentStatus("running");
-        runState.setProgressPercent(0);
-        runState.setProgressDetail(firstNonBlank(detail, "Starting scheduled process."));
-        runState.setStartedAtIso(startedAtIso);
-        runState.setFinishedAtIso("");
-        runState.setDurationMillis(0L);
-        rule.setRunState(runState);
-        rule.setUpdatedDate(nowIso);
-        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
-        socketSessionRegistry.broadcastRuleRuntime(saved);
+        List<Criteria> criteria = new ArrayList<>();
+        criteria.add(Criteria.where("ruleKey").is(safeText(ruleKey)));
+        criteria.add(new Criteria().orOperator(
+                Criteria.where("runState.currentStatus").ne("running"),
+                Criteria.where("runState.startedAtIso").exists(false),
+                Criteria.where("runState.startedAtIso").is(null),
+                Criteria.where("runState.startedAtIso").lte(Instant.now().minus(2, ChronoUnit.HOURS).toString())));
+        if (expectedLastRunAtIso != null) {
+            criteria.add(StringUtils.hasText(expectedLastRunAtIso)
+                    ? Criteria.where("runState.lastRunAtIso").is(expectedLastRunAtIso)
+                    : new Criteria().orOperator(
+                            Criteria.where("runState.lastRunAtIso").exists(false),
+                            Criteria.where("runState.lastRunAtIso").is(null),
+                            Criteria.where("runState.lastRunAtIso").is("")));
+            criteria.add(Criteria.where("enabled").is(true));
+        }
+        Update update = new Update()
+                .set("runState.currentStatus", "running")
+                .set("runState.progressPercent", 0)
+                .set("runState.progressDetail", firstNonBlank(detail, "Starting scheduled process."))
+                .set("runState.startedAtIso", startedAtIso)
+                .set("runState.finishedAtIso", "")
+                .set("runState.durationMillis", 0L)
+                .set("updatedDate", nowIso)
+                .set("updatedUser", firstNonBlank(actorUserId, SYSTEM_USER));
+        NotificationRuleConfig saved = mongoTemplate.findAndModify(
+                Query.query(new Criteria().andOperator(criteria)),
+                update,
+                FindAndModifyOptions.options().returnNew(true),
+                NotificationRuleConfig.class);
+        if (saved != null) {
+            socketSessionRegistry.broadcastRuleRuntime(saved);
+        }
         return saved;
     }
 
-    public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
+    public synchronized NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
         return recordRun(ruleKey, count, status, detail, actorUserId, null);
     }
 
-    public NotificationRuleConfig recordRun(
+    public synchronized NotificationRuleConfig recordRun(
             String ruleKey,
             int count,
             String status,
@@ -173,48 +232,135 @@ public class NotificationRuleRegistryService {
         long durationMillis = startedAt == null || finishedAt == null
                 ? 0L
                 : Math.max(0L, finishedAt.toEpochMilli() - startedAt.toEpochMilli());
-        runState.setCurrentStatus(firstNonBlank(status, "completed"));
-        runState.setProgressPercent(100);
-        runState.setProgressDetail(safeText(detail));
-        runState.setFinishedAtIso(finishedAtIso);
-        runState.setDurationMillis(durationMillis);
-        runState.setLastRunAtIso(finishedAtIso);
-        runState.setLastRunCount(Math.max(0, count));
-        runState.setLastRunStatus(firstNonBlank(status, "completed"));
-        runState.setLastRunDetail(safeText(detail));
-        runState.setLastRunUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        rule.setRunState(runState);
-        appendRunHistory(rule, startedAtIso, finishedAtIso, durationMillis, count, status, detail, actorUserId);
-        rule.setUpdatedDate(finishedAtIso);
-        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
-        socketSessionRegistry.broadcastRuleRuntime(saved);
+        Update update = new Update()
+                .set("runState.currentStatus", firstNonBlank(status, "completed"))
+                .set("runState.progressPercent", 100)
+                .set("runState.progressDetail", safeText(detail))
+                .set("runState.finishedAtIso", finishedAtIso)
+                .set("runState.durationMillis", durationMillis)
+                .set("runState.lastRunAtIso", finishedAtIso)
+                .set("runState.lastRunCount", Math.max(0, count))
+                .set("runState.lastRunStatus", firstNonBlank(status, "completed"))
+                .set("runState.lastRunDetail", safeText(detail))
+                .set("runState.lastRunUser", firstNonBlank(actorUserId, SYSTEM_USER))
+                .set("updatedDate", finishedAtIso)
+                .set("updatedUser", firstNonBlank(actorUserId, SYSTEM_USER));
+        update.push("runHistory")
+                .atPosition(0)
+                .slice(RUN_HISTORY_LIMIT)
+                .each(runHistoryEntry(
+                        Boolean.TRUE.equals(rule.getManualRunEnabled()),
+                        startedAtIso,
+                        finishedAtIso,
+                        durationMillis,
+                        count,
+                        status,
+                        detail,
+                        actorUserId));
+        Criteria criteria = Criteria.where("ruleKey").is(safeText(ruleKey));
+        if (startedAtOverride != null) {
+            criteria = new Criteria().andOperator(
+                    criteria,
+                    Criteria.where("runState.startedAtIso").is(startedAtOverride.toString()));
+        }
+        NotificationRuleConfig saved = mongoTemplate.findAndModify(
+                Query.query(criteria),
+                update,
+                FindAndModifyOptions.options().returnNew(true),
+                NotificationRuleConfig.class);
+        if (saved != null) {
+            socketSessionRegistry.broadcastRuleRuntime(saved);
+        }
         return saved;
     }
 
-    public NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {
+    public synchronized NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
         }
         String nowIso = Instant.now().toString();
-        NotificationRuleConfig.RunState runState = rule.getRunState() == null
-                ? new NotificationRuleConfig.RunState()
-                : rule.getRunState();
-        runState.setCurrentStatus("running");
-        runState.setProgressPercent(clamp(progressPercent, 0, 99));
-        runState.setProgressDetail(firstNonBlank(detail, "Scheduled process is running."));
-        if (!StringUtils.hasText(runState.getStartedAtIso())) {
-            runState.setStartedAtIso(nowIso);
+        String startedAtIso = rule.getRunState() == null
+                ? nowIso
+                : firstNonBlank(rule.getRunState().getStartedAtIso(), nowIso);
+        NotificationRuleConfig saved = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("ruleKey").is(safeText(ruleKey))),
+                new Update()
+                        .set("runState.currentStatus", "running")
+                        .set("runState.progressPercent", clamp(progressPercent, 0, 99))
+                        .set("runState.progressDetail", firstNonBlank(detail, "Scheduled process is running."))
+                        .set("runState.startedAtIso", startedAtIso)
+                        .set("runState.finishedAtIso", "")
+                        .set("runState.durationMillis", 0L)
+                        .set("updatedDate", nowIso)
+                        .set("updatedUser", firstNonBlank(actorUserId, SYSTEM_USER)),
+                FindAndModifyOptions.options().returnNew(true),
+                NotificationRuleConfig.class);
+        if (saved != null) {
+            socketSessionRegistry.broadcastRuleRuntime(saved);
         }
-        runState.setFinishedAtIso("");
-        runState.setDurationMillis(0L);
-        rule.setRunState(runState);
-        rule.setUpdatedDate(nowIso);
-        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
-        socketSessionRegistry.broadcastRuleRuntime(saved);
         return saved;
+    }
+
+    public synchronized NotificationRuleConfig adjustPendingCount(String ruleKey, int delta, String unit) {
+        String normalizedRuleKey = safeText(ruleKey);
+        if (!StringUtils.hasText(normalizedRuleKey) || delta == 0) {
+            return findRule(normalizedRuleKey).orElse(null);
+        }
+        String nowIso = Instant.now().toString();
+        AggregationExpression pendingCount = context -> new Document(
+                "$max",
+                List.of(
+                        0,
+                        new Document(
+                                "$add",
+                                List.of(
+                                        new Document(
+                                                "$ifNull",
+                                                List.of("$runState.pendingCount", 0)),
+                                        delta))));
+        AggregationUpdate update = AggregationUpdate.update()
+                .set("runState").toValue((AggregationExpression) context -> new Document(
+                            "$ifNull",
+                            List.of("$runState", new Document())))
+                .set("runState.pendingCount").toValue(pendingCount)
+                .set("runState.pendingCountUnit").toValue(firstNonBlank(unit, "records"))
+                .set("runState.pendingCountUpdatedAtIso").toValue(nowIso);
+        NotificationRuleConfig saved = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("ruleKey").is(normalizedRuleKey)),
+                update,
+                FindAndModifyOptions.options().returnNew(true),
+                NotificationRuleConfig.class);
+        return saved;
+    }
+
+    public synchronized int claimPendingCount(String ruleKey) {
+        String normalizedRuleKey = safeText(ruleKey);
+        if (!StringUtils.hasText(normalizedRuleKey)) {
+            return 0;
+        }
+        String nowIso = Instant.now().toString();
+        NotificationRuleConfig previous = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("ruleKey").is(normalizedRuleKey)),
+                new Update()
+                        .set("runState.pendingCount", 0)
+                        .set("runState.pendingCountUpdatedAtIso", nowIso),
+                FindAndModifyOptions.options().returnNew(false),
+                NotificationRuleConfig.class);
+        NotificationRuleConfig current = findRule(normalizedRuleKey).orElse(null);
+        if (current != null) {
+            socketSessionRegistry.broadcastRuleRuntime(current);
+        }
+        Integer pendingCount = previous == null || previous.getRunState() == null
+                ? null
+                : previous.getRunState().getPendingCount();
+        return Math.max(0, pendingCount == null ? 0 : pendingCount);
+    }
+
+    public synchronized void restoreClaimedPendingCount(String ruleKey, int claimedCount, String unit) {
+        if (claimedCount > 0) {
+            adjustPendingCount(ruleKey, claimedCount, unit);
+        }
     }
 
     public void broadcastRunProgress(
@@ -230,7 +376,7 @@ public class NotificationRuleRegistryService {
                 firstNonBlank(actorUserId, SYSTEM_USER));
     }
 
-    public List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
+    public synchronized List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
         if (incomingRules == null || incomingRules.isEmpty()) {
             return rules();
         }
@@ -241,7 +387,6 @@ public class NotificationRuleRegistryService {
             }
         }
         String nowIso = Instant.now().toString();
-        List<NotificationRuleConfig> nextRules = new ArrayList<>();
         for (NotificationRuleConfig incoming : incomingRules) {
             String ruleKey = safeText(incoming == null ? null : incoming.getRuleKey());
             if (!StringUtils.hasText(ruleKey)) {
@@ -258,12 +403,38 @@ public class NotificationRuleRegistryService {
             }
             merged.setUpdatedDate(nowIso);
             merged.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-            nextRules.add(merged);
-        }
-        if (!nextRules.isEmpty()) {
-            notificationRuleConfigsRepository.saveAll(nextRules);
+            if (current == null) {
+                notificationRuleConfigsRepository.save(merged);
+            } else {
+                saveEditableFields(merged);
+            }
         }
         return rules();
+    }
+
+    private NotificationRuleConfig saveEditableFields(NotificationRuleConfig rule) {
+        Update update = new Update()
+                .set("label", rule.getLabel())
+                .set("category", rule.getCategory())
+                .set("description", rule.getDescription())
+                .set("actionKey", rule.getActionKey())
+                .set("triggerKind", rule.getTriggerKind())
+                .set("enabled", rule.getEnabled())
+                .set("manualRunEnabled", rule.getManualRunEnabled())
+                .set("adminManageable", rule.getAdminManageable())
+                .set("priority", rule.getPriority())
+                .set("channels", rule.getChannels())
+                .set("timing", rule.getTiming())
+                .set("scheduleSlots", rule.getScheduleSlots())
+                .set("parameters", rule.getParameters())
+                .set("message", rule.getMessage())
+                .set("updatedDate", rule.getUpdatedDate())
+                .set("updatedUser", rule.getUpdatedUser());
+        return mongoTemplate.findAndModify(
+                Query.query(Criteria.where("ruleKey").is(safeText(rule.getRuleKey()))),
+                update,
+                FindAndModifyOptions.options().returnNew(true),
+                NotificationRuleConfig.class);
     }
 
     private String i18nSegment(String value) {
@@ -582,8 +753,8 @@ public class NotificationRuleRegistryService {
         }
     }
 
-    private void appendRunHistory(
-            NotificationRuleConfig rule,
+    private NotificationRuleConfig.RunHistoryEntry runHistoryEntry(
+            boolean manualRunEnabled,
             String startedAtIso,
             String finishedAtIso,
             long durationMillis,
@@ -591,10 +762,11 @@ public class NotificationRuleRegistryService {
             String status,
             String detail,
             String actorUserId) {
-        List<NotificationRuleConfig.RunHistoryEntry> history = new ArrayList<>();
         NotificationRuleConfig.RunHistoryEntry entry = new NotificationRuleConfig.RunHistoryEntry();
         entry.setId(UUID.randomUUID().toString());
-        entry.setTrigger("scheduler".equals(safeText(actorUserId)) ? "scheduled" : "manual");
+        entry.setTrigger(manualRunEnabled && !"scheduler".equals(safeText(actorUserId))
+                ? "manual"
+                : "scheduled");
         entry.setRunnerUser(firstNonBlank(actorUserId, SYSTEM_USER));
         entry.setStartedAtIso(startedAtIso);
         entry.setFinishedAtIso(finishedAtIso);
@@ -602,14 +774,7 @@ public class NotificationRuleRegistryService {
         entry.setProcessedCount(Math.max(0, processedCount));
         entry.setStatus(firstNonBlank(status, "completed"));
         entry.setDetail(safeText(detail));
-        history.add(entry);
-        if (rule.getRunHistory() != null) {
-            history.addAll(rule.getRunHistory().stream()
-                    .filter(existing -> existing != null && StringUtils.hasText(safeText(existing.getId())))
-                    .limit(RUN_HISTORY_LIMIT - 1L)
-                    .toList());
-        }
-        rule.setRunHistory(history);
+        return entry;
     }
 
     private IntervalSpec intervalSpec(NotificationRuleConfig.Timing timing) {

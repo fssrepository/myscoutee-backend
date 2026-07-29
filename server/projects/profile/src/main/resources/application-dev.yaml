@@ -12,8 +12,10 @@ management:
         prometheus: "metrics"
 
 config:
-  adminUser: ${ADMIN_USER:myscoutee@gmail.com}
   operator-user: ${OPERATOR_USER:}
+  operator-bootstrap-email: ${OPERATOR_BOOTSTRAP_EMAIL:}
+  operator-bootstrap-password-sha256: ${OPERATOR_BOOTSTRAP_PASSWORD_SHA256:}
+  operator-bootstrap-allow-insecure: ${OPERATOR_BOOTSTRAP_ALLOW_INSECURE:true}
   firebase-enabled: ${FIREBASE_ENABLED:false}
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:./secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}

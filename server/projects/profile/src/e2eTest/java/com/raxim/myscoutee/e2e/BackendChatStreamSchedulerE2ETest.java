@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
@@ -122,6 +123,8 @@ class BackendChatStreamSchedulerE2ETest {
     private ChatWebSocketSessionRegistry sessionRegistry;
     @Autowired
     private ChatWebSocketHandler chatWebSocketHandler;
+    @Autowired
+    private InMemoryRedisStream redisStream;
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
@@ -145,7 +148,7 @@ class BackendChatStreamSchedulerE2ETest {
 
     @BeforeEach
     void seedBackend() {
-        E2eInfrastructure.redisStream.clear();
+        redisStream.clear();
         withReal(() -> {
             mongoTemplate.remove(new Query(), Users.class);
             mongoTemplate.remove(new Query(), Chat.class);
@@ -173,7 +176,8 @@ class BackendChatStreamSchedulerE2ETest {
         String messageId = posted.path("id").asString();
         assertThat(messageId).isNotBlank();
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(50)).untilAsserted(() ->
-                assertThat(E2eInfrastructure.redisStream.size()).isEqualTo(1));
+                assertThat(redisStream.size(ChatStreamPublisher.STREAM_KEY))
+                        .isEqualTo(1));
 
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
             assertThat(recipientMessages).hasSize(1);
@@ -203,7 +207,8 @@ class BackendChatStreamSchedulerE2ETest {
         assertThat(secondMessageId).isNotBlank();
 
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
-            assertThat(E2eInfrastructure.redisStream.deliveredCount()).isEqualTo(2);
+            assertThat(redisStream.deliveredCount(ChatStreamPublisher.STREAM_KEY))
+                    .isEqualTo(2);
             assertThat(recipientMessages).hasSize(2);
         });
 
@@ -409,17 +414,22 @@ class BackendChatStreamSchedulerE2ETest {
 
     @TestConfiguration(proxyBeanMethods = false)
     static class E2eInfrastructure {
-        static final InMemoryRedisStream redisStream = new InMemoryRedisStream();
+        @Bean
+        InMemoryRedisStream inMemoryRedisStream() {
+            return new InMemoryRedisStream();
+        }
 
         @Bean
         @Primary
         @SuppressWarnings("unchecked")
-        StringRedisTemplate stringRedisTemplate() {
+        StringRedisTemplate stringRedisTemplate(InMemoryRedisStream redisStream) {
             StringRedisTemplate template = mock(StringRedisTemplate.class, RETURNS_DEEP_STUBS);
             StreamOperations<String, Object, Object> streamOperations = mock(StreamOperations.class);
             when(template.opsForStream()).thenReturn(streamOperations);
             when(streamOperations.add(any(MapRecord.class))).thenAnswer(invocation -> redisStream.add(invocation.getArgument(0)));
-            when(streamOperations.read(any(StreamReadOptions.class), any(StreamOffset[].class))).thenAnswer(invocation -> redisStream.read());
+            when(streamOperations.read(any(StreamReadOptions.class), any(StreamOffset[].class)))
+                    .thenAnswer(invocation -> redisStream.read(List.of(
+                            invocation.<StreamOffset<String>>getArgument(1))));
             return template;
         }
 
@@ -439,46 +449,105 @@ class BackendChatStreamSchedulerE2ETest {
     }
 
     static class InMemoryRedisStream {
-        private final AtomicLong sequence = new AtomicLong();
-        private final List<MapRecord<String, Object, Object>> records = new CopyOnWriteArrayList<>();
-        private final AtomicLong deliveredThrough = new AtomicLong();
+        private final Map<String, AtomicLong> sequenceByStream =
+                new ConcurrentHashMap<>();
+        private final Map<String, List<MapRecord<String, Object, Object>>>
+                recordsByStream = new ConcurrentHashMap<>();
+        private final Map<String, AtomicLong> deliveredThroughByStream =
+                new ConcurrentHashMap<>();
 
         RecordId add(MapRecord<String, Object, Object> record) {
-            long idValue = sequence.incrementAndGet();
+            String streamKey = record.getStream() == null
+                    ? ChatStreamPublisher.STREAM_KEY
+                    : record.getStream();
+            long idValue = sequenceByStream
+                    .computeIfAbsent(streamKey, ignored -> new AtomicLong())
+                    .incrementAndGet();
             RecordId id = RecordId.of(idValue, 0);
             Map<Object, Object> value = new LinkedHashMap<>();
             value.putAll(record.getValue());
-            records.add(StreamRecords.<String, Object, Object>mapBacked(value)
-                    .withStreamKey(record.getStream() == null ? ChatStreamPublisher.STREAM_KEY : record.getStream())
-                    .withId(id));
+            recordsByStream
+                    .computeIfAbsent(
+                            streamKey,
+                            ignored -> new CopyOnWriteArrayList<>())
+                    .add(StreamRecords.<String, Object, Object>mapBacked(value)
+                            .withStreamKey(streamKey)
+                            .withId(id));
             return id;
         }
 
-        List<MapRecord<String, Object, Object>> read() {
-            long delivered = deliveredThrough.get();
-            List<MapRecord<String, Object, Object>> next = records.stream()
-                    .filter(record -> numericId(record.getId()) > delivered)
-                    .toList();
-            next.stream()
-                    .map(MapRecord::getId)
-                    .mapToLong(this::numericId)
-                    .max()
-                    .ifPresent(deliveredThrough::set);
+        List<MapRecord<String, Object, Object>> read(
+                List<StreamOffset<String>> offsets) {
+            if (offsets == null || offsets.isEmpty()) {
+                return List.of();
+            }
+            List<MapRecord<String, Object, Object>> next = new ArrayList<>();
+            for (StreamOffset<String> offset : offsets) {
+                if (offset == null || offset.getKey() == null) {
+                    continue;
+                }
+                String streamKey = offset.getKey();
+                long delivered = numericOffset(streamKey, offset);
+                List<MapRecord<String, Object, Object>> streamRecords =
+                        recordsByStream.getOrDefault(streamKey, List.of());
+                List<MapRecord<String, Object, Object>> unread =
+                        streamRecords.stream()
+                                .filter(record ->
+                                        numericId(record.getId()) > delivered)
+                                .toList();
+                next.addAll(unread);
+                unread.stream()
+                        .map(MapRecord::getId)
+                        .mapToLong(this::numericId)
+                        .max()
+                        .ifPresent(value -> deliveredThroughByStream
+                                .computeIfAbsent(
+                                        streamKey,
+                                        ignored -> new AtomicLong())
+                                .accumulateAndGet(value, Math::max));
+            }
             return next;
         }
 
-        int size() {
-            return records.size();
+        int size(String streamKey) {
+            return recordsByStream
+                    .getOrDefault(streamKey, List.of())
+                    .size();
         }
 
-        long deliveredCount() {
-            return deliveredThrough.get();
+        long deliveredCount(String streamKey) {
+            AtomicLong delivered = deliveredThroughByStream.get(streamKey);
+            return delivered == null ? 0L : delivered.get();
         }
 
         void clear() {
-            records.clear();
-            sequence.set(0);
-            deliveredThrough.set(0);
+            recordsByStream.clear();
+            sequenceByStream.clear();
+            deliveredThroughByStream.clear();
+        }
+
+        private long numericOffset(
+                String streamKey,
+                StreamOffset<String> offset) {
+            if (offset.getOffset() == null
+                    || offset.getOffset().getOffset() == null) {
+                return 0L;
+            }
+            String value = offset.getOffset().getOffset();
+            if ("$".equals(value)) {
+                AtomicLong sequence = sequenceByStream.get(streamKey);
+                return sequence == null ? 0L : sequence.get();
+            }
+            if (">".equals(value)) {
+                AtomicLong delivered =
+                        deliveredThroughByStream.get(streamKey);
+                return delivered == null ? 0L : delivered.get();
+            }
+            try {
+                return numericId(RecordId.of(value));
+            } catch (IllegalArgumentException ignored) {
+                return 0L;
+            }
         }
 
         private long numericId(RecordId id) {

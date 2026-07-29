@@ -66,7 +66,6 @@ import tools.jackson.databind.ObjectMapper;
         properties = {
                 "config.firebase-enabled=false",
                 "config.dev-user=",
-                "config.admin-user=e2e-admin-params-admin@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -187,25 +186,41 @@ class BackendAdminParamsRealtimeE2ETest {
     }
 
     @Test
-    void chatMessageRetrievalMarksCopiesReadWithoutRealtimeCounterChangesThroughHttp() {
+    void chatMessageRetrievalPublishesStructuredRealtimeCountersAndReadReceiptThroughHttp() {
         JsonNode initial = postJson("/auth/me/realtime/long-poll", Map.of("userId", RECIPIENT_ID, "cursor", ""));
         String initialCursor = initial.path("cursor").asString();
         assertThat(initial.path("userId").asString()).isEqualTo(RECIPIENT_ID);
-        assertThat(initial.path("counters").path("chat").asInt()).isZero();
+        assertThat(initial.path("counters").path("chats").asInt()).isZero();
+        assertThat(initial.path("counters").path("chat").path("all").asInt()).isZero();
         assertThat(initialCursor).isNotBlank();
 
-        postJson("/activities/chats/" + REALTIME_CHAT_ID + "/messages?userId=" + SENDER_ID,
+        JsonNode posted = postJson("/activities/chats/" + REALTIME_CHAT_ID + "/messages?userId=" + SENDER_ID,
                 Map.of("text", "Realtime counter should rise"));
+        String messageId = posted.path("id").asString();
+        assertThat(messageId).isNotBlank();
 
         JsonNode afterMessage = postJson("/auth/me/realtime/long-poll",
                 Map.of("userId", RECIPIENT_ID, "cursor", initialCursor));
-        assertThat(afterMessage.path("counters").path("chat").asInt()).isZero();
-        assertThat(afterMessage.path("cursor").asString()).isEqualTo(initialCursor);
+        assertThat(afterMessage.path("counters").path("chats").asInt()).isEqualTo(1);
+        assertThat(afterMessage.path("counters").path("chat").path("all").asInt()).isEqualTo(1);
+        String unreadCursor = afterMessage.path("cursor").asString();
+        assertThat(unreadCursor).isNotEqualTo(initialCursor);
         assertThat(findChat(RECIPIENT_ID, REALTIME_CHAT_ID).getUnread()).isEqualTo(1);
 
         JsonNode messages = getJson("/activities/chats/" + REALTIME_CHAT_ID + "/messages?userId=" + RECIPIENT_ID);
         assertThat(messages.path("items")).hasSize(1);
+        assertThat(messages.path("read").path("userId").asString()).isEqualTo(RECIPIENT_ID);
+        assertThat(messages.path("read").path("messageIds")).hasSize(1);
+        assertThat(messages.path("read").path("messageIds").get(0).asString()).isEqualTo(messageId);
+        assertThat(messages.path("read").path("unread").asInt()).isZero();
         assertThat(findChat(RECIPIENT_ID, REALTIME_CHAT_ID).getUnread()).isZero();
+
+        JsonNode afterRead = postJson("/auth/me/realtime/long-poll",
+                Map.of("userId", RECIPIENT_ID, "cursor", unreadCursor));
+        assertThat(afterRead.path("counters").path("chats").asInt()).isZero();
+        assertThat(afterRead.path("counters").path("chat").path("all").asInt()).isZero();
+        assertThat(afterRead.path("counters").path("notifications").asInt()).isEqualTo(1);
+        assertThat(afterRead.path("cursor").asString()).isNotEqualTo(unreadCursor);
     }
 
     private void clearE2eCollections() {

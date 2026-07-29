@@ -40,6 +40,7 @@ public class EventCheckoutBasketItem {
     private Integer quantity;
     private String status;
     private String resultState;
+    private Boolean pendingCounterTracked;
     private List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows = new ArrayList<>();
     private List<String> appliedPromoCodes = new ArrayList<>();
     private String checkoutSessionId;
@@ -97,6 +98,8 @@ public class EventCheckoutBasketItem {
 
     public String getResultState() { return resultState; }
     public void setResultState(String resultState) { this.resultState = resultState; }
+    public Boolean getPendingCounterTracked() { return pendingCounterTracked; }
+    public void setPendingCounterTracked(Boolean pendingCounterTracked) { this.pendingCounterTracked = pendingCounterTracked; }
 
     public List<EventCheckoutPricingSummaryRowDto> getPricingSummaryRows() { return pricingSummaryRows; }
     public void setPricingSummaryRows(List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {

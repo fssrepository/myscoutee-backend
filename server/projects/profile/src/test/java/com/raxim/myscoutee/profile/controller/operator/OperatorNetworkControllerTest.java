@@ -15,10 +15,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimOverviewDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardSnapshotDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorNetworkService;
 
 class OperatorNetworkControllerTest {
@@ -32,8 +36,14 @@ class OperatorNetworkControllerTest {
                 "2026-06",
                 1L,
                 2L,
+                3L,
+                4L,
+                5L,
                 "ledger",
                 "audit",
+                "review",
+                "eligibility",
+                "transfer",
                 "100000",
                 "1",
                 "1",
@@ -68,7 +78,7 @@ class OperatorNetworkControllerTest {
     void claimStatusUsesAuthenticatedOperatorIdentity() {
         OperatorNetworkService service = mock(OperatorNetworkService.class);
         OperatorNetworkController controller = new OperatorNetworkController(service);
-        OperatorClaimStatusDto expected = new OperatorClaimStatusDto(
+        OperatorClaimStatusDto expectedStatus = new OperatorClaimStatusDto(
                 true,
                 "2026-07-28T00:00:00Z",
                 "operator-1",
@@ -83,7 +93,20 @@ class OperatorNetworkControllerTest {
                 null,
                 "APPROVED",
                 "2026-07-28T00:00:00Z",
-                "Operator");
+                "Operator",
+                "active");
+        OperatorClaimRequestDto submission = new OperatorClaimRequestDto(
+                "Operator",
+                "REG-42",
+                "Slovakia",
+                "Main Street 1",
+                "https://example.test",
+                "Alex Reviewer",
+                "Director",
+                "alex@example.test",
+                true);
+        OperatorClaimOverviewDto expected =
+                new OperatorClaimOverviewDto(expectedStatus, submission);
         var authentication = new UsernamePasswordAuthenticationToken(
                 "operator-1",
                 null,
@@ -95,7 +118,7 @@ class OperatorNetworkControllerTest {
     }
 
     @Test
-    void structuredClaimForwardsOnlyCompanyVerificationAndReturnsStatus() {
+    void structuredClaimReturnsStatusAndCanonicalLeaderboardMutation() {
         OperatorNetworkService service = mock(OperatorNetworkService.class);
         OperatorNetworkController controller = new OperatorNetworkController(service);
         OperatorClaimRequestDto request = new OperatorClaimRequestDto(
@@ -108,7 +131,7 @@ class OperatorNetworkControllerTest {
                 "Director",
                 "alex@example.test",
                 true);
-        OperatorClaimStatusDto expected = new OperatorClaimStatusDto(
+        OperatorClaimStatusDto expectedStatus = new OperatorClaimStatusDto(
                 true,
                 "2026-07-28T00:00:00Z",
                 "operator-1",
@@ -123,7 +146,29 @@ class OperatorNetworkControllerTest {
                 null,
                 "PENDING_REVIEW",
                 "2026-07-28T00:00:00Z",
-                "Example Cooperative");
+                "Example Cooperative",
+                "inactive");
+        OperatorLeaderboardRowDto leaderboardEntry =
+                new OperatorLeaderboardRowDto(
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "claimed",
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "Example Cooperative",
+                        "",
+                        "pending-review",
+                        "inactive",
+                        1L,
+                        "0",
+                        "1",
+                        "0",
+                        "1");
+        OperatorClaimMutationResultDto expected = new OperatorClaimMutationResultDto(
+                expectedStatus,
+                request,
+                leaderboardEntry,
+                List.of(leaderboardEntry),
+                List.of("dep_0123456789abcdef0123456789abcdef"),
+                0);
         var authentication = new UsernamePasswordAuthenticationToken(
                 "operator-1",
                 null,
@@ -136,6 +181,34 @@ class OperatorNetworkControllerTest {
                 "claim-request-12345678",
                 authentication)).isSameAs(expected);
         verify(service).submitClaim(request, "operator-1", "claim-request-12345678");
+    }
+
+    @Test
+    void clientTokenRedemptionReturnsCanonicalLeaderboardMutation() {
+        OperatorNetworkService service = mock(OperatorNetworkService.class);
+        OperatorNetworkController controller = new OperatorNetworkController(service);
+        OperatorRedeemClientTokenRequestDto request =
+                new OperatorRedeemClientTokenRequestDto(
+                        "client-token",
+                        "redeem-request-12345678");
+        OperatorClaimMutationResultDto expected =
+                new OperatorClaimMutationResultDto(
+                        null,
+                        null,
+                        null,
+                        List.of(),
+                        List.of("dep_0123456789abcdef0123456789abcdef"),
+                        -1);
+        var authentication = new UsernamePasswordAuthenticationToken(
+                "operator-1",
+                null,
+                List.of(new SimpleGrantedAuthority("O")));
+        when(service.redeemClientToken(request, "operator-1"))
+                .thenReturn(expected);
+
+        assertThat(controller.redeemClientToken(request, authentication))
+                .isSameAs(expected);
+        verify(service).redeemClientToken(request, "operator-1");
     }
 
     @Test

@@ -1,0 +1,21 @@
+{
+  "name": "operator pre-registration guards and dormant synchronization",
+  "group": "flows",
+  "tags": [
+    "operator",
+    "security",
+    "registry"
+  ],
+  "order": 9100,
+  "method": "POST",
+  "path": "/api/operator/revenue/synchronize",
+  "script": "operator-pre-registration-guards.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 12000
+}

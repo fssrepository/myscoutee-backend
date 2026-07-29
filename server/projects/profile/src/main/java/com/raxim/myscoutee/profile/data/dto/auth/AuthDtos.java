@@ -2,11 +2,29 @@ package com.raxim.myscoutee.profile.data.dto.auth;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public final class AuthDtos {
     private AuthDtos() {
+    }
+
+    public record OperatorBootstrapLoginRequestDto(
+            @NotBlank @Email @Size(max = 254) String email,
+            @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+            @NotBlank @Size(max = 512) String password) {
+    }
+
+    public record OperatorBootstrapLoginResponseDto(
+            String tokenType,
+            String accessToken,
+            String email,
+            String expiresAt) {
     }
 
     public record UserPersonalityTraitDto(

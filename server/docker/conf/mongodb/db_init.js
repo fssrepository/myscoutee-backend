@@ -3,10 +3,13 @@ const requiredCollections = [
   'userRates',
   'userFilterPreferences',
   'assets',
+  'assetRequests',
   'activityMembers',
   'activityResources',
   'eventCheckoutBasketItems',
   'payments',
+  'revenueReportOutbox',
+  'qualifiedMauReportOutbox',
   'accessPolicyDefinitions',
   'accessGrants',
   'chats',
@@ -33,6 +36,7 @@ const requiredCollections = [
   'countryPartitions',
   'operatorRegistryEndpoints',
   'paymentProviders',
+  'communityProviders',
   'deploymentConfigurations',
   'i18n_bundles',
   'i18n_messages'
@@ -218,6 +222,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 },
     { name: 'user_rate_pair_lookup_v2' }
   );
+  portalDb.userRates.createIndex(
+    { scoreGiven: 1, updatedDate: 1, createdDate: 1, ownerUserId: 1 },
+    { name: 'user_rate_qmau_window' }
+  );
 
   portalDb.userFilterPreferences.createIndex(
     { syncKey: 1 },
@@ -245,6 +253,11 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'asset_owner_updated' }
   );
 
+  portalDb.assetRequests.createIndex(
+    { status: 1, requestedAtIso: 1, userId: 1 },
+    { name: 'asset_request_qmau_booking_window' }
+  );
+
   portalDb.activityMembers.createIndex(
     { syncKey: 1 },
     { name: 'activity_member_sync_key', unique: true, sparse: true }
@@ -268,6 +281,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.activityMembers.createIndex(
     { ownerType: 1, status: 1, requestKind: 1 },
     { name: 'activity_member_status_request' }
+  );
+  portalDb.activityMembers.createIndex(
+    { ownerType: 1, status: 1, actionAtIso: 1, userId: 1 },
+    { name: 'activity_member_qmau_join' }
   );
 
   portalDb.eventCheckoutBasketItems.createIndex(
@@ -306,6 +323,48 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.payments.createIndex(
     { gatewaySessionId: 1 },
     { name: 'payment_gateway_session', unique: true, sparse: true }
+  );
+  portalDb.payments.createIndex(
+    { status: 1, provider: 1, auditKind: 1, createdDate: 1, _id: 1 },
+    { name: 'payment_revenue_period_scan' }
+  );
+
+  portalDb.revenueReportOutbox.createIndex(
+    { deploymentId: 1, period: 1, revision: 1 },
+    { name: 'revenue_outbox_deployment_period_revision', unique: true }
+  );
+  portalDb.revenueReportOutbox.createIndex(
+    {
+      deploymentId: 1,
+      status: 1,
+      nextRetryAt: 1,
+      period: 1,
+      revision: 1
+    },
+    { name: 'revenue_outbox_delivery' }
+  );
+  portalDb.revenueReportOutbox.createIndex(
+    { idempotencyKey: 1 },
+    { name: 'revenue_outbox_idempotency', unique: true }
+  );
+
+  portalDb.qualifiedMauReportOutbox.createIndex(
+    { deploymentId: 1, period: 1, revision: 1 },
+    { name: 'qmau_outbox_deployment_period_revision', unique: true }
+  );
+  portalDb.qualifiedMauReportOutbox.createIndex(
+    {
+      deploymentId: 1,
+      status: 1,
+      nextRetryAt: 1,
+      period: 1,
+      revision: 1
+    },
+    { name: 'qmau_outbox_delivery' }
+  );
+  portalDb.qualifiedMauReportOutbox.createIndex(
+    { idempotencyKey: 1 },
+    { name: 'qmau_outbox_idempotency', unique: true }
   );
 
   portalDb.activityResources.createIndex(
@@ -427,6 +486,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { locationGeo: '2dsphere' },
     { name: 'event_location_geo' }
   );
+  portalDb.events.createIndex(
+    { status: 1, generated: 1, createdDate: 1, creatorUserId: 1 },
+    { name: 'event_qmau_host_window' }
+  );
 
   portalDb.chats.createIndex(
     { ownerUserId: 1, id: 1 },
@@ -476,6 +539,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { pollVoterUserIds: 1, sentAtIso: -1 },
     { name: 'chat_poll_voter_date' }
   );
+  portalDb.chatMessages.createIndex(
+    { sentAtIso: 1, 'senderAvatar.id': 1, deletedAtIso: 1 },
+    { name: 'chat_message_qmau_window' }
+  );
 
   portalDb.eventFeedbackStates.createIndex(
     { syncKey: 1 },
@@ -492,6 +559,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.eventFeedbackStates.createIndex(
     { eventId: 1, updatedDate: -1 },
     { name: 'event_feedback_state_event_updated' }
+  );
+  portalDb.eventFeedbackStates.createIndex(
+    { removed: 1, submittedAtIso: 1, viewerUserId: 1, eventId: 1 },
+    { name: 'event_feedback_state_qmau_window' }
   );
 
   portalDb.eventFeedbackAnswers.createIndex(
@@ -585,6 +656,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.paymentProviders.createIndex(
     { enabled: 1, sortOrder: 1, label: 1, _id: 1 },
     { name: 'payment_provider_enabled_sort' }
+  );
+  portalDb.communityProviders.createIndex(
+    { enabled: 1, sortOrder: 1, name: 1, _id: 1 },
+    { name: 'community_provider_enabled_sort' }
   );
 
   portalDb.i18n_bundles.createIndex(

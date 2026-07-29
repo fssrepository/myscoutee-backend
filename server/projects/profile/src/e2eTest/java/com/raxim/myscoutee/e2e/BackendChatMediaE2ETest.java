@@ -164,7 +164,10 @@ class BackendChatMediaE2ETest {
 
         JsonNode readerMessages = getJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + READER_ID);
         JsonNode readerMessage = messageById(readerMessages, messageId);
-        assertThat(ids(readerMessage.path("readBy"), "id")).contains(READER_ID);
+        assertThat(readerMessages.path("read").path("userId").asString()).isEqualTo(READER_ID);
+        assertThat(textValues(readerMessages.path("read").path("messageIds"))).contains(messageId);
+        assertThat(readerMessages.path("read").path("unread").asInt()).isZero();
+        assertThat(readerMessage.path("id").asString()).isEqualTo(messageId);
         assertThat(findChat(READER_ID, CHAT_ID).getUnread()).isZero();
 
         JsonNode edited = postJson("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/edit?userId=" + SENDER_ID,
@@ -736,6 +739,14 @@ class BackendChatMediaE2ETest {
         List<String> values = new ArrayList<>();
         for (JsonNode item : array) {
             values.add(item.path(fieldName).asString());
+        }
+        return values;
+    }
+
+    private List<String> textValues(JsonNode array) {
+        List<String> values = new ArrayList<>();
+        for (JsonNode item : array) {
+            values.add(item.asString());
         }
         return values;
     }

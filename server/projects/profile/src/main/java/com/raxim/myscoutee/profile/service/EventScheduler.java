@@ -41,8 +41,10 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorRequest;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -50,6 +52,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -71,6 +74,7 @@ public class EventScheduler {
     private static final String STAGE_STATUS_FINALIZED = "F";
     private static final String STAGE_STATUS_SUSPENDED = "S";
     private static final String STAGE_STATUS_ERROR = "E";
+    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
     private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
@@ -82,12 +86,15 @@ public class EventScheduler {
     private final SchedulerPlanMarkersRepository schedulerPlanMarkersRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
+    private final ActivityTournamentGroupCounterService activityTournamentGroupCounterService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final EventCounterExpiryService eventCounterExpiryService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
     private final NotificationOutboxService notificationOutboxService;
+    private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
@@ -107,6 +114,7 @@ public class EventScheduler {
             SchedulerPlanMarkersRepository schedulerPlanMarkersRepository,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
+            ActivityTournamentGroupCounterService activityTournamentGroupCounterService,
             EventInviteNotificationService eventInviteNotificationService,
             EventCounterExpiryService eventCounterExpiryService,
             EventCheckoutBasketService eventCheckoutBasketService,
@@ -119,6 +127,7 @@ public class EventScheduler {
         this.schedulerPlanMarkersRepository = schedulerPlanMarkersRepository;
         this.activitiesMembersService = activitiesMembersService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
+        this.activityTournamentGroupCounterService = activityTournamentGroupCounterService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.eventCounterExpiryService = eventCounterExpiryService;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
@@ -127,44 +136,54 @@ public class EventScheduler {
         this.notificationOutboxService = notificationOutboxService;
     }
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
+        this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setActivitySubEventStageRuntimeRepository(
+            ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository) {
+        this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
+    }
+
     @Scheduled(fixedDelayString = "${events.scheduler.check-delay-ms:60000}")
     public void runScheduledWrappers() {
+        if (scheduledMongoSessionRunner == null) {
+            runScheduledWrappersForCurrentDatabase();
+            return;
+        }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::runScheduledWrappersForCurrentDatabase);
+    }
+
+    private void runScheduledWrappersForCurrentDatabase() {
         if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
         }
 
         Instant now = Instant.now();
-        if (schedulerEnabled && claimStageSchedulerRun(now)) {
-            int startReviewCount = moveTournamentFirstStagesToStartReview(now);
-            if (startReviewCount > 0) {
-                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
-            }
-            int reviewCount = closeEndedTournamentStagesForReview(now);
-            if (reviewCount > 0) {
-                LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
-            }
+        boolean tournamentRuleConfigured = notificationRuleRegistryService
+                .findRule(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                .isPresent();
+        boolean tournamentReviewDue = tournamentRuleConfigured
+                ? notificationRuleRegistryService.shouldRunScheduledRule(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        now)
+                : schedulerEnabled && claimStageSchedulerRun(now);
+        if (tournamentReviewDue) {
+            runTournamentReview(now, tournamentRuleConfigured);
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                    "Scheduled random grouping started.",
-                    MARKER_UPDATED_BY);
-            List<GeneratedEventPlan> plans = generateRandomPlans();
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                    plans.size(),
-                    "completed",
-                    "Generated random event group plans.",
-                    MARKER_UPDATED_BY);
+            runScheduledRandomGroups();
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, now)) {
-            int expiredCount = eventCounterExpiryService.runExpiryPassNow();
+            int expiredCount = eventCounterExpiryService.runScheduledExpiryPass(now);
             if (expiredCount > 0) {
                 LOGGER.info("Expired {} event counter source(s).", expiredCount);
             }
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
-            int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBaskets(now);
+            int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBasketsScheduled(now);
             if (purgedCount > 0) {
                 LOGGER.info("Purged {} checkout basket item(s).", purgedCount);
             }
@@ -173,22 +192,167 @@ public class EventScheduler {
 
     @Scheduled(fixedDelayString = "${events.waitlist.inviter-check-delay-ms:60000}")
     public void runWaitlistInviter() {
+        if (scheduledMongoSessionRunner == null) {
+            runWaitlistInviterForCurrentDatabase();
+            return;
+        }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::runWaitlistInviterForCurrentDatabase);
+    }
+
+    private void runWaitlistInviterForCurrentDatabase() {
         if (!waitlistInviterEnabled) {
             return;
         }
-        if (!claimAutoInviterRun(Instant.now())) {
+        Instant now = Instant.now();
+        boolean ruleConfigured = notificationRuleRegistryService
+                .findRule(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                .isPresent();
+        boolean due = ruleConfigured
+                ? notificationRuleRegistryService.shouldRunScheduledRule(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        now)
+                : claimAutoInviterRun(now);
+        if (!due) {
             return;
         }
-        int invitedCount = activitiesMembersService.sweepEventWaitlists();
-        if (invitedCount > 0) {
-            LOGGER.info("Promoted {} event wait-list member(s) to invitations.", invitedCount);
+        if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
+                NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                "Scheduled event auto-inviter started.",
+                MARKER_UPDATED_BY,
+                now) == null) {
+            return;
         }
-        List<InviteBatchPlan> autoInvitePlans = generatePriorityPlans();
-        int autoInvitedCount = autoInvitePlans.stream()
-                .mapToInt(plan -> plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
-                .sum();
-        if (autoInvitedCount > 0) {
-            LOGGER.info("Auto-invited {} event candidate(s) across {} event(s).", autoInvitedCount, autoInvitePlans.size());
+        int claimedPendingCount = ruleConfigured
+                ? notificationRuleRegistryService.claimPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                : 0;
+        try {
+            int waitlistChangedCount = activitiesMembersService.sweepEventWaitlists();
+            if (waitlistChangedCount > 0) {
+                LOGGER.info("Adjusted {} event wait-list invitation(s).", waitlistChangedCount);
+            }
+            List<InviteBatchPlan> autoInvitePlans = generatePriorityPlans();
+            int autoInvitedCount = autoInvitePlans.stream()
+                    .mapToInt(plan -> plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
+                    .sum();
+            if (autoInvitedCount > 0) {
+                LOGGER.info("Auto-invited {} event candidate(s) across {} event(s).", autoInvitedCount, autoInvitePlans.size());
+            }
+            if (ruleConfigured) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        waitlistChangedCount + autoInvitedCount,
+                        "completed",
+                        "Processed scheduled wait-list and automatic invitations.",
+                        MARKER_UPDATED_BY,
+                        now);
+            }
+        } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.restoreClaimedPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        claimedPendingCount,
+                        "admin.jobs.table.affected");
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        MARKER_UPDATED_BY,
+                        now);
+            }
+            LOGGER.warn("Scheduled event auto-inviter failed.", exception);
+        }
+    }
+
+    private void runScheduledRandomGroups() {
+        Instant startedAt = Instant.now();
+        if (notificationRuleRegistryService.beginScheduledRun(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                "Scheduled random grouping started.",
+                MARKER_UPDATED_BY,
+                startedAt) == null) {
+            return;
+        }
+        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+        try {
+            List<GeneratedEventPlan> plans = generateRandomPlans();
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    plans.size(),
+                    "completed",
+                    "Generated random event group plans.",
+                    MARKER_UPDATED_BY,
+                    startedAt);
+        } catch (RuntimeException exception) {
+            notificationRuleRegistryService.restoreClaimedPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    claimedPendingCount,
+                    "admin.jobs.table.affected");
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    MARKER_UPDATED_BY,
+                    startedAt);
+            LOGGER.warn("Scheduled random grouping failed.", exception);
+        }
+    }
+
+    private void runTournamentReview(Instant now, boolean ruleConfigured) {
+        Instant startedAt = now == null ? Instant.now() : now;
+        if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
+                NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                "Scheduled tournament review started.",
+                MARKER_UPDATED_BY,
+                startedAt) == null) {
+            return;
+        }
+        int claimedPendingCount = ruleConfigured
+                ? notificationRuleRegistryService.claimPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                : 0;
+        try {
+            int startReviewCount = moveTournamentFirstStagesToStartReview(startedAt);
+            if (startReviewCount > 0) {
+                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
+            }
+            int reviewCount = closeEndedTournamentStagesForReview(startedAt);
+            if (reviewCount > 0) {
+                LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
+            }
+            ScorePlanRunResult scorePlanRun = generateScorePlanRunForEvents(null, true);
+            if (scorePlanRun.changedGroupCount() > 0) {
+                LOGGER.info(
+                        "Synchronized advancing members in {} tournament group(s).",
+                        scorePlanRun.changedGroupCount());
+            }
+            if (ruleConfigured) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        startReviewCount + reviewCount + scorePlanRun.changedGroupCount(),
+                        "completed",
+                        "Reviewed scheduled tournament stages and synchronized advancing members.",
+                        MARKER_UPDATED_BY,
+                        startedAt);
+            }
+        } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                notificationRuleRegistryService.restoreClaimedPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        claimedPendingCount,
+                        "admin.jobs.table.affected");
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        MARKER_UPDATED_BY,
+                        startedAt);
+            }
+            LOGGER.warn("Scheduled tournament review failed.", exception);
         }
     }
 
@@ -369,7 +533,13 @@ public class EventScheduler {
         if (groupMin > 0 || groupMax > 0) {
             int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
             int stageMax = safeCount(subEvent.capacityMax());
-            return stageMax > 0 ? Math.max(1, (int) Math.ceil((double) stageMax / divisor)) : 0;
+            int groupsNeededForMaximum = stageMax > 0
+                    ? (int) Math.ceil((double) stageMax / divisor)
+                    : 0;
+            int groupsAllowedByMinimum = groupMin > 0
+                    ? Math.max(1, stageMax / groupMin)
+                    : groupsNeededForMaximum;
+            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
         }
         return 0;
     }
@@ -595,8 +765,30 @@ public class EventScheduler {
                     continue;
                 }
 
+                Set<String> stageEligibleUserIds = resolveStageAssignmentUserIds(
+                        eventId,
+                        subEvents,
+                        subEventIndex,
+                        acceptedUserIds);
+                if (stageEligibleUserIds.isEmpty()) {
+                    logDiagnostic(
+                            "random",
+                            eventId,
+                            subEventId,
+                            subEventIndex == 0
+                                    ? "No accepted users are eligible for the first stage."
+                                    : "The finalized previous stage has no advancing users.");
+                    processedSubEvents.incrementAndGet();
+                    continue;
+                }
+                FGraph stageGraph = eventGraph.filter(stageEligibleUserIds, Set.of(), 0d);
+                if (stageGraph.getNodes().isEmpty()) {
+                    processedSubEvents.incrementAndGet();
+                    continue;
+                }
+
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
-                        eventId, subEventId, subEvent, acceptedUserIds, true, "random", observedQueries, eventDocumentsById);
+                        eventId, subEventId, subEvent, stageEligibleUserIds, true, "random", observedQueries, eventDocumentsById);
                         
                 if (targets.isEmpty()) {
                     int processedSubEvent = processedSubEvents.incrementAndGet();
@@ -612,7 +804,10 @@ public class EventScheduler {
                 }
                 
                 List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
-                        event, eventGraph, acceptedUserIds, targets, "random", "random:" + eventId + ":" + subEventId, observedQueries);
+                        event, stageGraph, stageEligibleUserIds, targets, "random", "random:" + eventId + ":" + subEventId, observedQueries);
+                if (!assignedMembers.isEmpty()) {
+                    activityTournamentGroupCounterService.syncParent(eventId, subEventId);
+                }
                         
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
@@ -729,7 +924,10 @@ public class EventScheduler {
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
             
             int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
-            int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - acceptedMembers);
+            int reservedInvitations = reservedInvitationCount(snapshot);
+            int openSpots = Math.max(
+                    0,
+                    safeCount(event.getCapacityTotal()) - acceptedMembers - reservedInvitations);
             
             if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
@@ -774,10 +972,45 @@ public class EventScheduler {
         return plans;
     }
 
+    private int reservedInvitationCount(ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        if (snapshot == null || snapshot.invitedMemberUserIds() == null) {
+            return 0;
+        }
+        Set<String> acceptedUserIds = new LinkedHashSet<>(normalizeUserIds(snapshot.acceptedMemberUserIds()));
+        return (int) snapshot.invitedMemberUserIds().stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !acceptedUserIds.contains(userId))
+                .distinct()
+                .count();
+    }
+
     public List<EventLeaderboardStateDto> generateScorePlans() {
+        return generateScorePlansForEvents(null);
+    }
+
+    public List<EventLeaderboardStateDto> generateScorePlansForEvents(Collection<String> sourceIds) {
+        return generateScorePlanRunForEvents(sourceIds, false).states();
+    }
+
+    private ScorePlanRunResult generateScorePlanRunForEvents(
+            Collection<String> sourceIds,
+            boolean advancementOnly) {
         // THREAD SAFETY: We must use a synchronized list because multiple CPU threads will add to this simultaneously
         List<EventLeaderboardStateDto> states = Collections.synchronizedList(new ArrayList<>());
+        AtomicInteger changedGroupCount = new AtomicInteger(0);
+        Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> events = resolveCanonicalEvents();
+        if (!requestedSourceIds.isEmpty()) {
+            events = events.stream()
+                    .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
+                    .toList();
+        }
+        events = applyStageRuntimeOverlays(events);
+        events = events.stream()
+                .filter(this::shouldReviewTournamentStages)
+                .filter(event -> !advancementOnly || hasFinalizedTournamentTransition(event))
+                .toList();
         
         // --- PHASE 1: PRE-FETCH (Runs Sequentially) ---
         // Gather all users and snapshots up front to eliminate N+1 database queries
@@ -804,16 +1037,21 @@ public class EventScheduler {
         // Process every event concurrently across all available CPU cores!
         MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
         events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
-            if (event == null || event.getSubEvents() == null) return; // 'return' replaces 'continue' in lambdas
+            if (event == null || event.getSubEvents() == null || !shouldReviewTournamentStages(event)) {
+                return;
+            }
             
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) return;
             
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
+            Set<String> acceptedUserIds = snapshot == null
+                    ? new LinkedHashSet<>()
+                    : new LinkedHashSet<>(normalizeUserIds(snapshot.acceptedMemberUserIds()));
             
-            FGraph eventGraph = snapshot == null || snapshot.acceptedMemberUserIds().isEmpty()
+            FGraph eventGraph = acceptedUserIds.isEmpty()
                     ? new FGraph()
-                    : globalGraph.filter(new LinkedHashSet<>(snapshot.acceptedMemberUserIds()), Set.of(), 0d);
+                    : globalGraph.filter(acceptedUserIds, Set.of(), 0d);
 
             List<SubEventItem> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
@@ -845,11 +1083,7 @@ public class EventScheduler {
                 if (!STAGE_STATUS_FINALIZED.equals(stageStatus)) continue;
 
                 Set<String> advancingUserIds = resolveAdvancingUserIds(state);
-                if (advancingUserIds.isEmpty()) continue;
-
-                if (eventGraph.getNodes().isEmpty()) {
-                    eventGraph = globalGraph.filter(advancingUserIds, Set.of(), 0d);
-                }
+                advancingUserIds.retainAll(acceptedUserIds);
 
                 SubEventItem nextSubEvent = subEvents.get(index + 1);
                 String nextSubEventId = normalizeId(nextSubEvent == null ? null : nextSubEvent.id());
@@ -857,19 +1091,155 @@ public class EventScheduler {
                     logDiagnostic("score", eventId, subEventId, "Skipping next-stage materialization because the next subevent is missing an id.");
                     continue;
                 }
+                if (!isTournamentStage(nextSubEvent)) {
+                    logDiagnostic(
+                            "score",
+                            eventId,
+                            subEventId,
+                            "Skipping next-stage materialization because the adjacent subevent is not a tournament stage.");
+                    continue;
+                }
+                if (!isNextStageMembershipMutable(nextSubEvent)) {
+                    logDiagnostic(
+                            "score",
+                            eventId,
+                            subEventId,
+                            "Skipping next-stage membership synchronization because the next stage is already in progress or closed.");
+                    continue;
+                }
 
                 List<GroupAssignmentTarget> nextTargets = resolveGroupAssignmentTargets(
-                        eventId, nextSubEventId, nextSubEvent, advancingUserIds, true, "score");
+                        eventId, nextSubEventId, nextSubEvent, advancingUserIds, false, "score");
                 
                 if (nextTargets.isEmpty()) continue;
 
-                assignMembersToTargets(
+                List<GeneratedEventPlan> changedGroups = assignMembersToTargets(
                         event, eventGraph, advancingUserIds, nextTargets, "score", 
-                        "score:" + eventId + ":" + subEventId + "->" + nextSubEventId);
+                        "score:" + eventId + ":" + subEventId + "->" + nextSubEventId,
+                        null,
+                        true);
+                if (!changedGroups.isEmpty()) {
+                    activityTournamentGroupCounterService.syncParent(eventId, nextSubEventId);
+                }
+                changedGroupCount.addAndGet(changedGroups.size());
             }
         })); // End of parallel stream
 
-        return states;
+        return new ScorePlanRunResult(List.copyOf(states), changedGroupCount.get());
+    }
+
+    private boolean isNextStageMembershipMutable(SubEventItem stage) {
+        if (stage == null) {
+            return false;
+        }
+        String status = normalizeStageStatus(stage.stageStatus());
+        if (STAGE_STATUS_START_REVIEW.equals(status)) {
+            return true;
+        }
+        return STAGE_STATUS_ACTIVE.equals(status)
+                && !StringUtils.hasText(safeText(stage.stageStatusUpdatedAt()))
+                && !StringUtils.hasText(safeText(stage.stageFinalizedAt()));
+    }
+
+    private List<ActivityEvent> applyStageRuntimeOverlays(List<ActivityEvent> events) {
+        List<ActivityEvent> safeEvents = events == null
+                ? List.of()
+                : events.stream().filter(Objects::nonNull).toList();
+        if (safeEvents.isEmpty() || activitySubEventStageRuntimeRepository == null) {
+            return safeEvents;
+        }
+        List<String> ownerIds = safeEvents.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (ownerIds.isEmpty()) {
+            return safeEvents;
+        }
+        List<ActivitySubEventStageRuntime> runtimes =
+                activitySubEventStageRuntimeRepository.findByOwnerIdIn(ownerIds);
+        Map<String, Map<String, ActivitySubEventStageRuntime>> runtimesByOwnerAndStage =
+                new LinkedHashMap<>();
+        for (ActivitySubEventStageRuntime runtime :
+                runtimes == null ? List.<ActivitySubEventStageRuntime>of() : runtimes) {
+            String ownerId = normalizeId(runtime == null ? null : runtime.getOwnerId());
+            String stageId = normalizeId(runtime == null ? null : runtime.getSubEventId());
+            if (!StringUtils.hasText(ownerId)
+                    || !StringUtils.hasText(stageId)
+                    || "D".equalsIgnoreCase(safeText(runtime.getStatus()))) {
+                continue;
+            }
+            runtimesByOwnerAndStage
+                    .computeIfAbsent(ownerId, ignored -> new LinkedHashMap<>())
+                    .put(stageId, runtime);
+        }
+        for (ActivityEvent event : safeEvents) {
+            Map<String, ActivitySubEventStageRuntime> stageRuntimes =
+                    runtimesByOwnerAndStage.get(normalizeId(event.getSourceId()));
+            if (stageRuntimes == null || stageRuntimes.isEmpty()) {
+                continue;
+            }
+            List<SubEventItem> effectiveStages = new ArrayList<>();
+            for (SubEventItem stage : safeSubEvents(event)) {
+                ActivitySubEventStageRuntime runtime =
+                        stageRuntimes.get(normalizeId(stage == null ? null : stage.id()));
+                effectiveStages.add(runtime == null
+                        ? stage
+                        : copySubEventWithStageStatus(
+                                stage,
+                                firstNonBlank(runtime.getStageStatus(), stage.stageStatus()),
+                                firstNonBlank(runtime.getStageStatusReason(), stage.stageStatusReason()),
+                                firstNonBlank(runtime.getStageStatusUpdatedAt(), stage.stageStatusUpdatedAt()),
+                                firstNonBlank(runtime.getStageFinalizedAt(), stage.stageFinalizedAt()),
+                                firstNonBlank(
+                                        runtime.getStageFinalizedByUserId(),
+                                        stage.stageFinalizedByUserId())));
+            }
+            event.setSubEvents(effectiveStages);
+        }
+        return safeEvents;
+    }
+
+    private boolean hasFinalizedTournamentTransition(ActivityEvent event) {
+        List<SubEventItem> stages = safeSubEvents(event);
+        for (int index = 0; index + 1 < stages.size(); index += 1) {
+            SubEventItem current = stages.get(index);
+            SubEventItem next = stages.get(index + 1);
+            if (isTournamentStage(current)
+                    && isTournamentStage(next)
+                    && STAGE_STATUS_FINALIZED.equals(normalizeStageStatus(current.stageStatus()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<String> resolveStageAssignmentUserIds(
+            String eventId,
+            List<SubEventItem> stages,
+            int stageIndex,
+            Collection<String> acceptedUserIds) {
+        Set<String> accepted = new LinkedHashSet<>(normalizeUserIds(acceptedUserIds));
+        if (stageIndex <= 0) {
+            return accepted;
+        }
+        if (stages == null || stageIndex >= stages.size()) {
+            return Set.of();
+        }
+        SubEventItem previousStage = stages.get(stageIndex - 1);
+        SubEventItem currentStage = stages.get(stageIndex);
+        if (!isTournamentStage(previousStage) || !isTournamentStage(currentStage)) {
+            return accepted;
+        }
+        String previousStageId = normalizeId(previousStage == null ? null : previousStage.id());
+        if (!StringUtils.hasText(previousStageId)) {
+            return Set.of();
+        }
+        EventLeaderboardStateDto previousState = activitiesEventLeaderboardService.queryState(eventId, previousStageId);
+        Set<String> advancingUserIds = resolveAdvancingUserIds(previousState);
+        advancingUserIds.retainAll(accepted);
+        return advancingUserIds;
     }
 
     private void withMongoSessionMode(MongoSessionMode sessionMode, Runnable action) {
@@ -1106,7 +1476,9 @@ public class EventScheduler {
         return Range.of(Math.min(min, max), Math.max(min, max));
     }
 
-    private boolean hasSameAcceptedMembers(ActivitiesMembersService.OwnerMembersSnapshot snapshot, List<String> plannedUserIds) {
+    private boolean hasExactAcceptedMembership(
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            List<String> plannedUserIds) {
         List<String> currentUserIds = snapshot == null
                 ? List.of()
                 : snapshot.acceptedMemberUserIds().stream().sorted().toList();
@@ -1117,7 +1489,28 @@ public class EventScheduler {
                         .filter(StringUtils::hasText)
                         .sorted()
                         .toList();
-        return currentUserIds.equals(normalizedPlannedUserIds);
+        if (!currentUserIds.equals(normalizedPlannedUserIds)) {
+            return false;
+        }
+        if (snapshot == null) {
+            return normalizedPlannedUserIds.isEmpty();
+        }
+        if (snapshot.pendingMemberUserIds() != null && !snapshot.pendingMemberUserIds().isEmpty()) {
+            return false;
+        }
+        if (snapshot.members() == null || snapshot.members().isEmpty()) {
+            return true;
+        }
+        List<String> visibleAcceptedUserIds = snapshot.members().stream()
+                .filter(Objects::nonNull)
+                .filter(member -> MEMBER_STATUS_ACCEPTED.equalsIgnoreCase(safeText(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .sorted()
+                .toList();
+        return visibleAcceptedUserIds.equals(normalizedPlannedUserIds)
+                && snapshot.members().size() == visibleAcceptedUserIds.size();
     }
 
     private List<GeneratedEventPlan> assignMembersToTargets(
@@ -1127,7 +1520,7 @@ public class EventScheduler {
             List<GroupAssignmentTarget> targets,
             String wrapperType,
             String context) {
-        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null);
+        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null, false);
     }
 
     private List<GeneratedEventPlan> assignMembersToTargets(
@@ -1138,9 +1531,33 @@ public class EventScheduler {
             String wrapperType,
             String context,
             AtomicInteger observedQueries) {
+        return assignMembersToTargets(
+                event,
+                graph,
+                poolUserIds,
+                targets,
+                wrapperType,
+                context,
+                observedQueries,
+                false);
+    }
+
+    private List<GeneratedEventPlan> assignMembersToTargets(
+            ActivityEvent event,
+            FGraph graph,
+            Collection<String> poolUserIds,
+            List<GroupAssignmentTarget> targets,
+            String wrapperType,
+            String context,
+            AtomicInteger observedQueries,
+            boolean reconcileAllTargets) {
         Set<String> normalizedPoolUserIds = new LinkedHashSet<>(normalizeUserIds(poolUserIds));
-        normalizedPoolUserIds.retainAll(graph.getNodes().keySet());
-        if (normalizedPoolUserIds.isEmpty() || targets.isEmpty()) {
+        if (graph != null) {
+            normalizedPoolUserIds.retainAll(graph.getNodes().keySet());
+        } else {
+            normalizedPoolUserIds.clear();
+        }
+        if (targets == null || targets.isEmpty() || (normalizedPoolUserIds.isEmpty() && !reconcileAllTargets)) {
             return List.of();
         }
 
@@ -1205,11 +1622,17 @@ public class EventScheduler {
                             openMin == 0,
                             0d);
             List<String> fillUserIds = selectedNodes.stream().map(Node::getId).toList();
+            if (fillUserIds.size() < openMin && reconcileAllTargets) {
+                fillUserIds = remainingUserIds.stream()
+                        .sorted()
+                        .limit(openMax)
+                        .toList();
+            }
             if (fillUserIds.size() < openMin) {
                 logDiagnostic("random", target.groupId(), context, "Unable to fill anchored group to its minimum capacity.");
-            } else {
-                remainingUserIds.removeAll(fillUserIds);
+                continue;
             }
+            remainingUserIds.removeAll(fillUserIds);
             plannedGroups.add(new GeneratedEventPlan(target.groupId(), mergeUserIds(target.lockedUserIds(), fillUserIds)));
         }
 
@@ -1222,16 +1645,45 @@ public class EventScheduler {
                     false));
             if (generatedPlans.size() != emptyTargets.size()) {
                 logDiagnostic("random", normalizeId(event == null ? null : event.getSourceId()), context, "Unable to assign all empty groups from the remaining pool.");
+                if (reconcileAllTargets) {
+                    plannedGroups.addAll(buildDeterministicTargetPlans(remainingUserIds, emptyTargets));
+                } else {
+                    plannedGroups.addAll(generatedPlans);
+                }
             } else {
                 plannedGroups.addAll(generatedPlans);
             }
         }
 
-        List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
         Map<String, String> memberOwnerIdByGroupId = normalizedTargets.stream()
                 .collect(LinkedHashMap::new,
                         (map, target) -> map.put(target.groupId(), target.memberOwnerId()),
                         Map::putAll);
+        if (reconcileAllTargets) {
+            Map<String, GeneratedEventPlan> planByGroupId = plannedGroups.stream()
+                    .filter(Objects::nonNull)
+                    .collect(
+                            LinkedHashMap::new,
+                            (map, plan) -> map.putIfAbsent(normalizeId(plan.seedId()), plan),
+                            Map::putAll);
+            plannedGroups = normalizedTargets.stream()
+                    .map(target -> planByGroupId.getOrDefault(
+                            target.groupId(),
+                            new GeneratedEventPlan(target.groupId(), List.of())))
+                    .toList();
+            if (!hasExactTargetCoverage(normalizedPoolUserIds, normalizedTargets, plannedGroups)) {
+                logDiagnostic(
+                        wrapperType,
+                        normalizeId(event == null ? null : event.getSourceId()),
+                        context,
+                        "Skipping membership synchronization because configured target capacity cannot preserve the exact advancing-user set.");
+                throw new IllegalStateException(
+                        "Configured target capacity cannot preserve the exact advancing-user set for "
+                                + context + ".");
+            }
+        }
+
+        List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByPlannedGroupId =
                 activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, plannedGroups.stream()
                         .map(plan -> memberOwnerIdByGroupId.get(plan.seedId()))
@@ -1250,7 +1702,7 @@ public class EventScheduler {
                     normalizeId(plannedGroup.seedId()),
                     normalizeId(plannedGroup.seedId()));
             ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
-            if (hasSameAcceptedMembers(groupSnapshot, normalizedPlannedUserIds)) {
+            if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {
                 rememberPlanMarkerIfMissing(
                         wrapperType,
                         MARKER_ACTION_GROUP_MEMBERS,
@@ -1264,18 +1716,130 @@ public class EventScheduler {
                     resolveInviterUserId(event),
                     normalizedPlannedUserIds);
             incrementObservedQueries(observedQueries);
-            if (!syncedUserIds.isEmpty()) {
-                recordPlanMarker(
+            List<String> normalizedSyncedUserIds = normalizeUserIds(syncedUserIds).stream().sorted().toList();
+            List<String> expectedSyncedUserIds = normalizedPlannedUserIds.stream().sorted().toList();
+            if (!normalizedSyncedUserIds.equals(expectedSyncedUserIds)) {
+                logDiagnostic(
                         wrapperType,
-                        MARKER_ACTION_GROUP_MEMBERS,
                         plannedGroup.seedId(),
                         context,
-                        syncedUserIds);
-                syncedGroups.add(new GeneratedEventPlan(plannedGroup.seedId(), syncedUserIds));
+                        "Membership synchronization did not return the exact requested accepted-member set.");
+                throw new IllegalStateException(
+                        "Membership synchronization failed for " + plannedGroup.seedId()
+                                + ": expected " + expectedSyncedUserIds
+                                + " but persisted " + normalizedSyncedUserIds + ".");
             }
+            recordPlanMarker(
+                    wrapperType,
+                    MARKER_ACTION_GROUP_MEMBERS,
+                    plannedGroup.seedId(),
+                    context,
+                    expectedSyncedUserIds);
+            syncedGroups.add(new GeneratedEventPlan(plannedGroup.seedId(), expectedSyncedUserIds));
         }
         notifyChangedRandomGroupAssignments(event, wrapperType, context, syncedGroups);
         return syncedGroups;
+    }
+
+    private boolean hasExactTargetCoverage(
+            Set<String> expectedUserIds,
+            List<GroupAssignmentTarget> targets,
+            List<GeneratedEventPlan> plans) {
+        Map<String, GroupAssignmentTarget> targetById = targets == null
+                ? Map.of()
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> StringUtils.hasText(normalizeId(target.groupId())))
+                        .collect(
+                                LinkedHashMap::new,
+                                (map, target) -> map.putIfAbsent(normalizeId(target.groupId()), target),
+                                Map::putAll);
+        if (plans == null || plans.size() != targetById.size()) {
+            return false;
+        }
+        List<String> assignedUserIds = new ArrayList<>();
+        Set<String> plannedTargetIds = new LinkedHashSet<>();
+        for (GeneratedEventPlan plan : plans) {
+            String targetId = normalizeId(plan == null ? null : plan.seedId());
+            GroupAssignmentTarget target = targetById.get(targetId);
+            if (target == null || !plannedTargetIds.add(targetId)) {
+                return false;
+            }
+            List<String> memberUserIds = normalizeUserIds(plan.memberUserIds());
+            if (!memberUserIds.isEmpty()
+                    && (memberUserIds.size() < target.range().getMin()
+                            || memberUserIds.size() > target.range().getMax())) {
+                return false;
+            }
+            assignedUserIds.addAll(memberUserIds);
+        }
+        Set<String> assignedUserIdSet = new LinkedHashSet<>(assignedUserIds);
+        return assignedUserIds.size() == assignedUserIdSet.size()
+                && assignedUserIdSet.equals(new LinkedHashSet<>(normalizeUserIds(expectedUserIds)));
+    }
+
+    private List<GeneratedEventPlan> buildDeterministicTargetPlans(
+            Collection<String> poolUserIds,
+            List<GroupAssignmentTarget> targets) {
+        List<String> userIds = normalizeUserIds(poolUserIds).stream().sorted().toList();
+        List<GroupAssignmentTarget> usableTargets = targets == null
+                ? List.of()
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> target.range() != null && StringUtils.hasText(target.groupId()))
+                        .toList();
+        if (userIds.isEmpty() || usableTargets.isEmpty()) {
+            return List.of();
+        }
+
+        int feasibleTargetCount = usableTargets.size();
+        while (feasibleTargetCount > 0
+                && minimumCapacity(usableTargets.subList(0, feasibleTargetCount)) > userIds.size()) {
+            feasibleTargetCount -= 1;
+        }
+        if (feasibleTargetCount == 0) {
+            return List.of();
+        }
+
+        List<GroupAssignmentTarget> feasibleTargets = usableTargets.subList(0, feasibleTargetCount);
+        int assignableUserCount = Math.min(userIds.size(), maximumCapacity(feasibleTargets));
+        List<GeneratedEventPlan> plans = new ArrayList<>();
+        int cursor = 0;
+        for (int index = 0; index < feasibleTargets.size(); index += 1) {
+            GroupAssignmentTarget target = feasibleTargets.get(index);
+            int remainingMinimum = minimumCapacity(feasibleTargets.subList(index + 1, feasibleTargets.size()));
+            int size = Math.min(
+                    target.range().getMax(),
+                    Math.max(target.range().getMin(), assignableUserCount - cursor - remainingMinimum));
+            if (size < target.range().getMin() || cursor + size > assignableUserCount) {
+                break;
+            }
+            plans.add(new GeneratedEventPlan(
+                    target.groupId(),
+                    new ArrayList<>(userIds.subList(cursor, cursor + size))));
+            cursor += size;
+        }
+        return plans;
+    }
+
+    private int minimumCapacity(List<GroupAssignmentTarget> targets) {
+        return targets == null
+                ? 0
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> target.range() != null)
+                        .mapToInt(target -> Math.max(0, target.range().getMin()))
+                        .sum();
+    }
+
+    private int maximumCapacity(List<GroupAssignmentTarget> targets) {
+        return targets == null
+                ? 0
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> target.range() != null)
+                        .mapToInt(target -> Math.max(0, target.range().getMax()))
+                        .sum();
     }
 
     private void notifyChangedRandomGroupAssignments(
@@ -1582,5 +2146,10 @@ public class EventScheduler {
             String memberOwnerId,
             Range range,
             List<String> lockedUserIds) {
+    }
+
+    private record ScorePlanRunResult(
+            List<EventLeaderboardStateDto> states,
+            int changedGroupCount) {
     }
 }

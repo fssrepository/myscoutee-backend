@@ -140,9 +140,45 @@ public class AdminNotificationService {
                 return new AdminNotificationRuleRunResultDto(normalizedRuleKey, normalizedRuleKey, 0, "skipped",
                         "Rule was not found.", Instant.now().toString());
             }
+            if (!Boolean.TRUE.equals(rule.getManualRunEnabled())) {
+                if (progress != null) {
+                    progress.close();
+                }
+                return new AdminNotificationRuleRunResultDto(
+                        normalizedRuleKey,
+                        safeText(rule.getLabel()),
+                        0,
+                        "skipped",
+                        "This scheduled process does not support manual execution.",
+                        Instant.now().toString());
+            }
+            if (!Boolean.TRUE.equals(rule.getEnabled())) {
+                if (progress != null) {
+                    progress.close();
+                }
+                return new AdminNotificationRuleRunResultDto(
+                        normalizedRuleKey,
+                        safeText(rule.getLabel()),
+                        0,
+                        "skipped",
+                        "This scheduled process is suspended.",
+                        Instant.now().toString());
+            }
             NotificationRuleConfig startedRule = progress == null
                     ? notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id())
                     : notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id(), progress.startedAt());
+            if (startedRule == null) {
+                if (progress != null) {
+                    progress.close();
+                }
+                return new AdminNotificationRuleRunResultDto(
+                        normalizedRuleKey,
+                        safeText(rule.getLabel()),
+                        0,
+                        "skipped",
+                        "This scheduled process is already running.",
+                        Instant.now().toString());
+            }
             if (progress != null) {
                 progress.adoptRule(startedRule);
             }
@@ -211,10 +247,11 @@ public class AdminNotificationService {
             String adminUserId,
             NotificationRuleConfig startedRule,
             RandomRunProgress progress) {
+        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(ruleKey);
         try {
             if (progress != null) {
                 progress.setAdminUserId(adminUserId);
-                progress.adoptRule(startedRule);
+                progress.adoptRule(notificationRuleRegistryService.findRule(ruleKey).orElse(startedRule));
                 progress.raiseTo(1, "Loading published events for matched rooms.");
             }
             List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {
@@ -236,6 +273,10 @@ public class AdminNotificationService {
                     progress == null ? null : progress.startedAt());
             adminTelemetryService.record("jobs.run.completed", "jobs", ruleKey, adminUserId, Math.max(1, affectedUsers));
         } catch (Exception exception) {
+            notificationRuleRegistryService.restoreClaimedPendingCount(
+                    ruleKey,
+                    claimedPendingCount,
+                    "admin.jobs.table.affected");
             if (progress != null) {
                 progress.close();
             }
@@ -329,6 +370,9 @@ public class AdminNotificationService {
                 runtimeState.setLastRunDetail(source.getLastRunDetail());
                 runtimeState.setLastRunCount(source.getLastRunCount());
                 runtimeState.setLastRunUser(source.getLastRunUser());
+                runtimeState.setPendingCount(source.getPendingCount());
+                runtimeState.setPendingCountUnit(source.getPendingCountUnit());
+                runtimeState.setPendingCountUpdatedAtIso(source.getPendingCountUpdatedAtIso());
                 runtimeState.setCurrentStatus("running");
                 runtimeState.setStartedAtIso(startedAt.toString());
                 runtimeState.setFinishedAtIso("");
@@ -584,7 +628,10 @@ public class AdminNotificationService {
                         runState.getLastRunStatus(),
                         runState.getLastRunDetail(),
                         runState.getLastRunCount(),
-                        runState.getLastRunUser()),
+                        runState.getLastRunUser(),
+                        runState.getPendingCount(),
+                        runState.getPendingCountUnit(),
+                        runState.getPendingCountUpdatedAtIso()),
                 rule.getRunHistory() == null ? List.of() : rule.getRunHistory().stream()
                         .map(this::toRunHistoryEntry)
                         .toList(),

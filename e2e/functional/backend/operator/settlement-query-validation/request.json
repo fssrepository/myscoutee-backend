@@ -1,0 +1,17 @@
+{
+  "name": "operator settlement query validation",
+  "group": "operator",
+  "order": 1300,
+  "method": "GET",
+  "path": "/api/operator/revenue/settlements",
+  "params": {
+    "currencyCode": "usd",
+    "limit": 10
+  },
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 400,
+  "maxMs": 8000
+}

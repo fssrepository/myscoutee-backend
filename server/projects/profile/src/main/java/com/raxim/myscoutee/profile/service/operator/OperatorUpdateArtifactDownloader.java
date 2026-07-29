@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.LongConsumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +26,7 @@ public class OperatorUpdateArtifactDownloader {
     private final HttpClient httpClient;
     private final Duration requestTimeout;
 
+    @Autowired
     public OperatorUpdateArtifactDownloader(OperatorUpdateProperties properties) {
         this(
                 HttpClient.newBuilder()

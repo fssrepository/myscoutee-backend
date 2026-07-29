@@ -109,45 +109,95 @@ remote_script='set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 
+managed_images=""
+if command -v docker >/dev/null 2>&1; then
+  managed_images="$(
+    docker images --format "{{.Repository}}:{{.Tag}}" \
+      | awk '"'"'
+          /^myscoutee-api:/ ||
+          /^myscoutee-nginx:/ ||
+          /^myscoutee-minio:/ ||
+          /^myscoutee-registry:/ {
+            print
+          }
+        '"'"' \
+      | sort -u
+  )"
+fi
+
 echo "Stopping MyScoutee service..."
 systemctl stop myscoutee || true
 
 echo "Removing MyScoutee compose containers, network, and volumes..."
 if [[ -x /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ]]; then
-  /opt/myscoutee/packaging/scripts/myscoutee-compose.sh down -v --remove-orphans || true
+  if ! /opt/myscoutee/packaging/scripts/myscoutee-compose.sh \
+      down -v --remove-orphans; then
+    echo "Failed to remove the installed MyScoutee Compose stack." >&2
+    exit 1
+  fi
 elif [[ -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
-  (cd /opt/myscoutee/server && docker compose -f docker-compose-prod.yml down -v --remove-orphans) || true
+  if ! (
+    cd /opt/myscoutee/server
+    docker compose -f docker-compose-prod.yml down -v --remove-orphans
+  ); then
+    echo "Failed to remove the fallback MyScoutee Compose stack." >&2
+    exit 1
+  fi
 fi
 
 echo "Purging MyScoutee Debian package..."
-apt-get purge -y myscoutee || true
+apt-get purge -y myscoutee
 
 echo "Removing MyScoutee-owned files..."
 rm -rf /etc/myscoutee
 rm -rf /opt/myscoutee
 rm -rf /var/lib/myscoutee
 rm -rf /var/log/myscoutee
-rm -rf /var/backups/myscoutee
 rm -f "${REMOTE_DEB_PATH}"
 
 echo "Removing MyScoutee-owned Docker images..."
-if command -v docker >/dev/null 2>&1; then
-  docker images --format "{{.Repository}}:{{.Tag}}" \
-    | awk "/^myscoutee-api:/ || /^myscoutee-nginx:/ { print }" \
-    | xargs -r docker image rm -f || true
+image_cleanup_failed=false
+if command -v docker >/dev/null 2>&1 && [[ -n "${managed_images}" ]]; then
+  while IFS= read -r managed_image; do
+    [[ -n "${managed_image}" ]] || continue
+    if docker image inspect "${managed_image}" >/dev/null 2>&1 \
+        && ! docker image rm -f "${managed_image}"; then
+      image_cleanup_failed=true
+    fi
+  done <<< "${managed_images}"
 fi
 
 systemctl daemon-reload || true
 
 echo "Remaining MyScoutee containers:"
+remaining_containers=""
 if command -v docker >/dev/null 2>&1; then
-  docker ps -a --format "{{.Names}} {{.Image}}" \
-    | awk "\$1 == \"myscoutee\" || \$1 == \"nginx\" || \$1 == \"mongodb\" || \$1 == \"redis\" || \$1 == \"minio\" { print }" || true
+  remaining_containers="$(
+    docker ps -a --format "{{.Names}} {{.Image}}" \
+      | awk "\$1 == \"myscoutee\" || \$1 == \"nginx\" || \$1 == \"mongodb\" || \$1 == \"redis\" || \$1 == \"minio\" || \$1 == \"registry-demo\" { print }" \
+      || true
+  )"
+  [[ -z "${remaining_containers}" ]] \
+    || printf "%s\n" "${remaining_containers}"
 fi
 
 echo "Remaining MyScoutee compose volumes:"
+remaining_volumes=""
 if command -v docker >/dev/null 2>&1; then
-  docker volume ls --format "{{.Name}}" | awk "/^server_/ { print }" || true
+  remaining_volumes="$(
+    docker volume ls --format "{{.Name}}" \
+      | awk "/^server_/ || /^myscoutee-registry-demo-/ { print }" \
+      || true
+  )"
+  [[ -z "${remaining_volumes}" ]] \
+    || printf "%s\n" "${remaining_volumes}"
+fi
+
+if [[ "${image_cleanup_failed}" == "true" \
+    || -n "${remaining_containers}" \
+    || -n "${remaining_volumes}" ]]; then
+  echo "MyScoutee purge completed with residual Docker state." >&2
+  exit 1
 fi
 
 echo "MyScoutee purge complete."

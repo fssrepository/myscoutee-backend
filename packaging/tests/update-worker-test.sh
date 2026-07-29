@@ -43,6 +43,7 @@ NGIN_BASE_ID="sha256:$(printf '1%.0s' {1..64})"
 NGIN_ID="sha256:$(printf '2%.0s' {1..64})"
 API_ID="sha256:$(printf '3%.0s' {1..64})"
 MINIO_ID="sha256:$(printf '4%.0s' {1..64})"
+REGISTRY_DEMO_ID="sha256:$(printf '5%.0s' {1..64})"
 
 mkdir -p \
   "${FAKE_BIN}" \
@@ -57,6 +58,7 @@ jq -n \
   --arg nginxId "${NGIN_ID}" \
   --arg apiId "${API_ID}" \
   --arg minioId "${MINIO_ID}" \
+  --arg registryDemoId "${REGISTRY_DEMO_ID}" \
   '{
     schemaVersion: 1,
     releaseVersion: $version,
@@ -85,6 +87,12 @@ jq -n \
         container: "minio",
         reference: ("myscoutee-minio:" + $version + "-prod"),
         imageId: $minioId
+      },
+      {
+        service: "registry-demo",
+        container: "registry-demo",
+        reference: ("myscoutee-registry:" + $version + "-prod"),
+        imageId: $registryDemoId
       }
     ]
   }' > "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
@@ -136,6 +144,7 @@ printf '%s\n' \
   '      nginx) printf "%s\n" "myscoutee-nginx:999.0.0-prod" ;;' \
   '      myscoutee) printf "%s\n" "myscoutee-api:999.0.0-prod" ;;' \
   '      minio) printf "%s\n" "myscoutee-minio:999.0.0-prod" ;;' \
+  '      registry-demo) printf "%s\n" "myscoutee-registry:999.0.0-prod" ;;' \
   '      *) exit 1 ;;' \
   '    esac' \
   '    ;;' \
@@ -147,6 +156,7 @@ printf '%s\n' \
   '        nginx) printf "%s\n" "${UPDATE_TEST_NGINX_ID}" ;;' \
   '        myscoutee) printf "%s\n" "${UPDATE_TEST_API_ID}" ;;' \
   '        minio) printf "%s\n" "${UPDATE_TEST_MINIO_ID}" ;;' \
+  '        registry-demo) printf "%s\n" "${UPDATE_TEST_REGISTRY_DEMO_ID}" ;;' \
   '        *) exit 1 ;;' \
   '      esac' \
   '    fi' \
@@ -180,6 +190,7 @@ export UPDATE_TEST_BACKUP_FILE="${BACKUP_FILE}"
 export UPDATE_TEST_NGINX_ID="${NGIN_ID}"
 export UPDATE_TEST_API_ID="${API_ID}"
 export UPDATE_TEST_MINIO_ID="${MINIO_ID}"
+export UPDATE_TEST_REGISTRY_DEMO_ID="${REGISTRY_DEMO_ID}"
 export MYSCOUTEE_UPDATE_STATE_DIR="${STATE_ROOT}"
 export MYSCOUTEE_UPDATE_CACHE_DIR="${CACHE_ROOT}"
 export MYSCOUTEE_UPDATE_AUDIT_DIR="${AUDIT_ROOT}"

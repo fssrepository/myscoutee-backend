@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.CandidateDefaultsDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.DraftInspectionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.EnrollmentDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.NodeIdentityDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryMutationResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.OperatorRegistryStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryAuditDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryIdentityDto;
@@ -16,9 +18,17 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Regist
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistrySelectionDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.SafeRegistryErrorDto;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
 
 @Component
 public class OperatorRegistryMapper {
+    private final OperatorNetworkMapper networkMapper;
+
+    public OperatorRegistryMapper(
+            OperatorNetworkMapper networkMapper) {
+        this.networkMapper = networkMapper;
+    }
+
     public OperatorRegistryStatusDto toStatus(
             OperatorRegistrySettings settings,
             String mode,
@@ -56,6 +66,58 @@ public class OperatorRegistryMapper {
                         draft.getIdentityEndpoint(),
                         draft.getProtocolVersion(),
                         draft.getRegistryScope()));
+    }
+
+    public OperatorRegistryMutationResultDto toRegistrationMutation(
+            OperatorRegistryStatusDto status,
+            String deploymentId,
+            boolean created) {
+        OperatorLeaderboardRowDto entry = deploymentId != null
+                && !deploymentId.isBlank()
+                ? new OperatorLeaderboardRowDto(
+                        requireText(deploymentId, "Deployment ID"),
+                        "unclaimed",
+                        "",
+                        requireText(deploymentId, "Deployment ID"),
+                        "",
+                        "unclaimed",
+                        "inactive",
+                        1L,
+                        "0",
+                        "1",
+                        "0",
+                        "1")
+                : null;
+        return new OperatorRegistryMutationResultDto(
+                status,
+                entry,
+                entry == null ? List.of() : List.of(entry),
+                List.of(),
+                created && entry != null ? 1 : 0,
+                created);
+    }
+
+    public OperatorRegistryMutationResultDto toDisconnectMutation(
+            OperatorRegistryStatusDto status,
+            LeaderboardRow remainingClaimedGroup,
+            List<String> removedLeaderboardEntryIds) {
+        List<String> removedIds = removedLeaderboardEntryIds == null
+                ? List.of()
+                : removedLeaderboardEntryIds.stream()
+                        .filter(value -> value != null && !value.isBlank())
+                        .map(String::trim)
+                        .distinct()
+                        .toList();
+        OperatorLeaderboardRowDto entry = remainingClaimedGroup == null
+                ? null
+                : networkMapper.toLeaderboardRow(remainingClaimedGroup);
+        return new OperatorRegistryMutationResultDto(
+                status,
+                entry,
+                entry == null ? List.of() : List.of(entry),
+                removedIds,
+                entry == null && !removedIds.isEmpty() ? -1 : 0,
+                false);
     }
 
     private DraftInspectionDto toDraft(OperatorRegistrySettings.DraftInspection value) {

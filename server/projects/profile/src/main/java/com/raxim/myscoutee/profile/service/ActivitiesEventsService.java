@@ -2151,6 +2151,7 @@ public class ActivitiesEventsService {
                     STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
                     STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? viewer.userId() : null);
             saveSubEventStageRuntime(sourceId, preferred, savedStage, viewer.userId());
+            affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
             return toStageActionResult(
                     sourceId,
                     savedStage,
@@ -2177,7 +2178,6 @@ public class ActivitiesEventsService {
                 saved = refreshed;
             }
         }
-
         ActivityEvent savedPreferred = computePreferredEventRecords(saved).stream().findFirst().orElse(saved.get(0));
         List<SubEventItem> savedSubEvents = cloneSubEvents(savedPreferred.getSubEvents());
         int savedStageIndex = resolveStageIndex(savedSubEvents, stageId, preferredStageIndex);
@@ -2241,18 +2241,18 @@ public class ActivitiesEventsService {
                 savedPreferredParent = computePreferredEventRecords(savedParentDocuments).stream()
                         .findFirst()
                         .orElse(preferredParent);
-                affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
                 syncStageReminderTasksForSavedEvents(savedParentDocuments, actorUserId);
             }
             EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
             if (scheduler != null) {
-                scheduler.generateRandomPlansForEvents(List.of(parentEventId));
+                scheduler.generateRandomPlansForEvents(List.of(slotSourceId));
             }
         }
 
         boolean finalStage = stageIndex == slotStages.size() - 1;
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferredParent, savedStage, finalStage);
         saveSubEventStageRuntime(slotSourceId, savedPreferredParent, savedStage, actorUserId);
+        affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
         enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
         postStageChatMessage(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), finalStage, resultSummary);
         adminTelemetryService.record("event.stage.action", "events", parentEventId, actorUserId, 1L, Map.of(
@@ -2447,8 +2447,6 @@ public class ActivitiesEventsService {
                 ActivitiesMembersService.OwnerMembersSnapshot slotSnapshot =
                         activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
                 boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
-                affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
-                affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
                 if (joinedSlot) {
                     markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, slotSourceId);
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
@@ -2474,7 +2472,6 @@ public class ActivitiesEventsService {
         ActivitiesMembersService.OwnerMembersSnapshot snapshot =
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
-        affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
         if (joined) {
             markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, null);
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
@@ -6271,7 +6268,13 @@ public class ActivitiesEventsService {
         if (groupMin > 0 || groupMax > 0) {
             int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
             int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(item.capacityMax()));
-            return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
+            int groupsNeededForMaximum = capacityMax > 0
+                    ? (int) Math.ceil((double) capacityMax / divisor)
+                    : 0;
+            int groupsAllowedByMinimum = groupMin > 0
+                    ? Math.max(1, capacityMax / groupMin)
+                    : groupsNeededForMaximum;
+            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
         }
         return 0;
     }

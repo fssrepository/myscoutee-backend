@@ -69,6 +69,7 @@ RUN_APT_UPDATE="${RUN_APT_UPDATE:-false}"
 START_SERVICE="${START_SERVICE:-true}"
 STOP_ON_FAILURE="${STOP_ON_FAILURE:-true}"
 WAIT_AFTER_START_SECONDS="${WAIT_AFTER_START_SECONDS:-20}"
+SMOKE_PUBLIC_BASE_URL="${SMOKE_PUBLIC_BASE_URL:-}"
 
 DEB_PATH="${DEB_PATH:-${1:-}}"
 if [ -z "${DEB_PATH}" ]; then
@@ -79,8 +80,17 @@ fi
 [ -n "${REMOTE_USER}" ] || fail "REMOTE_USER is required in ${CONFIG_FILE}"
 [ -n "${DEB_PATH}" ] || fail "DEB_PATH is not set and no deb was found under packaging/dist"
 [ -f "${DEB_PATH}" ] || fail "deb file not found: ${DEB_PATH}"
+if [ -n "${SMOKE_PUBLIC_BASE_URL}" ]; then
+  case "${SMOKE_PUBLIC_BASE_URL}" in
+    https://*)
+      ;;
+    *)
+      fail "SMOKE_PUBLIC_BASE_URL must use https://"
+      ;;
+  esac
+fi
 
-SMOKE_BASE_URL="http://${REMOTE_HOST}"
+SMOKE_BASE_URL="http://127.0.0.1"
 
 if ! command -v dpkg-deb >/dev/null 2>&1; then
   fail "dpkg-deb is required to read package metadata from ${DEB_PATH}"
@@ -203,7 +213,12 @@ echo "Config: ${CONFIG_FILE}"
 echo "Debian package: ${DEB_PATH}"
 echo "Package: ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 echo "Remote path: ${REMOTE_DEB_PATH}"
-echo "Smoke URL: ${SMOKE_BASE_URL}"
+echo "Internal Java smoke URL: ${SMOKE_BASE_URL}"
+if [ -n "${SMOKE_PUBLIC_BASE_URL}" ]; then
+  echo "Strict public HTTPS smoke URL: ${SMOKE_PUBLIC_BASE_URL}"
+else
+  echo "Strict public HTTPS smoke: skipped (SMOKE_PUBLIC_BASE_URL is empty)"
+fi
 
 echo "Uploading Debian package..."
 run_scp "${DEB_PATH}" "${REMOTE_DEB_PATH}"
@@ -218,7 +233,8 @@ run_ssh bash -s -- \
   "${WAIT_AFTER_START_SECONDS}" \
   "${REMOTE_SUDO_PASSWORD}" \
   "${PACKAGE_NAME}" \
-  "${PACKAGE_VERSION}" <<'REMOTE_SCRIPT'
+  "${PACKAGE_VERSION}" \
+  "${SMOKE_PUBLIC_BASE_URL}" <<'REMOTE_SCRIPT'
 set -euo pipefail
 
 REMOTE_DEB_PATH="$1"
@@ -230,6 +246,7 @@ WAIT_AFTER_START_SECONDS="$6"
 SUDO_PASSWORD="$7"
 PACKAGE_NAME="$8"
 PACKAGE_VERSION="$9"
+SMOKE_PUBLIC_BASE_URL="${10}"
 
 stage="initialization"
 
@@ -455,11 +472,35 @@ sudo_run env MYSCOUTEE_BASE_URL="${SMOKE_BASE_URL}" START_STACK=false \
 check_restart_loops
 
 stage="bundle smoke test"
-bundle_body="$(curl -fsS "${SMOKE_BASE_URL%/}/api/i18n/bundle?lang=hu")"
+bundle_body="$(sudo_run docker exec myscoutee sh -lc \
+  "wget -qO- 'http://localhost:8080/i18n/bundle?lang=hu'")"
 if [[ "${bundle_body}" != *'"lang":"hu"'* || "${bundle_body}" != *'"data":{'* ]]; then
-  fail_remote "i18n bundle smoke failed for ${SMOKE_BASE_URL%/}/api/i18n/bundle?lang=hu"
+  fail_remote "internal i18n bundle smoke failed"
 fi
 log "i18n bundle smoke passed"
+
+if [[ -n "${SMOKE_PUBLIC_BASE_URL}" ]]; then
+  stage="strict public HTTPS smoke test"
+  public_headers="$(mktemp)"
+  if ! public_health="$(curl --fail --silent --show-error --location \
+    --proto '=https' --proto-redir '=https' \
+    --dump-header "${public_headers}" \
+    "${SMOKE_PUBLIC_BASE_URL%/}/api/health")"; then
+    rm -f "${public_headers}"
+    fail_remote "public HTTPS health request failed certificate or transport validation"
+  fi
+  if [[ "${public_health}" != *'"status":"UP"'* ]]; then
+    rm -f "${public_headers}"
+    fail_remote "public HTTPS health response did not report UP"
+  fi
+  if ! grep -Eiq '^Strict-Transport-Security:[[:space:]]*max-age=31536000' \
+    "${public_headers}"; then
+    rm -f "${public_headers}"
+    fail_remote "public HTTPS response omitted the production HSTS policy"
+  fi
+  rm -f "${public_headers}"
+  log "strict public HTTPS smoke passed"
+fi
 
 stage="registry status"
 report_registry_status

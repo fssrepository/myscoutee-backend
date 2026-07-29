@@ -3,9 +3,11 @@ package com.raxim.myscoutee.profile.service.operator;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
+import com.raxim.myscoutee.profile.data.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionReceiptDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementDto;
@@ -13,6 +15,9 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementLocalizationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorAnnouncementSnapshotDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimMutationResultDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimOverviewDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentPageDto;
@@ -81,7 +86,86 @@ public class OperatorNetworkMapper {
                 status.verificationUnavailableReason(),
                 status.verificationStatus(),
                 status.verificationSubmittedAt(),
-                status.legalName());
+                status.legalName(),
+                status.eligibilityStatus());
+    }
+
+    public OperatorClaimMutationResultDto toClaimMutation(
+            ClaimStatus status,
+            String claimantUserId,
+            OperatorClaimSubmissionSnapshot submission,
+            LeaderboardRow leaderboardEntry,
+            String removedLeaderboardEntryId) {
+        return toClaimMutation(
+                status,
+                claimantUserId,
+                submission,
+                leaderboardEntry,
+                leaderboardEntry == null
+                        ? List.of()
+                        : List.of(leaderboardEntry),
+                removedLeaderboardEntryId == null
+                        || removedLeaderboardEntryId.isBlank()
+                        ? List.of()
+                        : List.of(removedLeaderboardEntryId.trim()),
+                0);
+    }
+
+    public OperatorClaimMutationResultDto toClaimMutation(
+            ClaimStatus status,
+            String claimantUserId,
+            OperatorClaimSubmissionSnapshot submission,
+            LeaderboardRow leaderboardEntry,
+            List<LeaderboardRow> leaderboardUpserts,
+            List<String> removedLeaderboardEntryIds,
+            int leaderboardTotalDelta) {
+        return new OperatorClaimMutationResultDto(
+                toClaimStatus(status, claimantUserId),
+                toClaimSubmission(submission),
+                leaderboardEntry == null
+                        ? null
+                        : toLeaderboardRow(leaderboardEntry),
+                leaderboardUpserts == null
+                        ? List.of()
+                        : leaderboardUpserts.stream()
+                                .filter(Objects::nonNull)
+                                .map(this::toLeaderboardRow)
+                                .toList(),
+                removedLeaderboardEntryIds == null
+                        ? List.of()
+                        : removedLeaderboardEntryIds.stream()
+                                .filter(Objects::nonNull)
+                                .map(String::trim)
+                                .filter(value -> !value.isBlank())
+                                .distinct()
+                                .toList(),
+                leaderboardTotalDelta);
+    }
+
+    public OperatorClaimOverviewDto toClaimOverview(
+            ClaimStatus status,
+            String claimantUserId,
+            OperatorClaimSubmissionSnapshot submission) {
+        return new OperatorClaimOverviewDto(
+                toClaimStatus(status, claimantUserId),
+                toClaimSubmission(submission));
+    }
+
+    private OperatorClaimRequestDto toClaimSubmission(
+            OperatorClaimSubmissionSnapshot submission) {
+        if (submission == null) {
+            return null;
+        }
+        return new OperatorClaimRequestDto(
+                submission.getLegalName(),
+                submission.getRegistrationNumber(),
+                submission.getJurisdiction(),
+                submission.getRegisteredAddress(),
+                submission.getWebsite(),
+                submission.getVerificationContactName(),
+                submission.getVerificationContactRole(),
+                submission.getVerificationContactEmail(),
+                Boolean.TRUE.equals(submission.getAuthorityAttested()));
     }
 
     public OperatorAnnouncementPageDto toAnnouncementPage(
@@ -128,6 +212,8 @@ public class OperatorNetworkMapper {
                 receipt.groupId(),
                 receipt.linkId(),
                 receipt.tokenId(),
+                receipt.sourceClaimActionId(),
+                receipt.sourcePrivateRecordHash(),
                 receipt.tokenExpiresAt());
     }
 
@@ -139,8 +225,14 @@ public class OperatorNetworkMapper {
                 snapshot.throughPeriod(),
                 snapshot.throughLedgerIndex(),
                 snapshot.throughAuditIndex(),
+                snapshot.throughReviewIndex(),
+                snapshot.throughEligibilityIndex(),
+                snapshot.throughTransferEventIndex(),
                 snapshot.ledgerHeadHash(),
                 snapshot.auditHeadHash(),
+                snapshot.reviewHeadHash(),
+                snapshot.eligibilityHeadHash(),
+                snapshot.transferEventHeadHash(),
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
                 snapshot.founderShareNumerator(),
@@ -153,7 +245,7 @@ public class OperatorNetworkMapper {
                 snapshot.snapshotHash());
     }
 
-    private OperatorLeaderboardRowDto toLeaderboardRow(LeaderboardRow row) {
+    public OperatorLeaderboardRowDto toLeaderboardRow(LeaderboardRow row) {
         return new OperatorLeaderboardRowDto(
                 row.rowId(),
                 row.view(),
@@ -161,6 +253,7 @@ public class OperatorNetworkMapper {
                 row.label(),
                 row.avatarUrl(),
                 row.claimState(),
+                row.eligibilityStatus(),
                 row.deploymentCount(),
                 row.weightNumerator(),
                 row.weightDenominator(),
@@ -174,6 +267,7 @@ public class OperatorNetworkMapper {
                 deployment.deploymentId(),
                 deployment.groupId(),
                 deployment.claimState(),
+                deployment.eligibilityStatus(),
                 deployment.membershipState(),
                 deployment.weightNumerator(),
                 deployment.weightDenominator(),

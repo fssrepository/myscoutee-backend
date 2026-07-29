@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -42,9 +43,22 @@ class OperatorConfigurationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
+                                  "adminEmails": ["admin@example.test"],
+                                  "privacyContact": {
+                                    "dataControllerName": "Community Cooperative",
+                                    "privacyContactEmail": "privacy@community.example"
+                                  },
+                                  "socialLinks": [
+                                    {
+                                      "provider": "discord",
+                                      "label": "Discord",
+                                      "url": "https://discord.example.test/community",
+                                      "icon": "discord",
+                                      "handle": "@community"
+                                    }
+                                  ],
                                   "branding": {
                                     "productName": "Community",
-                                    "homeLabel": "Welcome",
                                     "logoUrl": "/media/public?key=images%2Flogo",
                                     "themePreset": "AURORA"
                                   },
@@ -66,9 +80,19 @@ class OperatorConfigurationControllerTest {
                                 {"kind":"FIREBASE_MESSAGING"}
                                 """))
                 .andExpect(status().isOk());
+        mockMvc.perform(post(
+                        "/operator/configuration/firebase/activate"))
+                .andExpect(status().isOk());
 
         verify(service).configuration();
-        verify(service).update(any(OperatorConfigurationUpdateDto.class));
+        ArgumentCaptor<OperatorConfigurationUpdateDto> updateCaptor =
+                ArgumentCaptor.forClass(OperatorConfigurationUpdateDto.class);
+        verify(service).update(updateCaptor.capture());
+        assertThat(updateCaptor.getValue().privacyContact().dataControllerName())
+                .isEqualTo("Community Cooperative");
+        assertThat(updateCaptor.getValue().privacyContact().privacyContactEmail())
+                .isEqualTo("privacy@community.example");
         verify(service).test(any(ConfigurationTestRequestDto.class));
+        verify(service).activateFirebase();
     }
 }

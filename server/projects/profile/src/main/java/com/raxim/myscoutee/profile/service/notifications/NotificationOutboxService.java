@@ -18,6 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -48,6 +52,8 @@ public class NotificationOutboxService {
     private final PlatformParametersService platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
     private final ObjectProvider<UserNotificationService> userNotificationServiceProvider;
+    private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     public NotificationOutboxService(
@@ -87,6 +93,17 @@ public class NotificationOutboxService {
         this(notificationOutboxRepository, null, null, null);
     }
 
+    @Autowired(required = false)
+    void setNotificationRuleRegistryServiceProvider(
+            ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+        this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
+    }
+
+    @Autowired(required = false)
+    void setMongoTemplate(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
     public Optional<NotificationOutboxItem> enqueue(NotificationIntent intent) {
         if (intent == null) {
             return Optional.empty();
@@ -114,17 +131,94 @@ public class NotificationOutboxService {
                 recipientScope,
                 payloadHash);
 
-        NotificationOutboxItem item = notificationOutboxRepository
+        NotificationOutboxItem existing = notificationOutboxRepository
                 .findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
                         collapseKey,
                         List.of(NotificationOutboxItem.STATUS_PENDING),
                         collapseWindowStartIso(nowIso))
-                .map(existing -> mergeRecipients(existing, recipientUserIds, payload, nowIso, intent.createdUser()))
-                .orElseGet(() -> newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso));
-        NotificationOutboxItem saved = notificationOutboxRepository.save(item);
+                .orElse(null);
+        TrackedOutboxSave trackedSave = existing != null && mongoTemplate != null
+                ? mergeExistingItemAtomic(existing, recipientUserIds, payload, nowIso, intent.createdUser())
+                : null;
+        NotificationOutboxItem saved;
+        boolean newlyTracked;
+        if (trackedSave != null) {
+            saved = trackedSave.item();
+            newlyTracked = trackedSave.newlyTracked();
+        } else {
+            NotificationOutboxItem item = existing == null || mongoTemplate != null
+                    ? newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso)
+                    : mergeRecipients(existing, recipientUserIds, payload, nowIso, intent.createdUser());
+            newlyTracked = !Boolean.TRUE.equals(item.getPendingCounterTracked());
+            item.setPendingCounterTracked(true);
+            saved = notificationOutboxRepository.save(item);
+        }
+        if (newlyTracked) {
+            adjustPendingCount(1);
+        }
         publishWakeup(saved);
         materializeInbox(saved);
         return Optional.of(saved);
+    }
+
+    private TrackedOutboxSave mergeExistingItemAtomic(
+            NotificationOutboxItem existing,
+            List<String> recipientUserIds,
+            Map<String, String> payload,
+            String nowIso,
+            String actorUserId) {
+        if (existing == null || mongoTemplate == null || !StringUtils.hasText(safeText(existing.getId()))) {
+            return null;
+        }
+        Update update = new Update()
+                .set("pendingCounterTracked", true)
+                .set("nextRetryAt", firstNonBlank(existing.getNextRetryAt(), nowIso))
+                .set("updatedDate", nowIso)
+                .set("updatedUser", safeNullableText(actorUserId));
+        if (recipientUserIds != null && !recipientUserIds.isEmpty()) {
+            update.addToSet("recipientUserIds").each(recipientUserIds.toArray());
+        }
+        NotificationOutboxItem previous = mongoTemplate.findAndModify(
+                Query.query(new Criteria().andOperator(
+                        Criteria.where("_id").is(existing.getId()),
+                        Criteria.where("status").is(NotificationOutboxItem.STATUS_PENDING))),
+                update,
+                org.springframework.data.mongodb.core.FindAndModifyOptions.options().returnNew(false),
+                NotificationOutboxItem.class);
+        if (previous == null) {
+            return null;
+        }
+        NotificationOutboxItem saved = notificationOutboxRepository.findById(existing.getId())
+                .orElseGet(() -> mergeRecipients(existing, recipientUserIds, payload, nowIso, actorUserId));
+        if (!DELIVERY_STRATEGY_TOPIC.equals(safeText(saved.getDeliveryStrategy()))) {
+            String strategy = knownUserDeliveryStrategy(
+                    firstNonEmptyMap(saved.getPayload(), payload),
+                    compactIds(saved.getRecipientUserIds()).size());
+            mongoTemplate.updateFirst(
+                    Query.query(new Criteria().andOperator(
+                            Criteria.where("_id").is(saved.getId()),
+                            Criteria.where("status").is(NotificationOutboxItem.STATUS_PENDING))),
+                    new Update().set("deliveryStrategy", strategy),
+                    NotificationOutboxItem.class);
+            saved.setDeliveryStrategy(strategy);
+        }
+        saved.setPendingCounterTracked(true);
+        return new TrackedOutboxSave(saved, !Boolean.TRUE.equals(previous.getPendingCounterTracked()));
+    }
+
+    private record TrackedOutboxSave(NotificationOutboxItem item, boolean newlyTracked) {}
+
+    private void adjustPendingCount(int delta) {
+        if (notificationRuleRegistryServiceProvider == null || delta == 0) {
+            return;
+        }
+        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
+        if (registry != null) {
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                    delta,
+                    "admin.jobs.rule.notification.outbox");
+        }
     }
 
     private void materializeInbox(NotificationOutboxItem item) {

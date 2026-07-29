@@ -33,6 +33,7 @@ public class ScheduledMessageTask {
     private String dueAtIso;
     private String status;
     private Boolean suspended;
+    private Boolean pendingCounterTracked;
     private String lastRunAtIso;
     private String lastRunStatus;
     private String lastRunDetail;
@@ -67,6 +68,8 @@ public class ScheduledMessageTask {
     public void setStatus(String status) { this.status = status; }
     public Boolean getSuspended() { return suspended; }
     public void setSuspended(Boolean suspended) { this.suspended = suspended; }
+    public Boolean getPendingCounterTracked() { return pendingCounterTracked; }
+    public void setPendingCounterTracked(Boolean pendingCounterTracked) { this.pendingCounterTracked = pendingCounterTracked; }
     public String getLastRunAtIso() { return lastRunAtIso; }
     public void setLastRunAtIso(String lastRunAtIso) { this.lastRunAtIso = lastRunAtIso; }
     public String getLastRunStatus() { return lastRunStatus; }

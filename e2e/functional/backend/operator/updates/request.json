@@ -1,0 +1,13 @@
+{
+  "name": "operator deployment update overview",
+  "group": "operator",
+  "order": 1250,
+  "method": "GET",
+  "path": "/api/operator/updates",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

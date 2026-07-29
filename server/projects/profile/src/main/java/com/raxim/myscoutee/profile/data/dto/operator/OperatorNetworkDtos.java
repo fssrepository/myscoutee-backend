@@ -62,6 +62,8 @@ public final class OperatorNetworkDtos {
             String groupId,
             String linkId,
             String tokenId,
+            String sourceClaimActionId,
+            String sourcePrivateRecordHash,
             String tokenExpiresAt) {
     }
 
@@ -87,7 +89,37 @@ public final class OperatorNetworkDtos {
             String verificationUnavailableReason,
             String verificationStatus,
             String verificationSubmittedAt,
-            String legalName) {
+            String legalName,
+            String eligibilityStatus) {
+    }
+
+    public record OperatorClaimOverviewDto(
+            OperatorClaimStatusDto status,
+            OperatorClaimRequestDto submission) {
+    }
+
+    public record OperatorClaimMutationResultDto(
+            OperatorClaimStatusDto status,
+            OperatorClaimRequestDto submission,
+            OperatorLeaderboardRowDto leaderboardEntry,
+            List<OperatorLeaderboardRowDto> leaderboardUpserts,
+            List<String> removedLeaderboardEntryIds,
+            int leaderboardTotalDelta) {
+        public OperatorClaimMutationResultDto(
+                OperatorClaimStatusDto status,
+                OperatorClaimRequestDto submission,
+                OperatorLeaderboardRowDto leaderboardEntry,
+                List<String> removedLeaderboardEntryIds) {
+            this(
+                    status,
+                    submission,
+                    leaderboardEntry,
+                    leaderboardEntry == null
+                            ? List.of()
+                            : List.of(leaderboardEntry),
+                    removedLeaderboardEntryIds,
+                    0);
+        }
     }
 
     public record OperatorLeaderboardSnapshotDto(
@@ -97,8 +129,14 @@ public final class OperatorNetworkDtos {
             String throughPeriod,
             long throughLedgerIndex,
             long throughAuditIndex,
+            long throughReviewIndex,
+            long throughEligibilityIndex,
+            long throughTransferEventIndex,
             String ledgerHeadHash,
             String auditHeadHash,
+            String reviewHeadHash,
+            String eligibilityHeadHash,
+            String transferEventHeadHash,
             String founderUnitsNumerator,
             String founderUnitsDenominator,
             String founderShareNumerator,
@@ -118,6 +156,7 @@ public final class OperatorNetworkDtos {
             String label,
             String avatarUrl,
             String claimState,
+            String eligibilityStatus,
             long deploymentCount,
             String weightNumerator,
             String weightDenominator,
@@ -136,6 +175,7 @@ public final class OperatorNetworkDtos {
             String deploymentId,
             String groupId,
             String claimState,
+            String eligibilityStatus,
             String membershipState,
             String weightNumerator,
             String weightDenominator,

@@ -52,26 +52,20 @@ class OperatorConfigurationMapperTest {
     }
 
     @Test
-    void configurationDefaultsLiveOnlyInIdenticalMongoSeeds() throws Exception {
+    void configurationDefaultsLiveOnlyInVersionedMongoSeeds() throws Exception {
         DeploymentConfiguration empty = new DeploymentConfiguration();
         assertThat(empty.getSchemaVersion()).isNull();
         assertThat(empty.getBranding()).isNull();
+        assertThat(empty.getSocialLinks()).isNull();
+        assertThat(empty.getPrivacyContact()).isNull();
         assertThat(empty.getPayment()).isNull();
         assertThat(empty.getFirebase()).isNull();
 
         Path seedRoot = locateSeedRoot();
-        String expected = null;
         for (String database : List.of("myscoutee_db", "demo_db", "e2e_db")) {
             String seedJson = Files.readString(
                     seedRoot.resolve(database)
                             .resolve("deploymentConfigurations.json"));
-            if (expected == null) {
-                expected = seedJson;
-            } else {
-                assertThat(seedJson)
-                        .as(database + " deployment configuration seed")
-                        .isEqualTo(expected);
-            }
             JsonNode seed = objectMapper.readTree(seedJson);
             assertThat(seed.size()).isEqualTo(1);
             JsonNode singleton = seed.get(0);
@@ -82,26 +76,90 @@ class OperatorConfigurationMapperTest {
             assertThat(singleton.path("version").asLong()).isZero();
             assertThat(singleton.path("branding").path("themePreset").asText())
                     .isEqualTo(DeploymentThemePreset.AURORA.name());
+            assertThat(singleton.path("branding")
+                            .has("logoCharacterIndex"))
+                    .isTrue();
+            assertThat(singleton.path("branding")
+                            .get("logoCharacterIndex")
+                            .isNull())
+                    .isTrue();
+            assertThat(singleton.path("socialLinks").isArray()).isTrue();
+            JsonNode privacyContact = singleton.path("privacyContact");
+            assertThat(privacyContact.propertyNames())
+                    .containsExactlyInAnyOrder(
+                            "dataControllerName",
+                            "privacyContactEmail");
+            if ("myscoutee_db".equals(database)) {
+                assertThat(privacyContact.path("dataControllerName").asText())
+                        .isEmpty();
+                assertThat(privacyContact.path("privacyContactEmail").asText())
+                        .isEmpty();
+            } else {
+                assertThat(privacyContact.path("dataControllerName").asText())
+                        .isNotBlank();
+                assertThat(privacyContact.path("privacyContactEmail").asText())
+                        .endsWith(".myscoutee.test");
+            }
         }
     }
 
     @Test
-    void publicBrandingJsonContainsExactlyTheFivePublicFields() throws Exception {
+    void publicConfigurationJsonContainsBrandingSocialAndPrivacyFieldsOnly()
+            throws Exception {
         DeploymentConfiguration configuration = seededConfiguration();
         configuration.getBranding().setLogoUrl(
                 "/media/public?key=images%2Foperator%2Flogo%2Fmedium");
+        DeploymentConfiguration.SocialLink socialLink =
+                new DeploymentConfiguration.SocialLink();
+        socialLink.setProvider("discord");
+        socialLink.setLabel("Discord");
+        socialLink.setUrl("https://discord.example.test/community");
+        socialLink.setIcon("discord");
+        socialLink.setHandle("@community");
+        configuration.setSocialLinks(List.of(socialLink));
         OperatorConfigurationMapper mapper = new OperatorConfigurationMapper();
 
         var json = objectMapper.readTree(
-                objectMapper.writeValueAsString(mapper.toBranding(configuration)));
+                objectMapper.writeValueAsString(
+                        mapper.toPublicConfiguration(configuration)));
 
         assertThat(json.propertyNames())
                 .containsExactlyInAnyOrder(
                         "productName",
+                        "logoCharacterIndex",
                         "homeLabel",
                         "logoUrl",
                         "themePreset",
-                        "revision");
+                        "revision",
+                        "socialLinks",
+                        "privacyContact");
+        assertThat(json.path("socialLinks").get(0).propertyNames())
+                .containsExactlyInAnyOrder(
+                        "provider",
+                        "label",
+                        "url",
+                        "icon",
+                        "handle");
+        assertThat(json.path("privacyContact").propertyNames())
+                .containsExactlyInAnyOrder(
+                        "configured",
+                        "dataControllerName",
+                        "privacyContactEmail");
+        assertThat(json.path("privacyContact").path("configured").asBoolean())
+                .isTrue();
+        assertThat(json.path("privacyContact")
+                        .path("dataControllerName")
+                        .asText())
+                .isEqualTo("MyScoutee Test Controller");
+        assertThat(json.path("privacyContact")
+                        .path("privacyContactEmail")
+                        .asText())
+                .isEqualTo("privacy@example.test");
+        assertThat(json.toString())
+                .doesNotContain("adminEmails")
+                .doesNotContain("credential")
+                .doesNotContain("firebase")
+                .doesNotContain("payment");
     }
 
     @Test
@@ -114,6 +172,8 @@ class OperatorConfigurationMapperTest {
         encrypted.setNonce("nonce");
         encrypted.setCiphertext("ciphertext");
         configuration.getPayment().setProviderId("stripe");
+        configuration.getPayment().setPublicBaseUrl(
+                "https://community.example.test");
         configuration.getPayment().setCredentialEnvelope(encrypted);
         configuration.getPayment().setCredentialMask("••••1234");
         configuration.getFirebase().setAuthenticationCredentialEnvelope(encrypted);
@@ -127,13 +187,21 @@ class OperatorConfigurationMapperTest {
                         "assets/payment-providers/stripe.svg",
                         "Stripe",
                         "violet")),
+                List.of("admin@example.test"),
                 null);
         String json = objectMapper.writeValueAsString(dto);
 
         assertThat(dto.payment().credentialConfigured()).isTrue();
+        assertThat(dto.payment().publicBaseUrl())
+                .isEqualTo("https://community.example.test");
         assertThat(dto.payment().credentialMask()).isEqualTo("••••1234");
         assertThat(dto.firebase().authenticationCredentialConfigured()).isTrue();
         assertThat(dto.firebase().messagingCredentialConfigured()).isTrue();
+        assertThat(dto.privacyContact().configured()).isTrue();
+        assertThat(dto.privacyContact().dataControllerName())
+                .isEqualTo("MyScoutee Test Controller");
+        assertThat(dto.privacyContact().privacyContactEmail())
+                .isEqualTo("privacy@example.test");
         assertThat(json)
                 .doesNotContain("ciphertext")
                 .doesNotContain("nonce")
@@ -157,24 +225,37 @@ class OperatorConfigurationMapperTest {
         var dto = new OperatorConfigurationMapper().toOperatorConfiguration(
                 seededConfiguration(),
                 List.of(),
+                List.of(),
                 null);
         var json = objectMapper.readTree(objectMapper.writeValueAsString(dto));
 
         assertThat(json.propertyNames()).containsExactlyInAnyOrder(
                 "capability",
                 "unavailableReason",
+                "adminEmails",
+                "privacyContact",
+                "socialLinks",
                 "branding",
                 "payment",
                 "firebase",
                 "updatedAt");
         assertThat(json.get("unavailableReason").isNull()).isTrue();
         assertThat(json.get("updatedAt").isNull()).isTrue();
+        assertThat(json.get("privacyContact").propertyNames())
+                .containsExactlyInAnyOrder(
+                        "configured",
+                        "dataControllerName",
+                        "privacyContactEmail");
         assertThat(json.get("payment").propertyNames()).containsExactlyInAnyOrder(
                 "availableProviders",
                 "providerId",
+                "publicBaseUrl",
+                "merchantAccount",
                 "credentialConfigured",
                 "credentialMask");
         assertThat(json.get("payment").get("providerId").isNull()).isTrue();
+        assertThat(json.get("payment").get("publicBaseUrl").isNull()).isTrue();
+        assertThat(json.get("payment").get("merchantAccount").isNull()).isTrue();
         assertThat(json.get("payment").get("credentialMask").isNull()).isTrue();
     }
 
@@ -202,11 +283,18 @@ class OperatorConfigurationMapperTest {
         DeploymentConfiguration.Branding branding =
                 new DeploymentConfiguration.Branding();
         branding.setProductName("MyScoutee");
+        branding.setLogoCharacterIndex(null);
         branding.setHomeLabel("Your preferences come first");
         branding.setLogoUrl("assets/logo/heart.webp");
         branding.setThemePreset(DeploymentThemePreset.AURORA.name());
         branding.setRevision(0L);
         configuration.setBranding(branding);
+        configuration.setSocialLinks(List.of());
+        DeploymentConfiguration.PrivacyContact privacyContact =
+                new DeploymentConfiguration.PrivacyContact();
+        privacyContact.setDataControllerName("MyScoutee Test Controller");
+        privacyContact.setPrivacyContactEmail("privacy@example.test");
+        configuration.setPrivacyContact(privacyContact);
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();

@@ -2,16 +2,21 @@ package com.raxim.myscoutee.profile.service.notifications;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -19,12 +24,123 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
+import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
 
 class NotificationOutboxWorkerServiceTest {
+    @Test
+    void inactiveFirebaseStillRecordsTheEnabledScheduledRuleWithoutTouchingPendingWork() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setFirebaseEnabled(false);
+        NotificationOutboxRepository outboxRepository =
+                org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        UsersRepository usersRepository = org.mockito.Mockito.mock(UsersRepository.class);
+        ChatWebSocketSessionRegistry sessionRegistry =
+                org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
+        MongoTemplate mongoTemplate = org.mockito.Mockito.mock(MongoTemplate.class);
+        FirebaseMessagingGateway gateway =
+                org.mockito.Mockito.mock(FirebaseMessagingGateway.class);
+        NotificationRuleRegistryService registry =
+                org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<NotificationRuleRegistryService> registryProvider =
+                org.mockito.Mockito.mock(ObjectProvider.class);
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        rule.setRuleKey(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX);
+        rule.setEnabled(true);
+        when(registryProvider.getIfAvailable()).thenReturn(registry);
+        when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX))
+                .thenReturn(Optional.of(rule));
+        when(registry.shouldRunScheduledRule(
+                eq(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX),
+                any(Instant.class)))
+                .thenReturn(true);
+        when(registry.beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX),
+                any(String.class),
+                eq("notification-outbox"),
+                any(Instant.class)))
+                .thenReturn(rule);
+        NotificationOutboxWorkerService service = new NotificationOutboxWorkerService(
+                configProperties,
+                outboxRepository,
+                usersRepository,
+                sessionRegistry,
+                mongoTemplate,
+                null,
+                null,
+                org.mockito.Mockito.mock(AdminTelemetryService.class),
+                gateway,
+                50,
+                500,
+                5,
+                300_000L,
+                60_000L,
+                0,
+                24,
+                null);
+        service.setNotificationRuleRegistryServiceProvider(registryProvider);
+
+        service.processDueNotifications();
+
+        ArgumentCaptor<Instant> beginAt = ArgumentCaptor.forClass(Instant.class);
+        verify(registry).beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX),
+                any(String.class),
+                eq("notification-outbox"),
+                beginAt.capture());
+        ArgumentCaptor<Instant> recordedAt = ArgumentCaptor.forClass(Instant.class);
+        verify(registry).recordRun(
+                eq(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX),
+                eq(0),
+                eq("completed"),
+                eq("Firebase delivery is inactive; pending notification outbox work was retained."),
+                eq("notification-outbox"),
+                recordedAt.capture());
+        assertThat(recordedAt.getValue()).isEqualTo(beginAt.getValue());
+        verify(registry, never()).adjustPendingCount(
+                any(String.class),
+                anyInt(),
+                any(String.class));
+        verifyNoInteractions(outboxRepository, usersRepository, mongoTemplate, gateway);
+    }
+
+    @Test
+    void inactiveFirebaseDoesNothingUntilTheEnabledRuleIsDue() {
+        NotificationRuleRegistryService registry =
+                org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<NotificationRuleRegistryService> registryProvider =
+                org.mockito.Mockito.mock(ObjectProvider.class);
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        rule.setRuleKey(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX);
+        rule.setEnabled(true);
+        when(registryProvider.getIfAvailable()).thenReturn(registry);
+        when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX))
+                .thenReturn(Optional.of(rule));
+        NotificationOutboxWorkerService service = service(
+                org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class));
+        service.setNotificationRuleRegistryServiceProvider(registryProvider);
+
+        service.processDueNotifications();
+
+        verify(registry, never()).beginScheduledRun(
+                any(String.class),
+                any(String.class),
+                any(String.class),
+                any(Instant.class));
+        verify(registry, never()).recordRun(
+                any(String.class),
+                anyInt(),
+                any(String.class),
+                any(String.class),
+                any(String.class),
+                any(Instant.class));
+    }
+
     @Test
     void chatDeliverySuppressesForegroundUsersImmediatelyBeforeDeviceLookup() {
         ChatWebSocketSessionRegistry sessionRegistry = org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);

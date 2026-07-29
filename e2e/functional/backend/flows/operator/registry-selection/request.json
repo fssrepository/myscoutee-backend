@@ -1,0 +1,20 @@
+{
+  "name": "operator registry inspect, confirm, guards and disconnect",
+  "group": "flows",
+  "tags": [
+    "operator",
+    "registry"
+  ],
+  "order": 9300,
+  "method": "GET",
+  "path": "/api/operator/registry",
+  "script": "operator-registry-selection.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 12000
+}

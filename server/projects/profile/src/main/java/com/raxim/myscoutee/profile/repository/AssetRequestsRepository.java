@@ -8,4 +8,5 @@ import com.raxim.myscoutee.profile.data.document.AssetRequest;
 
 public interface AssetRequestsRepository extends MongoRepository<AssetRequest, String> {
     List<AssetRequest> findByOwnerUserIdAndAssetId(String ownerUserId, String assetId);
+
 }

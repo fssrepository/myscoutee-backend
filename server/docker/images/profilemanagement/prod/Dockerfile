@@ -6,11 +6,13 @@ RUN apk add --no-cache imagemagick && \
     addgroup -S -g 10001 myscoutee && \
     adduser -S -D -H -u 10001 -G myscoutee myscoutee && \
     install -d -o myscoutee -g myscoutee /app \
+      /var/lib/myscoutee/registry-demo/keys \
+      /var/lib/myscoutee/registry-demo/state \
       /var/lib/myscoutee/update/staging \
       /var/lib/myscoutee/update/requests \
       /var/lib/myscoutee/update/jobs
 
-COPY --chown=myscoutee:myscoutee projects/profile/build/libs/*.jar /app/spring-boot-application.jar
+COPY --chown=myscoutee:myscoutee *.jar /app/spring-boot-application.jar
 
 USER 10001:10001
 

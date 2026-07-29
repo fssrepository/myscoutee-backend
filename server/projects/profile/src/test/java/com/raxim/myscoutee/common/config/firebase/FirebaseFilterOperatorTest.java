@@ -77,6 +77,86 @@ class FirebaseFilterOperatorTest {
                 .containsExactly("U", "O");
     }
 
+    @Test
+    void existingBootstrapAuthenticationIsNeverReplacedByDemoFallback()
+            throws Exception {
+        FirebaseService firebaseService = mock(FirebaseService.class);
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(false);
+        FirebasePrincipal principal = new FirebasePrincipal(
+                "real-operator",
+                "operator@deployment.invalid",
+                List.of("U", "O"),
+                null);
+        FirebaseAuthenticationToken bootstrapAuthentication =
+                new FirebaseAuthenticationToken(
+                        principal,
+                        null,
+                        principal.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(
+                bootstrapAuthentication);
+        FirebaseFilter filter = new FirebaseFilter(
+                firebaseService,
+                properties,
+                mock(FirebaseTokenVerifier.class));
+        MockHttpServletRequest request = demoOperatorRequest();
+        request.addHeader("X-Demo-User-Id", "operator-demo-dev");
+        FilterChain chain = mock(FilterChain.class);
+
+        filter.doFilter(
+                request,
+                new MockHttpServletResponse(),
+                chain);
+
+        assertThat(SecurityContextHolder.getContext()
+                .getAuthentication()).isSameAs(
+                        bootstrapAuthentication);
+        verify(firebaseService, never())
+                .loadDemoOperatorById(
+                        org.mockito.ArgumentMatchers.anyString());
+        verify(firebaseService, never())
+                .loadUserByUsername(
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.any(),
+                        org.mockito.ArgumentMatchers.anyString());
+        verify(chain).doFilter(
+                org.mockito.ArgumentMatchers.eq(request),
+                org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    void bootstrapLoginIgnoresStaleFirebaseBearerCredential()
+            throws Exception {
+        FirebaseService firebaseService = mock(FirebaseService.class);
+        FirebaseTokenVerifier verifier = mock(FirebaseTokenVerifier.class);
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(true);
+        FirebaseFilter filter = new FirebaseFilter(
+                firebaseService,
+                properties,
+                verifier);
+        MockHttpServletRequest request =
+                new MockHttpServletRequest(
+                        "POST",
+                        "/api/auth/operator-bootstrap");
+        request.addHeader("Authorization", "Bearer expired-firebase-token");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        FilterChain chain = mock(FilterChain.class);
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(SecurityContextHolder.getContext().getAuthentication())
+                .isNull();
+        verify(verifier, never()).verify(
+                org.mockito.ArgumentMatchers.anyString());
+        verify(firebaseService, never()).loadUserByCredential(
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.anyString());
+        verify(chain).doFilter(request, response);
+    }
+
     private MockHttpServletRequest demoOperatorRequest() {
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/api/operator/registry");

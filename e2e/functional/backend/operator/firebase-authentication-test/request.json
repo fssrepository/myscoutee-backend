@@ -1,0 +1,16 @@
+{
+  "name": "operator Firebase authentication capability test is isolated in demo mode",
+  "group": "operator",
+  "order": 1260,
+  "method": "POST",
+  "path": "/api/operator/configuration/tests",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "body": {
+    "kind": "FIREBASE_AUTHENTICATION"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

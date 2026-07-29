@@ -1,11 +1,73 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+read_env_file_value() {
+  local key="$1"
+  local file="$2"
+  local line value
+
+  [[ -f "${file}" && ! -L "${file}" ]] || return 1
+  line="$(sed -n "s/^[[:space:]]*${key}[[:space:]]*=[[:space:]]*//p" "${file}" | tail -n 1)"
+  [[ -n "${line}" ]] || return 1
+
+  value="${line%$'\r'}"
+  if [[ "${value}" == \"*\" && "${value}" == *\" ]]; then
+    value="${value:1:${#value}-2}"
+  elif [[ "${value}" == \'*\' && "${value}" == *\' ]]; then
+    value="${value:1:${#value}-2}"
+  fi
+
+  printf '%s' "${value}"
+}
+
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload >/dev/null 2>&1 || true
 fi
 
 if [[ "${1:-}" = "purge" ]]; then
+  if command -v docker >/dev/null 2>&1; then
+    env_file="${MYSCOUTEE_POSTRM_ENV_FILE:-/etc/myscoutee/myscoutee.env}"
+    registry_demo_volume="$(
+      read_env_file_value REGISTRY_DEMO_VOLUME_NAME "${env_file}" || true
+    )"
+    registry_demo_client_volume="$(
+      read_env_file_value REGISTRY_DEMO_CLIENT_VOLUME_NAME "${env_file}" || true
+    )"
+    registry_demo_volume="${registry_demo_volume:-myscoutee-registry-demo-data-v1}"
+    registry_demo_client_volume="${registry_demo_client_volume:-myscoutee-registry-demo-client-data-v1}"
+
+    for registry_volume in \
+      "${registry_demo_volume}" \
+      "${registry_demo_client_volume}"; do
+      if docker volume inspect "${registry_volume}" >/dev/null 2>&1 \
+          && ! docker volume rm -f "${registry_volume}" >/dev/null 2>&1; then
+        echo "Warning: could not remove MyScoutee volume ${registry_volume}." >&2
+      fi
+    done
+
+    managed_images="$(
+      docker images --format "{{.Repository}}:{{.Tag}}" 2>/dev/null \
+        | awk '
+            /^myscoutee-api:/ ||
+            /^myscoutee-nginx:/ ||
+            /^myscoutee-minio:/ ||
+            /^myscoutee-registry:/ {
+              print
+            }
+          ' \
+        | sort -u \
+        || true
+    )"
+    if [[ -n "${managed_images}" ]]; then
+      while IFS= read -r managed_image; do
+        [[ -n "${managed_image}" ]] || continue
+        if ! docker image rm -f "${managed_image}" >/dev/null 2>&1; then
+          echo "Warning: could not remove MyScoutee image ${managed_image}." >&2
+        fi
+      done <<< "${managed_images}"
+    fi
+  fi
+
   rm -rf /etc/myscoutee
   rm -rf /opt/myscoutee
   rm -rf /var/lib/myscoutee

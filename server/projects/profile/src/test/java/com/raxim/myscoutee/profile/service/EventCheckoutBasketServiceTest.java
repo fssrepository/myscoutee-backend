@@ -4,10 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.profile.data.document.EventCheckoutBasketItem;
+import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.repository.EventCheckoutBasketItemsRepository;
@@ -28,16 +32,18 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 class EventCheckoutBasketServiceTest {
     private EventCheckoutBasketItemsRepository repository;
     private MongoTemplate mongoTemplate;
+    private NotificationRuleRegistryService notificationRuleRegistryService;
     private EventCheckoutBasketService service;
 
     @BeforeEach
     void setUp() {
         repository = mock(EventCheckoutBasketItemsRepository.class);
         mongoTemplate = mock(MongoTemplate.class);
+        notificationRuleRegistryService = mock(NotificationRuleRegistryService.class);
         service = new EventCheckoutBasketService(
                 repository,
                 mongoTemplate,
-                mock(NotificationRuleRegistryService.class));
+                notificationRuleRegistryService);
     }
 
     @Test
@@ -110,6 +116,40 @@ class EventCheckoutBasketServiceTest {
                 eq(List.of("event-1", "event-2")),
                 anyList(),
                 anyList());
+    }
+
+    @Test
+    void purgeDoesNotReadOrWriteWhenAnotherInstanceOwnsTheScheduledRun() {
+        int processed = service.purgeExpiredDraftBasketsScheduled(Instant.now());
+
+        assertThat(processed).isZero();
+        verify(notificationRuleRegistryService).beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE),
+                any(String.class),
+                any(String.class),
+                any(Instant.class));
+        verify(mongoTemplate, never()).updateMulti(
+                any(Query.class),
+                any(Update.class),
+                eq(EventCheckoutBasketItem.class));
+    }
+
+    @Test
+    void purgeScansExpiredDraftsAfterOwningTheScheduledRun() {
+        when(notificationRuleRegistryService.beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE),
+                any(String.class),
+                any(String.class),
+                any(Instant.class)))
+                .thenReturn(new NotificationRuleConfig());
+
+        int processed = service.purgeExpiredDraftBasketsScheduled(Instant.now());
+
+        assertThat(processed).isZero();
+        verify(mongoTemplate, atLeastOnce()).updateMulti(
+                any(Query.class),
+                any(Update.class),
+                eq(EventCheckoutBasketItem.class));
     }
 
     private EventCheckoutBasketItem persistedItem() {

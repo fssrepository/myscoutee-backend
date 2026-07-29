@@ -87,4 +87,5 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
             String status);
 
     List<ActivityMember> findByOwnerTypeAndStatusAndRequestKind(String ownerType, String status, String requestKind);
+
 }

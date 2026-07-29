@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.repository.AffinityRecomputeTasksRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class AffinityRecomputeTaskService {
@@ -48,6 +49,7 @@ public class AffinityRecomputeTaskService {
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
     private final PlatformParametersService platformParametersService;
+    private org.springframework.beans.factory.ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
 
     @Autowired
     public AffinityRecomputeTaskService(
@@ -66,6 +68,12 @@ public class AffinityRecomputeTaskService {
             AffinityRecomputeProperties properties,
             MongoTemplate mongoTemplate) {
         this(tasksRepository, properties, mongoTemplate, null);
+    }
+
+    @Autowired(required = false)
+    void setNotificationRuleRegistryServiceProvider(
+            org.springframework.beans.factory.ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+        this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
     }
 
     @PostConstruct
@@ -154,6 +162,16 @@ public class AffinityRecomputeTaskService {
         return tasksRepository.save(task);
     }
 
+    void recordPendingWorkCompleted() {
+        adjustPendingCount(-1);
+    }
+
+    NotificationRuleRegistryService notificationRuleRegistry() {
+        return notificationRuleRegistryServiceProvider == null
+                ? null
+                : notificationRuleRegistryServiceProvider.getIfAvailable();
+    }
+
     public Optional<AffinityRecomputeTask> findByTaskKey(String taskKey) {
         return tasksRepository.findByTaskKey(safeText(taskKey));
     }
@@ -240,7 +258,60 @@ public class AffinityRecomputeTaskService {
             task.setCreatedDate(iso(Instant.now()));
             task.setAttemptCount(0);
         }
-        return tasksRepository.save(merge(task, reason, availableAt(debounce), actorUserId));
+        boolean newlyTracked = !Boolean.TRUE.equals(task.getPendingCounterTracked());
+        task.setPendingCounterTracked(true);
+        AffinityRecomputeTask saved = tasksRepository.save(merge(task, reason, availableAt(debounce), actorUserId));
+        if (newlyTracked) {
+            adjustPendingCount(1);
+        }
+        markAffectedAdminJobsPending(targetType);
+        return saved;
+    }
+
+    private void adjustPendingCount(int delta) {
+        if (notificationRuleRegistryServiceProvider == null || delta == 0) {
+            return;
+        }
+        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
+        if (registry != null) {
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                    delta,
+                    "admin.jobs.rule.affinity.recompute");
+        }
+    }
+
+    private void markAffectedAdminJobsPending(String targetType) {
+        if (notificationRuleRegistryServiceProvider == null) {
+            return;
+        }
+        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
+        if (registry == null) {
+            return;
+        }
+        String normalizedTargetType = normalizeTargetType(targetType);
+        if (TARGET_USER.equals(normalizedTargetType)
+                || TARGET_EVENT.equals(normalizedTargetType)
+                || TARGET_CONFIG.equals(normalizedTargetType)) {
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    1,
+                    "admin.jobs.table.affected");
+        }
+        if (TARGET_EVENT.equals(normalizedTargetType)) {
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                    1,
+                    "admin.jobs.table.affected");
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                    1,
+                    "admin.jobs.table.affected");
+            registry.adjustPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                    1,
+                    "admin.jobs.table.affected");
+        }
     }
 
     private AffinityRecomputeTask merge(

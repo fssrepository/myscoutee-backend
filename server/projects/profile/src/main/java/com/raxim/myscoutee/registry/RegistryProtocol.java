@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,17 @@ public final class RegistryProtocol {
     public static final String REGISTRATION_PATH = "/v1/deployments/register";
     public static final String MAU_BATCH_PATH = "/v1/mau/batches";
     public static final String REVENUE_BATCH_PATH = "/v1/revenue/batches";
+    public static final String SETTLEMENT_QUERY_PATH = "/v1/settlements/query";
+    public static final String GLOBAL_IDENTITY_VOPRF_KEY_PATH =
+            "/v1/global-identities/voprf-keys/current";
+    public static final String GLOBAL_IDENTITY_EVALUATE_PATH =
+            "/v1/global-identities/evaluate";
+    public static final String GLOBAL_IDENTITY_LINK_PATH =
+            "/v1/global-identities/links";
+    public static final String GLOBAL_IDENTITY_LINK_ACTION_PATH =
+            "/v1/global-identities/link-actions";
+    public static final String GLOBAL_IDENTITY_PRESENCE_BATCH_PATH =
+            "/v1/global-identities/presence-batches";
     public static final String OPERATOR_ACTION_PATH = "/v1/operator/actions";
     public static final String OPERATOR_CLAIM_STATUS_PATH_PREFIX = "/v1/operator/claims/";
     public static final String LEADERBOARD_PATH = "/v1/leaderboard";
@@ -34,10 +46,71 @@ public final class RegistryProtocol {
     public static final String INSTALLATION_RULESET = "installation-test-v1";
     public static final long INSTALLATION_MAU_COUNT = 0L;
     public static final String INSTALLATION_ENTRY_TYPE = "INSTALLATION_TEST_BATCH_ACCEPTED";
+    public static final String QMAU_KIND = "monthly-qmau";
+    public static final String QMAU_RULESET_VERSION = "qmau-v1";
+    public static final String QMAU_ENTRY_TYPE = "QMAU_BATCH_ACCEPTED";
     public static final String REVENUE_KIND = "daily-revenue";
     public static final String REVENUE_RULESET_VERSION =
             "net-captured-revenue-v1";
+    public static final String SETTLEMENT_KIND = "monthly-settlement";
+    public static final String SETTLEMENT_RULESET_VERSION =
+            "share-weighted-settlement-v1";
+    public static final String SETTLEMENT_VALUATION_RULESET_VERSION =
+            "three-month-acceleration-valuation-v1";
+    public static final String SETTLEMENT_ENTRY_TYPE =
+            "SETTLEMENT_CALCULATED";
+    public static final String GLOBAL_IDENTITY_VOPRF_SUITE = "P256-SHA256";
+    public static final String GLOBAL_IDENTITY_VOPRF_MODE = "VOPRF";
+    public static final String GLOBAL_IDENTITY_VOPRF_KEY_STATUS_ACTIVE =
+            "ACTIVE";
+    public static final String GLOBAL_IDENTITY_CONSENT_VERSION =
+            "global-dedup-consent-v1";
+    public static final String GLOBAL_IDENTITY_LINK_ACTION_UNLINK = "UNLINK";
+    public static final String GLOBAL_IDENTITY_LINK_ACTION_CORRECT = "CORRECT";
+    public static final String GLOBAL_IDENTITY_EVENT_ACTION_PRESENCE =
+            "QUALIFIED_PRESENCE";
+    public static final long
+            SETTLEMENT_DEFAULT_VALUATION_MULTIPLIER_BASIS_POINTS = 30_000L;
+    public static final long
+            SETTLEMENT_MINIMUM_BASE_VALUATION_MULTIPLIER_BASIS_POINTS =
+                    1_000L;
+    public static final long
+            SETTLEMENT_MAXIMUM_BASE_VALUATION_MULTIPLIER_BASIS_POINTS =
+                    100_000L;
+    public static final long SETTLEMENT_MINIMUM_GROWTH_BASIS_POINTS =
+            -10_000L;
+    public static final long SETTLEMENT_MAXIMUM_GROWTH_BASIS_POINTS =
+            20_000L;
+    public static final long SETTLEMENT_MINIMUM_ACCELERATION_BASIS_POINTS =
+            -10_000L;
+    public static final long SETTLEMENT_MAXIMUM_ACCELERATION_BASIS_POINTS =
+            10_000L;
+    public static final long SETTLEMENT_ACCELERATION_ADJUSTMENT_DIVISOR = 4L;
+    public static final long
+            SETTLEMENT_MINIMUM_VALUATION_ADJUSTMENT_BASIS_POINTS = -2_500L;
+    public static final long
+            SETTLEMENT_MAXIMUM_VALUATION_ADJUSTMENT_BASIS_POINTS = 2_500L;
+    public static final String SETTLEMENT_BENEFICIARY_FOUNDER = "FOUNDER";
+    public static final String SETTLEMENT_BENEFICIARY_OPERATOR_GROUP =
+            "OPERATOR_GROUP";
+    public static final String SETTLEMENT_BENEFICIARY_RESERVE =
+            "UNALLOCATED_RESERVE";
+    public static final String SETTLEMENT_FOUNDER_BENEFICIARY_ID = "founder";
+    public static final String SETTLEMENT_RESERVE_BENEFICIARY_ID =
+            "unallocated-reserve";
+    public static final int SETTLEMENT_MAX_QUERY_LIMIT = 100;
+    /**
+     * Largest settlement minor-unit amount that remains exact in every v1
+     * JSON consumer, including JavaScript's IEEE-754 integer representation.
+     */
+    public static final long SETTLEMENT_MAXIMUM_SAFE_MINOR =
+            9_007_199_254_740_991L;
     public static final int REVENUE_COMMISSION_RATE_BASIS_POINTS = 500;
+    public static final int REVENUE_MAX_CURRENCY_ROWS = 32;
+    public static final long REVENUE_MAX_MINOR =
+            9_000_000_000_000_000L;
+    public static final long REVENUE_MAX_PAYMENT_COUNT =
+            1_000_000_000_000L;
     public static final String LEADERBOARD_FORMULA_VERSION = "six-complete-month-average-v1";
     public static final String LEADERBOARD_RULESET_VERSION = "qmau-v1";
     public static final String UPDATE_MANIFEST_VERSION = "1";
@@ -50,9 +123,17 @@ public final class RegistryProtocol {
     public static final String OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT = "deactivate-deployment";
     public static final String OPERATOR_ACTION_REACTIVATE_DEPLOYMENT = "reactivate-deployment";
     public static final String OPERATOR_CLAIM_STATE_PENDING_REVIEW = "pending-review";
+    public static final String OPERATOR_CLAIM_STATE_REJECTED = "rejected";
+    public static final String OPERATOR_CLAIM_STATE_WITHDRAWN = "withdrawn";
     public static final String OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW = "PENDING_REVIEW";
     public static final String OPERATOR_VERIFICATION_STATUS_APPROVED = "APPROVED";
+    public static final String OPERATOR_VERIFICATION_STATUS_REJECTED = "REJECTED";
     public static final String OPERATOR_VERIFICATION_STATUS_WITHDRAWN = "WITHDRAWN";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_ACTIVE = "active";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_SUSPENDED = "suspended";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_INACTIVE = "inactive";
+    public static final String OPERATOR_ELIGIBILITY_STATUS_PARTIALLY_SUSPENDED =
+            "partially-suspended";
     public static final String ZERO_HASH =
             "sha256:0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -65,9 +146,13 @@ public final class RegistryProtocol {
     private static final Pattern BATCH_ID_PATTERN = Pattern.compile("batch_[0-9a-f]{32}");
     private static final Pattern REVENUE_BATCH_ID_PATTERN =
             Pattern.compile("revbatch_[0-9a-f]{32}");
+    private static final Pattern SETTLEMENT_ID_PATTERN =
+            Pattern.compile("stl_[0-9a-f]{32}");
     private static final Pattern REGISTRY_KEY_ID_PATTERN = Pattern.compile("rkey_[0-9a-f]{32}");
     private static final Pattern OPERATOR_ACTION_ID_PATTERN = Pattern.compile("opa_[0-9a-f]{32}");
     private static final Pattern OPERATOR_REVIEW_ID_PATTERN = Pattern.compile("opr_[0-9a-f]{32}");
+    private static final Pattern OPERATOR_ELIGIBILITY_ID_PATTERN =
+            Pattern.compile("ope_[0-9a-f]{32}");
     private static final Pattern OPERATOR_GROUP_ID_PATTERN = Pattern.compile("opg_[0-9a-f]{32}");
     private static final Pattern OPERATOR_LINK_ID_PATTERN = Pattern.compile("opl_[0-9a-f]{32}");
     private static final Pattern OPERATOR_TOKEN_ID_PATTERN = Pattern.compile("opt_[0-9a-f]{32}");
@@ -77,6 +162,45 @@ public final class RegistryProtocol {
             Pattern.compile("annsnap_[0-9a-f]{32}");
     private static final Pattern PACKAGE_SIGNING_KEY_ID_PATTERN =
             Pattern.compile("pkey_[0-9a-f]{32}");
+    /*
+     * Pinned settlement-currency table for net-captured-revenue-v1. This must
+     * change only with a new accounting ruleset; it deliberately does not use
+     * the JDK's independently updateable runtime currency data.
+     */
+    private static final Map<String, Integer>
+            REVENUE_V1_CURRENCY_FRACTION_DIGITS =
+                    parseRevenueCurrencyFractionDigits("""
+                            AED:2 AFN:2 ALL:2 AMD:2 ANG:2 AOA:2 ARS:2 AUD:2 AWG:2 AZN:2
+                            BAM:2 BBD:2 BDT:2 BGN:2 BHD:3 BIF:0 BMD:2 BND:2 BOB:2 BOV:2 BRL:2 BSD:2
+                            BTN:2 BWP:2 BYN:2 BZD:2
+                            CAD:2 CDF:2 CHE:2 CHF:2 CHW:2 CLF:4 CLP:0 CNY:2 COP:2 COU:2 CRC:2 CUP:2
+                            CVE:2 CZK:2
+                            DJF:0 DKK:2 DOP:2 DZD:2
+                            EGP:2 ERN:2 ETB:2 EUR:2
+                            FJD:2 FKP:2
+                            GBP:2 GEL:2 GHS:2 GIP:2 GMD:2 GNF:0 GTQ:2 GYD:2
+                            HKD:2 HNL:2 HTG:2 HUF:2
+                            IDR:2 ILS:2 INR:2 IQD:3 IRR:2 ISK:0
+                            JMD:2 JOD:3 JPY:0
+                            KES:2 KGS:2 KHR:2 KMF:0 KPW:2 KRW:0 KWD:3 KYD:2 KZT:2
+                            LAK:2 LBP:2 LKR:2 LRD:2 LSL:2 LYD:3
+                            MAD:2 MDL:2 MGA:2 MKD:2 MMK:2 MNT:2 MOP:2 MRU:2 MUR:2 MVR:2 MWK:2 MXN:2
+                            MXV:2 MYR:2 MZN:2
+                            NAD:2 NGN:2 NIO:2 NOK:2 NPR:2 NZD:2
+                            OMR:3
+                            PAB:2 PEN:2 PGK:2 PHP:2 PKR:2 PLN:2 PYG:0
+                            QAR:2
+                            RON:2 RSD:2 RUB:2 RWF:0
+                            SAR:2 SBD:2 SCR:2 SDG:2 SEK:2 SGD:2 SHP:2 SLE:2 SOS:2 SRD:2 SSP:2 STN:2
+                            SVC:2 SYP:2 SZL:2
+                            THB:2 TJS:2 TMT:2 TND:3 TOP:2 TRY:2 TTD:2 TWD:2 TZS:2
+                            UAH:2 UGX:0 USD:2 USN:2 UYI:0 UYU:2 UYW:4 UZS:2
+                            VED:2 VES:2 VND:0 VUV:0
+                            WST:2
+                            XAF:0 XCD:2 XCG:2 XOF:0 XPF:0
+                            YER:2
+                            ZAR:2 ZMW:2 ZWG:2
+                            """);
 
     private RegistryProtocol() {
     }
@@ -124,6 +248,43 @@ public final class RegistryProtocol {
                 commitmentHash);
     }
 
+    public static byte[] qmauBatchPayload(
+            String kind,
+            String period,
+            String rulesetVersion,
+            long qualifiedMauCount,
+            String commitmentHash,
+            long revision,
+            String supersedesBatchId) {
+        if (!QMAU_KIND.equals(kind)
+                || !QMAU_RULESET_VERSION.equals(rulesetVersion)) {
+            throw new IllegalArgumentException(
+                    "QMAU payload does not use the supported qualification ruleset.");
+        }
+        requirePeriod(period);
+        requireNonNegative(qualifiedMauCount, "qualified_mau_count");
+        requireHash(commitmentHash, "commitment_hash");
+        long normalizedRevision = requirePositive(revision, "revision");
+        String normalizedSupersedes = nullToEmpty(supersedesBatchId);
+        if (normalizedRevision == 1L) {
+            if (!normalizedSupersedes.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Initial QMAU revision must not supersede a batch.");
+            }
+        } else {
+            requireBatchId(normalizedSupersedes);
+        }
+        return canonicalAllowEmpty(
+                "myscoutee-registry-qmau-batch-payload-v1",
+                kind,
+                period,
+                rulesetVersion,
+                Long.toString(qualifiedMauCount),
+                commitmentHash,
+                Long.toString(normalizedRevision),
+                normalizedSupersedes);
+    }
+
     public static byte[] revenueBatchPayload(
             String kind,
             String period,
@@ -132,15 +293,37 @@ public final class RegistryProtocol {
             String rulesetVersion,
             int commissionRateBasisPoints,
             List<RevenueCurrencyRow> currencies) {
-        List<RevenueCurrencyRow> rows = currencies == null
-                ? List.of()
-                : List.copyOf(currencies);
+        List<RevenueCurrencyRow> rows = List.copyOf(
+                Objects.requireNonNull(
+                        currencies,
+                        "Revenue currencies must be an explicit array."));
+        if (!REVENUE_KIND.equals(kind)
+                || !REVENUE_RULESET_VERSION.equals(rulesetVersion)
+                || commissionRateBasisPoints
+                        != REVENUE_COMMISSION_RATE_BASIS_POINTS) {
+            throw new IllegalArgumentException(
+                    "Revenue payload does not use the supported accounting ruleset.");
+        }
+        if (rows.size() > REVENUE_MAX_CURRENCY_ROWS) {
+            throw new IllegalArgumentException(
+                    "Revenue payload contains more than 32 currency rows.");
+        }
+        long normalizedRevision = requirePositive(revision, "revision");
+        String normalizedSupersedes = nullToEmpty(supersedesBatchId);
+        if (normalizedRevision == 1L) {
+            if (!normalizedSupersedes.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Initial revenue revision must not supersede a batch.");
+            }
+        } else {
+            requireRevenueBatchId(normalizedSupersedes);
+        }
         String[] values = new String[7 + rows.size() * 8];
         values[0] = "myscoutee-registry-revenue-batch-payload-v1";
         values[1] = requireCanonical(kind, "revenue kind");
         values[2] = requireRevenuePeriod(period);
-        values[3] = Long.toString(requirePositive(revision, "revision"));
-        values[4] = supersedesBatchId == null ? "" : supersedesBatchId;
+        values[3] = Long.toString(normalizedRevision);
+        values[4] = normalizedSupersedes;
         values[5] = requireCanonical(rulesetVersion, "revenue ruleset_version");
         values[6] = Integer.toString(commissionRateBasisPoints);
         String[] withCount = new String[values.length + 1];
@@ -157,8 +340,10 @@ public final class RegistryProtocol {
             }
             previousCurrency = currencyCode;
             withCount[offset++] = currencyCode;
-            withCount[offset++] = Integer.toString(requireRevenueFractionDigits(
-                    row.fractionDigits()));
+            withCount[offset++] = Integer.toString(
+                    requireRevenueCurrencyFractionDigits(
+                            currencyCode,
+                            row.fractionDigits()));
             withCount[offset++] = Long.toString(requireNonNegative(
                     row.capturedMinor(), "captured_minor"));
             withCount[offset++] = Long.toString(requireNonNegative(
@@ -172,8 +357,413 @@ public final class RegistryProtocol {
                     "estimated_commission_minor"));
             withCount[offset++] = Long.toString(requireNonNegative(
                     row.paymentCount(), "payment_count"));
+            validateRevenueCurrencyRow(row);
         }
         return canonicalAllowEmpty(withCount);
+    }
+
+    public static byte[] settlementQueryPayload(
+            SettlementQueryRequest request) {
+        Objects.requireNonNull(
+                request,
+                "Settlement query request must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-settlement-query-payload-v1",
+                request.currencyCode(),
+                request.fromPeriod(),
+                request.throughPeriod(),
+                Boolean.toString(request.includeSuperseded()),
+                Integer.toString(request.limit()),
+                request.afterPeriod(),
+                request.afterSettlementId());
+    }
+
+    public static String settlementHistoryItemsHash(
+            List<SettlementHistoryItem> items) {
+        List<SettlementHistoryItem> safeItems = List.copyOf(
+                Objects.requireNonNull(
+                        items,
+                        "Settlement history items must be an explicit array."));
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-settlement-history-items-v1");
+        values.add(Integer.toString(safeItems.size()));
+        for (SettlementHistoryItem item : safeItems) {
+            Objects.requireNonNull(
+                    item,
+                    "Settlement history item must not be null.");
+            values.add(item.settlementId());
+            values.add(item.period());
+            values.add(item.currencyCode());
+            values.add(Long.toString(item.fractionDigits()));
+            values.add(Long.toString(item.revision()));
+            values.add(nullToEmpty(item.supersedesSettlementId()));
+            values.add(item.beneficiaryType());
+            values.add(item.beneficiaryId());
+            values.add(item.shareNumerator());
+            values.add(item.shareDenominator());
+            values.add(Long.toString(item.networkPoolMinor()));
+            values.add(Long.toString(item.networkPoolAllocationMinor()));
+            values.add(Long.toString(item.ttmCommissionBasisMinor()));
+            values.add(Long.toString(item.ttmNetworkCommissionPoolMinor()));
+            values.add(Long.toString(item.indicativeNetworkValueMinor()));
+            values.add(Long.toString(item.indicativeValueAllocationMinor()));
+            values.add(item.valuationRulesetVersion());
+            values.add(Long.toString(
+                    item.baseValuationMultiplierBasisPoints()));
+            values.add(Long.toString(item.recentThreeMonthAverageMinor()));
+            values.add(Long.toString(item.priorThreeMonthAverageMinor()));
+            values.add(Long.toString(item.earlierThreeMonthAverageMinor()));
+            values.add(Long.toString(item.recentGrowthBasisPoints()));
+            values.add(Long.toString(item.priorGrowthBasisPoints()));
+            values.add(Long.toString(item.accelerationBasisPoints()));
+            values.add(Long.toString(item.valuationAdjustmentBasisPoints()));
+            values.add(Long.toString(
+                    item.effectiveValuationMultiplierBasisPoints()));
+            values.add(Boolean.toString(item.valuationIsNonBinding()));
+            values.add(Long.toString(item.throughLedgerIndex()));
+            values.add(Long.toString(item.throughAuditIndex()));
+            values.add(Long.toString(item.throughReviewIndex()));
+            values.add(Long.toString(item.throughEligibilityIndex()));
+            values.add(item.sourceFingerprint());
+            values.add(item.settlementHash());
+            values.add(item.acceptedAt());
+        }
+        return sha256(canonicalAllowEmpty(values.toArray(String[]::new)));
+    }
+
+    public static byte[] settlementQueryResponse(
+            SettlementQueryResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Settlement query response must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-settlement-query-response-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.deploymentId(),
+                response.queryId(),
+                response.queryHash(),
+                response.itemsHash(),
+                response.nextAfterPeriod(),
+                response.nextAfterSettlementId(),
+                response.generatedAt(),
+                response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityVoprfKey(
+            GlobalIdentityVoprfKey response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity VOPRF key response must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-voprf-key-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                requiredLong(response.keyVersion(), "key_version"),
+                response.suite(),
+                response.mode(),
+                response.publicKey(),
+                response.status(),
+                response.activatedAt(),
+                response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityEvaluationPayload(
+            long keyVersion,
+            String suite,
+            String blindedElement) {
+        return canonical(
+                "myscoutee-registry-global-identity-evaluate-payload-v1",
+                Long.toString(requirePositive(keyVersion, "key_version")),
+                requireCanonical(suite, "suite"),
+                requireCanonical(blindedElement, "blinded_element"));
+    }
+
+    public static byte[] globalIdentityEvaluationResult(
+            GlobalIdentityEvaluationResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity evaluation response must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-evaluation-result-v1",
+                requiredLong(response.keyVersion(), "key_version"),
+                response.suite(),
+                response.publicKey(),
+                response.evaluatedElement(),
+                response.proof());
+    }
+
+    public static byte[] globalIdentityEvaluationReceipt(
+            GlobalIdentityEvaluationResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity evaluation response must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-evaluation-receipt-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.deploymentId(),
+                requiredLong(response.keyVersion(), "key_version"),
+                response.suite(),
+                response.requestHash(),
+                response.responseHash(),
+                response.evaluatedAt(),
+                response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityLinkPayload(
+            long keyVersion,
+            String suite,
+            String networkIdentityCommitment,
+            String consentVersion,
+            String consentEvidenceCommitment,
+            String verifiedAt,
+            String effectivePeriod) {
+        return canonical(
+                "myscoutee-registry-global-identity-link-payload-v1",
+                Long.toString(requirePositive(keyVersion, "key_version")),
+                requireCanonical(suite, "suite"),
+                requireHash(
+                        networkIdentityCommitment,
+                        "network_identity_commitment"),
+                requireCanonical(consentVersion, "consent_version"),
+                requireHash(
+                        consentEvidenceCommitment,
+                        "consent_evidence_commitment"),
+                requireCanonical(verifiedAt, "verified_at"),
+                requireCanonical(effectivePeriod, "effective_period"));
+    }
+
+    public static byte[] globalIdentityLinkActionPayload(
+            String action,
+            String linkId,
+            Long replacementKeyVersion,
+            String replacementSuite,
+            String replacementCommitment,
+            String consentVersion,
+            String consentEvidenceCommitment,
+            String verifiedAt,
+            String effectivePeriod,
+            String reasonCommitment) {
+        return canonicalAllowEmpty(
+                "myscoutee-registry-global-identity-link-action-payload-v1",
+                requireCanonical(action, "global-identity link action"),
+                requireCanonical(linkId, "global-identity link_id"),
+                replacementKeyVersion == null
+                        ? "0"
+                        : Long.toString(requirePositive(
+                                replacementKeyVersion,
+                                "replacement_key_version")),
+                nullToEmpty(replacementSuite),
+                nullToEmpty(replacementCommitment),
+                nullToEmpty(consentVersion),
+                nullToEmpty(consentEvidenceCommitment),
+                nullToEmpty(verifiedAt),
+                requireCanonical(effectivePeriod, "effective_period"),
+                requireHash(reasonCommitment, "reason_commitment"));
+    }
+
+    public static byte[] globalIdentityPresenceBatchPayload(
+            String period,
+            long revision,
+            String supersedesBatchId,
+            long reportedQmauCount,
+            long keyVersion,
+            String suite,
+            List<String> networkIdentityCommitments) {
+        List<String> commitments = List.copyOf(Objects.requireNonNull(
+                networkIdentityCommitments,
+                "Global-identity commitments must be an explicit array."));
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-global-identity-presence-batch-v1");
+        values.add(requireCanonical(period, "period"));
+        values.add(Long.toString(requirePositive(revision, "revision")));
+        values.add(nullToEmpty(supersedesBatchId));
+        values.add(Long.toString(requireNonNegative(
+                reportedQmauCount,
+                "reported_qmau_count")));
+        values.add(Long.toString(requirePositive(keyVersion, "key_version")));
+        values.add(requireCanonical(suite, "suite"));
+        values.add(Integer.toString(commitments.size()));
+        String previous = "";
+        for (String commitment : commitments) {
+            String normalized = requireHash(
+                    commitment,
+                    "network_identity_commitment");
+            if (!previous.isEmpty()
+                    && previous.compareTo(normalized) > 0) {
+                throw new IllegalArgumentException(
+                        "Global-identity commitments must be sorted.");
+            }
+            values.add(normalized);
+            previous = normalized;
+        }
+        return canonicalAllowEmpty(values.toArray(String[]::new));
+    }
+
+    public static String globalIdentityPresenceSetHash(
+            List<String> networkIdentityCommitments) {
+        List<String> commitments = List.copyOf(Objects.requireNonNull(
+                networkIdentityCommitments,
+                "Global-identity commitments must be an explicit array."));
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            updateCanonicalDigest(
+                    digest,
+                    "myscoutee-registry-global-identity-presence-set-v1",
+                    "canonical field 0",
+                    false);
+            updateCanonicalDigest(
+                    digest,
+                    Integer.toString(commitments.size()),
+                    "canonical field 1",
+                    false);
+            String previous = "";
+            for (int index = 0; index < commitments.size(); index++) {
+                String commitment = requireHash(
+                        commitments.get(index),
+                        "network_identity_commitment");
+                if (!previous.isEmpty()
+                        && previous.compareTo(commitment) > 0) {
+                    throw new IllegalArgumentException(
+                            "Global-identity commitments must be sorted.");
+                }
+                updateCanonicalDigest(
+                        digest,
+                        commitment,
+                        "canonical field " + (index + 2),
+                        false);
+                previous = commitment;
+            }
+            return "sha256:" + HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable.", exception);
+        }
+    }
+
+    public static byte[] globalIdentityPresenceChunkPayload(
+            String submissionId,
+            String period,
+            long revision,
+            String supersedesBatchId,
+            long reportedQmauCount,
+            long keyVersion,
+            String suite,
+            int chunkIndex,
+            int chunkCount,
+            long totalCommitmentCount,
+            String commitmentSetHash,
+            List<String> networkIdentityCommitments) {
+        List<String> commitments = List.copyOf(Objects.requireNonNull(
+                networkIdentityCommitments,
+                "Global-identity commitments must be an explicit array."));
+        if (chunkIndex < 0 || chunkCount <= 0 || chunkIndex >= chunkCount) {
+            throw new IllegalArgumentException(
+                    "Global-identity chunk coordinates are invalid.");
+        }
+        if (totalCommitmentCount < commitments.size()) {
+            throw new IllegalArgumentException(
+                    "Global-identity total commitment count is invalid.");
+        }
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-global-identity-presence-chunk-v2");
+        values.add(requireToken(submissionId, "submission_id"));
+        values.add(requireCanonical(period, "period"));
+        values.add(Long.toString(requirePositive(revision, "revision")));
+        values.add(nullToEmpty(supersedesBatchId));
+        values.add(Long.toString(requireNonNegative(
+                reportedQmauCount,
+                "reported_qmau_count")));
+        values.add(Long.toString(requirePositive(keyVersion, "key_version")));
+        values.add(requireCanonical(suite, "suite"));
+        values.add(Integer.toString(chunkIndex));
+        values.add(Integer.toString(chunkCount));
+        values.add(Long.toString(requireNonNegative(
+                totalCommitmentCount,
+                "total_commitment_count")));
+        values.add(requireHash(commitmentSetHash, "commitment_set_hash"));
+        values.add(Integer.toString(commitments.size()));
+        String previous = "";
+        for (String commitment : commitments) {
+            String normalized = requireHash(
+                    commitment,
+                    "network_identity_commitment");
+            if (!previous.isEmpty()
+                    && previous.compareTo(normalized) > 0) {
+                throw new IllegalArgumentException(
+                        "Global-identity commitments must be sorted.");
+            }
+            values.add(normalized);
+            previous = normalized;
+        }
+        return canonicalAllowEmpty(values.toArray(String[]::new));
+    }
+
+    public static byte[] globalIdentityPresenceChunkReceipt(
+            GlobalIdentityPresenceBatchResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity presence response must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-global-identity-presence-chunk-receipt-v2",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.deploymentId(),
+                response.submissionId(),
+                response.period(),
+                requiredLong(response.revision(), "revision"),
+                requiredInteger(response.chunkIndex(), "chunk_index"),
+                requiredInteger(response.chunkCount(), "chunk_count"),
+                requiredInteger(
+                        response.receivedChunkCount(),
+                        "received_chunk_count"),
+                requiredLong(
+                        response.totalCommitmentCount(),
+                        "total_commitment_count"),
+                response.commitmentSetHash(),
+                response.requestHash(),
+                response.payloadHash(),
+                response.acceptedAt(),
+                Boolean.toString(Boolean.TRUE.equals(response.complete())),
+                nullToEmpty(response.batchId()),
+                response.event() == null
+                        ? ""
+                        : nullToEmpty(response.event().eventHash()),
+                response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityEvent(
+            GlobalIdentityEvent event) {
+        Objects.requireNonNull(
+                event,
+                "Global-identity event must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-global-identity-event-v1",
+                requiredLong(event.eventIndex(), "event_index"),
+                event.eventId(),
+                event.action(),
+                event.deploymentId(),
+                event.period(),
+                event.aggregateCommitment(),
+                requiredLong(event.reportedCount(), "reported_count"),
+                requiredLong(
+                        event.deduplicatedCount(),
+                        "deduplicated_count"),
+                event.acceptedAt(),
+                event.previousEventHash(),
+                event.registryScope(),
+                event.registryKeyId());
+    }
+
+    public static byte[] globalIdentityEventReceipt(
+            GlobalIdentityEvent event) {
+        Objects.requireNonNull(
+                event,
+                "Global-identity event must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-event-receipt-v1",
+                event.eventHash(),
+                event.registryKeyId());
     }
 
     public static byte[] signedRequest(
@@ -245,6 +835,9 @@ public final class RegistryProtocol {
     public static byte[] mauReceipt(BatchResponse response) {
         Objects.requireNonNull(response, "Batch response must not be null.");
         MauReceipt receipt = Objects.requireNonNull(response.receipt(), "MAU receipt must not be null.");
+        if (QMAU_KIND.equals(receipt.kind())) {
+            return qmauReceipt(response);
+        }
         return canonical(
                 "myscoutee-registry-mau-receipt-v1",
                 response.protocolVersion(),
@@ -259,6 +852,39 @@ public final class RegistryProtocol {
                 receipt.period(),
                 receipt.rulesetVersion(),
                 requiredLong(receipt.qualifiedMauCount(), "qualified_mau_count"),
+                receipt.acceptedAt(),
+                receipt.checkpointDate(),
+                receipt.registryKeyId());
+    }
+
+    public static byte[] qmauReceipt(BatchResponse response) {
+        Objects.requireNonNull(response, "QMAU response must not be null.");
+        MauReceipt receipt = Objects.requireNonNull(
+                response.receipt(),
+                "QMAU receipt must not be null.");
+        if (!QMAU_KIND.equals(receipt.kind())) {
+            throw new IllegalArgumentException(
+                    "QMAU receipt kind must be monthly-qmau.");
+        }
+        return canonicalAllowEmpty(
+                "myscoutee-registry-qmau-receipt-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.batchId(),
+                response.deploymentId(),
+                requiredLong(receipt.ledgerIndex(), "ledger_index"),
+                receipt.entryHash(),
+                receipt.previousEntryHash(),
+                receipt.batchHash(),
+                receipt.kind(),
+                receipt.period(),
+                receipt.rulesetVersion(),
+                requiredLong(
+                        receipt.qualifiedMauCount(),
+                        "qualified_mau_count"),
+                receipt.commitmentHash(),
+                requiredLong(receipt.revision(), "revision"),
+                nullToEmpty(receipt.supersedesBatchId()),
                 receipt.acceptedAt(),
                 receipt.checkpointDate(),
                 receipt.registryKeyId());
@@ -340,8 +966,30 @@ public final class RegistryProtocol {
 
     public static byte[] operatorActionReceipt(OperatorActionReceipt receipt) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
+        boolean sourceAnchored = hasOperatorSourceAnchor(receipt);
+        if (!sourceAnchored) {
+            return canonicalAllowEmpty(
+                    "myscoutee-registry-operator-action-receipt-v1",
+                    requiredLong(receipt.auditIndex(), "audit_index"),
+                    receipt.auditHash(),
+                    receipt.previousAuditHash(),
+                    receipt.actionId(),
+                    receipt.deploymentId(),
+                    receipt.subjectDeploymentId(),
+                    receipt.relatedDeploymentId(),
+                    receipt.action(),
+                    receipt.acceptedAt(),
+                    receipt.claimState(),
+                    receipt.groupId(),
+                    receipt.linkId(),
+                    receipt.tokenId(),
+                    receipt.clientTokenHash(),
+                    receipt.tokenExpiresAt(),
+                    receipt.registryScope(),
+                    receipt.registryKeyId());
+        }
         return canonicalAllowEmpty(
-                "myscoutee-registry-operator-action-receipt-v1",
+                "myscoutee-registry-operator-action-receipt-v2",
                 requiredLong(receipt.auditIndex(), "audit_index"),
                 receipt.auditHash(),
                 receipt.previousAuditHash(),
@@ -356,6 +1004,8 @@ public final class RegistryProtocol {
                 receipt.linkId(),
                 receipt.tokenId(),
                 receipt.clientTokenHash(),
+                receipt.sourceClaimActionId(),
+                receipt.sourcePrivateRecordHash(),
                 receipt.tokenExpiresAt(),
                 receipt.registryScope(),
                 receipt.registryKeyId());
@@ -365,8 +1015,28 @@ public final class RegistryProtocol {
             OperatorActionReceipt receipt,
             String payloadHash) {
         Objects.requireNonNull(receipt, "Operator action receipt must not be null.");
+        boolean sourceAnchored = hasOperatorSourceAnchor(receipt);
+        if (!sourceAnchored) {
+            return canonicalAllowEmpty(
+                    "myscoutee-registry-operator-audit-v1",
+                    requiredLong(receipt.auditIndex(), "audit_index"),
+                    receipt.actionId(),
+                    receipt.deploymentId(),
+                    receipt.subjectDeploymentId(),
+                    receipt.relatedDeploymentId(),
+                    receipt.action(),
+                    payloadHash,
+                    receipt.acceptedAt(),
+                    receipt.claimState(),
+                    receipt.groupId(),
+                    receipt.linkId(),
+                    receipt.tokenId(),
+                    receipt.clientTokenHash(),
+                    receipt.tokenExpiresAt(),
+                    receipt.previousAuditHash());
+        }
         return canonicalAllowEmpty(
-                "myscoutee-registry-operator-audit-v1",
+                "myscoutee-registry-operator-audit-v2",
                 requiredLong(receipt.auditIndex(), "audit_index"),
                 receipt.actionId(),
                 receipt.deploymentId(),
@@ -380,12 +1050,49 @@ public final class RegistryProtocol {
                 receipt.linkId(),
                 receipt.tokenId(),
                 receipt.clientTokenHash(),
+                receipt.sourceClaimActionId(),
+                receipt.sourcePrivateRecordHash(),
                 receipt.tokenExpiresAt(),
                 receipt.previousAuditHash());
     }
 
+    private static boolean hasOperatorSourceAnchor(
+            OperatorActionReceipt receipt) {
+        return (receipt.sourceClaimActionId() != null
+                        && !receipt.sourceClaimActionId().isEmpty())
+                || (receipt.sourcePrivateRecordHash() != null
+                        && !receipt.sourcePrivateRecordHash().isEmpty());
+    }
+
     public static byte[] operatorClaimStatusReceipt(OperatorClaimStatusReceipt status) {
         Objects.requireNonNull(status, "Operator claim status receipt must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-operator-claim-status-receipt-v2",
+                status.deploymentId(),
+                status.claimActionId(),
+                requiredLong(status.claimAuditIndex(), "claim_audit_index"),
+                status.claimAuditHash(),
+                status.groupId(),
+                status.legalName(),
+                status.verificationStatus(),
+                status.submittedAt(),
+                status.reviewId(),
+                status.reviewIndex() == null ? "0" : Long.toString(status.reviewIndex()),
+                status.reviewHash(),
+                status.approvedAt(),
+                status.eligibilityStatus(),
+                status.eligibilityId(),
+                status.eligibilityIndex() == null
+                        ? "0"
+                        : Long.toString(status.eligibilityIndex()),
+                status.eligibilityHash(),
+                status.registryScope(),
+                status.registryKeyId());
+    }
+
+    static byte[] legacyOperatorClaimStatusReceipt(
+            OperatorClaimStatusReceipt status) {
+        Objects.requireNonNull(status, "Legacy operator claim status receipt must not be null.");
         return canonicalAllowEmpty(
                 "myscoutee-registry-operator-claim-status-receipt-v1",
                 status.deploymentId(),
@@ -407,15 +1114,25 @@ public final class RegistryProtocol {
     public static byte[] leaderboardSnapshotHash(LeaderboardSnapshot snapshot) {
         Objects.requireNonNull(snapshot, "Leaderboard snapshot must not be null.");
         return canonicalAllowEmpty(
-                "myscoutee-registry-leaderboard-snapshot-hash-v1",
+                "myscoutee-registry-leaderboard-snapshot-hash-v3",
                 snapshot.snapshotId(),
                 snapshot.formulaVersion(),
                 snapshot.rulesetVersion(),
                 snapshot.throughPeriod(),
                 requiredLong(snapshot.throughLedgerIndex(), "through_ledger_index"),
                 requiredLong(snapshot.throughAuditIndex(), "through_audit_index"),
+                requiredLong(snapshot.throughReviewIndex(), "through_review_index"),
+                requiredLong(
+                        snapshot.throughEligibilityIndex(),
+                        "through_eligibility_index"),
+                requiredLong(
+                        snapshot.throughTransferEventIndex(),
+                        "through_transfer_event_index"),
                 snapshot.ledgerHeadHash(),
                 snapshot.auditHeadHash(),
+                snapshot.reviewHeadHash(),
+                snapshot.eligibilityHeadHash(),
+                snapshot.transferEventHeadHash(),
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
                 snapshot.founderShareNumerator(),
@@ -437,14 +1154,26 @@ public final class RegistryProtocol {
                 snapshot.registryKeyId());
     }
 
-    public static byte[] leaderboardCursor(byte[] cursorPayload) {
-        byte[] prefix = "myscoutee-registry-leaderboard-cursor-v1\n"
+    public static byte[] leaderboardCursor(
+            int version,
+            byte[] cursorPayload) {
+        if (version != 2 && version != 3) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor version is unsupported.");
+        }
+        byte[] prefix = ("myscoutee-registry-leaderboard-cursor-v"
+                + version
+                + "\n")
                 .getBytes(StandardCharsets.UTF_8);
         byte[] payload = Objects.requireNonNull(cursorPayload, "Leaderboard cursor payload must not be null.");
         byte[] message = new byte[prefix.length + payload.length];
         System.arraycopy(prefix, 0, message, 0, prefix.length);
         System.arraycopy(payload, 0, message, prefix.length, payload.length);
         return message;
+    }
+
+    public static byte[] leaderboardCursor(byte[] cursorPayload) {
+        return leaderboardCursor(2, cursorPayload);
     }
 
     public static byte[] announcementContent(
@@ -616,6 +1345,24 @@ public final class RegistryProtocol {
         return canonical.toString().getBytes(StandardCharsets.UTF_8);
     }
 
+    private static void updateCanonicalDigest(
+            MessageDigest digest,
+            String value,
+            String fieldName,
+            boolean allowEmpty) {
+        Objects.requireNonNull(digest, "Message digest must not be null.");
+        String normalized = allowEmpty
+                ? nullToEmpty(value)
+                : requireCanonical(value, fieldName);
+        if (normalized.indexOf('\r') >= 0
+                || normalized.indexOf('\n') >= 0) {
+            throw new IllegalArgumentException(
+                    fieldName + " must not contain CR or LF.");
+        }
+        digest.update(normalized.getBytes(StandardCharsets.UTF_8));
+        digest.update((byte) '\n');
+    }
+
     public static String sha256(byte[] value) {
         try {
             byte[] digest = MessageDigest.getInstance("SHA-256").digest(value);
@@ -720,6 +1467,13 @@ public final class RegistryProtocol {
                 REVENUE_BATCH_ID_PATTERN);
     }
 
+    public static String requireSettlementId(String value) {
+        return requirePattern(
+                value,
+                "settlement_id",
+                SETTLEMENT_ID_PATTERN);
+    }
+
     public static String requireRevenuePeriod(String value) {
         requireCanonical(value, "revenue period");
         try {
@@ -738,23 +1492,12 @@ public final class RegistryProtocol {
 
     public static String requireRevenueCurrencyCode(String value) {
         requireCanonical(value, "currency_code");
-        if (!value.matches("[A-Z]{3}")) {
+        if (!value.matches("[A-Z]{3}")
+                || !REVENUE_V1_CURRENCY_FRACTION_DIGITS.containsKey(value)) {
             throw new IllegalArgumentException(
-                    "currency_code must contain exactly three uppercase ASCII letters.");
+                    "currency_code is not a supported revenue-v1 settlement currency.");
         }
-        try {
-            java.util.Currency currency = java.util.Currency.getInstance(value);
-            if (!currency.getCurrencyCode().equals(value)
-                    || currency.getDefaultFractionDigits() < 0) {
-                throw new IllegalArgumentException(
-                        "currency_code is not an accounting ISO-4217 currency.");
-            }
-            return value;
-        } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException(
-                    "currency_code is not an accounting ISO-4217 currency.",
-                    exception);
-        }
+        return value;
     }
 
     public static int requireRevenueFractionDigits(Integer value) {
@@ -763,6 +1506,37 @@ public final class RegistryProtocol {
                     "fraction_digits must be between zero and nine.");
         }
         return value;
+    }
+
+    public static int requireRevenueCurrencyFractionDigits(
+            String currencyCode,
+            Integer value) {
+        String normalizedCode = requireRevenueCurrencyCode(currencyCode);
+        int normalizedValue = requireRevenueFractionDigits(value);
+        if (REVENUE_V1_CURRENCY_FRACTION_DIGITS.get(normalizedCode)
+                != normalizedValue) {
+            throw new IllegalArgumentException(
+                    "fraction_digits does not match the pinned revenue-v1 currency exponent.");
+        }
+        return normalizedValue;
+    }
+
+    public static int revenueCurrencyFractionDigits(String currencyCode) {
+        String normalizedCode = requireRevenueCurrencyCode(currencyCode);
+        return REVENUE_V1_CURRENCY_FRACTION_DIGITS.get(normalizedCode);
+    }
+
+    public static long revenueCommissionMinor(long commissionBasisMinor) {
+        if (commissionBasisMinor < 0L
+                || commissionBasisMinor > REVENUE_MAX_MINOR) {
+            throw new IllegalArgumentException(
+                    "commission_basis_minor is outside the supported range.");
+        }
+        return (commissionBasisMinor / 10_000L)
+                        * REVENUE_COMMISSION_RATE_BASIS_POINTS
+                + ((commissionBasisMinor % 10_000L)
+                                * REVENUE_COMMISSION_RATE_BASIS_POINTS)
+                        / 10_000L;
     }
 
     public static String requireRegistryKeyId(String value) {
@@ -779,6 +1553,13 @@ public final class RegistryProtocol {
 
     public static String requireOperatorReviewId(String value) {
         return requirePattern(value, "review_id", OPERATOR_REVIEW_ID_PATTERN);
+    }
+
+    public static String requireOperatorEligibilityId(String value) {
+        return requirePattern(
+                value,
+                "eligibility_id",
+                OPERATOR_ELIGIBILITY_ID_PATTERN);
     }
 
     public static String requireOperatorGroupId(String value) {
@@ -1046,6 +1827,69 @@ public final class RegistryProtocol {
         return Integer.toString(value);
     }
 
+    private static void validateRevenueCurrencyRow(
+            RevenueCurrencyRow row) {
+        long captured = requireRevenueMinor(
+                row.capturedMinor(),
+                "captured_minor");
+        long refunded = requireRevenueMinor(
+                row.refundedMinor(),
+                "refunded_minor");
+        long net = requireRevenueMinor(row.netMinor(), "net_minor");
+        long commissionBasis = requireRevenueMinor(
+                row.commissionBasisMinor(),
+                "commission_basis_minor");
+        long estimatedCommission = requireRevenueMinor(
+                row.estimatedCommissionMinor(),
+                "estimated_commission_minor");
+        long paymentCount = requireNonNegative(
+                row.paymentCount(),
+                "payment_count");
+        if (paymentCount > REVENUE_MAX_PAYMENT_COUNT
+                || refunded > captured
+                || net != captured - refunded
+                || commissionBasis != net
+                || estimatedCommission
+                        != revenueCommissionMinor(commissionBasis)) {
+            throw new IllegalArgumentException(
+                    "Revenue currency row violates net-captured-revenue-v1.");
+        }
+    }
+
+    private static long requireRevenueMinor(
+            Long value,
+            String fieldName) {
+        long normalized = requireNonNegative(value, fieldName);
+        if (normalized > REVENUE_MAX_MINOR) {
+            throw new IllegalArgumentException(
+                    fieldName + " exceeds the revenue protocol limit.");
+        }
+        return normalized;
+    }
+
+    private static Map<String, Integer>
+            parseRevenueCurrencyFractionDigits(String source) {
+        java.util.LinkedHashMap<String, Integer> result =
+                new java.util.LinkedHashMap<>();
+        for (String entry : source.strip().split("\\s+")) {
+            String[] parts = entry.split(":", -1);
+            if (parts.length != 2
+                    || !parts[0].matches("[A-Z]{3}")) {
+                throw new ExceptionInInitializerError(
+                        "Invalid pinned revenue currency entry: " + entry);
+            }
+            Integer previous = result.put(
+                    parts[0],
+                    Integer.valueOf(parts[1]));
+            if (previous != null) {
+                throw new ExceptionInInitializerError(
+                        "Duplicate pinned revenue currency entry: "
+                                + parts[0]);
+            }
+        }
+        return Map.copyOf(result);
+    }
+
     private static long requirePositive(long value, String fieldName) {
         if (value <= 0L) {
             throw new IllegalArgumentException(fieldName + " must be positive.");
@@ -1110,8 +1954,41 @@ public final class RegistryProtocol {
             @JsonProperty("ruleset_version") String rulesetVersion,
             @JsonProperty("qualified_mau_count") Long qualifiedMauCount,
             @JsonProperty("commitment_hash") String commitmentHash,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
             @JsonProperty("payload_hash") String payloadHash,
             String signature) {
+        public BatchRequest(
+                String protocolVersion,
+                String registryScope,
+                String deploymentId,
+                String timestamp,
+                String nonce,
+                String idempotencyKey,
+                String kind,
+                String period,
+                String rulesetVersion,
+                Long qualifiedMauCount,
+                String commitmentHash,
+                String payloadHash,
+                String signature) {
+            this(
+                    protocolVersion,
+                    registryScope,
+                    deploymentId,
+                    timestamp,
+                    nonce,
+                    idempotencyKey,
+                    kind,
+                    period,
+                    rulesetVersion,
+                    qualifiedMauCount,
+                    commitmentHash,
+                    null,
+                    null,
+                    payloadHash,
+                    signature);
+        }
     }
 
     public record BatchResponse(
@@ -1133,12 +2010,49 @@ public final class RegistryProtocol {
             String period,
             @JsonProperty("ruleset_version") String rulesetVersion,
             @JsonProperty("qualified_mau_count") Long qualifiedMauCount,
+            @JsonProperty("commitment_hash") String commitmentHash,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
             @JsonProperty("accepted_at") String acceptedAt,
             @JsonProperty("checkpoint_date") String checkpointDate,
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("registry_key_id") String registryKeyId,
             @JsonProperty("registry_public_key") String registryPublicKey,
             String signature) {
+        public MauReceipt(
+                Long ledgerIndex,
+                String entryHash,
+                String previousEntryHash,
+                String batchHash,
+                String kind,
+                String period,
+                String rulesetVersion,
+                Long qualifiedMauCount,
+                String acceptedAt,
+                String checkpointDate,
+                String registryScope,
+                String registryKeyId,
+                String registryPublicKey,
+                String signature) {
+            this(
+                    ledgerIndex,
+                    entryHash,
+                    previousEntryHash,
+                    batchHash,
+                    kind,
+                    period,
+                    rulesetVersion,
+                    qualifiedMauCount,
+                    null,
+                    null,
+                    null,
+                    acceptedAt,
+                    checkpointDate,
+                    registryScope,
+                    registryKeyId,
+                    registryPublicKey,
+                    signature);
+        }
     }
 
     public record RevenueCurrencyRow(
@@ -1168,6 +2082,11 @@ public final class RegistryProtocol {
             List<RevenueCurrencyRow> currencies,
             @JsonProperty("payload_hash") String payloadHash,
             String signature) {
+        public RevenueBatchRequest {
+            currencies = List.copyOf(Objects.requireNonNull(
+                    currencies,
+                    "Revenue currencies must be an explicit array."));
+        }
     }
 
     public record RevenueBatchResponse(
@@ -1181,10 +2100,7 @@ public final class RegistryProtocol {
     }
 
     public record RevenueReceipt(
-            @JsonProperty("protocol_version") String protocolVersion,
             @JsonProperty("registry_scope") String registryScope,
-            @JsonProperty("batch_id") String batchId,
-            @JsonProperty("deployment_id") String deploymentId,
             @JsonProperty("ledger_index") Long ledgerIndex,
             @JsonProperty("entry_hash") String entryHash,
             @JsonProperty("previous_entry_hash") String previousEntryHash,
@@ -1201,6 +2117,312 @@ public final class RegistryProtocol {
             @JsonProperty("registry_key_id") String registryKeyId,
             @JsonProperty("registry_public_key") String registryPublicKey,
             String signature) {
+    }
+
+    public record SettlementQueryRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("query_id") String queryId,
+            @JsonProperty("currency_code") String currencyCode,
+            @JsonProperty("from_period") String fromPeriod,
+            @JsonProperty("through_period") String throughPeriod,
+            @JsonProperty("include_superseded") boolean includeSuperseded,
+            int limit,
+            @JsonProperty("after_period") String afterPeriod,
+            @JsonProperty("after_settlement_id") String afterSettlementId,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record SettlementHistoryItem(
+            @JsonProperty("settlement_id") String settlementId,
+            String period,
+            @JsonProperty("currency_code") String currencyCode,
+            @JsonProperty("fraction_digits") long fractionDigits,
+            long revision,
+            @JsonProperty("supersedes_settlement_id")
+                    String supersedesSettlementId,
+            @JsonProperty("beneficiary_type") String beneficiaryType,
+            @JsonProperty("beneficiary_id") String beneficiaryId,
+            @JsonProperty("share_numerator") String shareNumerator,
+            @JsonProperty("share_denominator") String shareDenominator,
+            @JsonProperty("network_pool_minor") long networkPoolMinor,
+            @JsonProperty("network_pool_allocation_minor")
+                    long networkPoolAllocationMinor,
+            @JsonProperty("ttm_commission_basis_minor")
+                    long ttmCommissionBasisMinor,
+            @JsonProperty("ttm_network_commission_pool_minor")
+                    long ttmNetworkCommissionPoolMinor,
+            @JsonProperty("indicative_network_value_minor")
+                    long indicativeNetworkValueMinor,
+            @JsonProperty("indicative_value_allocation_minor")
+                    long indicativeValueAllocationMinor,
+            @JsonProperty("valuation_ruleset_version")
+                    String valuationRulesetVersion,
+            @JsonProperty("base_valuation_multiplier_basis_points")
+                    long baseValuationMultiplierBasisPoints,
+            @JsonProperty("recent_three_month_average_minor")
+                    long recentThreeMonthAverageMinor,
+            @JsonProperty("prior_three_month_average_minor")
+                    long priorThreeMonthAverageMinor,
+            @JsonProperty("earlier_three_month_average_minor")
+                    long earlierThreeMonthAverageMinor,
+            @JsonProperty("recent_growth_basis_points")
+                    long recentGrowthBasisPoints,
+            @JsonProperty("prior_growth_basis_points")
+                    long priorGrowthBasisPoints,
+            @JsonProperty("acceleration_basis_points")
+                    long accelerationBasisPoints,
+            @JsonProperty("valuation_adjustment_basis_points")
+                    long valuationAdjustmentBasisPoints,
+            @JsonProperty("effective_valuation_multiplier_basis_points")
+                    long effectiveValuationMultiplierBasisPoints,
+            @JsonProperty("valuation_is_non_binding")
+                    boolean valuationIsNonBinding,
+            @JsonProperty("through_ledger_index") long throughLedgerIndex,
+            @JsonProperty("through_audit_index") long throughAuditIndex,
+            @JsonProperty("through_review_index") long throughReviewIndex,
+            @JsonProperty("through_eligibility_index")
+                    long throughEligibilityIndex,
+            @JsonProperty("source_fingerprint") String sourceFingerprint,
+            @JsonProperty("settlement_hash") String settlementHash,
+            @JsonProperty("accepted_at") String acceptedAt) {
+    }
+
+    public record SettlementQueryResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("query_id") String queryId,
+            @JsonProperty("query_hash") String queryHash,
+            @JsonProperty("items_hash") String itemsHash,
+            List<SettlementHistoryItem> items,
+            @JsonProperty("next_after_period") String nextAfterPeriod,
+            @JsonProperty("next_after_settlement_id")
+                    String nextAfterSettlementId,
+            @JsonProperty("generated_at") String generatedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            String signature) {
+        public SettlementQueryResponse {
+            items = List.copyOf(Objects.requireNonNull(
+                    items,
+                    "Settlement history items must be an explicit array."));
+        }
+    }
+
+    public record GlobalIdentityVoprfKey(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            String mode,
+            @JsonProperty("public_key") String publicKey,
+            String status,
+            @JsonProperty("activated_at") String activatedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            String signature) {
+    }
+
+    public record GlobalIdentityEvaluationRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("blinded_element") String blindedElement,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record GlobalIdentityEvaluationResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("public_key") String publicKey,
+            @JsonProperty("evaluated_element") String evaluatedElement,
+            String proof,
+            @JsonProperty("request_hash") String requestHash,
+            @JsonProperty("response_hash") String responseHash,
+            @JsonProperty("evaluated_at") String evaluatedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            @JsonProperty("receipt_signature") String receiptSignature,
+            Boolean duplicate) {
+    }
+
+    public record GlobalIdentityLinkRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("network_identity_commitment")
+                    String networkIdentityCommitment,
+            @JsonProperty("consent_version") String consentVersion,
+            @JsonProperty("consent_evidence_commitment")
+                    String consentEvidenceCommitment,
+            @JsonProperty("verified_at") String verifiedAt,
+            @JsonProperty("effective_period") String effectivePeriod,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record GlobalIdentityLinkActionRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            String action,
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("replacement_key_version")
+                    Long replacementKeyVersion,
+            @JsonProperty("replacement_suite") String replacementSuite,
+            @JsonProperty("replacement_commitment")
+                    String replacementCommitment,
+            @JsonProperty("consent_version") String consentVersion,
+            @JsonProperty("consent_evidence_commitment")
+                    String consentEvidenceCommitment,
+            @JsonProperty("verified_at") String verifiedAt,
+            @JsonProperty("effective_period") String effectivePeriod,
+            @JsonProperty("reason_commitment") String reasonCommitment,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record GlobalIdentityPresenceBatchRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            @JsonProperty("submission_id") String submissionId,
+            String period,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
+            @JsonProperty("reported_qmau_count") Long reportedQmauCount,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("chunk_index") Integer chunkIndex,
+            @JsonProperty("chunk_count") Integer chunkCount,
+            @JsonProperty("total_commitment_count")
+                    Long totalCommitmentCount,
+            @JsonProperty("commitment_set_hash") String commitmentSetHash,
+            @JsonProperty("network_identity_commitments")
+                    List<String> networkIdentityCommitments,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+        public GlobalIdentityPresenceBatchRequest {
+            networkIdentityCommitments = List.copyOf(Objects.requireNonNull(
+                    networkIdentityCommitments,
+                    "Global-identity commitments must be an explicit array."));
+        }
+    }
+
+    public record GlobalIdentityLink(
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("deployment_id") String deploymentId,
+            String status,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("active_from_period") String activeFromPeriod,
+            @JsonProperty("inactive_from_period") String inactiveFromPeriod,
+            @JsonProperty("consent_version") String consentVersion,
+            @JsonProperty("verified_at") String verifiedAt,
+            @JsonProperty("latest_event_index") Long latestEventIndex,
+            @JsonProperty("latest_event_hash") String latestEventHash) {
+    }
+
+    public record GlobalIdentityEvent(
+            @JsonProperty("event_index") Long eventIndex,
+            @JsonProperty("event_id") String eventId,
+            String action,
+            @JsonProperty("deployment_id") String deploymentId,
+            String period,
+            @JsonProperty("aggregate_commitment") String aggregateCommitment,
+            @JsonProperty("reported_count") Long reportedCount,
+            @JsonProperty("deduplicated_count") Long deduplicatedCount,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("previous_event_hash") String previousEventHash,
+            @JsonProperty("event_hash") String eventHash,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+    }
+
+    public record GlobalIdentitySnapshot(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            String period,
+            Long revision,
+            @JsonProperty("reported_qmau_count") Long reportedQmauCount,
+            @JsonProperty("linked_observation_count")
+                    Long linkedObservationCount,
+            @JsonProperty("globally_unique_linked_count")
+                    Long globallyUniqueLinkedCount,
+            @JsonProperty("unlinked_qmau_count") Long unlinkedQmauCount,
+            @JsonProperty("deduplicated_network_qmau")
+                    Long deduplicatedNetworkQmau,
+            @JsonProperty("duplicate_reduction") Long duplicateReduction,
+            @JsonProperty("covered_deployment_count")
+                    Long coveredDeploymentCount,
+            @JsonProperty("aggregate_commitment") String aggregateCommitment,
+            @JsonProperty("through_event_index") Long throughEventIndex,
+            @JsonProperty("through_event_hash") String throughEventHash,
+            @JsonProperty("generated_at") String generatedAt) {
+    }
+
+    public record GlobalIdentityMutationResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            GlobalIdentityLink link,
+            GlobalIdentityEvent event,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            Boolean duplicate) {
+    }
+
+    public record GlobalIdentityPresenceBatchResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("batch_id") String batchId,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("submission_id") String submissionId,
+            String period,
+            Long revision,
+            @JsonProperty("chunk_index") Integer chunkIndex,
+            @JsonProperty("chunk_count") Integer chunkCount,
+            @JsonProperty("received_chunk_count") Integer receivedChunkCount,
+            @JsonProperty("total_commitment_count")
+                    Long totalCommitmentCount,
+            @JsonProperty("commitment_set_hash") String commitmentSetHash,
+            @JsonProperty("linked_count") Long linkedCount,
+            @JsonProperty("unlinked_count") Long unlinkedCount,
+            GlobalIdentityEvent event,
+            GlobalIdentitySnapshot snapshot,
+            Boolean complete,
+            @JsonProperty("request_hash") String requestHash,
+            @JsonProperty("payload_hash") String payloadHash,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            @JsonProperty("receipt_hash") String receiptHash,
+            @JsonProperty("receipt_signature") String receiptSignature,
+            Boolean duplicate) {
     }
 
     public record CheckpointResponse(
@@ -1303,6 +2525,8 @@ public final class RegistryProtocol {
             @JsonProperty("token_id") String tokenId,
             @JsonProperty("client_token") String clientToken,
             @JsonProperty("client_token_hash") String clientTokenHash,
+            @JsonProperty("source_claim_action_id") String sourceClaimActionId,
+            @JsonProperty("source_private_record_hash") String sourcePrivateRecordHash,
             @JsonProperty("token_expires_at") String tokenExpiresAt,
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("registry_key_id") String registryKeyId,
@@ -1325,6 +2549,8 @@ public final class RegistryProtocol {
                     tokenId,
                     null,
                     clientTokenHash,
+                    sourceClaimActionId,
+                    sourcePrivateRecordHash,
                     tokenExpiresAt,
                     registryScope,
                     registryKeyId,
@@ -1352,6 +2578,10 @@ public final class RegistryProtocol {
             @JsonProperty("review_index") Long reviewIndex,
             @JsonProperty("review_hash") String reviewHash,
             @JsonProperty("approved_at") String approvedAt,
+            @JsonProperty("eligibility_status") String eligibilityStatus,
+            @JsonProperty("eligibility_id") String eligibilityId,
+            @JsonProperty("eligibility_index") Long eligibilityIndex,
+            @JsonProperty("eligibility_hash") String eligibilityHash,
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("registry_key_id") String registryKeyId,
             String signature) {
@@ -1370,8 +2600,16 @@ public final class RegistryProtocol {
             @JsonProperty("through_period") String throughPeriod,
             @JsonProperty("through_ledger_index") Long throughLedgerIndex,
             @JsonProperty("through_audit_index") Long throughAuditIndex,
+            @JsonProperty("through_review_index") Long throughReviewIndex,
+            @JsonProperty("through_eligibility_index") Long throughEligibilityIndex,
+            @JsonProperty("through_transfer_event_index")
+                    Long throughTransferEventIndex,
             @JsonProperty("ledger_head_hash") String ledgerHeadHash,
             @JsonProperty("audit_head_hash") String auditHeadHash,
+            @JsonProperty("review_head_hash") String reviewHeadHash,
+            @JsonProperty("eligibility_head_hash") String eligibilityHeadHash,
+            @JsonProperty("transfer_event_head_hash")
+                    String transferEventHeadHash,
             @JsonProperty("founder_units_numerator") String founderUnitsNumerator,
             @JsonProperty("founder_units_denominator") String founderUnitsDenominator,
             @JsonProperty("founder_share_numerator") String founderShareNumerator,
@@ -1394,6 +2632,7 @@ public final class RegistryProtocol {
             String label,
             @JsonProperty("avatar_url") String avatarUrl,
             @JsonProperty("claim_state") String claimState,
+            @JsonProperty("eligibility_status") String eligibilityStatus,
             @JsonProperty("deployment_count") Long deploymentCount,
             @JsonProperty("weight_numerator") String weightNumerator,
             @JsonProperty("weight_denominator") String weightDenominator,
@@ -1412,6 +2651,7 @@ public final class RegistryProtocol {
             @JsonProperty("deployment_id") String deploymentId,
             @JsonProperty("group_id") String groupId,
             @JsonProperty("claim_state") String claimState,
+            @JsonProperty("eligibility_status") String eligibilityStatus,
             @JsonProperty("membership_state") String membershipState,
             @JsonProperty("weight_numerator") String weightNumerator,
             @JsonProperty("weight_denominator") String weightDenominator,

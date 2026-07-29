@@ -21,7 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class AffinityRecomputeWorkerService {
@@ -35,6 +39,7 @@ public class AffinityRecomputeWorkerService {
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
     private final AffinityRecomputeMetricsService metricsService;
+    private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private final AtomicBoolean processing = new AtomicBoolean(false);
     private volatile long lastScheduledRunMs = 0L;
     private volatile long cachedWorkerPollDelayMs = DEFAULT_WORKER_POLL_DELAY_MS;
@@ -54,18 +59,67 @@ public class AffinityRecomputeWorkerService {
         this.metricsService = metricsService;
     }
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
+        this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
     @Scheduled(fixedDelayString = "${affinity.recompute.worker-tick-ms:1000}")
     public void runDueTasks() {
-        if (!properties.isEnabled()
-                || (properties.isChangeStreamEnabled() && !properties.isChangeStreamFallbackPollEnabled())) {
+        if (scheduledMongoSessionRunner == null) {
+            runDueTasksForCurrentDatabase();
             return;
         }
+        scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::runDueTasksForCurrentDatabase);
+    }
+
+    private void runDueTasksForCurrentDatabase() {
+        if (!properties.isEnabled()
+                || (properties.isChangeStreamEnabled()
+                        && !properties.isChangeStreamFallbackPollEnabled()
+                        && MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO)) {
+            return;
+        }
+        Instant startedAt = Instant.now();
+        NotificationRuleRegistryService registry = taskService.notificationRuleRegistry();
+        boolean ruleConfigured = registry != null
+                && registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isPresent();
         try {
-            if (!shouldRunScheduledPass()) {
+            boolean due = ruleConfigured
+                    ? registry.shouldRunScheduledRule(
+                            NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                            startedAt)
+                    : shouldRunScheduledPass();
+            if (!due) {
                 return;
             }
-            processDueTasks(Instant.now(), "scheduled");
+            if (ruleConfigured && registry.beginScheduledRun(
+                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        "Scheduled affinity recompute started.",
+                        "affinity-recompute",
+                        startedAt) == null) {
+                return;
+            }
+            int processedCount = processDueTasks(startedAt, "scheduled");
+            if (ruleConfigured) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        processedCount,
+                        "completed",
+                        "Processed pending affinity recompute tasks.",
+                        "affinity-recompute",
+                        startedAt);
+            }
         } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        "affinity-recompute",
+                        startedAt);
+            }
             LOGGER.debug("Affinity recompute worker tick skipped after a transient failure.", exception);
         }
     }
@@ -74,9 +128,46 @@ public class AffinityRecomputeWorkerService {
         if (!properties.isEnabled()) {
             return 0;
         }
+        Instant startedAt = Instant.now();
+        NotificationRuleRegistryService registry = taskService.notificationRuleRegistry();
+        boolean ruleConfigured = registry != null
+                && registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isPresent();
+        if (ruleConfigured && !registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE)
+                .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
+                .orElse(false)) {
+            return 0;
+        }
         try {
-            return processDueTasks(Instant.now(), StringUtils.hasText(trigger) ? trigger : "wakeup");
+            if (ruleConfigured && registry.beginRun(
+                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        "Affinity recompute wake-up started.",
+                        "affinity-recompute",
+                        startedAt) == null) {
+                return 0;
+            }
+            int processedCount = processDueTasks(
+                    startedAt,
+                    StringUtils.hasText(trigger) ? trigger : "wakeup");
+            if (ruleConfigured) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        processedCount,
+                        "completed",
+                        "Processed affinity recompute wake-up tasks.",
+                        "affinity-recompute",
+                        startedAt);
+            }
+            return processedCount;
         } catch (RuntimeException exception) {
+            if (ruleConfigured) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        "affinity-recompute",
+                        startedAt);
+            }
             LOGGER.debug("Affinity recompute worker wakeup skipped after a transient failure.", exception);
             return 0;
         }
@@ -327,7 +418,9 @@ public class AffinityRecomputeWorkerService {
     private void finish(AffinityRecomputeTask task) {
         AffinityRecomputeTask latest = taskService.findByTaskKey(task.getTaskKey()).orElse(task);
         String nowIso = Instant.now().toString();
-        if (Boolean.TRUE.equals(latest.getRerunRequested())) {
+        boolean pendingCounterTracked = Boolean.TRUE.equals(latest.getPendingCounterTracked());
+        boolean rerunRequested = Boolean.TRUE.equals(latest.getRerunRequested());
+        if (rerunRequested) {
             latest.setStatus(AffinityRecomputeTaskService.STATUS_PENDING);
             latest.setAvailableAtIso(Instant.now().plus(taskService.debounceForTarget(latest.getTargetType())).toString());
             latest.setRerunRequested(false);
@@ -336,6 +429,7 @@ public class AffinityRecomputeWorkerService {
             latest.setCompletedAtIso(null);
         } else {
             latest.setStatus(AffinityRecomputeTaskService.STATUS_DONE);
+            latest.setPendingCounterTracked(false);
             latest.setLeaseUntilIso(null);
             latest.setWorkerId(null);
             latest.setCompletedAtIso(nowIso);
@@ -343,18 +437,26 @@ public class AffinityRecomputeWorkerService {
         latest.setUpdatedDate(nowIso);
         latest.setUpdatedUser(workerId);
         taskService.save(latest);
+        if (!rerunRequested && pendingCounterTracked) {
+            taskService.recordPendingWorkCompleted();
+        }
     }
 
     private void fail(AffinityRecomputeTask task, RuntimeException exception) {
         AffinityRecomputeTask latest = taskService.findByTaskKey(task.getTaskKey()).orElse(task);
         String nowIso = Instant.now().toString();
+        boolean pendingCounterTracked = Boolean.TRUE.equals(latest.getPendingCounterTracked());
         latest.setStatus(AffinityRecomputeTaskService.STATUS_FAILED);
+        latest.setPendingCounterTracked(false);
         latest.setLeaseUntilIso(null);
         latest.setWorkerId(null);
         latest.setLastError(truncate(exception == null ? null : exception.getMessage(), 1000));
         latest.setUpdatedDate(nowIso);
         latest.setUpdatedUser(workerId);
         taskService.save(latest);
+        if (pendingCounterTracked) {
+            taskService.recordPendingWorkCompleted();
+        }
     }
 
     private Duration effectiveLeaseDuration() {

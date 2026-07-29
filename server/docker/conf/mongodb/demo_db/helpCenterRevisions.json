@@ -119,7 +119,7 @@
         "icon": "contact_mail",
         "title": "Contact details",
         "blurb": "Who to contact about privacy and data protection.",
-        "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee demo platform</li><li><strong>Support Email:</strong> privacy@myscoutee.app</li><li><strong>DPO Contact:</strong> dpo@myscoutee.app</li></ul>"
+        "contentHtml": "{{deployment.privacy.contactDetails}}"
       },
       {
         "id": "legal-basis",
@@ -161,7 +161,7 @@
         "icon": "manage_accounts",
         "title": "Account and data deletion",
         "blurb": "How account deletion, reactivation, and Meta/Facebook deletion requests are handled.",
-        "contentHtml": "<ul><li>Delete account is available from the user settings menu. Confirming it schedules the account for deletion and signs the user out.</li><li>If the account has been deleted but not yet purged, signing in again can show a reactivation confirmation before the 30-day deletion window ends.</li><li>If deletion is requested from Meta/Facebook account settings after Facebook login, Meta sends the request to the MyScoutee backend callback and matching accounts follow the same deletion schedule.</li><li>Deletion requests can also be sent to the support email listed in Contact details from the email address connected to the MyScoutee account.</li></ul>"
+        "contentHtml": "<ul><li>Delete account is available from the user settings menu. Confirming it schedules the account for deletion and signs the user out.</li><li>If the account has been deleted but not yet purged, signing in again can show a reactivation confirmation before the 30-day deletion window ends.</li><li>If deletion is requested from Meta/Facebook account settings after Facebook login, Meta sends the request to the MyScoutee backend callback and matching accounts follow the same deletion schedule.</li></ul>{{deployment.privacy.deletionEmailRoute}}"
       },
       {
         "id": "sharing",
@@ -207,7 +207,7 @@
         "icon": "contact_mail",
         "title": "Kapcsolati adatok",
         "blurb": "Kihez fordulhatsz adatvédelemmel és adatkezeléssel kapcsolatban.",
-        "contentHtml": "<ul><li><strong>Adatkezelő:</strong> MyScoutee demo platform</li><li><strong>Támogatási email:</strong> privacy@myscoutee.app</li><li><strong>DPO kapcsolat:</strong> dpo@myscoutee.app</li></ul>"
+        "contentHtml": "{{deployment.privacy.contactDetails}}"
       },
       {
         "id": "legal-basis",
@@ -249,7 +249,7 @@
         "icon": "manage_accounts",
         "title": "Fiók és adatok törlése",
         "blurb": "Hogyan működik a fióktörlés, az újraaktiválás és a Meta/Facebook törlési kérés.",
-        "contentHtml": "<ul><li>A fiók törlése a felhasználói beállítások menüben érhető el. A megerősítés után a fiók törlésre kerül ütemezésre, és a felhasználó kijelentkezik.</li><li>Ha a fiók törölt állapotban van, de még nem lett véglegesen törölve, az ismételt bejelentkezés újraaktiválási megerősítést jeleníthet meg a 30 napos törlési időszak lejárta előtt.</li><li>Ha a törlést Facebook-belépés után a Meta/Facebook fiókbeállításokból kérik, a Meta a MyScoutee backend callbacket hívja meg, és az egyező fiókok ugyanazt a törlési ütemezést követik.</li><li>Törlési kérés küldhető a Kapcsolati adatoknál megadott támogatási email címre a MyScoutee fiókhoz kapcsolódó email címről.</li></ul>"
+        "contentHtml": "<ul><li>A fiók törlése a felhasználói beállítások menüben érhető el. A megerősítés után a fiók törlésre kerül ütemezésre, és a felhasználó kijelentkezik.</li><li>Ha a fiók törölt állapotban van, de még nem lett véglegesen törölve, az ismételt bejelentkezés újraaktiválási megerősítést jeleníthet meg a 30 napos törlési időszak lejárta előtt.</li><li>Ha a törlést Facebook-belépés után a Meta/Facebook fiókbeállításokból kérik, a Meta a MyScoutee backend callbacket hívja meg, és az egyező fiókok ugyanazt a törlési ütemezést követik.</li></ul>{{deployment.privacy.deletionEmailRoute}}"
       },
       {
         "id": "sharing",

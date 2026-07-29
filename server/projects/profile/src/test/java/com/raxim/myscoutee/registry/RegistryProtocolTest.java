@@ -5,10 +5,351 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 class RegistryProtocolTest {
+    @Test
+    void settlementQueryPayloadAndResponseMatchTheGoProtocolExactly() {
+        String hash =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        RegistryProtocol.SettlementQueryRequest request =
+                new RegistryProtocol.SettlementQueryRequest(
+                        "1",
+                        "test-program:parent-a",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "2026-07-29T00:00:00Z",
+                        "nonce_0123456789",
+                        "query_0123456789",
+                        "EUR",
+                        "2026-01",
+                        "2026-06",
+                        false,
+                        25,
+                        "2026-05",
+                        "stl_0123456789abcdef0123456789abcdef",
+                        hash,
+                        "signature");
+        assertThat(new String(
+                        RegistryProtocol.settlementQueryPayload(request),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-settlement-query-payload-v1
+                        EUR
+                        2026-01
+                        2026-06
+                        false
+                        25
+                        2026-05
+                        stl_0123456789abcdef0123456789abcdef
+                        """);
+
+        RegistryProtocol.SettlementQueryResponse response =
+                new RegistryProtocol.SettlementQueryResponse(
+                        "1",
+                        "test-program:parent-a",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "query_0123456789",
+                        hash,
+                        hash,
+                        List.of(),
+                        "2026-05",
+                        "stl_0123456789abcdef0123456789abcdef",
+                        "2026-07-29T00:00:01Z",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        "registry-public-key",
+                        "signature");
+        assertThat(new String(
+                        RegistryProtocol.settlementQueryResponse(response),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-settlement-query-response-v1
+                        1
+                        test-program:parent-a
+                        dep_0123456789abcdef0123456789abcdef
+                        query_0123456789
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        2026-05
+                        stl_0123456789abcdef0123456789abcdef
+                        2026-07-29T00:00:01Z
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void settlementItemsHashCommitsThreeMonthAccelerationInputs() {
+        String hash =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        RegistryProtocol.SettlementHistoryItem item =
+                new RegistryProtocol.SettlementHistoryItem(
+                        "stl_0123456789abcdef0123456789abcdef",
+                        "2026-06",
+                        "EUR",
+                        2L,
+                        1L,
+                        "",
+                        RegistryProtocol
+                                .SETTLEMENT_BENEFICIARY_OPERATOR_GROUP,
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "1",
+                        "10",
+                        500L,
+                        50L,
+                        10_000L,
+                        500L,
+                        31_500L,
+                        3_150L,
+                        RegistryProtocol
+                                .SETTLEMENT_VALUATION_RULESET_VERSION,
+                        30_000L,
+                        180L,
+                        120L,
+                        100L,
+                        5_000L,
+                        2_000L,
+                        3_000L,
+                        2_000L,
+                        36_000L,
+                        true,
+                        100L,
+                        20L,
+                        10L,
+                        5L,
+                        hash,
+                        hash,
+                        "2026-07-29T00:00:01Z");
+
+        String original =
+                RegistryProtocol.settlementHistoryItemsHash(List.of(item));
+        RegistryProtocol.SettlementHistoryItem accelerated =
+                new RegistryProtocol.SettlementHistoryItem(
+                        item.settlementId(),
+                        item.period(),
+                        item.currencyCode(),
+                        item.fractionDigits(),
+                        item.revision(),
+                        item.supersedesSettlementId(),
+                        item.beneficiaryType(),
+                        item.beneficiaryId(),
+                        item.shareNumerator(),
+                        item.shareDenominator(),
+                        item.networkPoolMinor(),
+                        item.networkPoolAllocationMinor(),
+                        item.ttmCommissionBasisMinor(),
+                        item.ttmNetworkCommissionPoolMinor(),
+                        item.indicativeNetworkValueMinor(),
+                        item.indicativeValueAllocationMinor(),
+                        item.valuationRulesetVersion(),
+                        item.baseValuationMultiplierBasisPoints(),
+                        item.recentThreeMonthAverageMinor(),
+                        item.priorThreeMonthAverageMinor(),
+                        item.earlierThreeMonthAverageMinor(),
+                        item.recentGrowthBasisPoints(),
+                        item.priorGrowthBasisPoints(),
+                        item.accelerationBasisPoints() + 1L,
+                        item.valuationAdjustmentBasisPoints(),
+                        item.effectiveValuationMultiplierBasisPoints(),
+                        item.valuationIsNonBinding(),
+                        item.throughLedgerIndex(),
+                        item.throughAuditIndex(),
+                        item.throughReviewIndex(),
+                        item.throughEligibilityIndex(),
+                        item.sourceFingerprint(),
+                        item.settlementHash(),
+                        item.acceptedAt());
+
+        assertThat(original)
+                .startsWith("sha256:")
+                .isNotEqualTo(RegistryProtocol.settlementHistoryItemsHash(
+                        List.of(accelerated)));
+    }
+
+    @Test
+    void revenuePayloadMatchesTheGoProtocolExactly() {
+        List<RegistryProtocol.RevenueCurrencyRow> currencies = List.of(
+                new RegistryProtocol.RevenueCurrencyRow(
+                        "EUR",
+                        2,
+                        12_345L,
+                        345L,
+                        12_000L,
+                        12_000L,
+                        600L,
+                        3L),
+                new RegistryProtocol.RevenueCurrencyRow(
+                        "JPY",
+                        0,
+                        20_000L,
+                        0L,
+                        20_000L,
+                        20_000L,
+                        1_000L,
+                        2L));
+
+        assertThat(new String(
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                RegistryProtocol
+                                        .REVENUE_COMMISSION_RATE_BASIS_POINTS,
+                                currencies),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-revenue-batch-payload-v1
+                        daily-revenue
+                        2026-07-27
+                        1
+
+                        net-captured-revenue-v1
+                        500
+                        2
+                        EUR
+                        2
+                        12345
+                        345
+                        12000
+                        12000
+                        600
+                        3
+                        JPY
+                        0
+                        20000
+                        0
+                        20000
+                        20000
+                        1000
+                        2
+                        """);
+    }
+
+    @Test
+    void revenueReceiptMatchesTheGoProtocolExactly() {
+        String hash =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        RegistryProtocol.RevenueReceipt receipt =
+                new RegistryProtocol.RevenueReceipt(
+                        "test-program:parent-a",
+                        9L,
+                        hash,
+                        RegistryProtocol.ZERO_HASH,
+                        hash,
+                        RegistryProtocol.REVENUE_KIND,
+                        "2026-07-27",
+                        1L,
+                        "",
+                        RegistryProtocol.REVENUE_RULESET_VERSION,
+                        500,
+                        0,
+                        "2026-07-28T00:00:01Z",
+                        "2026-07-28",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        "registry-public-key",
+                        "signature");
+        RegistryProtocol.RevenueBatchResponse response =
+                new RegistryProtocol.RevenueBatchResponse(
+                        "1",
+                        "test-program:parent-a",
+                        "revbatch_0123456789abcdef0123456789abcdef",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "revenue_0123456789abcdef",
+                        false,
+                        receipt);
+
+        assertThat(new String(
+                        RegistryProtocol.revenueReceipt(response),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-revenue-receipt-v1
+                        1
+                        test-program:parent-a
+                        revbatch_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        9
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        daily-revenue
+                        2026-07-27
+                        1
+
+                        net-captured-revenue-v1
+                        500
+                        0
+                        2026-07-28T00:00:01Z
+                        2026-07-28
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void revenueV1UsesPinnedCurrencyExponentsAndAggregateLimits() {
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("JPY"))
+                .isZero();
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("HUF"))
+                .isEqualTo(2);
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("BHD"))
+                .isEqualTo(3);
+        assertThat(RegistryProtocol.revenueCurrencyFractionDigits("CLF"))
+                .isEqualTo(4);
+        assertThatThrownBy(() ->
+                        RegistryProtocol.requireRevenueCurrencyCode("XXX"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                500,
+                                List.of(new RegistryProtocol.RevenueCurrencyRow(
+                                        "JPY",
+                                        2,
+                                        1L,
+                                        0L,
+                                        1L,
+                                        1L,
+                                        0L,
+                                        1L))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("pinned");
+        assertThatThrownBy(() ->
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                500,
+                                List.of(new RegistryProtocol.RevenueCurrencyRow(
+                                        "EUR",
+                                        2,
+                                        RegistryProtocol.REVENUE_MAX_MINOR + 1L,
+                                        0L,
+                                        RegistryProtocol.REVENUE_MAX_MINOR + 1L,
+                                        RegistryProtocol.REVENUE_MAX_MINOR + 1L,
+                                        0L,
+                                        1L))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("limit");
+        assertThat(new String(
+                        RegistryProtocol.revenueBatchPayload(
+                                RegistryProtocol.REVENUE_KIND,
+                                "2026-07-27",
+                                1L,
+                                "",
+                                RegistryProtocol.REVENUE_RULESET_VERSION,
+                                500,
+                                List.of()),
+                        StandardCharsets.UTF_8))
+                .endsWith("500\n0\n");
+    }
+
     @Test
     void canonicalRegistryIdentityMatchesTheGoProtocol() {
         RegistryProtocol.RegistryIdentityResponse identity =
@@ -96,6 +437,90 @@ class RegistryProtocolTest {
     }
 
     @Test
+    void qualifiedMauRevisionPayloadMatchesTheGoProtocolExactly() {
+        String commitment =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+        assertThat(new String(
+                        RegistryProtocol.qmauBatchPayload(
+                                RegistryProtocol.QMAU_KIND,
+                                "2026-06",
+                                RegistryProtocol.QMAU_RULESET_VERSION,
+                                42L,
+                                commitment,
+                                2L,
+                                "batch_0123456789abcdef0123456789abcdef"),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-qmau-batch-payload-v1
+                        monthly-qmau
+                        2026-06
+                        qmau-v1
+                        42
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        2
+                        batch_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void qualifiedMauReceiptMatchesTheGoProtocolExactly() {
+        RegistryProtocol.MauReceipt receipt =
+                new RegistryProtocol.MauReceipt(
+                        9L,
+                        "sha256:" + "b".repeat(64),
+                        RegistryProtocol.ZERO_HASH,
+                        "sha256:" + "c".repeat(64),
+                        RegistryProtocol.QMAU_KIND,
+                        "2026-06",
+                        RegistryProtocol.QMAU_RULESET_VERSION,
+                        42L,
+                        "sha256:" + "a".repeat(64),
+                        2L,
+                        "batch_0123456789abcdef0123456789abcdef",
+                        "2026-07-01T00:00:03Z",
+                        "2026-07-01",
+                        "test-program:parent-a",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        "registry-public-key",
+                        "receipt-signature");
+        RegistryProtocol.BatchResponse response =
+                new RegistryProtocol.BatchResponse(
+                        "1",
+                        "test-program:parent-a",
+                        "batch_fedcba9876543210fedcba9876543210",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "qmau_0123456789",
+                        false,
+                        receipt);
+
+        assertThat(new String(
+                        RegistryProtocol.qmauReceipt(response),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-qmau-receipt-v1
+                        1
+                        test-program:parent-a
+                        batch_fedcba9876543210fedcba9876543210
+                        dep_0123456789abcdef0123456789abcdef
+                        9
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+                        monthly-qmau
+                        2026-06
+                        qmau-v1
+                        42
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        2
+                        batch_0123456789abcdef0123456789abcdef
+                        2026-07-01T00:00:03Z
+                        2026-07-01
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
     void structuredOperatorClaimPayloadMatchesTheGoProtocolExactly() {
         assertThat(new String(
                         RegistryProtocol.operatorClaimPayload(
@@ -127,6 +552,138 @@ class RegistryProtocolTest {
     }
 
     @Test
+    void legacyOperatorActionMessagesRemainExactlyV1WithoutSourceAnchors() {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                operatorReceipt(null, null);
+        String payloadHash =
+                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+
+        assertThat(new String(
+                        RegistryProtocol.operatorActionReceipt(receipt),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-action-receipt-v1
+                        7
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        2026-07-28T00:00:03Z
+                        pending-review
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+        assertThat(new String(
+                        RegistryProtocol.operatorAudit(receipt, payloadHash),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-audit-v1
+                        7
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        2026-07-28T00:00:03Z
+                        pending-review
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        """);
+    }
+
+    @Test
+    void tokenDerivedClaimMessagesMatchTheGoV2SourceAnchorOrder() {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                operatorReceipt(
+                        "opa_22222222222222222222222222222222",
+                        "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
+        String payloadHash =
+                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+
+        assertThat(new String(
+                        RegistryProtocol.operatorActionReceipt(receipt),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-action-receipt-v2
+                        7
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        2026-07-28T00:00:03Z
+                        pending-review
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        opa_22222222222222222222222222222222
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+        assertThat(new String(
+                        RegistryProtocol.operatorAudit(receipt, payloadHash),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-operator-audit-v2
+                        7
+                        opa_11111111111111111111111111111111
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_0123456789abcdef0123456789abcdef
+                        dep_fedcba9876543210fedcba9876543210
+                        redeem-client-token
+                        sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        2026-07-28T00:00:03Z
+                        pending-review
+                        opg_0123456789abcdef0123456789abcdef
+
+                        opt_0123456789abcdef0123456789abcdef
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        opa_22222222222222222222222222222222
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        """);
+    }
+
+    @Test
+    void partialSourceAnchorSelectsV2ForDeterministicRejectionByVerifier() {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                operatorReceipt(
+                        "opa_22222222222222222222222222222222",
+                        null);
+
+        assertThat(new String(
+                        RegistryProtocol.operatorActionReceipt(receipt),
+                        StandardCharsets.UTF_8))
+                .startsWith(
+                        "myscoutee-registry-operator-action-receipt-v2\n");
+        assertThat(new String(
+                        RegistryProtocol.operatorAudit(
+                                receipt,
+                                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"),
+                        StandardCharsets.UTF_8))
+                .startsWith("myscoutee-registry-operator-audit-v2\n");
+    }
+
+    @Test
     void operatorClaimStatusReceiptMatchesTheGoProtocolExactly() {
         RegistryProtocol.OperatorClaimStatusReceipt status =
                 new RegistryProtocol.OperatorClaimStatusReceipt(
@@ -142,6 +699,10 @@ class RegistryProtocolTest {
                         null,
                         RegistryProtocol.ZERO_HASH,
                         null,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE,
+                        null,
+                        null,
+                        RegistryProtocol.ZERO_HASH,
                         "test-program:parent-b",
                         "rkey_0123456789abcdef0123456789abcdef",
                         null);
@@ -150,7 +711,7 @@ class RegistryProtocolTest {
                         RegistryProtocol.operatorClaimStatusReceipt(status),
                         StandardCharsets.UTF_8))
                 .isEqualTo("""
-                        myscoutee-registry-operator-claim-status-receipt-v1
+                        myscoutee-registry-operator-claim-status-receipt-v2
                         dep_0123456789abcdef0123456789abcdef
                         opa_0123456789abcdef0123456789abcdef
                         7
@@ -163,9 +724,102 @@ class RegistryProtocolTest {
                         0
                         sha256:0000000000000000000000000000000000000000000000000000000000000000
 
+                        inactive
+
+                        0
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
                         test-program:parent-b
                         rkey_0123456789abcdef0123456789abcdef
                         """);
+    }
+
+    @Test
+    void leaderboardSnapshotHashMatchesTheGoV3BoundaryOrderExactly() {
+        RegistryProtocol.LeaderboardSnapshot snapshot =
+                new RegistryProtocol.LeaderboardSnapshot(
+                        "snap_0123456789abcdef0123456789abcdef",
+                        RegistryProtocol.LEADERBOARD_FORMULA_VERSION,
+                        RegistryProtocol.LEADERBOARD_RULESET_VERSION,
+                        "2026-06",
+                        12L,
+                        4L,
+                        3L,
+                        2L,
+                        0L,
+                        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                        "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                        RegistryProtocol.ZERO_HASH,
+                        "100000",
+                        "1",
+                        "1",
+                        "4",
+                        "200000",
+                        "1",
+                        "150000",
+                        "1",
+                        "2026-07-28T00:00:05Z",
+                        null,
+                        "test-program:parent-b",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        null);
+
+        assertThat(new String(
+                        RegistryProtocol.leaderboardSnapshotHash(snapshot),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-leaderboard-snapshot-hash-v3
+                        snap_0123456789abcdef0123456789abcdef
+                        six-complete-month-average-v1
+                        qmau-v1
+                        2026-06
+                        12
+                        4
+                        3
+                        2
+                        0
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+                        sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        100000
+                        1
+                        1
+                        4
+                        200000
+                        1
+                        150000
+                        1
+                        2026-07-28T00:00:05Z
+                        test-program:parent-b
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void leaderboardCursorUsesTheGoV2DomainExactly() {
+        byte[] payload = "{\"version\":2}".getBytes(StandardCharsets.UTF_8);
+
+        assertThat(new String(
+                        RegistryProtocol.leaderboardCursor(payload),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-leaderboard-cursor-v2
+                        {"version":2}""");
+    }
+
+    @Test
+    void leaderboardCursorUsesTheGoV3DomainExactly() {
+        byte[] payload = "{\"version\":3}".getBytes(StandardCharsets.UTF_8);
+
+        assertThat(new String(
+                        RegistryProtocol.leaderboardCursor(3, payload),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-leaderboard-cursor-v3
+                        {"version":3}""");
     }
 
     @Test
@@ -321,6 +975,9 @@ class RegistryProtocolTest {
         assertThat(RegistryProtocol.requireBatchId(
                         "batch_0123456789abcdef0123456789abcdef"))
                 .isEqualTo("batch_0123456789abcdef0123456789abcdef");
+        assertThat(RegistryProtocol.requireOperatorEligibilityId(
+                        "ope_0123456789abcdef0123456789abcdef"))
+                .isEqualTo("ope_0123456789abcdef0123456789abcdef");
         assertThatThrownBy(() -> RegistryProtocol.requireDeploymentId(
                         "dep_01234567_ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -329,5 +986,36 @@ class RegistryProtocolTest {
                         "batch_0123456789ABCDEF0123456789ABCDEF"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("malformed");
+        assertThatThrownBy(() -> RegistryProtocol.requireOperatorEligibilityId(
+                        "ope_0123456789ABCDEF0123456789ABCDEF"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("malformed");
+    }
+
+    private static RegistryProtocol.OperatorActionReceipt operatorReceipt(
+            String sourceClaimActionId,
+            String sourcePrivateRecordHash) {
+        return new RegistryProtocol.OperatorActionReceipt(
+                7L,
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                RegistryProtocol.ZERO_HASH,
+                "opa_11111111111111111111111111111111",
+                "dep_0123456789abcdef0123456789abcdef",
+                "dep_0123456789abcdef0123456789abcdef",
+                "dep_fedcba9876543210fedcba9876543210",
+                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                "2026-07-28T00:00:03Z",
+                RegistryProtocol.OPERATOR_CLAIM_STATE_PENDING_REVIEW,
+                "opg_0123456789abcdef0123456789abcdef",
+                null,
+                "opt_0123456789abcdef0123456789abcdef",
+                null,
+                "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                sourceClaimActionId,
+                sourcePrivateRecordHash,
+                null,
+                "test-program:parent-b",
+                "rkey_0123456789abcdef0123456789abcdef",
+                null);
     }
 }

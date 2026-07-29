@@ -28,9 +28,9 @@ import com.raxim.myscoutee.common.config.properties.RegistryProperties;
  * Explicit, one-shot creation of the local deployment signing identity.
  *
  * <p>Construction of this service has no filesystem side effects. The
- * initializer is intended to be called only by a future authenticated operator
+ * initializer is called only by the authenticated operator registration/retry
  * action after registry preflight; it is never invoked by application startup
- * or the registry retry worker.</p>
+ * or a background retry worker.</p>
  */
 @Service
 public class RegistryNodeIdentityService {
