@@ -111,6 +111,8 @@ assert_no_development_scripts_mount() {
 
 SERVER_DOCKERIGNORE="${REPO_ROOT}/server/.dockerignore"
 NGINX_DOCKERIGNORE="${REPO_ROOT}/server/docker/.dockerignore"
+PRODUCTION_COMPOSE="${REPO_ROOT}/server/docker-compose-prod.yml"
+PRODUCTION_API_DOCKERFILE="${REPO_ROOT}/server/docker/images/profilemanagement/prod/Dockerfile"
 for pattern in \
   '.env' '.env.*' 'projects/profile/secrets/' \
   'docker/scripts/admin-job-fixtures/' \
@@ -120,6 +122,14 @@ for pattern in \
   '**/*provider-credentials*.json'; do
   assert_dockerignore_line "${SERVER_DOCKERIGNORE}" "${pattern}"
 done
+
+grep -Eq '^[[:space:]]+context: projects/profile/build/libs$' "${PRODUCTION_COMPOSE}" \
+  || fail "production API build context is not restricted to the compiled JAR directory"
+grep -Eq '^[[:space:]]+dockerfile: \.\./\.\./\.\./\.\./docker/images/profilemanagement/prod/Dockerfile$' "${PRODUCTION_COMPOSE}" \
+  || fail "production API Dockerfile is not resolved from the restricted JAR context"
+grep -Eq '^COPY --chown=myscoutee:myscoutee \*\.jar /app/spring-boot-application\.jar$' "${PRODUCTION_API_DOCKERFILE}" \
+  || fail "production API image does not copy exclusively from the restricted JAR context"
+
 for pattern in \
   'conf/nginx/keys/' \
   'scripts/admin-job-fixtures/' \
