@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
@@ -317,6 +318,9 @@ class OperatorGoRegistryRailQualificationTest {
         LocalDate period = YearMonth.now(qualificationClock)
                 .minusMonths(1L)
                 .atEndOfMonth();
+        int backfillDayCount = Math.toIntExact(ChronoUnit.DAYS.between(
+                period,
+                LocalDate.now(qualificationClock)));
         AtomicLong capturedMinor = new AtomicLong(10_000L);
         OperatorRevenueService revenueService =
                 mock(OperatorRevenueService.class);
@@ -331,7 +335,9 @@ class OperatorGoRegistryRailQualificationTest {
                             .sorted()
                             .map(day -> revenueSnapshot(
                                     day,
-                                    capturedMinor.get()))
+                                    day.equals(period)
+                                            ? capturedMinor.get()
+                                            : 0L))
                             .toList();
                 });
 
@@ -358,8 +364,8 @@ class OperatorGoRegistryRailQualificationTest {
 
         assertThat(first.state()).isEqualTo("PENDING");
         assertThat(first.code()).isEqualTo("REVENUE_DELIVERY_PENDING");
-        assertThat(first.materialized()).isEqualTo(1);
-        assertThat(first.accepted()).isZero();
+        assertThat(first.materialized()).isEqualTo(backfillDayCount);
+        assertThat(first.accepted()).isEqualTo(backfillDayCount - 1);
         assertThat(first.pending()).isEqualTo(1L);
         RevenueReportOutboxItem pending = durableRepository
                 .findByIdAndDeploymentId(
@@ -694,6 +700,7 @@ class OperatorGoRegistryRailQualificationTest {
         String fingerprint = RegistryProtocol.publicKeyFingerprint(
                 registryPublicKey.getEncoded());
         String keyId = RegistryProtocol.registryKeyId(fingerprint);
+        properties.setExpectedRegistryKeyFingerprint(fingerprint);
         assertThat(registration.registryKeyId()).isEqualTo(keyId);
         assertThat(state.installationBatch().receipt().signature())
                 .isNotBlank();
@@ -1086,6 +1093,14 @@ class OperatorGoRegistryRailQualificationTest {
                             "registry-signing-key.pem").toString());
             builder.environment().put(
                     "REGISTRY_GENERATE_SIGNING_KEY",
+                    "true");
+            builder.environment().put(
+                    "REGISTRY_GLOBAL_IDENTITY_VOPRF_KEYRING_PATH",
+                    stateDirectory.resolve(
+                            "registry-global-identity-voprf-keyring.json")
+                            .toString());
+            builder.environment().put(
+                    "REGISTRY_GENERATE_GLOBAL_IDENTITY_VOPRF_KEY",
                     "true");
             builder.environment().put(
                     "REGISTRY_CHECKPOINT_INTERVAL",
