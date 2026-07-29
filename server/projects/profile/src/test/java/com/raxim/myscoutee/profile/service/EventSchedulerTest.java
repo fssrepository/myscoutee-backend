@@ -87,7 +87,7 @@ class EventSchedulerTest {
 
         scheduler.runScheduledWrappers();
 
-        verify(eventCounterExpiryService).runExpiryPassNow();
+        verify(eventCounterExpiryService).runScheduledExpiryPass(any(Instant.class));
     }
 
     @Test
@@ -97,7 +97,33 @@ class EventSchedulerTest {
 
         scheduler.runScheduledWrappers();
 
-        verify(eventCounterExpiryService, never()).runExpiryPassNow();
+        verify(eventCounterExpiryService, never()).runScheduledExpiryPass(any(Instant.class));
+    }
+
+    @Test
+    void runScheduledWrappersRunsCheckoutPurgeWhenAdminRuleIsDue() {
+        EventScheduler scheduler = createScheduler();
+        when(notificationRuleRegistryService.hasEnabledScheduledEventRule()).thenReturn(true);
+        when(notificationRuleRegistryService.shouldRunScheduledRule(anyString(), any(Instant.class))).thenReturn(false);
+        when(notificationRuleRegistryService.shouldRunScheduledRule(
+                eq(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE),
+                any(Instant.class)))
+                .thenReturn(true);
+
+        scheduler.runScheduledWrappers();
+
+        verify(eventCheckoutBasketService).purgeExpiredDraftBasketsScheduled(any(Instant.class));
+    }
+
+    @Test
+    void runScheduledWrappersSkipsCheckoutPurgeWhenAdminRuleIsNotDue() {
+        EventScheduler scheduler = createScheduler();
+        when(notificationRuleRegistryService.hasEnabledScheduledEventRule()).thenReturn(true);
+
+        scheduler.runScheduledWrappers();
+
+        verify(eventCheckoutBasketService, never())
+                .purgeExpiredDraftBasketsScheduled(any(Instant.class));
     }
 
     @Test

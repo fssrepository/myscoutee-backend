@@ -1114,7 +1114,7 @@ public final class RegistryProtocol {
     public static byte[] leaderboardSnapshotHash(LeaderboardSnapshot snapshot) {
         Objects.requireNonNull(snapshot, "Leaderboard snapshot must not be null.");
         return canonicalAllowEmpty(
-                "myscoutee-registry-leaderboard-snapshot-hash-v2",
+                "myscoutee-registry-leaderboard-snapshot-hash-v3",
                 snapshot.snapshotId(),
                 snapshot.formulaVersion(),
                 snapshot.rulesetVersion(),
@@ -1125,10 +1125,14 @@ public final class RegistryProtocol {
                 requiredLong(
                         snapshot.throughEligibilityIndex(),
                         "through_eligibility_index"),
+                requiredLong(
+                        snapshot.throughTransferEventIndex(),
+                        "through_transfer_event_index"),
                 snapshot.ledgerHeadHash(),
                 snapshot.auditHeadHash(),
                 snapshot.reviewHeadHash(),
                 snapshot.eligibilityHeadHash(),
+                snapshot.transferEventHeadHash(),
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
                 snapshot.founderShareNumerator(),
@@ -1150,14 +1154,26 @@ public final class RegistryProtocol {
                 snapshot.registryKeyId());
     }
 
-    public static byte[] leaderboardCursor(byte[] cursorPayload) {
-        byte[] prefix = "myscoutee-registry-leaderboard-cursor-v2\n"
+    public static byte[] leaderboardCursor(
+            int version,
+            byte[] cursorPayload) {
+        if (version != 2 && version != 3) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor version is unsupported.");
+        }
+        byte[] prefix = ("myscoutee-registry-leaderboard-cursor-v"
+                + version
+                + "\n")
                 .getBytes(StandardCharsets.UTF_8);
         byte[] payload = Objects.requireNonNull(cursorPayload, "Leaderboard cursor payload must not be null.");
         byte[] message = new byte[prefix.length + payload.length];
         System.arraycopy(prefix, 0, message, 0, prefix.length);
         System.arraycopy(payload, 0, message, prefix.length, payload.length);
         return message;
+    }
+
+    public static byte[] leaderboardCursor(byte[] cursorPayload) {
+        return leaderboardCursor(2, cursorPayload);
     }
 
     public static byte[] announcementContent(
@@ -2586,10 +2602,14 @@ public final class RegistryProtocol {
             @JsonProperty("through_audit_index") Long throughAuditIndex,
             @JsonProperty("through_review_index") Long throughReviewIndex,
             @JsonProperty("through_eligibility_index") Long throughEligibilityIndex,
+            @JsonProperty("through_transfer_event_index")
+                    Long throughTransferEventIndex,
             @JsonProperty("ledger_head_hash") String ledgerHeadHash,
             @JsonProperty("audit_head_hash") String auditHeadHash,
             @JsonProperty("review_head_hash") String reviewHeadHash,
             @JsonProperty("eligibility_head_hash") String eligibilityHeadHash,
+            @JsonProperty("transfer_event_head_hash")
+                    String transferEventHeadHash,
             @JsonProperty("founder_units_numerator") String founderUnitsNumerator,
             @JsonProperty("founder_units_denominator") String founderUnitsDenominator,
             @JsonProperty("founder_share_numerator") String founderShareNumerator,

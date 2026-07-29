@@ -17712,6 +17712,234 @@
     "value": "The operator request timed out."
   },
   {
+    "_id": "i18n-message-en-global-identity-menu",
+    "key": "global.identity.menu",
+    "lang": "en",
+    "value": "Network identity"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-menu-description",
+    "key": "global.identity.menu.description",
+    "lang": "en",
+    "value": "Optional cross-deployment MAU deduplication"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-menu-open",
+    "key": "global.identity.menu.open",
+    "lang": "en",
+    "value": "Open network identity settings"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-title",
+    "key": "global.identity.title",
+    "lang": "en",
+    "value": "Network identity"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-subtitle",
+    "key": "global.identity.subtitle",
+    "lang": "en",
+    "value": "Control optional, privacy-enhanced deduplication across deployments"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-loading",
+    "key": "global.identity.loading",
+    "lang": "en",
+    "value": "Loading network identity status…"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-status",
+    "key": "global.identity.status",
+    "lang": "en",
+    "value": "Current status"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-unavailable",
+    "key": "global.identity.state.unavailable",
+    "lang": "en",
+    "value": "Not available"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-unlinked",
+    "key": "global.identity.state.unlinked",
+    "lang": "en",
+    "value": "Not linked"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-pending",
+    "key": "global.identity.state.pending",
+    "lang": "en",
+    "value": "Pending synchronization"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-link",
+    "key": "global.identity.state.link",
+    "lang": "en",
+    "value": "Link pending"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-correct",
+    "key": "global.identity.state.correct",
+    "lang": "en",
+    "value": "Rotation pending"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-unlink",
+    "key": "global.identity.state.unlink",
+    "lang": "en",
+    "value": "Unlink pending"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-state-active",
+    "key": "global.identity.state.active",
+    "lang": "en",
+    "value": "Active"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-privacy-title",
+    "key": "global.identity.privacy.title",
+    "lang": "en",
+    "value": "What leaves this deployment"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-privacy-description",
+    "key": "global.identity.privacy.description",
+    "lang": "en",
+    "value": "If you opt in, deployments can count the same verified person once in network MAU without sending your raw e-mail address, Firebase identifier, or profile to the registry."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-privacy-sent",
+    "key": "global.identity.privacy.sent",
+    "lang": "en",
+    "value": "This deployment blinds the verified e-mail through RFC 9497 VOPRF and sends only an opaque SHA-256 commitment and qualified period presence."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-privacy-history",
+    "key": "global.identity.privacy.history",
+    "lang": "en",
+    "value": "Unlinking stops applicable future presence. Aggregate records already accepted into the registry ledger remain append-only and auditable."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-privacy-limit",
+    "key": "global.identity.privacy.limit",
+    "lang": "en",
+    "value": "This improves privacy but is not anonymity: a registry controlling its VOPRF key and restricted commitments could test guessed low-entropy e-mail addresses offline."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-consent-title",
+    "key": "global.identity.consent.title",
+    "lang": "en",
+    "value": "Explicit consent"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-consent-label",
+    "key": "global.identity.consent.label",
+    "lang": "en",
+    "value": "I consent to optional cross-deployment network MAU deduplication."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-consent-description",
+    "key": "global.identity.consent.description",
+    "lang": "en",
+    "value": "A verified e-mail address and a registered deployment are required. You can unlink this identity later."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-action-reload",
+    "key": "global.identity.action.reload",
+    "lang": "en",
+    "value": "Reload status"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-action-link",
+    "key": "global.identity.action.link",
+    "lang": "en",
+    "value": "Link identity"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-action-retry",
+    "key": "global.identity.action.retry",
+    "lang": "en",
+    "value": "Retry synchronization"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-action-rotate",
+    "key": "global.identity.action.rotate",
+    "lang": "en",
+    "value": "Rotate identity"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-action-unlink",
+    "key": "global.identity.action.unlink",
+    "lang": "en",
+    "value": "Unlink identity"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-rotation-required",
+    "key": "global.identity.rotation.required",
+    "lang": "en",
+    "value": "Rotation required"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-active-from",
+    "key": "global.identity.active.from",
+    "lang": "en",
+    "value": "Active from period"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-inactive-from",
+    "key": "global.identity.inactive.from",
+    "lang": "en",
+    "value": "Inactive from period"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-verified-at",
+    "key": "global.identity.verified.at",
+    "lang": "en",
+    "value": "Registry verified"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-updated-at",
+    "key": "global.identity.updated.at",
+    "lang": "en",
+    "value": "Last changed"
+  },
+  {
+    "_id": "i18n-message-en-global-identity-error-verified-email",
+    "key": "global.identity.error.verified.email",
+    "lang": "en",
+    "value": "A verified e-mail address is required for this operation."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-error-conflict",
+    "key": "global.identity.error.conflict",
+    "lang": "en",
+    "value": "The identity changed concurrently or is not in a compatible state. Reload and try again."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-error-timeout",
+    "key": "global.identity.error.timeout",
+    "lang": "en",
+    "value": "The network identity request timed out."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-error-unavailable",
+    "key": "global.identity.error.unavailable",
+    "lang": "en",
+    "value": "Network identity synchronization is not available from this deployment."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-error-local-unavailable",
+    "key": "global.identity.error.local.unavailable",
+    "lang": "en",
+    "value": "A browser-only workspace has no trusted deployment key, so it cannot create a network identity."
+  },
+  {
+    "_id": "i18n-message-en-global-identity-error-failed",
+    "key": "global.identity.error.failed",
+    "lang": "en",
+    "value": "The network identity request failed."
+  },
+  {
     "_id": "i18n-message-en-operator-request-failed",
     "key": "operator.request.failed",
     "lang": "en",
@@ -35428,6 +35656,234 @@
     "key": "operator.request.timeout",
     "lang": "hu",
     "value": "Az operátori kérés időtúllépés miatt megszakadt."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-menu",
+    "key": "global.identity.menu",
+    "lang": "hu",
+    "value": "Hálózati identitás"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-menu-description",
+    "key": "global.identity.menu.description",
+    "lang": "hu",
+    "value": "Opcionális, telepítések közötti MAU-deduplikáció"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-menu-open",
+    "key": "global.identity.menu.open",
+    "lang": "hu",
+    "value": "Hálózati identitás beállításainak megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-title",
+    "key": "global.identity.title",
+    "lang": "hu",
+    "value": "Hálózati identitás"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-subtitle",
+    "key": "global.identity.subtitle",
+    "lang": "hu",
+    "value": "Az opcionális, adatvédelmet erősítő, telepítések közötti deduplikáció kezelése"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-loading",
+    "key": "global.identity.loading",
+    "lang": "hu",
+    "value": "Hálózati identitás állapotának betöltése…"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-status",
+    "key": "global.identity.status",
+    "lang": "hu",
+    "value": "Jelenlegi állapot"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-unavailable",
+    "key": "global.identity.state.unavailable",
+    "lang": "hu",
+    "value": "Nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-unlinked",
+    "key": "global.identity.state.unlinked",
+    "lang": "hu",
+    "value": "Nincs összekapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-pending",
+    "key": "global.identity.state.pending",
+    "lang": "hu",
+    "value": "Szinkronizálásra vár"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-link",
+    "key": "global.identity.state.link",
+    "lang": "hu",
+    "value": "Összekapcsolás folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-correct",
+    "key": "global.identity.state.correct",
+    "lang": "hu",
+    "value": "Kulcsváltás folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-unlink",
+    "key": "global.identity.state.unlink",
+    "lang": "hu",
+    "value": "Leválasztás folyamatban"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-state-active",
+    "key": "global.identity.state.active",
+    "lang": "hu",
+    "value": "Aktív"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-privacy-title",
+    "key": "global.identity.privacy.title",
+    "lang": "hu",
+    "value": "Mi hagyja el ezt a telepítést"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-privacy-description",
+    "key": "global.identity.privacy.description",
+    "lang": "hu",
+    "value": "Ha engedélyezed, a hálózat ugyanazt az ellenőrzött személyt egyszer számolhatja a hálózati MAU-ban anélkül, hogy a nyers e-mail-címed, Firebase-azonosítód vagy profilod a nyilvántartásba kerülne."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-privacy-sent",
+    "key": "global.identity.privacy.sent",
+    "lang": "hu",
+    "value": "A telepítés RFC 9497 VOPRF-fel vakítja az ellenőrzött e-mail-címet, és csak egy átlátszatlan SHA-256 commitmentet, valamint a minősített időszaki jelenlétet küldi."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-privacy-history",
+    "key": "global.identity.privacy.history",
+    "lang": "hu",
+    "value": "A leválasztás leállítja az alkalmazandó jövőbeli jelenlétet. A nyilvántartási főkönyvbe már befogadott összesített adatok append-only és auditálható előzményként megmaradnak."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-privacy-limit",
+    "key": "global.identity.privacy.limit",
+    "lang": "hu",
+    "value": "Ez javítja az adatvédelmet, de nem anonimitás: a VOPRF-kulcsot és a korlátozott commitmenteket kezelő nyilvántartás offline tesztelhet kitalált, alacsony entrópiájú e-mail-címeket."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-consent-title",
+    "key": "global.identity.consent.title",
+    "lang": "hu",
+    "value": "Kifejezett hozzájárulás"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-consent-label",
+    "key": "global.identity.consent.label",
+    "lang": "hu",
+    "value": "Hozzájárulok az opcionális, telepítések közötti hálózati MAU-deduplikációhoz."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-consent-description",
+    "key": "global.identity.consent.description",
+    "lang": "hu",
+    "value": "Ellenőrzött e-mail-cím és regisztrált telepítés szükséges. Az identitás később leválasztható."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-action-reload",
+    "key": "global.identity.action.reload",
+    "lang": "hu",
+    "value": "Állapot újratöltése"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-action-link",
+    "key": "global.identity.action.link",
+    "lang": "hu",
+    "value": "Identitás összekapcsolása"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-action-retry",
+    "key": "global.identity.action.retry",
+    "lang": "hu",
+    "value": "Szinkronizálás újrapróbálása"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-action-rotate",
+    "key": "global.identity.action.rotate",
+    "lang": "hu",
+    "value": "Identitás kulcsváltása"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-action-unlink",
+    "key": "global.identity.action.unlink",
+    "lang": "hu",
+    "value": "Identitás leválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-rotation-required",
+    "key": "global.identity.rotation.required",
+    "lang": "hu",
+    "value": "Kulcsváltás szükséges"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-active-from",
+    "key": "global.identity.active.from",
+    "lang": "hu",
+    "value": "Aktív ettől az időszaktól"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-inactive-from",
+    "key": "global.identity.inactive.from",
+    "lang": "hu",
+    "value": "Inaktív ettől az időszaktól"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-verified-at",
+    "key": "global.identity.verified.at",
+    "lang": "hu",
+    "value": "Nyilvántartási ellenőrzés"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-updated-at",
+    "key": "global.identity.updated.at",
+    "lang": "hu",
+    "value": "Utolsó változás"
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-error-verified-email",
+    "key": "global.identity.error.verified.email",
+    "lang": "hu",
+    "value": "Ehhez a művelethez ellenőrzött e-mail-cím szükséges."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-error-conflict",
+    "key": "global.identity.error.conflict",
+    "lang": "hu",
+    "value": "Az identitás közben megváltozott, vagy nem megfelelő állapotban van. Töltsd újra, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-error-timeout",
+    "key": "global.identity.error.timeout",
+    "lang": "hu",
+    "value": "A hálózati identitás kérése időtúllépés miatt megszakadt."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-error-unavailable",
+    "key": "global.identity.error.unavailable",
+    "lang": "hu",
+    "value": "A hálózati identitás szinkronizálása ezen a telepítésen nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-error-local-unavailable",
+    "key": "global.identity.error.local.unavailable",
+    "lang": "hu",
+    "value": "A kizárólag böngészőben futó munkaterületnek nincs megbízható telepítési kulcsa, ezért nem hozhat létre hálózati identitást."
+  },
+  {
+    "_id": "i18n-message-hu-global-identity-error-failed",
+    "key": "global.identity.error.failed",
+    "lang": "hu",
+    "value": "A hálózati identitás kérése sikertelen."
   },
   {
     "_id": "i18n-message-hu-operator-request-failed",

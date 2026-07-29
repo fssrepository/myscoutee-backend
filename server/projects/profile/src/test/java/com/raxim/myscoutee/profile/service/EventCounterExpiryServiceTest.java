@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +25,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -166,6 +168,42 @@ class EventCounterExpiryServiceTest {
         assertThat(activities.game()).isEqualTo(1);
         assertThat(activities.adminJobs()).isEqualTo(14);
         verify(mongoTemplate).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void runScheduledExpiryPassDoesNotReadOrWriteWhenAnotherInstanceOwnsTheRun() {
+        int processed = service.runScheduledExpiryPass(Instant.now());
+
+        assertThat(processed).isZero();
+        verify(notificationRuleRegistryService).beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY),
+                any(String.class),
+                any(String.class),
+                any(Instant.class));
+        verify(mongoTemplate, never()).find(any(Query.class), eq(ActivityEvent.class));
+        verify(mongoTemplate, never()).updateMulti(
+                any(Query.class),
+                any(Update.class),
+                eq(ActivityEvent.class));
+        verify(usersRepository, never()).saveAll(any());
+    }
+
+    @Test
+    void runScheduledExpiryPassClaimsBeforeScanningDueEvents() {
+        when(notificationRuleRegistryService.beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY),
+                any(String.class),
+                any(String.class),
+                any(Instant.class)))
+                .thenReturn(new NotificationRuleConfig());
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of());
+
+        int processed = service.runScheduledExpiryPass(Instant.now());
+
+        assertThat(processed).isZero();
+        verify(notificationRuleRegistryService).claimPendingCount(
+                NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+        verify(mongoTemplate, atLeastOnce()).find(any(Query.class), eq(ActivityEvent.class));
     }
 
     private ActivityEvent event(String sourceId, String ownerUserId, String suffix, String startAtIso, String endAtIso, boolean expired) {

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -767,9 +768,9 @@ public class OperatorGlobalIdentityPresenceReportService {
                     "Global identity chunk receipt signature is invalid.");
         }
         if (!Boolean.TRUE.equals(response.complete())) {
-            if (response.batchId() != null
-                    || response.linkedCount() != null
-                    || response.unlinkedCount() != null
+            if (StringUtils.hasText(response.batchId())
+                    || value(response.linkedCount()) != 0L
+                    || value(response.unlinkedCount()) != 0L
                     || response.event() != null
                     || response.snapshot() != null) {
                 throw new IllegalStateException(

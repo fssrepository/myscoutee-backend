@@ -30,6 +30,44 @@ for production_identity_seed in \
     || fail "production identity source seed is not empty: ${production_identity_seed#${REPO_ROOT}/}"
 done
 
+assert_admin_job_seed_defaults() {
+  local seed_file="$1"
+
+  jq -e '
+    [
+      "event-random-groups",
+      "event-auto-inviter",
+      "event-tournament-review",
+      "event-counter-expiry",
+      "event-checkout-basket-purge",
+      "notification-outbox",
+      "affinity-recompute",
+      "scheduled-messages",
+      "account-purge"
+    ] as $expected
+    | type == "array"
+    and length == ($expected | length)
+    and ((map(.ruleKey) | sort) == ($expected | sort))
+    and all(.[];
+      .enabled == true
+      and .triggerKind == "scheduled_process"
+      and (
+        if .ruleKey == "event-random-groups"
+        then .manualRunEnabled == true
+        else .manualRunEnabled == false
+        end
+      ))
+  ' "${seed_file}" >/dev/null \
+    || fail "Admin Job defaults are invalid: ${seed_file#${REPO_ROOT}/}"
+}
+
+for admin_job_seed in \
+  "${REPO_ROOT}/server/docker/conf/mongodb/myscoutee_db/notificationRuleConfigs.json" \
+  "${REPO_ROOT}/server/docker/conf/mongodb/demo_db/notificationRuleConfigs.json" \
+  "${REPO_ROOT}/server/docker/conf/mongodb/e2e_db/notificationRuleConfigs.json"; do
+  assert_admin_job_seed_defaults "${admin_job_seed}"
+done
+
 assert_dockerignore_line() {
   local dockerignore="$1"
   local pattern="$2"
@@ -141,6 +179,8 @@ jq -e \
 PACKAGED_MONGO="${EXTRACTED}/opt/myscoutee/server/docker/conf/mongodb"
 PACKAGED_PRODUCTION_SEED="${PACKAGED_MONGO}/myscoutee_db"
 PACKAGED_DEMO_SEED="${PACKAGED_MONGO}/demo_db"
+assert_admin_job_seed_defaults "${PACKAGED_PRODUCTION_SEED}/notificationRuleConfigs.json"
+assert_admin_job_seed_defaults "${PACKAGED_DEMO_SEED}/notificationRuleConfigs.json"
 [[ ! -e "${PACKAGED_MONGO}/e2e_db" ]] \
   || fail "E2E Mongo fixtures were embedded in the production package"
 for forbidden_seed in \

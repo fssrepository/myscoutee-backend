@@ -734,7 +734,7 @@ class RegistryProtocolTest {
     }
 
     @Test
-    void leaderboardSnapshotHashMatchesTheGoV2BoundaryOrderExactly() {
+    void leaderboardSnapshotHashMatchesTheGoV3BoundaryOrderExactly() {
         RegistryProtocol.LeaderboardSnapshot snapshot =
                 new RegistryProtocol.LeaderboardSnapshot(
                         "snap_0123456789abcdef0123456789abcdef",
@@ -745,10 +745,12 @@ class RegistryProtocolTest {
                         4L,
                         3L,
                         2L,
+                        0L,
                         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
                         "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
                         "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                        RegistryProtocol.ZERO_HASH,
                         "100000",
                         "1",
                         "1",
@@ -767,7 +769,7 @@ class RegistryProtocolTest {
                         RegistryProtocol.leaderboardSnapshotHash(snapshot),
                         StandardCharsets.UTF_8))
                 .isEqualTo("""
-                        myscoutee-registry-leaderboard-snapshot-hash-v2
+                        myscoutee-registry-leaderboard-snapshot-hash-v3
                         snap_0123456789abcdef0123456789abcdef
                         six-complete-month-average-v1
                         qmau-v1
@@ -776,10 +778,12 @@ class RegistryProtocolTest {
                         4
                         3
                         2
+                        0
                         sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                         sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
                         sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
                         sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
                         100000
                         1
                         1
@@ -804,6 +808,18 @@ class RegistryProtocolTest {
                 .isEqualTo("""
                         myscoutee-registry-leaderboard-cursor-v2
                         {"version":2}""");
+    }
+
+    @Test
+    void leaderboardCursorUsesTheGoV3DomainExactly() {
+        byte[] payload = "{\"version\":3}".getBytes(StandardCharsets.UTF_8);
+
+        assertThat(new String(
+                        RegistryProtocol.leaderboardCursor(3, payload),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-leaderboard-cursor-v3
+                        {"version":3}""");
     }
 
     @Test

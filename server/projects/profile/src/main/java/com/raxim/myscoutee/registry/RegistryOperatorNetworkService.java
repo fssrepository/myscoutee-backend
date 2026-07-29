@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -61,6 +62,44 @@ public final class RegistryOperatorNetworkService {
             Pattern.compile("[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?");
     private static final Pattern UPDATE_CHANNEL =
             Pattern.compile("^[a-z][a-z0-9._-]{0,31}$");
+    private static final Set<String> LEADERBOARD_CURSOR_V2_FIELDS = Set.of(
+            "version",
+            "kind",
+            "view",
+            "snapshot_id",
+            "from_period",
+            "through_period",
+            "through_ledger_index",
+            "through_audit_index",
+            "through_review_index",
+            "through_eligibility_index",
+            "ledger_head_hash",
+            "audit_head_hash",
+            "review_head_hash",
+            "eligibility_head_hash",
+            "created_at",
+            "after_weight",
+            "after_id");
+    private static final Set<String> LEADERBOARD_CURSOR_V3_FIELDS = Set.of(
+            "version",
+            "kind",
+            "view",
+            "snapshot_id",
+            "from_period",
+            "through_period",
+            "through_ledger_index",
+            "through_audit_index",
+            "through_review_index",
+            "through_eligibility_index",
+            "through_transfer_event_index",
+            "ledger_head_hash",
+            "audit_head_hash",
+            "review_head_hash",
+            "eligibility_head_hash",
+            "transfer_event_head_hash",
+            "created_at",
+            "after_weight",
+            "after_id");
     private static final Set<String> ACTIONS = Set.of(
             RegistryProtocol.OPERATOR_ACTION_CLAIM,
             RegistryProtocol.OPERATOR_ACTION_WITHDRAW_CLAIM,
@@ -1617,12 +1656,18 @@ public final class RegistryOperatorNetworkService {
         requireNonNegative(
                 snapshot.throughEligibilityIndex(),
                 "through_eligibility_index");
+        requireNonNegative(
+                snapshot.throughTransferEventIndex(),
+                "through_transfer_event_index");
         RegistryProtocol.requireHash(snapshot.ledgerHeadHash(), "ledger_head_hash");
         RegistryProtocol.requireHash(snapshot.auditHeadHash(), "audit_head_hash");
         RegistryProtocol.requireHash(snapshot.reviewHeadHash(), "review_head_hash");
         RegistryProtocol.requireHash(
                 snapshot.eligibilityHeadHash(),
                 "eligibility_head_hash");
+        RegistryProtocol.requireHash(
+                snapshot.transferEventHeadHash(),
+                "transfer_event_head_hash");
         requireHeadBoundary(
                 snapshot.throughReviewIndex(),
                 snapshot.reviewHeadHash(),
@@ -1631,6 +1676,10 @@ public final class RegistryOperatorNetworkService {
                 snapshot.throughEligibilityIndex(),
                 snapshot.eligibilityHeadHash(),
                 "eligibility");
+        requireHeadBoundary(
+                snapshot.throughTransferEventIndex(),
+                snapshot.transferEventHeadHash(),
+                "transfer event");
         requireRational(
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
@@ -2136,20 +2185,22 @@ public final class RegistryOperatorNetworkService {
         byte[] signature = decodeCanonicalUrlBase64(
                 cursor.substring(separator + 1),
                 "leaderboard cursor signature");
-        if (signature.length != 64 || !RegistryCrypto.verify(
-                trusted.registryPublicKey(),
-                RegistryProtocol.leaderboardCursor(payload),
-                signature)) {
-            throw new IllegalArgumentException("Leaderboard cursor signature is invalid.");
-        }
         JsonNode node;
         try {
             node = objectMapper.readTree(payload);
         } catch (RuntimeException exception) {
             throw new IllegalArgumentException("Leaderboard cursor payload is invalid.", exception);
         }
+        int version = node.path("version").asInt(-1);
+        requireLeaderboardCursorFields(node, version);
+        if (signature.length != 64 || !RegistryCrypto.verify(
+                trusted.registryPublicKey(),
+                RegistryProtocol.leaderboardCursor(version, payload),
+                signature)) {
+            throw new IllegalArgumentException("Leaderboard cursor signature is invalid.");
+        }
         CursorClaims claims = new CursorClaims(
-                node.path("version").asInt(-1),
+                version,
                 node.path("kind").asText(""),
                 node.path("view").asText(""),
                 node.path("group_id").asText(""),
@@ -2160,14 +2211,21 @@ public final class RegistryOperatorNetworkService {
                 node.path("through_audit_index").asLong(-1L),
                 node.path("through_review_index").asLong(-1L),
                 node.path("through_eligibility_index").asLong(-1L),
+                version == 2
+                        ? 0L
+                        : node.path("through_transfer_event_index")
+                                .asLong(-1L),
                 node.path("ledger_head_hash").asText(""),
                 node.path("audit_head_hash").asText(""),
                 node.path("review_head_hash").asText(""),
                 node.path("eligibility_head_hash").asText(""),
+                version == 2
+                        ? RegistryProtocol.ZERO_HASH
+                        : node.path("transfer_event_head_hash").asText(""),
                 node.path("created_at").asText(""),
                 node.path("after_weight").asLong(-1L),
                 node.path("after_id").asText(""));
-        if (claims.version() != 2
+        if ((claims.version() != 2 && claims.version() != 3)
                 || !expectedKind.equals(claims.kind())
                 || !expectedView.equals(claims.view())
                 || !expectedGroupId.equals(claims.groupId())
@@ -2185,12 +2243,18 @@ public final class RegistryOperatorNetworkService {
         requireNonNegative(
                 claims.throughEligibilityIndex(),
                 "cursor through_eligibility_index");
+        requireNonNegative(
+                claims.throughTransferEventIndex(),
+                "cursor through_transfer_event_index");
         RegistryProtocol.requireHash(claims.ledgerHeadHash(), "cursor ledger_head_hash");
         RegistryProtocol.requireHash(claims.auditHeadHash(), "cursor audit_head_hash");
         RegistryProtocol.requireHash(claims.reviewHeadHash(), "cursor review_head_hash");
         RegistryProtocol.requireHash(
                 claims.eligibilityHeadHash(),
                 "cursor eligibility_head_hash");
+        RegistryProtocol.requireHash(
+                claims.transferEventHeadHash(),
+                "cursor transfer_event_head_hash");
         requireHeadBoundary(
                 claims.throughReviewIndex(),
                 claims.reviewHeadHash(),
@@ -2199,11 +2263,36 @@ public final class RegistryOperatorNetworkService {
                 claims.throughEligibilityIndex(),
                 claims.eligibilityHeadHash(),
                 "cursor eligibility");
+        requireHeadBoundary(
+                claims.throughTransferEventIndex(),
+                claims.transferEventHeadHash(),
+                "cursor transfer event");
         RegistryProtocol.requireUtcTimestamp(claims.createdAt(), "cursor created_at");
         if (snapshot != null) {
             requireCursorSnapshot(claims, snapshot);
         }
         return claims;
+    }
+
+    private static void requireLeaderboardCursorFields(
+            JsonNode node,
+            int version) {
+        if (node == null || !node.isObject()
+                || (version != 2 && version != 3)) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor version is unsupported.");
+        }
+        Set<String> required = version == 2
+                ? LEADERBOARD_CURSOR_V2_FIELDS
+                : LEADERBOARD_CURSOR_V3_FIELDS;
+        Set<String> actual = new HashSet<>();
+        node.propertyNames().forEachRemaining(actual::add);
+        boolean unknown = actual.stream().anyMatch(field ->
+                !"group_id".equals(field) && !required.contains(field));
+        if (unknown || !actual.containsAll(required)) {
+            throw new IllegalArgumentException(
+                    "Leaderboard cursor payload fields are invalid.");
+        }
     }
 
     private void requireCursorSnapshot(CursorClaims cursor, LeaderboardSnapshot snapshot) {
@@ -2217,11 +2306,15 @@ public final class RegistryOperatorNetworkService {
                 || cursor.throughReviewIndex() != snapshot.throughReviewIndex()
                 || cursor.throughEligibilityIndex()
                         != snapshot.throughEligibilityIndex()
+                || cursor.throughTransferEventIndex()
+                        != snapshot.throughTransferEventIndex()
                 || !cursor.ledgerHeadHash().equals(snapshot.ledgerHeadHash())
                 || !cursor.auditHeadHash().equals(snapshot.auditHeadHash())
                 || !cursor.reviewHeadHash().equals(snapshot.reviewHeadHash())
                 || !cursor.eligibilityHeadHash()
                         .equals(snapshot.eligibilityHeadHash())
+                || !cursor.transferEventHeadHash()
+                        .equals(snapshot.transferEventHeadHash())
                 || !cursor.createdAt().equals(snapshot.createdAt())) {
             throw new IllegalArgumentException(
                     "Leaderboard cursor and signed snapshot boundaries differ.");
@@ -2587,10 +2680,12 @@ public final class RegistryOperatorNetworkService {
             long throughAuditIndex,
             long throughReviewIndex,
             long throughEligibilityIndex,
+            long throughTransferEventIndex,
             String ledgerHeadHash,
             String auditHeadHash,
             String reviewHeadHash,
             String eligibilityHeadHash,
+            String transferEventHeadHash,
             String createdAt,
             long afterWeight,
             String afterId) {

@@ -3,7 +3,9 @@ package com.raxim.myscoutee.profile.service.notifications;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCha
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationMessageDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationScheduleSlotDto;
@@ -28,6 +31,35 @@ import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
 
 class AdminNotificationServiceTest {
+    @Test
+    void runRejectsNonManualRuleBeforeStartingAnyWorker() {
+        NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
+        NotificationRuleConfig nonManualRule = rule(
+                NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                true,
+                "idle",
+                "");
+        when(registry.findRule(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER))
+                .thenReturn(java.util.Optional.of(nonManualRule));
+        AdminNotificationService service = service(registry);
+
+        try {
+            var result = service.run(
+                    NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                    new AdminNotificationRuleRunRequestDto("admin-1"));
+
+            assertThat(result.status()).isEqualTo("skipped");
+            assertThat(result.detail())
+                    .isEqualTo("This scheduled process does not support manual execution.");
+            verify(registry, never()).beginRun(
+                    eq(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER),
+                    org.mockito.ArgumentMatchers.anyString(),
+                    org.mockito.ArgumentMatchers.anyString());
+        } finally {
+            service.shutdown();
+        }
+    }
+
     @Test
     void stateFiltersProcessBucketsOnTheServerAndReturnsAllCounts() {
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);

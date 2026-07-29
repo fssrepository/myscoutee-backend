@@ -1,9 +1,9 @@
 # Operator network implementation roadmap
 
 This roadmap keeps the installer offline and makes every external relationship an
-explicit operator action. It separates what is safe to ship now from MAU
-qualification and global-user deduplication, which require their own privacy and
-fraud specifications.
+explicit operator action. MAU qualification and privacy-preserving global-person
+linking have their own versioned protocols and remain separate from local
+authentication, profiles, and public leaderboard identities.
 
 ## Non-negotiable deployment model
 
@@ -185,41 +185,54 @@ Exit criteria:
 
 ## Phase 5 — privacy-safe global deduplication
 
-Status: planned after the settlement and exit-eligibility rails.
+Status: implemented at the protocol, persistence, delivery, consent, and
+aggregate-query boundaries. Independent privacy/security review and stronger
+registry-key separation remain Phase 9 release requirements.
 
-The intended product behavior is that each deployment attempts to link a
-locally authenticated person to a stable network identity. The raw identity
-input remains deployment-local. The registry receives only an opaque
-network-link identifier derived through a keyed/blinded protocol, never a raw
-email, Firebase UID, phone number, profile ID, or a plain/unsalted hash that can
-be dictionary-reversed. The link record is separate from local user identity,
-QMAU evidence, and public ledger rows.
+Each consenting, locally authenticated person may link a verified,
+deployment-scoped identity to a stable opaque network identity. The raw
+identifier is normalized only in Java and evaluated through the versioned RFC
+9497 `P256-SHA256` VOPRF flow. The registry never receives a raw email,
+Firebase UID, phone number, local profile ID, or plain/unsalted identifier
+hash. Local authentication remains `(provider, issuer, subject)` scoped; the
+global link is a separate consented record and never replaces it.
 
-Required design and implementation work:
-
-- Define the verified human-account linking, consent, unlink, recovery, and
-  account-merger model.
-- Use a versioned VOPRF/OPRF or equivalently reviewed keyed/blinded derivation
-  so deployments can obtain the same opaque identifier for the same verified
-  input without learning the registry key and without disclosing that input to
-  the registry.
-- Store the opaque global identity separately from the deployment-scoped
-  `(provider, issuer, subject)` identity; never replace the local identity with
-  the global link.
-- Separate uniqueness evidence from activity/weight evidence.
-- Specify key rotation, deletion, collision, shared-device, bot, and account
-  merger behavior.
-- Keep public leaderboard and Merkle/ledger entries aggregate-only; global link
-  identifiers belong in access-controlled direct query/audit records.
-- Obtain privacy, security, and legal review before collecting global linkage
-  evidence.
+- Link, retry, unlink, local-account purge, consent evidence, key rotation, and
+  period-effective immutable link history are implemented.
+- A durable Java outbox sends independently signed, ordered, idempotent
+  presence chunks. Partial submissions remain append-only staging and cannot
+  change the current aggregate. The final missing chunk atomically appends one
+  aggregate event and one directly queryable dedup snapshot.
+- Exact retries, including a lost final response, return the original signed
+  receipt. A submission pins its VOPRF key version on its first accepted chunk,
+  so an in-flight submission can finish safely across a rotation.
+- The Go ingress limits of 4096 commitments per chunk and 4096 chunks per
+  deployment/period/revision submission are memory and abuse-safety bounds,
+  not deployment, network, or user-count limits. Java deliberately sends 512
+  commitments per chunk under the default HTTP body limit, giving a current
+  interoperable ceiling of 2,097,152 linked commitments in one deployment's
+  period submission.
+- Opaque commitments stay in restricted direct/audit tables. Public ledger and
+  Merkle records expose only aggregate counts and commitments.
+- The deduplicated snapshot reports a globally unique network total. It does
+  not silently redistribute already accepted deployment QMAU, leaderboard
+  shares, settlement inputs, or payout eligibility.
+- This is not anonymous PSI. A party controlling both the registry VOPRF secret
+  and restricted commitment storage can test guessed low-entropy identifiers
+  offline. Production hardening therefore requires strict separation and audit
+  of those access paths; threshold or separately governed/HSM-backed OPRF is a
+  future strengthening option, not a property claimed by this version.
 
 Exit criteria:
 
-- The registry can prove the deduplicated total without reconstructing local
-  profiles or exporting raw identifiers.
-- Test vectors cover the same person on multiple deployments, key rotation,
-  deletion, and malicious replay.
+- The registry can reproduce and verify every aggregate from its immutable
+  link/presence history without reconstructing local profiles or receiving raw
+  identifiers.
+- Shared fixtures cover the same person on multiple deployments, consent,
+  unlink/purge, corrections, chunk interruption and retry, key rotation,
+  malicious replay, and persisted-state verification.
+- Privacy, security, retention, and legal review accepts the configured
+  registry key-custody boundary before production collection is enabled.
 
 ## Phase 6 — fraud, claims, and exit audit
 
@@ -237,10 +250,14 @@ signed eligibility chain. The exit-review rail freezes an exact completed-day
 checkpoint, Merkle root, group membership, claim/eligibility boundaries, and
 settlement revisions; subsequent buyer/auditor verify, reject, dispute, and
 withdraw decisions are immutable and evidence bodies remain in the governed
-external review system behind SHA-256 commitments. Ownership transfer and
-final contractual/legal allocation remain open. Contract-dependent payout and
-final legal valuation rules are deliberately not inferred from the technical,
-non-binding records.
+external review system behind SHA-256 commitments. The two-phase
+ownership-transfer rail and final exit-allocation rail are implemented: the
+allocation pins the exact verified-eligible exit, a completed transfer or
+explicit no-transfer beneficiary, frozen settlement revisions,
+contract/evidence commitments, and exactly conserved JavaScript-safe minor
+units per currency. It records contractual allocation evidence only; payment
+execution, banking, invoicing, tax treatment, and buyer-side legal enforcement
+remain outside the registry.
 
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and
   eligibility change in the append-only ledger.

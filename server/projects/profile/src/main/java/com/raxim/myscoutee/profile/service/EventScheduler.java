@@ -177,13 +177,13 @@ public class EventScheduler {
             runScheduledRandomGroups();
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, now)) {
-            int expiredCount = eventCounterExpiryService.runExpiryPassNow();
+            int expiredCount = eventCounterExpiryService.runScheduledExpiryPass(now);
             if (expiredCount > 0) {
                 LOGGER.info("Expired {} event counter source(s).", expiredCount);
             }
         }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
-            int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBaskets(now);
+            int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBasketsScheduled(now);
             if (purgedCount > 0) {
                 LOGGER.info("Purged {} checkout basket item(s).", purgedCount);
             }

@@ -142,9 +142,6 @@ public class NotificationOutboxWorkerService {
     }
 
     private void processDueNotificationsForCurrentDatabase() {
-        if (!configProperties.isFirebaseEnabled()) {
-            return;
-        }
         Instant startedAt = Instant.now();
         NotificationRuleRegistryService registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
@@ -165,11 +162,14 @@ public class NotificationOutboxWorkerService {
         try {
             int processedCount = processDueNotificationsNow();
             if (ruleConfigured) {
+                String detail = configProperties.isFirebaseEnabled()
+                        ? "Processed pending notification outbox work."
+                        : "Firebase delivery is inactive; pending notification outbox work was retained.";
                 registry.recordRun(
                         NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
                         processedCount,
                         "completed",
-                        "Processed pending notification outbox work.",
+                        detail,
                         "notification-outbox",
                         startedAt);
             }

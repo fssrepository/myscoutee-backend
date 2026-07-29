@@ -28,7 +28,7 @@
         pendingCount: 1,
         pendingCountUnit: "admin.jobs.rule.notification.outbox",
         expected: variation === "due"
-          ? "With stock demo/e2e Firebase disabled, the item stays pending. If Firebase is deliberately enabled, it becomes sent with zero token successes for this no-device user."
+          ? "With stock demo/e2e Firebase disabled, the job records completed count 0 while retaining the item unchanged and pending. If Firebase is deliberately enabled, it becomes sent with zero token successes for this no-device user."
           : "The item stays pending because nextRetryAt is in the future.",
         context: { outboxId, userId, isolatedOutboxIds },
         specs: [

@@ -76,22 +76,39 @@ public class EventCounterExpiryService {
     }
 
     public int runExpiryPassNow() {
-        return runExpiryPass().dueSources();
+        return runExpiryPass(Instant.now(), false).dueSources();
     }
 
-    private ExpiryRunResult runExpiryPass() {
+    public int runScheduledExpiryPass(Instant scheduledAt) {
+        return runExpiryPass(scheduledAt, true).dueSources();
+    }
+
+    private ExpiryRunResult runExpiryPass(Instant requestedStart, boolean scheduled) {
         if (!processing.compareAndSet(false, true)) {
             return new ExpiryRunResult(0, 0, 0, 0L, 0L);
         }
-        Instant startedAt = Instant.now();
-        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+        Instant startedAt = requestedStart == null ? Instant.now() : requestedStart;
+        int claimedPendingCount = 0;
+        boolean runStarted = !scheduled;
         try {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
-                    "Scanning expired event counters.",
-                    SYSTEM_USER,
-                    startedAt);
+            if (scheduled) {
+                if (notificationRuleRegistryService.beginScheduledRun(
+                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        "Scanning expired event counters.",
+                        SYSTEM_USER,
+                        startedAt) == null) {
+                    return new ExpiryRunResult(0, 0, 0, 0L, 0L);
+                }
+            } else {
+                notificationRuleRegistryService.beginRun(
+                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        "Scanning expired event counters.",
+                        SYSTEM_USER,
+                        startedAt);
+            }
+            runStarted = true;
+            claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
             ExpiryRunResult result = processDueEvents(Instant.now());
             String detail = result.dueSources() == 0 && result.markedTicketRecords() == 0
                     ? "No expired event counters or ticket records were due."
@@ -117,18 +134,22 @@ public class EventCounterExpiryService {
             }
             return result;
         } catch (RuntimeException exception) {
-            notificationRuleRegistryService.restoreClaimedPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
-                    claimedPendingCount,
-                    "admin.jobs.table.affected");
+            if (runStarted) {
+                notificationRuleRegistryService.restoreClaimedPendingCount(
+                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        claimedPendingCount,
+                        "admin.jobs.table.affected");
+            }
             LOGGER.warn("Event counter expiry pass failed.", exception);
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
-                    0,
-                    "failed",
-                    safeText(exception.getMessage()),
-                    SYSTEM_USER,
-                    startedAt);
+            if (runStarted) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        SYSTEM_USER,
+                        startedAt);
+            }
             return new ExpiryRunResult(0, 0, 0, 0L, 0L);
         } finally {
             processing.set(false);

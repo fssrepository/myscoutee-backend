@@ -39,9 +39,9 @@ deployment decisions that take precedence over older installer-first sketches.
 - The Go append-only hash-linked ledger is the audit source of truth. Query
   tables are written in the same transaction for efficient cursor-paginated
   reads; leaderboard requests do not rebuild a projection.
-- Deployment receipts, claims, virtual operator groups, and eventual global
-  identity linking are separate records. Grouping deployments never merges
-  their node identities, users, receipts, or histories.
+- Deployment receipts, claims, virtual operator groups, and consented global
+  identity links are separate records. Grouping deployments never merges their
+  node identities, local users, receipts, or histories.
 - A pending claim remains visible as a yellow leaderboard row with an
   under-review marker and its measured percentage badge. The percentage is
   indicative and is excluded from approved-share allocation until approval.
@@ -58,7 +58,11 @@ deployment decisions that take precedence over older installer-first sketches.
 - Keep authentication-provider logic behind an interface. Never treat a
   Firebase UID alone as globally meaningful; scoped identity is
   `provider + issuer + subject`.
-- Global-human deduplication and Firebase migration remain later milestones.
+- Global-human linking uses the versioned blinded VOPRF protocol and explicit
+  member consent. Raw identifiers stay deployment-local; opaque commitments
+  and aggregate presence are separate from local authentication, QMAU
+  evidence, public ledger rows, and leaderboard shares. Firebase-account
+  migration remains a separate later milestone.
 - Preserve the existing shared/core frontend and Java
   controller/service/mapper/repository patterns. Do not add component-local
   route-delay implementations or repair seed data in application classes.

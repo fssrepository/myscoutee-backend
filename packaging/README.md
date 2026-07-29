@@ -246,6 +246,22 @@ bash packaging/tests/update-worker-test.sh
 bash packaging/tests/package-content-test.sh
 ```
 
+Before a release drill, bind the evidence to the exact candidate package,
+oldest-supported package, and production registry image:
+
+```bash
+MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
+  bash packaging/scripts/qualify-release-artifacts.sh \
+    /absolute/myscoutee_1.2.0_amd64.deb \
+    /absolute/myscoutee_1.0.0_amd64.deb \
+    myscoutee-registry:1.2.0-prod
+```
+
+This is a read-only artifact preflight, not an upgrade or restore. The complete
+oldest-supported upgrade, interruption, clean-host restore, multi-registry,
+load, and security procedures are documented in
+`plans/PRODUCTION_QUALIFICATION.md`.
+
 The package separates locally generated deployment secrets from external
 provider credentials:
 

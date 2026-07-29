@@ -366,20 +366,40 @@ public class EventCheckoutBasketService {
     }
 
     public int purgeExpiredDraftBasketsNow() {
-        return purgeExpiredDraftBaskets(Instant.now());
+        return purgeExpiredDraftBaskets(Instant.now(), false);
     }
 
     public int purgeExpiredDraftBaskets(Instant now) {
+        return purgeExpiredDraftBaskets(now, false);
+    }
+
+    public int purgeExpiredDraftBasketsScheduled(Instant now) {
+        return purgeExpiredDraftBaskets(now, true);
+    }
+
+    private int purgeExpiredDraftBaskets(Instant now, boolean scheduled) {
         if (!processing.compareAndSet(false, true)) {
             return 0;
         }
-        Instant startedAt = Instant.now();
+        Instant startedAt = now == null ? Instant.now() : now;
+        boolean runStarted = !scheduled;
         try {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
-                    "Scanning expired checkout basket drafts.",
-                    SYSTEM_USER,
-                    startedAt);
+            if (scheduled) {
+                if (notificationRuleRegistryService.beginScheduledRun(
+                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        "Scanning expired checkout basket drafts.",
+                        SYSTEM_USER,
+                        startedAt) == null) {
+                    return 0;
+                }
+            } else {
+                notificationRuleRegistryService.beginRun(
+                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        "Scanning expired checkout basket drafts.",
+                        SYSTEM_USER,
+                        startedAt);
+            }
+            runStarted = true;
             String nowIso = (now == null ? Instant.now() : now).toString();
             Query query = new Query(new Criteria().andOperator(
                     Criteria.where("status").in(PURGEABLE_STATUSES),
@@ -414,13 +434,15 @@ public class EventCheckoutBasketService {
             return modified;
         } catch (RuntimeException exception) {
             LOGGER.warn("Checkout basket purge pass failed.", exception);
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
-                    0,
-                    "failed",
-                    safeText(exception.getMessage()),
-                    SYSTEM_USER,
-                    startedAt);
+            if (runStarted) {
+                notificationRuleRegistryService.recordRun(
+                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        SYSTEM_USER,
+                        startedAt);
+            }
             return 0;
         } finally {
             processing.set(false);

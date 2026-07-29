@@ -1,4 +1,4 @@
-# Admin job manual fixture toolkit
+# Admin Job fixture toolkit
 
 This folder creates small, repeatable demo/e2e data states for manually checking every Admin Job and the rating/feedback bell flow. It is deliberately separate from the application seeds and production behavior.
 
@@ -236,7 +236,7 @@ Variations:
 - `due`: pending direct notification, due now, addressed to an isolated user with no device token.
 - `future`: pending direct notification whose `nextRetryAt` is in the future.
 
-The stock demo/e2e deployment marker has Firebase inactive. In that normal state the worker deliberately does nothing and the due item remains `pending`. This is the expected safe result, not a delivery failure. If messaging has been explicitly configured and enabled on a disposable environment, the due/no-token row should become `sent` with zero successful tokens. The future row must remain pending in either case.
+The stock demo/e2e deployment marker has Firebase inactive. In that normal state the scheduled rule records a `completed` zero-count safe no-op with the detail `Firebase delivery is inactive; pending notification outbox work was retained.` The worker does not lease or send the due item, so it remains `pending` with its retry fields unchanged. This is the expected safe result, not a delivery failure. If messaging has been explicitly configured and enabled on a disposable environment, the due/no-token row should become `sent` with zero successful tokens. The future row must remain pending in either case.
 
 Directly inserting an outbox fixture does not create a bell item. Bell materialization occurs when application code calls the outbox enqueue service, which is tested by the graph and interaction scenarios.
 
@@ -386,7 +386,7 @@ The scripts prepare valid data; they do not hide scheduler wiring problems.
 - A non-manual rule remaining `idle` with old data after `trigger` means the running backend did not poll it, its worker feature is disabled, or that worker is not wired to the registry rule.
 - A rule changing run state while fixture data remains unchanged points to an eligibility/worker defect.
 - A rating/feedback `FAIL/GAP` means persistence worked but the action did not enqueue/materialize the other party's in-app notification.
-- Notification outbox staying pending while Firebase is inactive is expected.
+- Notification outbox staying pending while Firebase is inactive is expected; the enabled job must still record a completed zero-count safe no-op.
 
 Older code paths may expose only the random job through manual Admin Run and may run auto-inviter/tournament from independent in-memory cadence switches. The expected end state is that all stored job rules are enabled by default on production, dev, demo, and e2e, and scheduled workers honor their stored timing. These fixtures make that integration observable without changing production defaults.
 
