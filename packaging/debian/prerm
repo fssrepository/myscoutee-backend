@@ -16,7 +16,9 @@ cleanup_generated_opt_files() {
 if [[ "${1:-}" = "remove" || "${1:-}" = "deconfigure" ]]; then
   if command -v systemctl >/dev/null 2>&1; then
     systemctl stop myscoutee-update.path myscoutee-update.service >/dev/null 2>&1 || true
+    systemctl stop myscoutee-tls.path myscoutee-tls.service myscoutee-tls-renew.timer myscoutee-tls-renew.service >/dev/null 2>&1 || true
     systemctl disable myscoutee-update.path >/dev/null 2>&1 || true
+    systemctl disable myscoutee-tls.path myscoutee-tls-renew.timer >/dev/null 2>&1 || true
     systemctl stop myscoutee.service >/dev/null 2>&1 || true
     systemctl disable myscoutee.service >/dev/null 2>&1 || true
   fi

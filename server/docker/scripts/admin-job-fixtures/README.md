@@ -10,11 +10,19 @@ The toolkit:
 - calls the already-running loopback backend only for the isolated `notification-read-path`
   and prepared `bell-rating-feedback` API projections;
 - uses the already-running `mongodb` container when available, otherwise an already-installed local `mongosh`;
-- snapshots the exact documents selected by a scenario before changing them;
+- snapshots the exact documents selected by a scenario and all nine Admin Job rule
+  documents before changing them;
 - allows only one prepared scenario at a time;
-- restores only that scenario's snapshotted selectors on reset.
+- restores that scenario's snapshotted selectors, then restores all Admin Job rule
+  documents last so indirect graph, affinity, and outbox counter changes do not leak
+  into the next variation.
 
 It must not be used as a production migration or a production test tool. All application jobs should still be enabled by their normal defaults in every deployment; this fixture tool rejects trusted/production databases so manual experiments cannot modify them.
+
+Reset intentionally returns all nine Admin Job registry documents, including run
+history and stored pending counters, to their pre-`prepare` state. Do not use the
+toolkit while preserving unrelated Admin Job runs in the same disposable demo/e2e
+database matters.
 
 The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; the production Compose stack does not mount the development scripts directory; it is not installed by the Debian package and is never exposed as an application endpoint. `packaging/tests/package-content-test.sh` fails if any path from this directory enters a production package or if production Compose exposes the development scripts directory.
 

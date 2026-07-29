@@ -5,6 +5,17 @@
   const PREFIX = "admin-job-fixture:v1";
   const SNAPSHOT_COLLECTION = "adminJobFixtureSnapshots";
   const FIXTURE_ACTOR = `${PREFIX}:actor`;
+  const ADMIN_JOB_RULE_KEYS = [
+    "event-random-groups",
+    "event-auto-inviter",
+    "event-tournament-review",
+    "event-counter-expiry",
+    "event-checkout-basket-purge",
+    "notification-outbox",
+    "affinity-recompute",
+    "scheduled-messages",
+    "account-purge"
+  ];
   const command = String(process.env.FIXTURE_COMMAND || "").trim();
   const requestedJob = String(process.env.FIXTURE_JOB || "").trim();
   const requestedVariation = String(process.env.FIXTURE_VARIATION || "").trim();
@@ -208,6 +219,21 @@
       selector: spec.selector,
       documents: collection(spec.collection).find(spec.selector).toArray()
     }));
+    const ruleSnapshot = snapshots.find(
+      item => item.collection === "notificationRuleConfigs"
+    );
+    const snapshottedRuleKeys = new Set(
+      (ruleSnapshot && ruleSnapshot.documents || [])
+        .map(document => safeText(document.ruleKey))
+        .filter(Boolean)
+    );
+    if (snapshottedRuleKeys.size !== ADMIN_JOB_RULE_KEYS.length
+        || ADMIN_JOB_RULE_KEYS.some(ruleKey => !snapshottedRuleKeys.has(ruleKey))) {
+      fail(
+        `expected all ${ADMIN_JOB_RULE_KEYS.length} Admin Job rules before preparing `
+          + `'${job}'.`
+      );
+    }
     const preparedAtIso = nowIso();
     const snapshot = {
       _id: id,
@@ -238,17 +264,40 @@
       print(`[admin-job-fixtures] ${job}: nothing to reset.`);
       return;
     }
-    for (const item of snapshot.snapshots || []) {
+    const snapshots = snapshot.snapshots || [];
+    const dataSnapshots = snapshots.filter(
+      item => item.collection !== "notificationRuleConfigs"
+    );
+    const ruleSnapshots = snapshots.filter(
+      item => item.collection === "notificationRuleConfigs"
+    );
+    for (const item of dataSnapshots) {
       collection(item.collection).deleteMany(item.selector);
     }
-    for (const item of snapshot.snapshots || []) {
+    for (const item of dataSnapshots) {
       const documents = item.documents || [];
       if (documents.length > 0) {
         collection(item.collection).insertMany(documents, { ordered: true });
       }
     }
+    for (const item of ruleSnapshots) {
+      for (const document of item.documents || []) {
+        const ruleKey = safeText(document.ruleKey);
+        if (!ruleKey) {
+          fail("snapshotted notification rule is missing ruleKey.");
+        }
+        collection(item.collection).replaceOne(
+          { ruleKey },
+          document,
+          { upsert: true }
+        );
+      }
+    }
     collection(SNAPSHOT_COLLECTION).deleteOne({ _id: snapshot._id });
-    print(`[admin-job-fixtures] ${job}: exact snapshotted documents restored; fixture namespace removed.`);
+    print(
+      `[admin-job-fixtures] ${job}: exact snapshotted documents and all Admin Job `
+        + `rule counters restored; fixture namespace removed.`
+    );
   }
 
   function summarizeRule(ruleKey) {
@@ -271,22 +320,23 @@
     };
   }
 
-  function standardSpecs(ruleKey, specs) {
+  function standardSpecs(specs) {
     const result = [...(specs || [])];
-    if (ruleKey) {
-      const existingRuleSpec = result.find(
-        spec => spec && spec.collection === "notificationRuleConfigs"
-      );
-      if (existingRuleSpec) {
-        existingRuleSpec.selector = {
-          $or: [existingRuleSpec.selector, { ruleKey }]
-        };
-      } else {
-        result.push({
-          collection: "notificationRuleConfigs",
-          selector: { ruleKey }
-        });
-      }
+    const existingRuleSpec = result.find(
+      spec => spec && spec.collection === "notificationRuleConfigs"
+    );
+    const allRuleSelector = {
+      ruleKey: { $in: ADMIN_JOB_RULE_KEYS }
+    };
+    if (existingRuleSpec) {
+      existingRuleSpec.selector = {
+        $or: [existingRuleSpec.selector, allRuleSelector]
+      };
+    } else {
+      result.push({
+        collection: "notificationRuleConfigs",
+        selector: allRuleSelector
+      });
     }
     return result;
   }
@@ -316,7 +366,7 @@
         requestedVariation,
         setup.expected || "",
         setup.context || {},
-        standardSpecs(definition.ruleKey, setup.specs)
+        standardSpecs(setup.specs)
       );
       try {
         definition.prepare(requestedVariation, setup.context || {}, snapshot);

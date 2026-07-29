@@ -195,6 +195,18 @@ grep -Fxq './lib/systemd/system/myscoutee-update.service' "${CONTENTS}" \
   || fail "update service is missing"
 grep -Fxq './lib/systemd/system/myscoutee-update.path' "${CONTENTS}" \
   || fail "update path unit is missing"
+for tls_unit in \
+  myscoutee-tls.path \
+  myscoutee-tls.service \
+  myscoutee-tls-renew.service \
+  myscoutee-tls-renew.timer; do
+  grep -Fxq "./lib/systemd/system/${tls_unit}" "${CONTENTS}" \
+    || fail "TLS unit ${tls_unit} is missing"
+done
+grep -Fxq \
+  './opt/myscoutee/packaging/scripts/myscoutee-tls-worker.sh' \
+  "${CONTENTS}" \
+  || fail "privileged TLS worker is missing"
 grep -Fxq './opt/myscoutee/packaging/IMAGE-MANIFEST.json' "${CONTENTS}" \
   || fail "package image manifest is missing"
 
@@ -331,6 +343,8 @@ grep -Fxq 'OPERATOR_BOOTSTRAP_EMAIL=' \
   || fail "safe-copy helper is not executable"
 [[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/ensure-operator-bootstrap.sh" ]] \
   || fail "Operator bootstrap helper is not executable"
+[[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/myscoutee-tls-worker.sh" ]] \
+  || fail "privileged TLS worker is not executable"
 UPDATE_PATH_UNIT="${EXTRACTED}/lib/systemd/system/myscoutee-update.path"
 grep -Fxq \
   'DirectoryNotEmpty=/var/lib/myscoutee/update/inbox/requests' \
@@ -339,6 +353,14 @@ grep -Fxq \
 if grep -Eq '^[[:space:]]*PathExistsGlob=' "${UPDATE_PATH_UNIT}"; then
   fail "packaged update path unit still filters inbox entries by glob"
 fi
+TLS_PATH_UNIT="${EXTRACTED}/lib/systemd/system/myscoutee-tls.path"
+grep -Fxq \
+  'DirectoryNotEmpty=/var/lib/myscoutee/tls/inbox/requests' \
+  "${TLS_PATH_UNIT}" \
+  || fail "packaged TLS path unit does not watch the fixed inbox"
+grep -Fxq 'Persistent=true' \
+  "${EXTRACTED}/lib/systemd/system/myscoutee-tls-renew.timer" \
+  || fail "packaged TLS renewal timer is not persistent"
 
 KEY_HELPER="${EXTRACTED}/opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh"
 KEY_DIR="${TEST_ROOT}/configuration"

@@ -28,6 +28,15 @@ install -d -m 0700 /var/cache/myscoutee-update
 install -d -m 0700 /var/cache/myscoutee-update/jobs
 install -d -m 0755 /var/log/myscoutee
 install -d -m 0700 /var/log/myscoutee/update
+install -d -m 0700 /var/lib/myscoutee/tls
+install -d -m 0700 /var/lib/myscoutee/tls/inbox
+install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/inbox/requests
+install -d -m 0700 /var/lib/myscoutee/tls/archive
+install -d -m 0700 /var/lib/myscoutee/tls/archive/processing
+install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime
+install -d -m 2750 -o root -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime/jobs
+install -d -m 0755 /var/lib/myscoutee/data/certbot/conf
+install -d -m 0755 /var/lib/myscoutee/data/certbot/www
 install -d -m 0755 /var/backups/myscoutee
 install -m 0644 \
   /opt/myscoutee/packaging/update/README \
@@ -415,6 +424,8 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload || true
   systemctl enable myscoutee.service >/dev/null 2>&1 || true
   systemctl enable --now myscoutee-update.path >/dev/null 2>&1 || true
+  systemctl enable --now myscoutee-tls.path >/dev/null 2>&1 || true
+  systemctl enable --now myscoutee-tls-renew.timer >/dev/null 2>&1 || true
 fi
 
 cat <<'MESSAGE'

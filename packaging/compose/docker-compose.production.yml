@@ -175,6 +175,8 @@ services:
       OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
       OPERATOR_UPDATE_MAX_ARTIFACT_BYTES: "${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
       OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES: "${MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES:-536870912}"
+      OPERATOR_TLS_ENABLED: "${OPERATOR_TLS_ENABLED:-true}"
+      OPERATOR_TLS_STATE_DIR: "/var/lib/myscoutee/tls"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     secrets:
@@ -189,6 +191,8 @@ services:
       - /var/lib/myscoutee/update/inbox/requests:/var/lib/myscoutee/update/requests:rw
       - /var/lib/myscoutee/update/runtime/jobs:/var/lib/myscoutee/update/jobs:ro
       - /etc/myscoutee/update:/etc/myscoutee/update:ro
+      - /var/lib/myscoutee/tls/inbox/requests:/var/lib/myscoutee/tls/inbox/requests:rw
+      - /var/lib/myscoutee/tls/runtime:/var/lib/myscoutee/tls/runtime:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee

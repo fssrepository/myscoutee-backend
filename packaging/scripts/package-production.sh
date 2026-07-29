@@ -197,6 +197,10 @@ cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.path"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.path"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.timer" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.timer"
 install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}/opt/myscoutee/packaging/update/README"
 printf '%s\n' "${VERSION}" > "${STAGING_DIR}/opt/myscoutee/packaging/VERSION"
 

@@ -100,7 +100,14 @@ sudo sed -i \
 sudo systemctl start myscoutee
 ```
 
-Renewal is deliberately explicit at present:
+Renewal can be managed from the authenticated Operator Configuration screen.
+Enable **Manage HTTPS**, choose **Automatic certificate**, enter the public
+domain and certificate contact e-mail, and use the domain and certificate test
+buttons before saving. The **Automatic renewal** toggle controls whether the
+packaged daily renewal check acts on that certificate; changing a toggle is
+only a draft until the block's Save button is used.
+
+The equivalent manual renewal command remains available for recovery:
 
 ```bash
 sudo systemctl stop myscoutee
@@ -111,8 +118,9 @@ sudo docker run --rm --name myscoutee-certbot-renew \
 sudo systemctl start myscoutee
 ```
 
-`LETSENCRYPT_ENABLED=true` activates an already provisioned certificate; it
-does not silently obtain one or fall back to the self-signed key.
+Directly setting `LETSENCRYPT_ENABLED=true` still only activates an already
+provisioned certificate. The Operator workflow obtains a certificate through
+its separate, fixed-format privileged TLS worker.
 
 For an operator-managed CA certificate instead, install the full chain and
 unencrypted private key at the configured host-mounted paths, restrict the
