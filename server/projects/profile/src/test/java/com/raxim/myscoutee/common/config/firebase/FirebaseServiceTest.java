@@ -35,6 +35,7 @@ class FirebaseServiceTest {
         String expectedUserId = stableUserId(email);
         when(credential.getEmail()).thenReturn("New.Person@Example.com");
         when(credential.getName()).thenReturn("");
+        when(credential.isEmailVerified()).thenReturn(true);
         when(appSettingsService.isAdminEmail(email)).thenReturn(false);
         when(usersRepository.findFirstByEmail(email)).thenReturn(Optional.empty());
         when(usersRepository.findByUserId(expectedUserId)).thenReturn(Optional.empty());
@@ -49,6 +50,7 @@ class FirebaseServiceTest {
         FirebasePrincipal principal = (FirebasePrincipal) userDetails;
         assertThat(principal.getUserId()).isEqualTo(expectedUserId);
         assertThat(principal.getEmail()).isEqualTo(email);
+        assertThat(principal.isEmailVerified()).isTrue();
         assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("U");
 
         verify(usersRepository).save(any(Users.class));
@@ -62,6 +64,16 @@ class FirebaseServiceTest {
         assertThat(created.getImages()).isEmpty();
         assertThat(created.getInitials()).isEqualTo("NP");
         assertThat(created.getDeletedAtIso()).isNotBlank();
+    }
+
+    @Test
+    void legacyAndNonFirebasePrincipalsDefaultToUnverifiedEmail() {
+        FirebasePrincipal legacy = new FirebasePrincipal(
+                "legacy-user",
+                "legacy@example.test",
+                "U");
+
+        assertThat(legacy.isEmailVerified()).isFalse();
     }
 
     @Test

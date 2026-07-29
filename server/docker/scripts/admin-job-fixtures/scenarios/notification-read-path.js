@@ -1,4 +1,4 @@
-/* global AdminJobFixture */
+/* global AdminJobFixture, EJSON */
 (() => {
   "use strict";
   const F = AdminJobFixture;
@@ -301,7 +301,7 @@
         })
         .sort({ createdDate: 1, _id: 1 })
         .toArray();
-      const outboxIds = outboxes.map(item => item._id);
+      const outboxIds = outboxes.map(item => F.safeText(item._id)).filter(Boolean);
       const notifications = outboxIds.length === 0
         ? []
         : F.collection("userNotifications")
@@ -341,7 +341,7 @@
       const exactOutboxBellLink = Boolean(
         outbox
           && notification
-          && notification.outboxId === outbox._id
+          && notification.outboxId === F.safeText(outbox._id)
           && notification.syncKey === `${outbox.syncKey}:${context.recipientUserId}`
       );
       const notificationContextValid = Boolean(
@@ -378,7 +378,8 @@
         && notifications.length === 1
         && uniqueNotificationSyncKeys.size === notifications.length;
       const messageValid = messages.length === 1
-        && messages[0].senderId === context.senderUserId
+        && messages[0].senderAvatar
+        && messages[0].senderAvatar.id === context.senderUserId
         && messages[0].text === context.messageText;
       const deployment = F.collection("deploymentConfigurations").findOne({
         _id: "deployment-configuration"

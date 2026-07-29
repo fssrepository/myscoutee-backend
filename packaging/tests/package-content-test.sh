@@ -42,6 +42,7 @@ SERVER_DOCKERIGNORE="${REPO_ROOT}/server/.dockerignore"
 NGINX_DOCKERIGNORE="${REPO_ROOT}/server/docker/.dockerignore"
 for pattern in \
   '.env' '.env.*' 'projects/profile/secrets/' \
+  'docker/scripts/admin-job-fixtures/' \
   'docker/conf/nginx/keys/' 'data/' \
   '**/*.pem' '**/*.key' '**/*.p8' \
   '**/*service-account*.json' '**/*client-secret*.json' \
@@ -50,6 +51,7 @@ for pattern in \
 done
 for pattern in \
   'conf/nginx/keys/' \
+  'scripts/admin-job-fixtures/' \
   '**/*.pem' '**/*.key' '**/*.p8' \
   '**/*service-account*.json' '**/*client-secret*.json' \
   '**/*provider-credentials*.json'; do
@@ -71,6 +73,9 @@ dpkg-deb --fsys-tarfile "${DEB_PATH}" | tar -tf - > "${CONTENTS}"
 if grep -Fxq './opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json' \
   "${CONTENTS}"; then
   fail "real Firebase service-account JSON was embedded in the package"
+fi
+if grep -Fq '/admin-job-fixtures/' "${CONTENTS}"; then
+  fail "development admin-job fixtures were embedded in the production package"
 fi
 if grep -Eiq \
   '/(\.env\.secrets|application-secrets\.ya?ml|[^/]*(client-secret|provider-credentials)[^/]*\.json|[^/]*\.(p12|pfx|jks|keystore))$' \

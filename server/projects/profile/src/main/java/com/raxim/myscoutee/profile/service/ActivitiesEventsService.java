@@ -2151,6 +2151,7 @@ public class ActivitiesEventsService {
                     STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
                     STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? viewer.userId() : null);
             saveSubEventStageRuntime(sourceId, preferred, savedStage, viewer.userId());
+            affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
             return toStageActionResult(
                     sourceId,
                     savedStage,

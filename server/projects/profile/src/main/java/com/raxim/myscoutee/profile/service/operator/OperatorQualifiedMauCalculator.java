@@ -8,7 +8,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +45,11 @@ class OperatorQualifiedMauCalculator {
     }
 
     QualifiedMauSnapshot calculate(YearMonth completedPeriod) {
+        return calculateDetailed(completedPeriod).snapshot();
+    }
+
+    QualifiedMauDetailedSnapshot calculateDetailed(
+            YearMonth completedPeriod) {
         Objects.requireNonNull(
                 completedPeriod,
                 "Completed QMAU period must not be null.");
@@ -62,6 +69,7 @@ class OperatorQualifiedMauCalculator {
         updateFramed(aggregateDigest, endExclusive.toString());
 
         Map<String, Long> qualifiedActionCounts = new LinkedHashMap<>();
+        List<String> qualifiedUserIds = new ArrayList<>();
         AtomicReference<UserAccumulator> current = new AtomicReference<>();
         long[] qualifiedUsers = {0L};
         long[] qualifiedActions = {0L};
@@ -76,6 +84,7 @@ class OperatorQualifiedMauCalculator {
                             accumulator,
                             aggregateDigest,
                             qualifiedActionCounts,
+                            qualifiedUserIds,
                             qualifiedUsers,
                             qualifiedActions);
                 }
@@ -89,13 +98,14 @@ class OperatorQualifiedMauCalculator {
                     current.get(),
                     aggregateDigest,
                     qualifiedActionCounts,
+                    qualifiedUserIds,
                     qualifiedUsers,
                     qualifiedActions);
         }
         updateFramed(aggregateDigest, Long.toString(qualifiedUsers[0]));
         updateFramed(aggregateDigest, Long.toString(qualifiedActions[0]));
 
-        return new QualifiedMauSnapshot(
+        QualifiedMauSnapshot snapshot = new QualifiedMauSnapshot(
                 completedPeriod.toString(),
                 startInclusive.toString(),
                 endExclusive.toString(),
@@ -104,12 +114,16 @@ class OperatorQualifiedMauCalculator {
                 Map.copyOf(qualifiedActionCounts),
                 "sha256:" + java.util.HexFormat.of().formatHex(
                         aggregateDigest.digest()));
+        return new QualifiedMauDetailedSnapshot(
+                snapshot,
+                List.copyOf(qualifiedUserIds));
     }
 
     private static void finishUser(
             UserAccumulator accumulator,
             MessageDigest aggregateDigest,
             Map<String, Long> actionCounts,
+            List<String> qualifiedUserIds,
             long[] qualifiedUsers,
             long[] qualifiedActions) {
         if (accumulator.actionCount < REQUIRED_ACTIONS
@@ -117,6 +131,7 @@ class OperatorQualifiedMauCalculator {
             return;
         }
         qualifiedUsers[0]++;
+        qualifiedUserIds.add(accumulator.userId);
         qualifiedActions[0] += accumulator.actionCount;
         accumulator.actionCounts.forEach((action, count) ->
                 actionCounts.merge(action, count, Long::sum));
@@ -219,5 +234,13 @@ class OperatorQualifiedMauCalculator {
             long actionCount,
             Map<String, Long> actionCounts,
             String evidenceCommitmentHash) {
+    }
+
+    record QualifiedMauDetailedSnapshot(
+            QualifiedMauSnapshot snapshot,
+            List<String> qualifiedUserIds) {
+        QualifiedMauDetailedSnapshot {
+            qualifiedUserIds = List.copyOf(qualifiedUserIds);
+        }
     }
 }

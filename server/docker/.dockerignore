@@ -3,6 +3,7 @@
 # BuildKit.
 conf/nginx/keys/
 conf/nginx/app/myscoutee/
+scripts/admin-job-fixtures/
 
 *.pem
 *.key

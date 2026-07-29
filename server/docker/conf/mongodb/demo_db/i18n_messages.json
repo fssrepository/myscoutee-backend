@@ -14919,7 +14919,7 @@
     "_id": "i18n-message-en-operator-revenue-settlement-title",
     "key": "operator.revenue.settlement.title",
     "lang": "en",
-    "value": "Indicative network valuation"
+    "value": "Indicative company market value"
   },
   {
     "_id": "i18n-message-en-operator-revenue-settlement-currency-notice",
@@ -32637,7 +32637,7 @@
     "_id": "i18n-message-hu-operator-revenue-settlement-title",
     "key": "operator.revenue.settlement.title",
     "lang": "hu",
-    "value": "Indikatív hálózati értékelés"
+    "value": "Indikatív vállalati piaci érték"
   },
   {
     "_id": "i18n-message-hu-operator-revenue-settlement-currency-notice",

@@ -15,6 +15,8 @@ The toolkit:
 
 It must not be used as a production migration or a production test tool. All application jobs should still be enabled by their normal defaults in every deployment; this fixture tool rejects trusted/production databases so manual experiments cannot modify them.
 
+The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; it is not installed by the Debian package and is never exposed as an application endpoint. `packaging/tests/package-content-test.sh` fails if any path from this directory enters a production package.
+
 ## Admin Job inventory and controls
 
 All nine seeded jobs are enabled by default in production, development, demo, and e2e. The interval below is the seed default; an admin can change it.
@@ -147,6 +149,7 @@ Variations:
 
 - `open-spots`: one accepted admin and capacity for two invitations.
 - `full`: accepted capacity is already full; this is the zero-change control.
+- `weighted`: one accepted creator, one already-pending highest-weight invitee, and four available candidates with deterministic weights. Exactly the next two candidates must be invited.
 
 Preparation temporarily disables `autoInviter` on every other currently enabled demo event and quarantines existing pending waitlist rows. This prevents the two global passes from inviting a very large candidate set.
 
@@ -154,8 +157,9 @@ Expected:
 
 - `open-spots`: two connected users become pending event members with `requestKind:"invite"`; a priority plan marker and invite outbox/bell records appear.
 - `full`: no new membership, marker, outbox, or bell record.
+- `weighted`: the existing pending user with weight `0.99` remains reserved and is not invited again; the candidates weighted `0.95` and `0.80` are the exact new invitees; the `0.40` and `0.10` candidates remain outside. Marker, outbox recipients, and bell recipients must contain exactly the same two IDs.
 
-Repeated priority runs can otherwise invite more users because pending invitations are locked but do not reduce the worker's accepted-member open-spot calculation. Keep this fixture isolated and reset it.
+Pending invitations reduce open capacity. After the first successful `weighted` pass, run `status` once to capture its fixture fingerprint, then `trigger event-auto-inviter`, wait for the existing scheduler, and run `status` again. `validation.repeatedPassChangedZeroRecords` and `validation.membershipMarkerAndNotificationSetUnchanged` must be true.
 
 ### `event-tournament-review`
 
@@ -163,6 +167,7 @@ Variations:
 
 - `ended`: an active tournament stage ended in the past.
 - `future`: an active first stage starts in the future.
+- `advancement`: six synthetic accepted users in two finalized Score groups, with one exact winner per group and a two-person final preloaded with a loser.
 
 Preparation quarantines other published tournament-capable demo events. The fixture uses the exact backend field names:
 
@@ -182,6 +187,9 @@ Expected:
 - `ended`: `stageStatus:"SR"` and `stageStatusReason:"stage-ended"`.
 - `future`: `stageStatus:"RS"` and `stageStatusReason:"awaiting-tournament-start"`.
 - both: a new `stageStatusUpdatedAt` and the event's scheduler update metadata.
+- `advancement`: the scheduled rule calculates the exact winners (`user-2` and `user-5`), synchronizes only those two into the generated final group, and marks the preloaded loser deleted. The synthetic users intentionally have no affinity edges: ranking determines who advances, while affinity is allowed to influence only how valid winners are grouped.
+
+For `advancement`, run `status` after the first scheduler pass. It captures the successful membership/marker fingerprint inside the fixture snapshot. Then run `trigger event-tournament-review`, wait for the existing scheduler, and run `status` again. `validation.repeatedPassChangedZeroGroups` and `validation.membershipAndMarkerUnchanged` must both be true. This proves scheduled repair and idempotence without calling a private endpoint or moving graph work into the stage-finalize request.
 
 ### `event-counter-expiry`
 
@@ -258,6 +266,8 @@ bash admin-job-fixtures.sh reset notification-read-path
 
 The bell is intentionally materialized during enqueue, before Firebase push delivery. With stock Firebase disabled, the outbox staying `pending` is expected. If Firebase is enabled in a disposable local stack, the no-token item may become `sent` with zero token successes without changing the bell assertion.
 
+The generic chat bell payload currently carries the chat/message/sender IDs. Event, sub-event, and group IDs belong to the chat read model, so `status` verifies them through `GET /activities/chats` rather than inventing fields in production notification code.
+
 If the local HTTP request fails after the snapshot was created, run `reset notification-read-path`; the snapshot is deliberately retained for recovery.
 
 ### `affinity-recompute`
@@ -327,13 +337,15 @@ This is an application interaction check, not a scheduled job:
 4. Switch to the printed target and open the bell.
 5. Run `status bell-rating-feedback`.
 
-`status` reports both persisted action data and bell/outbox deltas:
+Before the action, the fixture temporarily removes only the selected rating/event's matching historical bell/outbox documents behind the exact reset snapshot. It refuses to continue if one of those outbox items is still tracked by the running worker. This makes the oracle independent of unrelated target notifications.
 
-- `PASS`: the action was saved and another party received a new in-app bell item.
-- `FAIL/GAP`: the action was saved but no new bell item exists.
+`status` reports the persisted action and validates the exact notification contract:
+
+- `PASS`: one logical outbox has exactly the submitted recipients; every target has exactly one unread bell with the expected kind, source, sender, action path, and payload; the actor has none; the stored unread projection matches the notification collection.
+- `FAIL/GAP`: persistence worked but at least one exact outbox, bell fanout, duplicate, actor-exclusion, or unread-projection assertion failed.
 - `WAITING`: the manual action has not been submitted.
 
-The status check treats either a new document or an existing post-prepare document update as evidence, so enqueue collapse/merge is covered. The baseline target notifications and outbox documents are snapshotted exactly for reset.
+All selected user, notification, outbox, affinity, rating/feedback, and affected Admin Job rule documents are snapshotted exactly for reset.
 
 ## Current integration checks and useful failures
 

@@ -181,7 +181,16 @@ stage_mongo_configuration() {
 }
 
 stage_mongo_configuration
-cp -a "${SERVER_DIR}/docker/scripts/." "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
+while IFS= read -r runtime_script_path; do
+  cp -a "${runtime_script_path}" "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
+done < <(
+  find "${SERVER_DIR}/docker/scripts" \
+    -mindepth 1 \
+    -maxdepth 1 \
+    ! -name "admin-job-fixtures" \
+    -print \
+    | sort
+)
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"

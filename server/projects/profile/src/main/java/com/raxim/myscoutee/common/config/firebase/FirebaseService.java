@@ -135,7 +135,8 @@ public class FirebaseService {
                 resolvedUserId,
                 normalizedEmail,
                 resolveAuthorities(normalizedEmail, user),
-                user);
+                user,
+                credential.isEmailVerified());
     }
 
     private Users findUser(String userId) {

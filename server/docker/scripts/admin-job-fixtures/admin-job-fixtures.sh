@@ -33,9 +33,11 @@ event-random-groups
 event-auto-inviter
   open-spots      published event with capacity for 2 graph-selected invitations
   full            published event with no open capacity (zero-change control)
+  weighted        exact weighted ranking, pending exclusion, and repeated-run no-op
 event-tournament-review
   ended           active tournament stage whose end time is already past
   future          active first stage waiting for start review
+  advancement     6 synthetic users, exact Score winners advance into a 2-person final
 event-counter-expiry
   event           one expired active event source
   ticket-only     one due ticket record that is not an active event
@@ -390,9 +392,16 @@ case "${command_name}" in
   status|trigger)
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     is_known_job "$2" || fail "Unknown job '$2'. Run 'list' for valid names."
-    run_scenario "${command_name}" "$2"
     if [ "${command_name}" = "status" ] && [ "$2" = "notification-read-path" ]; then
-      verify_notification_read_api
+      command -v jq >/dev/null 2>&1 \
+        || fail "jq is required to inspect notification-read-path fixture status."
+      scenario_status="$(run_scenario "${command_name}" "$2")"
+      printf '%s\n' "${scenario_status}"
+      if jq -e '.prepared == true' >/dev/null <<<"${scenario_status}"; then
+        verify_notification_read_api
+      fi
+    else
+      run_scenario "${command_name}" "$2"
     fi
     ;;
   reset)

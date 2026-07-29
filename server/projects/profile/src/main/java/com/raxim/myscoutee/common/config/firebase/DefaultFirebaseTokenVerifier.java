@@ -1,7 +1,5 @@
 package com.raxim.myscoutee.common.config.firebase;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
 
 import com.google.firebase.auth.FirebaseToken;
@@ -20,7 +18,9 @@ public class DefaultFirebaseTokenVerifier implements FirebaseTokenVerifier {
 
     @Override
     public FirebaseCredential verify(String firebaseToken) {
-        Objects.requireNonNull(firebaseToken, "FirebaseToken must not be null or blank");
+        if (firebaseToken == null || firebaseToken.isBlank()) {
+            throw invalidToken();
+        }
         try {
             FirebaseToken decodedToken = firebaseRuntime
                     .authentication()
@@ -32,8 +32,12 @@ public class DefaultFirebaseTokenVerifier implements FirebaseTokenVerifier {
              * provider details. Authentication callers only need a stable,
              * non-sensitive rejection and must never receive that diagnostic.
              */
-            throw new FirebaseTokenInvalidException(
-                    "Invalid Firebase authentication token.");
+            throw invalidToken();
         }
+    }
+
+    private FirebaseTokenInvalidException invalidToken() {
+        return new FirebaseTokenInvalidException(
+                "Invalid Firebase authentication token.");
     }
 }

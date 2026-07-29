@@ -232,10 +232,14 @@ registry-local anomaly/case rail supports signed, hash-linked flag/clear events
 and same-transaction query rows without changing eligibility. Registry-manager
 rejection is an immutable signed review decision with a bounded reason code;
 the rejected claim remains visible but share-ineligible and does not imply
-deployment deactivation. Suspension, reinstatement, disputes, ownership
-transfer, evidence policy, exit record-date freezing, buyer/auditor decisions,
-and final legal allocation remain open. Contract-dependent payout and final
-legal valuation rules are deliberately not inferred from the technical,
+deployment deactivation. Claim suspension/reinstatement is an independent
+signed eligibility chain. The exit-review rail freezes an exact completed-day
+checkpoint, Merkle root, group membership, claim/eligibility boundaries, and
+settlement revisions; subsequent buyer/auditor verify, reject, dispute, and
+withdraw decisions are immutable and evidence bodies remain in the governed
+external review system behind SHA-256 commitments. Ownership transfer and
+final contractual/legal allocation remain open. Contract-dependent payout and
+final legal valuation rules are deliberately not inferred from the technical,
 non-binding records.
 
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and

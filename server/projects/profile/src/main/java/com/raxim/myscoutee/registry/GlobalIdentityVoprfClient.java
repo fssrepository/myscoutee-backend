@@ -111,8 +111,9 @@ public final class GlobalIdentityVoprfClient {
             String evaluatedElement,
             String proof) {
         Objects.requireNonNull(session, "VOPRF blind session must not be null.");
-        byte[] input = session.takeInput();
-        byte[] blind = session.takeBlind();
+        BlindSession.Secrets secrets = session.takeSecrets();
+        byte[] input = secrets.input();
+        byte[] blind = secrets.blind();
         try {
             ECPoint blinded = decodeElement(
                     session.blindedElement(),
@@ -444,20 +445,17 @@ public final class GlobalIdentityVoprfClient {
             return blindedElement;
         }
 
-        private synchronized byte[] takeInput() {
+        private synchronized Secrets takeSecrets() {
             if (input == null || blind == null) {
                 throw new IllegalStateException(
                         "VOPRF blind session has already been consumed.");
             }
-            return input.clone();
-        }
-
-        private synchronized byte[] takeBlind() {
-            if (input == null || blind == null) {
-                throw new IllegalStateException(
-                        "VOPRF blind session has already been consumed.");
+            Secrets secrets = new Secrets(input.clone(), blind.clone());
+            try {
+                return secrets;
+            } finally {
+                close();
             }
-            return blind.clone();
         }
 
         @Override
@@ -470,6 +468,9 @@ public final class GlobalIdentityVoprfClient {
                 Arrays.fill(blind, (byte) 0);
                 blind = null;
             }
+        }
+
+        private record Secrets(byte[] input, byte[] blind) {
         }
     }
 }

@@ -582,7 +582,7 @@ public class ActivitiesEventLeaderboardService {
             SubEventGroupItemDto group,
         List<EventLeaderboardEntry> entries) {
         String groupId = normalizeId(group.id());
-        List<GeneratorModels.LeaderboardMember> members = resolveLeaderboardMembers(eventId, subEventId, group, entries).stream()
+        List<GeneratorModels.LeaderboardMember> members = resolveRankingMembers(eventId, subEventId, group).stream()
                 .map(member -> new GeneratorModels.LeaderboardMember(member.memberId(), member.memberName()))
                 .toList();
         List<GeneratorModels.ScoreLeaderboardEntry> scoreEntries = entries.stream()
@@ -610,6 +610,23 @@ public class ActivitiesEventLeaderboardService {
                 members,
                 scoreEntries,
                 fifaMatches);
+    }
+
+    private List<EventLeaderboardMemberDto> resolveRankingMembers(
+            String eventId,
+            String subEventId,
+            SubEventGroupItemDto group) {
+        String groupId = normalizeId(group == null ? null : group.id());
+        Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
+        for (EventLeaderboardMemberDto member : resolveMembers(eventId, subEventId, groupId)) {
+            membersById.put(member.memberId(), member);
+        }
+        int intendedMemberCount = Math.max(2, safeCount(group == null ? null : group.capacityMax()));
+        for (int index = 1; membersById.size() < intendedMemberCount; index += 1) {
+            String memberId = groupId + "-member-" + index;
+            membersById.putIfAbsent(memberId, new EventLeaderboardMemberDto(memberId, "-----"));
+        }
+        return new ArrayList<>(membersById.values());
     }
 
     private List<EventLeaderboardMemberDto> resolveMembers(String eventId, String subEventId, String groupId) {

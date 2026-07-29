@@ -67,6 +67,8 @@ public final class RegistryProtocol {
             "global-dedup-consent-v1";
     public static final String GLOBAL_IDENTITY_LINK_ACTION_UNLINK = "UNLINK";
     public static final String GLOBAL_IDENTITY_LINK_ACTION_CORRECT = "CORRECT";
+    public static final String GLOBAL_IDENTITY_EVENT_ACTION_PRESENCE =
+            "QUALIFIED_PRESENCE";
     public static final long
             SETTLEMENT_DEFAULT_VALUATION_MULTIPLIER_BASIS_POINTS = 30_000L;
     public static final long
@@ -2045,6 +2047,196 @@ public final class RegistryProtocol {
                     items,
                     "Settlement history items must be an explicit array."));
         }
+    }
+
+    public record GlobalIdentityVoprfKey(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            String mode,
+            @JsonProperty("public_key") String publicKey,
+            String status,
+            @JsonProperty("activated_at") String activatedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            String signature) {
+    }
+
+    public record GlobalIdentityEvaluationRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("blinded_element") String blindedElement,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record GlobalIdentityEvaluationResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("public_key") String publicKey,
+            @JsonProperty("evaluated_element") String evaluatedElement,
+            String proof,
+            @JsonProperty("request_hash") String requestHash,
+            @JsonProperty("response_hash") String responseHash,
+            @JsonProperty("evaluated_at") String evaluatedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            @JsonProperty("receipt_signature") String receiptSignature,
+            Boolean duplicate) {
+    }
+
+    public record GlobalIdentityLinkRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("network_identity_commitment")
+                    String networkIdentityCommitment,
+            @JsonProperty("consent_version") String consentVersion,
+            @JsonProperty("consent_evidence_commitment")
+                    String consentEvidenceCommitment,
+            @JsonProperty("verified_at") String verifiedAt,
+            @JsonProperty("effective_period") String effectivePeriod,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record GlobalIdentityLinkActionRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            String action,
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("replacement_key_version")
+                    Long replacementKeyVersion,
+            @JsonProperty("replacement_suite") String replacementSuite,
+            @JsonProperty("replacement_commitment")
+                    String replacementCommitment,
+            @JsonProperty("consent_version") String consentVersion,
+            @JsonProperty("consent_evidence_commitment")
+                    String consentEvidenceCommitment,
+            @JsonProperty("verified_at") String verifiedAt,
+            @JsonProperty("effective_period") String effectivePeriod,
+            @JsonProperty("reason_commitment") String reasonCommitment,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record GlobalIdentityPresenceBatchRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("idempotency_key") String idempotencyKey,
+            String period,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
+            @JsonProperty("reported_qmau_count") Long reportedQmauCount,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("network_identity_commitments")
+                    List<String> networkIdentityCommitments,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+        public GlobalIdentityPresenceBatchRequest {
+            networkIdentityCommitments = List.copyOf(Objects.requireNonNull(
+                    networkIdentityCommitments,
+                    "Global-identity commitments must be an explicit array."));
+        }
+    }
+
+    public record GlobalIdentityLink(
+            @JsonProperty("link_id") String linkId,
+            @JsonProperty("deployment_id") String deploymentId,
+            String status,
+            @JsonProperty("key_version") Long keyVersion,
+            String suite,
+            @JsonProperty("active_from_period") String activeFromPeriod,
+            @JsonProperty("inactive_from_period") String inactiveFromPeriod,
+            @JsonProperty("consent_version") String consentVersion,
+            @JsonProperty("verified_at") String verifiedAt,
+            @JsonProperty("latest_event_index") Long latestEventIndex,
+            @JsonProperty("latest_event_hash") String latestEventHash) {
+    }
+
+    public record GlobalIdentityEvent(
+            @JsonProperty("event_index") Long eventIndex,
+            @JsonProperty("event_id") String eventId,
+            String action,
+            @JsonProperty("deployment_id") String deploymentId,
+            String period,
+            @JsonProperty("aggregate_commitment") String aggregateCommitment,
+            @JsonProperty("reported_count") Long reportedCount,
+            @JsonProperty("deduplicated_count") Long deduplicatedCount,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("previous_event_hash") String previousEventHash,
+            @JsonProperty("event_hash") String eventHash,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            String signature) {
+    }
+
+    public record GlobalIdentitySnapshot(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            String period,
+            Long revision,
+            @JsonProperty("reported_qmau_count") Long reportedQmauCount,
+            @JsonProperty("linked_observation_count")
+                    Long linkedObservationCount,
+            @JsonProperty("globally_unique_linked_count")
+                    Long globallyUniqueLinkedCount,
+            @JsonProperty("unlinked_qmau_count") Long unlinkedQmauCount,
+            @JsonProperty("deduplicated_network_qmau")
+                    Long deduplicatedNetworkQmau,
+            @JsonProperty("duplicate_reduction") Long duplicateReduction,
+            @JsonProperty("covered_deployment_count")
+                    Long coveredDeploymentCount,
+            @JsonProperty("aggregate_commitment") String aggregateCommitment,
+            @JsonProperty("through_event_index") Long throughEventIndex,
+            @JsonProperty("through_event_hash") String throughEventHash,
+            @JsonProperty("generated_at") String generatedAt) {
+    }
+
+    public record GlobalIdentityMutationResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            GlobalIdentityLink link,
+            GlobalIdentityEvent event,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            Boolean duplicate) {
+    }
+
+    public record GlobalIdentityPresenceBatchResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("batch_id") String batchId,
+            @JsonProperty("deployment_id") String deploymentId,
+            String period,
+            Long revision,
+            @JsonProperty("linked_count") Long linkedCount,
+            @JsonProperty("unlinked_count") Long unlinkedCount,
+            GlobalIdentityEvent event,
+            GlobalIdentitySnapshot snapshot,
+            Boolean duplicate) {
     }
 
     public record CheckpointResponse(

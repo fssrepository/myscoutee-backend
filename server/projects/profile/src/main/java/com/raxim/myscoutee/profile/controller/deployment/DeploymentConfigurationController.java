@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.controller.deployment;
 
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,11 @@ public class DeploymentConfigurationController {
     }
 
     @GetMapping("/firebase-config")
-    public FirebasePublicConfigurationDto firebaseConfiguration() {
-        return service.publicFirebaseConfiguration();
+    public ResponseEntity<FirebasePublicConfigurationDto>
+            firebaseConfiguration() {
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .header("Pragma", "no-cache")
+                .body(service.publicFirebaseConfiguration());
     }
 }

@@ -1032,7 +1032,13 @@ public class OperatorConfigurationService {
             changed = true;
         }
         if (changed) {
-            firebase.setRevision(firebaseRevision(firebase) + 1L);
+            long currentRevision = firebaseRevision(firebase);
+            if (currentRevision == Long.MAX_VALUE) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Firebase configuration revision cannot be advanced.");
+            }
+            firebase.setRevision(currentRevision + 1L);
             firebase.setActive(false);
             firebase.setAuthenticationTestedRevision(null);
             firebase.setAuthenticationTestedAt(null);

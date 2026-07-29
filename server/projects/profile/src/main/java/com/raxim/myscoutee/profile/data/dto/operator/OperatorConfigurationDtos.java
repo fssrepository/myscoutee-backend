@@ -218,6 +218,30 @@ public final class OperatorConfigurationDtos {
                     authenticationCredential,
                     messagingCredential);
         }
+
+        /**
+         * Record defaults include every component and are unsafe for
+         * credentials if a request is ever included in diagnostic output.
+         */
+        @Override
+        public String toString() {
+            return "FirebaseUpdateDto["
+                    + "projectIdProvided="
+                    + hasText(projectId)
+                    + ", publicConfigurationProvided="
+                    + (hasText(apiKey)
+                            || hasText(authDomain)
+                            || hasText(storageBucket)
+                            || hasText(messagingSenderId)
+                            || hasText(appId)
+                            || hasText(measurementId)
+                            || hasText(vapidKey))
+                    + ", authenticationCredentialProvided="
+                    + hasText(authenticationCredential)
+                    + ", messagingCredentialProvided="
+                    + hasText(messagingCredential)
+                    + "]";
+        }
     }
 
     public record OperatorConfigurationUpdateDto(
@@ -264,6 +288,25 @@ public final class OperatorConfigurationDtos {
                 String destinationToken) {
             this(kind, destinationToken, null, null, null);
         }
+
+        /**
+         * FCM registration tokens must not appear in request diagnostics.
+         */
+        @Override
+        public String toString() {
+            return "ConfigurationTestRequestDto["
+                    + "kind="
+                    + kind
+                    + ", destinationTokenProvided="
+                    + hasText(destinationToken)
+                    + ", browserReadinessTokenProvided="
+                    + hasText(browserReadinessToken)
+                    + ", browserConfigurationRevision="
+                    + browserConfigurationRevision
+                    + ", browserAppIdProvided="
+                    + hasText(browserAppId)
+                    + "]";
+        }
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -273,5 +316,9 @@ public final class OperatorConfigurationDtos {
             String message,
             String testedAt,
             FirebaseConfigurationDto firebase) {
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }

@@ -3,6 +3,7 @@
 .env
 .env.*
 projects/profile/secrets/
+docker/scripts/admin-job-fixtures/
 docker/conf/nginx/keys/
 
 # Locally generated deployment/demo identities and other private key material.

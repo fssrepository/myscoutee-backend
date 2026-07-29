@@ -64,6 +64,12 @@ class OperatorRevenueRegistryRuntimeResolver {
         return resolve(mode, RegistryProtocol.SETTLEMENT_QUERY_PATH);
     }
 
+    Resolution resolveGlobalIdentity(MongoSessionMode mode) {
+        return resolve(
+                mode,
+                RegistryProtocol.GLOBAL_IDENTITY_VOPRF_KEY_PATH);
+    }
+
     private Resolution resolve(
             MongoSessionMode requestedMode,
             String requiredEndpointPath) {

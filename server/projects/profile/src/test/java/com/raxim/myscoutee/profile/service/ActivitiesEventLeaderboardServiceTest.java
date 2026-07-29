@@ -279,6 +279,37 @@ class ActivitiesEventLeaderboardServiceTest {
         assertThat(state.groups().getFirst().scoreRows())
                 .extracting(row -> row.memberName())
                 .containsExactly("accepted-user", "-----", "-----", "-----");
+        assertThat(state.groups().getFirst().advancingMemberIds())
+                .containsExactly("accepted-user");
+    }
+
+    @Test
+    void leaderboardDoesNotAdvanceEntryOnlyOutsiderInsteadOfAcceptedGroupMember() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent event = eventRecord("event-1", "canonical");
+        String groupOwnerId = "event-1:sub-1:sub-1:group:1";
+        EventLeaderboardEntry outsiderScore = scoreEntry("outsider-score", "outsider", 100);
+        EventLeaderboardEntry acceptedScore = scoreEntry("accepted-score", "accepted-user", 1);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(List.of(outsiderScore, acceptedScore));
+        when(activitiesMembersService.queryMembers("group", groupOwnerId))
+                .thenReturn(List.of(activityMember("accepted-user", "accepted")));
+
+        var state = service.queryState("event-1", "sub-1");
+
+        assertThat(state.groups().getFirst().advancingMemberIds())
+                .containsExactly("accepted-user");
+        assertThat(state.groups().getFirst().scoreRows())
+                .extracting(row -> row.memberId())
+                .contains("accepted-user")
+                .doesNotContain("outsider");
     }
 
     @Test
@@ -395,5 +426,18 @@ class ActivitiesEventLeaderboardServiceTest {
                 null,
                 null,
                 List.of());
+    }
+
+    private EventLeaderboardEntry scoreEntry(String id, String memberId, int value) {
+        EventLeaderboardEntry entry = new EventLeaderboardEntry();
+        entry.setId(id);
+        entry.setEventId("event-1");
+        entry.setSubEventId("sub-1");
+        entry.setGroupId("sub-1:group:1");
+        entry.setEntryType("score");
+        entry.setMemberId(memberId);
+        entry.setScoreValue(value);
+        entry.setCreatedAtIso("2026-07-22T17:24:59Z");
+        return entry;
     }
 }

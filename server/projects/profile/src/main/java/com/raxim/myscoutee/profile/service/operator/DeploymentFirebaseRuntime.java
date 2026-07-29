@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -74,12 +75,14 @@ public class DeploymentFirebaseRuntime {
             throw new IllegalStateException(
                     "Live Firebase authentication is unavailable in Explore/demo mode.");
         }
-        ResolvedCredential resolved = resolve(
-                CredentialKind.AUTHENTICATION);
-        if (resolved.legacyStartup()) {
-            return FirebaseAuth.getInstance();
+        synchronized (appLock) {
+            ResolvedCredential resolved = resolve(
+                    CredentialKind.AUTHENTICATION);
+            if (resolved.legacyStartup()) {
+                return FirebaseAuth.getInstance();
+            }
+            return FirebaseAuth.getInstance(runtimeApp(resolved));
         }
-        return FirebaseAuth.getInstance(runtimeApp(resolved));
     }
 
     public FirebaseMessaging messaging() {
@@ -88,11 +91,14 @@ public class DeploymentFirebaseRuntime {
             throw new IllegalStateException(
                     "Live Firebase messaging is unavailable in Explore/demo mode.");
         }
-        ResolvedCredential resolved = resolve(CredentialKind.MESSAGING);
-        if (resolved.legacyStartup()) {
-            return FirebaseMessaging.getInstance();
+        synchronized (appLock) {
+            ResolvedCredential resolved = resolve(
+                    CredentialKind.MESSAGING);
+            if (resolved.legacyStartup()) {
+                return FirebaseMessaging.getInstance();
+            }
+            return FirebaseMessaging.getInstance(runtimeApp(resolved));
         }
-        return FirebaseMessaging.getInstance(runtimeApp(resolved));
     }
 
     /**
@@ -233,7 +239,7 @@ public class DeploymentFirebaseRuntime {
                     .setProjectId(resolved.projectId())
                     .build();
             String appName = APP_NAME_PREFIX
-                    + resolved.kind().name().toLowerCase()
+                    + resolved.kind().name().toLowerCase(Locale.ROOT)
                     + "-"
                     + resolved.revision()
                     + "-"

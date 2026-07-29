@@ -4,6 +4,126 @@
   const F = AdminJobFixture;
   const job = "bell-rating-feedback";
 
+  function uniqueIds(values) {
+    return [...new Set((values || []).map(F.safeText).filter(Boolean))].sort();
+  }
+
+  function sameIds(actual, expected) {
+    const left = uniqueIds(actual);
+    const right = uniqueIds(expected);
+    return left.length === right.length && left.every((value, index) => value === right[index]);
+  }
+
+  function targetUserIds(context) {
+    return context.mode === "rating"
+      ? [context.targetUserId]
+      : uniqueIds(context.targetUserIds);
+  }
+
+  function logicalNotificationSelector(context) {
+    if (context.mode === "rating") {
+      return {
+        kind: "user-rated",
+        sourceType: "user-rate",
+        sourceId: F.safeText(context.rateId),
+        senderUserId: context.actorUserId
+      };
+    }
+    return {
+      kind: "event-feedback-submitted",
+      sourceType: "event",
+      sourceId: context.eventId,
+      senderUserId: context.actorUserId
+    };
+  }
+
+  function logicalOutboxSelector(context) {
+    if (context.mode === "rating") {
+      return {
+        notificationType: "user-rated",
+        entityType: "user-rate",
+        entityId: F.safeText(context.rateId),
+        "payload.senderUserId": context.actorUserId
+      };
+    }
+    return {
+      notificationType: "event-feedback-submitted",
+      entityType: "event",
+      entityId: context.eventId,
+      "payload.senderUserId": context.actorUserId
+    };
+  }
+
+  function afterPreparedAt(selector, preparedAtIso) {
+    return {
+      $and: [
+        selector,
+        { createdDate: { $gt: preparedAtIso } }
+      ]
+    };
+  }
+
+  function reconcileUnreadProjection(userIds) {
+    for (const userId of uniqueIds(userIds)) {
+      const unreadCount = F.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        readAtIso: null
+      });
+      F.collection("users").updateOne(
+        { userId },
+        {
+          $set: {
+            "activities.notifications": unreadCount,
+            updatedDate: F.nowIso(),
+            updatedUser: F.FIXTURE_ACTOR
+          }
+        }
+      );
+    }
+  }
+
+  function projectionRows(userIds) {
+    return uniqueIds(userIds).map(userId => {
+      const unreadCount = F.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        readAtIso: null
+      });
+      const user = F.collection("users").findOne({ userId });
+      const storedCount = Number(user && user.activities && user.activities.notifications) || 0;
+      return {
+        userId,
+        unreadCount,
+        storedCount,
+        valid: storedCount === unreadCount
+      };
+    });
+  }
+
+  function isolateLogicalNotification(context) {
+    const outboxSelector = logicalOutboxSelector(context);
+    const trackedOutboxCount = F.collection("notificationOutbox").countDocuments({
+      $and: [
+        outboxSelector,
+        { pendingCounterTracked: true }
+      ]
+    });
+    if (trackedOutboxCount > 0) {
+      F.fail(
+        "the selected rating/feedback notification still has tracked outbox work; "
+          + "wait for the existing worker and prepare again."
+      );
+    }
+    const affectedUserIds = [context.actorUserId, ...targetUserIds(context)];
+    F.collection("userNotifications").deleteMany({
+      $and: [
+        logicalNotificationSelector(context),
+        { recipientUserId: { $in: affectedUserIds } }
+      ]
+    });
+    F.collection("notificationOutbox").deleteMany(outboxSelector);
+    reconcileUnreadProjection(affectedUserIds);
+  }
+
   function existingUserIds() {
     return new Set(
       F.collection("users")
@@ -23,11 +143,21 @@
       })
       .sort({ scoreGiven: 1, updatedDate: -1 })
       .toArray();
-    const rate = candidates.find(item =>
-      users.has(F.safeText(item.ownerUserId))
-        && users.has(F.safeText(item.relatedUserId))
-        && F.safeText(item.ownerUserId) !== F.safeText(item.relatedUserId)
-    );
+    const rate = candidates.find(item => {
+      const actorUserId = F.safeText(item.ownerUserId);
+      const targetUserId = F.safeText(item.relatedUserId);
+      const rateId = F.safeText(item._id);
+      return users.has(actorUserId)
+        && users.has(targetUserId)
+        && actorUserId !== targetUserId
+        && F.collection("notificationOutbox").countDocuments({
+          notificationType: "user-rated",
+          entityType: "user-rate",
+          entityId: rateId,
+          "payload.senderUserId": actorUserId,
+          pendingCounterTracked: true
+        }) === 0;
+    });
     if (!rate) {
       F.fail("rating variation needs one seeded single userRates record between two existing users.");
     }
@@ -45,10 +175,38 @@
       actorUserId,
       actorName: actor && actor.name,
       targetUserId,
-      targetName: target && target.name,
-      baselineBellCount: F.collection("userNotifications").countDocuments({ recipientUserId: targetUserId }),
-      baselineOutboxCount: F.collection("notificationOutbox").countDocuments({ recipientUserIds: targetUserId })
+      targetName: target && target.name
     };
+  }
+
+  function feedbackTargets(event, actorUserId, users) {
+    const hostId = [event.creatorUserId, event.ownerUserId]
+      .map(F.safeText)
+      .find(userId => userId && users.has(userId)) || actorUserId;
+    const targetIds = [];
+    if (hostId && hostId !== actorUserId) {
+      targetIds.push(hostId);
+    }
+    const attendeeIds = [];
+    for (const rawUserId of [
+      ...(event.acceptedMemberUserIds || []),
+      ...(event.pendingMemberUserIds || [])
+    ]) {
+      const userId = F.safeText(rawUserId);
+      if (!userId
+          || userId === actorUserId
+          || userId === hostId
+          || !users.has(userId)
+          || attendeeIds.includes(userId)) {
+        continue;
+      }
+      attendeeIds.push(userId);
+      if (attendeeIds.length >= 5) {
+        break;
+      }
+    }
+    targetIds.push(...attendeeIds);
+    return uniqueIds(targetIds);
   }
 
   function feedbackSetup() {
@@ -75,7 +233,14 @@
         userId: actorUserId,
         status: "accepted"
       });
-      if (event && acceptedMember) {
+      const hasTrackedOutbox = F.collection("notificationOutbox").countDocuments({
+        notificationType: "event-feedback-submitted",
+        entityType: "event",
+        entityId: eventId,
+        "payload.senderUserId": actorUserId,
+        pendingCounterTracked: true
+      }) > 0;
+      if (event && acceptedMember && !hasTrackedOutbox) {
         selected = { answer, event };
         break;
       }
@@ -85,14 +250,7 @@
     }
     const actorUserId = F.safeText(selected.answer.viewerUserId);
     const eventId = F.safeText(selected.answer.eventId);
-    const eventAnswers = F.collection("eventFeedbackAnswers")
-      .find({ viewerUserId: actorUserId, eventId })
-      .toArray();
-    const targetUserIds = [...new Set(
-      eventAnswers
-        .map(answer => F.safeText(answer.targetUserId))
-        .filter(userId => userId && userId !== actorUserId && users.has(userId))
-    )];
+    const targetUserIds = feedbackTargets(selected.event, actorUserId, users);
     if (targetUserIds.length === 0) {
       F.fail("selected feedback submission has no other-party target.");
     }
@@ -109,12 +267,6 @@
       targetNames: targetUserIds.map(userId => {
         const user = F.collection("users").findOne({ $or: [{ _id: userId }, { userId }] });
         return { userId, name: user && user.name };
-      }),
-      baselineBellCount: F.collection("userNotifications").countDocuments({
-        recipientUserId: { $in: targetUserIds }
-      }),
-      baselineOutboxCount: F.collection("notificationOutbox").countDocuments({
-        recipientUserIds: { $in: targetUserIds }
       })
     };
   }
@@ -123,9 +275,8 @@
     const allUserIds = context.mode === "rating"
       ? [context.actorUserId, context.targetUserId]
       : [context.actorUserId, ...(context.targetUserIds || [])];
-    const targetUserIds = context.mode === "rating"
-      ? [context.targetUserId]
-      : context.targetUserIds;
+    const notificationSelector = logicalNotificationSelector(context);
+    const outboxSelector = logicalOutboxSelector(context);
     const specs = [
       {
         collection: "users",
@@ -148,11 +299,22 @@
       },
       {
         collection: "userNotifications",
-        selector: { recipientUserId: { $in: targetUserIds } }
+        selector: {
+          $and: [
+            notificationSelector,
+            { recipientUserId: { $in: allUserIds } }
+          ]
+        }
       },
       {
         collection: "notificationOutbox",
-        selector: { recipientUserIds: { $in: targetUserIds } }
+        selector: outboxSelector
+      },
+      {
+        collection: "notificationRuleConfigs",
+        selector: {
+          ruleKey: { $in: ["notification-outbox", "affinity-recompute"] }
+        }
       }
     ];
     if (context.mode === "rating") {
@@ -198,8 +360,8 @@
       const context = variation === "rating" ? ratingSetup() : feedbackSetup();
       return {
         expected: variation === "rating"
-          ? "After the actor submits a non-zero rating, the rate changes and the target gets at least one new bell notification. A zero bell delta is a reproducible notification gap."
-          : "After the actor resubmits feedback, answers/states reappear and at least one other-party target gets a new bell notification. A zero bell delta is a reproducible notification gap.",
+          ? "After the actor submits a non-zero rating, exactly one logical outbox item and one unread target bell appear with the expected source, sender, payload, and projection; the actor receives none."
+          : "After the actor resubmits feedback, exactly one logical outbox fanout and one unread bell per submitted other-party target appear with no duplicate or actor notification.",
         next: variation === "rating"
           ? "Use the existing demo app as the printed actor, submit a non-zero rating, inspect the target bell, then run status bell-rating-feedback."
           : "Use the existing demo app as the printed actor, submit event feedback, inspect a printed target bell, then run status bell-rating-feedback.",
@@ -209,6 +371,7 @@
     },
     prepare(variation, context) {
       const now = F.nowIso();
+      isolateLogicalNotification(context);
       if (variation === "rating") {
         F.collection("userRates").updateOne(
           { _id: context.rateId },
@@ -273,29 +436,53 @@
       }
       if (context.mode === "rating") {
         const rate = F.collection("userRates").findOne({ _id: context.rateId });
-        const bellCount = F.collection("userNotifications").countDocuments({
-          recipientUserId: context.targetUserId
-        });
-        const outboxCount = F.collection("notificationOutbox").countDocuments({
-          recipientUserIds: context.targetUserId
-        });
-        const bellDelta = bellCount - context.baselineBellCount;
-        const outboxDelta = outboxCount - context.baselineOutboxCount;
-        const changedBellCount = F.collection("userNotifications").countDocuments({
-          recipientUserId: context.targetUserId,
-          $or: [
-            { createdDate: { $gt: snapshot.preparedAtIso } },
-            { updatedDate: { $gt: snapshot.preparedAtIso } }
-          ]
-        });
-        const changedOutboxCount = F.collection("notificationOutbox").countDocuments({
-          recipientUserIds: context.targetUserId,
-          $or: [
-            { createdDate: { $gt: snapshot.preparedAtIso } },
-            { updatedDate: { $gt: snapshot.preparedAtIso } }
-          ]
-        });
-        const hasBellEvidence = bellDelta > 0 || changedBellCount > 0;
+        const rateId = F.safeText(context.rateId);
+        const outboxes = F.collection("notificationOutbox")
+          .find(afterPreparedAt(logicalOutboxSelector(context), snapshot.preparedAtIso))
+          .toArray();
+        const bells = F.collection("userNotifications")
+          .find(afterPreparedAt(logicalNotificationSelector(context), snapshot.preparedAtIso))
+          .toArray();
+        const actorBellCount = bells.filter(item =>
+          F.safeText(item.recipientUserId) === context.actorUserId
+        ).length;
+        const projection = projectionRows([context.targetUserId]);
+        const actionStored = Number(rate && rate.scoreGiven) > 0;
+        const exactOutbox = outboxes.length === 1
+          && sameIds(outboxes[0].recipientUserIds, [context.targetUserId])
+          && outboxes[0].recipientScope === "rated-users"
+          && outboxes[0].payload
+          && outboxes[0].payload.rateId === rateId
+          && outboxes[0].payload.mode === "single"
+          && outboxes[0].payload.senderUserId === context.actorUserId
+          && outboxes[0].payload.type === "user-rated"
+          && outboxes[0].payload.entityType === "user-rate"
+          && outboxes[0].payload.entityId === rateId;
+        const exactBells = bells.length === 1
+          && bells[0].recipientUserId === context.targetUserId
+          && bells[0].kind === "user-rated"
+          && bells[0].category === "user"
+          && bells[0].senderUserId === context.actorUserId
+          && bells[0].sourceType === "user-rate"
+          && bells[0].sourceId === rateId
+          && bells[0].actionPath === "/game"
+          && bells[0].readAtIso == null
+          && bells[0].payload
+          && bells[0].payload.rateId === rateId
+          && bells[0].payload.mode === "single"
+          && bells[0].payload.senderUserId === context.actorUserId;
+        const validation = {
+          actionStored,
+          exactSingleOutbox: exactOutbox,
+          exactSingleTargetBell: exactBells,
+          actorExcluded: actorBellCount === 0,
+          noDuplicateRecipients: sameIds(
+            bells.map(item => item.recipientUserId),
+            [context.targetUserId]
+          ),
+          unreadProjectionMatchesCollection: projection.every(item => item.valid)
+        };
+        const pass = Object.values(validation).every(Boolean);
         return {
           actor: { userId: context.actorUserId, name: context.actorName },
           target: { userId: context.targetUserId, name: context.targetName },
@@ -306,62 +493,103 @@
             updatedDate: rate.updatedDate,
             updatedUser: rate.updatedUser
           },
-          bellDelta,
-          outboxDelta,
-          changedBellCount,
-          changedOutboxCount,
-          notificationCheck: Number(rate && rate.scoreGiven) > 0 && hasBellEvidence
-            ? "PASS: rating changed and the other party received a bell item."
-            : Number(rate && rate.scoreGiven) > 0
-              ? "FAIL/GAP: rating changed, but no new bell item exists for the other party."
+          outboxes,
+          bells,
+          actorBellCount,
+          projection,
+          validation,
+          notificationCheck: pass
+            ? "PASS: rating persistence, exact outbox, exact unread target bell, actor exclusion, and projection all match."
+            : actionStored
+              ? "FAIL/GAP: rating persisted, but the exact outbox/bell recipient or unread projection contract failed."
               : "WAITING: submit a non-zero rating in the app."
         };
       }
-      const submissions = F.collection("eventFeedbackAnswers").countDocuments({
-        viewerUserId: context.actorUserId,
-        eventId: context.eventId
-      });
+      const submissions = F.collection("eventFeedbackAnswers")
+        .find({
+          viewerUserId: context.actorUserId,
+          eventId: context.eventId
+        })
+        .toArray();
       const state = F.collection("eventFeedbackStates").findOne({
         viewerUserId: context.actorUserId,
         eventId: context.eventId
       });
-      const bellCount = F.collection("userNotifications").countDocuments({
-        recipientUserId: { $in: context.targetUserIds }
-      });
-      const outboxCount = F.collection("notificationOutbox").countDocuments({
-        recipientUserIds: { $in: context.targetUserIds }
-      });
-      const bellDelta = bellCount - context.baselineBellCount;
-      const outboxDelta = outboxCount - context.baselineOutboxCount;
-      const changedBellCount = F.collection("userNotifications").countDocuments({
-        recipientUserId: { $in: context.targetUserIds },
-        $or: [
-          { createdDate: { $gt: snapshot.preparedAtIso } },
-          { updatedDate: { $gt: snapshot.preparedAtIso } }
-        ]
-      });
-      const changedOutboxCount = F.collection("notificationOutbox").countDocuments({
-        recipientUserIds: { $in: context.targetUserIds },
-        $or: [
-          { createdDate: { $gt: snapshot.preparedAtIso } },
-          { updatedDate: { $gt: snapshot.preparedAtIso } }
-        ]
-      });
-      const hasBellEvidence = bellDelta > 0 || changedBellCount > 0;
+      const submittedTargetUserIds = uniqueIds(
+        submissions
+          .map(answer => answer.targetUserId)
+          .filter(userId => F.safeText(userId) !== context.actorUserId)
+      );
+      const allowedTargetUserIds = targetUserIds(context);
+      const outboxes = F.collection("notificationOutbox")
+        .find(afterPreparedAt(logicalOutboxSelector(context), snapshot.preparedAtIso))
+        .toArray();
+      const bells = F.collection("userNotifications")
+        .find(afterPreparedAt(logicalNotificationSelector(context), snapshot.preparedAtIso))
+        .toArray();
+      const expectedEventTitle = F.safeText(context.eventTitle) || "Event";
+      const actorBellCount = bells.filter(item =>
+        F.safeText(item.recipientUserId) === context.actorUserId
+      ).length;
+      const projection = projectionRows(submittedTargetUserIds);
+      const actionStored = submissions.length > 0 && Boolean(state && state.submittedAtIso);
+      const exactOutbox = outboxes.length === 1
+        && sameIds(outboxes[0].recipientUserIds, submittedTargetUserIds)
+        && outboxes[0].recipientScope === "feedback-targets"
+        && outboxes[0].payload
+        && outboxes[0].payload.eventId === context.eventId
+        && outboxes[0].payload.eventTitle === expectedEventTitle
+        && outboxes[0].payload.senderUserId === context.actorUserId
+        && outboxes[0].payload.type === "event-feedback-submitted"
+        && outboxes[0].payload.entityType === "event"
+        && outboxes[0].payload.entityId === context.eventId;
+      const exactBells = bells.length === submittedTargetUserIds.length
+        && sameIds(
+          bells.map(item => item.recipientUserId),
+          submittedTargetUserIds
+        )
+        && bells.every(item =>
+          item.kind === "event-feedback-submitted"
+            && item.category === "event"
+            && item.senderUserId === context.actorUserId
+            && item.sourceType === "event"
+            && item.sourceId === context.eventId
+            && item.actionPath === "/game"
+            && item.readAtIso == null
+            && item.payload
+            && item.payload.eventId === context.eventId
+            && item.payload.eventTitle === expectedEventTitle
+            && item.payload.senderUserId === context.actorUserId
+        );
+      const validation = {
+        actionStored,
+        submittedTargetsAreAllowed: submittedTargetUserIds.length > 0
+          && submittedTargetUserIds.every(userId => allowedTargetUserIds.includes(userId)),
+        exactSingleOutbox: exactOutbox,
+        exactOneBellPerSubmittedTarget: exactBells,
+        actorExcluded: actorBellCount === 0,
+        noDuplicateRecipients: bells.length === uniqueIds(
+          bells.map(item => item.recipientUserId)
+        ).length,
+        unreadProjectionMatchesCollection: projection.every(item => item.valid)
+      };
+      const pass = Object.values(validation).every(Boolean);
       return {
         actor: { userId: context.actorUserId, name: context.actorName },
         event: { eventId: context.eventId, title: context.eventTitle },
         targets: context.targetNames,
-        submittedAnswerCount: submissions,
+        submittedAnswerCount: submissions.length,
+        submittedTargetUserIds,
         submittedAtIso: state && state.submittedAtIso,
-        bellDelta,
-        outboxDelta,
-        changedBellCount,
-        changedOutboxCount,
-        notificationCheck: submissions > 0 && hasBellEvidence
-          ? "PASS: feedback was stored and another party received a bell item."
-          : submissions > 0
-            ? "FAIL/GAP: feedback was stored, but no new bell item exists for its other-party targets."
+        outboxes,
+        bells,
+        actorBellCount,
+        projection,
+        validation,
+        notificationCheck: pass
+          ? "PASS: feedback persistence, exact outbox fanout, one unread bell per submitted target, actor exclusion, and projection all match."
+          : actionStored
+            ? "FAIL/GAP: feedback persisted, but the exact outbox/bell fanout or unread projection contract failed."
             : "WAITING: submit feedback in the app."
       };
     }
