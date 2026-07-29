@@ -37,6 +37,23 @@
     };
   }
 
+  function waitlistCapacityFixture() {
+    const creatorUserId = F.fixtureId(job, "waitlist-creator");
+    const reservedUserId = F.fixtureId(job, "waitlist-reserved");
+    const waitingUserIds = Array.from(
+      { length: 4 },
+      (_, index) => F.fixtureId(job, `waitlist-candidate-${index + 1}`)
+    );
+    return {
+      creatorUserId,
+      reservedUserId,
+      waitingUserIds,
+      userIds: [creatorUserId, reservedUserId, ...waitingUserIds],
+      expectedPromotedUserIds: waitingUserIds.slice(0, 2),
+      expectedWaitingUserIds: waitingUserIds.slice(2)
+    };
+  }
+
   function creatorAndCandidates() {
     const existingUsers = new Set(
       F.collection("users")
@@ -64,10 +81,14 @@
   F.run({
     job,
     ruleKey: job,
-    variations: ["open-spots", "full", "weighted"],
+    variations: ["open-spots", "full", "weighted", "waitlist-capacity"],
     build(variation) {
       const weighted = variation === "weighted" ? weightedFixture() : null;
-      const userIds = weighted ? weighted.userIds : creatorAndCandidates();
+      const waitlistCapacity = variation === "waitlist-capacity"
+        ? waitlistCapacityFixture()
+        : null;
+      const synthetic = weighted || waitlistCapacity;
+      const userIds = synthetic ? synthetic.userIds : creatorAndCandidates();
       const isolatedEventIds = F.collection("events")
         .find({ autoInviter: true, _id: { $ne: eventId } }, { projection: { _id: 1 } })
         .map(event => event._id)
@@ -87,12 +108,15 @@
           ? "Two connected candidates become pending event invite members; invite outbox/bell records and one priority plan marker appear."
           : variation === "full"
             ? "No invitations are created because accepted capacity is already full."
-            : "The pending highest-weight user stays excluded; the next two exact weighted candidates are invited, and a repeated scheduled pass changes zero records.",
+            : variation === "weighted"
+              ? "The pending highest-weight user stays excluded; the next two exact weighted candidates are invited, and a repeated scheduled pass changes zero records."
+              : "Exactly the two oldest of four waitlisted users are promoted into the two unreserved places; the other two remain waitlisted and a repeated pass changes zero records.",
         context: {
           eventId,
           userIds,
           weighted: Boolean(weighted),
-          ...(weighted || {}),
+          waitlistCapacity: Boolean(waitlistCapacity),
+          ...(synthetic || {}),
           isolatedEventIds,
           isolatedWaitlistMemberIds,
           initialMemberId: F.fixtureId(job, "creator-member"),
@@ -111,6 +135,21 @@
                 { _id: { $in: weighted ? weighted.edges.map(edge => edge._id) : [] } },
                 { pairKey: { $in: weighted ? weighted.edges.map(edge => edge.pairKey) : [] } }
               ]
+            }
+          },
+          {
+            collection: "notificationRuleConfigs",
+            selector: {
+              ruleKey: {
+                $in: [
+                  "event-auto-inviter",
+                  "event-random-groups",
+                  "event-tournament-review",
+                  "event-counter-expiry",
+                  "notification-outbox",
+                  "affinity-recompute"
+                ]
+              }
             }
           },
           {
@@ -161,7 +200,7 @@
           }
         );
       }
-      if (context.weighted) {
+      if (context.weighted || context.waitlistCapacity) {
         F.collection("users").insertMany(context.userIds.map((userId, index) => ({
           _id: userId,
           syncKey: userId,
@@ -181,6 +220,8 @@
           updatedDate: now,
           updatedUser: F.FIXTURE_ACTOR
         })));
+      }
+      if (context.weighted) {
         F.collection("userAffinityEdges").insertMany(context.edges.map(edge => ({
           ...edge,
           updatedDate: now
@@ -193,14 +234,26 @@
         title: "Admin fixture auto inviter",
         status: "A",
         published: true,
-        autoInviter: true,
+        autoInviter: variation !== "waitlist-capacity",
         ownerUserId: context.creatorUserId || context.userIds[0],
         creatorUserId: context.creatorUserId || context.userIds[0],
         capacityMin: 1,
-        capacityMax: variation === "open-spots" ? 3 : variation === "weighted" ? 4 : 1,
-        capacityTotal: variation === "open-spots" ? 3 : variation === "weighted" ? 4 : 1,
+        capacityMax: ["weighted", "waitlist-capacity"].includes(variation)
+          ? 4
+          : variation === "open-spots"
+            ? 3
+            : 1,
+        capacityTotal: ["weighted", "waitlist-capacity"].includes(variation)
+          ? 4
+          : variation === "open-spots"
+            ? 3
+            : 1,
         acceptedMembers: 1,
-        pendingMembers: variation === "weighted" ? 1 : 0,
+        pendingMembers: variation === "weighted"
+          ? 1
+          : variation === "waitlist-capacity"
+            ? 5
+            : 0,
         subEvents: [],
         startAtIso: F.futureIso(180),
         endAtIso: F.futureIso(360),
@@ -223,7 +276,7 @@
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
       }];
-      if (variation === "weighted") {
+      if (["weighted", "waitlist-capacity"].includes(variation)) {
         initialMembers.push({
           _id: context.reservedMemberId,
           syncKey: context.reservedMemberId,
@@ -233,13 +286,37 @@
           role: "Member",
           status: "pending",
           requestKind: "invite",
-          pendingSource: "fixture-existing-invite",
+          pendingSource: "admin",
+          invitedByUserId: context.creatorUserId || context.userIds[0],
           actionAtIso: now,
           createdDate: now,
           createdUser: F.FIXTURE_ACTOR,
           updatedDate: now,
           updatedUser: F.FIXTURE_ACTOR
         });
+      }
+      if (variation === "waitlist-capacity") {
+        const waitlistActionMinutesAgo = [80, 60, 40, 20];
+        const waitlistMembers = context.waitingUserIds.map((userId, index) => {
+          const queuedAtIso = F.pastIso(waitlistActionMinutesAgo[index]);
+          return {
+            _id: F.fixtureId(job, `waitlist-member-${index + 1}`),
+            syncKey: F.fixtureId(job, `waitlist-member-${index + 1}`),
+            ownerType: "event",
+            ownerId: eventId,
+            userId,
+            role: "Member",
+            status: "pending",
+            requestKind: "waitlist",
+            pendingSource: "member",
+            actionAtIso: queuedAtIso,
+            createdDate: queuedAtIso,
+            createdUser: F.FIXTURE_ACTOR,
+            updatedDate: now,
+            updatedUser: F.FIXTURE_ACTOR
+          };
+        });
+        initialMembers.push(...waitlistMembers.reverse());
       }
       F.collection("activityMembers").insertMany(initialMembers);
     },
@@ -260,7 +337,10 @@
           status: member.status,
           requestKind: member.requestKind,
           pendingSource: member.pendingSource,
+          invitedByUserId: member.invitedByUserId,
           role: member.role,
+          actionAtIso: member.actionAtIso,
+          createdDate: member.createdDate,
           updatedDate: member.updatedDate
         }))
         .toArray();
@@ -293,12 +373,130 @@
         outboxCount: outboxDocuments.length,
         bellCount: bellDocuments.length
       };
+      const sorted = values => [...(values || [])].sort();
+      const same = (left, right) => JSON.stringify(sorted(left)) === JSON.stringify(sorted(right));
+      if (context.waitlistCapacity) {
+        const expectedPromotedUserIds = sorted(context.expectedPromotedUserIds);
+        const expectedWaitingUserIds = sorted(context.expectedWaitingUserIds);
+        const promotedMembers = members.filter(member =>
+          expectedPromotedUserIds.includes(member.userId)
+          && member.status === "pending"
+          && member.requestKind === "waitlist-invite"
+        );
+        const waitingMembers = members.filter(member =>
+          expectedWaitingUserIds.includes(member.userId)
+          && member.status === "pending"
+          && member.requestKind === "waitlist"
+        );
+        const promotedUserIds = sorted(promotedMembers.map(member => member.userId));
+        const stillWaitingUserIds = sorted(waitingMembers.map(member => member.userId));
+        const creatorMember = members.find(member => member.userId === context.creatorUserId);
+        const reservedMember = members.find(member => member.userId === context.reservedUserId);
+        const outboxRecipientUserIds = sorted(
+          outboxDocuments.flatMap(item => item.recipientUserIds || [])
+        );
+        const bellRecipientUserIds = sorted(
+          bellDocuments.map(item => item.recipientUserId)
+        );
+        const exactPromotions = same(promotedUserIds, expectedPromotedUserIds)
+          && promotedMembers.every(member =>
+            member.pendingSource === "admin"
+            && member.invitedByUserId === context.creatorUserId
+          );
+        const exactRemainingWaitlist = same(stillWaitingUserIds, expectedWaitingUserIds)
+          && waitingMembers.every(member => member.pendingSource === "member");
+        const exactMembershipCardinality = members.length === 6
+          && Boolean(creatorMember && creatorMember.status === "accepted");
+        const reservedInvitePreserved = Boolean(
+          reservedMember
+          && reservedMember.status === "pending"
+          && reservedMember.requestKind === "invite"
+        );
+        const exactOutboxRecipients = outboxDocuments.length === 1
+          && same(outboxRecipientUserIds, expectedPromotedUserIds);
+        const exactBellRecipients = same(bellRecipientUserIds, expectedPromotedUserIds);
+        const noPriorityPlanMarker = markerDocuments.length === 0;
+        const rule = F.requireRule(job);
+        const baseline = context.waitlistBaseline || null;
+        const firstPassRunCountExact = Boolean(baseline)
+          || Boolean(
+            rule.runState
+            && rule.runState.lastRunStatus === "completed"
+            && rule.runState.lastRunCount === 2
+          );
+        const firstPassComplete = exactPromotions
+          && exactRemainingWaitlist
+          && exactMembershipCardinality
+          && reservedInvitePreserved
+          && exactOutboxRecipients
+          && exactBellRecipients
+          && noPriorityPlanMarker
+          && firstPassRunCountExact;
+        const currentFingerprint = JSON.stringify({
+          members,
+          markers: markerDocuments,
+          outbox: outboxDocuments.map(item => ({
+            id: item._id,
+            collapseKey: item.collapseKey,
+            recipientUserIds: sorted(item.recipientUserIds)
+          })),
+          bells: bellDocuments.map(item => ({
+            id: item._id,
+            recipientUserId: item.recipientUserId,
+            sourceId: item.sourceId
+          }))
+        });
+        if (firstPassComplete && !baseline && snapshot) {
+          F.collection(F.SNAPSHOT_COLLECTION).updateOne(
+            { _id: snapshot._id },
+            {
+              $set: {
+                "context.waitlistBaseline": {
+                  fingerprint: currentFingerprint,
+                  capturedAtIso: F.nowIso()
+                }
+              }
+            }
+          );
+        }
+        const repeatedPassObserved = Boolean(
+          baseline
+          && rule.runState
+          && rule.runState.lastRunStatus === "completed"
+          && rule.runState.lastRunCount === 0
+        );
+        return {
+          ...result,
+          expectedPromotedUserIds,
+          expectedWaitingUserIds,
+          promotedUserIds,
+          stillWaitingUserIds,
+          reservedMember,
+          outboxRecipientUserIds,
+          bellRecipientUserIds,
+          validation: {
+            exactPromotions,
+            exactRemainingWaitlist,
+            exactMembershipCardinality,
+            reservedInvitePreserved,
+            exactOutboxRecipients,
+            exactBellRecipients,
+            noPriorityPlanMarker,
+            firstPassChangedExactlyTwoRecords: firstPassRunCountExact,
+            firstPassComplete,
+            baselineCaptured: Boolean(baseline) || firstPassComplete,
+            repeatedPassObserved,
+            repeatedPassChangedZeroRecords: repeatedPassObserved,
+            membershipAndNotificationSetUnchanged:
+              repeatedPassObserved
+              && baseline.fingerprint === currentFingerprint
+          }
+        };
+      }
       if (!context.weighted) {
         return result;
       }
 
-      const sorted = values => [...(values || [])].sort();
-      const same = (left, right) => JSON.stringify(sorted(left)) === JSON.stringify(sorted(right));
       const expectedInvitees = sorted(context.expectedInviteeUserIds);
       const expectedExcluded = sorted(context.expectedExcludedUserIds);
       const invitedUserIds = sorted(members
@@ -317,6 +515,11 @@
         && item.actionType === "invite-batch"
         && item.scopeId === currentEventId
       );
+      const priorityMarkers = markerDocuments.filter(item =>
+        item.wrapperType === "priority"
+        && item.actionType === "invite-batch"
+        && item.scopeId === currentEventId
+      );
       const outboxRecipientUserIds = sorted(
         outboxDocuments.flatMap(item => item.recipientUserIds || [])
       );
@@ -324,21 +527,33 @@
         bellDocuments.map(item => item.recipientUserId)
       );
       const exactInvitees = same(invitedUserIds, expectedInvitees);
-      const exactMarker = Boolean(marker) && same(marker.userIds, expectedInvitees);
-      const exactOutboxRecipients = same(outboxRecipientUserIds, expectedInvitees);
+      const exactMarker = priorityMarkers.length === 1
+        && Boolean(marker)
+        && same(marker.userIds, expectedInvitees);
+      const exactOutboxRecipients = outboxDocuments.length === 1
+        && same(outboxRecipientUserIds, expectedInvitees);
       const exactBellRecipients = same(bellRecipientUserIds, expectedInvitees);
       const reservedInvitePreserved = Boolean(
         reservedMember
         && reservedMember.status === "pending"
         && reservedMember.requestKind === "invite"
       );
+      const rule = F.requireRule(job);
+      const baseline = context.weightedBaseline || null;
+      const firstPassRunCountExact = Boolean(baseline)
+        || Boolean(
+          rule.runState
+          && rule.runState.lastRunStatus === "completed"
+          && rule.runState.lastRunCount === 2
+        );
       const firstPassComplete =
         exactInvitees
         && unexpectedlyInvitedUserIds.length === 0
         && reservedInvitePreserved
         && exactMarker
         && exactOutboxRecipients
-        && exactBellRecipients;
+        && exactBellRecipients
+        && firstPassRunCountExact;
       const currentFingerprint = JSON.stringify({
         members,
         marker: marker && {
@@ -358,7 +573,6 @@
           sourceId: item.sourceId
         }))
       });
-      const baseline = context.weightedBaseline || null;
       if (firstPassComplete && !baseline && snapshot) {
         F.collection(F.SNAPSHOT_COLLECTION).updateOne(
           { _id: snapshot._id },
@@ -372,10 +586,10 @@
           }
         );
       }
-      const rule = F.requireRule(job);
       const repeatedPassObserved = Boolean(
         baseline
         && rule.runState
+        && rule.runState.lastRunStatus === "completed"
         && rule.runState.lastRunCount === 0
       );
       return {
@@ -401,6 +615,7 @@
           exactMarker,
           exactOutboxRecipients,
           exactBellRecipients,
+          firstPassChangedExactlyTwoRecords: firstPassRunCountExact,
           firstPassComplete,
           baselineCaptured: Boolean(baseline) || firstPassComplete,
           repeatedPassObserved,

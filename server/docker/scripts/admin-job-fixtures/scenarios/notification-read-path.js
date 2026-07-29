@@ -36,9 +36,9 @@
     build() {
       return {
         expected:
-          "The wrapper posts one message through the existing app. The real enqueue path creates exactly one chat outbox item and one unread bell item for the other participant, never for the sender. Notification poll, profile counters, and group-chat context are checked by status.",
+          "The wrapper posts one message through the existing app. The real enqueue path creates exactly one chat outbox item and one bell item for the other participant, never for the sender. Status accepts only the exact unread baseline or the exact API-marked-read state while preserving the group-chat context.",
         next:
-          "The wrapper now calls the existing local app once. Then run status notification-read-path; running status repeatedly must remain read-only and report the same one notification.",
+          "The wrapper now calls the existing local app once. Run status notification-read-path for the unread baseline, trigger notification-read-path to mark the exact bell read through the API, then repeat status/trigger to verify stable read state and idempotency.",
         context: {
           senderUserId,
           recipientUserId,
@@ -328,6 +328,9 @@
       const recipientStoredUnread = numberAt(recipient, ["activities", "notifications"]);
       const outbox = outboxes[0];
       const notification = notifications[0];
+      const notificationReadAtIso = F.safeText(notification && notification.readAtIso);
+      const notificationRead = Boolean(notificationReadAtIso);
+      const expectedNotificationUnread = notificationRead ? 0 : 1;
       const recipientCopy = chatCopies.find(item => item.ownerUserId === context.recipientUserId);
       const senderCopy = chatCopies.find(item => item.ownerUserId === context.senderUserId);
       const uniqueNotificationSyncKeys = new Set(
@@ -351,7 +354,10 @@
           && notification.sourceType === "chat"
           && notification.sourceId === context.chatId
           && notification.senderUserId === context.senderUserId
-          && notification.readAtIso == null
+          && (
+            notification.readAtIso == null
+            || (typeof notification.readAtIso === "string" && notificationReadAtIso.length > 0)
+          )
           && notification.actionPath === `/game?chatId=${context.chatId}`
           && notification.payload
           && notification.payload.chatId === context.chatId
@@ -368,8 +374,8 @@
         )
         && Number(recipientCopy && recipientCopy.unread) === 1
         && Number(senderCopy && senderCopy.unread) === 0;
-      const countersValid = recipientUnreadDocuments === 1
-        && recipientStoredUnread === 1
+      const countersValid = recipientUnreadDocuments === expectedNotificationUnread
+        && recipientStoredUnread === expectedNotificationUnread
         && numberAt(recipient, ["activities", "chats"]) === 1
         && numberAt(recipient, ["activities", "chat", "all"]) === 1
         && numberAt(recipient, ["activities", "chat", "group"]) === 1
@@ -426,6 +432,7 @@
           sourceType: notification.sourceType,
           sourceId: notification.sourceId,
           payload: notification.payload,
+          readState: notificationRead ? "read" : "unread",
           unreadDocumentCount: recipientUnreadDocuments,
           storedNotificationCounter: recipientStoredUnread,
           contextValid: notificationContextValid

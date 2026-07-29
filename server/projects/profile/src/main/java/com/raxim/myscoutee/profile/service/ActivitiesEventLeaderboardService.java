@@ -61,6 +61,7 @@ public class ActivitiesEventLeaderboardService {
     private final EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessControlService accessControlService;
+    private AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final EventGeneratorByScore scoreGenerator = new EventGeneratorByScore();
 
     public ActivitiesEventLeaderboardService(
@@ -76,6 +77,11 @@ public class ActivitiesEventLeaderboardService {
         this.eventLeaderboardEntriesRepository = eventLeaderboardEntriesRepository;
         this.activitiesMembersService = activitiesMembersService;
         this.accessControlService = accessControlService;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setAffinityRecomputeTaskService(AffinityRecomputeTaskService affinityRecomputeTaskService) {
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public EventLeaderboardStateDto queryState(String eventId, String subEventId) {
@@ -158,6 +164,7 @@ public class ActivitiesEventLeaderboardService {
             record.setUpdatedDate(nowIso);
             record.setUpdatedUser(actorUserId);
             eventLeaderboardEntriesRepository.save(record);
+            enqueueTournamentInputChanged(normalizedEventId, actorUserId);
             return queryState(normalizedEventId, normalizedSubEventId);
         }
 
@@ -180,6 +187,7 @@ public class ActivitiesEventLeaderboardService {
         record.setUpdatedDate(nowIso);
         record.setUpdatedUser(actorUserId);
         eventLeaderboardEntriesRepository.save(record);
+        enqueueTournamentInputChanged(normalizedEventId, actorUserId);
         return queryState(normalizedEventId, normalizedSubEventId);
     }
 
@@ -274,6 +282,7 @@ public class ActivitiesEventLeaderboardService {
         group.setUpdatedUser(actorUserId);
         activitySubEventGroupsRepository.save(group);
         upsertStageRuntimeGroupsCount(ownerSourceId, normalizedSubEventId, definitionEvent, stage, actorUserId);
+        enqueueTournamentInputChanged(ownerSourceId, actorUserId);
         return tournamentGroupsState(ownerSourceId, definitionEvent, actorUserId);
     }
 
@@ -314,14 +323,16 @@ public class ActivitiesEventLeaderboardService {
                 stage,
                 actorUserId);
         String groupOwnerId = normalizeId(runtimeRecord == null ? null : runtimeRecord.getId());
-        activitySubEventGroupsRepository
+        ActivitySubEventGroup group = activitySubEventGroupsRepository
                 .findByOwnerIdAndGroupId(groupOwnerId, normalizedGroupId)
-                .ifPresent(group -> {
-                    group.setStatus(STATUS_DELETED);
-                    group.setUpdatedDate(nowIso);
-                    group.setUpdatedUser(actorUserId);
-                    activitySubEventGroupsRepository.save(group);
-                });
+                .orElse(null);
+        if (group != null) {
+            group.setStatus(STATUS_DELETED);
+            group.setUpdatedDate(nowIso);
+            group.setUpdatedUser(actorUserId);
+            activitySubEventGroupsRepository.save(group);
+            enqueueTournamentInputChanged(ownerSourceId, actorUserId);
+        }
         upsertStageRuntimeGroupsCount(ownerSourceId, normalizedSubEventId, definitionEvent, stage, actorUserId);
         return tournamentGroupsState(ownerSourceId, definitionEvent, actorUserId);
     }
@@ -699,9 +710,25 @@ public class ActivitiesEventLeaderboardService {
             String groupId) {
         String normalizedGroupId = normalizeId(groupId);
         String memberOwnerId = groupMemberOwnerId(eventId, subEventId, normalizedGroupId);
-        return StringUtils.hasText(memberOwnerId)
-                ? activitiesMembersService.queryMembers("group", memberOwnerId)
-                : List.of();
+        if (!StringUtils.hasText(memberOwnerId)) {
+            return List.of();
+        }
+        List<ActivityMemberEntryDto> canonicalMembers =
+                activitiesMembersService.queryMembers("group", memberOwnerId);
+        if ((canonicalMembers != null && !canonicalMembers.isEmpty())
+                || activitiesMembersService.hasStoredOwnerMembers("group", memberOwnerId)
+                || memberOwnerId.equals(normalizedGroupId)) {
+            return canonicalMembers == null ? List.of() : canonicalMembers;
+        }
+        List<ActivityMemberEntryDto> legacyMembers =
+                activitiesMembersService.queryMembers("group", normalizedGroupId);
+        return legacyMembers == null ? List.of() : legacyMembers;
+    }
+
+    private void enqueueTournamentInputChanged(String eventId, String actorUserId) {
+        if (affinityRecomputeTaskService != null && StringUtils.hasText(normalizeId(eventId))) {
+            affinityRecomputeTaskService.enqueueEventChanged(eventId, actorUserId);
+        }
     }
 
     private String groupMemberOwnerId(String eventId, String subEventId, String groupId) {

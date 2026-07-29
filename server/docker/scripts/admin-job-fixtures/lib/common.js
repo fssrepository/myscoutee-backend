@@ -274,10 +274,19 @@
   function standardSpecs(ruleKey, specs) {
     const result = [...(specs || [])];
     if (ruleKey) {
-      result.push({
-        collection: "notificationRuleConfigs",
-        selector: { ruleKey }
-      });
+      const existingRuleSpec = result.find(
+        spec => spec && spec.collection === "notificationRuleConfigs"
+      );
+      if (existingRuleSpec) {
+        existingRuleSpec.selector = {
+          $or: [existingRuleSpec.selector, { ruleKey }]
+        };
+      } else {
+        result.push({
+          collection: "notificationRuleConfigs",
+          selector: { ruleKey }
+        });
+      }
     }
     return result;
   }

@@ -17,19 +17,20 @@ import com.raxim.myscoutee.registry.RegistryProtocol;
  * already accepted QMAU revision. It intentionally contains no local user id,
  * email, Firebase UID, provider subject, or action evidence.
  */
-@Document(collection = "globalIdentityPresenceOutbox")
+@Document(collection = "globalIdentityPresenceChunkOutbox")
 @CompoundIndexes({
         @CompoundIndex(
-                name = "global_identity_presence_deployment_period_revision",
-                def = "{'deploymentId': 1, 'period': 1, 'revision': 1}",
+                name = "global_identity_presence_deployment_period_revision_chunk",
+                def = "{'deploymentId': 1, 'period': 1, 'revision': 1,"
+                        + " 'chunkIndex': 1}",
                 unique = true),
         @CompoundIndex(
                 name = "global_identity_presence_delivery",
                 def = "{'deploymentId': 1, 'status': 1, 'nextRetryAt': 1,"
-                        + " 'period': 1, 'revision': 1}")
+                        + " 'period': 1, 'revision': 1, 'chunkIndex': 1}")
 })
 public class GlobalIdentityPresenceOutboxItem {
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_ACCEPTED = "ACCEPTED";
     public static final String STATUS_BLOCKED = "BLOCKED";
@@ -49,7 +50,13 @@ public class GlobalIdentityPresenceOutboxItem {
     private Long reportedQmauCount;
     private Long keyVersion;
     private String suite;
+    private String submissionId;
+    private Integer chunkIndex;
+    private Integer chunkCount;
+    private Long totalCommitmentCount;
+    private String commitmentSetHash;
     private List<String> networkIdentityCommitments = new ArrayList<>();
+    private Boolean materializationComplete = true;
     private String payloadHash;
     @Indexed(name = "global_identity_presence_idempotency", unique = true)
     private String idempotencyKey;
@@ -89,12 +96,24 @@ public class GlobalIdentityPresenceOutboxItem {
     public void setKeyVersion(Long keyVersion) { this.keyVersion = keyVersion; }
     public String getSuite() { return suite; }
     public void setSuite(String suite) { this.suite = suite; }
+    public String getSubmissionId() { return submissionId; }
+    public void setSubmissionId(String submissionId) { this.submissionId = submissionId; }
+    public Integer getChunkIndex() { return chunkIndex; }
+    public void setChunkIndex(Integer chunkIndex) { this.chunkIndex = chunkIndex; }
+    public Integer getChunkCount() { return chunkCount; }
+    public void setChunkCount(Integer chunkCount) { this.chunkCount = chunkCount; }
+    public Long getTotalCommitmentCount() { return totalCommitmentCount; }
+    public void setTotalCommitmentCount(Long totalCommitmentCount) { this.totalCommitmentCount = totalCommitmentCount; }
+    public String getCommitmentSetHash() { return commitmentSetHash; }
+    public void setCommitmentSetHash(String commitmentSetHash) { this.commitmentSetHash = commitmentSetHash; }
     public List<String> getNetworkIdentityCommitments() { return List.copyOf(networkIdentityCommitments); }
     public void setNetworkIdentityCommitments(List<String> commitments) {
         this.networkIdentityCommitments = commitments == null
                 ? new ArrayList<>()
                 : new ArrayList<>(commitments);
     }
+    public Boolean getMaterializationComplete() { return materializationComplete; }
+    public void setMaterializationComplete(Boolean materializationComplete) { this.materializationComplete = materializationComplete; }
     public String getPayloadHash() { return payloadHash; }
     public void setPayloadHash(String payloadHash) { this.payloadHash = payloadHash; }
     public String getIdempotencyKey() { return idempotencyKey; }

@@ -601,6 +601,137 @@ public final class RegistryProtocol {
         return canonicalAllowEmpty(values.toArray(String[]::new));
     }
 
+    public static String globalIdentityPresenceSetHash(
+            List<String> networkIdentityCommitments) {
+        List<String> commitments = List.copyOf(Objects.requireNonNull(
+                networkIdentityCommitments,
+                "Global-identity commitments must be an explicit array."));
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            updateCanonicalDigest(
+                    digest,
+                    "myscoutee-registry-global-identity-presence-set-v1",
+                    "canonical field 0",
+                    false);
+            updateCanonicalDigest(
+                    digest,
+                    Integer.toString(commitments.size()),
+                    "canonical field 1",
+                    false);
+            String previous = "";
+            for (int index = 0; index < commitments.size(); index++) {
+                String commitment = requireHash(
+                        commitments.get(index),
+                        "network_identity_commitment");
+                if (!previous.isEmpty()
+                        && previous.compareTo(commitment) > 0) {
+                    throw new IllegalArgumentException(
+                            "Global-identity commitments must be sorted.");
+                }
+                updateCanonicalDigest(
+                        digest,
+                        commitment,
+                        "canonical field " + (index + 2),
+                        false);
+                previous = commitment;
+            }
+            return "sha256:" + HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable.", exception);
+        }
+    }
+
+    public static byte[] globalIdentityPresenceChunkPayload(
+            String submissionId,
+            String period,
+            long revision,
+            String supersedesBatchId,
+            long reportedQmauCount,
+            long keyVersion,
+            String suite,
+            int chunkIndex,
+            int chunkCount,
+            long totalCommitmentCount,
+            String commitmentSetHash,
+            List<String> networkIdentityCommitments) {
+        List<String> commitments = List.copyOf(Objects.requireNonNull(
+                networkIdentityCommitments,
+                "Global-identity commitments must be an explicit array."));
+        if (chunkIndex < 0 || chunkCount <= 0 || chunkIndex >= chunkCount) {
+            throw new IllegalArgumentException(
+                    "Global-identity chunk coordinates are invalid.");
+        }
+        if (totalCommitmentCount < commitments.size()) {
+            throw new IllegalArgumentException(
+                    "Global-identity total commitment count is invalid.");
+        }
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-global-identity-presence-chunk-v2");
+        values.add(requireToken(submissionId, "submission_id"));
+        values.add(requireCanonical(period, "period"));
+        values.add(Long.toString(requirePositive(revision, "revision")));
+        values.add(nullToEmpty(supersedesBatchId));
+        values.add(Long.toString(requireNonNegative(
+                reportedQmauCount,
+                "reported_qmau_count")));
+        values.add(Long.toString(requirePositive(keyVersion, "key_version")));
+        values.add(requireCanonical(suite, "suite"));
+        values.add(Integer.toString(chunkIndex));
+        values.add(Integer.toString(chunkCount));
+        values.add(Long.toString(requireNonNegative(
+                totalCommitmentCount,
+                "total_commitment_count")));
+        values.add(requireHash(commitmentSetHash, "commitment_set_hash"));
+        values.add(Integer.toString(commitments.size()));
+        String previous = "";
+        for (String commitment : commitments) {
+            String normalized = requireHash(
+                    commitment,
+                    "network_identity_commitment");
+            if (!previous.isEmpty()
+                    && previous.compareTo(normalized) > 0) {
+                throw new IllegalArgumentException(
+                        "Global-identity commitments must be sorted.");
+            }
+            values.add(normalized);
+            previous = normalized;
+        }
+        return canonicalAllowEmpty(values.toArray(String[]::new));
+    }
+
+    public static byte[] globalIdentityPresenceChunkReceipt(
+            GlobalIdentityPresenceBatchResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity presence response must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-global-identity-presence-chunk-receipt-v2",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.deploymentId(),
+                response.submissionId(),
+                response.period(),
+                requiredLong(response.revision(), "revision"),
+                requiredInteger(response.chunkIndex(), "chunk_index"),
+                requiredInteger(response.chunkCount(), "chunk_count"),
+                requiredInteger(
+                        response.receivedChunkCount(),
+                        "received_chunk_count"),
+                requiredLong(
+                        response.totalCommitmentCount(),
+                        "total_commitment_count"),
+                response.commitmentSetHash(),
+                response.requestHash(),
+                response.payloadHash(),
+                response.acceptedAt(),
+                Boolean.toString(Boolean.TRUE.equals(response.complete())),
+                nullToEmpty(response.batchId()),
+                response.event() == null
+                        ? ""
+                        : nullToEmpty(response.event().eventHash()),
+                response.registryKeyId());
+    }
+
     public static byte[] globalIdentityEvent(
             GlobalIdentityEvent event) {
         Objects.requireNonNull(
@@ -1196,6 +1327,24 @@ public final class RegistryProtocol {
             canonical.append(value).append('\n');
         }
         return canonical.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static void updateCanonicalDigest(
+            MessageDigest digest,
+            String value,
+            String fieldName,
+            boolean allowEmpty) {
+        Objects.requireNonNull(digest, "Message digest must not be null.");
+        String normalized = allowEmpty
+                ? nullToEmpty(value)
+                : requireCanonical(value, fieldName);
+        if (normalized.indexOf('\r') >= 0
+                || normalized.indexOf('\n') >= 0) {
+            throw new IllegalArgumentException(
+                    fieldName + " must not contain CR or LF.");
+        }
+        digest.update(normalized.getBytes(StandardCharsets.UTF_8));
+        digest.update((byte) '\n');
     }
 
     public static String sha256(byte[] value) {
@@ -2146,12 +2295,18 @@ public final class RegistryProtocol {
             String timestamp,
             String nonce,
             @JsonProperty("idempotency_key") String idempotencyKey,
+            @JsonProperty("submission_id") String submissionId,
             String period,
             Long revision,
             @JsonProperty("supersedes_batch_id") String supersedesBatchId,
             @JsonProperty("reported_qmau_count") Long reportedQmauCount,
             @JsonProperty("key_version") Long keyVersion,
             String suite,
+            @JsonProperty("chunk_index") Integer chunkIndex,
+            @JsonProperty("chunk_count") Integer chunkCount,
+            @JsonProperty("total_commitment_count")
+                    Long totalCommitmentCount,
+            @JsonProperty("commitment_set_hash") String commitmentSetHash,
             @JsonProperty("network_identity_commitments")
                     List<String> networkIdentityCommitments,
             @JsonProperty("payload_hash") String payloadHash,
@@ -2230,12 +2385,27 @@ public final class RegistryProtocol {
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("batch_id") String batchId,
             @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("submission_id") String submissionId,
             String period,
             Long revision,
+            @JsonProperty("chunk_index") Integer chunkIndex,
+            @JsonProperty("chunk_count") Integer chunkCount,
+            @JsonProperty("received_chunk_count") Integer receivedChunkCount,
+            @JsonProperty("total_commitment_count")
+                    Long totalCommitmentCount,
+            @JsonProperty("commitment_set_hash") String commitmentSetHash,
             @JsonProperty("linked_count") Long linkedCount,
             @JsonProperty("unlinked_count") Long unlinkedCount,
             GlobalIdentityEvent event,
             GlobalIdentitySnapshot snapshot,
+            Boolean complete,
+            @JsonProperty("request_hash") String requestHash,
+            @JsonProperty("payload_hash") String payloadHash,
+            @JsonProperty("accepted_at") String acceptedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            @JsonProperty("receipt_hash") String receiptHash,
+            @JsonProperty("receipt_signature") String receiptSignature,
             Boolean duplicate) {
     }
 

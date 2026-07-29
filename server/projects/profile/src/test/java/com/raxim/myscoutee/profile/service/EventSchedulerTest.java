@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -28,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
@@ -37,6 +39,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -53,11 +56,15 @@ class EventSchedulerTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    @Mock
     private SchedulerPlanMarkersRepository schedulerPlanMarkersRepository;
     @Mock
     private ActivitiesMembersService activitiesMembersService;
     @Mock
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
+    @Mock
+    private ActivityTournamentGroupCounterService activityTournamentGroupCounterService;
     @Mock
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
@@ -114,7 +121,7 @@ class EventSchedulerTest {
                         List.of(),
                         List.of("locked-1"),
                         List.of("pending-1", "pending-2"),
-                        List.of(),
+                        List.of("pending-1", "pending-2"),
                         List.of(),
                         Set.of("creator-1"),
                         3));
@@ -174,6 +181,55 @@ class EventSchedulerTest {
         });
         verify(activitiesMembersService).inviteUsers("event-1", "creator-1", List.of("u1", "u2"), event);
         verify(eventInviteNotificationService).notifyInvitees(event, List.of("u1", "u2"), "creator-1");
+    }
+
+    @Test
+    void generatePriorityPlansDoesNotReserveCapacityForPendingJoinRequests() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-pending-request");
+        event.setAutoInviter(true);
+        event.setStatus("A");
+        event.setCapacityTotal(2);
+        event.setCreatorUserId("creator-1");
+        event.setTitle("Board Game Night");
+
+        when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("creator-1"),
+                user("accepted-1"),
+                user("request-1"),
+                user("candidate-1")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
+                rate("accepted-1", "candidate-1", 1.0d)));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-pending-request"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-pending-request",
+                        List.of(),
+                        List.of("accepted-1"),
+                        List.of("request-1"),
+                        List.of(),
+                        List.of("request-1"),
+                        Set.of("creator-1"),
+                        2));
+        when(activitiesMembersService.inviteUsers(
+                "event-pending-request",
+                "creator-1",
+                List.of("candidate-1"),
+                event))
+                .thenReturn(List.of("candidate-1"));
+
+        List<InviteBatchPlan> plans = scheduler.generatePriorityPlans();
+
+        assertThat(plans).singleElement().satisfies(plan ->
+                assertThat(plan.invitedUserIds()).containsExactly("candidate-1"));
+        verify(activitiesMembersService).inviteUsers(
+                "event-pending-request",
+                "creator-1",
+                List.of("candidate-1"),
+                event);
     }
 
     @Test
@@ -251,6 +307,76 @@ class EventSchedulerTest {
                     "assignmentScope",
                     "assignmentFingerprint");
         });
+    }
+
+    @Test
+    void generateRandomPlansKeepsValidRoomsWhenTheLastConfiguredRoomCannotReachItsMinimum() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-partial");
+        event.setStatus("A");
+        event.setCreatorUserId("creator-1");
+        event.setTitle("Partial room test");
+        event.setSubEvents(List.of(subEvent("stage-partial", 3, 2, 2)));
+
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("a1"),
+                user("a2"),
+                user("b1"),
+                user("b2"),
+                user("outside")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
+                rate("a1", "a2", 1.0d),
+                rate("a1", "outside", 0.01d),
+                rate("b1", "b2", 0.95d)));
+        when(activitiesMembersService.buildBatchEventSnapshots(any()))
+                .thenReturn(Map.of(
+                        "event-partial",
+                        new ActivitiesMembersService.OwnerMembersSnapshot(
+                                "event",
+                                "event-partial",
+                                List.of(),
+                                List.of("a1", "a2", "b1", "b2", "outside"),
+                                List.of(),
+                                List.of(),
+                                List.of(),
+                                Set.of("creator-1"),
+                                5)));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(eq("group"), anyCollection()))
+                .thenReturn(Map.of());
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                eq("event-partial"),
+                eq("stage-partial"),
+                anyList()))
+                .thenReturn(List.of(
+                        group("stage-partial:group:1", "Group A"),
+                        group("stage-partial:group:2", "Group B"),
+                        group("stage-partial:group:3", "Group C")));
+        when(activitiesMembersService.syncGroupMembers(
+                anyString(),
+                eq("creator-1"),
+                anyList()))
+                .thenAnswer(invocation -> invocation.<List<String>>getArgument(2));
+
+        List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
+
+        assertThat(plans).hasSize(2);
+        assertThat(plans).extracting(GeneratedEventPlan::seedId)
+                .containsExactly("stage-partial:group:1", "stage-partial:group:2");
+        assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder("a1", "a2", "b1", "b2")
+                .doesNotContain("outside");
+        verify(activitiesMembersService, times(2)).syncGroupMembers(
+                anyString(),
+                eq("creator-1"),
+                anyList());
+        verify(activitiesMembersService, never()).syncGroupMembers(
+                eq("event-partial:stage-partial:stage-partial:group:3"),
+                anyString(),
+                anyList());
+        verify(activityTournamentGroupCounterService).syncParent("event-partial", "stage-partial");
     }
 
     @Test
@@ -455,6 +581,7 @@ class EventSchedulerTest {
 
         assertThat(states).containsExactly(currentState);
         verify(activitiesMembersService).syncGroupMembers("event-3:sub-2:next-group", "creator-1", List.of("u1", "u2"));
+        verify(activityTournamentGroupCounterService).syncParent("event-3", "sub-2");
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -617,6 +744,234 @@ class EventSchedulerTest {
     }
 
     @Test
+    void generateScorePlansSkipsMutationWhenTargetCapacityCannotHoldEveryWinner() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-capacity-overflow");
+        event.setStatus("A");
+        event.setCreatorUserId("creator-1");
+        event.setSubEvents(List.of(
+                withStageStatus(explicitSubEvent("qualifier"), "F"),
+                singleGroupSubEvent("final", "final-group")));
+        EventLeaderboardStateDto qualifierState = new EventLeaderboardStateDto(
+                "event-capacity-overflow",
+                "qualifier",
+                "Qualifier",
+                "Score",
+                List.of(
+                        leaderboardGroup("qualifier-a", "u1"),
+                        leaderboardGroup("qualifier-b", "u2")));
+
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-capacity-overflow"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-capacity-overflow",
+                        List.of(),
+                        List.of("u1", "u2"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("creator-1"),
+                        2));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                "event-capacity-overflow", "qualifier"))
+                .thenReturn(List.of(group("qualifier-a", "A"), group("qualifier-b", "B")));
+        when(activitiesEventLeaderboardService.queryState("event-capacity-overflow", "qualifier"))
+                .thenReturn(qualifierState);
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                "event-capacity-overflow", "final"))
+                .thenReturn(List.of(new SubEventGroupItemDto(
+                        "final-group", "Final", 1, 1, "generated")));
+
+        assertThatThrownBy(scheduler::generateScorePlans)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("cannot preserve the exact advancing-user set");
+
+        verify(activitiesMembersService, never()).syncGroupMembers(
+                anyString(), anyString(), anyList());
+    }
+
+    @Test
+    void generateScorePlansConsumesFinalizedGeneratedSlotRuntimeState() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent slot = new ActivityEvent();
+        slot.setSourceId("event-1:slot:morning");
+        slot.setStatus("A");
+        slot.setCreatorUserId("creator-1");
+        slot.setSubEvents(List.of(
+                withStageStatus(explicitSubEvent("qualifier"), "SR"),
+                singleGroupSubEvent("final", "final-group")));
+        ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+        runtime.setOwnerId("event-1:slot:morning");
+        runtime.setSubEventId("qualifier");
+        runtime.setStageStatus("F");
+        EventLeaderboardStateDto qualifierState = new EventLeaderboardStateDto(
+                "event-1:slot:morning",
+                "qualifier",
+                "Qualifier",
+                "Score",
+                List.of(
+                        leaderboardGroup("qualifier-a", "u1"),
+                        leaderboardGroup("qualifier-b", "u2")));
+
+        when(activityEventsRepository.findAll()).thenReturn(List.of(slot));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdIn(
+                List.of("event-1:slot:morning"))).thenReturn(List.of(runtime));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1:slot:morning"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1:slot:morning",
+                        List.of(),
+                        List.of("u1", "u2"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("creator-1"),
+                        2));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("u1"),
+                user("u2")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                "event-1:slot:morning", "qualifier"))
+                .thenReturn(List.of(group("qualifier-a", "Qualifier")));
+        when(activitiesEventLeaderboardService.queryState(
+                "event-1:slot:morning", "qualifier")).thenReturn(qualifierState);
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                "event-1:slot:morning", "final"))
+                .thenReturn(List.of(group("final-group", "Final")));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(
+                eq("group"), anyCollection())).thenReturn(Map.of());
+        when(activitiesMembersService.syncGroupMembers(
+                "event-1:slot:morning:final:final-group",
+                "creator-1",
+                List.of("u1", "u2"))).thenReturn(List.of("u1", "u2"));
+
+        scheduler.generateScorePlans();
+
+        verify(activitiesMembersService).syncGroupMembers(
+                "event-1:slot:morning:final:final-group",
+                "creator-1",
+                List.of("u1", "u2"));
+    }
+
+    @Test
+    void generateScorePlansDoesNotRewriteNextStageAfterScoreReviewStarted() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-locked-final");
+        event.setStatus("A");
+        event.setCreatorUserId("creator-1");
+        event.setSubEvents(List.of(
+                withStageStatus(explicitSubEvent("qualifier"), "F"),
+                withStageStatus(singleGroupSubEvent("final", "final-group"), "SR")));
+        EventLeaderboardStateDto qualifierState = new EventLeaderboardStateDto(
+                "event-locked-final",
+                "qualifier",
+                "Qualifier",
+                "Score",
+                List.of(leaderboardGroup("qualifier-a", "u1")));
+
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-locked-final"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-locked-final",
+                        List.of(),
+                        List.of("u1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("creator-1"),
+                        1));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
+        when(activitiesEventLeaderboardService.queryState("event-locked-final", "qualifier"))
+                .thenReturn(qualifierState);
+
+        scheduler.generateScorePlans();
+
+        verify(activitiesMembersService, never()).syncGroupMembers(
+                anyString(), anyString(), anyList());
+    }
+
+    @Test
+    void generateScorePlansCleansPendingLoserEvenWhenAcceptedWinnersAlreadyMatch() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-pending-loser");
+        event.setStatus("A");
+        event.setCreatorUserId("creator-1");
+        event.setSubEvents(List.of(
+                withStageStatus(explicitSubEvent("qualifier"), "F"),
+                singleGroupSubEvent("final", "final-group")));
+        EventLeaderboardStateDto qualifierState = new EventLeaderboardStateDto(
+                "event-pending-loser",
+                "qualifier",
+                "Qualifier",
+                "Score",
+                List.of(
+                        leaderboardGroup("qualifier-a", "u1"),
+                        leaderboardGroup("qualifier-b", "u2")));
+
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-pending-loser"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-pending-loser",
+                        List.of(),
+                        List.of("u1", "u2", "u3"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("creator-1"),
+                        3));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("u1"), user("u2"), user("u3")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                "event-pending-loser", "qualifier"))
+                .thenReturn(List.of(group("qualifier-a", "A"), group("qualifier-b", "B")));
+        when(activitiesEventLeaderboardService.queryState("event-pending-loser", "qualifier"))
+                .thenReturn(qualifierState);
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                "event-pending-loser", "final"))
+                .thenReturn(List.of(group("final-group", "Final")));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(
+                org.mockito.ArgumentMatchers.eq("group"),
+                anyCollection()))
+                .thenReturn(Map.of(
+                        "event-pending-loser:final:final-group",
+                        new ActivitiesMembersService.OwnerMembersSnapshot(
+                                "group",
+                                "event-pending-loser:final:final-group",
+                                List.of(),
+                                List.of("u1", "u2"),
+                                List.of("u3"),
+                                List.of(),
+                                List.of("u3"),
+                                Set.of(),
+                                2)));
+        when(activitiesMembersService.syncGroupMembers(
+                "event-pending-loser:final:final-group",
+                "creator-1",
+                List.of("u1", "u2")))
+                .thenReturn(List.of("u1", "u2"));
+
+        scheduler.generateScorePlans();
+
+        verify(activitiesMembersService).syncGroupMembers(
+                "event-pending-loser:final:final-group",
+                "creator-1",
+                List.of("u1", "u2"));
+    }
+
+    @Test
     void scheduledTournamentReviewRepairsAdvancementAndSecondPassIsNoOp() {
         EventScheduler scheduler = createScheduler();
 
@@ -712,8 +1067,6 @@ class EventSchedulerTest {
                 anyCollection()))
                 .thenReturn(
                         Map.of("event-scheduled-advancement:final:final-group", staleGroup),
-                        Map.of("event-scheduled-advancement:final:final-group", staleGroup),
-                        Map.of("event-scheduled-advancement:final:final-group", exactGroup),
                         Map.of("event-scheduled-advancement:final:final-group", exactGroup));
         when(activitiesMembersService.syncGroupMembers(
                 "event-scheduled-advancement:final:final-group",
@@ -960,19 +1313,22 @@ class EventSchedulerTest {
 
     private EventScheduler createScheduler() {
         lenient().when(schedulerPlanMarkersRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
-        return new EventScheduler(
+        EventScheduler scheduler = new EventScheduler(
                 usersRepository,
                 userAffinityEdgesRepository,
                 activityEventsRepository,
                 schedulerPlanMarkersRepository,
                 activitiesMembersService,
                 activitiesEventLeaderboardService,
+                activityTournamentGroupCounterService,
                 eventInviteNotificationService,
                 eventCounterExpiryService,
                 eventCheckoutBasketService,
                 notificationRuleRegistryService,
                 platformParametersService,
                 notificationOutboxService);
+        scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
+        return scheduler;
     }
 
     private Users user(String userId) {

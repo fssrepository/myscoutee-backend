@@ -38,6 +38,17 @@ assert_dockerignore_line() {
     || fail "${dockerignore#${REPO_ROOT}/} does not exclude ${pattern}"
 }
 
+assert_no_development_scripts_mount() {
+  local compose_file="$1"
+
+  [[ -f "${compose_file}" ]] \
+    || fail "production Compose file is missing: ${compose_file#${REPO_ROOT}/}"
+  if sed -E 's/[[:space:]]+#.*$//' "${compose_file}" \
+      | grep -Eq "^[[:space:]]*(-[[:space:]]+|source:[[:space:]]+).*docker/scripts([/:]|[\"']?[[:space:]]*$)"; then
+    fail "${compose_file#${REPO_ROOT}/} exposes development scripts inside a runtime container"
+  fi
+}
+
 SERVER_DOCKERIGNORE="${REPO_ROOT}/server/.dockerignore"
 NGINX_DOCKERIGNORE="${REPO_ROOT}/server/docker/.dockerignore"
 for pattern in \
@@ -56,6 +67,14 @@ for pattern in \
   '**/*service-account*.json' '**/*client-secret*.json' \
   '**/*provider-credentials*.json'; do
   assert_dockerignore_line "${NGINX_DOCKERIGNORE}" "${pattern}"
+done
+
+for production_compose in \
+  "${REPO_ROOT}/server/docker-compose-prod.yml" \
+  "${REPO_ROOT}/server/docker-compose.replicaset.yml" \
+  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" \
+  "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml"; do
+  assert_no_development_scripts_mount "${production_compose}"
 done
 
 DEB_PATH="$(
@@ -217,6 +236,9 @@ done < <(
     || true
 )
 PACKAGED_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose-prod.yml"
+PACKAGED_REPLICASET_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose.replicaset.yml"
+assert_no_development_scripts_mount "${PACKAGED_COMPOSE}"
+assert_no_development_scripts_mount "${PACKAGED_REPLICASET_COMPOSE}"
 if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' "${PACKAGED_COMPOSE}"; then
   fail "production Compose contains a baked administrator/developer identity"
 fi

@@ -725,6 +725,17 @@ public class OperatorQualifiedMauReportService {
         }
     }
 
+    void validateAcceptedForGlobalIdentity(
+            RegisteredRuntime runtime,
+            QualifiedMauReportOutboxItem item) {
+        validateStoredItem(runtime, item);
+        if (!QualifiedMauReportOutboxItem.STATUS_ACCEPTED.equals(
+                item.getStatus())) {
+            throw new IllegalStateException(
+                    "Global identity presence requires an accepted QMAU revision.");
+        }
+    }
+
     private RegisteredRuntime requireOperatorRuntime(
             MongoSessionMode requestedMode) {
         MongoSessionMode mode = requestedMode == null

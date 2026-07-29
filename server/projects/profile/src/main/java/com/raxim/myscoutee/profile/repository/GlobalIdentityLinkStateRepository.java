@@ -18,10 +18,16 @@ public interface GlobalIdentityLinkStateRepository
             findFirstByLocalUserIdOrderByUpdatedAtDesc(String localUserId);
 
     List<GlobalIdentityLinkState>
-            findByDeploymentIdAndLocalUserIdInAndStatusAndKeyVersionAndSuite(
+            findByPendingOperationIsNotNullOrderByUpdatedAtAsc();
+
+    List<GlobalIdentityLinkState>
+            findByPurgeRequestedTrueOrderByUpdatedAtAsc();
+
+    List<GlobalIdentityLinkState>
+            findByDeploymentIdAndLocalUserIdInAndStatusInAndKeyVersionAndSuite(
                     String deploymentId,
                     Collection<String> localUserIds,
-                    String status,
+                    Collection<String> statuses,
                     Long keyVersion,
                     String suite);
 }

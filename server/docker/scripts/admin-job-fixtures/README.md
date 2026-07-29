@@ -7,7 +7,8 @@ The toolkit:
 - accepts only a database named exactly `demo_db` or `e2e_db`;
 - also verifies the seeded schema-v3 deployment identity (`MyScoutee Demo Operator` or `MyScoutee E2E Operator`) before doing anything;
 - never starts, stops, or restarts Mongo, the backend, npm, or any other process;
-- calls the already-running loopback backend only for the isolated `notification-read-path` API check;
+- calls the already-running loopback backend only for the isolated `notification-read-path`
+  and prepared `bell-rating-feedback` API projections;
 - uses the already-running `mongodb` container when available, otherwise an already-installed local `mongosh`;
 - snapshots the exact documents selected by a scenario before changing them;
 - allows only one prepared scenario at a time;
@@ -15,7 +16,7 @@ The toolkit:
 
 It must not be used as a production migration or a production test tool. All application jobs should still be enabled by their normal defaults in every deployment; this fixture tool rejects trusted/production databases so manual experiments cannot modify them.
 
-The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; it is not installed by the Debian package and is never exposed as an application endpoint. `packaging/tests/package-content-test.sh` fails if any path from this directory enters a production package.
+The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; the production Compose stack does not mount the development scripts directory; it is not installed by the Debian package and is never exposed as an application endpoint. `packaging/tests/package-content-test.sh` fails if any path from this directory enters a production package or if production Compose exposes the development scripts directory.
 
 ## Admin Job inventory and controls
 
@@ -150,6 +151,7 @@ Variations:
 - `open-spots`: one accepted admin and capacity for two invitations.
 - `full`: accepted capacity is already full; this is the zero-change control.
 - `weighted`: one accepted creator, one already-pending highest-weight invitee, and four available candidates with deterministic weights. Exactly the next two candidates must be invited.
+- `waitlist-capacity`: capacity four with one accepted creator, one already-reserved invitation, and four waitlisted users inserted newest-first. Only the two oldest waitlisted users fit.
 
 Preparation temporarily disables `autoInviter` on every other currently enabled demo event and quarantines existing pending waitlist rows. This prevents the two global passes from inviting a very large candidate set.
 
@@ -158,8 +160,11 @@ Expected:
 - `open-spots`: two connected users become pending event members with `requestKind:"invite"`; a priority plan marker and invite outbox/bell records appear.
 - `full`: no new membership, marker, outbox, or bell record.
 - `weighted`: the existing pending user with weight `0.99` remains reserved and is not invited again; the candidates weighted `0.95` and `0.80` are the exact new invitees; the `0.40` and `0.10` candidates remain outside. Marker, outbox recipients, and bell recipients must contain exactly the same two IDs.
+- `waitlist-capacity`: exactly the two oldest rows change from `requestKind:"waitlist"`/`pendingSource:"member"` to `requestKind:"waitlist-invite"`/`pendingSource:"admin"`; the two newer rows stay waitlisted, the existing invite remains unchanged, no priority marker appears, and outbox/bell recipients are exactly the two promoted IDs.
 
-Pending invitations reduce open capacity. After the first successful `weighted` pass, run `status` once to capture its fixture fingerprint, then `trigger event-auto-inviter`, wait for the existing scheduler, and run `status` again. `validation.repeatedPassChangedZeroRecords` and `validation.membershipMarkerAndNotificationSetUnchanged` must be true.
+The `waitlist-capacity` event intentionally has `autoInviter:false`. The waitlist sweep discovers it from its pending membership rows independently; disabling graph-based priority invitations keeps this variation's two changed rows and notifications exact.
+
+Pending invitations reduce open capacity. After the first successful `weighted` or `waitlist-capacity` pass, run `status` once to capture its fixture fingerprint, then `trigger event-auto-inviter`, wait for the existing scheduler, and run `status` again. For `weighted`, `validation.repeatedPassChangedZeroRecords` and `validation.membershipMarkerAndNotificationSetUnchanged` must be true. For `waitlist-capacity`, `validation.repeatedPassChangedZeroRecords` and `validation.membershipAndNotificationSetUnchanged` must be true.
 
 ### `event-tournament-review`
 
@@ -248,13 +253,17 @@ This scenario uses the already-running local backend but does not start it:
 ```bash
 bash admin-job-fixtures.sh prepare notification-read-path group-chat
 bash admin-job-fixtures.sh status notification-read-path
+bash admin-job-fixtures.sh trigger notification-read-path
+bash admin-job-fixtures.sh status notification-read-path
+bash admin-job-fixtures.sh trigger notification-read-path
 bash admin-job-fixtures.sh status notification-read-path
 bash admin-job-fixtures.sh reset notification-read-path
 ```
 
 `prepare` snapshots the selected Mongo documents, inserts the isolated context, then posts exactly one chat message through the real HTTP endpoint. That application call exercises chat persistence, recipient selection, `NotificationOutboxService.enqueue`, and immediate in-app inbox materialization.
 
-`status` is read-only and checks both Mongo and the real API read models:
+Before `trigger`, `status` is read-only and checks both Mongo and the real API
+unread models:
 
 - exactly one outbox item and one `userNotifications` row exist;
 - the recipient is exactly the other participant and the sender is excluded;
@@ -263,6 +272,21 @@ bash admin-job-fixtures.sh reset notification-read-path
 - `GET /auth/me` exposes matching stored notification and chat counters;
 - `GET /activities/chats` exposes `unread:1`, `channelType:"groupSubEvent"`, and matching event/sub-event/group IDs and navigation context;
 - a second `status` remains unchanged, proving the poll itself has no write side effects.
+
+`trigger notification-read-path` calls the real
+`POST /notifications/{id}/read` endpoint for the isolated bell. It then proves:
+
+- the response contains the same notification ID and exact chat source;
+- `readAtIso` is non-empty and `unreadCount` is zero;
+- the `new` bucket is empty while the `all` bucket contains exactly the read row;
+- both `/auth/me` notification projections are zero;
+- the independent group-chat unread flag and chat counters remain one, because reading
+  the bell must not silently read the chat;
+- a repeated `trigger` preserves the first `readAtIso`, proving read idempotency.
+
+After the trigger, repeated `status` calls remain read-only and report
+`readState:"read"`, the stable `readAtIso`, zero bell/profile unread count, and the
+unchanged event/sub-event/group chat context.
 
 The bell is intentionally materialized during enqueue, before Firebase push delivery. With stock Firebase disabled, the outbox staying `pending` is expected. If Firebase is enabled in a disposable local stack, the no-token item may become `sent` with zero token successes without changing the bell assertion.
 
@@ -339,9 +363,16 @@ This is an application interaction check, not a scheduled job:
 
 Before the action, the fixture temporarily removes only the selected rating/event's matching historical bell/outbox documents behind the exact reset snapshot. It refuses to continue if one of those outbox items is still tracked by the running worker. This makes the oracle independent of unrelated target notifications.
 
-`status` reports the persisted action and validates the exact notification contract:
+`status` reports the persisted action and validates the exact notification contract.
+Once the Mongo oracle passes, the wrapper also queries the already-running loopback
+backend for the actor and every submitted target:
 
 - `PASS`: one logical outbox has exactly the submitted recipients; every target has exactly one unread bell with the expected kind, source, sender, action path, and payload; the actor has none; the stored unread projection matches the notification collection.
+- The API sub-oracle requires the exact persisted notification ID and DTO fields in
+  `GET /notifications?bucket=new`, requires its `unreadCount` to equal the Mongo
+  collection count, and requires both `/auth/me` notification counter projections to
+  equal that same count. The actor API result must not contain the logical
+  rating/feedback notification.
 - `FAIL/GAP`: persistence worked but at least one exact outbox, bell fanout, duplicate, actor-exclusion, or unread-projection assertion failed.
 - `WAITING`: the manual action has not been submitted.
 
@@ -381,5 +412,7 @@ Admin detail should display this stored pending delta and the previous run's sto
 - The global event jobs are quarantined rather than backend-scoped because their scheduled entry points do not accept fixture IDs. Their targeted internal graph methods exist, but the Admin API does not expose a safe fixture filter.
 - A hard application crash between a worker mutation and reset can leave the snapshot intact; run `reset <job>` after the app is back.
 - Redis wakeup stream records are not modified or cleared. Mongo status remains the source of truth for these fixtures.
-- `notification-read-path` only calls an explicitly loopback API root and requires the matching already-running demo/e2e backend.
+- `notification-read-path` and the API sub-oracle of a prepared
+  `bell-rating-feedback` status only call an explicitly loopback API root and require
+  the matching already-running demo/e2e backend.
 - The scripts do not run a browser, visual confirmation, npm, Gradle, Docker Compose, or a full seed reset.

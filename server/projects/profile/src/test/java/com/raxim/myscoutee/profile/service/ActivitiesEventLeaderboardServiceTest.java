@@ -47,6 +47,8 @@ class ActivitiesEventLeaderboardServiceTest {
     private ActivitiesMembersService activitiesMembersService;
     @Mock
     private AccessControlService accessControlService;
+    @Mock
+    private AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     @Test
     void materializeGeneratedGroupsReturnsGeneratedSubEventGroupsWithoutPersistingThem() {
@@ -206,6 +208,37 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     @Test
+    void upsertEntrySignalsScheduledTournamentInputChange() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        service.setAffinityRecomputeTaskService(affinityRecomputeTaskService);
+        when(accessControlService.canCurrentActorSubmitLeaderboardEntry("member-1", "event-1"))
+                .thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of());
+
+        service.upsertEntry(new EventLeaderboardEntryUpsertRequestDto(
+                "member-1",
+                "event-1",
+                "sub-1",
+                "group-1",
+                "Score",
+                "member-1",
+                10,
+                "note",
+                null,
+                null,
+                null,
+                null));
+
+        verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "member-1");
+    }
+
+    @Test
     void virtualSlotLeaderboardUsesParentDefinitionAndKeepsEntriesScopedToSlot() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
@@ -310,6 +343,64 @@ class ActivitiesEventLeaderboardServiceTest {
                 .extracting(row -> row.memberId())
                 .contains("accepted-user")
                 .doesNotContain("outsider");
+    }
+
+    @Test
+    void leaderboardMergesLegacyRawGroupOwnerWithoutTrustingEntryOnlyOutsiders() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent event = eventRecord("event-1", "canonical");
+        String canonicalOwnerId = "event-1:sub-1:sub-1:group:1";
+        EventLeaderboardEntry legacyMemberScore = scoreEntry("legacy-score", "legacy-member", 7);
+        EventLeaderboardEntry outsiderScore = scoreEntry("outsider-score", "outsider", 100);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(List.of(outsiderScore, legacyMemberScore));
+        when(activitiesMembersService.queryMembers("group", canonicalOwnerId)).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers("group", "sub-1:group:1"))
+                .thenReturn(List.of(activityMember("legacy-member", "accepted")));
+
+        var state = service.queryState("event-1", "sub-1");
+
+        assertThat(state.groups().getFirst().advancingMemberIds())
+                .containsExactly("legacy-member");
+        assertThat(state.groups().getFirst().scoreRows())
+                .extracting(row -> row.memberId())
+                .contains("legacy-member")
+                .doesNotContain("outsider");
+    }
+
+    @Test
+    void canonicalGroupHistoryPreventsDeletedMemberFromResurrectingThroughLegacyOwner() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent event = eventRecord("event-1", "canonical");
+        String canonicalOwnerId = "event-1:sub-1:sub-1:group:1";
+        EventLeaderboardEntry legacyMemberScore = scoreEntry("legacy-score", "legacy-member", 7);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(List.of(legacyMemberScore));
+        when(activitiesMembersService.queryMembers("group", canonicalOwnerId)).thenReturn(List.of());
+        when(activitiesMembersService.hasStoredOwnerMembers("group", canonicalOwnerId)).thenReturn(true);
+
+        var state = service.queryState("event-1", "sub-1");
+
+        assertThat(state.groups().getFirst().advancingMemberIds())
+                .doesNotContain("legacy-member");
+        assertThat(state.groups().getFirst().scoreRows())
+                .extracting(row -> row.memberId())
+                .doesNotContain("legacy-member");
+        verify(activitiesMembersService, never()).queryMembers("group", "sub-1:group:1");
     }
 
     @Test

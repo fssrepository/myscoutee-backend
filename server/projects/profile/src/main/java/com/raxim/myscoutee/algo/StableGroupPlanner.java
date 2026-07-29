@@ -183,12 +183,28 @@ public class StableGroupPlanner {
         }
 
         List<Range> normalizedRanges = normalizeRanges(ranges);
-        if (normalizedRanges.isEmpty() || !canSatisfyRemainingRanges(eligibleUserIds.size(), normalizedRanges, normalizedTypes, hasAny)) {
+        if (normalizedRanges.isEmpty()) {
             return List.of();
         }
 
-List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds, normalizedRanges, normalizedTypes, hasAny, 0);
-        if (plannedGroups == null) {
+        List<List<String>> plannedGroups = null;
+        for (int targetCount = normalizedRanges.size(); targetCount > 0; targetCount -= 1) {
+            List<Range> targetRanges = normalizedRanges.subList(0, targetCount);
+            if (!canSatisfyRemainingRanges(eligibleUserIds.size(), targetRanges, normalizedTypes, hasAny)) {
+                continue;
+            }
+            plannedGroups = planTargetedGroups(
+                    snapshot,
+                    eligibleUserIds,
+                    targetRanges,
+                    normalizedTypes,
+                    hasAny,
+                    0);
+            if (plannedGroups != null) {
+                break;
+            }
+        }
+        if (plannedGroups == null || plannedGroups.isEmpty()) {
             return List.of();
         }
         

@@ -263,8 +263,8 @@ public class AffinityRecomputeTaskService {
         AffinityRecomputeTask saved = tasksRepository.save(merge(task, reason, availableAt(debounce), actorUserId));
         if (newlyTracked) {
             adjustPendingCount(1);
-            markAffectedAdminJobsPending(targetType);
         }
+        markAffectedAdminJobsPending(targetType);
         return saved;
     }
 

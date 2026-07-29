@@ -6,18 +6,24 @@ import java.time.Clock;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityLinkState;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityLinkState.PendingOperation;
@@ -70,7 +76,10 @@ public class OperatorGlobalIdentityService {
     private final GlobalIdentityVoprfClient voprfClient;
     private final Clock clock;
     private final SecureRandom secureRandom;
+    private final AtomicBoolean pendingSynchronizationRunning =
+            new AtomicBoolean();
 
+    @Autowired
     public OperatorGlobalIdentityService(
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
@@ -101,6 +110,104 @@ public class OperatorGlobalIdentityService {
         this.voprfClient = Objects.requireNonNull(voprfClient);
         this.clock = Objects.requireNonNull(clock);
         this.secureRandom = Objects.requireNonNull(secureRandom);
+    }
+
+    @Scheduled(
+            fixedDelayString =
+                    "${operator.global-identity.link-retry-delay-ms:300000}",
+            initialDelayString =
+                    "${operator.global-identity.link-retry-initial-delay-ms:90000}")
+    public void synchronizePendingScheduled() {
+        if (!pendingSynchronizationRunning.compareAndSet(false, true)) {
+            return;
+        }
+        MongoSessionMode previous = MongoSessionModeContext.currentMode();
+        try {
+            for (MongoSessionMode mode : List.of(
+                    MongoSessionMode.REAL,
+                    MongoSessionMode.DEMO)) {
+                MongoSessionModeContext.set(mode);
+                synchronizePending(mode);
+            }
+        } finally {
+            MongoSessionModeContext.set(previous);
+            pendingSynchronizationRunning.set(false);
+        }
+    }
+
+    public void preparePurgeUnlink(String localUserId) {
+        if (!StringUtils.hasText(localUserId)) {
+            return;
+        }
+        GlobalIdentityLinkState state = linkRepository
+                .findFirstByLocalUserIdOrderByUpdatedAtDesc(
+                        localUserId.trim())
+                .orElse(null);
+        if (state == null) {
+            return;
+        }
+        if (!Boolean.TRUE.equals(state.getPurgeRequested())) {
+            String now = clock.instant().toString();
+            state.setPurgeRequested(true);
+            state.setPurgeRequestedAt(now);
+            state.setPurgeTombstoneId(RegistryProtocol.randomToken(
+                    "gitomb_",
+                    secureRandom));
+            state.setUpdatedAt(now);
+            state = saveConcurrent(state);
+        }
+        Resolution resolution = runtimeResolver.resolveGlobalIdentity(
+                MongoSessionModeContext.currentMode());
+        if (!resolution.isReady()) {
+            return;
+        }
+        try {
+            processPurgeState(resolution.runtime(), state);
+        } catch (RuntimeException ignored) {
+            /*
+             * Purge must not lose its durable local unlink intent merely
+             * because the registry is unavailable. The scheduled worker
+             * resumes the exact idempotent operation.
+             */
+        }
+    }
+
+    private void synchronizePending(MongoSessionMode mode) {
+        Resolution resolution = runtimeResolver.resolveGlobalIdentity(mode);
+        if (!resolution.isReady()) {
+            return;
+        }
+        RegisteredRuntime runtime = resolution.runtime();
+        LinkedHashMap<String, GlobalIdentityLinkState> work =
+                new LinkedHashMap<>();
+        for (GlobalIdentityLinkState state :
+                linkRepository
+                        .findByPendingOperationIsNotNullOrderByUpdatedAtAsc()) {
+            work.put(state.getId(), state);
+        }
+        for (GlobalIdentityLinkState state :
+                linkRepository
+                        .findByPurgeRequestedTrueOrderByUpdatedAtAsc()) {
+            work.put(state.getId(), state);
+        }
+        for (GlobalIdentityLinkState state : work.values()) {
+            try {
+                validateStoredLink(
+                        runtime,
+                        state,
+                        state.getLocalUserId());
+                if (Boolean.TRUE.equals(state.getPurgeRequested())) {
+                    processPurgeState(runtime, state);
+                } else if (state.getPendingOperation() != null) {
+                    completePending(runtime, state, null);
+                }
+            } catch (RuntimeException ignored) {
+                /*
+                 * The persisted operation is the retry journal. Individual
+                 * registry or integrity failures must not stop other links.
+                 */
+            }
+        }
     }
 
     public GlobalIdentityStatusDto status(Authentication authentication) {
@@ -245,7 +352,23 @@ public class OperatorGlobalIdentityService {
                         "Global identity is not linked."));
         validateStoredLink(runtime, state, member.localUserId());
         if (state.getPendingOperation() != null) {
-            return completePending(runtime, state, null);
+            String pendingAction = state.getPendingOperation().getAction();
+            GlobalIdentityStatusDto completed = completePending(
+                    runtime,
+                    state,
+                    null);
+            if (RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK.equals(
+                    pendingAction)) {
+                return completed;
+            }
+            state = linkRepository
+                    .findByDeploymentIdAndLocalUserId(
+                            runtime.state().deploymentId(),
+                            member.localUserId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Global identity changed concurrently; reload and retry."));
+            validateStoredLink(runtime, state, member.localUserId());
         }
         if (GlobalIdentityLinkState.STATUS_UNLINKED.equals(state.getStatus())) {
             return toStatus(state, null, true);
@@ -256,31 +379,7 @@ public class OperatorGlobalIdentityService {
                     HttpStatus.CONFLICT,
                     "Global identity is not active.");
         }
-        String now = clock.instant().toString();
-        PendingOperation pending = new PendingOperation();
-        pending.setAction(
-                RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK);
-        pending.setIdempotencyKey(RegistryProtocol.randomToken(
-                "giunlink_",
-                secureRandom));
-        pending.setEffectivePeriod(currentPeriod());
-        pending.setReasonCommitment(reasonCommitment("USER_WITHDRAWN", now));
-        pending.setCreatedAt(now);
-        pending.setPayloadHash(RegistryProtocol.sha256(
-                RegistryProtocol.globalIdentityLinkActionPayload(
-                        pending.getAction(),
-                        state.getLinkId(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        pending.getEffectivePeriod(),
-                        pending.getReasonCommitment())));
-        state.setPendingOperation(pending);
-        state.setUpdatedAt(now);
-        state = saveConcurrent(state);
+        state = queueUnlink(state, "USER_WITHDRAWN");
         return completePending(runtime, state, null);
     }
 
@@ -446,7 +545,7 @@ public class OperatorGlobalIdentityService {
                     HttpStatus.SERVICE_UNAVAILABLE,
                     "Global identity registry synchronization is temporarily unavailable.");
         }
-        verifyMutationResponse(runtime, pending, response);
+        verifyMutationResponse(runtime, state, pending, response);
         applyResponse(state, pending, response);
         validateStoredLink(runtime, state, state.getLocalUserId());
         state.setUpdatedAt(clock.instant().toString());
@@ -649,6 +748,7 @@ public class OperatorGlobalIdentityService {
 
     static void verifyMutationResponse(
             RegisteredRuntime runtime,
+            GlobalIdentityLinkState state,
             PendingOperation pending,
             GlobalIdentityMutationResponse response) {
         if (response == null
@@ -675,15 +775,30 @@ public class OperatorGlobalIdentityService {
         boolean unlink =
                 RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK.equals(
                         expectedAction);
+        boolean correction =
+                RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_CORRECT.equals(
+                        expectedAction);
+        RegistryProtocol.requireToken(link.linkId(), "link_id");
         if (!runtime.state().deploymentId().equals(link.deploymentId())
                 || !expectedStatus.equals(link.status())
                 || !pending.getEffectivePeriod().equals(
                         response.event().period())
+                || (!initialLink
+                        && !Objects.equals(
+                                state.getLinkId(),
+                                link.linkId()))
                 || (initialLink
                         && !pending.getEffectivePeriod().equals(
                                 link.activeFromPeriod()))
+                || (!initialLink
+                        && !Objects.equals(
+                                state.getActiveFromPeriod(),
+                                link.activeFromPeriod()))
                 || (unlink
                         && !pending.getEffectivePeriod().equals(
+                                link.inactiveFromPeriod()))
+                || (!unlink
+                        && StringUtils.hasText(
                                 link.inactiveFromPeriod()))
                 || link.latestEventIndex() == null
                 || link.latestEventIndex() <= 0L
@@ -696,18 +811,27 @@ public class OperatorGlobalIdentityService {
             throw new IllegalStateException(
                     "Global identity link does not match the mutation.");
         }
-        if (!RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK.equals(
-                expectedAction)
-                && (!Objects.equals(
-                        pending.getKeyVersion(),
-                        link.keyVersion())
-                || !Objects.equals(pending.getSuite(), link.suite())
+        Long expectedKeyVersion = unlink
+                ? state.getKeyVersion()
+                : pending.getKeyVersion();
+        String expectedSuite = unlink
+                ? state.getSuite()
+                : pending.getSuite();
+        String expectedConsentVersion = unlink
+                ? state.getConsentVersion()
+                : pending.getConsentVersion();
+        String expectedVerifiedAt = unlink
+                ? state.getVerifiedAt()
+                : pending.getVerifiedAt();
+        if (!Objects.equals(expectedKeyVersion, link.keyVersion())
+                || !Objects.equals(expectedSuite, link.suite())
                 || !Objects.equals(
-                        pending.getConsentVersion(),
+                        expectedConsentVersion,
                         link.consentVersion())
-                || !Objects.equals(
-                        pending.getVerifiedAt(),
-                        link.verifiedAt()))) {
+                || !Objects.equals(expectedVerifiedAt, link.verifiedAt())
+                || (correction
+                        && !GlobalIdentityLinkState.STATUS_ACTIVE.equals(
+                                state.getStatus()))) {
             throw new IllegalStateException(
                     "Global identity link changed immutable metadata.");
         }
@@ -729,13 +853,16 @@ public class OperatorGlobalIdentityService {
                 || event.reportedCount() == null
                 || event.reportedCount() < 0L
                 || event.deduplicatedCount() == null
-                || event.deduplicatedCount() < 0L) {
+                || event.deduplicatedCount() < 0L
+                || event.deduplicatedCount() > event.reportedCount()) {
             throw new IllegalStateException(
                     "Global identity event does not match the request.");
         }
         RegistryProtocol.requireHash(
                 event.aggregateCommitment(),
                 "aggregate_commitment");
+        RegistryProtocol.requireToken(event.eventId(), "event_id");
+        RegistryProtocol.requirePeriod(event.period());
         RegistryProtocol.requireHash(
                 event.previousEventHash(),
                 "previous_event_hash");

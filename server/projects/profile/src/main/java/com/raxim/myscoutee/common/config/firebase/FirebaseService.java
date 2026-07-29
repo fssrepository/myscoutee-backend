@@ -63,7 +63,8 @@ public class FirebaseService {
                 normalizeId(user.getId()),
                 email,
                 resolveAuthorities(email, user),
-                user);
+                user,
+                true);
     }
 
     public UserDetails loadOrCreateBootstrapOperator(String email) {

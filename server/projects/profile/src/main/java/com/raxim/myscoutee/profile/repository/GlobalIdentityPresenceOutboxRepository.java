@@ -1,8 +1,6 @@
 package com.raxim.myscoutee.profile.repository;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityPresenceOutboxItem;
@@ -10,11 +8,11 @@ import com.raxim.myscoutee.profile.data.document.GlobalIdentityPresenceOutboxIte
 public interface GlobalIdentityPresenceOutboxRepository
         extends MongoRepository<GlobalIdentityPresenceOutboxItem, String> {
     List<GlobalIdentityPresenceOutboxItem>
-            findByDeploymentIdOrderByPeriodAscRevisionAsc(
+            findByDeploymentIdOrderByPeriodAscRevisionAscChunkIndexAsc(
                     String deploymentId);
 
-    Optional<GlobalIdentityPresenceOutboxItem>
-            findByDeploymentIdAndPeriodAndRevision(
+    List<GlobalIdentityPresenceOutboxItem>
+            findByDeploymentIdAndPeriodAndRevisionOrderByChunkIndexAsc(
                     String deploymentId,
                     String period,
                     Long revision);

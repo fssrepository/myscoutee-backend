@@ -34,6 +34,7 @@ event-auto-inviter
   open-spots      published event with capacity for 2 graph-selected invitations
   full            published event with no open capacity (zero-change control)
   weighted        exact weighted ranking, pending exclusion, and repeated-run no-op
+  waitlist-capacity  1 accepted + 1 reserved invite; only the 2 oldest of 4 waitlisted users advance
 event-tournament-review
   ended           active tournament stage whose end time is already past
   future          active first stage waiting for start review
@@ -48,7 +49,7 @@ notification-outbox
   due             due direct notification for a user with no device token
   future          pending notification whose retry time is still in the future
 notification-read-path
-  group-chat      real app enqueue plus bell/profile/chat read-model checks
+  group-chat      real app enqueue plus exact unread/read bell, profile, and group-chat API checks
 affinity-recompute
   isolated-user   due USER recompute task for an isolated fixture user
 scheduled-messages
@@ -245,12 +246,18 @@ verify_notification_read_api() {
   fi
 
   local notifications
+  local all_notifications
   local chats
   local profile
   if ! notifications="$(curl -sS --fail --max-time 15 \
       "${headers[@]}" \
       "${api_root}/notifications?bucket=new&limit=50&userId=${recipient_id}")"; then
     fail "notification poll failed against the already-running local app."
+  fi
+  if ! all_notifications="$(curl -sS --fail --max-time 15 \
+      "${headers[@]}" \
+      "${api_root}/notifications?bucket=all&limit=50&userId=${recipient_id}")"; then
+    fail "all-notification poll failed against the already-running local app."
   fi
   if ! chats="$(curl -sS --fail --max-time 15 \
       "${headers[@]}" \
@@ -274,19 +281,89 @@ verify_notification_read_api() {
           and .category == "chat"
           and .sourceType == "chat"
           and .sourceId == $chat
-          and .readAtIso == null
           and .actionPath == ("/game?chatId=" + $chat)
           and .payload.chatId == $chat
           and .payload.senderId == $sender
           and (.payload.messageId | type == "string" and length > 0)
         )] | length == 1)
         and .total == 1
-        and .unreadCount == 1
         and .muted == false' \
-      >/dev/null <<<"${notifications}"; then
-    printf '%s\n' "${notifications}" >&2
-    fail "notification poll did not expose exactly one expected unread bell item."
+      >/dev/null <<<"${all_notifications}"; then
+    printf '%s\n' "${all_notifications}" >&2
+    fail "all-notification poll did not expose exactly one expected bell item."
   fi
+
+  local read_at_iso
+  local read_state
+  local expected_unread_count
+  read_at_iso="$(jq -r \
+    --arg recipient "${recipient_id}" \
+    --arg chat "${chat_id}" \
+    '[.records[] | select(.recipientUserId == $recipient and .sourceType == "chat" and .sourceId == $chat) | .readAtIso]
+      | first // ""' \
+    <<<"${all_notifications}")"
+  if [ -n "${read_at_iso}" ] && [ "${read_at_iso}" != "null" ]; then
+    read_state="read"
+    expected_unread_count=0
+    if ! jq -e \
+        --arg recipient "${recipient_id}" \
+        --arg chat "${chat_id}" \
+        '([.records[] | select(
+            .recipientUserId == $recipient
+            and .sourceType == "chat"
+            and .sourceId == $chat
+            and (.readAtIso | type == "string" and length > 0)
+          )] | length == 0)
+          and .total == 0
+          and .unreadCount == 0
+          and .muted == false' \
+        >/dev/null <<<"${notifications}"; then
+      printf '%s\n' "${notifications}" >&2
+      fail "new-notification poll still exposed the fixture bell after it was marked read."
+    fi
+    if ! jq -e \
+        --arg recipient "${recipient_id}" \
+        --arg chat "${chat_id}" \
+        '([.records[] | select(
+            .recipientUserId == $recipient
+            and .sourceType == "chat"
+            and .sourceId == $chat
+            and (.readAtIso | type == "string" and length > 0)
+          )] | length == 1)
+          and .unreadCount == 0' \
+        >/dev/null <<<"${all_notifications}"; then
+      printf '%s\n' "${all_notifications}" >&2
+      fail "all-notification context did not expose the exact read row and unreadCount:0."
+    fi
+  else
+    read_state="unread"
+    expected_unread_count=1
+    if ! jq -e \
+        --arg recipient "${recipient_id}" \
+        --arg sender "${sender_id}" \
+        --arg chat "${chat_id}" \
+        '([.records[] | select(
+            .recipientUserId == $recipient
+            and .senderUserId == $sender
+            and .kind == "chat-message"
+            and .category == "chat"
+            and .sourceType == "chat"
+            and .sourceId == $chat
+            and .readAtIso == null
+            and .actionPath == ("/game?chatId=" + $chat)
+            and .payload.chatId == $chat
+            and .payload.senderId == $sender
+            and (.payload.messageId | type == "string" and length > 0)
+          )] | length == 1)
+          and .total == 1
+          and .unreadCount == 1
+          and .muted == false' \
+        >/dev/null <<<"${notifications}"; then
+      printf '%s\n' "${notifications}" >&2
+      fail "new-notification poll did not expose exactly one expected unread bell item."
+    fi
+  fi
+
   if ! jq -e \
       --arg chat "${chat_id}" \
       --arg event "${event_id}" \
@@ -308,8 +385,9 @@ verify_notification_read_api() {
     fail "chat read model did not expose the expected event/sub-event/group context and unread flag."
   fi
   if ! jq -e \
-      '.activities.notifications == 1
-        and .counterOverrides.notifications == 1
+      --argjson expectedUnreadCount "${expected_unread_count}" \
+      '.activities.notifications == $expectedUnreadCount
+        and .counterOverrides.notifications == $expectedUnreadCount
         and .activities.chats == 1
         and .counterOverrides.chats == 1
         and .activities.chat.all == 1
@@ -322,19 +400,24 @@ verify_notification_read_api() {
   fi
 
   jq -n \
-    --arg apiRoot "${api_root}" \
-    --arg recipientUserId "${recipient_id}" \
-    --arg chatId "${chat_id}" \
-    --argjson notifications "${notifications}" \
-    --argjson chats "${chats}" \
-    --argjson profile "${profile}" \
-    '{
+      --arg apiRoot "${api_root}" \
+      --arg recipientUserId "${recipient_id}" \
+      --arg chatId "${chat_id}" \
+      --arg readState "${read_state}" \
+      --arg readAtIso "${read_at_iso}" \
+      --argjson notifications "${notifications}" \
+      --argjson allNotifications "${all_notifications}" \
+      --argjson chats "${chats}" \
+      --argjson profile "${profile}" \
+      '{
       notificationReadPathApiStatus: {
         pass: true,
         apiRoot: $apiRoot,
         recipientUserId: $recipientUserId,
+        readState: $readState,
+        readAtIso: (if $readAtIso == "" or $readAtIso == "null" then null else $readAtIso end),
         notification: (
-          $notifications.records
+          $allNotifications.records
           | map(select(.sourceType == "chat" and .sourceId == $chatId))
           | first
           | {
@@ -350,8 +433,9 @@ verify_notification_read_api() {
               payload
             }
         ),
-        unreadCount: $notifications.unreadCount,
-        muted: $notifications.muted,
+        unreadCount: $allNotifications.unreadCount,
+        newBucketTotal: $notifications.total,
+        muted: $allNotifications.muted,
         profileCounters: {
           notifications: $profile.counterOverrides.notifications,
           chats: $profile.counterOverrides.chats,
@@ -371,6 +455,308 @@ verify_notification_read_api() {
               navigationContext
             }
         )
+      }
+    }'
+}
+
+mark_notification_read_api() {
+  command -v curl >/dev/null 2>&1 \
+    || fail "curl is required to call the already-running local app for notification-read-path."
+  command -v jq >/dev/null 2>&1 \
+    || fail "jq is required to validate the notification read response."
+
+  local api_root
+  api_root="$(notification_read_api_root)"
+  local fixture_prefix="admin-job-fixture:v1:notification-read-path"
+  local sender_id="${fixture_prefix}:sender"
+  local recipient_id="${fixture_prefix}:recipient"
+  local chat_id="${fixture_prefix}:chat"
+  local -a headers=()
+  local session_header
+  session_header="$(notification_read_api_headers)"
+  if [ -n "${session_header}" ]; then
+    headers+=(-H "${session_header}")
+  fi
+
+  local before
+  if ! before="$(curl -sS --fail --max-time 15 \
+      "${headers[@]}" \
+      "${api_root}/notifications?bucket=all&limit=50&userId=${recipient_id}")"; then
+    fail "could not load the prepared fixture notification before marking it read."
+  fi
+  local notification_id
+  local previous_read_at_iso
+  notification_id="$(jq -r \
+    --arg recipient "${recipient_id}" \
+    --arg chat "${chat_id}" \
+    '[.records[] | select(.recipientUserId == $recipient and .sourceType == "chat" and .sourceId == $chat) | .id]
+      | if length == 1 then first else "" end' \
+    <<<"${before}")"
+  previous_read_at_iso="$(jq -r \
+    --arg recipient "${recipient_id}" \
+    --arg chat "${chat_id}" \
+    '[.records[] | select(.recipientUserId == $recipient and .sourceType == "chat" and .sourceId == $chat) | .readAtIso]
+      | if length == 1 then (first // "") else "" end' \
+    <<<"${before}")"
+  [ -n "${notification_id}" ] \
+    || fail "expected exactly one prepared fixture bell before calling the read endpoint."
+
+  local response
+  if ! response="$(curl -sS --fail --max-time 15 \
+      -X POST \
+      "${headers[@]}" \
+      -H "Content-Type: application/json" \
+      --data '{}' \
+      "${api_root}/notifications/${notification_id}/read?userId=${recipient_id}")"; then
+    fail "notification read endpoint rejected the isolated fixture bell."
+  fi
+  if ! jq -e \
+      --arg id "${notification_id}" \
+      --arg recipient "${recipient_id}" \
+      --arg sender "${sender_id}" \
+      --arg chat "${chat_id}" \
+      '.notification.id == $id
+        and .notification.recipientUserId == $recipient
+        and .notification.senderUserId == $sender
+        and .notification.kind == "chat-message"
+        and .notification.category == "chat"
+        and .notification.sourceType == "chat"
+        and .notification.sourceId == $chat
+        and .notification.actionPath == ("/game?chatId=" + $chat)
+        and .notification.payload.chatId == $chat
+        and .notification.payload.senderId == $sender
+        and (.notification.payload.messageId | type == "string" and length > 0)
+        and (.notification.readAtIso | type == "string" and length > 0)
+        and .unreadCount == 0' \
+      >/dev/null <<<"${response}"; then
+    printf '%s\n' "${response}" >&2
+    fail "notification read endpoint returned an unexpected notification or unread count."
+  fi
+  if [ -n "${previous_read_at_iso}" ] && [ "${previous_read_at_iso}" != "null" ]; then
+    if ! jq -e \
+        --arg previousReadAtIso "${previous_read_at_iso}" \
+        '.notification.readAtIso == $previousReadAtIso' \
+        >/dev/null <<<"${response}"; then
+      printf '%s\n' "${response}" >&2
+      fail "repeated notification read changed the existing readAtIso timestamp."
+    fi
+  fi
+
+  local response_read_at_iso
+  response_read_at_iso="$(jq -r '.notification.readAtIso' <<<"${response}")"
+  local verification
+  verification="$(verify_notification_read_api)"
+  if ! jq -e \
+      --arg id "${notification_id}" \
+      --arg readAtIso "${response_read_at_iso}" \
+      '.notificationReadPathApiStatus.readState == "read"
+        and .notificationReadPathApiStatus.notification.id == $id
+        and .notificationReadPathApiStatus.readAtIso == $readAtIso
+        and .notificationReadPathApiStatus.notification.readAtIso == $readAtIso
+        and .notificationReadPathApiStatus.unreadCount == 0
+        and .notificationReadPathApiStatus.newBucketTotal == 0' \
+      >/dev/null <<<"${verification}"; then
+    printf '%s\n' "${verification}" >&2
+    fail "notification read response did not match the subsequently persisted read-model state."
+  fi
+
+  jq -n \
+    --arg apiRoot "${api_root}" \
+    --arg notificationId "${notification_id}" \
+    --arg previousReadAtIso "${previous_read_at_iso}" \
+    --argjson response "${response}" \
+    '{
+      notificationReadApiAction: {
+        pass: true,
+        apiRoot: $apiRoot,
+        notificationId: $notificationId,
+        previousReadAtIso: (
+          if $previousReadAtIso == "" or $previousReadAtIso == "null"
+          then null
+          else $previousReadAtIso
+          end
+        ),
+        readAtIso: $response.notification.readAtIso,
+        unreadCount: $response.unreadCount,
+        idempotentRepeat: (
+          $previousReadAtIso == ""
+          or $previousReadAtIso == "null"
+          or $response.notification.readAtIso == $previousReadAtIso
+        )
+      }
+    }'
+  printf '%s\n' "${verification}"
+}
+
+verify_bell_rating_feedback_api() {
+  local scenario_status="$1"
+  command -v curl >/dev/null 2>&1 \
+    || fail "curl is required to validate the rating/feedback bell API projection."
+  command -v jq >/dev/null 2>&1 \
+    || fail "jq is required to validate the rating/feedback bell API projection."
+
+  local api_root
+  api_root="$(notification_read_api_root)"
+  local -a headers=()
+  local session_header
+  session_header="$(notification_read_api_headers)"
+  if [ -n "${session_header}" ]; then
+    headers+=(-H "${session_header}")
+  fi
+
+  local variation
+  local actor_id
+  local target_count
+  variation="$(jq -r '.variation // ""' <<<"${scenario_status}")"
+  actor_id="$(jq -r '.current.actor.userId // ""' <<<"${scenario_status}")"
+  target_count="$(jq -r '.current.projection | length' <<<"${scenario_status}")"
+  [ -n "${actor_id}" ] || fail "rating/feedback status did not expose the fixture actor."
+  [ "${target_count}" -gt 0 ] || fail "rating/feedback status did not expose any submitted target projection."
+
+  local expected_kind
+  local expected_source_type
+  local expected_source_id
+  if [ "${variation}" = "rating" ]; then
+    expected_kind="user-rated"
+    expected_source_type="user-rate"
+    expected_source_id="$(jq -r \
+      '.current.rate.id
+        | if type == "object" and has("$oid") then .["$oid"]
+          elif . == null then ""
+          else tostring
+          end' \
+      <<<"${scenario_status}")"
+  elif [ "${variation}" = "feedback" ]; then
+    expected_kind="event-feedback-submitted"
+    expected_source_type="event"
+    expected_source_id="$(jq -r '.current.event.eventId // ""' <<<"${scenario_status}")"
+  else
+    fail "rating/feedback status exposed unsupported variation '${variation}'."
+  fi
+  [ -n "${expected_source_id}" ] || fail "rating/feedback status did not expose the expected source ID."
+
+  local actor_notifications
+  if ! actor_notifications="$(curl -sS --fail --max-time 15 \
+      "${headers[@]}" \
+      "${api_root}/notifications?bucket=new&limit=50&userId=${actor_id}")"; then
+    fail "could not query the rating/feedback actor's bell projection."
+  fi
+  if ! jq -e \
+      --arg actor "${actor_id}" \
+      --arg kind "${expected_kind}" \
+      --arg sourceType "${expected_source_type}" \
+      --arg sourceId "${expected_source_id}" \
+      '([.records[] | select(
+          .recipientUserId == $actor
+          and .kind == $kind
+          and .sourceType == $sourceType
+          and .sourceId == $sourceId
+        )] | length == 0)' \
+      >/dev/null <<<"${actor_notifications}"; then
+    printf '%s\n' "${actor_notifications}" >&2
+    fail "the actor API projection contains the rating/feedback notification intended for the other party."
+  fi
+
+  local api_results='[]'
+  local index
+  for ((index = 0; index < target_count; index += 1)); do
+    local target_id
+    local expected_unread_count
+    local expected_bell
+    local bell_id
+    target_id="$(jq -r ".current.projection[${index}].userId // \"\"" <<<"${scenario_status}")"
+    expected_unread_count="$(jq -r ".current.projection[${index}].unreadCount // -1" <<<"${scenario_status}")"
+    expected_bell="$(jq -c \
+      --arg target "${target_id}" \
+      '.current.bells | map(select(.recipientUserId == $target)) | if length == 1 then first else null end' \
+      <<<"${scenario_status}")"
+    bell_id="$(jq -r '._id["$oid"]? // ._id // .id // ""' <<<"${expected_bell}")"
+    [ -n "${target_id}" ] && [ "${expected_unread_count}" -ge 0 ] && [ -n "${bell_id}" ] \
+      || fail "rating/feedback status did not expose one exact bell and projection for every target."
+
+    local notifications
+    local profile
+    if ! notifications="$(curl -sS --fail --max-time 15 \
+        "${headers[@]}" \
+        "${api_root}/notifications?bucket=new&limit=50&userId=${target_id}")"; then
+      fail "could not query target '${target_id}' notification projection."
+    fi
+    if ! profile="$(curl -sS --fail --max-time 15 \
+        "${headers[@]}" \
+        "${api_root}/auth/me?userId=${target_id}")"; then
+      fail "could not query target '${target_id}' profile counter projection."
+    fi
+    if ! jq -e \
+        --arg id "${bell_id}" \
+        --arg target "${target_id}" \
+        --arg actor "${actor_id}" \
+        --arg kind "${expected_kind}" \
+        --arg sourceType "${expected_source_type}" \
+        --arg sourceId "${expected_source_id}" \
+        --argjson expectedUnreadCount "${expected_unread_count}" \
+        --argjson expectedBell "${expected_bell}" \
+        '([.records[] | select(
+            .id == $id
+            and .recipientUserId == $target
+            and .senderUserId == $actor
+            and .kind == $kind
+            and .category == $expectedBell.category
+            and .title == $expectedBell.title
+            and .message == $expectedBell.message
+            and .createdAtIso == $expectedBell.createdDate
+            and .sourceType == $sourceType
+            and .sourceId == $sourceId
+            and .actionPath == $expectedBell.actionPath
+            and .readAtIso == null
+            and .payload == $expectedBell.payload
+          )] | length == 1)
+          and .unreadCount == $expectedUnreadCount' \
+        >/dev/null <<<"${notifications}"; then
+      printf '%s\n' "${notifications}" >&2
+      fail "target '${target_id}' API bell did not match the exact persisted rating/feedback notification."
+    fi
+    if ! jq -e \
+        --argjson expectedUnreadCount "${expected_unread_count}" \
+        '.activities.notifications == $expectedUnreadCount
+          and .counterOverrides.notifications == $expectedUnreadCount' \
+        >/dev/null <<<"${profile}"; then
+      printf '%s\n' "${profile}" >&2
+      fail "target '${target_id}' profile notification projection did not match the unread collection count."
+    fi
+
+    api_results="$(jq -c \
+      --arg targetUserId "${target_id}" \
+      --arg notificationId "${bell_id}" \
+      --argjson unreadCount "${expected_unread_count}" \
+      '. + [{
+        targetUserId: $targetUserId,
+        notificationId: $notificationId,
+        unreadCount: $unreadCount,
+        exactBellDto: true,
+        profileProjectionMatches: true
+      }]' \
+      <<<"${api_results}")"
+  done
+
+  jq -n \
+    --arg apiRoot "${api_root}" \
+    --arg variation "${variation}" \
+    --arg actorUserId "${actor_id}" \
+    --arg kind "${expected_kind}" \
+    --arg sourceType "${expected_source_type}" \
+    --arg sourceId "${expected_source_id}" \
+    --argjson targets "${api_results}" \
+    '{
+      bellRatingFeedbackApiStatus: {
+        pass: true,
+        apiRoot: $apiRoot,
+        variation: $variation,
+        actorUserId: $actorUserId,
+        actorExcluded: true,
+        kind: $kind,
+        sourceType: $sourceType,
+        sourceId: $sourceId,
+        targets: $targets
       }
     }'
 }
@@ -399,6 +785,21 @@ case "${command_name}" in
       printf '%s\n' "${scenario_status}"
       if jq -e '.prepared == true' >/dev/null <<<"${scenario_status}"; then
         verify_notification_read_api
+      fi
+    elif [ "${command_name}" = "trigger" ] && [ "$2" = "notification-read-path" ]; then
+      run_scenario "${command_name}" "$2"
+      mark_notification_read_api
+    elif [ "${command_name}" = "status" ] && [ "$2" = "bell-rating-feedback" ]; then
+      command -v jq >/dev/null 2>&1 \
+        || fail "jq is required to inspect bell-rating-feedback fixture status."
+      scenario_status="$(run_scenario "${command_name}" "$2")"
+      printf '%s\n' "${scenario_status}"
+      if jq -e \
+          '.prepared == true
+            and (.current.notificationCheck | type == "string")
+            and (.current.notificationCheck | startswith("PASS:"))' \
+          >/dev/null <<<"${scenario_status}"; then
+        verify_bell_rating_feedback_api "${scenario_status}"
       fi
     else
       run_scenario "${command_name}" "$2"

@@ -2241,18 +2241,18 @@ public class ActivitiesEventsService {
                 savedPreferredParent = computePreferredEventRecords(savedParentDocuments).stream()
                         .findFirst()
                         .orElse(preferredParent);
-                affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
                 syncStageReminderTasksForSavedEvents(savedParentDocuments, actorUserId);
             }
             EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
             if (scheduler != null) {
-                scheduler.generateRandomPlansForEvents(List.of(parentEventId));
+                scheduler.generateRandomPlansForEvents(List.of(slotSourceId));
             }
         }
 
         boolean finalStage = stageIndex == slotStages.size() - 1;
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferredParent, savedStage, finalStage);
         saveSubEventStageRuntime(slotSourceId, savedPreferredParent, savedStage, actorUserId);
+        affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
         enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
         postStageChatMessage(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), finalStage, resultSummary);
         adminTelemetryService.record("event.stage.action", "events", parentEventId, actorUserId, 1L, Map.of(
@@ -2447,8 +2447,6 @@ public class ActivitiesEventsService {
                 ActivitiesMembersService.OwnerMembersSnapshot slotSnapshot =
                         activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
                 boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
-                affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
-                affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
                 if (joinedSlot) {
                     markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, slotSourceId);
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
@@ -2474,7 +2472,6 @@ public class ActivitiesEventsService {
         ActivitiesMembersService.OwnerMembersSnapshot snapshot =
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
-        affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
         if (joined) {
             markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, null);
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);

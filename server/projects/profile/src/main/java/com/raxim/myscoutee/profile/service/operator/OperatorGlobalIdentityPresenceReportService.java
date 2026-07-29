@@ -5,18 +5,20 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,7 @@ import com.raxim.myscoutee.profile.repository.QualifiedMauReportOutboxRepository
 import com.raxim.myscoutee.profile.service.operator.OperatorQualifiedMauCalculator.QualifiedMauDetailedSnapshot;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueRegistryRuntimeResolver.Resolution;
+import com.raxim.myscoutee.registry.RegistryCrypto;
 import com.raxim.myscoutee.registry.RegistryHttpClient;
 import com.raxim.myscoutee.registry.RegistryHttpClient.RegistryHttpException;
 import com.raxim.myscoutee.registry.RegistryProtocol;
@@ -53,13 +56,20 @@ import tools.jackson.databind.ObjectMapper;
 public class OperatorGlobalIdentityPresenceReportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             OperatorGlobalIdentityPresenceReportService.class);
-    private static final int MAX_COMMITMENTS = 4_096;
+    private static final int COMMITMENTS_PER_CHUNK = 512;
+    private static final int LOCAL_LINK_QUERY_SIZE = 512;
+    private static final int SERVER_MAX_COMMITMENTS_PER_CHUNK = 4_096;
     private static final int MAX_DELIVERIES = 16;
     private static final Duration MAX_RETRY_DELAY = Duration.ofHours(24);
+    private static final String FAILURE_EVIDENCE_MISMATCH =
+            "GLOBAL_IDENTITY_QMAU_EVIDENCE_MISMATCH";
+    private static final String FAILURE_SUPERSEDED_BEFORE_PRESENCE =
+            "GLOBAL_IDENTITY_SUPERSEDED_BEFORE_PRESENCE";
 
     private final OperatorRevenueRegistryRuntimeResolver runtimeResolver;
     private final OperatorGlobalIdentityService globalIdentityService;
     private final OperatorQualifiedMauCalculator calculator;
+    private final OperatorQualifiedMauReportService qmauReportService;
     private final QualifiedMauReportOutboxRepository qmauRepository;
     private final GlobalIdentityLinkStateRepository linkRepository;
     private final GlobalIdentityPresenceOutboxRepository outboxRepository;
@@ -68,10 +78,12 @@ public class OperatorGlobalIdentityPresenceReportService {
     private final SecureRandom secureRandom;
     private final AtomicBoolean running = new AtomicBoolean();
 
+    @Autowired
     public OperatorGlobalIdentityPresenceReportService(
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             OperatorGlobalIdentityService globalIdentityService,
             OperatorQualifiedMauCalculator calculator,
+            OperatorQualifiedMauReportService qmauReportService,
             QualifiedMauReportOutboxRepository qmauRepository,
             GlobalIdentityLinkStateRepository linkRepository,
             GlobalIdentityPresenceOutboxRepository outboxRepository,
@@ -80,6 +92,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                 runtimeResolver,
                 globalIdentityService,
                 calculator,
+                qmauReportService,
                 qmauRepository,
                 linkRepository,
                 outboxRepository,
@@ -92,6 +105,7 @@ public class OperatorGlobalIdentityPresenceReportService {
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             OperatorGlobalIdentityService globalIdentityService,
             OperatorQualifiedMauCalculator calculator,
+            OperatorQualifiedMauReportService qmauReportService,
             QualifiedMauReportOutboxRepository qmauRepository,
             GlobalIdentityLinkStateRepository linkRepository,
             GlobalIdentityPresenceOutboxRepository outboxRepository,
@@ -102,6 +116,7 @@ public class OperatorGlobalIdentityPresenceReportService {
         this.globalIdentityService =
                 Objects.requireNonNull(globalIdentityService);
         this.calculator = Objects.requireNonNull(calculator);
+        this.qmauReportService = Objects.requireNonNull(qmauReportService);
         this.qmauRepository = Objects.requireNonNull(qmauRepository);
         this.linkRepository = Objects.requireNonNull(linkRepository);
         this.outboxRepository = Objects.requireNonNull(outboxRepository);
@@ -117,12 +132,18 @@ public class OperatorGlobalIdentityPresenceReportService {
                     "${operator.global-identity.reporter-initial-delay-ms:120000}")
     public void synchronizeScheduled() {
         MongoSessionMode previous = MongoSessionModeContext.currentMode();
-        MongoSessionModeContext.set(MongoSessionMode.REAL);
         try {
-            synchronize(MongoSessionMode.REAL, false);
-        } catch (RuntimeException exception) {
-            LOGGER.warn(
-                    "Global identity presence synchronization failed; its durable outbox will be retried.");
+            for (MongoSessionMode mode : List.of(
+                    MongoSessionMode.REAL,
+                    MongoSessionMode.DEMO)) {
+                MongoSessionModeContext.set(mode);
+                try {
+                    synchronize(mode, false);
+                } catch (RuntimeException exception) {
+                    LOGGER.warn(
+                            "Global identity presence synchronization failed; its durable outbox will be retried.");
+                }
+            }
         } finally {
             MongoSessionModeContext.set(previous);
         }
@@ -169,68 +190,178 @@ public class OperatorGlobalIdentityPresenceReportService {
                                 item.getRevision())))
                 .toList();
         List<GlobalIdentityPresenceOutboxItem> existing = outboxRepository
-                .findByDeploymentIdOrderByPeriodAscRevisionAsc(
+                .findByDeploymentIdOrderByPeriodAscRevisionAscChunkIndexAsc(
                         runtime.state().deploymentId());
-        Map<String, GlobalIdentityPresenceOutboxItem> byRevision =
+        Map<String, List<GlobalIdentityPresenceOutboxItem>> byRevision =
                 new HashMap<>();
-        Map<String, GlobalIdentityPresenceOutboxItem> latestByPeriod =
+        Map<String, PresenceRevision> latestByPeriod =
+                new HashMap<>();
+        Map<String, PresenceRevision> latestAcceptedByPeriod =
                 new HashMap<>();
         for (GlobalIdentityPresenceOutboxItem item : existing) {
             validateStored(runtime, item);
-            byRevision.put(revisionKey(item.getPeriod(), item.getRevision()),
-                    item);
-            GlobalIdentityPresenceOutboxItem previous =
-                    latestByPeriod.get(item.getPeriod());
+            byRevision.computeIfAbsent(
+                            revisionKey(item.getPeriod(), item.getRevision()),
+                            ignored -> new ArrayList<>())
+                    .add(item);
+        }
+        for (List<GlobalIdentityPresenceOutboxItem> items :
+                byRevision.values()) {
+            PresenceRevision revision = validateRevision(items);
+            PresenceRevision previous = latestByPeriod.get(revision.period());
             if (previous == null
-                    || value(item.getRevision())
-                            > value(previous.getRevision())) {
-                latestByPeriod.put(item.getPeriod(), item);
+                    || revision.revision() > previous.revision()) {
+                latestByPeriod.put(revision.period(), revision);
+            }
+            if (revision.finalized()) {
+                PresenceRevision acceptedPrevious =
+                        latestAcceptedByPeriod.get(revision.period());
+                if (acceptedPrevious == null
+                        || revision.revision()
+                                > acceptedPrevious.revision()) {
+                    latestAcceptedByPeriod.put(
+                            revision.period(),
+                            revision);
+                }
             }
         }
 
         for (QualifiedMauReportOutboxItem qmau : accepted) {
+            qmauReportService.validateAcceptedForGlobalIdentity(
+                    runtime,
+                    qmau);
             String revisionKey = revisionKey(
                     qmau.getPeriod(),
                     qmau.getRevision());
-            if (byRevision.containsKey(revisionKey)) {
+            List<GlobalIdentityPresenceOutboxItem> existingItems =
+                    byRevision.get(revisionKey);
+            if (existingItems != null) {
+                PresenceRevision acceptedHead =
+                        latestAcceptedByPeriod.get(qmau.getPeriod());
+                boolean laterRevisionAccepted = acceptedHead != null
+                        && acceptedHead.revision()
+                                > value(qmau.getRevision());
+                PresenceRevision revision = validateRevision(existingItems);
+                if (!laterRevisionAccepted
+                        && (!revision.materializationComplete()
+                                || !revision.structurallyComplete()
+                                || (!revision.started()
+                                        && !Objects.equals(
+                                                revision.items()
+                                                        .get(0)
+                                                        .getKeyVersion(),
+                                                key.keyVersion())))) {
+                    PresenceRevision repaired = materializeRevision(
+                            runtime,
+                            key,
+                            qmau,
+                            revision.previousBatchId(),
+                            existingItems);
+                    byRevision.put(revisionKey, repaired.items());
+                    latestByPeriod.put(qmau.getPeriod(), repaired);
+                }
                 continue;
             }
-            GlobalIdentityPresenceOutboxItem previous =
+            PresenceRevision previous =
                     latestByPeriod.get(qmau.getPeriod());
             if (previous != null
-                    && !GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED
-                            .equals(previous.getStatus())) {
-                continue;
+                    && !previous.finalized()) {
+                if (latestAcceptedByPeriod.get(qmau.getPeriod()) == null
+                        && previous.skippableMaterialization()) {
+                    markSupersededBeforePresence(previous);
+                    previous = null;
+                } else {
+                    continue;
+                }
             }
-            QualifiedMauDetailedSnapshot detailed = calculator
-                    .calculateDetailed(YearMonth.parse(qmau.getPeriod()));
-            List<String> commitments = List.of();
-            if (Objects.equals(
-                        detailed.snapshot().evidenceCommitmentHash(),
-                        qmau.getCommitmentHash())
-                    && detailed.snapshot().qualifiedMauCount()
-                            == value(qmau.getQualifiedMauCount())) {
-                commitments = eligibleCommitments(
-                        runtime,
-                        key,
-                        qmau.getPeriod(),
-                        detailed.qualifiedUserIds());
-            }
-            GlobalIdentityPresenceOutboxItem created = newItem(
+            PresenceRevision created = materializeRevision(
                     runtime,
                     key,
                     qmau,
-                    previous,
-                    commitments);
-            try {
-                created = outboxRepository.save(created);
-                byRevision.put(revisionKey, created);
-                latestByPeriod.put(qmau.getPeriod(), created);
-            } catch (DataIntegrityViolationException exception) {
-                LOGGER.debug(
-                        "Global identity presence revision already exists.");
-            }
+                    previous == null ? null : previous.batchId(),
+                    List.of());
+            byRevision.put(revisionKey, created.items());
+            latestByPeriod.put(qmau.getPeriod(), created);
         }
+    }
+
+    private PresenceRevision materializeRevision(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            QualifiedMauReportOutboxItem qmau,
+            String supersedesBatchId,
+            List<GlobalIdentityPresenceOutboxItem> existing) {
+        boolean frozen = existing.stream().anyMatch(item ->
+                value(item.getAttemptCount()) > 0
+                        || GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED
+                                .equals(item.getStatus()));
+        if (frozen) {
+            return validateRevision(existing);
+        }
+
+        QualifiedMauDetailedSnapshot detailed = calculator
+                .calculateDetailed(YearMonth.parse(qmau.getPeriod()));
+        if (!matchesAcceptedSource(qmau, detailed)) {
+            GlobalIdentityPresenceOutboxItem marker = existing.isEmpty()
+                    ? newChunk(
+                            runtime,
+                            key,
+                            qmau,
+                            supersedesBatchId,
+                            "gipsub_" + deterministicHex(
+                                    "presence-mismatch",
+                                    runtime.state().deploymentId(),
+                                    qmau.getPeriod(),
+                                    Long.toString(value(qmau.getRevision())),
+                                    qmau.getCommitmentHash()).substring(0, 32),
+                            0,
+                            1,
+                            0L,
+                            RegistryProtocol.globalIdentityPresenceSetHash(
+                                    List.of()),
+                            List.of())
+                    : existing.get(0);
+            blockMaterialization(marker, FAILURE_EVIDENCE_MISMATCH);
+            marker = saveChunk(marker);
+            removeUnattemptedExtras(existing, Set.of(marker.getId()));
+            return validateRevision(List.of(marker));
+        }
+
+        List<String> commitments = eligibleCommitments(
+                runtime,
+                key,
+                qmau.getPeriod(),
+                detailed.qualifiedUserIds());
+        List<GlobalIdentityPresenceOutboxItem> expected = newChunks(
+                runtime,
+                key,
+                qmau,
+                supersedesBatchId,
+                commitments);
+        Map<Integer, GlobalIdentityPresenceOutboxItem> storedByIndex =
+                new HashMap<>();
+        for (GlobalIdentityPresenceOutboxItem item : existing) {
+            storedByIndex.put(item.getChunkIndex(), item);
+        }
+        List<GlobalIdentityPresenceOutboxItem> materialized =
+                new ArrayList<>(expected.size());
+        for (GlobalIdentityPresenceOutboxItem candidate : expected) {
+            GlobalIdentityPresenceOutboxItem stored =
+                    storedByIndex.get(candidate.getChunkIndex());
+            if (stored != null) {
+                candidate.setId(stored.getId());
+                candidate.setVersion(stored.getVersion());
+                candidate.setCreatedAt(stored.getCreatedAt());
+            }
+            validateStored(runtime, candidate);
+            materialized.add(saveChunk(candidate));
+        }
+        Set<String> retainedIds = new HashSet<>();
+        for (GlobalIdentityPresenceOutboxItem item : materialized) {
+            retainedIds.add(item.getId());
+        }
+        removeUnattemptedExtras(existing, retainedIds);
+        return validateRevision(materialized);
     }
 
     private List<String> eligibleCommitments(
@@ -241,50 +372,162 @@ public class OperatorGlobalIdentityPresenceReportService {
         if (qualifiedUserIds.isEmpty()) {
             return List.of();
         }
-        return linkRepository
-                .findByDeploymentIdAndLocalUserIdInAndStatusAndKeyVersionAndSuite(
-                        runtime.state().deploymentId(),
-                        qualifiedUserIds,
-                        GlobalIdentityLinkState.STATUS_ACTIVE,
-                        key.keyVersion(),
-                        key.suite())
-                .stream()
-                .filter(link -> link.getActiveFromPeriod() != null
-                        && link.getActiveFromPeriod().compareTo(period) <= 0)
-                .filter(link -> link.getInactiveFromPeriod() == null
-                        || link.getInactiveFromPeriod().isBlank()
-                        || link.getInactiveFromPeriod().compareTo(period) > 0)
-                .map(GlobalIdentityLinkState::getNetworkIdentityCommitment)
-                .map(commitment -> RegistryProtocol.requireHash(
-                        commitment,
-                        "network_identity_commitment"))
-                .sorted()
-                .limit(MAX_COMMITMENTS)
-                .toList();
+        List<String> commitments = new ArrayList<>();
+        for (int offset = 0;
+                offset < qualifiedUserIds.size();
+                offset += LOCAL_LINK_QUERY_SIZE) {
+            int toIndex = Math.min(
+                    qualifiedUserIds.size(),
+                    offset + LOCAL_LINK_QUERY_SIZE);
+            commitments.addAll(linkRepository
+                    .findByDeploymentIdAndLocalUserIdInAndStatusInAndKeyVersionAndSuite(
+                            runtime.state().deploymentId(),
+                            qualifiedUserIds.subList(offset, toIndex),
+                            List.of(
+                                    GlobalIdentityLinkState.STATUS_ACTIVE,
+                                    GlobalIdentityLinkState.STATUS_UNLINKED),
+                            key.keyVersion(),
+                            key.suite())
+                    .stream()
+                    .filter(link -> link.getActiveFromPeriod() != null
+                            && link.getActiveFromPeriod()
+                                    .compareTo(period) <= 0)
+                    .filter(link -> link.getInactiveFromPeriod() == null
+                            || link.getInactiveFromPeriod().isBlank()
+                            || link.getInactiveFromPeriod()
+                                    .compareTo(period) > 0)
+                    .map(GlobalIdentityLinkState
+                            ::getNetworkIdentityCommitment)
+                    .map(commitment -> RegistryProtocol.requireHash(
+                            commitment,
+                            "network_identity_commitment"))
+                    .toList());
+        }
+        commitments.sort(String::compareTo);
+        return List.copyOf(commitments);
     }
 
-    private GlobalIdentityPresenceOutboxItem newItem(
+    private static boolean matchesAcceptedSource(
+            QualifiedMauReportOutboxItem qmau,
+            QualifiedMauDetailedSnapshot detailed) {
+        return Objects.equals(
+                    detailed.snapshot().evidenceCommitmentHash(),
+                    qmau.getCommitmentHash())
+                && detailed.snapshot().qualifiedMauCount()
+                        == value(qmau.getQualifiedMauCount());
+    }
+
+    private void blockMaterialization(
+            GlobalIdentityPresenceOutboxItem item,
+            String code) {
+        String now = clock.instant().toString();
+        item.setMaterializationComplete(false);
+        item.setStatus(GlobalIdentityPresenceOutboxItem.STATUS_BLOCKED);
+        item.setNextRetryAt(null);
+        item.setLastFailure(new Failure(code, now, false));
+        item.setUpdatedAt(now);
+    }
+
+    private void markSupersededBeforePresence(
+            PresenceRevision revision) {
+        String now = clock.instant().toString();
+        for (GlobalIdentityPresenceOutboxItem item : revision.items()) {
+            item.setMaterializationComplete(false);
+            item.setStatus(GlobalIdentityPresenceOutboxItem.STATUS_BLOCKED);
+            item.setLastFailure(new Failure(
+                    FAILURE_SUPERSEDED_BEFORE_PRESENCE,
+                    now,
+                    false));
+            item.setNextRetryAt(null);
+            item.setUpdatedAt(now);
+            outboxRepository.save(item);
+        }
+    }
+
+    private List<GlobalIdentityPresenceOutboxItem> newChunks(
             RegisteredRuntime runtime,
             GlobalIdentityVoprfKey key,
             QualifiedMauReportOutboxItem qmau,
-            GlobalIdentityPresenceOutboxItem previous,
+            String supersedesBatchId,
+            List<String> commitments) {
+        String commitmentSetHash =
+                RegistryProtocol.globalIdentityPresenceSetHash(commitments);
+        String submissionId = "gipsub_" + deterministicHex(
+                "presence-submission",
+                runtime.state().registryScope(),
+                runtime.state().deploymentId(),
+                qmau.getPeriod(),
+                Long.toString(value(qmau.getRevision())),
+                qmau.getCommitmentHash(),
+                Long.toString(key.keyVersion()),
+                key.suite(),
+                commitmentSetHash).substring(0, 32);
+        int chunkCount = Math.max(
+                1,
+                (commitments.size() + COMMITMENTS_PER_CHUNK - 1)
+                        / COMMITMENTS_PER_CHUNK);
+        List<GlobalIdentityPresenceOutboxItem> chunks =
+                new ArrayList<>(chunkCount);
+        for (int chunkIndex = 0;
+                chunkIndex < chunkCount;
+                chunkIndex++) {
+            int fromIndex = chunkIndex * COMMITMENTS_PER_CHUNK;
+            int toIndex = Math.min(
+                    commitments.size(),
+                    fromIndex + COMMITMENTS_PER_CHUNK);
+            List<String> chunkCommitments = fromIndex == toIndex
+                    ? List.of()
+                    : commitments.subList(fromIndex, toIndex);
+            chunks.add(newChunk(
+                    runtime,
+                    key,
+                    qmau,
+                    supersedesBatchId,
+                    submissionId,
+                    chunkIndex,
+                    chunkCount,
+                    commitments.size(),
+                    commitmentSetHash,
+                    chunkCommitments));
+        }
+        return List.copyOf(chunks);
+    }
+
+    private GlobalIdentityPresenceOutboxItem newChunk(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            QualifiedMauReportOutboxItem qmau,
+            String supersedesBatchId,
+            String submissionId,
+            int chunkIndex,
+            int chunkCount,
+            long totalCommitmentCount,
+            String commitmentSetHash,
             List<String> commitments) {
         String now = clock.instant().toString();
-        String supersedes = previous == null
-                ? null
-                : previous.getAcceptedResponse().batchId();
         String payloadHash = RegistryProtocol.sha256(
-                RegistryProtocol.globalIdentityPresenceBatchPayload(
+                RegistryProtocol.globalIdentityPresenceChunkPayload(
+                        submissionId,
                         qmau.getPeriod(),
                         qmau.getRevision(),
-                        supersedes,
+                        supersedesBatchId,
                         qmau.getQualifiedMauCount(),
                         key.keyVersion(),
                         key.suite(),
+                        chunkIndex,
+                        chunkCount,
+                        totalCommitmentCount,
+                        commitmentSetHash,
                         commitments));
+        String stableIdentity = deterministicHex(
+                "presence-chunk",
+                runtime.state().registryScope(),
+                runtime.state().deploymentId(),
+                submissionId,
+                Integer.toString(chunkIndex));
         GlobalIdentityPresenceOutboxItem item =
                 new GlobalIdentityPresenceOutboxItem();
-        item.setId(new ObjectId().toHexString());
+        item.setId(stableIdentity.substring(0, 24));
         item.setSchemaVersion(
                 GlobalIdentityPresenceOutboxItem.SCHEMA_VERSION);
         item.setRegistryScope(runtime.state().registryScope());
@@ -293,41 +536,102 @@ public class OperatorGlobalIdentityPresenceReportService {
         item.setQmauCommitmentHash(qmau.getCommitmentHash());
         item.setPeriod(qmau.getPeriod());
         item.setRevision(qmau.getRevision());
-        item.setSupersedesBatchId(supersedes);
+        item.setSupersedesBatchId(supersedesBatchId);
         item.setReportedQmauCount(qmau.getQualifiedMauCount());
         item.setKeyVersion(key.keyVersion());
         item.setSuite(key.suite());
+        item.setSubmissionId(submissionId);
+        item.setChunkIndex(chunkIndex);
+        item.setChunkCount(chunkCount);
+        item.setTotalCommitmentCount(totalCommitmentCount);
+        item.setCommitmentSetHash(commitmentSetHash);
         item.setNetworkIdentityCommitments(commitments);
+        item.setMaterializationComplete(true);
         item.setPayloadHash(payloadHash);
-        item.setIdempotencyKey(RegistryProtocol.randomToken(
-                "gipresence_",
-                secureRandom));
+        item.setIdempotencyKey(
+                "gipresencechunk_" + stableIdentity.substring(0, 48));
         item.setStatus(GlobalIdentityPresenceOutboxItem.STATUS_PENDING);
         item.setAttemptCount(0);
         item.setCreatedAt(now);
         item.setUpdatedAt(now);
-        validateStored(runtime, item);
         return item;
+    }
+
+    private GlobalIdentityPresenceOutboxItem saveChunk(
+            GlobalIdentityPresenceOutboxItem item) {
+        return outboxRepository.save(item);
+    }
+
+    private void removeUnattemptedExtras(
+            List<GlobalIdentityPresenceOutboxItem> existing,
+            Set<String> retainedIds) {
+        for (GlobalIdentityPresenceOutboxItem item : existing) {
+            if (!retainedIds.contains(item.getId())) {
+                if (value(item.getAttemptCount()) > 0
+                        || GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED
+                                .equals(item.getStatus())) {
+                    throw new IllegalStateException(
+                            "Attempted presence chunks cannot be rematerialized.");
+                }
+                outboxRepository.delete(item);
+            }
+        }
+    }
+
+    private static String deterministicHex(
+            String domain,
+            String... values) {
+        String[] canonical = new String[values.length + 1];
+        canonical[0] = domain;
+        System.arraycopy(values, 0, canonical, 1, values.length);
+        return RegistryProtocol.sha256(RegistryProtocol.canonical(canonical))
+                .substring("sha256:".length());
     }
 
     private void deliverPending(
             RegisteredRuntime runtime,
             boolean forceDelivery) {
-        List<GlobalIdentityPresenceOutboxItem> pending = outboxRepository
-                .findByDeploymentIdOrderByPeriodAscRevisionAsc(
-                        runtime.state().deploymentId())
-                .stream()
-                .filter(item -> GlobalIdentityPresenceOutboxItem.STATUS_PENDING
-                        .equals(item.getStatus()))
-                .filter(item -> forceDelivery
-                        || retryDue(item, clock.instant()))
-                .limit(MAX_DELIVERIES)
-                .toList();
-        for (GlobalIdentityPresenceOutboxItem item : pending) {
-            try {
-                deliver(runtime, item);
-            } catch (RuntimeException exception) {
-                recordFailure(runtime, item, exception);
+        List<GlobalIdentityPresenceOutboxItem> items = outboxRepository
+                .findByDeploymentIdOrderByPeriodAscRevisionAscChunkIndexAsc(
+                        runtime.state().deploymentId());
+        Map<String, List<GlobalIdentityPresenceOutboxItem>> groups =
+                new java.util.LinkedHashMap<>();
+        for (GlobalIdentityPresenceOutboxItem item : items) {
+            validateStored(runtime, item);
+            groups.computeIfAbsent(
+                            revisionKey(item.getPeriod(), item.getRevision()),
+                            ignored -> new ArrayList<>())
+                    .add(item);
+        }
+        int deliveries = 0;
+        for (List<GlobalIdentityPresenceOutboxItem> group : groups.values()) {
+            PresenceRevision revision = validateRevision(group);
+            if (!revision.materializationComplete()
+                    || !revision.structurallyComplete()
+                    || revision.finalized()) {
+                continue;
+            }
+            for (GlobalIdentityPresenceOutboxItem item : revision.items()) {
+                if (GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED.equals(
+                        item.getStatus())) {
+                    continue;
+                }
+                if (!GlobalIdentityPresenceOutboxItem.STATUS_PENDING.equals(
+                            item.getStatus())
+                        || (!forceDelivery
+                                && !retryDue(item, clock.instant()))) {
+                    break;
+                }
+                try {
+                    deliver(runtime, item);
+                    deliveries++;
+                } catch (RuntimeException exception) {
+                    recordFailure(runtime, item, exception);
+                    break;
+                }
+                if (deliveries >= MAX_DELIVERIES) {
+                    return;
+                }
             }
         }
     }
@@ -338,17 +642,18 @@ public class OperatorGlobalIdentityPresenceReportService {
         validateStored(runtime, item);
         String timestamp = clock.instant().toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
+        byte[] signedRequest = RegistryProtocol.signedRequest(
+                "POST",
+                RegistryProtocol.GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
+                RegistryProtocol.PROTOCOL_VERSION,
+                item.getRegistryScope(),
+                item.getDeploymentId(),
+                timestamp,
+                nonce,
+                item.getIdempotencyKey(),
+                item.getPayloadHash());
         String signature = runtime.deploymentCrypto().signBase64(
-                RegistryProtocol.signedRequest(
-                        "POST",
-                        RegistryProtocol.GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
-                        RegistryProtocol.PROTOCOL_VERSION,
-                        item.getRegistryScope(),
-                        item.getDeploymentId(),
-                        timestamp,
-                        nonce,
-                        item.getIdempotencyKey(),
-                        item.getPayloadHash()));
+                signedRequest);
         item.setAttemptCount(value(item.getAttemptCount()) + 1);
         item.setLastAttempt(new SignedAttempt(
                 timestamp,
@@ -365,12 +670,17 @@ public class OperatorGlobalIdentityPresenceReportService {
                         timestamp,
                         nonce,
                         item.getIdempotencyKey(),
+                        item.getSubmissionId(),
                         item.getPeriod(),
                         item.getRevision(),
                         item.getSupersedesBatchId(),
                         item.getReportedQmauCount(),
                         item.getKeyVersion(),
                         item.getSuite(),
+                        item.getChunkIndex(),
+                        item.getChunkCount(),
+                        item.getTotalCommitmentCount(),
+                        item.getCommitmentSetHash(),
                         item.getNetworkIdentityCommitments(),
                         item.getPayloadHash(),
                         signature);
@@ -379,10 +689,14 @@ public class OperatorGlobalIdentityPresenceReportService {
                         runtime.properties(),
                         objectMapper).submitGlobalIdentityPresenceBatch(
                                 request);
-        verifyResponse(runtime, item, response);
+        verifyResponse(
+                runtime,
+                item,
+                RegistryProtocol.sha256(signedRequest),
+                response);
 
         item.setAcceptedResponse(response);
-        item.setAcceptedAt(response.event().acceptedAt());
+        item.setAcceptedAt(response.acceptedAt());
         item.setStatus(GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED);
         item.setNextRetryAt(null);
         item.setLastFailure(null);
@@ -393,28 +707,87 @@ public class OperatorGlobalIdentityPresenceReportService {
     private void verifyResponse(
             RegisteredRuntime runtime,
             GlobalIdentityPresenceOutboxItem item,
+            String expectedRequestHash,
             GlobalIdentityPresenceBatchResponse response) {
         if (response == null
-                || response.event() == null
-                || response.snapshot() == null
                 || !RegistryProtocol.PROTOCOL_VERSION.equals(
                         response.protocolVersion())
                 || !item.getRegistryScope().equals(
                         response.registryScope())
                 || !item.getDeploymentId().equals(
                         response.deploymentId())
+                || !item.getSubmissionId().equals(
+                        response.submissionId())
                 || !item.getPeriod().equals(response.period())
                 || !Objects.equals(item.getRevision(), response.revision())
                 || !Objects.equals(
-                        (long) item.getNetworkIdentityCommitments().size(),
-                        response.linkedCount())
+                        item.getChunkIndex(),
+                        response.chunkIndex())
                 || !Objects.equals(
-                        value(item.getReportedQmauCount())
-                                - item.getNetworkIdentityCommitments().size(),
-                        response.unlinkedCount())
+                        item.getChunkCount(),
+                        response.chunkCount())
+                || response.receivedChunkCount() == null
+                || response.receivedChunkCount()
+                        < item.getChunkIndex() + 1
+                || response.receivedChunkCount()
+                        > item.getChunkCount()
+                || !Objects.equals(
+                        item.getTotalCommitmentCount(),
+                        response.totalCommitmentCount())
+                || !item.getCommitmentSetHash().equals(
+                        response.commitmentSetHash())
+                || !expectedRequestHash.equals(response.requestHash())
+                || !item.getPayloadHash().equals(response.payloadHash())
+                || !runtime.registryKeyId().equals(
+                        response.registryKeyId())
+                || !runtime.registryPublicKeyBase64().equals(
+                        response.registryPublicKey())
+                || response.complete() == null
+                || !Objects.equals(
+                        Boolean.TRUE.equals(response.complete()),
+                        response.receivedChunkCount()
+                                .equals(response.chunkCount()))
                 || response.duplicate() == null) {
             throw new IllegalStateException(
                     "Global identity presence response changed the signed batch.");
+        }
+        RegistryProtocol.requireUtcTimestamp(
+                response.acceptedAt(),
+                "accepted_at");
+        String expectedReceiptHash = RegistryProtocol.sha256(
+                RegistryProtocol.globalIdentityPresenceChunkReceipt(
+                        response));
+        if (!expectedReceiptHash.equals(response.receiptHash())
+                || !RegistryCrypto.verifyBase64(
+                        runtime.registryPublicKey(),
+                        RegistryProtocol.globalIdentityPresenceChunkReceipt(
+                                response),
+                        response.receiptSignature())) {
+            throw new IllegalStateException(
+                    "Global identity chunk receipt signature is invalid.");
+        }
+        if (!Boolean.TRUE.equals(response.complete())) {
+            if (response.batchId() != null
+                    || response.linkedCount() != null
+                    || response.unlinkedCount() != null
+                    || response.event() != null
+                    || response.snapshot() != null) {
+                throw new IllegalStateException(
+                        "Partial global identity receipt exposed final state.");
+            }
+            return;
+        }
+        if (response.event() == null
+                || response.snapshot() == null
+                || !Objects.equals(
+                        item.getTotalCommitmentCount(),
+                        response.linkedCount())
+                || !Objects.equals(
+                        value(item.getReportedQmauCount())
+                                - value(item.getTotalCommitmentCount()),
+                        response.unlinkedCount())) {
+            throw new IllegalStateException(
+                    "Final global identity receipt has invalid totals.");
         }
         RegistryProtocol.requireBatchId(response.batchId());
         OperatorGlobalIdentityService.verifyEvent(
@@ -498,15 +871,10 @@ public class OperatorGlobalIdentityPresenceReportService {
                 .findById(candidate.getId())
                 .orElse(candidate);
         validateStored(runtime, item);
-        boolean retryable = !(exception instanceof RegistryHttpException http)
-                || http.getStatusCode() >= 500
-                || http.getStatusCode() == 408
-                || http.getStatusCode() == 429;
+        boolean retryable = retryable(exception);
         String now = clock.instant().toString();
         item.setLastFailure(new Failure(
-                retryable
-                        ? "REGISTRY_TEMPORARILY_UNAVAILABLE"
-                        : "REGISTRY_REJECTED_BATCH",
+                failureCode(exception),
                 now,
                 retryable));
         if (retryable) {
@@ -546,10 +914,31 @@ public class OperatorGlobalIdentityPresenceReportService {
                 || item.getKeyVersion() <= 0L
                 || !RegistryProtocol.GLOBAL_IDENTITY_VOPRF_SUITE.equals(
                         item.getSuite())
-                || item.getNetworkIdentityCommitments().size()
+                || item.getSubmissionId() == null
+                || !item.getSubmissionId()
+                        .matches("gipsub_[0-9a-f]{32}")
+                || item.getChunkIndex() == null
+                || item.getChunkIndex() < 0
+                || item.getChunkCount() == null
+                || item.getChunkCount() <= 0
+                || item.getChunkIndex() >= item.getChunkCount()
+                || item.getTotalCommitmentCount() == null
+                || item.getTotalCommitmentCount() < 0L
+                || item.getTotalCommitmentCount()
                         > item.getReportedQmauCount()
+                || !List.of(
+                                GlobalIdentityPresenceOutboxItem.STATUS_PENDING,
+                                GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED,
+                                GlobalIdentityPresenceOutboxItem.STATUS_BLOCKED)
+                        .contains(item.getStatus())
                 || item.getNetworkIdentityCommitments().size()
-                        > MAX_COMMITMENTS) {
+                        > item.getTotalCommitmentCount()
+                || (isMaterializationComplete(item)
+                        && item.getNetworkIdentityCommitments().size()
+                                > COMMITMENTS_PER_CHUNK)
+                || item.getNetworkIdentityCommitments().size()
+                        > SERVER_MAX_COMMITMENTS_PER_CHUNK
+                || value(item.getAttemptCount()) < 0) {
             throw new IllegalStateException(
                     "Stored global identity presence item is invalid.");
         }
@@ -557,18 +946,26 @@ public class OperatorGlobalIdentityPresenceReportService {
         RegistryProtocol.requireHash(
                 item.getQmauCommitmentHash(),
                 "qmau_commitment_hash");
+        RegistryProtocol.requireHash(
+                item.getCommitmentSetHash(),
+                "commitment_set_hash");
         RegistryProtocol.requireHash(item.getPayloadHash(), "payload_hash");
         RegistryProtocol.requireToken(
                 item.getIdempotencyKey(),
                 "idempotency_key");
         String expectedPayloadHash = RegistryProtocol.sha256(
-                RegistryProtocol.globalIdentityPresenceBatchPayload(
+                RegistryProtocol.globalIdentityPresenceChunkPayload(
+                        item.getSubmissionId(),
                         item.getPeriod(),
                         item.getRevision(),
                         item.getSupersedesBatchId(),
                         item.getReportedQmauCount(),
                         item.getKeyVersion(),
                         item.getSuite(),
+                        item.getChunkIndex(),
+                        item.getChunkCount(),
+                        item.getTotalCommitmentCount(),
+                        item.getCommitmentSetHash(),
                         item.getNetworkIdentityCommitments()));
         if (!expectedPayloadHash.equals(item.getPayloadHash())) {
             throw new IllegalStateException(
@@ -580,10 +977,8 @@ public class OperatorGlobalIdentityPresenceReportService {
                         item.getDeploymentId())
                 .orElseThrow(() -> new IllegalStateException(
                         "Accepted QMAU source is missing."));
-        if (!QualifiedMauReportOutboxItem.STATUS_ACCEPTED.equals(
-                    qmau.getStatus())
-                || qmau.getAcceptedResponse() == null
-                || !Objects.equals(qmau.getPeriod(), item.getPeriod())
+        qmauReportService.validateAcceptedForGlobalIdentity(runtime, qmau);
+        if (!Objects.equals(qmau.getPeriod(), item.getPeriod())
                 || !Objects.equals(qmau.getRevision(), item.getRevision())
                 || !Objects.equals(
                         qmau.getQualifiedMauCount(),
@@ -594,16 +989,165 @@ public class OperatorGlobalIdentityPresenceReportService {
             throw new IllegalStateException(
                     "Global identity presence does not match its accepted QMAU source.");
         }
+        if (!isMaterializationComplete(item)) {
+            Failure failure = item.getLastFailure();
+            if (!GlobalIdentityPresenceOutboxItem.STATUS_BLOCKED.equals(
+                        item.getStatus())
+                    || value(item.getAttemptCount()) != 0
+                    || item.getAcceptedResponse() != null
+                    || item.getAcceptedAt() != null
+                    || item.getNextRetryAt() != null
+                    || failure == null
+                    || !Boolean.FALSE.equals(failure.getRetryable())
+                    || (!FAILURE_EVIDENCE_MISMATCH.equals(failure.getCode())
+                            && !FAILURE_SUPERSEDED_BEFORE_PRESENCE.equals(
+                                    failure.getCode()))) {
+                throw new IllegalStateException(
+                        "Blocked global identity materialization state is invalid.");
+            }
+            return;
+        }
         if (GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED.equals(
                 item.getStatus())) {
-            verifyResponse(runtime, item, item.getAcceptedResponse());
+            SignedAttempt attempt = item.getLastAttempt();
+            if (attempt == null || value(item.getAttemptCount()) <= 0) {
+                throw new IllegalStateException(
+                        "Accepted global identity chunk has no signed attempt.");
+            }
+            String expectedRequestHash = RegistryProtocol.sha256(
+                    RegistryProtocol.signedRequest(
+                            "POST",
+                            RegistryProtocol
+                                    .GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
+                            RegistryProtocol.PROTOCOL_VERSION,
+                            item.getRegistryScope(),
+                            item.getDeploymentId(),
+                            attempt.getTimestamp(),
+                            attempt.getNonce(),
+                            item.getIdempotencyKey(),
+                            item.getPayloadHash()));
+            verifyResponse(
+                    runtime,
+                    item,
+                    expectedRequestHash,
+                    item.getAcceptedResponse());
             if (!Objects.equals(
                     item.getAcceptedAt(),
-                    item.getAcceptedResponse().event().acceptedAt())) {
+                    item.getAcceptedResponse().acceptedAt())) {
                 throw new IllegalStateException(
                         "Stored global identity presence acceptance time changed.");
             }
+        } else if (item.getAcceptedResponse() != null
+                || item.getAcceptedAt() != null) {
+            throw new IllegalStateException(
+                    "Unaccepted global identity chunk contains an acceptance.");
         }
+    }
+
+    private PresenceRevision validateRevision(
+            List<GlobalIdentityPresenceOutboxItem> source) {
+        if (source == null || source.isEmpty()) {
+            throw new IllegalStateException(
+                    "Global identity presence revision is empty.");
+        }
+        List<GlobalIdentityPresenceOutboxItem> items = source.stream()
+                .sorted(Comparator.comparingInt(item ->
+                        value(item.getChunkIndex())))
+                .toList();
+        GlobalIdentityPresenceOutboxItem head = items.get(0);
+        boolean structurallyComplete =
+                items.size() == value(head.getChunkCount());
+        boolean materializationComplete = true;
+        boolean acceptedPrefix = true;
+        boolean allAccepted = true;
+        List<String> commitments = new ArrayList<>();
+        for (int index = 0; index < items.size(); index++) {
+            GlobalIdentityPresenceOutboxItem item = items.get(index);
+            if (!Objects.equals(head.getRegistryScope(), item.getRegistryScope())
+                    || !Objects.equals(
+                            head.getDeploymentId(),
+                            item.getDeploymentId())
+                    || !Objects.equals(head.getPeriod(), item.getPeriod())
+                    || !Objects.equals(head.getRevision(), item.getRevision())
+                    || !Objects.equals(
+                            head.getSupersedesBatchId(),
+                            item.getSupersedesBatchId())
+                    || !Objects.equals(
+                            head.getReportedQmauCount(),
+                            item.getReportedQmauCount())
+                    || !Objects.equals(
+                            head.getKeyVersion(),
+                            item.getKeyVersion())
+                    || !Objects.equals(head.getSuite(), item.getSuite())
+                    || !Objects.equals(
+                            head.getSubmissionId(),
+                            item.getSubmissionId())
+                    || !Objects.equals(
+                            head.getChunkCount(),
+                            item.getChunkCount())
+                    || !Objects.equals(
+                            head.getTotalCommitmentCount(),
+                            item.getTotalCommitmentCount())
+                    || !Objects.equals(
+                            head.getCommitmentSetHash(),
+                            item.getCommitmentSetHash())
+                    || !Objects.equals(
+                            head.getQmauReportId(),
+                            item.getQmauReportId())
+                    || !Objects.equals(
+                            head.getQmauCommitmentHash(),
+                            item.getQmauCommitmentHash())
+                    || !Objects.equals(item.getChunkIndex(), index)) {
+                structurallyComplete = false;
+            }
+            materializationComplete &=
+                    isMaterializationComplete(item);
+            boolean accepted =
+                    GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED.equals(
+                            item.getStatus());
+            if (!accepted) {
+                acceptedPrefix = false;
+                allAccepted = false;
+            } else if (!acceptedPrefix) {
+                throw new IllegalStateException(
+                        "Global identity chunks were accepted out of order.");
+            }
+            commitments.addAll(item.getNetworkIdentityCommitments());
+        }
+        if (structurallyComplete && materializationComplete) {
+            if (commitments.size() != value(
+                        head.getTotalCommitmentCount())
+                    || !RegistryProtocol.globalIdentityPresenceSetHash(
+                                commitments)
+                            .equals(head.getCommitmentSetHash())) {
+                throw new IllegalStateException(
+                        "Global identity commitment manifest changed.");
+            }
+        }
+        boolean finalized = structurallyComplete
+                && materializationComplete
+                && allAccepted
+                && Boolean.TRUE.equals(items.get(items.size() - 1)
+                        .getAcceptedResponse()
+                        .complete());
+        for (int index = 0; index < items.size(); index++) {
+            GlobalIdentityPresenceBatchResponse response =
+                    items.get(index).getAcceptedResponse();
+            if (response != null
+                    && Boolean.TRUE.equals(response.complete())
+                    != (finalized && index == items.size() - 1)) {
+                throw new IllegalStateException(
+                        "Global identity completion receipt is misplaced.");
+            }
+        }
+        return new PresenceRevision(
+                head.getPeriod(),
+                value(head.getRevision()),
+                head.getSupersedesBatchId(),
+                List.copyOf(items),
+                structurallyComplete,
+                materializationComplete,
+                finalized);
     }
 
     private static boolean retryDue(
@@ -618,6 +1162,37 @@ public class OperatorGlobalIdentityPresenceReportService {
         } catch (RuntimeException exception) {
             return true;
         }
+    }
+
+    private static boolean retryable(RuntimeException exception) {
+        if (exception instanceof RegistryHttpException http) {
+            return http.getStatusCode() == 0
+                    || http.getStatusCode() == 408
+                    || http.getStatusCode() == 425
+                    || http.getStatusCode() == 429
+                    || http.getStatusCode() >= 500;
+        }
+        return exception instanceof DataAccessException;
+    }
+
+    private static String failureCode(RuntimeException exception) {
+        if (exception instanceof RegistryHttpException http
+                && http.getErrorCode() != null
+                && !http.getErrorCode().isBlank()) {
+            return http.getErrorCode();
+        }
+        if (exception instanceof DataAccessException) {
+            return "GLOBAL_IDENTITY_PRESENCE_PERSISTENCE_RETRY";
+        }
+        if (exception instanceof IllegalStateException) {
+            return "INVALID_GLOBAL_IDENTITY_PRESENCE_RECEIPT";
+        }
+        return "GLOBAL_IDENTITY_PRESENCE_REJECTED";
+    }
+
+    private static boolean isMaterializationComplete(
+            GlobalIdentityPresenceOutboxItem item) {
+        return !Boolean.FALSE.equals(item.getMaterializationComplete());
     }
 
     private static Duration retryDelay(Integer attempts) {
@@ -638,5 +1213,42 @@ public class OperatorGlobalIdentityPresenceReportService {
 
     private static long value(Long value) {
         return value == null ? 0L : value;
+    }
+
+    private record PresenceRevision(
+            String period,
+            long revision,
+            String previousBatchId,
+            List<GlobalIdentityPresenceOutboxItem> items,
+            boolean structurallyComplete,
+            boolean materializationComplete,
+            boolean finalized) {
+
+        boolean skippableMaterialization() {
+            return !materializationComplete
+                    && items.stream().allMatch(item ->
+                            value(item.getAttemptCount()) == 0)
+                    && items.stream().noneMatch(item ->
+                            item.getLastFailure() != null
+                                    && FAILURE_SUPERSEDED_BEFORE_PRESENCE
+                                            .equals(item.getLastFailure()
+                                            .getCode()));
+        }
+
+        boolean started() {
+            return items.stream().anyMatch(item ->
+                    value(item.getAttemptCount()) > 0
+                            || GlobalIdentityPresenceOutboxItem.STATUS_ACCEPTED
+                                    .equals(item.getStatus()));
+        }
+
+        String batchId() {
+            if (!finalized) {
+                return null;
+            }
+            return items.get(items.size() - 1)
+                    .getAcceptedResponse()
+                    .batchId();
+        }
     }
 }

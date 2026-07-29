@@ -249,6 +249,7 @@ public class NotificationRuleRegistryService {
                 .atPosition(0)
                 .slice(RUN_HISTORY_LIMIT)
                 .each(runHistoryEntry(
+                        Boolean.TRUE.equals(rule.getManualRunEnabled()),
                         startedAtIso,
                         finishedAtIso,
                         durationMillis,
@@ -753,6 +754,7 @@ public class NotificationRuleRegistryService {
     }
 
     private NotificationRuleConfig.RunHistoryEntry runHistoryEntry(
+            boolean manualRunEnabled,
             String startedAtIso,
             String finishedAtIso,
             long durationMillis,
@@ -762,7 +764,9 @@ public class NotificationRuleRegistryService {
             String actorUserId) {
         NotificationRuleConfig.RunHistoryEntry entry = new NotificationRuleConfig.RunHistoryEntry();
         entry.setId(UUID.randomUUID().toString());
-        entry.setTrigger("scheduler".equals(safeText(actorUserId)) ? "scheduled" : "manual");
+        entry.setTrigger(manualRunEnabled && !"scheduler".equals(safeText(actorUserId))
+                ? "manual"
+                : "scheduled");
         entry.setRunnerUser(firstNonBlank(actorUserId, SYSTEM_USER));
         entry.setStartedAtIso(startedAtIso);
         entry.setFinishedAtIso(finishedAtIso);

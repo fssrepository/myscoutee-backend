@@ -56,6 +56,11 @@ public class GlobalIdentityLinkState {
     private String latestEventHash;
     private PendingOperation pendingOperation;
     private RegistryProtocol.GlobalIdentityMutationResponse acceptedResponse;
+    private Boolean purgeRequested;
+    private String purgeTombstoneId;
+    private String purgeRequestedAt;
+    private String purgedAt;
+    private String purgeUnlinkIdempotencyKey;
     private String createdAt;
     private String updatedAt;
 
@@ -101,6 +106,16 @@ public class GlobalIdentityLinkState {
     public void setPendingOperation(PendingOperation pendingOperation) { this.pendingOperation = pendingOperation; }
     public RegistryProtocol.GlobalIdentityMutationResponse getAcceptedResponse() { return acceptedResponse; }
     public void setAcceptedResponse(RegistryProtocol.GlobalIdentityMutationResponse acceptedResponse) { this.acceptedResponse = acceptedResponse; }
+    public Boolean getPurgeRequested() { return purgeRequested; }
+    public void setPurgeRequested(Boolean purgeRequested) { this.purgeRequested = purgeRequested; }
+    public String getPurgeTombstoneId() { return purgeTombstoneId; }
+    public void setPurgeTombstoneId(String purgeTombstoneId) { this.purgeTombstoneId = purgeTombstoneId; }
+    public String getPurgeRequestedAt() { return purgeRequestedAt; }
+    public void setPurgeRequestedAt(String purgeRequestedAt) { this.purgeRequestedAt = purgeRequestedAt; }
+    public String getPurgedAt() { return purgedAt; }
+    public void setPurgedAt(String purgedAt) { this.purgedAt = purgedAt; }
+    public String getPurgeUnlinkIdempotencyKey() { return purgeUnlinkIdempotencyKey; }
+    public void setPurgeUnlinkIdempotencyKey(String purgeUnlinkIdempotencyKey) { this.purgeUnlinkIdempotencyKey = purgeUnlinkIdempotencyKey; }
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
     public String getUpdatedAt() { return updatedAt; }

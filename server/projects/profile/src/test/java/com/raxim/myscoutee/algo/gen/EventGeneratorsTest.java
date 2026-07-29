@@ -187,6 +187,33 @@ class EventGeneratorsTest {
     }
 
     @Test
+    void randomTargetedGeneratorKeepsTheLongestValidTargetPrefix() {
+        EventGeneratorByRandom generator = new EventGeneratorByRandom();
+
+        FGraph graph = graph(
+                edge("a1", "a2", 0.95d),
+                edge("b1", "b2", 0.95d),
+                edge("a1", "outside", 0.01d));
+
+        List<GeneratedEventPlan> plans = generator.generateTargets(
+                new RandomTargetedGeneratorRequest(
+                        graph,
+                        List.of(
+                                new RandomGroupTarget("group-1", Range.of(2, 2)),
+                                new RandomGroupTarget("group-2", Range.of(2, 2)),
+                                new RandomGroupTarget("group-3", Range.of(2, 2))),
+                        List.of(),
+                        false));
+
+        assertThat(plans).hasSize(2);
+        assertThat(plans).extracting(GeneratedEventPlan::seedId)
+                .containsExactly("group-1", "group-2");
+        assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder("a1", "a2", "b1", "b2")
+                .doesNotContain("outside");
+    }
+
+    @Test
     void priorityGeneratorPrefersCandidatesConnectedToLockedGroup() {
         EventGeneratorByPriority generator = new EventGeneratorByPriority();
 

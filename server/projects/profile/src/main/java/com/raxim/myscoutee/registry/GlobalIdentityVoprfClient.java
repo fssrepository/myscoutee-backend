@@ -45,7 +45,8 @@ public final class GlobalIdentityVoprfClient {
     private static final byte[] CONTEXT_STRING = concatenate(
             ascii("OPRFV1-"),
             new byte[] {(byte) RFC_MODE_ID},
-            ascii("-" + SUITE));
+            ascii("-"),
+            i2osp2(RFC_SUITE_ID));
     private static final byte[] HASH_TO_GROUP_DST =
             concatenate(ascii("HashToGroup-"), CONTEXT_STRING);
     private static final byte[] HASH_TO_SCALAR_DST =

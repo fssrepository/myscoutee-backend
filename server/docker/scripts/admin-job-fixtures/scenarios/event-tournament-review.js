@@ -415,6 +415,20 @@
         scopeId: `score:${eventId}:${qualifierStageId}->${finalStageId}`
       });
       const rule = F.requireRule(job);
+      const baseline = context.advancementBaseline || null;
+      const staleLoserRows = finalRows.filter(
+        row => row.userId === context.staleLoserUserId
+      );
+      const exactMarkerUserIds = Boolean(marker)
+        && fingerprint([...(marker.userIds || [])].sort()) === fingerprint(expectedWinners);
+      const staleLoserDeleted = staleLoserRows.length === 1
+        && staleLoserRows[0].status === "deleted";
+      const firstPassRunCountExact = Boolean(baseline)
+        || Boolean(
+          rule.runState
+          && rule.runState.lastRunStatus === "completed"
+          && rule.runState.lastRunCount === 2
+        );
       const currentFingerprint = fingerprint({
         finalRows,
         marker: marker && {
@@ -431,8 +445,11 @@
       const rankingValid =
         fingerprint(calculatedWinners.map(item => item.userId).sort())
           === fingerprint(expectedWinners);
-      const firstPassComplete = assignmentValid && rankingValid && Boolean(marker);
-      const baseline = context.advancementBaseline || null;
+      const firstPassComplete = assignmentValid
+        && rankingValid
+        && exactMarkerUserIds
+        && staleLoserDeleted
+        && firstPassRunCountExact;
       if (firstPassComplete && !baseline && snapshot) {
         F.collection(F.SNAPSHOT_COLLECTION).updateOne(
           { _id: snapshot._id },
@@ -449,6 +466,7 @@
       const repeatedPassObserved = Boolean(
         baseline
         && rule.runState
+        && rule.runState.lastRunStatus === "completed"
         && rule.runState.lastRunCount === 0
       );
       return {
@@ -458,7 +476,7 @@
         acceptedFinalUserIds,
         missingWinnerUserIds,
         advancedLoserUserIds,
-        staleLoserRows: finalRows.filter(row => row.userId === context.staleLoserUserId),
+        staleLoserRows,
         finalRows,
         marker: marker && {
           ownerId: marker.ownerId,
@@ -471,6 +489,9 @@
           rankingValid,
           assignmentValid,
           exactWinnersOnly: assignmentValid && rankingValid,
+          exactMarkerUserIds,
+          staleLoserDeleted,
+          firstPassChangedExactlyTwoRecords: firstPassRunCountExact,
           firstPassComplete,
           baselineCaptured: Boolean(baseline) || firstPassComplete,
           repeatedPassObserved,

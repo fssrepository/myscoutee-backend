@@ -574,6 +574,19 @@ public class ActivitiesMembersService {
             return;
         }
 
+        if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            synchronized (eventJoinLock(ownerId)) {
+                replaceResolved(request, ownerType, ownerId);
+            }
+        } else {
+            replaceResolved(request, ownerType, ownerId);
+        }
+    }
+
+    private void replaceResolved(
+            ActivityMembersReplaceRequestDto request,
+            String ownerType,
+            String ownerId) {
         String actorUserId = resolveActorUserId(request.actorUserId());
         String scopedEventId = normalizeId(request.eventId());
         String scopedSubEventId = normalizeId(request.subEventId());
@@ -689,6 +702,14 @@ public class ActivitiesMembersService {
                 existingByUserId,
                 actorUserId,
                 nowIso);
+        if (OWNER_TYPE_EVENT.equals(ownerType)
+                && exceedsEventCapacity(
+                        findPreferredEventRecord(ownerId),
+                        nextDocuments)) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Accepted members and active invitations exceed event capacity.");
+        }
         List<ActivityMember> joinedEventMembers = OWNER_TYPE_EVENT.equals(ownerType)
                 ? joinedAcceptedEventMembers(ownerType, ownerId, nextDocuments, existingByUserId)
                 : List.of();
@@ -922,6 +943,34 @@ public class ActivitiesMembersService {
                     targetUserId,
                     existing,
                     next);
+        } else if (OWNER_TYPE_EVENT.equals(ownerType)
+                && STATUS_ACCEPTED.equals(nextStatus)
+                && !STATUS_ACCEPTED.equals(currentStatus)) {
+            synchronized (eventJoinLock(ownerId)) {
+                List<ActivityMember> latestMembers =
+                        loadOwnerDocuments(OWNER_TYPE_EVENT, ownerId);
+                ActivityMember latestCurrent = latestMembers.stream()
+                        .filter(Objects::nonNull)
+                        .filter(member -> targetUserId.equals(
+                                normalizeId(member.getUserId())))
+                        .findFirst()
+                        .orElse(null);
+                if (latestCurrent == null
+                        || !currentStatus.equals(
+                                normalizeStatus(latestCurrent.getStatus()))
+                        || isCapacityFullForJoin(
+                                findPreferredEventRecord(ownerId),
+                                latestMembers,
+                                targetUserId)) {
+                    return queryMembers(
+                            ownerType,
+                            ownerId,
+                            false,
+                            scopedEventId,
+                            scopedSubEventId);
+                }
+                activityMembersRepository.save(next);
+            }
         } else {
             activityMembersRepository.save(next);
         }
@@ -1781,12 +1830,46 @@ public class ActivitiesMembersService {
         if (capacityTotal <= 0) {
             return false;
         }
-        long acceptedMembers = existing.stream()
+        long occupiedCapacity = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !joiningUserId.equals(normalizeId(member.getUserId())))
-                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .filter(this::occupiesEventCapacity)
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
                 .count();
-        return acceptedMembers >= capacityTotal;
+        return occupiedCapacity >= capacityTotal;
+    }
+
+    private boolean exceedsEventCapacity(
+            ActivityEvent eventRecord,
+            Collection<ActivityMember> members) {
+        int capacityTotal = Math.max(
+                0,
+                eventRecord == null || eventRecord.getCapacityTotal() == null
+                        ? 0
+                        : eventRecord.getCapacityTotal());
+        if (capacityTotal <= 0) {
+            return false;
+        }
+        long occupiedCapacity =
+                (members == null ? List.<ActivityMember>of() : members).stream()
+                        .filter(Objects::nonNull)
+                        .filter(this::occupiesEventCapacity)
+                        .map(ActivityMember::getUserId)
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .count();
+        return occupiedCapacity > capacityTotal;
+    }
+
+    private boolean occupiesEventCapacity(ActivityMember member) {
+        String status = normalizeStatus(member == null ? null : member.getStatus());
+        return ACCEPTED_STATUSES.contains(status)
+                || STATUS_INVITED.equals(status)
+                || (STATUS_PENDING.equals(status) && isInvitationMembership(member));
     }
 
     private String pendingJoinRequestKind(boolean waitingList, boolean approvalRequested) {
@@ -1855,6 +1938,20 @@ public class ActivitiesMembersService {
             String actorUserId,
             List<String> invitedUserIds,
             ActivityEvent eventRecord) {
+        synchronized (eventJoinLock(eventId)) {
+            return persistEventInvitesLocked(
+                    eventId,
+                    actorUserId,
+                    invitedUserIds,
+                    eventRecord);
+        }
+    }
+
+    private List<String> persistEventInvitesLocked(
+            String eventId,
+            String actorUserId,
+            List<String> invitedUserIds,
+            ActivityEvent eventRecord) {
         String nowIso = Instant.now().toString();
         String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
 
@@ -1871,6 +1968,11 @@ public class ActivitiesMembersService {
         for (String userId : normalizeUserIds(invitedUserIds)) {
             ActivityMember current = existingByUserId.get(userId);
             if (current != null && !STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                continue;
+            }
+            List<ActivityMember> occupancy = new ArrayList<>(existing);
+            occupancy.addAll(membersToSave);
+            if (isCapacityFullForJoin(eventRecord, occupancy, userId)) {
                 continue;
             }
 
@@ -1996,6 +2098,19 @@ public class ActivitiesMembersService {
             activityMembersRepository.saveAll(membersToSave);
         }
         return syncedUserIds;
+    }
+
+    public boolean hasStoredOwnerMembers(String ownerType, String ownerId) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
+            return false;
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerId(
+                        normalizedOwnerType,
+                        normalizedOwnerId)
+                .stream()
+                .anyMatch(Objects::nonNull);
     }
 
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId) {
@@ -2711,7 +2826,18 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedEventId)) {
             return 0;
         }
+        synchronized (eventJoinLock(normalizedEventId)) {
+            return processEventWaitlistLocked(
+                    normalizedEventId,
+                    eventRecord,
+                    promoteSingle);
+        }
+    }
 
+    private int processEventWaitlistLocked(
+            String normalizedEventId,
+            ActivityEvent eventRecord,
+            boolean promoteSingle) {
         ActivityEvent preferredEventRecord = eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord;
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         int capacityTotal = snapshot == null || snapshot.capacityTotal() == null
@@ -2724,7 +2850,33 @@ public class ActivitiesMembersService {
         List<ActivityMember> storedMembers = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
         int acceptedMembers = snapshot == null ? 0 : Math.max(0, snapshot.acceptedMembers());
         if (acceptedMembers >= capacityTotal) {
-            demoteWaitlistInvitations(normalizedEventId, storedMembers);
+            return demoteWaitlistInvitations(
+                    normalizedEventId,
+                    storedMembers,
+                    Integer.MAX_VALUE);
+        }
+        Set<String> acceptedUserIds = snapshot == null
+                ? Set.of()
+                : new LinkedHashSet<>(snapshot.acceptedMemberUserIds());
+        int reservedInvitations = snapshot == null || snapshot.invitedMemberUserIds() == null
+                ? 0
+                : (int) snapshot.invitedMemberUserIds().stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .filter(userId -> !acceptedUserIds.contains(userId))
+                        .distinct()
+                        .count();
+        int excessReservations = Math.max(
+                0,
+                acceptedMembers + reservedInvitations - capacityTotal);
+        if (excessReservations > 0) {
+            return demoteWaitlistInvitations(
+                    normalizedEventId,
+                    storedMembers,
+                    excessReservations);
+        }
+        int availableCapacity = Math.max(0, capacityTotal - acceptedMembers - reservedInvitations);
+        if (availableCapacity <= 0) {
             return 0;
         }
 
@@ -2741,7 +2893,9 @@ public class ActivitiesMembersService {
             return 0;
         }
 
-        int promotionLimit = promoteSingle ? 1 : waitingMembers.size();
+        int promotionLimit = Math.min(
+                availableCapacity,
+                promoteSingle ? 1 : waitingMembers.size());
         String nowIso = Instant.now().toString();
         String inviterUserId = resolveWaitlistInviterUserId(preferredEventRecord);
         List<ActivityMember> membersToSave = new ArrayList<>();
@@ -2778,18 +2932,28 @@ public class ActivitiesMembersService {
         return promotedUserIds.size();
     }
 
-    private void demoteWaitlistInvitations(String eventId, List<ActivityMember> members) {
+    private int demoteWaitlistInvitations(
+            String eventId,
+            List<ActivityMember> members,
+            int maximumDemotions) {
         List<ActivityMember> membersToSave = new ArrayList<>();
         String nowIso = Instant.now().toString();
-        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
-            if (member == null || !STATUS_PENDING.equals(normalizeStatus(member.getStatus()))) {
-                continue;
-            }
-            String pendingSource = resolvePendingSource(member.getPendingSource(), STATUS_PENDING);
-            String requestKind = resolveRequestKind(member.getRequestKind(), STATUS_PENDING, pendingSource);
-            if (!REQUEST_KIND_WAITLIST_INVITE.equals(requestKind)) {
-                continue;
-            }
+        List<ActivityMember> waitlistInvitations =
+                (members == null ? List.<ActivityMember>of() : members).stream()
+                        .filter(Objects::nonNull)
+                        .filter(member -> STATUS_PENDING.equals(normalizeStatus(member.getStatus())))
+                        .filter(member -> REQUEST_KIND_WAITLIST_INVITE.equals(resolveRequestKind(
+                                member.getRequestKind(),
+                                STATUS_PENDING,
+                                resolvePendingSource(member.getPendingSource(), STATUS_PENDING))))
+                        .sorted(Comparator
+                                .comparing((ActivityMember member) -> toSortableDate(member.getActionAtIso()))
+                                .thenComparing(member -> toSortableDate(member.getCreatedDate()))
+                                .thenComparing(member -> safeText(member.getSyncKey()))
+                                .reversed())
+                        .limit(Math.max(0, maximumDemotions))
+                        .toList();
+        for (ActivityMember member : waitlistInvitations) {
             ActivityMember next = cloneMember(member);
             next.setPendingSource("member");
             next.setRequestKind(REQUEST_KIND_WAITLIST);
@@ -2803,6 +2967,7 @@ public class ActivitiesMembersService {
             enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, eventId, resolveWaitlistInviterUserId(findPreferredEventRecord(eventId)));
             refreshEmbeddedEventMembers(eventId);
         }
+        return membersToSave.size();
     }
 
     private String resolveWaitlistInviterUserId(ActivityEvent eventRecord) {
