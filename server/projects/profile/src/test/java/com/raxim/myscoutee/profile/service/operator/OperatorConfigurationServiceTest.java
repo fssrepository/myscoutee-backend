@@ -157,6 +157,15 @@ class OperatorConfigurationServiceTest {
                 "Product name");
         assertBadRequest(
                 () -> fixture.service().update(updateRequest(
+                        "Community\nHub",
+                        "/media/public?key=images%2Flogo",
+                        "stripe",
+                        "",
+                        "",
+                        "")),
+                "invalid character");
+        assertBadRequest(
+                () -> fixture.service().update(updateRequest(
                         "Product",
                         "data:image/png;base64,c2VjcmV0",
                         "stripe",

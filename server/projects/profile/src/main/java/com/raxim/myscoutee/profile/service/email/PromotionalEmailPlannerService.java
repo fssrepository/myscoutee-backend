@@ -36,6 +36,8 @@ import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.repository.NotificationTemplatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.ResolvedDeploymentBranding;
 
 import jakarta.annotation.PreDestroy;
 
@@ -59,6 +61,7 @@ public class PromotionalEmailPlannerService {
     private final EmailTemplateRenderer emailTemplateRenderer;
     private final PromotionalEmailRuleEvaluator ruleEvaluator;
     private final EmailProviderGateway emailProviderGateway;
+    private DeploymentBrandingResolver deploymentBrandingResolver;
     private final ExecutorService ruleExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private final Map<String, Future<?>> runningRuleTasks = new ConcurrentHashMap<>();
 
@@ -87,6 +90,12 @@ public class PromotionalEmailPlannerService {
         this.emailTemplateRenderer = emailTemplateRenderer;
         this.ruleEvaluator = ruleEvaluator;
         this.emailProviderGateway = emailProviderGateway;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setDeploymentBrandingResolver(
+            DeploymentBrandingResolver deploymentBrandingResolver) {
+        this.deploymentBrandingResolver = deploymentBrandingResolver;
     }
 
     @PreDestroy
@@ -210,6 +219,7 @@ public class PromotionalEmailPlannerService {
         if (emailTemplate == null && notificationTemplate == null) {
             return PlanningResult.empty();
         }
+        ResolvedDeploymentBranding branding = deploymentBranding();
         List<EmailOutboxItem> itemsToQueue = new ArrayList<>();
         int notificationCount = 0;
         int emailQueuedCount = 0;
@@ -224,7 +234,16 @@ public class PromotionalEmailPlannerService {
             if (!ruleEvaluator.qualifies(user, rule)) {
                 continue;
             }
-            Map<String, String> variables = ruleEvaluator.buildTemplateVariables(user, rule, emailProperties.getBaseUrl());
+            Map<String, String> variables = branding.enrich(
+                    ruleEvaluator.buildTemplateVariables(
+                            user,
+                            rule,
+                            emailProperties.getBaseUrl()));
+            String ctaLabel = brandedCtaLabel(
+                    variables,
+                    branding.productName());
+            variables.put("ctaLabel", ctaLabel);
+            variables.put("cta_label", ctaLabel);
             if (notificationTemplate != null
                     && scheduledNotificationDeliveryService.send(user, notificationTemplate, variables, safeText(rule.getRuleKey()))) {
                 notificationCount += 1;
@@ -258,6 +277,28 @@ public class PromotionalEmailPlannerService {
             emailOutboxRepository.saveAll(itemsToQueue);
         }
         return new PlanningResult(notificationCount, emailQueuedCount, failedCount);
+    }
+
+    private ResolvedDeploymentBranding deploymentBranding() {
+        return deploymentBrandingResolver == null
+                ? DeploymentBrandingResolver.fallback()
+                : deploymentBrandingResolver.resolve();
+    }
+
+    static String brandedCtaLabel(
+            Map<String, String> variables,
+            String productName) {
+        String snakeCase = safeText(variables.get("cta_label"));
+        String camelCase = safeText(variables.get("ctaLabel"));
+        if (StringUtils.hasText(snakeCase)
+                && !"open".equalsIgnoreCase(snakeCase)) {
+            return snakeCase;
+        }
+        if (StringUtils.hasText(camelCase)
+                && !"open".equalsIgnoreCase(camelCase)) {
+            return camelCase;
+        }
+        return "Open " + safeText(productName);
     }
 
     private EmailTemplate resolveEmailTemplate(EmailCampaignRule rule) {
@@ -574,7 +615,7 @@ public class PromotionalEmailPlannerService {
         return StringUtils.hasText(safeText(first)) ? safeText(first) : safeText(second);
     }
 
-    private String safeText(String value) {
+    private static String safeText(String value) {
         return value == null ? "" : value.trim();
     }
 }

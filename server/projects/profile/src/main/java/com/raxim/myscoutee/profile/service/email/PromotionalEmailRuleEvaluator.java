@@ -59,7 +59,7 @@ public class PromotionalEmailRuleEvaluator {
         putVariable(variables, "countryName", countryName);
         putVariable(variables, "completion", completion);
         putVariable(variables, "ctaUrl", ctaUrl);
-        putVariable(variables, "ctaLabel", "Open MyScoutee");
+        putVariable(variables, "ctaLabel", "Open");
         putVariable(variables, "ruleKey", ruleKey);
         putVariable(variables, "user_id", safeText(user == null ? null : user.getId()));
         putVariable(variables, "user_name", fullName);
@@ -71,7 +71,7 @@ public class PromotionalEmailRuleEvaluator {
         putVariable(variables, "completion_percent", completion);
         putVariable(variables, "profile_completion", completion);
         putVariable(variables, "cta_url", ctaUrl);
-        putVariable(variables, "cta_label", "Open MyScoutee");
+        putVariable(variables, "cta_label", "Open");
         putVariable(variables, "campaign_rule_key", ruleKey);
         if (rule != null && rule.getTemplateVariables() != null) {
             for (Map.Entry<String, String> entry : rule.getTemplateVariables().entrySet()) {

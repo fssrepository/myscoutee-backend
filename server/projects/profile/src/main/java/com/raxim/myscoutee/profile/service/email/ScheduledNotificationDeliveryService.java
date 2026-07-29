@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service.email;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +16,6 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 @Service
 public class ScheduledNotificationDeliveryService {
-    private static final String DEFAULT_BADGE_URL = "/assets/logo/heart.webp";
-    private static final String DEFAULT_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_PATH = "/game";
 
     private final EmailProperties emailProperties;
@@ -43,14 +42,18 @@ public class ScheduledNotificationDeliveryService {
         }
 
         String clickUrl = resolveClickUrl(template);
-        String iconUrl = firstNonBlank(template.getIconUrl(), DEFAULT_ICON_URL);
-        String badgeUrl = firstNonBlank(template.getBadgeUrl(), DEFAULT_BADGE_URL);
+        String iconUrl = templateRenderer
+                .renderText(template.getIconUrl(), variables)
+                .trim();
+        String badgeUrl = templateRenderer
+                .renderText(template.getBadgeUrl(), variables)
+                .trim();
         String templateKey = safeText(template.getTemplateKey());
         String tag = "scheduled-" + firstNonBlank(ruleKey, templateKey);
-        Map<String, String> payload = Map.of(
-                "ruleKey", safeText(ruleKey),
-                "templateKey", templateKey,
-                "timestampMillis", Long.toString(Instant.now().toEpochMilli()));
+        Map<String, String> payload = notificationPayload(
+                variables,
+                ruleKey,
+                templateKey);
         return notificationOutboxService.enqueue(new NotificationIntent(
                 "scheduled-template",
                 "notification-template",
@@ -65,6 +68,35 @@ public class ScheduledNotificationDeliveryService {
                 tag,
                 payload,
                 "notification-scheduler")).isPresent();
+    }
+
+    private Map<String, String> notificationPayload(
+            Map<String, String> variables,
+            String ruleKey,
+            String templateKey) {
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("ruleKey", safeText(ruleKey));
+        payload.put("templateKey", templateKey);
+        payload.put(
+                "timestampMillis",
+                Long.toString(Instant.now().toEpochMilli()));
+        copyIfText(variables, payload, "productName");
+        copyIfText(variables, payload, "product_name");
+        copyIfText(variables, payload, "productLogoUrl");
+        copyIfText(variables, payload, "product_logo_url");
+        copyIfText(variables, payload, "productBrandingRevision");
+        copyIfText(variables, payload, "product_branding_revision");
+        return payload;
+    }
+
+    private void copyIfText(
+            Map<String, String> source,
+            Map<String, String> target,
+            String key) {
+        String value = source == null ? "" : safeText(source.get(key));
+        if (StringUtils.hasText(value)) {
+            target.put(key, value);
+        }
     }
 
     private String resolveClickUrl(NotificationTemplate template) {

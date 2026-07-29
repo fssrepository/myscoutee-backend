@@ -303,7 +303,7 @@
     "_id": "i18n-message-en-add-myscoutee-to-your-home-screen",
     "key": "add.myscoutee.to.your.home.screen",
     "lang": "en",
-    "value": "Add MyScoutee to your home screen"
+    "value": "Add {productName} to your home screen"
   },
   {
     "_id": "i18n-message-en-add-help-section",
@@ -7443,7 +7443,7 @@
     "_id": "i18n-message-en-install-prompt-description",
     "key": "install.prompt.description",
     "lang": "en",
-    "value": "Install MyScoutee for quick access from your home screen."
+    "value": "Install {productName} for quick access from your home screen."
   },
   {
     "_id": "i18n-message-en-keep-tickets-cached-profile-details-and-chat-notifications-available-wit",
@@ -18285,7 +18285,7 @@
     "_id": "i18n-message-hu-add-myscoutee-to-your-home-screen",
     "key": "add.myscoutee.to.your.home.screen",
     "lang": "hu",
-    "value": "Add hozzá a MyScoutee-t a kezdőképernyőhöz"
+    "value": "{productName} hozzáadása a kezdőképernyőhöz"
   },
   {
     "_id": "i18n-message-hu-add-help-section",
@@ -25425,7 +25425,7 @@
     "_id": "i18n-message-hu-install-prompt-description",
     "key": "install.prompt.description",
     "lang": "hu",
-    "value": "Telepítsd a MyScoutee-t, hogy gyorsan elérd a kezdőképernyőről."
+    "value": "{productName} telepítésével gyorsan elérheted az alkalmazást a kezdőképernyőről."
   },
   {
     "_id": "i18n-message-hu-keep-tickets-cached-profile-details-and-chat-notifications-available-wit",

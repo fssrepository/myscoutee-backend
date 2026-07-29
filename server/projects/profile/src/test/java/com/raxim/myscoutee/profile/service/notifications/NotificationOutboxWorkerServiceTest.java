@@ -221,6 +221,29 @@ class NotificationOutboxWorkerServiceTest {
         verify(usersRepository).findByUserIdIn(List.of("offline-viewer"));
     }
 
+    @Test
+    void legacyRecordsUseTheirSnapshottedDeploymentBrand() {
+        NotificationOutboxWorkerService service = service(
+                org.mockito.Mockito.mock(
+                        ChatWebSocketSessionRegistry.class));
+        NotificationOutboxItem item = item(
+                "scheduled-template",
+                List.of("viewer-1"));
+        item.setIconUrl("/assets/logo/heart.webp");
+        item.setBadgeUrl("/assets/logo/heart.webp");
+        item.setPayload(Map.of(
+                "productName", "Community Hub",
+                "productLogoUrl", "/api/assets/community.webp",
+                "productBrandingRevision", "12"));
+
+        Map<String, String> payload = service.payloadFor(item);
+
+        assertThat(payload)
+                .containsEntry("title", "Community Hub")
+                .containsEntry("icon", "/api/assets/community.webp")
+                .containsEntry("badge", "/api/assets/community.webp");
+    }
+
     private NotificationOutboxWorkerService service(ChatWebSocketSessionRegistry sessionRegistry) {
         return new NotificationOutboxWorkerService(
                 new ConfigProperties(),

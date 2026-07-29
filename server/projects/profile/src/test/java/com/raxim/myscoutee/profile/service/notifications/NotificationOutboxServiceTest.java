@@ -20,6 +20,8 @@ import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.ResolvedDeploymentBranding;
 
 class NotificationOutboxServiceTest {
     @Test
@@ -178,6 +180,153 @@ class NotificationOutboxServiceTest {
         NotificationOutboxItem saved = service.enqueue(intent(List.of("u1"), Map.of())).orElseThrow();
 
         verify(userNotificationService).materialize(saved);
+    }
+
+    @Test
+    void enqueueSnapshotsDeploymentBrandingAndReplacesLegacyIcons() {
+        NotificationOutboxRepository repository =
+                org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository
+                .findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
+                        anyString(),
+                        anyCollection(),
+                        anyString()))
+                .thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        DeploymentBrandingResolver brandingResolver =
+                org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
+        when(brandingResolver.resolve()).thenReturn(
+                new ResolvedDeploymentBranding(
+                        "Community Hub",
+                        "/api/assets/community.webp",
+                        9L));
+        NotificationOutboxService service =
+                new NotificationOutboxService(repository);
+        service.setDeploymentBrandingResolver(brandingResolver);
+
+        NotificationOutboxItem saved = service.enqueue(
+                new NotificationIntent(
+                        "deployment-news",
+                        "announcement",
+                        "a-1",
+                        "users",
+                        List.of("u1"),
+                        null,
+                        "A new update is available.",
+                        "/game",
+                        "/assets/logo/heart.webp",
+                        "assets/logo/heart.png",
+                        "deployment-news-a-1",
+                        Map.of(),
+                        "worker"))
+                .orElseThrow();
+
+        assertThat(saved.getTitle()).isEqualTo("Community Hub");
+        assertThat(saved.getIconUrl())
+                .isEqualTo("/api/assets/community.webp");
+        assertThat(saved.getBadgeUrl())
+                .isEqualTo("/api/assets/community.webp");
+        assertThat(saved.getPayload())
+                .containsEntry("productName", "Community Hub")
+                .containsEntry(
+                        "productLogoUrl",
+                        "/api/assets/community.webp")
+                .containsEntry("productBrandingRevision", "9");
+    }
+
+    @Test
+    void enqueuePreservesAnExplicitContentIcon() {
+        NotificationOutboxRepository repository =
+                org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository
+                .findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
+                        anyString(),
+                        anyCollection(),
+                        anyString()))
+                .thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        DeploymentBrandingResolver brandingResolver =
+                org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
+        when(brandingResolver.resolve()).thenReturn(
+                new ResolvedDeploymentBranding(
+                        "Community Hub",
+                        "/api/assets/community.webp",
+                        9L));
+        NotificationOutboxService service =
+                new NotificationOutboxService(repository);
+        service.setDeploymentBrandingResolver(brandingResolver);
+
+        NotificationOutboxItem saved = service.enqueue(
+                new NotificationIntent(
+                        "event-update",
+                        "event",
+                        "e-1",
+                        "users",
+                        List.of("u1"),
+                        "Picnic changed",
+                        "Open the event.",
+                        "/game",
+                        "/api/assets/picnic-cover.webp",
+                        null,
+                        "event-update-e-1",
+                        Map.of(),
+                        "worker"))
+                .orElseThrow();
+
+        assertThat(saved.getIconUrl())
+                .isEqualTo("/api/assets/picnic-cover.webp");
+        assertThat(saved.getBadgeUrl())
+                .isEqualTo("/api/assets/community.webp");
+    }
+
+    @Test
+    void enqueueKeepsACompleteBrandingSnapshotWithoutResolvingTheCurrentBrand() {
+        NotificationOutboxRepository repository =
+                org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository
+                .findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
+                        anyString(),
+                        anyCollection(),
+                        anyString()))
+                .thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        DeploymentBrandingResolver brandingResolver =
+                org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
+        NotificationOutboxService service =
+                new NotificationOutboxService(repository);
+        service.setDeploymentBrandingResolver(brandingResolver);
+
+        NotificationOutboxItem saved = service.enqueue(
+                new NotificationIntent(
+                        "scheduled-template",
+                        "notification-template",
+                        "profile-reminder",
+                        "scheduled-user",
+                        List.of("u1", "u2"),
+                        null,
+                        "Complete your profile.",
+                        "/game",
+                        "/assets/logo/heart.webp",
+                        "/assets/logo/heart.webp",
+                        "scheduled-profile-reminder",
+                        Map.of(
+                                "product_name", "Queued Community",
+                                "product_logo_url", "/api/assets/queued.webp",
+                                "product_branding_revision", "17"),
+                        "notification-scheduler"))
+                .orElseThrow();
+
+        verify(brandingResolver, never()).resolve();
+        assertThat(saved.getTitle()).isEqualTo("Queued Community");
+        assertThat(saved.getIconUrl()).isEqualTo("/api/assets/queued.webp");
+        assertThat(saved.getBadgeUrl()).isEqualTo("/api/assets/queued.webp");
+        assertThat(saved.getPayload())
+                .containsEntry("productName", "Queued Community")
+                .containsEntry("productLogoUrl", "/api/assets/queued.webp")
+                .containsEntry("productBrandingRevision", "17");
     }
 
     private NotificationIntent intent(List<String> recipientUserIds, Map<String, String> payload) {

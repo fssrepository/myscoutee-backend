@@ -59,6 +59,8 @@ import com.raxim.myscoutee.profile.service.email.EmailTemplateRenderer;
 import com.raxim.myscoutee.profile.service.email.ScheduledMessageAuditService;
 import com.raxim.myscoutee.profile.service.email.ScheduledNotificationDeliveryService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.ResolvedDeploymentBranding;
 
 import jakarta.annotation.PreDestroy;
 
@@ -101,6 +103,7 @@ public class ScheduledMessageTaskService {
     private final ObjectProvider<ConfigProperties> configPropertiesProvider;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
+    private DeploymentBrandingResolver deploymentBrandingResolver;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private final ScheduledExecutorService taskExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable, "scheduled-message-task-controller");
@@ -156,6 +159,12 @@ public class ScheduledMessageTaskService {
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void setScheduledMongoSessionRunner(ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
         this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setDeploymentBrandingResolver(
+            DeploymentBrandingResolver deploymentBrandingResolver) {
+        this.deploymentBrandingResolver = deploymentBrandingResolver;
     }
 
     @PreDestroy
@@ -629,12 +638,14 @@ public class ScheduledMessageTaskService {
         int failedCount = 0;
         int affectedCount = 0;
         String nowIso = Instant.now().toString();
+        ResolvedDeploymentBranding branding = deploymentBranding();
 
         for (Users user : usersRepository.findByUserIdIn(userIds)) {
             if (user == null || isDeleted(user)) {
                 continue;
             }
-            Map<String, String> variables = stageReminderVariables(task, user);
+            Map<String, String> variables = branding.enrich(
+                    stageReminderVariables(task, user));
             boolean notificationAccepted = notificationTemplate != null
                     && notificationDeliveryService != null
                     && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()));
@@ -711,12 +722,14 @@ public class ScheduledMessageTaskService {
         int failedCount = 0;
         int affectedCount = 0;
         String nowIso = Instant.now().toString();
+        ResolvedDeploymentBranding branding = deploymentBranding();
 
         for (Users user : usersRepository.findByUserIdIn(userIds)) {
             if (user == null || isDeleted(user)) {
                 continue;
             }
-            Map<String, String> variables = eventDefinitionChangedVariables(task, user);
+            Map<String, String> variables = branding.enrich(
+                    eventDefinitionChangedVariables(task, user));
             boolean notificationAccepted = notificationTemplate != null
                     && notificationDeliveryService != null
                     && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()));
@@ -1144,6 +1157,12 @@ public class ScheduledMessageTaskService {
     private String currentEmailProviderKey() {
         EmailProviderGateway emailProviderGateway = emailProviderGatewayProvider.getIfAvailable();
         return emailProviderGateway == null ? "noop" : emailProviderGateway.currentProviderKey();
+    }
+
+    private ResolvedDeploymentBranding deploymentBranding() {
+        return deploymentBrandingResolver == null
+                ? DeploymentBrandingResolver.fallback()
+                : deploymentBrandingResolver.resolve();
     }
 
     private String baseUrl() {
