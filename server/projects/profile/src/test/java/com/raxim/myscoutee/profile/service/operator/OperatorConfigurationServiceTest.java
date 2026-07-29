@@ -850,6 +850,9 @@ class OperatorConfigurationServiceTest {
             String messagingCredential) {
         return new OperatorConfigurationUpdateDto(
                 List.of("Operator.Admin@Example.Test"),
+                new PrivacyContactUpdateDto(
+                        " My Community Cooperative ",
+                        " Privacy@Community.Example "),
                 socialLinks(),
                 new BrandingUpdateDto(
                         productName,
@@ -861,7 +864,7 @@ class OperatorConfigurationServiceTest {
                         "community-project",
                         "browser-api-key",
                         "community-project.firebaseapp.com",
-                        "community-project.firebasestorage.app",
+                        "",
                         "123456789",
                         "1:123456789:web:community",
                         "G-COMMUNITY",
@@ -885,11 +888,26 @@ class OperatorConfigurationServiceTest {
                 null);
     }
 
+    private OperatorConfigurationUpdateDto privacyRequest(
+            PrivacyContactUpdateDto privacyContact) {
+        return new OperatorConfigurationUpdateDto(
+                List.of(),
+                privacyContact,
+                List.of(),
+                new BrandingUpdateDto(
+                        "Product",
+                        null,
+                        "/media/public?key=images%2Foperator%2Fbranding",
+                        DeploymentThemePreset.OCEAN),
+                null,
+                null);
+    }
+
     private FirebaseWebConfiguration firebaseWebConfiguration() {
         return new FirebaseWebConfiguration(
                 "browser-api-key",
                 "community-project.firebaseapp.com",
-                "community-project.firebasestorage.app",
+                "",
                 "123456789",
                 "1:123456789:web:community",
                 "G-COMMUNITY",
@@ -926,6 +944,11 @@ class OperatorConfigurationServiceTest {
         branding.setRevision(0L);
         configuration.setBranding(branding);
         configuration.setSocialLinks(List.of());
+        DeploymentConfiguration.PrivacyContact privacyContact =
+                new DeploymentConfiguration.PrivacyContact();
+        privacyContact.setDataControllerName("");
+        privacyContact.setPrivacyContactEmail("");
+        configuration.setPrivacyContact(privacyContact);
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();
