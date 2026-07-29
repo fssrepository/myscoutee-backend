@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "deploymentConfigurations")
 public class DeploymentConfiguration {
     public static final String SINGLETON_ID = "deployment-configuration";
-    public static final int SCHEMA_VERSION = 2;
+    public static final int SCHEMA_VERSION = 3;
 
     @Id
     private String id;
@@ -18,6 +18,7 @@ public class DeploymentConfiguration {
     private Integer schemaVersion;
     private Branding branding;
     private List<SocialLink> socialLinks;
+    private PrivacyContact privacyContact;
     private Payment payment;
     private Firebase firebase;
     private String updatedAt;
@@ -64,6 +65,14 @@ public class DeploymentConfiguration {
 
     public void setSocialLinks(List<SocialLink> socialLinks) {
         this.socialLinks = socialLinks;
+    }
+
+    public PrivacyContact getPrivacyContact() {
+        return privacyContact;
+    }
+
+    public void setPrivacyContact(PrivacyContact privacyContact) {
+        this.privacyContact = privacyContact;
     }
 
     public void setPayment(Payment payment) {
@@ -218,6 +227,27 @@ public class DeploymentConfiguration {
 
         public void setHandle(String handle) {
             this.handle = handle;
+        }
+    }
+
+    public static class PrivacyContact {
+        private String dataControllerName;
+        private String privacyContactEmail;
+
+        public String getDataControllerName() {
+            return dataControllerName;
+        }
+
+        public void setDataControllerName(String dataControllerName) {
+            this.dataControllerName = dataControllerName;
+        }
+
+        public String getPrivacyContactEmail() {
+            return privacyContactEmail;
+        }
+
+        public void setPrivacyContactEmail(String privacyContactEmail) {
+            this.privacyContactEmail = privacyContactEmail;
         }
     }
 

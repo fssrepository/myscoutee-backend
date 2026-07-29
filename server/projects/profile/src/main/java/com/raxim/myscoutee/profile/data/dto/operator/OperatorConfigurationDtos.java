@@ -45,6 +45,25 @@ public final class OperatorConfigurationDtos {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
+    public record DeploymentPrivacyContactDto(
+            boolean configured,
+            String dataControllerName,
+            String privacyContactEmail) {
+    }
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    public record DeploymentPublicConfigurationDto(
+            String productName,
+            Integer logoCharacterIndex,
+            String homeLabel,
+            String logoUrl,
+            DeploymentThemePreset themePreset,
+            long revision,
+            List<DeploymentSocialLinkDto> socialLinks,
+            DeploymentPrivacyContactDto privacyContact) {
+    }
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     public record DeploymentSocialLinkDto(
             @NotBlank @Size(max = 32) String provider,
             @NotBlank @Size(max = 80) String label,
@@ -101,11 +120,32 @@ public final class OperatorConfigurationDtos {
             String capability,
             String unavailableReason,
             List<String> adminEmails,
+            DeploymentPrivacyContactDto privacyContact,
             List<DeploymentSocialLinkDto> socialLinks,
             DeploymentBrandingDto branding,
             PaymentConfigurationDto payment,
             FirebaseConfigurationDto firebase,
             String updatedAt) {
+        public OperatorConfigurationDto(
+                String capability,
+                String unavailableReason,
+                List<String> adminEmails,
+                List<DeploymentSocialLinkDto> socialLinks,
+                DeploymentBrandingDto branding,
+                PaymentConfigurationDto payment,
+                FirebaseConfigurationDto firebase,
+                String updatedAt) {
+            this(
+                    capability,
+                    unavailableReason,
+                    adminEmails,
+                    null,
+                    socialLinks,
+                    branding,
+                    payment,
+                    firebase,
+                    updatedAt);
+        }
     }
 
     public record BrandingUpdateDto(
@@ -133,6 +173,11 @@ public final class OperatorConfigurationDtos {
             @Size(max = 64) String providerId,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
             @Size(max = 16384) String credential) {
+    }
+
+    public record PrivacyContactUpdateDto(
+            @Size(max = 160) String dataControllerName,
+            @Size(max = 254) String privacyContactEmail) {
     }
 
     public record FirebaseUpdateDto(
@@ -169,11 +214,26 @@ public final class OperatorConfigurationDtos {
     public record OperatorConfigurationUpdateDto(
             @NotNull @Size(max = 32)
             List<@NotBlank @Email @Size(max = 254) String> adminEmails,
+            @Valid PrivacyContactUpdateDto privacyContact,
             @NotNull @Size(max = 12)
             List<@NotNull @Valid DeploymentSocialLinkDto> socialLinks,
             @NotNull @Valid BrandingUpdateDto branding,
             @Valid PaymentUpdateDto payment,
             @Valid FirebaseUpdateDto firebase) {
+        public OperatorConfigurationUpdateDto(
+                List<String> adminEmails,
+                List<DeploymentSocialLinkDto> socialLinks,
+                BrandingUpdateDto branding,
+                PaymentUpdateDto payment,
+                FirebaseUpdateDto firebase) {
+            this(
+                    adminEmails,
+                    null,
+                    socialLinks,
+                    branding,
+                    payment,
+                    firebase);
+        }
     }
 
     public record ConfigurationTestRequestDto(

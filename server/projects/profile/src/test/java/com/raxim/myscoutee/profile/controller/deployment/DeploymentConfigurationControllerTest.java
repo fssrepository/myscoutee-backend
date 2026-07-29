@@ -12,7 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
@@ -20,9 +21,11 @@ import com.raxim.myscoutee.profile.service.operator.OperatorConfigurationService
 
 class DeploymentConfigurationControllerTest {
     @Test
-    void publicRouteReturnsExactlyBrandingAndNoOperatorOrSecretState() throws Exception {
+    void publicRouteReturnsBrandingSocialAndPrivacyStateWithoutOperatorSecrets()
+            throws Exception {
         OperatorConfigurationService service = mock(OperatorConfigurationService.class);
-        when(service.branding()).thenReturn(new DeploymentBrandingDto(
+        when(service.publicConfiguration()).thenReturn(
+                new DeploymentPublicConfigurationDto(
                 "Community",
                 2,
                 "Welcome home",
@@ -34,7 +37,11 @@ class DeploymentConfigurationControllerTest {
                         "Discord",
                         "https://discord.example.test/community",
                         "discord",
-                        "@community"))));
+                        "@community")),
+                new DeploymentPrivacyContactDto(
+                        true,
+                        "Community Cooperative",
+                        "privacy@community.example")));
         var mockMvc = MockMvcBuilders
                 .standaloneSetup(new DeploymentConfigurationController(service))
                 .build();
@@ -58,13 +65,19 @@ class DeploymentConfigurationControllerTest {
                         .value("discord"))
                 .andExpect(jsonPath("$.socialLinks[0].handle")
                         .value("@community"))
+                .andExpect(jsonPath("$.privacyContact.configured")
+                        .value(true))
+                .andExpect(jsonPath("$.privacyContact.dataControllerName")
+                        .value("Community Cooperative"))
+                .andExpect(jsonPath("$.privacyContact.privacyContactEmail")
+                        .value("privacy@community.example"))
                 .andExpect(jsonPath("$.adminEmails").doesNotExist())
                 .andExpect(jsonPath("$.payment").doesNotExist())
                 .andExpect(jsonPath("$.firebase").doesNotExist())
                 .andExpect(jsonPath("$.updatedAt").doesNotExist())
                 .andExpect(jsonPath("$.credential").doesNotExist());
 
-        verify(service).branding();
+        verify(service).publicConfiguration();
     }
 
     @Test

@@ -39,6 +39,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.F
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PrivacyContactUpdateDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
 import com.raxim.myscoutee.profile.service.AppSettingsService;
 import com.raxim.myscoutee.profile.service.operator.OperatorFirebaseCapabilityClient.FirebaseWebConfiguration;
@@ -79,6 +80,11 @@ class OperatorConfigurationServiceTest {
         assertThat(saved.branding().revision()).isEqualTo(1L);
         assertThat(saved.adminEmails())
                 .containsExactly("operator.admin@example.test");
+        assertThat(saved.privacyContact().configured()).isTrue();
+        assertThat(saved.privacyContact().dataControllerName())
+                .isEqualTo("My Community Cooperative");
+        assertThat(saved.privacyContact().privacyContactEmail())
+                .isEqualTo("privacy@community.example");
         assertThat(saved.socialLinks())
                 .containsExactly(new DeploymentSocialLinkDto(
                         "discord",
@@ -96,6 +102,10 @@ class OperatorConfigurationServiceTest {
         assertThat(document.getSocialLinks())
                 .extracting(DeploymentConfiguration.SocialLink::getProvider)
                 .containsExactly("discord");
+        assertThat(document.getPrivacyContact().getDataControllerName())
+                .isEqualTo("My Community Cooperative");
+        assertThat(document.getPrivacyContact().getPrivacyContactEmail())
+                .isEqualTo("privacy@community.example");
         assertThat(persistedJson)
                 .doesNotContain("sk_live_super-secret-1234")
                 .doesNotContain("auth-secret-material")
@@ -108,6 +118,7 @@ class OperatorConfigurationServiceTest {
         OperatorConfigurationService reloaded = fixture.newService();
         var status = reloaded.configuration();
         assertThat(status.branding()).isEqualTo(saved.branding());
+        assertThat(status.privacyContact()).isEqualTo(saved.privacyContact());
         assertThat(status.payment().credentialMask()).isEqualTo("••••1234");
         assertThat(status.firebase().authenticationCredentialConfigured()).isTrue();
         assertThat(status.firebase().messagingCredentialConfigured()).isTrue();
@@ -322,6 +333,72 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
+    void privacyContactNormalizesPreservesClearsAndRejectsPartialValues()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+
+        var configured = fixture.service().update(privacyRequest(
+                new PrivacyContactUpdateDto(
+                        " Community Cooperative ",
+                        " Privacy@Community.Example ")));
+
+        assertThat(configured.privacyContact().configured()).isTrue();
+        assertThat(configured.privacyContact().dataControllerName())
+                .isEqualTo("Community Cooperative");
+        assertThat(configured.privacyContact().privacyContactEmail())
+                .isEqualTo("privacy@community.example");
+        assertThat(fixture.persisted()
+                        .get()
+                        .getPrivacyContact()
+                        .getPrivacyContactEmail())
+                .isEqualTo("privacy@community.example");
+
+        var preserved = fixture.service().update(privacyRequest(null));
+        assertThat(preserved.privacyContact()).isEqualTo(configured.privacyContact());
+
+        assertBadRequest(
+                () -> fixture.service().update(privacyRequest(
+                        new PrivacyContactUpdateDto(
+                                "Community Cooperative",
+                                ""))),
+                "both be configured or both be blank");
+        assertBadRequest(
+                () -> fixture.service().update(privacyRequest(
+                        new PrivacyContactUpdateDto(
+                                "",
+                                "privacy@community.example"))),
+                "both be configured or both be blank");
+        assertBadRequest(
+                () -> fixture.service().update(privacyRequest(
+                        new PrivacyContactUpdateDto(
+                                "Community Cooperative",
+                                "not-an-email"))),
+                "Privacy contact email");
+        assertBadRequest(
+                () -> fixture.service().update(privacyRequest(
+                        new PrivacyContactUpdateDto(
+                                "Community\nCooperative",
+                                "privacy@community.example"))),
+                "invalid character");
+
+        var cleared = fixture.service().update(privacyRequest(
+                new PrivacyContactUpdateDto(" ", " ")));
+        assertThat(cleared.privacyContact().configured()).isFalse();
+        assertThat(cleared.privacyContact().dataControllerName()).isEmpty();
+        assertThat(cleared.privacyContact().privacyContactEmail()).isEmpty();
+        assertThat(fixture.persisted()
+                        .get()
+                        .getPrivacyContact()
+                        .getDataControllerName())
+                .isEmpty();
+        assertThat(fixture.persisted()
+                        .get()
+                        .getPrivacyContact()
+                        .getPrivacyContactEmail())
+                .isEmpty();
+    }
+
+    @Test
     void persistsNullableLogoCharacterIndexAndUsesUnicodeCodePoints()
             throws Exception {
         Fixture fixture = fixtureWithKey();
@@ -387,6 +464,38 @@ class OperatorConfigurationServiceTest {
                         .getBranding()
                         .getLogoCharacterIndex())
                 .isEqualTo(9);
+        verify(fixture.repository(), never())
+                .save(any(DeploymentConfiguration.class));
+    }
+
+    @Test
+    void partialPersistedPrivacyContactIsUnavailableAndNeverRepaired()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        fixture.persisted()
+                .get()
+                .getPrivacyContact()
+                .setDataControllerName("Community Cooperative");
+
+        assertThatThrownBy(fixture.service()::configuration)
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> {
+                            assertThat(exception.getStatusCode())
+                                    .isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+                            assertThat(exception.getReason())
+                                    .contains("privacy-contact seed is invalid");
+                        });
+        assertThat(fixture.persisted()
+                        .get()
+                        .getPrivacyContact()
+                        .getDataControllerName())
+                .isEqualTo("Community Cooperative");
+        assertThat(fixture.persisted()
+                        .get()
+                        .getPrivacyContact()
+                        .getPrivacyContactEmail())
+                .isEmpty();
         verify(fixture.repository(), never())
                 .save(any(DeploymentConfiguration.class));
     }

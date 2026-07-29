@@ -52,27 +52,20 @@ class OperatorConfigurationMapperTest {
     }
 
     @Test
-    void configurationDefaultsLiveOnlyInIdenticalMongoSeeds() throws Exception {
+    void configurationDefaultsLiveOnlyInVersionedMongoSeeds() throws Exception {
         DeploymentConfiguration empty = new DeploymentConfiguration();
         assertThat(empty.getSchemaVersion()).isNull();
         assertThat(empty.getBranding()).isNull();
         assertThat(empty.getSocialLinks()).isNull();
+        assertThat(empty.getPrivacyContact()).isNull();
         assertThat(empty.getPayment()).isNull();
         assertThat(empty.getFirebase()).isNull();
 
         Path seedRoot = locateSeedRoot();
-        String expected = null;
         for (String database : List.of("myscoutee_db", "demo_db", "e2e_db")) {
             String seedJson = Files.readString(
                     seedRoot.resolve(database)
                             .resolve("deploymentConfigurations.json"));
-            if (expected == null) {
-                expected = seedJson;
-            } else {
-                assertThat(seedJson)
-                        .as(database + " deployment configuration seed")
-                        .isEqualTo(expected);
-            }
             JsonNode seed = objectMapper.readTree(seedJson);
             assertThat(seed.size()).isEqualTo(1);
             JsonNode singleton = seed.get(0);
@@ -91,11 +84,27 @@ class OperatorConfigurationMapperTest {
                             .isNull())
                     .isTrue();
             assertThat(singleton.path("socialLinks").isArray()).isTrue();
+            JsonNode privacyContact = singleton.path("privacyContact");
+            assertThat(privacyContact.propertyNames())
+                    .containsExactlyInAnyOrder(
+                            "dataControllerName",
+                            "privacyContactEmail");
+            if ("myscoutee_db".equals(database)) {
+                assertThat(privacyContact.path("dataControllerName").asText())
+                        .isEmpty();
+                assertThat(privacyContact.path("privacyContactEmail").asText())
+                        .isEmpty();
+            } else {
+                assertThat(privacyContact.path("dataControllerName").asText())
+                        .isNotBlank();
+                assertThat(privacyContact.path("privacyContactEmail").asText())
+                        .endsWith(".myscoutee.test");
+            }
         }
     }
 
     @Test
-    void publicBrandingJsonContainsOnlyBrandingAndNonSecretSocialFields()
+    void publicConfigurationJsonContainsBrandingSocialAndPrivacyFieldsOnly()
             throws Exception {
         DeploymentConfiguration configuration = seededConfiguration();
         configuration.getBranding().setLogoUrl(
@@ -111,7 +120,8 @@ class OperatorConfigurationMapperTest {
         OperatorConfigurationMapper mapper = new OperatorConfigurationMapper();
 
         var json = objectMapper.readTree(
-                objectMapper.writeValueAsString(mapper.toBranding(configuration)));
+                objectMapper.writeValueAsString(
+                        mapper.toPublicConfiguration(configuration)));
 
         assertThat(json.propertyNames())
                 .containsExactlyInAnyOrder(
@@ -121,7 +131,8 @@ class OperatorConfigurationMapperTest {
                         "logoUrl",
                         "themePreset",
                         "revision",
-                        "socialLinks");
+                        "socialLinks",
+                        "privacyContact");
         assertThat(json.path("socialLinks").get(0).propertyNames())
                 .containsExactlyInAnyOrder(
                         "provider",
@@ -129,6 +140,21 @@ class OperatorConfigurationMapperTest {
                         "url",
                         "icon",
                         "handle");
+        assertThat(json.path("privacyContact").propertyNames())
+                .containsExactlyInAnyOrder(
+                        "configured",
+                        "dataControllerName",
+                        "privacyContactEmail");
+        assertThat(json.path("privacyContact").path("configured").asBoolean())
+                .isTrue();
+        assertThat(json.path("privacyContact")
+                        .path("dataControllerName")
+                        .asText())
+                .isEqualTo("MyScoutee Test Controller");
+        assertThat(json.path("privacyContact")
+                        .path("privacyContactEmail")
+                        .asText())
+                .isEqualTo("privacy@example.test");
         assertThat(json.toString())
                 .doesNotContain("adminEmails")
                 .doesNotContain("credential")
@@ -167,6 +193,11 @@ class OperatorConfigurationMapperTest {
         assertThat(dto.payment().credentialMask()).isEqualTo("••••1234");
         assertThat(dto.firebase().authenticationCredentialConfigured()).isTrue();
         assertThat(dto.firebase().messagingCredentialConfigured()).isTrue();
+        assertThat(dto.privacyContact().configured()).isTrue();
+        assertThat(dto.privacyContact().dataControllerName())
+                .isEqualTo("MyScoutee Test Controller");
+        assertThat(dto.privacyContact().privacyContactEmail())
+                .isEqualTo("privacy@example.test");
         assertThat(json)
                 .doesNotContain("ciphertext")
                 .doesNotContain("nonce")
@@ -198,6 +229,7 @@ class OperatorConfigurationMapperTest {
                 "capability",
                 "unavailableReason",
                 "adminEmails",
+                "privacyContact",
                 "socialLinks",
                 "branding",
                 "payment",
@@ -205,6 +237,11 @@ class OperatorConfigurationMapperTest {
                 "updatedAt");
         assertThat(json.get("unavailableReason").isNull()).isTrue();
         assertThat(json.get("updatedAt").isNull()).isTrue();
+        assertThat(json.get("privacyContact").propertyNames())
+                .containsExactlyInAnyOrder(
+                        "configured",
+                        "dataControllerName",
+                        "privacyContactEmail");
         assertThat(json.get("payment").propertyNames()).containsExactlyInAnyOrder(
                 "availableProviders",
                 "providerId",
@@ -245,6 +282,11 @@ class OperatorConfigurationMapperTest {
         branding.setRevision(0L);
         configuration.setBranding(branding);
         configuration.setSocialLinks(List.of());
+        DeploymentConfiguration.PrivacyContact privacyContact =
+                new DeploymentConfiguration.PrivacyContact();
+        privacyContact.setDataControllerName("MyScoutee Test Controller");
+        privacyContact.setPrivacyContactEmail("privacy@example.test");
+        configuration.setPrivacyContact(privacyContact);
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();

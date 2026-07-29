@@ -13,6 +13,8 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseConfigurationDto;
@@ -38,6 +40,41 @@ public class OperatorConfigurationMapper {
                 toSocialLinks(configuration));
     }
 
+    public DeploymentPublicConfigurationDto toPublicConfiguration(
+            DeploymentConfiguration configuration) {
+        DeploymentConfiguration.Branding branding = configuration.getBranding();
+        return new DeploymentPublicConfigurationDto(
+                requireText(branding.getProductName(), "Deployment product name"),
+                branding.getLogoCharacterIndex(),
+                requireText(branding.getHomeLabel(), "Deployment home label"),
+                safeText(branding.getLogoUrl()),
+                theme(branding.getThemePreset()),
+                branding.getRevision(),
+                toSocialLinks(configuration),
+                toPrivacyContact(configuration));
+    }
+
+    public DeploymentPrivacyContactDto toPrivacyContact(
+            DeploymentConfiguration configuration) {
+        DeploymentConfiguration.PrivacyContact privacyContact =
+                configuration.getPrivacyContact();
+        String dataControllerName = safeText(
+                privacyContact == null
+                        ? null
+                        : privacyContact.getDataControllerName());
+        String privacyContactEmail = safeText(
+                privacyContact == null
+                        ? null
+                        : privacyContact.getPrivacyContactEmail())
+                .toLowerCase(Locale.ROOT);
+        boolean configured = StringUtils.hasText(dataControllerName)
+                && StringUtils.hasText(privacyContactEmail);
+        return new DeploymentPrivacyContactDto(
+                configured,
+                dataControllerName,
+                privacyContactEmail);
+    }
+
     public OperatorConfigurationDto toOperatorConfiguration(
             DeploymentConfiguration configuration,
             List<PaymentProviderDto> availableProviders,
@@ -51,6 +88,7 @@ public class OperatorConfigurationMapper {
                         : "AVAILABLE",
                 StringUtils.hasText(unavailableReason) ? unavailableReason.trim() : null,
                 adminEmails == null ? List.of() : List.copyOf(adminEmails),
+                toPrivacyContact(configuration),
                 toSocialLinks(configuration),
                 toBranding(configuration),
                 new PaymentConfigurationDto(
@@ -210,7 +248,6 @@ public class OperatorConfigurationMapper {
                 && StringUtils.hasText(firebase.getProjectId())
                 && StringUtils.hasText(publicClient.getApiKey())
                 && StringUtils.hasText(publicClient.getAuthDomain())
-                && StringUtils.hasText(publicClient.getStorageBucket())
                 && StringUtils.hasText(publicClient.getMessagingSenderId())
                 && StringUtils.hasText(publicClient.getAppId())
                 && StringUtils.hasText(publicClient.getVapidKey());

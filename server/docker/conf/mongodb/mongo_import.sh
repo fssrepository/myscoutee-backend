@@ -151,9 +151,60 @@ quit(1);
 " >/dev/null
 }
 
+migrate_deployment_configuration_v3() {
+  local target_db="$1"
+
+  mongosh \
+    --host "${mongo_host}" \
+    --port "${mongo_port}" \
+    --username "${mongo_username}" \
+    --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" \
+    --quiet \
+    "${target_db}" \
+    --eval "
+const deploymentConfigurations =
+    db.getCollection('deploymentConfigurations');
+deploymentConfigurations.updateOne(
+  {
+    _id: 'deployment-configuration',
+    schemaVersion: 2
+  },
+  [
+    {
+      \$set: {
+        privacyContact: {
+          \$cond: [
+            { \$eq: [{ \$type: '\$privacyContact' }, 'missing'] },
+            {
+              dataControllerName: '',
+              privacyContactEmail: ''
+            },
+            '\$privacyContact'
+          ]
+        },
+        schemaVersion: 3,
+        version: {
+          \$add: [
+            { \$ifNull: ['\$version', 0] },
+            1
+          ]
+        }
+      }
+    }
+  ]
+);
+" >/dev/null
+}
+
 import_deployment_configuration_seed() {
   local target_db="$1"
   local jsonfile="$2"
+
+  # Deployment configuration is mutable operator state. The only in-place
+  # seed migration adds the v3 field when absent and then advances the schema;
+  # an existing privacy contact is never replaced.
+  migrate_deployment_configuration_v3 "${target_db}"
 
   if deployment_configuration_exists "${target_db}"; then
     echo "Preserving existing ${target_db}.deploymentConfigurations singleton."

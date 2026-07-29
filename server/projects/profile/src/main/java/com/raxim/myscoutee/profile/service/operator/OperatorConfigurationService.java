@@ -29,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.C
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
@@ -37,6 +38,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.O
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PrivacyContactUpdateDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
 import com.raxim.myscoutee.profile.service.AppSettingsService;
 import com.raxim.myscoutee.profile.service.operator.OperatorFirebaseCapabilityClient.FirebaseWebConfiguration;
@@ -64,10 +66,14 @@ public class OperatorConfigurationService {
     private static final int FIREBASE_VAPID_KEY_MAX = 512;
     private static final int FIREBASE_CREDENTIAL_MAX = 65536;
     private static final int ADMIN_EMAIL_MAX = 254;
+    private static final int DATA_CONTROLLER_NAME_MAX = 160;
+    private static final int PRIVACY_CONTACT_EMAIL_MAX = 254;
     private static final int ADMIN_EMAIL_COUNT_MAX = 32;
     private static final int SOCIAL_LINK_COUNT_MAX = 12;
     private static final Pattern ADMIN_EMAIL_PATTERN =
             Pattern.compile("^[^\\s@]+@[^\\s@]+$");
+    private static final Pattern PRIVACY_CONTACT_EMAIL_PATTERN =
+            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
     private static final Pattern SOCIAL_PROVIDER_PATTERN =
             Pattern.compile("^[a-z0-9][a-z0-9._-]*$");
 
@@ -169,6 +175,13 @@ public class OperatorConfigurationService {
         }
     }
 
+    public DeploymentPublicConfigurationDto publicConfiguration() {
+        MongoSessionMode mode = MongoSessionModeContext.currentMode();
+        synchronized (modeLocks.get(mode)) {
+            return mapper.toPublicConfiguration(loadPersisted());
+        }
+    }
+
     public FirebasePublicConfigurationDto publicFirebaseConfiguration() {
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
@@ -254,6 +267,7 @@ public class OperatorConfigurationService {
                         exception);
             }
             applyBranding(configuration, request.branding());
+            applyPrivacyContact(configuration, request.privacyContact());
             applySocialLinks(configuration, socialLinks);
             applyPayment(configuration, request.payment(), providers);
             applyFirebase(configuration, request.firebase());
@@ -590,6 +604,7 @@ public class OperatorConfigurationService {
                         != DeploymentConfiguration.SCHEMA_VERSION
                 || configuration.getBranding() == null
                 || configuration.getSocialLinks() == null
+                || configuration.getPrivacyContact() == null
                 || configuration.getPayment() == null
                 || configuration.getFirebase() == null) {
             throw unavailable(
@@ -648,6 +663,7 @@ public class OperatorConfigurationService {
                     "Deployment social-link seed is invalid.",
                     exception);
         }
+        requireValidPersistedPrivacyContact(configuration.getPrivacyContact());
         DeploymentConfiguration.Payment payment = configuration.getPayment();
         if (payment.getCredentialEnvelope() != null
                 && (!StringUtils.hasText(payment.getProviderId())
@@ -778,6 +794,42 @@ public class OperatorConfigurationService {
             stored.add(item);
         }
         configuration.setSocialLinks(List.copyOf(stored));
+    }
+
+    private void applyPrivacyContact(
+            DeploymentConfiguration configuration,
+            PrivacyContactUpdateDto request) {
+        if (request == null) {
+            return;
+        }
+        String dataControllerName = privacyText(
+                request.dataControllerName(),
+                "Data controller name",
+                DATA_CONTROLLER_NAME_MAX);
+        String privacyContactEmail = privacyText(
+                request.privacyContactEmail(),
+                "Privacy contact email",
+                PRIVACY_CONTACT_EMAIL_MAX)
+                .toLowerCase(Locale.ROOT);
+        boolean hasDataControllerName =
+                StringUtils.hasText(dataControllerName);
+        boolean hasPrivacyContactEmail =
+                StringUtils.hasText(privacyContactEmail);
+        if (hasDataControllerName != hasPrivacyContactEmail) {
+            throw badRequest(
+                    "Data controller name and privacy contact email must "
+                            + "either both be configured or both be blank.");
+        }
+        if (hasPrivacyContactEmail
+                && !PRIVACY_CONTACT_EMAIL_PATTERN
+                        .matcher(privacyContactEmail)
+                        .matches()) {
+            throw badRequest("Privacy contact email is invalid.");
+        }
+        DeploymentConfiguration.PrivacyContact stored =
+                configuration.getPrivacyContact();
+        stored.setDataControllerName(dataControllerName);
+        stored.setPrivacyContactEmail(privacyContactEmail);
     }
 
     private void applyFirebase(
@@ -946,7 +998,6 @@ public class OperatorConfigurationService {
                 && StringUtils.hasText(firebase.getProjectId())
                 && StringUtils.hasText(publicClient.getApiKey())
                 && StringUtils.hasText(publicClient.getAuthDomain())
-                && StringUtils.hasText(publicClient.getStorageBucket())
                 && StringUtils.hasText(publicClient.getMessagingSenderId())
                 && StringUtils.hasText(publicClient.getAppId())
                 && StringUtils.hasText(publicClient.getVapidKey());
@@ -1007,6 +1058,56 @@ public class OperatorConfigurationService {
             throw badRequest(fieldName + " is required.");
         }
         return normalized;
+    }
+
+    private String privacyText(
+            String value,
+            String fieldName,
+            int maximumLength) {
+        String normalized = optionalTrimmed(
+                value,
+                fieldName,
+                maximumLength);
+        if (normalized.chars().anyMatch(Character::isISOControl)) {
+            throw badRequest(fieldName + " contains an invalid character.");
+        }
+        return normalized;
+    }
+
+    private void requireValidPersistedPrivacyContact(
+            DeploymentConfiguration.PrivacyContact privacyContact) {
+        String storedName = privacyContact.getDataControllerName();
+        String storedEmail = privacyContact.getPrivacyContactEmail();
+        String dataControllerName =
+                storedName == null ? "" : storedName.trim();
+        String privacyContactEmail =
+                storedEmail == null ? "" : storedEmail.trim();
+        boolean hasDataControllerName =
+                StringUtils.hasText(dataControllerName);
+        boolean hasPrivacyContactEmail =
+                StringUtils.hasText(privacyContactEmail);
+        boolean invalid = hasDataControllerName != hasPrivacyContactEmail
+                || dataControllerName.length() > DATA_CONTROLLER_NAME_MAX
+                || privacyContactEmail.length()
+                        > PRIVACY_CONTACT_EMAIL_MAX
+                || dataControllerName.chars()
+                        .anyMatch(Character::isISOControl)
+                || privacyContactEmail.chars()
+                        .anyMatch(Character::isISOControl)
+                || (hasPrivacyContactEmail
+                        && (!privacyContactEmail.equals(
+                                privacyContactEmail.toLowerCase(Locale.ROOT))
+                                || !PRIVACY_CONTACT_EMAIL_PATTERN
+                                        .matcher(privacyContactEmail)
+                                        .matches()))
+                || (storedName != null
+                        && !storedName.equals(dataControllerName))
+                || (storedEmail != null
+                        && !storedEmail.equals(privacyContactEmail));
+        if (invalid) {
+            throw unavailable(
+                    "Deployment privacy-contact seed is invalid.");
+        }
     }
 
     private String optionalTrimmed(String value, String fieldName, int maxLength) {
