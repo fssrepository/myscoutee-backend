@@ -405,9 +405,8 @@ class OperatorConfigurationServiceTest {
 
         var authentication = fixture.service().test(new ConfigurationTestRequestDto(
                 ConfigurationTestKind.FIREBASE_AUTHENTICATION));
-        var messaging = fixture.service().test(new ConfigurationTestRequestDto(
-                ConfigurationTestKind.FIREBASE_MESSAGING,
-                "destination-token"));
+        var messaging = fixture.service().test(
+                messagingTestRequest(fixture, "destination-token"));
 
         assertThat(authentication.success()).isTrue();
         assertThat(authentication.message())
@@ -431,6 +430,7 @@ class OperatorConfigurationServiceTest {
                 "community-project",
                 "{\"type\":\"service_account\",\"private_key\":\"messaging-secret\"}",
                 firebaseWebConfiguration(),
+                "browser-generated-token",
                 "destination-token",
                 "Product");
     }
@@ -455,9 +455,8 @@ class OperatorConfigurationServiceTest {
 
         fixture.service().test(new ConfigurationTestRequestDto(
                 ConfigurationTestKind.FIREBASE_AUTHENTICATION));
-        fixture.service().test(new ConfigurationTestRequestDto(
-                ConfigurationTestKind.FIREBASE_MESSAGING,
-                "destination-token"));
+        fixture.service().test(
+                messagingTestRequest(fixture, "destination-token"));
 
         var activated = fixture.service().activateFirebase();
         var publicConfiguration =
@@ -497,7 +496,44 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
-    void firebaseTestFailuresAreSafeAndMessagingRequiresExplicitDestination()
+    void staleBrowserMessagingProofFailsClosedAndClearsCurrentReadiness()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        fixture.service().update(updateRequest(
+                "Product",
+                "/media/public?key=images%2Flogo",
+                "stripe",
+                "payment-secret",
+                "authentication-secret",
+                "messaging-secret"));
+        fixture.service().test(new ConfigurationTestRequestDto(
+                ConfigurationTestKind.FIREBASE_AUTHENTICATION));
+        fixture.service().test(
+                messagingTestRequest(fixture, null));
+        fixture.service().activateFirebase();
+        var publicConfiguration = fixture.service()
+                .configuration()
+                .firebase()
+                .publicConfiguration();
+
+        var stale = fixture.service().test(
+                new ConfigurationTestRequestDto(
+                        ConfigurationTestKind.FIREBASE_MESSAGING,
+                        null,
+                        "browser-generated-token",
+                        publicConfiguration.revision() - 1L,
+                        publicConfiguration.appId()));
+
+        assertThat(stale.success()).isFalse();
+        assertThat(stale.message())
+                .contains("current saved configuration is required");
+        assertThat(stale.firebase().active()).isFalse();
+        assertThat(stale.firebase().readyToActivate()).isFalse();
+        assertThat(stale.firebase().messagingTestedAt()).isNull();
+    }
+
+    @Test
+    void firebaseTestFailuresAreSafeAndMessagingRequiresCurrentBrowserProof()
             throws Exception {
         Fixture fixture = fixtureWithKey();
         fixture.service().update(updateRequest(
@@ -515,7 +551,7 @@ class OperatorConfigurationServiceTest {
         var authentication = fixture.service().test(
                 new ConfigurationTestRequestDto(
                         ConfigurationTestKind.FIREBASE_AUTHENTICATION));
-        var missingDestination = fixture.service().test(
+        var missingBrowserProof = fixture.service().test(
                 new ConfigurationTestRequestDto(
                         ConfigurationTestKind.FIREBASE_MESSAGING));
 
@@ -528,11 +564,17 @@ class OperatorConfigurationServiceTest {
                 .doesNotContain("super-secret");
         assertThat(authentication.firebase()).isNotNull();
         assertThat(authentication.firebase().active()).isFalse();
-        assertThat(missingDestination.success()).isFalse();
-        assertThat(missingDestination.message())
-                .contains("destination token is required");
+        assertThat(missingBrowserProof.success()).isFalse();
+        assertThat(missingBrowserProof.message())
+                .contains("current saved configuration is required");
         verify(fixture.firebaseCapabilityClient(), never())
-                .sendTestMessage(any(), any(), any(), any(), any());
+                .sendTestMessage(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any());
     }
 
     @Test
@@ -743,6 +785,21 @@ class OperatorConfigurationServiceTest {
                 "1:123456789:web:community",
                 "G-COMMUNITY",
                 "public-vapid-key");
+    }
+
+    private ConfigurationTestRequestDto messagingTestRequest(
+            Fixture fixture,
+            String optionalDestinationToken) {
+        var publicConfiguration = fixture.service()
+                .configuration()
+                .firebase()
+                .publicConfiguration();
+        return new ConfigurationTestRequestDto(
+                ConfigurationTestKind.FIREBASE_MESSAGING,
+                optionalDestinationToken,
+                "browser-generated-token",
+                publicConfiguration.revision(),
+                publicConfiguration.appId());
     }
 
     private DeploymentConfiguration seededConfiguration() {

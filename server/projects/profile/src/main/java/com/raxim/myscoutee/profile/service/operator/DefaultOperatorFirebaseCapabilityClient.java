@@ -48,6 +48,63 @@ public class DefaultOperatorFirebaseCapabilityClient
     private final FirebasePublicConfigurationOperations
             publicConfigurationOperations;
 
+    static boolean hasAuthorizedDomain(
+            JsonNode domains,
+            String expectedDomain) {
+        if (domains == null || !domains.isArray()) {
+            return false;
+        }
+        String normalizedExpected = normalizeDomain(expectedDomain);
+        if (!StringUtils.hasText(normalizedExpected)) {
+            return false;
+        }
+        for (JsonNode domain : domains) {
+            if (normalizeDomain(domain.asText(""))
+                    .equals(normalizedExpected)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean emailPasswordEnabled(JsonNode config) {
+        return config != null
+                && config.path("signIn")
+                        .path("email")
+                        .path("enabled")
+                        .asBoolean(false);
+    }
+
+    static boolean enabledSupportedProvider(
+            JsonNode provider,
+            String providerId) {
+        String normalizedProviderId =
+                providerId == null ? "" : providerId.trim();
+        if (provider == null
+                || (!"google.com".equals(normalizedProviderId)
+                        && !"facebook.com".equals(
+                                normalizedProviderId))) {
+            return false;
+        }
+        return provider.path("enabled").asBoolean(false)
+                && StringUtils.hasText(
+                        provider.path("clientId").asText("").trim())
+                && provider.path("name").asText("").trim().endsWith(
+                        "/defaultSupportedIdpConfigs/"
+                                + normalizedProviderId);
+    }
+
+    private static String normalizeDomain(String value) {
+        String normalized = (value == null ? "" : value.trim())
+                .toLowerCase(Locale.ROOT);
+        while (normalized.endsWith(".")) {
+            normalized = normalized.substring(
+                    0,
+                    normalized.length() - 1);
+        }
+        return normalized;
+    }
+
     public DefaultOperatorFirebaseCapabilityClient() {
         this(
                 new FirebaseCapabilityOperations() {
@@ -584,11 +641,7 @@ public class DefaultOperatorFirebaseCapabilityClient
             requireAuthorizedDomain(
                     config.path("authorizedDomains"),
                     configuration.authDomain());
-            boolean emailPasswordEnabled = config.path("signIn")
-                    .path("email")
-                    .path("enabled")
-                    .asBoolean(false);
-            if (emailPasswordEnabled) {
+            if (emailPasswordEnabled(config)) {
                 return;
             }
             if (enabledDefaultProvider(
@@ -624,12 +677,9 @@ public class DefaultOperatorFirebaseCapabilityClient
             JsonNode provider = successfulJson(
                     response,
                     "Firebase authentication provider lookup");
-            return provider.path("enabled").asBoolean(false)
-                    && StringUtils.hasText(
-                            text(provider, "clientId"))
-                    && text(provider, "name").endsWith(
-                            "/defaultSupportedIdpConfigs/"
-                                    + providerId);
+            return enabledSupportedProvider(
+                    provider,
+                    providerId);
         }
 
         private HttpRequest authorizedGet(
@@ -647,31 +697,11 @@ public class DefaultOperatorFirebaseCapabilityClient
         private void requireAuthorizedDomain(
                 JsonNode domains,
                 String expectedDomain) {
-            if (!domains.isArray()) {
-                throw new IllegalStateException(
-                        "Firebase authentication authorized domains are invalid.");
-            }
-            String normalizedExpected =
-                    normalizeDomain(expectedDomain);
-            for (JsonNode domain : domains) {
-                if (normalizeDomain(domain.asText(""))
-                        .equals(normalizedExpected)) {
-                    return;
-                }
+            if (hasAuthorizedDomain(domains, expectedDomain)) {
+                return;
             }
             throw new IllegalStateException(
                     "Firebase authentication domain is not authorized.");
-        }
-
-        private String normalizeDomain(String value) {
-            String normalized = (value == null ? "" : value.trim())
-                    .toLowerCase(Locale.ROOT);
-            while (normalized.endsWith(".")) {
-                normalized = normalized.substring(
-                        0,
-                        normalized.length() - 1);
-            }
-            return normalized;
         }
 
         private BoundedResponse send(HttpRequest request)

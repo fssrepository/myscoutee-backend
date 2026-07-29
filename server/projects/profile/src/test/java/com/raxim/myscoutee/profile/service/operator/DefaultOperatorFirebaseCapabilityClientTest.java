@@ -41,7 +41,7 @@ class DefaultOperatorFirebaseCapabilityClientTest {
                     }
 
                     @Override
-                    public void sendTestMessage(
+                    public String sendTestMessage(
                             FirebaseApp app,
                             String destinationToken,
                             String notificationTitle) {
@@ -100,7 +100,7 @@ class DefaultOperatorFirebaseCapabilityClientTest {
                     }
 
                     @Override
-                    public void sendTestMessage(
+                    public String sendTestMessage(
                             FirebaseApp app,
                             String destinationToken,
                             String notificationTitle) {
@@ -113,10 +113,67 @@ class DefaultOperatorFirebaseCapabilityClientTest {
                 PROJECT_ID,
                 serviceAccountJson(PROJECT_ID),
                 webConfiguration("not-a-p256-public-key"),
-                "destination-token",
+                "browser-readiness-token",
+                null,
                 "Community"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("VAPID public key is invalid");
+    }
+
+    @Test
+    void validatesAuthorizedDomainAndSupportedSignInConfiguration()
+            throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        var configuration = mapper.readTree("""
+                {
+                  "authorizedDomains": [
+                    "example.test",
+                    "Login.Example.Test."
+                  ],
+                  "signIn": {
+                    "email": {
+                      "enabled": true,
+                      "passwordRequired": false
+                    }
+                  }
+                }
+                """);
+        var google = mapper.readTree("""
+                {
+                  "name": "projects/123/defaultSupportedIdpConfigs/google.com",
+                  "enabled": true,
+                  "clientId": "browser-client-id"
+                }
+                """);
+        var disabledFacebook = mapper.readTree("""
+                {
+                  "name": "projects/123/defaultSupportedIdpConfigs/facebook.com",
+                  "enabled": false,
+                  "clientId": "browser-client-id"
+                }
+                """);
+
+        assertThat(
+                DefaultOperatorFirebaseCapabilityClient.hasAuthorizedDomain(
+                        configuration.path("authorizedDomains"),
+                        "login.example.test"))
+                .isTrue();
+        assertThat(
+                DefaultOperatorFirebaseCapabilityClient.emailPasswordEnabled(
+                        configuration))
+                .isTrue();
+        assertThat(
+                DefaultOperatorFirebaseCapabilityClient
+                        .enabledSupportedProvider(
+                                google,
+                                "google.com"))
+                .isTrue();
+        assertThat(
+                DefaultOperatorFirebaseCapabilityClient
+                        .enabledSupportedProvider(
+                                disabledFacebook,
+                                "facebook.com"))
+                .isFalse();
     }
 
     private FirebaseWebConfiguration webConfiguration(
