@@ -11508,6 +11508,96 @@
     "value": "MyScoutee Support"
   },
   {
+    "_id": "i18n-message-en-myscoutee-support-blocked-chat-message",
+    "key": "myscoutee.support.blocked.chat.message",
+    "lang": "en",
+    "value": "Your account is blocked. You can message MyScoutee support here."
+  },
+  {
+    "_id": "i18n-message-en-myscoutee-support-blocked-review-message",
+    "key": "myscoutee.support.blocked.review.message",
+    "lang": "en",
+    "value": "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review."
+  },
+  {
+    "_id": "i18n-message-en-myscoutee-support-conversation",
+    "key": "myscoutee.support.conversation",
+    "lang": "en",
+    "value": "MyScoutee support conversation."
+  },
+  {
+    "_id": "i18n-message-en-myscoutee-support-user-title",
+    "key": "myscoutee.support.user.title",
+    "lang": "en",
+    "value": "MyScoutee Support · {user}"
+  },
+  {
+    "_id": "i18n-message-en-moderation-account-blocked-message",
+    "key": "moderation.account.blocked.message",
+    "lang": "en",
+    "value": "Your account has been blocked after moderation review."
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-token-unavailable",
+    "key": "event.chat.support.token.unavailable",
+    "lang": "en",
+    "value": "The workspace share token could not be created."
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-shared-workspace",
+    "key": "event.chat.support.shared.workspace",
+    "lang": "en",
+    "value": "Shared workspace"
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-session-subtitle",
+    "key": "event.chat.support.session.subtitle",
+    "lang": "en",
+    "value": "MyScoutee support session"
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-token-description",
+    "key": "event.chat.support.token.description",
+    "lang": "en",
+    "value": "MyScoutee admin can open the current app view from this token."
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-shared-message",
+    "key": "event.chat.support.shared.message",
+    "lang": "en",
+    "value": "Shared my current workspace with MyScoutee support."
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-share-workspace",
+    "key": "event.chat.support.share.workspace",
+    "lang": "en",
+    "value": "Share workspace"
+  },
+  {
+    "_id": "i18n-message-en-event-chat-support-share-workspace-summary",
+    "key": "event.chat.support.share.workspace.summary",
+    "lang": "en",
+    "value": "Send a token so MyScoutee admin can open this view"
+  },
+  {
+    "_id": "i18n-message-en-event-chat-external-link-title",
+    "key": "event.chat.external.link.title",
+    "lang": "en",
+    "value": "Open external link?"
+  },
+  {
+    "_id": "i18n-message-en-event-chat-external-link-message",
+    "key": "event.chat.external.link.message",
+    "lang": "en",
+    "value": "This link opens outside {productName}. Be vigilant and continue only if you trust it."
+  },
+  {
+    "_id": "i18n-message-en-feedback-submitted-category-success",
+    "key": "feedback.submitted.category.success",
+    "lang": "en",
+    "value": "Feedback sent successfully in \"{category}\". Thank you for helping improve MyScoutee."
+  },
+  {
     "_id": "i18n-message-en-open-affinity-graph",
     "key": "open.affinity.graph",
     "lang": "en",
@@ -11590,6 +11680,12 @@
     "key": "reactivate.account.question",
     "lang": "en",
     "value": "Reactivate account?"
+  },
+  {
+    "_id": "i18n-message-en-account-reactivation-message",
+    "key": "account.reactivation.message",
+    "lang": "en",
+    "value": "This account is scheduled for deletion. You can reactivate it within 30 days and continue using {productName} normally."
   },
   {
     "_id": "i18n-message-en-save-capacity",
@@ -14436,6 +14532,18 @@
     "value": "This node's share is claimed"
   },
   {
+    "_id": "i18n-message-en-operator-action-claim-share-pending",
+    "key": "operator.action.claim.share.pending",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-claim-share-pending-detail",
+    "key": "operator.action.claim.share.pending.detail",
+    "lang": "en",
+    "value": "The registry has received this node claim"
+  },
+  {
     "_id": "i18n-message-en-operator-action-configuration-detail",
     "key": "operator.action.configuration.detail",
     "lang": "en",
@@ -15264,6 +15372,12 @@
     "value": "Company verification is pending review"
   },
   {
+    "_id": "i18n-message-en-operator-claim-verification-pending-action",
+    "key": "operator.claim.verification.pending.action",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
     "_id": "i18n-message-en-operator-claim-verification-pending-instructions",
     "key": "operator.claim.verification.pending.instructions",
     "lang": "en",
@@ -15286,6 +15400,12 @@
     "key": "operator.claim.verification.error.required",
     "lang": "en",
     "value": "Complete every required company and contact field, enter a valid email and website, and confirm the attestation."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-error-email",
+    "key": "operator.claim.verification.error.email",
+    "lang": "en",
+    "value": "Enter a valid contact email address, for example name@example.com."
   },
   {
     "_id": "i18n-message-en-operator-claim-verification-error-website",
@@ -27810,6 +27930,96 @@
     "value": "MyScoutee támogatás"
   },
   {
+    "_id": "i18n-message-hu-myscoutee-support-blocked-chat-message",
+    "key": "myscoutee.support.blocked.chat.message",
+    "lang": "hu",
+    "value": "A fiókod le van tiltva. Itt üzenhetsz a MyScoutee támogatásnak."
+  },
+  {
+    "_id": "i18n-message-hu-myscoutee-support-blocked-review-message",
+    "key": "myscoutee.support.blocked.review.message",
+    "lang": "hu",
+    "value": "Fiókodat moderációs felülvizsgálat után letiltottuk. Itt válaszolhatsz, ha kapcsolatba szeretnél lépni a MyScoutee támogatással és felülvizsgálatot kérnél."
+  },
+  {
+    "_id": "i18n-message-hu-myscoutee-support-conversation",
+    "key": "myscoutee.support.conversation",
+    "lang": "hu",
+    "value": "MyScoutee támogatási beszélgetés."
+  },
+  {
+    "_id": "i18n-message-hu-myscoutee-support-user-title",
+    "key": "myscoutee.support.user.title",
+    "lang": "hu",
+    "value": "MyScoutee támogatás · {user}"
+  },
+  {
+    "_id": "i18n-message-hu-moderation-account-blocked-message",
+    "key": "moderation.account.blocked.message",
+    "lang": "hu",
+    "value": "Fiókodat moderációs felülvizsgálat után letiltottuk."
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-token-unavailable",
+    "key": "event.chat.support.token.unavailable",
+    "lang": "hu",
+    "value": "A munkaterület megosztási tokenjét nem sikerült létrehozni."
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-shared-workspace",
+    "key": "event.chat.support.shared.workspace",
+    "lang": "hu",
+    "value": "Megosztott munkaterület"
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-session-subtitle",
+    "key": "event.chat.support.session.subtitle",
+    "lang": "hu",
+    "value": "MyScoutee támogatási munkamenet"
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-token-description",
+    "key": "event.chat.support.token.description",
+    "lang": "hu",
+    "value": "A MyScoutee adminja meg tudja nyitni az alkalmazás aktuális nézetét ezzel a tokennel."
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-shared-message",
+    "key": "event.chat.support.shared.message",
+    "lang": "hu",
+    "value": "Megosztottam az aktuális munkaterületemet a MyScoutee támogatással."
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-share-workspace",
+    "key": "event.chat.support.share.workspace",
+    "lang": "hu",
+    "value": "Munkaterület megosztása"
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-support-share-workspace-summary",
+    "key": "event.chat.support.share.workspace.summary",
+    "lang": "hu",
+    "value": "Küldj egy tokent, amellyel a MyScoutee adminja megnyithatja ezt a nézetet"
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-external-link-title",
+    "key": "event.chat.external.link.title",
+    "lang": "hu",
+    "value": "Külső hivatkozás megnyitása?"
+  },
+  {
+    "_id": "i18n-message-hu-event-chat-external-link-message",
+    "key": "event.chat.external.link.message",
+    "lang": "hu",
+    "value": "Ez a hivatkozás a {productName} alkalmazáson kívül nyílik meg. Légy körültekintő, és csak akkor folytasd, ha megbízol benne."
+  },
+  {
+    "_id": "i18n-message-hu-feedback-submitted-category-success",
+    "key": "feedback.submitted.category.success",
+    "lang": "hu",
+    "value": "A „{category}” kategóriájú visszajelzést sikeresen elküldtük. Köszönjük, hogy segítesz javítani a MyScoutee-t."
+  },
+  {
     "_id": "i18n-message-hu-open-affinity-graph",
     "key": "open.affinity.graph",
     "lang": "hu",
@@ -27892,6 +28102,12 @@
     "key": "reactivate.account.question",
     "lang": "hu",
     "value": "Fiók újraaktiválása?"
+  },
+  {
+    "_id": "i18n-message-hu-account-reactivation-message",
+    "key": "account.reactivation.message",
+    "lang": "hu",
+    "value": "Ez a fiók törlésre van ütemezve. 30 napon belül újraaktiválhatod, majd a {productName} alkalmazást a megszokott módon használhatod tovább."
   },
   {
     "_id": "i18n-message-hu-save-capacity",
@@ -30738,6 +30954,18 @@
     "value": "A csomópont részesedését már igényelték"
   },
   {
+    "_id": "i18n-message-hu-operator-action-claim-share-pending",
+    "key": "operator.action.claim.share.pending",
+    "lang": "hu",
+    "value": "Felülvizsgálat alatt"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-claim-share-pending-detail",
+    "key": "operator.action.claim.share.pending.detail",
+    "lang": "hu",
+    "value": "A nyilvántartás fogadta a csomópont igénylését"
+  },
+  {
     "_id": "i18n-message-hu-operator-action-configuration-detail",
     "key": "operator.action.configuration.detail",
     "lang": "hu",
@@ -31566,6 +31794,12 @@
     "value": "A cégellenőrzés felülvizsgálatra vár"
   },
   {
+    "_id": "i18n-message-hu-operator-claim-verification-pending-action",
+    "key": "operator.claim.verification.pending.action",
+    "lang": "hu",
+    "value": "Felülvizsgálat alatt"
+  },
+  {
     "_id": "i18n-message-hu-operator-claim-verification-pending-instructions",
     "key": "operator.claim.verification.pending.instructions",
     "lang": "hu",
@@ -31588,6 +31822,12 @@
     "key": "operator.claim.verification.error.required",
     "lang": "hu",
     "value": "Tölts ki minden kötelező cég- és kapcsolattartói mezőt, adj meg érvényes e-mail-címet és webhelyet, majd erősítsd meg a nyilatkozatot."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-error-email",
+    "key": "operator.claim.verification.error.email",
+    "lang": "hu",
+    "value": "Adj meg érvényes kapcsolattartói e-mail-címet, például nev@pelda.hu."
   },
   {
     "_id": "i18n-message-hu-operator-claim-verification-error-website",

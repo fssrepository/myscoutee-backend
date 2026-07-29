@@ -109,7 +109,31 @@ public final class OperatorRegistryDtos {
     public record OperatorRegistryMutationResultDto(
             OperatorRegistryStatusDto status,
             OperatorLeaderboardRowDto leaderboardEntry,
+            List<OperatorLeaderboardRowDto> leaderboardUpserts,
             List<String> removedLeaderboardEntryIds,
+            int leaderboardTotalDelta,
             boolean created) {
+        public OperatorRegistryMutationResultDto(
+                OperatorRegistryStatusDto status,
+                OperatorLeaderboardRowDto leaderboardEntry,
+                List<String> removedLeaderboardEntryIds,
+                boolean created) {
+            this(
+                    status,
+                    leaderboardEntry,
+                    leaderboardEntry == null
+                            ? List.of()
+                            : List.of(leaderboardEntry),
+                    removedLeaderboardEntryIds,
+                    created && leaderboardEntry != null
+                            ? 1
+                            : !created
+                                    && leaderboardEntry == null
+                                    && removedLeaderboardEntryIds != null
+                                    && !removedLeaderboardEntryIds.isEmpty()
+                                            ? -1
+                                            : 0,
+                    created);
+        }
     }
 }

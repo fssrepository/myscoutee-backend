@@ -33,6 +33,7 @@ const requiredCollections = [
   'countryPartitions',
   'operatorRegistryEndpoints',
   'paymentProviders',
+  'communityProviders',
   'deploymentConfigurations',
   'i18n_bundles',
   'i18n_messages'
@@ -585,6 +586,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.paymentProviders.createIndex(
     { enabled: 1, sortOrder: 1, label: 1, _id: 1 },
     { name: 'payment_provider_enabled_sort' }
+  );
+  portalDb.communityProviders.createIndex(
+    { enabled: 1, sortOrder: 1, name: 1, _id: 1 },
+    { name: 'community_provider_enabled_sort' }
   );
 
   portalDb.i18n_bundles.createIndex(

@@ -90,7 +90,9 @@ public class OperatorRegistryMapper {
         return new OperatorRegistryMutationResultDto(
                 status,
                 entry,
+                entry == null ? List.of() : List.of(entry),
                 List.of(),
+                created && entry != null ? 1 : 0,
                 created);
     }
 
@@ -105,13 +107,15 @@ public class OperatorRegistryMapper {
                         .map(String::trim)
                         .distinct()
                         .toList();
+        OperatorLeaderboardRowDto entry = remainingClaimedGroup == null
+                ? null
+                : networkMapper.toLeaderboardRow(remainingClaimedGroup);
         return new OperatorRegistryMutationResultDto(
                 status,
-                remainingClaimedGroup == null
-                        ? null
-                        : networkMapper.toLeaderboardRow(
-                                remainingClaimedGroup),
+                entry,
+                entry == null ? List.of() : List.of(entry),
                 removedIds,
+                entry == null && !removedIds.isEmpty() ? -1 : 0,
                 false);
     }
 

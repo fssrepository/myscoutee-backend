@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -27,6 +28,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimStatusDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -204,6 +206,262 @@ class OperatorNetworkServiceTest {
     }
 
     @Test
+    void redeemsClientTokenThenReturnsCanonicalPaginatedLeaderboardMutation() {
+        OperatorRegistrySettingsRepository settingsRepository =
+                mock(OperatorRegistrySettingsRepository.class);
+        OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository =
+                mock(OperatorClaimSubmissionSnapshotRepository.class);
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        RegistryProperties properties = new RegistryProperties();
+        properties.setOutboundAllowed(true);
+        when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
+                .thenReturn(Optional.of(registeredSettings()));
+        when(claimSubmissionRepository.findById(
+                OperatorClaimSubmissionSnapshot.SINGLETON_ID))
+                .thenReturn(Optional.empty());
+
+        String groupId = "opg_0123456789abcdef0123456789abcdef";
+        String previousGroupId =
+                "opg_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        ClaimStatus previousStatus = pendingClaimStatus(
+                previousGroupId,
+                "2026-07-28T01:00:00Z");
+        ClaimStatus registryStatus = new ClaimStatus(
+                true,
+                "2026-07-29T01:00:00Z",
+                "Token Source Cooperative",
+                "https://cdn.example.test/operator.png",
+                groupId,
+                null,
+                "277",
+                "5000",
+                "AVAILABLE",
+                null,
+                "PENDING_REVIEW",
+                "2026-07-29T01:00:00Z",
+                "Token Source Cooperative");
+        LeaderboardRow unrelatedRow = new LeaderboardRow(
+                "opg_fedcba9876543210fedcba9876543210",
+                "claimed",
+                "opg_fedcba9876543210fedcba9876543210",
+                "Other Operator",
+                "",
+                "approved",
+                2L,
+                "65000",
+                "1",
+                "3",
+                "10");
+        LeaderboardRow registryLeaderboardEntry = new LeaderboardRow(
+                groupId,
+                "claimed",
+                groupId,
+                "Token Source Cooperative",
+                "https://cdn.example.test/operator.png",
+                "pending-review",
+                2L,
+                "12000",
+                "1",
+                "277",
+                "5000");
+        when(operations.claimStatus(any()))
+                .thenReturn(previousStatus, registryStatus);
+        when(operations.leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("")))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(unrelatedRow),
+                        "claimed-page-2"));
+        when(operations.leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("claimed-page-2")))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(registryLeaderboardEntry),
+                        null));
+        OperatorNetworkService service = new OperatorNetworkService(
+                settingsRepository,
+                claimSubmissionRepository,
+                mock(UsersRepository.class),
+                properties,
+                new RegistryDemoProperties(),
+                operations,
+                new OperatorNetworkMapper());
+        OperatorRedeemClientTokenRequestDto request =
+                new OperatorRedeemClientTokenRequestDto(
+                        "client-token",
+                        "redeem-request-12345678");
+
+        OperatorClaimMutationResultDto mutation =
+                service.redeemClientToken(request, "operator-1");
+
+        assertThat(mutation.status().operatorGroupId()).isEqualTo(groupId);
+        assertThat(mutation.status().verificationStatus())
+                .isEqualTo("PENDING_REVIEW");
+        assertThat(mutation.submission()).isNull();
+        assertThat(mutation.leaderboardEntry())
+                .isEqualTo(new OperatorLeaderboardRowDto(
+                        groupId,
+                        "claimed",
+                        groupId,
+                        "Token Source Cooperative",
+                        "https://cdn.example.test/operator.png",
+                        "pending-review",
+                        2L,
+                        "12000",
+                        "1",
+                        "277",
+                        "5000"));
+        assertThat(mutation.leaderboardUpserts())
+                .extracting(OperatorLeaderboardRowDto::rowId)
+                .containsExactly(groupId);
+        assertThat(mutation.removedLeaderboardEntryIds())
+                .containsExactly(previousGroupId);
+        assertThat(mutation.leaderboardTotalDelta()).isEqualTo(-1);
+
+        ArgumentCaptor<ActionCommand> command =
+                ArgumentCaptor.forClass(ActionCommand.class);
+        verify(operations).apply(any(), command.capture());
+        assertThat(command.getValue().action())
+                .isEqualTo(RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN);
+        assertThat(command.getValue().clientToken()).isEqualTo("client-token");
+        assertThat(command.getValue().idempotencyKey())
+                .isEqualTo("redeem-request-12345678");
+        verify(operations, times(2)).claimStatus(any());
+        verify(operations).leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq(""));
+        verify(operations).leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("claimed-page-2"));
+    }
+
+    @Test
+    void redemptionUpsertsPreviousGroupWhenItStillHasDeployments() {
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        String groupId = "opg_0123456789abcdef0123456789abcdef";
+        String previousGroupId =
+                "opg_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        when(operations.claimStatus(any())).thenReturn(
+                pendingClaimStatus(previousGroupId, "2026-07-28T01:00:00Z"),
+                pendingClaimStatus(groupId, "2026-07-29T01:00:00Z"));
+        LeaderboardRow currentGroup = leaderboardRow(groupId, 2L, "12000");
+        LeaderboardRow survivingPreviousGroup =
+                leaderboardRow(previousGroupId, 2L, "9000");
+        when(operations.leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("")))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(currentGroup, survivingPreviousGroup),
+                        null));
+
+        OperatorClaimMutationResultDto mutation =
+                registeredServiceWithRealMapper(operations).redeemClientToken(
+                        new OperatorRedeemClientTokenRequestDto(
+                                "client-token",
+                                "redeem-request-12345678"),
+                        "operator-1");
+
+        assertThat(mutation.leaderboardEntry().rowId()).isEqualTo(groupId);
+        assertThat(mutation.leaderboardUpserts())
+                .extracting(OperatorLeaderboardRowDto::rowId)
+                .containsExactly(groupId, previousGroupId);
+        assertThat(mutation.removedLeaderboardEntryIds()).isEmpty();
+        assertThat(mutation.leaderboardTotalDelta()).isZero();
+    }
+
+    @Test
+    void redemptionRemovesThePriorUnclaimedDeploymentRow() {
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        String groupId = "opg_0123456789abcdef0123456789abcdef";
+        when(operations.claimStatus(any())).thenReturn(
+                unclaimedStatus(),
+                pendingClaimStatus(groupId, "2026-07-29T01:00:00Z"));
+        when(operations.leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("")))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(leaderboardRow(groupId, 2L, "12000")),
+                        null));
+
+        OperatorClaimMutationResultDto mutation =
+                registeredServiceWithRealMapper(operations).redeemClientToken(
+                        new OperatorRedeemClientTokenRequestDto(
+                                "client-token",
+                                "redeem-request-12345678"),
+                        "operator-1");
+
+        assertThat(mutation.leaderboardUpserts())
+                .extracting(OperatorLeaderboardRowDto::rowId)
+                .containsExactly(groupId);
+        assertThat(mutation.removedLeaderboardEntryIds())
+                .containsExactly("dep_0123456789abcdef0123456789abcdef");
+        assertThat(mutation.leaderboardTotalDelta()).isEqualTo(-1);
+    }
+
+    @Test
+    void idempotentSameGroupRedemptionDoesNotChangeTheRowTotal() {
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        String groupId = "opg_0123456789abcdef0123456789abcdef";
+        when(operations.claimStatus(any())).thenReturn(
+                pendingClaimStatus(groupId, "2026-07-28T01:00:00Z"),
+                pendingClaimStatus(groupId, "2026-07-28T01:00:00Z"));
+        when(operations.leaderboard(
+                any(),
+                eq("claimed"),
+                isNull(),
+                eq(100),
+                eq("")))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(leaderboardRow(groupId, 2L, "12000")),
+                        null));
+
+        OperatorClaimMutationResultDto mutation =
+                registeredServiceWithRealMapper(operations).redeemClientToken(
+                        new OperatorRedeemClientTokenRequestDto(
+                                "client-token",
+                                "redeem-request-12345678"),
+                        "operator-1");
+
+        assertThat(mutation.leaderboardUpserts())
+                .extracting(OperatorLeaderboardRowDto::rowId)
+                .containsExactly(groupId);
+        assertThat(mutation.removedLeaderboardEntryIds()).isEmpty();
+        assertThat(mutation.leaderboardTotalDelta()).isZero();
+    }
+
+    @Test
     void claimOverviewHydratesOnlyTheCurrentRegistryClaimSubmission() {
         OperatorRegistrySettingsRepository settingsRepository =
                 mock(OperatorRegistrySettingsRepository.class);
@@ -369,6 +627,24 @@ class OperatorNetworkServiceTest {
                 mock(OperatorNetworkMapper.class));
     }
 
+    private static OperatorNetworkService registeredServiceWithRealMapper(
+            RegistryOperatorNetworkOperations operations) {
+        OperatorRegistrySettingsRepository settingsRepository =
+                mock(OperatorRegistrySettingsRepository.class);
+        RegistryProperties properties = new RegistryProperties();
+        properties.setOutboundAllowed(true);
+        when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
+                .thenReturn(Optional.of(registeredSettings()));
+        return new OperatorNetworkService(
+                settingsRepository,
+                mock(OperatorClaimSubmissionSnapshotRepository.class),
+                mock(UsersRepository.class),
+                properties,
+                new RegistryDemoProperties(),
+                operations,
+                new OperatorNetworkMapper());
+    }
+
     private static OperatorRegistrySettings registeredSettings() {
         OperatorRegistrySettings settings = new OperatorRegistrySettings();
         settings.setEnabled(true);
@@ -404,6 +680,41 @@ class OperatorNetworkServiceTest {
                 "PENDING_REVIEW",
                 submittedAt,
                 "Example Cooperative");
+    }
+
+    private static ClaimStatus unclaimedStatus() {
+        return new ClaimStatus(
+                false,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "0",
+                "1",
+                "AVAILABLE",
+                null,
+                "NOT_SUBMITTED",
+                null,
+                null);
+    }
+
+    private static LeaderboardRow leaderboardRow(
+            String groupId,
+            long deploymentCount,
+            String weightNumerator) {
+        return new LeaderboardRow(
+                groupId,
+                "claimed",
+                groupId,
+                "Example Cooperative",
+                "",
+                "pending-review",
+                deploymentCount,
+                weightNumerator,
+                "1",
+                "1",
+                "10");
     }
 
     private static OperatorClaimSubmissionSnapshot claimSubmission(

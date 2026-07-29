@@ -101,7 +101,24 @@ public final class OperatorNetworkDtos {
             OperatorClaimStatusDto status,
             OperatorClaimRequestDto submission,
             OperatorLeaderboardRowDto leaderboardEntry,
-            List<String> removedLeaderboardEntryIds) {
+            List<OperatorLeaderboardRowDto> leaderboardUpserts,
+            List<String> removedLeaderboardEntryIds,
+            int leaderboardTotalDelta) {
+        public OperatorClaimMutationResultDto(
+                OperatorClaimStatusDto status,
+                OperatorClaimRequestDto submission,
+                OperatorLeaderboardRowDto leaderboardEntry,
+                List<String> removedLeaderboardEntryIds) {
+            this(
+                    status,
+                    submission,
+                    leaderboardEntry,
+                    leaderboardEntry == null
+                            ? List.of()
+                            : List.of(leaderboardEntry),
+                    removedLeaderboardEntryIds,
+                    0);
+        }
     }
 
     public record OperatorLeaderboardSnapshotDto(

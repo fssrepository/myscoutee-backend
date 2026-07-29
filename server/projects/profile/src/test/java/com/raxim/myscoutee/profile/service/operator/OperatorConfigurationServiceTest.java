@@ -104,6 +104,9 @@ class OperatorConfigurationServiceTest {
                 "",
                 ""));
         assertThat(savedAgain.branding().revision()).isEqualTo(2L);
+        assertThat(savedAgain.branding().homeLabel())
+                .as("localized landing copy is not an operator branding field")
+                .isEqualTo("Your preferences come first");
         assertThat(savedAgain.payment().credentialConfigured()).isTrue();
         assertThat(savedAgain.payment().credentialMask()).isEqualTo("••••1234");
         assertThat(savedAgain.firebase().authenticationCredentialConfigured()).isTrue();
@@ -155,7 +158,6 @@ class OperatorConfigurationServiceTest {
                         new BrandingUpdateDto(
                                 "Product",
                                 null,
-                                "Home",
                                 "/media/public?key=images%2Flogo",
                                 null),
                         null,
@@ -401,7 +403,6 @@ class OperatorConfigurationServiceTest {
                 new BrandingUpdateDto(
                         productName,
                         null,
-                        "Your community comes first",
                         logoUrl,
                         DeploymentThemePreset.OCEAN),
                 new PaymentUpdateDto(providerId, paymentCredential),
@@ -418,7 +419,6 @@ class OperatorConfigurationServiceTest {
                 new BrandingUpdateDto(
                         productName,
                         logoCharacterIndex,
-                        "Your community comes first",
                         "/media/public?key=images%2Foperator%2Fbranding",
                         DeploymentThemePreset.OCEAN),
                 null,

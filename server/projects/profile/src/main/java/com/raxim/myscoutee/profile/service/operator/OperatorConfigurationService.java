@@ -41,7 +41,6 @@ public class OperatorConfigurationService {
     private static final String DEFAULT_LOGO_WEBP = "assets/logo/heart.webp";
     private static final String DEFAULT_LOGO_PNG = "assets/logo/heart.png";
     private static final int PRODUCT_NAME_MAX = 80;
-    private static final int HOME_LABEL_MAX = 120;
     private static final int LOGO_URL_MAX = 2048;
     private static final int PROVIDER_ID_MAX = 64;
     private static final int PAYMENT_CREDENTIAL_MAX = 16384;
@@ -280,10 +279,6 @@ public class OperatorConfigurationService {
                     "Logo character index must identify a Unicode character "
                             + "in the product name.");
         }
-        String homeLabel = requiredTrimmed(
-                request.homeLabel(),
-                "Home label",
-                HOME_LABEL_MAX);
         String logoUrl = validateLogoUrl(request.logoUrl());
         if (request.themePreset() == null) {
             throw badRequest("Theme preset is required.");
@@ -292,7 +287,6 @@ public class OperatorConfigurationService {
         DeploymentConfiguration.Branding branding = configuration.getBranding();
         branding.setProductName(productName);
         branding.setLogoCharacterIndex(logoCharacterIndex);
-        branding.setHomeLabel(homeLabel);
         branding.setLogoUrl(logoUrl);
         branding.setThemePreset(request.themePreset().name());
         long currentRevision = branding.getRevision();

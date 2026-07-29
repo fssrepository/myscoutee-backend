@@ -12,6 +12,8 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchive;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchiveRequest;
 import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
 import com.raxim.myscoutee.registry.RegistryProtocol.MauReceipt;
 
@@ -90,6 +92,20 @@ public class RegistryOperatorOperations {
                 receipt.acceptedAt(),
                 receipt.ledgerIndex(),
                 result.registrationDuplicate());
+    }
+
+    public BindingArchive archiveActiveBinding(
+            RegistryProperties properties,
+            BindingArchiveRequest request) {
+        return new RegistryLocalStore(properties, objectMapper)
+                .archiveActiveBinding(request);
+    }
+
+    public void restoreActiveBinding(
+            RegistryProperties properties,
+            String archiveId) {
+        new RegistryLocalStore(properties, objectMapper)
+                .restoreActiveBinding(archiveId);
     }
 
     private static void prepareStateDirectory(Path configuredDirectory) {

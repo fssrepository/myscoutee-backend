@@ -39,6 +39,8 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Regist
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchive;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchiveRequest;
 import com.raxim.myscoutee.registry.RegistryOperatorOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
@@ -164,7 +166,7 @@ public class OperatorRegistryService {
                     draft.getRegistryScope(),
                     draft.getRegistryPublicKeyFingerprint());
             requireSameIdentity(draft, fresh);
-            requireCompatibleSelection(settings.getSelection(), draft);
+            requireCompatibleSelection(settings, draft);
 
             Instant now = clock.instant();
             settings.setSelection(selection(draft, now, actorUserId));
@@ -200,7 +202,7 @@ public class OperatorRegistryService {
                     "",
                     now,
                     actorUserId);
-            requireCompatibleSelection(settings.getSelection(), inspectedTarget);
+            requireCompatibleSelection(settings, inspectedTarget);
             OperatorRegistrySettings.RegistrySelection selection =
                     selection(inspectedTarget, now, actorUserId);
             settings.setSelection(selection);
@@ -253,11 +255,15 @@ public class OperatorRegistryService {
         MongoSessionMode mode = currentMode();
         synchronized (modeLocks.get(mode)) {
             OperatorRegistrySettings settings = load().orElseGet(OperatorRegistrySettings::new);
+            Instant now = clock.instant();
             LeaderboardRow remainingClaimedGroup = null;
             LinkedHashSet<String> removedLeaderboardEntryIds =
                     new LinkedHashSet<>();
+            BindingArchive archivedBinding = null;
+            RegistryProperties archivedRuntime = null;
             if (requiresSignedDeactivation(settings)) {
                 RegistryProperties runtime = registeredRuntime(mode, settings);
+                archivedRuntime = runtime;
                 String deploymentId =
                         settings.getEnrollment().getDeploymentCode().trim();
                 ClaimStatus priorClaim = confirmedClaimStatus(runtime);
@@ -293,29 +299,45 @@ public class OperatorRegistryService {
                     }
                 }
                 removedLeaderboardEntryIds.add(deploymentId);
-                claimSubmissionRepository.deleteById(
-                        OperatorClaimSubmissionSnapshot.SINGLETON_ID);
-            } else if (Boolean.TRUE.equals(settings.getEnabled())
-                    && (settings.getEnrollment() != null
-                            || "REGISTERED".equals(
-                                    settings.getLifecycle()))) {
+                archivedBinding = archiveActiveBinding(
+                        runtime,
+                        settings.getSelection(),
+                        deploymentId,
+                        receipt,
+                        now,
+                        actorUserId);
+            } else if (hasPossibleCentralBinding(settings)) {
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT,
                         "Registered deployment state is incomplete; the local registry connection "
                                 + "remains enabled.");
             }
 
-            Instant now = clock.instant();
             initializeAudit(settings, now);
             settings.setEnabled(false);
-            settings.setLifecycle(settings.getSelection() == null ? "UNCONFIGURED" : "DISABLED");
+            settings.setLifecycle("UNCONFIGURED");
             settings.setDraftInspection(null);
+            settings.setSelection(null);
             settings.setRegistrationRequest(null);
+            settings.setEnrollment(null);
+            settings.setLastError(null);
             OperatorRegistrySettings.Audit audit = settings.getAudit();
             audit.setDisabledAt(now.toString());
             audit.setDisabledBy(safeActor(actorUserId));
             touch(settings, now, actorUserId);
-            save(settings);
+            try {
+                save(settings);
+            } catch (RuntimeException exception) {
+                restoreArchivedBinding(
+                        archivedRuntime,
+                        archivedBinding,
+                        exception);
+                throw exception;
+            }
+            if (archivedBinding != null) {
+                claimSubmissionRepository.deleteById(
+                        OperatorClaimSubmissionSnapshot.SINGLETON_ID);
+            }
             return mapper.toDisconnectMutation(
                     toStatus(settings, mode),
                     remainingClaimedGroup,
@@ -325,11 +347,71 @@ public class OperatorRegistryService {
 
     private boolean requiresSignedDeactivation(
             OperatorRegistrySettings settings) {
-        return Boolean.TRUE.equals(settings.getEnabled())
-                && settings.getSelection() != null
+        return settings.getSelection() != null
                 && settings.getEnrollment() != null
                 && StringUtils.hasText(
                         settings.getEnrollment().getDeploymentCode());
+    }
+
+    private boolean hasPossibleCentralBinding(
+            OperatorRegistrySettings settings) {
+        return settings.getEnrollment() != null
+                || settings.getRegistrationRequest() != null
+                || "REGISTERED".equals(settings.getLifecycle())
+                || "REGISTERING".equals(settings.getLifecycle())
+                || "ERROR".equals(settings.getLifecycle());
+    }
+
+    private BindingArchive archiveActiveBinding(
+            RegistryProperties runtime,
+            OperatorRegistrySettings.RegistrySelection selection,
+            String deploymentId,
+            OperatorActionReceipt receipt,
+            Instant now,
+            String actorUserId) {
+        try {
+            BindingArchive archived = operations.archiveActiveBinding(
+                    runtime,
+                    new BindingArchiveRequest(
+                            selection.getBaseUrl(),
+                            selection.getRegistryScope(),
+                            selection.getRegistryKeyId(),
+                            selection.getRegistryPublicKeyFingerprint(),
+                            deploymentId,
+                            receipt,
+                            now.toString(),
+                            safeActor(actorUserId)));
+            if (archived == null
+                    || !deploymentId.equals(archived.deploymentId())
+                    || !selection.getRegistryScope().equals(
+                            archived.registryScope())) {
+                throw new IllegalStateException(
+                        "Local registry binding archive result is inconsistent.");
+            }
+            return archived;
+        } catch (RuntimeException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Registry deactivation was confirmed, but the signed local binding "
+                            + "could not be archived. The active selection was retained for retry.",
+                    exception);
+        }
+    }
+
+    private void restoreArchivedBinding(
+            RegistryProperties runtime,
+            BindingArchive archived,
+            RuntimeException failure) {
+        if (runtime == null || archived == null) {
+            return;
+        }
+        try {
+            operations.restoreActiveBinding(
+                    runtime,
+                    archived.archiveId());
+        } catch (RuntimeException restoreFailure) {
+            failure.addSuppressed(restoreFailure);
+        }
     }
 
     private RegistryProperties registeredRuntime(
@@ -747,20 +829,37 @@ public class OperatorRegistryService {
     }
 
     private void requireCompatibleSelection(
-            OperatorRegistrySettings.RegistrySelection selected,
+            OperatorRegistrySettings settings,
             OperatorRegistrySettings.DraftInspection draft) {
+        OperatorRegistrySettings.RegistrySelection selected =
+                settings.getSelection();
         if (selected == null) {
             return;
         }
-        if (!Objects.equals(selected.getRegistryScope(), draft.getRegistryScope())
-                || !Objects.equals(selected.getRegistryKeyId(), draft.getRegistryKeyId())
-                || !Objects.equals(
-                        selected.getRegistryPublicKeyFingerprint(),
-                        draft.getRegistryPublicKeyFingerprint())) {
+        boolean bindingMayExist = settings.getEnrollment() != null
+                || settings.getRegistrationRequest() != null;
+        if (!bindingMayExist) {
+            return;
+        }
+        boolean sameRegistryIdentity =
+                Objects.equals(
+                                selected.getRegistryScope(),
+                                draft.getRegistryScope())
+                        && Objects.equals(
+                                selected.getRegistryKeyId(),
+                                draft.getRegistryKeyId())
+                        && Objects.equals(
+                                selected.getRegistryPublicKeyFingerprint(),
+                                draft.getRegistryPublicKeyFingerprint());
+        boolean sameEndpoint = Objects.equals(
+                selected.getBaseUrl(),
+                draft.getBaseUrl());
+        if (!sameRegistryIdentity || !sameEndpoint) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "EXPLICIT_UNREGISTER_REQUIRED: This deployment is already bound to a "
-                            + "different signed registry. Central unregister is not available yet.");
+                    "EXPLICIT_DISCONNECT_REQUIRED: This deployment is already bound to a "
+                            + "registry. Disconnect it with signed central deactivation before "
+                            + "registering at another endpoint.");
         }
     }
 

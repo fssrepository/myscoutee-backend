@@ -79,9 +79,22 @@ public final class OperatorConfigurationDtos {
     public record BrandingUpdateDto(
             @NotBlank @Size(max = 80) String productName,
             Integer logoCharacterIndex,
-            @NotBlank @Size(max = 120) String homeLabel,
+            @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+            @Size(max = 120) String homeLabel,
             @NotNull @Size(max = 2048) String logoUrl,
             @NotNull DeploymentThemePreset themePreset) {
+        public BrandingUpdateDto(
+                String productName,
+                Integer logoCharacterIndex,
+                String logoUrl,
+                DeploymentThemePreset themePreset) {
+            this(
+                    productName,
+                    logoCharacterIndex,
+                    null,
+                    logoUrl,
+                    themePreset);
+        }
     }
 
     public record PaymentUpdateDto(

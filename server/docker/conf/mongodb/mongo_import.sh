@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -564,6 +564,19 @@ db.getCollection('operatorRegistryEndpoints').createIndex({ baseUrl: 1, registry
 db.getCollection('paymentProviders').createIndex({ enabled: 1, sortOrder: 1, label: 1, _id: 1 }, { name: 'payment_provider_enabled_sort' });
 " >/dev/null
       ;;
+    communityProviders)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('communityProviders').createIndex({ enabled: 1, sortOrder: 1, name: 1, _id: 1 }, { name: 'community_provider_enabled_sort' });
+" >/dev/null
+      ;;
     eventFeedbackStates)
       mongosh \
         --host "${mongo_host}" \
@@ -766,6 +779,7 @@ ensure_runtime_indexes() {
 
   ensure_collection_indexes "${target_db}" "operatorRegistryEndpoints"
   ensure_collection_indexes "${target_db}" "paymentProviders"
+  ensure_collection_indexes "${target_db}" "communityProviders"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphLayouts"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphNodes"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphEdges"

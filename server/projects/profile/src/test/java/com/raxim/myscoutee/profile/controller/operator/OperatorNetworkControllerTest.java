@@ -22,6 +22,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardRowDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardSnapshotDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorNetworkService;
 
 class OperatorNetworkControllerTest {
@@ -139,9 +140,7 @@ class OperatorNetworkControllerTest {
                 "PENDING_REVIEW",
                 "2026-07-28T00:00:00Z",
                 "Example Cooperative");
-        OperatorClaimMutationResultDto expected = new OperatorClaimMutationResultDto(
-                expectedStatus,
-                request,
+        OperatorLeaderboardRowDto leaderboardEntry =
                 new OperatorLeaderboardRowDto(
                         "opg_0123456789abcdef0123456789abcdef",
                         "claimed",
@@ -153,8 +152,14 @@ class OperatorNetworkControllerTest {
                         "0",
                         "1",
                         "0",
-                        "1"),
-                List.of("dep_0123456789abcdef0123456789abcdef"));
+                        "1");
+        OperatorClaimMutationResultDto expected = new OperatorClaimMutationResultDto(
+                expectedStatus,
+                request,
+                leaderboardEntry,
+                List.of(leaderboardEntry),
+                List.of("dep_0123456789abcdef0123456789abcdef"),
+                0);
         var authentication = new UsernamePasswordAuthenticationToken(
                 "operator-1",
                 null,
@@ -167,6 +172,34 @@ class OperatorNetworkControllerTest {
                 "claim-request-12345678",
                 authentication)).isSameAs(expected);
         verify(service).submitClaim(request, "operator-1", "claim-request-12345678");
+    }
+
+    @Test
+    void clientTokenRedemptionReturnsCanonicalLeaderboardMutation() {
+        OperatorNetworkService service = mock(OperatorNetworkService.class);
+        OperatorNetworkController controller = new OperatorNetworkController(service);
+        OperatorRedeemClientTokenRequestDto request =
+                new OperatorRedeemClientTokenRequestDto(
+                        "client-token",
+                        "redeem-request-12345678");
+        OperatorClaimMutationResultDto expected =
+                new OperatorClaimMutationResultDto(
+                        null,
+                        null,
+                        null,
+                        List.of(),
+                        List.of("dep_0123456789abcdef0123456789abcdef"),
+                        -1);
+        var authentication = new UsernamePasswordAuthenticationToken(
+                "operator-1",
+                null,
+                List.of(new SimpleGrantedAuthority("O")));
+        when(service.redeemClientToken(request, "operator-1"))
+                .thenReturn(expected);
+
+        assertThat(controller.redeemClientToken(request, authentication))
+                .isSameAs(expected);
+        verify(service).redeemClientToken(request, "operator-1");
     }
 
     @Test

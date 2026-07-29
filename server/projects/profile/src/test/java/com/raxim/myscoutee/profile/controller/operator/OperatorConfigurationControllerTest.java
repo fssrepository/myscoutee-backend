@@ -44,7 +44,6 @@ class OperatorConfigurationControllerTest {
                                 {
                                   "branding": {
                                     "productName": "Community",
-                                    "homeLabel": "Welcome",
                                     "logoUrl": "/media/public?key=images%2Flogo",
                                     "themePreset": "AURORA"
                                   },

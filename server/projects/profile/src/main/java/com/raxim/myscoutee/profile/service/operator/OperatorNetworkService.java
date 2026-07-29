@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.operator;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorClaimRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardDeploymentPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorLeaderboardPageDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -168,6 +170,93 @@ public class OperatorNetworkService {
                         submission,
                         leaderboardEntry,
                         registered.deploymentId());
+            } catch (RegistryHttpException exception) {
+                throw registryHttpFailure(exception);
+            } catch (RegistryProtocolException exception) {
+                throw registryProtocolFailure(exception);
+            } catch (IllegalArgumentException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        safeMessage(exception),
+                        exception);
+            } catch (IllegalStateException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        safeMessage(exception),
+                        exception);
+            }
+        }
+    }
+
+    public OperatorClaimMutationResultDto redeemClientToken(
+            OperatorRedeemClientTokenRequestDto request,
+            String actorUserId) {
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Operator client token redemption request is required.");
+        }
+        MongoSessionMode mode = MongoSessionModeContext.currentMode();
+        synchronized (modeLocks.get(mode)) {
+            try {
+                RegisteredRuntime registered = requireRegisteredContext(mode);
+                RegistryProperties runtime = registered.properties();
+                ClaimStatus previousStatus = operations.claimStatus(runtime);
+                requireRegistryVerifiedClaimStatus(previousStatus);
+                operations.apply(
+                        runtime,
+                        new ActionCommand(
+                                RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
+                                null,
+                                null,
+                                request.clientToken(),
+                                null,
+                                null,
+                                null,
+                                request.idempotencyKey()));
+                ClaimStatus status = operations.claimStatus(runtime);
+                requireRegistryVerifiedClaimStatus(status);
+                String currentGroupId = safeText(status.groupId());
+                String previousGroupId = previousStatus.claimed()
+                        ? safeText(previousStatus.groupId())
+                        : "";
+                ClaimMutationLeaderboardRows leaderboardRows =
+                        requireClaimMutationLeaderboardRows(
+                                runtime,
+                                currentGroupId,
+                                previousGroupId);
+                List<LeaderboardRow> leaderboardUpserts = new ArrayList<>();
+                leaderboardUpserts.add(leaderboardRows.current());
+                boolean sameGroup = StringUtils.hasText(previousGroupId)
+                        && previousGroupId.equals(currentGroupId);
+                boolean previousGroupSurvives = !sameGroup
+                        && leaderboardRows.previous() != null;
+                if (previousGroupSurvives) {
+                    leaderboardUpserts.add(leaderboardRows.previous());
+                }
+                List<String> removedLeaderboardEntryIds;
+                int leaderboardTotalDelta;
+                if (sameGroup) {
+                    removedLeaderboardEntryIds = List.of();
+                    leaderboardTotalDelta = 0;
+                } else if (StringUtils.hasText(previousGroupId)) {
+                    removedLeaderboardEntryIds = previousGroupSurvives
+                            ? List.of()
+                            : List.of(previousGroupId);
+                    leaderboardTotalDelta = previousGroupSurvives ? 0 : -1;
+                } else {
+                    removedLeaderboardEntryIds =
+                            List.of(registered.deploymentId());
+                    leaderboardTotalDelta = -1;
+                }
+                return mapper.toClaimMutation(
+                        status,
+                        safeText(actorUserId),
+                        loadClaimSubmission(registered, status),
+                        leaderboardRows.current(),
+                        List.copyOf(leaderboardUpserts),
+                        removedLeaderboardEntryIds,
+                        leaderboardTotalDelta);
             } catch (RegistryHttpException exception) {
                 throw registryHttpFailure(exception);
             } catch (RegistryProtocolException exception) {
@@ -391,16 +480,27 @@ public class OperatorNetworkService {
     private LeaderboardRow requireClaimedLeaderboardRow(
             RegistryProperties runtime,
             String groupId) {
-        if (!StringUtils.hasText(groupId)) {
+        return requireClaimMutationLeaderboardRows(runtime, groupId, null)
+                .current();
+    }
+
+    private ClaimMutationLeaderboardRows requireClaimMutationLeaderboardRows(
+            RegistryProperties runtime,
+            String currentGroupId,
+            String previousGroupId) {
+        String normalizedCurrentGroupId = safeText(currentGroupId);
+        String normalizedPreviousGroupId = safeText(previousGroupId);
+        if (normalizedCurrentGroupId.isEmpty()) {
             throw new RegistryProtocolException(
                     "Registry claim status has no operator group.");
         }
+        if (normalizedCurrentGroupId.equals(normalizedPreviousGroupId)) {
+            normalizedPreviousGroupId = "";
+        }
+        LeaderboardRow current = null;
+        LeaderboardRow previous = null;
         String cursor = "";
-        int pageCount = 0;
-        do {
-            if (++pageCount > 1_000) {
-                break;
-            }
+        for (int pageCount = 1; pageCount <= 1_000; pageCount++) {
             LeaderboardPage page = operations.leaderboard(
                     runtime,
                     "claimed",
@@ -408,14 +508,27 @@ public class OperatorNetworkService {
                     100,
                     cursor);
             for (LeaderboardRow row : page.items()) {
-                if (groupId.equals(row.groupId())) {
-                    return row;
+                if (normalizedCurrentGroupId.equals(row.groupId())) {
+                    current = row;
+                } else if (normalizedPreviousGroupId.equals(row.groupId())) {
+                    previous = row;
                 }
             }
             cursor = safeText(page.nextCursor());
-        } while (!cursor.isEmpty());
+            if (current != null
+                    && (normalizedPreviousGroupId.isEmpty() || previous != null)) {
+                return new ClaimMutationLeaderboardRows(current, previous);
+            }
+            if (cursor.isEmpty()) {
+                if (current == null) {
+                    throw new RegistryProtocolException(
+                            "Registry claim status has no canonical claimed leaderboard row.");
+                }
+                return new ClaimMutationLeaderboardRows(current, previous);
+            }
+        }
         throw new RegistryProtocolException(
-                "Registry claim status has no canonical claimed leaderboard row.");
+                "Registry claimed leaderboard pagination limit was exceeded.");
     }
 
     private static void requireRegistryVerifiedClaimStatus(ClaimStatus status) {
@@ -552,5 +665,10 @@ public class OperatorNetworkService {
             RegistryProperties properties,
             String deploymentId,
             String registryScope) {
+    }
+
+    private record ClaimMutationLeaderboardRows(
+            LeaderboardRow current,
+            LeaderboardRow previous) {
     }
 }

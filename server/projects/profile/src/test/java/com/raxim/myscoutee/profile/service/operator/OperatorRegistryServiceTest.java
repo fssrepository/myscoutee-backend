@@ -41,6 +41,8 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.Regist
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.profile.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchive;
+import com.raxim.myscoutee.registry.RegistryLocalStore.BindingArchiveRequest;
 import com.raxim.myscoutee.registry.RegistryNodeIdentityService.NodeIdentity;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
@@ -100,6 +102,12 @@ class OperatorRegistryServiceTest {
                     stored.set(value);
                     return value;
                 });
+        when(operations.archiveActiveBinding(any(), any()))
+                .thenReturn(new BindingArchive(
+                        "opa_0123456789abcdef0123456789abcdef",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "demo:local-registry",
+                        tempDirectory.resolve("archived-binding")));
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
     }
 
@@ -453,14 +461,18 @@ class OperatorRegistryServiceTest {
 
         clearInvocations(
                 repository,
+                operations,
                 networkOperations,
                 claimSubmissionRepository);
         var disconnected = service.disconnect("operator-demo-dev");
 
-        assertThat(disconnected.status().lifecycle()).isEqualTo("DISABLED");
+        assertThat(disconnected.status().lifecycle())
+                .isEqualTo("UNCONFIGURED");
         assertThat(disconnected.status().enabled()).isFalse();
-        assertThat(disconnected.status().enrollment().deploymentCode())
-                .isEqualTo(registered.status().enrollment().deploymentCode());
+        assertThat(disconnected.status().selection()).isNull();
+        assertThat(disconnected.status().enrollment()).isNull();
+        assertThat(disconnected.status().nodeIdentity().state())
+                .isEqualTo("READY");
         assertThat(disconnected.removedLeaderboardEntryIds())
                 .containsExactly(
                         "opg_0123456789abcdef0123456789abcdef",
@@ -473,7 +485,7 @@ class OperatorRegistryServiceTest {
                 RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT);
         InOrder committedOrder = inOrder(
                 networkOperations,
-                claimSubmissionRepository,
+                operations,
                 repository);
         committedOrder.verify(networkOperations).claimStatus(any());
         committedOrder.verify(networkOperations).apply(any(), any());
@@ -483,9 +495,12 @@ class OperatorRegistryServiceTest {
                 any(),
                 any(),
                 any());
-        committedOrder.verify(claimSubmissionRepository).deleteById(
-                OperatorClaimSubmissionSnapshot.SINGLETON_ID);
+        committedOrder.verify(operations).archiveActiveBinding(
+                any(),
+                any());
         committedOrder.verify(repository).save(any());
+        verify(claimSubmissionRepository).deleteById(
+                OperatorClaimSubmissionSnapshot.SINGLETON_ID);
         assertThatThrownBy(() -> service.retry("operator-demo-dev"))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("409 CONFLICT");
@@ -550,11 +565,54 @@ class OperatorRegistryServiceTest {
         assertThat(stored.get().getLifecycle())
                 .isEqualTo("REGISTERED");
         verify(repository, never()).save(any());
+        verify(operations, never()).archiveActiveBinding(any(), any());
         verify(claimSubmissionRepository, never()).deleteById(any());
     }
 
     @Test
-    void sameSignedRegistryCanMoveToANewBaseUrlFromTheRegisterAction() {
+    void localArchiveFailureRetainsTheCurrentBindingForRetry() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenReturn(deactivationOutcome());
+        when(networkOperations.leaderboard(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(),
+                        null));
+        when(operations.archiveActiveBinding(any(), any()))
+                .thenThrow(new IllegalStateException(
+                        "filesystem unavailable"));
+        OperatorRegistryService service = service();
+        clearInvocations(repository, claimSubmissionRepository);
+
+        assertThatThrownBy(() ->
+                        service.disconnect("operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining(
+                        "active selection was retained for retry");
+
+        assertThat(stored.get().getEnabled()).isTrue();
+        assertThat(stored.get().getLifecycle())
+                .isEqualTo("REGISTERED");
+        assertThat(stored.get().getSelection()).isNotNull();
+        assertThat(stored.get().getEnrollment()).isNotNull();
+        verify(repository, never()).save(any());
+        verify(claimSubmissionRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void configuredButUnregisteredSelectionCanMoveToANewBaseUrl() {
         configureLiveDemo();
         when(operations.inspect(any())).thenAnswer(invocation -> {
             RegistryProperties properties = invocation.getArgument(0);
@@ -586,24 +644,115 @@ class OperatorRegistryServiceTest {
     }
 
     @Test
-    void differentSignedRegistryRequiresCentralUnregisterBeforeSelectionChanges() {
+    void registeredBindingCannotMoveEvenWhenTheNewUrlUsesTheSameIdentity() {
         configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspect(any())).thenAnswer(invocation -> {
+            RegistryProperties properties = invocation.getArgument(0);
+            return registryInspection(
+                    properties.getBaseUrl(),
+                    "demo:local-registry",
+                    REGISTRY_FINGERPRINT);
+        });
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        OperatorRegistryService service = service();
+
+        assertThatThrownBy(() -> service.register(
+                registerRequest(
+                        "http://moved-registry:8080",
+                        "demo:local-registry"),
+                "operator-demo-dev"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("EXPLICIT_DISCONNECT_REQUIRED");
+
+        assertThat(stored.get().getSelection().getBaseUrl())
+                .isEqualTo("http://registry:8080");
+        verify(operations, never()).synchronize(any());
+    }
+
+    @Test
+    void signedDisconnectAllowsExplicitRegistrationAtADifferentRegistry() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
+        when(networkOperations.claimStatus(any()))
+                .thenReturn(claimStatus());
+        when(networkOperations.apply(any(), any()))
+                .thenReturn(deactivationOutcome());
+        when(networkOperations.leaderboard(
+                        any(),
+                        any(),
+                        any(),
+                        any(),
+                        any()))
+                .thenReturn(new LeaderboardPage(
+                        null,
+                        "claimed",
+                        List.of(),
+                        null));
+        String nextFingerprint =
+                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+        when(operations.inspect(any()))
+                .thenReturn(registryInspection(
+                        "http://another-registry:8080",
+                        "demo:another-registry",
+                        nextFingerprint));
+        when(operations.synchronize(any()))
+                .thenReturn(new EnrollmentOutcome(
+                        "dep_ffffffffffffffffffffffffffffffff",
+                        "batch_ffffffffffffffffffffffffffffffff",
+                        NOW.plusSeconds(2).toString(),
+                        1L,
+                        false));
+        OperatorRegistryService service = service();
+
+        var disconnected = service.disconnect(
+                "operator-demo-dev");
+        var registered = service.register(
+                registerRequest(
+                        "http://another-registry:8080",
+                        "demo:another-registry"),
+                "operator-demo-dev");
+
+        assertThat(disconnected.status().selection()).isNull();
+        assertThat(disconnected.status().enrollment()).isNull();
+        assertThat(disconnected.status().nodeIdentity().initializedAt())
+                .isEqualTo(NOW.toString());
+        assertThat(registered.status().selection().registryIdentity()
+                        .registryScope())
+                .isEqualTo("demo:another-registry");
+        assertThat(registered.status().enrollment().deploymentCode())
+                .isEqualTo("dep_ffffffffffffffffffffffffffffffff");
+        assertThat(registered.status().nodeIdentity().initializedAt())
+                .isEqualTo(NOW.toString());
+        ArgumentCaptor<BindingArchiveRequest> archive =
+                ArgumentCaptor.forClass(BindingArchiveRequest.class);
+        verify(operations).archiveActiveBinding(any(), archive.capture());
+        assertThat(archive.getValue().registryScope())
+                .isEqualTo("demo:local-registry");
+        assertThat(archive.getValue().deploymentId())
+                .isEqualTo("dep_0123456789abcdef0123456789abcdef");
+        assertThat(archive.getValue().deactivationReceipt().action())
+                .isEqualTo(
+                        RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT);
+    }
+
+    @Test
+    void differentSignedRegistryRequiresSignedDisconnectBeforeSelectionChanges() {
+        configureLiveDemo();
+        stored.set(registeredSettings());
         String otherFingerprint =
                 "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
         when(operations.inspect(any()))
-                .thenReturn(registryInspection())
-                .thenReturn(registryInspection())
                 .thenReturn(registryInspection(
                         "http://another-registry:8080",
                         "demo:another-registry",
                         otherFingerprint));
-        when(operations.inspectNodeIdentity(any())).thenReturn(new NodeStatus("MISSING", null));
+        when(operations.inspectNodeIdentity(any()))
+                .thenReturn(new NodeStatus("READY", NODE_FINGERPRINT));
         OperatorRegistryService service = service();
-        var firstInspection =
-                service.inspect(new RegistryInspectRequestDto(
-                        "http://registry:8080",
-                        "demo:local-registry"), "operator-demo-dev");
-        service.confirm(firstInspection.inspectionToken(), "operator-demo-dev");
 
         assertThatThrownBy(() -> service.register(
                 registerRequest(
@@ -611,7 +760,7 @@ class OperatorRegistryServiceTest {
                         "demo:another-registry"),
                 "operator-demo-dev"))
                 .isInstanceOf(ResponseStatusException.class)
-                .hasMessageContaining("EXPLICIT_UNREGISTER_REQUIRED");
+                .hasMessageContaining("EXPLICIT_DISCONNECT_REQUIRED");
         assertThat(stored.get().getSelection().getRegistryScope())
                 .isEqualTo("demo:local-registry");
     }

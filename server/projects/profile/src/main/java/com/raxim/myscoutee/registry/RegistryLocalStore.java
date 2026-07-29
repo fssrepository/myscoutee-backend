@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
@@ -29,6 +30,7 @@ import tools.jackson.databind.ObjectMapper;
 
 public final class RegistryLocalStore {
     private static final int STATE_SCHEMA_VERSION = 1;
+    private static final int BINDING_ARCHIVE_SCHEMA_VERSION = 1;
     private static final int MAX_STATE_BYTES = 1_048_576;
     private static final Set<PosixFilePermission> DIRECTORY_PERMISSIONS =
             PosixFilePermissions.fromString("rwx------");
@@ -40,6 +42,7 @@ public final class RegistryLocalStore {
     private final Path statePath;
     private final Path receiptDirectory;
     private final Path operatorClaimStatusPath;
+    private final Path bindingArchiveDirectory;
 
     public RegistryLocalStore(RegistryProperties properties, ObjectMapper objectMapper) {
         this.objectMapper = Objects.requireNonNull(objectMapper, "ObjectMapper must not be null.");
@@ -48,6 +51,9 @@ public final class RegistryLocalStore {
         this.receiptDirectory = properties.receiptDirectory().toAbsolutePath().normalize();
         this.operatorClaimStatusPath = receiptDirectory
                 .resolve("operator-claim-status.json")
+                .normalize();
+        this.bindingArchiveDirectory = stateDirectory
+                .resolve("archives")
                 .normalize();
     }
 
@@ -384,6 +390,450 @@ public final class RegistryLocalStore {
         return statePath;
     }
 
+    /**
+     * Moves the active registry binding out of the enrollment path after a
+     * signed deployment-deactivation receipt has been durably stored.
+     *
+     * <p>The deployment key pair is deliberately outside this store and is not
+     * touched. The signed state and every receipt remain available beneath the
+     * private archive directory, while a later enrollment starts with a fresh
+     * scope, registration idempotency key, and installation idempotency key.</p>
+     */
+    public synchronized BindingArchive archiveActiveBinding(
+            BindingArchiveRequest request) {
+        Objects.requireNonNull(request, "Registry binding archive request must not be null.");
+        requireWritableStateDirectory();
+        LocalState state = load().orElseThrow(() -> new IllegalStateException(
+                "Registered local state is missing; the active registry binding was not archived."));
+        BindingArchiveManifest manifest = archiveManifest(request, state);
+        requireDurableDeactivation(state, manifest);
+        Path archiveRoot = ensurePrivateDirectory(
+                bindingArchiveDirectory,
+                "registry binding archive");
+        Path archivePath = archivePath(archiveRoot, manifest.archiveId());
+        if (Files.exists(archivePath, LinkOption.NOFOLLOW_LINKS)) {
+            requirePrivateDirectory(archivePath, "registry binding archive entry");
+            BindingArchiveManifest existing = loadArchiveManifest(archivePath);
+            requireSameArchivedBinding(existing, manifest);
+            manifest = existing;
+        } else {
+            createBindingArchive(archiveRoot, archivePath, manifest);
+        }
+        clearActiveBindingFiles(archivePath);
+        return new BindingArchive(
+                manifest.archiveId(),
+                manifest.deploymentId(),
+                manifest.registryScope(),
+                archivePath);
+    }
+
+    /**
+     * Restores an archived binding without removing its historical copy.
+     *
+     * <p>This is a narrow compensation hook for a settings persistence failure
+     * after the filesystem archive completed. It refuses to overwrite a
+     * different active binding.</p>
+     */
+    public synchronized void restoreActiveBinding(String suppliedArchiveId) {
+        requireWritableStateDirectory();
+        String archiveId = RegistryProtocol.requireOperatorActionId(
+                suppliedArchiveId);
+        Path archivePath = archivePath(
+                ensurePrivateDirectory(
+                        bindingArchiveDirectory,
+                        "registry binding archive"),
+                archiveId);
+        requirePrivateDirectory(archivePath, "registry binding archive entry");
+        loadArchiveManifest(archivePath);
+        restoreActiveBindingFiles(archivePath);
+    }
+
+    private BindingArchiveManifest archiveManifest(
+            BindingArchiveRequest request,
+            LocalState state) {
+        RegistryProtocol.OperatorActionReceipt receipt =
+                Objects.requireNonNull(
+                        request.deactivationReceipt(),
+                        "Signed deployment-deactivation receipt must not be null.");
+        String archiveId = RegistryProtocol.requireOperatorActionId(
+                receipt.actionId());
+        String deploymentId = RegistryProtocol.requireDeploymentId(
+                request.deploymentId());
+        String registryScope = RegistryProtocol.requireRegistryScope(
+                request.registryScope());
+        String registryKeyId = RegistryProtocol.requireRegistryKeyId(
+                request.registryKeyId());
+        String registryFingerprint = RegistryProtocol.requireHash(
+                request.registryPublicKeyFingerprint(),
+                "archived registry public-key fingerprint");
+        RegistryProtocol.requireUtcTimestamp(
+                request.archivedAt(),
+                "binding archived_at");
+        RegistryProtocol.requireUtcTimestamp(
+                receipt.acceptedAt(),
+                "deployment deactivation accepted_at");
+        if (!RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT.equals(
+                        receipt.action())
+                || !deploymentId.equals(receipt.deploymentId())
+                || !deploymentId.equals(receipt.subjectDeploymentId())
+                || !registryScope.equals(receipt.registryScope())
+                || !registryKeyId.equals(receipt.registryKeyId())
+                || !deploymentId.equals(state.deploymentId())
+                || !registryScope.equals(state.registryScope())
+                || !registryFingerprint.equals(
+                        state.trustedRegistryKeyFingerprint())) {
+            throw new IllegalStateException(
+                    "Signed deployment deactivation does not match the active local registry binding.");
+        }
+        return new BindingArchiveManifest(
+                BINDING_ARCHIVE_SCHEMA_VERSION,
+                archiveId,
+                requireArchiveText(request.registryBaseUrl(), "registry base URL", 2_048),
+                registryScope,
+                registryKeyId,
+                registryFingerprint,
+                deploymentId,
+                receipt.auditIndex(),
+                RegistryProtocol.requireHash(
+                        receipt.auditHash(),
+                        "deployment deactivation audit hash"),
+                receipt.acceptedAt(),
+                request.archivedAt(),
+                requireArchiveText(request.archivedBy(), "archive actor", 512));
+    }
+
+    private void requireDurableDeactivation(
+            LocalState state,
+            BindingArchiveManifest manifest) {
+        OperatorActionJournalEntry deactivation = loadOperatorActionJournal().stream()
+                .filter(entry -> entry.receipt() != null
+                        && manifest.archiveId().equals(
+                                entry.receipt().actionId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "Signed deployment-deactivation receipt is not durably stored."));
+        RegistryProtocol.OperatorActionReceipt receipt =
+                deactivation.receipt();
+        if (!RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT.equals(
+                        deactivation.action())
+                || !RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT.equals(
+                        receipt.action())
+                || !state.registryScope().equals(
+                        deactivation.registryScope())
+                || !state.deploymentId().equals(
+                        deactivation.deploymentId())
+                || !state.deploymentId().equals(
+                        receipt.deploymentId())
+                || !state.deploymentId().equals(
+                        receipt.subjectDeploymentId())) {
+            throw new IllegalStateException(
+                    "Durable deployment-deactivation receipt does not match the active binding.");
+        }
+    }
+
+    private void createBindingArchive(
+            Path archiveRoot,
+            Path archivePath,
+            BindingArchiveManifest manifest) {
+        Path staging = null;
+        try {
+            staging = Files.createTempDirectory(
+                    archiveRoot,
+                    "." + archivePath.getFileName() + ".");
+            setPosixPermissions(staging, DIRECTORY_PERMISSIONS);
+            Path archivedReceipts = Files.createDirectory(
+                    staging.resolve("receipts"));
+            setPosixPermissions(archivedReceipts, DIRECTORY_PERMISSIONS);
+            copyPrivateFile(
+                    statePath,
+                    staging.resolve(statePath.getFileName()));
+            for (Path receipt : receiptFiles(receiptDirectory)) {
+                copyPrivateFile(
+                        receipt,
+                        archivedReceipts.resolve(receipt.getFileName()));
+            }
+            byte[] archiveJson = objectMapper.writeValueAsString(manifest)
+                    .getBytes(StandardCharsets.UTF_8);
+            atomicCreate(
+                    staging.resolve("archive-manifest.json"),
+                    archiveJson);
+            forceDirectory(archivedReceipts);
+            forceDirectory(staging);
+            try {
+                Files.move(
+                        staging,
+                        archivePath,
+                        StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException exception) {
+                throw new IOException(
+                        "Atomic registry binding archival is not supported for "
+                                + archivePath
+                                + ".",
+                        exception);
+            }
+            staging = null;
+            forceDirectory(archiveRoot);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to preserve the active registry binding in "
+                            + archivePath
+                            + ".",
+                    exception);
+        } finally {
+            deleteArchiveStaging(staging, archiveRoot);
+        }
+    }
+
+    private void clearActiveBindingFiles(Path archivePath) {
+        Path archivedState = archivePath.resolve(statePath.getFileName());
+        Path archivedReceipts = archivePath.resolve("receipts");
+        try {
+            requireMatchingFile(
+                    statePath,
+                    archivedState,
+                    "active registry state");
+            List<Path> activeReceipts = receiptFiles(receiptDirectory);
+            for (Path receipt : activeReceipts) {
+                requireMatchingFile(
+                        receipt,
+                        archivedReceipts.resolve(receipt.getFileName()),
+                        "active registry receipt");
+            }
+            for (Path receipt : activeReceipts) {
+                Files.delete(receipt);
+            }
+            Files.delete(statePath);
+            forceDirectory(receiptDirectory);
+            forceDirectory(stateDirectory);
+        } catch (IOException | RuntimeException exception) {
+            try {
+                restoreActiveBindingFiles(archivePath);
+            } catch (RuntimeException restoreFailure) {
+                exception.addSuppressed(restoreFailure);
+            }
+            throw new IllegalStateException(
+                    "Unable to clear the archived active registry binding.",
+                    exception);
+        }
+    }
+
+    private void restoreActiveBindingFiles(Path archivePath) {
+        Path archivedState = archivePath.resolve(statePath.getFileName());
+        Path archivedReceipts = archivePath.resolve("receipts");
+        requireRegularNonSymlink(archivedState, "archived registry state");
+        requirePrivateDirectory(archivedReceipts, "archived registry receipts");
+        try {
+            restorePrivateFile(archivedState, statePath);
+            for (Path archivedReceipt : receiptFiles(archivedReceipts)) {
+                restorePrivateFile(
+                        archivedReceipt,
+                        receiptDirectory.resolve(
+                                archivedReceipt.getFileName()));
+            }
+            forceDirectory(receiptDirectory);
+            forceDirectory(stateDirectory);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to restore the active registry binding from "
+                            + archivePath
+                            + ".",
+                    exception);
+        }
+    }
+
+    private void restorePrivateFile(Path archived, Path active)
+            throws IOException {
+        if (Files.exists(active, LinkOption.NOFOLLOW_LINKS)) {
+            requireMatchingFile(active, archived, "restored registry file");
+            return;
+        }
+        copyPrivateFile(archived, active);
+    }
+
+    private void copyPrivateFile(Path source, Path target)
+            throws IOException {
+        requireRegularNonSymlink(source, "registry archive source");
+        atomicCreate(target, readLimited(source, MAX_STATE_BYTES));
+    }
+
+    private void requireMatchingFile(
+            Path active,
+            Path archived,
+            String label) throws IOException {
+        requireRegularNonSymlink(active, label);
+        requireRegularNonSymlink(archived, "archived " + label);
+        if (Files.mismatch(active, archived) != -1L) {
+            throw new IllegalStateException(
+                    label + " differs from its preserved archive.");
+        }
+    }
+
+    private List<Path> receiptFiles(Path directory)
+            throws IOException {
+        requirePrivateDirectory(directory, "registry receipt directory");
+        List<Path> files = new ArrayList<>();
+        try (var paths = Files.newDirectoryStream(directory)) {
+            for (Path path : paths) {
+                requireRegularNonSymlink(
+                        path,
+                        "registry receipt archive source");
+                files.add(path);
+            }
+        }
+        files.sort(Comparator.comparing(
+                path -> path.getFileName().toString()));
+        return List.copyOf(files);
+    }
+
+    private Path ensurePrivateDirectory(Path directory, String label) {
+        try {
+            if (!Files.exists(directory, LinkOption.NOFOLLOW_LINKS)) {
+                Files.createDirectory(directory);
+            }
+            requirePrivateDirectory(directory, label);
+            return directory;
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to prepare " + label + " at " + directory + ".",
+                    exception);
+        }
+    }
+
+    private void requirePrivateDirectory(Path directory, String label) {
+        if (!Files.exists(directory, LinkOption.NOFOLLOW_LINKS)
+                || Files.isSymbolicLink(directory)
+                || !Files.isDirectory(
+                        directory,
+                        LinkOption.NOFOLLOW_LINKS)) {
+            throw new IllegalStateException(
+                    label + " must be a private non-symlink directory: "
+                            + directory);
+        }
+        try {
+            setPosixPermissions(directory, DIRECTORY_PERMISSIONS);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to enforce private permissions for "
+                            + label
+                            + ": "
+                            + directory,
+                    exception);
+        }
+    }
+
+    private Path archivePath(Path archiveRoot, String suppliedArchiveId) {
+        String archiveId = RegistryProtocol.requireOperatorActionId(
+                suppliedArchiveId);
+        Path archivePath = archiveRoot
+                .resolve("binding-" + archiveId)
+                .normalize();
+        if (!archivePath.getParent().equals(archiveRoot)) {
+            throw new IllegalArgumentException(
+                    "Registry binding archive path escaped its directory.");
+        }
+        return archivePath;
+    }
+
+    private BindingArchiveManifest loadArchiveManifest(Path archivePath) {
+        Path manifestPath = archivePath
+                .resolve("archive-manifest.json")
+                .normalize();
+        if (!manifestPath.getParent().equals(archivePath)) {
+            throw new IllegalArgumentException(
+                    "Registry binding archive manifest escaped its directory.");
+        }
+        requireRegularNonSymlink(
+                manifestPath,
+                "registry binding archive manifest");
+        try {
+            BindingArchiveManifest manifest = objectMapper.readValue(
+                    readLimited(manifestPath, MAX_STATE_BYTES),
+                    BindingArchiveManifest.class);
+            if (manifest == null
+                    || manifest.schemaVersion() == null
+                    || manifest.schemaVersion()
+                            != BINDING_ARCHIVE_SCHEMA_VERSION) {
+                throw new IllegalStateException(
+                        "Registry binding archive manifest is invalid.");
+            }
+            return manifest;
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to read registry binding archive manifest from "
+                            + manifestPath
+                            + ".",
+                    exception);
+        }
+    }
+
+    private void requireSameArchivedBinding(
+            BindingArchiveManifest existing,
+            BindingArchiveManifest supplied) {
+        if (!Objects.equals(existing.archiveId(), supplied.archiveId())
+                || !Objects.equals(
+                        existing.registryBaseUrl(),
+                        supplied.registryBaseUrl())
+                || !Objects.equals(
+                        existing.registryScope(),
+                        supplied.registryScope())
+                || !Objects.equals(
+                        existing.registryKeyId(),
+                        supplied.registryKeyId())
+                || !Objects.equals(
+                        existing.registryPublicKeyFingerprint(),
+                        supplied.registryPublicKeyFingerprint())
+                || !Objects.equals(
+                        existing.deploymentId(),
+                        supplied.deploymentId())
+                || !Objects.equals(
+                        existing.deactivationAuditIndex(),
+                        supplied.deactivationAuditIndex())
+                || !Objects.equals(
+                        existing.deactivationAuditHash(),
+                        supplied.deactivationAuditHash())
+                || !Objects.equals(
+                        existing.deactivatedAt(),
+                        supplied.deactivatedAt())) {
+            throw new IllegalStateException(
+                    "A different registry binding already uses this archive ID.");
+        }
+    }
+
+    private String requireArchiveText(
+            String value,
+            String label,
+            int maxLength) {
+        String normalized = RegistryProtocol.requireCanonical(value, label);
+        if (normalized.length() > maxLength) {
+            throw new IllegalArgumentException(
+                    label + " exceeds " + maxLength + " characters.");
+        }
+        return normalized;
+    }
+
+    private void deleteArchiveStaging(
+            Path staging,
+            Path archiveRoot) {
+        if (staging == null
+                || !staging.normalize().getParent().equals(archiveRoot)
+                || !Files.exists(staging, LinkOption.NOFOLLOW_LINKS)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(staging)) {
+            paths.sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException ignored) {
+                            // A private incomplete staging directory is safer
+                            // than deleting outside the resolved archive root.
+                        }
+                    });
+        } catch (IOException ignored) {
+            // The completed archive path is never passed to this cleanup.
+        }
+    }
+
     private void validateBasicState(LocalState state) {
         if (state == null || state.schemaVersion() == null
                 || state.schemaVersion().intValue() != STATE_SCHEMA_VERSION) {
@@ -688,6 +1138,42 @@ public final class RegistryLocalStore {
     public record OperatorClaimStatusEvidence(
             @JsonProperty("schema_version") Integer schemaVersion,
             RegistryProtocol.OperatorClaimStatusReceipt status) {
+    }
+
+    public record BindingArchiveRequest(
+            String registryBaseUrl,
+            String registryScope,
+            String registryKeyId,
+            String registryPublicKeyFingerprint,
+            String deploymentId,
+            RegistryProtocol.OperatorActionReceipt deactivationReceipt,
+            String archivedAt,
+            String archivedBy) {
+    }
+
+    public record BindingArchive(
+            String archiveId,
+            String deploymentId,
+            String registryScope,
+            Path archiveDirectory) {
+    }
+
+    public record BindingArchiveManifest(
+            @JsonProperty("schema_version") Integer schemaVersion,
+            @JsonProperty("archive_id") String archiveId,
+            @JsonProperty("registry_base_url") String registryBaseUrl,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key_fingerprint")
+            String registryPublicKeyFingerprint,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("deactivation_audit_index")
+            Long deactivationAuditIndex,
+            @JsonProperty("deactivation_audit_hash")
+            String deactivationAuditHash,
+            @JsonProperty("deactivated_at") String deactivatedAt,
+            @JsonProperty("archived_at") String archivedAt,
+            @JsonProperty("archived_by") String archivedBy) {
     }
 
     private static String emptyToNull(String value) {

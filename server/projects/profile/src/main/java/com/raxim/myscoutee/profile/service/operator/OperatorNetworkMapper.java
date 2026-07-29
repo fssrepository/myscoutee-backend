@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service.operator;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
@@ -94,16 +95,50 @@ public class OperatorNetworkMapper {
             OperatorClaimSubmissionSnapshot submission,
             LeaderboardRow leaderboardEntry,
             String removedLeaderboardEntryId) {
+        return toClaimMutation(
+                status,
+                claimantUserId,
+                submission,
+                leaderboardEntry,
+                leaderboardEntry == null
+                        ? List.of()
+                        : List.of(leaderboardEntry),
+                removedLeaderboardEntryId == null
+                        || removedLeaderboardEntryId.isBlank()
+                        ? List.of()
+                        : List.of(removedLeaderboardEntryId.trim()),
+                0);
+    }
+
+    public OperatorClaimMutationResultDto toClaimMutation(
+            ClaimStatus status,
+            String claimantUserId,
+            OperatorClaimSubmissionSnapshot submission,
+            LeaderboardRow leaderboardEntry,
+            List<LeaderboardRow> leaderboardUpserts,
+            List<String> removedLeaderboardEntryIds,
+            int leaderboardTotalDelta) {
         return new OperatorClaimMutationResultDto(
                 toClaimStatus(status, claimantUserId),
                 toClaimSubmission(submission),
                 leaderboardEntry == null
                         ? null
                         : toLeaderboardRow(leaderboardEntry),
-                removedLeaderboardEntryId == null
-                        || removedLeaderboardEntryId.isBlank()
+                leaderboardUpserts == null
                         ? List.of()
-                        : List.of(removedLeaderboardEntryId.trim()));
+                        : leaderboardUpserts.stream()
+                                .filter(Objects::nonNull)
+                                .map(this::toLeaderboardRow)
+                                .toList(),
+                removedLeaderboardEntryIds == null
+                        ? List.of()
+                        : removedLeaderboardEntryIds.stream()
+                                .filter(Objects::nonNull)
+                                .map(String::trim)
+                                .filter(value -> !value.isBlank())
+                                .distinct()
+                                .toList(),
+                leaderboardTotalDelta);
     }
 
     public OperatorClaimOverviewDto toClaimOverview(

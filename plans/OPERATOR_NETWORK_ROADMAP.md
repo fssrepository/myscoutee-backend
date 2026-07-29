@@ -15,6 +15,15 @@ fraud specifications.
   registry can be selected.
 - A deployment can be unregistered, claimed later, or moved only through an
   explicit audited protocol.
+- Moving to another endpoint is never a URL rewrite: the current registry must
+  first return a verified signed deployment-deactivation receipt, which
+  withdraws the deployment from its claim/group. Java then archives the old
+  signed local state and receipts, clears only the active registry binding, and
+  preserves the deployment key pair. A later Register action creates a fresh
+  enrollment at the newly inspected signed registry.
+- Disconnect does not copy ledger, claim, share, or receipt history into the new
+  registry. Cross-registry history transfer requires the separate signed
+  migration protocol in Phase 7.
 - The Java server owns all outbound registry communication. The browser never
   receives a deployment private key or calls a registry directly.
 - The Go append-only ledger is the audit source of truth. Query tables are
@@ -32,7 +41,18 @@ Status: implemented and under integration validation.
 - Auditable hash-linked ledger and transactionally maintained query tables.
 - Optional deployment claim, temporary single-use grouping client tokens, and
   virtual operator groups that preserve each deployment as an independent node.
+- Signed, fail-closed deployment disconnect: central deactivation and claim
+  withdrawal are confirmed before the active local binding is archived/reset.
 - Cursor-paginated founder, claimed, and unclaimed leaderboard views.
+- Pending claims remain visible as yellow under-review rows and are excluded
+  from approved-share allocation; the row's badge says `Under review` instead
+  of presenting an approved percentage. Independently, the large workspace
+  action keeps `Claim share` as its primary label and changes only its
+  secondary status to `Under review`.
+- Registration, claim, deactivation, and client-code responses carry targeted
+  canonical leaderboard upserts, removals, and a net row-count delta so the
+  shared signal store patches and reorders cached rows without reloading the
+  complete list.
 - Registry-signed announcements and a local, non-HTTP publisher CLI.
 - No global user deduplication and no Firebase migration in this phase.
 
@@ -53,12 +73,17 @@ Status: in progress.
 - Ten supported landing themes:
   `AURORA`, `OCEAN`, `FOREST`, `SUNSET`, `VIOLET`, `ROSE`, `AMBER`, `SLATE`,
   `AQUARIUS`, and `MONOCHROME`.
-- Product name, home label, and one uploaded logo stored in MinIO through the
-  existing image-carousel/media flow.
+- Product name and one uploaded logo stored in MinIO through the existing
+  image-carousel/media flow. The landing eyebrow remains localized product
+  copy, not a hidden operator-editable branding field.
 - Production payment-provider catalog seeded from the implemented processors;
   the operator selects a provider and stores a write-only credential.
 - Firebase credential registration and real capability checks, without silently
   changing the application's Firebase identity model in this phase.
+- Community-provider links are deployment-owned Mongo catalog data. Explore and
+  `demo_db` may seed Discord/Discourse examples, while a production deployment
+  may intentionally expose an empty provider list; signed announcements still
+  come from the selected registry.
 - IndexedDB persistence for Explore and Mongo persistence for authenticated
   deployments. Reopening the popup reloads the stored state under the normal
   route-delay loading indicator.

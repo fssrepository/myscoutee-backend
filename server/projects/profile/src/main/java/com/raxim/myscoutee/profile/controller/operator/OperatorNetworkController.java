@@ -105,19 +105,11 @@ public class OperatorNetworkController {
     }
 
     @PostMapping("/claim/redeem")
-    public OperatorActionResultDto redeemClientToken(
+    public OperatorClaimMutationResultDto redeemClientToken(
             @RequestBody OperatorRedeemClientTokenRequestDto request,
             Authentication authentication) {
-        return service.apply(
-                new OperatorActionRequestDto(
-                        RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
-                        null,
-                        null,
-                        request == null ? null : request.clientToken(),
-                        null,
-                        null,
-                        null,
-                        request == null ? null : request.idempotencyKey()),
+        return service.redeemClientToken(
+                request,
                 actorUserId(authentication));
     }
 

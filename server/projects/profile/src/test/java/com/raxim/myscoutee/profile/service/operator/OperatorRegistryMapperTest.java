@@ -13,6 +13,7 @@ import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.CandidateDefaultsDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.NodeIdentityDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRegistryDtos.RegistryOptionDto;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
 
 class OperatorRegistryMapperTest {
     @Test
@@ -87,5 +88,93 @@ class OperatorRegistryMapperTest {
                         "registryKeyId",
                         "registryPublicKey",
                         "registryPublicKeyFingerprint");
+    }
+
+    @Test
+    void registrationMutationCarriesCanonicalUpsertAndNetRowDelta() {
+        OperatorRegistryMapper mapper =
+                new OperatorRegistryMapper(new OperatorNetworkMapper());
+        String deploymentId =
+                "dep_0123456789abcdef0123456789abcdef";
+
+        var created = mapper.toRegistrationMutation(
+                null,
+                deploymentId,
+                true);
+        var duplicate = mapper.toRegistrationMutation(
+                null,
+                deploymentId,
+                false);
+        var failed = mapper.toRegistrationMutation(
+                null,
+                null,
+                false);
+
+        assertThat(created.leaderboardEntry().rowId())
+                .isEqualTo(deploymentId);
+        assertThat(created.leaderboardUpserts())
+                .containsExactly(created.leaderboardEntry());
+        assertThat(created.removedLeaderboardEntryIds()).isEmpty();
+        assertThat(created.leaderboardTotalDelta()).isEqualTo(1);
+        assertThat(created.created()).isTrue();
+
+        assertThat(duplicate.leaderboardUpserts())
+                .containsExactly(duplicate.leaderboardEntry());
+        assertThat(duplicate.leaderboardTotalDelta()).isZero();
+        assertThat(duplicate.created()).isFalse();
+
+        assertThat(failed.leaderboardEntry()).isNull();
+        assertThat(failed.leaderboardUpserts()).isEmpty();
+        assertThat(failed.leaderboardTotalDelta()).isZero();
+    }
+
+    @Test
+    void disconnectMutationDistinguishesPatchedAndRemovedRows() {
+        OperatorRegistryMapper mapper =
+                new OperatorRegistryMapper(new OperatorNetworkMapper());
+        LeaderboardRow remainingGroup = new LeaderboardRow(
+                "opg_0123456789abcdef0123456789abcdef",
+                "claimed",
+                "opg_0123456789abcdef0123456789abcdef",
+                "Example Cooperative",
+                "",
+                "approved",
+                1L,
+                "9000",
+                "1",
+                "1",
+                "10");
+
+        var patched = mapper.toDisconnectMutation(
+                null,
+                remainingGroup,
+                List.of("dep_0123456789abcdef0123456789abcdef"));
+        var removed = mapper.toDisconnectMutation(
+                null,
+                null,
+                List.of(
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "dep_0123456789abcdef0123456789abcdef"));
+        var unchanged = mapper.toDisconnectMutation(
+                null,
+                null,
+                List.of());
+
+        assertThat(patched.leaderboardUpserts())
+                .containsExactly(patched.leaderboardEntry());
+        assertThat(patched.removedLeaderboardEntryIds())
+                .containsExactly("dep_0123456789abcdef0123456789abcdef");
+        assertThat(patched.leaderboardTotalDelta()).isZero();
+
+        assertThat(removed.leaderboardUpserts()).isEmpty();
+        assertThat(removed.removedLeaderboardEntryIds())
+                .containsExactly(
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "dep_0123456789abcdef0123456789abcdef");
+        assertThat(removed.leaderboardTotalDelta()).isEqualTo(-1);
+
+        assertThat(unchanged.leaderboardUpserts()).isEmpty();
+        assertThat(unchanged.removedLeaderboardEntryIds()).isEmpty();
+        assertThat(unchanged.leaderboardTotalDelta()).isZero();
     }
 }
