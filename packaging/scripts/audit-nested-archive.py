@@ -9,6 +9,8 @@ import sys
 import zipfile
 from pathlib import PurePosixPath
 
+from private_key_material import contains_private_key_material
+
 
 MAX_ENTRIES = 100_000
 MAX_TOTAL_UNCOMPRESSED = 2 * 1024 * 1024 * 1024
@@ -22,10 +24,6 @@ FORBIDDEN_PATH = re.compile(
     r"deployment-private-key\.pem|registry-demo-signing-key\.pem|"
     r"[^/]*\.(p12|pfx|jks|keystore))$",
     re.IGNORECASE,
-)
-PRIVATE_KEY_MARKER = re.compile(
-    rb"-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----|"
-    rb"-----BEGIN PGP PRIVATE KEY BLOCK-----"
 )
 PERSONAL_EMAIL = re.compile(
     rb"[A-Z0-9._%+-]+@(?:gmail\.com|googlemail\.com|outlook\.com|"
@@ -44,6 +42,9 @@ PUBLIC_PRODUCT_SOCIAL_PROFILES = (
     b"https://www.instagram.com/myscoutee",
     b"https://www.facebook.com/myscoutee",
     b"https://www.youtube.com/@myscoutee",
+    b"https://facebook.com/username",
+    b"https://instagram.com/username",
+    b"https://www.facebook.com/legal/terms",
 )
 FIXED_BOOTSTRAP_PASSWORD_HASH = re.compile(
     rb"operator[-_]bootstrap[-_]password[-_]sha256[=:][ \t]*[0-9a-f]{64}",
@@ -96,15 +97,7 @@ def normalized_name(raw_name: str) -> str:
 
 
 def contains_private_key_marker(entry: zipfile.ZipExtFile) -> bool:
-    overlap = b""
-    while True:
-        chunk = entry.read(1024 * 1024)
-        if not chunk:
-            return False
-        candidate = overlap + chunk
-        if PRIVATE_KEY_MARKER.search(candidate):
-            return True
-        overlap = candidate[-128:]
+    return contains_private_key_material(entry)
 
 
 def contains_personal_email(entry: zipfile.ZipExtFile) -> bool:

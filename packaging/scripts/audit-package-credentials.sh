@@ -10,6 +10,7 @@ STAGING_DIR="$(cd -- "${STAGING_DIR}" && pwd -P)"
 AUDIT_TMP="$(mktemp -d /tmp/myscoutee-package-credential-audit.XXXXXX)"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 NESTED_ARCHIVE_AUDIT="${SCRIPT_DIR}/audit-nested-archive.py"
+PRIVATE_KEY_AUDIT="${SCRIPT_DIR}/private_key_material.py"
 
 cleanup() {
   rm -rf "${AUDIT_TMP}"
@@ -24,6 +25,10 @@ for command_name in jq python3 tar; do
 done
 if [[ ! -f "${NESTED_ARCHIVE_AUDIT}" ]]; then
   echo "Nested archive credential audit helper is missing." >&2
+  exit 2
+fi
+if [[ ! -f "${PRIVATE_KEY_AUDIT}" ]]; then
+  echo "Private-key credential audit helper is missing." >&2
   exit 2
 fi
 
@@ -120,6 +125,9 @@ while IFS= read -r candidate_file; do
       -e 's#https://www\.instagram\.com/myscoutee##gI' \
       -e 's#https://www\.facebook\.com/myscoutee##gI' \
       -e 's#https://www\.youtube\.com/@myscoutee##gI' \
+      -e 's#https://facebook\.com/username##gI' \
+      -e 's#https://instagram\.com/username##gI' \
+      -e 's#https://www\.facebook\.com/legal/terms##gI' \
       "${candidate_file}" \
       | grep -Eiq -- "${personal_social_pattern}"
   ); then
@@ -337,10 +345,15 @@ audit_image_archive() {
       echo "External credential file found in managed image ${archive_label}: ${offending}" >&2
       exit 1
     fi
-    if grep -aEq \
-      -- '-----BEGIN ([A-Z0-9]+ )*PRIVATE KEY-----|-----BEGIN PGP PRIVATE KEY BLOCK-----' \
-      "${layer_file}"; then
+    private_key_status=0
+    python3 "${PRIVATE_KEY_AUDIT}" "${layer_file}" >/dev/null 2>&1 \
+      || private_key_status=$?
+    if [[ "${private_key_status}" -eq 0 ]]; then
       echo "Private key material found in managed image: ${archive_label}" >&2
+      exit 1
+    fi
+    if [[ "${private_key_status}" -ne 1 ]]; then
+      echo "Private-key audit failed for managed image: ${archive_label}" >&2
       exit 1
     fi
     mapfile -t application_members < <(
@@ -375,7 +388,10 @@ audit_image_archive() {
         -e 's#https://www\.instagram\.com/myscoutee##gI' \
         -e 's#https://www\.facebook\.com/myscoutee##gI' \
         -e 's#https://www\.youtube\.com/@myscoutee##gI' \
-        "${layer_file}" \
+        -e 's#https://facebook\.com/username##gI' \
+        -e 's#https://instagram\.com/username##gI' \
+        -e 's#https://www\.facebook\.com/legal/terms##gI' \
+        "${layer_file}" 2>/dev/null \
         | grep -aEiq -- "${personal_social_pattern}"
     ); then
       echo "Personal social-page URL found in managed image: ${archive_label}" >&2
@@ -419,17 +435,28 @@ done < <(
     | sort
 )
 
-offending_file="$(
-  grep -RIl \
-    --exclude='*.example' \
-    --exclude='audit-package-credentials.sh' \
-    --exclude='audit-nested-archive.py' \
-    -E -- '-----BEGIN ([A-Z0-9]+ )*PRIVATE KEY-----|-----BEGIN PGP PRIVATE KEY BLOCK-----' \
-    "${STAGING_DIR}" \
-    2>/dev/null \
-    | head -n 1 \
-    || true
-)"
+offending_file=""
+while IFS= read -r candidate_file; do
+  private_key_status=0
+  python3 "${PRIVATE_KEY_AUDIT}" "${candidate_file}" >/dev/null 2>&1 \
+    || private_key_status=$?
+  if [[ "${private_key_status}" -eq 0 ]]; then
+    offending_file="${candidate_file}"
+    break
+  fi
+  if [[ "${private_key_status}" -ne 1 ]]; then
+    echo "Private-key audit could not inspect: ${candidate_file#${STAGING_DIR}/}" >&2
+    exit 1
+  fi
+done < <(
+  find "${STAGING_DIR}" -type f \
+    ! -name '*.example' \
+    ! -name '*.tar' \
+    ! -name 'audit-package-credentials.sh' \
+    ! -name 'audit-nested-archive.py' \
+    ! -name 'private_key_material.py' \
+    -print
+)
 if [[ -n "${offending_file}" ]]; then
   echo "Private key material must not be embedded in the Debian package: ${offending_file#${STAGING_DIR}/}" >&2
   exit 1

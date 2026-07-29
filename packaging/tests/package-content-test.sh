@@ -295,6 +295,9 @@ while IFS= read -r candidate_file; do
       -e 's#https://www\.instagram\.com/myscoutee##gI' \
       -e 's#https://www\.facebook\.com/myscoutee##gI' \
       -e 's#https://www\.youtube\.com/@myscoutee##gI' \
+      -e 's#https://facebook\.com/username##gI' \
+      -e 's#https://instagram\.com/username##gI' \
+      -e 's#https://www\.facebook\.com/legal/terms##gI' \
       "${candidate_file}" \
       | grep -Eiq -- "${personal_social_pattern}"
   ); then
@@ -476,6 +479,10 @@ IMAGE_LAYER_ROOT="${IMAGE_BUILD}/layer-root"
 IMAGE_ARCHIVE_DIR="${AUDIT_FIXTURE}/opt/myscoutee/images"
 mkdir -p "${IMAGE_LAYER_ROOT}/app" "${IMAGE_ARCHIVE_DIR}"
 printf '%s\n' 'safe fixture' > "${IMAGE_LAYER_ROOT}/app/README"
+mkdir -p "${IMAGE_LAYER_ROOT}/etc/ImageMagick-7"
+printf '%s\n' \
+  '<mime magic="-----BEGIN PGP PRIVATE KEY BLOCK-----" />' \
+  > "${IMAGE_LAYER_ROOT}/etc/ImageMagick-7/mime.xml"
 tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
 jq -n \
   '{config:{Env:["MONGO_APP_PASSWORD=replace-with-install-generated-password"]}}' \
@@ -487,9 +494,27 @@ tar -cf "${IMAGE_ARCHIVE_DIR}/test-only.tar" \
   -C "${IMAGE_BUILD}" manifest.json config.json layer.tar
 bash "${CREDENTIAL_AUDIT}" "${AUDIT_FIXTURE}"
 
+printf '%s\n' \
+  '-----BEGIN PRIVATE KEY-----' \
+  'dGVzdC1vbmx5LW5vdC1hLXJlYWwta2V5' \
+  '-----END PRIVATE KEY-----' \
+  > "${IMAGE_LAYER_ROOT}/app/embedded-key.pem"
+tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
+tar -cf "${IMAGE_ARCHIVE_DIR}/test-only.tar" \
+  -C "${IMAGE_BUILD}" manifest.json config.json layer.tar
+if bash "${CREDENTIAL_AUDIT}" "${AUDIT_FIXTURE}" >/dev/null 2>&1; then
+  fail "credential audit accepted private-key material inside a managed image layer"
+fi
+rm -f "${IMAGE_LAYER_ROOT}/app/embedded-key.pem"
+
 mkdir -p "${IMAGE_LAYER_ROOT}/usr/share/nginx/html"
 printf '%s\n' 'Third-party license contact: jaffathecake@gmail.com' \
   > "${IMAGE_LAYER_ROOT}/usr/share/nginx/html/3rdpartylicenses.txt"
+printf '%s\n' \
+  'Placeholder: https://facebook.com/username' \
+  'Placeholder: https://instagram.com/username' \
+  'Provider terms: https://www.facebook.com/legal/terms' \
+  > "${IMAGE_LAYER_ROOT}/usr/share/nginx/html/main.js"
 tar -cf "${IMAGE_BUILD}/layer.tar" -C "${IMAGE_LAYER_ROOT}" .
 tar -cf "${IMAGE_ARCHIVE_DIR}/test-only.tar" \
   -C "${IMAGE_BUILD}" manifest.json config.json layer.tar
@@ -569,7 +594,7 @@ rm -rf "${IMAGE_ARCHIVE_DIR}" "${IMAGE_BUILD}"
 
 printf '%s\n' \
   '-----BEGIN PRIVATE KEY-----' \
-  'test-only-not-a-real-key' \
+  'dGVzdC1vbmx5LW5vdC1hLXJlYWwta2V5' \
   '-----END PRIVATE KEY-----' \
   > "${AUDIT_FIXTURE}/opt/myscoutee/server/projects/profile/secrets/provider-key.pem"
 if bash "${CREDENTIAL_AUDIT}" "${AUDIT_FIXTURE}" >/dev/null 2>&1; then
