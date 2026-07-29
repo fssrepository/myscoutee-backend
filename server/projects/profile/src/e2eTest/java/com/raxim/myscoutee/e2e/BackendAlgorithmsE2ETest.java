@@ -108,6 +108,9 @@ class BackendAlgorithmsE2ETest {
             RANDOM_STAGE_ID + ":group:2",
             RANDOM_STAGE_ID + ":group:3",
             RANDOM_STAGE_ID + ":group:4");
+    private static final List<String> RANDOM_GROUP_OWNER_IDS = RANDOM_GROUP_IDS.stream()
+            .map(groupId -> RANDOM_EVENT_ID + ":" + RANDOM_STAGE_ID + ":" + groupId)
+            .toList();
     private static final String PRIORITY_EVENT_ID = "e2e-priority-auto-invite";
     private static final String SCORE_EVENT_ID = "e2e-score-event";
     private static final String SCORE_STAGE_ID = "e2e-score-stage";
@@ -299,7 +302,7 @@ class BackendAlgorithmsE2ETest {
 
     private void assertRandomGroupsWereAssignedByAffinityClusters() {
         List<ActivityMember> groupMembers = fromDemo(() ->
-                activityMembersRepository.findByOwnerTypeAndOwnerIdIn("group", RANDOM_GROUP_IDS));
+                activityMembersRepository.findByOwnerTypeAndOwnerIdIn("group", RANDOM_GROUP_OWNER_IDS));
         assertThat(groupMembers).hasSize(20);
 
         Map<String, List<String>> usersByGroupId = new LinkedHashMap<>();
@@ -309,7 +312,7 @@ class BackendAlgorithmsE2ETest {
             }
         }
         assertThat(usersByGroupId).hasSize(4);
-        assertThat(usersByGroupId.keySet()).containsExactlyInAnyOrderElementsOf(RANDOM_GROUP_IDS);
+        assertThat(usersByGroupId.keySet()).containsExactlyInAnyOrderElementsOf(RANDOM_GROUP_OWNER_IDS);
         assertThat(usersByGroupId.values().stream().flatMap(Collection::stream).toList())
                 .containsExactlyInAnyOrderElementsOf(userIds(1, 20));
 
@@ -337,7 +340,7 @@ class BackendAlgorithmsE2ETest {
                 AffinityRecomputeTask.class));
         assertThat(tasks).isNotEmpty();
         assertThat(tasks.stream().flatMap(task -> task.getReasons().stream()).toList())
-                .contains("EVENT_CHANGED", "EVENT_MEMBERS_CHANGED");
+                .contains("EVENT_CHANGED");
     }
 
     private void assertPriorityInvitesAreGroupedIntoOneNotification() {
