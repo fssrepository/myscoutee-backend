@@ -1,0 +1,17 @@
+{
+  "name": "operator HTTP request binding and action validation",
+  "group": "operator",
+  "order": 1320,
+  "method": "POST",
+  "path": "/api/operator/network/actions",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "body": {
+    "action": "CLAIM",
+    "idempotencyKey": "generic-claim-must-be-rejected"
+  },
+  "expectedStatus": 400,
+  "maxMs": 8000
+}

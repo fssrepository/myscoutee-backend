@@ -26,6 +26,7 @@ public final class RegistryProtocol {
     public static final String REGISTRATION_PATH = "/v1/deployments/register";
     public static final String MAU_BATCH_PATH = "/v1/mau/batches";
     public static final String REVENUE_BATCH_PATH = "/v1/revenue/batches";
+    public static final String SETTLEMENT_QUERY_PATH = "/v1/settlements/query";
     public static final String OPERATOR_ACTION_PATH = "/v1/operator/actions";
     public static final String OPERATOR_CLAIM_STATUS_PATH_PREFIX = "/v1/operator/claims/";
     public static final String LEADERBOARD_PATH = "/v1/leaderboard";
@@ -41,6 +42,49 @@ public final class RegistryProtocol {
     public static final String REVENUE_KIND = "daily-revenue";
     public static final String REVENUE_RULESET_VERSION =
             "net-captured-revenue-v1";
+    public static final String SETTLEMENT_KIND = "monthly-settlement";
+    public static final String SETTLEMENT_RULESET_VERSION =
+            "share-weighted-settlement-v1";
+    public static final String SETTLEMENT_VALUATION_RULESET_VERSION =
+            "three-month-acceleration-valuation-v1";
+    public static final String SETTLEMENT_ENTRY_TYPE =
+            "SETTLEMENT_CALCULATED";
+    public static final long
+            SETTLEMENT_DEFAULT_VALUATION_MULTIPLIER_BASIS_POINTS = 30_000L;
+    public static final long
+            SETTLEMENT_MINIMUM_BASE_VALUATION_MULTIPLIER_BASIS_POINTS =
+                    1_000L;
+    public static final long
+            SETTLEMENT_MAXIMUM_BASE_VALUATION_MULTIPLIER_BASIS_POINTS =
+                    100_000L;
+    public static final long SETTLEMENT_MINIMUM_GROWTH_BASIS_POINTS =
+            -10_000L;
+    public static final long SETTLEMENT_MAXIMUM_GROWTH_BASIS_POINTS =
+            20_000L;
+    public static final long SETTLEMENT_MINIMUM_ACCELERATION_BASIS_POINTS =
+            -10_000L;
+    public static final long SETTLEMENT_MAXIMUM_ACCELERATION_BASIS_POINTS =
+            10_000L;
+    public static final long SETTLEMENT_ACCELERATION_ADJUSTMENT_DIVISOR = 4L;
+    public static final long
+            SETTLEMENT_MINIMUM_VALUATION_ADJUSTMENT_BASIS_POINTS = -2_500L;
+    public static final long
+            SETTLEMENT_MAXIMUM_VALUATION_ADJUSTMENT_BASIS_POINTS = 2_500L;
+    public static final String SETTLEMENT_BENEFICIARY_FOUNDER = "FOUNDER";
+    public static final String SETTLEMENT_BENEFICIARY_OPERATOR_GROUP =
+            "OPERATOR_GROUP";
+    public static final String SETTLEMENT_BENEFICIARY_RESERVE =
+            "UNALLOCATED_RESERVE";
+    public static final String SETTLEMENT_FOUNDER_BENEFICIARY_ID = "founder";
+    public static final String SETTLEMENT_RESERVE_BENEFICIARY_ID =
+            "unallocated-reserve";
+    public static final int SETTLEMENT_MAX_QUERY_LIMIT = 100;
+    /**
+     * Largest settlement minor-unit amount that remains exact in every v1
+     * JSON consumer, including JavaScript's IEEE-754 integer representation.
+     */
+    public static final long SETTLEMENT_MAXIMUM_SAFE_MINOR =
+            9_007_199_254_740_991L;
     public static final int REVENUE_COMMISSION_RATE_BASIS_POINTS = 500;
     public static final int REVENUE_MAX_CURRENCY_ROWS = 32;
     public static final long REVENUE_MAX_MINOR =
@@ -82,6 +126,8 @@ public final class RegistryProtocol {
     private static final Pattern BATCH_ID_PATTERN = Pattern.compile("batch_[0-9a-f]{32}");
     private static final Pattern REVENUE_BATCH_ID_PATTERN =
             Pattern.compile("revbatch_[0-9a-f]{32}");
+    private static final Pattern SETTLEMENT_ID_PATTERN =
+            Pattern.compile("stl_[0-9a-f]{32}");
     private static final Pattern REGISTRY_KEY_ID_PATTERN = Pattern.compile("rkey_[0-9a-f]{32}");
     private static final Pattern OPERATOR_ACTION_ID_PATTERN = Pattern.compile("opa_[0-9a-f]{32}");
     private static final Pattern OPERATOR_REVIEW_ID_PATTERN = Pattern.compile("opr_[0-9a-f]{32}");
@@ -294,6 +340,94 @@ public final class RegistryProtocol {
             validateRevenueCurrencyRow(row);
         }
         return canonicalAllowEmpty(withCount);
+    }
+
+    public static byte[] settlementQueryPayload(
+            SettlementQueryRequest request) {
+        Objects.requireNonNull(
+                request,
+                "Settlement query request must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-settlement-query-payload-v1",
+                request.currencyCode(),
+                request.fromPeriod(),
+                request.throughPeriod(),
+                Boolean.toString(request.includeSuperseded()),
+                Integer.toString(request.limit()),
+                request.afterPeriod(),
+                request.afterSettlementId());
+    }
+
+    public static String settlementHistoryItemsHash(
+            List<SettlementHistoryItem> items) {
+        List<SettlementHistoryItem> safeItems = List.copyOf(
+                Objects.requireNonNull(
+                        items,
+                        "Settlement history items must be an explicit array."));
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-settlement-history-items-v1");
+        values.add(Integer.toString(safeItems.size()));
+        for (SettlementHistoryItem item : safeItems) {
+            Objects.requireNonNull(
+                    item,
+                    "Settlement history item must not be null.");
+            values.add(item.settlementId());
+            values.add(item.period());
+            values.add(item.currencyCode());
+            values.add(Long.toString(item.fractionDigits()));
+            values.add(Long.toString(item.revision()));
+            values.add(nullToEmpty(item.supersedesSettlementId()));
+            values.add(item.beneficiaryType());
+            values.add(item.beneficiaryId());
+            values.add(item.shareNumerator());
+            values.add(item.shareDenominator());
+            values.add(Long.toString(item.networkPoolMinor()));
+            values.add(Long.toString(item.networkPoolAllocationMinor()));
+            values.add(Long.toString(item.ttmCommissionBasisMinor()));
+            values.add(Long.toString(item.ttmNetworkCommissionPoolMinor()));
+            values.add(Long.toString(item.indicativeNetworkValueMinor()));
+            values.add(Long.toString(item.indicativeValueAllocationMinor()));
+            values.add(item.valuationRulesetVersion());
+            values.add(Long.toString(
+                    item.baseValuationMultiplierBasisPoints()));
+            values.add(Long.toString(item.recentThreeMonthAverageMinor()));
+            values.add(Long.toString(item.priorThreeMonthAverageMinor()));
+            values.add(Long.toString(item.earlierThreeMonthAverageMinor()));
+            values.add(Long.toString(item.recentGrowthBasisPoints()));
+            values.add(Long.toString(item.priorGrowthBasisPoints()));
+            values.add(Long.toString(item.accelerationBasisPoints()));
+            values.add(Long.toString(item.valuationAdjustmentBasisPoints()));
+            values.add(Long.toString(
+                    item.effectiveValuationMultiplierBasisPoints()));
+            values.add(Boolean.toString(item.valuationIsNonBinding()));
+            values.add(Long.toString(item.throughLedgerIndex()));
+            values.add(Long.toString(item.throughAuditIndex()));
+            values.add(Long.toString(item.throughReviewIndex()));
+            values.add(Long.toString(item.throughEligibilityIndex()));
+            values.add(item.sourceFingerprint());
+            values.add(item.settlementHash());
+            values.add(item.acceptedAt());
+        }
+        return sha256(canonicalAllowEmpty(values.toArray(String[]::new)));
+    }
+
+    public static byte[] settlementQueryResponse(
+            SettlementQueryResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Settlement query response must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-settlement-query-response-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.deploymentId(),
+                response.queryId(),
+                response.queryHash(),
+                response.itemsHash(),
+                response.nextAfterPeriod(),
+                response.nextAfterSettlementId(),
+                response.generatedAt(),
+                response.registryKeyId());
     }
 
     public static byte[] signedRequest(
@@ -963,6 +1097,13 @@ public final class RegistryProtocol {
                 REVENUE_BATCH_ID_PATTERN);
     }
 
+    public static String requireSettlementId(String value) {
+        return requirePattern(
+                value,
+                "settlement_id",
+                SETTLEMENT_ID_PATTERN);
+    }
+
     public static String requireRevenuePeriod(String value) {
         requireCanonical(value, "revenue period");
         try {
@@ -1606,6 +1747,101 @@ public final class RegistryProtocol {
             @JsonProperty("registry_key_id") String registryKeyId,
             @JsonProperty("registry_public_key") String registryPublicKey,
             String signature) {
+    }
+
+    public record SettlementQueryRequest(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            String timestamp,
+            String nonce,
+            @JsonProperty("query_id") String queryId,
+            @JsonProperty("currency_code") String currencyCode,
+            @JsonProperty("from_period") String fromPeriod,
+            @JsonProperty("through_period") String throughPeriod,
+            @JsonProperty("include_superseded") boolean includeSuperseded,
+            int limit,
+            @JsonProperty("after_period") String afterPeriod,
+            @JsonProperty("after_settlement_id") String afterSettlementId,
+            @JsonProperty("payload_hash") String payloadHash,
+            String signature) {
+    }
+
+    public record SettlementHistoryItem(
+            @JsonProperty("settlement_id") String settlementId,
+            String period,
+            @JsonProperty("currency_code") String currencyCode,
+            @JsonProperty("fraction_digits") long fractionDigits,
+            long revision,
+            @JsonProperty("supersedes_settlement_id")
+                    String supersedesSettlementId,
+            @JsonProperty("beneficiary_type") String beneficiaryType,
+            @JsonProperty("beneficiary_id") String beneficiaryId,
+            @JsonProperty("share_numerator") String shareNumerator,
+            @JsonProperty("share_denominator") String shareDenominator,
+            @JsonProperty("network_pool_minor") long networkPoolMinor,
+            @JsonProperty("network_pool_allocation_minor")
+                    long networkPoolAllocationMinor,
+            @JsonProperty("ttm_commission_basis_minor")
+                    long ttmCommissionBasisMinor,
+            @JsonProperty("ttm_network_commission_pool_minor")
+                    long ttmNetworkCommissionPoolMinor,
+            @JsonProperty("indicative_network_value_minor")
+                    long indicativeNetworkValueMinor,
+            @JsonProperty("indicative_value_allocation_minor")
+                    long indicativeValueAllocationMinor,
+            @JsonProperty("valuation_ruleset_version")
+                    String valuationRulesetVersion,
+            @JsonProperty("base_valuation_multiplier_basis_points")
+                    long baseValuationMultiplierBasisPoints,
+            @JsonProperty("recent_three_month_average_minor")
+                    long recentThreeMonthAverageMinor,
+            @JsonProperty("prior_three_month_average_minor")
+                    long priorThreeMonthAverageMinor,
+            @JsonProperty("earlier_three_month_average_minor")
+                    long earlierThreeMonthAverageMinor,
+            @JsonProperty("recent_growth_basis_points")
+                    long recentGrowthBasisPoints,
+            @JsonProperty("prior_growth_basis_points")
+                    long priorGrowthBasisPoints,
+            @JsonProperty("acceleration_basis_points")
+                    long accelerationBasisPoints,
+            @JsonProperty("valuation_adjustment_basis_points")
+                    long valuationAdjustmentBasisPoints,
+            @JsonProperty("effective_valuation_multiplier_basis_points")
+                    long effectiveValuationMultiplierBasisPoints,
+            @JsonProperty("valuation_is_non_binding")
+                    boolean valuationIsNonBinding,
+            @JsonProperty("through_ledger_index") long throughLedgerIndex,
+            @JsonProperty("through_audit_index") long throughAuditIndex,
+            @JsonProperty("through_review_index") long throughReviewIndex,
+            @JsonProperty("through_eligibility_index")
+                    long throughEligibilityIndex,
+            @JsonProperty("source_fingerprint") String sourceFingerprint,
+            @JsonProperty("settlement_hash") String settlementHash,
+            @JsonProperty("accepted_at") String acceptedAt) {
+    }
+
+    public record SettlementQueryResponse(
+            @JsonProperty("protocol_version") String protocolVersion,
+            @JsonProperty("registry_scope") String registryScope,
+            @JsonProperty("deployment_id") String deploymentId,
+            @JsonProperty("query_id") String queryId,
+            @JsonProperty("query_hash") String queryHash,
+            @JsonProperty("items_hash") String itemsHash,
+            List<SettlementHistoryItem> items,
+            @JsonProperty("next_after_period") String nextAfterPeriod,
+            @JsonProperty("next_after_settlement_id")
+                    String nextAfterSettlementId,
+            @JsonProperty("generated_at") String generatedAt,
+            @JsonProperty("registry_key_id") String registryKeyId,
+            @JsonProperty("registry_public_key") String registryPublicKey,
+            String signature) {
+        public SettlementQueryResponse {
+            items = List.copyOf(Objects.requireNonNull(
+                    items,
+                    "Settlement history items must be an explicit array."));
+        }
     }
 
     public record CheckpointResponse(

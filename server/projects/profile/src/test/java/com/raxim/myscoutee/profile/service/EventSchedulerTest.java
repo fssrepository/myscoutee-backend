@@ -412,6 +412,96 @@ class EventSchedulerTest {
     }
 
     @Test
+    void generateRandomPlansUsesOnlyPreviousStageAdvancersForLaterStage() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-advancement");
+        event.setStatus("A");
+        event.setCreatorUserId("creator-1");
+        event.setSubEvents(List.of(
+                withStageStatus(explicitSubEvent("qualifier"), "F"),
+                singleGroupSubEvent("final", "final-group")));
+
+        EventLeaderboardStateDto qualifierState = new EventLeaderboardStateDto(
+                "event-advancement",
+                "qualifier",
+                "Qualifier",
+                "Score",
+                List.of(new EventLeaderboardGroupDto(
+                        "qualifier-group-a",
+                        "Group A",
+                        2,
+                        1,
+                        List.of("u1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of()),
+                        new EventLeaderboardGroupDto(
+                                "qualifier-group-b",
+                                "Group B",
+                                2,
+                                1,
+                                List.of("u2"),
+                                List.of(),
+                                List.of(),
+                                List.of(),
+                                List.of(),
+                                List.of())));
+
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("u1"),
+                user("u2"),
+                user("u3")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
+                rate("u1", "u2", 1.0d),
+                rate("u2", "u3", 0.9d)));
+        when(activitiesMembersService.buildBatchEventSnapshots(any()))
+                .thenReturn(Map.of(
+                        "event-advancement",
+                        new ActivitiesMembersService.OwnerMembersSnapshot(
+                                "event",
+                                "event-advancement",
+                                List.of(),
+                                List.of("u1", "u2", "u3"),
+                                List.of(),
+                                List.of(),
+                                List.of(),
+                                Set.of("creator-1"),
+                                3)));
+        when(activitiesEventLeaderboardService.queryState("event-advancement", "qualifier"))
+                .thenReturn(qualifierState);
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                org.mockito.ArgumentMatchers.eq("event-advancement"),
+                org.mockito.ArgumentMatchers.eq("final"),
+                anyList()))
+                .thenReturn(List.of(group("final-group", "Final")));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(
+                org.mockito.ArgumentMatchers.eq("group"),
+                anyCollection()))
+                .thenReturn(Map.of());
+        when(activitiesMembersService.syncGroupMembers(
+                "event-advancement:final:final-group",
+                "creator-1",
+                List.of("u1", "u2")))
+                .thenReturn(List.of("u1", "u2"));
+
+        List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
+
+        assertThat(plans).singleElement().satisfies(plan -> {
+            assertThat(plan.seedId()).isEqualTo("final-group");
+            assertThat(plan.memberUserIds()).containsExactly("u1", "u2");
+        });
+        verify(activitiesMembersService).syncGroupMembers(
+                "event-advancement:final:final-group",
+                "creator-1",
+                List.of("u1", "u2"));
+    }
+
+    @Test
     void generateRandomPlansRecordsNoOpMarkerWhenCurrentGroupAlreadyMatchesPlan() {
         EventScheduler scheduler = createScheduler();
 

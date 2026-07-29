@@ -124,6 +124,69 @@ class EventGeneratorsTest {
     }
 
     @Test
+    void randomTargetedGeneratorLeavesLowestAffinityCapacityOverflowUnassigned() {
+        EventGeneratorByRandom generator = new EventGeneratorByRandom();
+
+        FGraph graph = graph(
+                edge("a1", "a2", 0.95d),
+                edge("a1", "a3", 0.95d),
+                edge("a2", "a3", 0.95d),
+                edge("b1", "b2", 0.95d),
+                edge("b1", "b3", 0.95d),
+                edge("b2", "b3", 0.95d),
+                edge("a1", "outside", 0.01d));
+
+        List<GeneratedEventPlan> plans = generator.generateTargets(new RandomTargetedGeneratorRequest(
+                graph,
+                List.of(
+                        new RandomGroupTarget("group-1", Range.of(3, 3)),
+                        new RandomGroupTarget("group-2", Range.of(3, 3))),
+                List.of(),
+                false));
+
+        assertThat(plans).hasSize(2);
+        assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder(
+                        List.of("a1", "a2", "a3"),
+                        List.of("b1", "b2", "b3"));
+        assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder("a1", "a2", "a3", "b1", "b2", "b3")
+                .doesNotContain("outside");
+    }
+
+    @Test
+    void randomTargetedGeneratorKeepsAValidPartialRemainderGroup() {
+        EventGeneratorByRandom generator = new EventGeneratorByRandom();
+
+        FGraph graph = graph(
+                edge("a1", "a2", 0.95d),
+                edge("a1", "a3", 0.95d),
+                edge("a2", "a3", 0.95d),
+                edge("b1", "b2", 0.95d),
+                edge("b1", "b3", 0.95d),
+                edge("b2", "b3", 0.95d),
+                edge("c1", "c2", 0.95d));
+
+        List<GeneratedEventPlan> plans = generator.generateTargets(new RandomTargetedGeneratorRequest(
+                graph,
+                List.of(
+                        new RandomGroupTarget("group-1", Range.of(2, 3)),
+                        new RandomGroupTarget("group-2", Range.of(2, 3)),
+                        new RandomGroupTarget("group-3", Range.of(2, 3))),
+                List.of(),
+                false));
+
+        assertThat(plans).hasSize(3);
+        assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder(
+                        List.of("a1", "a2", "a3"),
+                        List.of("b1", "b2", "b3"),
+                        List.of("c1", "c2"));
+        assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder("a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2");
+    }
+
+    @Test
     void priorityGeneratorPrefersCandidatesConnectedToLockedGroup() {
         EventGeneratorByPriority generator = new EventGeneratorByPriority();
 
@@ -236,6 +299,31 @@ class EventGeneratorsTest {
         assertThat(fifaResult.fifaRows())
                 .extracting(row -> row.memberId() + ":" + row.points() + ":" + row.goalDiff())
                 .containsExactly("u3:4:2", "u1:3:0", "u2:1:-2");
+    }
+
+    @Test
+    void scoreGeneratorNeverAdvancesCapacityPlaceholderMembers() {
+        EventGeneratorByScore generator = new EventGeneratorByScore();
+
+        ScoreGeneratorGroup group = new ScoreGeneratorGroup(
+                "group-score",
+                "Score",
+                2,
+                List.of(
+                        new LeaderboardMember("u1", "Alice"),
+                        new LeaderboardMember("u2", "Bob"),
+                        new LeaderboardMember("group-score-member-1", "-----")),
+                List.of(
+                        new ScoreLeaderboardEntry("group-score-member-1", 100, 1000L),
+                        new ScoreLeaderboardEntry("u1", 5, 2000L),
+                        new ScoreLeaderboardEntry("u2", 3, 3000L)),
+                List.of());
+
+        ScoreGeneratorResult result = generator.generate(List.of(group)).getFirst();
+
+        assertThat(result.scoreRows()).extracting(row -> row.memberId())
+                .containsExactly("group-score-member-1", "u1", "u2");
+        assertThat(result.advancingMemberIds()).containsExactly("u1", "u2");
     }
 
     private Map<String, ScoreGeneratorResult> resultByGroupId(List<ScoreGeneratorResult> results) {

@@ -7,7 +7,9 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,6 +38,8 @@ import com.raxim.myscoutee.profile.repository.AffinityConfigsRepository;
 import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 class UserRatesServiceTest {
@@ -54,6 +59,125 @@ class UserRatesServiceTest {
     private MongoTemplate mongoTemplate;
     @Mock
     private AdminTelemetryService adminTelemetryService;
+    @Mock
+    private NotificationOutboxService notificationOutboxService;
+
+    @Test
+    void syncEnqueuesSingleRatingForRelatedUserAfterPersistence() {
+        Users owner = user("u1", "Owner", List.of("music"));
+        Users related = user("u2", "Related", List.of("music"));
+        UserRatesService service = syncService(Map.of("u1", owner, "u2", related), List.of());
+        when(userRatesRepository.findBySyncKey("sync-notification-single")).thenReturn(Optional.empty());
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "sync-notification-single",
+                "u1",
+                "u2",
+                8,
+                "single",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "u1",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        UserRate saved = singleSavedRate();
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("user-rated");
+        assertThat(intent.entityType()).isEqualTo("user-rate");
+        assertThat(intent.entityId()).isEqualTo(saved.getId());
+        assertThat(intent.recipientScope()).isEqualTo("rated-users");
+        assertThat(intent.recipientUserIds()).containsExactly("u2");
+        assertThat(intent.clickUrl()).isEqualTo("/game");
+        assertThat(intent.createdUser()).isEqualTo("u1");
+        assertThat(intent.payload())
+                .containsEntry("rateId", saved.getId())
+                .containsEntry("mode", "single")
+                .containsEntry("senderUserId", "u1");
+
+        InOrder persistenceOrder = inOrder(userRatesRepository, notificationOutboxService);
+        persistenceOrder.verify(userRatesRepository).saveAll(anyList());
+        persistenceOrder.verify(notificationOutboxService).enqueue(any(NotificationIntent.class));
+    }
+
+    @Test
+    void syncEnqueuesPairRatingForBothRatedUsersButNotOwner() {
+        Users owner = user("owner", "Owner", List.of("music"));
+        Users first = user("u1", "First", List.of("music"));
+        Users second = user("u2", "Second", List.of("music"));
+        UserRatesService service = syncService(
+                Map.of("owner", owner, "u1", first, "u2", second),
+                List.of());
+        when(userRatesRepository.findBySyncKey("sync-notification-pair")).thenReturn(Optional.empty());
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "sync-notification-pair",
+                "u1",
+                "u2",
+                7,
+                "pair",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "owner",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        assertThat(intentCaptor.getValue().recipientUserIds()).containsExactly("u1", "u2");
+        assertThat(intentCaptor.getValue().recipientUserIds()).doesNotContain("owner");
+    }
+
+    @Test
+    void syncDoesNotEnqueueRatingForUnchangedOfflineRetry() {
+        Users owner = user("u1", "Owner", List.of("music"));
+        Users related = user("u2", "Related", List.of("music"));
+        UserRate existing = singleRate("stored-rate-id", "u1", "u2", 8);
+        existing.setSyncKey("sync-notification-retry");
+        UserRatesService service = syncService(Map.of("u1", owner, "u2", related), List.of());
+        when(userRatesRepository.findBySyncKey("sync-notification-retry")).thenReturn(Optional.of(existing));
+        when(userRatesRepository.findByOwnerUserIdAndMode("u1", "single")).thenReturn(List.of(existing));
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "sync-notification-retry",
+                "u1",
+                "u2",
+                8,
+                "single",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "u1",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
+    }
 
     @Test
     void syncCalculatesBackendOwnedAffinityBeforeSaveAndRecomputesEdges() {
@@ -471,7 +595,9 @@ class UserRatesServiceTest {
                 affinityCalculationService,
                 userAffinityEdgeService,
                 mongoTemplate,
-                adminTelemetryService);
+                adminTelemetryService,
+                null,
+                notificationOutboxService);
     }
 
     private UserRatesService queryService(Map<String, Users> usersById, List<UserRate> records) {

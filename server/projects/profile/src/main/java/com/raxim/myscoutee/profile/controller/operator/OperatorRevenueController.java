@@ -12,8 +12,10 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.Operato
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueReportDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueReportPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueSyncDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorSettlementPageDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueReportService;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueService;
+import com.raxim.myscoutee.profile.service.operator.OperatorSettlementService;
 
 @RestController
 @RequestMapping("/operator/revenue")
@@ -21,12 +23,15 @@ import com.raxim.myscoutee.profile.service.operator.OperatorRevenueService;
 public class OperatorRevenueController {
     private final OperatorRevenueService service;
     private final OperatorRevenueReportService reportService;
+    private final OperatorSettlementService settlementService;
 
     public OperatorRevenueController(
             OperatorRevenueService service,
-            OperatorRevenueReportService reportService) {
+            OperatorRevenueReportService reportService,
+            OperatorSettlementService settlementService) {
         this.service = service;
         this.reportService = reportService;
+        this.settlementService = settlementService;
     }
 
     @GetMapping
@@ -51,5 +56,26 @@ public class OperatorRevenueController {
     public OperatorRevenueReportDto requeue(
             @PathVariable String reportId) {
         return reportService.requeue(reportId);
+    }
+
+    @GetMapping("/settlements")
+    public OperatorSettlementPageDto settlements(
+            @RequestParam(required = false) String currencyCode,
+            @RequestParam(required = false) String fromPeriod,
+            @RequestParam(required = false) String throughPeriod,
+            @RequestParam(defaultValue = "false")
+                    boolean includeSuperseded,
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(required = false) String afterPeriod,
+            @RequestParam(required = false)
+                    String afterSettlementId) {
+        return settlementService.settlements(
+                currencyCode,
+                fromPeriod,
+                throughPeriod,
+                includeSuperseded,
+                limit,
+                afterPeriod,
+                afterSettlementId);
     }
 }

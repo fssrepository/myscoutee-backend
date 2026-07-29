@@ -181,9 +181,11 @@ class PaymentProviderServiceTest {
     private List<PaymentProcessor> paymentImplementations() {
         DeploymentPaymentCredentialResolver resolver =
                 mock(DeploymentPaymentCredentialResolver.class);
+        DeploymentPaymentRoutingResolver routingResolver =
+                mock(DeploymentPaymentRoutingResolver.class);
         return List.of(
-                new StripePaymentProcessor(resolver, ""),
-                new BarionPaymentProcessor(resolver, ""));
+                new StripePaymentProcessor(resolver, routingResolver, ""),
+                new BarionPaymentProcessor(resolver, routingResolver, ""));
     }
 
     private PaymentProvider provider(String id, String label, int sortOrder) {

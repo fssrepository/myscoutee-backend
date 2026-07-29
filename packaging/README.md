@@ -266,6 +266,11 @@ provider credentials:
   them from the backend only after the Operator explicitly activates a
   successfully tested Firebase revision; the frontend does not load a packaged
   live Firebase configuration.
+- Payment API endpoints supplied by the provider may be part of the product,
+  but the deployment's public success/cancel/callback origin and a
+  provider-required merchant account belong to the deployment. They are saved
+  by the Operator with the selected payment provider; the package and runtime
+  processors contain no vendor-owned MyScoutee return URL or merchant fallback.
 - Operator and administrator email addresses are authorization identifiers,
   not secrets. They are nevertheless deployment-owner data, so the generic
   package does not nominate any real operator or administrator. The initial

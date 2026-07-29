@@ -2177,6 +2177,12 @@ public class ActivitiesEventsService {
                 saved = refreshed;
             }
         }
+        if (STAGE_ACTION_FINALIZE.equals(actionTarget.action())) {
+            EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
+            if (scheduler != null) {
+                scheduler.generateScorePlansForEvents(List.of(sourceId));
+            }
+        }
 
         ActivityEvent savedPreferred = computePreferredEventRecords(saved).stream().findFirst().orElse(saved.get(0));
         List<SubEventItem> savedSubEvents = cloneSubEvents(savedPreferred.getSubEvents());
@@ -6271,7 +6277,13 @@ public class ActivitiesEventsService {
         if (groupMin > 0 || groupMax > 0) {
             int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
             int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(item.capacityMax()));
-            return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
+            int groupsNeededForMaximum = capacityMax > 0
+                    ? (int) Math.ceil((double) capacityMax / divisor)
+                    : 0;
+            int groupsAllowedByMinimum = groupMin > 0
+                    ? Math.max(1, capacityMax / groupMin)
+                    : groupsNeededForMaximum;
+            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
         }
         return 0;
     }

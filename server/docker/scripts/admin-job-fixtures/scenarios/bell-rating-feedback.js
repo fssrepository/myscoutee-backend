@@ -200,6 +200,9 @@
         expected: variation === "rating"
           ? "After the actor submits a non-zero rating, the rate changes and the target gets at least one new bell notification. A zero bell delta is a reproducible notification gap."
           : "After the actor resubmits feedback, answers/states reappear and at least one other-party target gets a new bell notification. A zero bell delta is a reproducible notification gap.",
+        next: variation === "rating"
+          ? "Use the existing demo app as the printed actor, submit a non-zero rating, inspect the target bell, then run status bell-rating-feedback."
+          : "Use the existing demo app as the printed actor, submit event feedback, inspect a printed target bell, then run status bell-rating-feedback.",
         context,
         specs: pairSelectors(context)
       };
@@ -278,6 +281,21 @@
         });
         const bellDelta = bellCount - context.baselineBellCount;
         const outboxDelta = outboxCount - context.baselineOutboxCount;
+        const changedBellCount = F.collection("userNotifications").countDocuments({
+          recipientUserId: context.targetUserId,
+          $or: [
+            { createdDate: { $gt: snapshot.preparedAtIso } },
+            { updatedDate: { $gt: snapshot.preparedAtIso } }
+          ]
+        });
+        const changedOutboxCount = F.collection("notificationOutbox").countDocuments({
+          recipientUserIds: context.targetUserId,
+          $or: [
+            { createdDate: { $gt: snapshot.preparedAtIso } },
+            { updatedDate: { $gt: snapshot.preparedAtIso } }
+          ]
+        });
+        const hasBellEvidence = bellDelta > 0 || changedBellCount > 0;
         return {
           actor: { userId: context.actorUserId, name: context.actorName },
           target: { userId: context.targetUserId, name: context.targetName },
@@ -290,7 +308,9 @@
           },
           bellDelta,
           outboxDelta,
-          notificationCheck: Number(rate && rate.scoreGiven) > 0 && bellDelta > 0
+          changedBellCount,
+          changedOutboxCount,
+          notificationCheck: Number(rate && rate.scoreGiven) > 0 && hasBellEvidence
             ? "PASS: rating changed and the other party received a bell item."
             : Number(rate && rate.scoreGiven) > 0
               ? "FAIL/GAP: rating changed, but no new bell item exists for the other party."
@@ -313,6 +333,21 @@
       });
       const bellDelta = bellCount - context.baselineBellCount;
       const outboxDelta = outboxCount - context.baselineOutboxCount;
+      const changedBellCount = F.collection("userNotifications").countDocuments({
+        recipientUserId: { $in: context.targetUserIds },
+        $or: [
+          { createdDate: { $gt: snapshot.preparedAtIso } },
+          { updatedDate: { $gt: snapshot.preparedAtIso } }
+        ]
+      });
+      const changedOutboxCount = F.collection("notificationOutbox").countDocuments({
+        recipientUserIds: { $in: context.targetUserIds },
+        $or: [
+          { createdDate: { $gt: snapshot.preparedAtIso } },
+          { updatedDate: { $gt: snapshot.preparedAtIso } }
+        ]
+      });
+      const hasBellEvidence = bellDelta > 0 || changedBellCount > 0;
       return {
         actor: { userId: context.actorUserId, name: context.actorName },
         event: { eventId: context.eventId, title: context.eventTitle },
@@ -321,7 +356,9 @@
         submittedAtIso: state && state.submittedAtIso,
         bellDelta,
         outboxDelta,
-        notificationCheck: submissions > 0 && bellDelta > 0
+        changedBellCount,
+        changedOutboxCount,
+        notificationCheck: submissions > 0 && hasBellEvidence
           ? "PASS: feedback was stored and another party received a bell item."
           : submissions > 0
             ? "FAIL/GAP: feedback was stored, but no new bell item exists for its other-party targets."

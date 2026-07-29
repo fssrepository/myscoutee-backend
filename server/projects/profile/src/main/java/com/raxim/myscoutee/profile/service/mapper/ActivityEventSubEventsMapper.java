@@ -1261,7 +1261,13 @@ public class ActivityEventSubEventsMapper {
         if (groupMin > 0 || groupMax > 0) {
             int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
             int capacityMax = incomingCapacityMax > 0 ? incomingCapacityMax : nonNegativeInteger(item.capacityMax());
-            return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
+            int groupsNeededForMaximum = capacityMax > 0
+                    ? (int) Math.ceil((double) capacityMax / divisor)
+                    : 0;
+            int groupsAllowedByMinimum = groupMin > 0
+                    ? Math.max(1, capacityMax / groupMin)
+                    : groupsNeededForMaximum;
+            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
         }
         return 0;
     }

@@ -10,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentCredentialResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingResolver.PaymentRouting;
 
 import java.util.List;
 import java.util.Map;
@@ -18,13 +20,16 @@ import java.util.Map;
 public class BarionPaymentProcessor implements PaymentProcessor {
 
     private final DeploymentPaymentCredentialResolver credentialResolver;
+    private final DeploymentPaymentRoutingResolver routingResolver;
     private final String environmentPosKey;
     private final RestTemplate restTemplate = new RestTemplate();
 
     public BarionPaymentProcessor(
             DeploymentPaymentCredentialResolver credentialResolver,
+            DeploymentPaymentRoutingResolver routingResolver,
             @Value("${payment.barion.apiKey:}") String environmentPosKey) {
         this.credentialResolver = credentialResolver;
+        this.routingResolver = routingResolver;
         this.environmentPosKey = environmentPosKey;
     }
 
@@ -55,6 +60,7 @@ public class BarionPaymentProcessor implements PaymentProcessor {
                     HttpStatus.SERVICE_UNAVAILABLE,
                     "Barion payment credential is not configured.");
         }
+        PaymentRouting routing = routingResolver.require(getType());
 
         Map<String, Object> barionRequest = Map.of(
             "POSKey", posKey,
@@ -64,7 +70,7 @@ public class BarionPaymentProcessor implements PaymentProcessor {
             "PaymentRequestId", "PAY-" + System.currentTimeMillis(),
             "Transactions", List.of(Map.of(
                 "POSTransactionId", "TX-" + System.currentTimeMillis(),
-                "Payee", "info@myscoutee.com",
+                "Payee", routing.merchantAccount(),
                 "Total", request.totalAmount(),
                 "Items", request.lineItems().stream().map(item -> Map.of(
                     "Name", item.label(),
@@ -75,8 +81,8 @@ public class BarionPaymentProcessor implements PaymentProcessor {
                     "ItemTotal", item.amount()
                 )).toList()
             )),
-            "RedirectUrl", "https://myscoutee.com/payment/success",
-            "CallbackUrl", "https://myscoutee.com/api/payment/callback"
+            "RedirectUrl", routing.successUrl(),
+            "CallbackUrl", routing.callbackUrl()
         );
 
         try {

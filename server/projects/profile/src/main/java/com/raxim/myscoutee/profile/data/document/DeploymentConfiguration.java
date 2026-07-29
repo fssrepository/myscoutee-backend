@@ -154,6 +154,8 @@ public class DeploymentConfiguration {
 
     public static class Payment {
         private String providerId;
+        private String publicBaseUrl;
+        private String merchantAccount;
         private EncryptedSecret credentialEnvelope;
         private String credentialMask;
 
@@ -163,6 +165,22 @@ public class DeploymentConfiguration {
 
         public void setProviderId(String providerId) {
             this.providerId = providerId;
+        }
+
+        public String getPublicBaseUrl() {
+            return publicBaseUrl;
+        }
+
+        public void setPublicBaseUrl(String publicBaseUrl) {
+            this.publicBaseUrl = publicBaseUrl;
+        }
+
+        public String getMerchantAccount() {
+            return merchantAccount;
+        }
+
+        public void setMerchantAccount(String merchantAccount) {
+            this.merchantAccount = merchantAccount;
         }
 
         public EncryptedSecret getCredentialEnvelope() {

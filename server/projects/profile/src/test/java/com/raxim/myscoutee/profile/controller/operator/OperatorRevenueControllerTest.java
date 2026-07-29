@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueSyncDto;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueReportService;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueService;
+import com.raxim.myscoutee.profile.service.operator.OperatorSettlementService;
 
 class OperatorRevenueControllerTest {
     @Test
@@ -23,6 +24,8 @@ class OperatorRevenueControllerTest {
                 mock(OperatorRevenueService.class);
         OperatorRevenueReportService reportService =
                 mock(OperatorRevenueReportService.class);
+        OperatorSettlementService settlementService =
+                mock(OperatorSettlementService.class);
         when(reportService.synchronizeNow()).thenReturn(
                 new OperatorRevenueSyncDto(
                         "SYNCHRONIZED",
@@ -37,7 +40,8 @@ class OperatorRevenueControllerTest {
         var mockMvc = MockMvcBuilders.standaloneSetup(
                         new OperatorRevenueController(
                                 revenueService,
-                                reportService))
+                                reportService,
+                                settlementService))
                 .build();
 
         mockMvc.perform(get("/operator/revenue"))
@@ -53,11 +57,35 @@ class OperatorRevenueControllerTest {
                         "/operator/revenue/reports/{reportId}/requeue",
                         "a".repeat(24)))
                 .andExpect(status().isOk());
+        mockMvc.perform(get("/operator/revenue/settlements")
+                        .param("currencyCode", "EUR")
+                        .param("fromPeriod", "2026-01")
+                        .param("throughPeriod", "2026-06")
+                        .param("limit", "10"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/operator/revenue/settlements"))
+                .andExpect(status().isOk());
 
         verify(revenueService).revenue();
         verify(reportService).synchronizeNow();
         verify(reportService).reports("BLOCKED", 2, 10);
         verify(reportService).requeue("a".repeat(24));
+        verify(settlementService).settlements(
+                "EUR",
+                "2026-01",
+                "2026-06",
+                false,
+                10,
+                null,
+                null);
+        verify(settlementService).settlements(
+                null,
+                null,
+                null,
+                false,
+                20,
+                null,
+                null);
     }
 
     @Test

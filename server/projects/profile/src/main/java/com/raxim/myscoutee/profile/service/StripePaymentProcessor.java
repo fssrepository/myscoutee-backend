@@ -9,6 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentCredentialResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingResolver.PaymentRouting;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -20,12 +22,15 @@ import java.util.List;
 public class StripePaymentProcessor implements PaymentProcessor {
 
     private final DeploymentPaymentCredentialResolver credentialResolver;
+    private final DeploymentPaymentRoutingResolver routingResolver;
     private final String environmentApiKey;
 
     public StripePaymentProcessor(
             DeploymentPaymentCredentialResolver credentialResolver,
+            DeploymentPaymentRoutingResolver routingResolver,
             @Value("${payment.stripe.apiKey:}") String environmentApiKey) {
         this.credentialResolver = credentialResolver;
+        this.routingResolver = routingResolver;
         this.environmentApiKey = environmentApiKey;
     }
 
@@ -77,11 +82,12 @@ public class StripePaymentProcessor implements PaymentProcessor {
                     HttpStatus.SERVICE_UNAVAILABLE,
                     "Stripe payment credential is not configured.");
         }
+        PaymentRouting routing = routingResolver.require(getType());
         try {
             SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("https://myscoutee.com/payment/success")
-                .setCancelUrl("https://myscoutee.com/payment/cancel")
+                .setSuccessUrl(routing.successUrl())
+                .setCancelUrl(routing.cancelUrl())
                 .addAllLineItem(lineItems)
                 .build();
 

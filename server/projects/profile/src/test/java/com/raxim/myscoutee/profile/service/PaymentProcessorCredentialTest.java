@@ -13,15 +13,21 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentCredentialResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentPaymentRoutingResolver;
 
 class PaymentProcessorCredentialTest {
     @Test
     void stripeResolvesTheRegisteredRuntimeCredentialPerRequest() {
         DeploymentPaymentCredentialResolver resolver =
                 mock(DeploymentPaymentCredentialResolver.class);
+        DeploymentPaymentRoutingResolver routingResolver =
+                mock(DeploymentPaymentRoutingResolver.class);
         when(resolver.resolve("stripe", "legacy-stripe-env")).thenReturn("");
         StripePaymentProcessor processor =
-                new StripePaymentProcessor(resolver, "legacy-stripe-env");
+                new StripePaymentProcessor(
+                        resolver,
+                        routingResolver,
+                        "legacy-stripe-env");
 
         assertThatThrownBy(() -> processor.pay(request(), "checkout-1"))
                 .isInstanceOf(ResponseStatusException.class)
@@ -33,9 +39,14 @@ class PaymentProcessorCredentialTest {
     void barionResolvesTheRegisteredRuntimeCredentialPerRequest() {
         DeploymentPaymentCredentialResolver resolver =
                 mock(DeploymentPaymentCredentialResolver.class);
+        DeploymentPaymentRoutingResolver routingResolver =
+                mock(DeploymentPaymentRoutingResolver.class);
         when(resolver.resolve("barion", "legacy-barion-env")).thenReturn("");
         BarionPaymentProcessor processor =
-                new BarionPaymentProcessor(resolver, "legacy-barion-env");
+                new BarionPaymentProcessor(
+                        resolver,
+                        routingResolver,
+                        "legacy-barion-env");
 
         assertThatThrownBy(() -> processor.pay(request(), "checkout-1"))
                 .isInstanceOf(ResponseStatusException.class)

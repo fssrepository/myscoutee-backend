@@ -6,6 +6,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -39,6 +40,8 @@ import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncRequest
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncResponseDto;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @Service
 public class UserRatesService {
@@ -52,6 +55,7 @@ public class UserRatesService {
     private final MongoTemplate mongoTemplate;
     private final AdminTelemetryService adminTelemetryService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final NotificationOutboxService notificationOutboxService;
 
     @Autowired
     public UserRatesService(
@@ -62,7 +66,8 @@ public class UserRatesService {
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
             AdminTelemetryService adminTelemetryService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            NotificationOutboxService notificationOutboxService) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -71,6 +76,7 @@ public class UserRatesService {
         this.mongoTemplate = mongoTemplate;
         this.adminTelemetryService = adminTelemetryService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.notificationOutboxService = notificationOutboxService;
     }
 
     UserRatesService(
@@ -89,6 +95,7 @@ public class UserRatesService {
                 userAffinityEdgeService,
                 mongoTemplate,
                 adminTelemetryService,
+                null,
                 null);
     }
 
@@ -173,19 +180,23 @@ public class UserRatesService {
         }
 
         Map<String, UserRate> normalizedRatesByNaturalKey = new LinkedHashMap<>();
+        Map<String, Integer> previousScoresByNaturalKey = new LinkedHashMap<>();
         Set<String> affectedHomeProjectionOwnerIds = new LinkedHashSet<>();
         List<String> syncedRateIds = new ArrayList<>();
         List<String> failedRateIds = new ArrayList<>();
         for (UserRateRecordDto rate : request.rates()) {
-            UserRate normalized = normalizeRecord(rate, affectedHomeProjectionOwnerIds);
-            if (normalized == null) {
+            NormalizedRate normalizedResult = normalizeRecord(rate, affectedHomeProjectionOwnerIds);
+            if (normalizedResult == null || normalizedResult.rate() == null) {
                 String failedId = rate == null ? "" : normalizeId(rate.id());
                 if (StringUtils.hasText(failedId)) {
                     failedRateIds.add(failedId);
                 }
                 continue;
             }
-            normalizedRatesByNaturalKey.put(naturalKey(normalized), normalized);
+            UserRate normalized = normalizedResult.rate();
+            String normalizedNaturalKey = naturalKey(normalized);
+            normalizedRatesByNaturalKey.put(normalizedNaturalKey, normalized);
+            previousScoresByNaturalKey.putIfAbsent(normalizedNaturalKey, normalizedResult.previousScoreGiven());
             syncedRateIds.add(resolveSyncAcknowledgementId(rate, normalized));
         }
 
@@ -195,12 +206,64 @@ public class UserRatesService {
             List<UserRate> savedRates = new ArrayList<>();
             userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
             List<UserRate> persistedRates = savedRates.isEmpty() ? normalizedRates : savedRates;
+            enqueueRatingNotifications(persistedRates, previousScoresByNaturalKey);
             userAffinityEdgeService.recomputeForRates(persistedRates);
             refreshHomeGameRateProjections(affectedHomeProjectionOwnerIds, persistedRates);
             enqueueRateRecomputeTasks(persistedRates);
             adminTelemetryService.record("rates.synced", "matching", "", normalizedRates.get(0).getOwnerUserId(), normalizedRates.size());
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
+    }
+
+    private void enqueueRatingNotifications(
+            Collection<UserRate> persistedRates,
+            Map<String, Integer> previousScoresByNaturalKey) {
+        if (notificationOutboxService == null || persistedRates == null || persistedRates.isEmpty()) {
+            return;
+        }
+        for (UserRate rate : persistedRates) {
+            if (rate == null) {
+                continue;
+            }
+            int currentScore = normalizeScore(rate.getScoreGiven());
+            int previousScore = previousScoresByNaturalKey == null
+                    ? currentScore
+                    : previousScoresByNaturalKey.getOrDefault(naturalKey(rate), currentScore);
+            if (currentScore <= 0 || currentScore == previousScore) {
+                continue;
+            }
+            String actorUserId = normalizeId(rate.getOwnerUserId());
+            LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>();
+            addIfText(recipientUserIds, rate.getRelatedUserId());
+            if ("pair".equals(normalizeMode(rate.getMode()))) {
+                addIfText(recipientUserIds, rate.getSecondaryRelatedUserId());
+            }
+            recipientUserIds.remove(actorUserId);
+            recipientUserIds.removeIf(userId -> usersRepository.findByUserId(userId).isEmpty());
+            if (recipientUserIds.isEmpty()) {
+                continue;
+            }
+
+            String rateId = normalizeId(rate.getId());
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("rateId", rateId);
+            payload.put("mode", normalizeMode(rate.getMode()));
+            payload.put("senderUserId", actorUserId);
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "user-rated",
+                    "user-rate",
+                    rateId,
+                    "rated-users",
+                    recipientUserIds,
+                    "New rating",
+                    "You received a new rating.",
+                    "/game",
+                    "/assets/logo/heart.webp",
+                    "/assets/logo/heart.webp",
+                    "user-rated-" + rateId,
+                    payload,
+                    actorUserId));
+        }
     }
 
     private void enqueueRateRecomputeTasks(List<UserRate> rates) {
@@ -569,7 +632,7 @@ public class UserRatesService {
         return new ArrayList<>(deduped.values());
     }
 
-    private UserRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
+    private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
         if (rate == null) {
             return null;
         }
@@ -594,6 +657,7 @@ public class UserRatesService {
         addIfText(affectedHomeProjectionOwnerIds, naturalKeyRecord == null ? null : naturalKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, ownerUserId);
         UserRate existing = naturalKeyRecord != null ? naturalKeyRecord : syncKeyRecord;
+        int previousScoreGiven = normalizeScore(existing == null ? null : existing.getScoreGiven());
         boolean syncKeyBelongsToDifferentRecord = naturalKeyRecord != null
                 && syncKeyRecord != null
                 && !Objects.equals(naturalKeyRecord.getId(), syncKeyRecord.getId());
@@ -616,8 +680,11 @@ public class UserRatesService {
         document.setOwnerUserId(ownerUserId);
         document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
 
-        return normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+        UserRate normalized = normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+        return normalized == null ? null : new NormalizedRate(normalized, previousScoreGiven);
     }
+
+    private record NormalizedRate(UserRate rate, int previousScoreGiven) {}
 
     private UserRate findByNaturalKey(
             String ownerUserId,

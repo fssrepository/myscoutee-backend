@@ -48,4 +48,21 @@ class RegistryHttpClientTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("without credentials, query, fragment, or path");
     }
+
+    @Test
+    void settlementQueryUsesThePinnedEndpointAndRejectsMissingBodies() {
+        RegistryProperties properties = new RegistryProperties();
+        properties.setBaseUrl("https://registry.example.test");
+        RegistryHttpClient client = new RegistryHttpClient(
+                properties,
+                new JsonConfig().objectMapper());
+
+        assertThat(client.endpoint(
+                        RegistryProtocol.SETTLEMENT_QUERY_PATH).toString())
+                .isEqualTo(
+                        "https://registry.example.test/v1/settlements/query");
+        assertThatThrownBy(() -> client.querySettlements(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("must not be null");
+    }
 }

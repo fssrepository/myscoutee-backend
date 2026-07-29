@@ -111,4 +111,48 @@ public final class OperatorRevenueDtos {
             long estimatedCommissionMinor,
             long paymentCount) {
     }
+
+    public record OperatorSettlementPageDto(
+            List<OperatorSettlementDto> items,
+            String nextAfterPeriod,
+            String nextAfterSettlementId,
+            String generatedAtIso) {
+    }
+
+    public record OperatorSettlementDto(
+            String settlementId,
+            String period,
+            String currencyCode,
+            int fractionDigits,
+            long revision,
+            String supersedesSettlementId,
+            String beneficiaryType,
+            String beneficiaryId,
+            String shareNumerator,
+            String shareDenominator,
+            long networkPoolMinor,
+            long networkPoolAllocationMinor,
+            long ttmCommissionBasisMinor,
+            long ttmNetworkCommissionPoolMinor,
+            long indicativeNetworkValueMinor,
+            long indicativeValueAllocationMinor,
+            String valuationRulesetVersion,
+            long baseValuationMultiplierBasisPoints,
+            long recentThreeMonthAverageMinor,
+            long priorThreeMonthAverageMinor,
+            long earlierThreeMonthAverageMinor,
+            long recentGrowthBasisPoints,
+            long priorGrowthBasisPoints,
+            long accelerationBasisPoints,
+            long valuationAdjustmentBasisPoints,
+            long effectiveValuationMultiplierBasisPoints,
+            boolean valuationIsNonBinding,
+            long throughLedgerIndex,
+            long throughAuditIndex,
+            long throughReviewIndex,
+            long throughEligibilityIndex,
+            String sourceFingerprint,
+            String settlementHash,
+            String acceptedAtIso) {
+    }
 }

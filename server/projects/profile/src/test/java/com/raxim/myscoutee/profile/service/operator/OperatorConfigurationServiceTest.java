@@ -93,6 +93,8 @@ class OperatorConfigurationServiceTest {
                         "discord",
                         "@community"));
         assertThat(saved.payment().providerId()).isEqualTo("stripe");
+        assertThat(saved.payment().publicBaseUrl())
+                .isEqualTo("https://community.example.test");
         assertThat(saved.payment().credentialConfigured()).isTrue();
         assertThat(saved.payment().credentialMask()).isEqualTo("••••1234");
         assertThat(saved.firebase().authenticationCredentialConfigured()).isTrue();
@@ -194,6 +196,32 @@ class OperatorConfigurationServiceTest {
         assertBadRequest(
                 () -> fixture.service().update(missingTheme),
                 "Theme preset");
+    }
+
+    @Test
+    void refusesToOrphanAnExistingPaymentCredentialFromItsPublicRouting() {
+        Fixture fixture = fixtureWithKey();
+        OperatorConfigurationUpdateDto initial = updateRequest(
+                "Product",
+                "/media/public?key=images%2Flogo",
+                "stripe",
+                "payment-secret",
+                "",
+                "");
+        fixture.service().update(initial);
+
+        OperatorConfigurationUpdateDto clearing =
+                new OperatorConfigurationUpdateDto(
+                        initial.adminEmails(),
+                        initial.privacyContact(),
+                        initial.socialLinks(),
+                        initial.branding(),
+                        new PaymentUpdateDto("stripe", "", null, ""),
+                        initial.firebase());
+
+        assertBadRequest(
+                () -> fixture.service().update(clearing),
+                "public deployment URL");
     }
 
     @Test
@@ -860,7 +888,13 @@ class OperatorConfigurationServiceTest {
                         null,
                         logoUrl,
                         DeploymentThemePreset.OCEAN),
-                new PaymentUpdateDto(providerId, paymentCredential),
+                new PaymentUpdateDto(
+                        providerId,
+                        "https://community.example.test/",
+                        "barion".equals(providerId)
+                                ? "merchant@example.test"
+                                : null,
+                        paymentCredential),
                 new FirebaseUpdateDto(
                         "community-project",
                         "browser-api-key",

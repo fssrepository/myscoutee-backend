@@ -71,6 +71,29 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     @Test
+    void generatedGroupCountDropsImpossibleExactRemainderButKeepsValidPartialGroup() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+
+        ActivityEvent exactRemainder = eventRecord("event-exact", "canonical");
+        exactRemainder.setCapacityMax(61);
+        exactRemainder.setSubEvents(List.of(subEventForCapacity("stage-exact", 61, 3, 3)));
+        ActivityEvent validPartial = eventRecord("event-partial", "canonical");
+        validPartial.setCapacityMax(62);
+        validPartial.setSubEvents(List.of(subEventForCapacity("stage-partial", 62, 2, 3)));
+        when(activityEventsRepository.findBySourceId("event-exact")).thenReturn(List.of(exactRemainder));
+        when(activityEventsRepository.findBySourceId("event-partial")).thenReturn(List.of(validPartial));
+
+        assertThat(service.materializeGeneratedGroups("event-exact", "stage-exact")).hasSize(20);
+        assertThat(service.materializeGeneratedGroups("event-partial", "stage-partial")).hasSize(21);
+    }
+
+    @Test
     void tournamentGroupsDeriveStagesAndGroupsFromEditorDefinitions() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
@@ -305,6 +328,18 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     private SubEventItem subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
+        return subEventForCapacity(
+                id,
+                groupCount == null || groupCapacityMax == null ? null : groupCount * groupCapacityMax,
+                groupCapacityMin,
+                groupCapacityMax);
+    }
+
+    private SubEventItem subEventForCapacity(
+            String id,
+            Integer capacityMax,
+            Integer groupCapacityMin,
+            Integer groupCapacityMax) {
         return new SubEventItem(
                 id,
                 "Tournament",
@@ -320,7 +355,7 @@ class ActivitiesEventLeaderboardServiceTest {
                 false,
                 null,
                 null,
-                groupCount == null || groupCapacityMax == null ? null : groupCount * groupCapacityMax,
+                capacityMax,
                 null,
                 null,
                 null,

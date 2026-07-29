@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,7 @@ public class OperatorBootstrapAuthenticationService {
     private Instant failureWindowStarted = Instant.EPOCH;
     private int failedAttempts;
 
+    @Autowired
     public OperatorBootstrapAuthenticationService(
             ConfigProperties config,
             FirebaseService firebaseService) {

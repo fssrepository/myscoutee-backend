@@ -1,0 +1,13 @@
+{
+  "name": "operator configuration with write-only secrets hidden",
+  "group": "operator",
+  "order": 1220,
+  "method": "GET",
+  "path": "/api/operator/configuration",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

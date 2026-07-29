@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PublicKey;
@@ -67,6 +68,9 @@ import com.raxim.myscoutee.registry.RegistryHttpClient.RegistryHttpException;
 import com.raxim.myscoutee.registry.RegistryLocalStore;
 import com.raxim.myscoutee.registry.RegistryLocalStore.LocalState;
 import com.raxim.myscoutee.registry.RegistryNodeIdentityService;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
+import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimVerification;
 import com.raxim.myscoutee.registry.RegistryProtocol;
 import com.raxim.myscoutee.registry.RegistryProtocol.BatchRequest;
 import com.raxim.myscoutee.registry.RegistryProtocol.BatchResponse;
@@ -85,7 +89,8 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * Opt-in release qualification for the real Java-to-Go QMAU and revenue rails.
+ * Opt-in release qualification for the real Java-to-Go QMAU, revenue, and
+ * private settlement-history rails.
  *
  * <p>The registry runner builds the Go command and supplies
  * {@code REGISTRY_E2E_BINARY}. This test then starts only that standalone
@@ -112,7 +117,7 @@ class OperatorGoRegistryRailQualificationTest {
 
     @Test
     @Timeout(value = 4, unit = TimeUnit.MINUTES)
-    void qualifiesSignedQmauAndRevenueAcrossLostResponsesAndRestarts()
+    void qualifiesSignedQmauRevenueAndSettlementAcrossRestarts()
             throws Exception {
         String binaryValue = environment(BINARY_VARIABLE);
         assumeTrue(
@@ -158,6 +163,10 @@ class OperatorGoRegistryRailQualificationTest {
                     runtime,
                     objectMapper,
                     outboxes);
+            qualifySettlementQuery(
+                    registry,
+                    runtime,
+                    objectMapper);
 
             assertInvalidDeploymentSignaturesRejected(
                     runtimeAt(runtime, registry.baseUrl()),
@@ -305,8 +314,9 @@ class OperatorGoRegistryRailQualificationTest {
             RegisteredRuntime enrolledRuntime,
             ObjectMapper objectMapper,
             EmbeddedOutboxStore outboxes) throws Exception {
-        LocalDate period = LocalDate.now(qualificationClock)
-                .minusDays(1L);
+        LocalDate period = YearMonth.now(qualificationClock)
+                .minusMonths(1L)
+                .atEndOfMonth();
         AtomicLong capturedMinor = new AtomicLong(10_000L);
         OperatorRevenueService revenueService =
                 mock(OperatorRevenueService.class);
@@ -423,6 +433,109 @@ class OperatorGoRegistryRailQualificationTest {
                 });
 
         return new RevenueRail(revisionTwo);
+    }
+
+    private void qualifySettlementQuery(
+            GoRegistryProcess registry,
+            RegisteredRuntime enrolledRuntime,
+            ObjectMapper objectMapper) throws Exception {
+        String settlementPeriod = YearMonth.now(qualificationClock)
+                .minusMonths(1L)
+                .toString();
+        String legalName = "Java Go Qualification Operator";
+        var claim = new RegistryOperatorNetworkService(
+                enrolledRuntime.properties(),
+                objectMapper).apply(new ActionCommand(
+                        RegistryProtocol.OPERATOR_ACTION_CLAIM,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "qualification_claim_0001",
+                        new ClaimVerification(
+                                legalName,
+                                "QUALIFICATION-REG-1",
+                                "Slovakia",
+                                "Qualification Street 1, Bratislava",
+                                "https://qualification.example.test",
+                                "Qualification Reviewer",
+                                "Director",
+                                "reviewer@qualification.example.test",
+                                true)));
+        var claimReceipt = claim.response().receipt();
+        assertThat(claimReceipt.action())
+                .isEqualTo(RegistryProtocol.OPERATOR_ACTION_CLAIM);
+        assertThat(claimReceipt.groupId()).isNotBlank();
+
+        registry.runAdminCommand(
+                "approve-operator-claim",
+                "--deployment-id",
+                enrolledRuntime.state().deploymentId(),
+                "--claim-action-id",
+                claimReceipt.actionId(),
+                "--group-id",
+                claimReceipt.groupId(),
+                "--legal-name",
+                legalName,
+                "--reviewer-id",
+                "qualification-reviewer",
+                "--review-reference",
+                "qualification:settlement-query",
+                "--idempotency-key",
+                "qualification_approve_0001");
+        registry.runAdminCommand(
+                "calculate-settlement",
+                "--period",
+                settlementPeriod,
+                "--currency",
+                "EUR");
+
+        RegisteredRuntime runtime = runtimeAt(
+                enrolledRuntime,
+                registry.baseUrl());
+        OperatorRevenueRegistryRuntimeResolver resolver =
+                mock(OperatorRevenueRegistryRuntimeResolver.class);
+        when(resolver.resolveSettlement(MongoSessionMode.REAL))
+                .thenReturn(
+                        OperatorRevenueRegistryRuntimeResolver
+                                .Resolution.ready(runtime));
+        var page = new OperatorSettlementService(
+                resolver,
+                objectMapper,
+                qualificationClock,
+                new SecureRandom()).settlements(
+                        "EUR",
+                        settlementPeriod,
+                        settlementPeriod,
+                        false,
+                        20,
+                        "",
+                        "");
+
+        assertThat(page.items()).singleElement().satisfies(item -> {
+            assertThat(item.period()).isEqualTo(settlementPeriod);
+            assertThat(item.currencyCode()).isEqualTo("EUR");
+            assertThat(item.beneficiaryId())
+                    .isEqualTo(claimReceipt.groupId());
+            assertThat(item.ttmCommissionBasisMinor())
+                    .isEqualTo(12_500L);
+            assertThat(item.ttmNetworkCommissionPoolMinor())
+                    .isEqualTo(625L);
+            assertThat(item.indicativeNetworkValueMinor())
+                    .isPositive();
+            assertThat(item.valuationIsNonBinding()).isTrue();
+            assertThat(item.accelerationBasisPoints())
+                    .isBetween(
+                            RegistryProtocol
+                                    .SETTLEMENT_MINIMUM_ACCELERATION_BASIS_POINTS,
+                            RegistryProtocol
+                                    .SETTLEMENT_MAXIMUM_ACCELERATION_BASIS_POINTS);
+        });
+        assertThat(page.nextAfterPeriod()).isEmpty();
+        assertThat(page.nextAfterSettlementId()).isEmpty();
+        assertThat(page.generatedAtIso()).isNotBlank();
     }
 
     private void assertInvalidDeploymentSignaturesRejected(
@@ -917,6 +1030,47 @@ class OperatorGoRegistryRailQualificationTest {
             Files.createDirectories(stateDirectory);
             ProcessBuilder builder = new ProcessBuilder(
                     binary.toString());
+            configureEnvironment(builder);
+            builder.redirectErrorStream(true);
+            builder.redirectOutput(
+                    ProcessBuilder.Redirect.appendTo(
+                            logPath.toFile()));
+            process = builder.start();
+            awaitReady();
+        }
+
+        String runAdminCommand(String... arguments) throws Exception {
+            String[] command = new String[arguments.length + 1];
+            command[0] = binary.toString();
+            System.arraycopy(
+                    arguments,
+                    0,
+                    command,
+                    1,
+                    arguments.length);
+            ProcessBuilder builder = new ProcessBuilder(command);
+            configureEnvironment(builder);
+            builder.redirectErrorStream(true);
+            Process commandProcess = builder.start();
+            if (!commandProcess.waitFor(30L, TimeUnit.SECONDS)) {
+                commandProcess.destroyForcibly();
+                throw new IllegalStateException(
+                        "Go registry admin command timed out.");
+            }
+            String output = new String(
+                    commandProcess.getInputStream().readAllBytes(),
+                    StandardCharsets.UTF_8);
+            if (commandProcess.exitValue() != 0) {
+                throw new IllegalStateException(
+                        "Go registry admin command failed with exit "
+                                + commandProcess.exitValue()
+                                + ":\n"
+                                + output);
+            }
+            return output;
+        }
+
+        private void configureEnvironment(ProcessBuilder builder) {
             builder.environment().put(
                     "REGISTRY_LISTEN_ADDR",
                     "127.0.0.1:" + port);
@@ -939,12 +1093,6 @@ class OperatorGoRegistryRailQualificationTest {
             builder.environment().put(
                     "REGISTRY_SHUTDOWN_TIMEOUT",
                     "2s");
-            builder.redirectErrorStream(true);
-            builder.redirectOutput(
-                    ProcessBuilder.Redirect.appendTo(
-                            logPath.toFile()));
-            process = builder.start();
-            awaitReady();
         }
 
         void restart() throws Exception {

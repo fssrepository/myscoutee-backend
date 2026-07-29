@@ -514,7 +514,13 @@ public class EventScheduler {
         if (groupMin > 0 || groupMax > 0) {
             int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
             int stageMax = safeCount(subEvent.capacityMax());
-            return stageMax > 0 ? Math.max(1, (int) Math.ceil((double) stageMax / divisor)) : 0;
+            int groupsNeededForMaximum = stageMax > 0
+                    ? (int) Math.ceil((double) stageMax / divisor)
+                    : 0;
+            int groupsAllowedByMinimum = groupMin > 0
+                    ? Math.max(1, stageMax / groupMin)
+                    : groupsNeededForMaximum;
+            return Math.min(groupsNeededForMaximum, groupsAllowedByMinimum);
         }
         return 0;
     }
@@ -740,8 +746,30 @@ public class EventScheduler {
                     continue;
                 }
 
+                Set<String> stageEligibleUserIds = resolveStageAssignmentUserIds(
+                        eventId,
+                        subEvents,
+                        subEventIndex,
+                        acceptedUserIds);
+                if (stageEligibleUserIds.isEmpty()) {
+                    logDiagnostic(
+                            "random",
+                            eventId,
+                            subEventId,
+                            subEventIndex == 0
+                                    ? "No accepted users are eligible for the first stage."
+                                    : "The finalized previous stage has no advancing users.");
+                    processedSubEvents.incrementAndGet();
+                    continue;
+                }
+                FGraph stageGraph = eventGraph.filter(stageEligibleUserIds, Set.of(), 0d);
+                if (stageGraph.getNodes().isEmpty()) {
+                    processedSubEvents.incrementAndGet();
+                    continue;
+                }
+
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
-                        eventId, subEventId, subEvent, acceptedUserIds, true, "random", observedQueries, eventDocumentsById);
+                        eventId, subEventId, subEvent, stageEligibleUserIds, true, "random", observedQueries, eventDocumentsById);
                         
                 if (targets.isEmpty()) {
                     int processedSubEvent = processedSubEvents.incrementAndGet();
@@ -757,7 +785,7 @@ public class EventScheduler {
                 }
                 
                 List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
-                        event, eventGraph, acceptedUserIds, targets, "random", "random:" + eventId + ":" + subEventId, observedQueries);
+                        event, stageGraph, stageEligibleUserIds, targets, "random", "random:" + eventId + ":" + subEventId, observedQueries);
                         
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
@@ -920,9 +948,19 @@ public class EventScheduler {
     }
 
     public List<EventLeaderboardStateDto> generateScorePlans() {
+        return generateScorePlansForEvents(null);
+    }
+
+    public List<EventLeaderboardStateDto> generateScorePlansForEvents(Collection<String> sourceIds) {
         // THREAD SAFETY: We must use a synchronized list because multiple CPU threads will add to this simultaneously
         List<EventLeaderboardStateDto> states = Collections.synchronizedList(new ArrayList<>());
+        Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> events = resolveCanonicalEvents();
+        if (!requestedSourceIds.isEmpty()) {
+            events = events.stream()
+                    .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
+                    .toList();
+        }
         
         // --- PHASE 1: PRE-FETCH (Runs Sequentially) ---
         // Gather all users and snapshots up front to eliminate N+1 database queries
@@ -1015,6 +1053,29 @@ public class EventScheduler {
         })); // End of parallel stream
 
         return states;
+    }
+
+    private Set<String> resolveStageAssignmentUserIds(
+            String eventId,
+            List<SubEventItem> stages,
+            int stageIndex,
+            Collection<String> acceptedUserIds) {
+        Set<String> accepted = new LinkedHashSet<>(normalizeUserIds(acceptedUserIds));
+        if (stageIndex <= 0) {
+            return accepted;
+        }
+        if (stages == null || stageIndex >= stages.size()) {
+            return Set.of();
+        }
+        SubEventItem previousStage = stages.get(stageIndex - 1);
+        String previousStageId = normalizeId(previousStage == null ? null : previousStage.id());
+        if (!StringUtils.hasText(previousStageId)) {
+            return Set.of();
+        }
+        EventLeaderboardStateDto previousState = activitiesEventLeaderboardService.queryState(eventId, previousStageId);
+        Set<String> advancingUserIds = resolveAdvancingUserIds(previousState);
+        advancingUserIds.retainAll(accepted);
+        return advancingUserIds;
     }
 
     private void withMongoSessionMode(MongoSessionMode sessionMode, Runnable action) {

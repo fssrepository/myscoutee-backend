@@ -1,0 +1,13 @@
+{
+  "name": "operator local revenue summary",
+  "group": "operator",
+  "order": 1240,
+  "method": "GET",
+  "path": "/api/operator/revenue",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 12000
+}

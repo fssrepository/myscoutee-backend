@@ -11,6 +11,162 @@ import org.junit.jupiter.api.Test;
 
 class RegistryProtocolTest {
     @Test
+    void settlementQueryPayloadAndResponseMatchTheGoProtocolExactly() {
+        String hash =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        RegistryProtocol.SettlementQueryRequest request =
+                new RegistryProtocol.SettlementQueryRequest(
+                        "1",
+                        "test-program:parent-a",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "2026-07-29T00:00:00Z",
+                        "nonce_0123456789",
+                        "query_0123456789",
+                        "EUR",
+                        "2026-01",
+                        "2026-06",
+                        false,
+                        25,
+                        "2026-05",
+                        "stl_0123456789abcdef0123456789abcdef",
+                        hash,
+                        "signature");
+        assertThat(new String(
+                        RegistryProtocol.settlementQueryPayload(request),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-settlement-query-payload-v1
+                        EUR
+                        2026-01
+                        2026-06
+                        false
+                        25
+                        2026-05
+                        stl_0123456789abcdef0123456789abcdef
+                        """);
+
+        RegistryProtocol.SettlementQueryResponse response =
+                new RegistryProtocol.SettlementQueryResponse(
+                        "1",
+                        "test-program:parent-a",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "query_0123456789",
+                        hash,
+                        hash,
+                        List.of(),
+                        "2026-05",
+                        "stl_0123456789abcdef0123456789abcdef",
+                        "2026-07-29T00:00:01Z",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        "registry-public-key",
+                        "signature");
+        assertThat(new String(
+                        RegistryProtocol.settlementQueryResponse(response),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-settlement-query-response-v1
+                        1
+                        test-program:parent-a
+                        dep_0123456789abcdef0123456789abcdef
+                        query_0123456789
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        2026-05
+                        stl_0123456789abcdef0123456789abcdef
+                        2026-07-29T00:00:01Z
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void settlementItemsHashCommitsThreeMonthAccelerationInputs() {
+        String hash =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        RegistryProtocol.SettlementHistoryItem item =
+                new RegistryProtocol.SettlementHistoryItem(
+                        "stl_0123456789abcdef0123456789abcdef",
+                        "2026-06",
+                        "EUR",
+                        2L,
+                        1L,
+                        "",
+                        RegistryProtocol
+                                .SETTLEMENT_BENEFICIARY_OPERATOR_GROUP,
+                        "opg_0123456789abcdef0123456789abcdef",
+                        "1",
+                        "10",
+                        500L,
+                        50L,
+                        10_000L,
+                        500L,
+                        31_500L,
+                        3_150L,
+                        RegistryProtocol
+                                .SETTLEMENT_VALUATION_RULESET_VERSION,
+                        30_000L,
+                        180L,
+                        120L,
+                        100L,
+                        5_000L,
+                        2_000L,
+                        3_000L,
+                        2_000L,
+                        36_000L,
+                        true,
+                        100L,
+                        20L,
+                        10L,
+                        5L,
+                        hash,
+                        hash,
+                        "2026-07-29T00:00:01Z");
+
+        String original =
+                RegistryProtocol.settlementHistoryItemsHash(List.of(item));
+        RegistryProtocol.SettlementHistoryItem accelerated =
+                new RegistryProtocol.SettlementHistoryItem(
+                        item.settlementId(),
+                        item.period(),
+                        item.currencyCode(),
+                        item.fractionDigits(),
+                        item.revision(),
+                        item.supersedesSettlementId(),
+                        item.beneficiaryType(),
+                        item.beneficiaryId(),
+                        item.shareNumerator(),
+                        item.shareDenominator(),
+                        item.networkPoolMinor(),
+                        item.networkPoolAllocationMinor(),
+                        item.ttmCommissionBasisMinor(),
+                        item.ttmNetworkCommissionPoolMinor(),
+                        item.indicativeNetworkValueMinor(),
+                        item.indicativeValueAllocationMinor(),
+                        item.valuationRulesetVersion(),
+                        item.baseValuationMultiplierBasisPoints(),
+                        item.recentThreeMonthAverageMinor(),
+                        item.priorThreeMonthAverageMinor(),
+                        item.earlierThreeMonthAverageMinor(),
+                        item.recentGrowthBasisPoints(),
+                        item.priorGrowthBasisPoints(),
+                        item.accelerationBasisPoints() + 1L,
+                        item.valuationAdjustmentBasisPoints(),
+                        item.effectiveValuationMultiplierBasisPoints(),
+                        item.valuationIsNonBinding(),
+                        item.throughLedgerIndex(),
+                        item.throughAuditIndex(),
+                        item.throughReviewIndex(),
+                        item.throughEligibilityIndex(),
+                        item.sourceFingerprint(),
+                        item.settlementHash(),
+                        item.acceptedAt());
+
+        assertThat(original)
+                .startsWith("sha256:")
+                .isNotEqualTo(RegistryProtocol.settlementHistoryItemsHash(
+                        List.of(accelerated)));
+    }
+
+    @Test
     void revenuePayloadMatchesTheGoProtocolExactly() {
         List<RegistryProtocol.RevenueCurrencyRow> currencies = List.of(
                 new RegistryProtocol.RevenueCurrencyRow(

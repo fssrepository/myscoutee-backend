@@ -94,6 +94,8 @@ public class OperatorConfigurationMapper {
                 new PaymentConfigurationDto(
                         availableProviders == null ? List.of() : List.copyOf(availableProviders),
                         blankToNull(payment.getProviderId()),
+                        blankToNull(payment.getPublicBaseUrl()),
+                        blankToNull(payment.getMerchantAccount()),
                         credentialConfigured,
                         credentialConfigured
                                 ? payment.getCredentialMask().trim()

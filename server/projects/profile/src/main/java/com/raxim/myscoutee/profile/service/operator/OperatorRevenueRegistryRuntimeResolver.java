@@ -24,11 +24,11 @@ import com.raxim.myscoutee.registry.RegistryProtocol.RegistrationResponse;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Read-only gate for background revenue delivery.
+ * Read-only gate for signed registry delivery and private registry reads.
  *
- * <p>The settings row is checked before key, state, outbox, payment, or HTTP
- * access. This resolver never selects a registry, initializes an identity, or
- * repairs enrollment state.</p>
+ * <p>The settings row is checked before durable key, state, outbox, accounting,
+ * or HTTP access. This resolver never selects a registry, initializes an
+ * identity, or repairs enrollment state.</p>
  */
 @Service
 class OperatorRevenueRegistryRuntimeResolver {
@@ -58,6 +58,10 @@ class OperatorRevenueRegistryRuntimeResolver {
 
     Resolution resolveMau(MongoSessionMode mode) {
         return resolve(mode, RegistryProtocol.MAU_BATCH_PATH);
+    }
+
+    Resolution resolveSettlement(MongoSessionMode mode) {
+        return resolve(mode, RegistryProtocol.SETTLEMENT_QUERY_PATH);
     }
 
     private Resolution resolve(

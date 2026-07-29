@@ -14610,6 +14610,18 @@
     "value": "Registry review rejected this claim"
   },
   {
+    "_id": "i18n-message-en-operator-action-claim-share-suspended",
+    "key": "operator.action.claim.share.suspended",
+    "lang": "en",
+    "value": "Registry eligibility is suspended"
+  },
+  {
+    "_id": "i18n-message-en-operator-action-claim-share-inactive",
+    "key": "operator.action.claim.share.inactive",
+    "lang": "en",
+    "value": "This claim is not currently eligible"
+  },
+  {
     "_id": "i18n-message-en-operator-action-configuration-detail",
     "key": "operator.action.configuration.detail",
     "lang": "en",
@@ -14896,6 +14908,186 @@
     "key": "operator.revenue.delivery.requeued.pending",
     "lang": "en",
     "value": "The requeued report is pending. Synchronize delivery to submit it."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-eyebrow",
+    "key": "operator.revenue.settlement.eyebrow",
+    "lang": "en",
+    "value": "Registry settlement"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-title",
+    "key": "operator.revenue.settlement.title",
+    "lang": "en",
+    "value": "Indicative network valuation"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-currency-notice",
+    "key": "operator.revenue.settlement.currency.notice",
+    "lang": "en",
+    "value": "Each currency is calculated and displayed separately. No FX conversion is applied."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-nonbinding",
+    "key": "operator.revenue.settlement.nonbinding",
+    "lang": "en",
+    "value": "Indicative · non-binding"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-unavailable",
+    "key": "operator.revenue.settlement.unavailable",
+    "lang": "en",
+    "value": "Settlement history is unavailable until this deployment can reach its registered registry."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-empty",
+    "key": "operator.revenue.settlement.empty",
+    "lang": "en",
+    "value": "No registry settlements"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-empty-description",
+    "key": "operator.revenue.settlement.empty.description",
+    "lang": "en",
+    "value": "Accepted completed-period settlements will appear here."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-period",
+    "key": "operator.revenue.settlement.period",
+    "lang": "en",
+    "value": "Settlement period"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-revision",
+    "key": "operator.revenue.settlement.revision",
+    "lang": "en",
+    "value": "Revision"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-monthly-pool",
+    "key": "operator.revenue.settlement.monthly.pool",
+    "lang": "en",
+    "value": "Monthly 5% network pool"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-monthly-group-allocation",
+    "key": "operator.revenue.settlement.monthly.group.allocation",
+    "lang": "en",
+    "value": "This operator group's pool allocation"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-share",
+    "key": "operator.revenue.settlement.share",
+    "lang": "en",
+    "value": "Settlement share"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-ttm-basis",
+    "key": "operator.revenue.settlement.ttm.basis",
+    "lang": "en",
+    "value": "Trailing 12-month commission basis"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-ttm-pool",
+    "key": "operator.revenue.settlement.ttm.pool",
+    "lang": "en",
+    "value": "Trailing 12-month network pool"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-indicative-network-value",
+    "key": "operator.revenue.settlement.indicative.network.value",
+    "lang": "en",
+    "value": "Indicative network (virtual company) value"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-indicative-group-allocation",
+    "key": "operator.revenue.settlement.indicative.group.allocation",
+    "lang": "en",
+    "value": "This operator group's indicative share value"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-average-earlier",
+    "key": "operator.revenue.settlement.average.earlier",
+    "lang": "en",
+    "value": "Earlier 3-month average"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-average-prior",
+    "key": "operator.revenue.settlement.average.prior",
+    "lang": "en",
+    "value": "Prior 3-month average"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-average-recent",
+    "key": "operator.revenue.settlement.average.recent",
+    "lang": "en",
+    "value": "Recent 3-month average"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-growth-prior",
+    "key": "operator.revenue.settlement.growth.prior",
+    "lang": "en",
+    "value": "Earlier-to-prior growth"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-growth-recent",
+    "key": "operator.revenue.settlement.growth.recent",
+    "lang": "en",
+    "value": "Prior-to-recent growth"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-acceleration",
+    "key": "operator.revenue.settlement.acceleration",
+    "lang": "en",
+    "value": "3-month growth acceleration"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-adjustment",
+    "key": "operator.revenue.settlement.adjustment",
+    "lang": "en",
+    "value": "Valuation adjustment"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-multiplier",
+    "key": "operator.revenue.settlement.multiplier",
+    "lang": "en",
+    "value": "Effective valuation multiplier"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-ruleset",
+    "key": "operator.revenue.settlement.ruleset",
+    "lang": "en",
+    "value": "Valuation ruleset"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-accepted",
+    "key": "operator.revenue.settlement.accepted",
+    "lang": "en",
+    "value": "Accepted"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-currency-invalid",
+    "key": "operator.revenue.settlement.currency.invalid",
+    "lang": "en",
+    "value": "The settlement currency filter is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-period-invalid",
+    "key": "operator.revenue.settlement.period.invalid",
+    "lang": "en",
+    "value": "The settlement period filter is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-cursor-invalid",
+    "key": "operator.revenue.settlement.cursor.invalid",
+    "lang": "en",
+    "value": "The settlement cursor is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-settlement-response-invalid",
+    "key": "operator.revenue.settlement.response.invalid",
+    "lang": "en",
+    "value": "The registry returned an invalid settlement response."
   },
   {
     "_id": "i18n-message-en-operator-revenue-empty",
@@ -15930,6 +16122,36 @@
     "value": "Enter a valid public website URL beginning with https://."
   },
   {
+    "_id": "i18n-message-en-operator-claim-eligibility-active",
+    "key": "operator.claim.eligibility.active",
+    "lang": "en",
+    "value": "Eligible"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-eligibility-suspended",
+    "key": "operator.claim.eligibility.suspended",
+    "lang": "en",
+    "value": "Eligibility suspended"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-eligibility-suspended-instructions",
+    "key": "operator.claim.eligibility.suspended.instructions",
+    "lang": "en",
+    "value": "This approved claim remains visible and measured, but contributes no eligible weight or share until the registry reinstates it."
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-eligibility-partially-suspended",
+    "key": "operator.claim.eligibility.partially.suspended",
+    "lang": "en",
+    "value": "Partially suspended"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-eligibility-inactive",
+    "key": "operator.claim.eligibility.inactive",
+    "lang": "en",
+    "value": "Not eligible"
+  },
+  {
     "_id": "i18n-message-en-operator-claim-client-code",
     "key": "operator.claim.client.code",
     "lang": "en",
@@ -16588,6 +16810,72 @@
     "key": "operator.configuration.payment.provider.none",
     "lang": "en",
     "value": "No payment provider"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url",
+    "key": "operator.configuration.payment.public.url",
+    "lang": "en",
+    "value": "Public deployment URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url-placeholder",
+    "key": "operator.configuration.payment.public.url.placeholder",
+    "lang": "en",
+    "value": "https://your-deployment.example"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url-paste-aria",
+    "key": "operator.configuration.payment.public.url.paste.aria",
+    "lang": "en",
+    "value": "Paste public deployment URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url-open-aria",
+    "key": "operator.configuration.payment.public.url.open.aria",
+    "lang": "en",
+    "value": "Open public deployment URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url-clear-aria",
+    "key": "operator.configuration.payment.public.url.clear.aria",
+    "lang": "en",
+    "value": "Clear public deployment URL"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url-required",
+    "key": "operator.configuration.payment.public.url.required",
+    "lang": "en",
+    "value": "A public deployment URL is required."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-public-url-invalid",
+    "key": "operator.configuration.payment.public.url.invalid",
+    "lang": "en",
+    "value": "Enter an absolute HTTPS deployment URL. HTTP is accepted only for localhost development."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-merchant-account",
+    "key": "operator.configuration.payment.merchant.account",
+    "lang": "en",
+    "value": "Merchant account email"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-merchant-account-placeholder",
+    "key": "operator.configuration.payment.merchant.account.placeholder",
+    "lang": "en",
+    "value": "merchant@example.com"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-merchant-account-required",
+    "key": "operator.configuration.payment.merchant.account.required",
+    "lang": "en",
+    "value": "A merchant account email is required for Barion."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-payment-merchant-account-invalid",
+    "key": "operator.configuration.payment.merchant.account.invalid",
+    "lang": "en",
+    "value": "Enter a valid Barion merchant account email."
   },
   {
     "_id": "i18n-message-en-operator-configuration-payment-credential",
@@ -17380,6 +17668,24 @@
     "key": "operator.leaderboard.error.cursor.invalid",
     "lang": "en",
     "value": "The leaderboard cursor is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-snapshot-invalid",
+    "key": "operator.leaderboard.error.snapshot.invalid",
+    "lang": "en",
+    "value": "The registry returned an invalid signed leaderboard boundary."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-snapshot-changed",
+    "key": "operator.leaderboard.error.snapshot.changed",
+    "lang": "en",
+    "value": "The signed leaderboard boundary changed while the page was loading. Reload the leaderboard and try again."
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-error-eligibility-invalid",
+    "key": "operator.leaderboard.error.eligibility.invalid",
+    "lang": "en",
+    "value": "The registry returned an unknown eligibility state for a protected leaderboard row."
   },
   {
     "_id": "i18n-message-en-operator-workspace-error-unavailable",
@@ -32022,6 +32328,18 @@
     "value": "A nyilvántartási felülvizsgálat elutasította ezt az igénylést"
   },
   {
+    "_id": "i18n-message-hu-operator-action-claim-share-suspended",
+    "key": "operator.action.claim.share.suspended",
+    "lang": "hu",
+    "value": "A nyilvántartási jogosultság fel van függesztve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-action-claim-share-inactive",
+    "key": "operator.action.claim.share.inactive",
+    "lang": "hu",
+    "value": "Ez az igénylés jelenleg nem jogosult"
+  },
+  {
     "_id": "i18n-message-hu-operator-action-configuration-detail",
     "key": "operator.action.configuration.detail",
     "lang": "hu",
@@ -32308,6 +32626,186 @@
     "key": "operator.revenue.delivery.requeued.pending",
     "lang": "hu",
     "value": "Az újrasorba állított jelentés függőben van. A beküldéshez szinkronizáld a kézbesítést."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-eyebrow",
+    "key": "operator.revenue.settlement.eyebrow",
+    "lang": "hu",
+    "value": "Nyilvántartási elszámolás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-title",
+    "key": "operator.revenue.settlement.title",
+    "lang": "hu",
+    "value": "Indikatív hálózati értékelés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-currency-notice",
+    "key": "operator.revenue.settlement.currency.notice",
+    "lang": "hu",
+    "value": "Minden pénznemet külön számítunk és jelenítünk meg. Devizaátváltás nem történik."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-nonbinding",
+    "key": "operator.revenue.settlement.nonbinding",
+    "lang": "hu",
+    "value": "Indikatív · nem kötelező"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-unavailable",
+    "key": "operator.revenue.settlement.unavailable",
+    "lang": "hu",
+    "value": "Az elszámolási előzmények akkor érhetők el, ha a telepítés kapcsolódni tud a regisztrált nyilvántartásához."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-empty",
+    "key": "operator.revenue.settlement.empty",
+    "lang": "hu",
+    "value": "Nincs nyilvántartási elszámolás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-empty-description",
+    "key": "operator.revenue.settlement.empty.description",
+    "lang": "hu",
+    "value": "Az elfogadott, lezárt időszaki elszámolások itt jelennek meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-period",
+    "key": "operator.revenue.settlement.period",
+    "lang": "hu",
+    "value": "Elszámolási időszak"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-revision",
+    "key": "operator.revenue.settlement.revision",
+    "lang": "hu",
+    "value": "Változat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-monthly-pool",
+    "key": "operator.revenue.settlement.monthly.pool",
+    "lang": "hu",
+    "value": "Havi 5%-os hálózati alap"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-monthly-group-allocation",
+    "key": "operator.revenue.settlement.monthly.group.allocation",
+    "lang": "hu",
+    "value": "Az operátorcsoport alap-allokációja"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-share",
+    "key": "operator.revenue.settlement.share",
+    "lang": "hu",
+    "value": "Elszámolási részesedés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-ttm-basis",
+    "key": "operator.revenue.settlement.ttm.basis",
+    "lang": "hu",
+    "value": "Utolsó 12 havi jutalékalap"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-ttm-pool",
+    "key": "operator.revenue.settlement.ttm.pool",
+    "lang": "hu",
+    "value": "Utolsó 12 havi hálózati alap"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-indicative-network-value",
+    "key": "operator.revenue.settlement.indicative.network.value",
+    "lang": "hu",
+    "value": "Indikatív hálózati (virtuális vállalati) érték"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-indicative-group-allocation",
+    "key": "operator.revenue.settlement.indicative.group.allocation",
+    "lang": "hu",
+    "value": "Az operátorcsoport indikatív részesedési értéke"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-average-earlier",
+    "key": "operator.revenue.settlement.average.earlier",
+    "lang": "hu",
+    "value": "Korábbi 3 havi átlag"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-average-prior",
+    "key": "operator.revenue.settlement.average.prior",
+    "lang": "hu",
+    "value": "Előző 3 havi átlag"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-average-recent",
+    "key": "operator.revenue.settlement.average.recent",
+    "lang": "hu",
+    "value": "Legutóbbi 3 havi átlag"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-growth-prior",
+    "key": "operator.revenue.settlement.growth.prior",
+    "lang": "hu",
+    "value": "Korábbi–előző növekedés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-growth-recent",
+    "key": "operator.revenue.settlement.growth.recent",
+    "lang": "hu",
+    "value": "Előző–legutóbbi növekedés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-acceleration",
+    "key": "operator.revenue.settlement.acceleration",
+    "lang": "hu",
+    "value": "3 havi növekedés gyorsulása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-adjustment",
+    "key": "operator.revenue.settlement.adjustment",
+    "lang": "hu",
+    "value": "Értékelési korrekció"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-multiplier",
+    "key": "operator.revenue.settlement.multiplier",
+    "lang": "hu",
+    "value": "Tényleges értékelési szorzó"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-ruleset",
+    "key": "operator.revenue.settlement.ruleset",
+    "lang": "hu",
+    "value": "Értékelési szabályrendszer"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-accepted",
+    "key": "operator.revenue.settlement.accepted",
+    "lang": "hu",
+    "value": "Elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-currency-invalid",
+    "key": "operator.revenue.settlement.currency.invalid",
+    "lang": "hu",
+    "value": "Az elszámolás pénznemszűrője érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-period-invalid",
+    "key": "operator.revenue.settlement.period.invalid",
+    "lang": "hu",
+    "value": "Az elszámolási időszak szűrője érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-cursor-invalid",
+    "key": "operator.revenue.settlement.cursor.invalid",
+    "lang": "hu",
+    "value": "Az elszámolási kurzor érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-settlement-response-invalid",
+    "key": "operator.revenue.settlement.response.invalid",
+    "lang": "hu",
+    "value": "A nyilvántartás érvénytelen elszámolási választ adott."
   },
   {
     "_id": "i18n-message-hu-operator-revenue-empty",
@@ -33342,6 +33840,36 @@
     "value": "Adj meg érvényes, https:// kezdetű nyilvános webhelycímet."
   },
   {
+    "_id": "i18n-message-hu-operator-claim-eligibility-active",
+    "key": "operator.claim.eligibility.active",
+    "lang": "hu",
+    "value": "Jogosult"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-eligibility-suspended",
+    "key": "operator.claim.eligibility.suspended",
+    "lang": "hu",
+    "value": "A jogosultság fel van függesztve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-eligibility-suspended-instructions",
+    "key": "operator.claim.eligibility.suspended.instructions",
+    "lang": "hu",
+    "value": "A jóváhagyott igénylés látható és mért marad, de a nyilvántartás visszaállításáig nem ad jogosult súlyt vagy részesedést."
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-eligibility-partially-suspended",
+    "key": "operator.claim.eligibility.partially.suspended",
+    "lang": "hu",
+    "value": "Részben felfüggesztve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-eligibility-inactive",
+    "key": "operator.claim.eligibility.inactive",
+    "lang": "hu",
+    "value": "Nem jogosult"
+  },
+  {
     "_id": "i18n-message-hu-operator-claim-client-code",
     "key": "operator.claim.client.code",
     "lang": "hu",
@@ -34000,6 +34528,72 @@
     "key": "operator.configuration.payment.provider.none",
     "lang": "hu",
     "value": "Nincs fizetési szolgáltató"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url",
+    "key": "operator.configuration.payment.public.url",
+    "lang": "hu",
+    "value": "Nyilvános telepítési URL"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url-placeholder",
+    "key": "operator.configuration.payment.public.url.placeholder",
+    "lang": "hu",
+    "value": "https://sajat-telepites.example"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url-paste-aria",
+    "key": "operator.configuration.payment.public.url.paste.aria",
+    "lang": "hu",
+    "value": "Nyilvános telepítési URL beillesztése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url-open-aria",
+    "key": "operator.configuration.payment.public.url.open.aria",
+    "lang": "hu",
+    "value": "Nyilvános telepítési URL megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url-clear-aria",
+    "key": "operator.configuration.payment.public.url.clear.aria",
+    "lang": "hu",
+    "value": "Nyilvános telepítési URL törlése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url-required",
+    "key": "operator.configuration.payment.public.url.required",
+    "lang": "hu",
+    "value": "A nyilvános telepítési URL megadása kötelező."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-public-url-invalid",
+    "key": "operator.configuration.payment.public.url.invalid",
+    "lang": "hu",
+    "value": "Abszolút HTTPS telepítési URL-t adj meg. A HTTP csak helyi fejlesztésnél használható."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-merchant-account",
+    "key": "operator.configuration.payment.merchant.account",
+    "lang": "hu",
+    "value": "Kereskedői fiók e-mail-címe"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-merchant-account-placeholder",
+    "key": "operator.configuration.payment.merchant.account.placeholder",
+    "lang": "hu",
+    "value": "kereskedo@example.com"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-merchant-account-required",
+    "key": "operator.configuration.payment.merchant.account.required",
+    "lang": "hu",
+    "value": "A Barion használatához kötelező a kereskedői fiók e-mail-címe."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-payment-merchant-account-invalid",
+    "key": "operator.configuration.payment.merchant.account.invalid",
+    "lang": "hu",
+    "value": "Érvényes Barion kereskedői e-mail-címet adj meg."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-payment-credential",
@@ -34792,6 +35386,24 @@
     "key": "operator.leaderboard.error.cursor.invalid",
     "lang": "hu",
     "value": "A ranglista kurzora érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-snapshot-invalid",
+    "key": "operator.leaderboard.error.snapshot.invalid",
+    "lang": "hu",
+    "value": "A nyilvántartás érvénytelen aláírt ranglistahatárt adott vissza."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-snapshot-changed",
+    "key": "operator.leaderboard.error.snapshot.changed",
+    "lang": "hu",
+    "value": "Az aláírt ranglistahatár megváltozott az oldal betöltése közben. Töltsd újra a ranglistát, majd próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-error-eligibility-invalid",
+    "key": "operator.leaderboard.error.eligibility.invalid",
+    "lang": "hu",
+    "value": "A nyilvántartás ismeretlen jogosultsági állapotot adott vissza egy védett ranglistasorhoz."
   },
   {
     "_id": "i18n-message-hu-operator-workspace-error-unavailable",

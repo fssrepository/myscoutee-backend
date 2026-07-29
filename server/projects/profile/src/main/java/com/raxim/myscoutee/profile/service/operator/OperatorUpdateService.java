@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -94,6 +95,7 @@ public class OperatorUpdateService {
     private final AtomicReference<String> activeJavaJob = new AtomicReference<>();
     private final Object startLock = new Object();
 
+    @Autowired
     public OperatorUpdateService(
             OperatorNetworkService networkService,
             OperatorUpdateArtifactDownloader downloader,

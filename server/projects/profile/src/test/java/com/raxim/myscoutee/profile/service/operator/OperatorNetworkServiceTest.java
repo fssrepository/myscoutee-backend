@@ -36,11 +36,73 @@ import com.raxim.myscoutee.registry.RegistryOperatorNetworkOperations;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ActionCommand;
 import com.raxim.myscoutee.registry.RegistryOperatorNetworkService.ClaimStatus;
 import com.raxim.myscoutee.registry.RegistryProtocol;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeployment;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardDeploymentPage;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardPage;
 import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.registry.RegistryProtocol.LeaderboardSnapshot;
 import com.raxim.myscoutee.registry.RegistryProtocolException;
 
 class OperatorNetworkServiceTest {
+    @Test
+    void mapperPreservesSnapshotAndDeploymentEligibilityBoundaries() {
+        LeaderboardSnapshot snapshot = new LeaderboardSnapshot(
+                "snap_0123456789abcdef0123456789abcdef",
+                RegistryProtocol.LEADERBOARD_FORMULA_VERSION,
+                RegistryProtocol.LEADERBOARD_RULESET_VERSION,
+                "2026-06",
+                12L,
+                4L,
+                3L,
+                2L,
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "100000",
+                "1",
+                "1",
+                "4",
+                "200000",
+                "1",
+                "150000",
+                "1",
+                "2026-07-28T00:00:05Z",
+                "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "operator-test:parent-a",
+                "rkey_0123456789abcdef0123456789abcdef",
+                "signature");
+        LeaderboardDeployment deployment = new LeaderboardDeployment(
+                "dep_0123456789abcdef0123456789abcdef",
+                "opg_0123456789abcdef0123456789abcdef",
+                "approved",
+                "suspended",
+                "owner",
+                "0",
+                "1",
+                "0",
+                "1");
+
+        var mapped = new OperatorNetworkMapper()
+                .toLeaderboardDeploymentPage(
+                        new LeaderboardDeploymentPage(
+                                snapshot,
+                                deployment.groupId(),
+                                List.of(deployment),
+                                null));
+
+        assertThat(mapped.snapshot().throughReviewIndex()).isEqualTo(3L);
+        assertThat(mapped.snapshot().throughEligibilityIndex()).isEqualTo(2L);
+        assertThat(mapped.snapshot().reviewHeadHash())
+                .isEqualTo(snapshot.reviewHeadHash());
+        assertThat(mapped.snapshot().eligibilityHeadHash())
+                .isEqualTo(snapshot.eligibilityHeadHash());
+        assertThat(mapped.items())
+                .singleElement()
+                .satisfies(item -> assertThat(item.eligibilityStatus())
+                        .isEqualTo("suspended"));
+    }
+
     @Test
     void submitsStructuredClaimThenReturnsVerifiedRegistryStatus() {
         OperatorRegistrySettingsRepository settingsRepository =

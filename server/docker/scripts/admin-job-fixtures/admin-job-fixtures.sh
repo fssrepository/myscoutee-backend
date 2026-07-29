@@ -24,6 +24,12 @@ list_jobs() {
 event-random-groups
   balanced        6 seeded demo users, 2 rooms of exactly 3
   anchored        same, with one accepted member locked in each room
+  five-rooms      15 seeded demo users, 5 rooms of exactly 3
+  twenty-rooms    60 generated users, 20 known-affinity rooms of exactly 3
+  one-leftover    61 generated users, exact size 3, verifies which user is excluded
+  partial-room    62 generated users, room size 2..3, one valid partial room
+  quality-200     200 generated users, 40 known-affinity rooms of exactly 5
+  quality-1000    1000 generated users, 200 known-affinity rooms of exactly 5
 event-auto-inviter
   open-spots      published event with capacity for 2 graph-selected invitations
   full            published event with no open capacity (zero-change control)
@@ -117,7 +123,8 @@ run_scenario() {
         --username "${mongo_username}" \
         --password "${mongo_password}" \
         --authenticationDatabase "${target_db}" \
-        "${target_db}"
+        "${target_db}" \
+        --file /dev/stdin
     return
   fi
 
@@ -138,7 +145,8 @@ run_scenario() {
         --username "${mongo_username}" \
         --password "${mongo_password}" \
         --authenticationDatabase "${target_db}" \
-        "${target_db}"
+        "${target_db}" \
+        --file /dev/stdin
 }
 
 command_name="${1:-}"

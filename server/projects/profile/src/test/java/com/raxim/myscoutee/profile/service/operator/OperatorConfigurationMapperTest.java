@@ -172,6 +172,8 @@ class OperatorConfigurationMapperTest {
         encrypted.setNonce("nonce");
         encrypted.setCiphertext("ciphertext");
         configuration.getPayment().setProviderId("stripe");
+        configuration.getPayment().setPublicBaseUrl(
+                "https://community.example.test");
         configuration.getPayment().setCredentialEnvelope(encrypted);
         configuration.getPayment().setCredentialMask("••••1234");
         configuration.getFirebase().setAuthenticationCredentialEnvelope(encrypted);
@@ -190,6 +192,8 @@ class OperatorConfigurationMapperTest {
         String json = objectMapper.writeValueAsString(dto);
 
         assertThat(dto.payment().credentialConfigured()).isTrue();
+        assertThat(dto.payment().publicBaseUrl())
+                .isEqualTo("https://community.example.test");
         assertThat(dto.payment().credentialMask()).isEqualTo("••••1234");
         assertThat(dto.firebase().authenticationCredentialConfigured()).isTrue();
         assertThat(dto.firebase().messagingCredentialConfigured()).isTrue();
@@ -245,9 +249,13 @@ class OperatorConfigurationMapperTest {
         assertThat(json.get("payment").propertyNames()).containsExactlyInAnyOrder(
                 "availableProviders",
                 "providerId",
+                "publicBaseUrl",
+                "merchantAccount",
                 "credentialConfigured",
                 "credentialMask");
         assertThat(json.get("payment").get("providerId").isNull()).isTrue();
+        assertThat(json.get("payment").get("publicBaseUrl").isNull()).isTrue();
+        assertThat(json.get("payment").get("merchantAccount").isNull()).isTrue();
         assertThat(json.get("payment").get("credentialMask").isNull()).isTrue();
     }
 

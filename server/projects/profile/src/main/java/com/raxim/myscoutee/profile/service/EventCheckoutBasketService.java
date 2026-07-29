@@ -282,7 +282,8 @@ public class EventCheckoutBasketService {
                     .setOnInsert("createdAtIso", firstText(item.createdAtIso(), nowIso));
             UpdateResult updateResult = mongoTemplate.upsert(itemQuery, update, EventCheckoutBasketItem.class);
             if (newlyTracked
-                    && (updateResult.getModifiedCount() > 0 || updateResult.getUpsertedId() != null)) {
+                    && (modifiedCount(updateResult) > 0
+                            || (updateResult != null && updateResult.getUpsertedId() != null))) {
                 adjustPendingCount(1);
             }
         }

@@ -55,6 +55,8 @@ public class OperatorConfigurationService {
     private static final int PRODUCT_NAME_MAX = 80;
     private static final int LOGO_URL_MAX = 2048;
     private static final int PROVIDER_ID_MAX = 64;
+    private static final int PAYMENT_PUBLIC_BASE_URL_MAX = 2048;
+    private static final int PAYMENT_MERCHANT_ACCOUNT_MAX = 254;
     private static final int PAYMENT_CREDENTIAL_MAX = 16384;
     private static final int FIREBASE_PROJECT_ID_MAX = 160;
     private static final int FIREBASE_API_KEY_MAX = 256;
@@ -73,6 +75,8 @@ public class OperatorConfigurationService {
     private static final Pattern ADMIN_EMAIL_PATTERN =
             Pattern.compile("^[^\\s@]+@[^\\s@]+$");
     private static final Pattern PRIVACY_CONTACT_EMAIL_PATTERN =
+            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    private static final Pattern PAYMENT_MERCHANT_EMAIL_PATTERN =
             Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
     private static final Pattern SOCIAL_PROVIDER_PATTERN =
             Pattern.compile("^[a-z0-9][a-z0-9._-]*$");
@@ -667,7 +671,12 @@ public class OperatorConfigurationService {
         DeploymentConfiguration.Payment payment = configuration.getPayment();
         if (payment.getCredentialEnvelope() != null
                 && (!StringUtils.hasText(payment.getProviderId())
-                        || !StringUtils.hasText(payment.getCredentialMask()))) {
+                        || !StringUtils.hasText(payment.getPublicBaseUrl())
+                        || !StringUtils.hasText(payment.getCredentialMask())
+                        || ("barion".equals(normalizeProvider(
+                                payment.getProviderId()))
+                                && !StringUtils.hasText(
+                                        payment.getMerchantAccount())))) {
             throw unavailable(
                     "Deployment payment configuration is incomplete.");
         }
@@ -757,24 +766,108 @@ public class OperatorConfigurationService {
                 request.credential(),
                 "Payment credential",
                 PAYMENT_CREDENTIAL_MAX);
+        String publicBaseUrl = request.publicBaseUrl() == null
+                ? optionalTrimmed(
+                        payment.getPublicBaseUrl(),
+                        "Payment public base URL",
+                        PAYMENT_PUBLIC_BASE_URL_MAX)
+                : paymentPublicBaseUrl(request.publicBaseUrl());
+        String merchantAccount = request.merchantAccount() == null
+                ? optionalTrimmed(
+                        payment.getMerchantAccount(),
+                        "Payment merchant account",
+                        PAYMENT_MERCHANT_ACCOUNT_MAX)
+                : optionalTrimmed(
+                        request.merchantAccount(),
+                        "Payment merchant account",
+                        PAYMENT_MERCHANT_ACCOUNT_MAX);
+        if ("barion".equals(provider)
+                && StringUtils.hasText(merchantAccount)
+                && !PAYMENT_MERCHANT_EMAIL_PATTERN
+                        .matcher(merchantAccount)
+                        .matches()) {
+            throw badRequest("Barion merchant account must be an e-mail address.");
+        }
         if (StringUtils.hasText(credential) && !StringUtils.hasText(provider)) {
             throw badRequest(
                     "A payment provider must be selected before its credential is saved.");
         }
-
         boolean providerChanged = !Objects.equals(previousProvider, provider);
+        boolean willHaveCredential = StringUtils.hasText(provider)
+                && (StringUtils.hasText(credential)
+                        || (!providerChanged
+                                && payment.getCredentialEnvelope() != null));
+        if (willHaveCredential && !StringUtils.hasText(publicBaseUrl)) {
+            throw badRequest(
+                    "A public deployment URL is required while a payment credential is registered.");
+        }
+        if (willHaveCredential
+                && "barion".equals(provider)
+                && !StringUtils.hasText(merchantAccount)) {
+            throw badRequest(
+                    "A Barion merchant account is required while its credential is registered.");
+        }
+
         payment.setProviderId(provider);
         if (!StringUtils.hasText(provider)) {
+            payment.setPublicBaseUrl(null);
+            payment.setMerchantAccount(null);
             payment.setCredentialEnvelope(null);
             payment.setCredentialMask(null);
-        } else if (StringUtils.hasText(credential)) {
-            payment.setCredentialEnvelope(crypto.encrypt(
-                    DeploymentPaymentCredentialResolver.credentialPurpose(provider),
-                    credential));
-            payment.setCredentialMask(maskCredential(credential));
-        } else if (providerChanged) {
-            payment.setCredentialEnvelope(null);
-            payment.setCredentialMask(null);
+        } else {
+            payment.setPublicBaseUrl(publicBaseUrl);
+            payment.setMerchantAccount(merchantAccount);
+            if (StringUtils.hasText(credential)) {
+                payment.setCredentialEnvelope(crypto.encrypt(
+                        DeploymentPaymentCredentialResolver.credentialPurpose(provider),
+                        credential));
+                payment.setCredentialMask(maskCredential(credential));
+            } else if (providerChanged) {
+                payment.setCredentialEnvelope(null);
+                payment.setCredentialMask(null);
+            }
+        }
+    }
+
+    private String paymentPublicBaseUrl(String value) {
+        String normalized = optionalTrimmed(
+                value,
+                "Payment public base URL",
+                PAYMENT_PUBLIC_BASE_URL_MAX);
+        if (!StringUtils.hasText(normalized)) {
+            return normalized;
+        }
+        try {
+            URI uri = new URI(normalized);
+            String scheme = uri.getScheme();
+            boolean secure = "https".equalsIgnoreCase(scheme);
+            boolean loopback = "http".equalsIgnoreCase(scheme)
+                    && ("localhost".equalsIgnoreCase(uri.getHost())
+                            || "127.0.0.1".equals(uri.getHost())
+                            || "::1".equals(uri.getHost()));
+            if ((!secure && !loopback)
+                    || !StringUtils.hasText(uri.getHost())
+                    || uri.getUserInfo() != null
+                    || uri.getQuery() != null
+                    || uri.getFragment() != null) {
+                throw badRequest(
+                        "Payment public base URL must be an absolute HTTPS URL "
+                                + "(HTTP is accepted only for loopback development).");
+            }
+            String path = uri.getPath();
+            String withoutTrailingSlash = normalized;
+            while (withoutTrailingSlash.endsWith("/")) {
+                withoutTrailingSlash = withoutTrailingSlash.substring(
+                        0,
+                        withoutTrailingSlash.length() - 1);
+            }
+            if (path != null && path.contains("..")) {
+                throw badRequest(
+                        "Payment public base URL contains an invalid path.");
+            }
+            return withoutTrailingSlash;
+        } catch (URISyntaxException exception) {
+            throw badRequest("Payment public base URL is invalid.");
         }
     }
 

@@ -85,6 +85,8 @@ public final class OperatorConfigurationDtos {
     public record PaymentConfigurationDto(
             List<PaymentProviderDto> availableProviders,
             String providerId,
+            String publicBaseUrl,
+            String merchantAccount,
             boolean credentialConfigured,
             String credentialMask) {
     }
@@ -171,8 +173,15 @@ public final class OperatorConfigurationDtos {
 
     public record PaymentUpdateDto(
             @Size(max = 64) String providerId,
+            @Size(max = 2048) String publicBaseUrl,
+            @Size(max = 254) String merchantAccount,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
             @Size(max = 16384) String credential) {
+        public PaymentUpdateDto(
+                String providerId,
+                String credential) {
+            this(providerId, null, null, credential);
+        }
     }
 
     public record PrivacyContactUpdateDto(

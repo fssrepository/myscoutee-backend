@@ -14,6 +14,36 @@ The toolkit:
 
 It must not be used as a production migration or a production test tool. All application jobs should still be enabled by their normal defaults in every deployment; this fixture tool rejects trusted/production databases so manual experiments cannot modify them.
 
+## Admin Job inventory and controls
+
+All nine seeded jobs are enabled by default in production, development, demo, and e2e. The interval below is the seed default; an admin can change it.
+
+| Job | Seed interval | Manual Run | Fixture execution |
+| --- | ---: | --- | --- |
+| `event-random-groups` | 24 hours | Yes | Use the Admin Jobs Run button |
+| `event-auto-inviter` | 2 hours | No | Existing scheduler |
+| `event-tournament-review` | 30 minutes | No | Existing scheduler |
+| `event-counter-expiry` | 5 minutes | No | Existing scheduler |
+| `event-checkout-basket-purge` | 1 minute | No | Existing scheduler |
+| `notification-outbox` | 1 minute | No | Existing scheduler |
+| `affinity-recompute` | 1 minute | No | Existing scheduler/change worker |
+| `scheduled-messages` | 30 minutes | No | Existing scheduler/local delayed worker |
+| `account-purge` | 24 hours | No | Existing scheduler |
+
+The pause control changes `enabled`. Resuming a non-manual job only makes it eligible for a later configured scheduler slot; it does not run immediately. Its Run button remains disabled because `manualRunEnabled:false`, and the backend also rejects a direct manual-run request. Graph grouping remains both scheduled and manually runnable.
+
+The application scheduler runs each configured pass in the real and demo database contexts when those are different databases. This is why an enabled graph rule in `demo_db` now starts according to its own schedule rather than being invisible to a scheduler thread that defaulted to the real database.
+
+## What the pre-run number means
+
+The Admin Job detail reads `runState.pendingCount`; it does not count, project, or aggregate the source collection when the screen opens.
+
+- Queue jobs atomically mark a work document as tracked and add one. A terminal worker transition removes one.
+- Event jobs receive dirty-work signals from the existing deduplicated affinity/outbox-style change path. A run atomically claims the number accumulated before it started; changes arriving during the run remain for the next run. Failure restores the claimed number.
+- The value is an informational work-item/signal count, not a promise that every item will still be eligible or that the final affected-row count will be identical. Deduplication, retries, and eligibility checks can make those numbers differ.
+- Existing legacy queue rows are not scanned or backfilled. They become tracked when a normal application transition touches them. This avoids introducing the expensive projection the field is intended to replace.
+- Updating one work document and updating the rule counter are separate Mongo documents. Their transitions are race-safe and the displayed value cannot go below zero, but exact crash consistency would require a cross-document transaction or a durable delta ledger.
+
 ## Quick start
 
 From this folder:
@@ -81,20 +111,32 @@ Variations:
 
 - `balanced`: six connected seeded demo users and two generated rooms of exactly three.
 - `anchored`: the same data, with one user already accepted in each canonical room.
+- `five-rooms`: fifteen connected seeded demo users and five generated rooms of exactly three.
+- `twenty-rooms`: sixty generated users arranged into twenty known-affinity cohorts of three.
+- `one-leftover`: sixty-one generated users with exact room size three; one known under-minimum user tests the exclusion/remainder policy.
+- `partial-room`: sixty-two generated users with room minimum two and maximum three; the final known pair is a valid partial room.
+- `quality-200`: two hundred generated users arranged into forty known-affinity cohorts of five.
+- `quality-1000`: one thousand generated users arranged into two hundred known-affinity cohorts of five.
 
 Preparation temporarily sets every other currently published demo event to `published:false`, after snapshotting those exact event IDs. This quarantine is important: the graph worker is global and parallel, and the regular demo seed contains many eligible events and hundreds of accepted memberships. Without quarantine it can be expensive and can change unrelated demo assignments.
 
 Expected after **Admin Jobs → Run**:
 
-- the fixture event contains two materialized group definitions;
-- two canonical group owners each contain three accepted `activityMembers`;
+- group definitions are derived at runtime from the stage capacities and are intentionally not persisted into `subEvents[].groups`;
+- each derived canonical group owner contains exactly the configured number of accepted `activityMembers`;
 - every fixture event member appears in exactly one room;
 - anchors stay in their original rooms for `anchored`;
 - `schedulerPlanMarkers` exist;
 - one outbox intent and in-app bell items exist for changed assignments;
 - a second identical run makes no new assignment changes.
 
-The `status` output includes the exact room owner IDs, member IDs, marker count, outbox count, bell count, and how many existing events are quarantined.
+The `status` output includes the derived room IDs, exact room owner/member mapping, marker/outbox/bell counts, and a `validation.assignmentValid` result. Validation also lists room sizes, missing users, duplicate assignments, unexpected users, and the anchored-user check.
+
+The generated `twenty-rooms`, remainder, and `quality-*` variations also have an objective grouping-quality oracle. Members of one expected cohort have strong `0.95` edges; consecutive cohorts are connected only by a weak `0.05` ring edge. `validation.quality` reports mixed rooms, split cohorts, misplaced users, actual versus optimal in-room affinity weight, and `affinityQualityRatio`. It also distinguishes the expected under-minimum user from any wrongly excluded user through `correctlyUnassignedUnderMinimumUserIds`, `wronglyUnassignedUserIds`, and `unassignedSelectionValid`.
+
+`validation.capacityPolicy` reports empty, below-minimum, partial, and above-maximum room indexes plus the observed remainder policy. For `partial-room`, a valid result assigns everyone and keeps one room of two. For `one-leftover`, inspect this together with `unassignedSelectionValid` to see whether the exact low-value remainder was excluded instead of a valid cohort member.
+
+`quality-1000` is intentionally a load-oriented fixture. It inserts roughly one thousand temporary users, two thousand strong edges, two hundred weak edges, one thousand event memberships, and the resulting assignment notifications. Run it only on a disposable demo/e2e stack with explicit CPU/memory limits, then reset it before testing another scenario.
 
 ### `event-auto-inviter`
 
@@ -257,7 +299,7 @@ This is an application interaction check, not a scheduled job:
 - `FAIL/GAP`: the action was saved but no new bell item exists.
 - `WAITING`: the manual action has not been submitted.
 
-The baseline target notifications and outbox documents are snapshotted exactly so reset can restore them even if enqueue collapse/merge updates an existing row instead of inserting a new one.
+The status check treats either a new document or an existing post-prepare document update as evidence, so enqueue collapse/merge is covered. The baseline target notifications and outbox documents are snapshotted exactly for reset.
 
 ## Current integration checks and useful failures
 

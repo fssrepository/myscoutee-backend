@@ -1358,7 +1358,10 @@ public final class RegistryOperatorNetworkService {
         if (!sameClaim) {
             if (incoming.claimAuditIndex() == null
                     || previous.claimAuditIndex() == null
-                    || incoming.claimAuditIndex() <= previous.claimAuditIndex()) {
+                    || incoming.claimAuditIndex() <= previous.claimAuditIndex()
+                    || Objects.equals(
+                            incoming.claimActionId(),
+                            previous.claimActionId())) {
                 throw new IllegalArgumentException(
                         "Registry operator claim status rolled back to an older claim generation.");
             }

@@ -123,7 +123,10 @@
   }
 
   function makeRuleDue(ruleKey, detail) {
-    requireRule(ruleKey);
+    const currentRule = requireRule(ruleKey);
+    if (currentRule.runState && currentRule.runState.currentStatus === "running") {
+      fail(`rule '${ruleKey}' is currently running; wait for it to finish before preparing or re-triggering.`);
+    }
     const now = nowIso();
     const result = collection("notificationRuleConfigs").updateOne(
       { ruleKey },
@@ -331,9 +334,9 @@
         database: db.getName(),
         preparedAtIso: snapshot.preparedAtIso,
         expected: setup.expected,
-        next: definition.manualTrigger
+        next: safeText(setup.next) || (definition.manualTrigger
           ? `Use Admin > Admin Jobs > ${definition.job} > Run, then run status ${definition.job}.`
-          : `The data and rule are due. Keep the existing app running and run status ${definition.job} after its next scheduler poll.`
+          : `The data and rule are due. Keep the existing app running and run status ${definition.job} after its next scheduler poll.`)
       });
       if (definition.afterPrepare) {
         definition.afterPrepare(requestedVariation, setup.context || {}, snapshot);

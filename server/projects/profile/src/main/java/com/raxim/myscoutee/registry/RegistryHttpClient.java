@@ -79,6 +79,16 @@ public final class RegistryHttpClient {
                 RegistryProtocol.RevenueBatchResponse.class);
     }
 
+    public RegistryProtocol.SettlementQueryResponse querySettlements(
+            RegistryProtocol.SettlementQueryRequest request) {
+        return post(
+                RegistryProtocol.SETTLEMENT_QUERY_PATH,
+                Objects.requireNonNull(
+                        request,
+                        "Settlement query request must not be null."),
+                RegistryProtocol.SettlementQueryResponse.class);
+    }
+
     public RegistryProtocol.OperatorActionResponse applyOperatorAction(
             RegistryProtocol.OperatorActionRequest request) {
         return post(

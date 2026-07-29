@@ -5,8 +5,89 @@
   const job = "event-random-groups";
   const eventId = F.fixtureId(job, "event");
   const subEventId = F.fixtureId(job, "stage");
-  const groupIds = [`${subEventId}:group:1`, `${subEventId}:group:2`];
-  const groupOwnerIds = groupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
+  const defaultGroupIds = [`${subEventId}:group:1`, `${subEventId}:group:2`];
+  const defaultGroupOwnerIds =
+    defaultGroupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
+
+  function roomIds(roomCount) {
+    return Array.from(
+      { length: roomCount },
+      (_, index) => `${subEventId}:group:${index + 1}`
+    );
+  }
+
+  function syntheticUserIds(userCount) {
+    return Array.from(
+      { length: userCount },
+      (_, index) => F.fixtureId(job, `quality-user-${String(index + 1).padStart(3, "0")}`)
+    );
+  }
+
+  function affinityPairKey(leftUserId, rightUserId) {
+    return [leftUserId, rightUserId].sort().join(":");
+  }
+
+  function syntheticAffinityEdges(userIds, cohortSizes) {
+    const edges = [];
+    const cohorts = [];
+    let userOffset = 0;
+    (cohortSizes || []).forEach(cohortSize => {
+      cohorts.push(userIds.slice(userOffset, userOffset + cohortSize));
+      userOffset += cohortSize;
+    });
+    for (const cohort of cohorts) {
+      for (let leftIndex = 0; leftIndex < cohort.length; leftIndex += 1) {
+        for (
+          let rightIndex = leftIndex + 1;
+          rightIndex < cohort.length;
+          rightIndex += 1
+        ) {
+          edges.push({
+            leftUserId: cohort[leftIndex],
+            rightUserId: cohort[rightIndex],
+            affinityScore: 0.95,
+            edgeWeight: 0.95,
+            evidence: {
+              mutualSingleCount: 5,
+              singleOneSidedCount: 0,
+              pairOutsideNetworkCount: 0,
+              pairInsideNetworkCount: 0,
+              metCount: 1,
+              strongestAffinityScore: 0.95,
+              totalMultiplier: 5.5
+            }
+          });
+        }
+      }
+    }
+    for (let cohortIndex = 0; cohortIndex < cohorts.length; cohortIndex += 1) {
+      const current = cohorts[cohortIndex];
+      const next = cohorts[(cohortIndex + 1) % cohorts.length];
+      if (current.length === 0 || next.length === 0) {
+        continue;
+      }
+      edges.push({
+        leftUserId: current[0],
+        rightUserId: next[0],
+        affinityScore: 0.05,
+        edgeWeight: 0.05,
+        evidence: {
+          mutualSingleCount: 0,
+          singleOneSidedCount: 1,
+          pairOutsideNetworkCount: 0,
+          pairInsideNetworkCount: 0,
+          metCount: 0,
+          strongestAffinityScore: 0.05,
+          totalMultiplier: 1
+        }
+      });
+    }
+    return edges.map((edge, index) => ({
+      _id: F.fixtureId(job, `quality-edge-${String(index + 1).padStart(4, "0")}`),
+      pairKey: affinityPairKey(edge.leftUserId, edge.rightUserId),
+      ...edge
+    }));
+  }
 
   function graphUsers(count) {
     const existingUsers = new Set(
@@ -40,9 +121,66 @@
     job,
     ruleKey: job,
     manualTrigger: true,
-    variations: ["balanced", "anchored"],
+    variations: [
+      "balanced",
+      "anchored",
+      "five-rooms",
+      "twenty-rooms",
+      "one-leftover",
+      "partial-room",
+      "quality-200",
+      "quality-1000"
+    ],
     build(variation) {
-      const userIds = graphUsers(6);
+      const syntheticQuality =
+        variation === "twenty-rooms"
+        || variation === "one-leftover"
+        || variation === "partial-room"
+        || variation === "quality-200"
+        || variation === "quality-1000";
+      const userCount = variation === "quality-1000"
+        ? 1000
+        : variation === "quality-200"
+          ? 200
+          : variation === "partial-room"
+            ? 62
+            : variation === "one-leftover"
+              ? 61
+              : variation === "twenty-rooms"
+                ? 60
+                : variation === "five-rooms" ? 15 : 6;
+      const roomCapacityMax =
+        variation === "quality-200" || variation === "quality-1000"
+          ? 5
+          : 3;
+      const roomCapacityMin = variation === "partial-room"
+        ? 2
+        : roomCapacityMax;
+      const roomCount = variation === "one-leftover"
+        ? Math.floor(userCount / roomCapacityMax)
+        : Math.ceil(userCount / roomCapacityMax);
+      const expectedCohortSizes = syntheticQuality
+        ? variation === "one-leftover"
+          ? [...Array(20).fill(3), 1]
+          : variation === "partial-room"
+            ? [...Array(20).fill(3), 2]
+            : Array(roomCount).fill(roomCapacityMax)
+        : [];
+      const userIds = syntheticQuality
+        ? syntheticUserIds(userCount)
+        : graphUsers(userCount);
+      const syntheticEdges = syntheticQuality
+        ? syntheticAffinityEdges(userIds, expectedCohortSizes)
+        : [];
+      const expectedUnassignedUserIds = variation === "one-leftover"
+        ? userIds.slice(-1)
+        : [];
+      const expectedPartialRoomUserIds = variation === "partial-room"
+        ? userIds.slice(-2)
+        : [];
+      const groupIds = roomIds(roomCount);
+      const groupOwnerIds =
+        groupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
       const isolatedEventIds = F.collection("events")
         .find({ published: true, _id: { $ne: eventId } }, { projection: { _id: 1 } })
         .map(event => event._id)
@@ -56,16 +194,31 @@
         pendingCountUnit: "admin.jobs.table.affected",
         expected: variation === "anchored"
           ? "The 6 accepted users are split into two groups of 3, while the two pre-anchored users remain in their original rooms. A second Run should make no assignment changes."
-          : "The 6 accepted users are split into two generated groups of exactly 3. A second Run should make no assignment changes.",
+          : variation === "one-leftover"
+            ? "With 61 users and exact room size 3, status reveals whether the one under-minimum remainder is unassigned, mixed into another room, or persisted below minimum."
+            : variation === "partial-room"
+              ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
+              : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
         context: {
           eventId,
           subEventId,
+          syntheticQuality,
+          expectedStrongEdgeWeight: 0.95,
+          expectedRoomCount: roomCount,
+          expectedRoomSize: roomCapacityMax,
+          expectedRoomMin: roomCapacityMin,
+          expectedRoomMax: roomCapacityMax,
+          expectedCohortSizes,
+          expectedUnassignedUserIds,
+          expectedPartialRoomUserIds,
           groupIds,
           groupOwnerIds,
           userIds,
           isolatedEventIds,
           memberIds,
-          anchorIds
+          anchorIds,
+          syntheticEdgeIds: syntheticEdges.map(edge => edge._id),
+          syntheticEdgePairKeys: syntheticEdges.map(edge => edge.pairKey)
         },
         specs: [
           {
@@ -75,6 +228,15 @@
           {
             collection: "users",
             selector: { $or: [{ _id: { $in: userIds } }, { userId: { $in: userIds } }] }
+          },
+          {
+            collection: "userAffinityEdges",
+            selector: {
+              $or: [
+                { _id: { $in: syntheticEdges.map(edge => edge._id) } },
+                { pairKey: { $in: syntheticEdges.map(edge => edge.pairKey) } }
+              ]
+            }
           },
           {
             collection: "activityMembers",
@@ -124,6 +286,38 @@
           }
         );
       }
+      if (context.syntheticQuality) {
+        F.collection("users").insertMany(context.userIds.map((userId, index) => ({
+          _id: userId,
+          syncKey: userId,
+          userId,
+          name: `Graph Quality ${String(index + 1).padStart(3, "0")}`,
+          initials: `G${(index % 10) + 1}`,
+          city: "Fixture graph",
+          status: "A",
+          profileStatus: "public",
+          profileFormVersion: 1,
+          completion: 100,
+          headline: "Synthetic graph quality participant",
+          about: "Temporary deterministic affinity fixture.",
+          images: [],
+          profileDetails: [],
+          partitionKey: "country:hu",
+          createdDate: now,
+          createdUser: F.FIXTURE_ACTOR,
+          updatedDate: now,
+          updatedUser: F.FIXTURE_ACTOR
+        })));
+        F.collection("userAffinityEdges").insertMany(
+          syntheticAffinityEdges(
+            context.userIds,
+            context.expectedCohortSizes
+          ).map(edge => ({
+            ...edge,
+            updatedDate: now
+          }))
+        );
+      }
       F.collection("events").insertOne({
         _id: eventId,
         sourceId: eventId,
@@ -134,20 +328,20 @@
         randomGroups: true,
         ownerUserId: context.userIds[0],
         creatorUserId: context.userIds[0],
-        capacityMin: 6,
-        capacityMax: 6,
-        capacityTotal: 6,
+        capacityMin: context.userIds.length,
+        capacityMax: context.userIds.length,
+        capacityTotal: context.userIds.length,
         startAtIso: F.futureIso(180),
         endAtIso: F.futureIso(360),
         subEvents: [{
           id: subEventId,
           name: "Fixture graph grouping stage",
           createdByUserId: context.userIds[0],
-          tournamentGroupCapacityMin: 3,
-          tournamentGroupCapacityMax: 3,
-          capacityMin: 6,
-          capacityMax: 6,
-          membersAccepted: 6,
+          tournamentGroupCapacityMin: context.expectedRoomMin,
+          tournamentGroupCapacityMax: context.expectedRoomMax,
+          capacityMin: context.userIds.length,
+          capacityMax: context.userIds.length,
+          membersAccepted: context.userIds.length,
           membersPending: 0,
           stageStatus: "A",
           groups: []
@@ -178,7 +372,7 @@
             _id: context.anchorIds[0],
             syncKey: context.anchorIds[0],
             ownerType: "group",
-            ownerId: groupOwnerIds[0],
+            ownerId: context.groupOwnerIds[0],
             userId: context.userIds[0],
             role: "Member",
             status: "accepted",
@@ -192,7 +386,7 @@
             _id: context.anchorIds[1],
             syncKey: context.anchorIds[1],
             ownerType: "group",
-            ownerId: groupOwnerIds[1],
+            ownerId: context.groupOwnerIds[1],
             userId: context.userIds[3],
             role: "Member",
             status: "accepted",
@@ -205,14 +399,15 @@
         ]);
       }
     },
-    afterPrepare() {
+    afterPrepare(variation, context) {
       print(
         `[admin-job-fixtures] Existing published demo events were temporarily quarantined so the global `
-          + `parallel graph job stays limited to this six-user fixture. Reset this job when finished.`
+          + `parallel graph job stays limited to this ${context.userIds.length}-user fixture. `
+          + `Reset this job when finished.`
       );
     },
     status(context) {
-      const ownerIds = context.groupOwnerIds || groupOwnerIds;
+      const ownerIds = context.groupOwnerIds || defaultGroupOwnerIds;
       const event = F.collection("events").findOne({ _id: context.eventId || eventId });
       const groups = ownerIds.map(ownerId => ({
         ownerId,
@@ -222,14 +417,274 @@
           .map(member => member.userId)
           .toArray()
       }));
+      const assignedUserIds = groups.flatMap(group => group.acceptedUserIds);
+      const assignedCounts = new Map();
+      assignedUserIds.forEach(userId => {
+        assignedCounts.set(userId, (assignedCounts.get(userId) || 0) + 1);
+      });
+      const expectedUserIds = context.userIds || [];
+      const expectedUserIdSet = new Set(expectedUserIds);
+      const duplicateUserIds = [...assignedCounts.entries()]
+        .filter(([, count]) => count > 1)
+        .map(([userId]) => userId)
+        .sort();
+      const missingUserIds = expectedUserIds
+        .filter(userId => !assignedCounts.has(userId))
+        .sort();
+      const unexpectedUserIds = [...assignedCounts.keys()]
+        .filter(userId => !expectedUserIdSet.has(userId))
+        .sort();
+      const expectedUnassignedUserIds =
+        (context.expectedUnassignedUserIds || []).slice().sort();
+      const unassignedUserIdsMatchExpectation =
+        JSON.stringify(missingUserIds)
+        === JSON.stringify(expectedUnassignedUserIds);
+      const roomSizes = groups.map(group => group.acceptedUserIds.length);
+      const expectedRoomCount = context.expectedRoomCount || ownerIds.length;
+      const expectedRoomSize = context.expectedRoomSize || 3;
+      const expectedRoomMin = context.expectedRoomMin || expectedRoomSize;
+      const expectedRoomMax = context.expectedRoomMax || expectedRoomSize;
+      const actualRoomCount = roomSizes.filter(size => size > 0).length;
+      const emptyRoomIndexes = roomSizes
+        .map((size, index) => ({ size, index }))
+        .filter(item => item.size === 0)
+        .map(item => item.index + 1);
+      const belowMinimumRoomIndexes = roomSizes
+        .map((size, index) => ({ size, index }))
+        .filter(item => item.size > 0 && item.size < expectedRoomMin)
+        .map(item => item.index + 1);
+      const aboveMaximumRoomIndexes = roomSizes
+        .map((size, index) => ({ size, index }))
+        .filter(item => item.size > expectedRoomMax)
+        .map(item => item.index + 1);
+      const partialRoomIndexes = roomSizes
+        .map((size, index) => ({ size, index }))
+        .filter(item => (
+          item.size >= expectedRoomMin && item.size < expectedRoomMax
+        ))
+        .map(item => item.index + 1);
+      const actualPartialRoomUserIds = groups
+        .filter(group => (
+          group.acceptedUserIds.length >= expectedRoomMin
+          && group.acceptedUserIds.length < expectedRoomMax
+        ))
+        .flatMap(group => group.acceptedUserIds)
+        .sort();
+      const expectedPartialRoomUserIds =
+        (context.expectedPartialRoomUserIds || []).slice().sort();
+      const partialRoomSelectionValid =
+        JSON.stringify(actualPartialRoomUserIds)
+        === JSON.stringify(expectedPartialRoomUserIds);
+      const configuredRemainder = expectedUserIds.length % expectedRoomMax;
+      let observedRemainderPolicy = "all-assigned-within-range";
+      if (belowMinimumRoomIndexes.length > 0) {
+        observedRemainderPolicy = "below-minimum-room-created";
+      } else if (aboveMaximumRoomIndexes.length > 0) {
+        observedRemainderPolicy = "above-maximum-room-created";
+      } else if (missingUserIds.length > 0) {
+        observedRemainderPolicy = "remainder-unassigned";
+      } else if (configuredRemainder > 0) {
+        observedRemainderPolicy = partialRoomIndexes.length > 0
+          ? "remainder-kept-in-valid-partial-room"
+          : "remainder-redistributed-within-range";
+      }
+      const anchorsPreserved = (context.anchorIds || []).length === 0
+        || (groups[0].acceptedUserIds.includes(expectedUserIds[0])
+          && groups[1].acceptedUserIds.includes(expectedUserIds[3]));
+      const assignmentValid =
+        actualRoomCount === expectedRoomCount
+        && roomSizes.every(size => (
+          size >= expectedRoomMin && size <= expectedRoomMax
+        ))
+        && assignedCounts.size
+          === expectedUserIds.length - expectedUnassignedUserIds.length
+        && duplicateUserIds.length === 0
+        && unassignedUserIdsMatchExpectation
+        && unexpectedUserIds.length === 0
+        && partialRoomSelectionValid
+        && anchorsPreserved;
+      let quality = null;
+      if (context.syntheticQuality) {
+        const expectedCohortSizes =
+          context.expectedCohortSizes
+          || Array(expectedRoomCount).fill(expectedRoomMax);
+        const expectedCohortByUserId = new Map();
+        const expectedUsersByCohort = [];
+        let cohortUserOffset = 0;
+        expectedCohortSizes.forEach((cohortSize, cohortIndex) => {
+          const cohortUsers = expectedUserIds.slice(
+            cohortUserOffset,
+            cohortUserOffset + cohortSize
+          );
+          expectedUsersByCohort.push(cohortUsers);
+          cohortUsers.forEach(userId => {
+            expectedCohortByUserId.set(userId, cohortIndex);
+          });
+          cohortUserOffset += cohortSize;
+        });
+        const roomCohortIds = groups.map(group => [
+          ...new Set(group.acceptedUserIds.map(userId => (
+            expectedCohortByUserId.has(userId)
+              ? expectedCohortByUserId.get(userId)
+              : -1
+          )))
+        ].sort((left, right) => left - right));
+        const mixedRoomIndexes = roomCohortIds
+          .map((cohortIds, index) => ({ cohortIds, index }))
+          .filter(item => item.cohortIds.length !== 1 || item.cohortIds[0] < 0)
+          .map(item => item.index + 1);
+        const cohortRoomIndexes = new Map();
+        roomCohortIds.forEach((cohortIds, roomIndex) => {
+          cohortIds.filter(cohortId => cohortId >= 0).forEach(cohortId => {
+            if (!cohortRoomIndexes.has(cohortId)) {
+              cohortRoomIndexes.set(cohortId, new Set());
+            }
+            cohortRoomIndexes.get(cohortId).add(roomIndex);
+          });
+        });
+        const splitCohortIndexes = Array.from(
+          { length: expectedCohortSizes.length },
+          (_, cohortIndex) => cohortIndex
+        ).filter(cohortIndex => (
+          !cohortRoomIndexes.has(cohortIndex)
+          || cohortRoomIndexes.get(cohortIndex).size !== 1
+        ));
+        const underMinimumCohortIndexes = expectedCohortSizes
+          .map((size, index) => ({ size, index }))
+          .filter(item => item.size < expectedRoomMin)
+          .map(item => item.index);
+        const eligibleSplitCohortIndexes = splitCohortIndexes
+          .filter(cohortIndex => (
+            !underMinimumCohortIndexes.includes(cohortIndex)
+          ));
+        const underMinimumUserIds = underMinimumCohortIndexes
+          .flatMap(cohortIndex => expectedUsersByCohort[cohortIndex] || [])
+          .sort();
+        const underMinimumAssignedUserIds = underMinimumUserIds
+          .filter(userId => assignedCounts.has(userId));
+        const underMinimumUserIdSet = new Set(underMinimumUserIds);
+        const correctlyUnassignedUnderMinimumUserIds = missingUserIds
+          .filter(userId => underMinimumUserIdSet.has(userId));
+        const wronglyUnassignedUserIds = missingUserIds
+          .filter(userId => !underMinimumUserIdSet.has(userId));
+        const unassignedSelectionValid =
+          correctlyUnassignedUnderMinimumUserIds.length
+            === underMinimumUserIds.length
+          && wronglyUnassignedUserIds.length === 0
+          && underMinimumAssignedUserIds.length === 0;
+        const misplacedUserIds = groups
+          .filter((group, index) => mixedRoomIndexes.includes(index + 1))
+          .flatMap(group => group.acceptedUserIds)
+          .sort();
+        const actualRoomPairKeys = [];
+        groups.forEach(group => {
+          for (
+            let leftIndex = 0;
+            leftIndex < group.acceptedUserIds.length;
+            leftIndex += 1
+          ) {
+            for (
+              let rightIndex = leftIndex + 1;
+              rightIndex < group.acceptedUserIds.length;
+              rightIndex += 1
+            ) {
+              actualRoomPairKeys.push(affinityPairKey(
+                group.acceptedUserIds[leftIndex],
+                group.acceptedUserIds[rightIndex]
+              ));
+            }
+          }
+        });
+        const actualAffinityWeight = F.collection("userAffinityEdges")
+          .find(
+            { pairKey: { $in: actualRoomPairKeys } },
+            { edgeWeight: 1 }
+          )
+          .map(edge => Number(edge.edgeWeight) || 0)
+          .toArray()
+          .reduce((total, weight) => total + weight, 0);
+        const expectedAffinityWeight = expectedCohortSizes
+          .reduce(
+            (total, cohortSize) => total
+              + (cohortSize * (cohortSize - 1) / 2),
+            0
+          )
+          * (Number(context.expectedStrongEdgeWeight) || 0.95);
+        const affinityQualityRatio = expectedAffinityWeight > 0
+          ? actualAffinityWeight / expectedAffinityWeight
+          : 1;
+        quality = {
+          cohortIntegrityValid:
+            mixedRoomIndexes.length === 0
+            && eligibleSplitCohortIndexes.length === 0
+            && underMinimumAssignedUserIds.length === 0,
+          expectedCohortCount: expectedCohortSizes.length,
+          perfectCohortRoomCount: groups.filter((group, roomIndex) => {
+            const cohortIds = roomCohortIds[roomIndex];
+            return cohortIds.length === 1
+              && cohortIds[0] >= 0
+              && group.acceptedUserIds.length
+                === expectedCohortSizes[cohortIds[0]];
+          }).length,
+          mixedRoomIndexes,
+          splitCohortIndexes,
+          eligibleSplitCohortIndexes,
+          underMinimumCohortIndexes,
+          underMinimumUserIds,
+          underMinimumAssignedUserIds,
+          correctlyUnassignedUnderMinimumUserIds,
+          wronglyUnassignedUserIds,
+          unassignedSelectionValid,
+          misplacedUserIds,
+          expectedAffinityWeight:
+            Number(expectedAffinityWeight.toFixed(6)),
+          actualAffinityWeight:
+            Number(actualAffinityWeight.toFixed(6)),
+          affinityQualityRatio:
+            Number(affinityQualityRatio.toFixed(6))
+        };
+      }
       return {
         quarantinedPublishedEvents: (context.isolatedEventIds || []).length,
         fixtureEventPublished: event && event.published,
-        materializedGroups: event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
+        storedSubEventGroups:
+          event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
+        derivedGroupIds: context.groupIds || defaultGroupIds,
         groups,
-        assignedUserCount: [...new Set(groups.flatMap(group => group.acceptedUserIds))].length,
+        assignedUserCount: assignedCounts.size,
+        validation: {
+          assignmentValid,
+          expectedUserCount: expectedUserIds.length,
+          expectedRoomCount,
+          expectedRoomSize,
+          expectedRoomMin,
+          expectedRoomMax,
+          actualRoomCount,
+          roomSizes,
+          duplicateUserIds,
+          missingUserIds,
+          unexpectedUserIds,
+          anchorsPreserved,
+          capacityPolicy: {
+            configuredRemainder,
+            fullRoomCount:
+              roomSizes.filter(size => size === expectedRoomMax).length,
+            partialRoomIndexes,
+            emptyRoomIndexes,
+            belowMinimumRoomIndexes,
+            aboveMaximumRoomIndexes,
+            expectedUnassignedUserIds,
+            unassignedUserIds: missingUserIds,
+            unassignedUserIdsMatchExpectation,
+            expectedPartialRoomUserIds,
+            actualPartialRoomUserIds,
+            partialRoomSelectionValid,
+            observedRemainderPolicy
+          },
+          quality
+        },
         planMarkerCount: F.collection("schedulerPlanMarkers").countDocuments({
-          ownerId: { $in: context.groupIds || groupIds }
+          ownerId: { $in: context.groupIds || defaultGroupIds }
         }),
         outboxCount: F.collection("notificationOutbox").countDocuments({
           $or: [{ entityId: context.eventId || eventId }, { "payload.eventId": context.eventId || eventId }]

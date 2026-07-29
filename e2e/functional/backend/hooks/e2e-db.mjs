@@ -44,7 +44,14 @@ const DEFAULT_COLLECTIONS = [
   'userAffinityEdges',
   'countryPartitions',
   'i18n_bundles',
-  'i18n_messages'
+  'i18n_messages',
+  'deploymentConfigurations',
+  'operatorRegistrySettings',
+  'operatorClaimSubmissionSnapshots',
+  'qualifiedMauReportOutbox',
+  'revenueReportOutbox',
+  'communityProviders',
+  'appSettings'
 ];
 
 export async function resetE2eDatabase(ctx) {

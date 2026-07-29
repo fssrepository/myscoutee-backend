@@ -40,6 +40,8 @@
     },
     "payment": {
       "providerId": null,
+      "publicBaseUrl": null,
+      "merchantAccount": null,
       "credentialEnvelope": null,
       "credentialMask": null
     },

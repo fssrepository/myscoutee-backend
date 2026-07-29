@@ -53,14 +53,31 @@ public class EventGeneratorByScore implements EventGenerator<List<GeneratorModel
         }
         if ("Fifa".equalsIgnoreCase(leaderboardType)) {
             return fifaRows.stream()
+                    .filter(row -> isAdvancementCandidate(group, row.memberId()))
                     .limit(advanceCount)
                     .map(GeneratorModels.FifaStandingRow::memberId)
                     .toList();
         }
         return scoreRows.stream()
+                .filter(row -> isAdvancementCandidate(group, row.memberId()))
                 .limit(advanceCount)
                 .map(GeneratorModels.ScoreStandingRow::memberId)
                 .toList();
+    }
+
+    private boolean isAdvancementCandidate(GeneratorModels.ScoreGeneratorGroup group, String memberId) {
+        if (group == null || memberId == null || memberId.isBlank()) {
+            return false;
+        }
+        String groupId = group.groupId() == null ? "" : group.groupId().trim();
+        String placeholderPrefix = groupId + "-member-";
+        if (!groupId.isEmpty() && memberId.startsWith(placeholderPrefix)) {
+            String suffix = memberId.substring(placeholderPrefix.length());
+            if (suffix.matches("\\d+")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<GeneratorModels.ScoreStandingRow> buildScoreRows(GeneratorModels.ScoreGeneratorGroup group) {

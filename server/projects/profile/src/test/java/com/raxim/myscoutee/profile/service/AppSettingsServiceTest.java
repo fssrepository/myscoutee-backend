@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,6 +32,19 @@ class AppSettingsServiceTest {
     @AfterEach
     void clearMode() {
         MongoSessionModeContext.clear();
+    }
+
+    @Test
+    void springCanInstantiateServiceWithRepositoryConstructor() {
+        AppSettingsRepository repository = mock(AppSettingsRepository.class);
+        when(repository.findBySettingsKey(AppSettingsService.GLOBAL_SETTINGS_KEY))
+                .thenReturn(Optional.empty());
+
+        new ApplicationContextRunner()
+                .withBean(AppSettingsRepository.class, () -> repository)
+                .withBean(AppSettingsService.class)
+                .run(context -> assertThat(context)
+                        .hasSingleBean(AppSettingsService.class));
     }
 
     @Test

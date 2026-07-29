@@ -85,7 +85,10 @@ model.
   image-carousel/media flow. The landing eyebrow remains localized product
   copy, not a hidden operator-editable branding field.
 - Production payment-provider catalog seeded from the implemented processors;
-  the operator selects a provider and stores a write-only credential.
+  the operator selects a provider and stores a write-only credential. Public
+  success/cancel/callback routing and any provider-required merchant account
+  are deployment-owned Operator settings as well; no MyScoutee vendor domain
+  or merchant identity is used as a runtime payment fallback.
 - Firebase public browser configuration plus separate write-only authentication
   and messaging service-account credentials. Saving creates a new inactive
   revision; both real capability checks must attest that exact revision before
@@ -182,20 +185,32 @@ Exit criteria:
 
 ## Phase 5 — privacy-safe global deduplication
 
-Status: deliberately deferred.
+Status: planned after the settlement and exit-eligibility rails.
 
-Before implementation, select and document a cross-deployment privacy design.
-Plain email, Firebase UID, phone, profile IDs, or a registry-wide unsalted hash
-must never be sent.
+The intended product behavior is that each deployment attempts to link a
+locally authenticated person to a stable network identity. The raw identity
+input remains deployment-local. The registry receives only an opaque
+network-link identifier derived through a keyed/blinded protocol, never a raw
+email, Firebase UID, phone number, profile ID, or a plain/unsalted hash that can
+be dictionary-reversed. The link record is separate from local user identity,
+QMAU evidence, and public ledger rows.
 
-Candidate design work:
+Required design and implementation work:
 
-- Define the human-account linking and recovery model.
-- Evaluate an OPRF/PSI-style deduplication protocol or another independently
-  reviewed construction.
+- Define the verified human-account linking, consent, unlink, recovery, and
+  account-merger model.
+- Use a versioned VOPRF/OPRF or equivalently reviewed keyed/blinded derivation
+  so deployments can obtain the same opaque identifier for the same verified
+  input without learning the registry key and without disclosing that input to
+  the registry.
+- Store the opaque global identity separately from the deployment-scoped
+  `(provider, issuer, subject)` identity; never replace the local identity with
+  the global link.
 - Separate uniqueness evidence from activity/weight evidence.
 - Specify key rotation, deletion, collision, shared-device, bot, and account
   merger behavior.
+- Keep public leaderboard and Merkle/ledger entries aggregate-only; global link
+  identifiers belong in access-controlled direct query/audit records.
 - Obtain privacy, security, and legal review before collecting global linkage
   evidence.
 
@@ -210,15 +225,18 @@ Exit criteria:
 
 Status: the signed claim, independent review, client-code grouping,
 deactivation/withdrawal, immutable audit, direct query-state verification, and
-indicative share foundation are implemented. The registry-local anomaly/case
-rail also supports signed, hash-linked flag/clear events and
-same-transaction query rows without changing eligibility. Registry-manager
+indicative share foundation are implemented. The signed monthly technical 5%
+allocation and the bounded non-binding TTM value derived from three consecutive
+three-month revenue averages and their acceleration are also implemented. The
+registry-local anomaly/case rail supports signed, hash-linked flag/clear events
+and same-transaction query rows without changing eligibility. Registry-manager
 rejection is an immutable signed review decision with a bounded reason code;
 the rejected claim remains visible but share-ineligible and does not imply
 deployment deactivation. Suspension, reinstatement, disputes, ownership
 transfer, evidence policy, exit record-date freezing, buyer/auditor decisions,
-and final legal allocation remain open. Contract-dependent payout and
-valuation rules are deliberately not inferred.
+and final legal allocation remain open. Contract-dependent payout and final
+legal valuation rules are deliberately not inferred from the technical,
+non-binding records.
 
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and
   eligibility change in the append-only ledger.
@@ -228,14 +246,29 @@ valuation rules are deliberately not inferred.
   company/person validation, tamper checks, disputes, and final contractual
   allocation.
 - Preserve individual deployments beneath an aggregated operator row.
+- Calculate each completed UTC-month/currency network pool once from accepted
+  revenue revisions, then allocate integer minor units across the founder and
+  approved, active claim groups using the signed leaderboard boundary. Use
+  deterministic largest-remainder rounding and an explicit unallocated reserve
+  so every minor unit is conserved. Revisions are append-only.
+- Publish a per-currency, non-binding trailing-twelve-month indicative network
+  value using a versioned base multiplier plus a bounded adjustment derived
+  from three consecutive three-month revenue averages and their acceleration.
+  Persist every input and the effective multiplier so the result is
+  reproducible; a single spike must not make the adjustment unbounded. It is an
+  operator planning value, not a payment, settlement instruction, legal
+  allocation, or buyer decision.
 
 ## Phase 7 — registry federation and migration
 
 - Define signed capability discovery for multiple compatible registry operators.
-- Define an explicit prepare/confirm migration protocol; never silently register
-  from the installer.
-- Export/import signed deployment history with both registry identities and
-  immutable audit references.
+- Normal registry changes are already handled by signed deactivation at the old
+  registry followed by a fresh registration at the operator-selected registry.
+  The old claim is lost and no ledger history is transferred.
+- A signed history export/import protocol is not required for normal registry
+  selection or moving the same deployment server. It remains an optional future
+  disaster-recovery/federation feature only if a concrete operational need is
+  established.
 - Define parent-registry settlement separately from node enrollment so regional
   or partner infrastructure is reusable by other products.
 - Test split connectivity and independently hosted registries without

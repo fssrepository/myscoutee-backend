@@ -273,6 +273,8 @@ public class NotificationOutboxWorkerService {
                         .orElse(false)) {
             return;
         }
+        Instant startedAt = null;
+        boolean runStarted = false;
         try {
             List<MapRecord<String, Object, Object>> records = stringRedisTemplate.opsForStream().read(
                     StreamReadOptions.empty().count(effectiveBatchSize()),
@@ -285,7 +287,7 @@ public class NotificationOutboxWorkerService {
                     .filter(StringUtils::hasText)
                     .toList();
             lastWakeupStreamId = records.get(records.size() - 1).getId().getValue();
-            Instant startedAt = Instant.now();
+            startedAt = Instant.now();
             boolean ruleConfigured = registry != null
                     && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent();
             if (ruleConfigured && registry.beginRun(
@@ -295,6 +297,7 @@ public class NotificationOutboxWorkerService {
                         startedAt) == null) {
                 return;
             }
+            runStarted = ruleConfigured;
             int processedCount = processDueNotificationsNow();
             if (ruleConfigured) {
                 registry.recordRun(
@@ -307,6 +310,15 @@ public class NotificationOutboxWorkerService {
             }
             redisStreamRetentionService.deleteRecords(stringRedisTemplate, NotificationOutboxService.WAKEUP_STREAM_KEY, recordIds);
         } catch (RuntimeException exception) {
+            if (runStarted && registry != null && startedAt != null) {
+                registry.recordRun(
+                        NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
+                        0,
+                        "failed",
+                        safeText(exception.getMessage()),
+                        "notification-outbox",
+                        startedAt);
+            }
             LOGGER.debug("Notification outbox Redis wakeup read failed; scheduled polling remains active.", exception);
         }
     }
