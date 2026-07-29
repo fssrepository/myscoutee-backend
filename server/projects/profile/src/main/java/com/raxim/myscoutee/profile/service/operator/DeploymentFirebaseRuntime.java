@@ -3,6 +3,9 @@ package com.raxim.myscoutee.profile.service.operator;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -93,8 +96,9 @@ public class DeploymentFirebaseRuntime {
     }
 
     /**
-     * Refreshes only the public enabled signal after a real-workspace save or
-     * activation. Demo configuration can never change live process state.
+     * Refreshes the public enabled signal and evicts runtime apps whose
+     * activated revision or encrypted credential changed. Demo configuration
+     * can never change live process state.
      */
     public void refreshAfterConfigurationChange() {
         if (MongoSessionModeContext.currentMode()
@@ -103,11 +107,15 @@ public class DeploymentFirebaseRuntime {
         }
         boolean active = false;
         try {
-            active = repository.findById(
-                    DeploymentConfiguration.SINGLETON_ID)
+            DeploymentConfiguration.Firebase firebase =
+                    repository.findById(
+                            DeploymentConfiguration.SINGLETON_ID)
                     .map(DeploymentConfiguration::getFirebase)
-                    .map(DeploymentConfiguration.Firebase::isActive)
-                    .orElse(false);
+                    .orElse(null);
+            active = runtimeReady(firebase);
+            if (active) {
+                invalidateChangedRuntimeApps(firebase);
+            }
         } catch (RuntimeException exception) {
             LOGGER.warn(
                     "Unable to refresh deployment Firebase availability; "
@@ -138,6 +146,10 @@ public class DeploymentFirebaseRuntime {
             throw new IllegalStateException(
                     "Firebase has not been activated for this deployment.");
         }
+        if (!runtimeReady(firebase)) {
+            throw new IllegalStateException(
+                    "Activated Firebase revision is incomplete or unverified.");
+        }
         long revision = firebase.getRevision() == null
                 ? 0L
                 : Math.max(0L, firebase.getRevision());
@@ -161,6 +173,7 @@ public class DeploymentFirebaseRuntime {
                 kind,
                 projectId,
                 revision,
+                credentialFingerprint(envelope),
                 envelope,
                 purpose,
                 false);
@@ -177,8 +190,10 @@ public class DeploymentFirebaseRuntime {
             }
             FirebaseApp next = initializeApp(resolved);
             RuntimeApp replacement = new RuntimeApp(
+                    resolved.kind(),
                     resolved.projectId(),
                     resolved.revision(),
+                    resolved.credentialFingerprint(),
                     next);
             if (resolved.kind() == CredentialKind.AUTHENTICATION) {
                 authenticationApp = replacement;
@@ -247,6 +262,104 @@ public class DeploymentFirebaseRuntime {
         }
     }
 
+    private void invalidateChangedRuntimeApps(
+            DeploymentConfiguration.Firebase firebase) {
+        synchronized (appLock) {
+            RuntimeIdentity authenticationIdentity =
+                    runtimeIdentity(firebase, CredentialKind.AUTHENTICATION);
+            if (authenticationApp != null
+                    && !authenticationApp.matches(authenticationIdentity)) {
+                delete(authenticationApp);
+                authenticationApp = null;
+            }
+            RuntimeIdentity messagingIdentity =
+                    runtimeIdentity(firebase, CredentialKind.MESSAGING);
+            if (messagingApp != null
+                    && !messagingApp.matches(messagingIdentity)) {
+                delete(messagingApp);
+                messagingApp = null;
+            }
+        }
+    }
+
+    private RuntimeIdentity runtimeIdentity(
+            DeploymentConfiguration.Firebase firebase,
+            CredentialKind kind) {
+        if (!runtimeReady(firebase)) {
+            return null;
+        }
+        DeploymentConfiguration.EncryptedSecret envelope =
+                kind == CredentialKind.AUTHENTICATION
+                        ? firebase.getAuthenticationCredentialEnvelope()
+                        : firebase.getMessagingCredentialEnvelope();
+        if (!StringUtils.hasText(firebase.getProjectId())
+                || envelope == null) {
+            return null;
+        }
+        long revision = firebase.getRevision() == null
+                ? 0L
+                : Math.max(0L, firebase.getRevision());
+        return new RuntimeIdentity(
+                kind,
+                firebase.getProjectId().trim(),
+                revision,
+                credentialFingerprint(envelope));
+    }
+
+    private boolean runtimeReady(
+            DeploymentConfiguration.Firebase firebase) {
+        if (firebase == null || !firebase.isActive()) {
+            return false;
+        }
+        long revision = firebase.getRevision() == null
+                ? 0L
+                : Math.max(0L, firebase.getRevision());
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase.getPublicClient();
+        return StringUtils.hasText(firebase.getProjectId())
+                && firebase.getAuthenticationCredentialEnvelope() != null
+                && firebase.getMessagingCredentialEnvelope() != null
+                && publicClient != null
+                && StringUtils.hasText(publicClient.getApiKey())
+                && StringUtils.hasText(publicClient.getAuthDomain())
+                && StringUtils.hasText(
+                        publicClient.getMessagingSenderId())
+                && StringUtils.hasText(publicClient.getAppId())
+                && StringUtils.hasText(publicClient.getVapidKey())
+                && Long.valueOf(revision).equals(
+                        firebase.getAuthenticationTestedRevision())
+                && Long.valueOf(revision).equals(
+                        firebase.getMessagingTestedRevision());
+    }
+
+    private String credentialFingerprint(
+            DeploymentConfiguration.EncryptedSecret envelope) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            updateFingerprint(digest, envelope.getAlgorithm());
+            updateFingerprint(digest, envelope.getKeyId());
+            updateFingerprint(digest, envelope.getNonce());
+            updateFingerprint(digest, envelope.getCiphertext());
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException(
+                    "Firebase runtime fingerprinting is unavailable.",
+                    exception);
+        }
+    }
+
+    private void updateFingerprint(
+            MessageDigest digest,
+            String value) {
+        byte[] bytes = Objects.toString(value, "")
+                .getBytes(StandardCharsets.UTF_8);
+        digest.update((byte) (bytes.length >>> 24));
+        digest.update((byte) (bytes.length >>> 16));
+        digest.update((byte) (bytes.length >>> 8));
+        digest.update((byte) bytes.length);
+        digest.update(bytes);
+    }
+
     private void delete(RuntimeApp runtimeApp) {
         if (runtimeApp == null) {
             return;
@@ -276,6 +389,7 @@ public class DeploymentFirebaseRuntime {
             CredentialKind kind,
             String projectId,
             long revision,
+            String credentialFingerprint,
             DeploymentConfiguration.EncryptedSecret credentialEnvelope,
             String purpose,
             boolean legacyStartup) {
@@ -284,6 +398,7 @@ public class DeploymentFirebaseRuntime {
                     CredentialKind.AUTHENTICATION,
                     "",
                     -1L,
+                    "",
                     null,
                     "",
                     true);
@@ -291,12 +406,33 @@ public class DeploymentFirebaseRuntime {
     }
 
     private record RuntimeApp(
+            CredentialKind kind,
             String projectId,
             long revision,
+            String credentialFingerprint,
             FirebaseApp app) {
         private boolean matches(ResolvedCredential resolved) {
-            return projectId.equals(resolved.projectId())
-                    && revision == resolved.revision();
+            return matches(new RuntimeIdentity(
+                    resolved.kind(),
+                    resolved.projectId(),
+                    resolved.revision(),
+                    resolved.credentialFingerprint()));
         }
+
+        private boolean matches(RuntimeIdentity identity) {
+            return identity != null
+                    && kind == identity.kind()
+                    && projectId.equals(identity.projectId())
+                    && revision == identity.revision()
+                    && credentialFingerprint.equals(
+                            identity.credentialFingerprint());
+        }
+    }
+
+    private record RuntimeIdentity(
+            CredentialKind kind,
+            String projectId,
+            long revision,
+            String credentialFingerprint) {
     }
 }

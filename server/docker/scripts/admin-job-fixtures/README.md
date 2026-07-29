@@ -7,6 +7,7 @@ The toolkit:
 - accepts only a database named exactly `demo_db` or `e2e_db`;
 - also verifies the seeded schema-v3 deployment identity (`MyScoutee Demo Operator` or `MyScoutee E2E Operator`) before doing anything;
 - never starts, stops, or restarts Mongo, the backend, npm, or any other process;
+- calls the already-running loopback backend only for the isolated `notification-read-path` API check;
 - uses the already-running `mongodb` container when available, otherwise an already-installed local `mongosh`;
 - snapshots the exact documents selected by a scenario before changing them;
 - allows only one prepared scenario at a time;
@@ -85,9 +86,11 @@ ADMIN_FIXTURE_MONGO_HOST=127.0.0.1
 ADMIN_FIXTURE_MONGO_PORT=27017
 ADMIN_FIXTURE_MONGO_USERNAME=guest
 ADMIN_FIXTURE_MONGO_PASSWORD=guest
+ADMIN_FIXTURE_API_BASE_URL=http://localhost/api
 ```
 
 `auto` prefers an already-running container. If neither that container nor local `mongosh` exists, the command stops and tells you; it never runs Docker Compose.
+The API override accepts only an HTTP loopback root (`localhost` or `127.0.0.1`), never a remote or production URL.
 
 ## Commands
 
@@ -226,6 +229,37 @@ Directly inserting an outbox fixture does not create a bell item. Bell materiali
 
 Existing due pending outbox rows are snapshotted and temporarily moved to a future retry time so an enabled delivery worker cannot consume unrelated demo messages.
 
+### `notification-read-path`
+
+Variation:
+
+- `group-chat`: creates two isolated fixture users plus one group chat carrying explicit event, sub-event, and group context.
+
+This scenario uses the already-running local backend but does not start it:
+
+```bash
+bash admin-job-fixtures.sh prepare notification-read-path group-chat
+bash admin-job-fixtures.sh status notification-read-path
+bash admin-job-fixtures.sh status notification-read-path
+bash admin-job-fixtures.sh reset notification-read-path
+```
+
+`prepare` snapshots the selected Mongo documents, inserts the isolated context, then posts exactly one chat message through the real HTTP endpoint. That application call exercises chat persistence, recipient selection, `NotificationOutboxService.enqueue`, and immediate in-app inbox materialization.
+
+`status` is read-only and checks both Mongo and the real API read models:
+
+- exactly one outbox item and one `userNotifications` row exist;
+- the recipient is exactly the other participant and the sender is excluded;
+- the inbox `syncKey` is the outbox `syncKey` plus the recipient ID, so repeated materialization cannot create a duplicate;
+- `GET /notifications?bucket=new` returns one unread bell row with `unreadCount:1`, `readAtIso:null`, chat source/action/payload fields, and `muted:false`;
+- `GET /auth/me` exposes matching stored notification and chat counters;
+- `GET /activities/chats` exposes `unread:1`, `channelType:"groupSubEvent"`, and matching event/sub-event/group IDs and navigation context;
+- a second `status` remains unchanged, proving the poll itself has no write side effects.
+
+The bell is intentionally materialized during enqueue, before Firebase push delivery. With stock Firebase disabled, the outbox staying `pending` is expected. If Firebase is enabled in a disposable local stack, the no-token item may become `sent` with zero token successes without changing the bell assertion.
+
+If the local HTTP request fails after the snapshot was created, run `reset notification-read-path`; the snapshot is deliberately retained for recovery.
+
 ### `affinity-recompute`
 
 Variation:
@@ -335,4 +369,5 @@ Admin detail should display this stored pending delta and the previous run's sto
 - The global event jobs are quarantined rather than backend-scoped because their scheduled entry points do not accept fixture IDs. Their targeted internal graph methods exist, but the Admin API does not expose a safe fixture filter.
 - A hard application crash between a worker mutation and reset can leave the snapshot intact; run `reset <job>` after the app is back.
 - Redis wakeup stream records are not modified or cleared. Mongo status remains the source of truth for these fixtures.
+- `notification-read-path` only calls an explicitly loopback API root and requires the matching already-running demo/e2e backend.
 - The scripts do not run a browser, visual confirmation, npm, Gradle, Docker Compose, or a full seed reset.

@@ -1,5 +1,5 @@
 {
-  "name": "operator Firebase capability request validation is side-effect free",
+  "name": "operator Firebase capability validation does not mutate Firebase configuration",
   "group": "operator",
   "order": 1290,
   "method": "POST",

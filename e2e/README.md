@@ -118,6 +118,10 @@ node e2e/functional/backend/run.mjs --group flows --include-mutations
 The operator mutation flows use the same existing `mutation` and `e2eOnly`
 collection metadata as the other backend flows:
 
+`mutation: true` excludes a case unless `--include-mutations` is supplied.
+`e2eOnly: true` skips execution outside `e2e`/`stress` server mode. These are
+metadata fields, not newly introduced CLI flags.
+
 ```bash
 E2E_SERVER_MODE=e2e \
 node e2e/functional/backend/run.mjs \

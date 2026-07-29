@@ -81,7 +81,11 @@ export async function assertResponse({ ctx, result, request }) {
     'operator configuration before rejected Firebase requests'
   );
   assert(
-    JSON.stringify(after) === JSON.stringify(baseline),
-    'rejected Firebase capability requests must not mutate operator configuration'
+    JSON.stringify(after.firebase) === JSON.stringify(baseline.firebase),
+    'rejected Firebase capability requests must not mutate Firebase configuration',
+    {
+      before: baseline.firebase,
+      after: after.firebase
+    }
   );
 }

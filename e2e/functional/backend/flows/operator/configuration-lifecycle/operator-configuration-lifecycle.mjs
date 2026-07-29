@@ -26,6 +26,16 @@ export async function assertResponse({ ctx, result, request }) {
     'configuration lifecycle requires the credential-free e2e seed',
     original.payment
   );
+  assert(
+    baselineAdminEmails.length <= 30,
+    'configuration lifecycle requires two free administrator slots in the e2e seed',
+    baselineAdminEmails
+  );
+  assert(
+    original.socialLinks.length <= 10,
+    'configuration lifecycle requires two free social-link slots in the e2e seed',
+    original.socialLinks
+  );
 
   const runSlug = `${ctx.vars.runId}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').slice(0, 36);
   const stripeSecret = `sk_e2e_${runSlug}_stripe_7x9q`;

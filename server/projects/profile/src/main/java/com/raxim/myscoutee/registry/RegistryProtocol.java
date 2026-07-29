@@ -27,6 +27,16 @@ public final class RegistryProtocol {
     public static final String MAU_BATCH_PATH = "/v1/mau/batches";
     public static final String REVENUE_BATCH_PATH = "/v1/revenue/batches";
     public static final String SETTLEMENT_QUERY_PATH = "/v1/settlements/query";
+    public static final String GLOBAL_IDENTITY_VOPRF_KEY_PATH =
+            "/v1/global-identities/voprf-keys/current";
+    public static final String GLOBAL_IDENTITY_EVALUATE_PATH =
+            "/v1/global-identities/evaluate";
+    public static final String GLOBAL_IDENTITY_LINK_PATH =
+            "/v1/global-identities/links";
+    public static final String GLOBAL_IDENTITY_LINK_ACTION_PATH =
+            "/v1/global-identities/link-actions";
+    public static final String GLOBAL_IDENTITY_PRESENCE_BATCH_PATH =
+            "/v1/global-identities/presence-batches";
     public static final String OPERATOR_ACTION_PATH = "/v1/operator/actions";
     public static final String OPERATOR_CLAIM_STATUS_PATH_PREFIX = "/v1/operator/claims/";
     public static final String LEADERBOARD_PATH = "/v1/leaderboard";
@@ -49,6 +59,14 @@ public final class RegistryProtocol {
             "three-month-acceleration-valuation-v1";
     public static final String SETTLEMENT_ENTRY_TYPE =
             "SETTLEMENT_CALCULATED";
+    public static final String GLOBAL_IDENTITY_VOPRF_SUITE = "P256-SHA256";
+    public static final String GLOBAL_IDENTITY_VOPRF_MODE = "VOPRF";
+    public static final String GLOBAL_IDENTITY_VOPRF_KEY_STATUS_ACTIVE =
+            "ACTIVE";
+    public static final String GLOBAL_IDENTITY_CONSENT_VERSION =
+            "global-dedup-consent-v1";
+    public static final String GLOBAL_IDENTITY_LINK_ACTION_UNLINK = "UNLINK";
+    public static final String GLOBAL_IDENTITY_LINK_ACTION_CORRECT = "CORRECT";
     public static final long
             SETTLEMENT_DEFAULT_VALUATION_MULTIPLIER_BASIS_POINTS = 30_000L;
     public static final long
@@ -428,6 +446,191 @@ public final class RegistryProtocol {
                 response.nextAfterSettlementId(),
                 response.generatedAt(),
                 response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityVoprfKey(
+            GlobalIdentityVoprfKey response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity VOPRF key response must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-voprf-key-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                requiredLong(response.keyVersion(), "key_version"),
+                response.suite(),
+                response.mode(),
+                response.publicKey(),
+                response.status(),
+                response.activatedAt(),
+                response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityEvaluationPayload(
+            long keyVersion,
+            String suite,
+            String blindedElement) {
+        return canonical(
+                "myscoutee-registry-global-identity-evaluate-payload-v1",
+                Long.toString(requirePositive(keyVersion, "key_version")),
+                requireCanonical(suite, "suite"),
+                requireCanonical(blindedElement, "blinded_element"));
+    }
+
+    public static byte[] globalIdentityEvaluationResult(
+            GlobalIdentityEvaluationResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity evaluation response must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-evaluation-result-v1",
+                requiredLong(response.keyVersion(), "key_version"),
+                response.suite(),
+                response.publicKey(),
+                response.evaluatedElement(),
+                response.proof());
+    }
+
+    public static byte[] globalIdentityEvaluationReceipt(
+            GlobalIdentityEvaluationResponse response) {
+        Objects.requireNonNull(
+                response,
+                "Global-identity evaluation response must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-evaluation-receipt-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.deploymentId(),
+                requiredLong(response.keyVersion(), "key_version"),
+                response.suite(),
+                response.requestHash(),
+                response.responseHash(),
+                response.evaluatedAt(),
+                response.registryKeyId());
+    }
+
+    public static byte[] globalIdentityLinkPayload(
+            long keyVersion,
+            String suite,
+            String networkIdentityCommitment,
+            String consentVersion,
+            String consentEvidenceCommitment,
+            String verifiedAt,
+            String effectivePeriod) {
+        return canonical(
+                "myscoutee-registry-global-identity-link-payload-v1",
+                Long.toString(requirePositive(keyVersion, "key_version")),
+                requireCanonical(suite, "suite"),
+                requireHash(
+                        networkIdentityCommitment,
+                        "network_identity_commitment"),
+                requireCanonical(consentVersion, "consent_version"),
+                requireHash(
+                        consentEvidenceCommitment,
+                        "consent_evidence_commitment"),
+                requireCanonical(verifiedAt, "verified_at"),
+                requireCanonical(effectivePeriod, "effective_period"));
+    }
+
+    public static byte[] globalIdentityLinkActionPayload(
+            String action,
+            String linkId,
+            Long replacementKeyVersion,
+            String replacementSuite,
+            String replacementCommitment,
+            String consentVersion,
+            String consentEvidenceCommitment,
+            String verifiedAt,
+            String effectivePeriod,
+            String reasonCommitment) {
+        return canonicalAllowEmpty(
+                "myscoutee-registry-global-identity-link-action-payload-v1",
+                requireCanonical(action, "global-identity link action"),
+                requireCanonical(linkId, "global-identity link_id"),
+                replacementKeyVersion == null
+                        ? "0"
+                        : Long.toString(requirePositive(
+                                replacementKeyVersion,
+                                "replacement_key_version")),
+                nullToEmpty(replacementSuite),
+                nullToEmpty(replacementCommitment),
+                nullToEmpty(consentVersion),
+                nullToEmpty(consentEvidenceCommitment),
+                nullToEmpty(verifiedAt),
+                requireCanonical(effectivePeriod, "effective_period"),
+                requireHash(reasonCommitment, "reason_commitment"));
+    }
+
+    public static byte[] globalIdentityPresenceBatchPayload(
+            String period,
+            long revision,
+            String supersedesBatchId,
+            long reportedQmauCount,
+            long keyVersion,
+            String suite,
+            List<String> networkIdentityCommitments) {
+        List<String> commitments = List.copyOf(Objects.requireNonNull(
+                networkIdentityCommitments,
+                "Global-identity commitments must be an explicit array."));
+        java.util.ArrayList<String> values = new java.util.ArrayList<>();
+        values.add("myscoutee-registry-global-identity-presence-batch-v1");
+        values.add(requireCanonical(period, "period"));
+        values.add(Long.toString(requirePositive(revision, "revision")));
+        values.add(nullToEmpty(supersedesBatchId));
+        values.add(Long.toString(requireNonNegative(
+                reportedQmauCount,
+                "reported_qmau_count")));
+        values.add(Long.toString(requirePositive(keyVersion, "key_version")));
+        values.add(requireCanonical(suite, "suite"));
+        values.add(Integer.toString(commitments.size()));
+        String previous = "";
+        for (String commitment : commitments) {
+            String normalized = requireHash(
+                    commitment,
+                    "network_identity_commitment");
+            if (!previous.isEmpty()
+                    && previous.compareTo(normalized) > 0) {
+                throw new IllegalArgumentException(
+                        "Global-identity commitments must be sorted.");
+            }
+            values.add(normalized);
+            previous = normalized;
+        }
+        return canonicalAllowEmpty(values.toArray(String[]::new));
+    }
+
+    public static byte[] globalIdentityEvent(
+            GlobalIdentityEvent event) {
+        Objects.requireNonNull(
+                event,
+                "Global-identity event must not be null.");
+        return canonicalAllowEmpty(
+                "myscoutee-registry-global-identity-event-v1",
+                requiredLong(event.eventIndex(), "event_index"),
+                event.eventId(),
+                event.action(),
+                event.deploymentId(),
+                event.period(),
+                event.aggregateCommitment(),
+                requiredLong(event.reportedCount(), "reported_count"),
+                requiredLong(
+                        event.deduplicatedCount(),
+                        "deduplicated_count"),
+                event.acceptedAt(),
+                event.previousEventHash(),
+                event.registryScope(),
+                event.registryKeyId());
+    }
+
+    public static byte[] globalIdentityEventReceipt(
+            GlobalIdentityEvent event) {
+        Objects.requireNonNull(
+                event,
+                "Global-identity event must not be null.");
+        return canonical(
+                "myscoutee-registry-global-identity-event-receipt-v1",
+                event.eventHash(),
+                event.registryKeyId());
     }
 
     public static byte[] signedRequest(

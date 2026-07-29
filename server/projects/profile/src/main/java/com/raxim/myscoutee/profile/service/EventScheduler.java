@@ -310,12 +310,18 @@ public class EventScheduler {
             if (reviewCount > 0) {
                 LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
             }
+            ScorePlanRunResult scorePlanRun = generateScorePlanRunForEvents(null);
+            if (scorePlanRun.changedGroupCount() > 0) {
+                LOGGER.info(
+                        "Synchronized advancing members in {} tournament group(s).",
+                        scorePlanRun.changedGroupCount());
+            }
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
                         NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
-                        startReviewCount + reviewCount,
+                        startReviewCount + reviewCount + scorePlanRun.changedGroupCount(),
                         "completed",
-                        "Reviewed scheduled tournament stages.",
+                        "Reviewed scheduled tournament stages and synchronized advancing members.",
                         MARKER_UPDATED_BY,
                         startedAt);
             }
@@ -902,7 +908,12 @@ public class EventScheduler {
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
             
             int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
-            int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - acceptedMembers);
+            int pendingMembers = snapshot == null || snapshot.pendingMemberUserIds() == null
+                    ? 0
+                    : snapshot.pendingMemberUserIds().size();
+            int openSpots = Math.max(
+                    0,
+                    safeCount(event.getCapacityTotal()) - acceptedMembers - pendingMembers);
             
             if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
@@ -952,8 +963,13 @@ public class EventScheduler {
     }
 
     public List<EventLeaderboardStateDto> generateScorePlansForEvents(Collection<String> sourceIds) {
+        return generateScorePlanRunForEvents(sourceIds).states();
+    }
+
+    private ScorePlanRunResult generateScorePlanRunForEvents(Collection<String> sourceIds) {
         // THREAD SAFETY: We must use a synchronized list because multiple CPU threads will add to this simultaneously
         List<EventLeaderboardStateDto> states = Collections.synchronizedList(new ArrayList<>());
+        AtomicInteger changedGroupCount = new AtomicInteger(0);
         Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> events = resolveCanonicalEvents();
         if (!requestedSourceIds.isEmpty()) {
@@ -987,16 +1003,21 @@ public class EventScheduler {
         // Process every event concurrently across all available CPU cores!
         MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
         events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
-            if (event == null || event.getSubEvents() == null) return; // 'return' replaces 'continue' in lambdas
+            if (event == null || event.getSubEvents() == null || !shouldReviewTournamentStages(event)) {
+                return;
+            }
             
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) return;
             
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
+            Set<String> acceptedUserIds = snapshot == null
+                    ? new LinkedHashSet<>()
+                    : new LinkedHashSet<>(normalizeUserIds(snapshot.acceptedMemberUserIds()));
             
-            FGraph eventGraph = snapshot == null || snapshot.acceptedMemberUserIds().isEmpty()
+            FGraph eventGraph = acceptedUserIds.isEmpty()
                     ? new FGraph()
-                    : globalGraph.filter(new LinkedHashSet<>(snapshot.acceptedMemberUserIds()), Set.of(), 0d);
+                    : globalGraph.filter(acceptedUserIds, Set.of(), 0d);
 
             List<SubEventItem> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
@@ -1028,16 +1049,20 @@ public class EventScheduler {
                 if (!STAGE_STATUS_FINALIZED.equals(stageStatus)) continue;
 
                 Set<String> advancingUserIds = resolveAdvancingUserIds(state);
-                if (advancingUserIds.isEmpty()) continue;
-
-                if (eventGraph.getNodes().isEmpty()) {
-                    eventGraph = globalGraph.filter(advancingUserIds, Set.of(), 0d);
-                }
+                advancingUserIds.retainAll(acceptedUserIds);
 
                 SubEventItem nextSubEvent = subEvents.get(index + 1);
                 String nextSubEventId = normalizeId(nextSubEvent == null ? null : nextSubEvent.id());
                 if (!StringUtils.hasText(nextSubEventId)) {
                     logDiagnostic("score", eventId, subEventId, "Skipping next-stage materialization because the next subevent is missing an id.");
+                    continue;
+                }
+                if (!isTournamentStage(nextSubEvent)) {
+                    logDiagnostic(
+                            "score",
+                            eventId,
+                            subEventId,
+                            "Skipping next-stage materialization because the adjacent subevent is not a tournament stage.");
                     continue;
                 }
 
@@ -1046,13 +1071,16 @@ public class EventScheduler {
                 
                 if (nextTargets.isEmpty()) continue;
 
-                assignMembersToTargets(
+                List<GeneratedEventPlan> changedGroups = assignMembersToTargets(
                         event, eventGraph, advancingUserIds, nextTargets, "score", 
-                        "score:" + eventId + ":" + subEventId + "->" + nextSubEventId);
+                        "score:" + eventId + ":" + subEventId + "->" + nextSubEventId,
+                        null,
+                        true);
+                changedGroupCount.addAndGet(changedGroups.size());
             }
         })); // End of parallel stream
 
-        return states;
+        return new ScorePlanRunResult(List.copyOf(states), changedGroupCount.get());
     }
 
     private Set<String> resolveStageAssignmentUserIds(
@@ -1068,6 +1096,10 @@ public class EventScheduler {
             return Set.of();
         }
         SubEventItem previousStage = stages.get(stageIndex - 1);
+        SubEventItem currentStage = stages.get(stageIndex);
+        if (!isTournamentStage(previousStage) || !isTournamentStage(currentStage)) {
+            return accepted;
+        }
         String previousStageId = normalizeId(previousStage == null ? null : previousStage.id());
         if (!StringUtils.hasText(previousStageId)) {
             return Set.of();
@@ -1333,7 +1365,7 @@ public class EventScheduler {
             List<GroupAssignmentTarget> targets,
             String wrapperType,
             String context) {
-        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null);
+        return assignMembersToTargets(event, graph, poolUserIds, targets, wrapperType, context, null, false);
     }
 
     private List<GeneratedEventPlan> assignMembersToTargets(
@@ -1344,9 +1376,33 @@ public class EventScheduler {
             String wrapperType,
             String context,
             AtomicInteger observedQueries) {
+        return assignMembersToTargets(
+                event,
+                graph,
+                poolUserIds,
+                targets,
+                wrapperType,
+                context,
+                observedQueries,
+                false);
+    }
+
+    private List<GeneratedEventPlan> assignMembersToTargets(
+            ActivityEvent event,
+            FGraph graph,
+            Collection<String> poolUserIds,
+            List<GroupAssignmentTarget> targets,
+            String wrapperType,
+            String context,
+            AtomicInteger observedQueries,
+            boolean reconcileAllTargets) {
         Set<String> normalizedPoolUserIds = new LinkedHashSet<>(normalizeUserIds(poolUserIds));
-        normalizedPoolUserIds.retainAll(graph.getNodes().keySet());
-        if (normalizedPoolUserIds.isEmpty() || targets.isEmpty()) {
+        if (graph != null) {
+            normalizedPoolUserIds.retainAll(graph.getNodes().keySet());
+        } else {
+            normalizedPoolUserIds.clear();
+        }
+        if (targets == null || targets.isEmpty() || (normalizedPoolUserIds.isEmpty() && !reconcileAllTargets)) {
             return List.of();
         }
 
@@ -1411,11 +1467,17 @@ public class EventScheduler {
                             openMin == 0,
                             0d);
             List<String> fillUserIds = selectedNodes.stream().map(Node::getId).toList();
+            if (fillUserIds.size() < openMin && reconcileAllTargets) {
+                fillUserIds = remainingUserIds.stream()
+                        .sorted()
+                        .limit(openMax)
+                        .toList();
+            }
             if (fillUserIds.size() < openMin) {
                 logDiagnostic("random", target.groupId(), context, "Unable to fill anchored group to its minimum capacity.");
-            } else {
-                remainingUserIds.removeAll(fillUserIds);
+                continue;
             }
+            remainingUserIds.removeAll(fillUserIds);
             plannedGroups.add(new GeneratedEventPlan(target.groupId(), mergeUserIds(target.lockedUserIds(), fillUserIds)));
         }
 
@@ -1428,16 +1490,33 @@ public class EventScheduler {
                     false));
             if (generatedPlans.size() != emptyTargets.size()) {
                 logDiagnostic("random", normalizeId(event == null ? null : event.getSourceId()), context, "Unable to assign all empty groups from the remaining pool.");
+                if (reconcileAllTargets) {
+                    plannedGroups.addAll(buildDeterministicTargetPlans(remainingUserIds, emptyTargets));
+                }
             } else {
                 plannedGroups.addAll(generatedPlans);
             }
         }
 
-        List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
         Map<String, String> memberOwnerIdByGroupId = normalizedTargets.stream()
                 .collect(LinkedHashMap::new,
                         (map, target) -> map.put(target.groupId(), target.memberOwnerId()),
                         Map::putAll);
+        if (reconcileAllTargets) {
+            Map<String, GeneratedEventPlan> planByGroupId = plannedGroups.stream()
+                    .filter(Objects::nonNull)
+                    .collect(
+                            LinkedHashMap::new,
+                            (map, plan) -> map.putIfAbsent(normalizeId(plan.seedId()), plan),
+                            Map::putAll);
+            plannedGroups = normalizedTargets.stream()
+                    .map(target -> planByGroupId.getOrDefault(
+                            target.groupId(),
+                            new GeneratedEventPlan(target.groupId(), List.of())))
+                    .toList();
+        }
+
+        List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByPlannedGroupId =
                 activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, plannedGroups.stream()
                         .map(plan -> memberOwnerIdByGroupId.get(plan.seedId()))
@@ -1470,18 +1549,90 @@ public class EventScheduler {
                     resolveInviterUserId(event),
                     normalizedPlannedUserIds);
             incrementObservedQueries(observedQueries);
-            if (!syncedUserIds.isEmpty()) {
-                recordPlanMarker(
+            List<String> normalizedSyncedUserIds = normalizeUserIds(syncedUserIds).stream().sorted().toList();
+            List<String> expectedSyncedUserIds = normalizedPlannedUserIds.stream().sorted().toList();
+            if (!normalizedSyncedUserIds.equals(expectedSyncedUserIds)) {
+                logDiagnostic(
                         wrapperType,
-                        MARKER_ACTION_GROUP_MEMBERS,
                         plannedGroup.seedId(),
                         context,
-                        syncedUserIds);
-                syncedGroups.add(new GeneratedEventPlan(plannedGroup.seedId(), syncedUserIds));
+                        "Membership synchronization did not return the exact requested accepted-member set.");
+                continue;
             }
+            recordPlanMarker(
+                    wrapperType,
+                    MARKER_ACTION_GROUP_MEMBERS,
+                    plannedGroup.seedId(),
+                    context,
+                    expectedSyncedUserIds);
+            syncedGroups.add(new GeneratedEventPlan(plannedGroup.seedId(), expectedSyncedUserIds));
         }
         notifyChangedRandomGroupAssignments(event, wrapperType, context, syncedGroups);
         return syncedGroups;
+    }
+
+    private List<GeneratedEventPlan> buildDeterministicTargetPlans(
+            Collection<String> poolUserIds,
+            List<GroupAssignmentTarget> targets) {
+        List<String> userIds = normalizeUserIds(poolUserIds).stream().sorted().toList();
+        List<GroupAssignmentTarget> usableTargets = targets == null
+                ? List.of()
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> target.range() != null && StringUtils.hasText(target.groupId()))
+                        .toList();
+        if (userIds.isEmpty() || usableTargets.isEmpty()) {
+            return List.of();
+        }
+
+        int feasibleTargetCount = usableTargets.size();
+        while (feasibleTargetCount > 0
+                && minimumCapacity(usableTargets.subList(0, feasibleTargetCount)) > userIds.size()) {
+            feasibleTargetCount -= 1;
+        }
+        if (feasibleTargetCount == 0) {
+            return List.of();
+        }
+
+        List<GroupAssignmentTarget> feasibleTargets = usableTargets.subList(0, feasibleTargetCount);
+        int assignableUserCount = Math.min(userIds.size(), maximumCapacity(feasibleTargets));
+        List<GeneratedEventPlan> plans = new ArrayList<>();
+        int cursor = 0;
+        for (int index = 0; index < feasibleTargets.size(); index += 1) {
+            GroupAssignmentTarget target = feasibleTargets.get(index);
+            int remainingMinimum = minimumCapacity(feasibleTargets.subList(index + 1, feasibleTargets.size()));
+            int size = Math.min(
+                    target.range().getMax(),
+                    Math.max(target.range().getMin(), assignableUserCount - cursor - remainingMinimum));
+            if (size < target.range().getMin() || cursor + size > assignableUserCount) {
+                break;
+            }
+            plans.add(new GeneratedEventPlan(
+                    target.groupId(),
+                    new ArrayList<>(userIds.subList(cursor, cursor + size))));
+            cursor += size;
+        }
+        return plans;
+    }
+
+    private int minimumCapacity(List<GroupAssignmentTarget> targets) {
+        return targets == null
+                ? 0
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> target.range() != null)
+                        .mapToInt(target -> Math.max(0, target.range().getMin()))
+                        .sum();
+    }
+
+    private int maximumCapacity(List<GroupAssignmentTarget> targets) {
+        return targets == null
+                ? 0
+                : targets.stream()
+                        .filter(Objects::nonNull)
+                        .filter(target -> target.range() != null)
+                        .mapToInt(target -> Math.max(0, target.range().getMax()))
+                        .sum();
     }
 
     private void notifyChangedRandomGroupAssignments(
@@ -1788,5 +1939,10 @@ public class EventScheduler {
             String memberOwnerId,
             Range range,
             List<String> lockedUserIds) {
+    }
+
+    private record ScorePlanRunResult(
+            List<EventLeaderboardStateDto> states,
+            int changedGroupCount) {
     }
 }

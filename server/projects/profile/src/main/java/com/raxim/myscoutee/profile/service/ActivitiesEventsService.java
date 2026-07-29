@@ -2177,13 +2177,6 @@ public class ActivitiesEventsService {
                 saved = refreshed;
             }
         }
-        if (STAGE_ACTION_FINALIZE.equals(actionTarget.action())) {
-            EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
-            if (scheduler != null) {
-                scheduler.generateScorePlansForEvents(List.of(sourceId));
-            }
-        }
-
         ActivityEvent savedPreferred = computePreferredEventRecords(saved).stream().findFirst().orElse(saved.get(0));
         List<SubEventItem> savedSubEvents = cloneSubEvents(savedPreferred.getSubEvents());
         int savedStageIndex = resolveStageIndex(savedSubEvents, stageId, preferredStageIndex);

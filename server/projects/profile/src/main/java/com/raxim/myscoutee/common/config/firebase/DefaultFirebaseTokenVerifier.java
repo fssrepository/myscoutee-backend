@@ -26,8 +26,14 @@ public class DefaultFirebaseTokenVerifier implements FirebaseTokenVerifier {
                     .authentication()
                     .verifyIdToken(firebaseToken);
             return new FirebaseCredential(decodedToken);
-        } catch (Exception e) {
-            throw new FirebaseTokenInvalidException(e.getMessage());
+        } catch (Exception exception) {
+            /*
+             * Upstream Firebase failures can contain project identifiers and
+             * provider details. Authentication callers only need a stable,
+             * non-sensitive rejection and must never receive that diagnostic.
+             */
+            throw new FirebaseTokenInvalidException(
+                    "Invalid Firebase authentication token.");
         }
     }
 }

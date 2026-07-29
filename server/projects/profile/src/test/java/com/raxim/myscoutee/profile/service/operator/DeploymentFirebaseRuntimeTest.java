@@ -29,9 +29,9 @@ class DeploymentFirebaseRuntimeTest {
         DeploymentConfiguration configuration =
                 new DeploymentConfiguration();
         configuration.setId(DeploymentConfiguration.SINGLETON_ID);
-        DeploymentConfiguration.Firebase firebase =
-                new DeploymentConfiguration.Firebase();
-        firebase.setActive(true);
+        DeploymentConfiguration.Firebase firebase = runtimeReadyFirebase(
+                encryptedSecret("authentication"),
+                encryptedSecret("messaging"));
         configuration.setFirebase(firebase);
         DeploymentConfigurationRepository repository =
                 mock(DeploymentConfigurationRepository.class);
@@ -70,17 +70,10 @@ class DeploymentFirebaseRuntimeTest {
     @Test
     void activatedDeploymentCredentialOverridesTheLegacyStartupApp() {
         DeploymentConfiguration.EncryptedSecret envelope =
-                new DeploymentConfiguration.EncryptedSecret();
-        envelope.setAlgorithm("AES-256-GCM");
-        envelope.setKeyId("test-key");
-        envelope.setNonce("test-nonce");
-        envelope.setCiphertext("test-ciphertext");
-        DeploymentConfiguration.Firebase firebase =
-                new DeploymentConfiguration.Firebase();
-        firebase.setProjectId("activated-project");
-        firebase.setRevision(7L);
-        firebase.setActive(true);
-        firebase.setAuthenticationCredentialEnvelope(envelope);
+                encryptedSecret("authentication");
+        DeploymentConfiguration.Firebase firebase = runtimeReadyFirebase(
+                envelope,
+                encryptedSecret("messaging"));
         DeploymentConfiguration configuration =
                 new DeploymentConfiguration();
         configuration.setId(DeploymentConfiguration.SINGLETON_ID);
@@ -110,5 +103,67 @@ class DeploymentFirebaseRuntimeTest {
                 OperatorConfigurationService
                         .FIREBASE_AUTHENTICATION_PURPOSE,
                 envelope);
+    }
+
+    @Test
+    void unverifiedActiveRevisionIsNeverPublished() {
+        DeploymentConfiguration.Firebase firebase = runtimeReadyFirebase(
+                encryptedSecret("authentication"),
+                encryptedSecret("messaging"));
+        firebase.setMessagingTestedRevision(6L);
+        DeploymentConfiguration configuration =
+                new DeploymentConfiguration();
+        configuration.setId(DeploymentConfiguration.SINGLETON_ID);
+        configuration.setFirebase(firebase);
+        DeploymentConfigurationRepository repository =
+                mock(DeploymentConfigurationRepository.class);
+        when(repository.findById(DeploymentConfiguration.SINGLETON_ID))
+                .thenReturn(Optional.of(configuration));
+        ConfigProperties properties = new ConfigProperties();
+        DeploymentFirebaseRuntime runtime = new DeploymentFirebaseRuntime(
+                repository,
+                mock(DeploymentConfigurationCrypto.class),
+                properties);
+
+        runtime.initializeAvailability();
+
+        assertThat(properties.isFirebaseEnabled()).isFalse();
+        assertThatThrownBy(runtime::authentication)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("incomplete or unverified");
+    }
+
+    private DeploymentConfiguration.Firebase runtimeReadyFirebase(
+            DeploymentConfiguration.EncryptedSecret authentication,
+            DeploymentConfiguration.EncryptedSecret messaging) {
+        DeploymentConfiguration.Firebase firebase =
+                new DeploymentConfiguration.Firebase();
+        firebase.setProjectId("activated-project");
+        firebase.setRevision(7L);
+        firebase.setActive(true);
+        firebase.setAuthenticationTestedRevision(7L);
+        firebase.setMessagingTestedRevision(7L);
+        firebase.setAuthenticationCredentialEnvelope(authentication);
+        firebase.setMessagingCredentialEnvelope(messaging);
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                new DeploymentConfiguration.FirebasePublicClient();
+        publicClient.setApiKey("browser-key");
+        publicClient.setAuthDomain("activated-project.firebaseapp.com");
+        publicClient.setMessagingSenderId("123456789");
+        publicClient.setAppId("1:123456789:web:runtime");
+        publicClient.setVapidKey("public-vapid-key");
+        firebase.setPublicClient(publicClient);
+        return firebase;
+    }
+
+    private DeploymentConfiguration.EncryptedSecret encryptedSecret(
+            String suffix) {
+        DeploymentConfiguration.EncryptedSecret envelope =
+                new DeploymentConfiguration.EncryptedSecret();
+        envelope.setAlgorithm("AES-256-GCM");
+        envelope.setKeyId("test-key");
+        envelope.setNonce("test-nonce-" + suffix);
+        envelope.setCiphertext("test-ciphertext-" + suffix);
+        return envelope;
     }
 }

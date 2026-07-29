@@ -40,6 +40,9 @@ Latest local validation:
 server e2e: 49 passed, 0 failed, 0 skipped, 49 selected
 ```
 
+This is a historical execution result. The current authored inventory is 76
+safe contracts; 13 of those are the operator cases authored for the later run.
+
 ## E2E Mutation Flows
 
 Default command:
@@ -70,6 +73,10 @@ Latest local validation:
 ```text
 server e2e: 7 passed, 0 failed, 0 skipped, 7 selected
 ```
+
+This is a historical execution result. The current authored inventory is 14
+mutation cases; 3 of those are the operator state-machine flows authored for
+the later run.
 
 ## Stress Scenarios
 
@@ -113,7 +120,8 @@ definitions and assertion modules have been syntax-checked only.
 
 The safe `operator` group includes controller-wide access checks, bootstrap
 boundary and secret redaction, request binding validation, settlement query
-validation, Firebase request validation without configuration mutation,
+validation, Firebase request validation without Firebase configuration
+mutation,
 configuration/registry/community/revenue/update projections, and revenue
 aggregation invariants. The opt-in `flows/operator` collection adds the three
 mutation state-machine scenarios listed above.
