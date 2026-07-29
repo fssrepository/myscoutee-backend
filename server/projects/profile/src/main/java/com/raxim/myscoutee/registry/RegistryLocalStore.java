@@ -318,9 +318,7 @@ public final class RegistryLocalStore {
         }
         OperatorClaimStatusEvidence existing =
                 loadOperatorClaimStatusEvidence().orElse(null);
-        if (existing != null
-                && existing.schemaVersion()
-                        == OPERATOR_CLAIM_STATUS_SCHEMA_VERSION) {
+        if (existing != null) {
             requireClaimStatusHighWater(existing.status(), status);
         }
         try {
@@ -368,15 +366,25 @@ public final class RegistryLocalStore {
                     "Refusing to replace durable operator claim status with an older claim generation.");
         }
         if (incoming.claimAuditIndex().equals(previous.claimAuditIndex())
-                && !Objects.equals(
-                        incoming.claimActionId(),
-                        previous.claimActionId())) {
+                && (!Objects.equals(
+                                incoming.claimActionId(),
+                                previous.claimActionId())
+                        || !Objects.equals(
+                                incoming.claimAuditHash(),
+                                previous.claimAuditHash()))) {
             throw new IllegalStateException(
                     "Refusing to replace durable operator claim status with a conflicting claim generation.");
         }
-        if (!Objects.equals(
-                incoming.claimActionId(),
-                previous.claimActionId())) {
+        if (incoming.claimAuditIndex() > previous.claimAuditIndex()) {
+            if (Objects.equals(
+                    incoming.claimActionId(),
+                    previous.claimActionId())) {
+                throw new IllegalStateException(
+                        "Refusing a durable operator claim action with a changed audit boundary.");
+            }
+            return;
+        }
+        if (hasLegacyClaimStatusShape(previous)) {
             return;
         }
         long previousEligibilityIndex =
@@ -400,6 +408,20 @@ public final class RegistryLocalStore {
                                 previous.eligibilityHash()))) {
             throw new IllegalStateException(
                     "Refusing a conflicting operator claim eligibility boundary at the durable high-water mark.");
+        }
+        boolean approvalRemainsCurrent = RegistryProtocol
+                        .OPERATOR_VERIFICATION_STATUS_APPROVED
+                        .equals(previous.verificationStatus())
+                && RegistryProtocol
+                        .OPERATOR_VERIFICATION_STATUS_APPROVED
+                        .equals(incoming.verificationStatus());
+        if (approvalRemainsCurrent
+                && incomingEligibilityIndex == previousEligibilityIndex
+                && !Objects.equals(
+                        incoming.eligibilityStatus(),
+                        previous.eligibilityStatus())) {
+            throw new IllegalStateException(
+                    "Refusing an operator claim eligibility state change without a newer durable decision.");
         }
     }
 

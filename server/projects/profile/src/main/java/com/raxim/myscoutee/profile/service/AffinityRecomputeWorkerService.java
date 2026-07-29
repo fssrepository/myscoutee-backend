@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
@@ -73,7 +75,9 @@ public class AffinityRecomputeWorkerService {
 
     private void runDueTasksForCurrentDatabase() {
         if (!properties.isEnabled()
-                || (properties.isChangeStreamEnabled() && !properties.isChangeStreamFallbackPollEnabled())) {
+                || (properties.isChangeStreamEnabled()
+                        && !properties.isChangeStreamFallbackPollEnabled()
+                        && MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO)) {
             return;
         }
         Instant startedAt = Instant.now();
@@ -89,12 +93,12 @@ public class AffinityRecomputeWorkerService {
             if (!due) {
                 return;
             }
-            if (ruleConfigured) {
-                registry.beginRun(
+            if (ruleConfigured && registry.beginScheduledRun(
                         NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
                         "Scheduled affinity recompute started.",
                         "affinity-recompute",
-                        startedAt);
+                        startedAt) == null) {
+                return;
             }
             int processedCount = processDueTasks(startedAt, "scheduled");
             if (ruleConfigured) {
@@ -134,12 +138,12 @@ public class AffinityRecomputeWorkerService {
             return 0;
         }
         try {
-            if (ruleConfigured) {
-                registry.beginRun(
+            if (ruleConfigured && registry.beginRun(
                         NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
                         "Affinity recompute wake-up started.",
                         "affinity-recompute",
-                        startedAt);
+                        startedAt) == null) {
+                return 0;
             }
             int processedCount = processDueTasks(
                     startedAt,

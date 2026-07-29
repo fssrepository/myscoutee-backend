@@ -24,10 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -184,12 +186,12 @@ public class ScheduledMessageTaskService {
                 startedAt)) {
             return;
         }
-        if (ruleConfigured) {
-            registry.beginRun(
+        if (ruleConfigured && registry.beginScheduledRun(
                     NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
                     "Scheduled message task poll started.",
                     UPDATED_BY,
-                    startedAt);
+                    startedAt) == null) {
+            return;
         }
         try {
             reconcileLocalWorkersFromDb();
@@ -515,16 +517,26 @@ public class ScheduledMessageTaskService {
                         .orElse(false)) {
             return;
         }
-        ScheduledMessageTask task = copyTask(dueTask);
-        if (!isRunnableTask(task)) {
+        if (!isRunnableTask(dueTask)) {
             return;
         }
         String nowIso = Instant.now().toString();
-        task.setStatus(STATUS_RUNNING);
-        task.setLastRunAtIso(nowIso);
-        task.setUpdatedDate(nowIso);
-        task.setUpdatedUser(UPDATED_BY);
-        task = scheduledMessageTasksRepository.save(task);
+        ScheduledMessageTask task = mongoTemplate.findAndModify(
+                Query.query(new Criteria().andOperator(
+                        Criteria.where("_id").is(dueTask.getId()),
+                        Criteria.where("status").is(STATUS_SCHEDULED),
+                        Criteria.where("suspended").ne(Boolean.TRUE),
+                        Criteria.where("dueAtIso").is(dueTask.getDueAtIso()))),
+                new Update()
+                        .set("status", STATUS_RUNNING)
+                        .set("lastRunAtIso", nowIso)
+                        .set("updatedDate", nowIso)
+                        .set("updatedUser", UPDATED_BY),
+                org.springframework.data.mongodb.core.FindAndModifyOptions.options().returnNew(true),
+                ScheduledMessageTask.class);
+        if (task == null) {
+            return;
+        }
 
         String runId = scheduledMessageAuditService.beginRun(task);
         try {
@@ -770,23 +782,41 @@ public class ScheduledMessageTaskService {
         task.setLastRunCount(0);
         task.setUpdatedDate(nowIso);
         task.setUpdatedUser(UPDATED_BY);
-        ScheduledMessageTask saved = scheduledMessageTasksRepository.save(task);
-        scheduleLocalWorker(saved);
     }
 
     private void finishTask(ScheduledMessageTask task, String status, int count, String detail) {
+        if (task == null || !StringUtils.hasText(safeText(task.getId()))) {
+            return;
+        }
         String nowIso = Instant.now().toString();
         boolean pendingCounterTracked = Boolean.TRUE.equals(task.getPendingCounterTracked());
         boolean remainsScheduled = STATUS_SCHEDULED.equals(safeText(status));
-        task.setStatus(safeText(status));
-        task.setPendingCounterTracked(remainsScheduled && pendingCounterTracked);
-        task.setLastRunAtIso(nowIso);
-        task.setLastRunStatus(safeText(status));
-        task.setLastRunDetail(safeText(detail));
-        task.setLastRunCount(Math.max(0, count));
-        task.setUpdatedDate(nowIso);
-        task.setUpdatedUser(UPDATED_BY);
-        ScheduledMessageTask saved = scheduledMessageTasksRepository.save(task);
+        List<Criteria> criteria = new ArrayList<>(List.of(
+                Criteria.where("_id").is(task.getId()),
+                Criteria.where("status").is(STATUS_RUNNING)));
+        if (pendingCounterTracked) {
+            criteria.add(Criteria.where("pendingCounterTracked").is(true));
+        }
+        Update update = new Update()
+                .set("status", safeText(status))
+                .set("pendingCounterTracked", remainsScheduled && pendingCounterTracked)
+                .set("lastRunAtIso", nowIso)
+                .set("lastRunStatus", safeText(status))
+                .set("lastRunDetail", safeText(detail))
+                .set("lastRunCount", Math.max(0, count))
+                .set("updatedDate", nowIso)
+                .set("updatedUser", UPDATED_BY);
+        if (remainsScheduled) {
+            update.set("dueAtIso", task.getDueAtIso());
+        }
+        ScheduledMessageTask saved = mongoTemplate.findAndModify(
+                Query.query(new Criteria().andOperator(criteria)),
+                update,
+                org.springframework.data.mongodb.core.FindAndModifyOptions.options().returnNew(true),
+                ScheduledMessageTask.class);
+        if (saved == null) {
+            return;
+        }
         if (remainsScheduled) {
             scheduleLocalWorker(saved);
         } else if (pendingCounterTracked) {
@@ -871,13 +901,17 @@ public class ScheduledMessageTaskService {
         if (task == null) {
             return null;
         }
-        boolean pendingCounterTracked = Boolean.TRUE.equals(task.getPendingCounterTracked());
-        task.setSuspended(Boolean.TRUE);
-        task.setPendingCounterTracked(false);
-        task.setUpdatedDate(nowIso);
-        task.setUpdatedUser(StringUtils.hasText(safeText(updatedBy)) ? safeText(updatedBy) : UPDATED_BY);
-        ScheduledMessageTask saved = scheduledMessageTasksRepository.save(task);
-        if (pendingCounterTracked) {
+        ScheduledMessageTask previous = mongoTemplate.findAndModify(
+                Query.query(Criteria.where("_id").is(task.getId())),
+                new Update()
+                        .set("suspended", Boolean.TRUE)
+                        .set("pendingCounterTracked", false)
+                        .set("updatedDate", nowIso)
+                        .set("updatedUser", StringUtils.hasText(safeText(updatedBy)) ? safeText(updatedBy) : UPDATED_BY),
+                org.springframework.data.mongodb.core.FindAndModifyOptions.options().returnNew(false),
+                ScheduledMessageTask.class);
+        ScheduledMessageTask saved = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElse(task);
+        if (previous != null && Boolean.TRUE.equals(previous.getPendingCounterTracked())) {
             adjustPendingCount(-1);
         }
         scheduleLocalWorker(saved);
@@ -885,13 +919,54 @@ public class ScheduledMessageTaskService {
     }
 
     private ScheduledMessageTask saveRunnableTask(ScheduledMessageTask task) {
-        boolean newlyTracked = !Boolean.TRUE.equals(task.getPendingCounterTracked());
-        task.setPendingCounterTracked(true);
-        ScheduledMessageTask saved = scheduledMessageTasksRepository.save(task);
-        if (newlyTracked) {
+        if (task == null || !StringUtils.hasText(safeText(task.getTaskKey()))) {
+            return task;
+        }
+        Update update = runnableTaskUpdate(task);
+        ScheduledMessageTask previous;
+        try {
+            previous = mongoTemplate.findAndModify(
+                    Query.query(Criteria.where("taskKey").is(task.getTaskKey())),
+                    update,
+                    org.springframework.data.mongodb.core.FindAndModifyOptions.options()
+                            .upsert(true)
+                            .returnNew(false),
+                    ScheduledMessageTask.class);
+        } catch (DuplicateKeyException exception) {
+            previous = mongoTemplate.findAndModify(
+                    Query.query(Criteria.where("taskKey").is(task.getTaskKey())),
+                    update,
+                    org.springframework.data.mongodb.core.FindAndModifyOptions.options().returnNew(false),
+                    ScheduledMessageTask.class);
+        }
+        ScheduledMessageTask saved = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElse(task);
+        saved.setPendingCounterTracked(true);
+        if (previous == null || !Boolean.TRUE.equals(previous.getPendingCounterTracked())) {
             adjustPendingCount(1);
         }
         return saved;
+    }
+
+    private Update runnableTaskUpdate(ScheduledMessageTask task) {
+        return new Update()
+                .setOnInsert("_id", task.getId())
+                .setOnInsert("syncKey", task.getSyncKey())
+                .setOnInsert("createdDate", task.getCreatedDate())
+                .setOnInsert("createdUser", task.getCreatedUser())
+                .set("taskKey", task.getTaskKey())
+                .set("actionKey", task.getActionKey())
+                .set("userId", task.getUserId())
+                .set("eventId", task.getEventId())
+                .set("subEventId", task.getSubEventId())
+                .set("notificationTemplateKey", task.getNotificationTemplateKey())
+                .set("emailTemplateKey", task.getEmailTemplateKey())
+                .set("dueAtIso", task.getDueAtIso())
+                .set("status", task.getStatus())
+                .set("suspended", task.getSuspended())
+                .set("pendingCounterTracked", true)
+                .set("payload", task.getPayload())
+                .set("updatedDate", task.getUpdatedDate())
+                .set("updatedUser", task.getUpdatedUser());
     }
 
     private void adjustPendingCount(int delta) {

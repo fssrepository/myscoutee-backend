@@ -167,6 +167,18 @@ public class AdminNotificationService {
             NotificationRuleConfig startedRule = progress == null
                     ? notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id())
                     : notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id(), progress.startedAt());
+            if (startedRule == null) {
+                if (progress != null) {
+                    progress.close();
+                }
+                return new AdminNotificationRuleRunResultDto(
+                        normalizedRuleKey,
+                        safeText(rule.getLabel()),
+                        0,
+                        "skipped",
+                        "This scheduled process is already running.",
+                        Instant.now().toString());
+            }
             if (progress != null) {
                 progress.adoptRule(startedRule);
             }
@@ -239,7 +251,7 @@ public class AdminNotificationService {
         try {
             if (progress != null) {
                 progress.setAdminUserId(adminUserId);
-                progress.adoptRule(startedRule);
+                progress.adoptRule(notificationRuleRegistryService.findRule(ruleKey).orElse(startedRule));
                 progress.raiseTo(1, "Loading published events for matched rooms.");
             }
             List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {

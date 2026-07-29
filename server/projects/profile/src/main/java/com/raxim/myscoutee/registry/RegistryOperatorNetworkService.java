@@ -1141,7 +1141,8 @@ public final class RegistryOperatorNetworkService {
         requireText(status.legalName(), "legal_name", 160);
         RegistryProtocol.requireUtcTimestamp(status.submittedAt(), "submitted_at");
         RegistryProtocol.requireHash(status.reviewHash(), "review_hash");
-        if (!Set.of(
+        if (status.verificationStatus() == null
+                || !Set.of(
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_PENDING_REVIEW,
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_APPROVED,
                         RegistryProtocol.OPERATOR_VERIFICATION_STATUS_REJECTED,
@@ -1278,7 +1279,8 @@ public final class RegistryOperatorNetworkService {
 
     private static void verifyClaimEligibilityBoundary(
             OperatorClaimStatusReceipt status) {
-        if (!Set.of(
+        if (status.eligibilityStatus() == null
+                || !Set.of(
                         RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
                         RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
                         RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE)
@@ -1471,6 +1473,7 @@ public final class RegistryOperatorNetworkService {
             RegistryProtocol.requireCanonical(row.label(), "leaderboard label");
             requireCanonicalOptional(row.avatarUrl(), "leaderboard avatar_url");
             RegistryProtocol.requireCanonical(row.claimState(), "leaderboard claim_state");
+            requireLeaderboardRowEligibility(expectedView, row);
             if (row.deploymentCount() == null || row.deploymentCount() < 0L) {
                 throw new IllegalArgumentException("leaderboard deployment_count must be non-negative.");
             }
@@ -1505,10 +1508,13 @@ public final class RegistryOperatorNetworkService {
                 throw new IllegalArgumentException("Registry leaderboard deployment is missing.");
             }
             RegistryProtocol.requireDeploymentId(deployment.deploymentId());
-            if (StringUtils.hasText(deployment.groupId())) {
-                RegistryProtocol.requireOperatorGroupId(deployment.groupId());
+            if (!expectedGroupId.equals(deployment.groupId())) {
+                throw new IllegalArgumentException(
+                        "Registry leaderboard deployment has a mismatched group.");
             }
+            RegistryProtocol.requireOperatorGroupId(deployment.groupId());
             RegistryProtocol.requireCanonical(deployment.claimState(), "leaderboard claim_state");
+            requireLeaderboardDeploymentEligibility(deployment);
             RegistryProtocol.requireCanonical(
                     deployment.membershipState(),
                     "leaderboard membership_state");
@@ -1530,6 +1536,71 @@ public final class RegistryOperatorNetworkService {
                 page.snapshot());
     }
 
+    private static void requireLeaderboardRowEligibility(
+            String view,
+            LeaderboardRow row) {
+        String eligibilityStatus = row.eligibilityStatus();
+        if (eligibilityStatus == null
+                || !Set.of(
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_PARTIALLY_SUSPENDED)
+                .contains(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry leaderboard row eligibility status is unsupported.");
+        }
+        if ("founder".equals(view)
+                && !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE
+                        .equals(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry founder row must be eligibility-active.");
+        }
+        if ("unclaimed".equals(view)
+                && !RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                        .equals(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry unclaimed row must be eligibility-inactive.");
+        }
+    }
+
+    private static void requireLeaderboardDeploymentEligibility(
+            LeaderboardDeployment deployment) {
+        String eligibilityStatus = deployment.eligibilityStatus();
+        if (eligibilityStatus == null
+                || !Set.of(
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED,
+                        RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE)
+                .contains(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Registry leaderboard deployment eligibility status is unsupported.");
+        }
+        if ("claimed".equals(deployment.claimState())) {
+            if (!RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE
+                    .equals(eligibilityStatus)) {
+                throw new IllegalArgumentException(
+                        "Legacy claimed deployment must be eligibility-active.");
+            }
+            return;
+        }
+        if ("approved".equals(deployment.claimState())) {
+            if (!Set.of(
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_ACTIVE,
+                            RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_SUSPENDED)
+                    .contains(eligibilityStatus)) {
+                throw new IllegalArgumentException(
+                        "Approved deployment has an invalid eligibility status.");
+            }
+            return;
+        }
+        if (!RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE
+                .equals(eligibilityStatus)) {
+            throw new IllegalArgumentException(
+                    "Non-approved deployment must be eligibility-inactive.");
+        }
+    }
+
     private void verifySnapshot(TrustedDeployment trusted, LeaderboardSnapshot snapshot) {
         RegistryProtocol.requireSnapshotId(snapshot.snapshotId());
         if (!RegistryProtocol.LEADERBOARD_FORMULA_VERSION.equals(snapshot.formulaVersion())
@@ -1539,8 +1610,24 @@ public final class RegistryOperatorNetworkService {
         RegistryProtocol.requirePeriod(snapshot.throughPeriod());
         requireNonNegative(snapshot.throughLedgerIndex(), "through_ledger_index");
         requireNonNegative(snapshot.throughAuditIndex(), "through_audit_index");
+        requireNonNegative(snapshot.throughReviewIndex(), "through_review_index");
+        requireNonNegative(
+                snapshot.throughEligibilityIndex(),
+                "through_eligibility_index");
         RegistryProtocol.requireHash(snapshot.ledgerHeadHash(), "ledger_head_hash");
         RegistryProtocol.requireHash(snapshot.auditHeadHash(), "audit_head_hash");
+        RegistryProtocol.requireHash(snapshot.reviewHeadHash(), "review_head_hash");
+        RegistryProtocol.requireHash(
+                snapshot.eligibilityHeadHash(),
+                "eligibility_head_hash");
+        requireHeadBoundary(
+                snapshot.throughReviewIndex(),
+                snapshot.reviewHeadHash(),
+                "review");
+        requireHeadBoundary(
+                snapshot.throughEligibilityIndex(),
+                snapshot.eligibilityHeadHash(),
+                "eligibility");
         requireRational(
                 snapshot.founderUnitsNumerator(),
                 snapshot.founderUnitsDenominator(),
@@ -1574,6 +1661,18 @@ public final class RegistryOperatorNetworkService {
                 RegistryProtocol.leaderboardSnapshotReceipt(snapshot),
                 snapshot.signature())) {
             throw new IllegalArgumentException("Registry leaderboard snapshot signature is invalid.");
+        }
+    }
+
+    private static void requireHeadBoundary(
+            Long index,
+            String hash,
+            String fieldName) {
+        boolean hasEntries = index != null && index > 0L;
+        boolean hasNonZeroHash = !RegistryProtocol.ZERO_HASH.equals(hash);
+        if (hasEntries != hasNonZeroHash) {
+            throw new IllegalArgumentException(
+                    fieldName + " index and head hash boundary is inconsistent.");
         }
     }
 
@@ -2056,12 +2155,16 @@ public final class RegistryOperatorNetworkService {
                 node.path("through_period").asText(""),
                 node.path("through_ledger_index").asLong(-1L),
                 node.path("through_audit_index").asLong(-1L),
+                node.path("through_review_index").asLong(-1L),
+                node.path("through_eligibility_index").asLong(-1L),
                 node.path("ledger_head_hash").asText(""),
                 node.path("audit_head_hash").asText(""),
+                node.path("review_head_hash").asText(""),
+                node.path("eligibility_head_hash").asText(""),
                 node.path("created_at").asText(""),
                 node.path("after_weight").asLong(-1L),
                 node.path("after_id").asText(""));
-        if (claims.version() != 1
+        if (claims.version() != 2
                 || !expectedKind.equals(claims.kind())
                 || !expectedView.equals(claims.view())
                 || !expectedGroupId.equals(claims.groupId())
@@ -2075,8 +2178,24 @@ public final class RegistryOperatorNetworkService {
         RegistryProtocol.requirePeriod(claims.throughPeriod());
         requireNonNegative(claims.throughLedgerIndex(), "cursor through_ledger_index");
         requireNonNegative(claims.throughAuditIndex(), "cursor through_audit_index");
+        requireNonNegative(claims.throughReviewIndex(), "cursor through_review_index");
+        requireNonNegative(
+                claims.throughEligibilityIndex(),
+                "cursor through_eligibility_index");
         RegistryProtocol.requireHash(claims.ledgerHeadHash(), "cursor ledger_head_hash");
         RegistryProtocol.requireHash(claims.auditHeadHash(), "cursor audit_head_hash");
+        RegistryProtocol.requireHash(claims.reviewHeadHash(), "cursor review_head_hash");
+        RegistryProtocol.requireHash(
+                claims.eligibilityHeadHash(),
+                "cursor eligibility_head_hash");
+        requireHeadBoundary(
+                claims.throughReviewIndex(),
+                claims.reviewHeadHash(),
+                "cursor review");
+        requireHeadBoundary(
+                claims.throughEligibilityIndex(),
+                claims.eligibilityHeadHash(),
+                "cursor eligibility");
         RegistryProtocol.requireUtcTimestamp(claims.createdAt(), "cursor created_at");
         if (snapshot != null) {
             requireCursorSnapshot(claims, snapshot);
@@ -2092,8 +2211,14 @@ public final class RegistryOperatorNetworkService {
                 || !cursor.throughPeriod().equals(snapshot.throughPeriod())
                 || cursor.throughLedgerIndex() != snapshot.throughLedgerIndex()
                 || cursor.throughAuditIndex() != snapshot.throughAuditIndex()
+                || cursor.throughReviewIndex() != snapshot.throughReviewIndex()
+                || cursor.throughEligibilityIndex()
+                        != snapshot.throughEligibilityIndex()
                 || !cursor.ledgerHeadHash().equals(snapshot.ledgerHeadHash())
                 || !cursor.auditHeadHash().equals(snapshot.auditHeadHash())
+                || !cursor.reviewHeadHash().equals(snapshot.reviewHeadHash())
+                || !cursor.eligibilityHeadHash()
+                        .equals(snapshot.eligibilityHeadHash())
                 || !cursor.createdAt().equals(snapshot.createdAt())) {
             throw new IllegalArgumentException(
                     "Leaderboard cursor and signed snapshot boundaries differ.");
@@ -2424,7 +2549,8 @@ public final class RegistryOperatorNetworkService {
             String verificationUnavailableReason,
             String verificationStatus,
             String verificationSubmittedAt,
-            String legalName) {
+            String legalName,
+            String eligibilityStatus) {
     }
 
     public record PackageVerification(
@@ -2456,8 +2582,12 @@ public final class RegistryOperatorNetworkService {
             String throughPeriod,
             long throughLedgerIndex,
             long throughAuditIndex,
+            long throughReviewIndex,
+            long throughEligibilityIndex,
             String ledgerHeadHash,
             String auditHeadHash,
+            String reviewHeadHash,
+            String eligibilityHeadHash,
             String createdAt,
             long afterWeight,
             String afterId) {

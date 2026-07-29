@@ -128,12 +128,12 @@ public class DeletedAccountPurgeService {
                 now)) {
             return;
         }
-        if (ruleConfigured) {
-            notificationRuleRegistryService.beginRun(
+        if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
                     NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
                     "Scheduled deleted-account purge started.",
                     "account-purge",
-                    now);
+                    now) == null) {
+            return;
         }
         try {
             String purgeBeforeIso = now.minus(deleteGraceDays(), ChronoUnit.DAYS).toString();

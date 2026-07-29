@@ -155,12 +155,12 @@ public class NotificationOutboxWorkerService {
         if (!due) {
             return;
         }
-        if (ruleConfigured) {
-            registry.beginRun(
+        if (ruleConfigured && registry.beginScheduledRun(
                     NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
                     "Scheduled notification outbox delivery started.",
                     "notification-outbox",
-                    startedAt);
+                    startedAt) == null) {
+            return;
         }
         try {
             int processedCount = processDueNotificationsNow();
@@ -288,12 +288,12 @@ public class NotificationOutboxWorkerService {
             Instant startedAt = Instant.now();
             boolean ruleConfigured = registry != null
                     && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent();
-            if (ruleConfigured) {
-                registry.beginRun(
+            if (ruleConfigured && registry.beginRun(
                         NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
                         "Notification outbox wake-up started.",
                         "notification-outbox",
-                        startedAt);
+                        startedAt) == null) {
+                return;
             }
             int processedCount = processDueNotificationsNow();
             if (ruleConfigured) {

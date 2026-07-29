@@ -202,18 +202,18 @@ public class EventScheduler {
         if (!due) {
             return;
         }
+        if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
+                NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                "Scheduled event auto-inviter started.",
+                MARKER_UPDATED_BY,
+                now) == null) {
+            return;
+        }
         int claimedPendingCount = ruleConfigured
                 ? notificationRuleRegistryService.claimPendingCount(
                         NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
                 : 0;
         try {
-            if (ruleConfigured) {
-                notificationRuleRegistryService.beginRun(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
-                        "Scheduled event auto-inviter started.",
-                        MARKER_UPDATED_BY,
-                        now);
-            }
             int waitlistInvitedCount = activitiesMembersService.sweepEventWaitlists();
             if (waitlistInvitedCount > 0) {
                 LOGGER.info("Promoted {} event wait-list member(s) to invitations.", waitlistInvitedCount);
@@ -254,14 +254,16 @@ public class EventScheduler {
 
     private void runScheduledRandomGroups() {
         Instant startedAt = Instant.now();
+        if (notificationRuleRegistryService.beginScheduledRun(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                "Scheduled random grouping started.",
+                MARKER_UPDATED_BY,
+                startedAt) == null) {
+            return;
+        }
         int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
                 NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
         try {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                    "Scheduled random grouping started.",
-                    MARKER_UPDATED_BY,
-                    startedAt);
             List<GeneratedEventPlan> plans = generateRandomPlans();
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
@@ -288,18 +290,18 @@ public class EventScheduler {
 
     private void runTournamentReview(Instant now, boolean ruleConfigured) {
         Instant startedAt = now == null ? Instant.now() : now;
+        if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
+                NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                "Scheduled tournament review started.",
+                MARKER_UPDATED_BY,
+                startedAt) == null) {
+            return;
+        }
         int claimedPendingCount = ruleConfigured
                 ? notificationRuleRegistryService.claimPendingCount(
                         NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
                 : 0;
         try {
-            if (ruleConfigured) {
-                notificationRuleRegistryService.beginRun(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
-                        "Scheduled tournament review started.",
-                        MARKER_UPDATED_BY,
-                        startedAt);
-            }
             int startReviewCount = moveTournamentFirstStagesToStartReview(startedAt);
             if (startReviewCount > 0) {
                 LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
