@@ -145,14 +145,6 @@ class DefaultOperatorFirebaseCapabilityClientTest {
                   "clientId": "browser-client-id"
                 }
                 """);
-        var disabledFacebook = mapper.readTree("""
-                {
-                  "name": "projects/123/defaultSupportedIdpConfigs/facebook.com",
-                  "enabled": false,
-                  "clientId": "browser-client-id"
-                }
-                """);
-
         assertThat(
                 DefaultOperatorFirebaseCapabilityClient.hasAuthorizedDomain(
                         configuration.path("authorizedDomains"),
@@ -164,16 +156,8 @@ class DefaultOperatorFirebaseCapabilityClientTest {
                 .isTrue();
         assertThat(
                 DefaultOperatorFirebaseCapabilityClient
-                        .enabledSupportedProvider(
-                                google,
-                                "google.com"))
+                        .enabledGoogleProvider(google))
                 .isTrue();
-        assertThat(
-                DefaultOperatorFirebaseCapabilityClient
-                        .enabledSupportedProvider(
-                                disabledFacebook,
-                                "facebook.com"))
-                .isFalse();
     }
 
     private FirebaseWebConfiguration webConfiguration(

@@ -16683,25 +16683,25 @@
     "_id": "i18n-message-en-operator-configuration-test-messaging-destination",
     "key": "operator.configuration.test.messaging.destination",
     "lang": "en",
-    "value": "Test-device registration token"
+    "value": "Optional extra test-device token"
   },
   {
     "_id": "i18n-message-en-operator-configuration-test-messaging-destination-placeholder",
     "key": "operator.configuration.test.messaging.destination.placeholder",
     "lang": "en",
-    "value": "Paste one Firebase Cloud Messaging registration token"
+    "value": "Optionally paste an additional Firebase Cloud Messaging registration token"
   },
   {
     "_id": "i18n-message-en-operator-configuration-test-messaging-destination-guidance",
     "key": "operator.configuration.test.messaging.destination.guidance",
     "lang": "en",
-    "value": "Used once for this test request. It is not saved with the deployment configuration."
+    "value": "The browser readiness token is generated automatically. This optional extra destination is used once and is not saved."
   },
   {
     "_id": "i18n-message-en-operator-configuration-test-messaging-destination-required",
     "key": "operator.configuration.test.messaging.destination.required",
     "lang": "en",
-    "value": "Enter a test-device registration token before sending a test notification."
+    "value": "Browser notification permission and service-worker readiness are required for this test."
   },
   {
     "_id": "i18n-message-en-operator-configuration-test-messaging-destination-too-long",
@@ -33981,25 +33981,25 @@
     "_id": "i18n-message-hu-operator-configuration-test-messaging-destination",
     "key": "operator.configuration.test.messaging.destination",
     "lang": "hu",
-    "value": "Tesztkészülék regisztrációs tokenje"
+    "value": "Opcionális extra tesztkészülék-token"
   },
   {
     "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-placeholder",
     "key": "operator.configuration.test.messaging.destination.placeholder",
     "lang": "hu",
-    "value": "Illessz be egy Firebase Cloud Messaging regisztrációs tokent"
+    "value": "Opcionálisan illessz be egy további Firebase Cloud Messaging regisztrációs tokent"
   },
   {
     "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-guidance",
     "key": "operator.configuration.test.messaging.destination.guidance",
     "lang": "hu",
-    "value": "Csak ehhez a tesztkéréshez használjuk; nem kerül mentésre a telepítés konfigurációjában."
+    "value": "A böngésző alkalmassági tokenje automatikusan létrejön. Az opcionális további célpontot csak egyszer használjuk, és nem mentjük el."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-required",
     "key": "operator.configuration.test.messaging.destination.required",
     "lang": "hu",
-    "value": "Tesztértesítés küldése előtt add meg a tesztkészülék regisztrációs tokenjét."
+    "value": "A teszthez engedélyezett böngészőértesítések és működő service worker szükséges."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-too-long",

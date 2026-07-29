@@ -413,7 +413,7 @@ class OperatorConfigurationServiceTest {
                 .contains("browser configuration tests succeeded");
         assertThat(messaging.success()).isTrue();
         assertThat(messaging.message())
-                .contains("browser VAPID readiness tests succeeded");
+                .contains("browser messaging readiness test succeeded");
         assertThat(authentication.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
         assertThat(messaging.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
         assertThat(authentication.firebase()

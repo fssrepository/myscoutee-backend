@@ -75,23 +75,15 @@ public class DefaultOperatorFirebaseCapabilityClient
                         .asBoolean(false);
     }
 
-    static boolean enabledSupportedProvider(
-            JsonNode provider,
-            String providerId) {
-        String normalizedProviderId =
-                providerId == null ? "" : providerId.trim();
-        if (provider == null
-                || (!"google.com".equals(normalizedProviderId)
-                        && !"facebook.com".equals(
-                                normalizedProviderId))) {
+    static boolean enabledGoogleProvider(JsonNode provider) {
+        if (provider == null) {
             return false;
         }
         return provider.path("enabled").asBoolean(false)
                 && StringUtils.hasText(
                         provider.path("clientId").asText("").trim())
                 && provider.path("name").asText("").trim().endsWith(
-                        "/defaultSupportedIdpConfigs/"
-                                + normalizedProviderId);
+                        "/defaultSupportedIdpConfigs/google.com");
     }
 
     private static String normalizeDomain(String value) {
@@ -475,11 +467,11 @@ public class DefaultOperatorFirebaseCapabilityClient
                     projectId,
                     configuration);
             if (validateIdentityToolkit) {
-                verifyIdentityToolkit(configuration);
                 verifyAuthenticationConfiguration(
                         accessToken,
                         projectId,
                         configuration);
+                verifyIdentityToolkit(configuration);
             }
         }
 
@@ -605,11 +597,11 @@ public class DefaultOperatorFirebaseCapabilityClient
                     IDENTITY_TOOLKIT_PREFIX
                             + encodeQuery(configuration.apiKey()));
             byte[] body = objectMapper.writeValueAsBytes(Map.of(
-                    "identifier",
-                    "firebase-capability-test@myscoutee.invalid",
+                    "providerId",
+                    "google.com",
                     "continueUri",
                     "https://" + configuration.authDomain()
-                            + "/__/auth/handler"));
+                            + "/entry"));
             String origin = "https://" + configuration.authDomain();
             HttpRequest request = HttpRequest.newBuilder(uri)
                     .timeout(REQUEST_TIMEOUT)
@@ -618,9 +610,19 @@ public class DefaultOperatorFirebaseCapabilityClient
                     .header("Referer", origin + "/")
                     .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                     .build();
-            successfulJson(
+            JsonNode result = successfulJson(
                     send(request),
                     "Firebase browser authentication lookup");
+            requireExact(
+                    text(result, "providerId"),
+                    "google.com",
+                    "authentication provider");
+            if (!StringUtils.hasText(text(result, "authUri"))
+                    || !StringUtils.hasText(
+                            text(result, "sessionId"))) {
+                throw new IllegalStateException(
+                        "Firebase browser authentication lookup returned an invalid response.");
+            }
         }
 
         private void verifyAuthenticationConfiguration(
@@ -641,24 +643,21 @@ public class DefaultOperatorFirebaseCapabilityClient
             requireAuthorizedDomain(
                     config.path("authorizedDomains"),
                     configuration.authDomain());
-            if (emailPasswordEnabled(config)) {
-                return;
+            if (!emailPasswordEnabled(config)) {
+                throw new IllegalStateException(
+                        "Firebase email and password sign-in is not enabled.");
             }
-            if (enabledDefaultProvider(
-                    accessToken,
-                    projectId,
-                    "google.com")
-                    || enabledDefaultProvider(
+            if (!enabledGoogleProvider(
+                    loadDefaultProvider(
                             accessToken,
                             projectId,
-                            "facebook.com")) {
-                return;
+                            "google.com"))) {
+                throw new IllegalStateException(
+                        "Firebase Google sign-in is not enabled.");
             }
-            throw new IllegalStateException(
-                    "Firebase authentication has no supported enabled sign-in method.");
         }
 
-        private boolean enabledDefaultProvider(
+        private JsonNode loadDefaultProvider(
                 String accessToken,
                 String projectId,
                 String providerId) throws Exception {
@@ -671,15 +670,9 @@ public class DefaultOperatorFirebaseCapabilityClient
                             + encodeQuery("name,enabled,clientId"));
             BoundedResponse response = send(
                     authorizedGet(uri, accessToken));
-            if (response.statusCode() == 404) {
-                return false;
-            }
-            JsonNode provider = successfulJson(
+            return successfulJson(
                     response,
                     "Firebase authentication provider lookup");
-            return enabledSupportedProvider(
-                    provider,
-                    providerId);
         }
 
         private HttpRequest authorizedGet(
