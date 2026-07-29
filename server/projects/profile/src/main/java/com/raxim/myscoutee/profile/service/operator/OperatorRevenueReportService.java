@@ -21,15 +21,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.RevenueReportOutboxItem;
 import com.raxim.myscoutee.profile.data.document.RevenueReportOutboxItem.Failure;
 import com.raxim.myscoutee.profile.data.document.RevenueReportOutboxItem.SignedAttempt;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueReportCurrencyDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueReportDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueReportPageDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorRevenueDtos.OperatorRevenueSyncDto;
 import com.raxim.myscoutee.profile.repository.RevenueReportOutboxRepository;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
@@ -96,19 +103,84 @@ public class OperatorRevenueReportService {
      * initializes identity or selects/registers a registry.
      */
     public OperatorRevenueSyncDto synchronizeNow() {
-        if (MongoSessionModeContext.currentMode() != MongoSessionMode.REAL) {
-            return status(
-                    "DORMANT",
-                    "EXPLORE_MODE",
-                    "Explore mode never sends deployment revenue.",
-                    0,
-                    0,
-                    0,
-                    0L,
-                    0L,
-                    clock.instant());
+        return synchronize(
+                MongoSessionModeContext.currentMode(),
+                true);
+    }
+
+    public OperatorRevenueReportPageDto reports(
+            String status,
+            int page,
+            int size) {
+        RegisteredRuntime runtime = requireOperatorRuntime(
+                MongoSessionModeContext.currentMode());
+        int normalizedPage = requirePage(page);
+        int normalizedSize = requirePageSize(size);
+        String normalizedStatus = requireReportStatus(status);
+        PageRequest request = PageRequest.of(
+                normalizedPage,
+                normalizedSize,
+                Sort.by(
+                        Sort.Order.desc("period"),
+                        Sort.Order.desc("revision"),
+                        Sort.Order.desc("_id")));
+        var result = normalizedStatus == null
+                ? outboxRepository.findByDeploymentId(
+                        runtime.state().deploymentId(),
+                        request)
+                : outboxRepository.findByDeploymentIdAndStatus(
+                        runtime.state().deploymentId(),
+                        normalizedStatus,
+                        request);
+        return new OperatorRevenueReportPageDto(
+                result.getContent().stream()
+                        .map(this::toReportDto)
+                        .toList(),
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages());
+    }
+
+    /**
+     * Explicitly returns one blocked immutable payload to the normal durable
+     * retry queue. It does not alter its payload/idempotency key and does not
+     * perform network I/O in this request.
+     */
+    public OperatorRevenueReportDto requeue(String reportId) {
+        RegisteredRuntime runtime = requireOperatorRuntime(
+                MongoSessionModeContext.currentMode());
+        String normalizedId = safeText(reportId);
+        if (!normalizedId.matches("[0-9a-f]{24}")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Revenue report id is invalid.");
         }
-        return synchronize(true);
+        RevenueReportOutboxItem item = outboxRepository
+                .findByIdAndDeploymentId(
+                        normalizedId,
+                        runtime.state().deploymentId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Revenue report was not found."));
+        if (!RevenueReportOutboxItem.STATUS_BLOCKED.equals(
+                item.getStatus())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Only a blocked revenue report can be requeued.");
+        }
+        validateStoredItem(runtime, item);
+        item.setStatus(RevenueReportOutboxItem.STATUS_PENDING);
+        item.setNextRetryAt(null);
+        item.setUpdatedAt(clock.instant().toString());
+        try {
+            return toReportDto(outboxRepository.save(item));
+        } catch (DataAccessException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Revenue report changed concurrently; reload it and retry.",
+                    exception);
+        }
     }
 
     @Scheduled(
@@ -120,7 +192,9 @@ public class OperatorRevenueReportService {
         MongoSessionMode previous = MongoSessionModeContext.currentMode();
         MongoSessionModeContext.set(MongoSessionMode.REAL);
         try {
-            OperatorRevenueSyncDto result = synchronize(false);
+            OperatorRevenueSyncDto result = synchronize(
+                    MongoSessionMode.REAL,
+                    false);
             if ("BLOCKED".equals(result.state())
                     || "ERROR".equals(result.state())) {
                 LOGGER.warn(
@@ -137,7 +211,12 @@ public class OperatorRevenueReportService {
         }
     }
 
-    private OperatorRevenueSyncDto synchronize(boolean forceDelivery) {
+    private OperatorRevenueSyncDto synchronize(
+            MongoSessionMode requestedMode,
+            boolean forceDelivery) {
+        MongoSessionMode mode = requestedMode == null
+                ? MongoSessionMode.REAL
+                : requestedMode;
         Instant startedAt = clock.instant();
         if (!synchronizationRunning.compareAndSet(false, true)) {
             return status(
@@ -156,7 +235,7 @@ public class OperatorRevenueReportService {
              * This resolution must remain first. A dormant deployment does not
              * read payments/outbox, write Mongo, load keys/state, or call HTTP.
              */
-            Resolution resolution = runtimeResolver.resolveReal();
+            Resolution resolution = runtimeResolver.resolveRevenue(mode);
             if (!resolution.isReady()) {
                 return status(
                         resolution.state(),
@@ -245,20 +324,23 @@ public class OperatorRevenueReportService {
         Set<LocalDate> reportPeriods =
                 new LinkedHashSet<>(latestByPeriod.keySet());
         LocalDate previousCompletedDay = currentDay.minusDays(1L);
-        if (!latestByPeriod.isEmpty()) {
-            LocalDate catchUpDay = latestByPeriod.keySet().stream()
-                    .min(Comparator.naturalOrder())
-                    .orElseThrow()
-                    .plusDays(1L);
-            int catchUpCount = 0;
-            while (!catchUpDay.isAfter(previousCompletedDay)
-                    && catchUpCount < MAX_CATCH_UP_DAYS_PER_ROUND) {
-                if (!latestByPeriod.containsKey(catchUpDay)) {
-                    reportPeriods.add(catchUpDay);
-                    catchUpCount++;
-                }
-                catchUpDay = catchUpDay.plusDays(1L);
+        Set<LocalDate> finalizedPaymentPeriods =
+                revenueService.finalizedRevenuePeriodsBefore(currentDay);
+        LocalDate backfillStart = earliest(
+                latestByPeriod.keySet(),
+                finalizedPaymentPeriods);
+        if (backfillStart == null) {
+            backfillStart = previousCompletedDay;
+        }
+        LocalDate catchUpDay = backfillStart;
+        int catchUpCount = 0;
+        while (!catchUpDay.isAfter(previousCompletedDay)
+                && catchUpCount < MAX_CATCH_UP_DAYS_PER_ROUND) {
+            if (!latestByPeriod.containsKey(catchUpDay)) {
+                reportPeriods.add(catchUpDay);
+                catchUpCount++;
             }
+            catchUpDay = catchUpDay.plusDays(1L);
         }
         reportPeriods.add(previousCompletedDay);
 
@@ -306,6 +388,24 @@ public class OperatorRevenueReportService {
             }
         }
         return materialized;
+    }
+
+    private LocalDate earliest(
+            Set<LocalDate> first,
+            Set<LocalDate> second) {
+        LocalDate left = first == null
+                ? null
+                : first.stream().min(Comparator.naturalOrder()).orElse(null);
+        LocalDate right = second == null
+                ? null
+                : second.stream().min(Comparator.naturalOrder()).orElse(null);
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return left.isBefore(right) ? left : right;
     }
 
     private DeliveryResult deliverPending(
@@ -862,6 +962,104 @@ public class OperatorRevenueReportService {
                 pending,
                 blocked,
                 at.toString());
+    }
+
+    private RegisteredRuntime requireOperatorRuntime(
+            MongoSessionMode requestedMode) {
+        MongoSessionMode mode = requestedMode == null
+                ? MongoSessionMode.REAL
+                : requestedMode;
+        Resolution resolution = runtimeResolver.resolveRevenue(mode);
+        if (resolution.isReady()) {
+            return resolution.runtime();
+        }
+        HttpStatus status = "BLOCKED".equals(resolution.state())
+                ? HttpStatus.SERVICE_UNAVAILABLE
+                : HttpStatus.CONFLICT;
+        throw new ResponseStatusException(
+                status,
+                StringUtils.hasText(resolution.message())
+                        ? resolution.message()
+                        : "Registered deployment evidence is unavailable.");
+    }
+
+    private int requirePage(int page) {
+        if (page < 0 || page > 1_000_000) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Revenue report page is invalid.");
+        }
+        return page;
+    }
+
+    private int requirePageSize(int size) {
+        if (size < 1 || size > 100) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Revenue report page size must be between 1 and 100.");
+        }
+        return size;
+    }
+
+    private String requireReportStatus(String status) {
+        String normalized = safeText(status).toUpperCase(
+                java.util.Locale.ROOT);
+        if (normalized.isEmpty()) {
+            return null;
+        }
+        if (!Set.of(
+                        RevenueReportOutboxItem.STATUS_PENDING,
+                        RevenueReportOutboxItem.STATUS_ACCEPTED,
+                        RevenueReportOutboxItem.STATUS_BLOCKED)
+                .contains(normalized)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Revenue report status is invalid.");
+        }
+        return normalized;
+    }
+
+    private OperatorRevenueReportDto toReportDto(
+            RevenueReportOutboxItem item) {
+        Failure failure = item.getLastFailure();
+        RevenueBatchResponse accepted = item.getAcceptedResponse();
+        return new OperatorRevenueReportDto(
+                item.getId(),
+                item.getPeriod(),
+                valueOrZero(item.getRevision()),
+                empty(item.getSupersedesBatchId()),
+                item.getRulesetVersion(),
+                valueOrZero(item.getCommissionRateBasisPoints()),
+                item.getCurrencies() == null
+                        ? List.of()
+                        : item.getCurrencies().stream()
+                                .map(this::toReportCurrencyDto)
+                                .toList(),
+                item.getPayloadHash(),
+                item.getStatus(),
+                valueOrZero(item.getAttemptCount()),
+                item.getNextRetryAt(),
+                failure == null ? null : failure.getCode(),
+                failure == null ? null : failure.getMessage(),
+                failure == null ? null : failure.getRetryable(),
+                failure == null ? null : failure.getAt(),
+                accepted == null ? null : accepted.batchId(),
+                item.getAcceptedAt(),
+                item.getCreatedAt(),
+                item.getUpdatedAt());
+    }
+
+    private OperatorRevenueReportCurrencyDto toReportCurrencyDto(
+            RevenueCurrencyRow row) {
+        return new OperatorRevenueReportCurrencyDto(
+                row.currencyCode(),
+                valueOrZero(row.fractionDigits()),
+                valueOrZero(row.capturedMinor()),
+                valueOrZero(row.refundedMinor()),
+                valueOrZero(row.netMinor()),
+                valueOrZero(row.commissionBasisMinor()),
+                valueOrZero(row.estimatedCommissionMinor()),
+                valueOrZero(row.paymentCount()));
     }
 
     private static int valueOrZero(Integer value) {

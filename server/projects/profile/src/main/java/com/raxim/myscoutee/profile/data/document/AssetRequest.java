@@ -12,7 +12,8 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord
 @Document(collection = "assetRequests")
 @CompoundIndexes({
         @CompoundIndex(name = "asset_request_owner_asset", def = "{'ownerUserId': 1, 'assetId': 1}"),
-        @CompoundIndex(name = "asset_request_asset_updated", def = "{'assetId': 1, 'updatedDate': -1}")
+        @CompoundIndex(name = "asset_request_asset_updated", def = "{'assetId': 1, 'updatedDate': -1}"),
+        @CompoundIndex(name = "asset_request_qmau_booking_window", def = "{'status': 1, 'requestedAtIso': 1, 'userId': 1}")
 })
 public record AssetRequest(
         @Id String id,

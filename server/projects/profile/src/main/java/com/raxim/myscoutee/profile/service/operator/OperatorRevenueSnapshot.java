@@ -57,7 +57,8 @@ record OperatorRevenueSnapshot(
             long invalidRefundRecords,
             long invalidTimestampRecords,
             long excludedUnfinalizedPayments,
-            long excludedPaymentRevisions) {
+            long excludedPaymentRevisions,
+            long excludedSimulatedPayments) {
 
         long rejectedRecordCount() {
             return invalidCurrencyRecords

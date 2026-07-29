@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.RegistryProperties;
+import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.profile.data.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.profile.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.registry.RegistryCrypto;
@@ -32,18 +34,38 @@ import tools.jackson.databind.ObjectMapper;
 class OperatorRevenueRegistryRuntimeResolver {
     private final OperatorRegistrySettingsRepository settingsRepository;
     private final RegistryProperties configuredProperties;
+    private final RegistryDemoProperties demoProperties;
     private final ObjectMapper objectMapper;
 
     OperatorRevenueRegistryRuntimeResolver(
             OperatorRegistrySettingsRepository settingsRepository,
             RegistryProperties configuredProperties,
+            RegistryDemoProperties demoProperties,
             ObjectMapper objectMapper) {
         this.settingsRepository = Objects.requireNonNull(settingsRepository);
         this.configuredProperties = Objects.requireNonNull(configuredProperties);
+        this.demoProperties = Objects.requireNonNull(demoProperties);
         this.objectMapper = Objects.requireNonNull(objectMapper);
     }
 
     Resolution resolveReal() {
+        return resolveRevenue(MongoSessionMode.REAL);
+    }
+
+    Resolution resolveRevenue(MongoSessionMode mode) {
+        return resolve(mode, RegistryProtocol.REVENUE_BATCH_PATH);
+    }
+
+    Resolution resolveMau(MongoSessionMode mode) {
+        return resolve(mode, RegistryProtocol.MAU_BATCH_PATH);
+    }
+
+    private Resolution resolve(
+            MongoSessionMode requestedMode,
+            String requiredEndpointPath) {
+        MongoSessionMode mode = requestedMode == null
+                ? MongoSessionMode.REAL
+                : requestedMode;
         Optional<OperatorRegistrySettings> stored = settingsRepository.findById(
                 OperatorRegistrySettings.SINGLETON_ID);
         if (stored.isEmpty()) {
@@ -68,16 +90,19 @@ class OperatorRevenueRegistryRuntimeResolver {
                     "DEPLOYMENT_NOT_REGISTERED",
                     "Complete node registration before sending revenue reports.");
         }
-        if (!configuredProperties.isOutboundAllowed()) {
+        if (mode == MongoSessionMode.REAL
+                && !configuredProperties.isOutboundAllowed()) {
             return Resolution.dormant(
                     "REGISTRY_OUTBOUND_DISABLED",
                     "Outbound registry communication is disabled by the deployment policy.");
         }
 
         try {
-            RegistryProperties runtime = runtimeProperties(settings.getSelection());
+            RegistryProperties runtime = runtimeProperties(
+                    settings.getSelection(),
+                    mode);
             new RegistryHttpClient(runtime, objectMapper).endpoint(
-                    RegistryProtocol.REVENUE_BATCH_PATH);
+                    requiredEndpointPath);
             RegistryCrypto crypto = RegistryCrypto.load(runtime);
             RegistryLocalStore localStore =
                     new RegistryLocalStore(runtime, objectMapper);
@@ -98,14 +123,35 @@ class OperatorRevenueRegistryRuntimeResolver {
         }
     }
 
-    private RegistryProperties runtimeProperties(
-            OperatorRegistrySettings.RegistrySelection selection) {
+    RegistryProperties runtimeProperties(
+            OperatorRegistrySettings.RegistrySelection selection,
+            MongoSessionMode mode) {
         RegistryProperties runtime = new RegistryProperties();
         runtime.setEnabled(true);
         runtime.setOutboundAllowed(true);
         runtime.setOperatorRegistrationConfirmed(false);
-        runtime.setBaseUrl(selection.getBaseUrl());
-        runtime.setRegistryScope(selection.getRegistryScope());
+        String baseUrl = safeText(selection.getBaseUrl());
+        String scope = safeText(selection.getRegistryScope());
+        if (mode == MongoSessionMode.DEMO) {
+            String configuredDemoBaseUrl = stripTrailingSlash(
+                    demoProperties.getBaseUrl());
+            String configuredDemoScope = safeText(
+                    demoProperties.getRegistryScope());
+            if (!StringUtils.hasText(configuredDemoBaseUrl)
+                    || !StringUtils.hasText(configuredDemoScope)) {
+                throw new IllegalStateException(
+                        "Explore registry endpoint and scope are not configured.");
+            }
+            if (!configuredDemoBaseUrl.equals(stripTrailingSlash(baseUrl))
+                    || !configuredDemoScope.equals(scope)) {
+                throw new IllegalStateException(
+                        "Explore registry selection does not match its isolated demo registry.");
+            }
+            baseUrl = configuredDemoBaseUrl;
+            scope = configuredDemoScope;
+        }
+        runtime.setBaseUrl(baseUrl);
+        runtime.setRegistryScope(scope);
         runtime.setExpectedRegistryKeyFingerprint(
                 selection.getRegistryPublicKeyFingerprint());
         runtime.setTrustOnFirstUse(false);
@@ -114,14 +160,38 @@ class OperatorRevenueRegistryRuntimeResolver {
         runtime.setRetryDelay(configuredProperties.getRetryDelay());
         runtime.setMaxResponseBytes(configuredProperties.getMaxResponseBytes());
         runtime.setSoftwareVersion(configuredProperties.getSoftwareVersion());
-        runtime.setPrivateKeyPath(configuredProperties.getPrivateKeyPath());
-        runtime.setPublicKeyPath(configuredProperties.getPublicKeyPath());
-        runtime.setStateDir(configuredProperties.getStateDir());
         runtime.setPackageSigningPublicKeyPath(
                 configuredProperties.getPackageSigningPublicKeyPath());
-        runtime.setAllowInsecureHttp(false);
-        runtime.setInsecureHttpAllowedHosts("");
+        if (mode == MongoSessionMode.DEMO) {
+            runtime.setPrivateKeyPath(demoProperties.getPrivateKeyPath());
+            runtime.setPublicKeyPath(demoProperties.getPublicKeyPath());
+            runtime.setStateDir(demoProperties.getStateDir());
+            runtime.setAllowInsecureHttp(
+                    demoProperties.isAllowInsecureHttp());
+            runtime.setInsecureHttpAllowedHosts(
+                    demoProperties.getInsecureHttpAllowedHosts());
+        } else {
+            runtime.setPrivateKeyPath(
+                    configuredProperties.getPrivateKeyPath());
+            runtime.setPublicKeyPath(
+                    configuredProperties.getPublicKeyPath());
+            runtime.setStateDir(configuredProperties.getStateDir());
+            runtime.setAllowInsecureHttp(false);
+            runtime.setInsecureHttpAllowedHosts("");
+        }
         return runtime;
+    }
+
+    private static String stripTrailingSlash(String value) {
+        String normalized = safeText(value);
+        while (normalized.endsWith("/") && normalized.length() > 1) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        return normalized;
+    }
+
+    private static String safeText(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private RegisteredRuntime verifyRegisteredEvidence(

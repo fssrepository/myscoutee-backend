@@ -99,12 +99,14 @@ docker compose up --build
 ```
 
 The landing Explore popup can select `Operator`, then the seeded
-`Demo Operator`. That browser-local workspace is the non-destructive product
-tour and uses the frontend seed store. When login is enabled, an authenticated
-development Operator uses Java and the live local Go service instead. Node
-initialization and registration happen only when that Operator performs the
-corresponding UI actions. Starting Compose does not create a Java node identity
-or silently enroll it.
+`Demo Operator`. In every backend-connected development, E2E, or production
+build this is a server-side demo session: Angular calls Java, Java uses Mongo
+`demo_db`, and registry operations use the isolated seeded Go service below. Node
+initialization and registration still happen only when that demo Operator
+performs the corresponding UI actions. Starting Compose seeds the registry
+tour data but does not silently create or enroll the Java demo deployment.
+The frontend-local seed adapter remains available only for an explicit
+local/offline build.
 
 The three demo stores are deliberately separate:
 
@@ -117,17 +119,18 @@ The three demo stores are deliberately separate:
 
 The registry health endpoint is
 `http://127.0.0.1:${LOCAL_REGISTRY_PORT:-8081}/healthz`. The default signed
-scope is the generic `demo:local-registry`. Selectable HTTP-demo endpoints are
+scope is `demo:myscoutee`. Selectable HTTP-demo endpoints are
 defined in `server/docker/conf/mongodb/demo_db/operatorRegistryEndpoints.json`;
 Java does not manufacture a candidate endpoint, signed identity, or enrollment
 record. No geography or parent is built in.
 
 Plain HTTP is enabled only for the exact Compose hostname `registry` in this
-development sandbox. The browser-local Explore data source is populated only
-by the frontend seed builder and never calls this Java workflow. An
-authenticated production Operator uses the independently deployed registry's
-HTTPS endpoint; that central Go deployment has its own nginx/TLS configuration
-and is not bundled into the MyScoutee production stack.
+internal demo network. A deployed production package includes the same tiny Go
+binary as an internal-only `myscoutee-registry:<version>-prod` service, with no
+host port and with independent demo SQLite, signing-key, and Java-client
+volumes. This service is used only by Explore. An authenticated real Operator
+selects an independently deployed registry's HTTPS endpoint; real registry
+state is never bundled with or routed through the Explore service.
 
 The registry announcement publisher is also testable against the running dev
 stack. It is a local command in the registry container, not a public write

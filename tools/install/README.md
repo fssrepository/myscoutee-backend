@@ -54,21 +54,30 @@ REMOTE_PASSWORD=
 
 `REMOTE_KEY_FILE` can be used instead of `REMOTE_PASSWORD`. When `REMOTE_PASSWORD` is set, the script uses `sshpass` when it exists locally, otherwise it falls back to OpenSSH askpass through `setsid`.
 
-The live smoke URL is derived from `REMOTE_HOST`:
+Java/Mongo smoke checks run through the backend container and therefore do not
+weaken or bypass public certificate validation. To additionally qualify the
+public transport, set an explicit trusted HTTPS URL:
 
-```text
-http://${REMOTE_HOST}
+```bash
+SMOKE_PUBLIC_BASE_URL=https://app.example.com
 ```
+
+When set, `install.sh` follows redirects and requires the host's normal CA
+trust to validate that URL. It has no insecure `-k` mode. Leave it empty only
+when the remote-install run is intentionally checking application/package
+health before public TLS has been provisioned; the isolated Nginx policy test
+still verifies redirect, health, ACME, and HSTS behavior.
 
 The remote installer does not initialize a node, choose a registry, or write a
 registry URL/scope. Registry configuration belongs to the authenticated local
 operator workflow after the product is running.
 
-Explore mode on an installed production node may display the sample Operator
-workspace, but it never contacts a registry or creates deployment keys/state.
-The package does not install a local Go registry. Real registration is
-available only to an authenticated Operator and uses the separately deployed
-registry's HTTPS endpoint.
+Explore mode on an installed production node is a server-side demo session.
+It uses Mongo `demo_db` and the package's isolated, seeded Go demo registry,
+which has dedicated SQLite/signing-key/client-state volumes and no host port.
+Those demo identities and writes never reach the operator-selected registry.
+Real registration remains available only to an authenticated Operator and uses
+the separately deployed registry's HTTPS endpoint.
 
 Remote Install
 --------------
@@ -103,11 +112,14 @@ The install flow is:
 3. remove and reinstall when the installed version already matches the deb
 4. install the deb as an upgrade when the version differs
 5. restart `myscoutee` with systemd
-6. run `/opt/myscoutee/packaging/scripts/smoke-mongo-compatibility.sh` against `http://${REMOTE_HOST}`
-7. `curl http://${REMOTE_HOST}/api/i18n/bundle?lang=hu` and verify a bundle payload comes back
-8. report whether the node is uninitialized, initialized but unregistered, or
+6. run `/opt/myscoutee/packaging/scripts/smoke-mongo-compatibility.sh` with its
+   explicit internal Java fallback
+7. query the i18n bundle inside the backend container
+8. when `SMOKE_PUBLIC_BASE_URL` is configured, strictly verify the public HTTPS
+   API through the host CA trust
+9. report whether the node is uninitialized, initialized but unregistered, or
    already has a preserved deployment code
-9. check for MyScoutee Docker containers stuck in `Restarting`
+10. check for MyScoutee Docker containers stuck in `Restarting`
 
 The script is fail-safe by default. If install, start, smoke test, or restart-loop detection fails, the remote script prints `systemctl`, Docker, compose, and journal diagnostics to the terminal, then stops `myscoutee`. Set `STOP_ON_FAILURE=false` only when you explicitly want to leave the failed service running for manual inspection.
 

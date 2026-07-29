@@ -3,7 +3,7 @@
     "_id": "registry-demo-local",
     "label": "Local registry",
     "baseUrl": "http://registry:8080",
-    "registryScope": "demo:local-registry",
+    "registryScope": "demo:myscoutee",
     "enabled": true,
     "sortOrder": 10
   }

@@ -56,6 +56,7 @@ class OperatorConfigurationMapperTest {
         DeploymentConfiguration empty = new DeploymentConfiguration();
         assertThat(empty.getSchemaVersion()).isNull();
         assertThat(empty.getBranding()).isNull();
+        assertThat(empty.getSocialLinks()).isNull();
         assertThat(empty.getPayment()).isNull();
         assertThat(empty.getFirebase()).isNull();
 
@@ -89,14 +90,24 @@ class OperatorConfigurationMapperTest {
                             .get("logoCharacterIndex")
                             .isNull())
                     .isTrue();
+            assertThat(singleton.path("socialLinks").isArray()).isTrue();
         }
     }
 
     @Test
-    void publicBrandingJsonContainsExactlyTheSixPublicFields() throws Exception {
+    void publicBrandingJsonContainsOnlyBrandingAndNonSecretSocialFields()
+            throws Exception {
         DeploymentConfiguration configuration = seededConfiguration();
         configuration.getBranding().setLogoUrl(
                 "/media/public?key=images%2Foperator%2Flogo%2Fmedium");
+        DeploymentConfiguration.SocialLink socialLink =
+                new DeploymentConfiguration.SocialLink();
+        socialLink.setProvider("discord");
+        socialLink.setLabel("Discord");
+        socialLink.setUrl("https://discord.example.test/community");
+        socialLink.setIcon("discord");
+        socialLink.setHandle("@community");
+        configuration.setSocialLinks(List.of(socialLink));
         OperatorConfigurationMapper mapper = new OperatorConfigurationMapper();
 
         var json = objectMapper.readTree(
@@ -109,7 +120,20 @@ class OperatorConfigurationMapperTest {
                         "homeLabel",
                         "logoUrl",
                         "themePreset",
-                        "revision");
+                        "revision",
+                        "socialLinks");
+        assertThat(json.path("socialLinks").get(0).propertyNames())
+                .containsExactlyInAnyOrder(
+                        "provider",
+                        "label",
+                        "url",
+                        "icon",
+                        "handle");
+        assertThat(json.toString())
+                .doesNotContain("adminEmails")
+                .doesNotContain("credential")
+                .doesNotContain("firebase")
+                .doesNotContain("payment");
     }
 
     @Test
@@ -135,6 +159,7 @@ class OperatorConfigurationMapperTest {
                         "assets/payment-providers/stripe.svg",
                         "Stripe",
                         "violet")),
+                List.of("admin@example.test"),
                 null);
         String json = objectMapper.writeValueAsString(dto);
 
@@ -165,12 +190,15 @@ class OperatorConfigurationMapperTest {
         var dto = new OperatorConfigurationMapper().toOperatorConfiguration(
                 seededConfiguration(),
                 List.of(),
+                List.of(),
                 null);
         var json = objectMapper.readTree(objectMapper.writeValueAsString(dto));
 
         assertThat(json.propertyNames()).containsExactlyInAnyOrder(
                 "capability",
                 "unavailableReason",
+                "adminEmails",
+                "socialLinks",
                 "branding",
                 "payment",
                 "firebase",
@@ -216,6 +244,7 @@ class OperatorConfigurationMapperTest {
         branding.setThemePreset(DeploymentThemePreset.AURORA.name());
         branding.setRevision(0L);
         configuration.setBranding(branding);
+        configuration.setSocialLinks(List.of());
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();

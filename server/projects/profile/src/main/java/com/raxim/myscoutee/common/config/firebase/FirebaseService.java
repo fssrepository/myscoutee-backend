@@ -66,6 +66,36 @@ public class FirebaseService {
                 user);
     }
 
+    public UserDetails loadOrCreateBootstrapOperator(String email) {
+        String normalizedEmail = normalizeEmail(email);
+        if (!config.isOperatorUser(normalizedEmail)) {
+            return null;
+        }
+        Users user = findUserByEmail(normalizedEmail);
+        if (user == null) {
+            user = findUser(stableUserId(normalizedEmail));
+        }
+        if (user == null) {
+            user = createOperatorUser(normalizedEmail, null);
+        }
+        user = ensureBootstrapOperator(user, normalizedEmail);
+        return operatorPrincipal(normalizedEmail, user);
+    }
+
+    public UserDetails loadStoredBootstrapOperator(String email) {
+        String normalizedEmail = normalizeEmail(email);
+        if (!config.isOperatorUser(normalizedEmail)) {
+            return null;
+        }
+        Users user = findUserByEmail(normalizedEmail);
+        if (user == null) {
+            user = findUser(stableUserId(normalizedEmail));
+        }
+        return isActiveStoredOperator(user)
+                ? operatorPrincipal(normalizedEmail, user)
+                : null;
+    }
+
     public UserDetails loadUserByUsername(String username, String xLink, String currentPage) {
         String normalizedEmail = normalizeEmail(username);
         Users user = findUserByEmail(normalizedEmail);
@@ -250,6 +280,58 @@ public class FirebaseService {
         }
     }
 
+    private UserDetails operatorPrincipal(
+            String normalizedEmail,
+            Users user) {
+        if (user == null || !isStoredOperator(user)) {
+            return null;
+        }
+        return new FirebasePrincipal(
+                normalizeId(user.getId()),
+                normalizedEmail,
+                resolveAuthorities(normalizedEmail, user),
+                user);
+    }
+
+    private Users ensureBootstrapOperator(
+            Users user,
+            String normalizedEmail) {
+        boolean changed = false;
+        if (!user.isOperator()) {
+            user.setOperator(true);
+            changed = true;
+        }
+        if (!"Operator".equals(user.getHostTier())) {
+            user.setHostTier("Operator");
+            changed = true;
+        }
+        if (!"Operator workspace".equals(user.getStatusText())) {
+            user.setStatusText("Operator workspace");
+            changed = true;
+        }
+        if (!"A".equalsIgnoreCase(user.getStatus())) {
+            user.setStatus("A");
+            changed = true;
+        }
+        if (!"public".equalsIgnoreCase(user.getProfileStatus())) {
+            user.setProfileStatus("public");
+            changed = true;
+        }
+        if (StringUtils.hasText(user.getDeletedAtIso())) {
+            user.setDeletedAtIso(null);
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getName())) {
+            user.setName("Operator");
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getInitials())) {
+            user.setInitials(resolveInitials(normalizedEmail));
+            changed = true;
+        }
+        return changed ? usersRepository.save(user) : user;
+    }
+
     private Users syncFirebaseIdentity(Users user, FirebaseCredential credential) {
         if (user == null || credential == null) {
             return user;
@@ -357,11 +439,16 @@ public class FirebaseService {
     }
 
     private boolean isAdminEmail(String normalizedEmail) {
-        return config.isAdminUser(normalizedEmail)
-                || appSettingsService.isAdminEmail(normalizedEmail);
+        return appSettingsService.isAdminEmail(normalizedEmail);
     }
 
     private boolean isStoredOperator(Users user) {
         return user != null && user.isOperator();
+    }
+
+    private boolean isActiveStoredOperator(Users user) {
+        return isStoredOperator(user)
+                && "A".equalsIgnoreCase(user.getStatus())
+                && !StringUtils.hasText(user.getDeletedAtIso());
     }
 }

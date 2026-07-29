@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 
 import jakarta.servlet.FilterChain;
@@ -35,6 +36,11 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
 
     private MongoSessionMode resolveMode(HttpServletRequest request) {
         String requestUri = request == null ? null : request.getRequestURI();
+        if (OperatorBootstrapRequestSupport.isLoginRequest(request)
+                || OperatorBootstrapRequestSupport
+                        .hasAuthorizationHeader(request)) {
+            return MongoSessionMode.REAL;
+        }
         if (requestUri != null && requestUri.endsWith(DEMO_USERS_ROUTE)) {
             return MongoSessionMode.DEMO;
         }

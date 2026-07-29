@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -7,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "deploymentConfigurations")
 public class DeploymentConfiguration {
     public static final String SINGLETON_ID = "deployment-configuration";
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
 
     @Id
     private String id;
@@ -15,6 +17,7 @@ public class DeploymentConfiguration {
     private Long version;
     private Integer schemaVersion;
     private Branding branding;
+    private List<SocialLink> socialLinks;
     private Payment payment;
     private Firebase firebase;
     private String updatedAt;
@@ -53,6 +56,14 @@ public class DeploymentConfiguration {
 
     public Payment getPayment() {
         return payment;
+    }
+
+    public List<SocialLink> getSocialLinks() {
+        return socialLinks;
+    }
+
+    public void setSocialLinks(List<SocialLink> socialLinks) {
+        this.socialLinks = socialLinks;
     }
 
     public void setPayment(Payment payment) {
@@ -159,6 +170,54 @@ public class DeploymentConfiguration {
 
         public void setCredentialMask(String credentialMask) {
             this.credentialMask = credentialMask;
+        }
+    }
+
+    public static class SocialLink {
+        private String provider;
+        private String label;
+        private String url;
+        private String icon;
+        private String handle;
+
+        public String getProvider() {
+            return provider;
+        }
+
+        public void setProvider(String provider) {
+            this.provider = provider;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getIcon() {
+            return icon;
+        }
+
+        public void setIcon(String icon) {
+            this.icon = icon;
+        }
+
+        public String getHandle() {
+            return handle;
+        }
+
+        public void setHandle(String handle) {
+            this.handle = handle;
         }
     }
 

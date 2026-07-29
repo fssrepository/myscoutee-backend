@@ -63,6 +63,14 @@ public final class RegistryHttpClient {
                 RegistryProtocol.BatchResponse.class);
     }
 
+    public RegistryProtocol.BatchResponse submitMauBatch(
+            RegistryProtocol.BatchRequest request) {
+        return post(
+                RegistryProtocol.MAU_BATCH_PATH,
+                request,
+                RegistryProtocol.BatchResponse.class);
+    }
+
     public RegistryProtocol.RevenueBatchResponse submitRevenueBatch(
             RegistryProtocol.RevenueBatchRequest request) {
         return post(

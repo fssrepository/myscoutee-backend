@@ -131,7 +131,8 @@ public class OperatorRegistryService {
         synchronized (modeLocks.get(mode)) {
             String baseUrl = resolveCandidateBaseUrl(request == null ? null : request.baseUrl(), mode);
             String expectedScope = resolveExpectedScope(
-                    request == null ? null : request.expectedScope());
+                    request == null ? null : request.expectedScope(),
+                    mode);
             RegistryInspection inspection = inspectLive(mode, baseUrl, expectedScope, "");
 
             Instant now = clock.instant();
@@ -711,8 +712,22 @@ public class OperatorRegistryService {
         // local-only configuration below.
         runtime.setOutboundAllowed(
                 mode == MongoSessionMode.DEMO || realProperties.isOutboundAllowed());
-        runtime.setBaseUrl(safeText(baseUrl));
-        runtime.setRegistryScope(safeText(scope));
+        String runtimeBaseUrl = safeText(baseUrl);
+        String runtimeScope = safeText(scope);
+        if (mode == MongoSessionMode.DEMO
+                && StringUtils.hasText(demoProperties.getBaseUrl())) {
+            runtimeBaseUrl = resolveCandidateBaseUrl(
+                    runtimeBaseUrl,
+                    mode);
+        }
+        if (mode == MongoSessionMode.DEMO
+                && StringUtils.hasText(demoProperties.getRegistryScope())) {
+            runtimeScope = resolveExpectedScope(
+                    runtimeScope,
+                    mode);
+        }
+        runtime.setBaseUrl(runtimeBaseUrl);
+        runtime.setRegistryScope(runtimeScope);
         runtime.setConnectTimeout(realProperties.getConnectTimeout());
         runtime.setRequestTimeout(realProperties.getRequestTimeout());
         runtime.setRetryDelay(realProperties.getRetryDelay());
@@ -874,7 +889,9 @@ public class OperatorRegistryService {
                     "Selected registry URL and scope are required.");
         }
         String requestedBaseUrl = resolveCandidateBaseUrl(request.registryBaseUrl(), mode);
-        String requestedScope = resolveExpectedScope(request.expectedRegistryScope());
+        String requestedScope = resolveExpectedScope(
+                request.expectedRegistryScope(),
+                mode);
         return new RegistrationTarget(requestedBaseUrl, requestedScope);
     }
 
@@ -987,6 +1004,18 @@ public class OperatorRegistryService {
 
     private String resolveCandidateBaseUrl(String requested, MongoSessionMode mode) {
         String candidate = StringUtils.hasText(requested) ? requested.trim() : "";
+        if (mode == MongoSessionMode.DEMO
+                && StringUtils.hasText(demoProperties.getBaseUrl())) {
+            String configured = normalizeBaseUrl(
+                    demoProperties.getBaseUrl());
+            if (StringUtils.hasText(candidate)
+                    && !configured.equals(normalizeBaseUrl(candidate))) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Explore mode can use only its isolated demo registry.");
+            }
+            return configured;
+        }
         if (!StringUtils.hasText(candidate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registry base URL is required.");
         }
@@ -1000,8 +1029,30 @@ public class OperatorRegistryService {
         return normalized;
     }
 
-    private String resolveExpectedScope(String requested) {
+    private String resolveExpectedScope(
+            String requested,
+            MongoSessionMode mode) {
         String scope = StringUtils.hasText(requested) ? requested.trim() : "";
+        if (mode == MongoSessionMode.DEMO
+                && StringUtils.hasText(demoProperties.getRegistryScope())) {
+            String configured;
+            try {
+                configured = RegistryProtocol.requireRegistryScope(
+                        demoProperties.getRegistryScope());
+            } catch (IllegalArgumentException exception) {
+                throw new ResponseStatusException(
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        "Explore demo registry scope is invalid.",
+                        exception);
+            }
+            if (StringUtils.hasText(scope)
+                    && !configured.equals(scope)) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Explore mode can use only its isolated demo registry scope.");
+            }
+            return configured;
+        }
         if (!StringUtils.hasText(scope)) {
             return "";
         }

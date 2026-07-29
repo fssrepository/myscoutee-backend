@@ -14,4 +14,5 @@ public interface EventFeedbackStatesRepository extends MongoRepository<EventFeed
     List<EventFeedbackState> findByEventIdInOrderByEventIdAscUpdatedDateDesc(Collection<String> eventIds);
 
     Optional<EventFeedbackState> findByViewerUserIdAndEventId(String viewerUserId, String eventId);
+
 }

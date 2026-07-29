@@ -12,7 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "user_rate_primary_lookup_v2", def = "{'relatedUserId': 1, 'updatedDate': -1}"),
         @CompoundIndex(name = "user_rate_secondary_lookup_v2", def = "{'secondaryRelatedUserId': 1, 'updatedDate': -1}", sparse = true),
         @CompoundIndex(name = "user_rate_owner_primary_mode_v2", def = "{'ownerUserId': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1, 'mode': 1}"),
-        @CompoundIndex(name = "user_rate_owner_mode_target_unique_v1", def = "{'ownerUserId': 1, 'mode': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1}", unique = true)
+        @CompoundIndex(name = "user_rate_owner_mode_target_unique_v1", def = "{'ownerUserId': 1, 'mode': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1}", unique = true),
+        @CompoundIndex(name = "user_rate_qmau_window", def = "{'scoreGiven': 1, 'updatedDate': 1, 'createdDate': 1, 'ownerUserId': 1}")
 })
 public class UserRate {
     @Id

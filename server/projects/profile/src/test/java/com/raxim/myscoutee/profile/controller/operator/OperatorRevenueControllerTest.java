@@ -44,9 +44,20 @@ class OperatorRevenueControllerTest {
                 .andExpect(status().isOk());
         mockMvc.perform(post("/operator/revenue/synchronize"))
                 .andExpect(status().isOk());
+        mockMvc.perform(get("/operator/revenue/reports")
+                        .param("status", "BLOCKED")
+                        .param("page", "2")
+                        .param("size", "10"))
+                .andExpect(status().isOk());
+        mockMvc.perform(post(
+                        "/operator/revenue/reports/{reportId}/requeue",
+                        "a".repeat(24)))
+                .andExpect(status().isOk());
 
         verify(revenueService).revenue();
         verify(reportService).synchronizeNow();
+        verify(reportService).reports("BLOCKED", 2, 10);
+        verify(reportService).requeue("a".repeat(24));
     }
 
     @Test

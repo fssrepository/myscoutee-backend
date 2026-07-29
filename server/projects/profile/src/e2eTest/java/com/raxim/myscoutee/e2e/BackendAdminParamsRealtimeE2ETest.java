@@ -66,7 +66,6 @@ import tools.jackson.databind.ObjectMapper;
         properties = {
                 "config.firebase-enabled=false",
                 "config.dev-user=",
-                "config.admin-user=e2e-admin-params-admin@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",

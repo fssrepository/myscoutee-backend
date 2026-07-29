@@ -18,7 +18,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 @CompoundIndexes({
     @CompoundIndex(name = "payment_user_source", def = "{'userId': 1, 'sourceId': 1, 'createdDate': -1}"),
     @CompoundIndex(name = "payment_user_source_booking", def = "{'userId': 1, 'sourceId': 1, 'bookingStatus': 1, 'createdDate': -1}"),
-    @CompoundIndex(name = "payment_revision_root", def = "{'revisionRootSessionId': 1, 'revisionNumber': -1, 'createdDate': -1}")
+    @CompoundIndex(name = "payment_revision_root", def = "{'revisionRootSessionId': 1, 'revisionNumber': -1, 'createdDate': -1}"),
+    @CompoundIndex(
+            name = "payment_revenue_period_scan",
+            def = "{'status': 1, 'provider': 1, 'auditKind': 1, 'createdDate': 1, '_id': 1}")
 })
 public class Payment {
     @Id

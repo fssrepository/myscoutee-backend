@@ -70,6 +70,13 @@ public class Users {
     private String profileStatus;
     private String previousProfileStatus;
     private String deletedAtIso;
+    /*
+     * Explicit accounting exclusion for synthetic, automated, test, or other
+     * non-human accounts. A missing value means eligible; privileged and
+     * inactive accounts are excluded independently by the QMAU calculator.
+     */
+    private Boolean networkMeasurementExcluded;
+    private String networkMeasurementExclusionReason;
     private UserActivitiesRecord activities;
     private UserNotificationPreferencesRecord notificationPreferences;
     private List<UserDeviceRecord> devices = new ArrayList<>();
@@ -249,6 +256,26 @@ public class Users {
 
     public void setOperator(Boolean operator) {
         this.operator = operator;
+    }
+
+    public Boolean getNetworkMeasurementExcluded() {
+        return networkMeasurementExcluded;
+    }
+
+    public boolean isNetworkMeasurementExcluded() {
+        return Boolean.TRUE.equals(networkMeasurementExcluded);
+    }
+
+    public void setNetworkMeasurementExcluded(Boolean value) {
+        this.networkMeasurementExcluded = value;
+    }
+
+    public String getNetworkMeasurementExclusionReason() {
+        return networkMeasurementExclusionReason;
+    }
+
+    public void setNetworkMeasurementExclusionReason(String value) {
+        this.networkMeasurementExclusionReason = value;
     }
 
     public String getTraitLabel() {

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
@@ -42,6 +43,18 @@ public class FirebaseFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        // A fresh local-operator login must not be rejected because the browser
+        // still carries an expired Firebase credential from an earlier session.
+        if (OperatorBootstrapRequestSupport.isLoginRequest(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        Authentication existing =
+                SecurityContextHolder.getContext().getAuthentication();
+        if (existing != null && existing.isAuthenticated()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (DemoSessionRequestSupport.isOperatorRequest(request)
                 && (DemoSessionRequestSupport.isDemoSessionRequest(request)
                         || !configProperties.isFirebaseEnabled())) {

@@ -25,7 +25,7 @@ class OperatorRevenueServiceTest {
     @Test
     void aggregatesFinalizedPaymentsPerPinnedCurrencyWithoutMixing() {
         PaymentsRepository payments = mock(PaymentsRepository.class);
-        when(payments.findAll()).thenReturn(List.of(
+        when(payments.findRevenueCandidates()).thenReturn(List.of(
                 payment("approved", 10.005D, "EUR", null, null, null),
                 payment("approved", 123.5D, "JPY", null, null, null),
                 payment("approved", 1.2345D, "BHD", null, null, null),
@@ -98,7 +98,7 @@ class OperatorRevenueServiceTest {
                 null);
         refunded.setCreatedDate("2026-07-25T23:59:59Z");
         refunded.setRefundedAtIso("2026-07-28T01:00:00Z");
-        when(payments.findAll()).thenReturn(List.of(refunded));
+        when(payments.findRevenueCandidates()).thenReturn(List.of(refunded));
         OperatorRevenueService service = service(payments);
 
         var reports = service.dailyRevenueHistory(Set.of(
@@ -119,6 +119,78 @@ class OperatorRevenueServiceTest {
         assertThat(emptyDay.period())
                 .isEqualTo(LocalDate.parse("2026-07-27"));
         assertThat(emptyDay.currencies()).isEmpty();
+    }
+
+    @Test
+    void simulatedApprovedCheckoutNeverContributesRevenue() {
+        PaymentsRepository payments = mock(PaymentsRepository.class);
+        Payment real = payment(
+                "approved",
+                10D,
+                "EUR",
+                null,
+                null,
+                "payment");
+        real.setProvider("stripe");
+        Payment simulated = payment(
+                "approved",
+                999D,
+                "EUR",
+                null,
+                null,
+                "payment");
+        simulated.setProvider("dummy");
+        simulated.setCheckoutSessionId("dummy_test-session");
+        when(payments.findRevenueCandidates()).thenReturn(
+                List.of(real, simulated));
+        OperatorRevenueService service = service(payments);
+
+        var response = service.revenue();
+
+        assertThat(response.currencies()).hasSize(1);
+        assertThat(response.currencies().getFirst().capturedPaymentMinor())
+                .isEqualTo(1_000L);
+        assertThat(response.currencies().getFirst().paymentCount())
+                .isEqualTo(1L);
+    }
+
+    @Test
+    void historicalBackfillBoundaryUsesOnlyCompletedRealPaymentDays() {
+        PaymentsRepository payments = mock(PaymentsRepository.class);
+        Payment oldest = payment(
+                "approved",
+                10D,
+                "EUR",
+                null,
+                null,
+                "payment");
+        oldest.setProvider("stripe");
+        oldest.setCreatedDate("2026-05-04T23:59:59Z");
+        Payment currentDay = payment(
+                "approved",
+                10D,
+                "EUR",
+                null,
+                null,
+                "payment");
+        currentDay.setProvider("stripe");
+        currentDay.setCreatedDate("2026-07-28T00:00:00Z");
+        Payment simulated = payment(
+                "approved",
+                999D,
+                "EUR",
+                null,
+                null,
+                "payment");
+        simulated.setProvider("dummy");
+        simulated.setCreatedDate("2026-04-01T00:00:00Z");
+        when(payments.findRevenueCandidates()).thenReturn(
+                List.of(oldest, currentDay, simulated));
+        OperatorRevenueService service = service(payments);
+
+        assertThat(service.finalizedRevenuePeriodsBefore(
+                        LocalDate.parse("2026-07-28")))
+                .containsExactly(LocalDate.parse("2026-05-04"));
     }
 
     private OperatorRevenueService service(

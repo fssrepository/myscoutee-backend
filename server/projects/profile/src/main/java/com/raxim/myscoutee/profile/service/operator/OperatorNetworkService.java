@@ -441,8 +441,34 @@ public class OperatorNetworkService {
         runtime.setOutboundAllowed(
                 mode == MongoSessionMode.DEMO || realProperties.isOutboundAllowed());
         runtime.setOperatorRegistrationConfirmed(false);
-        runtime.setBaseUrl(selection.getBaseUrl());
-        runtime.setRegistryScope(selection.getRegistryScope());
+        String selectedBaseUrl = safeText(selection.getBaseUrl());
+        String selectedScope = safeText(selection.getRegistryScope());
+        if (mode == MongoSessionMode.DEMO) {
+            if (StringUtils.hasText(demoProperties.getBaseUrl())) {
+                String configuredBaseUrl =
+                        stripTrailingSlash(demoProperties.getBaseUrl());
+                if (!configuredBaseUrl.equals(
+                        stripTrailingSlash(selectedBaseUrl))) {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Explore registry selection does not match its isolated demo registry.");
+                }
+                selectedBaseUrl = configuredBaseUrl;
+            }
+            if (StringUtils.hasText(
+                    demoProperties.getRegistryScope())) {
+                String configuredScope =
+                        demoProperties.getRegistryScope().trim();
+                if (!configuredScope.equals(selectedScope)) {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Explore registry selection does not match its isolated demo registry scope.");
+                }
+                selectedScope = configuredScope;
+            }
+        }
+        runtime.setBaseUrl(selectedBaseUrl);
+        runtime.setRegistryScope(selectedScope);
         runtime.setExpectedRegistryKeyFingerprint(
                 selection.getRegistryPublicKeyFingerprint());
         runtime.setTrustOnFirstUse(false);
@@ -474,7 +500,14 @@ public class OperatorNetworkService {
         return new RegisteredRuntime(
                 runtime,
                 settings.getEnrollment().getDeploymentCode().trim(),
-                selection.getRegistryScope().trim());
+                selectedScope);
+    }
+
+    private String stripTrailingSlash(String value) {
+        String normalized = safeText(value);
+        return normalized.endsWith("/")
+                ? normalized.substring(0, normalized.length() - 1)
+                : normalized;
     }
 
     private LeaderboardRow requireClaimedLeaderboardRow(

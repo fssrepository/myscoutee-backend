@@ -229,7 +229,6 @@ services:
       CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
       FIREBASE_ENABLED: "false"
       DEV_USER: "dev@myscoutee.local"
-      ADMIN_USER: "myscoutee@gmail.com"
       OPERATOR_USER: "${OPERATOR_USER:-dev@myscoutee.local}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/workspace/data/configuration/deployment-master-key"
       MEDIA_ENABLED: "true"
@@ -239,6 +238,8 @@ services:
       MEDIA_OBJECT_STORE_PATH_STYLE: "true"
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
+      REGISTRY_DEMO_BASE_URL: "http://registry:8080"
+      REGISTRY_DEMO_SCOPE: "demo:myscoutee"
       REGISTRY_DEMO_PRIVATE_KEY_PATH: "/workspace/data/registry-demo-keys/deployment-private-key.pem"
       REGISTRY_DEMO_PUBLIC_KEY_PATH: "/workspace/data/registry-demo-keys/deployment-public-key.der"
       REGISTRY_DEMO_STATE_DIR: "/workspace/data/registry-demo-state"
@@ -262,7 +263,7 @@ services:
       minio:
         condition: service_healthy
       registry:
-        condition: service_healthy
+        condition: service_started
   frontend-sync:
     image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
     pull_policy: build
@@ -316,11 +317,13 @@ services:
       context: ../../myscoutee-registry
       dockerfile: Dockerfile
     restart: unless-stopped
+    command: ["start-demo"]
     environment:
+      REGISTRY_DEMO_SEED: "true"
       REGISTRY_LISTEN_ADDR: ":8080"
-      REGISTRY_SCOPE: "demo:local-registry"
-      REGISTRY_DATABASE_PATH: "/data/registry.db"
-      REGISTRY_SIGNING_KEY_PATH: "/data/registry-signing-key.pem"
+      REGISTRY_SCOPE: "demo:myscoutee"
+      REGISTRY_DATABASE_PATH: "/data/registry-demo.db"
+      REGISTRY_SIGNING_KEY_PATH: "/data/registry-demo-signing-key.pem"
       REGISTRY_GENERATE_SIGNING_KEY: "true"
       REGISTRY_CHECKPOINT_INTERVAL: "${LOCAL_REGISTRY_CHECKPOINT_INTERVAL:-10s}"
       REGISTRY_HEALTHCHECK_URL: "http://127.0.0.1:8080/healthz"

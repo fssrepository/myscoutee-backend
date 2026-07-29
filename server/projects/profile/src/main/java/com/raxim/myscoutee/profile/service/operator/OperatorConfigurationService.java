@@ -1,12 +1,18 @@
 package com.raxim.myscoutee.profile.service.operator;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -23,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.C
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestResultDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationDto;
@@ -30,6 +37,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.O
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.profile.service.AppSettingsService;
 
 @Service
 public class OperatorConfigurationService {
@@ -46,11 +54,20 @@ public class OperatorConfigurationService {
     private static final int PAYMENT_CREDENTIAL_MAX = 16384;
     private static final int FIREBASE_PROJECT_ID_MAX = 160;
     private static final int FIREBASE_CREDENTIAL_MAX = 65536;
+    private static final int ADMIN_EMAIL_MAX = 254;
+    private static final int ADMIN_EMAIL_COUNT_MAX = 32;
+    private static final int SOCIAL_LINK_COUNT_MAX = 12;
+    private static final Pattern ADMIN_EMAIL_PATTERN =
+            Pattern.compile("^[^\\s@]+@[^\\s@]+$");
+    private static final Pattern SOCIAL_PROVIDER_PATTERN =
+            Pattern.compile("^[a-z0-9][a-z0-9._-]*$");
 
     private final DeploymentConfigurationRepository repository;
+    private final AppSettingsService appSettingsService;
     private final PaymentProviderService paymentProviderService;
     private final OperatorConfigurationMapper mapper;
     private final DeploymentConfigurationCrypto crypto;
+    private final OperatorFirebaseCapabilityClient firebaseCapabilityClient;
     private final Clock clock;
     private final EnumMap<MongoSessionMode, Object> modeLocks =
             new EnumMap<>(MongoSessionMode.class);
@@ -58,28 +75,54 @@ public class OperatorConfigurationService {
     @Autowired
     public OperatorConfigurationService(
             DeploymentConfigurationRepository repository,
+            AppSettingsService appSettingsService,
             PaymentProviderService paymentProviderService,
             OperatorConfigurationMapper mapper,
-            DeploymentConfigurationCrypto crypto) {
+            DeploymentConfigurationCrypto crypto,
+            OperatorFirebaseCapabilityClient firebaseCapabilityClient) {
         this(
                 repository,
+                appSettingsService,
                 paymentProviderService,
                 mapper,
                 crypto,
-                Clock.systemUTC());
+                Clock.systemUTC(),
+                firebaseCapabilityClient);
     }
 
     OperatorConfigurationService(
             DeploymentConfigurationRepository repository,
+            AppSettingsService appSettingsService,
             PaymentProviderService paymentProviderService,
             OperatorConfigurationMapper mapper,
             DeploymentConfigurationCrypto crypto,
             Clock clock) {
+        this(
+                repository,
+                appSettingsService,
+                paymentProviderService,
+                mapper,
+                crypto,
+                clock,
+                unavailableFirebaseCapabilityClient());
+    }
+
+    OperatorConfigurationService(
+            DeploymentConfigurationRepository repository,
+            AppSettingsService appSettingsService,
+            PaymentProviderService paymentProviderService,
+            OperatorConfigurationMapper mapper,
+            DeploymentConfigurationCrypto crypto,
+            Clock clock,
+            OperatorFirebaseCapabilityClient firebaseCapabilityClient) {
         this.repository = Objects.requireNonNull(repository);
+        this.appSettingsService = Objects.requireNonNull(appSettingsService);
         this.paymentProviderService = Objects.requireNonNull(paymentProviderService);
         this.mapper = Objects.requireNonNull(mapper);
         this.crypto = Objects.requireNonNull(crypto);
         this.clock = Objects.requireNonNull(clock);
+        this.firebaseCapabilityClient =
+                Objects.requireNonNull(firebaseCapabilityClient);
         for (MongoSessionMode mode : MongoSessionMode.values()) {
             modeLocks.put(mode, new Object());
         }
@@ -110,6 +153,7 @@ public class OperatorConfigurationService {
             return mapper.toOperatorConfiguration(
                     configuration,
                     providers,
+                    appSettingsService.adminEmails(),
                     unavailableReason);
         }
     }
@@ -120,6 +164,10 @@ public class OperatorConfigurationService {
             if (request == null || request.branding() == null) {
                 throw badRequest("Branding configuration is required.");
             }
+            List<String> adminEmails = normalizeAdminEmails(
+                    request.adminEmails());
+            List<DeploymentSocialLinkDto> socialLinks =
+                    normalizeSocialLinks(request.socialLinks());
             DeploymentConfiguration configuration = loadPersisted();
             String cryptoGap = crypto.unavailableReason(configuration);
             if (StringUtils.hasText(cryptoGap)) {
@@ -138,12 +186,19 @@ public class OperatorConfigurationService {
                         exception);
             }
             applyBranding(configuration, request.branding());
+            applySocialLinks(configuration, socialLinks);
             applyPayment(configuration, request.payment(), providers);
             applyFirebase(configuration, request.firebase());
             configuration.setSchemaVersion(DeploymentConfiguration.SCHEMA_VERSION);
             configuration.setUpdatedAt(clock.instant().toString());
             DeploymentConfiguration saved = saveUpdate(configuration);
-            return mapper.toOperatorConfiguration(saved, providers, null);
+            List<String> savedAdminEmails =
+                    appSettingsService.updateAdminEmails(adminEmails);
+            return mapper.toOperatorConfiguration(
+                    saved,
+                    providers,
+                    savedAdminEmails,
+                    null);
         }
     }
 
@@ -157,44 +212,130 @@ public class OperatorConfigurationService {
             DeploymentConfiguration.Firebase firebase = configuration.getFirebase();
             Instant testedAt = clock.instant();
             return switch (request.kind()) {
-                case FIREBASE_AUTHENTICATION -> firebaseTestResult(
-                        ConfigurationTestKind.FIREBASE_AUTHENTICATION,
-                        StringUtils.hasText(firebase.getProjectId())
-                                && firebase.getAuthenticationCredentialEnvelope() != null,
-                        "Firebase authentication test unavailable: projectId and "
-                                + "authentication credential must be configured.",
-                        "Firebase authentication test unavailable: operator-managed "
-                                + "credentials are encrypted and persisted, but the "
-                                + "authentication runtime still initializes once from "
-                                + "FIREBASE_SERVICE_ACCOUNT_PATH. Rewiring that runtime "
-                                + "is the deferred Firebase migration.",
+                case FIREBASE_AUTHENTICATION -> testFirebaseAuthentication(
+                        firebase,
                         testedAt);
-                case FIREBASE_MESSAGING -> firebaseTestResult(
-                        ConfigurationTestKind.FIREBASE_MESSAGING,
-                        StringUtils.hasText(firebase.getProjectId())
-                                && firebase.getMessagingCredentialEnvelope() != null,
-                        "Firebase messaging test unavailable: projectId and messaging "
-                                + "credential must be configured.",
-                        "Firebase messaging test unavailable: operator-managed credentials "
-                                + "are not wired to FirebaseApp/FirebaseMessaging, and this "
-                                + "request has no registered destination token. That runtime "
-                                + "migration is deferred.",
+                case FIREBASE_MESSAGING -> testFirebaseMessaging(
+                        firebase,
+                        request.destinationToken(),
+                        configuration.getBranding().getProductName(),
                         testedAt);
             };
         }
     }
 
+    private ConfigurationTestResultDto testFirebaseAuthentication(
+            DeploymentConfiguration.Firebase firebase,
+            Instant testedAt) {
+        if (!StringUtils.hasText(firebase.getProjectId())
+                || firebase.getAuthenticationCredentialEnvelope() == null) {
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_AUTHENTICATION,
+                    false,
+                    "Firebase authentication test unavailable: projectId and "
+                            + "authentication credential must be configured.",
+                    testedAt);
+        }
+        try {
+            String credential = crypto.decrypt(
+                    FIREBASE_AUTHENTICATION_PURPOSE,
+                    firebase.getAuthenticationCredentialEnvelope());
+            firebaseCapabilityClient.testAuthentication(
+                    firebase.getProjectId().trim(),
+                    credential);
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_AUTHENTICATION,
+                    true,
+                    "Firebase authentication test succeeded.",
+                    testedAt);
+        } catch (RuntimeException exception) {
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_AUTHENTICATION,
+                    false,
+                    "Firebase authentication test failed. Check the configured "
+                            + "project and service-account permissions.",
+                    testedAt);
+        }
+    }
+
+    private ConfigurationTestResultDto testFirebaseMessaging(
+            DeploymentConfiguration.Firebase firebase,
+            String destinationToken,
+            String productName,
+            Instant testedAt) {
+        if (!StringUtils.hasText(firebase.getProjectId())
+                || firebase.getMessagingCredentialEnvelope() == null) {
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_MESSAGING,
+                    false,
+                    "Firebase messaging test unavailable: projectId and messaging "
+                            + "credential must be configured.",
+                    testedAt);
+        }
+        if (!StringUtils.hasText(destinationToken)) {
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_MESSAGING,
+                    false,
+                    "Firebase messaging test unavailable: a destination token is required.",
+                    testedAt);
+        }
+        try {
+            String credential = crypto.decrypt(
+                    FIREBASE_MESSAGING_PURPOSE,
+                    firebase.getMessagingCredentialEnvelope());
+            firebaseCapabilityClient.sendTestMessage(
+                    firebase.getProjectId().trim(),
+                    credential,
+                    destinationToken.trim(),
+                    productName.trim());
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_MESSAGING,
+                    true,
+                    "Firebase messaging test succeeded.",
+                    testedAt);
+        } catch (RuntimeException exception) {
+            return firebaseTestResult(
+                    ConfigurationTestKind.FIREBASE_MESSAGING,
+                    false,
+                    "Firebase messaging test failed. Check the configured project, "
+                            + "destination token, and service-account permissions.",
+                    testedAt);
+        }
+    }
+
     private ConfigurationTestResultDto firebaseTestResult(
             ConfigurationTestKind kind,
-            boolean configured,
-            String missingMessage,
-            String migrationGapMessage,
+            boolean success,
+            String message,
             Instant testedAt) {
         return new ConfigurationTestResultDto(
                 kind,
-                false,
-                configured ? migrationGapMessage : missingMessage,
+                success,
+                message,
                 testedAt.toString());
+    }
+
+    private static OperatorFirebaseCapabilityClient
+            unavailableFirebaseCapabilityClient() {
+        return new OperatorFirebaseCapabilityClient() {
+            @Override
+            public void testAuthentication(
+                    String projectId,
+                    String serviceAccountJson) {
+                throw new IllegalStateException(
+                        "Firebase capability client is unavailable.");
+            }
+
+            @Override
+            public void sendTestMessage(
+                    String projectId,
+                    String serviceAccountJson,
+                    String destinationToken,
+                    String notificationTitle) {
+                throw new IllegalStateException(
+                        "Firebase capability client is unavailable.");
+            }
+        };
     }
 
     private DeploymentConfiguration loadPersisted() {
@@ -212,6 +353,7 @@ public class OperatorConfigurationService {
                 || configuration.getSchemaVersion()
                         != DeploymentConfiguration.SCHEMA_VERSION
                 || configuration.getBranding() == null
+                || configuration.getSocialLinks() == null
                 || configuration.getPayment() == null
                 || configuration.getFirebase() == null) {
             throw unavailable(
@@ -243,6 +385,13 @@ public class OperatorConfigurationService {
         if (configuration.getFirebase().getProjectId() == null) {
             throw unavailable(
                     "Deployment Firebase seed is incomplete.");
+        }
+        try {
+            mapper.toSocialLinks(configuration);
+        } catch (IllegalStateException exception) {
+            throw unavailable(
+                    "Deployment social-link seed is invalid.",
+                    exception);
         }
         DeploymentConfiguration.Payment payment = configuration.getPayment();
         if (payment.getCredentialEnvelope() != null
@@ -358,6 +507,24 @@ public class OperatorConfigurationService {
         }
     }
 
+    private void applySocialLinks(
+            DeploymentConfiguration configuration,
+            List<DeploymentSocialLinkDto> links) {
+        List<DeploymentConfiguration.SocialLink> stored =
+                new ArrayList<>(links.size());
+        for (DeploymentSocialLinkDto link : links) {
+            DeploymentConfiguration.SocialLink item =
+                    new DeploymentConfiguration.SocialLink();
+            item.setProvider(link.provider());
+            item.setLabel(link.label());
+            item.setUrl(link.url());
+            item.setIcon(link.icon());
+            item.setHandle(link.handle());
+            stored.add(item);
+        }
+        configuration.setSocialLinks(List.copyOf(stored));
+    }
+
     private void applyFirebase(
             DeploymentConfiguration configuration,
             FirebaseUpdateDto request) {
@@ -469,6 +636,153 @@ public class OperatorConfigurationService {
             return "••••";
         }
         return "••••" + normalized.substring(normalized.length() - 4);
+    }
+
+    private List<String> normalizeAdminEmails(List<String> values) {
+        if (values == null) {
+            throw badRequest("Admin email list is required.");
+        }
+        if (values.size() > ADMIN_EMAIL_COUNT_MAX) {
+            throw badRequest(
+                    "No more than " + ADMIN_EMAIL_COUNT_MAX
+                            + " admin emails may be configured.");
+        }
+        LinkedHashSet<String> normalized = new LinkedHashSet<>();
+        for (String value : values) {
+            String email = value == null
+                    ? ""
+                    : value.trim().toLowerCase(Locale.ROOT);
+            if (!StringUtils.hasText(email)
+                    || email.length() > ADMIN_EMAIL_MAX
+                    || !ADMIN_EMAIL_PATTERN.matcher(email).matches()) {
+                throw badRequest("A configured admin email is invalid.");
+            }
+            normalized.add(email);
+        }
+        return List.copyOf(normalized);
+    }
+
+    private List<DeploymentSocialLinkDto> normalizeSocialLinks(
+            List<DeploymentSocialLinkDto> values) {
+        if (values == null) {
+            throw badRequest("Social-link list is required.");
+        }
+        if (values.size() > SOCIAL_LINK_COUNT_MAX) {
+            throw badRequest(
+                    "No more than " + SOCIAL_LINK_COUNT_MAX
+                            + " social links may be configured.");
+        }
+        Map<String, DeploymentSocialLinkDto> byProvider =
+                new LinkedHashMap<>();
+        Map<String, DeploymentSocialLinkDto> byUrl =
+                new LinkedHashMap<>();
+        for (DeploymentSocialLinkDto value : values) {
+            if (value == null) {
+                throw badRequest("A configured social link is invalid.");
+            }
+            String provider = requiredSocialText(
+                    value.provider(),
+                    "Social provider",
+                    32)
+                    .toLowerCase(Locale.ROOT);
+            if (!SOCIAL_PROVIDER_PATTERN.matcher(provider).matches()) {
+                throw badRequest(
+                        "Social provider must be a lowercase identifier.");
+            }
+            DeploymentSocialLinkDto normalized =
+                    new DeploymentSocialLinkDto(
+                            provider,
+                            requiredSocialText(
+                                    value.label(),
+                                    "Social label",
+                                    80),
+                            validateSocialUrl(value.url()),
+                            optionalSocialText(
+                                    value.icon(),
+                                    "Social icon",
+                                    64),
+                            optionalSocialText(
+                                    value.handle(),
+                                    "Social handle",
+                                    80));
+            String urlKey = socialUrlKey(normalized.url());
+            DeploymentSocialLinkDto providerDuplicate =
+                    byProvider.get(provider);
+            DeploymentSocialLinkDto urlDuplicate = byUrl.get(urlKey);
+            if (providerDuplicate != null || urlDuplicate != null) {
+                DeploymentSocialLinkDto duplicate =
+                        providerDuplicate != null
+                                ? providerDuplicate
+                                : urlDuplicate;
+                if (duplicate.equals(normalized)) {
+                    continue;
+                }
+                throw badRequest(
+                        "Social links contain a duplicate provider or URL.");
+            }
+            byProvider.put(provider, normalized);
+            byUrl.put(urlKey, normalized);
+        }
+        return List.copyOf(byProvider.values());
+    }
+
+    private String requiredSocialText(
+            String value,
+            String fieldName,
+            int maximumLength) {
+        String normalized = optionalSocialText(
+                value,
+                fieldName,
+                maximumLength);
+        if (!StringUtils.hasText(normalized)) {
+            throw badRequest(fieldName + " is required.");
+        }
+        return normalized;
+    }
+
+    private String optionalSocialText(
+            String value,
+            String fieldName,
+            int maximumLength) {
+        String normalized = value == null ? "" : value.trim();
+        if (normalized.length() > maximumLength
+                || normalized.chars().anyMatch(Character::isISOControl)) {
+            throw badRequest(fieldName + " is invalid.");
+        }
+        return StringUtils.hasText(normalized) ? normalized : null;
+    }
+
+    private String validateSocialUrl(String value) {
+        String normalized = requiredSocialText(
+                value,
+                "Social URL",
+                LOGO_URL_MAX);
+        try {
+            URI uri = new URI(normalized);
+            if (!"https".equalsIgnoreCase(uri.getScheme())
+                    || !StringUtils.hasText(uri.getHost())
+                    || uri.getUserInfo() != null) {
+                throw badRequest(
+                        "Social URL must be an HTTPS URL without credentials.");
+            }
+            return normalized;
+        } catch (URISyntaxException exception) {
+            throw badRequest("Social URL must be a valid HTTPS URL.");
+        }
+    }
+
+    private String socialUrlKey(String value) {
+        URI uri = URI.create(value);
+        String host = uri.getHost().toLowerCase(Locale.ROOT);
+        int port = uri.getPort() == 443 ? -1 : uri.getPort();
+        return "https://"
+                + host
+                + (port < 0 ? "" : ":" + port)
+                + (uri.getRawPath() == null ? "" : uri.getRawPath())
+                + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery())
+                + (uri.getRawFragment() == null
+                        ? ""
+                        : "#" + uri.getRawFragment());
     }
 
     private String appendReason(String first, String second) {

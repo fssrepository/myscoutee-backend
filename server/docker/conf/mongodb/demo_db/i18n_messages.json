@@ -1116,6 +1116,36 @@
     "value": "The two passwords do not match."
   },
   {
+    "_id": "i18n-message-en-operator-bootstrap-auth-invalid",
+    "key": "operator.bootstrap.auth.invalid",
+    "lang": "en",
+    "value": "The installer operator email or password is incorrect."
+  },
+  {
+    "_id": "i18n-message-en-operator-bootstrap-auth-throttled",
+    "key": "operator.bootstrap.auth.throttled",
+    "lang": "en",
+    "value": "Too many operator sign-in attempts. Try again later."
+  },
+  {
+    "_id": "i18n-message-en-operator-bootstrap-auth-failed",
+    "key": "operator.bootstrap.auth.failed",
+    "lang": "en",
+    "value": "The dedicated operator sign-in is temporarily unavailable."
+  },
+  {
+    "_id": "i18n-message-en-operator-bootstrap-auth-response-invalid",
+    "key": "operator.bootstrap.auth.response.invalid",
+    "lang": "en",
+    "value": "The server returned an invalid operator sign-in response."
+  },
+  {
+    "_id": "i18n-message-en-operator-bootstrap-auth-profile-unavailable",
+    "key": "operator.bootstrap.auth.profile.unavailable",
+    "lang": "en",
+    "value": "The persisted Operator profile could not be loaded."
+  },
+  {
     "_id": "i18n-message-en-this-email-is-already-registered-use-login-instead",
     "key": "This email is already registered. Use login instead.",
     "lang": "en",
@@ -7324,6 +7354,24 @@
     "key": "landing.partners.economics.no.exit.description",
     "lang": "en",
     "value": "At 10 million verified monthly active users (MAU), if no exit is defined, the founder seeks 5% of contract-defined member contributions—never operator commissions."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-operator-access-title",
+    "key": "landing.partners.operator.access.title",
+    "lang": "en",
+    "value": "Operate a deployment"
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-operator-access-description",
+    "key": "landing.partners.operator.access.description",
+    "lang": "en",
+    "value": "Sign in to configure and manage this deployment, or open the operator workspace in Explore mode."
+  },
+  {
+    "_id": "i18n-message-en-landing-partners-operator-access-action",
+    "key": "landing.partners.operator.access.action",
+    "lang": "en",
+    "value": "Operator access"
   },
   {
     "_id": "i18n-message-en-articles",
@@ -14622,6 +14670,216 @@
     "value": "Select currency"
   },
   {
+    "_id": "i18n-message-en-operator-revenue-delivery",
+    "key": "operator.revenue.delivery",
+    "lang": "en",
+    "value": "Registry delivery"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-manual-description",
+    "key": "operator.revenue.delivery.manual.description",
+    "lang": "en",
+    "value": "Delivery is explicit. Synchronize to create completed-period reports and send any pending signed revenue reports to the registered registry."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-synchronize",
+    "key": "operator.revenue.delivery.synchronize",
+    "lang": "en",
+    "value": "Synchronize delivery"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-synchronize-detail",
+    "key": "operator.revenue.delivery.synchronize.detail",
+    "lang": "en",
+    "value": "Create and send pending signed reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-synchronizing",
+    "key": "operator.revenue.delivery.synchronizing",
+    "lang": "en",
+    "value": "Synchronizing revenue delivery…"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-state-synchronized",
+    "key": "operator.revenue.delivery.state.synchronized",
+    "lang": "en",
+    "value": "Synchronized"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-state-pending",
+    "key": "operator.revenue.delivery.state.pending",
+    "lang": "en",
+    "value": "Pending retry"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-state-blocked",
+    "key": "operator.revenue.delivery.state.blocked",
+    "lang": "en",
+    "value": "Operator review required"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-state-busy",
+    "key": "operator.revenue.delivery.state.busy",
+    "lang": "en",
+    "value": "Synchronization already running"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-state-dormant",
+    "key": "operator.revenue.delivery.state.dormant",
+    "lang": "en",
+    "value": "Delivery is dormant"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-state-error",
+    "key": "operator.revenue.delivery.state.error",
+    "lang": "en",
+    "value": "Synchronization failed"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-materialized",
+    "key": "operator.revenue.delivery.materialized",
+    "lang": "en",
+    "value": "Created"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-submitted",
+    "key": "operator.revenue.delivery.submitted",
+    "lang": "en",
+    "value": "Submitted"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-accepted",
+    "key": "operator.revenue.delivery.accepted",
+    "lang": "en",
+    "value": "Accepted"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-pending",
+    "key": "operator.revenue.delivery.pending",
+    "lang": "en",
+    "value": "Pending"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-blocked",
+    "key": "operator.revenue.delivery.blocked",
+    "lang": "en",
+    "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-not-sent",
+    "key": "operator.revenue.delivery.not.sent",
+    "lang": "en",
+    "value": "No revenue report was sent."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-reports",
+    "key": "operator.revenue.delivery.reports",
+    "lang": "en",
+    "value": "Delivery reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-reports-blocked",
+    "key": "operator.revenue.delivery.reports.blocked",
+    "lang": "en",
+    "value": "Blocked reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-reports-empty",
+    "key": "operator.revenue.delivery.reports.empty",
+    "lang": "en",
+    "value": "No blocked reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-reports-empty-description",
+    "key": "operator.revenue.delivery.reports.empty.description",
+    "lang": "en",
+    "value": "The blocked total changed. Synchronize again to refresh delivery status."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-reports-response-invalid",
+    "key": "operator.revenue.delivery.reports.response.invalid",
+    "lang": "en",
+    "value": "The revenue report page response is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-period",
+    "key": "operator.revenue.delivery.report.period",
+    "lang": "en",
+    "value": "Period"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-revision",
+    "key": "operator.revenue.delivery.report.revision",
+    "lang": "en",
+    "value": "Revision"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-attempts",
+    "key": "operator.revenue.delivery.report.attempts",
+    "lang": "en",
+    "value": "Attempts"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-currencies",
+    "key": "operator.revenue.delivery.report.currencies",
+    "lang": "en",
+    "value": "Currencies"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-failed-at",
+    "key": "operator.revenue.delivery.report.failed.at",
+    "lang": "en",
+    "value": "Failed"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-failure-unknown",
+    "key": "operator.revenue.delivery.report.failure.unknown",
+    "lang": "en",
+    "value": "The registry rejected this report and did not provide a failure message."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-id-invalid",
+    "key": "operator.revenue.delivery.report.id.invalid",
+    "lang": "en",
+    "value": "The revenue report identifier is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-requeue",
+    "key": "operator.revenue.delivery.report.requeue",
+    "lang": "en",
+    "value": "Requeue report"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-requeue-detail",
+    "key": "operator.revenue.delivery.report.requeue.detail",
+    "lang": "en",
+    "value": "Return this unchanged signed report to the pending queue"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-report-requeue-progress",
+    "key": "operator.revenue.delivery.report.requeue.progress",
+    "lang": "en",
+    "value": "Requeuing revenue report…"
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-requeue-unavailable",
+    "key": "operator.revenue.delivery.requeue.unavailable",
+    "lang": "en",
+    "value": "Revenue report requeue is unavailable in this workspace."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-requeued",
+    "key": "operator.revenue.delivery.requeued",
+    "lang": "en",
+    "value": "The blocked report was returned to the pending queue."
+  },
+  {
+    "_id": "i18n-message-en-operator-revenue-delivery-requeued-pending",
+    "key": "operator.revenue.delivery.requeued.pending",
+    "lang": "en",
+    "value": "The requeued report is pending. Synchronize delivery to submit it."
+  },
+  {
     "_id": "i18n-message-en-operator-revenue-empty",
     "key": "operator.revenue.empty",
     "lang": "en",
@@ -15072,6 +15330,12 @@
     "value": "Node registration failed."
   },
   {
+    "_id": "i18n-message-en-operator-registration-error-switch-partial",
+    "key": "operator.registration.error.switch.partial",
+    "lang": "en",
+    "value": "The previous registry was disconnected, but registration with the selected registry failed. This node is currently unregistered."
+  },
+  {
     "_id": "i18n-message-en-operator-registration-error-retry",
     "key": "operator.registration.error.retry",
     "lang": "en",
@@ -15094,6 +15358,222 @@
     "key": "operator.registration.error.response.unavailable",
     "lang": "en",
     "value": "The operator registry response is unavailable."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery",
+    "key": "operator.measurements.delivery",
+    "lang": "en",
+    "value": "QMAU delivery"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-title",
+    "key": "operator.measurements.delivery.title",
+    "lang": "en",
+    "value": "Qualified activity reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-description",
+    "key": "operator.measurements.delivery.description",
+    "lang": "en",
+    "value": "Synchronize completed periods and inspect only reports that need operator attention."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-synchronize",
+    "key": "operator.measurements.delivery.synchronize",
+    "lang": "en",
+    "value": "Synchronize QMAU"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-synchronize-detail",
+    "key": "operator.measurements.delivery.synchronize.detail",
+    "lang": "en",
+    "value": "Create and deliver completed-period reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-state-dormant",
+    "key": "operator.measurements.delivery.state.dormant",
+    "lang": "en",
+    "value": "Delivery is dormant"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-state-blocked",
+    "key": "operator.measurements.delivery.state.blocked",
+    "lang": "en",
+    "value": "Operator review required"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-state-ready",
+    "key": "operator.measurements.delivery.state.ready",
+    "lang": "en",
+    "value": "Delivery is ready"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-state-busy",
+    "key": "operator.measurements.delivery.state.busy",
+    "lang": "en",
+    "value": "Synchronization already running"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-state-error",
+    "key": "operator.measurements.delivery.state.error",
+    "lang": "en",
+    "value": "Synchronization failed"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-materialized",
+    "key": "operator.measurements.delivery.materialized",
+    "lang": "en",
+    "value": "Created"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-submitted",
+    "key": "operator.measurements.delivery.submitted",
+    "lang": "en",
+    "value": "Submitted"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-accepted",
+    "key": "operator.measurements.delivery.accepted",
+    "lang": "en",
+    "value": "Accepted"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-pending",
+    "key": "operator.measurements.delivery.pending",
+    "lang": "en",
+    "value": "Pending"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-blocked",
+    "key": "operator.measurements.delivery.blocked",
+    "lang": "en",
+    "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-not-sent",
+    "key": "operator.measurements.delivery.not.sent",
+    "lang": "en",
+    "value": "No QMAU report was sent."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-requeued",
+    "key": "operator.measurements.delivery.requeued",
+    "lang": "en",
+    "value": "The blocked QMAU report was returned to the pending queue."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-delivery-requeued-pending",
+    "key": "operator.measurements.delivery.requeued.pending",
+    "lang": "en",
+    "value": "The requeued QMAU report is pending delivery."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-reports",
+    "key": "operator.measurements.reports",
+    "lang": "en",
+    "value": "QMAU reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-reports-blocked",
+    "key": "operator.measurements.reports.blocked",
+    "lang": "en",
+    "value": "Blocked reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-reports-empty",
+    "key": "operator.measurements.reports.empty",
+    "lang": "en",
+    "value": "No blocked QMAU reports"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-reports-empty-description",
+    "key": "operator.measurements.reports.empty.description",
+    "lang": "en",
+    "value": "The blocked total changed. Synchronize again to refresh delivery status."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-reports-response-invalid",
+    "key": "operator.measurements.reports.response.invalid",
+    "lang": "en",
+    "value": "The QMAU report page response is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-period",
+    "key": "operator.measurements.report.period",
+    "lang": "en",
+    "value": "Period"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-qmau-short",
+    "key": "operator.measurements.report.qmau.short",
+    "lang": "en",
+    "value": "QMAU"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-revision",
+    "key": "operator.measurements.report.revision",
+    "lang": "en",
+    "value": "Revision"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-actions",
+    "key": "operator.measurements.report.actions",
+    "lang": "en",
+    "value": "Qualifying actions"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-attempts",
+    "key": "operator.measurements.report.attempts",
+    "lang": "en",
+    "value": "Attempts"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-updated",
+    "key": "operator.measurements.report.updated",
+    "lang": "en",
+    "value": "Updated"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-failure-unknown",
+    "key": "operator.measurements.report.failure.unknown",
+    "lang": "en",
+    "value": "The registry blocked this report without a failure message."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-id-invalid",
+    "key": "operator.measurements.report.id.invalid",
+    "lang": "en",
+    "value": "The QMAU report identifier is invalid."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-requeue",
+    "key": "operator.measurements.report.requeue",
+    "lang": "en",
+    "value": "Queue resend"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-requeue-detail",
+    "key": "operator.measurements.report.requeue.detail",
+    "lang": "en",
+    "value": "Return this unchanged report to the pending delivery queue"
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-report-requeue-unavailable",
+    "key": "operator.measurements.report.requeue.unavailable",
+    "lang": "en",
+    "value": "QMAU report resend is unavailable in this workspace."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-error-synchronize",
+    "key": "operator.measurements.error.synchronize",
+    "lang": "en",
+    "value": "Unable to synchronize QMAU delivery."
+  },
+  {
+    "_id": "i18n-message-en-operator-measurements-error-requeue",
+    "key": "operator.measurements.error.requeue",
+    "lang": "en",
+    "value": "Unable to queue the QMAU report for resend."
   },
   {
     "_id": "i18n-message-en-operator-update-subtitle",
@@ -15579,7 +16059,7 @@
     "_id": "i18n-message-en-operator-configuration-subtitle",
     "key": "operator.configuration.subtitle",
     "lang": "en",
-    "value": "Branding, payments, and Firebase"
+    "value": "Branding, administrator access, payments, and Firebase"
   },
   {
     "_id": "i18n-message-en-operator-configuration-instructions",
@@ -15762,6 +16242,192 @@
     "value": "Monochrome"
   },
   {
+    "_id": "i18n-message-en-operator-configuration-admin-eyebrow",
+    "key": "operator.configuration.admin.eyebrow",
+    "lang": "en",
+    "value": "Deployment access"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin",
+    "key": "operator.configuration.admin",
+    "lang": "en",
+    "value": "Dedicated administrators"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-guidance",
+    "key": "operator.configuration.admin.guidance",
+    "lang": "en",
+    "value": "These addresses authorize administrator access for this deployment. Each person uses the existing email login or create-account flow to sign in or set a password in the operator's configured Firebase project. Java stores the authorized address, not the person's password; changes take effect on the next sign-in or token refresh and are never embedded in the package."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-emails",
+    "key": "operator.configuration.admin.emails",
+    "lang": "en",
+    "value": "Administrator email addresses"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-emails-description",
+    "key": "operator.configuration.admin.emails.description",
+    "lang": "en",
+    "value": "Separate addresses with commas or line breaks. Up to 32 addresses; leave empty to disable dedicated-email administrator access."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-emails-placeholder",
+    "key": "operator.configuration.admin.emails.placeholder",
+    "lang": "en",
+    "value": "admin@example.com, owner@example.com"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-save",
+    "key": "operator.configuration.admin.save",
+    "lang": "en",
+    "value": "Save administrators"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-saved",
+    "key": "operator.configuration.admin.saved",
+    "lang": "en",
+    "value": "Dedicated administrator access saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-email-invalid",
+    "key": "operator.configuration.admin.email.invalid",
+    "lang": "en",
+    "value": "Enter valid email addresses of at most 254 characters."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-admin-email-too-many",
+    "key": "operator.configuration.admin.email.too.many",
+    "lang": "en",
+    "value": "At most 32 dedicated administrator email addresses are allowed."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-eyebrow",
+    "key": "operator.configuration.social.eyebrow",
+    "lang": "en",
+    "value": "Public deployment links"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social",
+    "key": "operator.configuration.social",
+    "lang": "en",
+    "value": "Social sites"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-guidance",
+    "key": "operator.configuration.social.guidance",
+    "lang": "en",
+    "value": "Add the deployment-controlled social and community destinations shown on the public landing page. Report Issue remains a fixed MyScoutee support link."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-provider",
+    "key": "operator.configuration.social.provider",
+    "lang": "en",
+    "value": "Provider key"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-label",
+    "key": "operator.configuration.social.label",
+    "lang": "en",
+    "value": "Public label"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-url",
+    "key": "operator.configuration.social.url",
+    "lang": "en",
+    "value": "HTTPS address"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-icon",
+    "key": "operator.configuration.social.icon",
+    "lang": "en",
+    "value": "Material icon"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-icon-placeholder",
+    "key": "operator.configuration.social.icon.placeholder",
+    "lang": "en",
+    "value": "public"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-handle",
+    "key": "operator.configuration.social.handle",
+    "lang": "en",
+    "value": "Handle"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-handle-placeholder",
+    "key": "operator.configuration.social.handle.placeholder",
+    "lang": "en",
+    "value": "@community"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-add",
+    "key": "operator.configuration.social.add",
+    "lang": "en",
+    "value": "Add social site"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-remove",
+    "key": "operator.configuration.social.remove",
+    "lang": "en",
+    "value": "Remove social site"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-save",
+    "key": "operator.configuration.social.save",
+    "lang": "en",
+    "value": "Save social sites"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-saved",
+    "key": "operator.configuration.social.saved",
+    "lang": "en",
+    "value": "Public social sites saved."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-empty",
+    "key": "operator.configuration.social.empty",
+    "lang": "en",
+    "value": "No public social site is configured. Add one when this deployment has a public community destination."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-link-invalid",
+    "key": "operator.configuration.social.link.invalid",
+    "lang": "en",
+    "value": "Complete every social site with a provider key, label, and valid HTTPS address."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-link-too-many",
+    "key": "operator.configuration.social.link.too.many",
+    "lang": "en",
+    "value": "At most 12 public social sites are allowed."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-provider-duplicate",
+    "key": "operator.configuration.social.provider.duplicate",
+    "lang": "en",
+    "value": "Provider keys and addresses must each be unique unless the entire row is an exact duplicate."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-url-paste-aria",
+    "key": "operator.configuration.social.url.paste.aria",
+    "lang": "en",
+    "value": "Paste social-site address"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-url-open-aria",
+    "key": "operator.configuration.social.url.open.aria",
+    "lang": "en",
+    "value": "Open social-site address"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-social-url-clear-aria",
+    "key": "operator.configuration.social.url.clear.aria",
+    "lang": "en",
+    "value": "Clear social-site address"
+  },
+  {
     "_id": "i18n-message-en-operator-configuration-payment-eyebrow",
     "key": "operator.configuration.payment.eyebrow",
     "lang": "en",
@@ -15916,6 +16582,36 @@
     "key": "operator.configuration.test.messaging.short",
     "lang": "en",
     "value": "Message Test"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging-destination",
+    "key": "operator.configuration.test.messaging.destination",
+    "lang": "en",
+    "value": "Test-device registration token"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging-destination-placeholder",
+    "key": "operator.configuration.test.messaging.destination.placeholder",
+    "lang": "en",
+    "value": "Paste one Firebase Cloud Messaging registration token"
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging-destination-guidance",
+    "key": "operator.configuration.test.messaging.destination.guidance",
+    "lang": "en",
+    "value": "Used once for this test request. It is not saved with the deployment configuration."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging-destination-required",
+    "key": "operator.configuration.test.messaging.destination.required",
+    "lang": "en",
+    "value": "Enter a test-device registration token before sending a test notification."
+  },
+  {
+    "_id": "i18n-message-en-operator-configuration-test-messaging-destination-too-long",
+    "key": "operator.configuration.test.messaging.destination.too.long",
+    "lang": "en",
+    "value": "The test-device registration token is too long."
   },
   {
     "_id": "i18n-message-en-operator-configuration-testing",
@@ -17536,6 +18232,36 @@
     "key": "firebase.auth.error.password.mismatch",
     "lang": "hu",
     "value": "A két jelszó nem egyezik."
+  },
+  {
+    "_id": "i18n-message-hu-operator-bootstrap-auth-invalid",
+    "key": "operator.bootstrap.auth.invalid",
+    "lang": "hu",
+    "value": "A telepítői operátori e-mail-cím vagy jelszó helytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-bootstrap-auth-throttled",
+    "key": "operator.bootstrap.auth.throttled",
+    "lang": "hu",
+    "value": "Túl sok operátori bejelentkezési kísérlet történt. Próbáld újra később."
+  },
+  {
+    "_id": "i18n-message-hu-operator-bootstrap-auth-failed",
+    "key": "operator.bootstrap.auth.failed",
+    "lang": "hu",
+    "value": "A dedikált operátori bejelentkezés átmenetileg nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-bootstrap-auth-response-invalid",
+    "key": "operator.bootstrap.auth.response.invalid",
+    "lang": "hu",
+    "value": "A szerver érvénytelen operátori bejelentkezési választ küldött."
+  },
+  {
+    "_id": "i18n-message-hu-operator-bootstrap-auth-profile-unavailable",
+    "key": "operator.bootstrap.auth.profile.unavailable",
+    "lang": "hu",
+    "value": "A mentett Operátor profil nem tölthető be."
   },
   {
     "_id": "i18n-message-hu-this-email-is-already-registered-use-login-instead",
@@ -23746,6 +24472,24 @@
     "key": "landing.partners.economics.no.exit.description",
     "lang": "hu",
     "value": "10 millió ellenőrzött havi aktív felhasználónál (MAU), ha nincs meghatározott exit, az alapító a szerződésben meghatározott tagi hozzájárulások 5%-át kéri—soha nem az operátori jutalékokból."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-operator-access-title",
+    "key": "landing.partners.operator.access.title",
+    "lang": "hu",
+    "value": "Telepítés üzemeltetése"
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-operator-access-description",
+    "key": "landing.partners.operator.access.description",
+    "lang": "hu",
+    "value": "Jelentkezz be a telepítés konfigurálásához és kezeléséhez, vagy nyisd meg az operátori munkaterületet Felfedezés módban."
+  },
+  {
+    "_id": "i18n-message-hu-landing-partners-operator-access-action",
+    "key": "landing.partners.operator.access.action",
+    "lang": "hu",
+    "value": "Operátori hozzáférés"
   },
   {
     "_id": "i18n-message-hu-articles",
@@ -31044,6 +31788,216 @@
     "value": "Pénznem kiválasztása"
   },
   {
+    "_id": "i18n-message-hu-operator-revenue-delivery",
+    "key": "operator.revenue.delivery",
+    "lang": "hu",
+    "value": "Nyilvántartási kézbesítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-manual-description",
+    "key": "operator.revenue.delivery.manual.description",
+    "lang": "hu",
+    "value": "A kézbesítés kifejezett művelet. A szinkronizálás létrehozza a lezárt időszakok jelentéseit, és elküldi a függőben lévő aláírt bevételi jelentéseket a regisztrált nyilvántartásnak."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-synchronize",
+    "key": "operator.revenue.delivery.synchronize",
+    "lang": "hu",
+    "value": "Kézbesítés szinkronizálása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-synchronize-detail",
+    "key": "operator.revenue.delivery.synchronize.detail",
+    "lang": "hu",
+    "value": "Függőben lévő aláírt jelentések létrehozása és elküldése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-synchronizing",
+    "key": "operator.revenue.delivery.synchronizing",
+    "lang": "hu",
+    "value": "Bevételi kézbesítés szinkronizálása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-state-synchronized",
+    "key": "operator.revenue.delivery.state.synchronized",
+    "lang": "hu",
+    "value": "Szinkronizálva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-state-pending",
+    "key": "operator.revenue.delivery.state.pending",
+    "lang": "hu",
+    "value": "Újrapróbálkozásra vár"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-state-blocked",
+    "key": "operator.revenue.delivery.state.blocked",
+    "lang": "hu",
+    "value": "Operátori felülvizsgálat szükséges"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-state-busy",
+    "key": "operator.revenue.delivery.state.busy",
+    "lang": "hu",
+    "value": "A szinkronizálás már folyamatban van"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-state-dormant",
+    "key": "operator.revenue.delivery.state.dormant",
+    "lang": "hu",
+    "value": "A kézbesítés szünetel"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-state-error",
+    "key": "operator.revenue.delivery.state.error",
+    "lang": "hu",
+    "value": "A szinkronizálás sikertelen"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-materialized",
+    "key": "operator.revenue.delivery.materialized",
+    "lang": "hu",
+    "value": "Létrehozva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-submitted",
+    "key": "operator.revenue.delivery.submitted",
+    "lang": "hu",
+    "value": "Beküldve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-accepted",
+    "key": "operator.revenue.delivery.accepted",
+    "lang": "hu",
+    "value": "Elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-pending",
+    "key": "operator.revenue.delivery.pending",
+    "lang": "hu",
+    "value": "Függőben"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-blocked",
+    "key": "operator.revenue.delivery.blocked",
+    "lang": "hu",
+    "value": "Blokkolva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-not-sent",
+    "key": "operator.revenue.delivery.not.sent",
+    "lang": "hu",
+    "value": "Nem történt bevételi jelentés küldése."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-reports",
+    "key": "operator.revenue.delivery.reports",
+    "lang": "hu",
+    "value": "Kézbesítési jelentések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-reports-blocked",
+    "key": "operator.revenue.delivery.reports.blocked",
+    "lang": "hu",
+    "value": "Blokkolt jelentések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-reports-empty",
+    "key": "operator.revenue.delivery.reports.empty",
+    "lang": "hu",
+    "value": "Nincs blokkolt jelentés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-reports-empty-description",
+    "key": "operator.revenue.delivery.reports.empty.description",
+    "lang": "hu",
+    "value": "A blokkolt tételek száma megváltozott. A kézbesítési állapot frissítéséhez szinkronizálj újra."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-reports-response-invalid",
+    "key": "operator.revenue.delivery.reports.response.invalid",
+    "lang": "hu",
+    "value": "A bevételi jelentések oldalválasza érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-period",
+    "key": "operator.revenue.delivery.report.period",
+    "lang": "hu",
+    "value": "Időszak"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-revision",
+    "key": "operator.revenue.delivery.report.revision",
+    "lang": "hu",
+    "value": "Változat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-attempts",
+    "key": "operator.revenue.delivery.report.attempts",
+    "lang": "hu",
+    "value": "Próbálkozások"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-currencies",
+    "key": "operator.revenue.delivery.report.currencies",
+    "lang": "hu",
+    "value": "Pénznemek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-failed-at",
+    "key": "operator.revenue.delivery.report.failed.at",
+    "lang": "hu",
+    "value": "Sikertelen"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-failure-unknown",
+    "key": "operator.revenue.delivery.report.failure.unknown",
+    "lang": "hu",
+    "value": "A nyilvántartás elutasította a jelentést, de nem adott hibaüzenetet."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-id-invalid",
+    "key": "operator.revenue.delivery.report.id.invalid",
+    "lang": "hu",
+    "value": "A bevételi jelentés azonosítója érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-requeue",
+    "key": "operator.revenue.delivery.report.requeue",
+    "lang": "hu",
+    "value": "Jelentés újrasorba állítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-requeue-detail",
+    "key": "operator.revenue.delivery.report.requeue.detail",
+    "lang": "hu",
+    "value": "A változatlan aláírt jelentés visszahelyezése a függőben lévő sorba"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-report-requeue-progress",
+    "key": "operator.revenue.delivery.report.requeue.progress",
+    "lang": "hu",
+    "value": "Bevételi jelentés újrasorba állítása…"
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-requeue-unavailable",
+    "key": "operator.revenue.delivery.requeue.unavailable",
+    "lang": "hu",
+    "value": "A bevételi jelentés újrasorba állítása ebben a munkaterületen nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-requeued",
+    "key": "operator.revenue.delivery.requeued",
+    "lang": "hu",
+    "value": "A blokkolt jelentés visszakerült a függőben lévő sorba."
+  },
+  {
+    "_id": "i18n-message-hu-operator-revenue-delivery-requeued-pending",
+    "key": "operator.revenue.delivery.requeued.pending",
+    "lang": "hu",
+    "value": "Az újrasorba állított jelentés függőben van. A beküldéshez szinkronizáld a kézbesítést."
+  },
+  {
     "_id": "i18n-message-hu-operator-revenue-empty",
     "key": "operator.revenue.empty",
     "lang": "hu",
@@ -31494,6 +32448,12 @@
     "value": "A csomópont regisztrációja sikertelen."
   },
   {
+    "_id": "i18n-message-hu-operator-registration-error-switch-partial",
+    "key": "operator.registration.error.switch.partial",
+    "lang": "hu",
+    "value": "A korábbi nyilvántartási kapcsolat megszűnt, de a kiválasztott nyilvántartásba történő regisztráció sikertelen. A csomópont jelenleg nincs regisztrálva."
+  },
+  {
     "_id": "i18n-message-hu-operator-registration-error-retry",
     "key": "operator.registration.error.retry",
     "lang": "hu",
@@ -31516,6 +32476,222 @@
     "key": "operator.registration.error.response.unavailable",
     "lang": "hu",
     "value": "Az operátori nyilvántartás válasza nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery",
+    "key": "operator.measurements.delivery",
+    "lang": "hu",
+    "value": "QMAU-kézbesítés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-title",
+    "key": "operator.measurements.delivery.title",
+    "lang": "hu",
+    "value": "Minősített aktivitási jelentések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-description",
+    "key": "operator.measurements.delivery.description",
+    "lang": "hu",
+    "value": "Szinkronizáld a lezárt időszakokat, és csak a beavatkozást igénylő jelentéseket tekintsd át."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-synchronize",
+    "key": "operator.measurements.delivery.synchronize",
+    "lang": "hu",
+    "value": "QMAU szinkronizálása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-synchronize-detail",
+    "key": "operator.measurements.delivery.synchronize.detail",
+    "lang": "hu",
+    "value": "Lezárt időszaki jelentések létrehozása és kézbesítése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-state-dormant",
+    "key": "operator.measurements.delivery.state.dormant",
+    "lang": "hu",
+    "value": "A kézbesítés szünetel"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-state-blocked",
+    "key": "operator.measurements.delivery.state.blocked",
+    "lang": "hu",
+    "value": "Operátori felülvizsgálat szükséges"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-state-ready",
+    "key": "operator.measurements.delivery.state.ready",
+    "lang": "hu",
+    "value": "A kézbesítés készen áll"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-state-busy",
+    "key": "operator.measurements.delivery.state.busy",
+    "lang": "hu",
+    "value": "A szinkronizálás már folyamatban van"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-state-error",
+    "key": "operator.measurements.delivery.state.error",
+    "lang": "hu",
+    "value": "A szinkronizálás sikertelen"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-materialized",
+    "key": "operator.measurements.delivery.materialized",
+    "lang": "hu",
+    "value": "Létrehozva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-submitted",
+    "key": "operator.measurements.delivery.submitted",
+    "lang": "hu",
+    "value": "Beküldve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-accepted",
+    "key": "operator.measurements.delivery.accepted",
+    "lang": "hu",
+    "value": "Elfogadva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-pending",
+    "key": "operator.measurements.delivery.pending",
+    "lang": "hu",
+    "value": "Függőben"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-blocked",
+    "key": "operator.measurements.delivery.blocked",
+    "lang": "hu",
+    "value": "Blokkolva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-not-sent",
+    "key": "operator.measurements.delivery.not.sent",
+    "lang": "hu",
+    "value": "Nem történt QMAU-jelentés küldése."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-requeued",
+    "key": "operator.measurements.delivery.requeued",
+    "lang": "hu",
+    "value": "A blokkolt QMAU-jelentés visszakerült a függőben lévő sorba."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-delivery-requeued-pending",
+    "key": "operator.measurements.delivery.requeued.pending",
+    "lang": "hu",
+    "value": "Az újrasorba állított QMAU-jelentés kézbesítésre vár."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-reports",
+    "key": "operator.measurements.reports",
+    "lang": "hu",
+    "value": "QMAU-jelentések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-reports-blocked",
+    "key": "operator.measurements.reports.blocked",
+    "lang": "hu",
+    "value": "Blokkolt jelentések"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-reports-empty",
+    "key": "operator.measurements.reports.empty",
+    "lang": "hu",
+    "value": "Nincs blokkolt QMAU-jelentés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-reports-empty-description",
+    "key": "operator.measurements.reports.empty.description",
+    "lang": "hu",
+    "value": "A blokkolt tételek száma megváltozott. A kézbesítési állapot frissítéséhez szinkronizálj újra."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-reports-response-invalid",
+    "key": "operator.measurements.reports.response.invalid",
+    "lang": "hu",
+    "value": "A QMAU-jelentések oldalválasza érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-period",
+    "key": "operator.measurements.report.period",
+    "lang": "hu",
+    "value": "Időszak"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-qmau-short",
+    "key": "operator.measurements.report.qmau.short",
+    "lang": "hu",
+    "value": "QMAU"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-revision",
+    "key": "operator.measurements.report.revision",
+    "lang": "hu",
+    "value": "Változat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-actions",
+    "key": "operator.measurements.report.actions",
+    "lang": "hu",
+    "value": "Minősítő műveletek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-attempts",
+    "key": "operator.measurements.report.attempts",
+    "lang": "hu",
+    "value": "Próbálkozások"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-updated",
+    "key": "operator.measurements.report.updated",
+    "lang": "hu",
+    "value": "Frissítve"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-failure-unknown",
+    "key": "operator.measurements.report.failure.unknown",
+    "lang": "hu",
+    "value": "A nyilvántartás hibaüzenet nélkül blokkolta ezt a jelentést."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-id-invalid",
+    "key": "operator.measurements.report.id.invalid",
+    "lang": "hu",
+    "value": "A QMAU-jelentés azonosítója érvénytelen."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-requeue",
+    "key": "operator.measurements.report.requeue",
+    "lang": "hu",
+    "value": "Újraküldés sorba állítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-requeue-detail",
+    "key": "operator.measurements.report.requeue.detail",
+    "lang": "hu",
+    "value": "A változatlan jelentés visszahelyezése a függőben lévő kézbesítési sorba"
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-report-requeue-unavailable",
+    "key": "operator.measurements.report.requeue.unavailable",
+    "lang": "hu",
+    "value": "A QMAU-jelentés újraküldése ebben a munkaterületen nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-error-synchronize",
+    "key": "operator.measurements.error.synchronize",
+    "lang": "hu",
+    "value": "A QMAU-kézbesítés nem szinkronizálható."
+  },
+  {
+    "_id": "i18n-message-hu-operator-measurements-error-requeue",
+    "key": "operator.measurements.error.requeue",
+    "lang": "hu",
+    "value": "A QMAU-jelentés nem állítható sorba újraküldéshez."
   },
   {
     "_id": "i18n-message-hu-operator-update-subtitle",
@@ -32001,7 +33177,7 @@
     "_id": "i18n-message-hu-operator-configuration-subtitle",
     "key": "operator.configuration.subtitle",
     "lang": "hu",
-    "value": "Arculat, fizetés és Firebase"
+    "value": "Arculat, adminisztrátori hozzáférés, fizetés és Firebase"
   },
   {
     "_id": "i18n-message-hu-operator-configuration-instructions",
@@ -32184,6 +33360,192 @@
     "value": "Monokróm"
   },
   {
+    "_id": "i18n-message-hu-operator-configuration-admin-eyebrow",
+    "key": "operator.configuration.admin.eyebrow",
+    "lang": "hu",
+    "value": "Telepítési hozzáférés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin",
+    "key": "operator.configuration.admin",
+    "lang": "hu",
+    "value": "Kijelölt adminisztrátorok"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-guidance",
+    "key": "operator.configuration.admin.guidance",
+    "lang": "hu",
+    "value": "Ezek az e-mail-címek ehhez a telepítéshez adnak adminisztrátori jogosultságot. Minden érintett a meglévő e-mailes bejelentkezési vagy fióklétrehozási folyamatban jelentkezik be, illetve állít be jelszót az operátor konfigurált Firebase-projektjében. A Java csak az engedélyezett címet tárolja, a személy jelszavát nem; a változás a következő bejelentkezéskor vagy tokenfrissítéskor lép életbe, és soha nem kerül a csomagba."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-emails",
+    "key": "operator.configuration.admin.emails",
+    "lang": "hu",
+    "value": "Adminisztrátori e-mail-címek"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-emails-description",
+    "key": "operator.configuration.admin.emails.description",
+    "lang": "hu",
+    "value": "Az e-mail-címeket vesszővel vagy sortöréssel válaszd el. Legfeljebb 32 cím adható meg; üresen hagyva a kijelölt e-mailes adminisztrátori hozzáférés kikapcsol."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-emails-placeholder",
+    "key": "operator.configuration.admin.emails.placeholder",
+    "lang": "hu",
+    "value": "admin@example.com, tulajdonos@example.com"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-save",
+    "key": "operator.configuration.admin.save",
+    "lang": "hu",
+    "value": "Adminisztrátorok mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-saved",
+    "key": "operator.configuration.admin.saved",
+    "lang": "hu",
+    "value": "A kijelölt adminisztrátori hozzáférés elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-email-invalid",
+    "key": "operator.configuration.admin.email.invalid",
+    "lang": "hu",
+    "value": "Érvényes, legfeljebb 254 karakteres e-mail-címeket adj meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-admin-email-too-many",
+    "key": "operator.configuration.admin.email.too.many",
+    "lang": "hu",
+    "value": "Legfeljebb 32 kijelölt adminisztrátori e-mail-cím adható meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-eyebrow",
+    "key": "operator.configuration.social.eyebrow",
+    "lang": "hu",
+    "value": "Nyilvános telepítési hivatkozások"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social",
+    "key": "operator.configuration.social",
+    "lang": "hu",
+    "value": "Közösségi oldalak"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-guidance",
+    "key": "operator.configuration.social.guidance",
+    "lang": "hu",
+    "value": "Add meg a telepítés által kezelt közösségi célokat, amelyek a nyilvános nyitóoldalon jelennek meg. A Hibajelentés továbbra is a MyScoutee rögzített támogatási hivatkozása."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-provider",
+    "key": "operator.configuration.social.provider",
+    "lang": "hu",
+    "value": "Szolgáltatói kulcs"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-label",
+    "key": "operator.configuration.social.label",
+    "lang": "hu",
+    "value": "Nyilvános felirat"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-url",
+    "key": "operator.configuration.social.url",
+    "lang": "hu",
+    "value": "HTTPS-cím"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-icon",
+    "key": "operator.configuration.social.icon",
+    "lang": "hu",
+    "value": "Material ikon"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-icon-placeholder",
+    "key": "operator.configuration.social.icon.placeholder",
+    "lang": "hu",
+    "value": "public"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-handle",
+    "key": "operator.configuration.social.handle",
+    "lang": "hu",
+    "value": "Azonosító"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-handle-placeholder",
+    "key": "operator.configuration.social.handle.placeholder",
+    "lang": "hu",
+    "value": "@kozosseg"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-add",
+    "key": "operator.configuration.social.add",
+    "lang": "hu",
+    "value": "Közösségi oldal hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-remove",
+    "key": "operator.configuration.social.remove",
+    "lang": "hu",
+    "value": "Közösségi oldal eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-save",
+    "key": "operator.configuration.social.save",
+    "lang": "hu",
+    "value": "Közösségi oldalak mentése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-saved",
+    "key": "operator.configuration.social.saved",
+    "lang": "hu",
+    "value": "A nyilvános közösségi oldalak elmentve."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-empty",
+    "key": "operator.configuration.social.empty",
+    "lang": "hu",
+    "value": "Nincs beállított nyilvános közösségi oldal. Adj hozzá egyet, ha a telepítés rendelkezik nyilvános közösségi céllal."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-link-invalid",
+    "key": "operator.configuration.social.link.invalid",
+    "lang": "hu",
+    "value": "Minden közösségi oldalnál add meg a szolgáltatói kulcsot, a feliratot és egy érvényes HTTPS-címet."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-link-too-many",
+    "key": "operator.configuration.social.link.too.many",
+    "lang": "hu",
+    "value": "Legfeljebb 12 nyilvános közösségi oldal adható meg."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-provider-duplicate",
+    "key": "operator.configuration.social.provider.duplicate",
+    "lang": "hu",
+    "value": "A szolgáltatói kulcsoknak és a címeknek egyedinek kell lenniük, kivéve ha a teljes sor pontosan azonos."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-url-paste-aria",
+    "key": "operator.configuration.social.url.paste.aria",
+    "lang": "hu",
+    "value": "Közösségi oldal címének beillesztése"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-url-open-aria",
+    "key": "operator.configuration.social.url.open.aria",
+    "lang": "hu",
+    "value": "Közösségi oldal címének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-social-url-clear-aria",
+    "key": "operator.configuration.social.url.clear.aria",
+    "lang": "hu",
+    "value": "Közösségi oldal címének törlése"
+  },
+  {
     "_id": "i18n-message-hu-operator-configuration-payment-eyebrow",
     "key": "operator.configuration.payment.eyebrow",
     "lang": "hu",
@@ -32338,6 +33700,36 @@
     "key": "operator.configuration.test.messaging.short",
     "lang": "hu",
     "value": "Üzenet teszt"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging-destination",
+    "key": "operator.configuration.test.messaging.destination",
+    "lang": "hu",
+    "value": "Tesztkészülék regisztrációs tokenje"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-placeholder",
+    "key": "operator.configuration.test.messaging.destination.placeholder",
+    "lang": "hu",
+    "value": "Illessz be egy Firebase Cloud Messaging regisztrációs tokent"
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-guidance",
+    "key": "operator.configuration.test.messaging.destination.guidance",
+    "lang": "hu",
+    "value": "Csak ehhez a tesztkéréshez használjuk; nem kerül mentésre a telepítés konfigurációjában."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-required",
+    "key": "operator.configuration.test.messaging.destination.required",
+    "lang": "hu",
+    "value": "Tesztértesítés küldése előtt add meg a tesztkészülék regisztrációs tokenjét."
+  },
+  {
+    "_id": "i18n-message-hu-operator-configuration-test-messaging-destination-too-long",
+    "key": "operator.configuration.test.messaging.destination.too.long",
+    "lang": "hu",
+    "value": "A tesztkészülék regisztrációs tokenje túl hosszú."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-testing",

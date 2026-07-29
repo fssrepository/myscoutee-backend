@@ -395,9 +395,9 @@ validate_image_manifest() {
     and .schemaVersion == 1
     and .releaseVersion == $version
     and .bundled == true
-    and (.images | type == "array" and length == 4)
+    and (.images | type == "array" and length == 5)
     and ([.images[].service] | sort
-      == ["minio", "nginx", "nginx-base", "profilemanagement"])
+      == ["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"])
     and all(.images[];
       type == "object"
       and ((keys | sort) == ([
@@ -420,6 +420,10 @@ validate_image_manifest() {
       .service == "minio"
       and .container == "minio"
       and .reference == ("myscoutee-minio:" + $version + "-prod"))
+    and any(.images[];
+      .service == "registry-demo"
+      and .container == "registry-demo"
+      and .reference == ("myscoutee-registry:" + $version + "-prod"))
   ' "${manifest}" >/dev/null
 }
 
@@ -626,7 +630,7 @@ verify_running_release() {
     jq -r '.images[] | select(.container != null)
       | [.container, .reference, .imageId] | @tsv' "${manifest}"
   )
-  [[ "${#runtime_images[@]}" == "3" ]] || return 1
+  [[ "${#runtime_images[@]}" == "4" ]] || return 1
   for image in "${runtime_images[@]}"; do
     IFS=$'\t' read -r container reference expected_image_id <<< "${image}"
     configured_reference="$(docker inspect --format '{{.Config.Image}}' \

@@ -228,6 +228,7 @@ db.getCollection('userRates').createIndex({ secondaryRelatedUserId: 1, updatedDa
 db.getCollection('userRates').createIndex({ ownerUserId: 1, relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_owner_primary_mode_v2' });
 db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, relatedUserId: 1, secondaryRelatedUserId: 1 }, { name: 'user_rate_owner_mode_target_unique_v1', unique: true });
 db.getCollection('userRates').createIndex({ relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_pair_lookup_v2' });
+db.getCollection('userRates').createIndex({ scoreGiven: 1, updatedDate: 1, createdDate: 1, ownerUserId: 1 }, { name: 'user_rate_qmau_window' });
 " >/dev/null
       ;;
     appSettings)
@@ -401,6 +402,19 @@ db.getCollection('assets').createIndex({ ownerUserId: 1, assetId: 1 }, { name: '
 db.getCollection('assets').createIndex({ ownerUserId: 1, updatedDate: -1 }, { name: 'asset_owner_updated' });
 " >/dev/null
       ;;
+    assetRequests)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('assetRequests').createIndex({ status: 1, requestedAtIso: 1, userId: 1 }, { name: 'asset_request_qmau_booking_window' });
+" >/dev/null
+      ;;
     activityMembers)
       mongosh \
         --host "${mongo_host}" \
@@ -417,6 +431,7 @@ db.getCollection('activityMembers').createIndex({ ownerType: 1, ownerId: 1, acti
 db.getCollection('activityMembers').createIndex({ ownerType: 1, ownerId: 1, status: 1, actionAtIso: -1 }, { name: 'activity_member_owner_status' });
 db.getCollection('activityMembers').createIndex({ ownerType: 1, userId: 1, actionAtIso: -1 }, { name: 'activity_member_user_action' });
 db.getCollection('activityMembers').createIndex({ ownerType: 1, status: 1, requestKind: 1 }, { name: 'activity_member_status_request' });
+db.getCollection('activityMembers').createIndex({ ownerType: 1, status: 1, actionAtIso: 1, userId: 1 }, { name: 'activity_member_qmau_join' });
 " >/dev/null
       ;;
     activityResources)
@@ -469,6 +484,7 @@ db.getCollection('chatMessages').createIndex({ messageReadByUserIds: 1, sentAtIs
 db.getCollection('chatMessages').createIndex({ messageReactionUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_reaction_date' });
 db.getCollection('chatMessages').createIndex({ messageAttachmentKeys: 1, sentAtIso: -1 }, { name: 'chat_message_attachment_date' });
 db.getCollection('chatMessages').createIndex({ pollVoterUserIds: 1, sentAtIso: -1 }, { name: 'chat_poll_voter_date' });
+db.getCollection('chatMessages').createIndex({ sentAtIso: 1, 'senderAvatar.id': 1, deletedAtIso: 1 }, { name: 'chat_message_qmau_window' });
 " >/dev/null
       ;;
     events)
@@ -509,6 +525,7 @@ db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, publi
 db.getCollection('events').createIndex({ expired: 1, endAtIso: 1, sourceId: 1 }, { name: 'event_expired_end' });
 db.getCollection('events').createIndex({ expired: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_expired_start' });
 db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });
+db.getCollection('events').createIndex({ status: 1, generated: 1, createdDate: 1, creatorUserId: 1 }, { name: 'event_qmau_host_window' });
 " >/dev/null
       ;;
     userExperienceProfiles)
@@ -577,6 +594,49 @@ db.getCollection('paymentProviders').createIndex({ enabled: 1, sortOrder: 1, lab
 db.getCollection('communityProviders').createIndex({ enabled: 1, sortOrder: 1, name: 1, _id: 1 }, { name: 'community_provider_enabled_sort' });
 " >/dev/null
       ;;
+    payments)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('payments').createIndex({ status: 1, provider: 1, auditKind: 1, createdDate: 1, _id: 1 }, { name: 'payment_revenue_period_scan' });
+" >/dev/null
+      ;;
+    revenueReportOutbox)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('revenueReportOutbox').createIndex({ deploymentId: 1, period: 1, revision: 1 }, { name: 'revenue_outbox_deployment_period_revision', unique: true });
+db.getCollection('revenueReportOutbox').createIndex({ deploymentId: 1, status: 1, nextRetryAt: 1, period: 1, revision: 1 }, { name: 'revenue_outbox_delivery' });
+db.getCollection('revenueReportOutbox').createIndex({ idempotencyKey: 1 }, { name: 'revenue_outbox_idempotency', unique: true });
+" >/dev/null
+      ;;
+    qualifiedMauReportOutbox)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('qualifiedMauReportOutbox').createIndex({ deploymentId: 1, period: 1, revision: 1 }, { name: 'qmau_outbox_deployment_period_revision', unique: true });
+db.getCollection('qualifiedMauReportOutbox').createIndex({ deploymentId: 1, status: 1, nextRetryAt: 1, period: 1, revision: 1 }, { name: 'qmau_outbox_delivery' });
+db.getCollection('qualifiedMauReportOutbox').createIndex({ idempotencyKey: 1 }, { name: 'qmau_outbox_idempotency', unique: true });
+" >/dev/null
+      ;;
     eventFeedbackStates)
       mongosh \
         --host "${mongo_host}" \
@@ -591,6 +651,7 @@ db.getCollection('eventFeedbackStates').createIndex({ syncKey: 1 }, { name: 'eve
 db.getCollection('eventFeedbackStates').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_state_user_event', unique: true });
 db.getCollection('eventFeedbackStates').createIndex({ viewerUserId: 1, updatedDate: -1 }, { name: 'event_feedback_state_user_updated' });
 db.getCollection('eventFeedbackStates').createIndex({ eventId: 1, updatedDate: -1 }, { name: 'event_feedback_state_event_updated' });
+db.getCollection('eventFeedbackStates').createIndex({ removed: 1, submittedAtIso: 1, viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_state_qmau_window' });
 " >/dev/null
       ;;
     eventFeedbackAnswers)
@@ -780,6 +841,9 @@ ensure_runtime_indexes() {
   ensure_collection_indexes "${target_db}" "operatorRegistryEndpoints"
   ensure_collection_indexes "${target_db}" "paymentProviders"
   ensure_collection_indexes "${target_db}" "communityProviders"
+  ensure_collection_indexes "${target_db}" "payments"
+  ensure_collection_indexes "${target_db}" "revenueReportOutbox"
+  ensure_collection_indexes "${target_db}" "qualifiedMauReportOutbox"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphLayouts"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphNodes"
   ensure_collection_indexes "${target_db}" "adminAffinityGraphEdges"

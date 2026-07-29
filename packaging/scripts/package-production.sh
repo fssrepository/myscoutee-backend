@@ -31,10 +31,12 @@ export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
 export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
 export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
 export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
+export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
 if [[ "${NGINX_BASE_IMAGE}" != "myscoutee-nginx:${VERSION}-base" \
   || "${NGINX_PRODUCTION_IMAGE}" != "myscoutee-nginx:${VERSION}-prod" \
   || "${MYSCOUTEE_PRODUCTION_IMAGE}" != "myscoutee-api:${VERSION}-prod" \
-  || "${MINIO_PRODUCTION_IMAGE}" != "myscoutee-minio:${VERSION}-prod" ]]; then
+  || "${MINIO_PRODUCTION_IMAGE}" != "myscoutee-minio:${VERSION}-prod" \
+  || "${REGISTRY_DEMO_IMAGE}" != "myscoutee-registry:${VERSION}-prod" ]]; then
   echo "Release packages require the canonical version-derived managed image tags." >&2
   exit 1
 fi
@@ -68,7 +70,106 @@ install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account
 # Credentials are deployment input, never package content. The operator
 # provisions the real service-account file after installation through the
 # protected deployment configuration path.
-cp -a "${SERVER_DIR}/docker/conf/mongodb" "${STAGING_DIR}/opt/myscoutee/server/docker/conf/"
+
+stage_mongo_configuration() {
+  local source_root="${SERVER_DIR}/docker/conf/mongodb"
+  local target_root="${STAGING_DIR}/opt/myscoutee/server/docker/conf/mongodb"
+  local demo_source="${source_root}/demo_db"
+  local demo_target="${target_root}/demo_db"
+  local production_source="${source_root}/myscoutee_db"
+  local production_target="${target_root}/myscoutee_db"
+  local seed_rule collection source_file demo_file demo_admin_emails
+  local -a production_collections=()
+
+  install -d "${target_root}" "${demo_target}" "${production_target}"
+
+  # Only the Mongo initializer itself is shared. Development/E2E databases and
+  # runtime user collections are not release-package input.
+  while IFS= read -r source_file; do
+    install -m 0644 "${source_file}" "${target_root}/$(basename "${source_file}")"
+  done < <(find "${source_root}" -maxdepth 1 -type f | sort)
+  chmod 0755 "${target_root}/mongo_import.sh"
+
+  # The bundled Explore database is isolated demo state. Derive its admin
+  # allow-list only from explicitly synthetic demo users, never from a
+  # developer/vendor address present in a source checkout.
+  demo_admin_emails="$(
+    jq -c '
+      [
+        .[]
+        | select(
+            (._id | type) == "string"
+            and (._id | startswith("admin-demo-")))
+        | (.email // "")
+        | select(test("@[^@]+\\.(local|invalid)$"; "i"))
+      ]
+      | unique
+    ' "${demo_source}/users.json"
+  )"
+  if ! jq -e 'type == "array" and length > 0' \
+      <<< "${demo_admin_emails}" >/dev/null; then
+    echo "Explore seed has no explicitly synthetic demo administrators." >&2
+    exit 1
+  fi
+  while IFS= read -r demo_file; do
+    if [[ "$(basename "${demo_file}")" == "appSettings.json" ]]; then
+      jq --argjson adminEmails "${demo_admin_emails}" '
+        map(
+          if .settingsKey == "global"
+          then .adminEmails = $adminEmails
+          else .
+          end
+        )
+      ' "${demo_file}" > "${demo_target}/appSettings.json"
+    else
+      install -m 0644 "${demo_file}" "${demo_target}/$(basename "${demo_file}")"
+    fi
+  done < <(find "${demo_source}" -maxdepth 1 -type f -name '*.json' | sort)
+
+  # The production database receives only the system/configuration collections
+  # declared in the packaged allow-list. In particular, users, adminUsers,
+  # activity, chat, payment, and other deployment/runtime records are absent
+  # from the .deb even though a developer checkout may contain fixtures.
+  seed_rule="$(
+    sed -n 's/^MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=//p' \
+      "${REPO_ROOT}/packaging/templates/myscoutee.env" \
+      | tr ';' '\n' \
+      | sed -n 's/^production_db://p' \
+      | tail -n 1
+  )"
+  if [[ -z "${seed_rule}" || "${seed_rule}" == *"*"* ]]; then
+    echo "Production Mongo seed allow-list must be explicit and non-empty." >&2
+    exit 1
+  fi
+  IFS=',' read -r -a production_collections <<< "${seed_rule}"
+  for collection in "${production_collections[@]}"; do
+    if [[ ! "${collection}" =~ ^[A-Za-z][A-Za-z0-9_]*$ ]]; then
+      echo "Invalid production seed collection: ${collection}" >&2
+      exit 1
+    fi
+    source_file="${production_source}/${collection}.json"
+    if [[ ! -f "${source_file}" ]]; then
+      echo "Missing production system seed: ${source_file}" >&2
+      exit 1
+    fi
+    if [[ "${collection}" == "appSettings" ]]; then
+      # Admin authorization is mutable deployment state configured by the
+      # authenticated operator. A release never nominates an administrator.
+      jq '
+        map(
+          if .settingsKey == "global"
+          then .adminEmails = []
+          else .
+          end
+        )
+      ' "${source_file}" > "${production_target}/appSettings.json"
+    else
+      install -m 0644 "${source_file}" "${production_target}/${collection}.json"
+    fi
+  done
+}
+
+stage_mongo_configuration
 cp -a "${SERVER_DIR}/docker/scripts/." "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
@@ -84,6 +185,7 @@ sed \
   -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}-prod/" \
   -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}-prod/" \
   -e "s/^MINIO_PRODUCTION_IMAGE=.*/MINIO_PRODUCTION_IMAGE=myscoutee-minio:${VERSION}-prod/" \
+  -e "s/^REGISTRY_DEMO_IMAGE=.*/REGISTRY_DEMO_IMAGE=myscoutee-registry:${VERSION}-prod/" \
   -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
 
 save_image() {
@@ -123,6 +225,7 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}-prod"
   save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}-prod"
   save_image "${MINIO_PRODUCTION_IMAGE}" "myscoutee-minio-${VERSION}-prod"
+  save_image "${REGISTRY_DEMO_IMAGE}" "myscoutee-registry-${VERSION}-prod"
   jq -n \
     --arg releaseVersion "${VERSION}" \
     --arg nginxBaseReference "${NGINX_BASE_IMAGE}" \
@@ -133,6 +236,8 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
     --arg apiId "$(image_id "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
     --arg minioReference "${MINIO_PRODUCTION_IMAGE}" \
     --arg minioId "$(image_id "${MINIO_PRODUCTION_IMAGE}")" \
+    --arg registryDemoReference "${REGISTRY_DEMO_IMAGE}" \
+    --arg registryDemoId "$(image_id "${REGISTRY_DEMO_IMAGE}")" \
     '{
       schemaVersion: 1,
       releaseVersion: $releaseVersion,
@@ -161,6 +266,12 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
           container: "minio",
           reference: $minioReference,
           imageId: $minioId
+        },
+        {
+          service: "registry-demo",
+          container: "registry-demo",
+          reference: $registryDemoReference,
+          imageId: $registryDemoId
         }
       ]
     }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
@@ -183,6 +294,8 @@ if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then
   save_image "${MONGO_IMAGE:-mongo:8.0.4}" "mongo" true
   save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis" true
 fi
+
+bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
 
 if ! command -v dpkg-deb >/dev/null 2>&1; then
   echo "dpkg-deb is required to build the Debian package." >&2

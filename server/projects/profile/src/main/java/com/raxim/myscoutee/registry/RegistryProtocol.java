@@ -35,6 +35,9 @@ public final class RegistryProtocol {
     public static final String INSTALLATION_RULESET = "installation-test-v1";
     public static final long INSTALLATION_MAU_COUNT = 0L;
     public static final String INSTALLATION_ENTRY_TYPE = "INSTALLATION_TEST_BATCH_ACCEPTED";
+    public static final String QMAU_KIND = "monthly-qmau";
+    public static final String QMAU_RULESET_VERSION = "qmau-v1";
+    public static final String QMAU_ENTRY_TYPE = "QMAU_BATCH_ACCEPTED";
     public static final String REVENUE_KIND = "daily-revenue";
     public static final String REVENUE_RULESET_VERSION =
             "net-captured-revenue-v1";
@@ -168,6 +171,43 @@ public final class RegistryProtocol {
                 rulesetVersion,
                 Long.toString(qualifiedMauCount),
                 commitmentHash);
+    }
+
+    public static byte[] qmauBatchPayload(
+            String kind,
+            String period,
+            String rulesetVersion,
+            long qualifiedMauCount,
+            String commitmentHash,
+            long revision,
+            String supersedesBatchId) {
+        if (!QMAU_KIND.equals(kind)
+                || !QMAU_RULESET_VERSION.equals(rulesetVersion)) {
+            throw new IllegalArgumentException(
+                    "QMAU payload does not use the supported qualification ruleset.");
+        }
+        requirePeriod(period);
+        requireNonNegative(qualifiedMauCount, "qualified_mau_count");
+        requireHash(commitmentHash, "commitment_hash");
+        long normalizedRevision = requirePositive(revision, "revision");
+        String normalizedSupersedes = nullToEmpty(supersedesBatchId);
+        if (normalizedRevision == 1L) {
+            if (!normalizedSupersedes.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Initial QMAU revision must not supersede a batch.");
+            }
+        } else {
+            requireBatchId(normalizedSupersedes);
+        }
+        return canonicalAllowEmpty(
+                "myscoutee-registry-qmau-batch-payload-v1",
+                kind,
+                period,
+                rulesetVersion,
+                Long.toString(qualifiedMauCount),
+                commitmentHash,
+                Long.toString(normalizedRevision),
+                normalizedSupersedes);
     }
 
     public static byte[] revenueBatchPayload(
@@ -316,6 +356,9 @@ public final class RegistryProtocol {
     public static byte[] mauReceipt(BatchResponse response) {
         Objects.requireNonNull(response, "Batch response must not be null.");
         MauReceipt receipt = Objects.requireNonNull(response.receipt(), "MAU receipt must not be null.");
+        if (QMAU_KIND.equals(receipt.kind())) {
+            return qmauReceipt(response);
+        }
         return canonical(
                 "myscoutee-registry-mau-receipt-v1",
                 response.protocolVersion(),
@@ -330,6 +373,39 @@ public final class RegistryProtocol {
                 receipt.period(),
                 receipt.rulesetVersion(),
                 requiredLong(receipt.qualifiedMauCount(), "qualified_mau_count"),
+                receipt.acceptedAt(),
+                receipt.checkpointDate(),
+                receipt.registryKeyId());
+    }
+
+    public static byte[] qmauReceipt(BatchResponse response) {
+        Objects.requireNonNull(response, "QMAU response must not be null.");
+        MauReceipt receipt = Objects.requireNonNull(
+                response.receipt(),
+                "QMAU receipt must not be null.");
+        if (!QMAU_KIND.equals(receipt.kind())) {
+            throw new IllegalArgumentException(
+                    "QMAU receipt kind must be monthly-qmau.");
+        }
+        return canonicalAllowEmpty(
+                "myscoutee-registry-qmau-receipt-v1",
+                response.protocolVersion(),
+                response.registryScope(),
+                response.batchId(),
+                response.deploymentId(),
+                requiredLong(receipt.ledgerIndex(), "ledger_index"),
+                receipt.entryHash(),
+                receipt.previousEntryHash(),
+                receipt.batchHash(),
+                receipt.kind(),
+                receipt.period(),
+                receipt.rulesetVersion(),
+                requiredLong(
+                        receipt.qualifiedMauCount(),
+                        "qualified_mau_count"),
+                receipt.commitmentHash(),
+                requiredLong(receipt.revision(), "revision"),
+                nullToEmpty(receipt.supersedesBatchId()),
                 receipt.acceptedAt(),
                 receipt.checkpointDate(),
                 receipt.registryKeyId());
@@ -1318,8 +1394,41 @@ public final class RegistryProtocol {
             @JsonProperty("ruleset_version") String rulesetVersion,
             @JsonProperty("qualified_mau_count") Long qualifiedMauCount,
             @JsonProperty("commitment_hash") String commitmentHash,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
             @JsonProperty("payload_hash") String payloadHash,
             String signature) {
+        public BatchRequest(
+                String protocolVersion,
+                String registryScope,
+                String deploymentId,
+                String timestamp,
+                String nonce,
+                String idempotencyKey,
+                String kind,
+                String period,
+                String rulesetVersion,
+                Long qualifiedMauCount,
+                String commitmentHash,
+                String payloadHash,
+                String signature) {
+            this(
+                    protocolVersion,
+                    registryScope,
+                    deploymentId,
+                    timestamp,
+                    nonce,
+                    idempotencyKey,
+                    kind,
+                    period,
+                    rulesetVersion,
+                    qualifiedMauCount,
+                    commitmentHash,
+                    null,
+                    null,
+                    payloadHash,
+                    signature);
+        }
     }
 
     public record BatchResponse(
@@ -1341,12 +1450,49 @@ public final class RegistryProtocol {
             String period,
             @JsonProperty("ruleset_version") String rulesetVersion,
             @JsonProperty("qualified_mau_count") Long qualifiedMauCount,
+            @JsonProperty("commitment_hash") String commitmentHash,
+            Long revision,
+            @JsonProperty("supersedes_batch_id") String supersedesBatchId,
             @JsonProperty("accepted_at") String acceptedAt,
             @JsonProperty("checkpoint_date") String checkpointDate,
             @JsonProperty("registry_scope") String registryScope,
             @JsonProperty("registry_key_id") String registryKeyId,
             @JsonProperty("registry_public_key") String registryPublicKey,
             String signature) {
+        public MauReceipt(
+                Long ledgerIndex,
+                String entryHash,
+                String previousEntryHash,
+                String batchHash,
+                String kind,
+                String period,
+                String rulesetVersion,
+                Long qualifiedMauCount,
+                String acceptedAt,
+                String checkpointDate,
+                String registryScope,
+                String registryKeyId,
+                String registryPublicKey,
+                String signature) {
+            this(
+                    ledgerIndex,
+                    entryHash,
+                    previousEntryHash,
+                    batchHash,
+                    kind,
+                    period,
+                    rulesetVersion,
+                    qualifiedMauCount,
+                    null,
+                    null,
+                    null,
+                    acceptedAt,
+                    checkpointDate,
+                    registryScope,
+                    registryKeyId,
+                    registryPublicKey,
+                    signature);
+        }
     }
 
     public record RevenueCurrencyRow(

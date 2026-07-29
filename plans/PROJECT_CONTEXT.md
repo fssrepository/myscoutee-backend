@@ -19,6 +19,14 @@ deployment decisions that take precedence over older installer-first sketches.
   The browser never receives that key and never calls the Go registry directly.
 - Registry endpoints are deployment data, not hard-coded regions. Demo data may
   offer examples; a production catalog can be empty.
+- Every backend-connected **Explore** session is server-side, whether the build
+  is development, E2E, or production: Angular uses the normal Java HTTP API in
+  demo-session mode, Java uses Mongo `demo_db`, and registry operations use the
+  stack's internal Go demo registry backed by its own seeded SQLite database,
+  signing key, identity, and volume. Production builds that Go service from the
+  stripped production image and do not publish it on a host port. It can never
+  be selected as, or share state with, the operator's external real registry.
+  Browser-local operator data is only an explicitly local/offline fallback.
 - To move to a genuinely different registry identity, the operator first
   completes a signed unregister/deactivation at the current registry. That
   withdraws the current claim. The Java backend then archives the old binding
@@ -54,8 +62,11 @@ deployment decisions that take precedence over older installer-first sketches.
 - Preserve the existing shared/core frontend and Java
   controller/service/mapper/repository patterns. Do not add component-local
   route-delay implementations or repair seed data in application classes.
-- Explore demo bootstrap performs its single IndexedDB read up front, carries
-  state in memory between steps, and flushes each completed step.
+- When the explicit browser-local/offline Explore adapter is used, demo
+  bootstrap performs its single IndexedDB read up front, carries state in
+  memory between steps, and flushes each completed step. A backend-connected
+  Explore build never uses that adapter; it uses Java, Mongo `demo_db`, and the
+  isolated seeded SQLite demo registry described above.
 - Branding is deployment-specific where the deployment presents itself to
   users. MyScoutee network support, legal material, guides, moderation, and bug
   reporting remain MyScoutee product/vendor concerns and must use i18n strings

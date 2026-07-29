@@ -70,4 +70,45 @@ public final class OperatorRevenueDtos {
             long blocked,
             String synchronizedAtIso) {
     }
+
+    public record OperatorRevenueReportPageDto(
+            List<OperatorRevenueReportDto> items,
+            int page,
+            int size,
+            long totalElements,
+            int totalPages) {
+    }
+
+    public record OperatorRevenueReportDto(
+            String id,
+            String period,
+            long revision,
+            String supersedesBatchId,
+            String rulesetVersion,
+            int commissionRateBasisPoints,
+            List<OperatorRevenueReportCurrencyDto> currencies,
+            String payloadHash,
+            String status,
+            int attemptCount,
+            String nextRetryAt,
+            String failureCode,
+            String failureMessage,
+            Boolean failureRetryable,
+            String failedAt,
+            String acceptedBatchId,
+            String acceptedAt,
+            String createdAt,
+            String updatedAt) {
+    }
+
+    public record OperatorRevenueReportCurrencyDto(
+            String currencyCode,
+            int fractionDigits,
+            long capturedMinor,
+            long refundedMinor,
+            long netMinor,
+            long commissionBasisMinor,
+            long estimatedCommissionMinor,
+            long paymentCount) {
+    }
 }

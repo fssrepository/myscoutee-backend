@@ -53,7 +53,6 @@ import de.flapdoodle.reverse.TransitionWalker;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=true",
-                "config.admin-user=e2e-security-admin@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",

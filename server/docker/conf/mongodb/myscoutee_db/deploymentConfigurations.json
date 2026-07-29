@@ -2,7 +2,7 @@
   {
     "_id": "deployment-configuration",
     "version": 0,
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "branding": {
       "productName": "MyScoutee",
       "logoCharacterIndex": null,
@@ -11,6 +11,7 @@
       "themePreset": "AURORA",
       "revision": 0
     },
+    "socialLinks": [],
     "payment": {
       "providerId": null,
       "credentialEnvelope": null,

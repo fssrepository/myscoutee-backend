@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,7 +40,17 @@ public final class OperatorConfigurationDtos {
             String homeLabel,
             String logoUrl,
             DeploymentThemePreset themePreset,
-            long revision) {
+            long revision,
+            List<DeploymentSocialLinkDto> socialLinks) {
+    }
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    public record DeploymentSocialLinkDto(
+            @NotBlank @Size(max = 32) String provider,
+            @NotBlank @Size(max = 80) String label,
+            @NotBlank @Size(max = 2048) String url,
+            @Size(max = 64) String icon,
+            @Size(max = 80) String handle) {
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -70,6 +81,8 @@ public final class OperatorConfigurationDtos {
     public record OperatorConfigurationDto(
             String capability,
             String unavailableReason,
+            List<String> adminEmails,
+            List<DeploymentSocialLinkDto> socialLinks,
             DeploymentBrandingDto branding,
             PaymentConfigurationDto payment,
             FirebaseConfigurationDto firebase,
@@ -112,13 +125,22 @@ public final class OperatorConfigurationDtos {
     }
 
     public record OperatorConfigurationUpdateDto(
+            @NotNull @Size(max = 32)
+            List<@NotBlank @Email @Size(max = 254) String> adminEmails,
+            @NotNull @Size(max = 12)
+            List<@NotNull @Valid DeploymentSocialLinkDto> socialLinks,
             @NotNull @Valid BrandingUpdateDto branding,
             @Valid PaymentUpdateDto payment,
             @Valid FirebaseUpdateDto firebase) {
     }
 
     public record ConfigurationTestRequestDto(
-            @NotNull ConfigurationTestKind kind) {
+            @NotNull ConfigurationTestKind kind,
+            @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+            @Size(max = 4096) String destinationToken) {
+        public ConfigurationTestRequestDto(ConfigurationTestKind kind) {
+            this(kind, null);
+        }
     }
 
     @JsonInclude(JsonInclude.Include.ALWAYS)

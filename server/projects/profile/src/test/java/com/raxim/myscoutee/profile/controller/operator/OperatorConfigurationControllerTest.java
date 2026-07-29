@@ -42,6 +42,16 @@ class OperatorConfigurationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
+                                  "adminEmails": ["admin@example.test"],
+                                  "socialLinks": [
+                                    {
+                                      "provider": "discord",
+                                      "label": "Discord",
+                                      "url": "https://discord.example.test/community",
+                                      "icon": "discord",
+                                      "handle": "@community"
+                                    }
+                                  ],
                                   "branding": {
                                     "productName": "Community",
                                     "logoUrl": "/media/public?key=images%2Flogo",

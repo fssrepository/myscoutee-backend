@@ -17,6 +17,8 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       LETSENCRYPT_ENABLED: ${LETSENCRYPT_ENABLED:-false}
       DOMAIN: ${DOMAIN:-myscoutee.com}
+      NGINX_TLS_CERTIFICATE_PATH: ${NGINX_TLS_CERTIFICATE_PATH:-/etc/nginx/keys/nginx.crt}
+      NGINX_TLS_CERTIFICATE_KEY_PATH: ${NGINX_TLS_CERTIFICATE_KEY_PATH:-/etc/nginx/keys/nginx-nopass.key}
     ports:
       - 80:80
       - 443:443
@@ -36,7 +38,7 @@ services:
       profilemanagement:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/nginx-health >/dev/null 2>&1 || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -120,6 +122,8 @@ services:
     hostname: myscoutee
     restart: unless-stopped
     env_file:
+      # Includes the install-generated Operator bootstrap subject and digest.
+      # Do not shadow either with empty environment interpolation below.
       - .env.secrets
     environment:
       SPRING_PROFILES_ACTIVE: "prod"
@@ -131,8 +135,6 @@ services:
       SPRING_DATA_REDIS_PORT: "6379"
       FIREBASE_ENABLED: "${FIREBASE_ENABLED:-false}"
       FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
-      DEV_USER: "dev@myscoutee.local"
-      ADMIN_USER: "myscoutee@gmail.com,raxim.uk@gmail.com,myscoutee1@gmail.com"
       OPERATOR_USER: "${OPERATOR_USER:-}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:-/etc/myscoutee/configuration/deployment-master-key}"
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
@@ -162,6 +164,13 @@ services:
       REGISTRY_TRUST_ON_FIRST_USE: "${REGISTRY_TRUST_ON_FIRST_USE:-false}"
       REGISTRY_ALLOW_INSECURE_HTTP: "${REGISTRY_ALLOW_INSECURE_HTTP:-false}"
       REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS: "${REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS:-}"
+      REGISTRY_DEMO_BASE_URL: "http://registry:8080"
+      REGISTRY_DEMO_SCOPE: "demo:myscoutee"
+      REGISTRY_DEMO_PRIVATE_KEY_PATH: "/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem"
+      REGISTRY_DEMO_PUBLIC_KEY_PATH: "/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der"
+      REGISTRY_DEMO_STATE_DIR: "/var/lib/myscoutee/registry-demo/state"
+      REGISTRY_DEMO_ALLOW_INSECURE_HTTP: "true"
+      REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS: "registry"
       OPERATOR_UPDATE_ENABLED: "${MYSCOUTEE_UPDATE_ENABLED:-false}"
       OPERATOR_UPDATE_STATE_DIR: "/var/lib/myscoutee/update"
       OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
@@ -176,6 +185,7 @@ services:
       - "${OPERATOR_CONFIGURATION_KEY_DIR_HOST:-/etc/myscoutee/configuration}:/etc/myscoutee/configuration:ro"
       - "${REGISTRY_KEY_DIR_HOST:-/etc/myscoutee/registry}:/etc/myscoutee/registry:rw"
       - "${REGISTRY_STATE_DIR_HOST:-/var/lib/myscoutee/registry}:/var/lib/myscoutee/registry"
+      - registry-demo-client-data:/var/lib/myscoutee/registry-demo
       - /var/lib/myscoutee/update/inbox/staging:/var/lib/myscoutee/update/staging:rw
       - /var/lib/myscoutee/update/inbox/requests:/var/lib/myscoutee/update/requests:rw
       - /var/lib/myscoutee/update/runtime/jobs:/var/lib/myscoutee/update/jobs:ro
@@ -190,9 +200,53 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      registry:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health | grep -q UP"]
       interval: 10s
       timeout: 5s
       retries: 30
       start_period: 90s
+
+  # Explore-only registry. It is an internal dependency, has a dedicated
+  # seeded SQLite volume, and is never the operator-selected REAL registry.
+  registry:
+    image: ${REGISTRY_DEMO_IMAGE:-myscoutee-registry:1.0.0-prod}
+    pull_policy: never
+    container_name: registry-demo
+    hostname: registry
+    restart: unless-stopped
+    command: ["start-demo"]
+    environment:
+      REGISTRY_DEMO_SEED: "true"
+      REGISTRY_LISTEN_ADDR: ":8080"
+      REGISTRY_SCOPE: "demo:myscoutee"
+      REGISTRY_DATABASE_PATH: "/data/registry-demo.db"
+      REGISTRY_SIGNING_KEY_PATH: "/data/registry-demo-signing-key.pem"
+      REGISTRY_GENERATE_SIGNING_KEY: "true"
+      REGISTRY_HEALTHCHECK_URL: "http://127.0.0.1:8080/healthz"
+    volumes:
+      - registry-demo-data:/data
+    networks:
+      - myscoutee
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "/registry", "healthcheck"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    stop_grace_period: 15s
+
+volumes:
+  registry-demo-data:
+    name: "${REGISTRY_DEMO_VOLUME_NAME:-myscoutee-registry-demo-data-v1}"
+  registry-demo-client-data:
+    name: "${REGISTRY_DEMO_CLIENT_VOLUME_NAME:-myscoutee-registry-demo-client-data-v1}"

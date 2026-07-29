@@ -2,7 +2,7 @@
   {
     "_id": "deployment-configuration",
     "version": 0,
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "branding": {
       "productName": "MyScoutee",
       "logoCharacterIndex": null,
@@ -11,6 +11,29 @@
       "themePreset": "AURORA",
       "revision": 0
     },
+    "socialLinks": [
+      {
+        "provider": "instagram",
+        "label": "Instagram",
+        "url": "https://www.instagram.com/myscoutee",
+        "icon": "photo_camera",
+        "handle": "@myscoutee"
+      },
+      {
+        "provider": "youtube",
+        "label": "YouTube",
+        "url": "https://www.youtube.com/@myscoutee",
+        "icon": "smart_display",
+        "handle": "@myscoutee"
+      },
+      {
+        "provider": "facebook",
+        "label": "Facebook",
+        "url": "https://www.facebook.com/myscoutee",
+        "icon": "public",
+        "handle": "MyScoutee"
+      }
+    ],
     "payment": {
       "providerId": null,
       "credentialEnvelope": null,

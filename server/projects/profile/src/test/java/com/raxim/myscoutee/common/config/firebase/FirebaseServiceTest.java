@@ -92,29 +92,38 @@ class FirebaseServiceTest {
     }
 
     @Test
-    void configAdminUserGetsAdminRoleWithoutOnboardingUser() {
+    void adminAuthorityComesOnlyFromDeploymentAppSettings() {
         ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setAdminUser("Admin@Example.com");
         UsersRepository usersRepository = mock(UsersRepository.class);
         AppSettingsService appSettingsService = mock(AppSettingsService.class);
         FirebaseCredential credential = mock(FirebaseCredential.class);
-
-        String email = "admin@example.com";
+        String email = "former-runtime-admin@example.com";
         String expectedUserId = stableUserId(email);
-        when(credential.getEmail()).thenReturn("Admin@Example.com");
-        when(usersRepository.findFirstByEmail(email)).thenReturn(Optional.empty());
-        when(usersRepository.findByUserId(expectedUserId)).thenReturn(Optional.empty());
-        when(usersRepository.findById(expectedUserId)).thenReturn(Optional.empty());
+        when(credential.getEmail()).thenReturn(email);
+        when(appSettingsService.isAdminEmail(email)).thenReturn(false);
+        when(usersRepository.findFirstByEmail(email))
+                .thenReturn(Optional.empty());
+        when(usersRepository.findByUserId(expectedUserId))
+                .thenReturn(Optional.empty());
+        when(usersRepository.findById(expectedUserId))
+                .thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        FirebaseService service = new FirebaseService(configProperties, usersRepository, appSettingsService);
+        FirebasePrincipal principal = (FirebasePrincipal) new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService)
+                .loadUserByCredential(credential, null, "/admin");
 
-        UserDetails userDetails = service.loadUserByCredential(credential, null, "/admin");
-
-        FirebasePrincipal principal = (FirebasePrincipal) userDetails;
-        assertThat(principal.getUserId()).isEqualTo(expectedUserId);
-        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("A");
-        assertThat(principal.getUser()).isNull();
-        verify(usersRepository, never()).save(any(Users.class));
+        assertThat(principal.getAuthorities())
+                .extracting(Object::toString)
+                .containsExactly("U");
+        assertThat(principal.getUser()).isNotNull();
+        assertThat(java.util.Arrays.stream(
+                        ConfigProperties.class.getMethods())
+                .map(java.lang.reflect.Method::getName))
+                .noneMatch(name -> name.contains("AdminUser"));
     }
 
     @Test
@@ -199,6 +208,86 @@ class FirebaseServiceTest {
         assertThat(principal.getUser().isOperator()).isTrue();
         assertThat(principal.getUser().getHostTier()).isEqualTo("Operator");
         assertThat(principal.getUser().getProfileStatus()).isEqualTo("public");
+    }
+
+    @Test
+    void bootstrapCreatesAndReloadsAPersistedOperatorWithoutFirebase() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setOperatorUser(
+                "operator-install@deployment.invalid");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService =
+                mock(AppSettingsService.class);
+        String email = "operator-install@deployment.invalid";
+        String expectedUserId = stableUserId(email);
+        when(usersRepository.findFirstByEmail(email))
+                .thenReturn(Optional.empty());
+        when(usersRepository.findByUserId(expectedUserId))
+                .thenReturn(Optional.empty());
+        when(usersRepository.findById(expectedUserId))
+                .thenReturn(Optional.empty());
+        when(usersRepository.save(any(Users.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        FirebaseService service = new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService);
+
+        FirebasePrincipal created = (FirebasePrincipal)
+                service.loadOrCreateBootstrapOperator(email);
+
+        assertThat(created.getAuthorities())
+                .extracting(Object::toString)
+                .containsExactly("U", "O");
+        assertThat(created.getUser()).isNotNull();
+        assertThat(created.getUser().isOperator()).isTrue();
+        assertThat(created.getUser().getHostTier())
+                .isEqualTo("Operator");
+        assertThat(created.getUser().getEmail()).isEqualTo(email);
+        verify(usersRepository).save(any(Users.class));
+
+        when(usersRepository.findFirstByEmail(email))
+                .thenReturn(Optional.of(created.getUser()));
+        assertThat(service.loadStoredBootstrapOperator(email))
+                .isNotNull();
+        assertThat(service.loadStoredBootstrapOperator(
+                "other@deployment.invalid")).isNull();
+    }
+
+    @Test
+    void bootstrapPromotesAnExistingConfiguredUserToOperator() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setOperatorUser(
+                "operator-install@deployment.invalid");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService =
+                mock(AppSettingsService.class);
+        Users existing = new Users();
+        existing.setUserId("legacy-operator");
+        existing.setEmail("operator-install@deployment.invalid");
+        existing.setOperator(false);
+        existing.setHostTier("Member");
+        when(usersRepository.findFirstByEmail(
+                "operator-install@deployment.invalid"))
+                .thenReturn(Optional.of(existing));
+        when(usersRepository.save(existing)).thenReturn(existing);
+        FirebaseService service = new FirebaseService(
+                configProperties,
+                usersRepository,
+                appSettingsService);
+
+        FirebasePrincipal principal = (FirebasePrincipal)
+                service.loadOrCreateBootstrapOperator(
+                        "operator-install@deployment.invalid");
+
+        assertThat(existing.isOperator()).isTrue();
+        assertThat(existing.getHostTier()).isEqualTo("Operator");
+        assertThat(existing.getStatusText())
+                .isEqualTo("Operator workspace");
+        assertThat(principal.getAuthorities())
+                .extracting(Object::toString)
+                .containsExactly("U", "O");
+        verify(usersRepository).save(existing);
     }
 
     @Test

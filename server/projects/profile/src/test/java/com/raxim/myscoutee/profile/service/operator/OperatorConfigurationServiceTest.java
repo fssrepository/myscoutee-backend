@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -33,11 +34,13 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.B
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestKind;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestRequestDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
+import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.profile.service.AppSettingsService;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -73,6 +76,15 @@ class OperatorConfigurationServiceTest {
         assertThat(saved.branding().productName()).isEqualTo("My Community");
         assertThat(saved.branding().themePreset()).isEqualTo(DeploymentThemePreset.OCEAN);
         assertThat(saved.branding().revision()).isEqualTo(1L);
+        assertThat(saved.adminEmails())
+                .containsExactly("operator.admin@example.test");
+        assertThat(saved.socialLinks())
+                .containsExactly(new DeploymentSocialLinkDto(
+                        "discord",
+                        "Discord",
+                        "https://discord.example.test/community",
+                        "discord",
+                        "@community"));
         assertThat(saved.payment().providerId()).isEqualTo("stripe");
         assertThat(saved.payment().credentialConfigured()).isTrue();
         assertThat(saved.payment().credentialMask()).isEqualTo("••••1234");
@@ -80,6 +92,9 @@ class OperatorConfigurationServiceTest {
         assertThat(saved.firebase().messagingCredentialConfigured()).isTrue();
         assertThat(saved.updatedAt()).isEqualTo("2026-07-28T12:34:56Z");
         assertThat(document.getVersion()).isEqualTo(1L);
+        assertThat(document.getSocialLinks())
+                .extracting(DeploymentConfiguration.SocialLink::getProvider)
+                .containsExactly("discord");
         assertThat(persistedJson)
                 .doesNotContain("sk_live_super-secret-1234")
                 .doesNotContain("auth-secret-material")
@@ -155,6 +170,8 @@ class OperatorConfigurationServiceTest {
                 "not available");
         OperatorConfigurationUpdateDto missingTheme =
                 new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        List.of(),
                         new BrandingUpdateDto(
                                 "Product",
                                 null,
@@ -165,6 +182,142 @@ class OperatorConfigurationServiceTest {
         assertBadRequest(
                 () -> fixture.service().update(missingTheme),
                 "Theme preset");
+    }
+
+    @Test
+    void validatesAndNormalizesAdminEmailsAndSocialLinks() throws Exception {
+        Fixture fixture = fixtureWithKey();
+        OperatorConfigurationUpdateDto normalized =
+                new OperatorConfigurationUpdateDto(
+                        List.of(
+                                " Admin@One.Example ",
+                                "admin@one.example"),
+                        List.of(
+                                new DeploymentSocialLinkDto(
+                                        " Discord ",
+                                        " Community chat ",
+                                        "https://discord.example.test/community",
+                                        " discord ",
+                                        " @community "),
+                                new DeploymentSocialLinkDto(
+                                        "discord",
+                                        "Community chat",
+                                        "https://discord.example.test/community",
+                                        "discord",
+                                        "@community")),
+                        new BrandingUpdateDto(
+                                "Product",
+                                null,
+                                "/media/public?key=images%2Flogo",
+                                DeploymentThemePreset.OCEAN),
+                        null,
+                        null);
+
+        var saved = fixture.service().update(normalized);
+
+        assertThat(saved.adminEmails())
+                .containsExactly("admin@one.example");
+        assertThat(saved.socialLinks())
+                .containsExactly(new DeploymentSocialLinkDto(
+                        "discord",
+                        "Community chat",
+                        "https://discord.example.test/community",
+                        "discord",
+                        "@community"));
+
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        List.of("not-an-email"),
+                        List.of(),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "admin email");
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        java.util.stream.IntStream.range(0, 33)
+                                .mapToObj(index -> "admin-" + index
+                                        + "@example.test")
+                                .toList(),
+                        List.of(),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "No more than 32");
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        List.of(new DeploymentSocialLinkDto(
+                                "Discord!",
+                                "Discord",
+                                "https://discord.example.test",
+                                null,
+                                null)),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "lowercase identifier");
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        List.of(new DeploymentSocialLinkDto(
+                                "discord",
+                                "Discord",
+                                "http://discord.example.test",
+                                null,
+                                null)),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "HTTPS");
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        List.of(new DeploymentSocialLinkDto(
+                                "discord",
+                                "Discord",
+                                "https://user:password@discord.example.test",
+                                null,
+                                null)),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "without credentials");
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        List.of(
+                                new DeploymentSocialLinkDto(
+                                        "discord",
+                                        "Discord",
+                                        "https://discord.example.test/one",
+                                        null,
+                                        null),
+                                new DeploymentSocialLinkDto(
+                                        "discord",
+                                        "Another Discord",
+                                        "https://discord.example.test/two",
+                                        null,
+                                        null)),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "duplicate provider");
+        assertBadRequest(
+                () -> fixture.service().update(new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        java.util.stream.IntStream.range(0, 13)
+                                .mapToObj(index -> new DeploymentSocialLinkDto(
+                                        "provider-" + index,
+                                        "Provider " + index,
+                                        "https://social" + index + ".example.test",
+                                        null,
+                                        null))
+                                .toList(),
+                        normalized.branding(),
+                        null,
+                        null)),
+                "No more than 12");
     }
 
     @Test
@@ -238,32 +391,75 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
-    void firebaseTestsNeverFakeSuccessWhileRuntimeMigrationIsDeferred() throws Exception {
+    void firebaseTestsUseDecryptedOperatorCredentialsThroughIsolatedClient()
+            throws Exception {
         Fixture fixture = fixtureWithKey();
         fixture.service().update(updateRequest(
                 "Product",
                 "/media/public?key=images%2Flogo",
                 "stripe",
                 "payment-secret",
-                "authentication-secret",
-                "messaging-secret"));
+                "{\"type\":\"service_account\",\"private_key\":\"authentication-secret\"}",
+                "{\"type\":\"service_account\",\"private_key\":\"messaging-secret\"}"));
 
         var authentication = fixture.service().test(new ConfigurationTestRequestDto(
                 ConfigurationTestKind.FIREBASE_AUTHENTICATION));
         var messaging = fixture.service().test(new ConfigurationTestRequestDto(
-                ConfigurationTestKind.FIREBASE_MESSAGING));
+                ConfigurationTestKind.FIREBASE_MESSAGING,
+                "destination-token"));
+
+        assertThat(authentication.success()).isTrue();
+        assertThat(authentication.message())
+                .isEqualTo("Firebase authentication test succeeded.");
+        assertThat(messaging.success()).isTrue();
+        assertThat(messaging.message())
+                .isEqualTo("Firebase messaging test succeeded.");
+        assertThat(authentication.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
+        assertThat(messaging.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
+        verify(fixture.firebaseCapabilityClient()).testAuthentication(
+                "community-project",
+                "{\"type\":\"service_account\",\"private_key\":\"authentication-secret\"}");
+        verify(fixture.firebaseCapabilityClient()).sendTestMessage(
+                "community-project",
+                "{\"type\":\"service_account\",\"private_key\":\"messaging-secret\"}",
+                "destination-token",
+                "Product");
+    }
+
+    @Test
+    void firebaseTestFailuresAreSafeAndMessagingRequiresExplicitDestination()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        fixture.service().update(updateRequest(
+                "Product",
+                "/media/public?key=images%2Flogo",
+                "stripe",
+                "payment-secret",
+                "authentication-super-secret",
+                "messaging-super-secret"));
+        doThrow(new IllegalStateException(
+                "upstream leaked authentication-super-secret"))
+                .when(fixture.firebaseCapabilityClient())
+                .testAuthentication(any(), any());
+
+        var authentication = fixture.service().test(
+                new ConfigurationTestRequestDto(
+                        ConfigurationTestKind.FIREBASE_AUTHENTICATION));
+        var missingDestination = fixture.service().test(
+                new ConfigurationTestRequestDto(
+                        ConfigurationTestKind.FIREBASE_MESSAGING));
 
         assertThat(authentication.success()).isFalse();
         assertThat(authentication.message())
-                .contains("FIREBASE_SERVICE_ACCOUNT_PATH")
-                .contains("deferred Firebase migration");
-        assertThat(messaging.success()).isFalse();
-        assertThat(messaging.message())
-                .contains("not wired to FirebaseApp/FirebaseMessaging")
-                .contains("no registered destination token")
-                .contains("deferred");
-        assertThat(authentication.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
-        assertThat(messaging.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
+                .isEqualTo(
+                        "Firebase authentication test failed. Check the configured "
+                                + "project and service-account permissions.")
+                .doesNotContain("super-secret");
+        assertThat(missingDestination.success()).isFalse();
+        assertThat(missingDestination.message())
+                .contains("destination token is required");
+        verify(fixture.firebaseCapabilityClient(), never())
+                .sendTestMessage(any(), any(), any(), any());
     }
 
     @Test
@@ -276,8 +472,10 @@ class OperatorConfigurationServiceTest {
         properties.setMasterKeyPath(tempDir.resolve("missing-key"));
         DeploymentConfigurationCrypto crypto =
                 new DeploymentConfigurationCrypto(properties);
+        AppSettingsService appSettingsService = appSettingsService();
         OperatorConfigurationService service = new OperatorConfigurationService(
                 repository,
+                appSettingsService,
                 providerService,
                 new OperatorConfigurationMapper(),
                 crypto,
@@ -304,8 +502,10 @@ class OperatorConfigurationServiceTest {
                         + "101112131415161718191a1b1c1d1e1f\n");
         OperatorConfigurationProperties properties = new OperatorConfigurationProperties();
         properties.setMasterKeyPath(keyPath);
+        AppSettingsService appSettingsService = appSettingsService();
         OperatorConfigurationService service = new OperatorConfigurationService(
                 repository,
+                appSettingsService,
                 providerService(),
                 new OperatorConfigurationMapper(),
                 new DeploymentConfigurationCrypto(properties),
@@ -338,17 +538,24 @@ class OperatorConfigurationServiceTest {
                 new AtomicReference<>(seededConfiguration());
         DeploymentConfigurationRepository repository = statefulRepository(persisted);
         PaymentProviderService providerService = providerService();
+        AppSettingsService appSettingsService = appSettingsService();
+        OperatorFirebaseCapabilityClient firebaseCapabilityClient =
+                mock(OperatorFirebaseCapabilityClient.class);
         return new Fixture(
                 repository,
+                appSettingsService,
                 providerService,
                 crypto,
+                firebaseCapabilityClient,
                 persisted,
                 new OperatorConfigurationService(
                         repository,
+                        appSettingsService,
                         providerService,
                         new OperatorConfigurationMapper(),
                         crypto,
-                        FIXED_CLOCK));
+                        FIXED_CLOCK,
+                        firebaseCapabilityClient));
     }
 
     private DeploymentConfigurationRepository statefulRepository(
@@ -392,6 +599,24 @@ class OperatorConfigurationServiceTest {
         return service;
     }
 
+    private AppSettingsService appSettingsService() {
+        AppSettingsService service = mock(AppSettingsService.class);
+        when(service.adminEmails()).thenReturn(List.of());
+        when(service.updateAdminEmails(anyList()))
+                .thenAnswer(invocation -> List.copyOf(
+                        invocation.getArgument(0)));
+        return service;
+    }
+
+    private List<DeploymentSocialLinkDto> socialLinks() {
+        return List.of(new DeploymentSocialLinkDto(
+                "discord",
+                "Discord",
+                "https://discord.example.test/community",
+                "discord",
+                "@community"));
+    }
+
     private OperatorConfigurationUpdateDto updateRequest(
             String productName,
             String logoUrl,
@@ -400,6 +625,8 @@ class OperatorConfigurationServiceTest {
             String authenticationCredential,
             String messagingCredential) {
         return new OperatorConfigurationUpdateDto(
+                List.of("Operator.Admin@Example.Test"),
+                socialLinks(),
                 new BrandingUpdateDto(
                         productName,
                         null,
@@ -416,6 +643,8 @@ class OperatorConfigurationServiceTest {
             String productName,
             Integer logoCharacterIndex) {
         return new OperatorConfigurationUpdateDto(
+                List.of(),
+                List.of(),
                 new BrandingUpdateDto(
                         productName,
                         logoCharacterIndex,
@@ -439,6 +668,7 @@ class OperatorConfigurationServiceTest {
         branding.setThemePreset(DeploymentThemePreset.AURORA.name());
         branding.setRevision(0L);
         configuration.setBranding(branding);
+        configuration.setSocialLinks(List.of());
         configuration.setPayment(new DeploymentConfiguration.Payment());
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();
@@ -462,17 +692,21 @@ class OperatorConfigurationServiceTest {
 
     private record Fixture(
             DeploymentConfigurationRepository repository,
+            AppSettingsService appSettingsService,
             PaymentProviderService paymentProviderService,
             DeploymentConfigurationCrypto crypto,
+            OperatorFirebaseCapabilityClient firebaseCapabilityClient,
             AtomicReference<DeploymentConfiguration> persisted,
             OperatorConfigurationService service) {
         OperatorConfigurationService newService() {
             return new OperatorConfigurationService(
                     repository,
+                    appSettingsService,
                     paymentProviderService,
                     new OperatorConfigurationMapper(),
                     crypto,
-                    FIXED_CLOCK);
+                    FIXED_CLOCK,
+                    firebaseCapabilityClient);
         }
     }
 }

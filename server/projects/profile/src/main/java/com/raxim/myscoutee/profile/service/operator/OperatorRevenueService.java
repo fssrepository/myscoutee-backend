@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class OperatorRevenueService {
     private static final Set<String> REFUNDED_PAYMENT_STATUSES =
             Set.of("partially_refunded", "refunded");
     private static final String PAYMENT_AUDIT_KIND = "payment";
+    private static final String SIMULATED_PAYMENT_PROVIDER = "dummy";
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String REQUEST_KIND_BORROW = "borrow";
 
@@ -101,7 +103,10 @@ public class OperatorRevenueService {
         Accumulation accumulation = new Accumulation(now);
         accumulateEvents(accumulation, activityEventsRepository.findAll());
         accumulateAssets(accumulation, assetsRepository.findAll());
-        accumulatePayments(accumulation, paymentsRepository.findAll(), null);
+        accumulatePayments(
+                accumulation,
+                paymentsRepository.findRevenueCandidates(),
+                null);
         return accumulation.snapshot();
     }
 
@@ -135,8 +140,10 @@ public class OperatorRevenueService {
             }
         }
         long unmappedTimestampRecords = 0L;
-        for (Payment payment : nonNull(paymentsRepository.findAll())) {
-            if (isPaymentRevision(payment)
+        for (Payment payment
+                : nonNull(paymentsRepository.findRevenueCandidates())) {
+            if (isSimulatedPayment(payment)
+                    || isPaymentRevision(payment)
                     || !FINALIZED_PAYMENT_STATUSES.contains(
                             normalize(payment.getStatus()))) {
                 continue;
@@ -163,6 +170,32 @@ public class OperatorRevenueService {
                         entry.getKey(),
                         entry.getValue().snapshot()))
                 .toList();
+    }
+
+    /**
+     * Discovers the completed UTC days that contain at least one finalized,
+     * non-simulated payment candidate. This is used only to establish the
+     * historical backfill boundary; the actual amount and currency validation
+     * still happens while building each immutable daily snapshot.
+     */
+    Set<LocalDate> finalizedRevenuePeriodsBefore(LocalDate exclusiveEnd) {
+        Objects.requireNonNull(
+                exclusiveEnd,
+                "Revenue period upper bound must not be null.");
+        Set<LocalDate> periods = new TreeSet<>();
+        for (Payment payment
+                : nonNull(paymentsRepository.findRevenueCandidates())) {
+            if (isSimulatedPayment(payment)
+                    || isPaymentRevision(payment)
+                    || !FINALIZED_PAYMENT_STATUSES.contains(
+                            normalize(payment.getStatus()))) {
+                continue;
+            }
+            parseUtcDay(payment.getCreatedDate())
+                    .filter(period -> period.isBefore(exclusiveEnd))
+                    .ifPresent(periods::add);
+        }
+        return Set.copyOf(periods);
     }
 
     private DailyRevenueSnapshot dailySnapshot(
@@ -358,6 +391,10 @@ public class OperatorRevenueService {
             Accumulation accumulation,
             Payment payment,
             LocalDate onlyOriginalPaymentDay) {
+        if (isSimulatedPayment(payment)) {
+            accumulation.diagnostics.excludedSimulatedPayments++;
+            return;
+        }
         if (isPaymentRevision(payment)) {
             accumulation.diagnostics.excludedPaymentRevisions++;
             return;
@@ -623,6 +660,19 @@ public class OperatorRevenueService {
                 && !PAYMENT_AUDIT_KIND.equals(normalize(payment.getAuditKind()));
     }
 
+    private boolean isSimulatedPayment(Payment payment) {
+        return SIMULATED_PAYMENT_PROVIDER.equals(
+                normalize(payment == null ? null : payment.getProvider()))
+                || normalize(payment == null
+                        ? null
+                        : payment.getCheckoutSessionId())
+                        .startsWith("dummy_")
+                || normalize(payment == null
+                        ? null
+                        : payment.getGatewaySessionId())
+                        .startsWith("dummy_");
+    }
+
     private boolean isAcceptedBorrowRequest(AssetRequestRecord request) {
         return request != null
                 && STATUS_ACCEPTED.equals(normalize(request.status()))
@@ -871,6 +921,7 @@ public class OperatorRevenueService {
         private long invalidTimestampRecords;
         private long excludedUnfinalizedPayments;
         private long excludedPaymentRevisions;
+        private long excludedSimulatedPayments;
 
         private OperatorRevenueSnapshot.RevenueDiagnostics snapshot() {
             return new OperatorRevenueSnapshot.RevenueDiagnostics(
@@ -880,7 +931,8 @@ public class OperatorRevenueService {
                     invalidRefundRecords,
                     invalidTimestampRecords,
                     excludedUnfinalizedPayments,
-                    excludedPaymentRevisions);
+                    excludedPaymentRevisions,
+                    excludedSimulatedPayments);
         }
     }
 }

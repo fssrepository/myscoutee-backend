@@ -281,6 +281,90 @@ class RegistryProtocolTest {
     }
 
     @Test
+    void qualifiedMauRevisionPayloadMatchesTheGoProtocolExactly() {
+        String commitment =
+                "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+        assertThat(new String(
+                        RegistryProtocol.qmauBatchPayload(
+                                RegistryProtocol.QMAU_KIND,
+                                "2026-06",
+                                RegistryProtocol.QMAU_RULESET_VERSION,
+                                42L,
+                                commitment,
+                                2L,
+                                "batch_0123456789abcdef0123456789abcdef"),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-qmau-batch-payload-v1
+                        monthly-qmau
+                        2026-06
+                        qmau-v1
+                        42
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        2
+                        batch_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
+    void qualifiedMauReceiptMatchesTheGoProtocolExactly() {
+        RegistryProtocol.MauReceipt receipt =
+                new RegistryProtocol.MauReceipt(
+                        9L,
+                        "sha256:" + "b".repeat(64),
+                        RegistryProtocol.ZERO_HASH,
+                        "sha256:" + "c".repeat(64),
+                        RegistryProtocol.QMAU_KIND,
+                        "2026-06",
+                        RegistryProtocol.QMAU_RULESET_VERSION,
+                        42L,
+                        "sha256:" + "a".repeat(64),
+                        2L,
+                        "batch_0123456789abcdef0123456789abcdef",
+                        "2026-07-01T00:00:03Z",
+                        "2026-07-01",
+                        "test-program:parent-a",
+                        "rkey_0123456789abcdef0123456789abcdef",
+                        "registry-public-key",
+                        "receipt-signature");
+        RegistryProtocol.BatchResponse response =
+                new RegistryProtocol.BatchResponse(
+                        "1",
+                        "test-program:parent-a",
+                        "batch_fedcba9876543210fedcba9876543210",
+                        "dep_0123456789abcdef0123456789abcdef",
+                        "qmau_0123456789",
+                        false,
+                        receipt);
+
+        assertThat(new String(
+                        RegistryProtocol.qmauReceipt(response),
+                        StandardCharsets.UTF_8))
+                .isEqualTo("""
+                        myscoutee-registry-qmau-receipt-v1
+                        1
+                        test-program:parent-a
+                        batch_fedcba9876543210fedcba9876543210
+                        dep_0123456789abcdef0123456789abcdef
+                        9
+                        sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                        sha256:0000000000000000000000000000000000000000000000000000000000000000
+                        sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+                        monthly-qmau
+                        2026-06
+                        qmau-v1
+                        42
+                        sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                        2
+                        batch_0123456789abcdef0123456789abcdef
+                        2026-07-01T00:00:03Z
+                        2026-07-01
+                        rkey_0123456789abcdef0123456789abcdef
+                        """);
+    }
+
+    @Test
     void structuredOperatorClaimPayloadMatchesTheGoProtocolExactly() {
         assertThat(new String(
                         RegistryProtocol.operatorClaimPayload(
@@ -332,7 +416,7 @@ class RegistryProtocolTest {
                         dep_fedcba9876543210fedcba9876543210
                         redeem-client-token
                         2026-07-28T00:00:03Z
-                        PENDING_REVIEW
+                        pending-review
                         opg_0123456789abcdef0123456789abcdef
 
                         opt_0123456789abcdef0123456789abcdef
@@ -354,7 +438,7 @@ class RegistryProtocolTest {
                         redeem-client-token
                         sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
                         2026-07-28T00:00:03Z
-                        PENDING_REVIEW
+                        pending-review
                         opg_0123456789abcdef0123456789abcdef
 
                         opt_0123456789abcdef0123456789abcdef
@@ -387,7 +471,7 @@ class RegistryProtocolTest {
                         dep_fedcba9876543210fedcba9876543210
                         redeem-client-token
                         2026-07-28T00:00:03Z
-                        PENDING_REVIEW
+                        pending-review
                         opg_0123456789abcdef0123456789abcdef
 
                         opt_0123456789abcdef0123456789abcdef
@@ -411,7 +495,7 @@ class RegistryProtocolTest {
                         redeem-client-token
                         sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
                         2026-07-28T00:00:03Z
-                        PENDING_REVIEW
+                        pending-review
                         opg_0123456789abcdef0123456789abcdef
 
                         opt_0123456789abcdef0123456789abcdef

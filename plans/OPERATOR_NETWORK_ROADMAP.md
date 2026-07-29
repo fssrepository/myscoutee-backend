@@ -62,7 +62,12 @@ Exit criteria:
 - A browser/server restart can rediscover registration and update state.
 - Registry/Java protocol tests cover signatures, replay, cursors, and crash
   boundaries.
-- Dev mode exercises the real Java-to-Go path; Explore mode stays browser-local.
+- Every backend-connected development, E2E, and production Explore session
+  exercises the real Java-to-Go path against a dedicated seeded demo registry.
+  Production uses the stripped production Go image, an internal-only service,
+  and isolated demo SQLite/signing/client-state volumes. The real
+  operator-selected registry remains external and unseeded. Browser-local
+  Explore is retained only as an explicit local/offline fallback.
 
 ## Phase 2 — persisted operator configuration and branding
 
@@ -84,8 +89,9 @@ Status: in progress.
   `demo_db` may seed Discord/Discourse examples, while a production deployment
   may intentionally expose an empty provider list; signed announcements still
   come from the selected registry.
-- IndexedDB persistence for Explore and Mongo persistence for authenticated
-  deployments. Reopening the popup reloads the stored state under the normal
+- Mongo persistence for every backend-connected Explore or authenticated
+  deployment; IndexedDB persistence exists only in the explicit local/offline
+  adapter. Reopening the popup reloads the stored state under the normal
   route-delay loading indicator.
 
 Exit criteria:

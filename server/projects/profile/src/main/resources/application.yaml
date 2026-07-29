@@ -27,6 +27,8 @@ registry:
   allow-insecure-http: ${REGISTRY_ALLOW_INSECURE_HTTP:false}
   insecure-http-allowed-hosts: ${REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS:}
   demo:
+    base-url: ${REGISTRY_DEMO_BASE_URL:}
+    registry-scope: ${REGISTRY_DEMO_SCOPE:}
     private-key-path: ${REGISTRY_DEMO_PRIVATE_KEY_PATH:/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem}
     public-key-path: ${REGISTRY_DEMO_PUBLIC_KEY_PATH:/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der}
     state-dir: ${REGISTRY_DEMO_STATE_DIR:/var/lib/myscoutee/registry-demo/state}
