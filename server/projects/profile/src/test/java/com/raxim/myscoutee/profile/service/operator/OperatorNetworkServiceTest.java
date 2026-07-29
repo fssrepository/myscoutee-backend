@@ -187,6 +187,10 @@ class OperatorNetworkServiceTest {
                 .isEqualTo(request.registeredAddress());
         assertThat(submission.getValue().getVerificationContactEmail())
                 .isEqualTo(request.verificationContactEmail());
+        assertThat(submission.getValue().getRegistryScope())
+                .isEqualTo("example:region-a");
+        assertThat(submission.getValue().getDeploymentId())
+                .isEqualTo("dep_0123456789abcdef0123456789abcdef");
         assertThat(submission.getValue().getOperatorGroupId())
                 .isEqualTo(registryStatus.groupId());
         assertThat(submission.getValue().getSubmittedAt())
@@ -197,6 +201,57 @@ class OperatorNetworkServiceTest {
                 submission.getValue(),
                 registryLeaderboardEntry,
                 "dep_0123456789abcdef0123456789abcdef");
+    }
+
+    @Test
+    void claimOverviewHydratesOnlyTheCurrentRegistryClaimSubmission() {
+        OperatorRegistrySettingsRepository settingsRepository =
+                mock(OperatorRegistrySettingsRepository.class);
+        OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository =
+                mock(OperatorClaimSubmissionSnapshotRepository.class);
+        RegistryOperatorNetworkOperations operations =
+                mock(RegistryOperatorNetworkOperations.class);
+        RegistryProperties properties = new RegistryProperties();
+        properties.setOutboundAllowed(true);
+        when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
+                .thenReturn(Optional.of(registeredSettings()));
+
+        String groupId = "opg_0123456789abcdef0123456789abcdef";
+        String submittedAt = "2026-07-28T12:00:00Z";
+        ClaimStatus current = pendingClaimStatus(groupId, submittedAt);
+        OperatorClaimRequestDto request = new OperatorClaimRequestDto(
+                "Example Cooperative",
+                "REG-42",
+                "Slovakia",
+                " Main Street 1 ",
+                "https://example.test",
+                "Alex Reviewer",
+                "Director",
+                "alex@example.test",
+                true);
+        OperatorClaimSubmissionSnapshot submission =
+                claimSubmission(request, groupId, submittedAt);
+        when(operations.claimStatus(any())).thenReturn(current);
+        when(claimSubmissionRepository.findById(
+                OperatorClaimSubmissionSnapshot.SINGLETON_ID))
+                .thenReturn(Optional.of(submission));
+        OperatorNetworkService service = new OperatorNetworkService(
+                settingsRepository,
+                claimSubmissionRepository,
+                mock(UsersRepository.class),
+                properties,
+                new RegistryDemoProperties(),
+                operations,
+                new OperatorNetworkMapper());
+
+        assertThat(service.claimStatus("operator-1").submission())
+                .isEqualTo(request);
+
+        when(operations.claimStatus(any())).thenReturn(pendingClaimStatus(
+                "opg_abcdef0123456789abcdef0123456789",
+                "2026-07-28T13:00:00Z"));
+
+        assertThat(service.claimStatus("operator-1").submission()).isNull();
     }
 
     @Test
@@ -330,5 +385,54 @@ class OperatorNetworkServiceTest {
         enrollment.setDeploymentCode("dep_0123456789abcdef0123456789abcdef");
         settings.setEnrollment(enrollment);
         return settings;
+    }
+
+    private static ClaimStatus pendingClaimStatus(
+            String groupId,
+            String submittedAt) {
+        return new ClaimStatus(
+                true,
+                submittedAt,
+                "Example Cooperative",
+                null,
+                groupId,
+                null,
+                "0",
+                "1",
+                "AVAILABLE",
+                null,
+                "PENDING_REVIEW",
+                submittedAt,
+                "Example Cooperative");
+    }
+
+    private static OperatorClaimSubmissionSnapshot claimSubmission(
+            OperatorClaimRequestDto request,
+            String groupId,
+            String submittedAt) {
+        OperatorClaimSubmissionSnapshot submission =
+                new OperatorClaimSubmissionSnapshot();
+        submission.setId(OperatorClaimSubmissionSnapshot.SINGLETON_ID);
+        submission.setSchemaVersion(
+                OperatorClaimSubmissionSnapshot.SCHEMA_VERSION);
+        submission.setLegalName(request.legalName());
+        submission.setRegistrationNumber(request.registrationNumber());
+        submission.setJurisdiction(request.jurisdiction());
+        submission.setRegisteredAddress(request.registeredAddress());
+        submission.setWebsite(request.website());
+        submission.setVerificationContactName(
+                request.verificationContactName());
+        submission.setVerificationContactRole(
+                request.verificationContactRole());
+        submission.setVerificationContactEmail(
+                request.verificationContactEmail());
+        submission.setAuthorityAttested(request.authorityAttested());
+        submission.setRegistryScope("example:region-a");
+        submission.setDeploymentId(
+                "dep_0123456789abcdef0123456789abcdef");
+        submission.setOperatorGroupId(groupId);
+        submission.setSubmittedAt(submittedAt);
+        submission.setSubmittedBy("operator-1");
+        return submission;
     }
 }
