@@ -155,6 +155,47 @@ class EventGeneratorsTest {
     }
 
     @Test
+    void randomTargetedGeneratorKeepsDisconnectedTreesAndExcludesOnlyIsolatedOverflow() {
+        EventGeneratorByRandom generator = new EventGeneratorByRandom();
+        Edge[] forestEdges = {
+                edge("u1", "u2", 0.95d),
+                edge("u2", "u3", 0.95d),
+                edge("u3", "u4", 0.05d),
+                edge("u4", "u5", 0.95d),
+                edge("u5", "u6", 0.95d),
+                edge("u7", "u8", 0.95d),
+                edge("u8", "u9", 0.95d)
+        };
+        Map<String, Node> nodes = new LinkedHashMap<>();
+        for (String userId : List.of(
+                "u1", "u2", "u3", "u4", "u5", "u6",
+                "u7", "u8", "u9",
+                "isolated-1", "isolated-2")) {
+            nodes.put(userId, new Node(userId));
+        }
+        FGraph graph = new FGraph(nodes, List.of(forestEdges));
+
+        List<GeneratedEventPlan> plans = generator.generateTargets(
+                new RandomTargetedGeneratorRequest(
+                        graph,
+                        List.of(
+                                new RandomGroupTarget("group-1", Range.of(3, 3)),
+                                new RandomGroupTarget("group-2", Range.of(3, 3)),
+                                new RandomGroupTarget("group-3", Range.of(3, 3))),
+                        List.of(),
+                        false));
+
+        assertThat(plans).hasSize(3);
+        assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
+                .containsExactlyInAnyOrder(
+                        List.of("u1", "u2", "u3"),
+                        List.of("u4", "u5", "u6"),
+                        List.of("u7", "u8", "u9"));
+        assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
+                .doesNotContain("isolated-1", "isolated-2");
+    }
+
+    @Test
     void randomTargetedGeneratorKeepsAValidPartialRemainderGroup() {
         EventGeneratorByRandom generator = new EventGeneratorByRandom();
 

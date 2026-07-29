@@ -47,6 +47,26 @@ class GlobalIdentityVoprfClientTest {
     }
 
     @Test
+    void matchesSecondRfc9497P256VoprfBlindingVector() {
+        GlobalIdentityVoprfClient client =
+                new GlobalIdentityVoprfClient();
+        byte[] input = HEX.parseHex(
+                "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a");
+        byte[] blind = HEX.parseHex(
+                "3338fa65ec36e0290022b48eb562889d"
+                        + "89dbfa691d1cde91517fa222ed7ad364");
+
+        try (GlobalIdentityVoprfClient.BlindSession session =
+                client.blind(input, blind)) {
+            assertEquals(
+                    base64(
+                            "03cd0f033e791c4d79dfa9c6ed750f2a"
+                                    + "c009ec46cd4195ca6fd3800d1e9b887dbd"),
+                    session.blindedElement());
+        }
+    }
+
+    @Test
     void rejectsTamperedProofAndConsumesSession() {
         GlobalIdentityVoprfClient client =
                 new GlobalIdentityVoprfClient();

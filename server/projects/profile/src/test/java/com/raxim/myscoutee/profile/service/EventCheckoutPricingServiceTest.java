@@ -181,8 +181,8 @@ class EventCheckoutPricingServiceTest {
                 .filteredOn(row -> row.key().startsWith("promo:"))
                 .extracting(row -> row.key(), row -> row.label(), row -> row.amount())
                 .containsExactly(
-                        org.assertj.core.groups.Tuple.tuple("promo:save-ten", "Promo code SAVE10", -10d),
-                        org.assertj.core.groups.Tuple.tuple("promo:less-five", "Promo code LESS5", -5d));
+                        org.assertj.core.groups.Tuple.tuple("promo:save-ten", "pricing.promo.code", -10d),
+                        org.assertj.core.groups.Tuple.tuple("promo:less-five", "pricing.promo.code", -5d));
     }
 
     @Test

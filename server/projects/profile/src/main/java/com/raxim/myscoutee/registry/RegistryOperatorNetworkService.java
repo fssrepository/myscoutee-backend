@@ -2286,7 +2286,7 @@ public final class RegistryOperatorNetworkService {
                 ? LEADERBOARD_CURSOR_V2_FIELDS
                 : LEADERBOARD_CURSOR_V3_FIELDS;
         Set<String> actual = new HashSet<>();
-        node.propertyNames().forEachRemaining(actual::add);
+        actual.addAll(node.propertyNames());
         boolean unknown = actual.stream().anyMatch(field ->
                 !"group_id".equals(field) && !required.contains(field));
         if (unknown || !actual.containsAll(required)) {

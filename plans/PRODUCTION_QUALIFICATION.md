@@ -23,7 +23,7 @@ table or substitute a source-built artifact after a candidate has been signed.
 | source version | exact installed Debian version and SHA-256 |
 | target version | exact candidate Debian version and SHA-256 |
 | architecture | Debian architecture and host architecture |
-| managed images | exact image ID and repository digest for every image |
+| managed images | exact image ID and bundled archive SHA-256 for every image; repository digest when one exists |
 | Java/Go protocol | accepted protocol version and registry scope |
 | Mongo/SQLite | before/after schema or migration version |
 | host | distribution, kernel, filesystem, Docker and Compose versions |
@@ -35,7 +35,8 @@ name and architecture, and the candidate version must be strictly newer.
 ## Artifact preflight
 
 The read-only preflight checks exact package identity/version ordering, audits
-the extracted candidate for embedded external credentials, verifies the
+the extracted candidate for embedded external credentials, binds every
+managed image ID to its bundled archive and archive SHA-256, verifies the
 installed version marker and isolated Explore Compose contract, and inspects
 the exact registry image runtime boundary.
 

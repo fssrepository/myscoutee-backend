@@ -199,7 +199,8 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
-    void refusesToOrphanAnExistingPaymentCredentialFromItsPublicRouting() {
+    void refusesToOrphanAnExistingPaymentCredentialFromItsPublicRouting()
+            throws Exception {
         Fixture fixture = fixtureWithKey();
         OperatorConfigurationUpdateDto initial = updateRequest(
                 "Product",

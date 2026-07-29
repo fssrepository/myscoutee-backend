@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,13 +24,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageDelivery;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageRun;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
+import com.raxim.myscoutee.profile.repository.AffinityRecomputeTasksRepository;
 import com.raxim.myscoutee.profile.repository.ScheduledMessageDeliveriesRepository;
 import com.raxim.myscoutee.profile.repository.ScheduledMessageTasksRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -51,7 +53,6 @@ import de.flapdoodle.reverse.TransitionWalker;
         "scheduled-messages.task-poll-delay-ms=5000",
         "scheduled-messages.worker-lookahead-ms=15000"
 })
-@Disabled("Long-running scheduled integration tests are disabled temporarily.")
 class ScheduledMessageTaskServiceIntegrationTest {
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -71,6 +72,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         mongoTemplate.dropCollection(ScheduledMessageRun.class);
         mongoTemplate.dropCollection(ScheduledMessageDelivery.class);
         mongoTemplate.dropCollection(UserSessionAction.class);
+        mongoTemplate.dropCollection(AffinityRecomputeTask.class);
     }
 
     @Test
@@ -293,6 +295,16 @@ class ScheduledMessageTaskServiceIntegrationTest {
             return new MongoTemplate(new SimpleMongoClientDatabaseFactory(
                     mongoClient,
                     "scheduled-message-task-test"));
+        }
+
+        @Bean
+        AffinityRecomputeTaskService affinityRecomputeTaskService(
+                AffinityRecomputeTasksRepository tasksRepository,
+                MongoTemplate mongoTemplate) {
+            return new AffinityRecomputeTaskService(
+                    tasksRepository,
+                    new AffinityRecomputeProperties(),
+                    mongoTemplate);
         }
     }
 }

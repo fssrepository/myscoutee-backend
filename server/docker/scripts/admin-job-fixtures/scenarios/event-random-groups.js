@@ -89,6 +89,60 @@
     }));
   }
 
+  function syntheticForestEdges(userIds, cohortSizes) {
+    const edges = [];
+    let userOffset = 0;
+    for (const cohortSize of cohortSizes || []) {
+      const component = userIds.slice(userOffset, userOffset + cohortSize);
+      userOffset += cohortSize;
+      for (let index = 0; index + 1 < component.length; index += 1) {
+        edges.push({
+          leftUserId: component[index],
+          rightUserId: component[index + 1],
+          affinityScore: 0.95,
+          edgeWeight: 0.95,
+          evidence: {
+            mutualSingleCount: 5,
+            singleOneSidedCount: 0,
+            pairOutsideNetworkCount: 0,
+            pairInsideNetworkCount: 0,
+            metCount: 1,
+            strongestAffinityScore: 0.95,
+            totalMultiplier: 5.5
+          }
+        });
+      }
+    }
+    if (userIds.length >= 6) {
+      edges.push({
+        leftUserId: userIds[2],
+        rightUserId: userIds[3],
+        affinityScore: 0.05,
+        edgeWeight: 0.05,
+        evidence: {
+          mutualSingleCount: 0,
+          singleOneSidedCount: 1,
+          pairOutsideNetworkCount: 0,
+          pairInsideNetworkCount: 0,
+          metCount: 0,
+          strongestAffinityScore: 0.05,
+          totalMultiplier: 1
+        }
+      });
+    }
+    return edges.map((edge, index) => ({
+      _id: F.fixtureId(job, `forest-edge-${String(index + 1).padStart(4, "0")}`),
+      pairKey: affinityPairKey(edge.leftUserId, edge.rightUserId),
+      ...edge
+    }));
+  }
+
+  function generatedEdges(variation, userIds, cohortSizes) {
+    return variation === "disconnected-forest"
+      ? syntheticForestEdges(userIds, cohortSizes)
+      : syntheticAffinityEdges(userIds, cohortSizes);
+  }
+
   function graphUsers(count) {
     const existingUsers = new Set(
       F.collection("users")
@@ -128,6 +182,7 @@
       "twenty-rooms",
       "one-leftover",
       "partial-room",
+      "disconnected-forest",
       "quality-200",
       "quality-1000"
     ],
@@ -136,19 +191,22 @@
         variation === "twenty-rooms"
         || variation === "one-leftover"
         || variation === "partial-room"
+        || variation === "disconnected-forest"
         || variation === "quality-200"
         || variation === "quality-1000";
       const userCount = variation === "quality-1000"
         ? 1000
         : variation === "quality-200"
           ? 200
-          : variation === "partial-room"
-            ? 62
-            : variation === "one-leftover"
-              ? 61
-              : variation === "twenty-rooms"
-                ? 60
-                : variation === "five-rooms" ? 15 : 6;
+          : variation === "disconnected-forest"
+            ? 11
+            : variation === "partial-room"
+              ? 62
+              : variation === "one-leftover"
+                ? 61
+                : variation === "twenty-rooms"
+                  ? 60
+                  : variation === "five-rooms" ? 15 : 6;
       const roomCapacityMax =
         variation === "quality-200" || variation === "quality-1000"
           ? 5
@@ -157,24 +215,29 @@
         ? 2
         : roomCapacityMax;
       const roomCount = variation === "one-leftover"
+        || variation === "disconnected-forest"
         ? Math.floor(userCount / roomCapacityMax)
         : Math.ceil(userCount / roomCapacityMax);
       const expectedCohortSizes = syntheticQuality
         ? variation === "one-leftover"
           ? [...Array(20).fill(3), 1]
-          : variation === "partial-room"
-            ? [...Array(20).fill(3), 2]
-            : Array(roomCount).fill(roomCapacityMax)
+          : variation === "disconnected-forest"
+            ? [3, 3, 3, 1, 1]
+            : variation === "partial-room"
+              ? [...Array(20).fill(3), 2]
+              : Array(roomCount).fill(roomCapacityMax)
         : [];
       const userIds = syntheticQuality
         ? syntheticUserIds(userCount)
         : graphUsers(userCount);
       const syntheticEdges = syntheticQuality
-        ? syntheticAffinityEdges(userIds, expectedCohortSizes)
+        ? generatedEdges(variation, userIds, expectedCohortSizes)
         : [];
       const expectedUnassignedUserIds = variation === "one-leftover"
         ? userIds.slice(-1)
-        : [];
+        : variation === "disconnected-forest"
+          ? userIds.slice(-2)
+          : [];
       const expectedPartialRoomUserIds = variation === "partial-room"
         ? userIds.slice(-2)
         : [];
@@ -196,14 +259,18 @@
           ? "The 6 accepted users are split into two groups of 3, while the two pre-anchored users remain in their original rooms. A second Run should make no assignment changes."
           : variation === "one-leftover"
             ? "With 61 users and exact room size 3, status reveals whether the one under-minimum remainder is unassigned, mixed into another room, or persisted below minimum."
-            : variation === "partial-room"
-              ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
-              : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
+            : variation === "disconnected-forest"
+              ? "A 6-user tree is cut at its weak bridge into two correct rooms, the separate 3-user tree stays intact, and only the two isolated overflow users remain unassigned."
+              : variation === "partial-room"
+                ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
+                : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
         context: {
           eventId,
           subEventId,
           syntheticQuality,
           expectedStrongEdgeWeight: 0.95,
+          expectedStrongEdgeCount:
+            syntheticEdges.filter(edge => edge.edgeWeight === 0.95).length,
           expectedRoomCount: roomCount,
           expectedRoomSize: roomCapacityMax,
           expectedRoomMin: roomCapacityMin,
@@ -309,7 +376,8 @@
           updatedUser: F.FIXTURE_ACTOR
         })));
         F.collection("userAffinityEdges").insertMany(
-          syntheticAffinityEdges(
+          generatedEdges(
+            variation,
             context.userIds,
             context.expectedCohortSizes
           ).map(edge => ({
@@ -603,12 +671,15 @@
           .map(edge => Number(edge.edgeWeight) || 0)
           .toArray()
           .reduce((total, weight) => total + weight, 0);
-        const expectedAffinityWeight = expectedCohortSizes
-          .reduce(
-            (total, cohortSize) => total
-              + (cohortSize * (cohortSize - 1) / 2),
-            0
-          )
+        const expectedStrongEdgeCount =
+          Number.isInteger(context.expectedStrongEdgeCount)
+            ? context.expectedStrongEdgeCount
+            : expectedCohortSizes.reduce(
+              (total, cohortSize) => total
+                + (cohortSize * (cohortSize - 1) / 2),
+              0
+            );
+        const expectedAffinityWeight = expectedStrongEdgeCount
           * (Number(context.expectedStrongEdgeWeight) || 0.95);
         const affinityQualityRatio = expectedAffinityWeight > 0
           ? actualAffinityWeight / expectedAffinityWeight
@@ -619,6 +690,7 @@
             && eligibleSplitCohortIndexes.length === 0
             && underMinimumAssignedUserIds.length === 0,
           expectedCohortCount: expectedCohortSizes.length,
+          expectedStrongEdgeCount,
           perfectCohortRoomCount: groups.filter((group, roomIndex) => {
             const cohortIds = roomCohortIds[roomIndex];
             return cohortIds.length === 1

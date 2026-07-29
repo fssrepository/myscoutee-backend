@@ -60,6 +60,7 @@ public class OperatorGlobalIdentityPresenceReportService {
     private static final int COMMITMENTS_PER_CHUNK = 512;
     private static final int LOCAL_LINK_QUERY_SIZE = 512;
     private static final int SERVER_MAX_COMMITMENTS_PER_CHUNK = 4_096;
+    private static final int MAX_SIGNED_REQUEST_HASHES = 4_096;
     private static final int MAX_DELIVERIES = 16;
     private static final Duration MAX_RETRY_DELAY = Duration.ofHours(24);
     private static final String FAILURE_EVIDENCE_MISMATCH =
@@ -653,6 +654,9 @@ public class OperatorGlobalIdentityPresenceReportService {
                 nonce,
                 item.getIdempotencyKey(),
                 item.getPayloadHash());
+        rememberSignedRequestHash(
+                item,
+                RegistryProtocol.sha256(signedRequest));
         String signature = runtime.deploymentCrypto().signBase64(
                 signedRequest);
         item.setAttemptCount(value(item.getAttemptCount()) + 1);
@@ -693,7 +697,6 @@ public class OperatorGlobalIdentityPresenceReportService {
         verifyResponse(
                 runtime,
                 item,
-                RegistryProtocol.sha256(signedRequest),
                 response);
 
         item.setAcceptedResponse(response);
@@ -708,7 +711,6 @@ public class OperatorGlobalIdentityPresenceReportService {
     private void verifyResponse(
             RegisteredRuntime runtime,
             GlobalIdentityPresenceOutboxItem item,
-            String expectedRequestHash,
             GlobalIdentityPresenceBatchResponse response) {
         if (response == null
                 || !RegistryProtocol.PROTOCOL_VERSION.equals(
@@ -737,7 +739,8 @@ public class OperatorGlobalIdentityPresenceReportService {
                         response.totalCommitmentCount())
                 || !item.getCommitmentSetHash().equals(
                         response.commitmentSetHash())
-                || !expectedRequestHash.equals(response.requestHash())
+                || !signedRequestHashes(item).contains(
+                        response.requestHash())
                 || !item.getPayloadHash().equals(response.payloadHash())
                 || !runtime.registryKeyId().equals(
                         response.registryKeyId())
@@ -954,6 +957,18 @@ public class OperatorGlobalIdentityPresenceReportService {
         RegistryProtocol.requireToken(
                 item.getIdempotencyKey(),
                 "idempotency_key");
+        Set<String> requestHashes = signedRequestHashes(item);
+        int attemptCount = value(item.getAttemptCount());
+        if ((attemptCount == 0
+                    && (item.getLastAttempt() != null
+                            || !requestHashes.isEmpty()))
+                || (attemptCount > 0
+                    && (item.getLastAttempt() == null
+                            || requestHashes.isEmpty()))
+                || requestHashes.size() > attemptCount) {
+            throw new IllegalStateException(
+                    "Stored global identity presence retry history is invalid.");
+        }
         String expectedPayloadHash = RegistryProtocol.sha256(
                 RegistryProtocol.globalIdentityPresenceChunkPayload(
                         item.getSubmissionId(),
@@ -1015,22 +1030,9 @@ public class OperatorGlobalIdentityPresenceReportService {
                 throw new IllegalStateException(
                         "Accepted global identity chunk has no signed attempt.");
             }
-            String expectedRequestHash = RegistryProtocol.sha256(
-                    RegistryProtocol.signedRequest(
-                            "POST",
-                            RegistryProtocol
-                                    .GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
-                            RegistryProtocol.PROTOCOL_VERSION,
-                            item.getRegistryScope(),
-                            item.getDeploymentId(),
-                            attempt.getTimestamp(),
-                            attempt.getNonce(),
-                            item.getIdempotencyKey(),
-                            item.getPayloadHash()));
             verifyResponse(
                     runtime,
                     item,
-                    expectedRequestHash,
                     item.getAcceptedResponse());
             if (!Objects.equals(
                     item.getAcceptedAt(),
@@ -1149,6 +1151,70 @@ public class OperatorGlobalIdentityPresenceReportService {
                 structurallyComplete,
                 materializationComplete,
                 finalized);
+    }
+
+    static void rememberSignedRequestHash(
+            GlobalIdentityPresenceOutboxItem item,
+            String requestHash) {
+        List<String> hashes = new ArrayList<>(signedRequestHashes(item));
+        if (!hashes.contains(requestHash)) {
+            if (hashes.size() >= MAX_SIGNED_REQUEST_HASHES) {
+                throw new IllegalStateException(
+                        "Global identity presence retry history is full.");
+            }
+            hashes.add(RegistryProtocol.requireHash(
+                    requestHash,
+                    "signed_request_hash"));
+        }
+        item.setSignedRequestHashes(hashes);
+    }
+
+    static Set<String> signedRequestHashes(
+            GlobalIdentityPresenceOutboxItem item) {
+        List<String> persisted = item.getSignedRequestHashes();
+        if (persisted.size() > MAX_SIGNED_REQUEST_HASHES) {
+            throw new IllegalStateException(
+                    "Global identity presence retry history is too large.");
+        }
+        Set<String> hashes = new HashSet<>();
+        for (String requestHash : persisted) {
+            if (!hashes.add(RegistryProtocol.requireHash(
+                    requestHash,
+                    "signed_request_hash"))) {
+                throw new IllegalStateException(
+                        "Global identity presence retry history contains duplicates.");
+            }
+        }
+        SignedAttempt attempt = item.getLastAttempt();
+        if (attempt != null) {
+            RegistryProtocol.requireUtcTimestamp(
+                    attempt.getTimestamp(),
+                    "request_timestamp");
+            RegistryProtocol.requireToken(
+                    attempt.getNonce(),
+                    "request_nonce");
+            if (!StringUtils.hasText(attempt.getSignature())) {
+                throw new IllegalStateException(
+                        "Global identity presence signed attempt is incomplete.");
+            }
+            hashes.add(RegistryProtocol.sha256(
+                    RegistryProtocol.signedRequest(
+                            "POST",
+                            RegistryProtocol
+                                    .GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
+                            RegistryProtocol.PROTOCOL_VERSION,
+                            item.getRegistryScope(),
+                            item.getDeploymentId(),
+                            attempt.getTimestamp(),
+                            attempt.getNonce(),
+                            item.getIdempotencyKey(),
+                            item.getPayloadHash())));
+        }
+        if (hashes.size() > MAX_SIGNED_REQUEST_HASHES) {
+            throw new IllegalStateException(
+                    "Global identity presence retry history is too large.");
+        }
+        return Set.copyOf(hashes);
     }
 
     private static boolean retryDue(

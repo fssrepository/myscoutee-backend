@@ -121,6 +121,7 @@ Variations:
 - `twenty-rooms`: sixty generated users arranged into twenty known-affinity cohorts of three.
 - `one-leftover`: sixty-one generated users with exact room size three; one known under-minimum user tests the exclusion/remainder policy.
 - `partial-room`: sixty-two generated users with room minimum two and maximum three; the final known pair is a valid partial room.
+- `disconnected-forest`: one six-user tree with a deliberately weak middle bridge, one separate three-user tree, and two fully isolated overflow users; the weak bridge must become the room boundary and only the isolates may remain unassigned.
 - `quality-200`: two hundred generated users arranged into forty known-affinity cohorts of five.
 - `quality-1000`: one thousand generated users arranged into two hundred known-affinity cohorts of five.
 
@@ -140,7 +141,7 @@ The `status` output includes the derived room IDs, exact room owner/member mappi
 
 The generated `twenty-rooms`, remainder, and `quality-*` variations also have an objective grouping-quality oracle. Members of one expected cohort have strong `0.95` edges; consecutive cohorts are connected only by a weak `0.05` ring edge. `validation.quality` reports mixed rooms, split cohorts, misplaced users, actual versus optimal in-room affinity weight, and `affinityQualityRatio`. It also distinguishes the expected under-minimum user from any wrongly excluded user through `correctlyUnassignedUnderMinimumUserIds`, `wronglyUnassignedUserIds`, and `unassignedSelectionValid`.
 
-`validation.capacityPolicy` reports empty, below-minimum, partial, and above-maximum room indexes plus the observed remainder policy. For `partial-room`, a valid result assigns everyone and keeps one room of two. For `one-leftover`, inspect this together with `unassignedSelectionValid` to see whether the exact low-value remainder was excluded instead of a valid cohort member.
+`validation.capacityPolicy` reports empty, below-minimum, partial, and above-maximum room indexes plus the observed remainder policy. For `partial-room`, a valid result assigns everyone and keeps one room of two. For `one-leftover`, inspect this together with `unassignedSelectionValid` to see whether the exact low-value remainder was excluded instead of a valid cohort member. For `disconnected-forest`, `assignmentValid`, `cohortIntegrityValid`, `unassignedSelectionValid`, and an affinity quality ratio of `1` together prove that the six-user tree was cut only at its weak bridge, the three-user tree stayed intact, and only the two isolates were excluded.
 
 `quality-1000` is intentionally a load-oriented fixture. It inserts roughly one thousand temporary users, two thousand strong edges, two hundred weak edges, one thousand event memberships, and the resulting assignment notifications. Run it only on a disposable demo/e2e stack with explicit CPU/memory limits, then reset it before testing another scenario.
 

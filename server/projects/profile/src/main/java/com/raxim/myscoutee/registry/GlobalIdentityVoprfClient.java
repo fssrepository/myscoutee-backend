@@ -28,7 +28,6 @@ import org.bouncycastle.math.ec.ECPoint;
 public final class GlobalIdentityVoprfClient {
     public static final String SUITE = "P256-SHA256";
     public static final String MODE = "VOPRF";
-    public static final int RFC_SUITE_ID = 0x0003;
     public static final int RFC_MODE_ID = 0x01;
     public static final int OUTPUT_BYTES = 32;
 
@@ -46,7 +45,7 @@ public final class GlobalIdentityVoprfClient {
             ascii("OPRFV1-"),
             new byte[] {(byte) RFC_MODE_ID},
             ascii("-"),
-            i2osp2(RFC_SUITE_ID));
+            ascii(SUITE));
     private static final byte[] HASH_TO_GROUP_DST =
             concatenate(ascii("HashToGroup-"), CONTEXT_STRING);
     private static final byte[] HASH_TO_SCALAR_DST =

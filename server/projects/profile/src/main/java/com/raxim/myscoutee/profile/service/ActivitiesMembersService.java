@@ -1294,7 +1294,9 @@ public class ActivitiesMembersService {
                     normalizedUserId,
                     normalizedActorUserId,
                     nowIso);
-            LinkedHashSet<String> persistedEventSourceIds = eventSourceIdsFromDocuments(trashedOverlays);
+            LinkedHashSet<String> persistedEventSourceIds =
+                    new LinkedHashSet<>(affectedEventSourceIds);
+            persistedEventSourceIds.addAll(eventSourceIdsFromDocuments(trashedOverlays));
             activityMembersRepository.saveAll(suppressedMembers);
 
             int promotedWaitlistMembers = 0;

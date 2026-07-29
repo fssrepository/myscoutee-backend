@@ -28,6 +28,7 @@ event-random-groups
   twenty-rooms    60 generated users, 20 known-affinity rooms of exactly 3
   one-leftover    61 generated users, exact size 3, verifies which user is excluded
   partial-room    62 generated users, room size 2..3, one valid partial room
+  disconnected-forest  6-user tree, 3-user tree, and 2 isolated overflow users
   quality-200     200 generated users, 40 known-affinity rooms of exactly 5
   quality-1000    1000 generated users, 200 known-affinity rooms of exactly 5
 event-auto-inviter

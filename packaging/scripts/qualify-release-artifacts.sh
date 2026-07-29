@@ -49,7 +49,7 @@ if [[ -e "${EVIDENCE_DIR}" && (! -d "${EVIDENCE_DIR}" || -L "${EVIDENCE_DIR}") ]
   exit 2
 fi
 
-for command_name in docker dpkg dpkg-deb jq sha256sum stat uname; do
+for command_name in docker dpkg dpkg-deb jq sha256sum stat tar uname; do
   command -v "${command_name}" >/dev/null 2>&1 || {
     echo "Release-artifact qualification requires ${command_name}." >&2
     exit 2
@@ -146,6 +146,132 @@ packaged_version_file="${candidate_root}/opt/myscoutee/packaging/VERSION"
   exit 1
 }
 
+candidate_image_manifest="${candidate_root}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+[[ -f "${candidate_image_manifest}" && ! -L "${candidate_image_manifest}" ]] || {
+  echo "Candidate package omits the bundled-image manifest." >&2
+  exit 1
+}
+jq -e \
+  --arg version "${candidate_version}" \
+  '
+    .schemaVersion == 1
+    and .releaseVersion == $version
+    and .bundled == true
+    and (.images | length) == 5
+    and ([.images[].service] | sort)
+      == (["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"] | sort)
+    and all(.images[];
+      (.imageId | test("^sha256:[0-9a-f]{64}$"))
+      and (.reference | type == "string")
+    )
+  ' "${candidate_image_manifest}" >/dev/null || {
+  echo "Candidate bundled-image manifest is invalid or incomplete." >&2
+  exit 1
+}
+
+managed_images_jsonl="${work_dir}/managed-images.jsonl"
+: > "${managed_images_jsonl}"
+while IFS='|' read -r service expected_reference archive_name; do
+  [[ -n "${service}" ]] || continue
+  image_archive="${candidate_root}/opt/myscoutee/images/${archive_name}.tar"
+  [[ -f "${image_archive}" && ! -L "${image_archive}" ]] || {
+    echo "Candidate package omits managed image archive ${archive_name}.tar." >&2
+    exit 1
+  }
+  manifest_item="$(
+    jq -ce \
+      --arg service "${service}" \
+      --arg reference "${expected_reference}" \
+      '
+        [.images[]
+          | select(.service == $service and .reference == $reference)]
+        | if length == 1 then .[0] else error("managed image mismatch") end
+      ' "${candidate_image_manifest}"
+  )" || {
+    echo "Candidate manifest does not bind ${service} to ${expected_reference}." >&2
+    exit 1
+  }
+  archive_manifest="$(tar -xOf "${image_archive}" manifest.json)" || {
+    echo "Managed image archive ${archive_name}.tar has no Docker manifest." >&2
+    exit 1
+  }
+  jq -e \
+    --arg reference "${expected_reference}" \
+    '
+      length == 1
+      and (.[0].RepoTags | index($reference)) != null
+      and (.[0].Config | type == "string")
+    ' <<< "${archive_manifest}" >/dev/null || {
+    echo "Managed image archive ${archive_name}.tar has an unexpected tag set." >&2
+    exit 1
+  }
+  config_path="$(jq -er '.[0].Config' <<< "${archive_manifest}")"
+  [[ "${config_path}" =~ ^([0-9a-f]{64}\.json|blobs/sha256/[0-9a-f]{64})$ ]] || {
+    echo "Managed image archive ${archive_name}.tar has an unsafe config path." >&2
+    exit 1
+  }
+  image_config="$(tar -xOf "${image_archive}" "${config_path}")" || {
+    echo "Managed image archive ${archive_name}.tar omits its image config." >&2
+    exit 1
+  }
+  config_digest="sha256:$(
+    tar -xOf "${image_archive}" "${config_path}" | sha256sum | awk '{print $1}'
+  )"
+  manifest_image_id="$(jq -er '.imageId' <<< "${manifest_item}")"
+  [[ "${config_digest}" == "${manifest_image_id}" ]] || {
+    echo "Managed image archive ${archive_name}.tar differs from IMAGE-MANIFEST.json." >&2
+    exit 1
+  }
+  image_os="$(jq -er '.os' <<< "${image_config}")"
+  image_architecture="$(jq -er '.architecture' <<< "${image_config}")"
+  [[ "${image_os}" == "linux" \
+    && "${image_architecture}" == "${candidate_architecture}" ]] || {
+    echo "Managed image ${expected_reference} does not match the candidate platform." >&2
+    exit 1
+  }
+  archive_sha256="$(sha256sum "${image_archive}" | awk '{print $1}')"
+  archive_size="$(stat -c '%s' "${image_archive}")"
+  jq -nc \
+    --arg service "${service}" \
+    --arg reference "${expected_reference}" \
+    --arg imageID "${manifest_image_id}" \
+    --arg archivePath "opt/myscoutee/images/${archive_name}.tar" \
+    --arg archiveSha256 "sha256:${archive_sha256}" \
+    --argjson archiveSize "${archive_size}" \
+    --arg os "${image_os}" \
+    --arg architecture "${image_architecture}" \
+    '{
+      service: $service,
+      reference: $reference,
+      imageID: $imageID,
+      archivePath: $archivePath,
+      archiveSha256: $archiveSha256,
+      archiveSizeBytes: $archiveSize,
+      os: $os,
+      architecture: $architecture
+    }' >> "${managed_images_jsonl}"
+done <<EOF
+nginx-base|myscoutee-nginx:${candidate_version}-base|myscoutee-nginx-${candidate_version}-base
+nginx|myscoutee-nginx:${candidate_version}-prod|myscoutee-nginx-${candidate_version}-prod
+profilemanagement|myscoutee-api:${candidate_version}-prod|myscoutee-api-${candidate_version}-prod
+minio|myscoutee-minio:${candidate_version}-prod|myscoutee-minio-${candidate_version}-prod
+registry-demo|myscoutee-registry:${candidate_version}-prod|myscoutee-registry-${candidate_version}-prod
+EOF
+managed_images_json="${work_dir}/managed-images.json"
+jq -s '.' "${managed_images_jsonl}" > "${managed_images_json}"
+
+packaged_registry_image_id="$(
+  jq -er '
+    .images[]
+    | select(.service == "registry-demo")
+    | .imageId
+  ' "${candidate_image_manifest}"
+)"
+[[ "${packaged_registry_image_id}" == "${registry_image_id}" ]] || {
+  echo "Inspected registry image differs from the image bundled in the candidate." >&2
+  exit 1
+}
+
 candidate_compose="${candidate_root}/opt/myscoutee/server/docker-compose-prod.yml"
 [[ -f "${candidate_compose}" ]] || {
   echo "Candidate package omits the production Compose definition." >&2
@@ -196,6 +322,7 @@ evidence_tmp="$(mktemp "${EVIDENCE_DIR}/.release-artifact-evidence.XXXXXX")"
 trap 'rm -f -- "${evidence_tmp}"; cleanup' EXIT
 
 jq -n \
+  --slurpfile managedImages "${managed_images_json}" \
   --arg generatedAt "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
   --arg sourceCommit "${source_commit}" \
   --arg registrySourceCommit "${registry_source_commit}" \
@@ -243,6 +370,7 @@ jq -n \
         sha256: $oldestSha256,
         sizeBytes: $oldestSize
       },
+      managedImages: $managedImages[0],
       registryImage: {
         reference: $registryImage,
         imageID: $registryImageID,
@@ -258,6 +386,7 @@ jq -n \
       packageIdentityAndVersionOrdering: "PASS",
       packageCredentialAudit: "PASS",
       packageVersionMarker: "PASS",
+      completeBundledImageBinding: "PASS",
       packagedExploreRegistryIsolation: "PASS",
       registryImageRuntimeContract: "PASS"
     },

@@ -64,6 +64,7 @@ public class GlobalIdentityPresenceOutboxItem {
     private Integer attemptCount;
     private String nextRetryAt;
     private SignedAttempt lastAttempt;
+    private List<String> signedRequestHashes = new ArrayList<>();
     private Failure lastFailure;
     private RegistryProtocol.GlobalIdentityPresenceBatchResponse acceptedResponse;
     private String acceptedAt;
@@ -126,6 +127,16 @@ public class GlobalIdentityPresenceOutboxItem {
     public void setNextRetryAt(String nextRetryAt) { this.nextRetryAt = nextRetryAt; }
     public SignedAttempt getLastAttempt() { return lastAttempt; }
     public void setLastAttempt(SignedAttempt lastAttempt) { this.lastAttempt = lastAttempt; }
+    public List<String> getSignedRequestHashes() {
+        return signedRequestHashes == null
+                ? List.of()
+                : List.copyOf(signedRequestHashes);
+    }
+    public void setSignedRequestHashes(List<String> requestHashes) {
+        this.signedRequestHashes = requestHashes == null
+                ? new ArrayList<>()
+                : new ArrayList<>(requestHashes);
+    }
     public Failure getLastFailure() { return lastFailure; }
     public void setLastFailure(Failure lastFailure) { this.lastFailure = lastFailure; }
     public RegistryProtocol.GlobalIdentityPresenceBatchResponse getAcceptedResponse() { return acceptedResponse; }

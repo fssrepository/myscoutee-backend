@@ -27,8 +27,8 @@ class ActivitiesResourcesControllerPolicyTest {
                         AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
                         AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE);
         assertThat(policies.value()[0].subject()).isEqualTo("#request.assetOwnerUserId()");
-        assertThat(policies.value()[0].resourceId()).isEqualTo("#request.ownerId()");
+        assertThat(policies.value()[0].resourceId()).isEqualTo("#request.authorizationEventId()");
         assertThat(policies.value()[1].subject()).isEqualTo("#actorUserId");
-        assertThat(policies.value()[1].resourceId()).isEqualTo("#request.ownerId()");
+        assertThat(policies.value()[1].resourceId()).isEqualTo("#request.authorizationEventId()");
     }
 }

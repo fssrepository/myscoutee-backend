@@ -394,7 +394,6 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
-        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(promotedMember));
         when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
@@ -431,7 +430,7 @@ class AssetsServiceTest {
 
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
         verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(any(), any());
-        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
+        verify(accessControlService, never()).canReceiveEventAssetManagerRole(any(), any());
     }
 
     @Test
