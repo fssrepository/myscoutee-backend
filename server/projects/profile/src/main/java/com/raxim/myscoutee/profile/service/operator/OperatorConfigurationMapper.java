@@ -44,21 +44,7 @@ public class OperatorConfigurationMapper {
             List<String> adminEmails,
             String unavailableReason) {
         DeploymentConfiguration.Payment payment = configuration.getPayment();
-        DeploymentConfiguration.Firebase firebase = configuration.getFirebase();
-        DeploymentConfiguration.FirebasePublicClient publicClient =
-                firebase.getPublicClient();
         boolean credentialConfigured = payment.getCredentialEnvelope() != null;
-        long firebaseRevision = firebase.getRevision() == null
-                ? 0L
-                : Math.max(0L, firebase.getRevision());
-        boolean readyToActivate =
-                firebase.getAuthenticationCredentialEnvelope() != null
-                && firebase.getMessagingCredentialEnvelope() != null
-                && completePublicConfiguration(firebase, publicClient)
-                && Long.valueOf(firebaseRevision).equals(
-                        firebase.getAuthenticationTestedRevision())
-                && Long.valueOf(firebaseRevision).equals(
-                        firebase.getMessagingTestedRevision());
         return new OperatorConfigurationDto(
                 StringUtils.hasText(unavailableReason)
                         ? "BACKEND_UNAVAILABLE"
@@ -74,17 +60,35 @@ public class OperatorConfigurationMapper {
                         credentialConfigured
                                 ? payment.getCredentialMask().trim()
                                 : null),
-                new FirebaseConfigurationDto(
-                        safeText(firebase.getProjectId()),
-                        firebase.getAuthenticationCredentialEnvelope() != null,
-                        firebase.getMessagingCredentialEnvelope() != null,
-                        toPublicFirebaseConfiguration(firebase, publicClient),
-                        firebase.isActive(),
-                        readyToActivate,
-                        blankToNull(firebase.getAuthenticationTestedAt()),
-                        blankToNull(firebase.getMessagingTestedAt()),
-                        blankToNull(firebase.getActivatedAt())),
+                toFirebaseConfiguration(configuration),
                 blankToNull(configuration.getUpdatedAt()));
+    }
+
+    public FirebaseConfigurationDto toFirebaseConfiguration(
+            DeploymentConfiguration configuration) {
+        DeploymentConfiguration.Firebase firebase =
+                configuration.getFirebase();
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase.getPublicClient();
+        long firebaseRevision = firebaseRevision(firebase);
+        boolean readyToActivate =
+                firebase.getAuthenticationCredentialEnvelope() != null
+                && firebase.getMessagingCredentialEnvelope() != null
+                && completePublicConfiguration(firebase, publicClient)
+                && Long.valueOf(firebaseRevision).equals(
+                        firebase.getAuthenticationTestedRevision())
+                && Long.valueOf(firebaseRevision).equals(
+                        firebase.getMessagingTestedRevision());
+        return new FirebaseConfigurationDto(
+                safeText(firebase.getProjectId()),
+                firebase.getAuthenticationCredentialEnvelope() != null,
+                firebase.getMessagingCredentialEnvelope() != null,
+                toPublicFirebaseConfiguration(firebase, publicClient),
+                firebase.isActive(),
+                readyToActivate,
+                blankToNull(firebase.getAuthenticationTestedAt()),
+                blankToNull(firebase.getMessagingTestedAt()),
+                blankToNull(firebase.getActivatedAt()));
     }
 
     public FirebasePublicConfigurationDto toPublicFirebaseConfiguration(
@@ -166,6 +170,7 @@ public class OperatorConfigurationMapper {
             DeploymentConfiguration.Firebase firebase,
             DeploymentConfiguration.FirebasePublicClient publicClient) {
         return new FirebasePublicConfigurationDto(
+                firebaseRevision(firebase),
                 safeText(publicClient == null
                         ? null
                         : publicClient.getApiKey()),
@@ -188,6 +193,13 @@ public class OperatorConfigurationMapper {
                 safeText(publicClient == null
                         ? null
                         : publicClient.getVapidKey()));
+    }
+
+    private long firebaseRevision(
+            DeploymentConfiguration.Firebase firebase) {
+        return firebase == null || firebase.getRevision() == null
+                ? 0L
+                : Math.max(0L, firebase.getRevision());
     }
 
     private boolean completePublicConfiguration(

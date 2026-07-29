@@ -14592,6 +14592,12 @@
     "value": "The registry has received this node claim"
   },
   {
+    "_id": "i18n-message-en-operator-action-claim-share-rejected",
+    "key": "operator.action.claim.share.rejected",
+    "lang": "en",
+    "value": "Registry review rejected this claim"
+  },
+  {
     "_id": "i18n-message-en-operator-action-configuration-detail",
     "key": "operator.action.configuration.detail",
     "lang": "en",
@@ -15868,6 +15874,24 @@
     "key": "operator.claim.verification.approved",
     "lang": "en",
     "value": "Company verification approved"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-rejected",
+    "key": "operator.claim.verification.rejected",
+    "lang": "en",
+    "value": "Company verification rejected"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-rejected-action",
+    "key": "operator.claim.verification.rejected.action",
+    "lang": "en",
+    "value": "Review rejected"
+  },
+  {
+    "_id": "i18n-message-en-operator-claim-verification-rejected-instructions",
+    "key": "operator.claim.verification.rejected.instructions",
+    "lang": "en",
+    "value": "The registry rejected this claim. The submitted company details remain visible below as a read-only record of this claim generation. Rejection does not deactivate this deployment."
   },
   {
     "_id": "i18n-message-en-operator-claim-verification-backend-unavailable",
@@ -17200,6 +17224,12 @@
     "key": "operator.leaderboard.deployments.claim.approved",
     "lang": "en",
     "value": "Approved"
+  },
+  {
+    "_id": "i18n-message-en-operator-leaderboard-deployments-claim-rejected",
+    "key": "operator.leaderboard.deployments.claim.rejected",
+    "lang": "en",
+    "value": "Rejected"
   },
   {
     "_id": "i18n-message-en-operator-leaderboard-deployments-claim-withdrawn",
@@ -31860,6 +31890,12 @@
     "value": "A nyilvántartás fogadta a csomópont igénylését"
   },
   {
+    "_id": "i18n-message-hu-operator-action-claim-share-rejected",
+    "key": "operator.action.claim.share.rejected",
+    "lang": "hu",
+    "value": "A nyilvántartási felülvizsgálat elutasította ezt az igénylést"
+  },
+  {
     "_id": "i18n-message-hu-operator-action-configuration-detail",
     "key": "operator.action.configuration.detail",
     "lang": "hu",
@@ -33136,6 +33172,24 @@
     "key": "operator.claim.verification.approved",
     "lang": "hu",
     "value": "A cégellenőrzés jóváhagyva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-rejected",
+    "key": "operator.claim.verification.rejected",
+    "lang": "hu",
+    "value": "A cégellenőrzés elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-rejected-action",
+    "key": "operator.claim.verification.rejected.action",
+    "lang": "hu",
+    "value": "Felülvizsgálat elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-claim-verification-rejected-instructions",
+    "key": "operator.claim.verification.rejected.instructions",
+    "lang": "hu",
+    "value": "A nyilvántartás elutasította ezt az igénylést. A beküldött cégadatok alább csak olvasható bejegyzésként továbbra is láthatók ehhez az igénylési generációhoz. Az elutasítás nem inaktiválja ezt a telepítést."
   },
   {
     "_id": "i18n-message-hu-operator-claim-verification-backend-unavailable",
@@ -34468,6 +34522,12 @@
     "key": "operator.leaderboard.deployments.claim.approved",
     "lang": "hu",
     "value": "Jóváhagyva"
+  },
+  {
+    "_id": "i18n-message-hu-operator-leaderboard-deployments-claim-rejected",
+    "key": "operator.leaderboard.deployments.claim.rejected",
+    "lang": "hu",
+    "value": "Elutasítva"
   },
   {
     "_id": "i18n-message-hu-operator-leaderboard-deployments-claim-withdrawn",

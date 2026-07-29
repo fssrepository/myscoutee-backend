@@ -6,13 +6,26 @@ package com.raxim.myscoutee.profile.service.operator;
  * never replace or delete the process-wide default application.
  */
 public interface OperatorFirebaseCapabilityClient {
+    record FirebaseWebConfiguration(
+            String apiKey,
+            String authDomain,
+            String storageBucket,
+            String messagingSenderId,
+            String appId,
+            String measurementId,
+            String vapidKey) {
+    }
+
     void testAuthentication(
             String projectId,
-            String serviceAccountJson);
+            String serviceAccountJson,
+            FirebaseWebConfiguration webConfiguration);
 
     void sendTestMessage(
             String projectId,
             String serviceAccountJson,
-            String destinationToken,
+            FirebaseWebConfiguration webConfiguration,
+            String browserReadinessToken,
+            String optionalDestinationToken,
             String notificationTitle);
 }

@@ -41,6 +41,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.P
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
 import com.raxim.myscoutee.profile.service.AppSettingsService;
+import com.raxim.myscoutee.profile.service.operator.OperatorFirebaseCapabilityClient.FirebaseWebConfiguration;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -410,18 +411,26 @@ class OperatorConfigurationServiceTest {
 
         assertThat(authentication.success()).isTrue();
         assertThat(authentication.message())
-                .isEqualTo("Firebase authentication test succeeded.");
+                .contains("browser configuration tests succeeded");
         assertThat(messaging.success()).isTrue();
         assertThat(messaging.message())
-                .isEqualTo("Firebase messaging test succeeded.");
+                .contains("browser VAPID readiness tests succeeded");
         assertThat(authentication.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
         assertThat(messaging.testedAt()).isEqualTo("2026-07-28T12:34:56Z");
+        assertThat(authentication.firebase()
+                        .authenticationTestedAt())
+                .isEqualTo("2026-07-28T12:34:56Z");
+        assertThat(messaging.firebase()
+                        .messagingTestedAt())
+                .isEqualTo("2026-07-28T12:34:56Z");
         verify(fixture.firebaseCapabilityClient()).testAuthentication(
                 "community-project",
-                "{\"type\":\"service_account\",\"private_key\":\"authentication-secret\"}");
+                "{\"type\":\"service_account\",\"private_key\":\"authentication-secret\"}",
+                firebaseWebConfiguration());
         verify(fixture.firebaseCapabilityClient()).sendTestMessage(
                 "community-project",
                 "{\"type\":\"service_account\",\"private_key\":\"messaging-secret\"}",
+                firebaseWebConfiguration(),
                 "destination-token",
                 "Product");
     }
@@ -468,6 +477,23 @@ class OperatorConfigurationServiceTest {
                 .doesNotContain("private_key")
                 .doesNotContain("authentication-secret")
                 .doesNotContain("messaging-secret");
+
+        doThrow(new IllegalStateException("upstream failure"))
+                .when(fixture.firebaseCapabilityClient())
+                .testAuthentication(any(), any(), any());
+        var failed = fixture.service().test(
+                new ConfigurationTestRequestDto(
+                        ConfigurationTestKind.FIREBASE_AUTHENTICATION));
+
+        assertThat(failed.success()).isFalse();
+        assertThat(failed.firebase().active()).isFalse();
+        assertThat(failed.firebase().activatedAt()).isNull();
+        assertThatThrownBy(
+                fixture.service()::publicFirebaseConfiguration)
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        exception -> assertThat(exception.getStatusCode())
+                                .isEqualTo(HttpStatus.NOT_FOUND));
     }
 
     @Test
@@ -484,7 +510,7 @@ class OperatorConfigurationServiceTest {
         doThrow(new IllegalStateException(
                 "upstream leaked authentication-super-secret"))
                 .when(fixture.firebaseCapabilityClient())
-                .testAuthentication(any(), any());
+                .testAuthentication(any(), any(), any());
 
         var authentication = fixture.service().test(
                 new ConfigurationTestRequestDto(
@@ -497,13 +523,16 @@ class OperatorConfigurationServiceTest {
         assertThat(authentication.message())
                 .isEqualTo(
                         "Firebase authentication test failed. Check the configured "
-                                + "project and service-account permissions.")
+                                + "web app, browser API key, project, and "
+                                + "service-account permissions.")
                 .doesNotContain("super-secret");
+        assertThat(authentication.firebase()).isNotNull();
+        assertThat(authentication.firebase().active()).isFalse();
         assertThat(missingDestination.success()).isFalse();
         assertThat(missingDestination.message())
                 .contains("destination token is required");
         verify(fixture.firebaseCapabilityClient(), never())
-                .sendTestMessage(any(), any(), any(), any());
+                .sendTestMessage(any(), any(), any(), any(), any());
     }
 
     @Test
@@ -703,6 +732,17 @@ class OperatorConfigurationServiceTest {
                         DeploymentThemePreset.OCEAN),
                 null,
                 null);
+    }
+
+    private FirebaseWebConfiguration firebaseWebConfiguration() {
+        return new FirebaseWebConfiguration(
+                "browser-api-key",
+                "community-project.firebaseapp.com",
+                "community-project.firebasestorage.app",
+                "123456789",
+                "1:123456789:web:community",
+                "G-COMMUNITY",
+                "public-vapid-key");
     }
 
     private DeploymentConfiguration seededConfiguration() {

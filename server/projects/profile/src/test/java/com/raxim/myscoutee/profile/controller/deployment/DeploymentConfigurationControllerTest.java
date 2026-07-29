@@ -74,6 +74,7 @@ class DeploymentConfigurationControllerTest {
                 mock(OperatorConfigurationService.class);
         when(service.publicFirebaseConfiguration()).thenReturn(
                 new FirebasePublicConfigurationDto(
+                        4L,
                         "browser-api-key",
                         "community.firebaseapp.com",
                         "community",
@@ -92,6 +93,7 @@ class DeploymentConfigurationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.apiKey")
                         .value("browser-api-key"))
+                .andExpect(jsonPath("$.revision").value(4))
                 .andExpect(jsonPath("$.projectId")
                         .value("community"))
                 .andExpect(jsonPath("$.vapidKey")

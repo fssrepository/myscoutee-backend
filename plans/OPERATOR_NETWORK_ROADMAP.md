@@ -212,11 +212,13 @@ Status: the signed claim, independent review, client-code grouping,
 deactivation/withdrawal, immutable audit, direct query-state verification, and
 indicative share foundation are implemented. The registry-local anomaly/case
 rail also supports signed, hash-linked flag/clear events and
-same-transaction query rows without changing eligibility. Rejection,
-suspension, reinstatement, disputes, ownership transfer, evidence policy, exit
-record-date freezing, buyer/auditor decisions, and final legal allocation
-remain open. Contract-dependent payout and valuation rules are deliberately
-not inferred.
+same-transaction query rows without changing eligibility. Registry-manager
+rejection is an immutable signed review decision with a bounded reason code;
+the rejected claim remains visible but share-ineligible and does not imply
+deployment deactivation. Suspension, reinstatement, disputes, ownership
+transfer, evidence policy, exit record-date freezing, buyer/auditor decisions,
+and final legal allocation remain open. Contract-dependent payout and
+valuation rules are deliberately not inferred.
 
 - Record every claim, token issue/redeem/revoke, group change, MAU receipt, and
   eligibility change in the append-only ledger.

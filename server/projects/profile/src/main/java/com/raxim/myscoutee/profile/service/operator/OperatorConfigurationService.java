@@ -39,6 +39,7 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.P
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
 import com.raxim.myscoutee.profile.repository.DeploymentConfigurationRepository;
 import com.raxim.myscoutee.profile.service.AppSettingsService;
+import com.raxim.myscoutee.profile.service.operator.OperatorFirebaseCapabilityClient.FirebaseWebConfiguration;
 
 @Service
 public class OperatorConfigurationService {
@@ -338,16 +339,25 @@ public class OperatorConfigurationService {
                         testedAt);
                 case FIREBASE_MESSAGING -> testFirebaseMessaging(
                         firebase,
+                        request.browserReadinessToken(),
+                        request.browserConfigurationRevision(),
+                        request.browserAppId(),
                         request.destinationToken(),
                         configuration.getBranding().getProductName(),
                         testedAt);
             };
-            recordFirebaseTest(
-                    configuration,
-                    request,
-                    result,
-                    testedAt);
-            return result;
+            DeploymentConfiguration authoritative =
+                    recordFirebaseTest(
+                            configuration,
+                            request,
+                            result,
+                            testedAt);
+            return new ConfigurationTestResultDto(
+                    result.kind(),
+                    result.success(),
+                    result.message(),
+                    result.testedAt(),
+                    mapper.toFirebaseConfiguration(authoritative));
         }
     }
 
@@ -369,25 +379,30 @@ public class OperatorConfigurationService {
                     firebase.getAuthenticationCredentialEnvelope());
             firebaseCapabilityClient.testAuthentication(
                     firebase.getProjectId().trim(),
-                    credential);
+                    credential,
+                    firebaseWebConfiguration(firebase));
             return firebaseTestResult(
                     ConfigurationTestKind.FIREBASE_AUTHENTICATION,
                     true,
-                    "Firebase authentication test succeeded.",
+                    "Firebase authentication and browser configuration tests succeeded.",
                     testedAt);
         } catch (RuntimeException exception) {
             return firebaseTestResult(
                     ConfigurationTestKind.FIREBASE_AUTHENTICATION,
                     false,
                     "Firebase authentication test failed. Check the configured "
-                            + "project and service-account permissions.",
+                            + "web app, browser API key, project, and "
+                            + "service-account permissions.",
                     testedAt);
         }
     }
 
     private ConfigurationTestResultDto testFirebaseMessaging(
             DeploymentConfiguration.Firebase firebase,
-            String destinationToken,
+            String browserReadinessToken,
+            Long browserConfigurationRevision,
+            String browserAppId,
+            String optionalDestinationToken,
             String productName,
             Instant testedAt) {
         if (!StringUtils.hasText(firebase.getProjectId())
@@ -399,11 +414,21 @@ public class OperatorConfigurationService {
                             + "credential must be configured.",
                     testedAt);
         }
-        if (!StringUtils.hasText(destinationToken)) {
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase.getPublicClient();
+        if (!StringUtils.hasText(browserReadinessToken)
+                || browserConfigurationRevision == null
+                || browserConfigurationRevision
+                        != firebaseRevision(firebase)
+                || publicClient == null
+                || !StringUtils.hasText(browserAppId)
+                || !browserAppId.trim().equals(
+                        publicClient.getAppId())) {
             return firebaseTestResult(
                     ConfigurationTestKind.FIREBASE_MESSAGING,
                     false,
-                    "Firebase messaging test unavailable: a destination token is required.",
+                    "Firebase messaging test failed. Browser readiness proof "
+                            + "for the current saved configuration is required.",
                     testedAt);
         }
         try {
@@ -413,19 +438,24 @@ public class OperatorConfigurationService {
             firebaseCapabilityClient.sendTestMessage(
                     firebase.getProjectId().trim(),
                     credential,
-                    destinationToken.trim(),
+                    firebaseWebConfiguration(firebase),
+                    browserReadinessToken.trim(),
+                    optionalDestinationToken == null
+                            ? null
+                            : optionalDestinationToken.trim(),
                     productName.trim());
             return firebaseTestResult(
                     ConfigurationTestKind.FIREBASE_MESSAGING,
                     true,
-                    "Firebase messaging test succeeded.",
+                    "Firebase browser messaging readiness test succeeded.",
                     testedAt);
         } catch (RuntimeException exception) {
             return firebaseTestResult(
                     ConfigurationTestKind.FIREBASE_MESSAGING,
                     false,
-                    "Firebase messaging test failed. Check the configured project, "
-                            + "destination token, and service-account permissions.",
+                    "Firebase messaging test failed. Check the configured web "
+                            + "app, VAPID public key, project, browser support, "
+                            + "and service-account permissions.",
                     testedAt);
         }
     }
@@ -439,10 +469,11 @@ public class OperatorConfigurationService {
                 kind,
                 success,
                 message,
-                testedAt.toString());
+                testedAt.toString(),
+                null);
     }
 
-    private void recordFirebaseTest(
+    private DeploymentConfiguration recordFirebaseTest(
             DeploymentConfiguration configuration,
             ConfigurationTestRequestDto request,
             ConfigurationTestResultDto result,
@@ -456,7 +487,7 @@ public class OperatorConfigurationService {
             attempted = StringUtils.hasText(firebase.getProjectId())
                     && firebase.getAuthenticationCredentialEnvelope() != null;
             if (!attempted) {
-                return;
+                return configuration;
             }
             firebase.setAuthenticationTestedRevision(
                     result.success() ? revision : null);
@@ -464,10 +495,9 @@ public class OperatorConfigurationService {
                     result.success() ? testedAt.toString() : null);
         } else {
             attempted = StringUtils.hasText(firebase.getProjectId())
-                    && firebase.getMessagingCredentialEnvelope() != null
-                    && StringUtils.hasText(request.destinationToken());
+                    && firebase.getMessagingCredentialEnvelope() != null;
             if (!attempted) {
-                return;
+                return configuration;
             }
             firebase.setMessagingTestedRevision(
                     result.success() ? revision : null);
@@ -479,8 +509,25 @@ public class OperatorConfigurationService {
             firebase.setActivatedAt(null);
         }
         configuration.setUpdatedAt(testedAt.toString());
-        saveUpdate(configuration);
+        DeploymentConfiguration saved = saveUpdate(configuration);
         refreshFirebaseRuntime();
+        return saved;
+    }
+
+    private FirebaseWebConfiguration firebaseWebConfiguration(
+            DeploymentConfiguration.Firebase firebase) {
+        DeploymentConfiguration.FirebasePublicClient publicClient =
+                firebase.getPublicClient();
+        return new FirebaseWebConfiguration(
+                publicClient == null ? null : publicClient.getApiKey(),
+                publicClient == null ? null : publicClient.getAuthDomain(),
+                publicClient == null ? null : publicClient.getStorageBucket(),
+                publicClient == null
+                        ? null
+                        : publicClient.getMessagingSenderId(),
+                publicClient == null ? null : publicClient.getAppId(),
+                publicClient == null ? null : publicClient.getMeasurementId(),
+                publicClient == null ? null : publicClient.getVapidKey());
     }
 
     private List<PaymentProviderDto> availablePaymentProviders() {
@@ -507,7 +554,8 @@ public class OperatorConfigurationService {
             @Override
             public void testAuthentication(
                     String projectId,
-                    String serviceAccountJson) {
+                    String serviceAccountJson,
+                    FirebaseWebConfiguration webConfiguration) {
                 throw new IllegalStateException(
                         "Firebase capability client is unavailable.");
             }
@@ -516,7 +564,9 @@ public class OperatorConfigurationService {
             public void sendTestMessage(
                     String projectId,
                     String serviceAccountJson,
-                    String destinationToken,
+                    FirebaseWebConfiguration webConfiguration,
+                    String browserReadinessToken,
+                    String optionalDestinationToken,
                     String notificationTitle) {
                 throw new IllegalStateException(
                         "Firebase capability client is unavailable.");

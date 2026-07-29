@@ -72,6 +72,7 @@ public final class OperatorConfigurationDtos {
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
     public record FirebasePublicConfigurationDto(
+            long revision,
             String apiKey,
             String authDomain,
             String projectId,
@@ -178,9 +179,21 @@ public final class OperatorConfigurationDtos {
     public record ConfigurationTestRequestDto(
             @NotNull ConfigurationTestKind kind,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-            @Size(max = 4096) String destinationToken) {
+            @Size(max = 4096) String destinationToken,
+            @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+            @Size(max = 4096) String browserReadinessToken,
+            @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+            Long browserConfigurationRevision,
+            @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+            @Size(max = 256) String browserAppId) {
         public ConfigurationTestRequestDto(ConfigurationTestKind kind) {
-            this(kind, null);
+            this(kind, null, null, null, null);
+        }
+
+        public ConfigurationTestRequestDto(
+                ConfigurationTestKind kind,
+                String destinationToken) {
+            this(kind, destinationToken, null, null, null);
         }
     }
 
@@ -189,6 +202,7 @@ public final class OperatorConfigurationDtos {
             ConfigurationTestKind kind,
             boolean success,
             String message,
-            String testedAt) {
+            String testedAt,
+            FirebaseConfigurationDto firebase) {
     }
 }

@@ -285,9 +285,9 @@ class RegistryOperatorNetworkServiceTest {
                             null,
                             null,
                             "operator_issue_12345678")))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining(
-                            "source claim anchors are invalid");
+                    .isInstanceOf(RegistryProtocolException.class)
+                    .hasRootCauseMessage(
+                            "Registry operator source claim anchors are invalid for this action.");
             registry.assertHealthy();
         }
     }
@@ -316,9 +316,9 @@ class RegistryOperatorNetworkServiceTest {
                             null,
                             null,
                             null)))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining(
-                            "no signed source claim anchors");
+                    .isInstanceOf(RegistryProtocolException.class)
+                    .hasRootCauseMessage(
+                            "Token-derived pending claim receipt has no signed source claim anchors.");
             registry.assertHealthy();
         }
     }

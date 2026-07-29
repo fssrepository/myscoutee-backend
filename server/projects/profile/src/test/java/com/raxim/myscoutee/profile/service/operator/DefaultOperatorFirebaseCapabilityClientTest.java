@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 import com.google.firebase.FirebaseApp;
+import com.raxim.myscoutee.profile.service.operator.OperatorFirebaseCapabilityClient.FirebaseWebConfiguration;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -50,7 +51,8 @@ class DefaultOperatorFirebaseCapabilityClientTest {
 
         client.testAuthentication(
                 PROJECT_ID,
-                serviceAccountJson(PROJECT_ID));
+                serviceAccountJson(PROJECT_ID),
+                webConfiguration(""));
 
         assertThat(FirebaseApp.getApps().stream()
                 .map(FirebaseApp::getName)
@@ -74,7 +76,8 @@ class DefaultOperatorFirebaseCapabilityClientTest {
 
         assertThatThrownBy(() -> client.testAuthentication(
                 "expected-project",
-                serviceAccountJson("different-project")))
+                serviceAccountJson("different-project"),
+                webConfiguration("")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("does not match");
         assertThat(FirebaseApp.getApps().stream()
@@ -82,6 +85,50 @@ class DefaultOperatorFirebaseCapabilityClientTest {
                 .sorted()
                 .toList())
                 .isEqualTo(appNamesBefore);
+    }
+
+    @Test
+    void rejectsInvalidVapidKeyBeforeMessagingNetworkOperations()
+            throws Exception {
+        var client = new DefaultOperatorFirebaseCapabilityClient(
+                new DefaultOperatorFirebaseCapabilityClient
+                        .FirebaseCapabilityOperations() {
+                    @Override
+                    public void testAuthentication(FirebaseApp app) {
+                        throw new AssertionError(
+                                "Unexpected authentication call.");
+                    }
+
+                    @Override
+                    public void sendTestMessage(
+                            FirebaseApp app,
+                            String destinationToken,
+                            String notificationTitle) {
+                        throw new AssertionError(
+                                "Unexpected messaging call.");
+                    }
+                });
+
+        assertThatThrownBy(() -> client.sendTestMessage(
+                PROJECT_ID,
+                serviceAccountJson(PROJECT_ID),
+                webConfiguration("not-a-p256-public-key"),
+                "destination-token",
+                "Community"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("VAPID public key is invalid");
+    }
+
+    private FirebaseWebConfiguration webConfiguration(
+            String vapidKey) {
+        return new FirebaseWebConfiguration(
+                "browser-api-key",
+                PROJECT_ID + ".firebaseapp.com",
+                PROJECT_ID + ".firebasestorage.app",
+                "123456789",
+                "1:123456789:web:operator",
+                "G-OPERATOR",
+                vapidKey);
     }
 
     private String serviceAccountJson(String projectId) throws Exception {
