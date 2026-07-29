@@ -334,7 +334,7 @@ find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" \
 find "${STAGING_DIR}/opt/myscoutee/server/docker" \
   -type f -name "*.sh" -exec chmod 0755 {} +
 
-dpkg-deb --root-owner-group -Zzstd -z1 --build \
+dpkg-deb --root-owner-group --build \
   "${STAGING_DIR}" \
   "${DEB_PARTIAL_PATH}"
 dpkg-deb --info "${DEB_PARTIAL_PATH}" >/dev/null
