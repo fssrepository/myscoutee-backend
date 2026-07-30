@@ -337,6 +337,10 @@ public class OperatorGlobalIdentityPresenceReportService {
 
         List<String> commitments;
         try {
+            globalIdentityService.ensureQualifiedUsersLinked(
+                    runtime,
+                    key,
+                    detailed.qualifiedUserIds());
             commitments = eligibleCommitments(
                     runtime,
                     key,

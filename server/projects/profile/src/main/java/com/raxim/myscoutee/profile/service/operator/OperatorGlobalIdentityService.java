@@ -27,6 +27,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityLinkState;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityLinkState.PendingOperation;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.GlobalIdentityDtos.GlobalIdentityConsentRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.GlobalIdentityDtos.GlobalIdentityStatusDto;
 import com.raxim.myscoutee.profile.data.dto.auth.GlobalIdentityDtos.GlobalIdentityUnlinkRequestDto;
@@ -258,6 +259,35 @@ public class OperatorGlobalIdentityService {
         Member member = requireVerifiedMember(authentication);
         RegisteredRuntime runtime = requireRuntime();
         GlobalIdentityVoprfKey key = verifiedCurrentKey(runtime);
+        return link(runtime, key, member);
+    }
+
+    void ensureQualifiedUsersLinked(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            List<String> qualifiedUserIds) {
+        if (qualifiedUserIds == null || qualifiedUserIds.isEmpty()) {
+            return;
+        }
+        for (Users user : usersRepository.findByUserIdIn(
+                qualifiedUserIds.stream().distinct().toList())) {
+            if (!StringUtils.hasText(user.getUserId())
+                    || !StringUtils.hasText(user.getEmail())) {
+                continue;
+            }
+            link(
+                    runtime,
+                    key,
+                    new Member(
+                            user.getUserId().trim(),
+                            normalizeEmail(user.getEmail())));
+        }
+    }
+
+    private GlobalIdentityStatusDto link(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            Member member) {
         GlobalIdentityLinkState state = linkRepository
                 .findByDeploymentIdAndLocalUserId(
                         runtime.state().deploymentId(),
