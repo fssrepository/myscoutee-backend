@@ -435,6 +435,7 @@ public final class EventsDtos {
             String creatorUserId,
             String creatorName,
             String creatorInitials,
+            String creatorAvatarUrl,
             String creatorCity,
             String visibility,
             String startAtIso,

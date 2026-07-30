@@ -21,10 +21,12 @@ public class ActivityEventMapper {
     public record MappingContext(
             LocationCoordinatesDto viewerCoordinates,
             Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
-            Map<String, String> checkoutResultStatesBySourceId) {
+            Map<String, String> checkoutResultStatesBySourceId,
+            Map<String, String> creatorAvatarUrlsByUserId) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
             checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
+            creatorAvatarUrlsByUserId = creatorAvatarUrlsByUserId == null ? Map.of() : creatorAvatarUrlsByUserId;
         }
     }
 
@@ -61,6 +63,7 @@ public class ActivityEventMapper {
                 normalizeId(record.getCreatorUserId()),
                 safeText(record.getCreatorName()),
                 safeText(record.getCreatorInitials()),
+                resolveCreatorAvatarUrl(record, context),
                 safeText(record.getCreatorCity()),
                 safeText(record.getVisibility()),
                 StringUtils.hasText(record.getStartAtIso()) ? record.getStartAtIso().trim() : null,
@@ -86,6 +89,13 @@ public class ActivityEventMapper {
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()));
+    }
+
+    private String resolveCreatorAvatarUrl(ActivityEvent record, MappingContext context) {
+        if (record == null || context == null) {
+            return "";
+        }
+        return safeText(context.creatorAvatarUrlsByUserId().get(normalizeId(record.getCreatorUserId())));
     }
 
     private int aggregateRuntimeActivity(ActivityEvent record) {
