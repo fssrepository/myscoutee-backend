@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.profile.data.document.UserNotification;
 
 @Repository
@@ -83,6 +84,28 @@ public class UserNotificationPageRepository {
                 FindAndModifyOptions.options().returnNew(true),
                 UserNotification.class);
         return Optional.ofNullable(updated);
+    }
+
+    public long markUnreadBySource(
+            String recipientUserId,
+            String kind,
+            String sourceType,
+            String sourceId,
+            String readAtIso) {
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("recipientUserId").is(recipientUserId),
+                Criteria.where("kind").is(kind),
+                Criteria.where("sourceType").is(sourceType),
+                Criteria.where("sourceId").is(sourceId),
+                unreadCriteria());
+        UpdateResult result = mongoTemplate.updateMulti(
+                Query.query(criteria),
+                new Update()
+                        .set("readAtIso", readAtIso)
+                        .set("updatedDate", readAtIso)
+                        .set("updatedUser", recipientUserId),
+                UserNotification.class);
+        return result.getModifiedCount();
     }
 
     public void incrementUnreadCounter(String recipientUserId, int delta) {

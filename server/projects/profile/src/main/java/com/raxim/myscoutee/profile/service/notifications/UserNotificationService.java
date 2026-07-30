@@ -35,6 +35,8 @@ import com.raxim.myscoutee.profile.service.mapper.UserNotificationMapper;
 public class UserNotificationService {
     private static final String BUCKET_NEW = "new";
     private static final String BUCKET_ALL = "all";
+    private static final String EVENT_INVITE_KIND = "event-invite";
+    private static final String EVENT_SOURCE_TYPE = "event";
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_PAGE_SIZE = 50;
 
@@ -99,6 +101,28 @@ public class UserNotificationService {
         return new UserNotificationReadResponseDto(
                 userNotificationMapper.toDto(notification),
                 unreadCount);
+    }
+
+    public int markEventInvitationResolved(String recipientUserId, String eventId) {
+        String normalizedRecipientUserId = safeText(recipientUserId);
+        String normalizedEventId = safeText(eventId);
+        if (!StringUtils.hasText(normalizedRecipientUserId)
+                || !StringUtils.hasText(normalizedEventId)) {
+            return 0;
+        }
+        long changed = userNotificationPageRepository.markUnreadBySource(
+                normalizedRecipientUserId,
+                EVENT_INVITE_KIND,
+                EVENT_SOURCE_TYPE,
+                normalizedEventId,
+                Instant.now().toString());
+        int changedCount = safeInt(changed);
+        if (changedCount > 0) {
+            userNotificationPageRepository.incrementUnreadCounter(
+                    normalizedRecipientUserId,
+                    -changedCount);
+        }
+        return changedCount;
     }
 
     public UserNotificationPreferenceDto updateMutedPreference(String recipientUserId, Boolean muted) {

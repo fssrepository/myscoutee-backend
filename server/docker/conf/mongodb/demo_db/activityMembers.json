@@ -28036,27 +28036,6 @@
   },
   {
     "_id": {
-      "$oid": "23d49081a2f20115fa376f66"
-    },
-    "syncKey": "f6848ecf-078c-50c4-be6e-dfd3318e2365",
-    "ownerType": "event",
-    "ownerId": "99fc3b45fb145f50d4026729",
-    "userId": "9f3b3f085e23af6c89dbc432",
-    "role": "Member",
-    "status": "pending",
-    "pendingSource": "admin",
-    "requestKind": "invite",
-    "invitedByUserId": "bf057de7c586eede7e84bdc7",
-    "metAtIso": "2025-11-19T00:00:00",
-    "actionAtIso": "2025-11-19T00:00:00",
-    "metWhere": "Coffee Social",
-    "createdDate": "2026-03-25T13:07:51.346Z",
-    "createdUser": "bf057de7c586eede7e84bdc7",
-    "updatedDate": "2026-03-25T13:07:51.346Z",
-    "updatedUser": "bf057de7c586eede7e84bdc7"
-  },
-  {
-    "_id": {
       "$oid": "18af8fd3cdb3fbd1c334479a"
     },
     "syncKey": "35e38dfa-ad82-5c38-b7b0-aa32732d96d8",
@@ -28449,27 +28428,6 @@
     "metAtIso": "2026-02-15T00:00:00",
     "actionAtIso": "2026-02-15T00:00:00",
     "metWhere": "Coffee Social",
-    "createdDate": "2026-03-25T13:07:51.424Z",
-    "createdUser": "bf057de7c586eede7e84bdc7",
-    "updatedDate": "2026-03-25T13:07:51.424Z",
-    "updatedUser": "bf057de7c586eede7e84bdc7"
-  },
-  {
-    "_id": {
-      "$oid": "9c95de36a19c89f84a45fe5d"
-    },
-    "syncKey": "a4f728bd-b4bf-5172-93f9-11887131a495",
-    "ownerType": "event",
-    "ownerId": "50ebe8c0e820dfd6e5cdcf8b",
-    "userId": "1b1c70be2349b3359a8f6f94",
-    "role": "Member",
-    "status": "pending",
-    "pendingSource": "admin",
-    "requestKind": "invite",
-    "invitedByUserId": "bf057de7c586eede7e84bdc7",
-    "metAtIso": "2026-02-16T00:00:00",
-    "actionAtIso": "2026-02-16T00:00:00",
-    "metWhere": "Board Game Night",
     "createdDate": "2026-03-25T13:07:51.424Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-03-25T13:07:51.424Z",
@@ -35126,27 +35084,6 @@
     "invitedByUserId": null,
     "metAtIso": "2025-10-04T00:00:00",
     "actionAtIso": "2025-10-04T00:00:00",
-    "metWhere": "Music Event",
-    "createdDate": "2026-03-25T13:07:52.705Z",
-    "createdUser": "d04cd419e735549e3f312977",
-    "updatedDate": "2026-03-25T13:07:52.705Z",
-    "updatedUser": "d04cd419e735549e3f312977"
-  },
-  {
-    "_id": {
-      "$oid": "0920693b4e145165b1a34b13"
-    },
-    "syncKey": "5c180d81-aace-5f83-8f2e-49badbbc100e",
-    "ownerType": "event",
-    "ownerId": "ceaae76e8afd0975e1087cc8",
-    "userId": "bf057de7c586eede7e84bdc7",
-    "role": "Member",
-    "status": "pending",
-    "pendingSource": "admin",
-    "requestKind": "invite",
-    "invitedByUserId": "d04cd419e735549e3f312977",
-    "metAtIso": "2025-10-14T00:00:00",
-    "actionAtIso": "2025-10-14T00:00:00",
     "metWhere": "Music Event",
     "createdDate": "2026-03-25T13:07:52.705Z",
     "createdUser": "d04cd419e735549e3f312977",

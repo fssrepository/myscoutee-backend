@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.profile.data.document.UserNotification;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationCursor;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationSlice;
@@ -105,6 +106,38 @@ class UserNotificationPageRepositoryTest {
         assertThat(query.getValue().getQueryObject().toJson())
                 .contains("\"_id\": \"notification-1\"")
                 .contains("\"recipientUserId\": \"viewer-1\"")
+                .contains("\"readAtIso\": {\"$exists\": false}")
+                .contains("\"readAtIso\": null");
+        assertThat(update.getValue().getUpdateObject().toJson())
+                .contains("\"readAtIso\": \"2026-07-27T20:00:00Z\"");
+    }
+
+    @Test
+    void markUnreadBySourceOnlyReadsMatchingInvitationNotifications() {
+        when(mongoTemplate.updateMulti(
+                any(Query.class),
+                any(Update.class),
+                eq(UserNotification.class))).thenReturn(UpdateResult.acknowledged(2L, 2L, null));
+
+        long changed = repository.markUnreadBySource(
+                "viewer-1",
+                "event-invite",
+                "event",
+                "event-1",
+                "2026-07-27T20:00:00Z");
+
+        assertThat(changed).isEqualTo(2L);
+        ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> update = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateMulti(
+                query.capture(),
+                update.capture(),
+                eq(UserNotification.class));
+        assertThat(query.getValue().getQueryObject().toJson())
+                .contains("\"recipientUserId\": \"viewer-1\"")
+                .contains("\"kind\": \"event-invite\"")
+                .contains("\"sourceType\": \"event\"")
+                .contains("\"sourceId\": \"event-1\"")
                 .contains("\"readAtIso\": {\"$exists\": false}")
                 .contains("\"readAtIso\": null");
         assertThat(update.getValue().getUpdateObject().toJson())

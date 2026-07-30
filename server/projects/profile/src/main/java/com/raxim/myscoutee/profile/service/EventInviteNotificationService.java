@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.profile.service.notifications.UserNotificationService;
 
 @Service
 public class EventInviteNotificationService {
@@ -19,9 +21,13 @@ public class EventInviteNotificationService {
     private static final String DEFAULT_CLICK_URL = "/game";
 
     private final NotificationOutboxService notificationOutboxService;
+    private final UserNotificationService userNotificationService;
 
-    public EventInviteNotificationService(NotificationOutboxService notificationOutboxService) {
+    public EventInviteNotificationService(
+            NotificationOutboxService notificationOutboxService,
+            UserNotificationService userNotificationService) {
         this.notificationOutboxService = notificationOutboxService;
+        this.userNotificationService = userNotificationService;
     }
 
     public void notifyInvitees(
@@ -53,6 +59,7 @@ public class EventInviteNotificationService {
         payload.put("location", safeText(event.getLocation()));
         payload.put("startAtIso", safeText(event.getStartAtIso()));
         payload.put("eventScope", "invitations");
+        payload.put("invitationOccurrenceId", UUID.randomUUID().toString());
         String senderUserId = safeText(actorUserId);
         if (StringUtils.hasText(senderUserId)) {
             payload.put("senderUserId", senderUserId);
@@ -74,6 +81,12 @@ public class EventInviteNotificationService {
                 notificationTag,
                 payload,
                 StringUtils.hasText(senderUserId) ? senderUserId : null));
+    }
+
+    public int markInvitationResolved(String eventId, String recipientUserId) {
+        return userNotificationService.markEventInvitationResolved(
+                safeText(recipientUserId),
+                safeText(eventId));
     }
 
     private String resolveTitle(ActivityEvent event) {

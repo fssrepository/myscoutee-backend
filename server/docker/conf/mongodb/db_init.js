@@ -169,6 +169,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { sourceType: 1, sourceId: 1, createdDate: -1 },
     { name: 'user_notifications_source_created' }
   );
+  portalDb.userNotifications.createIndex(
+    { recipientUserId: 1, kind: 1, sourceType: 1, sourceId: 1, readAtIso: 1 },
+    { name: 'user_notifications_recipient_kind_source' }
+  );
   portalDb.scheduledMessageTasks.createIndex(
     { syncKey: 1 },
     { name: 'scheduled_message_task_sync_key', unique: true, sparse: true }

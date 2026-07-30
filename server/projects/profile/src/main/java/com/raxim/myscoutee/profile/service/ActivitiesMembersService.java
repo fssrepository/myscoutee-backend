@@ -875,6 +875,10 @@ public class ActivitiesMembersService {
         }
 
         String currentStatus = normalizeStatus(current.getStatus());
+        boolean cancellingEventInvitation = OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && STATUS_PENDING.equals(currentStatus)
+                && isInvitationMembership(current);
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
                 && !canManageOwnerMembers(
@@ -993,6 +997,11 @@ public class ActivitiesMembersService {
             if (removingPendingEventMembership) {
                 refreshEmbeddedEventMembers(ownerId, false);
                 userActivityCountersService.refreshEventCountersForUsers(List.of(targetUserId));
+                if (cancellingEventInvitation) {
+                    eventInviteNotificationService.markInvitationResolved(
+                            ownerId,
+                            targetUserId);
+                }
                 return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             if (ACTION_REMOVE.equals(action)) {
@@ -1100,6 +1109,10 @@ public class ActivitiesMembersService {
         }
 
         ActivityMember current = existingByUserId.get(viewerUserId);
+        boolean resolvingInvitation = current != null
+                && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                    || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
+                && isInvitationMembership(current);
         if (current != null && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
@@ -1142,6 +1155,11 @@ public class ActivitiesMembersService {
             eventParticipationTicketService.syncParticipationTicketForUser(normalizedEventId, viewerUserId);
             refreshEmbeddedEventMembers(normalizedEventId);
             userActivityCountersService.refreshEventCountersForUsers(List.of(viewerUserId));
+            if (resolvingInvitation) {
+                eventInviteNotificationService.markInvitationResolved(
+                        normalizedEventId,
+                        viewerUserId);
+            }
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
@@ -1172,6 +1190,10 @@ public class ActivitiesMembersService {
                     .filter(member -> normalizedUserId.equals(normalizeId(member.getUserId())))
                     .findFirst()
                     .orElse(null);
+            boolean resolvingInvitation = current != null
+                    && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                        || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
+                    && isInvitationMembership(current);
             boolean alreadySuppressed = current != null
                     && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
                     && normalizedEventId.equals(normalizeId(current.getSuppressionRootOwnerId()))
@@ -1331,6 +1353,11 @@ public class ActivitiesMembersService {
                 userActivityCountersService.refreshEventCountersForUsers(List.copyOf(counterUserIds));
             } else {
                 userActivityCountersService.refreshEventCountersForSourceIds(List.copyOf(persistedEventSourceIds));
+            }
+            if (resolvingInvitation) {
+                eventInviteNotificationService.markInvitationResolved(
+                        normalizedEventId,
+                        normalizedUserId);
             }
             OwnerMembersSnapshot updatedSnapshot =
                     queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
@@ -2927,11 +2954,12 @@ public class ActivitiesMembersService {
 
         activityMembersRepository.saveAll(membersToSave);
         enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, inviterUserId);
+        refreshEmbeddedEventMembers(normalizedEventId);
+        userActivityCountersService.refreshEventCountersForUsers(promotedUserIds);
         eventInviteNotificationService.notifyInvitees(
                 preferredEventRecord,
                 promotedUserIds,
                 inviterUserId);
-        refreshEmbeddedEventMembers(normalizedEventId);
         return promotedUserIds.size();
     }
 

@@ -7825,7 +7825,7 @@
     "slotsEnabled": false,
     "eventType": "main",
     "acceptedMembers": 9,
-    "pendingMembers": 1,
+    "pendingMembers": 0,
     "topics": [
       "#Yoga",
       "#Meditation",
@@ -8007,12 +8007,8 @@
       "9d3ba3d74edabe4695e6d3f9",
       "4b5bad1292fb6db05dc0e455"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -9976,7 +9972,7 @@
     "slotsEnabled": false,
     "eventType": "main",
     "acceptedMembers": 7,
-    "pendingMembers": 2,
+    "pendingMembers": 1,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -10115,12 +10111,9 @@
       "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [
-      "bf057de7c586eede7e84bdc7",
       "b29df68956f3fe15e04558de"
     ],
-    "invitedMemberUserIds": [
-      "bf057de7c586eede7e84bdc7"
-    ],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [
       "b29df68956f3fe15e04558de"
     ],
@@ -21136,7 +21129,7 @@
     "slotsEnabled": false,
     "eventType": "main",
     "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "pendingMembers": 0,
     "topics": [
       "#TVShows",
       "#Anime"
@@ -21244,12 +21237,8 @@
       "7313a9379f60200cba7b9f71",
       "1b1c70be2349b3359a8f6f94"
     ],
-    "pendingMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432"
-    ],
-    "invitedMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -60631,92 +60620,5 @@
     ],
     "policiesEnabled": false,
     "activity": 0
-  },
-  {
-    "_id": {
-      "$oid": "f1c4e57e2000000000000001"
-    },
-    "syncKey": "seed-ticket-nagy-eszter-friends-circle-supper",
-    "sourceId": "4f115bb6be32bf0838efb3b7",
-    "ownerUserId": "9f3b3f085e23af6c89dbc432",
-    "status": "A",
-    "admins": [
-      "b29df68956f3fe15e04558de"
-    ],
-    "avatar": "KB",
-    "title": "Friends Circle Supper",
-    "subtitle": "Small-table meetup for close connections and plus-ones.",
-    "timeframe": "Mar 17 · 6:30 PM - 9:30 PM",
-    "inviter": "Kiss Balázs",
-    "unread": 0,
-    "activity": 0,
-    "trashedAtIso": null,
-    "creatorUserId": "b29df68956f3fe15e04558de",
-    "creatorName": "Kiss Balázs",
-    "creatorInitials": "KB",
-    "creatorGender": "man",
-    "creatorCity": "Chicago",
-    "visibility": "Friends only",
-    "blindMode": "Open Event",
-    "startAtIso": "2027-03-17T18:30:00",
-    "endAtIso": "2027-03-17T21:30:00",
-    "distanceKm": 0,
-    "imageUrl": "https://picsum.photos/seed/4f115bb6be32bf0838efb3b7/1200/700",
-    "sourceLink": "https://example.com/events/4f115bb6be32bf0838efb3b7",
-    "location": "Chicago · Friends Circle",
-    "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
-    },
-    "locationGeo": {
-      "type": "Point",
-      "coordinates": [
-        -87.6346,
-        41.8889
-      ]
-    },
-    "capacityMin": 6,
-    "capacityMax": 14,
-    "capacityTotal": 22,
-    "autoInviter": false,
-    "frequency": "One-time",
-    "ticketing": true,
-    "approvalRequired": false,
-    "slotsEnabled": false,
-    "eventType": "main",
-    "acceptedMembers": 7,
-    "pendingMembers": 1,
-    "topics": [
-      "#StreetFood",
-      "#GoingOut"
-    ],
-    "subEvents": [],
-    "mode": "Casual",
-    "rating": 8.4,
-    "boost": 25018,
-    "affinity": 2025821,
-    "createdDate": "2027-03-17T18:30:00",
-    "createdUser": "b29df68956f3fe15e04558de",
-    "updatedDate": "2027-03-17T18:30:00",
-    "updatedUser": "b29df68956f3fe15e04558de",
-    "acceptedMemberUserIds": [
-      "b29df68956f3fe15e04558de",
-      "b5e2db6882d989d8532af12c",
-      "9f3b3f085e23af6c89dbc432",
-      "1b1c70be2349b3359a8f6f94",
-      "f4b2ebd8f56628ab7df58221",
-      "cdd937e0adcbd1a5e38f3ceb",
-      "af0436815ab38f4864dd1e24"
-    ],
-    "pendingMemberUserIds": [
-      "178e8d0cbe164fa3fede5884"
-    ],
-    "invitedMemberUserIds": [
-      "178e8d0cbe164fa3fede5884"
-    ],
-    "pendingRequestMemberUserIds": [],
-    "subEventsEnabled": true,
-    "subEventDefinitions": [],
-    "policiesEnabled": false
   }
 ]

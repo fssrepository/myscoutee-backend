@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -25,6 +26,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -242,6 +244,13 @@ class EventSchedulerTest {
         });
         verify(activitiesMembersService).inviteUsers("event-1", "creator-1", List.of("u1", "u2"), event);
         verify(eventInviteNotificationService).notifyInvitees(event, List.of("u1", "u2"), "creator-1");
+        InOrder persistenceBeforeNotification = inOrder(
+                activitiesMembersService,
+                eventInviteNotificationService);
+        persistenceBeforeNotification.verify(activitiesMembersService)
+                .inviteUsers("event-1", "creator-1", List.of("u1", "u2"), event);
+        persistenceBeforeNotification.verify(eventInviteNotificationService)
+                .notifyInvitees(event, List.of("u1", "u2"), "creator-1");
     }
 
     @Test

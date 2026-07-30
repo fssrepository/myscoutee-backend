@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
@@ -1403,6 +1405,13 @@ class ActivitiesMembersServiceTest {
         verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
         verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
         verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
+        InOrder cancellationOrder = inOrder(
+                userActivityCountersService,
+                eventInviteNotificationService);
+        cancellationOrder.verify(userActivityCountersService)
+                .refreshEventCountersForUsers(List.of("target"));
+        cancellationOrder.verify(eventInviteNotificationService)
+                .markInvitationResolved("event-1", "target");
     }
 
     @Test
@@ -1631,6 +1640,56 @@ class ActivitiesMembersServiceTest {
                 "viewer");
         verify(userActivityCountersService).refreshEventCountersForUsers(List.of("viewer"));
         verify(tournamentGroupCounterService).syncParent("event-1:slot:morning", "sub-1");
+    }
+
+    @Test
+    void rejectingOwnEventInvitationMarksItsNotificationResolved() {
+        ActivityEvent rootEvent = event("event-1", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember invitation = member(
+                "invite-sync",
+                "event-1",
+                "viewer",
+                "Member",
+                "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("owner");
+        AtomicReference<List<ActivityMember>> rootMembers =
+                new AtomicReference<>(List.of(owner, invitation));
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> rootMembers.get());
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(List.of(invitation));
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            rootMembers.set(rootMembers.get().stream()
+                    .map(member -> saved.stream()
+                            .filter(next -> member.getId().equals(next.getId()))
+                            .findFirst()
+                            .orElse(member))
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(rootEvent));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(rootEvent));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.suppressEventParticipationTree("event-1", "viewer", "viewer");
+
+        InOrder resolutionOrder = inOrder(
+                userActivityCountersService,
+                eventInviteNotificationService);
+        resolutionOrder.verify(userActivityCountersService)
+                .refreshEventCountersForUsers(List.of("viewer"));
+        resolutionOrder.verify(eventInviteNotificationService)
+                .markInvitationResolved("event-1", "viewer");
     }
 
     @Test
@@ -2161,6 +2220,7 @@ class ActivitiesMembersServiceTest {
                     assertThat(member.getPendingSource()).isNull();
                     assertThat(member.getRequestKind()).isNull();
                 });
+        verify(eventInviteNotificationService).markInvitationResolved("event-1", "viewer");
     }
 
     @Test
@@ -2185,6 +2245,17 @@ class ActivitiesMembersServiceTest {
                 "admin"));
 
         verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("new-user"),
+                "admin");
+        InOrder invitationOrder = inOrder(
+                activityMembersRepository,
+                userActivityCountersService,
+                eventInviteNotificationService);
+        invitationOrder.verify(activityMembersRepository).saveAll(anyList());
+        invitationOrder.verify(userActivityCountersService)
+                .refreshEventCountersForUsers(List.of("new-user"));
+        invitationOrder.verify(eventInviteNotificationService).notifyInvitees(
                 event,
                 List.of("new-user"),
                 "admin");
@@ -2236,6 +2307,19 @@ class ActivitiesMembersServiceTest {
             assertThat(member.getRequestKind()).isEqualTo("waitlist-invite");
         });
         verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("wait-1", "wait-2"),
+                "host");
+        InOrder invitationOrder = inOrder(
+                activityMembersRepository,
+                activityEventsRepository,
+                userActivityCountersService,
+                eventInviteNotificationService);
+        invitationOrder.verify(activityMembersRepository).saveAll(anyList());
+        invitationOrder.verify(activityEventsRepository).saveAll(anyList());
+        invitationOrder.verify(userActivityCountersService)
+                .refreshEventCountersForUsers(List.of("wait-1", "wait-2"));
+        invitationOrder.verify(eventInviteNotificationService).notifyInvitees(
                 event,
                 List.of("wait-1", "wait-2"),
                 "host");
