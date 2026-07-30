@@ -213,10 +213,15 @@ check_http_or_internal() {
   local body
 
   body="$(http_get "${path}" 2>/dev/null || true)"
-  if [[ -z "${body}" ]]; then
-    body="$(internal_get "${path}" 2>/dev/null || true)"
+  if [[ "${body}" == *"${pattern}"* ]]; then
+    status_line ok "${label}"
+    return 0
   fi
 
+  # The production HTTP listener may correctly return a non-empty redirect
+  # page. This host-level smoke still verifies Spring directly; public
+  # redirect and TLS behavior belongs to the external deployment verifier.
+  body="$(internal_get "${path}" 2>/dev/null || true)"
   if [[ "${body}" == *"${pattern}"* ]]; then
     status_line ok "${label}"
     return 0
@@ -302,4 +307,6 @@ main() {
   status_line ok "Mongo ${EXPECTED_MONGO_MINOR} compatibility smoke passed"
 }
 
-main "$@"
+if [[ "${MYSCOUTEE_SMOKE_LIBRARY_ONLY:-false}" != "true" ]]; then
+  main "$@"
+fi

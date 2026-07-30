@@ -61,6 +61,8 @@ cp "${TEST_ROOT}/keys/custom.key" \
   "${TEST_ROOT}/letsencrypt/live/transport.test/privkey.pem"
 printf 'console.log("transport-policy");\n' > "${TEST_ROOT}/html/app-TRANSPORT.js"
 printf 'transport-policy\n' > "${TEST_ROOT}/html/index.html"
+printf '%s\n' '{"name":"transport-policy","start_url":"/","scope":"/"}' \
+  > "${TEST_ROOT}/html/manifest.webmanifest"
 printf 'acme-token\n' \
   > "${TEST_ROOT}/acme/.well-known/acme-challenge/test-token"
 cp "${NGINX_ROOT}/conf/nginx/conf/stream/mongodb.conf" \
@@ -201,6 +203,15 @@ curl -skS -o /dev/null -D "${prod_root_headers}" \
   -H 'Host: transport.test' \
   "https://127.0.0.1:${prod_https_port}/"
 assert_header "${prod_root_headers}" '^Strict-Transport-Security: max-age=31536000'
+
+prod_manifest_headers="${TEST_ROOT}/prod-manifest.headers"
+curl -skS -o /dev/null -D "${prod_manifest_headers}" \
+  -H 'Host: transport.test' \
+  "https://127.0.0.1:${prod_https_port}/manifest.webmanifest"
+assert_header \
+  "${prod_manifest_headers}" \
+  '^Content-Type: application/manifest\+json'
+assert_header "${prod_manifest_headers}" '^Cache-Control: no-cache'
 
 grep -Fq 'server_name transport.test;' "${prod_config_dir}/spring.conf" \
   || fail "DOMAIN was not rendered into production Nginx"

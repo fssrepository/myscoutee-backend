@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 QUALIFIER="${REPO_ROOT}/packaging/scripts/qualify-deployment.sh"
 DIAGNOSTICS="${REPO_ROOT}/packaging/scripts/deployment-diagnostics.sh"
+MONGO_SMOKE="${REPO_ROOT}/packaging/scripts/smoke-mongo-compatibility.sh"
 TEST_ROOT="$(mktemp -d /tmp/myscoutee-deployment-qualification-test.XXXXXX)"
 FAKE_BIN="${TEST_ROOT}/bin"
 COMMAND_LOG="${TEST_ROOT}/commands.log"
@@ -18,6 +19,38 @@ fail() {
   echo "Deployment qualification test failed: $1" >&2
   exit 1
 }
+
+SMOKE_FALLBACK_OUTPUT="$(
+  MYSCOUTEE_SMOKE_LIBRARY_ONLY=true \
+    bash -c '
+      source "$1"
+      http_get() {
+        printf "<html>permanent redirect</html>"
+      }
+      internal_get() {
+        [[ "$1" == "/api/health" ]] || return 1
+        printf "{\"status\":\"UP\"}"
+      }
+      check_http_or_internal \
+        "redirect fallback health" "/api/health" "\"status\":\"UP\""
+    ' _ "${MONGO_SMOKE}"
+)"
+grep -Fq 'ok    redirect fallback health' <<< "${SMOKE_FALLBACK_OUTPUT}" \
+  || fail "a non-empty HTTP redirect did not fall back to the internal API"
+
+INTERNAL_HEALTH_COMMAND="$(
+  MYSCOUTEE_SMOKE_LIBRARY_ONLY=true \
+    bash -c '
+      source "$1"
+      docker() {
+        printf "%s\n" "$*"
+      }
+      internal_get "/api/health"
+    ' _ "${MONGO_SMOKE}"
+)"
+[[ "${INTERNAL_HEALTH_COMMAND}" \
+  == "exec myscoutee wget -qO- http://localhost:8080/health" ]] \
+  || fail "internal smoke did not remove the public /api proxy prefix"
 
 mkdir -p \
   "${FAKE_BIN}" \
