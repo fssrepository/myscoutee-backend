@@ -42,7 +42,8 @@ public class HomeGameCardsService {
                     request == null ? null : request.leftQuery(),
                     request == null ? null : request.rightQuery(),
                     request == null ? null : request.cursor(),
-                    request == null ? null : request.pageSize());
+                    request == null ? null : request.pageSize(),
+                    request == null ? null : request.excludedSocialCardIds());
         }
 
         UserGameFilterPreferencesDto effectivePreferences =
@@ -53,14 +54,21 @@ public class HomeGameCardsService {
         List<Users> filteredUsers = homeUserProfileService.queryGameStackUserRecords(resolvedUserId).stream()
                 .filter(user -> matchesFilterPreferences(user, effectivePreferences))
                 .toList();
+        Set<String> excludedCardUserIds = normalizeIds(
+                request == null ? null : request.excludedCardUserIds());
+        List<Users> unseenUsers = filteredUsers.stream()
+                .filter(user -> !excludedCardUserIds.contains(normalizeUserId(user.getId())))
+                .toList();
 
         int pageSize = resolvePageSize(request == null ? null : request.pageSize());
-        int offset = resolveOffset(request == null ? null : request.cursor());
-        int endExclusive = Math.min(filteredUsers.size(), offset + pageSize);
-        List<Users> page = offset >= filteredUsers.size()
+        int offset = excludedCardUserIds.isEmpty()
+                ? resolveOffset(request == null ? null : request.cursor())
+                : 0;
+        int endExclusive = Math.min(unseenUsers.size(), offset + pageSize);
+        List<Users> page = offset >= unseenUsers.size()
                 ? List.of()
-                : filteredUsers.subList(offset, endExclusive);
-        String nextCursor = endExclusive < filteredUsers.size() ? String.valueOf(endExclusive) : null;
+                : unseenUsers.subList(offset, endExclusive);
+        String nextCursor = endExclusive < unseenUsers.size() ? String.valueOf(endExclusive) : null;
 
         List<UserDto> users = page.stream()
                 .map(homeUserProfileService::toGameCardUserDto)
@@ -182,7 +190,8 @@ public class HomeGameCardsService {
             String leftQuery,
             String rightQuery,
             String cursor,
-            Integer pageSizeValue) {
+            Integer pageSizeValue,
+            List<String> excludedSocialCardIdsValue) {
         List<Users> allUserRecords = homeUserProfileService.queryOrderedUserRecords();
         Map<String, Users> usersById = allUserRecords.stream()
                 .filter(Objects::nonNull)
@@ -197,14 +206,18 @@ public class HomeGameCardsService {
                 .filter(card -> matchesSocialFilterPreferences(usersById, card, filterPreferences))
                 .filter(card -> matchesSocialQuery(usersById, card, leftQuery, rightQuery))
                 .toList();
+        Set<String> excludedSocialCardIds = normalizeIds(excludedSocialCardIdsValue);
+        List<HomeUserProfileService.GameSocialCardCandidate> unseenCards = filteredCards.stream()
+                .filter(card -> !excludedSocialCardIds.contains(normalizeUserId(card.id())))
+                .toList();
 
         int pageSize = resolvePageSize(pageSizeValue);
-        int offset = resolveOffset(cursor);
-        int endExclusive = Math.min(filteredCards.size(), offset + pageSize);
-        List<HomeUserProfileService.GameSocialCardCandidate> page = offset >= filteredCards.size()
+        int offset = excludedSocialCardIds.isEmpty() ? resolveOffset(cursor) : 0;
+        int endExclusive = Math.min(unseenCards.size(), offset + pageSize);
+        List<HomeUserProfileService.GameSocialCardCandidate> page = offset >= unseenCards.size()
                 ? List.of()
-                : filteredCards.subList(offset, endExclusive);
-        String nextCursor = endExclusive < filteredCards.size() ? String.valueOf(endExclusive) : null;
+                : unseenCards.subList(offset, endExclusive);
+        String nextCursor = endExclusive < unseenCards.size() ? String.valueOf(endExclusive) : null;
 
         Set<String> referencedUserIds = page.stream()
                 .flatMap(card -> Stream.of(card.userId(), card.secondaryUserId(), card.bridgeUserId()))
@@ -232,6 +245,16 @@ public class HomeGameCardsService {
                 nextCursor,
                 users,
                 socialCards);
+    }
+
+    private Set<String> normalizeIds(List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return Set.of();
+        }
+        return values.stream()
+                .filter(StringUtils::hasText)
+                .map(this::normalizeUserId)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private List<HomeUserProfileService.GameSocialCardCandidate> querySocialCardsForMode(
