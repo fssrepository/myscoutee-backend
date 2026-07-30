@@ -126,7 +126,11 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     private String normalizeRequestUserId(HttpServletRequest request) {
         String requestedUserId = request.getParameter("userId");
-        if (requestedUserId == null) {
+        if (!StringUtils.hasText(requestedUserId)
+                && DemoSessionRequestSupport.isDemoSessionRequest(request)) {
+            requestedUserId = request.getHeader(DEMO_USER_ID);
+        }
+        if (!StringUtils.hasText(requestedUserId)) {
             return null;
         }
         String normalizedUserId = requestedUserId.trim();

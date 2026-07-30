@@ -156,7 +156,7 @@ class FirebaseServiceTest {
                 appSettingsService)
                 .loadUserById("ordinary");
 
-        assertThat(principal.getEmail()).isEqualTo("dev@myscoutee.local");
+        assertThat(principal.getEmail()).isEqualTo("member@myscoutee.local");
         assertThat(principal.getAuthorities()).extracting(Object::toString)
                 .containsExactly("U");
     }

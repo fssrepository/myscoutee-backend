@@ -125,6 +125,47 @@ class FirebaseFilterOperatorTest {
     }
 
     @Test
+    void selectedDemoMemberHeaderAuthenticatesBodyOnlyApiRequests()
+            throws Exception {
+        FirebaseService firebaseService = mock(FirebaseService.class);
+        ConfigProperties properties = new ConfigProperties();
+        properties.setFirebaseEnabled(false);
+        Users user = new Users();
+        user.setUserId("nova-social");
+        FirebasePrincipal principal = new FirebasePrincipal(
+                "nova-social",
+                "nova@myscoutee.local",
+                List.of("U"),
+                user);
+        when(firebaseService.loadUserById("nova-social")).thenReturn(principal);
+        FirebaseFilter filter = new FirebaseFilter(
+                firebaseService,
+                properties,
+                mock(FirebaseTokenVerifier.class));
+        MockHttpServletRequest request =
+                new MockHttpServletRequest("POST", "/api/game-cards/query");
+        request.addHeader(
+                DemoSessionRequestSupport.SESSION_KIND_HEADER,
+                "demo");
+        request.addHeader("X-Demo-User-Id", "nova-social");
+
+        filter.doFilter(
+                request,
+                new MockHttpServletResponse(),
+                mock(FilterChain.class));
+
+        assertThat(SecurityContextHolder.getContext().getAuthentication())
+                .isNotNull();
+        assertThat(SecurityContextHolder.getContext().getAuthentication()
+                .getName()).isEqualTo("nova@myscoutee.local");
+        verify(firebaseService).loadUserById("nova-social");
+        verify(firebaseService, never()).loadUserByUsername(
+                org.mockito.ArgumentMatchers.anyString(),
+                org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.anyString());
+    }
+
+    @Test
     void bootstrapLoginIgnoresStaleFirebaseBearerCredential()
             throws Exception {
         FirebaseService firebaseService = mock(FirebaseService.class);
