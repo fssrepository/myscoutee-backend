@@ -310,7 +310,8 @@ apply_request() {
     upsert_env LETSENCRYPT_ENABLED false
   fi
   upsert_env WEBSOCKET_ALLOWED_ORIGIN_PATTERNS \
-    "https://${domain},http://localhost:8080,http://127.0.0.1:8080"
+    "https://${domain},https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080"
+  upsert_env EMAIL_BASE_URL "https://${domain}"
 
   write_status "${job_id}" RUNNING 80 \
     "operator.configuration.tls.job.restarting"

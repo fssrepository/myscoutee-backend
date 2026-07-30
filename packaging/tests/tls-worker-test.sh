@@ -15,13 +15,23 @@ export MYSCOUTEE_TLS_SERVER_DIR="${TEST_ROOT}/server"
 export MYSCOUTEE_API_USER_ID="$(id -u)"
 export MYSCOUTEE_API_GROUP_ID="$(id -g)"
 export MYSCOUTEE_TLS_WORKER_USER_ID="$(id -u)"
+export MYSCOUTEE_TLS_COMPOSE_WRAPPER="${TEST_ROOT}/compose-wrapper.sh"
+export MYSCOUTEE_TLS_COMPOSE_LOG="${TEST_ROOT}/compose-wrapper.log"
 mkdir -p \
   "${MYSCOUTEE_TLS_SERVER_DIR}/data/certbot/conf" \
   "${MYSCOUTEE_TLS_SERVER_DIR}/data/certbot/www" \
   "${MYSCOUTEE_TLS_SERVER_DIR}/docker/conf/nginx/keys"
 printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'printf "%s\n" "$*" >> "${MYSCOUTEE_TLS_COMPOSE_LOG:?}"' \
+  > "${MYSCOUTEE_TLS_COMPOSE_WRAPPER}"
+chmod 0755 "${MYSCOUTEE_TLS_COMPOSE_WRAPPER}"
+printf '%s\n' \
   'DOMAIN=localhost' \
   'LETSENCRYPT_ENABLED=false' \
+  'WEBSOCKET_ALLOWED_ORIGIN_PATTERNS=https://localhost' \
+  'EMAIL_BASE_URL=https://localhost' \
   > "${MYSCOUTEE_TLS_ENV_FILE}"
 
 # shellcheck source=../scripts/myscoutee-tls-worker.sh
@@ -84,6 +94,120 @@ if rg -l --fixed-strings \
     "$(sed -n '2p' "${PRIVATE_KEY}")" \
     "${MYSCOUTEE_TLS_STATE_DIR}" >/dev/null; then
   fail "private-key material remained in durable TLS state"
+fi
+
+MANUAL_JOB_ID="tls_11111111111111111111111111111111"
+jq -n \
+  --arg jobId "${MANUAL_JOB_ID}" \
+  --arg certificate "$(cat "${CERTIFICATE}")" \
+  --arg privateKey "$(cat "${PRIVATE_KEY}")" \
+  '{
+    schemaVersion: 1,
+    jobId: $jobId,
+    action: "APPLY",
+    requestedAt: "2026-07-30T00:01:00Z",
+    requestedBy: "operator-manual",
+    configuration: {
+      enabled: true,
+      mode: "MANUAL",
+      domain: "app.example.test",
+      contactEmail: "",
+      autoRenew: false,
+      certificate: $certificate,
+      privateKey: $privateKey
+    }
+  }' > "${REQUEST_DIR}/${MANUAL_JOB_ID}.json"
+
+process_request "${REQUEST_DIR}/${MANUAL_JOB_ID}.json" \
+  || fail "the manual TLS apply job failed"
+grep -Fxq 'DOMAIN=app.example.test' "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "manual mode did not persist the operator-selected domain"
+grep -Fxq 'LETSENCRYPT_ENABLED=false' "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "manual mode did not select the operator-managed certificate"
+grep -Fxq \
+  'WEBSOCKET_ALLOWED_ORIGIN_PATTERNS=https://app.example.test,https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "manual mode did not derive browser origins from the selected domain"
+grep -Fxq 'EMAIL_BASE_URL=https://app.example.test' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "manual mode did not derive application links from the selected domain"
+[[ "$(stat -c '%a' "${MANUAL_CERT}")" == "644" ]] \
+  || fail "the operator certificate mode is not 0644"
+[[ "$(stat -c '%a' "${MANUAL_KEY}")" == "600" ]] \
+  || fail "the operator private-key mode is not 0600"
+jq -e '
+  .enabled == true
+  and .mode == "MANUAL"
+  and .domain == "app.example.test"
+  and .contactEmail == ""
+  and .autoRenew == false
+  and .certificateConfigured == true
+' "${CONFIGURATION_FILE}" >/dev/null \
+  || fail "manual TLS state does not reflect the popup values"
+
+AUTO_CERTIFICATE="${TEST_ROOT}/automatic-certificate.pem"
+AUTO_PRIVATE_KEY="${TEST_ROOT}/automatic-private-key.pem"
+openssl req -x509 -nodes -days 30 -newkey rsa:2048 \
+  -keyout "${AUTO_PRIVATE_KEY}" \
+  -out "${AUTO_CERTIFICATE}" \
+  -subj '/CN=auto.example.test' \
+  -addext 'subjectAltName=DNS:auto.example.test' \
+  >/dev/null 2>&1
+test_domain() {
+  [[ "$1" == "auto.example.test" ]]
+}
+obtain_automatic_certificate() {
+  local domain="$1"
+  local target="${CERTBOT_CONF}/live/${domain}"
+  mkdir -p "${target}"
+  install -m 0644 "${AUTO_CERTIFICATE}" "${target}/fullchain.pem"
+  install -m 0600 "${AUTO_PRIVATE_KEY}" "${target}/privkey.pem"
+}
+
+AUTOMATIC_JOB_ID="tls_22222222222222222222222222222222"
+jq -n \
+  --arg jobId "${AUTOMATIC_JOB_ID}" \
+  '{
+    schemaVersion: 1,
+    jobId: $jobId,
+    action: "APPLY",
+    requestedAt: "2026-07-30T00:02:00Z",
+    requestedBy: "operator-automatic",
+    configuration: {
+      enabled: true,
+      mode: "AUTOMATIC",
+      domain: "auto.example.test",
+      contactEmail: "operator@example.test",
+      autoRenew: true,
+      certificate: "",
+      privateKey: ""
+    }
+  }' > "${REQUEST_DIR}/${AUTOMATIC_JOB_ID}.json"
+
+process_request "${REQUEST_DIR}/${AUTOMATIC_JOB_ID}.json" \
+  || fail "the automatic TLS apply job failed"
+grep -Fxq 'DOMAIN=auto.example.test' "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "automatic mode did not persist the operator-selected domain"
+grep -Fxq 'LETSENCRYPT_ENABLED=true' "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "automatic mode did not select the ACME certificate"
+grep -Fxq 'EMAIL_BASE_URL=https://auto.example.test' \
+  "${MYSCOUTEE_TLS_ENV_FILE}" \
+  || fail "automatic mode did not update application links"
+jq -e '
+  .enabled == true
+  and .mode == "AUTOMATIC"
+  and .domain == "auto.example.test"
+  and .contactEmail == "operator@example.test"
+  and .autoRenew == true
+  and .certificateConfigured == true
+' "${CONFIGURATION_FILE}" >/dev/null \
+  || fail "automatic TLS state does not reflect the popup values"
+[[ "$(wc -l < "${MYSCOUTEE_TLS_COMPOSE_LOG}")" == "2" ]] \
+  || fail "each applied TLS mode must recreate Nginx exactly once"
+if rg -l --fixed-strings \
+    "$(sed -n '2p' "${PRIVATE_KEY}")" \
+    "${MYSCOUTEE_TLS_STATE_DIR}" >/dev/null; then
+  fail "applied private-key material remained in durable TLS job state"
 fi
 
 echo "TLS worker tests passed."

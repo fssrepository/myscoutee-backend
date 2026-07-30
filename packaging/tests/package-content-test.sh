@@ -36,6 +36,8 @@ done
 
 bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
   || fail "numeric host ownership policy regression"
+bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
+  || fail "production i18n runtime seed synchronization regression"
 
 FRONTEND_SYNC_ROOT="${TEST_ROOT}/frontend-sync"
 FRONTEND_SYNC_TARGET="${TEST_ROOT}/nginx-html"
@@ -245,7 +247,9 @@ grep -Fxq './opt/myscoutee/packaging/IMAGE-MANIFEST.json' "${CONTENTS}" \
   || fail "package image manifest is missing"
 
 EXTRACTED="${TEST_ROOT}/extracted"
+CONTROL_EXTRACTED="${TEST_ROOT}/control"
 dpkg-deb -x "${DEB_PATH}" "${EXTRACTED}"
+dpkg-deb -e "${DEB_PATH}" "${CONTROL_EXTRACTED}"
 [[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh" ]] \
   || fail "portable managed-image fingerprint helper is not executable"
 CLIENT_TOOLS_ARCHIVE="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"
@@ -286,6 +290,21 @@ jq -e \
 PACKAGED_MONGO="${EXTRACTED}/opt/myscoutee/server/docker/conf/mongodb"
 PACKAGED_PRODUCTION_SEED="${PACKAGED_MONGO}/myscoutee_db"
 PACKAGED_DEMO_SEED="${PACKAGED_MONGO}/demo_db"
+PACKAGED_I18N_SYNC="${EXTRACTED}/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh"
+[[ -x "${PACKAGED_I18N_SYNC}" && ! -L "${PACKAGED_I18N_SYNC}" ]] \
+  || fail "production i18n runtime seed synchronizer is missing or not executable"
+grep -Fxq \
+  'ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
+  || fail "production service does not synchronize the authoritative backend bundle before start"
+grep -Fq \
+  'systemctl is-active --quiet myscoutee.service' \
+  "${CONTROL_EXTRACTED}/postinst" \
+  || fail "an active deployment upgrade does not detect the running service"
+grep -Fq \
+  '/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  "${CONTROL_EXTRACTED}/postinst" \
+  || fail "an active deployment upgrade does not synchronize the backend bundle"
 assert_admin_job_seed_defaults "${PACKAGED_PRODUCTION_SEED}/notificationRuleConfigs.json"
 assert_admin_job_seed_defaults "${PACKAGED_DEMO_SEED}/notificationRuleConfigs.json"
 [[ ! -e "${PACKAGED_MONGO}/e2e_db" ]] \
@@ -387,14 +406,30 @@ done < <(
 )
 PACKAGED_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose-prod.yml"
 PACKAGED_REPLICASET_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose.replicaset.yml"
+PACKAGED_ENV="${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.env"
 assert_no_development_scripts_mount "${PACKAGED_COMPOSE}"
 assert_no_development_scripts_mount "${PACKAGED_REPLICASET_COMPOSE}"
 if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' "${PACKAGED_COMPOSE}"; then
   fail "production Compose contains a baked administrator/developer identity"
 fi
 grep -Fxq 'OPERATOR_USER=' \
-  "${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.env" \
+  "${PACKAGED_ENV}" \
   || fail "runtime operator bootstrap allow-list is not empty in the package"
+grep -Fxq 'DOMAIN=localhost' "${PACKAGED_ENV}" \
+  || fail "fresh installation does not start on the bootstrap localhost domain"
+grep -Fxq 'LETSENCRYPT_ENABLED=false' "${PACKAGED_ENV}" \
+  || fail "fresh installation does not select the bootstrap certificate"
+grep -Fxq \
+  'WEBSOCKET_ALLOWED_ORIGIN_PATTERNS=https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080' \
+  "${PACKAGED_ENV}" \
+  || fail "fresh installation does not allow its HTTPS loopback origins"
+grep -Fxq 'EMAIL_BASE_URL=https://localhost' "${PACKAGED_ENV}" \
+  || fail "fresh installation embeds a public deployment URL before Operator setup"
+grep -Fq 'DOMAIN: ${DOMAIN:-localhost}' "${PACKAGED_COMPOSE}" \
+  || fail "packaged Nginx does not use the neutral bootstrap domain fallback"
+grep -Fq 'EMAIL_BASE_URL: "${EMAIL_BASE_URL:-https://localhost}"' \
+  "${PACKAGED_COMPOSE}" \
+  || fail "packaged API does not receive the dynamic deployment base URL"
 grep -Fxq 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256=' \
   "${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.secrets.env" \
   || fail "package contains a bootstrap password digest instead of an empty placeholder"
