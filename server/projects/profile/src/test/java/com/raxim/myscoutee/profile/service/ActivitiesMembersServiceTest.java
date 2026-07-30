@@ -2242,6 +2242,56 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void waitlistSweepUsesMembershipIdWhenLegacyRowsHaveEqualDatesAndNoSyncKey() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(3);
+        ActivityMember accepted = member(
+                "accepted",
+                "event-1",
+                "accepted-user",
+                "Member",
+                "accepted");
+        ActivityMember waitingA = waitlistMember("legacy-a", "wait-a");
+        ActivityMember waitingB = waitlistMember("legacy-b", "wait-b");
+        ActivityMember waitingC = waitlistMember("legacy-c", "wait-c");
+        waitingA.setId("membership-a");
+        waitingB.setId("membership-b");
+        waitingC.setId("membership-c");
+        waitingA.setSyncKey(null);
+        waitingB.setSyncKey(null);
+        waitingC.setSyncKey(null);
+        List<ActivityMember> stored = List.of(
+                accepted,
+                waitingC,
+                waitingB,
+                waitingA);
+
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist"))
+                .thenReturn(List.of(waitingC, waitingB, waitingA));
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist-invite"))
+                .thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(stored);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        int promoted = service.sweepEventWaitlists();
+
+        assertThat(promoted).isEqualTo(2);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue())
+                .extracting(ActivityMember::getUserId)
+                .containsExactly("wait-a", "wait-b");
+    }
+
+    @Test
     void waitlistSweepDemotesOnlyNewestExcessWaitlistInvitation() {
         ActivityEvent event = event("event-1", "host", "host");
         event.setCapacityTotal(3);
@@ -2289,6 +2339,57 @@ class ActivitiesMembersServiceTest {
         });
         verify(eventInviteNotificationService, never()).notifyInvitees(
                 any(ActivityEvent.class), anyList(), anyString());
+    }
+
+    @Test
+    void waitlistDemotionUsesMembershipIdWhenLegacyRowsHaveEqualDatesAndNoSyncKey() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(2);
+        ActivityMember accepted = member(
+                "accepted",
+                "event-1",
+                "accepted-user",
+                "Member",
+                "accepted");
+        ActivityMember invitationA = waitlistMember("legacy-a", "wait-a");
+        ActivityMember invitationC = waitlistMember("legacy-c", "wait-c");
+        for (ActivityMember invitation : List.of(invitationA, invitationC)) {
+            invitation.setPendingSource("admin");
+            invitation.setRequestKind("waitlist-invite");
+            invitation.setSyncKey(null);
+        }
+        invitationA.setId("membership-a");
+        invitationC.setId("membership-c");
+        List<ActivityMember> stored = List.of(
+                accepted,
+                invitationA,
+                invitationC);
+
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist"))
+                .thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(
+                "event", "pending", "waitlist-invite"))
+                .thenReturn(List.of(invitationA, invitationC));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(stored);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        int changed = service.sweepEventWaitlists();
+
+        assertThat(changed).isEqualTo(1);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue()).singleElement().satisfies(member -> {
+            assertThat(member.getUserId()).isEqualTo("wait-c");
+            assertThat(member.getPendingSource()).isEqualTo("member");
+            assertThat(member.getRequestKind()).isEqualTo("waitlist");
+        });
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {

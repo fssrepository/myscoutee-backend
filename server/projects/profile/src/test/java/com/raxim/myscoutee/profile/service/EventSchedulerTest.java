@@ -8,8 +8,10 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -124,6 +126,39 @@ class EventSchedulerTest {
 
         verify(eventCheckoutBasketService, never())
                 .purgeExpiredDraftBasketsScheduled(any(Instant.class));
+    }
+
+    @Test
+    void scheduledRandomGroupsRecordsAffectedUsersInsteadOfGeneratedRooms() {
+        EventScheduler scheduler = spy(createScheduler());
+        when(notificationRuleRegistryService.hasEnabledScheduledEventRule()).thenReturn(true);
+        when(notificationRuleRegistryService.shouldRunScheduledRule(anyString(), any(Instant.class)))
+                .thenReturn(false);
+        when(notificationRuleRegistryService.shouldRunScheduledRule(
+                eq(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS),
+                any(Instant.class)))
+                .thenReturn(true);
+        when(notificationRuleRegistryService.beginScheduledRun(
+                eq(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS),
+                anyString(),
+                eq("scheduler"),
+                any(Instant.class)))
+                .thenReturn(new NotificationRuleConfig());
+        doReturn(List.of(
+                new GeneratedEventPlan("room-1", List.of("u1", "u2", "u3")),
+                new GeneratedEventPlan("room-2", List.of("u4", "u5"))))
+                .when(scheduler)
+                .generateRandomPlans();
+
+        scheduler.runScheduledWrappers();
+
+        verify(notificationRuleRegistryService).recordRun(
+                eq(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS),
+                eq(5),
+                eq("completed"),
+                anyString(),
+                eq("scheduler"),
+                any(Instant.class));
     }
 
     @Test

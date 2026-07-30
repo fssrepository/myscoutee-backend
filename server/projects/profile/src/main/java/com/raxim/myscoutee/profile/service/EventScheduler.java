@@ -280,7 +280,7 @@ public class EventScheduler {
             List<GeneratedEventPlan> plans = generateRandomPlans();
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                    plans.size(),
+                    affectedUsers(plans),
                     "completed",
                     "Generated random event group plans.",
                     MARKER_UPDATED_BY,
@@ -299,6 +299,20 @@ public class EventScheduler {
                     startedAt);
             LOGGER.warn("Scheduled random grouping failed.", exception);
         }
+    }
+
+    private static int affectedUsers(List<GeneratedEventPlan> plans) {
+        Set<String> userIds = new LinkedHashSet<>();
+        for (GeneratedEventPlan plan : plans == null ? List.<GeneratedEventPlan>of() : plans) {
+            if (plan == null || plan.memberUserIds() == null) {
+                continue;
+            }
+            plan.memberUserIds().stream()
+                    .filter(StringUtils::hasText)
+                    .map(String::trim)
+                    .forEach(userIds::add);
+        }
+        return userIds.size();
     }
 
     private void runTournamentReview(Instant now, boolean ruleConfigured) {

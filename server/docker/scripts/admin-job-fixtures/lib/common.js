@@ -152,7 +152,10 @@
     }
     const now = nowIso();
     const result = collection("notificationRuleConfigs").updateOne(
-      { ruleKey },
+      {
+        ruleKey,
+        "runState.currentStatus": { $ne: "running" }
+      },
       {
         $set: {
           enabled: true,
@@ -172,7 +175,10 @@
       }
     );
     if (result.matchedCount !== 1) {
-      fail(`could not make rule '${ruleKey}' due.`);
+      fail(
+        `rule '${ruleKey}' started running before it could be made due; `
+          + "wait for it to finish and retry."
+      );
     }
   }
 
@@ -184,7 +190,10 @@
     }
     const now = nowIso();
     const result = collection("notificationRuleConfigs").updateOne(
-      { ruleKey },
+      {
+        ruleKey,
+        "runState.currentStatus": { $ne: "running" }
+      },
       {
         $set: {
           "runState.pendingCount": normalizedCount,
@@ -196,7 +205,10 @@
       }
     );
     if (result.matchedCount !== 1) {
-      fail(`could not persist fixture pending count for '${ruleKey}'.`);
+      fail(
+        `rule '${ruleKey}' started running before its fixture pending count `
+          + "could be stored; wait for it to finish and reset the fixture."
+      );
     }
   }
 

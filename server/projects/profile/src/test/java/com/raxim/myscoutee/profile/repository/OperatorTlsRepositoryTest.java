@@ -7,6 +7,7 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
@@ -21,6 +22,18 @@ import tools.jackson.databind.ObjectMapper;
 class OperatorTlsRepositoryTest {
     @TempDir
     Path temporaryDirectory;
+
+    @Test
+    void springUsesTheRuntimeConstructorWhenTestDependenciesAlsoExist() {
+        ObjectMapper objectMapper = new JsonConfig().objectMapper();
+
+        new ApplicationContextRunner()
+                .withBean(OperatorTlsProperties.class, OperatorTlsProperties::new)
+                .withBean(ObjectMapper.class, () -> objectMapper)
+                .withBean(OperatorTlsRepository.class)
+                .run(context -> assertThat(context)
+                        .hasSingleBean(OperatorTlsRepository.class));
+    }
 
     @Test
     void handsWriteOnlyCertificateMaterialToTheFixedWorkerInbox()

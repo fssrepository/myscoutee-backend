@@ -2889,7 +2889,8 @@ public class ActivitiesMembersService {
                 .sorted(Comparator
                         .comparing((ActivityMember member) -> toSortableDate(member.getActionAtIso()))
                         .thenComparing(member -> toSortableDate(member.getCreatedDate()))
-                        .thenComparing(member -> safeText(member.getSyncKey())))
+                        .thenComparing(member -> safeText(member.getSyncKey()))
+                        .thenComparing(member -> safeText(member.getId())))
                 .toList();
         if (waitingMembers.isEmpty()) {
             return 0;
@@ -2952,6 +2953,7 @@ public class ActivitiesMembersService {
                                 .comparing((ActivityMember member) -> toSortableDate(member.getActionAtIso()))
                                 .thenComparing(member -> toSortableDate(member.getCreatedDate()))
                                 .thenComparing(member -> safeText(member.getSyncKey()))
+                                .thenComparing(member -> safeText(member.getId()))
                                 .reversed())
                         .limit(Math.max(0, maximumDemotions))
                         .toList();

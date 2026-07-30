@@ -29,8 +29,9 @@ event-random-groups
   twenty-rooms    60 generated users, 20 known-affinity rooms of exactly 3
   one-leftover    61 generated users, exact size 3, verifies which user is excluded
   partial-room    62 generated users, room size 2..3, one valid partial room
+  flexible-redistribution  11 generated users, room size 3..5, exact 5/3/3 redistribution
   disconnected-forest  6-user tree, 3-user tree, and 2 isolated overflow users
-  under-min-connected-component  two valid trees plus one connected pair below min
+  under-min-connected-component  weakly joined 6-user tree plus one connected pair below min
   below-minimum-total  only 2 connected users for a room minimum of 3
   quality-200     200 generated users, 40 known-affinity rooms of exactly 5
   quality-1000    1000 generated users, 200 known-affinity rooms of exactly 5
@@ -40,16 +41,19 @@ event-auto-inviter
   weighted        exact weighted ranking, pending exclusion, and repeated-run no-op
   weighted-tie    equal-weight candidates with a deterministic user-ID tie-break
   waitlist-capacity  1 accepted + 1 reserved invite; only the 2 oldest of 4 waitlisted users advance
+  waitlist-timestamp-tie  equal legacy timestamps/no sync keys; membership ID breaks the tie
   pending-join-does-not-reserve  member-origin join stays locked but does not consume an invite slot
 event-tournament-review
   ended           active tournament stage whose end time is already past
   future          active first stage waiting for start review
   advancement     6 synthetic users, exact Score winners advance into a 2-person final
   advancement-score-tie  tied Score leaders use the deterministic name/user-ID tie-break
+  advancement-top-two-cutoff-tie  summed score rows and deterministic rank-2 cutoff ties
   no-advancers-clears-stale  no accepted qualifier may advance; stale final member is removed
 event-counter-expiry
   event           one expired active event source
   ticket-only     one due ticket record that is not an active event
+  start-fallback-future-control  missing end time uses start; future control remains active
 event-checkout-basket-purge
   mixed           one expired and one future checkout draft
   expired         two expired checkout drafts

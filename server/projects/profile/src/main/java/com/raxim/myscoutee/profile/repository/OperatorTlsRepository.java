@@ -17,6 +17,7 @@ import java.util.HexFormat;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
@@ -35,6 +36,7 @@ public class OperatorTlsRepository {
     private final Clock clock;
     private final SecureRandom secureRandom;
 
+    @Autowired
     public OperatorTlsRepository(
             OperatorTlsProperties properties,
             ObjectMapper objectMapper) {

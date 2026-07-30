@@ -133,10 +133,13 @@ Variations:
 - `twenty-rooms`: sixty generated users arranged into twenty known-affinity cohorts of three.
 - `one-leftover`: sixty-one generated users with exact room size three; one known under-minimum user tests the exclusion/remainder policy.
 - `partial-room`: sixty-two generated users with room minimum two and maximum three; the final known pair is a valid partial room.
+- `flexible-redistribution`: eleven generated users with room minimum three and
+  maximum five; three affinity cohorts of 5, 3, and 3 prove that the one-user
+  max-capacity remainder is redistributed instead of excluded.
 - `disconnected-forest`: one six-user tree with a deliberately weak middle bridge, one separate three-user tree, and two fully isolated overflow users; the weak bridge must become the room boundary and only the isolates may remain unassigned.
-- `under-min-connected-component`: two connected triples plus a separate connected
-  pair; the two-person component is still below the configured minimum and must be
-  the exact excluded set.
+- `under-min-connected-component`: one weakly joined six-user tree plus a separate
+  connected pair; the tree must split into two valid triples, while the two-person
+  component is the exact excluded set below the configured minimum.
 - `below-minimum-total`: the whole graph contains only two connected users while
   the room minimum is three; no room membership, marker, outbox, or bell may be
   created.
@@ -165,7 +168,7 @@ The `status` output includes the derived room IDs, exact room owner/member mappi
 
 The generated `twenty-rooms`, remainder, and `quality-*` variations also have an objective grouping-quality oracle. Members of one expected cohort have strong `0.95` edges; consecutive cohorts are connected only by a weak `0.05` ring edge. `validation.quality` reports mixed rooms, split cohorts, misplaced users, actual versus optimal in-room affinity weight, and `affinityQualityRatio`. It also distinguishes the expected under-minimum user from any wrongly excluded user through `correctlyUnassignedUnderMinimumUserIds`, `wronglyUnassignedUserIds`, and `unassignedSelectionValid`.
 
-`validation.capacityPolicy` reports empty, below-minimum, partial, and above-maximum room indexes plus the observed remainder policy. For `partial-room`, a valid result assigns everyone and keeps one room of two. For `one-leftover`, inspect this together with `unassignedSelectionValid` to see whether the exact low-value remainder was excluded instead of a valid cohort member. For `disconnected-forest`, `assignmentValid`, `cohortIntegrityValid`, `unassignedSelectionValid`, and an affinity quality ratio of `1` together prove that the six-user tree was cut only at its weak bridge, the three-user tree stayed intact, and only the two isolates were excluded.
+`validation.capacityPolicy` reports empty, below-minimum, partial, and above-maximum room indexes plus the observed remainder policy. For `partial-room`, a valid result assigns everyone and keeps one room of two. For `flexible-redistribution`, it must report three rooms sized 5, 3, and 3, no missing user, and an affinity quality ratio of `1`. For `one-leftover`, inspect this together with `unassignedSelectionValid` to see whether the exact low-value remainder was excluded instead of a valid cohort member. For `disconnected-forest`, `assignmentValid`, `cohortIntegrityValid`, `unassignedSelectionValid`, and an affinity quality ratio of `1` together prove that the six-user tree was cut only at its weak bridge, the three-user tree stayed intact, and only the two isolates were excluded.
 
 For `under-min-connected-component`, the same oracle proves that connectivity
 alone cannot override the room minimum. For `below-minimum-total`,
@@ -188,6 +191,10 @@ Variations:
   first two IDs in the production comparator order must be invited, while the
   existing reserved `0.99` invite remains untouched.
 - `waitlist-capacity`: capacity four with one accepted creator, one already-reserved invitation, and four waitlisted users inserted newest-first. Only the two oldest waitlisted users fit.
+- `waitlist-timestamp-tie`: the same capacity shape, but every waitlist timestamp
+  is equal, legacy `syncKey` values are absent, record IDs are deliberately not
+  correlated with user IDs, and insertion order is descending. The record ID is
+  the deterministic final comparator.
 - `pending-join-does-not-reserve`: capacity two with one accepted creator, one
   member-origin pending join request, and two affinity candidates. The join
   requester stays locked out of candidacy but does not consume the one available
@@ -203,6 +210,9 @@ Expected:
 - `weighted-tie`: the exact two lexicographically first candidate IDs are invited;
   marker, outbox, and bell recipients must match those IDs exactly.
 - `waitlist-capacity`: exactly the two oldest rows change from `requestKind:"waitlist"`/`pendingSource:"member"` to `requestKind:"waitlist-invite"`/`pendingSource:"admin"`; the two newer rows stay waitlisted, the existing invite remains unchanged, no priority marker appears, and outbox/bell recipients are exactly the two promoted IDs.
+- `waitlist-timestamp-tie`: the users belonging to the two lexicographically
+  smallest membership record IDs are promoted; the other two remain waitlisted,
+  regardless of reverse insertion order.
 - `pending-join-does-not-reserve`: the member-origin `join` row remains unchanged
   byte-for-byte, the strongest eligible candidate is the only new `invite`, and
   marker/outbox/bell recipients contain exactly that candidate.
@@ -210,13 +220,15 @@ Expected:
 The `waitlist-capacity` event intentionally has `autoInviter:false`. The waitlist sweep discovers it from its pending membership rows independently; disabling graph-based priority invitations keeps this variation's two changed rows and notifications exact.
 
 Pending invitations reduce open capacity; member-origin join requests do not.
-After the first successful `weighted`, `weighted-tie`, `waitlist-capacity`, or
+After the first successful `weighted`, `weighted-tie`, `waitlist-capacity`,
+`waitlist-timestamp-tie`, or
 `pending-join-does-not-reserve` pass, run `status` once to capture its
 fixture fingerprint, then `trigger event-auto-inviter`, wait for the existing
 scheduler, and run `status` again. For `weighted` and `weighted-tie`,
 `validation.repeatedPassChangedZeroRecords` and
 `validation.membershipMarkerAndNotificationSetUnchanged` must be true. For
-`waitlist-capacity`, `validation.repeatedPassChangedZeroRecords` and
+`waitlist-capacity` and `waitlist-timestamp-tie`,
+`validation.repeatedPassChangedZeroRecords` and
 `validation.membershipAndNotificationSetUnchanged` must be true. The pending-join
 variation uses `validation.pendingJoinDocumentUnchanged`,
 `validation.pendingJoinDidNotReserveOnlyInviteSlot`, and
@@ -232,6 +244,9 @@ Variations:
 - `advancement-score-tie`: the top two scores in each qualifier group are equal;
   the production comparator must choose the expected winner by member name and
   then user ID.
+- `advancement-top-two-cutoff-tie`: two users advance from each group; every
+  member has two score rows, and ranks two and three have equal aggregate scores
+  and equal display names so the final user-ID comparator decides the cutoff.
 - `no-advancers-clears-stale`: qualifier score rows exist, but every qualifier
   membership is disqualified. No scored user may advance and a stale accepted
   final member must be deleted.
@@ -258,12 +273,16 @@ Expected:
 - `advancement-score-tie`: the exact deterministic tie winners (`user-1` and
   `user-4`) enter the final, the preloaded loser is deleted, and marker/member
   state remains unchanged on the repeated pass.
+- `advancement-top-two-cutoff-tie`: all twelve score rows are summed by member;
+  users `1`, `2`, `4`, and `5` enter the four-person final, while users `3` and
+  `6` lose the equal-score/equal-name cutoff by user ID.
 - `no-advancers-clears-stale`: the accepted final set becomes empty, the stale
   final row becomes `deleted`, and the score marker contains an empty user list.
   Its first `lastRunCount` is `2`: one final-stage start-review transition plus
   one final-group membership synchronization.
 
-For `advancement`, `advancement-score-tie`, or
+For `advancement`, `advancement-score-tie`,
+`advancement-top-two-cutoff-tie`, or
 `no-advancers-clears-stale`, run `status` after the first scheduler pass. It
 captures the successful membership/marker fingerprint inside the fixture
 snapshot. Then run `trigger event-tournament-review`, wait for the existing
@@ -279,12 +298,18 @@ Variations:
 
 - `event`: one active event whose end is in the past.
 - `ticket-only`: one due ticket record that is not an active event.
+- `start-fallback-future-control`: one active event has no `endAtIso` and a past
+  `startAtIso`; a second active control has `endAtIso:null` and a future start.
 
 Expected:
 
 - `event`: `expired:true`, `updatedUser:"event-counter-expiry"`, the isolated owner's event counters are recomputed, and the rule reports one source.
 - `ticket-only`: the document becomes expired but the exposed source count is zero. Ticket rows are marked separately from the distinct active-event source count.
-- repeating either job produces no additional due row.
+- `start-fallback-future-control`: only the past start-only event expires, the
+  future control remains byte-for-byte stable, the rule reports one source, and
+  the owner's top-level and nested event counters expose only the future hosted
+  event.
+- Repeating any variation produces no additional due row.
 
 Any pre-existing due event/ticket rows are snapshotted and temporarily marked expired so the pass remains fixture-only; reset restores them exactly.
 

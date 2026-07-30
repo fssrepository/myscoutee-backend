@@ -47,20 +47,35 @@
     };
   }
 
-  function waitlistCapacityFixture() {
+  function waitlistCapacityFixture(equalTimestamps = false) {
     const creatorUserId = F.fixtureId(job, "waitlist-creator");
     const reservedUserId = F.fixtureId(job, "waitlist-reserved");
     const waitingUserIds = Array.from(
       { length: 4 },
       (_, index) => F.fixtureId(job, `waitlist-candidate-${index + 1}`)
     );
+    const waitlistMemberIds = equalTimestamps
+      ? ["c", "a", "d", "b"].map(suffix =>
+          F.fixtureId(job, `waitlist-tie-member-${suffix}`))
+      : waitingUserIds.map((_, index) =>
+          F.fixtureId(job, `waitlist-member-${index + 1}`));
+    const orderedTieIndexes = waitlistMemberIds
+      .map((id, index) => ({ id, index }))
+      .sort((left, right) => left.id.localeCompare(right.id))
+      .map(item => item.index);
     return {
       creatorUserId,
       reservedUserId,
       waitingUserIds,
+      waitlistMemberIds,
+      waitlistTimestampTie: equalTimestamps,
       userIds: [creatorUserId, reservedUserId, ...waitingUserIds],
-      expectedPromotedUserIds: waitingUserIds.slice(0, 2),
-      expectedWaitingUserIds: waitingUserIds.slice(2)
+      expectedPromotedUserIds: equalTimestamps
+        ? orderedTieIndexes.slice(0, 2).map(index => waitingUserIds[index])
+        : waitingUserIds.slice(0, 2),
+      expectedWaitingUserIds: equalTimestamps
+        ? orderedTieIndexes.slice(2).map(index => waitingUserIds[index])
+        : waitingUserIds.slice(2)
     };
   }
 
@@ -130,14 +145,18 @@
       "weighted",
       "weighted-tie",
       "waitlist-capacity",
+      "waitlist-timestamp-tie",
       "pending-join-does-not-reserve"
     ],
     build(variation) {
       const weighted = ["weighted", "weighted-tie"].includes(variation)
         ? weightedFixture(variation === "weighted-tie")
         : null;
-      const waitlistCapacity = variation === "waitlist-capacity"
-        ? waitlistCapacityFixture()
+      const waitlistCapacity = [
+        "waitlist-capacity",
+        "waitlist-timestamp-tie"
+      ].includes(variation)
+        ? waitlistCapacityFixture(variation === "waitlist-timestamp-tie")
         : null;
       const pendingJoinCapacity = variation === "pending-join-does-not-reserve"
         ? pendingJoinCapacityFixture()
@@ -170,6 +189,8 @@
                 ? "Four candidates have exactly equal affinity and only two places; the lexicographically first two user IDs are invited with an exact marker/outbox/bell oracle, and a repeated scheduled pass changes zero records."
                 : variation === "waitlist-capacity"
                   ? "Exactly the two oldest of four waitlisted users are promoted into the two unreserved places; the other two remain waitlisted and a repeated pass changes zero records."
+                  : variation === "waitlist-timestamp-tie"
+                    ? "Four waitlisted users have identical action and creation timestamps; exactly the users belonging to the two lexicographically first membership record IDs are promoted into the two free places, independent of insertion order, and a repeated pass changes zero records."
                   : "A member-origin pending join request stays byte-for-byte stable and locks that user out of candidacy without reserving invite capacity; the strongest eligible affinity candidate receives the only invitation, and a repeated scheduled pass changes zero records.",
         context: {
           eventId,
@@ -280,18 +301,28 @@
         title: "Admin fixture auto inviter",
         status: "A",
         published: true,
-        autoInviter: variation !== "waitlist-capacity",
+        autoInviter: !["waitlist-capacity", "waitlist-timestamp-tie"].includes(variation),
         ownerUserId: context.creatorUserId || context.userIds[0],
         creatorUserId: context.creatorUserId || context.userIds[0],
         capacityMin: 1,
-        capacityMax: ["weighted", "weighted-tie", "waitlist-capacity"].includes(variation)
+        capacityMax: [
+          "weighted",
+          "weighted-tie",
+          "waitlist-capacity",
+          "waitlist-timestamp-tie"
+        ].includes(variation)
           ? 4
           : variation === "open-spots"
             ? 3
             : variation === "pending-join-does-not-reserve"
               ? 2
               : 1,
-        capacityTotal: ["weighted", "weighted-tie", "waitlist-capacity"].includes(variation)
+        capacityTotal: [
+          "weighted",
+          "weighted-tie",
+          "waitlist-capacity",
+          "waitlist-timestamp-tie"
+        ].includes(variation)
           ? 4
           : variation === "open-spots"
             ? 3
@@ -301,7 +332,7 @@
         acceptedMembers: 1,
         pendingMembers: ["weighted", "weighted-tie"].includes(variation)
           ? 1
-          : variation === "waitlist-capacity"
+          : ["waitlist-capacity", "waitlist-timestamp-tie"].includes(variation)
             ? 5
             : variation === "pending-join-does-not-reserve"
               ? 1
@@ -328,7 +359,12 @@
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
       }];
-      if (["weighted", "weighted-tie", "waitlist-capacity"].includes(variation)) {
+      if ([
+        "weighted",
+        "weighted-tie",
+        "waitlist-capacity",
+        "waitlist-timestamp-tie"
+      ].includes(variation)) {
         initialMembers.push({
           _id: context.reservedMemberId,
           syncKey: context.reservedMemberId,
@@ -347,13 +383,17 @@
           updatedUser: F.FIXTURE_ACTOR
         });
       }
-      if (variation === "waitlist-capacity") {
-        const waitlistActionMinutesAgo = [80, 60, 40, 20];
+      if (["waitlist-capacity", "waitlist-timestamp-tie"].includes(variation)) {
+        const waitlistActionMinutesAgo = context.waitlistTimestampTie
+          ? [60, 60, 60, 60]
+          : [80, 60, 40, 20];
         const waitlistMembers = context.waitingUserIds.map((userId, index) => {
           const queuedAtIso = F.pastIso(waitlistActionMinutesAgo[index]);
           return {
-            _id: F.fixtureId(job, `waitlist-member-${index + 1}`),
-            syncKey: F.fixtureId(job, `waitlist-member-${index + 1}`),
+            _id: context.waitlistMemberIds[index],
+            ...(context.waitlistTimestampTie
+              ? {}
+              : { syncKey: context.waitlistMemberIds[index] }),
             ownerType: "event",
             ownerId: eventId,
             userId,
@@ -368,7 +408,10 @@
             updatedUser: F.FIXTURE_ACTOR
           };
         });
-        initialMembers.push(...waitlistMembers.reverse());
+        initialMembers.push(...(context.waitlistTimestampTie
+          ? waitlistMembers.sort((left, right) =>
+              String(right._id).localeCompare(String(left._id)))
+          : waitlistMembers.reverse()));
       }
       if (variation === "pending-join-does-not-reserve") {
         initialMembers.push({
@@ -486,6 +529,22 @@
           && same(outboxRecipientUserIds, expectedPromotedUserIds);
         const exactBellRecipients = same(bellRecipientUserIds, expectedPromotedUserIds);
         const noPriorityPlanMarker = markerDocuments.length === 0;
+        const originalWaitlistRows = members.filter(member =>
+          (context.waitingUserIds || []).includes(member.userId)
+        );
+        const identicalWaitlistTimestamps = !context.waitlistTimestampTie
+          || (
+            new Set(originalWaitlistRows.map(member => member.actionAtIso)).size === 1
+            && new Set(originalWaitlistRows.map(member => member.createdDate)).size === 1
+          );
+        const deterministicMembershipIdTieBreak = !context.waitlistTimestampTie
+          || same(
+            [...originalWaitlistRows]
+              .sort((left, right) => String(left.id).localeCompare(String(right.id)))
+              .slice(0, 2)
+              .map(member => member.userId),
+            expectedPromotedUserIds
+          );
         const rule = F.requireRule(job);
         const baseline = context.waitlistBaseline || null;
         const firstPassRunCountExact = Boolean(baseline)
@@ -501,6 +560,8 @@
           && exactOutboxRecipients
           && exactBellRecipients
           && noPriorityPlanMarker
+          && identicalWaitlistTimestamps
+          && deterministicMembershipIdTieBreak
           && firstPassRunCountExact;
         const currentFingerprint = JSON.stringify({
           members,
@@ -544,6 +605,7 @@
           reservedMember,
           outboxRecipientUserIds,
           bellRecipientUserIds,
+          waitlistTimestampTie: Boolean(context.waitlistTimestampTie),
           validation: {
             exactPromotions,
             exactRemainingWaitlist,
@@ -552,6 +614,8 @@
             exactOutboxRecipients,
             exactBellRecipients,
             noPriorityPlanMarker,
+            identicalWaitlistTimestamps,
+            deterministicMembershipIdTieBreak,
             firstPassChangedExactlyTwoRecords: firstPassRunCountExact,
             firstPassComplete,
             baselineCaptured: Boolean(baseline) || firstPassComplete,

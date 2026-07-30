@@ -8,7 +8,11 @@
   const qualifierStageId = F.fixtureId(job, "qualifier");
   const finalStageId = F.fixtureId(job, "final");
 
-  function advancementContext(scoreTie = false, noAdvancers = false) {
+  function advancementContext(
+    scoreTie = false,
+    noAdvancers = false,
+    topTwoCutoffTie = false
+  ) {
     const userIds = Array.from(
       { length: 6 },
       (_, index) => F.fixtureId(job, `user-${index + 1}`)
@@ -22,14 +26,48 @@
       groupId => `${eventId}:${qualifierStageId}:${groupId}`
     );
     const finalGroupOwnerId = `${eventId}:${finalStageId}:${finalGroupId}`;
-    const memberNames = userIds.map((_, index) => `Tournament Fixture ${index + 1}`);
+    const memberNames = topTwoCutoffTie
+      ? [
+          "Tournament Fixture 1",
+          "Tournament Cutoff A",
+          "Tournament Cutoff A",
+          "Tournament Fixture 4",
+          "Tournament Cutoff B",
+          "Tournament Cutoff B"
+        ]
+      : userIds.map((_, index) => `Tournament Fixture ${index + 1}`);
+    const scoreValues = scoreTie
+      ? [10, 10, 2, 8, 8, 1]
+      : topTwoCutoffTie
+        ? [15, 10, 10, 20, 9, 9]
+        : [2, 10, 3, 4, 9, 1];
+    const scoreParts = topTwoCutoffTie
+      ? [[8, 7], [4, 6], [7, 3], [9, 11], [4, 5], [6, 3]]
+      : scoreValues.map(value => [value]);
+    const scoreRows = scoreParts.flatMap((parts, userIndex) =>
+      parts.map((scoreValue, partIndex) => ({
+        id: F.fixtureId(
+          job,
+          `score-${userIndex + 1}-${partIndex + 1}`
+        ),
+        userId: userIds[userIndex],
+        groupId: qualifierGroupIds[userIndex < 3 ? 0 : 1],
+        scoreValue,
+        order: topTwoCutoffTie
+          ? (11 - (userIndex * 2 + partIndex))
+          : userIndex
+      })))
+      .sort((left, right) => left.order - right.order);
     return {
       advancement: true,
       scoreTie,
       noAdvancers,
+      topTwoCutoffTie,
+      advancePerGroup: topTwoCutoffTie ? 2 : 1,
       userIds,
       memberNames,
-      scoreValues: scoreTie ? [10, 10, 2, 8, 8, 1] : [2, 10, 3, 4, 9, 1],
+      scoreValues,
+      scoreRows,
       qualifierGroupIds,
       finalGroupId,
       qualifierGroupOwnerIds,
@@ -38,12 +76,16 @@
         ? []
         : scoreTie
           ? [userIds[0], userIds[3]]
-          : [userIds[1], userIds[4]],
+          : topTwoCutoffTie
+            ? [userIds[0], userIds[1], userIds[3], userIds[4]]
+            : [userIds[1], userIds[4]],
       expectedLoserUserIds: noAdvancers
         ? userIds
         : scoreTie
           ? [userIds[1], userIds[2], userIds[4], userIds[5]]
-          : [userIds[0], userIds[2], userIds[3], userIds[5]],
+          : topTwoCutoffTie
+            ? [userIds[2], userIds[5]]
+            : [userIds[0], userIds[2], userIds[3], userIds[5]],
       expectedFirstRunCount: 2,
       staleLoserUserId: userIds[2],
       eventMemberIds: userIds.map((_, index) =>
@@ -51,8 +93,7 @@
       qualifierMemberIds: userIds.map((_, index) =>
         F.fixtureId(job, `qualifier-member-${index + 1}`)),
       staleFinalMemberId: F.fixtureId(job, "stale-final-member"),
-      leaderboardEntryIds: userIds.map((_, index) =>
-        F.fixtureId(job, `score-${index + 1}`))
+      leaderboardEntryIds: scoreRows.map(row => row.id)
     };
   }
 
@@ -105,6 +146,7 @@
       "future",
       "advancement",
       "advancement-score-tie",
+      "advancement-top-two-cutoff-tie",
       "no-advancers-clears-stale"
     ],
     build(variation) {
@@ -112,11 +154,13 @@
       const advancement = [
         "advancement",
         "advancement-score-tie",
+        "advancement-top-two-cutoff-tie",
         "no-advancers-clears-stale"
       ].includes(variation)
         ? advancementContext(
             variation === "advancement-score-tie",
-            variation === "no-advancers-clears-stale"
+            variation === "no-advancers-clears-stale",
+            variation === "advancement-top-two-cutoff-tie"
           )
         : null;
       const groupOwnerIds = advancement
@@ -142,6 +186,8 @@
               ? "The scheduled rule ranks two finalized Score groups, advances exactly user-2 and user-5 into the final, removes the pre-seeded loser, and a repeated pass changes zero groups."
               : variation === "advancement-score-tie"
                 ? "Each finalized Score group has a tied top score; the scheduled rule advances the lexicographically first member name from each tie, removes the pre-seeded loser, and a repeated pass changes zero groups."
+                : variation === "advancement-top-two-cutoff-tie"
+                  ? "Each qualifier member has two score rows and two users advance per group. The scheduler must sum the rows, resolve each rank-2/rank-3 cutoff tie by user ID after equal names, advance exactly users 1, 2, 4, and 5, and change zero groups on repeat."
                 : "The finalized qualifier has scores but no accepted group members, so no user may advance; the scheduled rule moves the final to start review, clears the stale final member, persists an empty score marker, reports the two changed stage/group units, and a repeated pass changes zero groups.",
         context: {
           eventId,
@@ -282,7 +328,7 @@
             tournamentGroupCapacityMin: 3,
             tournamentGroupCapacityMax: 3,
             tournamentLeaderboardType: "Score",
-            tournamentAdvancePerGroup: 1,
+            tournamentAdvancePerGroup: context.advancePerGroup,
             capacityMin: 6,
             capacityMax: 6,
             membersAccepted: 6,
@@ -299,12 +345,12 @@
             name: "Fixture final",
             startAt: F.futureIso(60),
             endAt: F.futureIso(120),
-            tournamentGroupCapacityMin: 2,
-            tournamentGroupCapacityMax: 2,
+            tournamentGroupCapacityMin: context.topTwoCutoffTie ? 4 : 2,
+            tournamentGroupCapacityMax: context.topTwoCutoffTie ? 4 : 2,
             tournamentLeaderboardType: "Score",
             tournamentAdvancePerGroup: 1,
-            capacityMin: 2,
-            capacityMax: 2,
+            capacityMin: context.topTwoCutoffTie ? 4 : 2,
+            capacityMax: context.topTwoCutoffTie ? 4 : 2,
             membersAccepted: 0,
             membersPending: 0,
             stageStatus: "A",
@@ -360,15 +406,15 @@
         updatedUser: F.FIXTURE_ACTOR
       });
 
-      F.collection("eventLeaderboardEntries").insertMany(context.userIds.map((userId, index) => ({
-        _id: context.leaderboardEntryIds[index],
-        syncKey: context.leaderboardEntryIds[index],
+      F.collection("eventLeaderboardEntries").insertMany(context.scoreRows.map((row, index) => ({
+        _id: row.id,
+        syncKey: row.id,
         eventId,
         subEventId: qualifierStageId,
-        groupId: context.qualifierGroupIds[index < 3 ? 0 : 1],
+        groupId: row.groupId,
         entryType: "score",
-        memberId: userId,
-        scoreValue: context.scoreValues[index],
+        memberId: row.userId,
+        scoreValue: row.scoreValue,
         note: "deterministic fixture score",
         createdAtIso: new Date(Date.now() + index * 1000).toISOString(),
         createdUser: F.FIXTURE_ACTOR,
@@ -384,6 +430,7 @@
       if ([
         "advancement",
         "advancement-score-tie",
+        "advancement-top-two-cutoff-tie",
         "no-advancers-clears-stale"
       ].includes(variation)) {
         print(
@@ -453,8 +500,10 @@
           (context.memberNames || [])[index] || userId
         ])
       );
-      const calculatedWinners = (context.qualifierGroupIds || []).map(groupId =>
-        Object.entries(totalsByGroupAndUser)
+      const advancePerGroup = Number(context.advancePerGroup || 1);
+      const rankedAcceptedByGroup = (context.qualifierGroupIds || []).map(groupId => ({
+        groupId,
+        rows: Object.entries(totalsByGroupAndUser)
           .filter(([key]) => key.startsWith(`${groupId}:`))
           .filter(([key]) => acceptedQualifierUserIdSet.has(
             key.slice(groupId.length + 1)
@@ -467,8 +516,10 @@
             right.total - left.total
               || memberNamesByUserId[left.userId].localeCompare(memberNamesByUserId[right.userId])
               || left.userId.localeCompare(right.userId)
-          )[0]
-      ).filter(Boolean);
+          )
+      }));
+      const calculatedWinners = rankedAcceptedByGroup
+        .flatMap(group => group.rows.slice(0, advancePerGroup));
       const tiedTopGroups = (context.qualifierGroupIds || []).map(groupId => {
         const rows = Object.entries(totalsByGroupAndUser)
           .filter(([key]) => key.startsWith(`${groupId}:`))
@@ -492,6 +543,51 @@
           deterministicWinnerUserId: rows.length > 0 ? rows[0].userId : null
         };
       });
+      const cutoffTieGroups = rankedAcceptedByGroup.map(group => {
+        const cutoffRow = group.rows[advancePerGroup - 1] || null;
+        const cutoffTotal = cutoffRow && cutoffRow.total;
+        const tiedRows = cutoffRow
+          ? group.rows.filter(row => row.total === cutoffTotal)
+          : [];
+        const firstTieIndex = tiedRows.length > 0
+          ? group.rows.findIndex(row => row.userId === tiedRows[0].userId)
+          : -1;
+        const lastTieIndex = tiedRows.length > 0
+          ? group.rows.findIndex(
+              row => row.userId === tiedRows[tiedRows.length - 1].userId
+            )
+          : -1;
+        return {
+          groupId: group.groupId,
+          cutoffTotal,
+          tiedUserIds: tiedRows.map(row => row.userId),
+          tieCrossesCutoff:
+            firstTieIndex >= 0
+            && firstTieIndex < advancePerGroup
+            && lastTieIndex >= advancePerGroup,
+          selectedUserIds: group.rows
+            .slice(0, advancePerGroup)
+            .map(row => row.userId)
+        };
+      });
+      const scoreRowCountsByUserId = Object.fromEntries(
+        (context.userIds || []).map(userId => [
+          userId,
+          entries.filter(entry => entry.memberId === userId).length
+        ])
+      );
+      const aggregateScoreRowsValid = !context.topTwoCutoffTie
+        || (
+          entries.length === (context.userIds || []).length * 2
+          && Object.values(scoreRowCountsByUserId).every(count => count === 2)
+          && (context.userIds || []).every(
+            (userId, index) => (
+              totalsByGroupAndUser[
+                `${context.qualifierGroupIds[index < 3 ? 0 : 1]}:${userId}`
+              ] === context.scoreValues[index]
+            )
+          )
+        );
       const marker = F.collection("schedulerPlanMarkers").findOne({
         wrapperType: "score",
         actionType: "group-members",
@@ -541,6 +637,17 @@
           && tiedTopGroups.every(group => group.tiedUserIds.length >= 2)
           && fingerprint(tiedTopGroups.map(group => group.deterministicWinnerUserId).sort())
             === fingerprint(expectedWinners));
+      const deterministicCutoffTieBreak = !context.topTwoCutoffTie
+        || (
+          cutoffTieGroups.length === (context.qualifierGroupIds || []).length
+          && cutoffTieGroups.every(group => (
+            group.tieCrossesCutoff
+            && group.tiedUserIds.length === 2
+          ))
+          && fingerprint(
+            cutoffTieGroups.flatMap(group => group.selectedUserIds).sort()
+          ) === fingerprint(expectedWinners)
+        );
       const qualifierEligibilityValid = !context.noAdvancers
         || (
           acceptedQualifierUserIds.length === 0
@@ -551,6 +658,8 @@
       const firstPassComplete = assignmentValid
         && rankingValid
         && deterministicScoreTieBreak
+        && deterministicCutoffTieBreak
+        && aggregateScoreRowsValid
         && qualifierEligibilityValid
         && exactMarkerUserIds
         && emptyScoreMarkerValid
@@ -579,9 +688,13 @@
         quarantinedTournamentEvents: (context.isolatedEventIds || []).length,
         expectedWinnerUserIds: expectedWinners,
         scoreTie: Boolean(context.scoreTie),
+        topTwoCutoffTie: Boolean(context.topTwoCutoffTie),
+        advancePerGroup,
         noAdvancers: Boolean(context.noAdvancers),
         expectedFirstRunCount: context.expectedFirstRunCount,
         tiedTopGroups: context.scoreTie ? tiedTopGroups : [],
+        cutoffTieGroups: context.topTwoCutoffTie ? cutoffTieGroups : [],
+        scoreRowCountsByUserId,
         acceptedQualifierUserIds,
         qualifierRows,
         calculatedWinners,
@@ -600,6 +713,8 @@
         validation: {
           rankingValid,
           deterministicScoreTieBreak,
+          deterministicCutoffTieBreak,
+          aggregateScoreRowsValid,
           qualifierEligibilityValid,
           assignmentValid,
           exactWinnersOnly: assignmentValid && rankingValid,

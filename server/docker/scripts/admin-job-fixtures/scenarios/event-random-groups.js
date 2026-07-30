@@ -191,6 +191,7 @@
       "twenty-rooms",
       "one-leftover",
       "partial-room",
+      "flexible-redistribution",
       "disconnected-forest",
       "under-min-connected-component",
       "below-minimum-total",
@@ -202,6 +203,7 @@
         variation === "twenty-rooms"
         || variation === "one-leftover"
         || variation === "partial-room"
+        || variation === "flexible-redistribution"
         || variation === "disconnected-forest"
         || variation === "under-min-connected-component"
         || variation === "below-minimum-total"
@@ -213,6 +215,8 @@
           ? 200
           : variation === "disconnected-forest"
             ? 11
+            : variation === "flexible-redistribution"
+              ? 11
             : variation === "under-min-connected-component"
               ? 8
               : variation === "below-minimum-total"
@@ -225,12 +229,16 @@
                       ? 60
                       : variation === "five-rooms" ? 15 : 6;
       const roomCapacityMax =
-        variation === "quality-200" || variation === "quality-1000"
+        variation === "quality-200"
+          || variation === "quality-1000"
+          || variation === "flexible-redistribution"
           ? 5
           : 3;
       const roomCapacityMin = variation === "partial-room"
         ? 2
-        : roomCapacityMax;
+        : variation === "flexible-redistribution"
+          ? 3
+          : roomCapacityMax;
       const roomCount = variation === "one-leftover"
         || variation === "disconnected-forest"
         || variation === "under-min-connected-component"
@@ -244,8 +252,10 @@
           ? [...Array(20).fill(3), 1]
           : variation === "disconnected-forest"
             ? [3, 3, 3, 1, 1]
-            : variation === "under-min-connected-component"
+          : variation === "under-min-connected-component"
               ? [3, 3, 2]
+              : variation === "flexible-redistribution"
+                ? [5, 3, 3]
               : variation === "below-minimum-total"
                 ? [2]
                 : variation === "partial-room"
@@ -269,7 +279,9 @@
               : [];
       const expectedPartialRoomUserIds = variation === "partial-room"
         ? userIds.slice(-2)
-        : [];
+        : variation === "flexible-redistribution"
+          ? userIds.slice(5)
+          : [];
       const groupIds = roomIds(roomCount);
       const groupOwnerIds =
         groupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
@@ -307,12 +319,14 @@
             : variation === "disconnected-forest"
               ? "A 6-user tree is cut at its weak bridge into two correct rooms, the separate 3-user tree stays intact, and only the two isolated overflow users remain unassigned."
               : variation === "under-min-connected-component"
-                ? "Two connected 3-user components become valid rooms, while the separate connected 2-user component is the exact set left unassigned below the configured minimum."
+                ? "A weakly joined 6-user tree is cut into two valid 3-user rooms, while the separate connected 2-user component is the exact set left unassigned below the configured minimum."
                 : variation === "below-minimum-total"
                   ? "The complete 2-user graph is below the room minimum of 3, so no room membership or notification is created and both users remain unassigned."
-              : variation === "partial-room"
-                ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
-                : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
+                  : variation === "flexible-redistribution"
+                    ? "With 11 users and room capacity 3..5, all users stay assigned in three valid affinity cohorts of 5, 3, and 3; the one-user max-capacity remainder must be redistributed instead of dropped."
+                    : variation === "partial-room"
+                      ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
+                      : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
         context: {
           eventId,
           subEventId,

@@ -206,6 +206,38 @@ class EventCounterExpiryServiceTest {
         verify(mongoTemplate, atLeastOnce()).find(any(Query.class), eq(ActivityEvent.class));
     }
 
+    @Test
+    void activitiesDifferWhenOnlyTheNestedEventCountersDiffer() {
+        Users.UserActivitiesRecord first = activities(
+                new Users.UserEventCountersRecord(99, 1, 2, 3, 4, 5, 6));
+        Users.UserActivitiesRecord second = activities(
+                new Users.UserEventCountersRecord(21, 1, 2, 3, 4, 5, 6));
+
+        assertThat(service.activitiesEqual(first, second)).isFalse();
+    }
+
+    private Users.UserActivitiesRecord activities(
+            Users.UserEventCountersRecord eventCounters) {
+        return new Users.UserActivitiesRecord(
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                new Users.UserChatCountersRecord(2, 0, 0, 0, 0, 0),
+                eventCounters,
+                new Users.UserAssetCountersRecord(8, 9, 10, 11),
+                new Users.UserEventFeedbackCountersRecord(0, 13, 0, 0),
+                14,
+                15);
+    }
+
     private ActivityEvent event(String sourceId, String ownerUserId, String suffix, String startAtIso, String endAtIso, boolean expired) {
         ActivityEvent event = new ActivityEvent();
         event.setId(sourceId + ":" + ownerUserId + ":" + suffix);
