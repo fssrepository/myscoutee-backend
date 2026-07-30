@@ -1852,6 +1852,9 @@ public class ActivitiesEventsService {
             return removeCheckoutMembershipOnly(request, sourceId);
         }
         boolean organizerLifecycleRequest = isOrganizerLifecycleRequest(request);
+        if (!organizerLifecycleRequest) {
+            return removeCheckoutMembershipOnly(request, sourceId);
+        }
         if (organizerLifecycleRequest && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
             return null;
         }

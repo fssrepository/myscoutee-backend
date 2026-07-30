@@ -1419,7 +1419,12 @@ public class ActivitiesMembersService {
                     && StringUtils.hasText(
                             normalizeRestorableMembershipStatus(
                                     rootMembership.getStatusBeforeSuppression()));
-            if (!suppressedRootRestore && !legacyRootRestore) {
+            boolean legacyInvitationOverlayRestore = isSafeLegacyInvitationTrashOverlay(
+                    rootMembership,
+                    normalizedEventId,
+                    normalizedUserId,
+                    eventDocumentsBySourceId.getOrDefault(normalizedEventId, List.of()));
+            if (!suppressedRootRestore && !legacyRootRestore && !legacyInvitationOverlayRestore) {
                 return false;
             }
 
@@ -1493,7 +1498,8 @@ public class ActivitiesMembersService {
                     eventDocumentsBySourceId,
                     normalizedUserId,
                     normalizedActorUserId,
-                    nowIso);
+                    nowIso,
+                    legacyInvitationOverlayRestore);
             if (restoredMembers.isEmpty() && restoredOverlays.isEmpty()) {
                 return false;
             }
@@ -1743,7 +1749,8 @@ public class ActivitiesMembersService {
             Map<String, List<ActivityEvent>> documentsBySourceId,
             String userId,
             String actorUserId,
-            String nowIso) {
+            String nowIso,
+            boolean allowMissingStatusBeforeSuppression) {
         List<ActivityEvent> overlaysToSave = new ArrayList<>();
         for (List<ActivityEvent> documents :
                 documentsBySourceId == null ? List.<List<ActivityEvent>>of() : documentsBySourceId.values()) {
@@ -1755,7 +1762,8 @@ public class ActivitiesMembersService {
                 if (document == null
                         || !normalizeId(userId).equals(normalizeId(document.getOwnerUserId()))
                         || !ActivityEvent.STATUS_TRASHED.equals(safeText(document.getStatus()))
-                        || !StringUtils.hasText(safeText(document.getStatusBeforeSuppression()))) {
+                        || (!allowMissingStatusBeforeSuppression
+                                && !StringUtils.hasText(safeText(document.getStatusBeforeSuppression())))) {
                     continue;
                 }
                 ActivityEvent overlay = cloneEventDocument(document);
@@ -1785,6 +1793,26 @@ public class ActivitiesMembersService {
                 || !STATUS_DELETED.equals(normalizeStatus(rootMembership.getStatus()))
                 || StringUtils.hasText(normalizeId(rootMembership.getSuppressionRootOwnerId()))
                 || !normalizeId(userId).equals(normalizeId(rootMembership.getUpdatedUser()))
+                || !normalizeId(rootEventId).equals(normalizeId(rootMembership.getOwnerId()))) {
+            return false;
+        }
+        return (rootEventDocuments == null ? List.<ActivityEvent>of() : rootEventDocuments).stream()
+                .filter(Objects::nonNull)
+                .anyMatch(document -> normalizeId(userId).equals(normalizeId(document.getOwnerUserId()))
+                        && ActivityEvent.STATUS_TRASHED.equals(safeText(document.getStatus())));
+    }
+
+    private boolean isSafeLegacyInvitationTrashOverlay(
+            ActivityMember rootMembership,
+            String rootEventId,
+            String userId,
+            List<ActivityEvent> rootEventDocuments) {
+        String membershipStatus = normalizeStatus(rootMembership == null ? null : rootMembership.getStatus());
+        boolean activeInvitation = STATUS_INVITED.equals(membershipStatus)
+                || (STATUS_PENDING.equals(membershipStatus) && isInvitationMembership(rootMembership));
+        if (rootMembership == null
+                || !activeInvitation
+                || !normalizeId(userId).equals(normalizeId(rootMembership.getUserId()))
                 || !normalizeId(rootEventId).equals(normalizeId(rootMembership.getOwnerId()))) {
             return false;
         }

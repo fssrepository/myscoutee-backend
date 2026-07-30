@@ -449,6 +449,47 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void participantTrashWithoutExplicitMembershipFlagStillSuppressesParticipation() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent event = event("event-1", "host", 0d);
+        ActivitiesMembersService.OwnerMembersSnapshot members =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        10,
+                        true);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.suppressEventParticipationTree("event-1", "viewer", "viewer"))
+                .thenReturn(members);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+
+        EventParticipationActionResultDto result = service.trash(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.changed()).isTrue();
+        assertThat(result.membershipStatus()).isEqualTo("trashed");
+        verify(activitiesMembersService).suppressEventParticipationTree("event-1", "viewer", "viewer");
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
     void organizerRestoreStopsBeforeSaveWhenPolicyDenies() {
         Users host = new Users();
         host.setId("host");

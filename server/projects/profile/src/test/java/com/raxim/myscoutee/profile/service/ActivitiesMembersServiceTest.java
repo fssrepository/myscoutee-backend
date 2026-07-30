@@ -1858,6 +1858,48 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void restoreRepairsLegacyInvitationTrashOverlayWithoutChangingMembership() {
+        ActivityMember invitedRoot =
+                member("root-sync", "event-1", "viewer", "Member", "pending");
+        invitedRoot.setPendingSource("admin");
+        invitedRoot.setRequestKind("invite");
+        ActivityEvent canonical = event("event-1", "owner", "owner");
+        ActivityEvent viewerOverlay = event("event-1", "owner", "owner");
+        viewerOverlay.setId("event-1-viewer-overlay");
+        viewerOverlay.setOwnerUserId("viewer");
+        viewerOverlay.setStatus(ActivityEvent.STATUS_TRASHED);
+        viewerOverlay.setStatusBeforeSuppression(null);
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(invitedRoot));
+        when(activityMembersRepository.findParticipationTreeForUser(
+                org.mockito.ArgumentMatchers.eq("viewer"),
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                any(),
+                anyString())).thenReturn(List.of(invitedRoot));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(canonical, viewerOverlay));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        boolean restored = service.restoreEventParticipationTree("event-1", "viewer", "viewer");
+
+        assertThat(restored).isTrue();
+        assertThat(invitedRoot.getStatus()).isEqualTo("pending");
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        ArgumentCaptor<List<ActivityEvent>> savedEvents = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository, atLeastOnce()).saveAll(savedEvents.capture());
+        assertThat(savedEvents.getAllValues()).anySatisfy(batch ->
+                assertThat(batch).anySatisfy(savedOverlay -> {
+                    assertThat(savedOverlay.getId()).isEqualTo(viewerOverlay.getId());
+                    assertThat(savedOverlay.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+                    assertThat(savedOverlay.getStatusBeforeSuppression()).isNull();
+                }));
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("viewer"));
+    }
+
+    @Test
     void restoreDoesNotReviveParticipationWhileCanonicalEventIsTrashed() {
         ActivityMember suppressedRoot = suppressedMember(
                 member("root-sync", "event-1", "viewer", "Member", "accepted"),
