@@ -362,8 +362,6 @@ if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then
   save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis" true
 fi
 
-bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
-
 if ! command -v dpkg-deb >/dev/null 2>&1; then
   echo "dpkg-deb is required to build the Debian package." >&2
   exit 1
@@ -395,6 +393,16 @@ tar \
   | gzip -n > "${CLIENT_TOOLS_PARTIAL}"
 mv -f "${CLIENT_TOOLS_PARTIAL}" "${CLIENT_TOOLS_ARCHIVE}"
 chmod 0644 "${CLIENT_TOOLS_ARCHIVE}"
+
+# Client tools execute on the Operator workstation, not on the deployment
+# host. Keep the Debian payload as one directly transferable archive instead
+# of installing an unusable unpacked copy of the client-side scripts.
+rm -rf -- "${STAGING_DIR}/usr/share/myscoutee/client-tools"
+install -m 0644 \
+  "${CLIENT_TOOLS_ARCHIVE}" \
+  "${STAGING_DIR}/usr/share/myscoutee/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
+
+bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
 
 dpkg-deb --root-owner-group --build \
   "${STAGING_DIR}" \

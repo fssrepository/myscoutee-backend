@@ -235,26 +235,11 @@ for host_helper in \
     "${CONTENTS}" \
     || fail "installed host qualification helper is missing: ${host_helper}"
 done
-for operator_helper in \
-  README.md \
-  VERSION \
-  install.env.example \
-  install.sh \
-  purge.sh \
-  forward-localhost.sh \
-  remote-transport.sh \
-  verify-release.sh \
-  verify-deployment/README.md \
-  verify-deployment/run.mjs \
-  verify-deployment/checks.mjs \
-  verify-deployment/lib/assertions.mjs \
-  verify-deployment/lib/http.mjs; do
-  grep -Fxq "./usr/share/myscoutee/client-tools/${operator_helper}" \
-    "${CONTENTS}" \
-    || fail "Operator client helper is missing: ${operator_helper}"
-done
-if grep -Fxq './usr/share/myscoutee/client-tools/install.env' "${CONTENTS}"; then
-  fail "local Operator target credentials were embedded in the package"
+EMBEDDED_CLIENT_TOOLS_PATH='./usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz'
+grep -Fxq "${EMBEDDED_CLIENT_TOOLS_PATH}" "${CONTENTS}" \
+  || fail "versioned Operator client-tools archive is missing from the package"
+if grep -Eq '^\./usr/share/myscoutee/client-tools(/|$)' "${CONTENTS}"; then
+  fail "the deployment package contains a redundant client-tools directory"
 fi
 grep -Fxq './opt/myscoutee/packaging/IMAGE-MANIFEST.json' "${CONTENTS}" \
   || fail "package image manifest is missing"
@@ -268,8 +253,13 @@ CLIENT_TOOLS_ARCHIVE="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"
   || fail "standalone Operator client-tools archive is missing"
 [[ "$(stat -c '%a' "${CLIENT_TOOLS_ARCHIVE}")" == "644" ]] \
   || fail "standalone Operator client-tools archive is not mode 0644"
+EMBEDDED_CLIENT_TOOLS_ARCHIVE="${EXTRACTED}/${EMBEDDED_CLIENT_TOOLS_PATH#./}"
+[[ "$(stat -c '%a' "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}")" == "644" ]] \
+  || fail "embedded Operator client-tools archive is not mode 0644"
+cmp -s "${CLIENT_TOOLS_ARCHIVE}" "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}" \
+  || fail "embedded and standalone Operator client-tools archives differ"
 CLIENT_TOOLS_CONTENTS="${TEST_ROOT}/client-tools-contents.txt"
-tar -tzf "${CLIENT_TOOLS_ARCHIVE}" > "${CLIENT_TOOLS_CONTENTS}"
+tar -tzf "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}" > "${CLIENT_TOOLS_CONTENTS}"
 for verifier_member in \
   README.md \
   run.mjs \

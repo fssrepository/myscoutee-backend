@@ -47,9 +47,11 @@ The same build also creates
 Operator-facing client wrappers, a secret-free configuration example, and the
 external read-only deployment verifier. Its canonical source is
 `packaging/verify-deployment`; release artifacts expose it at
-`verify-deployment` beside the client wrappers. The identical files are
-discoverable inside the DEB under `/usr/share/myscoutee/client-tools/`;
-development-only checkout and datastore-reset helpers are deliberately
+`verify-deployment` beside the client wrappers. A byte-identical copy of that
+single archive is installed by the DEB as
+`/usr/share/myscoutee/myscoutee-client-tools_<version>.tar.gz`;
+the client-side scripts are not unpacked on the deployment host.
+Development-only checkout and datastore-reset helpers are deliberately
 excluded.
 
 `MYSCOUTEE_VERSION` is always the plain SemVer core (`1.0.0`). Image purpose
@@ -244,7 +246,8 @@ tools/sign-release-artifacts.sh \
   --output-dir packaging/dist
 ```
 
-The GitHub Release assets are the DEB, client-tools archive, and generated
+The GitHub Release assets may expose the DEB, its byte-identical client-tools
+archive, and generated
 `myscoutee-release_<version>.json`; the public key may also be published for
 convenience. Its complete printed SPKI SHA-256 fingerprint must be pinned
 through an independent channel. Neither the public key downloaded beside the

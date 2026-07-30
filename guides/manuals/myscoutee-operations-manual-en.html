@@ -644,9 +644,9 @@ curl --fail --silent --show-error http://app.example.com/nginx-health</code></pr
           <td>Signed metadata and trust inputs used to authenticate both the Debian package and the client-tools archive.</td>
         </tr>
         <tr>
-          <td><code>/usr/share/myscoutee/client-tools/</code></td>
-          <td>Discoverable inside the installed or extracted Debian package</td>
-          <td>An identical reference/recovery copy of the client bundle. The target host does not need to SSH to itself.</td>
+          <td><code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code></td>
+          <td>Target VM storage; transfer to a trusted Operator management workstation</td>
+          <td>A byte-identical, version-matched copy of the client archive. It is not expanded or executed on the deployment host.</td>
         </tr>
         <tr>
           <td><code>/opt/myscoutee/packaging/scripts/</code></td>
@@ -661,6 +661,11 @@ curl --fail --silent --show-error http://app.example.com/nginx-health</code></pr
     <p>The workstation bundle is GNU/Linux-oriented. It requires OpenSSH <code>ssh</code>/<code>scp</code>, APT package-inspection utilities (<code>dpkg</code> and <code>dpkg-deb</code>), OpenSSL, <code>jq</code>, <code>tar</code>, <code>base64</code>, <code>od</code>, <code>sha256sum</code>, GNU <code>find</code>/<code>stat</code>/<code>ps</code>, and the usual core utilities. Password transport additionally requires <code>sshpass</code> or <code>setsid</code>; key transport is preferred. Node.js 20 or later is recommended for the external smoke runner. The remote host must provide the supported Debian/Ubuntu APT environment, root or adequate <code>sudo</code>, and the separately prepared SSH service.</p>
 
     <h4>Authenticate and prepare the Operator client bundle</h4>
+    <p>An authorized Operator with SFTP access can download the exact version-matched archive from an already installed host to the administrative workstation. Use the workstation's approved SSH configuration; do not place a password or private-key content in the command:</p>
+    <pre><code>sftp myscoutee-host
+sftp&gt; get /usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz ./myscoutee-client-tools_1.0.0.tar.gz
+sftp&gt; bye</code></pre>
+    <p>SFTP provides transport, not release authenticity. The archive must be authenticated before extraction, and every client helper—including <code>install.sh</code>, <code>forward-localhost.sh</code>, and <code>verify-deployment</code>—must be extracted and executed only on the trusted workstation, never on the deployment host.</p>
     <p>Authenticate the client archive before extracting or executing anything from it. Use an already trusted copy of <code>verify-release.sh</code>—for example, one retained from a previously approved release, extracted from an independently authenticated package, or distributed through the organization’s controlled verifier channel:</p>
     <pre><code>/approved/trusted/verify-release.sh \
   myscoutee-client-tools_1.0.0.tar.gz \
@@ -829,8 +834,13 @@ local 127.0.0.1:443 → remote 127.0.0.1:443</code></pre>
 
     <aside class="callout success">
       <h3>Regional Registry Partnership</h3>
-      <p>Where registry functions must also remain country-local, a separately governed MyScoutee registry can be supplied and qualified through a regional technical partnership. Country-local deployments select that regional HTTPS endpoint and scope, while deployments elsewhere may use a different global registry. Each application deployment binds to one real registry at a time; the application package’s isolated Explore registry is never used as the real service. The MyScoutee registry is distinct from the private OCI image repository used to distribute container images inside the region.</p>
+      <p>Where registry functions must also remain country-local, a separately governed MyScoutee registry can be supplied and qualified through a regional technical partnership. Country-local deployments select that regional HTTPS endpoint and scope, while deployments elsewhere may use a different global registry. Each application deployment binds to one real registry at a time; the application package’s isolated Explore registry is never used as the real service. The MyScoutee registry is distinct from the private OCI image repository used to distribute container images inside the region. Its server release, technical operating material, and host administration form a restricted regional-partnership workstream separate from ordinary MyScoutee application operations.</p>
       <p><strong>Please contact MyScoutee if you want to deploy this topology.</strong> This is a partnership deployment: the real registry server is not publicly distributed in release 1.0.0, and country-local registry delivery and qualification are arranged for the target environment.</p>
+    </aside>
+
+    <aside class="callout danger">
+      <h3>Restricted Regional Registry Delivery and Access</h3>
+      <p><strong>Confidential — controlled/internal distribution only.</strong> The separate Registry server release and its technical operating material may be provided only to expressly authorized regional technical partner personnel through the partnership’s controlled distribution process. Registry host access is restricted to those personnel under the applicable access-control and audit procedures. This access is not part of ordinary MyScoutee Operator access, and neither Registry delivery nor host administration is public or self-service.</p>
     </aside>
 
     <h3>5.10. Current Provider References</h3>
@@ -1797,7 +1807,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
 
     <h3>Remove the Package While Retaining Data</h3>
     <pre><code>sudo apt remove myscoutee</code></pre>
-    <p>The process stops and removes the Compose containers and disables the application, update, and TLS units. It retains substantial state under <code>/etc/myscoutee</code> and <code>/var/lib/myscoutee</code>, the complete manual TLS pair under the otherwise removed package tree, the demo registry volumes, and MyScoutee image tags for a later reinstallation. Package-owned client tools under <code>/usr/share/myscoutee/client-tools</code> are removed; a separately extracted workstation archive is unaffected.</p>
+    <p>The process stops and removes the Compose containers and disables the application, update, and TLS units. It retains substantial state under <code>/etc/myscoutee</code> and <code>/var/lib/myscoutee</code>, the complete manual TLS pair under the otherwise removed package tree, the demo registry volumes, and MyScoutee image tags for a later reinstallation. The package-owned archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code> is removed; a separately downloaded and extracted workstation copy is unaffected.</p>
 
     <aside class="callout note">
       <h3>Manual TLS Pair Is Preserved Until Purge</h3>
@@ -1949,7 +1959,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
       </thead>
       <tbody>
         <tr><td><code>/opt/myscoutee</code></td><td>Packaged application, Compose files, scripts, and image manifest.</td></tr>
-        <tr><td><code>/usr/share/myscoutee/client-tools</code></td><td>Package-owned reference copy of the version-matched workstation bundle; removed with the package.</td></tr>
+        <tr><td><code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code></td><td>Package-owned version-matched client archive for controlled SFTP retrieval; never extract or execute it on the host.</td></tr>
         <tr><td><code>/etc/myscoutee</code></td><td>Deployment configuration, secrets, and keys.</td></tr>
         <tr><td><code>/var/lib/myscoutee/data</code></td><td>MongoDB, MinIO, and Certbot data.</td></tr>
         <tr><td><code>/var/lib/myscoutee/registry</code></td><td>Real registry state and receipts.</td></tr>
@@ -1991,7 +2001,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
     <pre><code>MYSCOUTEE_VERSION=1.0.0 \
   BUILD_ARTIFACTS=false \
   bash packaging/scripts/package-production.sh</code></pre>
-    <p>Expected outputs are <code>packaging/dist/myscoutee_1.0.0_amd64.deb</code> and <code>packaging/dist/myscoutee-client-tools_1.0.0.tar.gz</code>. The package build saves the five managed MyScoutee images into the Debian archive, creates an image manifest, runs a credential audit, embeds an identical client-tools tree under <code>/usr/share/myscoutee/client-tools</code>, and emits the standalone workstation archive. The source-only convenience entry point <code>tools/build-debian-release.sh</code> invokes the same package builder.</p>
+    <p>Expected outputs are <code>packaging/dist/myscoutee_1.0.0_amd64.deb</code> and <code>packaging/dist/myscoutee-client-tools_1.0.0.tar.gz</code>. The package build saves the five managed MyScoutee images into the Debian archive, creates an image manifest, runs a credential audit, embeds a byte-identical copy of the versioned client archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code>, and emits the standalone workstation archive. It does not install expanded client scripts on the deployment host. The source-only convenience entry point <code>tools/build-debian-release.sh</code> invokes the same package builder.</p>
     <p>Building does not by itself establish a published release. On an isolated release workstation, use the source-only <code>tools/sign-release-artifacts.sh</code> with an approved pre-existing Ed25519 PKCS#8 private key to validate and sign the matching Debian and client artifacts and to produce <code>myscoutee-release_1.0.0.json</code>. The signing tool neither creates nor copies the private key. Publish the Debian package, client archive, signed manifest, and public key; distribute the full SPKI fingerprint through an independent trusted channel. Production use still requires release qualification and approval.</p>
 
     <p>The release lifecycle is therefore: build both artifacts; sign them on the controlled release host; publish the two artifacts, signed manifest, and public key; authenticate the full SPKI fingerprint independently; verify the client archive with an already trusted verifier; extract it; and let its installer reverify the Debian package before SCP and APT.</p>

@@ -1,177 +1,47 @@
-* Swiping (e.g.: Tinder) or traditional dating websites are very exhausting and non-fair. Intead of swipes you can rate/prioritise people 1-10 to decide, who you would like to meet first. You can rate for pairs also to help others.
-* Based on mutual priority each person is being assigned to a group chat, where the participants can decide how they would like to meet with each other. (graph algorithm) They can organise event for themselves or just choose from a promoted/organised one.
-* If you have met someone already, you can invite him/her to an event based on mutual priorities too. (organise or choose from promoted ones) Multi-stage/multi-slot events are also possible. (e.g.: FIFA like competition)
-* Mutual priorities can be changed at any moment, hence the social graph can be improved. (similar to AI reinforced training)
-* Group dating allows to shift business model towards affiliate systems (e.g.: Booking.com) from subscription.
-* The algorithm can be used even on job site. (rate on jobs or ideas etc.)
+# MyScoutee Backend
 
-Official manuals
-----------------
+This repository contains the MyScoutee application server, the integrated
+frontend build, local Docker environments, production packaging, and the
+versioned product documentation.
 
-The released English manuals are versioned PDF files and can be downloaded
-directly from GitHub.
+## Development quick start
 
-| Manual | Document version | Applicable software | Download |
-|---|---:|---:|---|
-| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
-| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
-| User Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
-
-The editable sources and PDF regeneration instructions are in
-[`guides/manuals`](guides/manuals/README.md). The remaining project guidance
-is indexed under [`guides`](guides/README.md).
-
-Contribution:
--------------
-* MVP readiness with some issues - just notify me about your website that my effort is not wasted.
-* Transformed kotlin -> java, mysql/neo4j -> mongodb and ionic -> pwa to speed up the development.
-
-Boot Up:
--------
-* You need to have a firebase project and configure it properly in the repo. (cloud messaging + web app)
-* cd ./server
-* ./docker/scripts/bootstrap_mongodb_seed.sh
-* gradle build -x test
-* docker compose build --no-cache
-* docker compose up
-* frontend changes rebuild automatically through frontend-sync and are served on http://localhost
-
-Dependencies
-------------
-* `export MYSCOUTEE_VERSION=1.0.0`
-* Base nginx image: `docker build -f ./server/docker/images/nginx/base/Dockerfile -t myscoutee-nginx:${MYSCOUTEE_VERSION}-base ./server/docker`
-* Dev nginx image: `docker build -f ./server/docker/images/nginx/dev/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-dev ./server/docker`
-* Production nginx image: `cd frontend && npm run build:prod && cd .. && docker build --build-context frontend-prod=./frontend/prod -f ./server/docker/images/nginx/prod/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-prod ./server/docker`
-* Dev backend image: `docker build -f ./server/docker/images/profilemanagement/dev/Dockerfile -t myscoutee-api:${MYSCOUTEE_VERSION}-dev ./server`
-* Production backend image: `docker build -f ./server/docker/images/profilemanagement/prod/Dockerfile -t myscoutee-api:${MYSCOUTEE_VERSION} ./server`
-
-Frontend Runtime Sync (optional)
---------------------------------
-* `cd server && docker compose up` starts `frontend-sync` automatically and keeps watching continuously while Docker is alive (`frontend/dev` -> `server/docker/conf/nginx/app/myscoutee`)
-* first run after pulling changes: `cd server && docker compose up --build`
-* Dev one-time sync to nginx runtime folder:
-* `./server/docker/scripts/sync_frontend_assets.sh dev`
-* Dev auto-sync (watch mode):
-* `./server/docker/scripts/sync_frontend_assets.sh dev watch`
-
-Production Compose
-------------------
-* Standalone production compose uses the prebuilt `frontend/prod` folder as the nginx image build context.
-* Build the frontend production bundle first:
-* `(cd frontend && npm run build:prod)`
-* Run standalone production compose:
-* Before using operator-driven node initialization, create its dedicated host
-  directories with owner-only permissions:
-* `(cd server && install -d -m 0700 data/registry-keys data/registry)`
-* Before the first source-production start, create the deployment master key.
-  The creation command refuses to overwrite an existing key:
+Prerequisites are Docker Engine, Docker Compose v2, and a compatible local
+Registry source checkout for the Registry service declared by the development
+stack.
 
 ```bash
 cd server
-sudo install -d -o root -g 10001 -m 0750 data/configuration
-sudo sh -c 'set -euC; umask 0137; dd if=/dev/urandom bs=32 count=1 status=none > "$1"; chown root:10001 "$1"; chmod 0640 "$1"' sh "$PWD/data/configuration/deployment-master-key"
-sudo sh -c 'test "$(wc -c < "$1")" -eq 32' sh "$PWD/data/configuration/deployment-master-key"
-```
-
-The production backend runs as UID/GID `10001:10001`. The commands above leave
-the directory owned by `root:10001` with mode `0750` and the key owned by
-`root:10001` with mode `0640`. `docker-compose-prod.yml` mounts
-`OPERATOR_CONFIGURATION_KEY_DIR_HOST` (default `./data/configuration`) at
-`/etc/myscoutee/configuration` read-only.
-
-Back up `deployment-master-key` to protected off-host storage with every
-database backup. A restore or migration must restore the exact same 32 bytes
-and permissions before the backend starts. Never replace or regenerate the key
-after encrypted operator configuration has been stored; losing it makes those
-credentials unrecoverable.
-
-* `(cd server && docker compose -f docker-compose-prod.yml up --build)`
-* Build standalone production images only:
-* `(cd server && docker compose -f docker-compose-prod.yml build)`
-
-Production Packaging
---------------------
-* Build production artifacts/images for packaging:
-* `bash packaging/scripts/build-production.sh`
-* Run the packaged-style production stack:
-* `bash packaging/scripts/start-production.sh`
-
-Full Integration E2E Collections
---------------------------------
-* Postman-like server/API and UI collections live under `./e2e`.
-* Safe contracts, mutation flows, browser checks, and stress scenarios all use
-  the standalone production-style `e2e_db` stack; none requires the dev stack,
-  Gradle `bootRun`, frontend sync, or hot reload.
-* Start it with:
-  `cd server && docker compose -f docker-compose.e2e.yml up --build --wait`
-* Details: `./e2e/README.md`
-
-Local Signed Registry
----------------------
-The canonical development stack includes the real Go registry sandbox. Keep
-the `myscoutee-registry` repository beside this repository, then start the
-normal stack:
-
-```bash
-cd server
+./docker/scripts/bootstrap_mongodb_seed.sh
 docker compose up --build
 ```
 
-The landing Explore popup can select `Operator`, then the seeded
-`Demo Operator`. In every backend-connected development, E2E, or production
-build this is a server-side demo session: Angular calls Java, Java uses Mongo
-`demo_db`, and registry operations use the isolated seeded Go service below. Node
-initialization and registration still happen only when that demo Operator
-performs the corresponding UI actions. Starting Compose seeds the registry
-tour data but does not silently create or enroll the Java demo deployment.
-The frontend-local seed adapter remains available only for an explicit
-local/offline build.
+The frontend is rebuilt and synchronized automatically. Open
+`https://localhost`; the development certificate may need to be trusted
+locally.
 
-The three demo stores are deliberately separate:
+## Production and test entry points
 
-- application demo data: `server/data/mongodb/demo-data-v8-0` (`demo_db`)
-- registry SQLite and registry signing identity:
-  `myscoutee-registry-dev-demo-data-v1` Docker volume
-- demo deployment identity and verified client state:
-  `server/data/registry-demo-keys` and
-  `server/data/registry-demo-state`
+- [Production packaging and operations](packaging/README.md)
+- [Full integration E2E collections](e2e/README.md)
+- [Project documentation index](guides/README.md)
 
-The registry health endpoint is
-`http://127.0.0.1:${LOCAL_REGISTRY_PORT:-8081}/healthz`. The default signed
-scope is `demo:myscoutee`. Selectable HTTP-demo endpoints are
-defined in `server/docker/conf/mongodb/demo_db/operatorRegistryEndpoints.json`;
-Java does not manufacture a candidate endpoint, signed identity, or enrollment
-record. No geography or parent is built in.
+## Downloads
 
-Plain HTTP is enabled only for the exact Compose hostname `registry` in this
-internal demo network. A deployed production package includes the same tiny Go
-binary as an internal-only `myscoutee-registry:<version>-prod` service, with no
-host port and with independent demo SQLite, signing-key, and Java-client
-volumes. This service is used only by Explore. An authenticated real Operator
-selects an independently deployed registry's HTTPS endpoint; real registry
-state is never bundled with or routed through the Explore service.
+### Manuals
 
-The registry announcement publisher is also testable against the running dev
-stack. It is a local command in the registry container, not a public write
-endpoint or a frontend mock:
+| Manual | Document version | Applies to | PDF |
+|---|---:|---:|---|
+| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
+| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
+| User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 
-```bash
-cd server
-docker compose -f docker-compose-dev.yml exec -T registry \
-  /registry publish-announcement --file - \
-  < ../../myscoutee-registry/examples/announcement-general.json
+Editable manual sources and PDF build instructions are in
+[`guides/manuals`](guides/manuals/README.md).
 
-curl --fail --show-error \
-  'http://127.0.0.1:8081/v1/announcements?limit=20'
-```
+### Presentations
 
-The signed item is immediately visible through the registry feed and remains
-in the isolated `myscoutee-registry-dev-demo-data-v1` volume after a registry
-container restart. Once an authenticated development deployment has selected,
-verified, initialized, and registered against that local registry, reopening
-Community loads the same signed feed through Java. An active `UPDATE`
-announcement also drives the update badge; it still requires an explicit
-operator approval before any package is downloaded or installed. Complete
-publisher input, idempotency, update-manifest, cursor, restart, and optional
-dev-volume reset instructions are in the
-[MyScoutee Registry Protocol Developer Manual](../myscoutee-registry/guides/manuals/MyScoutee_Registry_Protocol_Developer_Manual_v1.0.0_EN.pdf).
+| Presentation | Version | PDF | PowerPoint |
+|---|---:|---|---|
+| MyScoutee Network | 1.0.0 | [PDF](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
+| MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
