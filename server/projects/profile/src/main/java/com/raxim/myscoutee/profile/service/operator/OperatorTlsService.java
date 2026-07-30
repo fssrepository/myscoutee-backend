@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,7 @@ public class OperatorTlsService {
     private final OperatorTlsMapper mapper;
     private final Clock clock;
 
+    @Autowired
     public OperatorTlsService(
             OperatorTlsProperties properties,
             OperatorTlsRepository repository,

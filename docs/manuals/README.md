@@ -5,9 +5,9 @@ downloadable PDF releases of the English manuals for MyScoutee 1.0.0.
 
 | Manual | Document ID | Document version | PDF |
 |---|---:|---:|---|
-| Operations Manual | MSC-OM-001 | 1.0.0 | [Download PDF](MyScoutee_Operations_Manual_v1.0.0_EN.pdf?raw=1) |
-| Administrator Manual | MSC-AM-001 | 1.0.0 | [Download PDF](MyScoutee_Administrator_Manual_v1.0.0_EN.pdf?raw=1) |
-| User Manual | MSC-UM-001 | 1.0.0 | [Download PDF](MyScoutee_User_Manual_v1.0.0_EN.pdf?raw=1) |
+| Operations Manual | MSC-OM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
+| Administrator Manual | MSC-AM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
+| User Manual | MSC-UM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 
 ## Regenerating the PDFs
 

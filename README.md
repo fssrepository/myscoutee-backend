@@ -13,9 +13,9 @@ directly from GitHub.
 
 | Manual | Document version | Applicable software | Download |
 |---|---:|---:|---|
-| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](docs/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf?raw=1) |
-| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](docs/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf?raw=1) |
-| User Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](docs/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf?raw=1) |
+| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
+| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
+| User Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 
 The editable sources and PDF regeneration instructions are in
 [`docs/manuals`](docs/manuals/README.md). The remaining project documentation
