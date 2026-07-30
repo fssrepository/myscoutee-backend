@@ -424,7 +424,7 @@ public class EventCounterExpiryService {
                 count(existing == null ? null : existing.notifications()));
     }
 
-    private boolean activitiesEqual(Users.UserActivitiesRecord first, Users.UserActivitiesRecord second) {
+    boolean activitiesEqual(Users.UserActivitiesRecord first, Users.UserActivitiesRecord second) {
         if (first == second) {
             return true;
         }
@@ -434,6 +434,7 @@ public class EventCounterExpiryService {
         return Objects.equals(count(first.game()), count(second.game()))
                 && Objects.equals(count(first.chats()), count(second.chats()))
                 && Objects.equals(first.chat(), second.chat())
+                && Objects.equals(first.event(), second.event())
                 && Objects.equals(count(first.invitations()), count(second.invitations()))
                 && Objects.equals(count(first.events()), count(second.events()))
                 && Objects.equals(count(first.hosting()), count(second.hosting()))

@@ -42,7 +42,7 @@ services:
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       LETSENCRYPT_ENABLED: ${LETSENCRYPT_ENABLED:-false}
-      DOMAIN: ${DOMAIN:-myscoutee.com}
+      DOMAIN: ${DOMAIN:-localhost}
       NGINX_TLS_CERTIFICATE_PATH: ${NGINX_TLS_CERTIFICATE_PATH:-/etc/nginx/keys/nginx.crt}
       NGINX_TLS_CERTIFICATE_KEY_PATH: ${NGINX_TLS_CERTIFICATE_KEY_PATH:-/etc/nginx/keys/nginx-nopass.key}
     #  WAIT_FOR: profilemanagement:8080
@@ -175,10 +175,11 @@ services:
       SPRING_DATA_REDIS_PORT: "6379"
       FIREBASE_ENABLED: "${FIREBASE_ENABLED:-true}"
       FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
-      DEV_USER: ""
+      MEMBER_USER: ""
       OPERATOR_USER: "${OPERATOR_USER:-}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/etc/myscoutee/configuration/deployment-master-key"
-      WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
+      WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080}"
+      EMAIL_BASE_URL: "${EMAIL_BASE_URL:-https://localhost}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
       MEDIA_OBJECT_STORE_REGION: "eu-central-1"

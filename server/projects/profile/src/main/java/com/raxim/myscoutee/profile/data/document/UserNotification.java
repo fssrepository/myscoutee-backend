@@ -19,7 +19,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 def = "{'recipientUserId': 1, 'createdDate': -1, '_id': -1}"),
         @CompoundIndex(
                 name = "user_notifications_source_created",
-                def = "{'sourceType': 1, 'sourceId': 1, 'createdDate': -1}")
+                def = "{'sourceType': 1, 'sourceId': 1, 'createdDate': -1}"),
+        @CompoundIndex(
+                name = "user_notifications_recipient_kind_source",
+                def = "{'recipientUserId': 1, 'kind': 1, 'sourceType': 1, 'sourceId': 1, 'readAtIso': 1}")
 })
 public class UserNotification {
     @Id

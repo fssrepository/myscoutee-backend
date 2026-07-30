@@ -621,10 +621,10 @@ if grep -Fxq '/opt/myscoutee/packaging/scripts/ensure-deployment-identity.sh' \
   "${REPO_ROOT}/packaging/debian/postinst"; then
   fail "postinst initializes a node identity before operator consent"
 fi
-grep -Fq 'install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry' \
+grep -Fq '0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry' \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not create the API-owned deployment-key directory with mode 0700"
-grep -Fq 'install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry' \
+grep -Fq '0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry' \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not create the API-owned registry-state directory with mode 0700"
 grep -Eq '^Depends:.*openssl' "${REPO_ROOT}/packaging/debian/control" \
@@ -670,7 +670,7 @@ grep -q 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256' \
 grep -q 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256' \
   "${REPO_ROOT}/server/projects/profile/src/main/resources/application-dev.yaml" \
   || fail "development application does not bind the local Operator bootstrap digest"
-if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' \
+if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER|MEMBER_USER):' \
     "${REPO_ROOT}/packaging/compose/docker-compose.production.yml"; then
   fail "production Compose embeds a deployment administrator/developer identity"
 fi
@@ -715,23 +715,16 @@ if grep -Fq 'MONGO_IMAGE' "${REPO_ROOT}/packaging/debian/postrm" \
     || grep -Fq 'REDIS_IMAGE' "${REPO_ROOT}/packaging/debian/postrm"; then
   fail "package purge removes shared upstream MongoDB or Redis images"
 fi
-for managed_repository in \
-  myscoutee-api \
-  myscoutee-nginx \
-  myscoutee-minio \
-  myscoutee-registry; do
-  grep -Fq "${managed_repository}" \
-    "${REPO_ROOT}/tools/install/purge.sh" \
-    || fail "remote purge leaves managed repository ${managed_repository} behind"
-done
-grep -Fq 'registry-demo' \
-  "${REPO_ROOT}/tools/install/purge.sh" \
-  || fail "remote purge does not report a remaining Explore registry container"
-grep -Fq 'myscoutee-registry-demo-' \
-  "${REPO_ROOT}/tools/install/purge.sh" \
-  || fail "remote purge does not report remaining Explore registry volumes"
+OPERATOR_PURGE="${REPO_ROOT}/packaging/client-tools/purge.sh"
+grep -Fq 'apt-get purge -y myscoutee' "${OPERATOR_PURGE}" \
+  || fail "Operator purge wrapper does not delegate to Debian package lifecycle"
+if grep -Eq \
+    'myscoutee-(api|nginx|minio|registry)|registry-demo|docker (image|volume)' \
+    "${OPERATOR_PURGE}"; then
+  fail "Operator purge wrapper duplicates package-owned Docker cleanup policy"
+fi
 if grep -Fq 'rm -rf /var/backups/myscoutee' \
-    "${REPO_ROOT}/tools/install/purge.sh"; then
+    "${OPERATOR_PURGE}"; then
   fail "remote purge deletes the external deployment recovery archive"
 fi
 grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \
@@ -775,6 +768,7 @@ for compose_file in \
 done
 
 DEMO_DEV_COMPOSE="${REPO_ROOT}/server/docker-compose-dev.yml"
+DEMO_DEV_PROFILE_SCRIPT="${REPO_ROOT}/server/docker/scripts/start_profilemanagement_dev.sh"
 CANONICAL_DEV_COMPOSE="${REPO_ROOT}/server/docker-compose.yml"
 DEMO_USERS="${REPO_ROOT}/server/docker/conf/mongodb/demo_db/users.json"
 E2E_USERS="${REPO_ROOT}/server/docker/conf/mongodb/e2e_db/users.json"
@@ -789,6 +783,21 @@ if grep -Fq 'REGISTRY_DEMO_MODE' "${DEMO_DEV_COMPOSE}"; then
 fi
 grep -Fq 'myscoutee-registry-dev-demo-data-v1' "${DEMO_DEV_COMPOSE}" \
   || fail "normal dev Compose does not use its explicit demo SQLite/signing-key volume"
+grep -Fq 'GRADLE_USER_HOME: /workspace/.gradle-docker' "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev Compose shares Gradle cache locks with host-side daemons"
+grep -Fq 'start_profilemanagement_dev.sh' "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev Compose does not serialize API startup before the continuous compiler"
+bash -n "${DEMO_DEV_PROFILE_SCRIPT}" \
+  || fail "normal dev profile startup script has invalid shell syntax"
+grep -Fq 'Profilemanagement is ready; starting the continuous compiler' "${DEMO_DEV_PROFILE_SCRIPT}" \
+  || fail "normal dev profile startup script starts both Gradle builds concurrently"
+grep -Fq 'exec bash /scripts/frontend_auto_watch.sh' "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev frontend sync hides watcher failures in a shell restart loop"
+if grep -Fq 'WAIT_FOR_HOSTS: "profilemanagement:8080"' "${DEMO_DEV_COMPOSE}"; then
+  fail "normal dev frontend sync is still coupled to API readiness"
+fi
+grep -Fq "bash -c '>/dev/tcp/127.0.0.1/8080'" "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev API does not expose a direct readiness healthcheck"
 grep -Fq '/workspace/data/registry-demo-keys/' "${DEMO_DEV_COMPOSE}" \
   || fail "local demo deployment keys are not separated from production keys"
 grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
@@ -797,7 +806,15 @@ grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
 for seed_file in "${DEMO_USERS}" "${E2E_USERS}"; do
   jq -e '
     [.[] | select(
-      .userId == "operator-demo-dev"
+      .email == "member@myscoutee.local"
+      and (.operator // false) == false
+      and .hostTier != "Operator"
+    )] | length == 1
+  ' "${seed_file}" >/dev/null \
+    || fail "${seed_file} does not contain exactly one default demo member"
+  jq -e '
+    [.[] | select(
+      .userId == "operator@myscoutee.local"
       and .email == "operator@myscoutee.local"
       and .operator == true
       and .hostTier == "Operator"
@@ -886,7 +903,8 @@ if docker compose version >/dev/null 2>&1; then
     and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-demo-signing-key.pem"
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"
     and .services.profilemanagement.environment.MONGODB_DATABASE == "demo_db"
-    and .services.profilemanagement.environment.OPERATOR_USER == "dev@myscoutee.local"
+    and .services.profilemanagement.environment.MEMBER_USER == "member@myscoutee.local"
+    and .services.profilemanagement.environment.OPERATOR_USER == "operator@myscoutee.local"
     and .services.profilemanagement.environment.REGISTRY_DEMO_PRIVATE_KEY_PATH
       == "/workspace/data/registry-demo-keys/deployment-private-key.pem"
     and .services.profilemanagement.environment.REGISTRY_DEMO_STATE_DIR

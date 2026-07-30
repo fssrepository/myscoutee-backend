@@ -24,25 +24,36 @@ list_jobs() {
 event-random-groups
   balanced        6 seeded demo users, 2 rooms of exactly 3
   anchored        same, with one accepted member locked in each room
+  anchored-full-and-empty  one full anchored room plus one empty room to fill
   five-rooms      15 seeded demo users, 5 rooms of exactly 3
   twenty-rooms    60 generated users, 20 known-affinity rooms of exactly 3
   one-leftover    61 generated users, exact size 3, verifies which user is excluded
   partial-room    62 generated users, room size 2..3, one valid partial room
+  flexible-redistribution  11 generated users, room size 3..5, exact 5/3/3 redistribution
   disconnected-forest  6-user tree, 3-user tree, and 2 isolated overflow users
+  under-min-connected-component  weakly joined 6-user tree plus one connected pair below min
+  below-minimum-total  only 2 connected users for a room minimum of 3
   quality-200     200 generated users, 40 known-affinity rooms of exactly 5
   quality-1000    1000 generated users, 200 known-affinity rooms of exactly 5
 event-auto-inviter
   open-spots      published event with capacity for 2 graph-selected invitations
   full            published event with no open capacity (zero-change control)
   weighted        exact weighted ranking, pending exclusion, and repeated-run no-op
+  weighted-tie    equal-weight candidates with a deterministic user-ID tie-break
   waitlist-capacity  1 accepted + 1 reserved invite; only the 2 oldest of 4 waitlisted users advance
+  waitlist-timestamp-tie  equal legacy timestamps/no sync keys; membership ID breaks the tie
+  pending-join-does-not-reserve  member-origin join stays locked but does not consume an invite slot
 event-tournament-review
   ended           active tournament stage whose end time is already past
   future          active first stage waiting for start review
   advancement     6 synthetic users, exact Score winners advance into a 2-person final
+  advancement-score-tie  tied Score leaders use the deterministic name/user-ID tie-break
+  advancement-top-two-cutoff-tie  summed score rows and deterministic rank-2 cutoff ties
+  no-advancers-clears-stale  no accepted qualifier may advance; stale final member is removed
 event-counter-expiry
   event           one expired active event source
   ticket-only     one due ticket record that is not an active event
+  start-fallback-future-control  missing end time uses start; future control remains active
 event-checkout-basket-purge
   mixed           one expired and one future checkout draft
   expired         two expired checkout drafts
@@ -51,6 +62,8 @@ notification-outbox
   future          pending notification whose retry time is still in the future
 notification-read-path
   group-chat      real app enqueue plus exact unread/read bell, profile, and group-chat API checks
+  group-chat-audience  sender + 3 recipients; exact fanout includes one muted, push-disabled recipient
+  preexisting-unread  reads only the new chat bell while an unrelated unread bell remains
 affinity-recompute
   isolated-user   due USER recompute task for an isolated fixture user
 scheduled-messages
@@ -225,6 +238,11 @@ post_notification_read_message() {
 }
 
 verify_notification_read_api() {
+  local variation="${1:-group-chat}"
+  case "${variation}" in
+    group-chat|group-chat-audience|preexisting-unread) ;;
+    *) fail "unsupported notification-read-path variation '${variation}'." ;;
+  esac
   command -v curl >/dev/null 2>&1 \
     || fail "curl is required to query the already-running local app for notification-read-path."
   command -v jq >/dev/null 2>&1 \
@@ -239,6 +257,16 @@ verify_notification_read_api() {
   local event_id="${fixture_prefix}:event"
   local sub_event_id="${fixture_prefix}:sub-event"
   local group_id="${fixture_prefix}:group"
+  local control_notification_id="${fixture_prefix}:preexisting-unread-control"
+  local control_source_id="${fixture_prefix}:preexisting-unread-source"
+  local expected_all_total=1
+  local expected_unread_before=1
+  local expected_unread_after=0
+  if [ "${variation}" = "preexisting-unread" ]; then
+    expected_all_total=2
+    expected_unread_before=2
+    expected_unread_after=1
+  fi
   local -a headers=()
   local session_header
   session_header="$(notification_read_api_headers)"
@@ -275,6 +303,7 @@ verify_notification_read_api() {
       --arg recipient "${recipient_id}" \
       --arg sender "${sender_id}" \
       --arg chat "${chat_id}" \
+      --argjson expectedAllTotal "${expected_all_total}" \
       '([.records[] | select(
           .recipientUserId == $recipient
           and .senderUserId == $sender
@@ -287,7 +316,7 @@ verify_notification_read_api() {
           and .payload.senderId == $sender
           and (.payload.messageId | type == "string" and length > 0)
         )] | length == 1)
-        and .total == 1
+        and .total == $expectedAllTotal
         and .muted == false' \
       >/dev/null <<<"${all_notifications}"; then
     printf '%s\n' "${all_notifications}" >&2
@@ -305,18 +334,19 @@ verify_notification_read_api() {
     <<<"${all_notifications}")"
   if [ -n "${read_at_iso}" ] && [ "${read_at_iso}" != "null" ]; then
     read_state="read"
-    expected_unread_count=0
+    expected_unread_count="${expected_unread_after}"
     if ! jq -e \
         --arg recipient "${recipient_id}" \
         --arg chat "${chat_id}" \
+        --argjson expectedUnreadCount "${expected_unread_count}" \
         '([.records[] | select(
             .recipientUserId == $recipient
             and .sourceType == "chat"
             and .sourceId == $chat
             and (.readAtIso | type == "string" and length > 0)
           )] | length == 0)
-          and .total == 0
-          and .unreadCount == 0
+          and .total == $expectedUnreadCount
+          and .unreadCount == $expectedUnreadCount
           and .muted == false' \
         >/dev/null <<<"${notifications}"; then
       printf '%s\n' "${notifications}" >&2
@@ -325,24 +355,26 @@ verify_notification_read_api() {
     if ! jq -e \
         --arg recipient "${recipient_id}" \
         --arg chat "${chat_id}" \
+        --argjson expectedUnreadCount "${expected_unread_count}" \
         '([.records[] | select(
             .recipientUserId == $recipient
             and .sourceType == "chat"
             and .sourceId == $chat
             and (.readAtIso | type == "string" and length > 0)
           )] | length == 1)
-          and .unreadCount == 0' \
+          and .unreadCount == $expectedUnreadCount' \
         >/dev/null <<<"${all_notifications}"; then
       printf '%s\n' "${all_notifications}" >&2
       fail "all-notification context did not expose the exact read row and unreadCount:0."
     fi
   else
     read_state="unread"
-    expected_unread_count=1
+    expected_unread_count="${expected_unread_before}"
     if ! jq -e \
         --arg recipient "${recipient_id}" \
         --arg sender "${sender_id}" \
         --arg chat "${chat_id}" \
+        --argjson expectedUnreadCount "${expected_unread_count}" \
         '([.records[] | select(
             .recipientUserId == $recipient
             and .senderUserId == $sender
@@ -356,12 +388,56 @@ verify_notification_read_api() {
             and .payload.senderId == $sender
             and (.payload.messageId | type == "string" and length > 0)
           )] | length == 1)
-          and .total == 1
-          and .unreadCount == 1
+          and .total == $expectedUnreadCount
+          and .unreadCount == $expectedUnreadCount
           and .muted == false' \
         >/dev/null <<<"${notifications}"; then
       printf '%s\n' "${notifications}" >&2
       fail "new-notification poll did not expose exactly one expected unread bell item."
+    fi
+  fi
+
+  if [ "${variation}" = "preexisting-unread" ]; then
+    if ! jq -e \
+        --arg id "${control_notification_id}" \
+        --arg recipient "${recipient_id}" \
+        --arg source "${control_source_id}" \
+        --argjson expectedAllTotal "${expected_all_total}" \
+        '([.records[] | select(
+            .id == $id
+            and .recipientUserId == $recipient
+            and .kind == "fixture-control"
+            and .category == "user"
+            and .sourceType == "fixture-control"
+            and .sourceId == $source
+            and .readAtIso == null
+            and .actionPath == "/game?fixtureControl=preexisting-unread"
+            and .payload.fixture == "notification-read-path"
+            and .payload.control == "preexisting-unread"
+          )] | length == 1)
+          and .total == $expectedAllTotal' \
+        >/dev/null <<<"${all_notifications}"; then
+      printf '%s\n' "${all_notifications}" >&2
+      fail "the unrelated control bell was missing, duplicated, or marked read in the all bucket."
+    fi
+    if ! jq -e \
+        --arg id "${control_notification_id}" \
+        --arg recipient "${recipient_id}" \
+        --arg source "${control_source_id}" \
+        --argjson expectedUnreadCount "${expected_unread_count}" \
+        '([.records[] | select(
+            .id == $id
+            and .recipientUserId == $recipient
+            and .kind == "fixture-control"
+            and .sourceType == "fixture-control"
+            and .sourceId == $source
+            and .readAtIso == null
+          )] | length == 1)
+          and .total == $expectedUnreadCount
+          and .unreadCount == $expectedUnreadCount' \
+        >/dev/null <<<"${notifications}"; then
+      printf '%s\n' "${notifications}" >&2
+      fail "the unrelated control bell was not the stable unread control in the new bucket."
     fi
   fi
 
@@ -400,8 +476,151 @@ verify_notification_read_api() {
     fail "profile read model did not expose the expected notification/chat counters."
   fi
 
+  local audience_results
+  audience_results="$(jq -cn \
+    --arg userId "${recipient_id}" \
+    --arg readState "${read_state}" \
+    --argjson muted false \
+    --argjson unreadCount "${expected_unread_count}" \
+    '[{
+      userId: $userId,
+      readState: $readState,
+      muted: $muted,
+      unreadCount: $unreadCount,
+      exactBell: true,
+      exactChatProjection: true,
+      exactProfileCounters: true
+    }]')"
+  if [ "${variation}" = "group-chat-audience" ]; then
+    local -a audience_recipient_ids=(
+      "${fixture_prefix}:recipient-two"
+      "${fixture_prefix}:recipient-muted"
+    )
+    local -a audience_expected_muted=(false true)
+    local audience_index
+    for ((audience_index = 0; audience_index < ${#audience_recipient_ids[@]}; audience_index += 1)); do
+      local audience_recipient_id="${audience_recipient_ids[${audience_index}]}"
+      local expected_muted="${audience_expected_muted[${audience_index}]}"
+      local audience_notifications
+      local audience_all_notifications
+      local audience_chats
+      local audience_profile
+      if ! audience_notifications="$(curl -sS --fail --max-time 15 \
+          "${headers[@]}" \
+          "${api_root}/notifications?bucket=new&limit=50&userId=${audience_recipient_id}")"; then
+        fail "notification poll failed for audience recipient '${audience_recipient_id}'."
+      fi
+      if ! audience_all_notifications="$(curl -sS --fail --max-time 15 \
+          "${headers[@]}" \
+          "${api_root}/notifications?bucket=all&limit=50&userId=${audience_recipient_id}")"; then
+        fail "all-notification poll failed for audience recipient '${audience_recipient_id}'."
+      fi
+      if ! audience_chats="$(curl -sS --fail --max-time 15 \
+          "${headers[@]}" \
+          "${api_root}/activities/chats?userId=${audience_recipient_id}")"; then
+        fail "chat read-model query failed for audience recipient '${audience_recipient_id}'."
+      fi
+      if ! audience_profile="$(curl -sS --fail --max-time 15 \
+          "${headers[@]}" \
+          "${api_root}/auth/me?userId=${audience_recipient_id}")"; then
+        fail "profile query failed for audience recipient '${audience_recipient_id}'."
+      fi
+      if ! jq -e \
+          --arg recipient "${audience_recipient_id}" \
+          --arg sender "${sender_id}" \
+          --arg chat "${chat_id}" \
+          --argjson expectedMuted "${expected_muted}" \
+          '([.records[] | select(
+              .recipientUserId == $recipient
+              and .senderUserId == $sender
+              and .kind == "chat-message"
+              and .category == "chat"
+              and .sourceType == "chat"
+              and .sourceId == $chat
+              and .readAtIso == null
+              and .actionPath == ("/game?chatId=" + $chat)
+              and .payload.chatId == $chat
+              and .payload.senderId == $sender
+              and (.payload.messageId | type == "string" and length > 0)
+            )] | length == 1)
+            and .total == 1
+            and .unreadCount == 1
+            and .muted == $expectedMuted' \
+          >/dev/null <<<"${audience_all_notifications}"; then
+        printf '%s\n' "${audience_all_notifications}" >&2
+        fail "audience recipient '${audience_recipient_id}' did not expose the exact bell or muted state."
+      fi
+      if ! jq -e \
+          --arg recipient "${audience_recipient_id}" \
+          --arg chat "${chat_id}" \
+          --argjson expectedMuted "${expected_muted}" \
+          '([.records[] | select(
+              .recipientUserId == $recipient
+              and .sourceType == "chat"
+              and .sourceId == $chat
+              and .readAtIso == null
+            )] | length == 1)
+            and .total == 1
+            and .unreadCount == 1
+            and .muted == $expectedMuted' \
+          >/dev/null <<<"${audience_notifications}"; then
+        printf '%s\n' "${audience_notifications}" >&2
+        fail "audience recipient '${audience_recipient_id}' new-bucket projection is not exact."
+      fi
+      if ! jq -e \
+          --arg chat "${chat_id}" \
+          --arg event "${event_id}" \
+          --arg subEvent "${sub_event_id}" \
+          --arg group "${group_id}" \
+          '([.[] | select(
+              .id == $chat
+              and .unread == 1
+              and .channelType == "groupSubEvent"
+              and .eventId == $event
+              and .subEventId == $subEvent
+              and .groupId == $group
+              and .navigationContext.eventId == $event
+              and .navigationContext.subEvent.id == $subEvent
+              and .navigationContext.group.id == $group
+            )] | length == 1)' \
+          >/dev/null <<<"${audience_chats}"; then
+        printf '%s\n' "${audience_chats}" >&2
+        fail "audience recipient '${audience_recipient_id}' chat projection is not exact."
+      fi
+      if ! jq -e \
+          --argjson expectedMuted "${expected_muted}" \
+          '.activities.notifications == 1
+            and .counterOverrides.notifications == 1
+            and .activities.chats == 1
+            and .counterOverrides.chats == 1
+            and .activities.chat.all == 1
+            and .activities.chat.group == 1
+            and .counterOverrides.chat.all == 1
+            and .counterOverrides.chat.group == 1
+            and .notificationPreferences.muted == $expectedMuted' \
+          >/dev/null <<<"${audience_profile}"; then
+        printf '%s\n' "${audience_profile}" >&2
+        fail "audience recipient '${audience_recipient_id}' profile counters or muted flag are not exact."
+      fi
+      audience_results="$(jq -c \
+        --arg userId "${audience_recipient_id}" \
+        --argjson muted "${expected_muted}" \
+        '. + [{
+          userId: $userId,
+          readState: "unread",
+          muted: $muted,
+          unreadCount: 1,
+          exactBell: true,
+          exactChatProjection: true,
+          exactProfileCounters: true
+        }]' \
+        <<<"${audience_results}")"
+    done
+  fi
+
   jq -n \
       --arg apiRoot "${api_root}" \
+      --arg variation "${variation}" \
       --arg recipientUserId "${recipient_id}" \
       --arg chatId "${chat_id}" \
       --arg readState "${read_state}" \
@@ -410,10 +629,12 @@ verify_notification_read_api() {
       --argjson allNotifications "${all_notifications}" \
       --argjson chats "${chats}" \
       --argjson profile "${profile}" \
+      --argjson audienceRecipients "${audience_results}" \
       '{
       notificationReadPathApiStatus: {
         pass: true,
         apiRoot: $apiRoot,
+        variation: $variation,
         recipientUserId: $recipientUserId,
         readState: $readState,
         readAtIso: (if $readAtIso == "" or $readAtIso == "null" then null else $readAtIso end),
@@ -437,6 +658,7 @@ verify_notification_read_api() {
         unreadCount: $allNotifications.unreadCount,
         newBucketTotal: $notifications.total,
         muted: $allNotifications.muted,
+        audienceRecipients: $audienceRecipients,
         profileCounters: {
           notifications: $profile.counterOverrides.notifications,
           chats: $profile.counterOverrides.chats,
@@ -461,6 +683,11 @@ verify_notification_read_api() {
 }
 
 mark_notification_read_api() {
+  local variation="${1:-group-chat}"
+  local expected_unread_after=0
+  if [ "${variation}" = "preexisting-unread" ]; then
+    expected_unread_after=1
+  fi
   command -v curl >/dev/null 2>&1 \
     || fail "curl is required to call the already-running local app for notification-read-path."
   command -v jq >/dev/null 2>&1 \
@@ -516,6 +743,7 @@ mark_notification_read_api() {
       --arg recipient "${recipient_id}" \
       --arg sender "${sender_id}" \
       --arg chat "${chat_id}" \
+      --argjson expectedUnreadAfter "${expected_unread_after}" \
       '.notification.id == $id
         and .notification.recipientUserId == $recipient
         and .notification.senderUserId == $sender
@@ -528,7 +756,7 @@ mark_notification_read_api() {
         and .notification.payload.senderId == $sender
         and (.notification.payload.messageId | type == "string" and length > 0)
         and (.notification.readAtIso | type == "string" and length > 0)
-        and .unreadCount == 0' \
+        and .unreadCount == $expectedUnreadAfter' \
       >/dev/null <<<"${response}"; then
     printf '%s\n' "${response}" >&2
     fail "notification read endpoint returned an unexpected notification or unread count."
@@ -546,16 +774,19 @@ mark_notification_read_api() {
   local response_read_at_iso
   response_read_at_iso="$(jq -r '.notification.readAtIso' <<<"${response}")"
   local verification
-  verification="$(verify_notification_read_api)"
+  verification="$(verify_notification_read_api "${variation}")"
   if ! jq -e \
       --arg id "${notification_id}" \
       --arg readAtIso "${response_read_at_iso}" \
+      --argjson expectedUnreadAfter "${expected_unread_after}" \
       '.notificationReadPathApiStatus.readState == "read"
         and .notificationReadPathApiStatus.notification.id == $id
         and .notificationReadPathApiStatus.readAtIso == $readAtIso
         and .notificationReadPathApiStatus.notification.readAtIso == $readAtIso
-        and .notificationReadPathApiStatus.unreadCount == 0
-        and .notificationReadPathApiStatus.newBucketTotal == 0' \
+        and .notificationReadPathApiStatus.unreadCount == $expectedUnreadAfter
+        and .notificationReadPathApiStatus.newBucketTotal == $expectedUnreadAfter
+        and .notificationReadPathApiStatus.profileCounters.notifications
+          == $expectedUnreadAfter' \
       >/dev/null <<<"${verification}"; then
     printf '%s\n' "${verification}" >&2
     fail "notification read response did not match the subsequently persisted read-model state."
@@ -785,11 +1016,12 @@ case "${command_name}" in
       scenario_status="$(run_scenario "${command_name}" "$2")"
       printf '%s\n' "${scenario_status}"
       if jq -e '.prepared == true' >/dev/null <<<"${scenario_status}"; then
-        verify_notification_read_api
+        verify_notification_read_api "$(jq -r '.variation // "group-chat"' <<<"${scenario_status}")"
       fi
     elif [ "${command_name}" = "trigger" ] && [ "$2" = "notification-read-path" ]; then
+      scenario_status="$(run_scenario status "$2")"
       run_scenario "${command_name}" "$2"
-      mark_notification_read_api
+      mark_notification_read_api "$(jq -r '.variation // "group-chat"' <<<"${scenario_status}")"
     elif [ "${command_name}" = "status" ] && [ "$2" = "bell-rating-feedback" ]; then
       command -v jq >/dev/null 2>&1 \
         || fail "jq is required to inspect bell-rating-feedback fixture status."

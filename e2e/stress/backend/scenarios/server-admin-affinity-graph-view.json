@@ -1,7 +1,7 @@
 {
   "name": "Admin affinity graph view benchmark",
   "mode": "contract",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 4,
   "rampUpMs": 5000,
   "durationMs": 60000,

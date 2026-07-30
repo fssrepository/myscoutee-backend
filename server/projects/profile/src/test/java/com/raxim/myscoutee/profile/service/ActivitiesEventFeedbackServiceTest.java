@@ -128,6 +128,50 @@ class ActivitiesEventFeedbackServiceTest {
     }
 
     @Test
+    void loadDetailPrefersLaterCanonicalEventOverLargerMemberScopedCopy() {
+        Users viewer = new Users();
+        viewer.setUserId("viewer");
+        viewer.setName("Viewer");
+        Users host = new Users();
+        host.setUserId("host");
+        host.setName("Host");
+
+        ActivityEvent canonical = new ActivityEvent();
+        canonical.setSourceId("event-1");
+        canonical.setTitle("Finished Event");
+        canonical.setCreatorUserId("host");
+        canonical.setOwnerUserId("host");
+        canonical.setAcceptedMemberUserIds(List.of("viewer"));
+        canonical.setStartAtIso("2020-01-01T10:00:00Z");
+
+        ActivityEvent memberScoped = new ActivityEvent();
+        memberScoped.setSourceId("event-1");
+        memberScoped.setTitle("Finished Event");
+        memberScoped.setCreatorUserId("host");
+        memberScoped.setOwnerUserId("viewer");
+        memberScoped.setAcceptedMemberUserIds(List.of("viewer", "participant-2", "participant-3"));
+        memberScoped.setStartAtIso("2020-01-01T10:00:00Z");
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(memberScoped, canonical));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
+        when(eventFeedbackStatesRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenReturn(Optional.empty());
+        when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenReturn(List.of());
+
+        EventFeedbackDetailDto detail = service.loadDetail(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto("viewer", "event-1"));
+
+        assertThat(detail.eventId()).isEqualTo("event-1");
+        assertThat(detail.cards()).singleElement().satisfies(card -> {
+            assertThat(card.kind()).isEqualTo("event");
+            assertThat(card.targetUserId()).isEqualTo("host");
+        });
+    }
+
+    @Test
     void loadDetailHydratesLegacyAnswerByKindAndTargetWhenCardIdChanged() {
         Users viewer = new Users();
         viewer.setUserId("viewer");

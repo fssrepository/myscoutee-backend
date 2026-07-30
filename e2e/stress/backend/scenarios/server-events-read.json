@@ -1,7 +1,7 @@
 {
   "name": "Events read benchmark",
   "mode": "contract",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 8,
   "rampUpMs": 8000,
   "durationMs": 90000,

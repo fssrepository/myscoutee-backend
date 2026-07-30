@@ -1,7 +1,7 @@
 {
   "name": "Opt-in server capacity probe",
   "mode": "contract",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 12,
   "rampUpMs": 15000,
   "durationMs": 120000,

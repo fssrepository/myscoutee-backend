@@ -10,7 +10,8 @@ import org.springframework.web.util.HtmlUtils;
 @Service
 public class EmailTemplateRenderer {
     private static final Pattern BRACED_PLACEHOLDER = Pattern.compile("\\{\\{\\s*([a-zA-Z0-9_.-]+)\\s*\\}\\}");
-    private static final Pattern TOKEN_PLACEHOLDER = Pattern.compile("(?<![\\p{Alnum}._%+-])@([a-zA-Z][a-zA-Z0-9_.-]*)");
+    private static final Pattern TOKEN_PLACEHOLDER = Pattern.compile(
+            "(?<![\\p{Alnum}._%+-])@([a-zA-Z][a-zA-Z0-9_-]*(?:\\.[a-zA-Z0-9_-]+)*)");
 
     public String renderSubject(String template, Map<String, String> variables) {
         return render(template, variables, false);

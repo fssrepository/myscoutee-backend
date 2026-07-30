@@ -141,7 +141,7 @@ class FirebaseServiceTest {
     @Test
     void devLookupKeepsLegacyIdentityAndMemberAuthorityForOrdinaryStoredUser() {
         ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setDevUser("dev@myscoutee.local");
+        configProperties.setMemberUser("member@myscoutee.local");
         UsersRepository usersRepository = mock(UsersRepository.class);
         AppSettingsService appSettingsService = mock(AppSettingsService.class);
         Users ordinary = new Users();
@@ -156,7 +156,7 @@ class FirebaseServiceTest {
                 appSettingsService)
                 .loadUserById("ordinary");
 
-        assertThat(principal.getEmail()).isEqualTo("dev@myscoutee.local");
+        assertThat(principal.getEmail()).isEqualTo("member@myscoutee.local");
         assertThat(principal.getAuthorities()).extracting(Object::toString)
                 .containsExactly("U");
     }
@@ -327,7 +327,7 @@ class FirebaseServiceTest {
     @Test
     void storedOperatorFlagAddsOperatorAuthorityWithoutChangingLegacyBaseRole() {
         ConfigProperties configProperties = new ConfigProperties();
-        configProperties.setDevUser("dev@myscoutee.local");
+        configProperties.setMemberUser("member@myscoutee.local");
         UsersRepository usersRepository = mock(UsersRepository.class);
         AppSettingsService appSettingsService = mock(AppSettingsService.class);
         Users operator = new Users();

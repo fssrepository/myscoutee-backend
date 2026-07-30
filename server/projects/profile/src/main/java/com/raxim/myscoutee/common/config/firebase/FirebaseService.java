@@ -39,7 +39,7 @@ public class FirebaseService {
     public UserDetails loadUserById(String profileId) {
         Users user = findUser(profileId);
         String normalizedProfileId = user != null ? normalizeId(user.getId()) : normalizeId(profileId);
-        String legacyDevEmail = normalizeEmail(config.getDevUser());
+        String memberEmail = normalizeEmail(config.getMemberUser());
         String storedEmail = user != null && StringUtils.hasText(user.getEmail())
                 ? normalizeEmail(user.getEmail())
                 : "";
@@ -47,7 +47,7 @@ public class FirebaseService {
                 || (StringUtils.hasText(storedEmail) && config.isOperatorUser(storedEmail));
         String email = explicitOperator && StringUtils.hasText(storedEmail)
                 ? storedEmail
-                : legacyDevEmail;
+                : memberEmail;
         return new FirebasePrincipal(normalizedProfileId, email, resolveAuthorities(email, user), user);
     }
 
@@ -366,15 +366,15 @@ public class FirebaseService {
 
     private String normalizeId(String profileId) {
         if (profileId == null || profileId.isBlank()) {
-            return stableUserId(config.getDevUser());
+            return stableUserId(config.getMemberUser());
         }
         return profileId.trim();
     }
 
     private String normalizeEmail(String username) {
         if (username == null || username.isBlank()) {
-            if (config.getDevUser() != null && !config.getDevUser().isBlank()) {
-                return config.getDevUser().trim();
+            if (config.getMemberUser() != null && !config.getMemberUser().isBlank()) {
+                return config.getMemberUser().trim();
             }
             return "dev@myscoutee.local";
         }

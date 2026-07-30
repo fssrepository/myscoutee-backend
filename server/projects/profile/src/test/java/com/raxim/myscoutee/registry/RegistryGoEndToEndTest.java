@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
@@ -25,6 +26,7 @@ import tools.jackson.databind.ObjectMapper;
  * and {@code REGISTRY_E2E_STATE_DIR} may point at installer-style persistent
  * directories; otherwise disposable test directories are used.
  */
+@Tag("qualification")
 class RegistryGoEndToEndTest {
     @TempDir
     Path temporaryDirectory;

@@ -4,12 +4,13 @@
   const F = AdminJobFixture;
   const job = "event-counter-expiry";
   const eventId = F.fixtureId(job, "event");
+  const controlEventId = F.fixtureId(job, "future-control");
   const userId = F.fixtureId(job, "user");
 
   F.run({
     job,
     ruleKey: job,
-    variations: ["event", "ticket-only"],
+    variations: ["event", "ticket-only", "start-fallback-future-control"],
     build(variation) {
       const now = F.nowIso();
       const isolatedEventIds = F.collection("events")
@@ -44,10 +45,25 @@
         pendingCountUnit: "admin.jobs.table.affected",
         expected: variation === "event"
           ? "The fixture event becomes expired=true and the rule reports one due source."
-          : "The ticket record becomes expired=true; the rule source count remains zero because ticket-only rows are tracked separately.",
-        context: { eventId, userId, isolatedEventIds },
+          : variation === "ticket-only"
+            ? "The ticket record becomes expired=true; the rule source count remains zero because ticket-only rows are tracked separately."
+            : "The active event with no endAtIso expires through its past startAtIso fallback, while the otherwise identical future control remains active and unmodified. Only one due source is reported and the owner's nested event counters retain exactly the future hosted event.",
+        context: {
+          eventId,
+          controlEventId,
+          userId,
+          isolatedEventIds,
+          variation,
+          startFallback: variation === "start-fallback-future-control",
+          expectedFirstRunCount: variation === "ticket-only" ? 0 : 1
+        },
         specs: [
-          { collection: "events", selector: { _id: { $in: [...isolatedEventIds, eventId] } } },
+          {
+            collection: "events",
+            selector: {
+              _id: { $in: [...isolatedEventIds, eventId, controlEventId] }
+            }
+          },
           { collection: "users", selector: { _id: userId } }
         ]
       };
@@ -82,11 +98,15 @@
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
       });
-      F.collection("events").insertOne({
+      const fixtureEvent = {
         _id: eventId,
         sourceId: eventId,
         syncKey: eventId,
-        title: variation === "event" ? "Fixture expired active event" : "Fixture expired ticket-only record",
+        title: variation === "event"
+          ? "Fixture expired active event"
+          : variation === "ticket-only"
+            ? "Fixture expired ticket-only record"
+            : "Fixture start-only expired event",
         status: variation === "event" ? "A" : "B",
         published: false,
         ticketing: variation === "ticket-only",
@@ -94,16 +114,140 @@
         ownerUserId: userId,
         creatorUserId: userId,
         startAtIso: F.pastIso(120),
-        endAtIso: F.pastIso(60),
+        ...(variation === "start-fallback-future-control"
+          ? { status: "A", published: true }
+          : { endAtIso: F.pastIso(60) }),
         createdDate: now,
         createdUser: F.FIXTURE_ACTOR,
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
-      });
+      };
+      F.collection("events").insertOne(fixtureEvent);
+      if (variation === "start-fallback-future-control") {
+        F.collection("events").insertOne({
+          _id: controlEventId,
+          sourceId: controlEventId,
+          syncKey: controlEventId,
+          title: "Fixture future start-only control",
+          status: "A",
+          published: true,
+          ticketing: false,
+          expired: false,
+          ownerUserId: userId,
+          creatorUserId: userId,
+          startAtIso: F.futureIso(120),
+          endAtIso: null,
+          createdDate: now,
+          createdUser: F.FIXTURE_ACTOR,
+          updatedDate: now,
+          updatedUser: F.FIXTURE_ACTOR
+        });
+      }
     },
-    status(context) {
+    status(context, snapshot) {
       const event = F.collection("events").findOne({ _id: context.eventId || eventId });
+      const controlEvent = context.startFallback
+        ? F.collection("events").findOne({
+            _id: context.controlEventId || controlEventId
+          })
+        : null;
       const user = F.collection("users").findOne({ _id: context.userId || userId });
+      const eventCounters = user && user.activities && user.activities.event;
+      const rule = F.requireRule(job);
+      const runState = rule.runState || {};
+      const currentRunAtIso = F.safeText(
+        runState.lastRunAtIso || runState.runFinishedAtIso
+      );
+      const preparedAtIso = F.safeText(snapshot && snapshot.preparedAtIso);
+      const runObservedAfterPrepare =
+        Number.isFinite(Date.parse(currentRunAtIso))
+        && Number.isFinite(Date.parse(preparedAtIso))
+        && Date.parse(currentRunAtIso) >= Date.parse(preparedAtIso);
+      const baseline = context.expiryBaseline || null;
+      const expectedFirstRunCount = Number(context.expectedFirstRunCount || 0);
+      const firstPassRunCountExact = Boolean(baseline)
+        || Boolean(
+          runState.lastRunStatus === "completed"
+          && runState.lastRunCount === expectedFirstRunCount
+        );
+      const dueEventExpired = Boolean(event && event.expired === true);
+      const futureControlUnchanged = !context.startFallback
+        || Boolean(
+          controlEvent
+          && controlEvent.expired === false
+          && controlEvent.status === "A"
+          && controlEvent.endAtIso === null
+          && Date.parse(controlEvent.startAtIso) > Date.now()
+          && controlEvent.updatedUser === F.FIXTURE_ACTOR
+        );
+      const ownerCountersValid = context.startFallback
+        ? Boolean(
+          user
+          && user.activities
+          && user.activities.invitations === 0
+          && user.activities.events === 0
+          && user.activities.hosting === 1
+          && eventCounters
+          && eventCounters.all === 1
+          && eventCounters.active === 0
+          && eventCounters.pending === 0
+          && eventCounters.invitations === 0
+          && eventCounters.hosting === 1
+          && eventCounters.drafts === 0
+          && eventCounters.trash === 0
+        )
+        : context.variation === "ticket-only"
+          ? Boolean(eventCounters && eventCounters.all === 99)
+          : Boolean(
+            user
+            && user.activities
+            && user.activities.invitations === 0
+            && user.activities.events === 0
+            && user.activities.hosting === 0
+            && eventCounters
+            && eventCounters.all === 0
+          );
+      const currentFingerprint = JSON.stringify({
+        event: event && {
+          expired: event.expired,
+          updatedDate: event.updatedDate,
+          updatedUser: event.updatedUser
+        },
+        controlEvent: controlEvent && {
+          expired: controlEvent.expired,
+          startAtIso: controlEvent.startAtIso,
+          endAtIso: controlEvent.endAtIso,
+          updatedDate: controlEvent.updatedDate,
+          updatedUser: controlEvent.updatedUser
+        },
+        activities: user && user.activities
+      });
+      const firstPassComplete = dueEventExpired
+        && futureControlUnchanged
+        && ownerCountersValid
+        && runObservedAfterPrepare
+        && firstPassRunCountExact;
+      if (firstPassComplete && !baseline && snapshot) {
+        F.collection(F.SNAPSHOT_COLLECTION).updateOne(
+          { _id: snapshot._id },
+          {
+            $set: {
+              "context.expiryBaseline": {
+                fingerprint: currentFingerprint,
+                runAtIso: currentRunAtIso,
+                capturedAtIso: F.nowIso()
+              }
+            }
+          }
+        );
+      }
+      const repeatedPassObserved = Boolean(
+        baseline
+        && runState.lastRunStatus === "completed"
+        && runState.lastRunCount === 0
+        && currentRunAtIso
+        && currentRunAtIso !== baseline.runAtIso
+      );
       return {
         quarantinedPreexistingDueRecords: (context.isolatedEventIds || []).length,
         event: event && {
@@ -113,7 +257,30 @@
           expired: event.expired,
           updatedUser: event.updatedUser
         },
-        ownerEventCounters: user && user.activities && user.activities.event
+        futureControl: controlEvent && {
+          id: controlEvent._id,
+          status: controlEvent.status,
+          startAtIso: controlEvent.startAtIso,
+          endAtIso: controlEvent.endAtIso,
+          expired: controlEvent.expired,
+          updatedUser: controlEvent.updatedUser
+        },
+        ownerEventCounters: eventCounters,
+        validation: {
+          dueEventExpired,
+          futureControlUnchanged,
+          ownerCountersValid,
+          expectedFirstRunCount,
+          firstPassRunCountExact,
+          runObservedAfterPrepare,
+          firstPassComplete,
+          baselineCaptured: Boolean(baseline) || firstPassComplete,
+          repeatedPassObserved,
+          repeatedPassChangedZeroSources: repeatedPassObserved,
+          eventControlAndCountersUnchanged:
+            repeatedPassObserved
+            && baseline.fingerprint === currentFingerprint
+        }
       };
     }
   });

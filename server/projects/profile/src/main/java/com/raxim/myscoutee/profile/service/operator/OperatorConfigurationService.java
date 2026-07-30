@@ -698,7 +698,7 @@ public class OperatorConfigurationService {
     private void applyBranding(
             DeploymentConfiguration configuration,
             BrandingUpdateDto request) {
-        String productName = requiredTrimmed(
+        String productName = requiredPublicText(
                 request.productName(),
                 "Product name",
                 PRODUCT_NAME_MAX);
@@ -1155,6 +1155,20 @@ public class OperatorConfigurationService {
         String normalized = optionalTrimmed(value, fieldName, maxLength);
         if (!StringUtils.hasText(normalized)) {
             throw badRequest(fieldName + " is required.");
+        }
+        return normalized;
+    }
+
+    private String requiredPublicText(
+            String value,
+            String fieldName,
+            int maximumLength) {
+        String normalized = requiredTrimmed(
+                value,
+                fieldName,
+                maximumLength);
+        if (normalized.chars().anyMatch(Character::isISOControl)) {
+            throw badRequest(fieldName + " contains an invalid character.");
         }
         return normalized;
     }

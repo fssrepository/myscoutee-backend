@@ -102,9 +102,23 @@ tasks.named('jacocoTestReport') {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform {
+		excludeTags 'qualification'
+	}
 
 	finalizedBy jacocoTestReport
+}
+
+tasks.register('qualificationTest', Test) {
+	description = 'Runs opt-in Java-to-external-process qualification tests.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	shouldRunAfter test
+	useJUnitPlatform {
+		includeTags 'qualification'
+	}
 }
 
 tasks.register('bootRunE2E', org.springframework.boot.gradle.tasks.run.BootRun) {

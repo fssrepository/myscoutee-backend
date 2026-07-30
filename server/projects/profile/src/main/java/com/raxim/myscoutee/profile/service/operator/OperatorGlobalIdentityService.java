@@ -17,20 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityLinkState;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityLinkState.PendingOperation;
-import com.raxim.myscoutee.profile.data.dto.auth.GlobalIdentityDtos.GlobalIdentityConsentRequestDto;
-import com.raxim.myscoutee.profile.data.dto.auth.GlobalIdentityDtos.GlobalIdentityStatusDto;
-import com.raxim.myscoutee.profile.data.dto.auth.GlobalIdentityDtos.GlobalIdentityUnlinkRequestDto;
+import com.raxim.myscoutee.profile.data.document.PrivacyConsent;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.GlobalIdentityLinkStateRepository;
+import com.raxim.myscoutee.profile.repository.PrivacyConsentsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
 import com.raxim.myscoutee.profile.service.operator.OperatorRevenueRegistryRuntimeResolver.Resolution;
@@ -50,14 +48,13 @@ import com.raxim.myscoutee.registry.RegistryProtocol.GlobalIdentityVoprfKey;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Member-facing privacy rail for optional cross-deployment identity linking.
+ * Internal cross-deployment identity preparation for registry MAU deduplication.
  *
  * <p>Only an RFC 9497 VOPRF-derived commitment leaves this deployment. The
- * verified email is held in memory only for blinding; local user ids remain in
- * Mongo only, and neither value is written to registry payloads, logs, or
- * errors. A verified-email change is intentionally handled by explicit
- * unlink followed by a new consent/link; the old and new raw addresses are
- * never retained here for comparison.</p>
+ * email is held in memory only for blinding; local user ids remain in Mongo
+ * only, and neither value is written to registry payloads, logs, or errors.
+ * There is no member-controlled link state: qualified users are prepared
+ * automatically whenever a registry connection exists.</p>
  */
 @Service
 public class OperatorGlobalIdentityService {
@@ -72,6 +69,7 @@ public class OperatorGlobalIdentityService {
     private final OperatorRevenueRegistryRuntimeResolver runtimeResolver;
     private final GlobalIdentityLinkStateRepository linkRepository;
     private final UsersRepository usersRepository;
+    private final PrivacyConsentsRepository privacyConsentsRepository;
     private final ObjectMapper objectMapper;
     private final GlobalIdentityVoprfClient voprfClient;
     private final Clock clock;
@@ -84,11 +82,13 @@ public class OperatorGlobalIdentityService {
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
             UsersRepository usersRepository,
+            PrivacyConsentsRepository privacyConsentsRepository,
             ObjectMapper objectMapper) {
         this(
                 runtimeResolver,
                 linkRepository,
                 usersRepository,
+                privacyConsentsRepository,
                 objectMapper,
                 new GlobalIdentityVoprfClient(),
                 Clock.systemUTC(),
@@ -99,6 +99,7 @@ public class OperatorGlobalIdentityService {
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
             UsersRepository usersRepository,
+            PrivacyConsentsRepository privacyConsentsRepository,
             ObjectMapper objectMapper,
             GlobalIdentityVoprfClient voprfClient,
             Clock clock,
@@ -106,6 +107,8 @@ public class OperatorGlobalIdentityService {
         this.runtimeResolver = Objects.requireNonNull(runtimeResolver);
         this.linkRepository = Objects.requireNonNull(linkRepository);
         this.usersRepository = Objects.requireNonNull(usersRepository);
+        this.privacyConsentsRepository = Objects.requireNonNull(
+                privacyConsentsRepository);
         this.objectMapper = Objects.requireNonNull(objectMapper);
         this.voprfClient = Objects.requireNonNull(voprfClient);
         this.clock = Objects.requireNonNull(clock);
@@ -207,7 +210,7 @@ public class OperatorGlobalIdentityService {
                 if (Boolean.TRUE.equals(state.getPurgeRequested())) {
                     processPurgeState(runtime, state);
                 } else if (state.getPendingOperation() != null) {
-                    completePending(runtime, state, null);
+                    completePending(runtime, state);
                 }
             } catch (RuntimeException ignored) {
                 /*
@@ -218,46 +221,52 @@ public class OperatorGlobalIdentityService {
         }
     }
 
-    public GlobalIdentityStatusDto status(Authentication authentication) {
-        AuthenticatedMember member = requireAuthenticatedMember(
-                authentication);
-        Resolution resolution = runtimeResolver.resolveGlobalIdentity(
-                MongoSessionModeContext.currentMode());
-        if (!resolution.isReady()) {
-            GlobalIdentityLinkState persisted = linkRepository
-                    .findFirstByLocalUserIdOrderByUpdatedAtDesc(
-                            member.localUserId())
-                    .orElse(null);
-            return toStatus(persisted, null, false);
+    void prepareQualifiedUsersForRegistry(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            String period,
+            List<String> qualifiedUserIds) {
+        if (qualifiedUserIds == null || qualifiedUserIds.isEmpty()) {
+            return;
         }
-        RegisteredRuntime runtime = resolution.runtime();
-        GlobalIdentityLinkState state = linkRepository
-                .findByDeploymentIdAndLocalUserId(
-                        runtime.state().deploymentId(),
-                        member.localUserId())
-                .orElse(null);
-        if (state != null) {
-            validateStoredLink(runtime, state, member.localUserId());
-        }
-        try {
-            GlobalIdentityVoprfKey key = verifiedCurrentKey(runtime);
-            return toStatus(state, key.keyVersion(), true);
-        } catch (RuntimeException exception) {
-            return toStatus(state, null, false);
+        RegistryProtocol.requirePeriod(period);
+        for (Users user : usersRepository.findByUserIdIn(
+                qualifiedUserIds.stream().distinct().toList())) {
+            if (!StringUtils.hasText(user.getUserId())
+                    || !StringUtils.hasText(user.getEmail())) {
+                throw new IllegalStateException(
+                        "A qualified user has no registry identity source.");
+            }
+            PrivacyConsent privacyConsent = privacyConsentsRepository
+                    .findTopByUserIdOrderByUpdatedAtIsoDesc(
+                            user.getUserId().trim())
+                    .filter(consent -> StringUtils.hasText(
+                            consent.getAcceptedAtIso()))
+                    .orElseThrow(() -> new IllegalStateException(
+                            "A qualified user has no accepted privacy context."));
+            if (!StringUtils.hasText(privacyConsent.getRevisionId())
+                    || privacyConsent.getRevisionVersion() == null
+                    || privacyConsent.getRevisionVersion() < 1) {
+                throw new IllegalStateException(
+                        "A qualified user's privacy context is incomplete.");
+            }
+            link(
+                    runtime,
+                    key,
+                    new Member(
+                            user.getUserId().trim(),
+                            normalizeEmail(user.getEmail())),
+                    privacyConsent,
+                    period);
         }
     }
 
-    public GlobalIdentityStatusDto link(
-            Authentication authentication,
-            GlobalIdentityConsentRequestDto request) {
-        if (request == null || !Boolean.TRUE.equals(request.accepted())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Explicit global identity consent is required.");
-        }
-        Member member = requireVerifiedMember(authentication);
-        RegisteredRuntime runtime = requireRuntime();
-        GlobalIdentityVoprfKey key = verifiedCurrentKey(runtime);
+    private void link(
+            RegisteredRuntime runtime,
+            GlobalIdentityVoprfKey key,
+            Member member,
+            PrivacyConsent privacyConsent,
+            String effectivePeriod) {
         GlobalIdentityLinkState state = linkRepository
                 .findByDeploymentIdAndLocalUserId(
                         runtime.state().deploymentId(),
@@ -267,15 +276,22 @@ public class OperatorGlobalIdentityService {
             validateStoredLink(runtime, state, member.localUserId());
         }
         if (state != null && state.getPendingOperation() != null) {
-            return completePending(runtime, state, key.keyVersion());
+            completePending(runtime, state);
+            return;
         }
         if (state != null
                 && GlobalIdentityLinkState.STATUS_ACTIVE.equals(
                         state.getStatus())) {
             if (Objects.equals(state.getKeyVersion(), key.keyVersion())) {
-                return toStatus(state, key.keyVersion(), true);
+                return;
             }
-            return rotate(runtime, member, state, key);
+            rotate(
+                    runtime,
+                    member,
+                    state,
+                    key,
+                    effectivePeriod);
+            return;
         }
 
         EvaluatedIdentity evaluated = evaluate(
@@ -289,15 +305,16 @@ public class OperatorGlobalIdentityService {
         String consentCommitment = RegistryProtocol.sha256(
                 RegistryProtocol.canonical(
                         CONSENT_EVIDENCE_DOMAIN,
-                        RegistryProtocol.GLOBAL_IDENTITY_CONSENT_VERSION,
-                        now,
+                        privacyConsent.getRevisionId(),
+                        Integer.toString(privacyConsent.getRevisionVersion()),
+                        privacyConsent.getAcceptedAtIso(),
                         consentNonce));
         PendingOperation pending = pendingLink(
                 evaluated,
                 consentCommitment,
                 consentNonce,
                 now,
-                currentPeriod());
+                effectivePeriod);
         if (state == null) {
             state = new GlobalIdentityLinkState();
             state.setId(new ObjectId().toHexString());
@@ -311,84 +328,7 @@ public class OperatorGlobalIdentityService {
         state.setPendingOperation(pending);
         state.setUpdatedAt(now);
         state = saveConcurrent(state);
-        return completePending(runtime, state, key.keyVersion());
-    }
-
-    public GlobalIdentityStatusDto rotate(Authentication authentication) {
-        Member member = requireVerifiedMember(authentication);
-        RegisteredRuntime runtime = requireRuntime();
-        GlobalIdentityVoprfKey key = verifiedCurrentKey(runtime);
-        GlobalIdentityLinkState state = linkRepository
-                .findByDeploymentIdAndLocalUserId(
-                        runtime.state().deploymentId(),
-                        member.localUserId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.CONFLICT,
-                        "Global identity is not linked."));
-        validateStoredLink(runtime, state, member.localUserId());
-        if (state.getPendingOperation() != null) {
-            return completePending(runtime, state, key.keyVersion());
-        }
-        if (!GlobalIdentityLinkState.STATUS_ACTIVE.equals(state.getStatus())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Global identity is not active.");
-        }
-        if (Objects.equals(state.getKeyVersion(), key.keyVersion())) {
-            return toStatus(state, key.keyVersion(), true);
-        }
-        return rotate(runtime, member, state, key);
-    }
-
-    public GlobalIdentityStatusDto unlink(
-            Authentication authentication,
-            GlobalIdentityUnlinkRequestDto request) {
-        if (request == null || !Boolean.TRUE.equals(request.confirmed())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Global identity unlink confirmation is required.");
-        }
-        AuthenticatedMember member = requireAuthenticatedMember(
-                authentication);
-        RegisteredRuntime runtime = requireRuntime();
-        GlobalIdentityLinkState state = linkRepository
-                .findByDeploymentIdAndLocalUserId(
-                        runtime.state().deploymentId(),
-                        member.localUserId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.CONFLICT,
-                        "Global identity is not linked."));
-        validateStoredLink(runtime, state, member.localUserId());
-        if (state.getPendingOperation() != null) {
-            String pendingAction = state.getPendingOperation().getAction();
-            GlobalIdentityStatusDto completed = completePending(
-                    runtime,
-                    state,
-                    null);
-            if (RegistryProtocol.GLOBAL_IDENTITY_LINK_ACTION_UNLINK.equals(
-                    pendingAction)) {
-                return completed;
-            }
-            state = linkRepository
-                    .findByDeploymentIdAndLocalUserId(
-                            runtime.state().deploymentId(),
-                            member.localUserId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.CONFLICT,
-                            "Global identity changed concurrently; reload and retry."));
-            validateStoredLink(runtime, state, member.localUserId());
-        }
-        if (GlobalIdentityLinkState.STATUS_UNLINKED.equals(state.getStatus())) {
-            return toStatus(state, null, true);
-        }
-        if (!GlobalIdentityLinkState.STATUS_ACTIVE.equals(state.getStatus())
-                || !StringUtils.hasText(state.getLinkId())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Global identity is not active.");
-        }
-        state = queueUnlink(state, "USER_WITHDRAWN");
-        return completePending(runtime, state, null);
+        completePending(runtime, state);
     }
 
     private void processPurgeState(
@@ -399,7 +339,7 @@ public class OperatorGlobalIdentityService {
                 .orElse(candidate);
         validateStoredLink(runtime, state, state.getLocalUserId());
         if (state.getPendingOperation() != null) {
-            completePending(runtime, state, null);
+            completePending(runtime, state);
             state = linkRepository.findById(state.getId())
                     .orElseThrow(() -> new IllegalStateException(
                             "Global identity purge state disappeared."));
@@ -407,7 +347,7 @@ public class OperatorGlobalIdentityService {
         }
         if (GlobalIdentityLinkState.STATUS_ACTIVE.equals(state.getStatus())) {
             state = queueUnlink(state, "ACCOUNT_PURGED");
-            completePending(runtime, state, null);
+            completePending(runtime, state);
             return;
         }
         if (GlobalIdentityLinkState.STATUS_UNLINKED.equals(
@@ -481,11 +421,12 @@ public class OperatorGlobalIdentityService {
         state.setUpdatedAt(clock.instant().toString());
     }
 
-    private GlobalIdentityStatusDto rotate(
+    private void rotate(
             RegisteredRuntime runtime,
             Member member,
             GlobalIdentityLinkState state,
-            GlobalIdentityVoprfKey key) {
+            GlobalIdentityVoprfKey key,
+            String effectivePeriod) {
         EvaluatedIdentity evaluated = evaluate(
                 runtime,
                 key,
@@ -505,7 +446,7 @@ public class OperatorGlobalIdentityService {
                 state.getConsentEvidenceCommitment());
         pending.setConsentEvidenceNonce(state.getConsentEvidenceNonce());
         pending.setVerifiedAt(state.getVerifiedAt());
-        pending.setEffectivePeriod(currentPeriod());
+        pending.setEffectivePeriod(effectivePeriod);
         pending.setReasonCommitment(reasonCommitment("KEY_ROTATION", now));
         pending.setCreatedAt(now);
         pending.setPayloadHash(RegistryProtocol.sha256(
@@ -523,7 +464,7 @@ public class OperatorGlobalIdentityService {
         state.setPendingOperation(pending);
         state.setUpdatedAt(now);
         state = saveConcurrent(state);
-        return completePending(runtime, state, key.keyVersion());
+        completePending(runtime, state);
     }
 
     private PendingOperation pendingLink(
@@ -559,10 +500,9 @@ public class OperatorGlobalIdentityService {
         return pending;
     }
 
-    private GlobalIdentityStatusDto completePending(
+    private void completePending(
             RegisteredRuntime runtime,
-            GlobalIdentityLinkState state,
-            Long currentKeyVersion) {
+            GlobalIdentityLinkState state) {
         PendingOperation pending = Objects.requireNonNull(
                 state.getPendingOperation(),
                 "Pending global identity operation is missing.");
@@ -654,8 +594,7 @@ public class OperatorGlobalIdentityService {
         }
         validateStoredLink(runtime, state, state.getLocalUserId());
         state.setUpdatedAt(clock.instant().toString());
-        state = saveConcurrent(state);
-        return toStatus(state, currentKeyVersion, true);
+        saveConcurrent(state);
     }
 
     private void applyResponse(
@@ -1163,52 +1102,6 @@ public class OperatorGlobalIdentityService {
         }
     }
 
-    private RegisteredRuntime requireRuntime() {
-        Resolution resolution = runtimeResolver.resolveGlobalIdentity(
-                MongoSessionModeContext.currentMode());
-        if (!resolution.isReady()) {
-            throw new ResponseStatusException(
-                    HttpStatus.SERVICE_UNAVAILABLE,
-                    "Global identity is unavailable until this deployment is registered.");
-        }
-        return resolution.runtime();
-    }
-
-    private AuthenticatedMember requireAuthenticatedMember(
-            Authentication authentication) {
-        if (authentication == null
-                || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal()
-                        instanceof FirebasePrincipal principal)
-                || !StringUtils.hasText(principal.getUserId())) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "An authenticated member profile is required.");
-        }
-        String localUserId = principal.getUserId().trim();
-        if (usersRepository.findByUserId(localUserId).isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "A persisted member profile is required.");
-        }
-        return new AuthenticatedMember(localUserId, principal);
-    }
-
-    private Member requireVerifiedMember(Authentication authentication) {
-        AuthenticatedMember authenticated = requireAuthenticatedMember(
-                authentication);
-        FirebasePrincipal principal = authenticated.principal();
-        if (!principal.isEmailVerified()
-                || !StringUtils.hasText(principal.getEmail())) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "A verified sign-in email is required.");
-        }
-        return new Member(
-                authenticated.localUserId(),
-                normalizeEmail(principal.getEmail()));
-    }
-
     private GlobalIdentityLinkState saveConcurrent(
             GlobalIdentityLinkState state) {
         try {
@@ -1218,46 +1111,6 @@ public class OperatorGlobalIdentityService {
                     HttpStatus.CONFLICT,
                     "Global identity changed concurrently; reload and retry.");
         }
-    }
-
-    private GlobalIdentityStatusDto toStatus(
-            GlobalIdentityLinkState state,
-            Long currentKeyVersion,
-            boolean syncAvailable) {
-        if (state == null) {
-            return new GlobalIdentityStatusDto(
-                    syncAvailable ? "UNLINKED" : "UNAVAILABLE",
-                    false,
-                    RegistryProtocol.GLOBAL_IDENTITY_CONSENT_VERSION,
-                    currentKeyVersion,
-                    RegistryProtocol.GLOBAL_IDENTITY_VOPRF_SUITE,
-                    null,
-                    null,
-                    null,
-                    null,
-                    syncAvailable,
-                    null);
-        }
-        boolean linked = GlobalIdentityLinkState.STATUS_ACTIVE.equals(
-                state.getStatus());
-        return new GlobalIdentityStatusDto(
-                state.getPendingOperation() == null
-                        ? state.getStatus()
-                        : state.getPendingOperation().getAction(),
-                linked,
-                state.getConsentVersion(),
-                state.getKeyVersion(),
-                state.getSuite(),
-                state.getActiveFromPeriod(),
-                state.getInactiveFromPeriod(),
-                state.getVerifiedAt(),
-                linked && currentKeyVersion != null
-                        ? !Objects.equals(
-                                state.getKeyVersion(),
-                                currentKeyVersion)
-                        : null,
-                syncAvailable,
-                state.getUpdatedAt());
     }
 
     private String reasonCommitment(String reasonCode, String at) {
@@ -1290,11 +1143,6 @@ public class OperatorGlobalIdentityService {
                     "A verified sign-in email is required.");
         }
         return normalized;
-    }
-
-    private record AuthenticatedMember(
-            String localUserId,
-            FirebasePrincipal principal) {
     }
 
     private record Member(String localUserId, String normalizedEmail) {

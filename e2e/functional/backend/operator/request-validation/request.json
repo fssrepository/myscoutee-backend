@@ -9,7 +9,7 @@
     "X-Demo-User-Id": "{{operatorUserId}}"
   },
   "body": {
-    "action": "CLAIM",
+    "action": "claim",
     "idempotencyKey": "generic-claim-must-be-rejected"
   },
   "expectedStatus": 400,

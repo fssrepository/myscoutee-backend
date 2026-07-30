@@ -92,7 +92,7 @@ upsert_value() {
   fi
   tmp="$(mktemp "${parent}/.$(basename -- "${file}").XXXXXX")"
   chmod "${mode}" "${tmp}"
-  chown "${OWNER_UID}:${OWNER_GID}" "${tmp}"
+  chown "+${OWNER_UID}:+${OWNER_GID}" -- "${tmp}"
   awk -v key="${key}" -v value="${value}" '
     BEGIN {
       replaced = 0
@@ -117,7 +117,7 @@ upsert_value() {
     }
   ' "${file}" > "${tmp}"
   chmod "${mode}" "${tmp}"
-  chown "${OWNER_UID}:${OWNER_GID}" "${tmp}"
+  chown "+${OWNER_UID}:+${OWNER_GID}" -- "${tmp}"
   mv -f -- "${tmp}" "${file}"
 }
 
@@ -128,7 +128,7 @@ fi
 
 require_safe_file "${ENV_FILE}" "Operator environment file"
 require_safe_file "${SECRETS_FILE}" "Operator secrets file"
-chown "${OWNER_UID}:${OWNER_GID}" "${ENV_FILE}" "${SECRETS_FILE}"
+chown "+${OWNER_UID}:+${OWNER_GID}" -- "${ENV_FILE}" "${SECRETS_FILE}"
 chmod 0644 "${ENV_FILE}"
 chmod 0600 "${SECRETS_FILE}"
 

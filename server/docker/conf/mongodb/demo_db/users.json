@@ -46,7 +46,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 17
     },
     "affinity": 432507,
     "age": 28,
@@ -173,6 +174,7 @@
     "syncKey": "aeda4d98-e210-55b7-a888-7a15acb4cc58",
     "partitionKey": "country:hu",
     "userId": "bf057de7c586eede7e84bdc7",
+    "email": "member@myscoutee.local",
     "profileFormVersion": 2
   },
   {
@@ -183,7 +185,7 @@
     "activities": {
       "game": 154,
       "chats": 30,
-      "invitations": 16,
+      "invitations": 15,
       "events": 6,
       "hosting": 32,
       "cars": 2,
@@ -201,10 +203,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 64,
+        "all": 63,
         "active": 6,
         "pending": 10,
-        "invitations": 16,
+        "invitations": 15,
         "hosting": 32,
         "drafts": 2,
         "trash": 0
@@ -222,7 +224,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 15
     },
     "affinity": 499225,
     "age": 31,
@@ -266,7 +269,7 @@
     "activities": {
       "game": 109,
       "chats": 24,
-      "invitations": 12,
+      "invitations": 10,
       "events": 11,
       "hosting": 31,
       "cars": 2,
@@ -284,10 +287,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 60,
+        "all": 58,
         "active": 11,
         "pending": 6,
-        "invitations": 12,
+        "invitations": 10,
         "hosting": 31,
         "drafts": 2,
         "trash": 0
@@ -306,7 +309,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 24
+      "notifications": 34
     },
     "affinity": 581523,
     "age": 30,
@@ -446,7 +449,7 @@
     "activities": {
       "game": 118,
       "chats": 9,
-      "invitations": 9,
+      "invitations": 3,
       "events": 12,
       "hosting": 32,
       "cars": 2,
@@ -464,10 +467,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 61,
+        "all": 55,
         "active": 12,
         "pending": 8,
-        "invitations": 9,
+        "invitations": 3,
         "hosting": 32,
         "drafts": 0,
         "trash": 0
@@ -485,7 +488,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 3
     },
     "affinity": 440843,
     "age": 29,
@@ -621,7 +625,7 @@
     "activities": {
       "game": 121,
       "chats": 9,
-      "invitations": 5,
+      "invitations": 2,
       "events": 13,
       "hosting": 3,
       "cars": 2,
@@ -639,10 +643,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 24,
+        "all": 21,
         "active": 13,
         "pending": 3,
-        "invitations": 5,
+        "invitations": 2,
         "hosting": 3,
         "drafts": 0,
         "trash": 0
@@ -660,7 +664,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 2
     },
     "affinity": 444724,
     "age": 27,
@@ -743,7 +748,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 620130,
     "age": 26,
@@ -787,7 +793,7 @@
     "activities": {
       "game": 106,
       "chats": 5,
-      "invitations": 3,
+      "invitations": 1,
       "events": 14,
       "hosting": 3,
       "cars": 2,
@@ -805,10 +811,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 22,
+        "all": 20,
         "active": 14,
         "pending": 2,
-        "invitations": 3,
+        "invitations": 1,
         "hosting": 3,
         "drafts": 0,
         "trash": 0
@@ -826,7 +832,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -908,7 +915,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 443988,
     "age": 32,
@@ -991,7 +999,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 227821,
     "age": 25,
@@ -1073,7 +1082,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 522709,
     "age": 29,
@@ -1156,7 +1166,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 398080,
     "age": 33,
@@ -1238,7 +1249,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 329173,
     "age": 27,
@@ -1321,7 +1333,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -1404,7 +1417,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -1487,7 +1501,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 581523,
     "age": 26,
@@ -1570,7 +1585,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 440843,
     "age": 27,
@@ -1652,7 +1668,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 444724,
     "age": 28,
@@ -1735,7 +1752,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 620130,
     "age": 29,
@@ -1818,7 +1836,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -1900,7 +1919,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 443988,
     "age": 31,
@@ -1983,7 +2003,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 227821,
     "age": 32,
@@ -2065,7 +2086,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 522709,
     "age": 33,
@@ -2148,7 +2170,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 398080,
     "age": 34,
@@ -2230,7 +2253,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 329173,
     "age": 35,
@@ -2313,7 +2337,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -2396,7 +2421,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -2479,7 +2505,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 581523,
     "age": 26,
@@ -2562,7 +2589,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 440843,
     "age": 27,
@@ -2644,7 +2672,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 444724,
     "age": 28,
@@ -2727,7 +2756,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 620130,
     "age": 29,
@@ -2810,7 +2840,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -2892,7 +2923,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 443988,
     "age": 31,
@@ -2975,7 +3007,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 227821,
     "age": 32,
@@ -3057,7 +3090,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 522709,
     "age": 33,
@@ -3140,7 +3174,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 398080,
     "age": 34,
@@ -3222,7 +3257,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 329173,
     "age": 35,
@@ -3305,7 +3341,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -3388,7 +3425,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -3471,7 +3509,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 581523,
     "age": 26,
@@ -3554,7 +3593,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 440843,
     "age": 27,
@@ -3636,7 +3676,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 444724,
     "age": 28,
@@ -3719,7 +3760,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 620130,
     "age": 29,
@@ -3802,7 +3844,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -3884,7 +3927,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 443988,
     "age": 31,
@@ -3967,7 +4011,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 227821,
     "age": 32,
@@ -4049,7 +4094,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 522709,
     "age": 33,
@@ -4132,7 +4178,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 398080,
     "age": 34,
@@ -4214,7 +4261,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 329173,
     "age": 35,
@@ -4297,7 +4345,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -4380,7 +4429,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -4463,7 +4513,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 0
     },
     "affinity": 612400,
     "age": 32,
@@ -4544,7 +4595,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 0
     },
     "affinity": 684300,
     "age": 27,
@@ -4626,7 +4678,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 0
     },
     "affinity": 571200,
     "age": 29,
@@ -4721,7 +4774,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 0
     }
   },
   {
@@ -4785,13 +4839,14 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 0
     }
   },
   {
-    "_id": "operator-demo-dev",
-    "syncKey": "operator-demo-dev",
-    "userId": "operator-demo-dev",
+    "_id": "operator@myscoutee.local",
+    "syncKey": "operator@myscoutee.local",
+    "userId": "operator@myscoutee.local",
     "email": "operator@myscoutee.local",
     "name": "Demo Operator",
     "city": "Deployment sandbox",
@@ -4850,7 +4905,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 0
     }
   }
 ]

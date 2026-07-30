@@ -17,10 +17,31 @@ fail() {
   exit 1
 }
 
-for command_name in dpkg-deb jq python3 rsync tar; do
+for command_name in dpkg-deb jq node python3 rsync tar; do
   command -v "${command_name}" >/dev/null 2>&1 \
     || fail "required test command is missing: ${command_name}"
 done
+
+for verifier_source in \
+  README.md \
+  run.mjs \
+  checks.mjs \
+  lib/assertions.mjs \
+  lib/http.mjs; do
+  [[ -f "${REPO_ROOT}/packaging/verify-deployment/${verifier_source}" ]] \
+    || fail "deployment verifier source is missing: ${verifier_source}"
+done
+[[ ! -e "${REPO_ROOT}/smoke" && ! -e "${REPO_ROOT}/packaging/smoke" ]] \
+  || fail "deployment verifier still has an ambiguous smoke source path"
+
+bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
+  || fail "numeric host ownership policy regression"
+bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
+  || fail "production i18n runtime seed synchronization regression"
+bash "${REPO_ROOT}/server/docker/images/mongodb-sync/dev/mongodb-seed-sync-test.sh" >/dev/null \
+  || fail "Mongo seed watcher lost a file update during import"
+node "${REPO_ROOT}/tools/normalize-chat-seed.mjs" >/dev/null \
+  || fail "demo chat seed membership or message-summary regression"
 
 FRONTEND_SYNC_ROOT="${TEST_ROOT}/frontend-sync"
 FRONTEND_SYNC_TARGET="${TEST_ROOT}/nginx-html"
@@ -156,6 +177,8 @@ DEB_PATH="$(
   bash "${PACKAGE_SCRIPT}" | tail -n 1
 )"
 [[ -f "${DEB_PATH}" ]] || fail "package-content fixture was not built"
+[[ "$(stat -c '%a' "${DEB_PATH}")" == "644" ]] \
+  || fail "Debian release artifact is not mode 0644"
 
 CONTENTS="${TEST_ROOT}/contents.txt"
 dpkg-deb --fsys-tarfile "${DEB_PATH}" | tar -tf - > "${CONTENTS}"
@@ -182,6 +205,10 @@ grep -Fxq \
   './opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh' \
   "${CONTENTS}" \
   || fail "operator configuration key initializer is missing"
+grep -Fxq \
+  './opt/myscoutee/packaging/scripts/image-content-fingerprint.sh' \
+  "${CONTENTS}" \
+  || fail "portable managed-image fingerprint helper is missing"
 if grep -Fxq './etc/myscoutee/configuration/deployment-master-key' \
   "${CONTENTS}"; then
   fail "operator configuration master key was embedded in the package"
@@ -195,11 +222,67 @@ grep -Fxq './lib/systemd/system/myscoutee-update.service' "${CONTENTS}" \
   || fail "update service is missing"
 grep -Fxq './lib/systemd/system/myscoutee-update.path' "${CONTENTS}" \
   || fail "update path unit is missing"
+for tls_unit in \
+  myscoutee-tls.path \
+  myscoutee-tls.service \
+  myscoutee-tls-renew.service \
+  myscoutee-tls-renew.timer; do
+  grep -Fxq "./lib/systemd/system/${tls_unit}" "${CONTENTS}" \
+    || fail "TLS unit ${tls_unit} is missing"
+done
+grep -Fxq \
+  './opt/myscoutee/packaging/scripts/myscoutee-tls-worker.sh' \
+  "${CONTENTS}" \
+  || fail "privileged TLS worker is missing"
+for host_helper in \
+  qualify-deployment.sh \
+  deployment-diagnostics.sh; do
+  grep -Fxq "./opt/myscoutee/packaging/scripts/${host_helper}" \
+    "${CONTENTS}" \
+    || fail "installed host qualification helper is missing: ${host_helper}"
+done
+EMBEDDED_CLIENT_TOOLS_PATH='./usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz'
+grep -Fxq "${EMBEDDED_CLIENT_TOOLS_PATH}" "${CONTENTS}" \
+  || fail "versioned Operator client-tools archive is missing from the package"
+if grep -Eq '^\./usr/share/myscoutee/client-tools(/|$)' "${CONTENTS}"; then
+  fail "the deployment package contains a redundant client-tools directory"
+fi
 grep -Fxq './opt/myscoutee/packaging/IMAGE-MANIFEST.json' "${CONTENTS}" \
   || fail "package image manifest is missing"
 
 EXTRACTED="${TEST_ROOT}/extracted"
+CONTROL_EXTRACTED="${TEST_ROOT}/control"
 dpkg-deb -x "${DEB_PATH}" "${EXTRACTED}"
+dpkg-deb -e "${DEB_PATH}" "${CONTROL_EXTRACTED}"
+[[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh" ]] \
+  || fail "portable managed-image fingerprint helper is not executable"
+CLIENT_TOOLS_ARCHIVE="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"
+[[ -s "${CLIENT_TOOLS_ARCHIVE}" ]] \
+  || fail "standalone Operator client-tools archive is missing"
+[[ "$(stat -c '%a' "${CLIENT_TOOLS_ARCHIVE}")" == "644" ]] \
+  || fail "standalone Operator client-tools archive is not mode 0644"
+EMBEDDED_CLIENT_TOOLS_ARCHIVE="${EXTRACTED}/${EMBEDDED_CLIENT_TOOLS_PATH#./}"
+[[ "$(stat -c '%a' "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}")" == "644" ]] \
+  || fail "embedded Operator client-tools archive is not mode 0644"
+cmp -s "${CLIENT_TOOLS_ARCHIVE}" "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}" \
+  || fail "embedded and standalone Operator client-tools archives differ"
+CLIENT_TOOLS_CONTENTS="${TEST_ROOT}/client-tools-contents.txt"
+tar -tzf "${EMBEDDED_CLIENT_TOOLS_ARCHIVE}" > "${CLIENT_TOOLS_CONTENTS}"
+for verifier_member in \
+  README.md \
+  run.mjs \
+  checks.mjs \
+  lib/assertions.mjs \
+  lib/http.mjs; do
+  grep -Fxq "./verify-deployment/${verifier_member}" \
+    "${CLIENT_TOOLS_CONTENTS}" \
+    || fail "standalone Operator archive omits deployment verifier member ${verifier_member}"
+done
+grep -Fxq './install.env.example' "${CLIENT_TOOLS_CONTENTS}" \
+  || fail "standalone Operator archive omits safe configuration example"
+if grep -Fxq './install.env' "${CLIENT_TOOLS_CONTENTS}"; then
+  fail "local Operator target credentials were embedded in the client-tools archive"
+fi
 jq -e \
   '.schemaVersion == 1
     and .releaseVersion == "1.0.0"
@@ -211,6 +294,21 @@ jq -e \
 PACKAGED_MONGO="${EXTRACTED}/opt/myscoutee/server/docker/conf/mongodb"
 PACKAGED_PRODUCTION_SEED="${PACKAGED_MONGO}/myscoutee_db"
 PACKAGED_DEMO_SEED="${PACKAGED_MONGO}/demo_db"
+PACKAGED_I18N_SYNC="${EXTRACTED}/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh"
+[[ -x "${PACKAGED_I18N_SYNC}" && ! -L "${PACKAGED_I18N_SYNC}" ]] \
+  || fail "production i18n runtime seed synchronizer is missing or not executable"
+grep -Fxq \
+  'ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
+  || fail "production service does not synchronize the authoritative backend bundle before start"
+grep -Fq \
+  'systemctl is-active --quiet myscoutee.service' \
+  "${CONTROL_EXTRACTED}/postinst" \
+  || fail "an active deployment upgrade does not detect the running service"
+grep -Fq \
+  '/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  "${CONTROL_EXTRACTED}/postinst" \
+  || fail "an active deployment upgrade does not synchronize the backend bundle"
 assert_admin_job_seed_defaults "${PACKAGED_PRODUCTION_SEED}/notificationRuleConfigs.json"
 assert_admin_job_seed_defaults "${PACKAGED_DEMO_SEED}/notificationRuleConfigs.json"
 [[ ! -e "${PACKAGED_MONGO}/e2e_db" ]] \
@@ -312,14 +410,30 @@ done < <(
 )
 PACKAGED_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose-prod.yml"
 PACKAGED_REPLICASET_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose.replicaset.yml"
+PACKAGED_ENV="${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.env"
 assert_no_development_scripts_mount "${PACKAGED_COMPOSE}"
 assert_no_development_scripts_mount "${PACKAGED_REPLICASET_COMPOSE}"
-if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' "${PACKAGED_COMPOSE}"; then
+if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER|MEMBER_USER):' "${PACKAGED_COMPOSE}"; then
   fail "production Compose contains a baked administrator/developer identity"
 fi
 grep -Fxq 'OPERATOR_USER=' \
-  "${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.env" \
+  "${PACKAGED_ENV}" \
   || fail "runtime operator bootstrap allow-list is not empty in the package"
+grep -Fxq 'DOMAIN=localhost' "${PACKAGED_ENV}" \
+  || fail "fresh installation does not start on the bootstrap localhost domain"
+grep -Fxq 'LETSENCRYPT_ENABLED=false' "${PACKAGED_ENV}" \
+  || fail "fresh installation does not select the bootstrap certificate"
+grep -Fxq \
+  'WEBSOCKET_ALLOWED_ORIGIN_PATTERNS=https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080' \
+  "${PACKAGED_ENV}" \
+  || fail "fresh installation does not allow its HTTPS loopback origins"
+grep -Fxq 'EMAIL_BASE_URL=https://localhost' "${PACKAGED_ENV}" \
+  || fail "fresh installation embeds a public deployment URL before Operator setup"
+grep -Fq 'DOMAIN: ${DOMAIN:-localhost}' "${PACKAGED_COMPOSE}" \
+  || fail "packaged Nginx does not use the neutral bootstrap domain fallback"
+grep -Fq 'EMAIL_BASE_URL: "${EMAIL_BASE_URL:-https://localhost}"' \
+  "${PACKAGED_COMPOSE}" \
+  || fail "packaged API does not receive the dynamic deployment base URL"
 grep -Fxq 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256=' \
   "${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.secrets.env" \
   || fail "package contains a bootstrap password digest instead of an empty placeholder"
@@ -331,6 +445,8 @@ grep -Fxq 'OPERATOR_BOOTSTRAP_EMAIL=' \
   || fail "safe-copy helper is not executable"
 [[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/ensure-operator-bootstrap.sh" ]] \
   || fail "Operator bootstrap helper is not executable"
+[[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/myscoutee-tls-worker.sh" ]] \
+  || fail "privileged TLS worker is not executable"
 UPDATE_PATH_UNIT="${EXTRACTED}/lib/systemd/system/myscoutee-update.path"
 grep -Fxq \
   'DirectoryNotEmpty=/var/lib/myscoutee/update/inbox/requests' \
@@ -339,6 +455,14 @@ grep -Fxq \
 if grep -Eq '^[[:space:]]*PathExistsGlob=' "${UPDATE_PATH_UNIT}"; then
   fail "packaged update path unit still filters inbox entries by glob"
 fi
+TLS_PATH_UNIT="${EXTRACTED}/lib/systemd/system/myscoutee-tls.path"
+grep -Fxq \
+  'DirectoryNotEmpty=/var/lib/myscoutee/tls/inbox/requests' \
+  "${TLS_PATH_UNIT}" \
+  || fail "packaged TLS path unit does not watch the fixed inbox"
+grep -Fxq 'Persistent=true' \
+  "${EXTRACTED}/lib/systemd/system/myscoutee-tls-renew.timer" \
+  || fail "packaged TLS renewal timer is not persistent"
 
 KEY_HELPER="${EXTRACTED}/opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh"
 KEY_DIR="${TEST_ROOT}/configuration"

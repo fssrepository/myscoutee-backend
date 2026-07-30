@@ -15,8 +15,12 @@ response.json
 Default command:
 
 ```bash
-E2E_SERVER_BASE_URL=http://localhost node e2e/functional/backend/run.mjs
+NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
+E2E_SERVER_BASE_URL=https://127.0.0.1 node e2e/functional/backend/run.mjs
 ```
+
+Copy the current container certificate as described in `e2e/README.md` before
+running this command.
 
 Covered groups:
 
@@ -31,7 +35,7 @@ Covered groups:
 - `websocket`: chat and admin notification websocket connects.
 - `event-editor`: members, member summaries, invite candidates, subevent resources, leaderboard.
 - `admin`: dashboard, stats, monitoring, params, notifications, notification runtime, help, privacy, explanation, ideas.
-- `operator`: controller-wide operator authorization, bootstrap/request/query validation, registry status, deployment configuration and secret redaction, community providers, local revenue invariants, update overview, and demo-isolated Firebase capability tests.
+- `operator`: controller-wide operator authorization, bootstrap/request/query validation, registry status, deployment and managed TLS configuration with secret redaction, community providers, local revenue invariants, update overview, and demo-isolated Firebase capability tests.
 - `media`: collected local image URLs from prior API responses are reachable.
 
 Latest local validation:
@@ -40,15 +44,16 @@ Latest local validation:
 server e2e: 49 passed, 0 failed, 0 skipped, 49 selected
 ```
 
-This is a historical execution result. The current authored inventory is 76
-safe contracts; 13 of those are the operator cases authored for the later run.
+This is a historical execution result. The current authored inventory is 77
+safe contracts; 14 of those are the operator cases authored for the later run.
 
 ## E2E Mutation Flows
 
 Default command:
 
 ```bash
-E2E_SERVER_BASE_URL=http://localhost \
+NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
+E2E_SERVER_BASE_URL=https://127.0.0.1 \
 E2E_SERVER_MODE=stress \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
@@ -121,7 +126,7 @@ definitions and assertion modules have been syntax-checked only.
 The safe `operator` group includes controller-wide access checks, bootstrap
 boundary and secret redaction, request binding validation, settlement query
 validation, Firebase request validation without Firebase configuration
-mutation,
+mutation, managed TLS availability and write-only certificate boundaries,
 configuration/registry/community/revenue/update projections, and revenue
 aggregation invariants. The opt-in `flows/operator` collection adds the three
 mutation state-machine scenarios listed above.

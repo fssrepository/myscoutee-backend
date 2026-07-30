@@ -37,7 +37,9 @@ validate_key() {
   exit 1
 }
 
-install -d -m 0750 -o "${OWNER_UID}" -g "${OWNER_GID}" "${KEY_DIR}"
+install -d -m 0750 -- "${KEY_DIR}"
+chown "+${OWNER_UID}:+${OWNER_GID}" -- "${KEY_DIR}"
+chmod 0750 -- "${KEY_DIR}"
 if [[ -e "${KEY_PATH}" || -L "${KEY_PATH}" ]]; then
   validate_key
 else
@@ -45,7 +47,7 @@ else
   trap 'rm -f -- "${temporary_key}"' EXIT
   openssl rand -hex 32 > "${temporary_key}"
   chmod 0640 "${temporary_key}"
-  chown "${OWNER_UID}:${OWNER_GID}" "${temporary_key}"
+  chown "+${OWNER_UID}:+${OWNER_GID}" -- "${temporary_key}"
   if ! ln "${temporary_key}" "${KEY_PATH}" 2>/dev/null; then
     validate_key
   fi
@@ -53,7 +55,7 @@ else
   trap - EXIT
 fi
 
-chown "${OWNER_UID}:${OWNER_GID}" "${KEY_DIR}" "${KEY_PATH}"
+chown "+${OWNER_UID}:+${OWNER_GID}" -- "${KEY_DIR}" "${KEY_PATH}"
 chmod 0750 "${KEY_DIR}"
 chmod 0640 "${KEY_PATH}"
 sync -f "${KEY_PATH}"

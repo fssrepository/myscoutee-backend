@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Configuration
-DOMAIN=${DOMAIN:-myscoutee.com}
+DOMAIN=${DOMAIN:-localhost}
 LETSENCRYPT_ENABLED=${LETSENCRYPT_ENABLED:-false}
 
 echo "Starting Nginx with LETSENCRYPT_ENABLED=$LETSENCRYPT_ENABLED for DOMAIN=$DOMAIN"

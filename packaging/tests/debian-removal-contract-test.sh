@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
+POSTINST="${REPO_ROOT}/packaging/debian/postinst"
 POSTRM="${REPO_ROOT}/packaging/debian/postrm"
 TEST_ROOT="$(mktemp -d /tmp/myscoutee-removal-contract-test.XXXXXX)"
 FAKE_BIN="${TEST_ROOT}/bin"
@@ -17,6 +18,15 @@ fail() {
   echo "FAIL: $1" >&2
   exit 1
 }
+
+for abort_action in abort-upgrade abort-remove abort-deconfigure; do
+  if ! bash "${POSTINST}" "${abort_action}" >/dev/null 2>&1; then
+    fail "postinst does not safely accept ${abort_action}"
+  fi
+done
+if bash "${POSTINST}" unsupported-action >/dev/null 2>&1; then
+  fail "postinst accepted an unsupported maintainer-script action"
+fi
 
 install -d "${FAKE_BIN}"
 : > "${COMMAND_LOG}"

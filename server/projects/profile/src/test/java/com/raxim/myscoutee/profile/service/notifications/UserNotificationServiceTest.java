@@ -178,6 +178,21 @@ class UserNotificationServiceTest {
     }
 
     @Test
+    void resolvingAnEventInvitationReadsEveryUnreadNotificationForThatEvent() {
+        when(userNotificationPageRepository.markUnreadBySource(
+                eq("viewer-1"),
+                eq("event-invite"),
+                eq("event"),
+                eq("event-1"),
+                any(String.class))).thenReturn(2L);
+
+        int changed = service.markEventInvitationResolved(" viewer-1 ", " event-1 ");
+
+        assertThat(changed).isEqualTo(2);
+        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -2);
+    }
+
+    @Test
     void pageReturnsStoredMutedPreferenceAndPreferenceMutationUsesUserScope() {
         Users user = new Users();
         user.setUserId("viewer-1");

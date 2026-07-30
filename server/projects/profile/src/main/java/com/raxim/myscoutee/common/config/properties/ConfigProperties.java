@@ -16,7 +16,7 @@ public class ConfigProperties {
     private boolean firebaseEnabled = false;
     private volatile boolean deploymentFirebaseEnabled = false;
     private boolean chatOnlyMode = false;
-    private String devUser = "dev@myscoutee.local";
+    private String memberUser = "member@myscoutee.local";
     private String facebookAppSecret = "";
     private String websocketAllowedOriginPatterns = "http://localhost,http://localhost:4200,https://localhost,https://localhost:4200";
 
@@ -114,12 +114,12 @@ public class ConfigProperties {
         this.chatOnlyMode = chatOnlyMode;
     }
 
-    public String getDevUser() {
-        return devUser;
+    public String getMemberUser() {
+        return memberUser;
     }
 
-    public void setDevUser(String devUser) {
-        this.devUser = devUser;
+    public void setMemberUser(String memberUser) {
+        this.memberUser = memberUser;
     }
 
     public String getFacebookAppSecret() {

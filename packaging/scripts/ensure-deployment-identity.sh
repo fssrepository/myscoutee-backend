@@ -93,7 +93,7 @@ chmod 0700 "${KEY_DIR}" "${STATE_DIR}" "${STATE_DIR}/receipts"
 chmod 0600 "${PRIVATE_KEY}"
 chmod 0644 "${PUBLIC_KEY}"
 if [[ "${EUID}" -eq 0 ]]; then
-  chown "${API_UID}:${API_GID}" \
+  chown "+${API_UID}:+${API_GID}" -- \
     "${KEY_DIR}" "${STATE_DIR}" "${STATE_DIR}/receipts" \
     "${PRIVATE_KEY}" "${PUBLIC_KEY}"
 fi

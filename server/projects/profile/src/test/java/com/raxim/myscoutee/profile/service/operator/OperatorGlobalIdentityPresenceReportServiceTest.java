@@ -2,17 +2,74 @@ package com.raxim.myscoutee.profile.service.operator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
+import java.security.SecureRandom;
+import java.time.Clock;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityPresenceOutboxItem;
 import com.raxim.myscoutee.profile.data.document.GlobalIdentityPresenceOutboxItem.SignedAttempt;
+import com.raxim.myscoutee.profile.repository.GlobalIdentityLinkStateRepository;
+import com.raxim.myscoutee.profile.repository.GlobalIdentityPresenceOutboxRepository;
+import com.raxim.myscoutee.profile.repository.QualifiedMauReportOutboxRepository;
+import com.raxim.myscoutee.profile.service.operator.OperatorRevenueRegistryRuntimeResolver.Resolution;
 import com.raxim.myscoutee.registry.RegistryProtocol;
 
+import tools.jackson.databind.ObjectMapper;
+
 class OperatorGlobalIdentityPresenceReportServiceTest {
+
+    @Test
+    void missingRegistryLeavesGlobalIdentityFlowDormant() {
+        OperatorRevenueRegistryRuntimeResolver runtimeResolver = mock(
+                OperatorRevenueRegistryRuntimeResolver.class);
+        OperatorGlobalIdentityService globalIdentityService = mock(
+                OperatorGlobalIdentityService.class);
+        OperatorQualifiedMauCalculator calculator = mock(
+                OperatorQualifiedMauCalculator.class);
+        OperatorQualifiedMauReportService qmauReportService = mock(
+                OperatorQualifiedMauReportService.class);
+        QualifiedMauReportOutboxRepository qmauRepository = mock(
+                QualifiedMauReportOutboxRepository.class);
+        GlobalIdentityLinkStateRepository linkRepository = mock(
+                GlobalIdentityLinkStateRepository.class);
+        GlobalIdentityPresenceOutboxRepository outboxRepository = mock(
+                GlobalIdentityPresenceOutboxRepository.class);
+        when(runtimeResolver.resolveGlobalIdentity(MongoSessionMode.REAL))
+                .thenReturn(Resolution.dormant(
+                        "REGISTRY_NOT_CONFIGURED",
+                        "Registry is not configured."));
+
+        OperatorGlobalIdentityPresenceReportService service =
+                new OperatorGlobalIdentityPresenceReportService(
+                        runtimeResolver,
+                        globalIdentityService,
+                        calculator,
+                        qmauReportService,
+                        qmauRepository,
+                        linkRepository,
+                        outboxRepository,
+                        mock(ObjectMapper.class),
+                        Clock.systemUTC(),
+                        new SecureRandom());
+
+        service.synchronizeNow();
+
+        verifyNoInteractions(
+                globalIdentityService,
+                calculator,
+                qmauReportService,
+                qmauRepository,
+                linkRepository,
+                outboxRepository);
+    }
 
     @Test
     void exactPresenceCapacityFitsTheMaximumServerChunkCount() {
@@ -22,6 +79,17 @@ class OperatorGlobalIdentityPresenceReportServiceTest {
                                 .MAX_COMMITMENTS_PER_SUBMISSION))
                 .isEqualTo(OperatorGlobalIdentityPresenceReportService
                         .SERVER_MAX_CHUNKS_PER_SUBMISSION);
+    }
+
+    @Test
+    void registryPresenceCannotSilentlyOmitAQualifiedUser() {
+        assertThatThrownBy(() ->
+                OperatorGlobalIdentityPresenceReportService
+                        .requireEveryQualifiedUserPrepared(
+                                List.of("user-1", "user-2"),
+                                List.of("commitment-1")))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("every qualified user");
     }
 
     @Test

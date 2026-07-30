@@ -1,4 +1,13 @@
 {
   "status": 200,
-  "body": { "type": "array" }
+  "body": {
+    "type": "object",
+    "required": ["items", "total", "page", "pageSize"],
+    "properties": {
+      "items": { "type": "array" },
+      "total": { "type": "number" },
+      "page": { "type": "number" },
+      "pageSize": { "type": "number" }
+    }
+  }
 }

@@ -51,6 +51,7 @@ import com.raxim.myscoutee.profile.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
+import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
@@ -113,6 +114,8 @@ class HomeUserProfileServiceTest {
     private AdminMenuCounterService adminMenuCounterService;
     @Mock
     private AccessControlService accessControlService;
+    @Mock
+    private UserNotificationPageRepository userNotificationPageRepository;
 
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -152,6 +155,9 @@ class HomeUserProfileServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService);
+        service.setUserNotificationPageRepository(userNotificationPageRepository);
+        lenient().when(userNotificationPageRepository.countUnread("active"))
+                .thenReturn(17L);
     }
 
     @Test
@@ -658,7 +664,7 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
-    void realtimeSnapshotUsesStoredActivityCountersWithoutRecomputing() {
+    void realtimeSnapshotUsesStoredActivityCountersAndAuthoritativeNotifications() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
@@ -670,6 +676,23 @@ class HomeUserProfileServiceTest {
         assertNestedCounters(snapshot.counters());
         verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
+    }
+
+    @Test
+    void realtimeSnapshotUsesAuthoritativeUnreadNotificationCount() {
+        Users active = user("active", 0d);
+        active.setActivities(storedActivityCounters());
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(eventFeedbackAnswersRepository
+                .findByTargetUserIdOrderBySubmittedAtIsoDesc("active"))
+                .thenReturn(List.of());
+        when(userNotificationPageRepository.countUnread("active"))
+                .thenReturn(41L);
+
+        var snapshot = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("active", null));
+
+        assertThat(snapshot.counters().notifications()).isEqualTo(41);
     }
 
     @Test

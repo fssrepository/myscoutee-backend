@@ -2,7 +2,7 @@
   "name": "UI shared help session route slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "help-session/route",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,
   "rampUpMs": 0,

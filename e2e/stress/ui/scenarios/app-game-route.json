@@ -2,7 +2,7 @@
   "name": "UI game route slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "game/route",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,
   "rampUpMs": 0,

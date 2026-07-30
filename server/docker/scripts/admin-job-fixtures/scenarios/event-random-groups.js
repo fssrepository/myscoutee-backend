@@ -138,9 +138,17 @@
   }
 
   function generatedEdges(variation, userIds, cohortSizes) {
-    return variation === "disconnected-forest"
+    return [
+      "disconnected-forest",
+      "under-min-connected-component",
+      "below-minimum-total"
+    ].includes(variation)
       ? syntheticForestEdges(userIds, cohortSizes)
       : syntheticAffinityEdges(userIds, cohortSizes);
+  }
+
+  function fingerprint(value) {
+    return JSON.stringify(value);
   }
 
   function graphUsers(count) {
@@ -178,11 +186,15 @@
     variations: [
       "balanced",
       "anchored",
+      "anchored-full-and-empty",
       "five-rooms",
       "twenty-rooms",
       "one-leftover",
       "partial-room",
+      "flexible-redistribution",
       "disconnected-forest",
+      "under-min-connected-component",
+      "below-minimum-total",
       "quality-200",
       "quality-1000"
     ],
@@ -191,7 +203,10 @@
         variation === "twenty-rooms"
         || variation === "one-leftover"
         || variation === "partial-room"
+        || variation === "flexible-redistribution"
         || variation === "disconnected-forest"
+        || variation === "under-min-connected-component"
+        || variation === "below-minimum-total"
         || variation === "quality-200"
         || variation === "quality-1000";
       const userCount = variation === "quality-1000"
@@ -200,32 +215,52 @@
           ? 200
           : variation === "disconnected-forest"
             ? 11
-            : variation === "partial-room"
-              ? 62
-              : variation === "one-leftover"
-                ? 61
-                : variation === "twenty-rooms"
-                  ? 60
-                  : variation === "five-rooms" ? 15 : 6;
+            : variation === "flexible-redistribution"
+              ? 11
+            : variation === "under-min-connected-component"
+              ? 8
+              : variation === "below-minimum-total"
+                ? 2
+                : variation === "partial-room"
+                  ? 62
+                  : variation === "one-leftover"
+                    ? 61
+                    : variation === "twenty-rooms"
+                      ? 60
+                      : variation === "five-rooms" ? 15 : 6;
       const roomCapacityMax =
-        variation === "quality-200" || variation === "quality-1000"
+        variation === "quality-200"
+          || variation === "quality-1000"
+          || variation === "flexible-redistribution"
           ? 5
           : 3;
       const roomCapacityMin = variation === "partial-room"
         ? 2
-        : roomCapacityMax;
+        : variation === "flexible-redistribution"
+          ? 3
+          : roomCapacityMax;
       const roomCount = variation === "one-leftover"
         || variation === "disconnected-forest"
+        || variation === "under-min-connected-component"
         ? Math.floor(userCount / roomCapacityMax)
         : Math.ceil(userCount / roomCapacityMax);
+      const expectedRoomCount = variation === "below-minimum-total"
+        ? 0
+        : roomCount;
       const expectedCohortSizes = syntheticQuality
         ? variation === "one-leftover"
           ? [...Array(20).fill(3), 1]
           : variation === "disconnected-forest"
             ? [3, 3, 3, 1, 1]
-            : variation === "partial-room"
-              ? [...Array(20).fill(3), 2]
-              : Array(roomCount).fill(roomCapacityMax)
+          : variation === "under-min-connected-component"
+              ? [3, 3, 2]
+              : variation === "flexible-redistribution"
+                ? [5, 3, 3]
+              : variation === "below-minimum-total"
+                ? [2]
+                : variation === "partial-room"
+                  ? [...Array(20).fill(3), 2]
+                  : Array(roomCount).fill(roomCapacityMax)
         : [];
       const userIds = syntheticQuality
         ? syntheticUserIds(userCount)
@@ -237,41 +272,73 @@
         ? userIds.slice(-1)
         : variation === "disconnected-forest"
           ? userIds.slice(-2)
-          : [];
+          : variation === "under-min-connected-component"
+            ? userIds.slice(-2)
+            : variation === "below-minimum-total"
+              ? userIds.slice()
+              : [];
       const expectedPartialRoomUserIds = variation === "partial-room"
         ? userIds.slice(-2)
-        : [];
+        : variation === "flexible-redistribution"
+          ? userIds.slice(5)
+          : [];
       const groupIds = roomIds(roomCount);
       const groupOwnerIds =
         groupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
       const isolatedEventIds = F.collection("events")
-        .find({ published: true, _id: { $ne: eventId } }, { projection: { _id: 1 } })
+        .find({ status: "A", _id: { $ne: eventId } }, { projection: { _id: 1 } })
         .map(event => event._id)
         .toArray();
       const memberIds = userIds.map((userId, index) => F.fixtureId(job, `event-member-${index + 1}`));
-      const anchorIds = variation === "anchored"
-        ? [F.fixtureId(job, "anchor-1"), F.fixtureId(job, "anchor-2")]
+      const expectedAnchoredUserIdsByGroup = variation === "anchored"
+        ? [[userIds[0]], [userIds[3]]]
+        : variation === "anchored-full-and-empty"
+          ? [userIds.slice(0, 3), []]
+          : [];
+      const anchorIds = expectedAnchoredUserIdsByGroup.length > 0
+        ? expectedAnchoredUserIdsByGroup
+          .flat()
+          .map((userId, index) => F.fixtureId(job, `anchor-${index + 1}`))
         : [];
+      const expectedStrongEdgeCount = syntheticEdges
+        .filter(edge => (
+          edge.edgeWeight === 0.95
+          && !expectedUnassignedUserIds.includes(edge.leftUserId)
+          && !expectedUnassignedUserIds.includes(edge.rightUserId)
+        ))
+        .length;
       return {
         pendingCount: 1,
         pendingCountUnit: "admin.jobs.table.affected",
         expected: variation === "anchored"
           ? "The 6 accepted users are split into two groups of 3, while the two pre-anchored users remain in their original rooms. A second Run should make no assignment changes."
+          : variation === "anchored-full-and-empty"
+            ? "One room starts full with 3 anchored users and must remain unchanged; the other starts empty and receives exactly the remaining 3 users."
           : variation === "one-leftover"
             ? "With 61 users and exact room size 3, status reveals whether the one under-minimum remainder is unassigned, mixed into another room, or persisted below minimum."
             : variation === "disconnected-forest"
               ? "A 6-user tree is cut at its weak bridge into two correct rooms, the separate 3-user tree stays intact, and only the two isolated overflow users remain unassigned."
-              : variation === "partial-room"
-                ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
-                : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
+              : variation === "under-min-connected-component"
+                ? "A weakly joined 6-user tree is cut into two valid 3-user rooms, while the separate connected 2-user component is the exact set left unassigned below the configured minimum."
+                : variation === "below-minimum-total"
+                  ? "The complete 2-user graph is below the room minimum of 3, so no room membership or notification is created and both users remain unassigned."
+                  : variation === "flexible-redistribution"
+                    ? "With 11 users and room capacity 3..5, all users stay assigned in three valid affinity cohorts of 5, 3, and 3; the one-user max-capacity remainder must be redistributed instead of dropped."
+                    : variation === "partial-room"
+                      ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
+                      : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
         context: {
           eventId,
           subEventId,
           syntheticQuality,
           expectedStrongEdgeWeight: 0.95,
-          expectedStrongEdgeCount:
-            syntheticEdges.filter(edge => edge.edgeWeight === 0.95).length,
-          expectedRoomCount: roomCount,
+          expectedStrongEdgeCount,
+          expectedRoomCount,
+          expectedFirstRunCount:
+            variation === "anchored-full-and-empty"
+              ? 3
+              : userCount - expectedUnassignedUserIds.length,
+          expectNoOutputArtifacts: variation === "below-minimum-total",
           expectedRoomSize: roomCapacityMax,
           expectedRoomMin: roomCapacityMin,
           expectedRoomMax: roomCapacityMax,
@@ -284,6 +351,7 @@
           isolatedEventIds,
           memberIds,
           anchorIds,
+          expectedAnchoredUserIdsByGroup,
           syntheticEdgeIds: syntheticEdges.map(edge => edge._id),
           syntheticEdgePairKeys: syntheticEdges.map(edge => edge.pairKey)
         },
@@ -346,7 +414,7 @@
           { _id: { $in: context.isolatedEventIds } },
           {
             $set: {
-              published: false,
+              status: "I",
               updatedDate: now,
               updatedUser: F.FIXTURE_ACTOR
             }
@@ -392,7 +460,6 @@
         syncKey: eventId,
         title: "Admin fixture graph rooms",
         status: "A",
-        published: true,
         randomGroups: true,
         ownerUserId: context.userIds[0],
         creatorUserId: context.userIds[0],
@@ -434,37 +501,32 @@
         updatedUser: F.FIXTURE_ACTOR
       }));
       F.collection("activityMembers").insertMany(eventMembers);
-      if (variation === "anchored") {
-        F.collection("activityMembers").insertMany([
-          {
-            _id: context.anchorIds[0],
-            syncKey: context.anchorIds[0],
-            ownerType: "group",
-            ownerId: context.groupOwnerIds[0],
-            userId: context.userIds[0],
-            role: "Member",
-            status: "accepted",
-            actionAtIso: now,
-            createdDate: now,
-            createdUser: F.FIXTURE_ACTOR,
-            updatedDate: now,
-            updatedUser: F.FIXTURE_ACTOR
-          },
-          {
-            _id: context.anchorIds[1],
-            syncKey: context.anchorIds[1],
-            ownerType: "group",
-            ownerId: context.groupOwnerIds[1],
-            userId: context.userIds[3],
-            role: "Member",
-            status: "accepted",
-            actionAtIso: now,
-            createdDate: now,
-            createdUser: F.FIXTURE_ACTOR,
-            updatedDate: now,
-            updatedUser: F.FIXTURE_ACTOR
-          }
-        ]);
+      const anchorMembers = [];
+      let anchorIndex = 0;
+      (context.expectedAnchoredUserIdsByGroup || []).forEach(
+        (anchoredUserIds, groupIndex) => {
+          (anchoredUserIds || []).forEach(userId => {
+            const anchorId = context.anchorIds[anchorIndex];
+            anchorIndex += 1;
+            anchorMembers.push({
+              _id: anchorId,
+              syncKey: anchorId,
+              ownerType: "group",
+              ownerId: context.groupOwnerIds[groupIndex],
+              userId,
+              role: "Member",
+              status: "accepted",
+              actionAtIso: now,
+              createdDate: now,
+              createdUser: F.FIXTURE_ACTOR,
+              updatedDate: now,
+              updatedUser: F.FIXTURE_ACTOR
+            });
+          });
+        }
+      );
+      if (anchorMembers.length > 0) {
+        F.collection("activityMembers").insertMany(anchorMembers);
       }
     },
     afterPrepare(variation, context) {
@@ -474,7 +536,7 @@
           + `Reset this job when finished.`
       );
     },
-    status(context) {
+    status(context, snapshot) {
       const ownerIds = context.groupOwnerIds || defaultGroupOwnerIds;
       const event = F.collection("events").findOne({ _id: context.eventId || eventId });
       const groups = ownerIds.map(ownerId => ({
@@ -508,7 +570,9 @@
         JSON.stringify(missingUserIds)
         === JSON.stringify(expectedUnassignedUserIds);
       const roomSizes = groups.map(group => group.acceptedUserIds.length);
-      const expectedRoomCount = context.expectedRoomCount || ownerIds.length;
+      const expectedRoomCount = Number.isInteger(context.expectedRoomCount)
+        ? context.expectedRoomCount
+        : ownerIds.length;
       const expectedRoomSize = context.expectedRoomSize || 3;
       const expectedRoomMin = context.expectedRoomMin || expectedRoomSize;
       const expectedRoomMax = context.expectedRoomMax || expectedRoomSize;
@@ -556,13 +620,20 @@
           ? "remainder-kept-in-valid-partial-room"
           : "remainder-redistributed-within-range";
       }
-      const anchorsPreserved = (context.anchorIds || []).length === 0
-        || (groups[0].acceptedUserIds.includes(expectedUserIds[0])
-          && groups[1].acceptedUserIds.includes(expectedUserIds[3]));
+      const expectedAnchoredUserIdsByGroup =
+        context.expectedAnchoredUserIdsByGroup || [];
+      const anchorsPreserved = expectedAnchoredUserIdsByGroup.every(
+        (anchoredUserIds, groupIndex) => (
+          Boolean(groups[groupIndex])
+          && (anchoredUserIds || []).every(
+            userId => groups[groupIndex].acceptedUserIds.includes(userId)
+          )
+        )
+      );
       const assignmentValid =
         actualRoomCount === expectedRoomCount
         && roomSizes.every(size => (
-          size >= expectedRoomMin && size <= expectedRoomMax
+          size === 0 || (size >= expectedRoomMin && size <= expectedRoomMax)
         ))
         && assignedCounts.size
           === expectedUserIds.length - expectedUnassignedUserIds.length
@@ -599,7 +670,10 @@
         ].sort((left, right) => left - right));
         const mixedRoomIndexes = roomCohortIds
           .map((cohortIds, index) => ({ cohortIds, index }))
-          .filter(item => item.cohortIds.length !== 1 || item.cohortIds[0] < 0)
+          .filter(item => (
+            groups[item.index].acceptedUserIds.length > 0
+            && (item.cohortIds.length !== 1 || item.cohortIds[0] < 0)
+          ))
           .map(item => item.index + 1);
         const cohortRoomIndexes = new Map();
         roomCohortIds.forEach((cohortIds, roomIndex) => {
@@ -716,9 +790,149 @@
             Number(affinityQualityRatio.toFixed(6))
         };
       }
+      const groupMemberRows = F.collection("activityMembers")
+        .find(
+          { ownerType: "group", ownerId: { $in: ownerIds } },
+          {
+            _id: 1,
+            ownerId: 1,
+            userId: 1,
+            status: 1,
+            requestKind: 1,
+            updatedDate: 1
+          }
+        )
+        .sort({ ownerId: 1, userId: 1, _id: 1 })
+        .toArray();
+      const markerRows = F.collection("schedulerPlanMarkers")
+        .find(
+          { ownerId: { $in: context.groupIds || defaultGroupIds } },
+          {
+            _id: 1,
+            ownerId: 1,
+            scopeId: 1,
+            userIds: 1,
+            fingerprint: 1,
+            updatedDate: 1
+          }
+        )
+        .sort({ ownerId: 1, scopeId: 1, _id: 1 })
+        .toArray();
+      const notificationSelector = {
+        $or: [
+          { entityId: context.eventId || eventId },
+          { "payload.eventId": context.eventId || eventId }
+        ]
+      };
+      const outboxRows = F.collection("notificationOutbox")
+        .find(
+          notificationSelector,
+          {
+            _id: 1,
+            syncKey: 1,
+            collapseKey: 1,
+            recipientUserIds: 1,
+            entityType: 1,
+            entityId: 1,
+            type: 1
+          }
+        )
+        .sort({ _id: 1 })
+        .toArray();
+      const bellRows = F.collection("userNotifications")
+        .find(
+          {
+            $or: [
+              { sourceId: context.eventId || eventId },
+              { "payload.eventId": context.eventId || eventId }
+            ]
+          },
+          {
+            _id: 1,
+            syncKey: 1,
+            outboxId: 1,
+            recipientUserId: 1,
+            senderUserId: 1,
+            kind: 1,
+            sourceType: 1,
+            sourceId: 1
+          }
+        )
+        .sort({ _id: 1 })
+        .toArray();
+      const outboxCount = outboxRows.length;
+      const bellCount = bellRows.length;
+      const noOutputArtifacts =
+        groupMemberRows.length === 0
+        && markerRows.length === 0
+        && outboxCount === 0
+        && bellCount === 0;
+      const currentAssignmentFingerprint = fingerprint({
+        storedSubEventGroups:
+          event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
+        groupMemberRows,
+        markerRows,
+        outboxRows,
+        bellRows
+      });
+      const rule = F.requireRule(job);
+      const runState = rule.runState || {};
+      const currentRunAtIso = F.safeText(
+        runState.lastRunAtIso || runState.runFinishedAtIso
+      );
+      const preparedAtIso = F.safeText(snapshot && snapshot.preparedAtIso);
+      const currentRunAtMillis = Date.parse(currentRunAtIso);
+      const preparedAtMillis = Date.parse(preparedAtIso);
+      const runObservedAfterPrepare =
+        Number.isFinite(currentRunAtMillis)
+        && Number.isFinite(preparedAtMillis)
+        && currentRunAtMillis >= preparedAtMillis;
+      const expectedFirstRunCount =
+        Number.isInteger(context.expectedFirstRunCount)
+          ? context.expectedFirstRunCount
+          : expectedUserIds.length - expectedUnassignedUserIds.length;
+      const baseline = context.assignmentBaseline || null;
+      const firstPassAffectedExpectedUsers = Boolean(baseline)
+        || (
+          runState.lastRunStatus === "completed"
+          && runState.lastRunCount === expectedFirstRunCount
+        );
+      const qualityValid = !quality
+        || (
+          quality.cohortIntegrityValid
+          && quality.unassignedSelectionValid
+          && quality.affinityQualityRatio === 1
+        );
+      const firstPassComplete =
+        assignmentValid
+        && qualityValid
+        && (!context.expectNoOutputArtifacts || noOutputArtifacts)
+        && runObservedAfterPrepare
+        && firstPassAffectedExpectedUsers;
+      if (firstPassComplete && !baseline && snapshot) {
+        F.collection(F.SNAPSHOT_COLLECTION).updateOne(
+          { _id: snapshot._id },
+          {
+            $set: {
+              "context.assignmentBaseline": {
+                fingerprint: currentAssignmentFingerprint,
+                runAtIso: currentRunAtIso,
+                capturedAtIso: F.nowIso()
+              }
+            }
+          }
+        );
+      }
+      const repeatedPassObserved = Boolean(
+        baseline
+        && runState.lastRunStatus === "completed"
+        && runState.lastRunCount === 0
+        && currentRunAtIso
+        && currentRunAtIso !== baseline.runAtIso
+      );
       return {
         quarantinedPublishedEvents: (context.isolatedEventIds || []).length,
-        fixtureEventPublished: event && event.published,
+        fixtureEventPublished: Boolean(event && F.safeText(event.status) === "A"),
         storedSubEventGroups:
           event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
         derivedGroupIds: context.groupIds || defaultGroupIds,
@@ -737,6 +951,20 @@
           missingUserIds,
           unexpectedUserIds,
           anchorsPreserved,
+          expectedNoOutputArtifacts: Boolean(context.expectNoOutputArtifacts),
+          noOutputArtifacts,
+          repeatedRun: {
+            expectedFirstPassAffectedUserCount: expectedFirstRunCount,
+            firstPassAffectedExpectedUsers,
+            runObservedAfterPrepare,
+            firstPassComplete,
+            baselineCaptured: Boolean(baseline) || firstPassComplete,
+            repeatedPassObserved,
+            repeatedPassChangedZeroGroups: repeatedPassObserved,
+            assignmentFingerprintUnchanged:
+              repeatedPassObserved
+              && baseline.fingerprint === currentAssignmentFingerprint
+          },
           capacityPolicy: {
             configuredRemainder,
             fullRoomCount:
@@ -758,12 +986,8 @@
         planMarkerCount: F.collection("schedulerPlanMarkers").countDocuments({
           ownerId: { $in: context.groupIds || defaultGroupIds }
         }),
-        outboxCount: F.collection("notificationOutbox").countDocuments({
-          $or: [{ entityId: context.eventId || eventId }, { "payload.eventId": context.eventId || eventId }]
-        }),
-        bellCount: F.collection("userNotifications").countDocuments({
-          $or: [{ sourceId: context.eventId || eventId }, { "payload.eventId": context.eventId || eventId }]
-        })
+        outboxCount,
+        bellCount
       };
     }
   });

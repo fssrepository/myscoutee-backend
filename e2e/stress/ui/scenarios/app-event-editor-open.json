@@ -2,7 +2,7 @@
   "name": "UI event editor open slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "event-editor/create",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,
   "rampUpMs": 0,

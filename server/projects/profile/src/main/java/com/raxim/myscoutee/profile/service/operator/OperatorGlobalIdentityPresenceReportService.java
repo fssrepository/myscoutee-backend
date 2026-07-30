@@ -337,11 +337,19 @@ public class OperatorGlobalIdentityPresenceReportService {
 
         List<String> commitments;
         try {
+            globalIdentityService.prepareQualifiedUsersForRegistry(
+                    runtime,
+                    key,
+                    qmau.getPeriod(),
+                    detailed.qualifiedUserIds());
             commitments = eligibleCommitments(
                     runtime,
                     key,
                     qmau.getPeriod(),
                     detailed.qualifiedUserIds());
+            requireEveryQualifiedUserPrepared(
+                    detailed.qualifiedUserIds(),
+                    commitments);
         } catch (PresenceCapacityExceededException exception) {
             return blockCapacityExceeded(
                     runtime,
@@ -401,9 +409,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                     .findByDeploymentIdAndLocalUserIdInAndStatusInAndKeyVersionAndSuite(
                             runtime.state().deploymentId(),
                             qualifiedUserIds.subList(offset, toIndex),
-                            List.of(
-                                    GlobalIdentityLinkState.STATUS_ACTIVE,
-                                    GlobalIdentityLinkState.STATUS_UNLINKED),
+                            List.of(GlobalIdentityLinkState.STATUS_ACTIVE),
                             key.keyVersion(),
                             key.suite())
                     .stream()
@@ -426,6 +432,18 @@ public class OperatorGlobalIdentityPresenceReportService {
         }
         commitments.sort(String::compareTo);
         return List.copyOf(commitments);
+    }
+
+    static void requireEveryQualifiedUserPrepared(
+            List<String> qualifiedUserIds,
+            List<String> commitments) {
+        long qualifiedUserCount = qualifiedUserIds.stream()
+                .distinct()
+                .count();
+        if (commitments.size() != qualifiedUserCount) {
+            throw new IllegalStateException(
+                    "Registry identity preparation must include every qualified user.");
+        }
     }
 
     private static boolean matchesAcceptedSource(

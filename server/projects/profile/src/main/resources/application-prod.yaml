@@ -18,9 +18,9 @@ config:
   firebase-enabled: ${FIREBASE_ENABLED:true}
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:/run/secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}
-  dev-user: ${DEV_USER:}
+  member-user: ${MEMBER_USER:}
   facebook-app-secret: ${FACEBOOK_APP_SECRET:}
-  websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}
+  websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080}
 
 auth:
   region-security:
@@ -45,7 +45,7 @@ email:
   from-email: ${EMAIL_FROM_EMAIL:no-reply@myscoutee.local}
   from-name: ${EMAIL_FROM_NAME:MyScoutee}
   reply-to: ${EMAIL_REPLY_TO:support@myscoutee.local}
-  base-url: ${EMAIL_BASE_URL:https://myscoutee.com}
+  base-url: ${EMAIL_BASE_URL:https://localhost}
   sendgrid:
     api-key: ${EMAIL_SENDGRID_API_KEY:}
     endpoint: ${EMAIL_SENDGRID_ENDPOINT:https://api.sendgrid.com/v3/mail/send}

@@ -366,6 +366,7 @@ db.getCollection('userNotifications').createIndex({ syncKey: 1 }, { name: 'user_
 db.getCollection('userNotifications').createIndex({ recipientUserId: 1, readAtIso: 1, createdDate: -1, _id: -1 }, { name: 'user_notifications_recipient_read_created' });
 db.getCollection('userNotifications').createIndex({ recipientUserId: 1, createdDate: -1, _id: -1 }, { name: 'user_notifications_recipient_created' });
 db.getCollection('userNotifications').createIndex({ sourceType: 1, sourceId: 1, createdDate: -1 }, { name: 'user_notifications_source_created' });
+db.getCollection('userNotifications').createIndex({ recipientUserId: 1, kind: 1, sourceType: 1, sourceId: 1, readAtIso: 1 }, { name: 'user_notifications_recipient_kind_source' });
 " >/dev/null
       ;;
     scheduledMessageTasks)

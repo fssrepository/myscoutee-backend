@@ -582,11 +582,26 @@ public class ActivitiesEventFeedbackService {
                 continue;
             }
             ActivityEvent current = bySourceId.get(eventId);
-            if (current == null || acceptedMemberCount(record) >= acceptedMemberCount(current)) {
+            if (current == null || shouldPreferFeedbackEvent(record, current)) {
                 bySourceId.put(eventId, record);
             }
         }
         return new ArrayList<>(bySourceId.values());
+    }
+
+    private boolean shouldPreferFeedbackEvent(ActivityEvent next, ActivityEvent current) {
+        boolean nextCanonical = isCanonicalFeedbackEvent(next);
+        boolean currentCanonical = isCanonicalFeedbackEvent(current);
+        if (nextCanonical != currentCanonical) {
+            return nextCanonical;
+        }
+        return acceptedMemberCount(next) >= acceptedMemberCount(current);
+    }
+
+    private boolean isCanonicalFeedbackEvent(ActivityEvent record) {
+        String creatorUserId = normalizeId(record == null ? null : record.getCreatorUserId());
+        return StringUtils.hasText(creatorUserId)
+                && creatorUserId.equals(normalizeId(record.getOwnerUserId()));
     }
 
     private Map<String, Users> buildFeedbackUsersById(

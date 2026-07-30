@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 WORKER_SCRIPT="${REPO_ROOT}/packaging/scripts/myscoutee-update-worker.sh"
 SAFE_COPY_HELPER="${REPO_ROOT}/packaging/scripts/myscoutee-safe-copy.py"
+FINGERPRINT_HELPER="${REPO_ROOT}/packaging/scripts/image-content-fingerprint.sh"
 TEST_ROOT="$(mktemp -d /tmp/myscoutee-update-worker-test.XXXXXX)"
 
 cleanup() {
@@ -21,6 +22,8 @@ for command_name in jq openssl sha256sum base64 stat dpkg dpkg-deb tar python3; 
   command -v "${command_name}" >/dev/null 2>&1 \
     || fail "required test command is missing: ${command_name}"
 done
+[[ -x "${FINGERPRINT_HELPER}" && ! -L "${FINGERPRINT_HELPER}" ]] \
+  || fail "image content fingerprint helper is missing or unsafe"
 
 STATE_ROOT="${TEST_ROOT}/state"
 CACHE_ROOT="${TEST_ROOT}/cache"
@@ -39,74 +42,22 @@ PACKAGE_PATH="${TEST_ROOT}/myscoutee_999.0.0_test.deb"
 PACKAGE_VERSION="999.0.0"
 PACKAGE_CHANNEL="stable"
 HOST_ARCH="$(dpkg --print-architecture)"
+IMAGE_INSPECT_DIR="${TEST_ROOT}/image-inspect"
 NGIN_BASE_ID="sha256:$(printf '1%.0s' {1..64})"
 NGIN_ID="sha256:$(printf '2%.0s' {1..64})"
 API_ID="sha256:$(printf '3%.0s' {1..64})"
 MINIO_ID="sha256:$(printf '4%.0s' {1..64})"
 REGISTRY_DEMO_ID="sha256:$(printf '5%.0s' {1..64})"
+API_RUNTIME_ID="sha256:$(printf '6%.0s' {1..64})"
+BAD_API_ID="sha256:$(printf '0%.0s' {1..64})"
 
 mkdir -p \
   "${FAKE_BIN}" \
+  "${IMAGE_INSPECT_DIR}" \
   "${PACKAGE_ROOT}/DEBIAN" \
   "${PACKAGE_ROOT}/opt/myscoutee/packaging"
 printf '%s\n' '1.0.0' > "${VERSION_FILE}"
 : > "${APT_CALLS_FILE}"
-
-jq -n \
-  --arg version "${PACKAGE_VERSION}" \
-  --arg nginxBaseId "${NGIN_BASE_ID}" \
-  --arg nginxId "${NGIN_ID}" \
-  --arg apiId "${API_ID}" \
-  --arg minioId "${MINIO_ID}" \
-  --arg registryDemoId "${REGISTRY_DEMO_ID}" \
-  '{
-    schemaVersion: 1,
-    releaseVersion: $version,
-    bundled: true,
-    images: [
-      {
-        service: "nginx-base",
-        container: null,
-        reference: ("myscoutee-nginx:" + $version + "-base"),
-        imageId: $nginxBaseId
-      },
-      {
-        service: "nginx",
-        container: "nginx",
-        reference: ("myscoutee-nginx:" + $version + "-prod"),
-        imageId: $nginxId
-      },
-      {
-        service: "profilemanagement",
-        container: "myscoutee",
-        reference: ("myscoutee-api:" + $version + "-prod"),
-        imageId: $apiId
-      },
-      {
-        service: "minio",
-        container: "minio",
-        reference: ("myscoutee-minio:" + $version + "-prod"),
-        imageId: $minioId
-      },
-      {
-        service: "registry-demo",
-        container: "registry-demo",
-        reference: ("myscoutee-registry:" + $version + "-prod"),
-        imageId: $registryDemoId
-      }
-    ]
-  }' > "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
-
-printf '%s\n' \
-  "Package: myscoutee" \
-  "Version: ${PACKAGE_VERSION}" \
-  "Section: web" \
-  "Priority: optional" \
-  "Architecture: ${HOST_ARCH}" \
-  "Maintainer: MyScoutee test" \
-  "Description: update worker verification fixture" \
-  > "${PACKAGE_ROOT}/DEBIAN/control"
-dpkg-deb --root-owner-group --build "${PACKAGE_ROOT}" "${PACKAGE_PATH}" >/dev/null
 
 openssl genpkey -algorithm ED25519 -out "${PRIVATE_KEY}"
 openssl pkey -in "${PRIVATE_KEY}" -pubout -out "${PUBLIC_KEY}"
@@ -135,6 +86,20 @@ printf '%s\n' \
 printf '%s\n' \
   '#!/usr/bin/env bash' \
   'set -euo pipefail' \
+  'if [[ "${1:-}" == "image" && "${2:-}" == "inspect" && "${3:-}" == "--" ]]; then' \
+  '  case "${4:-}" in' \
+  '    "${UPDATE_TEST_NGINX_BASE_ID}") fixture="${UPDATE_TEST_NGINX_BASE_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_NGINX_ID}") fixture="${UPDATE_TEST_NGINX_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_API_ID}") fixture="${UPDATE_TEST_API_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_API_RUNTIME_ID}") fixture="${UPDATE_TEST_API_RUNTIME_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_MINIO_ID}") fixture="${UPDATE_TEST_MINIO_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_REGISTRY_DEMO_ID}") fixture="${UPDATE_TEST_REGISTRY_DEMO_INSPECT}" ;;' \
+  '    "${UPDATE_TEST_BAD_API_ID}") fixture="${UPDATE_TEST_BAD_API_INSPECT}" ;;' \
+  '    *) exit 1 ;;' \
+  '  esac' \
+  '  cat "${fixture}"' \
+  '  exit 0' \
+  'fi' \
   'format="${3:-}"' \
   'container="${4:-}"' \
   'if [[ "${1:-}" != "inspect" || "${2:-}" != "--format" ]]; then exit 1; fi' \
@@ -150,11 +115,11 @@ printf '%s\n' \
   '    ;;' \
   '  "{{.Image}}")' \
   '    if [[ "${UPDATE_TEST_BAD_IMAGE:-false}" == "true" && "${container}" == "myscoutee" ]]; then' \
-  '      printf "sha256:%064d\n" 0' \
+  '      printf "%s\n" "${UPDATE_TEST_BAD_API_ID}"' \
   '    else' \
   '      case "${container}" in' \
   '        nginx) printf "%s\n" "${UPDATE_TEST_NGINX_ID}" ;;' \
-  '        myscoutee) printf "%s\n" "${UPDATE_TEST_API_ID}" ;;' \
+  '        myscoutee) printf "%s\n" "${UPDATE_TEST_API_RUNTIME_ID}" ;;' \
   '        minio) printf "%s\n" "${UPDATE_TEST_MINIO_ID}" ;;' \
   '        registry-demo) printf "%s\n" "${UPDATE_TEST_REGISTRY_DEMO_ID}" ;;' \
   '        *) exit 1 ;;' \
@@ -182,15 +147,204 @@ chmod 0755 \
   "${BACKUP_HELPER}" \
   "${SAFE_COPY_HELPER}"
 
-export PATH="${FAKE_BIN}:${PATH}"
+write_image_fixture() {
+  local fixture_name="$1"
+  local image_id="$2"
+  local service="$3"
+  local run_user="$4"
+  local config_path="${IMAGE_INSPECT_DIR}/${fixture_name}-config.json"
+  local inspect_path="${IMAGE_INSPECT_DIR}/${fixture_name}-inspect.json"
+
+  jq -n \
+    --arg service "${service}" \
+    --arg runUser "${run_user}" \
+    --arg layer "${image_id}" \
+    '{
+      architecture: "amd64",
+      os: "linux",
+      config: {
+        User: $runUser,
+        Env: [
+          ("SERVICE=" + $service),
+          "TZ=Europe/Bratislava"
+        ],
+        Entrypoint: ["/usr/local/bin/entrypoint"],
+        Cmd: ["serve", $service],
+        WorkingDir: "/opt/myscoutee",
+        Labels: {
+          "com.myscoutee.fixture": $service,
+          "org.opencontainers.image.vendor": "MyScoutee"
+        },
+        ExposedPorts: {
+          "8080/tcp": {}
+        },
+        Volumes: {
+          "/data": {}
+        },
+        Healthcheck: {
+          Test: ["CMD", "/usr/local/bin/healthcheck"],
+          Interval: 30000000000,
+          Timeout: 3000000000,
+          StartPeriod: 1000000000,
+          Retries: 3
+        },
+        StopSignal: "SIGTERM",
+        Shell: ["/bin/sh", "-c"]
+      },
+      rootfs: {
+        type: "layers",
+        diff_ids: [$layer]
+      }
+    }' > "${config_path}"
+  jq --arg imageId "${image_id}" '
+    [{
+      Id: $imageId,
+      RepoTags: ["daemon-local-id-is-not-release-identity:test"],
+      Architecture: .architecture,
+      Os: .os,
+      Config: .config,
+      RootFS: {
+        Type: .rootfs.type,
+        Layers: .rootfs.diff_ids
+      }
+    }]
+  ' "${config_path}" > "${inspect_path}"
+}
+
+write_image_fixture \
+  "nginx-base" "${NGIN_BASE_ID}" "nginx-base" "101:101"
+write_image_fixture \
+  "nginx" "${NGIN_ID}" "nginx" "101:101"
+write_image_fixture \
+  "api" "${API_ID}" "profilemanagement" "10001:10001"
+jq --arg runtimeId "${API_RUNTIME_ID}" \
+  '.[0].Id = $runtimeId' \
+  "${IMAGE_INSPECT_DIR}/api-inspect.json" \
+  > "${IMAGE_INSPECT_DIR}/api-runtime-inspect.json"
+write_image_fixture \
+  "minio" "${MINIO_ID}" "minio" "1000:1000"
+write_image_fixture \
+  "registry-demo" "${REGISTRY_DEMO_ID}" "registry-demo" "10002:10002"
+write_image_fixture \
+  "bad-api" "${BAD_API_ID}" "tampered-profilemanagement" "10001:10001"
+
 export UPDATE_TEST_VERSION_FILE="${VERSION_FILE}"
 export UPDATE_TEST_APT_CALLS_FILE="${APT_CALLS_FILE}"
 export UPDATE_TEST_INSTALLED_MANIFEST="${INSTALLED_MANIFEST}"
 export UPDATE_TEST_BACKUP_FILE="${BACKUP_FILE}"
+export UPDATE_TEST_NGINX_BASE_ID="${NGIN_BASE_ID}"
 export UPDATE_TEST_NGINX_ID="${NGIN_ID}"
 export UPDATE_TEST_API_ID="${API_ID}"
+export UPDATE_TEST_API_RUNTIME_ID="${API_RUNTIME_ID}"
 export UPDATE_TEST_MINIO_ID="${MINIO_ID}"
 export UPDATE_TEST_REGISTRY_DEMO_ID="${REGISTRY_DEMO_ID}"
+export UPDATE_TEST_BAD_API_ID="${BAD_API_ID}"
+export UPDATE_TEST_NGINX_BASE_INSPECT="${IMAGE_INSPECT_DIR}/nginx-base-inspect.json"
+export UPDATE_TEST_NGINX_INSPECT="${IMAGE_INSPECT_DIR}/nginx-inspect.json"
+export UPDATE_TEST_API_INSPECT="${IMAGE_INSPECT_DIR}/api-inspect.json"
+export UPDATE_TEST_API_RUNTIME_INSPECT="${IMAGE_INSPECT_DIR}/api-runtime-inspect.json"
+export UPDATE_TEST_MINIO_INSPECT="${IMAGE_INSPECT_DIR}/minio-inspect.json"
+export UPDATE_TEST_REGISTRY_DEMO_INSPECT="${IMAGE_INSPECT_DIR}/registry-demo-inspect.json"
+export UPDATE_TEST_BAD_API_INSPECT="${IMAGE_INSPECT_DIR}/bad-api-inspect.json"
+export PATH="${FAKE_BIN}:${PATH}"
+
+fingerprint_config() {
+  local config_path="$1"
+  local fingerprint
+
+  fingerprint="$("${FINGERPRINT_HELPER}" config - < "${config_path}")"
+  [[ "${fingerprint}" =~ ^sha256:[0-9a-f]{64}$ ]] \
+    || fail "image content fingerprint helper returned an invalid digest"
+  printf '%s' "${fingerprint}"
+}
+
+NGIN_BASE_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/nginx-base-config.json"
+)"
+NGIN_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/nginx-config.json"
+)"
+API_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/api-config.json"
+)"
+MINIO_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/minio-config.json"
+)"
+REGISTRY_DEMO_FINGERPRINT="$(
+  fingerprint_config "${IMAGE_INSPECT_DIR}/registry-demo-config.json"
+)"
+
+[[ "$("${FINGERPRINT_HELPER}" docker "${API_RUNTIME_ID}")" \
+  == "${API_FINGERPRINT}" ]] \
+  || fail "OCI config and Docker inspect fingerprints are not portable"
+
+jq -n \
+  --arg version "${PACKAGE_VERSION}" \
+  --arg nginxBaseId "${NGIN_BASE_ID}" \
+  --arg nginxId "${NGIN_ID}" \
+  --arg apiId "${API_ID}" \
+  --arg minioId "${MINIO_ID}" \
+  --arg registryDemoId "${REGISTRY_DEMO_ID}" \
+  --arg nginxBaseFingerprint "${NGIN_BASE_FINGERPRINT}" \
+  --arg nginxFingerprint "${NGIN_FINGERPRINT}" \
+  --arg apiFingerprint "${API_FINGERPRINT}" \
+  --arg minioFingerprint "${MINIO_FINGERPRINT}" \
+  --arg registryDemoFingerprint "${REGISTRY_DEMO_FINGERPRINT}" \
+  '{
+    schemaVersion: 1,
+    releaseVersion: $version,
+    bundled: true,
+    images: [
+      {
+        service: "nginx-base",
+        container: null,
+        reference: ("myscoutee-nginx:" + $version + "-base"),
+        imageId: $nginxBaseId,
+        contentFingerprint: $nginxBaseFingerprint
+      },
+      {
+        service: "nginx",
+        container: "nginx",
+        reference: ("myscoutee-nginx:" + $version + "-prod"),
+        imageId: $nginxId,
+        contentFingerprint: $nginxFingerprint
+      },
+      {
+        service: "profilemanagement",
+        container: "myscoutee",
+        reference: ("myscoutee-api:" + $version + "-prod"),
+        imageId: $apiId,
+        contentFingerprint: $apiFingerprint
+      },
+      {
+        service: "minio",
+        container: "minio",
+        reference: ("myscoutee-minio:" + $version + "-prod"),
+        imageId: $minioId,
+        contentFingerprint: $minioFingerprint
+      },
+      {
+        service: "registry-demo",
+        container: "registry-demo",
+        reference: ("myscoutee-registry:" + $version + "-prod"),
+        imageId: $registryDemoId,
+        contentFingerprint: $registryDemoFingerprint
+      }
+    ]
+  }' > "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+
+printf '%s\n' \
+  "Package: myscoutee" \
+  "Version: ${PACKAGE_VERSION}" \
+  "Section: web" \
+  "Priority: optional" \
+  "Architecture: ${HOST_ARCH}" \
+  "Maintainer: MyScoutee test" \
+  "Description: update worker verification fixture" \
+  > "${PACKAGE_ROOT}/DEBIAN/control"
+dpkg-deb --root-owner-group --build \
+  "${PACKAGE_ROOT}" "${PACKAGE_PATH}" >/dev/null
+
 export MYSCOUTEE_UPDATE_STATE_DIR="${STATE_ROOT}"
 export MYSCOUTEE_UPDATE_CACHE_DIR="${CACHE_ROOT}"
 export MYSCOUTEE_UPDATE_AUDIT_DIR="${AUDIT_ROOT}"
@@ -214,6 +368,19 @@ source "${WORKER_SCRIPT}"
 
 prepare_directories
 require_runtime
+
+CURRENT_RELEASE_VERSION="${PACKAGE_VERSION}"
+validate_image_manifest \
+  "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json" \
+  || fail "content-fingerprint image manifest was rejected"
+MISSING_FINGERPRINT_MANIFEST="${TEST_ROOT}/missing-content-fingerprint.json"
+jq 'del(.images[0].contentFingerprint)' \
+  "${PACKAGE_ROOT}/opt/myscoutee/packaging/IMAGE-MANIFEST.json" \
+  > "${MISSING_FINGERPRINT_MANIFEST}"
+if validate_image_manifest "${MISSING_FINGERPRINT_MANIFEST}"; then
+  fail "image manifest without a content fingerprint was accepted"
+fi
+CURRENT_RELEASE_VERSION=""
 
 make_request() {
   local job_id="$1"
@@ -406,12 +573,12 @@ BAD_IMAGE_JOB="upd_ffffffffffffffffffffffffffffffff"
 BAD_IMAGE_REQUEST="$(stage_request "${BAD_IMAGE_JOB}")"
 export UPDATE_TEST_BAD_IMAGE=true
 if run_request "${BAD_IMAGE_REQUEST}"; then
-  fail "wrong running image identity was accepted"
+  fail "wrong running image content fingerprint was accepted"
 fi
 unset UPDATE_TEST_BAD_IMAGE
 jq -e '.phase == "RECOVERY_REQUIRED"' \
   "${JOBS_DIR}/${BAD_IMAGE_JOB}/status.json" >/dev/null \
-  || fail "wrong running image did not require recovery"
+  || fail "wrong running image content did not require recovery"
 
 mkdir -p \
   "${CACHE_JOBS_DIR}/upd_10000000000000000000000000000000" \

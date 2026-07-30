@@ -16,7 +16,28 @@ public final class GameDtos {
             String rightQuery,
             UserGameFilterPreferencesDto filterPreferences,
             String cursor,
-            Integer pageSize) {
+            Integer pageSize,
+            List<String> excludedCardUserIds,
+            List<String> excludedSocialCardIds) {
+        public UserGameCardsQueryRequestDto(
+                String userId,
+                String mode,
+                String leftQuery,
+                String rightQuery,
+                UserGameFilterPreferencesDto filterPreferences,
+                String cursor,
+                Integer pageSize) {
+            this(
+                    userId,
+                    mode,
+                    leftQuery,
+                    rightQuery,
+                    filterPreferences,
+                    cursor,
+                    pageSize,
+                    List.of(),
+                    List.of());
+        }
     }
 
     public record UserGameSocialCardDto(

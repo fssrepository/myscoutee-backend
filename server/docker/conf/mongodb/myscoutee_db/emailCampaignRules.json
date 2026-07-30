@@ -132,7 +132,7 @@
     ],
     "ctaPath": "/game",
     "templateVariables": {
-      "promo_headline": "Fresh MyScoutee experiences just landed",
+      "promo_headline": "Fresh experiences just landed",
       "promo_body": "We are highlighting new hosts, fresh activity ideas, and stronger connection paths for members in your country. Open the app and see what is new around you.",
       "cta_label": "See what's new"
     },

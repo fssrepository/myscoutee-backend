@@ -77,7 +77,12 @@ public class PromotionalEmailDeliveryProcessor {
                         item.getHtmlBody(),
                         item.getTextBody(),
                         emailProperties.getFromEmail(),
-                        emailProperties.getFromName(),
+                        firstNonBlank(
+                                item.getTemplateVariables() == null
+                                        ? null
+                                        : item.getTemplateVariables()
+                                                .get("product_name"),
+                                emailProperties.getFromName()),
                         emailProperties.getReplyTo(),
                         safeText(item.getCategory()),
                         Map.of(
@@ -123,5 +128,10 @@ public class PromotionalEmailDeliveryProcessor {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String firstNonBlank(String first, String second) {
+        String normalized = safeText(first);
+        return normalized.isEmpty() ? safeText(second) : normalized;
     }
 }

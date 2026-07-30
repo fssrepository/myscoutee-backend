@@ -29,4 +29,16 @@ class EmailTemplateRendererTest {
 
         assertThat(rendered).isEqualTo("support@myscoutee.local @unknown_token Sam");
     }
+
+    @Test
+    void doesNotConsumeSentencePunctuationAfterAtStyleVariables() {
+        String rendered = renderer.renderText(
+                "Welcome back, @user_first_name. Open @product_name!",
+                Map.of(
+                        "user_first_name", "Ada",
+                        "product_name", "Community Hub"));
+
+        assertThat(rendered)
+                .isEqualTo("Welcome back, Ada. Open Community Hub!");
+    }
 }

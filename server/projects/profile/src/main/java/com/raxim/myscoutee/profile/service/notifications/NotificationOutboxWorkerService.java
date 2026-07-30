@@ -55,6 +55,8 @@ import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
 import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway.FirebaseBatchSendResult;
 import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway.FirebaseTokenSendResult;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.ResolvedDeploymentBranding;
 
 @Service
 public class NotificationOutboxWorkerService {
@@ -488,21 +490,32 @@ public class NotificationOutboxWorkerService {
                 .build();
     }
 
-    private Map<String, String> payloadFor(NotificationOutboxItem item) {
+    Map<String, String> payloadFor(NotificationOutboxItem item) {
         Map<String, String> payload = new LinkedHashMap<>(item.getPayload() == null ? Map.of() : item.getPayload());
+        ResolvedDeploymentBranding branding =
+                snapshottedBranding(payload);
         putIfText(payload, "type", item.getNotificationType());
-        putIfText(payload, "title", item.getTitle());
+        putIfText(payload, "title", firstNonBlank(
+                item.getTitle(),
+                payload.get("title"),
+                branding.productName()));
         putIfText(payload, "body", item.getBody());
         putIfText(payload, "url", firstNonBlank(item.getClickUrl(), payload.get("url"), "/game"));
-        putIfText(payload, "icon", firstNonBlank(item.getIconUrl(), payload.get("icon"), "/assets/logo/heart.webp"));
-        putIfText(payload, "badge", firstNonBlank(item.getBadgeUrl(), payload.get("badge"), "/assets/logo/heart.webp"));
+        putIfText(payload, "icon", branding.applicationIcon(
+                firstNonBlank(
+                        item.getIconUrl(),
+                        payload.get("icon"))));
+        putIfText(payload, "badge", branding.applicationIcon(
+                firstNonBlank(
+                        item.getBadgeUrl(),
+                        payload.get("badge"))));
         putIfText(payload, "tag", firstNonBlank(item.getTag(), payload.get("tag"), item.getNotificationType()));
         return payload;
     }
 
     private WebpushConfig webpushConfig(NotificationOutboxItem item, Map<String, String> payload) {
         WebpushNotification.Builder notificationBuilder = WebpushNotification.builder()
-                .setTitle(firstNonBlank(item.getTitle(), payload.get("title"), "MyScoutee"))
+                .setTitle(firstNonBlank(item.getTitle(), payload.get("title")))
                 .setBody(firstNonBlank(item.getBody(), payload.get("body"), "You have a new notification."))
                 .setIcon(payload.get("icon"))
                 .setBadge(payload.get("badge"))
@@ -515,6 +528,41 @@ public class NotificationOutboxWorkerService {
                 .setFcmOptions(WebpushFcmOptions.withLink(payload.get("url")))
                 .setNotification(notificationBuilder.build())
                 .build();
+    }
+
+    private ResolvedDeploymentBranding snapshottedBranding(
+            Map<String, String> payload) {
+        ResolvedDeploymentBranding fallback =
+                DeploymentBrandingResolver.fallback();
+        String revisionValue = firstNonBlank(
+                payload == null
+                        ? null
+                        : payload.get("productBrandingRevision"),
+                payload == null
+                        ? null
+                        : payload.get("product_branding_revision"));
+        long revision = 0L;
+        try {
+            revision = Math.max(
+                    0L,
+                    Long.parseLong(firstNonBlank(revisionValue, "0")));
+        } catch (NumberFormatException ignored) {
+            revision = 0L;
+        }
+        return new ResolvedDeploymentBranding(
+                firstNonBlank(
+                        payload == null ? null : payload.get("productName"),
+                        payload == null ? null : payload.get("product_name"),
+                        fallback.productName()),
+                firstNonBlank(
+                        payload == null
+                                ? null
+                                : payload.get("productLogoUrl"),
+                        payload == null
+                                ? null
+                                : payload.get("product_logo_url"),
+                        fallback.logoUrl()),
+                revision);
     }
 
     private List<TokenRegistration> tokenRegistrations(List<Users> users) {

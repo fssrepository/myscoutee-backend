@@ -9,6 +9,7 @@ Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/opt/myscoutee/server
 EnvironmentFile=-/etc/myscoutee/myscoutee.env
+ExecStartPre=/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh
 ExecStart=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh up -d
 ExecStop=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh down
 TimeoutStartSec=0

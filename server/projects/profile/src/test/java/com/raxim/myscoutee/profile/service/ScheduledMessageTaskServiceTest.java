@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,6 +30,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.common.config.properties.EmailProperties;
+import com.raxim.myscoutee.profile.data.document.EmailOutboxItem;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationTemplate;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
@@ -42,6 +45,8 @@ import com.raxim.myscoutee.profile.service.email.EmailProviderGateway;
 import com.raxim.myscoutee.profile.service.email.EmailTemplateRenderer;
 import com.raxim.myscoutee.profile.service.email.ScheduledMessageAuditService;
 import com.raxim.myscoutee.profile.service.email.ScheduledNotificationDeliveryService;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.ResolvedDeploymentBranding;
 
 @ExtendWith(MockitoExtension.class)
 class ScheduledMessageTaskServiceTest {
@@ -212,6 +217,76 @@ class ScheduledMessageTaskServiceTest {
                 anyMap(),
                 anyString());
         verify(emailOutboxRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void stageReminderResolvesBrandingOnceAndSnapshotsItForPushAndEmail() {
+        DeploymentBrandingResolver brandingResolver =
+                org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
+        when(brandingResolver.resolve()).thenReturn(
+                new ResolvedDeploymentBranding(
+                        "Community Hub",
+                        "/media/public?key=community-logo",
+                        31L));
+        service.setDeploymentBrandingResolver(brandingResolver);
+        notificationTemplate.setTitleTemplate(
+                "@product_name event update");
+        notificationTemplate.setIconUrl("@product_logo_url");
+        notificationTemplate.setBadgeUrl("@product_logo_url");
+        emailTemplate.setSubjectTemplate(
+                "@product_name event update");
+        List<EmailOutboxItem> savedEmails = new ArrayList<>();
+        when(emailOutboxRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> {
+                    List<EmailOutboxItem> items =
+                            invocation.getArgument(0);
+                    savedEmails.addAll(items);
+                    return items;
+                });
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("user-1"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of(),
+                        1));
+
+        ReflectionTestUtils.invokeMethod(
+                service,
+                "markStageReminderDue",
+                stageReminderTask(),
+                "run-stage");
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        ArgumentCaptor<Map<String, String>> variablesCaptor =
+                (ArgumentCaptor) ArgumentCaptor.forClass(Map.class);
+        verify(scheduledNotificationDeliveryService).send(
+                eq(recipient),
+                eq(notificationTemplate),
+                variablesCaptor.capture(),
+                eq("stage-reminder"));
+        verify(brandingResolver, times(1)).resolve();
+        assertThat(variablesCaptor.getValue())
+                .containsEntry("productName", "Community Hub")
+                .containsEntry("product_name", "Community Hub")
+                .containsEntry(
+                        "productLogoUrl",
+                        "/media/public?key=community-logo")
+                .containsEntry(
+                        "product_logo_url",
+                        "/media/public?key=community-logo")
+                .containsEntry("productBrandingRevision", "31")
+                .containsEntry("product_branding_revision", "31");
+        assertThat(savedEmails).hasSize(1);
+        assertThat(savedEmails.get(0).getSubject())
+                .isEqualTo("Community Hub event update");
+        assertThat(savedEmails.get(0).getTemplateVariables())
+                .containsEntry("product_name", "Community Hub")
+                .containsEntry("product_branding_revision", "31");
     }
 
     private ScheduledMessageTask stageReminderTask() {

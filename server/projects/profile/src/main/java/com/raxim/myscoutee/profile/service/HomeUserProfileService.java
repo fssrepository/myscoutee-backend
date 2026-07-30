@@ -88,6 +88,7 @@ import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
+import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
@@ -216,6 +217,7 @@ public class HomeUserProfileService {
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
     private NotificationRuleRegistryService notificationRuleRegistryService;
+    private UserNotificationPageRepository userNotificationPageRepository;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -276,6 +278,12 @@ public class HomeUserProfileService {
     @Autowired(required = false)
     void setNotificationRuleRegistryService(NotificationRuleRegistryService notificationRuleRegistryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
+    }
+
+    @Autowired(required = false)
+    void setUserNotificationPageRepository(
+            UserNotificationPageRepository userNotificationPageRepository) {
+        this.userNotificationPageRepository = userNotificationPageRepository;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -2535,9 +2543,22 @@ public class HomeUserProfileService {
                 counters.eventFeedback(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
-                counters.notifications(),
+                resolveRealtimeNotificationCount(user, counters.notifications()),
                 StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
                 StringUtils.hasText(previousMemberHash) && !Objects.equals(previousMemberHash, nextMemberHash));
+    }
+
+    private int resolveRealtimeNotificationCount(
+            Users user,
+            Integer storedNotificationCount) {
+        String userId = normalizeId(user == null ? null : user.getId());
+        if (userNotificationPageRepository == null || !StringUtils.hasText(userId)) {
+            return normalizeCount(storedNotificationCount);
+        }
+        long unreadCount = userNotificationPageRepository.countUnread(userId);
+        return unreadCount > Integer.MAX_VALUE
+                ? Integer.MAX_VALUE
+                : (int) Math.max(0L, unreadCount);
     }
 
     private String buildRealtimeCursor(

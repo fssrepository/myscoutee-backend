@@ -25,6 +25,10 @@ if [[ ! "${ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]; then
 fi
 PACKAGE_NAME="myscoutee_${VERSION}_${ARCHITECTURE}"
 DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
+DEB_PARTIAL_PATH="${DIST_DIR}/${PACKAGE_NAME}.partial.deb"
+CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/myscoutee-client-tools_${VERSION}.tar.gz"
+CLIENT_TOOLS_PARTIAL="${DIST_DIR}/myscoutee-client-tools_${VERSION}.partial.tar.gz"
+IMAGE_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
 
 export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
@@ -45,7 +49,7 @@ if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
 fi
 
-rm -rf "${STAGING_DIR}" "${DEB_PATH}"
+rm -rf "${STAGING_DIR}" "${DEB_PARTIAL_PATH}" "${CLIENT_TOOLS_PARTIAL}"
 install -d "${STAGING_DIR}/DEBIAN"
 install -d "${STAGING_DIR}/opt/myscoutee/server/docker/conf"
 install -d "${STAGING_DIR}/opt/myscoutee/server/docker/scripts"
@@ -54,6 +58,7 @@ install -d "${STAGING_DIR}/opt/myscoutee/packaging"
 install -d "${STAGING_DIR}/opt/myscoutee/packaging/update"
 install -d "${STAGING_DIR}/opt/myscoutee/images"
 install -d "${STAGING_DIR}/lib/systemd/system"
+install -d "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment"
 
 sed \
   -e "s/^Version:.*/Version: ${VERSION}/" \
@@ -180,6 +185,7 @@ stage_mongo_configuration() {
   done
 }
 
+node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
 while IFS= read -r runtime_script_path; do
   cp -a "${runtime_script_path}" "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
@@ -193,9 +199,29 @@ done < <(
 )
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
+for client_helper in \
+  README.md \
+  install.env.example \
+  install.sh \
+  purge.sh \
+  forward-localhost.sh \
+  remote-transport.sh \
+  verify-release.sh; do
+  install -m 0644 \
+    "${REPO_ROOT}/packaging/client-tools/${client_helper}" \
+    "${STAGING_DIR}/usr/share/myscoutee/client-tools/${client_helper}"
+done
+cp -a "${REPO_ROOT}/packaging/verify-deployment/." \
+  "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment/"
+printf '%s\n' "${VERSION}" \
+  > "${STAGING_DIR}/usr/share/myscoutee/client-tools/VERSION"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.path"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.path"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.timer" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.timer"
 install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}/opt/myscoutee/packaging/update/README"
 printf '%s\n' "${VERSION}" > "${STAGING_DIR}/opt/myscoutee/packaging/VERSION"
 
@@ -240,6 +266,18 @@ image_id() {
   printf '%s' "${value}"
 }
 
+image_content_fingerprint() {
+  local image_name="$1"
+  local value
+
+  value="$(bash "${IMAGE_FINGERPRINT_HELPER}" docker "${image_name}")"
+  if [[ ! "${value}" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+    echo "Could not fingerprint Docker image ${image_name}." >&2
+    exit 1
+  fi
+  printf '%s' "${value}"
+}
+
 if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${NGINX_BASE_IMAGE}" "myscoutee-nginx-${VERSION}-base"
   save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}-prod"
@@ -250,14 +288,19 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
     --arg releaseVersion "${VERSION}" \
     --arg nginxBaseReference "${NGINX_BASE_IMAGE}" \
     --arg nginxBaseId "$(image_id "${NGINX_BASE_IMAGE}")" \
+    --arg nginxBaseFingerprint "$(image_content_fingerprint "${NGINX_BASE_IMAGE}")" \
     --arg nginxReference "${NGINX_PRODUCTION_IMAGE}" \
     --arg nginxId "$(image_id "${NGINX_PRODUCTION_IMAGE}")" \
+    --arg nginxFingerprint "$(image_content_fingerprint "${NGINX_PRODUCTION_IMAGE}")" \
     --arg apiReference "${MYSCOUTEE_PRODUCTION_IMAGE}" \
     --arg apiId "$(image_id "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
+    --arg apiFingerprint "$(image_content_fingerprint "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
     --arg minioReference "${MINIO_PRODUCTION_IMAGE}" \
     --arg minioId "$(image_id "${MINIO_PRODUCTION_IMAGE}")" \
+    --arg minioFingerprint "$(image_content_fingerprint "${MINIO_PRODUCTION_IMAGE}")" \
     --arg registryDemoReference "${REGISTRY_DEMO_IMAGE}" \
     --arg registryDemoId "$(image_id "${REGISTRY_DEMO_IMAGE}")" \
+    --arg registryDemoFingerprint "$(image_content_fingerprint "${REGISTRY_DEMO_IMAGE}")" \
     '{
       schemaVersion: 1,
       releaseVersion: $releaseVersion,
@@ -267,31 +310,36 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
           service: "nginx-base",
           container: null,
           reference: $nginxBaseReference,
-          imageId: $nginxBaseId
+          imageId: $nginxBaseId,
+          contentFingerprint: $nginxBaseFingerprint
         },
         {
           service: "nginx",
           container: "nginx",
           reference: $nginxReference,
-          imageId: $nginxId
+          imageId: $nginxId,
+          contentFingerprint: $nginxFingerprint
         },
         {
           service: "profilemanagement",
           container: "myscoutee",
           reference: $apiReference,
-          imageId: $apiId
+          imageId: $apiId,
+          contentFingerprint: $apiFingerprint
         },
         {
           service: "minio",
           container: "minio",
           reference: $minioReference,
-          imageId: $minioId
+          imageId: $minioId,
+          contentFingerprint: $minioFingerprint
         },
         {
           service: "registry-demo",
           container: "registry-demo",
           reference: $registryDemoReference,
-          imageId: $registryDemoId
+          imageId: $registryDemoId,
+          contentFingerprint: $registryDemoFingerprint
         }
       ]
     }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
@@ -315,8 +363,6 @@ if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then
   save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis" true
 fi
 
-bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
-
 if ! command -v dpkg-deb >/dev/null 2>&1; then
   echo "dpkg-deb is required to build the Debian package." >&2
   exit 1
@@ -332,6 +378,38 @@ find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" \
   -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod 0755 {} +
 find "${STAGING_DIR}/opt/myscoutee/server/docker" \
   -type f -name "*.sh" -exec chmod 0755 {} +
+find "${STAGING_DIR}/usr/share/myscoutee/client-tools" \
+  -type f -name "*.sh" -exec chmod 0755 {} +
+chmod 0755 \
+  "${STAGING_DIR}/usr/share/myscoutee/client-tools/verify-deployment/run.mjs"
 
-dpkg-deb --root-owner-group --build "${STAGING_DIR}" "${DEB_PATH}"
+tar \
+  --sort=name \
+  --mtime="@${SOURCE_DATE_EPOCH:-0}" \
+  --owner=0 \
+  --group=0 \
+  --numeric-owner \
+  -C "${STAGING_DIR}/usr/share/myscoutee/client-tools" \
+  -cf - . \
+  | gzip -n > "${CLIENT_TOOLS_PARTIAL}"
+mv -f "${CLIENT_TOOLS_PARTIAL}" "${CLIENT_TOOLS_ARCHIVE}"
+chmod 0644 "${CLIENT_TOOLS_ARCHIVE}"
+
+# Client tools execute on the Operator workstation, not on the deployment
+# host. Keep the Debian payload as one directly transferable archive instead
+# of installing an unusable unpacked copy of the client-side scripts.
+rm -rf -- "${STAGING_DIR}/usr/share/myscoutee/client-tools"
+install -m 0644 \
+  "${CLIENT_TOOLS_ARCHIVE}" \
+  "${STAGING_DIR}/usr/share/myscoutee/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
+
+bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
+
+dpkg-deb --root-owner-group --build \
+  "${STAGING_DIR}" \
+  "${DEB_PARTIAL_PATH}"
+dpkg-deb --info "${DEB_PARTIAL_PATH}" >/dev/null
+mv -f "${DEB_PARTIAL_PATH}" "${DEB_PATH}"
+chmod 0644 "${DEB_PATH}"
+echo "Operator client tools: ${CLIENT_TOOLS_ARCHIVE}" >&2
 echo "${DEB_PATH}"

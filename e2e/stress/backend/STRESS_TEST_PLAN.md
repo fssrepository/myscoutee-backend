@@ -34,12 +34,23 @@ For WebSocket room load, also track:
 
 ## Run Method
 
-Start the normal stack for read-only contract scenarios:
+Start the standalone, disposable production-style E2E stack for every backend
+stress scenario:
 
 ```bash
 cd server
-docker compose up --build
+docker compose -f docker-compose.e2e.yml up --build --wait
+docker compose -f docker-compose.e2e.yml \
+  cp nginx:/etc/nginx/keys/nginx.crt /tmp/myscoutee-e2e-nginx-ca.pem
+
+cd ..
+export E2E_STRESS_BASE_URL=https://127.0.0.1
+export E2E_SERVER_BASE_URL=https://127.0.0.1
+export NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem
 ```
+
+The extra CA is the stack's short-lived self-signed localhost certificate;
+copy it again after recreating Nginx.
 
 Run a baseline and record artifacts:
 
@@ -69,14 +80,9 @@ node e2e/stress/backend/compare.mjs \
   .e2e-artifacts/stress/backend/server-events-read-candidate
 ```
 
-For e2e mutation scenarios and destructive WebSocket room load, start the
-e2e/stress stack instead:
-
-```bash
-cd server
-MONGO_E2E_DATABASE=e2e_db \
-docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build
-```
+The direct mutation-flow driver resets once, runs deployment-global
+`flows/operator/*` cases sequentially exactly once, then applies
+`E2E_STRESS_LOOPS` and `E2E_STRESS_CONCURRENCY` only to repeatable flows.
 
 ## Scenario Matrix
 

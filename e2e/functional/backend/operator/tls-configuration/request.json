@@ -1,0 +1,13 @@
+{
+  "name": "operator TLS configuration availability and secret boundary",
+  "group": "operator",
+  "order": 1330,
+  "method": "GET",
+  "path": "/api/operator/configuration/tls",
+  "headers": {
+    "X-App-Session-Kind": "demo",
+    "X-Demo-User-Id": "{{operatorUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

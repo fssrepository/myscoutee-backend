@@ -31,14 +31,14 @@ import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver;
+import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.ResolvedDeploymentBranding;
 
 @Service
 public class NotificationOutboxService {
     public static final String WAKEUP_STREAM_KEY = "notification:outbox:wakeups";
     private static final Duration WAKEUP_STREAM_RETENTION = Duration.ofDays(30);
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationOutboxService.class);
-    private static final String DEFAULT_BADGE_URL = "/assets/logo/heart.webp";
-    private static final String DEFAULT_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
     private static final String DELIVERY_STRATEGY_DIRECT = "direct";
     private static final String DELIVERY_STRATEGY_MULTICAST = "multicast";
@@ -53,6 +53,7 @@ public class NotificationOutboxService {
     private final RedisStreamRetentionService redisStreamRetentionService;
     private final ObjectProvider<UserNotificationService> userNotificationServiceProvider;
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
+    private DeploymentBrandingResolver deploymentBrandingResolver;
     private MongoTemplate mongoTemplate;
 
     @Autowired
@@ -104,12 +105,19 @@ public class NotificationOutboxService {
         this.mongoTemplate = mongoTemplate;
     }
 
+    @Autowired(required = false)
+    void setDeploymentBrandingResolver(
+            DeploymentBrandingResolver deploymentBrandingResolver) {
+        this.deploymentBrandingResolver = deploymentBrandingResolver;
+    }
+
     public Optional<NotificationOutboxItem> enqueue(NotificationIntent intent) {
         if (intent == null) {
             return Optional.empty();
         }
         String type = safeText(intent.type());
-        Map<String, String> payload = normalizedPayload(intent);
+        ResolvedDeploymentBranding branding = deploymentBranding(intent);
+        Map<String, String> payload = normalizedPayload(intent, branding);
         List<String> recipientUserIds = compactIds(intent.recipientUserIds());
         String topicName = resolveStableTopicName(intent, payload, recipientUserIds.size());
         String deliveryStrategy = StringUtils.hasText(topicName)
@@ -250,11 +258,17 @@ public class NotificationOutboxService {
         item.setRecipientUserIds(recipientUserIds);
         item.setDeliveryStrategy(deliveryStrategy);
         item.setTopicName(safeNullableText(topicName));
-        item.setTitle(firstNonBlank(intent.title(), payload.get("title")));
-        item.setBody(firstNonBlank(intent.body(), payload.get("body")));
-        item.setClickUrl(firstNonBlank(intent.clickUrl(), DEFAULT_CLICK_URL));
-        item.setIconUrl(firstNonBlank(intent.iconUrl(), DEFAULT_ICON_URL));
-        item.setBadgeUrl(firstNonBlank(intent.badgeUrl(), DEFAULT_BADGE_URL));
+        item.setTitle(firstNonBlank(
+                payload.get("title"),
+                payload.get("productName")));
+        item.setBody(firstNonBlank(payload.get("body"), intent.body()));
+        item.setClickUrl(firstNonBlank(payload.get("url"), DEFAULT_CLICK_URL));
+        item.setIconUrl(firstNonBlank(
+                payload.get("icon"),
+                payload.get("productLogoUrl")));
+        item.setBadgeUrl(firstNonBlank(
+                payload.get("badge"),
+                payload.get("productLogoUrl")));
         item.setTag(firstNonBlank(intent.tag(), item.getNotificationType()));
         item.setPayload(payload);
         item.setPayloadHash(payloadHash);
@@ -366,7 +380,9 @@ public class NotificationOutboxService {
         }
     }
 
-    private Map<String, String> normalizedPayload(NotificationIntent intent) {
+    private Map<String, String> normalizedPayload(
+            NotificationIntent intent,
+            ResolvedDeploymentBranding branding) {
         LinkedHashMap<String, String> payload = new LinkedHashMap<>();
         if (intent.payload() != null) {
             intent.payload().entrySet().stream()
@@ -378,13 +394,63 @@ public class NotificationOutboxService {
         putIfText(payload, "entityType", intent.entityType());
         putIfText(payload, "entityId", intent.entityId());
         putIfText(payload, "recipientScope", intent.recipientScope());
-        putIfText(payload, "title", firstNonBlank(intent.title(), payload.get("title")));
+        putIfText(payload, "productName", branding.productName());
+        putIfText(payload, "productLogoUrl", branding.logoUrl());
+        putIfText(
+                payload,
+                "productBrandingRevision",
+                Long.toString(branding.revision()));
+        putIfText(payload, "title", firstNonBlank(
+                intent.title(),
+                payload.get("title"),
+                branding.productName()));
         putIfText(payload, "body", firstNonBlank(intent.body(), payload.get("body")));
         putIfText(payload, "url", firstNonBlank(intent.clickUrl(), payload.get("url"), DEFAULT_CLICK_URL));
-        putIfText(payload, "icon", firstNonBlank(intent.iconUrl(), payload.get("icon"), DEFAULT_ICON_URL));
-        putIfText(payload, "badge", firstNonBlank(intent.badgeUrl(), payload.get("badge"), DEFAULT_BADGE_URL));
+        putIfText(payload, "icon", branding.applicationIcon(firstNonBlank(
+                intent.iconUrl(),
+                payload.get("icon"))));
+        putIfText(payload, "badge", branding.applicationIcon(firstNonBlank(
+                intent.badgeUrl(),
+                payload.get("badge"))));
         putIfText(payload, "tag", firstNonBlank(intent.tag(), payload.get("tag"), intent.type()));
         return payload;
+    }
+
+    private ResolvedDeploymentBranding deploymentBranding(
+            NotificationIntent intent) {
+        Map<String, String> payload =
+                intent == null || intent.payload() == null
+                        ? Map.of()
+                        : intent.payload();
+        String productName = firstNonBlank(
+                payload.get("productName"),
+                payload.get("product_name"));
+        String logoUrl = firstNonBlank(
+                payload.get("productLogoUrl"),
+                payload.get("product_logo_url"));
+        Long revision = parseNonNegativeLong(firstNonBlank(
+                payload.get("productBrandingRevision"),
+                payload.get("product_branding_revision")));
+        if (StringUtils.hasText(productName)
+                && StringUtils.hasText(logoUrl)
+                && revision != null) {
+            return new ResolvedDeploymentBranding(
+                    productName,
+                    logoUrl,
+                    revision);
+        }
+        return deploymentBrandingResolver == null
+                ? DeploymentBrandingResolver.fallback()
+                : deploymentBrandingResolver.resolve();
+    }
+
+    private Long parseNonNegativeLong(String value) {
+        try {
+            long parsed = Long.parseLong(safeText(value));
+            return parsed < 0L ? null : parsed;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     private void putIfText(Map<String, String> payload, String key, String value) {

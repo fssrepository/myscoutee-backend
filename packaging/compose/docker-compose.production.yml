@@ -16,7 +16,7 @@ services:
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       LETSENCRYPT_ENABLED: ${LETSENCRYPT_ENABLED:-false}
-      DOMAIN: ${DOMAIN:-myscoutee.com}
+      DOMAIN: ${DOMAIN:-localhost}
       NGINX_TLS_CERTIFICATE_PATH: ${NGINX_TLS_CERTIFICATE_PATH:-/etc/nginx/keys/nginx.crt}
       NGINX_TLS_CERTIFICATE_KEY_PATH: ${NGINX_TLS_CERTIFICATE_KEY_PATH:-/etc/nginx/keys/nginx-nopass.key}
     ports:
@@ -136,7 +136,8 @@ services:
       FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
       OPERATOR_USER: "${OPERATOR_USER:-}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "${OPERATOR_CONFIGURATION_MASTER_KEY_PATH:-/etc/myscoutee/configuration/deployment-master-key}"
-      WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
+      WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://localhost,https://127.0.0.1,http://localhost:8080,http://127.0.0.1:8080}"
+      EMAIL_BASE_URL: "${EMAIL_BASE_URL:-https://localhost}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
       MEDIA_OBJECT_STORE_REGION: "eu-central-1"
@@ -175,6 +176,8 @@ services:
       OPERATOR_UPDATE_RELEASE_PUBLIC_KEY_PATH: "${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
       OPERATOR_UPDATE_MAX_ARTIFACT_BYTES: "${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
       OPERATOR_UPDATE_STAGING_SAFETY_RESERVE_BYTES: "${MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES:-536870912}"
+      OPERATOR_TLS_ENABLED: "${OPERATOR_TLS_ENABLED:-true}"
+      OPERATOR_TLS_STATE_DIR: "/var/lib/myscoutee/tls"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     secrets:
@@ -189,6 +192,8 @@ services:
       - /var/lib/myscoutee/update/inbox/requests:/var/lib/myscoutee/update/requests:rw
       - /var/lib/myscoutee/update/runtime/jobs:/var/lib/myscoutee/update/jobs:ro
       - /etc/myscoutee/update:/etc/myscoutee/update:ro
+      - /var/lib/myscoutee/tls/inbox/requests:/var/lib/myscoutee/tls/inbox/requests:rw
+      - /var/lib/myscoutee/tls/runtime:/var/lib/myscoutee/tls/runtime:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee

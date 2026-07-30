@@ -31,10 +31,6 @@ public class I18nService {
 
     public I18nBundleResponseDto getBundle(String requestedLang, String acceptLanguage, String currentVersion) {
         String selectedLang = selectLanguage(requestedLang, acceptLanguage);
-        if (DEFAULT_LANG.equals(selectedLang)) {
-            return new I18nBundleResponseDto(DEFAULT_LANG, "0", null);
-        }
-
         I18nBundle i18nBundle = i18nBundleRepository.findByLang(selectedLang).orElse(null);
         if (i18nBundle == null) {
             return new I18nBundleResponseDto(DEFAULT_LANG, "0", null);

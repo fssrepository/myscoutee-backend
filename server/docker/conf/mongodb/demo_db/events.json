@@ -1772,7 +1772,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 7,
+    "acceptedMembers": 9,
     "pendingMembers": 2,
     "topics": [
       "#GoingOut",
@@ -1908,7 +1908,9 @@
       "7313a9379f60200cba7b9f71",
       "0c3ab5da9af33d4e688e809c",
       "0b8e5df4ec85d858c304a350",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -2032,8 +2034,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 2,
+    "acceptedMembers": 7,
+    "pendingMembers": 1,
     "topics": [
       "#InfluencerLife",
       "#Festivals",
@@ -2139,15 +2141,14 @@
       "ed4924c22a5240a54e48c0b5",
       "0f9350e50f1ffc3cf002b7ed",
       "9d3ba3d74edabe4695e6d3f9",
-      "23820c1e76d3bd843f61c799"
+      "9f3b3f085e23af6c89dbc432",
+      "23820c1e76d3bd843f61c799",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [
-      "b29df68956f3fe15e04558de",
-      "9f3b3f085e23af6c89dbc432"
+      "b29df68956f3fe15e04558de"
     ],
-    "invitedMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432"
-    ],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [
       "b29df68956f3fe15e04558de"
     ],
@@ -2249,7 +2250,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 1,
     "topics": [
       "#Yoga",
@@ -2356,7 +2357,9 @@
       "0cc9990d08304ab26ee67784",
       "e76d63199eff33a6945cb797",
       "f7bcd28c65ea349b4ee7aed2",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "9d3ba3d74edabe4695e6d3f9",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7"
@@ -2463,7 +2466,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 7,
+    "acceptedMembers": 9,
     "pendingMembers": 2,
     "topics": [
       "#SelfDevelopment",
@@ -2598,7 +2601,9 @@
       "25f4744ead36d038064d62c3",
       "c033e546ef7c928fb8cf073b",
       "931a01221376d8e28a068fe8",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "fcad6954169063f106a7a240",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -2977,8 +2982,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 2,
+    "acceptedMembers": 11,
+    "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
       "#Biohacking"
@@ -3154,16 +3159,15 @@
       "2d520f3c98b0440c1556f4af",
       "eac11b0685f9799953a40dd4",
       "7313a9379f60200cba7b9f71",
-      "23820c1e76d3bd843f61c799"
-    ],
-    "pendingMemberUserIds": [
       "9f3b3f085e23af6c89dbc432",
-      "1b1c70be2349b3359a8f6f94"
+      "1b1c70be2349b3359a8f6f94",
+      "23820c1e76d3bd843f61c799",
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a",
+      "4b5bad1292fb6db05dc0e455"
     ],
-    "invitedMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432",
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -3330,8 +3334,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 2,
+    "acceptedMembers": 12,
+    "pendingMembers": 1,
     "topics": [
       "#Wellness",
       "#MentalHealth",
@@ -3506,15 +3510,19 @@
       "1d7d3545ba5e0f1d63918589",
       "d182041b8a54132d5168034f",
       "d04cd419e735549e3f312977",
-      "23820c1e76d3bd843f61c799"
+      "b29df68956f3fe15e04558de",
+      "23820c1e76d3bd843f61c799",
+      "eb1ca0b761885bb0763e2929",
+      "4b5bad1292fb6db05dc0e455",
+      "0b8e5df4ec85d858c304a350",
+      "76da95a9109da485555c0d25",
+      "0f9350e50f1ffc3cf002b7ed",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [
-      "bf057de7c586eede7e84bdc7",
-      "b29df68956f3fe15e04558de"
+      "bf057de7c586eede7e84bdc7"
     ],
-    "invitedMemberUserIds": [
-      "b29df68956f3fe15e04558de"
-    ],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [
       "bf057de7c586eede7e84bdc7"
     ],
@@ -3795,7 +3803,7 @@
       }
     ],
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 6,
     "pendingMembers": 3,
     "topics": [
       "#GoingOut",
@@ -3901,7 +3909,8 @@
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
       "2d520f3c98b0440c1556f4af",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -4063,7 +4072,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 2,
     "topics": [
       "#Foodie",
@@ -4197,7 +4206,9 @@
       "4a008502646a200488911f45",
       "25f4744ead36d038064d62c3",
       "c100132b3ae88b47890def59",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "0f9350e50f1ffc3cf002b7ed",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -4321,7 +4332,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 9,
     "pendingMembers": 1,
     "topics": [
       "#Festivals",
@@ -4498,7 +4509,10 @@
       "e76d63199eff33a6945cb797",
       "f01086c19a00a6f46b6d41a7",
       "b5e2db6882d989d8532af12c",
-      "b29df68956f3fe15e04558de"
+      "b29df68956f3fe15e04558de",
+      "0b8e5df4ec85d858c304a350",
+      "0f9350e50f1ffc3cf002b7ed",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7"
@@ -4928,7 +4942,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 2,
     "topics": [
       "#ExtremeSports",
@@ -5063,7 +5077,9 @@
       "9d3ba3d74edabe4695e6d3f9",
       "8f6ff3752a1f0912cd63e912",
       "af0436815ab38f4864dd1e24",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "eac11b0685f9799953a40dd4",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de",
@@ -5399,7 +5415,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 2,
     "topics": [
       "#TVShows",
@@ -5533,7 +5549,9 @@
       "1b1c70be2349b3359a8f6f94",
       "0216b1ceb256d6f2c89073b8",
       "7313a9379f60200cba7b9f71",
-      "f6f22ba0a6f14cfcf4585d47"
+      "f6f22ba0a6f14cfcf4585d47",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -5657,8 +5675,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 2,
+    "acceptedMembers": 8,
+    "pendingMembers": 1,
     "topics": [
       "#Anime",
       "#Creativity"
@@ -5833,15 +5851,16 @@
       "f4b2ebd8f56628ab7df58221",
       "1d7d3545ba5e0f1d63918589",
       "7822c5f99eff99d63abe8933",
-      "d04cd419e735549e3f312977"
+      "d04cd419e735549e3f312977",
+      "9f3b3f085e23af6c89dbc432",
+      "e1dccfc3443239865c6ac69a",
+      "d182041b8a54132d5168034f"
     ],
     "pendingMemberUserIds": [
-      "b29df68956f3fe15e04558de",
-      "9f3b3f085e23af6c89dbc432"
+      "b29df68956f3fe15e04558de"
     ],
     "invitedMemberUserIds": [
-      "b29df68956f3fe15e04558de",
-      "9f3b3f085e23af6c89dbc432"
+      "b29df68956f3fe15e04558de"
     ],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
@@ -6009,7 +6028,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 11,
     "pendingMembers": 2,
     "topics": [
       "#Fitness",
@@ -6185,7 +6204,13 @@
       "e904dad402b47dd2cdaa8bec",
       "c100132b3ae88b47890def59",
       "c033e546ef7c928fb8cf073b",
-      "931a01221376d8e28a068fe8"
+      "931a01221376d8e28a068fe8",
+      "fcad6954169063f106a7a240",
+      "e1dccfc3443239865c6ac69a",
+      "9d3ba3d74edabe4695e6d3f9",
+      "af0436815ab38f4864dd1e24",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -6574,7 +6599,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 9,
     "pendingMembers": 1,
     "topics": [
       "#Tech",
@@ -6749,7 +6774,12 @@
       "d182041b8a54132d5168034f",
       "0cc9990d08304ab26ee67784",
       "f01086c19a00a6f46b6d41a7",
-      "f7bcd28c65ea349b4ee7aed2"
+      "f7bcd28c65ea349b4ee7aed2",
+      "76da95a9109da485555c0d25",
+      "9d3ba3d74edabe4695e6d3f9",
+      "eac11b0685f9799953a40dd4",
+      "0f9350e50f1ffc3cf002b7ed",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7"
@@ -6923,7 +6953,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 10,
     "pendingMembers": 2,
     "topics": [
       "#Entrepreneurship",
@@ -7099,7 +7129,11 @@
       "cdd937e0adcbd1a5e38f3ceb",
       "1d7d3545ba5e0f1d63918589",
       "d182041b8a54132d5168034f",
-      "eb1ca0b761885bb0763e2929"
+      "eb1ca0b761885bb0763e2929",
+      "0b8e5df4ec85d858c304a350",
+      "7822c5f99eff99d63abe8933",
+      "4b5bad1292fb6db05dc0e455",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -7357,7 +7391,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 2,
     "topics": [
       "#Brunch",
@@ -7462,7 +7496,9 @@
       "eac11b0685f9799953a40dd4",
       "f6f22ba0a6f14cfcf4585d47",
       "0c3ab5da9af33d4e688e809c",
-      "0b8e5df4ec85d858c304a350"
+      "0b8e5df4ec85d858c304a350",
+      "e1dccfc3443239865c6ac69a",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -7571,7 +7607,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 7,
     "pendingMembers": 2,
     "topics": [
       "#Festivals",
@@ -7677,7 +7713,8 @@
       "8f6ff3752a1f0912cd63e912",
       "b0971e779dbdb71f9327eabb",
       "d94ebcdf7bf9c8f33bb3f32c",
-      "4a008502646a200488911f45"
+      "4a008502646a200488911f45",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de",
@@ -7787,8 +7824,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 3,
+    "acceptedMembers": 9,
+    "pendingMembers": 0,
     "topics": [
       "#Yoga",
       "#Meditation",
@@ -7964,20 +8001,15 @@
       "f7bcd28c65ea349b4ee7aed2",
       "b29df68956f3fe15e04558de",
       "9f3b3f085e23af6c89dbc432",
-      "178e8d0cbe164fa3fede5884"
-    ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94",
+      "178e8d0cbe164fa3fede5884",
       "f4b2ebd8f56628ab7df58221",
-      "cdd937e0adcbd1a5e38f3ceb"
+      "cdd937e0adcbd1a5e38f3ceb",
+      "9d3ba3d74edabe4695e6d3f9",
+      "4b5bad1292fb6db05dc0e455"
     ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94",
-      "f4b2ebd8f56628ab7df58221"
-    ],
-    "pendingRequestMemberUserIds": [
-      "cdd937e0adcbd1a5e38f3ceb"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -8143,7 +8175,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CoffeeDates",
@@ -8317,7 +8349,9 @@
       "eb1ca0b761885bb0763e2929",
       "1d7d3545ba5e0f1d63918589",
       "d182041b8a54132d5168034f",
-      "d04cd419e735549e3f312977"
+      "d04cd419e735549e3f312977",
+      "4b5bad1292fb6db05dc0e455",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7"
@@ -8491,7 +8525,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Entrepreneurship",
@@ -8625,7 +8659,9 @@
       "e76d63199eff33a6945cb797",
       "f7bcd28c65ea349b4ee7aed2",
       "b5e2db6882d989d8532af12c",
-      "b29df68956f3fe15e04558de"
+      "b29df68956f3fe15e04558de",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7"
@@ -8746,7 +8782,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 11,
     "pendingMembers": 2,
     "topics": [
       "#Biohacking",
@@ -8924,7 +8960,12 @@
       "c033e546ef7c928fb8cf073b",
       "ec342d9af3f2cfd6adfd4ee5",
       "23820c1e76d3bd843f61c799",
-      "41f4659dbd75a03abc20cd6d"
+      "41f4659dbd75a03abc20cd6d",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9",
+      "eac11b0685f9799953a40dd4",
+      "7822c5f99eff99d63abe8933"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -9101,7 +9142,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Sports",
@@ -9275,7 +9316,10 @@
       "bf057de7c586eede7e84bdc7",
       "a0fb804ad6f347d6a9dab526",
       "9d3ba3d74edabe4695e6d3f9",
-      "8f6ff3752a1f0912cd63e912"
+      "8f6ff3752a1f0912cd63e912",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -9665,7 +9709,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 2,
     "topics": [
       "#Photography",
@@ -9801,7 +9845,9 @@
       "0c3ab5da9af33d4e688e809c",
       "76da95a9109da485555c0d25",
       "4da20eb049179e73d4757808",
-      "e1dccfc3443239865c6ac69a"
+      "e1dccfc3443239865c6ac69a",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -9926,7 +9972,7 @@
     "slotsEnabled": false,
     "eventType": "main",
     "acceptedMembers": 7,
-    "pendingMembers": 2,
+    "pendingMembers": 1,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -10065,12 +10111,9 @@
       "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [
-      "bf057de7c586eede7e84bdc7",
       "b29df68956f3fe15e04558de"
     ],
-    "invitedMemberUserIds": [
-      "bf057de7c586eede7e84bdc7"
-    ],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [
       "b29df68956f3fe15e04558de"
     ],
@@ -10186,7 +10229,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Hiking",
@@ -10290,7 +10333,10 @@
       "76da95a9109da485555c0d25",
       "4da20eb049179e73d4757808",
       "9184901a15076d32ea8b626f",
-      "bf057de7c586eede7e84bdc7"
+      "bf057de7c586eede7e84bdc7",
+      "af0436815ab38f4864dd1e24",
+      "7313a9379f60200cba7b9f71",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -10397,7 +10443,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
@@ -10501,7 +10547,9 @@
       "1b1c70be2349b3359a8f6f94",
       "f6f22ba0a6f14cfcf4585d47",
       "76da95a9109da485555c0d25",
-      "0b8e5df4ec85d858c304a350"
+      "0b8e5df4ec85d858c304a350",
+      "0f9350e50f1ffc3cf002b7ed",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -10608,7 +10656,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#Anime",
@@ -10743,7 +10791,8 @@
       "0f9350e50f1ffc3cf002b7ed",
       "8f6ff3752a1f0912cd63e912",
       "b0971e779dbdb71f9327eabb",
-      "d94ebcdf7bf9c8f33bb3f32c"
+      "d94ebcdf7bf9c8f33bb3f32c",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -11079,7 +11128,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 2,
     "topics": [
       "#Anime",
@@ -11253,7 +11302,10 @@
       "9f3b3f085e23af6c89dbc432",
       "c100132b3ae88b47890def59",
       "ec342d9af3f2cfd6adfd4ee5",
-      "931a01221376d8e28a068fe8"
+      "931a01221376d8e28a068fe8",
+      "af0436815ab38f4864dd1e24",
+      "0f9350e50f1ffc3cf002b7ed",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
@@ -11643,7 +11695,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 1,
     "topics": [
       "#Music",
@@ -11749,7 +11801,9 @@
       "b5e2db6882d989d8532af12c",
       "bf057de7c586eede7e84bdc7",
       "9f3b3f085e23af6c89dbc432",
-      "178e8d0cbe164fa3fede5884"
+      "178e8d0cbe164fa3fede5884",
+      "af0436815ab38f4864dd1e24",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -12072,7 +12126,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 3,
+    "acceptedMembers": 5,
     "pendingMembers": 1,
     "topics": [
       "#MentalHealth",
@@ -12247,7 +12301,9 @@
     "acceptedMemberUserIds": [
       "d182041b8a54132d5168034f",
       "f7bcd28c65ea349b4ee7aed2",
-      "b29df68956f3fe15e04558de"
+      "b29df68956f3fe15e04558de",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [
       "9f3b3f085e23af6c89dbc432"
@@ -12421,7 +12477,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Outdoors",
@@ -12557,7 +12613,8 @@
       "b0971e779dbdb71f9327eabb",
       "af0436815ab38f4864dd1e24",
       "904ee3c526298f6921cde3f3",
-      "e904dad402b47dd2cdaa8bec"
+      "e904dad402b47dd2cdaa8bec",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -12678,7 +12735,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -12783,7 +12840,9 @@
       "0c3ab5da9af33d4e688e809c",
       "0b8e5df4ec85d858c304a350",
       "4da20eb049179e73d4757808",
-      "e1dccfc3443239865c6ac69a"
+      "e1dccfc3443239865c6ac69a",
+      "9d3ba3d74edabe4695e6d3f9",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -12886,8 +12945,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 0,
     "topics": [
       "#Sports",
       "#Hiking"
@@ -12992,15 +13051,12 @@
       "fcad6954169063f106a7a240",
       "2d520f3c98b0440c1556f4af",
       "eac11b0685f9799953a40dd4",
-      "f6f22ba0a6f14cfcf4585d47"
-    ],
-    "pendingMemberUserIds": [
+      "f6f22ba0a6f14cfcf4585d47",
       "b29df68956f3fe15e04558de"
     ],
+    "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": [
-      "b29df68956f3fe15e04558de"
-    ],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -13099,8 +13155,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "acceptedMembers": 9,
+    "pendingMembers": 0,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -13277,15 +13333,14 @@
       "d182041b8a54132d5168034f",
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
-      "0216b1ceb256d6f2c89073b8"
+      "0216b1ceb256d6f2c89073b8",
+      "9f3b3f085e23af6c89dbc432",
+      "7313a9379f60200cba7b9f71",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
-    "pendingMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432"
-    ],
+    "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432"
-    ],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -13451,7 +13506,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Creativity",
@@ -13585,7 +13640,9 @@
       "c033e546ef7c928fb8cf073b",
       "931a01221376d8e28a068fe8",
       "23820c1e76d3bd843f61c799",
-      "41f4659dbd75a03abc20cd6d"
+      "41f4659dbd75a03abc20cd6d",
+      "76da95a9109da485555c0d25",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [
       "b29df68956f3fe15e04558de"
@@ -13706,8 +13763,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 3,
-    "pendingMembers": 3,
+    "acceptedMembers": 8,
+    "pendingMembers": 2,
     "topics": [
       "#Cocktails",
       "#LuxuryExperiences"
@@ -13879,16 +13936,19 @@
     "acceptedMemberUserIds": [
       "bf057de7c586eede7e84bdc7",
       "f01086c19a00a6f46b6d41a7",
-      "b5e2db6882d989d8532af12c"
+      "b5e2db6882d989d8532af12c",
+      "178e8d0cbe164fa3fede5884",
+      "e1dccfc3443239865c6ac69a",
+      "0f9350e50f1ffc3cf002b7ed",
+      "76da95a9109da485555c0d25",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [
       "9f3b3f085e23af6c89dbc432",
-      "1b1c70be2349b3359a8f6f94",
-      "178e8d0cbe164fa3fede5884"
+      "1b1c70be2349b3359a8f6f94"
     ],
     "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94",
-      "178e8d0cbe164fa3fede5884"
+      "1b1c70be2349b3359a8f6f94"
     ],
     "pendingRequestMemberUserIds": [
       "9f3b3f085e23af6c89dbc432"
@@ -14058,7 +14118,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -14192,7 +14252,8 @@
       "eb1ca0b761885bb0763e2929",
       "d04cd419e735549e3f312977",
       "2d520f3c98b0440c1556f4af",
-      "0216b1ceb256d6f2c89073b8"
+      "0216b1ceb256d6f2c89073b8",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -14309,7 +14370,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#Tech",
@@ -14485,7 +14546,10 @@
       "a0fb804ad6f347d6a9dab526",
       "0f9350e50f1ffc3cf002b7ed",
       "8f6ff3752a1f0912cd63e912",
-      "af0436815ab38f4864dd1e24"
+      "af0436815ab38f4864dd1e24",
+      "7313a9379f60200cba7b9f71",
+      "eac11b0685f9799953a40dd4",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -14655,7 +14719,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -14830,7 +14894,11 @@
       "bf057de7c586eede7e84bdc7",
       "8f6ff3752a1f0912cd63e912",
       "af0436815ab38f4864dd1e24",
-      "d94ebcdf7bf9c8f33bb3f32c"
+      "d94ebcdf7bf9c8f33bb3f32c",
+      "7313a9379f60200cba7b9f71",
+      "eac11b0685f9799953a40dd4",
+      "f4b2ebd8f56628ab7df58221",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -15254,7 +15322,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -15386,7 +15454,8 @@
       "d182041b8a54132d5168034f",
       "b5e2db6882d989d8532af12c",
       "9f3b3f085e23af6c89dbc432",
-      "178e8d0cbe164fa3fede5884"
+      "178e8d0cbe164fa3fede5884",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -15503,7 +15572,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -15611,7 +15680,9 @@
       "4da20eb049179e73d4757808",
       "9184901a15076d32ea8b626f",
       "4b5bad1292fb6db05dc0e455",
-      "a0fb804ad6f347d6a9dab526"
+      "a0fb804ad6f347d6a9dab526",
+      "af0436815ab38f4864dd1e24",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -15714,7 +15785,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -15848,7 +15919,9 @@
       "ed4924c22a5240a54e48c0b5",
       "0f9350e50f1ffc3cf002b7ed",
       "9d3ba3d74edabe4695e6d3f9",
-      "b0971e779dbdb71f9327eabb"
+      "b0971e779dbdb71f9327eabb",
+      "fcad6954169063f106a7a240",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -16179,7 +16252,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -16314,7 +16387,9 @@
       "fcad6954169063f106a7a240",
       "0216b1ceb256d6f2c89073b8",
       "eac11b0685f9799953a40dd4",
-      "f6f22ba0a6f14cfcf4585d47"
+      "f6f22ba0a6f14cfcf4585d47",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -16431,7 +16506,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -16536,7 +16611,9 @@
       "b0971e779dbdb71f9327eabb",
       "d94ebcdf7bf9c8f33bb3f32c",
       "904ee3c526298f6921cde3f3",
-      "e904dad402b47dd2cdaa8bec"
+      "e904dad402b47dd2cdaa8bec",
+      "e1dccfc3443239865c6ac69a",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -16889,7 +16966,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -17064,7 +17141,12 @@
       "9f3b3f085e23af6c89dbc432",
       "ed4924c22a5240a54e48c0b5",
       "0f9350e50f1ffc3cf002b7ed",
-      "9d3ba3d74edabe4695e6d3f9"
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a",
+      "eb1ca0b761885bb0763e2929",
+      "178e8d0cbe164fa3fede5884",
+      "1d7d3545ba5e0f1d63918589",
+      "b29df68956f3fe15e04558de"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -17444,7 +17526,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -17621,7 +17703,11 @@
       "904ee3c526298f6921cde3f3",
       "4a008502646a200488911f45",
       "25f4744ead36d038064d62c3",
-      "c033e546ef7c928fb8cf073b"
+      "c033e546ef7c928fb8cf073b",
+      "9d3ba3d74edabe4695e6d3f9",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -17791,8 +17877,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
       "#Music"
@@ -17896,15 +17982,13 @@
       "a0fb804ad6f347d6a9dab526",
       "9d3ba3d74edabe4695e6d3f9",
       "8f6ff3752a1f0912cd63e912",
-      "af0436815ab38f4864dd1e24"
+      "af0436815ab38f4864dd1e24",
+      "1b1c70be2349b3359a8f6f94",
+      "4b5bad1292fb6db05dc0e455"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -18003,7 +18087,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 5,
     "pendingMembers": 1,
     "topics": [
       "#Festivals",
@@ -18107,7 +18191,8 @@
       "eb1ca0b761885bb0763e2929",
       "f7bcd28c65ea349b4ee7aed2",
       "1b1c70be2349b3359a8f6f94",
-      "f4b2ebd8f56628ab7df58221"
+      "f4b2ebd8f56628ab7df58221",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [
       "9f3b3f085e23af6c89dbc432"
@@ -18214,8 +18299,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 3,
-    "pendingMembers": 1,
+    "acceptedMembers": 4,
+    "pendingMembers": 0,
     "topics": [
       "#Books",
       "#Foodie"
@@ -18317,14 +18402,11 @@
     "acceptedMemberUserIds": [
       "d182041b8a54132d5168034f",
       "9f3b3f085e23af6c89dbc432",
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "pendingMemberUserIds": [
+      "1b1c70be2349b3359a8f6f94",
       "178e8d0cbe164fa3fede5884"
     ],
-    "invitedMemberUserIds": [
-      "178e8d0cbe164fa3fede5884"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -18424,7 +18506,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 1,
     "topics": [
       "#FamilyOriented",
@@ -18530,7 +18612,9 @@
       "9d3ba3d74edabe4695e6d3f9",
       "8f6ff3752a1f0912cd63e912",
       "af0436815ab38f4864dd1e24",
-      "904ee3c526298f6921cde3f3"
+      "904ee3c526298f6921cde3f3",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [
       "9f3b3f085e23af6c89dbc432"
@@ -18637,8 +18721,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 2,
+    "acceptedMembers": 7,
+    "pendingMembers": 1,
     "topics": [
       "#StreetFood",
       "#GoingOut"
@@ -18771,18 +18855,17 @@
       "b5e2db6882d989d8532af12c",
       "9f3b3f085e23af6c89dbc432",
       "1b1c70be2349b3359a8f6f94",
-      "f4b2ebd8f56628ab7df58221"
+      "f4b2ebd8f56628ab7df58221",
+      "cdd937e0adcbd1a5e38f3ceb",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [
-      "178e8d0cbe164fa3fede5884",
-      "cdd937e0adcbd1a5e38f3ceb"
+      "178e8d0cbe164fa3fede5884"
     ],
     "invitedMemberUserIds": [
       "178e8d0cbe164fa3fede5884"
     ],
-    "pendingRequestMemberUserIds": [
-      "cdd937e0adcbd1a5e38f3ceb"
-    ],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -18895,8 +18978,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "acceptedMembers": 8,
+    "pendingMembers": 0,
     "topics": [
       "#Music",
       "#Creativity"
@@ -19001,14 +19084,12 @@
       "d94ebcdf7bf9c8f33bb3f32c",
       "904ee3c526298f6921cde3f3",
       "e904dad402b47dd2cdaa8bec",
-      "c100132b3ae88b47890def59"
+      "c100132b3ae88b47890def59",
+      "1b1c70be2349b3359a8f6f94",
+      "fcad6954169063f106a7a240"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -19108,7 +19189,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -19213,7 +19294,9 @@
       "af70e41dbe826cbd7d8b3500",
       "e76d63199eff33a6945cb797",
       "f01086c19a00a6f46b6d41a7",
-      "b5e2db6882d989d8532af12c"
+      "b5e2db6882d989d8532af12c",
+      "af0436815ab38f4864dd1e24",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -19316,7 +19399,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 5,
     "pendingMembers": 1,
     "topics": [
       "#CoffeeDates",
@@ -19448,7 +19531,8 @@
       "b29df68956f3fe15e04558de",
       "0f9350e50f1ffc3cf002b7ed",
       "8f6ff3752a1f0912cd63e912",
-      "b0971e779dbdb71f9327eabb"
+      "b0971e779dbdb71f9327eabb",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [
       "9f3b3f085e23af6c89dbc432"
@@ -19781,7 +19865,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#Festivals",
@@ -19955,7 +20039,14 @@
       "bf057de7c586eede7e84bdc7",
       "d94ebcdf7bf9c8f33bb3f32c",
       "4a008502646a200488911f45",
-      "e904dad402b47dd2cdaa8bec"
+      "e904dad402b47dd2cdaa8bec",
+      "e1dccfc3443239865c6ac69a",
+      "7313a9379f60200cba7b9f71",
+      "0b8e5df4ec85d858c304a350",
+      "7822c5f99eff99d63abe8933",
+      "76da95a9109da485555c0d25",
+      "0f9350e50f1ffc3cf002b7ed",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -20125,7 +20216,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -20300,7 +20391,14 @@
       "1b1c70be2349b3359a8f6f94",
       "d182041b8a54132d5168034f",
       "eb1ca0b761885bb0763e2929",
-      "fcad6954169063f106a7a240"
+      "fcad6954169063f106a7a240",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7313a9379f60200cba7b9f71",
+      "9d3ba3d74edabe4695e6d3f9",
+      "eac11b0685f9799953a40dd4",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "bf057de7c586eede7e84bdc7"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -20470,7 +20568,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 3,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -20573,7 +20671,8 @@
     "acceptedMemberUserIds": [
       "eb1ca0b761885bb0763e2929",
       "b5e2db6882d989d8532af12c",
-      "9f3b3f085e23af6c89dbc432"
+      "9f3b3f085e23af6c89dbc432",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -20676,8 +20775,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "acceptedMembers": 12,
+    "pendingMembers": 0,
     "topics": [
       "#StreetFood",
       "#CraftBeer",
@@ -20853,14 +20952,16 @@
       "8f6ff3752a1f0912cd63e912",
       "b0971e779dbdb71f9327eabb",
       "d94ebcdf7bf9c8f33bb3f32c",
-      "4a008502646a200488911f45"
+      "4a008502646a200488911f45",
+      "1b1c70be2349b3359a8f6f94",
+      "0b8e5df4ec85d858c304a350",
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a",
+      "af0436815ab38f4864dd1e24",
+      "7313a9379f60200cba7b9f71"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -21027,8 +21128,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 2,
+    "acceptedMembers": 6,
+    "pendingMembers": 0,
     "topics": [
       "#TVShows",
       "#Anime"
@@ -21133,18 +21234,12 @@
       "eb1ca0b761885bb0763e2929",
       "2d520f3c98b0440c1556f4af",
       "0216b1ceb256d6f2c89073b8",
-      "7313a9379f60200cba7b9f71"
-    ],
-    "pendingMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432",
+      "7313a9379f60200cba7b9f71",
       "1b1c70be2349b3359a8f6f94"
     ],
-    "invitedMemberUserIds": [
-      "9f3b3f085e23af6c89dbc432"
-    ],
-    "pendingRequestMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -21702,7 +21797,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -21878,7 +21973,12 @@
       "904ee3c526298f6921cde3f3",
       "e904dad402b47dd2cdaa8bec",
       "25f4744ead36d038064d62c3",
-      "c033e546ef7c928fb8cf073b"
+      "c033e546ef7c928fb8cf073b",
+      "7313a9379f60200cba7b9f71",
+      "9d3ba3d74edabe4695e6d3f9",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -22048,8 +22148,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
-    "pendingMembers": 1,
+    "acceptedMembers": 5,
+    "pendingMembers": 0,
     "topics": [
       "#Sustainability",
       "#FamilyOriented",
@@ -22181,14 +22281,11 @@
       "9f3b3f085e23af6c89dbc432",
       "9d3ba3d74edabe4695e6d3f9",
       "b0971e779dbdb71f9327eabb",
-      "af0436815ab38f4864dd1e24"
-    ],
-    "pendingMemberUserIds": [
+      "af0436815ab38f4864dd1e24",
       "1b1c70be2349b3359a8f6f94"
     ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -22302,7 +22399,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -22408,7 +22505,8 @@
       "9d3ba3d74edabe4695e6d3f9",
       "b0971e779dbdb71f9327eabb",
       "af0436815ab38f4864dd1e24",
-      "904ee3c526298f6921cde3f3"
+      "904ee3c526298f6921cde3f3",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -22857,7 +22955,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 12,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -23033,7 +23131,14 @@
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
       "2d520f3c98b0440c1556f4af",
-      "eac11b0685f9799953a40dd4"
+      "eac11b0685f9799953a40dd4",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a",
+      "76da95a9109da485555c0d25",
+      "9d3ba3d74edabe4695e6d3f9",
+      "b29df68956f3fe15e04558de",
+      "4b5bad1292fb6db05dc0e455",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -23203,7 +23308,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -23335,7 +23440,9 @@
       "9184901a15076d32ea8b626f",
       "4b5bad1292fb6db05dc0e455",
       "ed4924c22a5240a54e48c0b5",
-      "9f3b3f085e23af6c89dbc432"
+      "9f3b3f085e23af6c89dbc432",
+      "7313a9379f60200cba7b9f71",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -23452,7 +23559,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 12,
     "pendingMembers": 0,
     "topics": [
       "#Activism",
@@ -23629,7 +23736,13 @@
       "0216b1ceb256d6f2c89073b8",
       "eac11b0685f9799953a40dd4",
       "f6f22ba0a6f14cfcf4585d47",
-      "76da95a9109da485555c0d25"
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "9d3ba3d74edabe4695e6d3f9",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7313a9379f60200cba7b9f71",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -23799,8 +23912,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 1,
+    "acceptedMembers": 14,
+    "pendingMembers": 0,
     "topics": [
       "#Travel",
       "#Gym"
@@ -23974,15 +24087,20 @@
       "8f6ff3752a1f0912cd63e912",
       "af0436815ab38f4864dd1e24",
       "d94ebcdf7bf9c8f33bb3f32c",
-      "4a008502646a200488911f45"
+      "4a008502646a200488911f45",
+      "1b1c70be2349b3359a8f6f94",
+      "f4b2ebd8f56628ab7df58221",
+      "eac11b0685f9799953a40dd4",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7822c5f99eff99d63abe8933",
+      "0b8e5df4ec85d858c304a350",
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a",
+      "7313a9379f60200cba7b9f71"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -24148,7 +24266,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 15,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -24325,7 +24443,16 @@
       "af0436815ab38f4864dd1e24",
       "d94ebcdf7bf9c8f33bb3f32c",
       "4a008502646a200488911f45",
-      "25f4744ead36d038064d62c3"
+      "25f4744ead36d038064d62c3",
+      "4b5bad1292fb6db05dc0e455",
+      "0b8e5df4ec85d858c304a350",
+      "f4b2ebd8f56628ab7df58221",
+      "7313a9379f60200cba7b9f71",
+      "eac11b0685f9799953a40dd4",
+      "7822c5f99eff99d63abe8933",
+      "eb1ca0b761885bb0763e2929",
+      "0f9350e50f1ffc3cf002b7ed",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -24495,7 +24622,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
@@ -24669,7 +24796,11 @@
       "d182041b8a54132d5168034f",
       "1b1c70be2349b3359a8f6f94",
       "f4b2ebd8f56628ab7df58221",
-      "cdd937e0adcbd1a5e38f3ceb"
+      "cdd937e0adcbd1a5e38f3ceb",
+      "0f9350e50f1ffc3cf002b7ed",
+      "0b8e5df4ec85d858c304a350",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -24839,7 +24970,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Entrepreneurship",
@@ -24974,7 +25105,9 @@
       "25f4744ead36d038064d62c3",
       "c100132b3ae88b47890def59",
       "ec342d9af3f2cfd6adfd4ee5",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "eac11b0685f9799953a40dd4",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -25437,7 +25570,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Cocktails",
@@ -25571,7 +25704,8 @@
       "2d520f3c98b0440c1556f4af",
       "0216b1ceb256d6f2c89073b8",
       "7313a9379f60200cba7b9f71",
-      "0c3ab5da9af33d4e688e809c"
+      "0c3ab5da9af33d4e688e809c",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -25688,7 +25822,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -25822,7 +25956,9 @@
       "9184901a15076d32ea8b626f",
       "e1dccfc3443239865c6ac69a",
       "ed4924c22a5240a54e48c0b5",
-      "bf057de7c586eede7e84bdc7"
+      "bf057de7c586eede7e84bdc7",
+      "fcad6954169063f106a7a240",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -25939,7 +26075,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 3,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -26114,7 +26250,8 @@
     "acceptedMemberUserIds": [
       "eb1ca0b761885bb0763e2929",
       "178e8d0cbe164fa3fede5884",
-      "f4b2ebd8f56628ab7df58221"
+      "f4b2ebd8f56628ab7df58221",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -26284,7 +26421,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -26417,7 +26554,9 @@
       "bf057de7c586eede7e84bdc7",
       "e904dad402b47dd2cdaa8bec",
       "c100132b3ae88b47890def59",
-      "c033e546ef7c928fb8cf073b"
+      "c033e546ef7c928fb8cf073b",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -26785,8 +26924,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "acceptedMembers": 12,
+    "pendingMembers": 0,
     "topics": [
       "#CareerDriven",
       "#Tech"
@@ -26962,14 +27101,16 @@
       "d94ebcdf7bf9c8f33bb3f32c",
       "904ee3c526298f6921cde3f3",
       "e904dad402b47dd2cdaa8bec",
-      "c100132b3ae88b47890def59"
+      "c100132b3ae88b47890def59",
+      "1b1c70be2349b3359a8f6f94",
+      "fcad6954169063f106a7a240",
+      "76da95a9109da485555c0d25",
+      "7313a9379f60200cba7b9f71",
+      "0f9350e50f1ffc3cf002b7ed",
+      "e1dccfc3443239865c6ac69a"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -27136,7 +27277,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -27269,7 +27410,9 @@
       "b29df68956f3fe15e04558de",
       "b0971e779dbdb71f9327eabb",
       "d94ebcdf7bf9c8f33bb3f32c",
-      "904ee3c526298f6921cde3f3"
+      "904ee3c526298f6921cde3f3",
+      "76da95a9109da485555c0d25",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -27386,7 +27529,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -27560,7 +27703,12 @@
       "1b1c70be2349b3359a8f6f94",
       "fcad6954169063f106a7a240",
       "0216b1ceb256d6f2c89073b8",
-      "eac11b0685f9799953a40dd4"
+      "eac11b0685f9799953a40dd4",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "9d3ba3d74edabe4695e6d3f9",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -27730,7 +27878,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Festivals",
@@ -27864,7 +28012,9 @@
       "4b5bad1292fb6db05dc0e455",
       "a0fb804ad6f347d6a9dab526",
       "9d3ba3d74edabe4695e6d3f9",
-      "b29df68956f3fe15e04558de"
+      "b29df68956f3fe15e04558de",
+      "eac11b0685f9799953a40dd4",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -27981,7 +28131,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -28158,7 +28308,10 @@
       "1d7d3545ba5e0f1d63918589",
       "7822c5f99eff99d63abe8933",
       "eb1ca0b761885bb0763e2929",
-      "2d520f3c98b0440c1556f4af"
+      "2d520f3c98b0440c1556f4af",
+      "7313a9379f60200cba7b9f71",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -28328,7 +28481,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
@@ -28462,7 +28615,9 @@
       "2d520f3c98b0440c1556f4af",
       "eac11b0685f9799953a40dd4",
       "7313a9379f60200cba7b9f71",
-      "0c3ab5da9af33d4e688e809c"
+      "0c3ab5da9af33d4e688e809c",
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -28788,8 +28943,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
-    "pendingMembers": 1,
+    "acceptedMembers": 9,
+    "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
       "#Sports"
@@ -28962,14 +29117,15 @@
       "9f3b3f085e23af6c89dbc432",
       "af0436815ab38f4864dd1e24",
       "904ee3c526298f6921cde3f3",
-      "4a008502646a200488911f45"
+      "4a008502646a200488911f45",
+      "1b1c70be2349b3359a8f6f94",
+      "7313a9379f60200cba7b9f71",
+      "76da95a9109da485555c0d25",
+      "0b8e5df4ec85d858c304a350",
+      "eac11b0685f9799953a40dd4"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -29136,7 +29292,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -29242,7 +29398,9 @@
       "af0436815ab38f4864dd1e24",
       "904ee3c526298f6921cde3f3",
       "4a008502646a200488911f45",
-      "25f4744ead36d038064d62c3"
+      "25f4744ead36d038064d62c3",
+      "4b5bad1292fb6db05dc0e455",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -29345,7 +29503,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -29522,7 +29680,12 @@
       "1b1c70be2349b3359a8f6f94",
       "f4b2ebd8f56628ab7df58221",
       "cdd937e0adcbd1a5e38f3ceb",
-      "7822c5f99eff99d63abe8933"
+      "7822c5f99eff99d63abe8933",
+      "0b8e5df4ec85d858c304a350",
+      "0f9350e50f1ffc3cf002b7ed",
+      "fcad6954169063f106a7a240",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -29692,8 +29855,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
-    "pendingMembers": 2,
+    "acceptedMembers": 9,
+    "pendingMembers": 1,
     "topics": [
       "#Meditation",
       "#Spirituality"
@@ -29866,15 +30029,17 @@
       "f4b2ebd8f56628ab7df58221",
       "b5e2db6882d989d8532af12c",
       "178e8d0cbe164fa3fede5884",
-      "1d7d3545ba5e0f1d63918589"
+      "1d7d3545ba5e0f1d63918589",
+      "cdd937e0adcbd1a5e38f3ceb",
+      "7313a9379f60200cba7b9f71",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94",
-      "cdd937e0adcbd1a5e38f3ceb"
+      "1b1c70be2349b3359a8f6f94"
     ],
-    "invitedMemberUserIds": [
-      "cdd937e0adcbd1a5e38f3ceb"
-    ],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [
       "1b1c70be2349b3359a8f6f94"
     ],
@@ -30043,7 +30208,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -30178,7 +30343,9 @@
       "4a008502646a200488911f45",
       "e904dad402b47dd2cdaa8bec",
       "c100132b3ae88b47890def59",
-      "ec342d9af3f2cfd6adfd4ee5"
+      "ec342d9af3f2cfd6adfd4ee5",
+      "af0436815ab38f4864dd1e24",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -30504,7 +30671,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Festivals",
@@ -30639,7 +30806,9 @@
       "7313a9379f60200cba7b9f71",
       "f6f22ba0a6f14cfcf4585d47",
       "76da95a9109da485555c0d25",
-      "4da20eb049179e73d4757808"
+      "4da20eb049179e73d4757808",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -30756,7 +30925,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 12,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -30933,7 +31102,13 @@
       "cdd937e0adcbd1a5e38f3ceb",
       "1d7d3545ba5e0f1d63918589",
       "d182041b8a54132d5168034f",
-      "fcad6954169063f106a7a240"
+      "fcad6954169063f106a7a240",
+      "0b8e5df4ec85d858c304a350",
+      "9d3ba3d74edabe4695e6d3f9",
+      "eac11b0685f9799953a40dd4",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -31103,8 +31278,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 0,
     "topics": [
       "#Hiking",
       "#Yoga",
@@ -31237,15 +31412,13 @@
       "d94ebcdf7bf9c8f33bb3f32c",
       "4a008502646a200488911f45",
       "e904dad402b47dd2cdaa8bec",
-      "c100132b3ae88b47890def59"
+      "c100132b3ae88b47890def59",
+      "1b1c70be2349b3359a8f6f94",
+      "7313a9379f60200cba7b9f71"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
       {
@@ -31358,7 +31531,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 12,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -31534,7 +31707,13 @@
       "eb1ca0b761885bb0763e2929",
       "fcad6954169063f106a7a240",
       "0216b1ceb256d6f2c89073b8",
-      "7313a9379f60200cba7b9f71"
+      "7313a9379f60200cba7b9f71",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "0f9350e50f1ffc3cf002b7ed",
+      "1b1c70be2349b3359a8f6f94"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -31955,7 +32134,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -32088,7 +32267,9 @@
       "1b1c70be2349b3359a8f6f94",
       "eac11b0685f9799953a40dd4",
       "f6f22ba0a6f14cfcf4585d47",
-      "0c3ab5da9af33d4e688e809c"
+      "0c3ab5da9af33d4e688e809c",
+      "e1dccfc3443239865c6ac69a",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -32549,7 +32730,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -32723,7 +32904,11 @@
       "bf057de7c586eede7e84bdc7",
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
-      "2d520f3c98b0440c1556f4af"
+      "2d520f3c98b0440c1556f4af",
+      "76da95a9109da485555c0d25",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -32893,8 +33078,8 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
-    "pendingMembers": 1,
+    "acceptedMembers": 11,
+    "pendingMembers": 0,
     "topics": [
       "#Music",
       "#Movies",
@@ -33070,14 +33255,15 @@
       "e904dad402b47dd2cdaa8bec",
       "25f4744ead36d038064d62c3",
       "c033e546ef7c928fb8cf073b",
-      "931a01221376d8e28a068fe8"
+      "931a01221376d8e28a068fe8",
+      "1b1c70be2349b3359a8f6f94",
+      "fcad6954169063f106a7a240",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a",
+      "76da95a9109da485555c0d25"
     ],
-    "pendingMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
-    "invitedMemberUserIds": [
-      "1b1c70be2349b3359a8f6f94"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -33244,7 +33430,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -33348,7 +33534,9 @@
       "b29df68956f3fe15e04558de",
       "904ee3c526298f6921cde3f3",
       "e904dad402b47dd2cdaa8bec",
-      "25f4744ead36d038064d62c3"
+      "25f4744ead36d038064d62c3",
+      "4b5bad1292fb6db05dc0e455",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -33451,7 +33639,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Minimalism",
@@ -33584,7 +33772,8 @@
       "eb1ca0b761885bb0763e2929",
       "2d520f3c98b0440c1556f4af",
       "0216b1ceb256d6f2c89073b8",
-      "7313a9379f60200cba7b9f71"
+      "7313a9379f60200cba7b9f71",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -33701,7 +33890,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -33808,7 +33997,9 @@
       "7313a9379f60200cba7b9f71",
       "0c3ab5da9af33d4e688e809c",
       "76da95a9109da485555c0d25",
-      "4da20eb049179e73d4757808"
+      "4da20eb049179e73d4757808",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -34162,7 +34353,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Nightlife",
@@ -34269,7 +34460,9 @@
       "4a008502646a200488911f45",
       "25f4744ead36d038064d62c3",
       "c100132b3ae88b47890def59",
-      "ec342d9af3f2cfd6adfd4ee5"
+      "ec342d9af3f2cfd6adfd4ee5",
+      "af0436815ab38f4864dd1e24",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [
       "1b1c70be2349b3359a8f6f94"
@@ -34798,7 +34991,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#Wellness",
@@ -34974,7 +35167,9 @@
       "1d7d3545ba5e0f1d63918589",
       "d182041b8a54132d5168034f",
       "d04cd419e735549e3f312977",
-      "fcad6954169063f106a7a240"
+      "fcad6954169063f106a7a240",
+      "e1dccfc3443239865c6ac69a",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [
       "1b1c70be2349b3359a8f6f94"
@@ -35148,7 +35343,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 12,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -35326,7 +35521,13 @@
       "d182041b8a54132d5168034f",
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
-      "0216b1ceb256d6f2c89073b8"
+      "0216b1ceb256d6f2c89073b8",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455",
+      "76da95a9109da485555c0d25",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -35496,7 +35697,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 14,
     "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
@@ -35673,7 +35874,15 @@
       "931a01221376d8e28a068fe8",
       "23820c1e76d3bd843f61c799",
       "41f4659dbd75a03abc20cd6d",
-      "0cc9990d08304ab26ee67784"
+      "0cc9990d08304ab26ee67784",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a",
+      "eac11b0685f9799953a40dd4",
+      "76da95a9109da485555c0d25",
+      "0b8e5df4ec85d858c304a350",
+      "fcad6954169063f106a7a240",
+      "4b5bad1292fb6db05dc0e455",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -35843,7 +36052,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -35978,7 +36187,9 @@
       "0216b1ceb256d6f2c89073b8",
       "eac11b0685f9799953a40dd4",
       "f6f22ba0a6f14cfcf4585d47",
-      "76da95a9109da485555c0d25"
+      "76da95a9109da485555c0d25",
+      "af0436815ab38f4864dd1e24",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -36305,7 +36516,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
@@ -36479,7 +36690,10 @@
       "d182041b8a54132d5168034f",
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
-      "2d520f3c98b0440c1556f4af"
+      "2d520f3c98b0440c1556f4af",
+      "7313a9379f60200cba7b9f71",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -36649,7 +36863,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -36754,7 +36968,9 @@
       "bf057de7c586eede7e84bdc7",
       "2d520f3c98b0440c1556f4af",
       "eac11b0685f9799953a40dd4",
-      "7313a9379f60200cba7b9f71"
+      "7313a9379f60200cba7b9f71",
+      "4b5bad1292fb6db05dc0e455",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -36857,7 +37073,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -37033,7 +37249,11 @@
       "d04cd419e735549e3f312977",
       "eb1ca0b761885bb0763e2929",
       "2d520f3c98b0440c1556f4af",
-      "eac11b0685f9799953a40dd4"
+      "eac11b0685f9799953a40dd4",
+      "e1dccfc3443239865c6ac69a",
+      "4b5bad1292fb6db05dc0e455",
+      "76da95a9109da485555c0d25",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -37203,7 +37423,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -37336,7 +37556,9 @@
       "d94ebcdf7bf9c8f33bb3f32c",
       "4a008502646a200488911f45",
       "e904dad402b47dd2cdaa8bec",
-      "c100132b3ae88b47890def59"
+      "c100132b3ae88b47890def59",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -37453,7 +37675,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -37586,7 +37808,9 @@
       "eb1ca0b761885bb0763e2929",
       "b0971e779dbdb71f9327eabb",
       "d94ebcdf7bf9c8f33bb3f32c",
-      "904ee3c526298f6921cde3f3"
+      "904ee3c526298f6921cde3f3",
+      "76da95a9109da485555c0d25",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -37703,7 +37927,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -37879,7 +38103,9 @@
       "b29df68956f3fe15e04558de",
       "7822c5f99eff99d63abe8933",
       "d04cd419e735549e3f312977",
-      "eb1ca0b761885bb0763e2929"
+      "eb1ca0b761885bb0763e2929",
+      "4b5bad1292fb6db05dc0e455",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -38049,7 +38275,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -38223,7 +38449,12 @@
       "1b1c70be2349b3359a8f6f94",
       "ec342d9af3f2cfd6adfd4ee5",
       "23820c1e76d3bd843f61c799",
-      "63bae8417bd352e5013c2e93"
+      "63bae8417bd352e5013c2e93",
+      "7313a9379f60200cba7b9f71",
+      "af0436815ab38f4864dd1e24",
+      "eac11b0685f9799953a40dd4",
+      "9d3ba3d74edabe4695e6d3f9",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -38393,7 +38624,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#CareerDriven",
@@ -38527,7 +38758,9 @@
       "931a01221376d8e28a068fe8",
       "63bae8417bd352e5013c2e93",
       "41f4659dbd75a03abc20cd6d",
-      "0cc9990d08304ab26ee67784"
+      "0cc9990d08304ab26ee67784",
+      "e1dccfc3443239865c6ac69a",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -38644,7 +38877,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -38778,7 +39011,9 @@
       "e904dad402b47dd2cdaa8bec",
       "25f4744ead36d038064d62c3",
       "c033e546ef7c928fb8cf073b",
-      "931a01221376d8e28a068fe8"
+      "931a01221376d8e28a068fe8",
+      "fcad6954169063f106a7a240",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -38895,7 +39130,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Movies",
@@ -39002,7 +39237,9 @@
       "0216b1ceb256d6f2c89073b8",
       "7313a9379f60200cba7b9f71",
       "f6f22ba0a6f14cfcf4585d47",
-      "76da95a9109da485555c0d25"
+      "76da95a9109da485555c0d25",
+      "af0436815ab38f4864dd1e24",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -39105,7 +39342,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -39280,7 +39517,11 @@
       "d182041b8a54132d5168034f",
       "eb1ca0b761885bb0763e2929",
       "fcad6954169063f106a7a240",
-      "0216b1ceb256d6f2c89073b8"
+      "0216b1ceb256d6f2c89073b8",
+      "0f9350e50f1ffc3cf002b7ed",
+      "0b8e5df4ec85d858c304a350",
+      "9d3ba3d74edabe4695e6d3f9",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -39700,7 +39941,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Gym",
@@ -39806,7 +40047,9 @@
       "af0436815ab38f4864dd1e24",
       "904ee3c526298f6921cde3f3",
       "4a008502646a200488911f45",
-      "25f4744ead36d038064d62c3"
+      "25f4744ead36d038064d62c3",
+      "4b5bad1292fb6db05dc0e455",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -39909,7 +40152,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -40016,7 +40259,8 @@
       "fcad6954169063f106a7a240",
       "2d520f3c98b0440c1556f4af",
       "eac11b0685f9799953a40dd4",
-      "f6f22ba0a6f14cfcf4585d47"
+      "f6f22ba0a6f14cfcf4585d47",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -40119,7 +40363,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -40296,7 +40540,12 @@
       "4a008502646a200488911f45",
       "e904dad402b47dd2cdaa8bec",
       "c100132b3ae88b47890def59",
-      "ec342d9af3f2cfd6adfd4ee5"
+      "ec342d9af3f2cfd6adfd4ee5",
+      "0f9350e50f1ffc3cf002b7ed",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a",
+      "af0436815ab38f4864dd1e24",
+      "0b8e5df4ec85d858c304a350"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -40466,7 +40715,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -40601,7 +40850,8 @@
       "d04cd419e735549e3f312977",
       "fcad6954169063f106a7a240",
       "2d520f3c98b0440c1556f4af",
-      "eac11b0685f9799953a40dd4"
+      "eac11b0685f9799953a40dd4",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -40718,7 +40968,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -40853,7 +41103,9 @@
       "f6f22ba0a6f14cfcf4585d47",
       "0c3ab5da9af33d4e688e809c",
       "0b8e5df4ec85d858c304a350",
-      "9184901a15076d32ea8b626f"
+      "9184901a15076d32ea8b626f",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -40970,7 +41222,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -41147,7 +41399,11 @@
       "41f4659dbd75a03abc20cd6d",
       "af70e41dbe826cbd7d8b3500",
       "e76d63199eff33a6945cb797",
-      "f7bcd28c65ea349b4ee7aed2"
+      "f7bcd28c65ea349b4ee7aed2",
+      "9d3ba3d74edabe4695e6d3f9",
+      "76da95a9109da485555c0d25",
+      "eac11b0685f9799953a40dd4",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -41317,7 +41573,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 12,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -41491,7 +41747,15 @@
       "d182041b8a54132d5168034f",
       "4a008502646a200488911f45",
       "25f4744ead36d038064d62c3",
-      "c100132b3ae88b47890def59"
+      "c100132b3ae88b47890def59",
+      "0f9350e50f1ffc3cf002b7ed",
+      "0b8e5df4ec85d858c304a350",
+      "178e8d0cbe164fa3fede5884",
+      "4b5bad1292fb6db05dc0e455",
+      "1d7d3545ba5e0f1d63918589",
+      "7313a9379f60200cba7b9f71",
+      "d04cd419e735549e3f312977",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -41661,7 +41925,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -41766,7 +42030,8 @@
       "b29df68956f3fe15e04558de",
       "eb1ca0b761885bb0763e2929",
       "2d520f3c98b0440c1556f4af",
-      "0216b1ceb256d6f2c89073b8"
+      "0216b1ceb256d6f2c89073b8",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -41869,7 +42134,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#InfluencerLife",
@@ -42002,7 +42267,9 @@
       "bf057de7c586eede7e84bdc7",
       "7313a9379f60200cba7b9f71",
       "0c3ab5da9af33d4e688e809c",
-      "76da95a9109da485555c0d25"
+      "76da95a9109da485555c0d25",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -42119,7 +42386,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#WineTasting",
@@ -42226,7 +42493,8 @@
       "2d520f3c98b0440c1556f4af",
       "0216b1ceb256d6f2c89073b8",
       "7313a9379f60200cba7b9f71",
-      "0c3ab5da9af33d4e688e809c"
+      "0c3ab5da9af33d4e688e809c",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -42329,7 +42597,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -42434,7 +42702,9 @@
       "1b1c70be2349b3359a8f6f94",
       "63bae8417bd352e5013c2e93",
       "af70e41dbe826cbd7d8b3500",
-      "0cc9990d08304ab26ee67784"
+      "0cc9990d08304ab26ee67784",
+      "e1dccfc3443239865c6ac69a",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -42537,7 +42807,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -42712,7 +42982,10 @@
       "e904dad402b47dd2cdaa8bec",
       "c100132b3ae88b47890def59",
       "c033e546ef7c928fb8cf073b",
-      "931a01221376d8e28a068fe8"
+      "931a01221376d8e28a068fe8",
+      "fcad6954169063f106a7a240",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -42882,7 +43155,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -43057,7 +43330,10 @@
       "eb1ca0b761885bb0763e2929",
       "904ee3c526298f6921cde3f3",
       "e904dad402b47dd2cdaa8bec",
-      "25f4744ead36d038064d62c3"
+      "25f4744ead36d038064d62c3",
+      "4b5bad1292fb6db05dc0e455",
+      "e1dccfc3443239865c6ac69a",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -43227,7 +43503,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 9,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -43402,7 +43678,12 @@
       "9f3b3f085e23af6c89dbc432",
       "fcad6954169063f106a7a240",
       "0216b1ceb256d6f2c89073b8",
-      "eac11b0685f9799953a40dd4"
+      "eac11b0685f9799953a40dd4",
+      "9d3ba3d74edabe4695e6d3f9",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -43572,7 +43853,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -43679,7 +43960,9 @@
       "c033e546ef7c928fb8cf073b",
       "ec342d9af3f2cfd6adfd4ee5",
       "23820c1e76d3bd843f61c799",
-      "41f4659dbd75a03abc20cd6d"
+      "41f4659dbd75a03abc20cd6d",
+      "76da95a9109da485555c0d25",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -43782,7 +44065,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -43888,7 +44171,9 @@
       "f6f22ba0a6f14cfcf4585d47",
       "76da95a9109da485555c0d25",
       "0b8e5df4ec85d858c304a350",
-      "9184901a15076d32ea8b626f"
+      "9184901a15076d32ea8b626f",
+      "7313a9379f60200cba7b9f71",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -43991,7 +44276,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -44166,7 +44451,12 @@
       "fcad6954169063f106a7a240",
       "0216b1ceb256d6f2c89073b8",
       "eac11b0685f9799953a40dd4",
-      "f6f22ba0a6f14cfcf4585d47"
+      "f6f22ba0a6f14cfcf4585d47",
+      "7313a9379f60200cba7b9f71",
+      "9d3ba3d74edabe4695e6d3f9",
+      "0f9350e50f1ffc3cf002b7ed",
+      "0b8e5df4ec85d858c304a350",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -44336,7 +44626,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -44513,7 +44803,13 @@
       "4a008502646a200488911f45",
       "25f4744ead36d038064d62c3",
       "c100132b3ae88b47890def59",
-      "ec342d9af3f2cfd6adfd4ee5"
+      "ec342d9af3f2cfd6adfd4ee5",
+      "0f9350e50f1ffc3cf002b7ed",
+      "0b8e5df4ec85d858c304a350",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -44683,7 +44979,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Hiking",
@@ -44788,7 +45084,9 @@
       "41f4659dbd75a03abc20cd6d",
       "0cc9990d08304ab26ee67784",
       "e76d63199eff33a6945cb797",
-      "f7bcd28c65ea349b4ee7aed2"
+      "f7bcd28c65ea349b4ee7aed2",
+      "9d3ba3d74edabe4695e6d3f9",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -44891,7 +45189,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 16,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -45067,7 +45365,17 @@
       "23820c1e76d3bd843f61c799",
       "63bae8417bd352e5013c2e93",
       "af70e41dbe826cbd7d8b3500",
-      "e76d63199eff33a6945cb797"
+      "e76d63199eff33a6945cb797",
+      "4b5bad1292fb6db05dc0e455",
+      "7313a9379f60200cba7b9f71",
+      "9d3ba3d74edabe4695e6d3f9",
+      "af0436815ab38f4864dd1e24",
+      "eac11b0685f9799953a40dd4",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "76da95a9109da485555c0d25",
+      "0f9350e50f1ffc3cf002b7ed",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -45237,7 +45545,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -45343,7 +45651,9 @@
       "2d520f3c98b0440c1556f4af",
       "eac11b0685f9799953a40dd4",
       "7313a9379f60200cba7b9f71",
-      "0c3ab5da9af33d4e688e809c"
+      "0c3ab5da9af33d4e688e809c",
+      "76da95a9109da485555c0d25",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -45446,7 +45756,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -45620,7 +45930,11 @@
       "d182041b8a54132d5168034f",
       "c100132b3ae88b47890def59",
       "ec342d9af3f2cfd6adfd4ee5",
-      "931a01221376d8e28a068fe8"
+      "931a01221376d8e28a068fe8",
+      "fcad6954169063f106a7a240",
+      "0f9350e50f1ffc3cf002b7ed",
+      "d04cd419e735549e3f312977",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -45790,8 +46104,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 1,
+    "acceptedMembers": 12,
+    "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -45966,14 +46280,17 @@
       "af70e41dbe826cbd7d8b3500",
       "e76d63199eff33a6945cb797",
       "f01086c19a00a6f46b6d41a7",
-      "b5e2db6882d989d8532af12c"
+      "b5e2db6882d989d8532af12c",
+      "178e8d0cbe164fa3fede5884",
+      "af0436815ab38f4864dd1e24",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455",
+      "fcad6954169063f106a7a240",
+      "7313a9379f60200cba7b9f71",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
-    "pendingMemberUserIds": [
-      "178e8d0cbe164fa3fede5884"
-    ],
-    "invitedMemberUserIds": [
-      "178e8d0cbe164fa3fede5884"
-    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [],
     "subEventsEnabled": true,
     "subEventDefinitions": [
@@ -46140,7 +46457,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -46276,7 +46593,9 @@
       "c100132b3ae88b47890def59",
       "c033e546ef7c928fb8cf073b",
       "931a01221376d8e28a068fe8",
-      "63bae8417bd352e5013c2e93"
+      "63bae8417bd352e5013c2e93",
+      "7313a9379f60200cba7b9f71",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -46393,7 +46712,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 14,
     "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
@@ -46569,7 +46888,15 @@
       "eac11b0685f9799953a40dd4",
       "7313a9379f60200cba7b9f71",
       "0c3ab5da9af33d4e688e809c",
-      "0b8e5df4ec85d858c304a350"
+      "0b8e5df4ec85d858c304a350",
+      "fcad6954169063f106a7a240",
+      "76da95a9109da485555c0d25",
+      "9d3ba3d74edabe4695e6d3f9",
+      "e1dccfc3443239865c6ac69a",
+      "178e8d0cbe164fa3fede5884",
+      "4b5bad1292fb6db05dc0e455",
+      "af0436815ab38f4864dd1e24",
+      "1d7d3545ba5e0f1d63918589"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -46739,7 +47066,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -46914,7 +47241,14 @@
       "1b1c70be2349b3359a8f6f94",
       "0cc9990d08304ab26ee67784",
       "f01086c19a00a6f46b6d41a7",
-      "f7bcd28c65ea349b4ee7aed2"
+      "f7bcd28c65ea349b4ee7aed2",
+      "0f9350e50f1ffc3cf002b7ed",
+      "e1dccfc3443239865c6ac69a",
+      "eac11b0685f9799953a40dd4",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9",
+      "fcad6954169063f106a7a240",
+      "76da95a9109da485555c0d25"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -47084,7 +47418,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -47191,7 +47525,9 @@
       "7313a9379f60200cba7b9f71",
       "f6f22ba0a6f14cfcf4585d47",
       "76da95a9109da485555c0d25",
-      "4da20eb049179e73d4757808"
+      "4da20eb049179e73d4757808",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -47294,7 +47630,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#HealthyLifestyle",
@@ -47398,7 +47734,9 @@
       "eb1ca0b761885bb0763e2929",
       "25f4744ead36d038064d62c3",
       "c033e546ef7c928fb8cf073b",
-      "ec342d9af3f2cfd6adfd4ee5"
+      "ec342d9af3f2cfd6adfd4ee5",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -47501,7 +47839,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -47634,7 +47972,9 @@
       "c033e546ef7c928fb8cf073b",
       "931a01221376d8e28a068fe8",
       "23820c1e76d3bd843f61c799",
-      "41f4659dbd75a03abc20cd6d"
+      "41f4659dbd75a03abc20cd6d",
+      "76da95a9109da485555c0d25",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -47751,7 +48091,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -47885,7 +48225,9 @@
       "b29df68956f3fe15e04558de",
       "0216b1ceb256d6f2c89073b8",
       "7313a9379f60200cba7b9f71",
-      "f6f22ba0a6f14cfcf4585d47"
+      "f6f22ba0a6f14cfcf4585d47",
+      "0b8e5df4ec85d858c304a350",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -48002,7 +48344,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -48108,7 +48450,9 @@
       "eac11b0685f9799953a40dd4",
       "f6f22ba0a6f14cfcf4585d47",
       "0c3ab5da9af33d4e688e809c",
-      "0b8e5df4ec85d858c304a350"
+      "0b8e5df4ec85d858c304a350",
+      "fcad6954169063f106a7a240",
+      "e1dccfc3443239865c6ac69a"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -48211,7 +48555,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#TVShows",
@@ -48385,7 +48729,11 @@
       "9f3b3f085e23af6c89dbc432",
       "eac11b0685f9799953a40dd4",
       "f6f22ba0a6f14cfcf4585d47",
-      "0c3ab5da9af33d4e688e809c"
+      "0c3ab5da9af33d4e688e809c",
+      "e1dccfc3443239865c6ac69a",
+      "0f9350e50f1ffc3cf002b7ed",
+      "9d3ba3d74edabe4695e6d3f9",
+      "bf057de7c586eede7e84bdc7"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -48555,7 +48903,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 1,
     "topics": [
       "#GoingOut",
@@ -48729,7 +49077,10 @@
       "1b1c70be2349b3359a8f6f94",
       "e76d63199eff33a6945cb797",
       "f7bcd28c65ea349b4ee7aed2",
-      "b5e2db6882d989d8532af12c"
+      "b5e2db6882d989d8532af12c",
+      "af0436815ab38f4864dd1e24",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [
       "178e8d0cbe164fa3fede5884"
@@ -48903,7 +49254,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -49038,7 +49389,9 @@
       "c100132b3ae88b47890def59",
       "ec342d9af3f2cfd6adfd4ee5",
       "931a01221376d8e28a068fe8",
-      "63bae8417bd352e5013c2e93"
+      "63bae8417bd352e5013c2e93",
+      "7313a9379f60200cba7b9f71",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -49155,7 +49508,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -49262,7 +49615,9 @@
       "23820c1e76d3bd843f61c799",
       "63bae8417bd352e5013c2e93",
       "af70e41dbe826cbd7d8b3500",
-      "e76d63199eff33a6945cb797"
+      "e76d63199eff33a6945cb797",
+      "4b5bad1292fb6db05dc0e455",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -49365,7 +49720,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 8,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -49499,7 +49854,9 @@
       "931a01221376d8e28a068fe8",
       "23820c1e76d3bd843f61c799",
       "41f4659dbd75a03abc20cd6d",
-      "0cc9990d08304ab26ee67784"
+      "0cc9990d08304ab26ee67784",
+      "e1dccfc3443239865c6ac69a",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -49616,7 +49973,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -49794,7 +50151,11 @@
       "0c3ab5da9af33d4e688e809c",
       "76da95a9109da485555c0d25",
       "4da20eb049179e73d4757808",
-      "e1dccfc3443239865c6ac69a"
+      "e1dccfc3443239865c6ac69a",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9",
+      "eac11b0685f9799953a40dd4",
+      "1d7d3545ba5e0f1d63918589"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -49964,7 +50325,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -50139,7 +50500,10 @@
       "d182041b8a54132d5168034f",
       "931a01221376d8e28a068fe8",
       "63bae8417bd352e5013c2e93",
-      "41f4659dbd75a03abc20cd6d"
+      "41f4659dbd75a03abc20cd6d",
+      "7313a9379f60200cba7b9f71",
+      "76da95a9109da485555c0d25",
+      "fcad6954169063f106a7a240"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -50309,7 +50673,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -50443,7 +50807,9 @@
       "c100132b3ae88b47890def59",
       "ec342d9af3f2cfd6adfd4ee5",
       "931a01221376d8e28a068fe8",
-      "63bae8417bd352e5013c2e93"
+      "63bae8417bd352e5013c2e93",
+      "7313a9379f60200cba7b9f71",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -50560,8 +50926,8 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
-    "pendingMembers": 2,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Running",
       "#ExtremeSports"
@@ -50693,15 +51059,14 @@
       "1b1c70be2349b3359a8f6f94",
       "f01086c19a00a6f46b6d41a7",
       "b5e2db6882d989d8532af12c",
-      "f4b2ebd8f56628ab7df58221"
+      "f4b2ebd8f56628ab7df58221",
+      "cdd937e0adcbd1a5e38f3ceb",
+      "0f9350e50f1ffc3cf002b7ed"
     ],
     "pendingMemberUserIds": [
-      "178e8d0cbe164fa3fede5884",
-      "cdd937e0adcbd1a5e38f3ceb"
+      "178e8d0cbe164fa3fede5884"
     ],
-    "invitedMemberUserIds": [
-      "cdd937e0adcbd1a5e38f3ceb"
-    ],
+    "invitedMemberUserIds": [],
     "pendingRequestMemberUserIds": [
       "178e8d0cbe164fa3fede5884"
     ],
@@ -50817,7 +51182,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 10,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -50992,7 +51357,13 @@
       "b29df68956f3fe15e04558de",
       "c033e546ef7c928fb8cf073b",
       "931a01221376d8e28a068fe8",
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "eac11b0685f9799953a40dd4",
+      "9d3ba3d74edabe4695e6d3f9",
+      "76da95a9109da485555c0d25",
+      "0b8e5df4ec85d858c304a350",
+      "fcad6954169063f106a7a240",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -51162,7 +51533,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Entrepreneurship",
@@ -51267,7 +51638,9 @@
       "1b1c70be2349b3359a8f6f94",
       "0b8e5df4ec85d858c304a350",
       "9184901a15076d32ea8b626f",
-      "e1dccfc3443239865c6ac69a"
+      "e1dccfc3443239865c6ac69a",
+      "fcad6954169063f106a7a240",
+      "7313a9379f60200cba7b9f71"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -51370,7 +51743,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 7,
     "pendingMembers": 0,
     "topics": [
       "#Yoga",
@@ -51505,7 +51878,9 @@
       "23820c1e76d3bd843f61c799",
       "41f4659dbd75a03abc20cd6d",
       "af70e41dbe826cbd7d8b3500",
-      "e76d63199eff33a6945cb797"
+      "e76d63199eff33a6945cb797",
+      "4b5bad1292fb6db05dc0e455",
+      "eac11b0685f9799953a40dd4"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -51622,7 +51997,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 4,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -51797,7 +52172,14 @@
       "eb1ca0b761885bb0763e2929",
       "ec342d9af3f2cfd6adfd4ee5",
       "23820c1e76d3bd843f61c799",
-      "63bae8417bd352e5013c2e93"
+      "63bae8417bd352e5013c2e93",
+      "af0436815ab38f4864dd1e24",
+      "eac11b0685f9799953a40dd4",
+      "76da95a9109da485555c0d25",
+      "f4b2ebd8f56628ab7df58221",
+      "7313a9379f60200cba7b9f71",
+      "7822c5f99eff99d63abe8933",
+      "4b5bad1292fb6db05dc0e455"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -51967,7 +52349,7 @@
     "ticketing": true,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -52144,7 +52526,13 @@
       "fcad6954169063f106a7a240",
       "0216b1ceb256d6f2c89073b8",
       "eac11b0685f9799953a40dd4",
-      "f6f22ba0a6f14cfcf4585d47"
+      "f6f22ba0a6f14cfcf4585d47",
+      "0f9350e50f1ffc3cf002b7ed",
+      "e1dccfc3443239865c6ac69a",
+      "0b8e5df4ec85d858c304a350",
+      "7313a9379f60200cba7b9f71",
+      "4b5bad1292fb6db05dc0e455",
+      "9d3ba3d74edabe4695e6d3f9"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -52314,7 +52702,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 6,
+    "acceptedMembers": 11,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -52491,7 +52879,12 @@
       "7313a9379f60200cba7b9f71",
       "f6f22ba0a6f14cfcf4585d47",
       "76da95a9109da485555c0d25",
-      "4da20eb049179e73d4757808"
+      "4da20eb049179e73d4757808",
+      "eac11b0685f9799953a40dd4",
+      "0b8e5df4ec85d858c304a350",
+      "0f9350e50f1ffc3cf002b7ed",
+      "4b5bad1292fb6db05dc0e455",
+      "af0436815ab38f4864dd1e24"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -60227,93 +60620,5 @@
     ],
     "policiesEnabled": false,
     "activity": 0
-  },
-  {
-    "_id": {
-      "$oid": "f1c4e57e2000000000000001"
-    },
-    "syncKey": "seed-ticket-nagy-eszter-friends-circle-supper",
-    "sourceId": "4f115bb6be32bf0838efb3b7",
-    "ownerUserId": "9f3b3f085e23af6c89dbc432",
-    "status": "A",
-    "admins": [
-      "b29df68956f3fe15e04558de"
-    ],
-    "avatar": "KB",
-    "title": "Friends Circle Supper",
-    "subtitle": "Small-table meetup for close connections and plus-ones.",
-    "timeframe": "Mar 17 · 6:30 PM - 9:30 PM",
-    "inviter": "Kiss Balázs",
-    "unread": 0,
-    "activity": 0,
-    "trashedAtIso": null,
-    "creatorUserId": "b29df68956f3fe15e04558de",
-    "creatorName": "Kiss Balázs",
-    "creatorInitials": "KB",
-    "creatorGender": "man",
-    "creatorCity": "Chicago",
-    "visibility": "Friends only",
-    "blindMode": "Open Event",
-    "startAtIso": "2027-03-17T18:30:00",
-    "endAtIso": "2027-03-17T21:30:00",
-    "distanceKm": 0,
-    "imageUrl": "https://picsum.photos/seed/4f115bb6be32bf0838efb3b7/1200/700",
-    "sourceLink": "https://example.com/events/4f115bb6be32bf0838efb3b7",
-    "location": "Chicago · Friends Circle",
-    "locationCoordinates": {
-      "latitude": 41.8889,
-      "longitude": -87.6346
-    },
-    "locationGeo": {
-      "type": "Point",
-      "coordinates": [
-        -87.6346,
-        41.8889
-      ]
-    },
-    "capacityMin": 6,
-    "capacityMax": 14,
-    "capacityTotal": 22,
-    "autoInviter": false,
-    "frequency": "One-time",
-    "ticketing": true,
-    "approvalRequired": false,
-    "slotsEnabled": false,
-    "eventType": "main",
-    "acceptedMembers": 5,
-    "pendingMembers": 2,
-    "topics": [
-      "#StreetFood",
-      "#GoingOut"
-    ],
-    "subEvents": [],
-    "mode": "Casual",
-    "rating": 8.4,
-    "boost": 25018,
-    "affinity": 2025821,
-    "createdDate": "2027-03-17T18:30:00",
-    "createdUser": "b29df68956f3fe15e04558de",
-    "updatedDate": "2027-03-17T18:30:00",
-    "updatedUser": "b29df68956f3fe15e04558de",
-    "acceptedMemberUserIds": [
-      "b29df68956f3fe15e04558de",
-      "b5e2db6882d989d8532af12c",
-      "9f3b3f085e23af6c89dbc432",
-      "1b1c70be2349b3359a8f6f94",
-      "f4b2ebd8f56628ab7df58221"
-    ],
-    "pendingMemberUserIds": [
-      "178e8d0cbe164fa3fede5884",
-      "cdd937e0adcbd1a5e38f3ceb"
-    ],
-    "invitedMemberUserIds": [
-      "178e8d0cbe164fa3fede5884"
-    ],
-    "pendingRequestMemberUserIds": [
-      "cdd937e0adcbd1a5e38f3ceb"
-    ],
-    "subEventsEnabled": true,
-    "subEventDefinitions": [],
-    "policiesEnabled": false
   }
 ]

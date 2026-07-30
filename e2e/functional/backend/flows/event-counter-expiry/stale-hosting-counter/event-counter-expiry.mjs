@@ -121,7 +121,7 @@ async function setUserActivities(userId, overrides) {
     ?? 'e2e_db';
   const activities = {
     game: 0,
-    chat: 0,
+    chats: 0,
     invitations: 0,
     events: 0,
     hosting: 0,
@@ -131,6 +131,14 @@ async function setUserActivities(userId, overrides) {
     tickets: 0,
     contacts: 0,
     feedback: 0,
+    chat: {
+      all: 0,
+      event: 0,
+      subEvent: 0,
+      group: 0,
+      service: 0,
+      appSupport: 0
+    },
     adminJobs: 0,
     adminMetrics: 0,
     ...overrides

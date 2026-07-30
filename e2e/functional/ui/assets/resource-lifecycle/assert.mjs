@@ -48,7 +48,7 @@ export async function assertUi({ page }) {
 
   const editedAsset = await findOwnedAssetByTitle(page, marker);
   assert(editedAsset?.id === createdAsset.id, 'Editing the asset should keep the same asset id', { createdAsset, editedAsset });
-  assert(editedAsset.description === editedDetails, 'Edited asset description should persist through /api/assets', editedAsset);
+  assert(editedAsset.details === editedDetails, 'Edited asset details should persist through /api/assets/{id}', editedAsset);
   assert(Number(editedAsset.quantity) === 4, 'Edited asset quantity should persist through /api/assets', editedAsset);
   assert(editedAsset.category === 'Tech', 'Edited asset category should persist through /api/assets', editedAsset);
 

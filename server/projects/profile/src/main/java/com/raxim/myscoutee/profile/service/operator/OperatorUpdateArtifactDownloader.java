@@ -11,8 +11,10 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.LongConsumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,10 @@ import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
 
 @Component
 public class OperatorUpdateArtifactDownloader {
+    private static final int MAX_REDIRECTS = 5;
+    private static final String ARTIFACT_ACCEPT_HEADER =
+            "application/vnd.debian.binary-package, application/octet-stream";
+
     private final HttpClient httpClient;
     private final Duration requestTimeout;
 
@@ -54,16 +60,42 @@ public class OperatorUpdateArtifactDownloader {
             throw new IllegalArgumentException(
                     "The signed update artifact exceeds the configured download limit.");
         }
-        HttpRequest request = HttpRequest.newBuilder(uri)
-                .GET()
-                .timeout(requestTimeout)
-                .header(
-                        "Accept",
-                        "application/vnd.debian.binary-package, application/octet-stream")
-                .build();
-        HttpResponse<InputStream> response = httpClient.send(
-                request,
-                HttpResponse.BodyHandlers.ofInputStream());
+
+        Set<URI> visitedUris = new HashSet<>();
+        visitedUris.add(canonicalRedirectUri(uri));
+        int redirectCount = 0;
+        HttpResponse<InputStream> response;
+        while (true) {
+            HttpRequest request = HttpRequest.newBuilder(uri)
+                    .GET()
+                    .timeout(requestTimeout)
+                    .header("Accept", ARTIFACT_ACCEPT_HEADER)
+                    .build();
+            response = httpClient.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofInputStream());
+            if (!isRedirect(response.statusCode())) {
+                break;
+            }
+
+            URI nextUri;
+            try (InputStream ignored = response.body()) {
+                nextUri = requireSafeRedirectUri(
+                        uri,
+                        response.headers().firstValue("Location").orElse(null));
+            }
+            if (redirectCount >= MAX_REDIRECTS) {
+                throw new IOException(
+                        "The signed update artifact endpoint exceeded the redirect limit.");
+            }
+            if (!visitedUris.add(canonicalRedirectUri(nextUri))) {
+                throw new IOException(
+                        "The signed update artifact endpoint returned a redirect loop.");
+            }
+            redirectCount++;
+            uri = nextUri;
+        }
+
         if (response.statusCode() != 200) {
             try (InputStream ignored = response.body()) {
                 // Close the bounded response without exposing its untrusted body.
@@ -128,12 +160,7 @@ public class OperatorUpdateArtifactDownloader {
                     "The signed update artifact URL is invalid.",
                     exception);
         }
-        if (!"https".equals(uri.getScheme() == null
-                        ? ""
-                        : uri.getScheme().toLowerCase(Locale.ROOT))
-                || !StringUtils.hasText(uri.getHost())
-                || uri.getRawUserInfo() != null
-                || uri.getRawFragment() != null) {
+        if (!isSafeHttpsUri(uri)) {
             throw new IllegalArgumentException(
                     "The signed update artifact URL must be an absolute HTTPS URL.");
         }
@@ -143,5 +170,75 @@ public class OperatorUpdateArtifactDownloader {
                     "The signed update artifact must be a Debian package.");
         }
         return uri;
+    }
+
+    private static boolean isRedirect(int statusCode) {
+        return statusCode == 301
+                || statusCode == 302
+                || statusCode == 303
+                || statusCode == 307
+                || statusCode == 308;
+    }
+
+    private static URI requireSafeRedirectUri(
+            URI currentUri,
+            String location) throws IOException {
+        if (!StringUtils.hasText(location)) {
+            throw new IOException(
+                    "The signed update artifact redirect is missing its Location header.");
+        }
+
+        URI locationUri;
+        try {
+            locationUri = URI.create(location);
+        } catch (IllegalArgumentException exception) {
+            throw new IOException(
+                    "The signed update artifact redirect Location is invalid.",
+                    exception);
+        }
+
+        URI nextUri;
+        try {
+            nextUri = currentUri.resolve(locationUri);
+        } catch (IllegalArgumentException exception) {
+            throw new IOException(
+                    "The signed update artifact redirect Location is invalid.",
+                    exception);
+        }
+        if (!isSafeHttpsUri(nextUri)) {
+            throw new IOException(
+                    "The signed update artifact redirect must target an absolute, "
+                            + "credential-free, fragment-free HTTPS URL.");
+        }
+        return nextUri;
+    }
+
+    private static boolean isSafeHttpsUri(URI uri) {
+        return "https".equals(uri.getScheme() == null
+                        ? ""
+                        : uri.getScheme().toLowerCase(Locale.ROOT))
+                && StringUtils.hasText(uri.getHost())
+                && uri.getRawUserInfo() == null
+                && uri.getRawFragment() == null
+                && uri.getPort() <= 65_535;
+    }
+
+    private static URI canonicalRedirectUri(URI uri) {
+        URI normalized = uri.normalize();
+        int port = normalized.getPort() == 443 ? -1 : normalized.getPort();
+        try {
+            return new URI(
+                    normalized.getScheme().toLowerCase(Locale.ROOT),
+                    null,
+                    normalized.getHost().toLowerCase(Locale.ROOT),
+                    port,
+                    normalized.getRawPath(),
+                    normalized.getRawQuery(),
+                    null);
+        } catch (java.net.URISyntaxException exception) {
+            throw new IllegalArgumentException(
+                    "The signed update artifact URL is invalid.",
+                    exception);
+        }
     }
 }

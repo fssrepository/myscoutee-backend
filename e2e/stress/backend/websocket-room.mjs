@@ -110,6 +110,9 @@ try {
   console.error(error.stack ?? error.message);
   process.exitCode = 1;
 } finally {
+  await closeClients(clients, config.closeTimeoutMs).catch(error => {
+    console.error(`WebSocket cleanup failed: ${error.message}`);
+  });
   await resourceMonitor?.stop();
 }
 
@@ -134,10 +137,56 @@ db.users.insertMany(userIds.map((userId, index) => ({
   initials: 'W' + String((index + 1) % 10),
   gender: index % 2 === 0 ? 'woman' : 'man',
   status: 'A',
-  profileStatus: 'active',
+  profileStatus: 'public',
   completion: 100,
   images: [],
-  activities: { chat: 1, events: 0, game: 0, hosting: 0, invitations: 0 }
+  networkMeasurementExcluded: true,
+  networkMeasurementExclusionReason: 'e2e websocket room stress fixture',
+  activities: {
+    game: 0,
+    chats: 1,
+    invitations: 0,
+    events: 0,
+    hosting: 0,
+    cars: 0,
+    accommodation: 0,
+    supplies: 0,
+    tickets: 0,
+    contacts: 0,
+    feedback: 0,
+    chat: {
+      all: 1,
+      event: 0,
+      subEvent: 0,
+      group: 0,
+      service: 0,
+      appSupport: 0
+    },
+    event: {
+      all: 0,
+      active: 0,
+      pending: 0,
+      invitations: 0,
+      hosting: 0,
+      drafts: 0,
+      trash: 0
+    },
+    asset: {
+      cars: 0,
+      accommodation: 0,
+      supplies: 0,
+      tickets: 0
+    },
+    eventFeedback: {
+      ownEvents: 0,
+      pending: 0,
+      feedbacked: 0,
+      removed: 0
+    },
+    adminJobs: 0,
+    adminMetrics: 0,
+    notifications: 0
+  }
 })), { ordered: false });
 db.chats.insertMany(userIds.map((userId, index) => ({
   _id: chatId + ':' + userId,
@@ -380,8 +429,15 @@ async function waitForDelivery(config, sentMessages, clients) {
 
 async function closeClients(clients, closeTimeoutMs) {
   for (const client of clients) {
-    if (client?.ws?.readyState === WebSocket.OPEN) {
-      client.ws.close(1000, 'e2e websocket room complete');
+    if (
+      client?.ws?.readyState === WebSocket.CONNECTING
+      || client?.ws?.readyState === WebSocket.OPEN
+    ) {
+      try {
+        client.ws.close(1000, 'e2e websocket room complete');
+      } catch (error) {
+        client.errors.push(`WebSocket cleanup failed: ${error.message}`);
+      }
     }
   }
   const deadline = Date.now() + closeTimeoutMs;
@@ -854,7 +910,7 @@ function resolveConfig(args) {
     messages: numberArg(args.messages, process.env.E2E_WS_ROOM_MESSAGES, 20),
     sendRatePerSec: numberArg(args.sendRate, process.env.E2E_WS_ROOM_SEND_RATE, 2),
     connectConcurrency: numberArg(args.connectConcurrency, process.env.E2E_WS_ROOM_CONNECT_CONCURRENCY, 25),
-    baseUrl: args.baseUrl || process.env.E2E_WS_ROOM_BASE_URL || process.env.E2E_STRESS_BASE_URL || 'http://localhost',
+    baseUrl: args.baseUrl || process.env.E2E_WS_ROOM_BASE_URL || process.env.E2E_STRESS_BASE_URL || 'https://127.0.0.1',
     database: args.database || process.env.E2E_WS_ROOM_DATABASE || process.env.MONGO_E2E_DATABASE || 'e2e_db',
     mongoContainer: args.mongoContainer || process.env.E2E_MONGO_CONTAINER || 'mongodb',
     redisContainer: args.redisContainer || process.env.E2E_REDIS_CONTAINER || 'redis',

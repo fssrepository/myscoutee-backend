@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd -P)"
+IMAGE_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
 
 CANDIDATE_DEB="${MYSCOUTEE_CANDIDATE_DEB:-${1:-}}"
 OLDEST_SUPPORTED_DEB="${MYSCOUTEE_OLDEST_SUPPORTED_DEB:-${2:-}}"
@@ -99,6 +100,9 @@ registry_ports="$(
 registry_os="$(docker image inspect --format '{{.Os}}' "${REGISTRY_IMAGE}")"
 registry_architecture="$(docker image inspect --format '{{.Architecture}}' "${REGISTRY_IMAGE}")"
 registry_image_id="$(docker image inspect --format '{{.Id}}' "${REGISTRY_IMAGE}")"
+registry_content_fingerprint="$(
+  bash "${IMAGE_FINGERPRINT_HELPER}" docker "${REGISTRY_IMAGE}"
+)"
 registry_repo_digests="$(
   docker image inspect --format '{{json .RepoDigests}}' "${REGISTRY_IMAGE}"
 )"
@@ -162,6 +166,7 @@ jq -e \
       == (["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"] | sort)
     and all(.images[];
       (.imageId | test("^sha256:[0-9a-f]{64}$"))
+      and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$"))
       and (.reference | type == "string")
     )
   ' "${candidate_image_manifest}" >/dev/null || {
@@ -222,6 +227,17 @@ while IFS='|' read -r service expected_reference archive_name; do
     echo "Managed image archive ${archive_name}.tar differs from IMAGE-MANIFEST.json." >&2
     exit 1
   }
+  manifest_content_fingerprint="$(
+    jq -er '.contentFingerprint' <<< "${manifest_item}"
+  )"
+  archive_content_fingerprint="$(
+    printf '%s\n' "${image_config}" \
+      | bash "${IMAGE_FINGERPRINT_HELPER}" config -
+  )"
+  [[ "${archive_content_fingerprint}" == "${manifest_content_fingerprint}" ]] || {
+    echo "Managed image archive ${archive_name}.tar content fingerprint differs from IMAGE-MANIFEST.json." >&2
+    exit 1
+  }
   image_os="$(jq -er '.os' <<< "${image_config}")"
   image_architecture="$(jq -er '.architecture' <<< "${image_config}")"
   [[ "${image_os}" == "linux" \
@@ -235,6 +251,7 @@ while IFS='|' read -r service expected_reference archive_name; do
     --arg service "${service}" \
     --arg reference "${expected_reference}" \
     --arg imageID "${manifest_image_id}" \
+    --arg contentFingerprint "${manifest_content_fingerprint}" \
     --arg archivePath "opt/myscoutee/images/${archive_name}.tar" \
     --arg archiveSha256 "sha256:${archive_sha256}" \
     --argjson archiveSize "${archive_size}" \
@@ -244,6 +261,7 @@ while IFS='|' read -r service expected_reference archive_name; do
       service: $service,
       reference: $reference,
       imageID: $imageID,
+      contentFingerprint: $contentFingerprint,
       archivePath: $archivePath,
       archiveSha256: $archiveSha256,
       archiveSizeBytes: $archiveSize,
@@ -260,14 +278,14 @@ EOF
 managed_images_json="${work_dir}/managed-images.json"
 jq -s '.' "${managed_images_jsonl}" > "${managed_images_json}"
 
-packaged_registry_image_id="$(
+packaged_registry_content_fingerprint="$(
   jq -er '
     .images[]
     | select(.service == "registry-demo")
-    | .imageId
+    | .contentFingerprint
   ' "${candidate_image_manifest}"
 )"
-[[ "${packaged_registry_image_id}" == "${registry_image_id}" ]] || {
+[[ "${packaged_registry_content_fingerprint}" == "${registry_content_fingerprint}" ]] || {
   echo "Inspected registry image differs from the image bundled in the candidate." >&2
   exit 1
 }
@@ -341,6 +359,7 @@ jq -n \
   --argjson oldestSize "${oldest_size}" \
   --arg registryImage "${REGISTRY_IMAGE}" \
   --arg registryImageID "${registry_image_id}" \
+  --arg registryContentFingerprint "${registry_content_fingerprint}" \
   --argjson registryRepoDigests "${registry_repo_digests}" \
   --arg registryOS "${registry_os}" \
   --arg registryArchitecture "${registry_architecture}" \
@@ -374,6 +393,7 @@ jq -n \
       registryImage: {
         reference: $registryImage,
         imageID: $registryImageID,
+        contentFingerprint: $registryContentFingerprint,
         repoDigests: $registryRepoDigests,
         os: $registryOS,
         architecture: $registryArchitecture,

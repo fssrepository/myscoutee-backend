@@ -125,6 +125,101 @@ class HomeGameCardsServiceTest {
         assertThat(afterNewUser.nextCursor()).isEqualTo("10");
     }
 
+    @Test
+    void singlePaginationDoesNotSkipUnseenUsersWhenRatedUsersDisappear() {
+        HomeGameCardsService service = new HomeGameCardsService(homeUserProfileService);
+        List<Users> initialCandidates = java.util.stream.IntStream.rangeClosed(1, 12)
+                .mapToObj(index -> user("candidate-" + index))
+                .toList();
+        List<Users> candidatesAfterEightRatings = initialCandidates.subList(8, 12);
+        when(homeUserProfileService.resolveSelectedUserId("active")).thenReturn("active");
+        when(homeUserProfileService.queryGameStackUserRecords("active"))
+                .thenReturn(initialCandidates, candidatesAfterEightRatings);
+        when(homeUserProfileService.toGameCardUserDto(any(Users.class))).thenAnswer(invocation -> {
+            Users candidate = invocation.getArgument(0);
+            return userDto(candidate.getId());
+        });
+
+        var firstPage = service.queryPage(new UserGameCardsQueryRequestDto(
+                "active", "single", null, null, null, null, 10));
+        var secondPage = service.queryPage(new UserGameCardsQueryRequestDto(
+                "active",
+                "single",
+                null,
+                null,
+                null,
+                firstPage.nextCursor(),
+                10,
+                firstPage.cardUserIds(),
+                List.of()));
+
+        assertThat(firstPage.cardUserIds())
+                .containsExactlyElementsOf(initialCandidates.subList(0, 10).stream().map(Users::getId).toList());
+        assertThat(secondPage.filterCount()).isEqualTo(4);
+        assertThat(secondPage.cardUserIds()).containsExactly("candidate-11", "candidate-12");
+        assertThat(secondPage.nextCursor()).isNull();
+    }
+
+    @Test
+    void socialPaginationDoesNotSkipUnseenCardsWhenRatedPairsDisappear() {
+        HomeGameCardsService service = new HomeGameCardsService(homeUserProfileService);
+        List<Users> users = java.util.stream.IntStream.rangeClosed(1, 24)
+                .mapToObj(index -> user("candidate-" + index))
+                .toList();
+        List<HomeUserProfileService.GameSocialCardCandidate> initialCandidates =
+                java.util.stream.IntStream.rangeClosed(1, 12)
+                        .mapToObj(index -> socialCandidate(index))
+                        .toList();
+        List<HomeUserProfileService.GameSocialCardCandidate> candidatesAfterEightRatings =
+                initialCandidates.subList(8, 12);
+        HomeUserProfileService.ActivitySocialGraph graph =
+                new HomeUserProfileService.ActivitySocialGraph(Map.of(), Map.of());
+        when(homeUserProfileService.resolveSelectedUserId("active")).thenReturn("active");
+        when(homeUserProfileService.queryOrderedUserRecords()).thenReturn(users);
+        when(homeUserProfileService.queryActivitySocialGraph()).thenReturn(graph);
+        when(homeUserProfileService.queryOutsideNetworkCards("active", users, graph))
+                .thenReturn(initialCandidates, candidatesAfterEightRatings);
+        when(homeUserProfileService.toGameCardUserDto(any(Users.class))).thenAnswer(invocation -> {
+            Users candidate = invocation.getArgument(0);
+            return userDto(candidate.getId());
+        });
+
+        var firstPage = service.queryPage(new UserGameCardsQueryRequestDto(
+                "active", "outside-network", null, null, null, null, 10));
+        var secondPage = service.queryPage(new UserGameCardsQueryRequestDto(
+                "active",
+                "outside-network",
+                null,
+                null,
+                null,
+                firstPage.nextCursor(),
+                10,
+                List.of(),
+                firstPage.socialCards().stream().map(card -> card.id()).toList()));
+
+        assertThat(firstPage.socialCards()).extracting(card -> card.id())
+                .containsExactlyElementsOf(
+                        initialCandidates.subList(0, 10).stream().map(candidate -> candidate.id()).toList());
+        assertThat(secondPage.filterCount()).isEqualTo(4);
+        assertThat(secondPage.socialCards()).extracting(card -> card.id())
+                .containsExactly("outside-network:active:21:22", "outside-network:active:23:24");
+        assertThat(secondPage.nextCursor()).isNull();
+    }
+
+    private HomeUserProfileService.GameSocialCardCandidate socialCandidate(int index) {
+        int leftIndex = (index * 2) - 1;
+        int rightIndex = index * 2;
+        return new HomeUserProfileService.GameSocialCardCandidate(
+                "outside-network:active:" + leftIndex + ":" + rightIndex,
+                "candidate-" + leftIndex,
+                "candidate-" + rightIndex,
+                "outside-network",
+                null,
+                null,
+                null,
+                100d - index);
+    }
+
     private Users user(String id) {
         Users user = new Users();
         user.setId(id);

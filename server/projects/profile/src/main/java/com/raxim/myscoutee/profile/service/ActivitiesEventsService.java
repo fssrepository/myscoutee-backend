@@ -1852,6 +1852,9 @@ public class ActivitiesEventsService {
             return removeCheckoutMembershipOnly(request, sourceId);
         }
         boolean organizerLifecycleRequest = isOrganizerLifecycleRequest(request);
+        if (!organizerLifecycleRequest) {
+            return removeCheckoutMembershipOnly(request, sourceId);
+        }
         if (organizerLifecycleRequest && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
             return null;
         }
@@ -4229,7 +4232,8 @@ public class ActivitiesEventsService {
                 current == null ? Set.of() : current.trackedEventSourceIds(),
                 current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
                 current == null ? Set.of() : current.pendingPaymentEventSourceIds(),
-                current == null ? Map.of() : current.edgeWeightsByPairKey());
+                current == null ? Map.of() : current.edgeWeightsByPairKey(),
+                creatorAvatarUrlsByUserId(hydratedRecords));
         Map<String, String> checkoutResultStatesBySourceId = checkoutResultStatesBySourceId(
                 viewer == null ? null : viewer.userId(),
                 hydratedRecords);
@@ -4237,6 +4241,39 @@ public class ActivitiesEventsService {
                 .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
                 .toList());
+    }
+
+    private Map<String, String> creatorAvatarUrlsByUserId(Collection<ActivityEvent> records) {
+        List<String> creatorUserIds = (records == null ? List.<ActivityEvent>of() : records).stream()
+                .filter(Objects::nonNull)
+                .map(ActivityEvent::getCreatorUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (creatorUserIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, String> avatarUrlsByUserId = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(creatorUserIds)) {
+            String userId = normalizeId(user == null ? null : user.getUserId());
+            String avatarUrl = firstUserImageUrl(user);
+            if (StringUtils.hasText(userId) && StringUtils.hasText(avatarUrl)) {
+                avatarUrlsByUserId.put(userId, avatarUrl);
+            }
+        }
+        return avatarUrlsByUserId;
+    }
+
+    private String firstUserImageUrl(Users user) {
+        if (user == null || user.getImages() == null) {
+            return "";
+        }
+        return user.getImages().stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse("");
     }
 
     private Map<String, String> checkoutResultStatesBySourceId(
@@ -4827,7 +4864,8 @@ public class ActivitiesEventsService {
         return new ActivityEventMapper.MappingContext(
                 viewer == null ? null : viewer.locationCoordinates(),
                 snapshotsBySourceId,
-                checkoutResultStatesBySourceId);
+                checkoutResultStatesBySourceId,
+                ctx == null ? Map.of() : ctx.creatorAvatarUrlsByUserId());
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> singleRecordSnapshot(ActivityEvent record) {
@@ -6847,6 +6885,25 @@ public class ActivitiesEventsService {
             Set<String> trackedEventSourceIds,
             Map<String, String> trackedEventStatusesBySourceId,
             Set<String> pendingPaymentEventSourceIds,
-            Map<String, Double> edgeWeightsByPairKey) {
+            Map<String, Double> edgeWeightsByPairKey,
+            Map<String, String> creatorAvatarUrlsByUserId) {
+        private EventQueryContext(
+                List<ActivityEvent> allEvents,
+                List<ActivityEvent> mergedEvents,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Set<String> trackedEventSourceIds,
+                Map<String, String> trackedEventStatusesBySourceId,
+                Set<String> pendingPaymentEventSourceIds,
+                Map<String, Double> edgeWeightsByPairKey) {
+            this(
+                    allEvents,
+                    mergedEvents,
+                    snapshotsBySourceId,
+                    trackedEventSourceIds,
+                    trackedEventStatusesBySourceId,
+                    pendingPaymentEventSourceIds,
+                    edgeWeightsByPairKey,
+                    Map.of());
+        }
     }
 }

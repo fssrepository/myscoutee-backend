@@ -17,7 +17,7 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const args = parseCommonArgs(process.argv.slice(2));
-const baseUrl = process.env.E2E_SERVER_BASE_URL ?? 'http://localhost';
+const baseUrl = process.env.E2E_SERVER_BASE_URL ?? 'https://127.0.0.1';
 const mode = process.env.E2E_SERVER_MODE ?? 'contract';
 
 const ctx = {

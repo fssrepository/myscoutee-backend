@@ -875,6 +875,10 @@ public class ActivitiesMembersService {
         }
 
         String currentStatus = normalizeStatus(current.getStatus());
+        boolean cancellingEventInvitation = OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && STATUS_PENDING.equals(currentStatus)
+                && isInvitationMembership(current);
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
                 && !canManageOwnerMembers(
@@ -993,6 +997,11 @@ public class ActivitiesMembersService {
             if (removingPendingEventMembership) {
                 refreshEmbeddedEventMembers(ownerId, false);
                 userActivityCountersService.refreshEventCountersForUsers(List.of(targetUserId));
+                if (cancellingEventInvitation) {
+                    eventInviteNotificationService.markInvitationResolved(
+                            ownerId,
+                            targetUserId);
+                }
                 return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             if (ACTION_REMOVE.equals(action)) {
@@ -1100,6 +1109,10 @@ public class ActivitiesMembersService {
         }
 
         ActivityMember current = existingByUserId.get(viewerUserId);
+        boolean resolvingInvitation = current != null
+                && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                    || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
+                && isInvitationMembership(current);
         if (current != null && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
@@ -1142,6 +1155,11 @@ public class ActivitiesMembersService {
             eventParticipationTicketService.syncParticipationTicketForUser(normalizedEventId, viewerUserId);
             refreshEmbeddedEventMembers(normalizedEventId);
             userActivityCountersService.refreshEventCountersForUsers(List.of(viewerUserId));
+            if (resolvingInvitation) {
+                eventInviteNotificationService.markInvitationResolved(
+                        normalizedEventId,
+                        viewerUserId);
+            }
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
@@ -1172,6 +1190,10 @@ public class ActivitiesMembersService {
                     .filter(member -> normalizedUserId.equals(normalizeId(member.getUserId())))
                     .findFirst()
                     .orElse(null);
+            boolean resolvingInvitation = current != null
+                    && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                        || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
+                    && isInvitationMembership(current);
             boolean alreadySuppressed = current != null
                     && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
                     && normalizedEventId.equals(normalizeId(current.getSuppressionRootOwnerId()))
@@ -1332,6 +1354,11 @@ public class ActivitiesMembersService {
             } else {
                 userActivityCountersService.refreshEventCountersForSourceIds(List.copyOf(persistedEventSourceIds));
             }
+            if (resolvingInvitation) {
+                eventInviteNotificationService.markInvitationResolved(
+                        normalizedEventId,
+                        normalizedUserId);
+            }
             OwnerMembersSnapshot updatedSnapshot =
                     queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
             return updatedSnapshot == null ? null : updatedSnapshot.withMutationApplied(true);
@@ -1392,7 +1419,12 @@ public class ActivitiesMembersService {
                     && StringUtils.hasText(
                             normalizeRestorableMembershipStatus(
                                     rootMembership.getStatusBeforeSuppression()));
-            if (!suppressedRootRestore && !legacyRootRestore) {
+            boolean legacyInvitationOverlayRestore = isSafeLegacyInvitationTrashOverlay(
+                    rootMembership,
+                    normalizedEventId,
+                    normalizedUserId,
+                    eventDocumentsBySourceId.getOrDefault(normalizedEventId, List.of()));
+            if (!suppressedRootRestore && !legacyRootRestore && !legacyInvitationOverlayRestore) {
                 return false;
             }
 
@@ -1466,7 +1498,8 @@ public class ActivitiesMembersService {
                     eventDocumentsBySourceId,
                     normalizedUserId,
                     normalizedActorUserId,
-                    nowIso);
+                    nowIso,
+                    legacyInvitationOverlayRestore);
             if (restoredMembers.isEmpty() && restoredOverlays.isEmpty()) {
                 return false;
             }
@@ -1716,7 +1749,8 @@ public class ActivitiesMembersService {
             Map<String, List<ActivityEvent>> documentsBySourceId,
             String userId,
             String actorUserId,
-            String nowIso) {
+            String nowIso,
+            boolean allowMissingStatusBeforeSuppression) {
         List<ActivityEvent> overlaysToSave = new ArrayList<>();
         for (List<ActivityEvent> documents :
                 documentsBySourceId == null ? List.<List<ActivityEvent>>of() : documentsBySourceId.values()) {
@@ -1728,7 +1762,8 @@ public class ActivitiesMembersService {
                 if (document == null
                         || !normalizeId(userId).equals(normalizeId(document.getOwnerUserId()))
                         || !ActivityEvent.STATUS_TRASHED.equals(safeText(document.getStatus()))
-                        || !StringUtils.hasText(safeText(document.getStatusBeforeSuppression()))) {
+                        || (!allowMissingStatusBeforeSuppression
+                                && !StringUtils.hasText(safeText(document.getStatusBeforeSuppression())))) {
                     continue;
                 }
                 ActivityEvent overlay = cloneEventDocument(document);
@@ -1758,6 +1793,26 @@ public class ActivitiesMembersService {
                 || !STATUS_DELETED.equals(normalizeStatus(rootMembership.getStatus()))
                 || StringUtils.hasText(normalizeId(rootMembership.getSuppressionRootOwnerId()))
                 || !normalizeId(userId).equals(normalizeId(rootMembership.getUpdatedUser()))
+                || !normalizeId(rootEventId).equals(normalizeId(rootMembership.getOwnerId()))) {
+            return false;
+        }
+        return (rootEventDocuments == null ? List.<ActivityEvent>of() : rootEventDocuments).stream()
+                .filter(Objects::nonNull)
+                .anyMatch(document -> normalizeId(userId).equals(normalizeId(document.getOwnerUserId()))
+                        && ActivityEvent.STATUS_TRASHED.equals(safeText(document.getStatus())));
+    }
+
+    private boolean isSafeLegacyInvitationTrashOverlay(
+            ActivityMember rootMembership,
+            String rootEventId,
+            String userId,
+            List<ActivityEvent> rootEventDocuments) {
+        String membershipStatus = normalizeStatus(rootMembership == null ? null : rootMembership.getStatus());
+        boolean activeInvitation = STATUS_INVITED.equals(membershipStatus)
+                || (STATUS_PENDING.equals(membershipStatus) && isInvitationMembership(rootMembership));
+        if (rootMembership == null
+                || !activeInvitation
+                || !normalizeId(userId).equals(normalizeId(rootMembership.getUserId()))
                 || !normalizeId(rootEventId).equals(normalizeId(rootMembership.getOwnerId()))) {
             return false;
         }
@@ -2889,7 +2944,8 @@ public class ActivitiesMembersService {
                 .sorted(Comparator
                         .comparing((ActivityMember member) -> toSortableDate(member.getActionAtIso()))
                         .thenComparing(member -> toSortableDate(member.getCreatedDate()))
-                        .thenComparing(member -> safeText(member.getSyncKey())))
+                        .thenComparing(member -> safeText(member.getSyncKey()))
+                        .thenComparing(member -> safeText(member.getId())))
                 .toList();
         if (waitingMembers.isEmpty()) {
             return 0;
@@ -2926,11 +2982,12 @@ public class ActivitiesMembersService {
 
         activityMembersRepository.saveAll(membersToSave);
         enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, inviterUserId);
+        refreshEmbeddedEventMembers(normalizedEventId);
+        userActivityCountersService.refreshEventCountersForUsers(promotedUserIds);
         eventInviteNotificationService.notifyInvitees(
                 preferredEventRecord,
                 promotedUserIds,
                 inviterUserId);
-        refreshEmbeddedEventMembers(normalizedEventId);
         return promotedUserIds.size();
     }
 
@@ -2952,6 +3009,7 @@ public class ActivitiesMembersService {
                                 .comparing((ActivityMember member) -> toSortableDate(member.getActionAtIso()))
                                 .thenComparing(member -> toSortableDate(member.getCreatedDate()))
                                 .thenComparing(member -> safeText(member.getSyncKey()))
+                                .thenComparing(member -> safeText(member.getId()))
                                 .reversed())
                         .limit(Math.max(0, maximumDemotions))
                         .toList();
