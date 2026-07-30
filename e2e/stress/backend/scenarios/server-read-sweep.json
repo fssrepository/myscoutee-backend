@@ -1,7 +1,7 @@
 {
   "name": "Server read sweep",
   "mode": "contract",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 4,
   "rampUpMs": 3000,
   "durationMs": 30000,

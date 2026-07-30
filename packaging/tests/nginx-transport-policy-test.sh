@@ -180,6 +180,15 @@ prod_redirect_status="$(curl -sS -o /dev/null -D "${prod_redirect_headers}" \
   || fail "production application HTTP request was not redirected"
 assert_header "${prod_redirect_headers}" '^Location: https://transport\.test/api/auth/me'
 
+prod_forged_host_headers="${TEST_ROOT}/prod-forged-host.headers"
+prod_forged_host_status="$(curl -sS -o /dev/null -D "${prod_forged_host_headers}" \
+  -H 'Host: forged-host.invalid' -w '%{http_code}' \
+  "http://127.0.0.1:${prod_http_port}/api/auth/me")"
+[[ "${prod_forged_host_status}" == "308" ]] \
+  || fail "production request with a forged Host header was not safely redirected"
+assert_header "${prod_forged_host_headers}" '^Location: https://transport\.test/api/auth/me'
+assert_no_header "${prod_forged_host_headers}" '^Location: https://forged-host\.invalid'
+
 prod_asset_headers="${TEST_ROOT}/prod-asset.headers"
 curl -skS -o /dev/null -D "${prod_asset_headers}" \
   -H 'Host: transport.test' \

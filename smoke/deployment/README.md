@@ -49,7 +49,8 @@ immediately, before any network operation.
 ## What it checks
 
 - HTTP `/nginx-health` remains available and application traffic receives
-  the production `308` HTTPS redirect;
+  the production `308` HTTPS redirect without allowing a forged `Host` header
+  to control its destination;
 - the supplied target completes a normally validated TLS handshake and HTTPS
   responses carry HSTS;
 - Nginx serves the Angular shell, SPA deep links, PWA metadata, matching build

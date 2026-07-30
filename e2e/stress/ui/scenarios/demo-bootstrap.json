@@ -1,7 +1,7 @@
 {
   "name": "UI demo bootstrap slow-mobile benchmark",
   "flow": "demoBootstrap",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "route": "/",
   "users": 1,
   "iterations": 1,

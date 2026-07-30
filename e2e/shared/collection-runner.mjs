@@ -324,7 +324,11 @@ function expectBodyContract(value, contract, pathLabel) {
     return;
   }
   if (contract.type === 'number') {
-    assert(Number.isFinite(Number(value)), `${pathLabel} should be numeric`, { value });
+    assert(
+      typeof value === 'number' && Number.isFinite(value),
+      `${pathLabel} should be a finite number`,
+      { value }
+    );
     return;
   }
   if (contract.type === 'boolean') {

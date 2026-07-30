@@ -15,8 +15,12 @@ response.json
 Default command:
 
 ```bash
-E2E_SERVER_BASE_URL=http://localhost node e2e/functional/backend/run.mjs
+NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
+E2E_SERVER_BASE_URL=https://127.0.0.1 node e2e/functional/backend/run.mjs
 ```
+
+Copy the current container certificate as described in `e2e/README.md` before
+running this command.
 
 Covered groups:
 
@@ -48,7 +52,8 @@ safe contracts; 14 of those are the operator cases authored for the later run.
 Default command:
 
 ```bash
-E2E_SERVER_BASE_URL=http://localhost \
+NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
+E2E_SERVER_BASE_URL=https://127.0.0.1 \
 E2E_SERVER_MODE=stress \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```

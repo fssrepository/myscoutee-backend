@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rawArgs = process.argv.slice(2);
 const args = parseCommonArgs(stripUiArgs(rawArgs));
 const uiArgs = parseUiArgs(rawArgs);
-const baseUrl = process.env.E2E_UI_BASE_URL ?? 'http://localhost';
+const baseUrl = process.env.E2E_UI_BASE_URL ?? 'https://127.0.0.1';
 const artifactsDir = process.env.E2E_UI_ARTIFACTS_DIR
   ? path.resolve(process.env.E2E_UI_ARTIFACTS_DIR)
   : path.join(__dirname, '..', '..', '..', '.e2e-artifacts', 'functional', uiArgs.artifactName);

@@ -5,6 +5,7 @@ export async function assertResponse({ ctx, result, request }) {
   assertSecretsHidden(result.data, [
     request.body.password
   ], 'demo-session bootstrap rejection');
+  const secureTransport = new URL(ctx.http.baseUrl).protocol === 'https:';
 
   const oversizedPassword = `bootstrap-${'p'.repeat(513)}`;
   const invalidLogins = [
@@ -31,9 +32,6 @@ export async function assertResponse({ ctx, result, request }) {
   ];
   for (const invalidLogin of invalidLogins) {
     const rejected = await ctx.http.post(request.path, {
-      headers: {
-        'X-Forwarded-Proto': 'https'
-      },
       json: invalidLogin.body,
       expectedStatus: 400
     });
@@ -51,18 +49,17 @@ export async function assertResponse({ ctx, result, request }) {
 
   const unknownPassword = `unknown-bootstrap-${ctx.vars.runId}-7q9w`;
   const unknownLogin = await ctx.http.post(request.path, {
-    headers: {
-      'X-Forwarded-Proto': 'https'
-    },
     json: {
       email: `missing-bootstrap-${ctx.vars.runId}@example.test`,
       password: unknownPassword
     },
-    expectedStatus: 404
+    expectedStatus: secureTransport ? 404 : 426
   });
   assert(
-    unknownLogin.status === 404,
-    'an unconfigured bootstrap identity should not disclose credential validity',
+    unknownLogin.status === (secureTransport ? 404 : 426),
+    secureTransport
+      ? 'an unconfigured bootstrap identity should not disclose credential validity'
+      : 'cleartext bootstrap login should require HTTPS before evaluating credentials',
     unknownLogin.data
   );
   assertSecretsHidden(unknownLogin.data, [unknownPassword], 'unknown bootstrap response');
@@ -70,26 +67,31 @@ export async function assertResponse({ ctx, result, request }) {
   const invalidToken = `invalid-bootstrap-token-${ctx.vars.runId}`;
   const tokenRejection = await ctx.http.get('/api/operator/configuration', {
     headers: {
-      Authorization: `OperatorBootstrap ${invalidToken}`,
-      'X-Forwarded-Proto': 'https'
+      Authorization: `OperatorBootstrap ${invalidToken}`
     },
-    expectedStatus: 401
+    expectedStatus: secureTransport ? 401 : 426
   });
-  assert(tokenRejection.status === 401, 'an invalid bootstrap token should be rejected');
+  assert(
+    tokenRejection.status === (secureTransport ? 401 : 426),
+    secureTransport
+      ? 'an invalid bootstrap token should be rejected'
+      : 'cleartext bootstrap authorization should require HTTPS before evaluating the token'
+  );
   assertSecretsHidden(tokenRejection.data, [invalidToken], 'invalid bootstrap token response');
 
   const mixedSessionRejection = await ctx.http.get('/api/operator/configuration', {
     headers: {
       Authorization: `OperatorBootstrap ${invalidToken}`,
-      'X-Forwarded-Proto': 'https',
       'X-App-Session-Kind': 'demo',
       'X-Demo-User-Id': ctx.vars.operatorUserId
     },
-    expectedStatus: 401
+    expectedStatus: secureTransport ? 401 : 426
   });
   assert(
-    mixedSessionRejection.status === 401,
-    'bootstrap authorization must not be combined with a demo session'
+    mixedSessionRejection.status === (secureTransport ? 401 : 426),
+    secureTransport
+      ? 'bootstrap authorization must not be combined with a demo session'
+      : 'cleartext mixed bootstrap/demo authorization should require HTTPS first'
   );
   assertSecretsHidden(
     mixedSessionRejection.data,

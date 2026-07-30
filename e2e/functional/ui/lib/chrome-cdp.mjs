@@ -29,6 +29,7 @@ export async function launchChromeBrowser(options = {}) {
     '--disable-gpu',
     '--disable-extensions',
     '--disable-features=Translate,MediaRouter',
+    '--allow-insecure-localhost',
     '--hide-scrollbars',
     '--mute-audio',
     '--no-sandbox',
@@ -42,8 +43,13 @@ export async function launchChromeBrowser(options = {}) {
   child.stdout?.resume();
   child.stderr?.resume();
   const browser = new ChromeBrowser({ child, remotePort, userDataDir, baseUrl: options.baseUrl, defaultViewport: viewport });
-  await browser.waitUntilReady();
-  return browser;
+  try {
+    await browser.waitUntilReady();
+    return browser;
+  } catch (error) {
+    await browser.close().catch(() => undefined);
+    throw error;
+  }
 }
 
 export class ChromeBrowser {
@@ -51,7 +57,7 @@ export class ChromeBrowser {
     this.child = child;
     this.remotePort = remotePort;
     this.userDataDir = userDataDir;
-    this.baseUrl = (baseUrl ?? 'http://localhost').replace(/\/+$/, '');
+    this.baseUrl = (baseUrl ?? 'https://127.0.0.1').replace(/\/+$/, '');
     this.defaultViewport = defaultViewport ?? { width: 1440, height: 950 };
   }
 

@@ -1,0 +1,11 @@
+**
+
+!nginx.conf
+!conf/
+!conf/http/
+!conf/http/spring.conf
+!conf/http/routing.conf
+!conf/http/http-transport-policy.prod.conf
+!conf/http/https-response-policy.prod.conf
+!conf/stream/
+!conf/stream/mongodb.conf

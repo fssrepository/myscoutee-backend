@@ -25,7 +25,7 @@ if (args.list) {
 const scenario = await loadScenario(args.scenario);
 applyScenarioOverrides(scenario, args);
 const serverCases = new Map((await discoverCollection(serverRoot)).map(testCase => [testCase.id, testCase]));
-const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'http://localhost';
+const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'https://127.0.0.1';
 const mode = process.env.E2E_STRESS_MODE ?? scenario.mode ?? 'contract';
 
 if (shouldResetE2eDatabase(mode, scenario)) {

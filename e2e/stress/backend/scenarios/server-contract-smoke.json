@@ -1,7 +1,7 @@
 {
   "name": "Server contract smoke load",
   "mode": "contract",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 2,
   "rampUpMs": 1000,
   "iterations": 2,

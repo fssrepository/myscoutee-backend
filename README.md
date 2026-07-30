@@ -99,8 +99,11 @@ Production Packaging
 Full Integration E2E Collections
 --------------------------------
 * Postman-like server/API and UI collections live under `./e2e`.
-* Safe contract checks against the normal dev stack: `node e2e/server/run.mjs`
-* Disposable mutation/stress checks use `e2e_db`: `cd server && docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build`
+* Safe contracts, mutation flows, browser checks, and stress scenarios all use
+  the standalone production-style `e2e_db` stack; none requires the dev stack,
+  Gradle `bootRun`, frontend sync, or hot reload.
+* Start it with:
+  `cd server && docker compose -f docker-compose.e2e.yml up --build --wait`
 * Details: `./e2e/README.md`
 
 Local Signed Registry

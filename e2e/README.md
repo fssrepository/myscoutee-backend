@@ -61,19 +61,29 @@ e2e/functional/backend/SERVER_ENDPOINT_COVERAGE.md
 
 ## Server Contract Mode
 
-Contract mode is safe by default. It targets the already-running dev compose
-stack on port 80 and does not run mutation cases.
+Contract mode is safe by default and does not run mutation cases. All backend,
+UI, mutation, and stress collections use the same standalone E2E stack; they
+never require the dev compose stack, Gradle `bootRun`, frontend sync, or a file
+watcher.
 
 ```bash
 cd server
-docker compose up --build
+docker compose -f docker-compose.e2e.yml up --build --wait
+docker compose -f docker-compose.e2e.yml \
+  cp nginx:/etc/nginx/keys/nginx.crt /tmp/myscoutee-e2e-nginx-ca.pem
 
 cd ..
+export E2E_SERVER_BASE_URL=https://127.0.0.1
+export NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem
 node e2e/functional/backend/run.mjs --list
 node e2e/functional/backend/run.mjs
 node e2e/functional/backend/run.mjs --group events
 node e2e/functional/backend/run.mjs --case profile/auth-me --record
 ```
+
+`NODE_EXTRA_CA_CERTS` trusts only the disposable stack's short-lived localhost
+certificate. Copy it again after recreating Nginx. Nginx otherwise uses the
+production HTTP redirect and HSTS response policies.
 
 Operator contracts use the seeded `operator-demo-dev` identity and exercise
 the distinct `O` authority across the operator controllers, bootstrap and
@@ -97,7 +107,7 @@ node e2e/functional/backend/run.mjs --group operator
 Default target:
 
 ```bash
-E2E_SERVER_BASE_URL=http://localhost
+E2E_SERVER_BASE_URL=https://127.0.0.1
 ```
 
 ## E2E Flow Mode
@@ -107,11 +117,13 @@ E2E mode is for destructive or weird end-to-end flows. It uses
 
 ```bash
 cd server
-MONGO_E2E_DATABASE=e2e_db \
-docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build
+docker compose -f docker-compose.e2e.yml up --build --wait
+docker compose -f docker-compose.e2e.yml \
+  cp nginx:/etc/nginx/keys/nginx.crt /tmp/myscoutee-e2e-nginx-ca.pem
 
 cd ..
-# Start the e2e stack first; this runner expects localhost to route to it.
+export E2E_SERVER_BASE_URL=https://127.0.0.1
+export NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem
 E2E_SERVER_MODE=e2e \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
@@ -151,34 +163,42 @@ The e2e Mongo seed folder is:
 server/docker/conf/mongodb/e2e_db
 ```
 
-It symlinks to the default demo seed so e2e starts from familiar static
-data while writes land in the disposable e2e database/volume.
+It is a dedicated, tracked E2E seed snapshot. The Mongo E2E image bakes it in,
+while all runtime writes land in the disposable `e2e_db` volume.
 
-## Gradle E2E/Stress Backend
+`docker-compose.e2e.yml` is a complete, standalone, production-style stack.
+Do not layer it over `docker-compose-dev.yml`. The API runs the built boot JAR
+with the `prod` Spring profile, the optimized E2E Angular bundle is baked into
+Nginx, the production redirect/HSTS policy is enabled on ports 80/443, and the
+Mongo seed is baked into its E2E image. There are no source mounts, Gradle or
+Node runtime processes, file watchers, hot reload, or seed synchronization
+services.
 
-When Mongo/Redis/MinIO are already available, the backend can also be started
-directly in e2e mode:
+Remove all disposable E2E databases, registry SQLite state, object storage,
+and generated keys after a run:
 
 ```bash
 cd server
-MONGO_E2E_DATABASE=e2e_db ./gradlew :projects:profile:bootRunE2E
+docker compose -f docker-compose.e2e.yml down --volumes --remove-orphans
 ```
 
-Stress backend mode:
+## Mutation Flow Stress Driver
+
+With the standalone stack above running, execute the mutation flow driver:
 
 ```bash
-cd server
-MONGO_E2E_DATABASE=e2e_db ./gradlew :projects:profile:bootRunStress
-```
-
-Then run the stress collection driver:
-
-```bash
+NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
+E2E_SERVER_BASE_URL=https://127.0.0.1 \
 E2E_SERVER_MODE=stress \
 E2E_STRESS_LOOPS=10 \
 E2E_STRESS_CONCURRENCY=2 \
 node e2e/stress/backend/flows.mjs
 ```
+
+The driver resets the disposable database once. Deployment-global
+`flows/operator/*` cases then run sequentially exactly once because they mutate
+singleton configuration and registry state. Loop and concurrency settings
+apply only to the remaining repeatable mutation flows.
 
 ## JMeter-Style Stress Scenarios
 
@@ -239,7 +259,10 @@ round-robin from the sockets, verifies room fanout, and records host/container
 metrics:
 
 ```bash
-node e2e/stress/backend/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record
+NODE_EXTRA_CA_CERTS=/tmp/myscoutee-e2e-nginx-ca.pem \
+E2E_WS_ROOM_BASE_URL=https://127.0.0.1 \
+node e2e/stress/backend/websocket-room.mjs \
+  --clients 500 --messages 20 --send-rate 2 --record
 ```
 
 The WebSocket room simulation expects the backend to be running against
@@ -254,13 +277,12 @@ E2E_STRESS_MODE=stress \
 node e2e/stress/backend/run.mjs --scenario e2e-flow-smoke
 ```
 
-The e2e scenario expects the stack to be started with
-`docker-compose.e2e.yml` or the backend to be running with
-`bootRunStress`.
+The e2e scenario expects the standalone `docker-compose.e2e.yml` stack.
 
 ## UI Checks
 
-UI checks are browser checks against the full stack through nginx on port 80.
+UI checks are browser checks against the full stack through Nginx HTTPS on
+port 443; port 80 only serves the production redirect and health exception.
 They do not target the Angular dev server. The suite logs in/selects a demo
 user once, closes the normal explanation/privacy/location overlays, and reuses
 that session for internal screens such as game, profile editor, event explore,
@@ -268,14 +290,14 @@ event editor create, and admin help editor image carousel checks.
 
 ```bash
 # Start the e2e/full-stack compose environment before running UI checks.
-E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs
+E2E_UI_BASE_URL=https://127.0.0.1 node e2e/functional/ui/run.mjs
 ```
 
 Record screenshots and per-step evidence:
 
 ```bash
 # Start the e2e/full-stack compose environment before recording UI checks.
-E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs --record
+E2E_UI_BASE_URL=https://127.0.0.1 node e2e/functional/ui/run.mjs --record
 ```
 
 Recorded output is written under `.e2e-artifacts/functional/ui/` and is gitignored.
@@ -295,7 +317,7 @@ node e2e/stress/ui/run.mjs --list
 The first scenario measures demo bootstrap on a slow mobile profile:
 
 ```bash
-E2E_UI_STRESS_BASE_URL=http://localhost \
+E2E_UI_STRESS_BASE_URL=https://127.0.0.1 \
 node e2e/stress/ui/run.mjs --scenario demo-bootstrap --record
 ```
 

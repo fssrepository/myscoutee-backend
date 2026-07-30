@@ -1,0 +1,8 @@
+**
+
+!00_replica_set.js
+!db_init.js
+!mongo_import.sh
+!e2e_db/
+!e2e_db/**
+

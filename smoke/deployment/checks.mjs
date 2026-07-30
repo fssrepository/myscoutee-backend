@@ -15,6 +15,7 @@ import {
 export const CHECK_CATALOG = [
   ['transport/http-health', 'Nginx HTTP health exception'],
   ['transport/http-to-https', 'production HTTP to HTTPS redirect'],
+  ['transport/http-host-boundary', 'forged Host cannot control the HTTPS redirect'],
   ['transport/https-policy', 'validated HTTPS entrypoint and HSTS'],
   ['frontend/shell-assets', 'Angular shell and referenced build assets'],
   ['frontend/routing', 'SPA deep link and missing-asset routing'],
@@ -71,6 +72,33 @@ export function buildChecks(ctx) {
         redirected.pathname === requested.pathname && redirected.search === requested.search,
         'HTTP redirect should preserve the application path and query',
         { requested: requested.toString(), redirected: redirected.toString() }
+      );
+    }),
+
+    check('transport/http-host-boundary', 'forged Host cannot control the HTTPS redirect', async () => {
+      const skipReason = httpPolicySkipReason(ctx);
+      if (skipReason) {
+        return skipped(skipReason);
+      }
+      const result = await ctx.httpProbe.get('/api/health?deployment-smoke-host=1', {
+        redirect: 'manual',
+        headers: {
+          Host: 'forged-host.deployment-smoke.invalid'
+        },
+        maxBodyBytes: 8192
+      });
+      expectStatus(result, 308, 'HTTP request with a forged Host header');
+      const location = result.headers.location;
+      expectString(location, 'forged-Host redirect Location');
+      const redirected = new URL(location, result.requestUrl);
+      const effectiveApplicationOrigin = new URL((await ctx.root()).responseUrl).origin;
+      assert(
+        redirected.origin === effectiveApplicationOrigin,
+        'a forged Host header must not control the HTTPS redirect target',
+        {
+          redirectedOrigin: redirected.origin,
+          effectiveApplicationOrigin
+        }
       );
     }),
 

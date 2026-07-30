@@ -1,4 +1,4 @@
-import { assert, expectArray } from '../../../../../shared/assertions.mjs';
+import { assert, expectArray, expectObject } from '../../../../../shared/assertions.mjs';
 import { assertEvent, assertEventList } from '../../../lib/contracts.mjs';
 
 export async function assertResponse({ ctx, result, request }) {
@@ -36,16 +36,49 @@ export async function assertResponse({ ctx, result, request }) {
     attendingEvents
   );
 
-  await ctx.http.post('/api/activities/events/feedback/submit', {
+  await moveEventIntoUnlockedFeedbackWindow(ctx, request, eventId);
+
+  const feedbackDetailResult = await ctx.http.post('/api/activities/events/feedback/detail', {
     headers: request.headers,
-    params: { userId: ctx.vars.e2eSecondUserId },
     json: {
       userId: ctx.vars.e2eSecondUserId,
-      eventId,
-      answers: []
+      eventId
     },
     expectedStatus: 200
   });
+  const feedbackDetail = expectObject(feedbackDetailResult.data, 'participation feedback detail');
+  assert(feedbackDetail.eventId === eventId, 'feedback detail should belong to the participation event', feedbackDetail);
+  const feedbackCards = expectArray(feedbackDetail.cards, 'participation feedback cards');
+  assert(feedbackCards.length > 0, 'unlocked participation event should expose at least one feedback card', feedbackDetail);
+
+  const submitted = await ctx.http.post('/api/activities/events/feedback/submit', {
+    headers: request.headers,
+    json: {
+      userId: ctx.vars.e2eSecondUserId,
+      feedback: {
+        eventId,
+        title: feedbackDetail.title,
+        submittedAtIso: new Date().toISOString(),
+        cards: feedbackCards.map((card, index) => ({
+          ...card,
+          answerPrimary: index === 0 ? 'excellent' : 'positive',
+          answerSecondary: index === 0 ? 'well-organized' : '',
+          selectedTraitIds: Array.isArray(card.selectedTraitIds) ? card.selectedTraitIds : []
+        }))
+      }
+    },
+    expectedStatus: 200
+  });
+  const submittedFeedback = expectObject(submitted.data, 'submitted participation feedback');
+  assert(submittedFeedback.eventId === eventId, 'submitted feedback should belong to the participation event', submittedFeedback);
+  assert(submittedFeedback.submittedAtIso, 'submitted feedback should include a submission timestamp', submittedFeedback);
+  const submittedCards = expectArray(submittedFeedback.cards, 'submitted participation feedback cards');
+  assert(
+    submittedCards.some(card => card?.answerPrimary === 'excellent'),
+    'submitted feedback should preserve the primary answer',
+    submittedCards
+  );
+
   await assertFeedbackState(ctx, request, eventId, {
     submitted: true,
     removed: false
@@ -92,6 +125,48 @@ export async function assertResponse({ ctx, result, request }) {
     submitted: true,
     removed: false,
     organizerNote: 'E2E organizer note'
+  });
+}
+
+async function moveEventIntoUnlockedFeedbackWindow(ctx, request, eventId) {
+  const actionBody = {
+    userId: request.body.creatorUserId,
+    type: 'hosting',
+    sourceId: eventId
+  };
+  await ctx.http.post('/api/activities/events/unpublish', {
+    headers: request.headers,
+    json: actionBody,
+    expectedStatus: 200
+  });
+
+  const now = Date.now();
+  const startAtIso = new Date(now - 4 * 60 * 60 * 1000).toISOString();
+  const endAtIso = new Date(now - 3 * 60 * 60 * 1000).toISOString();
+  const updated = await ctx.http.post('/api/activities/events/sync', {
+    headers: request.headers,
+    json: {
+      ...request.body,
+      status: 'DR',
+      startAtIso,
+      endAtIso,
+      timeframe: 'Finished earlier today'
+    },
+    expectedStatus: 200
+  });
+  const unlockedDraft = assertEvent(updated.data, 'participation feedback unlocked draft');
+  assert(unlockedDraft.id === eventId, 'feedback window update should preserve the event id', unlockedDraft);
+  assert(unlockedDraft.status === 'DR', 'feedback window update should keep the event as a draft', unlockedDraft);
+  assert(
+    Math.abs(Date.parse(unlockedDraft.startAtIso) - Date.parse(startAtIso)) < 1000,
+    'feedback window update should move the event start into the past',
+    { expected: startAtIso, actual: unlockedDraft.startAtIso }
+  );
+
+  await ctx.http.post('/api/activities/events/publish', {
+    headers: request.headers,
+    json: actionBody,
+    expectedStatus: 200
   });
 }
 

@@ -68,7 +68,17 @@ export async function assertResponse({ ctx, result, request }) {
       label: 'structured company claim',
       method: 'POST',
       path: '/api/operator/claim',
-      body: {}
+      body: {
+        legalName: 'E2E Unregistered Operator',
+        registrationNumber: `E2E-PRE-REG-${ctx.vars.runId}`,
+        jurisdiction: 'SK',
+        registeredAddress: 'E2E test address',
+        website: 'https://operator.example.test',
+        verificationContactName: 'E2E Operator',
+        verificationContactRole: 'Owner',
+        verificationContactEmail: 'operator@example.test',
+        authorityAttested: true
+      }
     },
     {
       label: 'claim withdrawal',

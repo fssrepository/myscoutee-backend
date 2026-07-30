@@ -55,7 +55,7 @@ applyScenarioOverrides(scenario, args);
 const baseUrl = process.env.E2E_UI_STRESS_BASE_URL
   ?? process.env.E2E_UI_BASE_URL
   ?? scenario.baseUrl
-  ?? 'http://localhost';
+  ?? 'https://127.0.0.1';
 const startedAtIso = new Date().toISOString();
 const startedAt = performance.now();
 const artifactDir = args.record

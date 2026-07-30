@@ -2,7 +2,7 @@
   "name": "UI admin help editor images slow-mobile benchmark",
   "flow": "functionalCase",
   "functionalCase": "admin/help-editor-images",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 1,
   "iterations": 1,
   "rampUpMs": 0,

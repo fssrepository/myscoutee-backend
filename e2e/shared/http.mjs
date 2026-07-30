@@ -7,7 +7,7 @@ export class HttpRequestError extends Error {
 }
 
 export function createHttpClient(options = {}) {
-  const baseUrl = normalizeBaseUrl(options.baseUrl ?? 'http://localhost');
+  const baseUrl = normalizeBaseUrl(options.baseUrl ?? 'https://127.0.0.1');
   const defaultHeaders = options.defaultHeaders ?? {};
   const defaultTimeoutMs = Number(options.timeoutMs ?? 15000);
 
@@ -114,7 +114,7 @@ export function buildUrl(baseUrl, path, params = undefined) {
 }
 
 export function normalizeBaseUrl(value) {
-  const url = `${value ?? ''}`.trim() || 'http://localhost';
+  const url = `${value ?? ''}`.trim() || 'https://127.0.0.1';
   return url.endsWith('/') ? url : `${url}/`;
 }
 

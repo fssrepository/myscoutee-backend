@@ -1,7 +1,7 @@
 {
   "name": "E2E mutation flow smoke",
   "mode": "e2e",
-  "baseUrl": "http://localhost",
+  "baseUrl": "https://127.0.0.1",
   "users": 2,
   "rampUpMs": 1000,
   "iterations": 1,

@@ -3,7 +3,7 @@ import { assert } from '../../../../shared/assertions.mjs';
 export async function assertResponse({ ctx, result, request }) {
   assert(
     result.status === 400,
-    'generic operator actions should reject CLAIM in favor of the structured endpoint'
+    'generic operator actions should reject the canonical claim action in favor of the structured endpoint'
   );
   assertNotEchoed(
     result.data,

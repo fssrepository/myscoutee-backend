@@ -48,8 +48,12 @@ export function expectOptionalString(value, path = 'value') {
 }
 
 export function expectNumber(value, path = 'value') {
-  assert(Number.isFinite(Number(value)), `${path} should be numeric`, { value });
-  return Number(value);
+  assert(
+    typeof value === 'number' && Number.isFinite(value),
+    `${path} should be a finite number`,
+    { value }
+  );
+  return value;
 }
 
 export function expectOptionalNumber(value, path = 'value') {
