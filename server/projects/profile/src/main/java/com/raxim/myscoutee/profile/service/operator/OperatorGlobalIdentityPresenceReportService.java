@@ -337,9 +337,10 @@ public class OperatorGlobalIdentityPresenceReportService {
 
         List<String> commitments;
         try {
-            globalIdentityService.ensureQualifiedUsersLinked(
+            globalIdentityService.prepareQualifiedUsersForRegistry(
                     runtime,
                     key,
+                    qmau.getPeriod(),
                     detailed.qualifiedUserIds());
             commitments = eligibleCommitments(
                     runtime,
@@ -405,9 +406,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                     .findByDeploymentIdAndLocalUserIdInAndStatusInAndKeyVersionAndSuite(
                             runtime.state().deploymentId(),
                             qualifiedUserIds.subList(offset, toIndex),
-                            List.of(
-                                    GlobalIdentityLinkState.STATUS_ACTIVE,
-                                    GlobalIdentityLinkState.STATUS_UNLINKED),
+                            List.of(GlobalIdentityLinkState.STATUS_ACTIVE),
                             key.keyVersion(),
                             key.suite())
                     .stream()
