@@ -230,7 +230,7 @@ services:
       SPRING_DATA_REDIS_PORT: "6379"
       CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
       FIREBASE_ENABLED: "false"
-      DEV_USER: "dev@myscoutee.local"
+      MEMBER_USER: "${MEMBER_USER:-member@myscoutee.local}"
       OPERATOR_USER: "${OPERATOR_USER:-operator@myscoutee.local}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/workspace/data/configuration/deployment-master-key"
       MEDIA_ENABLED: "true"

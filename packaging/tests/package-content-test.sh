@@ -409,7 +409,7 @@ PACKAGED_REPLICASET_COMPOSE="${EXTRACTED}/opt/myscoutee/server/docker-compose.re
 PACKAGED_ENV="${EXTRACTED}/opt/myscoutee/packaging/templates/myscoutee.env"
 assert_no_development_scripts_mount "${PACKAGED_COMPOSE}"
 assert_no_development_scripts_mount "${PACKAGED_REPLICASET_COMPOSE}"
-if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' "${PACKAGED_COMPOSE}"; then
+if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER|MEMBER_USER):' "${PACKAGED_COMPOSE}"; then
   fail "production Compose contains a baked administrator/developer identity"
 fi
 grep -Fxq 'OPERATOR_USER=' \

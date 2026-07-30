@@ -98,12 +98,12 @@ public class FirebaseFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(requestedUserId)) {
             userDetails = firebaseService.loadUserById(requestedUserId);
         } else {
-            String devUser = configProperties.getDevUser();
-            if (devUser == null || devUser.isBlank()) {
+            String memberUser = configProperties.getMemberUser();
+            if (memberUser == null || memberUser.isBlank()) {
                 return;
             }
             userDetails = firebaseService.loadUserByUsername(
-                    devUser,
+                    memberUser,
                     request.getHeader(AUTH_LINK),
                     request.getRequestURI());
         }

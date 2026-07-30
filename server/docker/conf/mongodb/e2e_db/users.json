@@ -173,6 +173,7 @@
     "syncKey": "aeda4d98-e210-55b7-a888-7a15acb4cc58",
     "partitionKey": "country:hu",
     "userId": "bf057de7c586eede7e84bdc7",
+    "email": "member@myscoutee.local",
     "profileFormVersion": 2
   },
   {
@@ -4783,9 +4784,9 @@
     }
   },
   {
-    "_id": "operator-demo-dev",
-    "syncKey": "operator-demo-dev",
-    "userId": "operator-demo-dev",
+    "_id": "operator@myscoutee.local",
+    "syncKey": "operator@myscoutee.local",
+    "userId": "operator@myscoutee.local",
     "email": "operator@myscoutee.local",
     "name": "Demo Operator",
     "city": "Deployment sandbox",

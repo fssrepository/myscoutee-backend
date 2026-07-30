@@ -670,7 +670,7 @@ grep -q 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256' \
 grep -q 'OPERATOR_BOOTSTRAP_PASSWORD_SHA256' \
   "${REPO_ROOT}/server/projects/profile/src/main/resources/application-dev.yaml" \
   || fail "development application does not bind the local Operator bootstrap digest"
-if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER):' \
+if grep -Eq '^[[:space:]]*(ADMIN_USER|DEV_USER|MEMBER_USER):' \
     "${REPO_ROOT}/packaging/compose/docker-compose.production.yml"; then
   fail "production Compose embeds a deployment administrator/developer identity"
 fi
@@ -806,7 +806,15 @@ grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
 for seed_file in "${DEMO_USERS}" "${E2E_USERS}"; do
   jq -e '
     [.[] | select(
-      .userId == "operator-demo-dev"
+      .email == "member@myscoutee.local"
+      and (.operator // false) == false
+      and .hostTier != "Operator"
+    )] | length == 1
+  ' "${seed_file}" >/dev/null \
+    || fail "${seed_file} does not contain exactly one default demo member"
+  jq -e '
+    [.[] | select(
+      .userId == "operator@myscoutee.local"
       and .email == "operator@myscoutee.local"
       and .operator == true
       and .hostTier == "Operator"
@@ -895,6 +903,7 @@ if docker compose version >/dev/null 2>&1; then
     and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-demo-signing-key.pem"
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"
     and .services.profilemanagement.environment.MONGODB_DATABASE == "demo_db"
+    and .services.profilemanagement.environment.MEMBER_USER == "member@myscoutee.local"
     and .services.profilemanagement.environment.OPERATOR_USER == "operator@myscoutee.local"
     and .services.profilemanagement.environment.REGISTRY_DEMO_PRIVATE_KEY_PATH
       == "/workspace/data/registry-demo-keys/deployment-private-key.pem"

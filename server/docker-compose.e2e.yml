@@ -160,7 +160,7 @@ services:
       SPRING_DATA_REDIS_PORT: "6379"
       CHAT_STREAM_BLOCK_MS: "100"
       FIREBASE_ENABLED: "false"
-      DEV_USER: dev@myscoutee.local
+      MEMBER_USER: member@myscoutee.local
       OPERATOR_USER: operator@myscoutee.local
       OPERATOR_BOOTSTRAP_EMAIL: ""
       OPERATOR_BOOTSTRAP_PASSWORD_SHA256: ""

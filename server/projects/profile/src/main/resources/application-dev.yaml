@@ -19,7 +19,7 @@ config:
   firebase-enabled: ${FIREBASE_ENABLED:false}
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:./secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}
-  dev-user: ${DEV_USER:dev@myscoutee.local}
+  member-user: ${MEMBER_USER:member@myscoutee.local}
   facebook-app-secret: ${FACEBOOK_APP_SECRET:}
   websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://localhost,http://localhost:4200,https://localhost,https://localhost:4200}
 
