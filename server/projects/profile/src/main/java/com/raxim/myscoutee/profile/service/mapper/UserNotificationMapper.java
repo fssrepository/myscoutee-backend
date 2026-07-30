@@ -45,7 +45,11 @@ public class UserNotificationMapper {
                                 LinkedHashMap::new));
         return notifications.stream()
                 .filter(Objects::nonNull)
-                .map(notification -> toDto(notification, usersById.get(notification.getSenderUserId())))
+                .map(notification -> toDto(
+                        notification,
+                        StringUtils.hasText(notification.getSenderUserId())
+                                ? usersById.get(notification.getSenderUserId())
+                                : null))
                 .toList();
     }
 

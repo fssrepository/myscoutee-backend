@@ -10,19 +10,21 @@ The toolkit:
 - calls the already-running loopback backend only for the isolated `notification-read-path`
   and prepared `bell-rating-feedback` API projections;
 - uses the already-running `mongodb` container when available, otherwise an already-installed local `mongosh`;
-- snapshots the exact documents selected by a scenario and all nine Admin Job rule
-  documents before changing them;
+- snapshots the exact documents selected by a scenario, its primary Admin Job rule,
+  and the stored pending fields of every rule it can indirectly change;
 - allows only one prepared scenario at a time;
-- restores that scenario's snapshotted selectors, then restores all Admin Job rule
-  documents last so indirect graph, affinity, and outbox counter changes do not leak
-  into the next variation.
+- restores that scenario's snapshotted selectors and primary rule, then restores
+  only the pending fields of indirectly affected graph, affinity, and outbox rules
+  so fixture counters do not leak without rewinding legitimate scheduler history.
 
 It must not be used as a production migration or a production test tool. All application jobs should still be enabled by their normal defaults in every deployment; this fixture tool rejects trusted/production databases so manual experiments cannot modify them.
 
-Reset intentionally returns all nine Admin Job registry documents, including run
-history and stored pending counters, to their pre-`prepare` state. Do not use the
-toolkit while preserving unrelated Admin Job runs in the same disposable demo/e2e
-database matters.
+Reset returns the scenario's primary Admin Job registry document, including its run
+history, and each indirectly affected rule's three pending fields to their
+pre-`prepare` state. It refuses to prepare or start restoring while one of those
+rules is running, and it guards every rule write against a scheduler starting
+concurrently. Wait for the rule to finish and repeat the command if that guard
+fires.
 
 The entire `admin-job-fixtures` directory is excluded from both production Docker build contexts and from `package-production.sh`; the production Compose stack does not mount the development scripts directory; it is not installed by the Debian package and is never exposed as an application endpoint. `packaging/tests/package-content-test.sh` fails if any path from this directory enters a production package or if production Compose exposes the development scripts directory.
 
@@ -125,22 +127,36 @@ Variations:
 
 - `balanced`: six connected seeded demo users and two generated rooms of exactly three.
 - `anchored`: the same data, with one user already accepted in each canonical room.
+- `anchored-full-and-empty`: one room starts with three anchored users while the
+  other is empty; only the three unassigned users may move.
 - `five-rooms`: fifteen connected seeded demo users and five generated rooms of exactly three.
 - `twenty-rooms`: sixty generated users arranged into twenty known-affinity cohorts of three.
 - `one-leftover`: sixty-one generated users with exact room size three; one known under-minimum user tests the exclusion/remainder policy.
 - `partial-room`: sixty-two generated users with room minimum two and maximum three; the final known pair is a valid partial room.
 - `disconnected-forest`: one six-user tree with a deliberately weak middle bridge, one separate three-user tree, and two fully isolated overflow users; the weak bridge must become the room boundary and only the isolates may remain unassigned.
+- `under-min-connected-component`: two connected triples plus a separate connected
+  pair; the two-person component is still below the configured minimum and must be
+  the exact excluded set.
+- `below-minimum-total`: the whole graph contains only two connected users while
+  the room minimum is three; no room membership, marker, outbox, or bell may be
+  created.
 - `quality-200`: two hundred generated users arranged into forty known-affinity cohorts of five.
 - `quality-1000`: one thousand generated users arranged into two hundred known-affinity cohorts of five.
 
-Preparation temporarily sets every other currently published demo event to `published:false`, after snapshotting those exact event IDs. This quarantine is important: the graph worker is global and parallel, and the regular demo seed contains many eligible events and hundreds of accepted memberships. Without quarantine it can be expensive and can change unrelated demo assignments.
+Preparation temporarily changes every other canonical active demo event from
+`status:"A"` to `status:"I"`, after snapshotting those exact event IDs. Reset
+restores each complete original event document. This quarantine is important:
+the graph worker is global and parallel, and the regular demo seed contains many
+eligible events and hundreds of accepted memberships. Without quarantine it can
+be expensive and can change unrelated demo assignments.
 
 Expected after **Admin Jobs → Run**:
 
 - group definitions are derived at runtime from the stage capacities and are intentionally not persisted into `subEvents[].groups`;
 - each derived canonical group owner contains exactly the configured number of accepted `activityMembers`;
 - every fixture event member appears in exactly one room;
-- anchors stay in their original rooms for `anchored`;
+- anchors stay in their original rooms for `anchored` and
+  `anchored-full-and-empty`;
 - `schedulerPlanMarkers` exist;
 - one outbox intent and in-app bell items exist for changed assignments;
 - a second identical run makes no new assignment changes.
@@ -151,6 +167,14 @@ The generated `twenty-rooms`, remainder, and `quality-*` variations also have an
 
 `validation.capacityPolicy` reports empty, below-minimum, partial, and above-maximum room indexes plus the observed remainder policy. For `partial-room`, a valid result assigns everyone and keeps one room of two. For `one-leftover`, inspect this together with `unassignedSelectionValid` to see whether the exact low-value remainder was excluded instead of a valid cohort member. For `disconnected-forest`, `assignmentValid`, `cohortIntegrityValid`, `unassignedSelectionValid`, and an affinity quality ratio of `1` together prove that the six-user tree was cut only at its weak bridge, the three-user tree stayed intact, and only the two isolates were excluded.
 
+For `under-min-connected-component`, the same oracle proves that connectivity
+alone cannot override the room minimum. For `below-minimum-total`,
+`expectedNoOutputArtifacts` and `noOutputArtifacts` must both be true. After a
+successful first pass, `status` stores a fixture-only fingerprint of memberships,
+markers, outbox, and bell rows. A second Admin **Run** must report zero affected
+users and `repeatedPassChangedZeroGroups:true` plus
+`assignmentFingerprintUnchanged:true`.
+
 `quality-1000` is intentionally a load-oriented fixture. It inserts roughly one thousand temporary users, two thousand strong edges, two hundred weak edges, one thousand event memberships, and the resulting assignment notifications. Run it only on a disposable demo/e2e stack with explicit CPU/memory limits, then reset it before testing another scenario.
 
 ### `event-auto-inviter`
@@ -160,7 +184,14 @@ Variations:
 - `open-spots`: one accepted admin and capacity for two invitations.
 - `full`: accepted capacity is already full; this is the zero-change control.
 - `weighted`: one accepted creator, one already-pending highest-weight invitee, and four available candidates with deterministic weights. Exactly the next two candidates must be invited.
+- `weighted-tie`: four available candidates all have weight `0.50`; exactly the
+  first two IDs in the production comparator order must be invited, while the
+  existing reserved `0.99` invite remains untouched.
 - `waitlist-capacity`: capacity four with one accepted creator, one already-reserved invitation, and four waitlisted users inserted newest-first. Only the two oldest waitlisted users fit.
+- `pending-join-does-not-reserve`: capacity two with one accepted creator, one
+  member-origin pending join request, and two affinity candidates. The join
+  requester stays locked out of candidacy but does not consume the one available
+  invitation slot.
 
 Preparation temporarily disables `autoInviter` on every other currently enabled demo event and quarantines existing pending waitlist rows. This prevents the two global passes from inviting a very large candidate set.
 
@@ -169,11 +200,27 @@ Expected:
 - `open-spots`: two connected users become pending event members with `requestKind:"invite"`; a priority plan marker and invite outbox/bell records appear.
 - `full`: no new membership, marker, outbox, or bell record.
 - `weighted`: the existing pending user with weight `0.99` remains reserved and is not invited again; the candidates weighted `0.95` and `0.80` are the exact new invitees; the `0.40` and `0.10` candidates remain outside. Marker, outbox recipients, and bell recipients must contain exactly the same two IDs.
+- `weighted-tie`: the exact two lexicographically first candidate IDs are invited;
+  marker, outbox, and bell recipients must match those IDs exactly.
 - `waitlist-capacity`: exactly the two oldest rows change from `requestKind:"waitlist"`/`pendingSource:"member"` to `requestKind:"waitlist-invite"`/`pendingSource:"admin"`; the two newer rows stay waitlisted, the existing invite remains unchanged, no priority marker appears, and outbox/bell recipients are exactly the two promoted IDs.
+- `pending-join-does-not-reserve`: the member-origin `join` row remains unchanged
+  byte-for-byte, the strongest eligible candidate is the only new `invite`, and
+  marker/outbox/bell recipients contain exactly that candidate.
 
 The `waitlist-capacity` event intentionally has `autoInviter:false`. The waitlist sweep discovers it from its pending membership rows independently; disabling graph-based priority invitations keeps this variation's two changed rows and notifications exact.
 
-Pending invitations reduce open capacity. After the first successful `weighted` or `waitlist-capacity` pass, run `status` once to capture its fixture fingerprint, then `trigger event-auto-inviter`, wait for the existing scheduler, and run `status` again. For `weighted`, `validation.repeatedPassChangedZeroRecords` and `validation.membershipMarkerAndNotificationSetUnchanged` must be true. For `waitlist-capacity`, `validation.repeatedPassChangedZeroRecords` and `validation.membershipAndNotificationSetUnchanged` must be true.
+Pending invitations reduce open capacity; member-origin join requests do not.
+After the first successful `weighted`, `weighted-tie`, `waitlist-capacity`, or
+`pending-join-does-not-reserve` pass, run `status` once to capture its
+fixture fingerprint, then `trigger event-auto-inviter`, wait for the existing
+scheduler, and run `status` again. For `weighted` and `weighted-tie`,
+`validation.repeatedPassChangedZeroRecords` and
+`validation.membershipMarkerAndNotificationSetUnchanged` must be true. For
+`waitlist-capacity`, `validation.repeatedPassChangedZeroRecords` and
+`validation.membershipAndNotificationSetUnchanged` must be true. The pending-join
+variation uses `validation.pendingJoinDocumentUnchanged`,
+`validation.pendingJoinDidNotReserveOnlyInviteSlot`, and
+`validation.membershipMarkerAndNotificationSetUnchanged`.
 
 ### `event-tournament-review`
 
@@ -182,6 +229,12 @@ Variations:
 - `ended`: an active tournament stage ended in the past.
 - `future`: an active first stage starts in the future.
 - `advancement`: six synthetic accepted users in two finalized Score groups, with one exact winner per group and a two-person final preloaded with a loser.
+- `advancement-score-tie`: the top two scores in each qualifier group are equal;
+  the production comparator must choose the expected winner by member name and
+  then user ID.
+- `no-advancers-clears-stale`: qualifier score rows exist, but every qualifier
+  membership is disqualified. No scored user may advance and a stale accepted
+  final member must be deleted.
 
 Preparation quarantines other published tournament-capable demo events. The fixture uses the exact backend field names:
 
@@ -202,8 +255,23 @@ Expected:
 - `future`: `stageStatus:"RS"` and `stageStatusReason:"awaiting-tournament-start"`.
 - both: a new `stageStatusUpdatedAt` and the event's scheduler update metadata.
 - `advancement`: the scheduled rule calculates the exact winners (`user-2` and `user-5`), synchronizes only those two into the generated final group, and marks the preloaded loser deleted. The synthetic users intentionally have no affinity edges: ranking determines who advances, while affinity is allowed to influence only how valid winners are grouped.
+- `advancement-score-tie`: the exact deterministic tie winners (`user-1` and
+  `user-4`) enter the final, the preloaded loser is deleted, and marker/member
+  state remains unchanged on the repeated pass.
+- `no-advancers-clears-stale`: the accepted final set becomes empty, the stale
+  final row becomes `deleted`, and the score marker contains an empty user list.
+  Its first `lastRunCount` is `2`: one final-stage start-review transition plus
+  one final-group membership synchronization.
 
-For `advancement`, run `status` after the first scheduler pass. It captures the successful membership/marker fingerprint inside the fixture snapshot. Then run `trigger event-tournament-review`, wait for the existing scheduler, and run `status` again. `validation.repeatedPassChangedZeroGroups` and `validation.membershipAndMarkerUnchanged` must both be true. This proves scheduled repair and idempotence without calling a private endpoint or moving graph work into the stage-finalize request.
+For `advancement`, `advancement-score-tie`, or
+`no-advancers-clears-stale`, run `status` after the first scheduler pass. It
+captures the successful membership/marker fingerprint inside the fixture
+snapshot. Then run `trigger event-tournament-review`, wait for the existing
+scheduler, and run `status` again.
+`validation.repeatedPassChangedZeroGroups` and
+`validation.membershipAndMarkerUnchanged` must both be true. This proves
+scheduled repair and idempotence without calling a private endpoint or moving
+graph work into the stage-finalize request.
 
 ### `event-counter-expiry`
 
@@ -253,9 +321,16 @@ Existing due pending outbox rows are snapshotted and temporarily moved to a futu
 
 ### `notification-read-path`
 
-Variation:
+Variations:
 
 - `group-chat`: creates two isolated fixture users plus one group chat carrying explicit event, sub-event, and group context.
+- `group-chat-audience`: creates a sender and three recipients. One recipient is
+  muted and has a device with push notifications disabled. All three recipients
+  must still receive the pulled in-app bell and chat projection; the sender must
+  receive neither.
+- `preexisting-unread`: starts the primary recipient with one unrelated unread
+  control bell, then creates the normal chat notification through the real HTTP
+  endpoint.
 
 This scenario uses the already-running local backend but does not start it:
 
@@ -293,11 +368,21 @@ unread models:
   the bell must not silently read the chat;
 - a repeated `trigger` preserves the first `readAtIso`, proving read idempotency.
 
+For `preexisting-unread`, the initial API/profile unread count must be `2`.
+Reading the chat bell must leave the unrelated control bell in the new bucket,
+with API/profile count `1`; the chat's own unread projection remains `1`. This
+checks a selective `2 → 1` decrement instead of only the simple `1 → 0` path.
+
 After the trigger, repeated `status` calls remain read-only and report
 `readState:"read"`, the stable `readAtIso`, zero bell/profile unread count, and the
 unchanged event/sub-event/group chat context.
 
 The bell is intentionally materialized during enqueue, before Firebase push delivery. With stock Firebase disabled, the outbox staying `pending` is expected. If Firebase is enabled in a disposable local stack, the no-token item may become `sent` with zero token successes without changing the bell assertion.
+
+The audience variation validates the persisted push-disabled flag and the
+pull-based in-app notification audience. It deliberately does not claim that an
+external Firebase delivery was suppressed, because stock demo/e2e has Firebase
+disabled and the fixture never calls a real push gateway.
 
 The generic chat bell payload currently carries the chat/message/sender IDs. Event, sub-event, and group IDs belong to the chat read model, so `status` verifies them through `GET /activities/chats` rather than inventing fields in production notification code.
 

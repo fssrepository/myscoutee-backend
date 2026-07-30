@@ -5,7 +5,7 @@
   const job = "event-auto-inviter";
   const eventId = F.fixtureId(job, "event");
 
-  function weightedFixture() {
+  function weightedFixture(equalCandidateWeights = false) {
     const creatorUserId = F.fixtureId(job, "weighted-creator");
     const reservedUserId = F.fixtureId(job, "weighted-reserved");
     const candidateUserIds = Array.from(
@@ -13,7 +13,9 @@
       (_, index) => F.fixtureId(job, `weighted-candidate-${index + 1}`)
     );
     const weightedUserIds = [creatorUserId, reservedUserId, ...candidateUserIds];
-    const weights = [0.99, 0.95, 0.80, 0.40, 0.10];
+    const weights = equalCandidateWeights
+      ? [0.99, 0.50, 0.50, 0.50, 0.50]
+      : [0.99, 0.95, 0.80, 0.40, 0.10];
     const edgeUserIds = [reservedUserId, ...candidateUserIds];
     const edges = edgeUserIds.map((rightUserId, index) => ({
       _id: F.fixtureId(job, `weighted-edge-${index + 1}`),
@@ -32,8 +34,16 @@
       candidateUserIds,
       userIds: weightedUserIds,
       edges,
-      expectedInviteeUserIds: candidateUserIds.slice(0, 2),
-      expectedExcludedUserIds: [reservedUserId, ...candidateUserIds.slice(2)]
+      weightedTie: equalCandidateWeights,
+      expectedInviteeUserIds: equalCandidateWeights
+        ? [...candidateUserIds].sort().slice(0, 2)
+        : candidateUserIds.slice(0, 2),
+      expectedExcludedUserIds: [
+        reservedUserId,
+        ...(equalCandidateWeights
+          ? [...candidateUserIds].sort().slice(2)
+          : candidateUserIds.slice(2))
+      ]
     };
   }
 
@@ -51,6 +61,39 @@
       userIds: [creatorUserId, reservedUserId, ...waitingUserIds],
       expectedPromotedUserIds: waitingUserIds.slice(0, 2),
       expectedWaitingUserIds: waitingUserIds.slice(2)
+    };
+  }
+
+  function pendingJoinCapacityFixture() {
+    const creatorUserId = F.fixtureId(job, "pending-join-creator");
+    const pendingJoinUserId = F.fixtureId(job, "pending-join-requester");
+    const candidateUserIds = [
+      F.fixtureId(job, "pending-join-candidate-strong"),
+      F.fixtureId(job, "pending-join-candidate-weak")
+    ];
+    const edgeUserIds = [pendingJoinUserId, ...candidateUserIds];
+    const weights = [0.99, 0.90, 0.40];
+    const edges = edgeUserIds.map((rightUserId, index) => ({
+      _id: F.fixtureId(job, `pending-join-edge-${index + 1}`),
+      syncKey: F.fixtureId(job, `pending-join-edge-${index + 1}`),
+      pairKey: [creatorUserId, rightUserId].sort().join(":"),
+      leftUserId: creatorUserId,
+      rightUserId,
+      affinityScore: weights[index],
+      edgeWeight: weights[index],
+      evidenceCount: 1,
+      updatedUser: F.FIXTURE_ACTOR
+    }));
+    return {
+      creatorUserId,
+      pendingJoinUserId,
+      candidateUserIds,
+      userIds: [creatorUserId, pendingJoinUserId, ...candidateUserIds],
+      edges,
+      pendingJoinMemberId: F.fixtureId(job, "pending-join-member"),
+      pendingJoinAtIso: F.pastIso(15),
+      expectedInviteeUserIds: candidateUserIds.slice(0, 1),
+      expectedExcludedUserIds: [pendingJoinUserId, candidateUserIds[1]]
     };
   }
 
@@ -81,13 +124,26 @@
   F.run({
     job,
     ruleKey: job,
-    variations: ["open-spots", "full", "weighted", "waitlist-capacity"],
+    variations: [
+      "open-spots",
+      "full",
+      "weighted",
+      "weighted-tie",
+      "waitlist-capacity",
+      "pending-join-does-not-reserve"
+    ],
     build(variation) {
-      const weighted = variation === "weighted" ? weightedFixture() : null;
+      const weighted = ["weighted", "weighted-tie"].includes(variation)
+        ? weightedFixture(variation === "weighted-tie")
+        : null;
       const waitlistCapacity = variation === "waitlist-capacity"
         ? waitlistCapacityFixture()
         : null;
-      const synthetic = weighted || waitlistCapacity;
+      const pendingJoinCapacity = variation === "pending-join-does-not-reserve"
+        ? pendingJoinCapacityFixture()
+        : null;
+      const synthetic = weighted || waitlistCapacity || pendingJoinCapacity;
+      const syntheticEdges = synthetic && synthetic.edges ? synthetic.edges : [];
       const userIds = synthetic ? synthetic.userIds : creatorAndCandidates();
       const isolatedEventIds = F.collection("events")
         .find({ autoInviter: true, _id: { $ne: eventId } }, { projection: { _id: 1 } })
@@ -110,12 +166,17 @@
             ? "No invitations are created because accepted capacity is already full."
             : variation === "weighted"
               ? "The pending highest-weight user stays excluded; the next two exact weighted candidates are invited, and a repeated scheduled pass changes zero records."
-              : "Exactly the two oldest of four waitlisted users are promoted into the two unreserved places; the other two remain waitlisted and a repeated pass changes zero records.",
+              : variation === "weighted-tie"
+                ? "Four candidates have exactly equal affinity and only two places; the lexicographically first two user IDs are invited with an exact marker/outbox/bell oracle, and a repeated scheduled pass changes zero records."
+                : variation === "waitlist-capacity"
+                  ? "Exactly the two oldest of four waitlisted users are promoted into the two unreserved places; the other two remain waitlisted and a repeated pass changes zero records."
+                  : "A member-origin pending join request stays byte-for-byte stable and locks that user out of candidacy without reserving invite capacity; the strongest eligible affinity candidate receives the only invitation, and a repeated scheduled pass changes zero records.",
         context: {
           eventId,
           userIds,
           weighted: Boolean(weighted),
           waitlistCapacity: Boolean(waitlistCapacity),
+          pendingJoinCapacity: Boolean(pendingJoinCapacity),
           ...(synthetic || {}),
           isolatedEventIds,
           isolatedWaitlistMemberIds,
@@ -132,24 +193,9 @@
             collection: "userAffinityEdges",
             selector: {
               $or: [
-                { _id: { $in: weighted ? weighted.edges.map(edge => edge._id) : [] } },
-                { pairKey: { $in: weighted ? weighted.edges.map(edge => edge.pairKey) : [] } }
+                { _id: { $in: syntheticEdges.map(edge => edge._id) } },
+                { pairKey: { $in: syntheticEdges.map(edge => edge.pairKey) } }
               ]
-            }
-          },
-          {
-            collection: "notificationRuleConfigs",
-            selector: {
-              ruleKey: {
-                $in: [
-                  "event-auto-inviter",
-                  "event-random-groups",
-                  "event-tournament-review",
-                  "event-counter-expiry",
-                  "notification-outbox",
-                  "affinity-recompute"
-                ]
-              }
             }
           },
           {
@@ -200,7 +246,7 @@
           }
         );
       }
-      if (context.weighted || context.waitlistCapacity) {
+      if (context.weighted || context.waitlistCapacity || context.pendingJoinCapacity) {
         F.collection("users").insertMany(context.userIds.map((userId, index) => ({
           _id: userId,
           syncKey: userId,
@@ -221,7 +267,7 @@
           updatedUser: F.FIXTURE_ACTOR
         })));
       }
-      if (context.weighted) {
+      if (context.weighted || context.pendingJoinCapacity) {
         F.collection("userAffinityEdges").insertMany(context.edges.map(edge => ({
           ...edge,
           updatedDate: now
@@ -238,22 +284,28 @@
         ownerUserId: context.creatorUserId || context.userIds[0],
         creatorUserId: context.creatorUserId || context.userIds[0],
         capacityMin: 1,
-        capacityMax: ["weighted", "waitlist-capacity"].includes(variation)
+        capacityMax: ["weighted", "weighted-tie", "waitlist-capacity"].includes(variation)
           ? 4
           : variation === "open-spots"
             ? 3
-            : 1,
-        capacityTotal: ["weighted", "waitlist-capacity"].includes(variation)
+            : variation === "pending-join-does-not-reserve"
+              ? 2
+              : 1,
+        capacityTotal: ["weighted", "weighted-tie", "waitlist-capacity"].includes(variation)
           ? 4
           : variation === "open-spots"
             ? 3
-            : 1,
+            : variation === "pending-join-does-not-reserve"
+              ? 2
+              : 1,
         acceptedMembers: 1,
-        pendingMembers: variation === "weighted"
+        pendingMembers: ["weighted", "weighted-tie"].includes(variation)
           ? 1
           : variation === "waitlist-capacity"
             ? 5
-            : 0,
+            : variation === "pending-join-does-not-reserve"
+              ? 1
+              : 0,
         subEvents: [],
         startAtIso: F.futureIso(180),
         endAtIso: F.futureIso(360),
@@ -276,7 +328,7 @@
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
       }];
-      if (["weighted", "waitlist-capacity"].includes(variation)) {
+      if (["weighted", "weighted-tie", "waitlist-capacity"].includes(variation)) {
         initialMembers.push({
           _id: context.reservedMemberId,
           syncKey: context.reservedMemberId,
@@ -317,6 +369,24 @@
           };
         });
         initialMembers.push(...waitlistMembers.reverse());
+      }
+      if (variation === "pending-join-does-not-reserve") {
+        initialMembers.push({
+          _id: context.pendingJoinMemberId,
+          syncKey: context.pendingJoinMemberId,
+          ownerType: "event",
+          ownerId: eventId,
+          userId: context.pendingJoinUserId,
+          role: "Member",
+          status: "pending",
+          requestKind: "join",
+          pendingSource: "member",
+          actionAtIso: context.pendingJoinAtIso,
+          createdDate: context.pendingJoinAtIso,
+          createdUser: F.FIXTURE_ACTOR,
+          updatedDate: context.pendingJoinAtIso,
+          updatedUser: F.FIXTURE_ACTOR
+        });
       }
       F.collection("activityMembers").insertMany(initialMembers);
     },
@@ -493,6 +563,214 @@
           }
         };
       }
+      if (context.pendingJoinCapacity) {
+        const expectedInvitees = sorted(context.expectedInviteeUserIds);
+        const expectedExcluded = sorted(context.expectedExcludedUserIds);
+        const creatorMember = members.find(member => member.userId === context.creatorUserId);
+        const pendingJoinMember = members.find(
+          member => member.userId === context.pendingJoinUserId
+        );
+        const invitedMembers = members.filter(member =>
+          member.status === "pending"
+          && ["invite", "waitlist-invite"].includes(member.requestKind)
+        );
+        const invitedUserIds = sorted(invitedMembers.map(member => member.userId));
+        const pendingJoinDocument = F.collection("activityMembers").findOne({
+          _id: context.pendingJoinMemberId
+        });
+        const expectedPendingJoinDocument = {
+          _id: context.pendingJoinMemberId,
+          syncKey: context.pendingJoinMemberId,
+          ownerType: "event",
+          ownerId: currentEventId,
+          userId: context.pendingJoinUserId,
+          role: "Member",
+          status: "pending",
+          requestKind: "join",
+          pendingSource: "member",
+          actionAtIso: context.pendingJoinAtIso,
+          createdDate: context.pendingJoinAtIso,
+          createdUser: F.FIXTURE_ACTOR,
+          updatedDate: context.pendingJoinAtIso,
+          updatedUser: F.FIXTURE_ACTOR
+        };
+        const canonicalRecord = document => {
+          if (!document) return null;
+          return Object.keys(document)
+            .sort()
+            .reduce((resultDocument, key) => {
+              resultDocument[key] = document[key];
+              return resultDocument;
+            }, {});
+        };
+        const pendingJoinDocumentUnchanged =
+          JSON.stringify(canonicalRecord(pendingJoinDocument))
+          === JSON.stringify(canonicalRecord(expectedPendingJoinDocument));
+        const marker = markerDocuments.find(item =>
+          item.wrapperType === "priority"
+          && item.actionType === "invite-batch"
+          && item.scopeId === currentEventId
+        );
+        const priorityMarkers = markerDocuments.filter(item =>
+          item.wrapperType === "priority"
+          && item.actionType === "invite-batch"
+          && item.scopeId === currentEventId
+        );
+        const outboxRecipientUserIds = sorted(
+          outboxDocuments.flatMap(item => item.recipientUserIds || [])
+        );
+        const bellRecipientUserIds = sorted(
+          bellDocuments.map(item => item.recipientUserId)
+        );
+        const exactInvitee = same(invitedUserIds, expectedInvitees)
+          && invitedMembers.length === 1
+          && invitedMembers.every(member =>
+            member.pendingSource === "admin"
+            && member.invitedByUserId === context.creatorUserId
+          );
+        const excludedUsersNotInvited = expectedExcluded.every(
+          userId => !invitedUserIds.includes(userId)
+        );
+        const exactMembershipCardinality = members.length === 3
+          && Boolean(creatorMember && creatorMember.status === "accepted")
+          && Boolean(
+            pendingJoinMember
+            && pendingJoinMember.status === "pending"
+            && pendingJoinMember.requestKind === "join"
+            && pendingJoinMember.pendingSource === "member"
+          );
+        const exactMarker = priorityMarkers.length === 1
+          && Boolean(marker)
+          && same(marker.userIds, expectedInvitees);
+        const exactOutboxRecipients = outboxDocuments.length === 1
+          && same(outboxRecipientUserIds, expectedInvitees);
+        const exactBellRecipients = same(bellRecipientUserIds, expectedInvitees);
+        const joinEdge = (context.edges || []).find(
+          edge => edge.rightUserId === context.pendingJoinUserId
+        );
+        const eligibleEdges = (context.edges || []).filter(
+          edge => (context.candidateUserIds || []).includes(edge.rightUserId)
+        );
+        const strongestEligibleEdge = [...eligibleEdges].sort(
+          (left, right) => Number(right.edgeWeight) - Number(left.edgeWeight)
+        )[0];
+        const pendingJoinHasHighestWeight = Boolean(
+          joinEdge
+          && eligibleEdges.length > 0
+          && eligibleEdges.every(
+            edge => Number(joinEdge.edgeWeight) > Number(edge.edgeWeight)
+          )
+        );
+        const strongestEligibleInvited = Boolean(
+          strongestEligibleEdge
+          && expectedInvitees.length === 1
+          && strongestEligibleEdge.rightUserId === expectedInvitees[0]
+          && invitedUserIds[0] === strongestEligibleEdge.rightUserId
+        );
+        const fixtureEvent = F.collection("events").findOne({ _id: currentEventId });
+        const capacityFixtureExact = Boolean(
+          fixtureEvent
+          && Number(fixtureEvent.capacityTotal) === 2
+          && Number(fixtureEvent.capacityMax) === 2
+        );
+        const rule = F.requireRule(job);
+        const baseline = context.pendingJoinBaseline || null;
+        const firstPassRunCountExact = Boolean(baseline)
+          || Boolean(
+            rule.runState
+            && rule.runState.lastRunStatus === "completed"
+            && rule.runState.lastRunCount === 1
+          );
+        const firstPassComplete = exactInvitee
+          && excludedUsersNotInvited
+          && exactMembershipCardinality
+          && pendingJoinDocumentUnchanged
+          && exactMarker
+          && exactOutboxRecipients
+          && exactBellRecipients
+          && pendingJoinHasHighestWeight
+          && strongestEligibleInvited
+          && capacityFixtureExact
+          && firstPassRunCountExact;
+        const currentFingerprint = JSON.stringify({
+          members,
+          pendingJoinDocument: canonicalRecord(pendingJoinDocument),
+          marker: marker && {
+            id: marker._id,
+            fingerprint: marker.fingerprint,
+            userIds: sorted(marker.userIds),
+            updatedDate: marker.updatedDate
+          },
+          outbox: outboxDocuments.map(item => ({
+            id: item._id,
+            collapseKey: item.collapseKey,
+            recipientUserIds: sorted(item.recipientUserIds)
+          })),
+          bells: bellDocuments.map(item => ({
+            id: item._id,
+            recipientUserId: item.recipientUserId,
+            sourceId: item.sourceId
+          }))
+        });
+        if (firstPassComplete && !baseline && snapshot) {
+          F.collection(F.SNAPSHOT_COLLECTION).updateOne(
+            { _id: snapshot._id },
+            {
+              $set: {
+                "context.pendingJoinBaseline": {
+                  fingerprint: currentFingerprint,
+                  capturedAtIso: F.nowIso()
+                }
+              }
+            }
+          );
+        }
+        const repeatedPassObserved = Boolean(
+          baseline
+          && rule.runState
+          && rule.runState.lastRunStatus === "completed"
+          && rule.runState.lastRunCount === 0
+        );
+        return {
+          ...result,
+          capacityTotal: fixtureEvent && fixtureEvent.capacityTotal,
+          expectedInviteeUserIds: expectedInvitees,
+          expectedExcludedUserIds: expectedExcluded,
+          invitedUserIds,
+          pendingJoinMember,
+          marker: marker && {
+            ownerId: marker.ownerId,
+            scopeId: marker.scopeId,
+            userIds: marker.userIds,
+            fingerprint: marker.fingerprint,
+            updatedDate: marker.updatedDate
+          },
+          outboxRecipientUserIds,
+          bellRecipientUserIds,
+          validation: {
+            exactInvitee,
+            excludedUsersNotInvited,
+            exactMembershipCardinality,
+            pendingJoinDocumentUnchanged,
+            pendingJoinHasHighestWeight,
+            strongestEligibleInvited,
+            capacityFixtureExact,
+            pendingJoinDidNotReserveOnlyInviteSlot:
+              exactInvitee && capacityFixtureExact && pendingJoinDocumentUnchanged,
+            exactMarker,
+            exactOutboxRecipients,
+            exactBellRecipients,
+            firstPassChangedExactlyOneRecord: firstPassRunCountExact,
+            firstPassComplete,
+            baselineCaptured: Boolean(baseline) || firstPassComplete,
+            repeatedPassObserved,
+            repeatedPassChangedZeroRecords: repeatedPassObserved,
+            membershipMarkerAndNotificationSetUnchanged:
+              repeatedPassObserved
+              && baseline.fingerprint === currentFingerprint
+          }
+        };
+      }
       if (!context.weighted) {
         return result;
       }
@@ -538,6 +816,17 @@
         && reservedMember.status === "pending"
         && reservedMember.requestKind === "invite"
       );
+      const equalWeightCandidateEdges = (context.edges || []).filter(
+        edge => (context.candidateUserIds || []).includes(edge.rightUserId)
+      );
+      const tieBreakExpectedInvitees = sorted(context.candidateUserIds).slice(0, 2);
+      const equalCandidateWeights = equalWeightCandidateEdges.length
+        === (context.candidateUserIds || []).length
+        && new Set(equalWeightCandidateEdges.map(edge => Number(edge.edgeWeight))).size === 1;
+      const deterministicTieBreak = !context.weightedTie
+        || (equalCandidateWeights
+          && same(expectedInvitees, tieBreakExpectedInvitees)
+          && same(invitedUserIds, tieBreakExpectedInvitees));
       const rule = F.requireRule(job);
       const baseline = context.weightedBaseline || null;
       const firstPassRunCountExact = Boolean(baseline)
@@ -553,6 +842,7 @@
         && exactMarker
         && exactOutboxRecipients
         && exactBellRecipients
+        && deterministicTieBreak
         && firstPassRunCountExact;
       const currentFingerprint = JSON.stringify({
         members,
@@ -598,6 +888,10 @@
         expectedExcludedUserIds: expectedExcluded,
         invitedUserIds,
         unexpectedlyInvitedUserIds,
+        weightedTie: Boolean(context.weightedTie),
+        tieBreakExpectedInviteeUserIds: context.weightedTie
+          ? tieBreakExpectedInvitees
+          : [],
         reservedMember,
         marker: marker && {
           ownerId: marker.ownerId,
@@ -615,6 +909,8 @@
           exactMarker,
           exactOutboxRecipients,
           exactBellRecipients,
+          equalCandidateWeights: !context.weightedTie || equalCandidateWeights,
+          deterministicEqualWeightTieBreak: deterministicTieBreak,
           firstPassChangedExactlyTwoRecords: firstPassRunCountExact,
           firstPassComplete,
           baselineCaptured: Boolean(baseline) || firstPassComplete,

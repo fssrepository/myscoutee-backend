@@ -1,0 +1,2010 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="MyScoutee">
+    <meta name="description" content="MyScoutee 1.0.0 Administrator Manual">
+    <title>MyScoutee Administrator Manual · MSC-AM-001</title>
+    <link rel="stylesheet" href="manuals.css">
+  </head>
+  <body>
+    <article class="manual">
+      <section class="cover" id="cover">
+        <div class="cover-brand">
+          <img src="../../frontend/src/assets/logo/heart.png" alt="MyScoutee logo">
+          <div>
+            <div class="cover-brand-name">MyScoutee</div>
+            <div class="cover-brand-subtitle">Official product documentation</div>
+          </div>
+        </div>
+
+        <div class="cover-title-block">
+          <div class="cover-kicker">Released manual · EN</div>
+          <h1>MyScoutee Administrator Manual</h1>
+          <p class="cover-lead">
+            Moderation, content-management, configuration, and network
+            administration procedures for MyScoutee 1.0.0.
+          </p>
+        </div>
+
+        <div class="cover-meta">
+          <div>
+            <strong>Document ID</strong>
+            MSC-AM-001
+          </div>
+          <div>
+            <strong>Document version</strong>
+            1.0.0
+          </div>
+          <div>
+            <strong>Applicable software version</strong>
+            MyScoutee 1.0.0
+          </div>
+          <div>
+            <strong>Status</strong>
+            <span class="cover-status"><span class="status-dot"></span>Released</span>
+          </div>
+          <div>
+            <strong>Release date</strong>
+            2026-07-30
+          </div>
+          <div>
+            <strong>Language</strong>
+            EN
+          </div>
+        </div>
+      </section>
+
+      <section class="document-control" id="document-control">
+        <h1>Document control</h1>
+
+        <table>
+          <tbody>
+            <tr>
+              <th>Document title</th>
+              <td>MyScoutee Administrator Manual</td>
+            </tr>
+            <tr>
+              <th>Document ID</th>
+              <td>MSC-AM-001</td>
+            </tr>
+            <tr>
+              <th>Document version</th>
+              <td>1.0.0</td>
+            </tr>
+            <tr>
+              <th>Applicable software version</th>
+              <td>MyScoutee 1.0.0</td>
+            </tr>
+            <tr>
+              <th>Status and release</th>
+              <td>Released · 2026-07-30 · EN</td>
+            </tr>
+            <tr>
+              <th>Document owner</th>
+              <td>MyScoutee product and service operations</td>
+            </tr>
+            <tr>
+              <th>Distribution</th>
+              <td>
+                Project documentation; the versioned PDF is available for
+                download from the GitHub project page.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Version history</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1.0.0</td>
+              <td>2026-07-30</td>
+              <td>Released</td>
+              <td>
+                Initial release: Admin and Operator workspaces, authorization,
+                moderation, content, parameters, jobs, observability, node
+                management, updates, configuration, and revenue data.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout warning">
+          <strong>Version boundary</strong>
+          This manual describes only the verified 1.0.0 user interface.
+          Menus, fields, permissions, and background processes may differ in
+          other releases; suitability must be reviewed again before use.
+        </div>
+
+        <h2>Approval</h2>
+        <div class="signature-grid">
+          <div class="signature-line">Document owner / date</div>
+          <div class="signature-line">Release approver / date</div>
+        </div>
+      </section>
+
+      <nav class="toc small" id="table-of-contents" aria-label="Table of contents">
+        <h1>Table of contents</h1>
+        <ol>
+          <li><a href="#introduction">1. Purpose, scope, and use</a></li>
+          <li>
+            <a href="#roles">2. Roles and responsibility boundaries</a>
+            <ol>
+              <li><a href="#role-matrix">2.1. Admin, Operator, and host operator</a></li>
+              <li><a href="#four-eyes">2.2. Four-eyes principle and prohibited practices</a></li>
+            </ol>
+          </li>
+          <li>
+            <a href="#access">3. Access and session security</a>
+            <ol>
+              <li><a href="#admin-login">3.1. Admin sign-in</a></li>
+              <li><a href="#operator-login">3.2. Operator sign-in</a></li>
+              <li><a href="#access-failure">3.3. Access failure</a></li>
+            </ol>
+          </li>
+          <li><a href="#workspaces">4. Workspaces and general working practice</a></li>
+          <li><a href="#reports">5. Reports and moderation</a></li>
+          <li><a href="#feedback">6. User feedback</a></li>
+          <li><a href="#support">7. Support conversations and shared help views</a></li>
+          <li><a href="#governed-content">8. Help, legal, and explanatory content</a></li>
+          <li><a href="#articles">9. Article management</a></li>
+          <li><a href="#parameters">10. Platform parameters</a></li>
+          <li><a href="#jobs">11. Scheduled jobs</a></li>
+          <li><a href="#observability">12. Statistics, monitoring, and affinity graph</a></li>
+          <li><a href="#operator-overview">13. Operator workspace</a></li>
+          <li><a href="#node-registration">14. Node registration and measurement delivery</a></li>
+          <li><a href="#claim">15. Ownership claim, leaderboard, and community</a></li>
+          <li><a href="#updates">16. Software updates</a></li>
+          <li><a href="#operator-configuration">17. Deployment configuration</a></li>
+          <li><a href="#revenue">18. Revenue and settlement view</a></li>
+          <li><a href="#audit">19. Change management and audit</a></li>
+          <li><a href="#escalation">20. Incident response and escalation</a></li>
+          <li><a href="#limitations">21. Known limitations and functional gaps</a></li>
+          <li><a href="#quick-checklists">22. Quick checklists</a></li>
+          <li><a href="#appendix-a">A. Statuses and their meaning</a></li>
+          <li><a href="#appendix-b">B. Source and verification register</a></li>
+          <li><a href="#appendix-c">C. Glossary</a></li>
+        </ol>
+      </nav>
+
+      <section class="major page-break" id="introduction">
+        <h1>1. Purpose, scope, and use</h1>
+        <p>
+          This manual makes actions performed in MyScoutee's privileged
+          workspaces repeatable, verifiable, and traceable. It covers the
+          application-level <strong>Admin</strong> and
+          <strong>Operator</strong> workspaces and defines the handoff boundary
+          to the host operator.
+        </p>
+
+        <div class="quick-grid">
+          <article class="quick-card">
+            <h3>Included in this manual</h3>
+            <ul>
+              <li>moderation and support;</li>
+              <li>content, articles, and platform parameters;</li>
+              <li>scheduled jobs and observability views;</li>
+              <li>node, deployment, and network Operator actions;</li>
+              <li>minimum verification, audit, and escalation controls.</li>
+            </ul>
+          </article>
+          <article class="quick-card">
+            <h3>This manual does not replace</h3>
+            <ul>
+              <li>the Operations Manual or the backup and recovery plan;</li>
+              <li>the organization's privacy and moderation policies;</li>
+              <li>the payment provider's own procedures;</li>
+              <li>Firebase and domain-provider administration.</li>
+            </ul>
+          </article>
+        </div>
+
+        <h2>Usage conventions</h2>
+        <p>
+          Menu and button labels are shown in bold. In a procedure, “record”
+          means the external change ticket, incident record, or other register
+          designated by the organization. MyScoutee does not provide a
+          dedicated administrator-comment field on every screen.
+        </p>
+        <div class="callout note">
+          <strong>Evidence rule</strong>
+          This manual treats a function as available only when it is present in
+          the verified 1.0.0 source and interface. Where there is no
+          self-service UI, revocation control, or complete audit view, the
+          limitation is stated explicitly.
+        </div>
+      </section>
+
+      <section class="major" id="roles">
+        <h1>2. Roles and responsibility boundaries</h1>
+
+        <h2 id="role-matrix">2.1. Admin, Operator, and host operator</h2>
+        <div class="role-grid">
+          <article class="role-card">
+            <h3>Admin <span class="label">A</span></h3>
+            <p>
+              Application-level moderator and content/configuration manager.
+              Has access to the <code>/admin</code> workspace.
+            </p>
+            <p>
+              Typical work: reports, blocks, support chats, content, articles,
+              parameters, jobs, and observability.
+            </p>
+          </article>
+          <article class="role-card">
+            <h3>Operator <span class="label">O</span></h3>
+            <p>
+              Network and deployment administrator for an installed MyScoutee
+              node. Has access to the <code>/operator</code> workspace.
+            </p>
+            <p>
+              Typical work: registry connection, claims, updates, TLS,
+              Firebase, branding, payments, measurement delivery, and revenue
+              delivery.
+            </p>
+          </article>
+          <article class="role-card">
+            <h3>Host operator</h3>
+            <p>
+              Owner of the operating system, packages, containers, database,
+              network, and backups. This is <strong>not</strong> a MyScoutee
+              web role and does not grant A or O authority by itself.
+            </p>
+            <p>
+              Typical work: service recovery, backup and restore, key files,
+              storage, system time, proxy, DNS, and privileged workers.
+            </p>
+          </article>
+          <article class="role-card">
+            <h3>Event host</h3>
+            <p>
+              A normal application user who manages an event or resource.
+              This is distinct from the host operator and does not grant Admin
+              or Operator access.
+            </p>
+          </article>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Activity</th>
+              <th>Admin</th>
+              <th>Operator</th>
+              <th>Host operator</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Investigate a user report</td>
+              <td>Performs the action</td>
+              <td>No responsibility</td>
+              <td>Technical support only</td>
+            </tr>
+            <tr>
+              <td>Change administrator email addresses</td>
+              <td>Affected party / verifier</td>
+              <td>Performs the action</td>
+              <td>Emergency recovery</td>
+            </tr>
+            <tr>
+              <td>Registry connection or ownership claim</td>
+              <td>No responsibility</td>
+              <td>Performs the action</td>
+              <td>Supports network troubleshooting</td>
+            </tr>
+            <tr>
+              <td>Application parameter or schedule</td>
+              <td>Performs the action</td>
+              <td>No direct interface</td>
+              <td>Reviews capacity and incident impact</td>
+            </tr>
+            <tr>
+              <td>TLS, Firebase, or payment configuration</td>
+              <td>Impact verifier</td>
+              <td>Performs the action</td>
+              <td>Supports DNS, proxy, and secret handling</td>
+            </tr>
+            <tr>
+              <td>Backup and restore</td>
+              <td>Business verifier</td>
+              <td>May initiate an update</td>
+              <td>Performs the action</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout danger">
+          <strong>Authorities do not inherit from one another</strong>
+          A and O are separate backend authorities. The Admin interface does
+          not grant Operator actions, and the Operator interface does not
+          grant moderation rights. A person can access both only when their
+          identity has been explicitly and verifiably assigned both
+          authorities; never assume this by default.
+        </div>
+
+        <h2 id="four-eyes">2.2. Four-eyes principle and prohibited practices</h2>
+        <p>
+          Independent verification is required for actions that affect access,
+          legal content, user accounts, payment routing, authentication, or
+          service availability.
+        </p>
+        <ul class="checklist">
+          <li>The change ticket identifies the purpose, owner, window, and rollback plan.</li>
+          <li>A second person compares the target value with the approved source.</li>
+          <li>The executor does not place secrets in screenshots, chats, or tickets.</li>
+          <li>A separate person verifies user impact after execution.</li>
+        </ul>
+        <div class="callout warning">
+          <strong>Prohibited</strong>
+          Shared administrator accounts, sharing personal tokens, placing
+          production secrets in unapproved channels, blocking without
+          evidence, activating unapproved legal content, and updating without
+          recovery readiness are prohibited.
+        </div>
+      </section>
+
+      <section class="major" id="access">
+        <h1>3. Access and session security</h1>
+
+        <h2 id="admin-login">3.1. Admin sign-in</h2>
+        <p>
+          In production, Admin authority is tied to configured administrator
+          email addresses. The user authenticates with Firebase, after which
+          the application routes an authorized identity to
+          <code>/admin</code>. The web interface does not maintain a separate
+          MyScoutee administrator password.
+        </p>
+        <div class="procedure">
+          <h3>Start an Admin session</h3>
+          <ol>
+            <li>Open only the approved HTTPS deployment URL.</li>
+            <li>Sign in with your named address that appears in the administrator list.</li>
+            <li>Confirm that the application opens the <strong>Admin</strong> workspace.</li>
+            <li>Record the start of work when the organizational process requires a change or incident ticket.</li>
+            <li>Sign out and close the browser profile when the work is complete.</li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <strong>Local development mode</strong>
+          Local/demo mode may use a selected demo identity and more permissive
+          backend behavior. Do not treat it as a production access-control
+          check or audit record.
+        </div>
+
+        <h2 id="operator-login">3.2. Operator sign-in</h2>
+        <p>
+          The Operator role always requires O authority. The identity may be a
+          designated Firebase user or the bootstrap Operator account created
+          during deployment. The server-side bootstrap token is valid for no
+          more than eight hours and is stored in browser session storage.
+        </p>
+        <div class="procedure">
+          <h3>First bootstrap Operator sign-in</h3>
+          <ol>
+            <li>Receive the one-time displayed Operator email address and password through the approved secret-transfer process.</li>
+            <li>Sign in over HTTPS. Insecure HTTP is accepted only when explicitly enabled for local development.</li>
+            <li>Confirm that the application opens the <strong>Operator</strong> workspace.</li>
+            <li>Configure and test the permanent Firebase access first, then handle the bootstrap credential under the organization's secret policy.</li>
+            <li>After expiry or a 401/403 response, start a new session; do not attempt to recover the token from browser storage.</li>
+          </ol>
+        </div>
+
+        <div class="callout danger">
+          <strong>Bootstrap credential</strong>
+          Deployment does not store the generated password in plaintext; only
+          its digest is written to the secret file. The once-displayed
+          password may appear in terminal or installation logs, so access to
+          those logs must be restricted. Recovery of a lost credential is a
+          host-operator task.
+        </div>
+
+        <h2 id="access-failure">3.3. Access failure</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Symptom</th>
+              <th>Admin/Operator action</th>
+              <th>Escalation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>The normal application opens instead of the privileged workspace</td>
+              <td>Sign out, verify the identity and email address, then sign in again.</td>
+              <td>Operator verifies the administrator list or O authority.</td>
+            </tr>
+            <tr>
+              <td>401/403 response and session termination</td>
+              <td>Do not repeat the action in a loop; sign in again.</td>
+              <td>For recurrence, investigate identity, clock synchronization, and backend state.</td>
+            </tr>
+            <tr>
+              <td>The Admin side menu is disabled</td>
+              <td>Check network state; do not treat pending changes as saved.</td>
+              <td>Host/network operator if connectivity does not recover.</td>
+            </tr>
+            <tr>
+              <td>The final administrator address was removed</td>
+              <td>Do not attempt an ad hoc database change outside the web interface.</td>
+              <td>Immediately involve the Operator and host operator under an approved recovery procedure.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="major" id="workspaces">
+        <h1>4. Workspaces and general working practice</h1>
+        <p>
+          The Admin home page is a moderation workspace; functions open in
+          popup work panels. The Operator home page combines node state,
+          network leaderboards, and deployment actions.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Admin menu group</th>
+              <th>Functions</th>
+              <th>Operational character</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Moderation &amp; support</td>
+              <td>Reports, Feedback, Chats</td>
+              <td>User casework and enforcement</td>
+            </tr>
+            <tr>
+              <td>Configuration</td>
+              <td>Jobs, Params, Content, Article</td>
+              <td>Change management; several functions have live impact</td>
+            </tr>
+            <tr>
+              <td>Monitoring</td>
+              <td>Stats, Metrics, Graph</td>
+              <td>Primarily read-only and diagnostic</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Common working practice for every action</h2>
+        <div class="architecture flow-3" aria-label="Administrative workflow">
+          <div class="node"><strong>1. Identify</strong><span>case, target, scope</span></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="node"><strong>2. Execute</strong><span>smallest necessary intervention</span></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="node"><strong>3. Verify</strong><span>result, audit, escalation</span></div>
+        </div>
+        <ul class="checklist">
+          <li>Confirm whether the environment is production or demo.</li>
+          <li>Identify the user, report, content revision, job, or deployment by a unique ID.</li>
+          <li>Read the full detail; a list card alone is not a sufficient decision basis.</li>
+          <li>Prepare a rollback or mitigation plan before execution.</li>
+          <li>Wait for a success or failure state; reload authoritative state after a network interruption.</li>
+          <li>Record the decision and verification result in the designated external register.</li>
+        </ul>
+      </section>
+
+      <section class="major" id="reports">
+        <h1>5. Reports and moderation</h1>
+        <p>
+          The <strong>Reports</strong> panel lists unresolved and resolved
+          cases. Its detail view can show the reporter, time, reason,
+          description, source quotation, subject member, and source context.
+        </p>
+
+        <div class="procedure">
+          <h3>Investigate a report</h3>
+          <ol>
+            <li>Open <strong>Admin → Reports</strong>.</li>
+            <li>Select the <strong>Unresolved</strong> filter and open the case details.</li>
+            <li>Reconcile the reporter, subject user, time, reason, details, and source context.</li>
+            <li>For a chat report, open chat review; for another source, use item preview.</li>
+            <li>Decide whether no action, a warning, or a block is appropriate. The organizational incident process takes precedence for severe, immediate risk.</li>
+            <li>Perform the approved action, then mark the case resolved.</li>
+            <li>Verify the result and record the rationale in the external case/audit register.</li>
+          </ol>
+        </div>
+
+        <h2>Decision guide</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Situation</th>
+              <th>Least proportionate action</th>
+              <th>Required verification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unsubstantiated or incorrect report</td>
+              <td>Do not sanction; close the review.</td>
+              <td>Document the source and report reason.</td>
+            </tr>
+            <tr>
+              <td>First correctable behavior issue</td>
+              <td>Warning in the support chat.</td>
+              <td>The message is specific, factual, and tied to policy.</td>
+            </tr>
+            <tr>
+              <td>Repeated or serious violation</td>
+              <td>Block when the organizational policy permits it.</td>
+              <td>Record the ID, evidence, approver, and rationale.</td>
+            </tr>
+            <tr>
+              <td>Suspected threat, unlawful content, or security incident</td>
+              <td>Preserve evidence and escalate immediately; apply only approved mitigation.</td>
+              <td>Incident lead and legal/privacy decision.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Warning</h2>
+        <div class="procedure">
+          <h3>Send a warning</h3>
+          <ol>
+            <li>Choose <strong>Warn</strong> from the report detail.</li>
+            <li>Verify the target user and, for a chat report, the highlighted message.</li>
+            <li>Edit the required warning text; do not include unnecessary personal data.</li>
+            <li>Send the message and wait for confirmation.</li>
+            <li>Use <strong>View chat</strong> for subsequent review of the support conversation.</li>
+          </ol>
+        </div>
+
+        <h2>Block and unblock</h2>
+        <div class="procedure">
+          <h3>Block a user</h3>
+          <ol>
+            <li>Confirm that the target user and report belong together.</li>
+            <li>Select <strong>Block</strong> and read the confirmation dialog.</li>
+            <li>Verify the support message and approval for the decision.</li>
+            <li>Confirm the block and wait for the success response.</li>
+            <li>Open <strong>Blocked users</strong> and verify the new state.</li>
+          </ol>
+        </div>
+        <div class="procedure">
+          <h3>Unblock a user</h3>
+          <ol>
+            <li>Open <strong>Blocked users</strong>.</li>
+            <li>Identify the user; review the support chat and the unblock approval.</li>
+            <li>Select <strong>Unblock</strong>.</li>
+            <li>Verify that the user is no longer listed and record the result.</li>
+          </ol>
+        </div>
+
+        <div class="callout warning">
+          <strong>“Resolved” does not automatically mean sanctioned</strong>
+          Resolving a report changes its review workflow state. Warning,
+          blocking, and unblocking are separate actions; always verify that the
+          intended enforcement action actually occurred.
+        </div>
+      </section>
+
+      <section class="major" id="feedback">
+        <h1>6. User feedback</h1>
+        <p>
+          The <strong>Feedback</strong> panel manages unresolved and resolved
+          entries. Details include subject, description, category, user, and
+          submission time. Recognized categories are Bug report, Feature
+          request, UX improvement, Performance, and General.
+        </p>
+
+        <div class="procedure">
+          <h3>Process feedback</h3>
+          <ol>
+            <li>Open <strong>Admin → Feedback</strong>.</li>
+            <li>Select <strong>Unresolved</strong>, then read the full subject and description.</li>
+            <li>Verify the category, submitter, and time; create an external development or support ticket when necessary.</li>
+            <li>Select <strong>Mark solved</strong> only after the organization's processing requirement has been met.</li>
+            <li>Use <strong>Mark unresolved</strong> to reopen an incorrectly closed item.</li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <strong>Functional boundary</strong>
+          The verified interface has no assignment, internal comment, export,
+          or development-ticket integration. Handle these in the
+          organization's external workflow.
+        </div>
+      </section>
+
+      <section class="major" id="support">
+        <h1>7. Support conversations and shared help views</h1>
+
+        <h2>Support chat</h2>
+        <p>
+          The Admin chat is intended for service/support conversations. A
+          warning initiated from a report enters the same support context and
+          can be reviewed later.
+        </p>
+        <ul class="checklist">
+          <li>Always verify the conversation's target user.</li>
+          <li>Communicate only data necessary to resolve the case.</li>
+          <li>Never request a password, private key, service-account JSON, or payment secret.</li>
+          <li>Escalate threatening, legal, or privacy-sensitive content; do not improvise.</li>
+        </ul>
+
+        <h2>Shared help view</h2>
+        <p>
+          Report details can create a short-lived tokenized
+          <code>/admin/help/&lt;token&gt;</code> link to the reported member's
+          or source's application view. The server issues the token with a
+          24-hour lifetime.
+        </p>
+        <div class="procedure">
+          <h3>Use a help link safely</h3>
+          <ol>
+            <li>Create the member-view or source-view link from report details.</li>
+            <li>Open it in an approved Admin work environment and verify that it shows the intended context.</li>
+            <li>Do not paste it into public channels or free-text tickets, and do not capture unnecessary screenshots.</li>
+            <li>Close the view after review. If disclosure is suspected, treat the 24-hour validity window as an incident risk.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Bearer-style access</strong>
+          Possession of the link may be sufficient to resolve the shared
+          target. The verified Admin UI has no manual token-revocation action;
+          immediately escalate an accidental disclosure to security/privacy.
+        </div>
+      </section>
+
+      <section class="major" id="governed-content">
+        <h1>8. Help, legal, and explanatory content</h1>
+        <p>
+          The <strong>Content</strong> editor manages four content types:
+          Help, Privacy, Terms, and Explanations. Content is maintained in
+          English (<code>EN</code>) and Hungarian (<code>HU</code>).
+          Explanations are bound to a predefined application screen.
+        </p>
+
+        <h2>Revision model</h2>
+        <ul>
+          <li>Saving creates a new inactive revision; it does not overwrite the active revision directly.</li>
+          <li>Editing an existing revision also creates a new version and carries its base-revision ID as trace data.</li>
+          <li>Activation is separate. One revision is active per type, language, and—where applicable—screen context.</li>
+          <li>The server sanitizes HTML, may omit empty sections, and makes colliding section IDs unique.</li>
+          <li>Create, activate, and delete operations produce backend audit records and telemetry events.</li>
+        </ul>
+
+        <div class="procedure">
+          <h3>Create a content revision</h3>
+          <ol>
+            <li>Open <strong>Admin → Content</strong>.</li>
+            <li>Select the content type and language; for an explanation, select the target screen.</li>
+            <li>Start a <strong>New revision</strong> or open an existing revision for editing.</li>
+            <li>Enter the title, summary, description, header color, and sections.</li>
+            <li>For each section, verify its label, icon, blurb, sanitized HTML, image, and panel span.</li>
+            <li>Save and verify that the revision is inactive and has a new version number.</li>
+            <li>Obtain content approval—and legal/privacy approval for legal content—before activation.</li>
+          </ol>
+        </div>
+
+        <div class="procedure">
+          <h3>Activate a revision</h3>
+          <ol>
+            <li>Open the approved inactive revision and compare it with the currently active version.</li>
+            <li>Verify the type, language, screen context, and version.</li>
+            <li>Select <strong>Activate</strong>.</li>
+            <li>Open the user view and verify headings, sections, links, images, and responsive layout.</li>
+            <li>Record the approver, time, old/new revision, and verification result.</li>
+          </ol>
+        </div>
+
+        <div class="callout danger">
+          <strong>Privacy activation</strong>
+          Activating a privacy revision can establish a new consent boundary
+          and require users to accept it again. Legal/privacy approval,
+          support readiness, and user-flow testing are mandatory before
+          activation.
+        </div>
+
+        <div class="procedure">
+          <h3>Delete a revision</h3>
+          <ol>
+            <li>Confirm the target revision ID and language.</li>
+            <li>Check whether it is active. Delete an active revision only with an approved rollback plan.</li>
+            <li>Select <strong>Delete</strong> and confirm.</li>
+            <li>Reload the list and verify the active revision in the user view.</li>
+          </ol>
+        </div>
+        <div class="callout warning">
+          <strong>Automatic fallback activation</strong>
+          When an active revision is deleted, the backend can automatically
+          activate the newest remaining revision. Deletion is therefore not a
+          “disable content” operation; always verify which earlier version
+          became active.
+        </div>
+        <div class="callout note">
+          <strong>Concurrent editing limitation</strong>
+          The base-revision ID provides traceability, but the verified
+          implementation does not provide complete optimistic locking or a
+          visual merge workflow. Assign only one editor to a given content
+          item at a time.
+        </div>
+      </section>
+
+      <section class="major" id="articles">
+        <h1>9. Article management</h1>
+        <p>
+          The <strong>Article</strong> editor manages English and Hungarian
+          posts. Filters are All, Featured, Published, Drafts, and Trashed.
+          An article can contain a title, excerpt, image carousel, and
+          sanitized article HTML.
+        </p>
+
+        <div class="procedure">
+          <h3>Create and publish an article</h3>
+          <ol>
+            <li>Open <strong>Admin → Article</strong> and select the language.</li>
+            <li>Start a new article; enter the required title, excerpt, images, and article HTML.</li>
+            <li>Use preview and verify images, links, and layout.</li>
+            <li>Save. The result is a draft that is neither published nor featured.</li>
+            <li>On the card, select <strong>Publish</strong> separately and confirm.</li>
+            <li>Verify the result in the user-facing article list.</li>
+            <li>If required, mark only a published article as <strong>Featured</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="callout warning">
+          <strong>Republishing is required after editing</strong>
+          The editor's save request stores an article as a draft with both
+          published and featured set to false. Editing and saving a published
+          article can therefore remove it from the live interface; publish the
+          approved version again as a separate action.
+        </div>
+
+        <h2>Unpublish, trash, and restore</h2>
+        <ul>
+          <li><strong>Unpublish:</strong> removes the published state and clears featured status.</li>
+          <li><strong>Move to trash:</strong> soft-deletes the article and clears published and featured status.</li>
+          <li><strong>Restore:</strong> returns it from trash as an unpublished, unfeatured draft; publish separately.</li>
+          <li><strong>Feature:</strong> is available only for a published article.</li>
+        </ul>
+        <div class="callout note">
+          <strong>Audit limitation</strong>
+          The backend maintains modification data and save/delete/restore
+          telemetry, but the verified article interface has no browsable,
+          immutable revision history comparable to governed Help or legal
+          content. Preserve approval evidence in the external change ticket.
+        </div>
+      </section>
+
+      <section class="major" id="parameters">
+        <h1>10. Platform parameters</h1>
+        <p>
+          The <strong>Params</strong> panel manages platform behavior in seven
+          sections. A save creates a complete new active configuration version
+          and makes the previous active version inactive. The change can queue
+          affinity recomputation and generate an administrator notification.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Examples of affected settings</th>
+              <th>Primary risk</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Matching</td>
+              <td>rating, evidence, and owner-context multipliers</td>
+              <td>matching order and quality</td>
+            </tr>
+            <tr>
+              <td>Profile</td>
+              <td>profile-field rules, impression and trait multipliers</td>
+              <td>profile and affinity calculations</td>
+            </tr>
+            <tr>
+              <td>Events</td>
+              <td>affinity, boost, capacity, and host confidence</td>
+              <td>event recommendations and capacity</td>
+            </tr>
+            <tr>
+              <td>Assets</td>
+              <td>affinity, boost, requests, and freshness</td>
+              <td>asset recommendations and request handling</td>
+            </tr>
+            <tr>
+              <td>Discovery</td>
+              <td>distance multiplier, maximum meters, and strategy</td>
+              <td>result radius and geographic relevance</td>
+            </tr>
+            <tr>
+              <td>Notifications</td>
+              <td>send window, workers, retries, backoff, and multicast/topic thresholds</td>
+              <td>notification latency, load, and duplication</td>
+            </tr>
+            <tr>
+              <td>Jobs</td>
+              <td>debounce, polling, batch, lease, processing cadence, and account-purge window</td>
+              <td>background load, latency, and retention boundary</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="procedure">
+          <h3>Change a parameter</h3>
+          <ol>
+            <li>Open <strong>Admin → Params</strong> and expand the target section.</li>
+            <li>Record the active version and baseline value of every field to be changed.</li>
+            <li>Review impact with product, data, and operations owners; include the host operator for significant capacity risk.</li>
+            <li>Change only the approved value; never try to bypass a read-only field.</li>
+            <li>Save the configuration and record the new version.</li>
+            <li>Observe affinity recomputation, jobs, monitoring, and user behavior.</li>
+            <li>Use section-level rollback when results deviate from the approved expectation.</li>
+          </ol>
+        </div>
+
+        <div class="procedure small">
+          <h3>Restore a section from an earlier version</h3>
+          <ol>
+            <li>Open the section's <strong>History</strong>.</li>
+            <li>Identify the approved earlier version, modifier, time, summary, and values.</li>
+            <li>Select <strong>Switch to this version</strong>.</li>
+            <li>Verify that a <em>new</em> active configuration version was created with the selected section's earlier values.</li>
+            <li>Repeat impact verification.</li>
+          </ol>
+        </div>
+
+        <div class="callout warning small">
+          <strong>Rollback creates a new version</strong>
+          A section rollback does not reactivate the old document. It creates a
+          new active configuration version from that section's earlier values.
+          Rolling back several sections is not atomic; manage the interim mixed
+          state in the change plan.
+        </div>
+      </section>
+
+      <section class="major" id="jobs">
+        <h1>11. Scheduled jobs</h1>
+        <p>
+          The <strong>Jobs</strong> panel shows scheduled-process state, last
+          and next run, pending count, runtime progress, detail, and history.
+          State can update over WebSocket and, during a run, by short-interval
+          polling.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Meaning</th>
+              <th>Administrator action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ready</td>
+              <td>Available to run or awaiting its next scheduled slot.</td>
+              <td>Normal observation.</td>
+            </tr>
+            <tr>
+              <td>Running</td>
+              <td>Execution is in progress.</td>
+              <td>Do not start another manual run; observe progress.</td>
+            </tr>
+            <tr>
+              <td>Failed</td>
+              <td>The most recent run failed.</td>
+              <td>Review detail/history, correlate logs, and assess incident impact.</td>
+            </tr>
+            <tr>
+              <td>Missed</td>
+              <td>A scheduled run did not occur.</td>
+              <td>Investigate schedule, downtime, and backlog.</td>
+            </tr>
+            <tr>
+              <td>Suspended</td>
+              <td>The process is paused.</td>
+              <td>Resume only with approval and after assessing accumulated work.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Processes supplied in the baseline package</h2>
+        <p class="small muted">
+          The following list reflects the released seed configuration. The
+          configuration displayed in the live panel is authoritative.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Process</th>
+              <th>Purpose</th>
+              <th>Typical baseline interval</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Matched rooms</td>
+              <td>Assign accepted members to generated rooms using affinity and prior-meeting signals.</td>
+              <td>1,440 minutes; manual run enabled</td>
+            </tr>
+            <tr>
+              <td>Auto inviter</td>
+              <td>Process eligible invitation/wait-list candidates.</td>
+              <td>120 minutes</td>
+            </tr>
+            <tr>
+              <td>Tournament review</td>
+              <td>Review tournament stage states periodically.</td>
+              <td>30 minutes</td>
+            </tr>
+            <tr>
+              <td>Event counter expiry</td>
+              <td>Handle counters associated with past events.</td>
+              <td>5 minutes</td>
+            </tr>
+            <tr>
+              <td>Checkout basket cleanup</td>
+              <td>Remove expired checkout-basket drafts.</td>
+              <td>1 minute</td>
+            </tr>
+            <tr>
+              <td>Notification outbox</td>
+              <td>Process delivery of pending notification intents.</td>
+              <td>1 minute</td>
+            </tr>
+            <tr>
+              <td>Affinity recompute</td>
+              <td>Execute queued affinity recomputations.</td>
+              <td>1 minute</td>
+            </tr>
+            <tr>
+              <td>Scheduled messages</td>
+              <td>Process scheduled messaging tasks.</td>
+              <td>30 minutes</td>
+            </tr>
+            <tr>
+              <td>Account purge</td>
+              <td>Perform delayed data-handling work for deleted accounts.</td>
+              <td>1,440 minutes</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="procedure">
+          <h3>Change a schedule or job parameter</h3>
+          <ol>
+            <li>Open the process detail and verify status, pending count, last/next run, and history.</li>
+            <li>Pause the process when necessary, but first calculate the expected backlog and user impact.</li>
+            <li>Edit the start time, fixed interval and unit, and any exposed process parameters.</li>
+            <li>Save, reload the detail, and verify the next run time.</li>
+            <li>After resuming, observe the first complete run and confirm that the pending count declines.</li>
+          </ol>
+        </div>
+
+        <div class="procedure">
+          <h3>Manual run</h3>
+          <ol>
+            <li>Verify that the process is enabled, not running, and that <strong>Run</strong> is available.</li>
+            <li>Identify the target workload and any potentially irreversible impact.</li>
+            <li>Start the run and monitor progress and history until completion.</li>
+            <li>Do not retry blindly after failure; inspect the detail and escalate.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Manual Matched rooms run</strong>
+          In the released baseline this is the process with manual execution
+          enabled. It can modify user and event-group assignments; run it only
+          for an approved event scope, with a captured baseline and result
+          verification.
+        </div>
+      </section>
+
+      <section class="major" id="observability">
+        <h1>12. Statistics, monitoring, and affinity graph</h1>
+
+        <h2>Stats</h2>
+        <p>
+          <strong>Stats</strong> is a read-only panel with an explicit
+          <strong>Refresh</strong> action. It can show KPIs and health,
+          timelines for active users, registrations, ratings, events/assets,
+          messages, and moderation, and aggregated network-quality,
+          community, bridge-user, event-type, segment, city, and topic data.
+        </p>
+        <div class="procedure">
+          <h3>Investigate a statistical anomaly</h3>
+          <ol>
+            <li>Open <strong>Admin → Stats</strong> and select <strong>Refresh</strong>.</li>
+            <li>Record the observation time, metric, trend, and comparison baseline.</li>
+            <li>Compare at least two related metrics; do not intervene on a single KPI alone.</li>
+            <li>Correlate the change with configuration, job, release, and incident times.</li>
+            <li>Escalate suspected data-quality issues; do not “correct” product parameters before validating the measurement.</li>
+          </ol>
+        </div>
+
+        <h2>Monitoring</h2>
+        <p>
+          <strong>Monitoring</strong> displays aggregate node, edge, and
+          status metrics filtered by category. Verified filters are All,
+          Watch, Domains, Notifications, and Background; health is shown as
+          Healthy, Watch, or Alert.
+        </p>
+        <div class="callout note">
+          <strong>Snapshot behavior</strong>
+          The verified panel has no separate refresh control or proven timed
+          auto-refresh. Close and reopen it to issue a new query. Correlate a
+          persistent alert with server-side metrics and logs.
+        </div>
+
+        <h2>Affinity graph</h2>
+        <p>
+          <strong>Graph</strong> opens a full-screen, read-only 3D view. It can
+          show forest/component overviews, members, links, components, and
+          isolated members. Large data sets load progressively.
+        </p>
+        <div class="procedure">
+          <h3>Use the graph</h3>
+          <ol>
+            <li>Open <strong>Admin → Graph</strong> and wait for the data-loading indicator to complete.</li>
+            <li>Pan with the left mouse button, rotate with the right button, zoom with the wheel, and pan by steps with the arrow keys.</li>
+            <li>Select a forest/component, then a member badge to view the profile and strongest links.</li>
+            <li>Use Link range to hide links outside the selected strength range; for a selected member, set link depth from 1 to 3.</li>
+            <li>Select <strong>Reset</strong> to return to overview.</li>
+          </ol>
+        </div>
+        <div class="callout warning">
+          <strong>Not evidence of intent</strong>
+          An affinity link or visual proximity is a computed relationship. It
+          cannot serve by itself as evidence for moderation, legal, or user
+          decisions.
+        </div>
+        <div class="callout note">
+          <strong>Layout rebuild</strong>
+          A layout-rebuild backend endpoint exists, but MyScoutee 1.0.0 has no
+          control for it in the Admin graph panel. Do not invoke it manually
+          from the browser; escalate it as an approved technical change.
+        </div>
+      </section>
+
+      <section class="major" id="operator-overview">
+        <h1>13. Operator workspace</h1>
+        <p>
+          The Operator page manages network and deployment duties for the
+          installed node. Its main actions are <strong>Updates, Node
+          registration, Claim share, Configuration, and Revenue</strong>;
+          <strong>Community</strong> is available from the side rail. The
+          leaderboard provides Founder, Claimed, and Unclaimed views and a
+          deployment list for each group.
+        </p>
+
+        <div class="callout danger">
+          <strong>Scope of Operator actions</strong>
+          These actions can change identity, external network connectivity,
+          authentication, TLS, payment routing, and installed software.
+          Access to the Operator workspace does not replace change approval or
+          host-side recovery readiness.
+        </div>
+
+        <h2>Operator pre-check</h2>
+        <ul class="checklist">
+          <li>The deployment's unique identity and environment are confirmed.</li>
+          <li>System time, HTTPS, and network connectivity are healthy.</li>
+          <li>No other Operator change is running on the same node.</li>
+          <li>Affected secrets originate from an approved secret store.</li>
+          <li>The host operator is available for a high-risk change.</li>
+          <li>The recovery point, owner, and decision threshold are documented.</li>
+        </ul>
+      </section>
+
+      <section class="major" id="node-registration">
+        <h1>14. Node registration and measurement delivery</h1>
+        <p>
+          <strong>Node registration</strong> shows lifecycle state and the
+          selected registry URL. In real mode, the candidate must use HTTPS.
+          MyScoutee 1.0.0 permits selection only from the registry catalog
+          supplied by the server; the text field is read-only and there is no
+          manual URL entry.
+        </p>
+
+        <div class="procedure">
+          <h3>First registration</h3>
+          <ol>
+            <li>Open <strong>Operator → Node registration</strong>.</li>
+            <li>Verify the current lifecycle and any selected registry.</li>
+            <li>Select the approved registry from the catalog.</li>
+            <li>Independently verify the registry scope and TLS/network expectation.</li>
+            <li>Select <strong>Register node</strong>.</li>
+            <li>Wait for <strong>Registered</strong>, refresh the panel, and verify the leaderboard mutation.</li>
+          </ol>
+        </div>
+
+        <div class="callout note">
+          <strong>The actual 1.0.0 interface</strong>
+          Although the backend has separate inspect and confirm endpoints, the
+          released Operator panel displays no “Inspect” or “Confirm” control.
+          The documented UI process is catalog selection followed directly by
+          <strong>Register node</strong>; do not prescribe controls that are
+          not visible.
+        </div>
+
+        <div class="procedure">
+          <h3>Switch registries</h3>
+          <ol>
+            <li>Record the current registry URL, scope, state, and associated network/group bindings.</li>
+            <li>Verify the new catalog registry and scope through an independent channel.</li>
+            <li>Select the new registry and start registration.</li>
+            <li>If a partial-switch error appears, treat the old connection as removed and the new one as not established.</li>
+            <li>Do not retry without control. Verify status, network, and registry, then register to the approved target.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Registry switching is not atomic</strong>
+          When the target differs, the client disconnects the existing
+          binding before registering with the new registry. If the second step
+          fails, the node remains unregistered. Switch only with an accepted
+          outage and recovery plan.
+        </div>
+
+        <div class="procedure">
+          <h3>Disable the connection</h3>
+          <ol>
+            <li>Confirm that the intended target is the current registry connection.</li>
+            <li>Record associated node, group, measurement, and revenue-delivery state.</li>
+            <li>Select <strong>Disable connection</strong>.</li>
+            <li>Verify <strong>Disabled</strong> and the expected restrictions on Operator functions.</li>
+          </ol>
+        </div>
+
+        <h2>Measurement synchronization</h2>
+        <p>
+          For a registered node, the panel shows delivery state and counts of
+          materialized, submitted, accepted, pending, and blocked measurement
+          reports. Blocked reports are listed and can be requeued
+          individually.
+        </p>
+        <div class="procedure">
+          <h3>Synchronize measurements and requeue a blocked report</h3>
+          <ol>
+            <li>Verify that the node is registered and delivery is not Busy.</li>
+            <li>Select <strong>Synchronize measurements</strong>.</li>
+            <li>Compare the materialized, submitted, accepted, pending, and blocked counts.</li>
+            <li>For a blocked item, read its period, revision, failure code/message, action count, and attempt count.</li>
+            <li>Select <strong>Queue resend</strong> only after correcting the underlying cause.</li>
+            <li>Verify that the item becomes pending and is accepted by a subsequent synchronization.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="major" id="claim">
+        <h1>15. Ownership claim, leaderboard, and community</h1>
+
+        <h2>Company ownership claim</h2>
+        <p>
+          A registered node can be claimed through company verification or
+          with a temporary client code from an already verified Operator
+          group. The company route requires legal name, registration number,
+          jurisdiction, registered address, website, verification-contact
+          name/role/email, and an authority attestation.
+        </p>
+        <div class="procedure">
+          <h3>Submit a company claim</h3>
+          <ol>
+            <li>Open <strong>Operator → Claim share</strong> and select <strong>Company details</strong>.</li>
+            <li>Verify that the node is registered and the verification backend is available.</li>
+            <li>Enter company and contact data from authoritative registration sources.</li>
+            <li>Select the required attestation only with verified authority to represent the entity.</li>
+            <li>Select <strong>Claim this node</strong> and record the status.</li>
+            <li>Do not resubmit while <strong>Under review</strong>. The screen sends no email: follow its contact instruction; approval occurs at the registry, outside this web UI. Escalate Rejected or Suspended status.</li>
+          </ol>
+        </div>
+
+        <h2>Issue and redeem a client code</h2>
+        <div class="procedure">
+          <h3>Issue a client code</h3>
+          <ol>
+            <li>Use the header client-code action only on an active, approved/verified node that belongs to a group.</li>
+            <li>Record the displayed expiry, but do not copy the code itself into a log.</li>
+            <li>Use <strong>Copy code</strong> and transfer it to the target Operator through an approved secret channel.</li>
+            <li>Treat it as consumed after successful redemption; do not redistribute it.</li>
+          </ol>
+        </div>
+        <div class="procedure">
+          <h3>Redeem a client code</h3>
+          <ol>
+            <li>On the target node, open the claim panel and select <strong>Client code</strong>.</li>
+            <li>Paste the received code and verify that the target node is registered.</li>
+            <li>Select <strong>Claim this node</strong>.</li>
+            <li>Verify the provisional group membership and leaderboard mutation. Investigate the cause before requesting a replacement code after failure.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Client code is a short-lived secret</strong>
+          The code can attach a deployment to an Operator group. Give it only
+          to the designated recipient; never place it in chat, a ticket,
+          screenshot, or source code.
+        </div>
+
+        <h2>Leaderboard</h2>
+        <p>
+          The leaderboard and group deployment list are read-only snapshots.
+          Displayed share, weight, claim, and eligibility state are for
+          verification. For discrepancies, record the snapshot period and
+          deployment/group ID, then escalate to the registry.
+        </p>
+
+        <h2>Community and announcements</h2>
+        <p>
+          <strong>Community</strong> displays available provider links and
+          registry announcements. An announcement can show kind, severity,
+          status, publication/expiry time, details, and—for an update—signature
+          and compatibility metadata.
+        </p>
+        <div class="callout note">
+          <strong>Community-state limitation</strong>
+          The remote HTTP data source does not support changing community
+          availability; treat the panel as read-only in production. Open a
+          provider link only when it is available and uses HTTPS.
+        </div>
+      </section>
+
+      <section class="major" id="updates">
+        <h1>16. Software updates</h1>
+        <p>
+          <strong>Updates</strong> shows the current and available versions,
+          the most recent update, and the progress of any active job.
+          <strong>Check for updates</strong> requests a new registry snapshot;
+          <strong>Update deployment</strong> is enabled only for an
+          installable newer release.
+        </p>
+
+        <h2>Security model</h2>
+        <ul>
+          <li>Only an available, compatible, and newer release is accepted.</li>
+          <li>The registry announcement's signing key, locally pinned release key, and package signature must verify.</li>
+          <li>The backend downloads over HTTPS, verifies size and SHA-256, and stages the package in local state.</li>
+          <li>A privileged local update helper performs the package installation; this is a host-side trust boundary.</li>
+          <li>The browser follows job events and maps lower-level host phases to Checking, Downloading, Verifying, Installing, Completed, or Failed.</li>
+        </ul>
+
+        <div class="procedure">
+          <h3>Perform an update</h3>
+          <ol>
+            <li>Create an approved change ticket. Reconcile the target version and compatibility/signature data shown in the <strong>Community</strong> update announcement. Obtain expected downtime and backup requirements separately from an approved release source.</li>
+            <li>The host operator verifies a current backup, tested recovery point, free storage, and the privileged update helper.</li>
+            <li>Open <strong>Operator → Updates</strong> and select <strong>Check for updates</strong>.</li>
+            <li>Compare the current and available versions with the approved release.</li>
+            <li>Select <strong>Update deployment</strong>. Do not close the change merely because download or verification completed.</li>
+            <li>Follow progress to <strong>Update completed</strong>; expect temporary loss of connectivity during installation/restart.</li>
+            <li>After reconnection, verify the current version, sign-in, Admin/Operator routes, and designated smoke tests.</li>
+            <li>Record the job ID, target version, result, duration, and verification.</li>
+          </ol>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Panel phase</th>
+              <th>Interpretation</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Checking</td>
+              <td>Validating the signed manifest and prerequisites.</td>
+              <td>Wait; investigate network/registry if prolonged.</td>
+            </tr>
+            <tr>
+              <td>Downloading</td>
+              <td>Package download in progress.</td>
+              <td>Do not start another job; observe the byte counter.</td>
+            </tr>
+            <tr>
+              <td>Verifying</td>
+              <td>Digest/signature verification and local handoff.</td>
+              <td>Never bypass verification after failure.</td>
+            </tr>
+            <tr>
+              <td>Installing</td>
+              <td>Waiting for the host helper, backing up, installing, or restarting.</td>
+              <td>Keep the host operator ready; do not interrupt.</td>
+            </tr>
+            <tr>
+              <td>Completed</td>
+              <td>The job completed.</td>
+              <td>Verify version and function.</td>
+            </tr>
+            <tr>
+              <td>Failed</td>
+              <td>May represent host states Failed, Rejected, or Recovery Required.</td>
+              <td>Stop; inspect job/helper logs and make a recovery decision.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout danger">
+          <strong>Failed is not sufficiently specific</strong>
+          The web view can collapse several host terminal states into
+          “Failed.” In particular, never retry or start another update after
+          Recovery Required until the host state and backup have been
+          examined.
+        </div>
+      </section>
+
+      <section class="major" id="operator-configuration">
+        <h1>17. Deployment configuration</h1>
+        <p>
+          <strong>Configuration</strong> manages deployment branding, privacy
+          contact, administrator email addresses, social links, payment
+          provider, Firebase integration, and HTTPS. Each section exposes a
+          separate save action, but a save request submits the current complete
+          configuration draft. Review every pending field in the panel before
+          saving any section.
+        </p>
+
+        <h2>Branding, privacy contact, and social links</h2>
+        <div class="procedure">
+          <h3>Save lower-risk configuration</h3>
+          <ol>
+            <li>Open <strong>Operator → Configuration</strong>.</li>
+            <li>For branding, verify product name, logo image, logo-character index, and theme.</li>
+            <li>For privacy, enter the data-controller name and public privacy email address.</li>
+            <li>For a social link, verify provider, label, HTTPS URL, icon, and handle; no more than 12 links can be added.</li>
+            <li>Save the target section, then verify public presentation and links in a separate browser session.</li>
+          </ol>
+        </div>
+
+        <h2>Administrator email addresses</h2>
+        <p>
+          A authority is tied to addresses in the administrator list. An
+          address is not a password; the user authenticates through Firebase.
+          An authority change becomes effective on the next sign-in or
+          authentication-token refresh.
+        </p>
+        <div class="procedure">
+          <h3>Add or remove an administrator</h3>
+          <ol>
+            <li>Open the administrator section and preserve the currently approved list in the change record.</li>
+            <li>Verify the address to be added or removed through two sources; use a named organizational address.</li>
+            <li>Maintain at least one other tested Admin account independent of the executor.</li>
+            <li>Edit the list and select <strong>Save administrators</strong>.</li>
+            <li>After signing out and back in, the new Admin verifies <code>/admin</code>. For removal, verify in a new session that the old identity no longer enters.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Lockout risk</strong>
+          Never remove the final functioning administrator address. The
+          verified UI has no break-glass Admin control; lockout requires
+          Operator and host-operator recovery.
+        </div>
+
+        <h2>Payment provider</h2>
+        <p>
+          The panel selects an available provider and manages the public base
+          URL, provider-specific merchant account, and secret credential. An
+          existing secret cannot be read back; the UI shows only a masked or
+          configured state.
+        </p>
+        <div class="procedure">
+          <h3>Register or update payment configuration</h3>
+          <ol>
+            <li>Reconcile the environment, merchant, and callback/public URL with the provider portal and change record.</li>
+            <li>Select the provider and enter the approved public base URL and, where requested, merchant email/account.</li>
+            <li>Paste the credential directly from the approved secret store; do not log it.</li>
+            <li>Select <strong>Register payment</strong> or <strong>Update payment</strong> and wait for confirmation.</li>
+            <li>Run the provider-approved low-value or sandbox end-to-end test; verify webhook and accounting results.</li>
+          </ol>
+        </div>
+        <div class="callout warning">
+          <strong>Remove provider</strong>
+          Selecting no provider creates a <strong>Remove payment</strong>
+          action. Do so only after checking active payment flows and open
+          refunds.
+        </div>
+
+        <h2>Firebase</h2>
+        <p>
+          The Firebase section manages public client configuration—project ID,
+          API key, auth domain, storage bucket, messaging sender ID, app ID,
+          optional measurement ID, and VAPID key—and separate authentication
+          and messaging service-account credentials. Save, two capability
+          tests, and activation are distinct.
+        </p>
+        <div class="procedure">
+          <h3>Introduce Firebase configuration</h3>
+          <ol>
+            <li>Confirm that every public value and both service accounts belong to the same approved Firebase project and environment.</li>
+            <li>Complete the public fields and paste the authentication and messaging credentials.</li>
+            <li>Select <strong>Save Firebase</strong>. Test controls become available only for saved, clean configuration with registered credentials.</li>
+            <li>Run <strong>Auth Test</strong>.</li>
+            <li>Allow notifications in the test browser and verify its service worker. Optionally enter an additional test-device token, then run <strong>Message Test</strong>.</li>
+            <li>Select <strong>Activate Firebase</strong> only after both successful tests and complete public-client fields.</li>
+            <li>In a separate browser, verify sign-in, token refresh, push-permission flow, and a test notification.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Fail-closed behavior</strong>
+          A failed capability test can deactivate the live Firebase revision.
+          Test only in a maintenance window with a rollback plan and
+          alternative Operator access.
+        </div>
+        <div class="callout note">
+          <strong>Secret handling</strong>
+          Existing service-account credentials cannot be read back, and the
+          client clears credential fields from the draft when the configuration
+          panel closes. Recovery or rotation of the master key used for
+          server-side secret encryption is a host-operator procedure.
+        </div>
+
+        <h2>HTTPS</h2>
+        <p>
+          HTTPS can be enabled or disabled. Automatic mode uses a domain,
+          contact email, and automatic renewal. Manual mode uses a domain,
+          certificate, and private key. Separate domain and certificate tests
+          precede a save job.
+        </p>
+        <div class="procedure">
+          <h3>Configure HTTPS</h3>
+          <ol>
+            <li>With the host operator, verify DNS records, public reachability, proxy/port routing, and the change window.</li>
+            <li>Enable HTTPS, enter the domain, and select <strong>Automatic certificate</strong> or <strong>Certificate and key</strong>.</li>
+            <li>In automatic mode, enter a monitored contact email and choose automatic renewal. In manual mode, paste the complete certificate chain and matching private key.</li>
+            <li>Run <strong>Test domain</strong>, then <strong>Test certificate</strong>.</li>
+            <li>Only after successful tests, select <strong>Save HTTPS</strong> and follow the job state.</li>
+            <li>With an independent client, verify HTTPS, certificate chain, name, expiry, redirects, and Admin/Operator sign-in.</li>
+          </ol>
+        </div>
+        <div class="callout danger">
+          <strong>Private key</strong>
+          Never put a private key in a ticket, chat, screenshot, or version
+          control. After an unsuccessful or unknown save result, reload
+          authoritative state before attempting any further action; do not
+          paste the key again automatically.
+        </div>
+      </section>
+
+      <section class="major" id="revenue">
+        <h1>18. Revenue and settlement view</h1>
+        <p>
+          <strong>Revenue</strong> can show the ruleset and commission rate,
+          revenue metrics by currency, a projected timeline, asset categories,
+          delivery state, blocked reports, and settlement snapshots.
+        </p>
+
+        <h2>Delivery</h2>
+        <p>
+          Counters show materialized, submitted, accepted, pending, and
+          blocked reports. For a blocked report, the panel shows period,
+          revision, failure message/code, attempt count, affected currencies,
+          and failure time.
+        </p>
+        <div class="procedure">
+          <h3>Synchronize revenue delivery</h3>
+          <ol>
+            <li>Select the currency and record the ruleset version and commission rate.</li>
+            <li>Compare period, payment, refund, net, and commission metrics with the approved payment-provider report.</li>
+            <li>Select <strong>Synchronize delivery</strong>.</li>
+            <li>Verify changes to accepted, pending, and blocked counts.</li>
+            <li>Select <strong>Requeue report</strong> for a blocked report only after correcting its underlying cause and data.</li>
+          </ol>
+        </div>
+
+        <h2>Settlement snapshots</h2>
+        <p>
+          The view can show period, currency, revision, monthly network pool,
+          group allocation, share, trailing commission basis, indicative
+          network/group values, three-month averages, growth, acceleration,
+          adjustment, multiplier, ruleset, and accepted time.
+        </p>
+        <div class="callout warning">
+          <strong>Nonbinding</strong>
+          The panel explicitly presents settlement data as indicative and
+          nonbinding. It does not replace an invoice, provider statement, tax
+          document, or accounting record and is not sufficient by itself for
+          a payout decision.
+        </div>
+        <ul class="checklist">
+          <li>Always record currency, period, revision, and ruleset.</li>
+          <li>Do not aggregate different currencies without an exchange-rate source and time.</li>
+          <li>Do not omit superseded revisions from final reconciliation.</li>
+          <li>When escalating a discrepancy, include provider, registry, and local report IDs together.</li>
+        </ul>
+      </section>
+
+      <section class="major" id="audit">
+        <h1>19. Change management and audit</h1>
+        <p>
+          Built-in auditability differs by function. Governed content has the
+          strongest revision audit, and parameters have version history.
+          For several moderation, article, Operator, and configuration
+          actions, application state, telemetry, or a job ID is not a complete
+          organizational audit trail. An external change/case register is
+          therefore mandatory.
+        </p>
+
+        <div class="callout warning">
+          <strong>Data minimization</strong>
+          Do not store full chats, help tokens, client codes, private keys,
+          credentials, payment secrets, or device tokens as audit evidence. A
+          unique object ID and the necessary masked evidence are sufficient.
+        </div>
+
+        <h2>Minimum audit record</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Required content</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Identification</td>
+              <td>ticket/incident, environment, deployment, and target object's unique ID</td>
+            </tr>
+            <tr>
+              <td>Actors</td>
+              <td>requester, executor, and verifier/approver</td>
+            </tr>
+            <tr>
+              <td>Time</td>
+              <td>start, execution, completion, and time zone</td>
+            </tr>
+            <tr>
+              <td>Change</td>
+              <td>old/new value or state; version, revision, or job ID</td>
+            </tr>
+            <tr>
+              <td>Rationale and impact</td>
+              <td>business/technical reason and affected users, data, and service</td>
+            </tr>
+            <tr>
+              <td>Evidence</td>
+              <td>success/failure state and verification result, without secrets or unnecessary personal data</td>
+            </tr>
+            <tr>
+              <td>Rollback</td>
+              <td>plan, decision threshold, execution, or reason for not executing</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Built-in audit sources by function</h2>
+        <table class="small">
+          <thead>
+            <tr>
+              <th>Function</th>
+              <th>Built-in trace</th>
+              <th>Required supplement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Help/legal/explanation content</td>
+              <td>revision plus create/activate/delete audit and telemetry</td>
+              <td>approver, comparison, and user-view test</td>
+            </tr>
+            <tr>
+              <td>Parameters</td>
+              <td>version, modifier, time, summary, and values</td>
+              <td>impact measurement, approval, and multi-section order</td>
+            </tr>
+            <tr>
+              <td>Scheduled job</td>
+              <td>runtime state, history, and execution detail</td>
+              <td>change rationale, schedule before/after, and backlog</td>
+            </tr>
+            <tr>
+              <td>Update/HTTPS</td>
+              <td>durable job and event state</td>
+              <td>backup, approval, host-helper evidence, and smoke test</td>
+            </tr>
+            <tr>
+              <td>Moderation and Operator configuration</td>
+              <td>object state and partial telemetry</td>
+              <td>decision rationale, approver, and previous/new state</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="major small" id="escalation">
+        <h1>20. Incident response and escalation</h1>
+
+        <h2>Severity guide</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Example</th>
+              <th>Immediate action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>S1 — critical</td>
+              <td>complete outage; Admin/Operator lockout; Recovery Required; authentication or private-key incident; mass incorrect blocking</td>
+              <td>stop changes; immediately engage the incident lead and host operator; preserve evidence</td>
+            </tr>
+            <tr>
+              <td>S2 — high</td>
+              <td>widespread Firebase/push or payment failure; lost registry connection; incorrect legal-content activation</td>
+              <td>mitigate and engage relevant service, privacy, legal, or finance owners</td>
+            </tr>
+            <tr>
+              <td>S3 — medium</td>
+              <td>persistent job failure; blocked measurement/revenue reports; monitoring alert with partial impact</td>
+              <td>diagnose and use a controlled retry or change window</td>
+            </tr>
+            <tr>
+              <td>S4 — low</td>
+              <td>single feedback item; cosmetic content defect; transient snapshot discrepancy</td>
+              <td>normal casework and planned correction</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Immediate decision tree</h2>
+        <div class="procedure">
+          <h3>Failure after a privileged action</h3>
+          <ol>
+            <li><strong>Is a write or job still in progress?</strong> Do not start a second action; reload state and determine the unique job/revision result.</li>
+            <li><strong>Does it affect access, secrets, money, legal content, or many users?</strong> Classify at least S2 and involve the designated owner.</li>
+            <li><strong>Is there Recovery Required, an outage, or suspected corruption?</strong> Stop; a host operator and incident lead are required.</li>
+            <li><strong>Can the UI restore it safely?</strong> Use only an approved, proven rollback action.</li>
+            <li><strong>Is there no UI rollback?</strong> Do not call the API manually or edit the database; escalate into the operations procedure.</li>
+          </ol>
+        </div>
+
+        <h2>Escalation package</h2>
+        <ul class="checklist small">
+          <li>Environment, deployment, and affected function.</li>
+          <li>Exact UTC/local time and time zone.</li>
+          <li>User, report, revision, job, group, or deployment ID.</li>
+          <li>Previous and current state and the button/action executed.</li>
+          <li>Exact error text/code, with secrets removed.</li>
+          <li>User, privacy, financial, and availability impact.</li>
+          <li>Mitigation performed and risky attempts explicitly not performed.</li>
+        </ul>
+
+        <div class="callout danger small">
+          <strong>Do not create a second failure</strong>
+          After an unknown save, registry switch, block, update, Firebase
+          activation, or financial requeue, query authoritative state first.
+          Pressing the action again is not a recovery procedure.
+        </div>
+      </section>
+
+      <section class="major" id="limitations">
+        <h1>21. Known limitations and functional gaps</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>1.0.0 limitation</th>
+              <th>Procedural control</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Feedback</td>
+              <td>No assignment, internal comments, or export.</td>
+              <td>External case-management system.</td>
+            </tr>
+            <tr>
+              <td>Help token</td>
+              <td>24-hour lifetime and no visible manual revocation.</td>
+              <td>Confidential-link handling; treat disclosure as an incident.</td>
+            </tr>
+            <tr>
+              <td>Governed content</td>
+              <td>No complete concurrent-edit locking.</td>
+              <td>One assigned editor and an external change ticket.</td>
+            </tr>
+            <tr>
+              <td>Article</td>
+              <td>No browsable immutable revision model equivalent to Help/legal content.</td>
+              <td>External approval and content archive.</td>
+            </tr>
+            <tr>
+              <td>Parameter rollback</td>
+              <td>Creates a new version by section; multiple sections are not atomic.</td>
+              <td>Ordered plan and observation of interim state.</td>
+            </tr>
+            <tr>
+              <td>Monitoring</td>
+              <td>Snapshot panel with no proven auto-refresh.</td>
+              <td>Reopen and correlate with server-side data.</td>
+            </tr>
+            <tr>
+              <td>Affinity graph</td>
+              <td>No UI control for layout rebuild.</td>
+              <td>Approved technical escalation.</td>
+            </tr>
+            <tr>
+              <td>Registry</td>
+              <td>The backend has inspect/confirm endpoints, but no released UI step; switching can fail partially.</td>
+              <td>Independent target verification and outage plan.</td>
+            </tr>
+            <tr>
+              <td>Community</td>
+              <td>Remote HTTP mode does not support changing availability.</td>
+              <td>Read-only use and registry escalation.</td>
+            </tr>
+            <tr>
+              <td>Update</td>
+              <td>The UI omits manifest backup and expected-downtime fields and collapses several host terminal states to “Failed.”</td>
+              <td>Approved release source and host-side job/helper state and log review.</td>
+            </tr>
+            <tr>
+              <td>Admin recovery</td>
+              <td>No web break-glass Admin action.</td>
+              <td>A second functioning Admin plus Operator/host emergency procedure.</td>
+            </tr>
+            <tr>
+              <td>Audit</td>
+              <td>Not every interface provides a complete decision audit trail.</td>
+              <td>Mandatory external change/case record.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="major" id="quick-checklists">
+        <h1>22. Quick checklists</h1>
+
+        <div class="quick-grid">
+          <article class="quick-card">
+            <h3>Start of shift</h3>
+            <ul class="checklist">
+              <li>Correct environment and named account.</li>
+              <li>HTTPS and network state healthy.</li>
+              <li>Open S1/S2 incidents handed over.</li>
+              <li>Active job, update, and HTTPS state reviewed.</li>
+              <li>Change windows and approvers known.</li>
+            </ul>
+          </article>
+          <article class="quick-card">
+            <h3>End of shift</h3>
+            <ul class="checklist">
+              <li>No save or job has an unknown outcome.</li>
+              <li>Unresolved cases and escalations handed over.</li>
+              <li>Audit/change records complete.</li>
+              <li>Clipboard and temporary local secrets cleared.</li>
+              <li>Admin/Operator sessions closed.</li>
+            </ul>
+          </article>
+          <article class="quick-card">
+            <h3>Moderation</h3>
+            <ul class="checklist">
+              <li>Target user and source verified.</li>
+              <li>Full context reviewed.</li>
+              <li>Action proportionate and approved.</li>
+              <li>Message factual and data-minimized.</li>
+              <li>State and rationale recorded.</li>
+            </ul>
+          </article>
+          <article class="quick-card">
+            <h3>Live content</h3>
+            <ul class="checklist">
+              <li>Type, language, and screen correct.</li>
+              <li>Preview, links, and images verified.</li>
+              <li>Legal/privacy approval available.</li>
+              <li>Old and new revisions recorded.</li>
+              <li>User view tested after activation.</li>
+            </ul>
+          </article>
+          <article class="quick-card">
+            <h3>Configuration</h3>
+            <ul class="checklist">
+              <li>Baseline and target values recorded.</li>
+              <li>Impact, capacity, and rollback assessed.</li>
+              <li>Four-eyes review complete.</li>
+              <li>Only approved fields changed.</li>
+              <li>Post-change observation window and metrics assigned.</li>
+            </ul>
+          </article>
+          <article class="quick-card">
+            <h3>Update/HTTPS/Firebase</h3>
+            <ul class="checklist">
+              <li>Alternative access and host readiness.</li>
+              <li>Backup and recovery point verified.</li>
+              <li>Keys/credentials from the correct environment.</li>
+              <li>Job followed to a terminal state.</li>
+              <li>Independent sign-in and functional tests complete.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="major" id="appendix-a">
+        <h1>A. Statuses and their meaning</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Status</th>
+              <th>Operational meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Report/feedback</td>
+              <td>Unresolved / Resolved</td>
+              <td>Review workflow; not automatic sanction or product correction.</td>
+            </tr>
+            <tr>
+              <td>Registry</td>
+              <td>Not registered / Configured / Registering / Registered / Error / Disabled</td>
+              <td>Lifecycle of the node's registry binding.</td>
+            </tr>
+            <tr>
+              <td>Claim</td>
+              <td>Under review / Rejected / Approved or Verified</td>
+              <td>Review state of the ownership claim.</td>
+            </tr>
+            <tr>
+              <td>Eligibility</td>
+              <td>Active / Suspended / Inactive</td>
+              <td>Whether an approved claim can participate in the network.</td>
+            </tr>
+            <tr>
+              <td>Measurement delivery</td>
+              <td>Dormant / Ready / Busy / Blocked / Error</td>
+              <td>Idle, ready, in progress, requiring intervention, or technical failure.</td>
+            </tr>
+            <tr>
+              <td>Revenue delivery</td>
+              <td>Ready / Pending / Busy / Blocked / Error</td>
+              <td>Delivery readiness and pending/blocked report state.</td>
+            </tr>
+            <tr>
+              <td>Job</td>
+              <td>Ready / Running / Failed / Missed / Suspended</td>
+              <td>Scheduled-process execution state.</td>
+            </tr>
+            <tr>
+              <td>Update</td>
+              <td>Checking / Downloading / Verifying / Installing / Completed / Failed</td>
+              <td>Aggregated web job phase; Failed may conceal a host-specific terminal state.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="major" id="appendix-b">
+        <h1>B. Source and verification register</h1>
+        <p>
+          Functional claims in this manual were verified against the following
+          components of the MyScoutee 1.0.0 repository:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Verified source</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Routes and guards</td>
+              <td><code>frontend/src/app/app.routes.ts</code> and Admin/Operator route guards</td>
+            </tr>
+            <tr>
+              <td>Backend authorization</td>
+              <td><code>WebSecurityConfig.java</code>, <code>FirebaseService.java</code>, and <code>AppSettingsService.java</code></td>
+            </tr>
+            <tr>
+              <td>Admin navigation</td>
+              <td><code>side-menu.component.ts</code> and <code>admin-menu.store.ts</code></td>
+            </tr>
+            <tr>
+              <td>Moderation and support</td>
+              <td>reports, feedback, chat-review, and admin-help components; AdminController and moderation services</td>
+            </tr>
+            <tr>
+              <td>Content and articles</td>
+              <td>help-editor and idea-editor components; HelpCenterService and IdeaPostsService</td>
+            </tr>
+            <tr>
+              <td>Parameters and jobs</td>
+              <td>admin-params and admin-notifications components; AdminParamsService and notification-rule services</td>
+            </tr>
+            <tr>
+              <td>Stats, monitoring, and graph</td>
+              <td>stats, monitoring, and affinity-graph components, services, and static 3D client</td>
+            </tr>
+            <tr>
+              <td>Operator</td>
+              <td>operator-page, operator-action-popup, operator-registry-popup, workspace/registry stores, and HTTP service</td>
+            </tr>
+            <tr>
+              <td>Registry, update, HTTPS, configuration, and revenue</td>
+              <td><code>controller/operator</code> and <code>service/operator</code> backend components, registry protocol, and packaging templates</td>
+            </tr>
+            <tr>
+              <td>End-to-end verification</td>
+              <td>Profile-project admin, content, security, registry, and Operator E2E tests</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="source-note">
+          This register supports maintainer traceability. It does not authorize
+          direct API, database, or host changes and does not replace the
+          Operations Manual.
+        </p>
+      </section>
+
+      <section class="major" id="appendix-c">
+        <h1>C. Glossary</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Admin</td>
+              <td>Application-level moderator and content/configuration manager with A authority.</td>
+            </tr>
+            <tr>
+              <td>Operator</td>
+              <td>Network and deployment administrator for an installed node with O authority.</td>
+            </tr>
+            <tr>
+              <td>Host operator</td>
+              <td>Owner of the host, operating system, services, database, backups, and privileged helpers; not a web role.</td>
+            </tr>
+            <tr>
+              <td>Registry</td>
+              <td>Registry service providing node registration, network state, announcements, and related aggregates.</td>
+            </tr>
+            <tr>
+              <td>Revision</td>
+              <td>Saved content or report version with its own activation or acceptance lifecycle.</td>
+            </tr>
+            <tr>
+              <td>Job</td>
+              <td>Asynchronous, durable, or observable background action, such as an update or HTTPS configuration.</td>
+            </tr>
+            <tr>
+              <td>Backlog</td>
+              <td>Accumulated jobs, notifications, or reports awaiting processing.</td>
+            </tr>
+            <tr>
+              <td>Credential</td>
+              <td>Secret authentication material such as a service-account JSON, API secret, or payment key.</td>
+            </tr>
+            <tr>
+              <td>VAPID</td>
+              <td>Public application key for web push; not the Firebase service-account secret.</td>
+            </tr>
+            <tr>
+              <td>Affinity graph</td>
+              <td>Computed member and relationship visualization for diagnostic use.</td>
+            </tr>
+            <tr>
+              <td>Indicative settlement</td>
+              <td>Informational valuation that is not a binding financial instrument.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout success">
+          <strong>End of document</strong>
+          MSC-AM-001 · document version 1.0.0 · MyScoutee 1.0.0 · Released ·
+          2026-07-30 · EN
+        </div>
+      </section>
+    </article>
+  </body>
+</html>

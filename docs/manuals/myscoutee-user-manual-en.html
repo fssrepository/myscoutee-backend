@@ -1,0 +1,2223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="MyScoutee">
+  <meta name="description" content="The official user manual for MyScoutee 1.0.0.">
+  <title>MyScoutee User Manual · MSC-UM-001</title>
+  <link rel="stylesheet" href="manuals.css">
+</head>
+<body>
+  <article class="manual">
+    <section class="cover" aria-labelledby="cover-title">
+      <div class="cover-brand">
+        <img src="../../frontend/src/assets/logo/heart.png" alt="MyScoutee emblem">
+        <div>
+          <div class="cover-brand-name">MyScoutee</div>
+          <div class="cover-brand-subtitle">Official product documentation</div>
+        </div>
+      </div>
+
+      <div class="cover-title-block">
+        <div class="cover-kicker">User documentation</div>
+        <h1 id="cover-title">MyScoutee User Manual</h1>
+        <p class="cover-lead">
+          Sign-in, profiles, recommendations, ratings, events, chats,
+          assets, privacy, and account management in MyScoutee 1.0.0.
+        </p>
+      </div>
+
+      <div class="cover-meta" aria-label="Document metadata">
+        <div>
+          <strong>Document ID</strong>
+          <span>MSC-UM-001</span>
+        </div>
+        <div>
+          <strong>Document version</strong>
+          <span>1.0.0</span>
+        </div>
+        <div>
+          <strong>Applicable software version</strong>
+          <span>MyScoutee 1.0.0</span>
+        </div>
+        <div>
+          <strong>Status</strong>
+          <span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released</span>
+        </div>
+        <div>
+          <strong>Release date</strong>
+          <time datetime="2026-07-30">2026-07-30</time>
+        </div>
+        <div>
+          <strong>Language</strong>
+          <span>EN</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="document-control" id="dokumentumkezeles" aria-labelledby="dokumentumkezeles-cim">
+      <h1 id="dokumentumkezeles-cim">Document control</h1>
+
+      <table>
+        <tbody>
+          <tr>
+            <th scope="row">Document title</th>
+            <td>MyScoutee User Manual</td>
+          </tr>
+          <tr>
+            <th scope="row">Document ID</th>
+            <td>MSC-UM-001</td>
+          </tr>
+          <tr>
+            <th scope="row">Document version</th>
+            <td>1.0.0</td>
+          </tr>
+          <tr>
+            <th scope="row">Applicable software version</th>
+            <td>MyScoutee 1.0.0</td>
+          </tr>
+          <tr>
+            <th scope="row">Status</th>
+            <td>Released</td>
+          </tr>
+          <tr>
+            <th scope="row">Release date</th>
+            <td>2026-07-30</td>
+          </tr>
+          <tr>
+            <th scope="row">Audience</th>
+            <td>Registered users, participants, event hosts, and asset owners</td>
+          </tr>
+          <tr>
+            <th scope="row">Document language</th>
+            <td>English (EN)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Version history</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Version</th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1.0.0</td>
+            <td>2026-07-30</td>
+            <td>Released</td>
+            <td>Initial release covering the MyScoutee 1.0.0 user workflows.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Validity and maintenance</h2>
+      <p>
+        This manual describes the 1.0.0 features that can be verified in the
+        source code. On a newer release, a differently configured deployment,
+        or a custom-branded installation, on-screen labels and available
+        features may differ. In that case, the interface, privacy notice, and
+        terms of use for that deployment take precedence.
+      </p>
+      <div class="callout note">
+        <strong>Branding differences</strong>
+        The product name, colours, and certain labels can be configured for
+        each deployment. In this document, “MyScoutee” is the collective name
+        for the product and its associated legal, support, and moderation
+        processes.
+      </div>
+    </section>
+
+    <nav class="toc" id="tartalomjegyzek" aria-labelledby="tartalomjegyzek-cim">
+      <h1 id="tartalomjegyzek-cim">Table of contents</h1>
+      <ol>
+        <li><a href="#bevezetes">1. Using this manual</a>
+          <ol>
+            <li><a href="#cel-es-hatakor">1.1 Purpose and scope</a></li>
+            <li><a href="#fogalmi-jelolesek">1.2 Notation and interface conventions</a></li>
+            <li><a href="#adatmodok">1.3 Boundary between demo and real data</a></li>
+          </ol>
+        </li>
+        <li><a href="#gyorskezdes">2. Quick start</a></li>
+        <li><a href="#hozzaferes">3. Sign-in, registration, and first launch</a>
+          <ol>
+            <li><a href="#belepesi-modok">3.1 Sign-in methods</a></li>
+            <li><a href="#email-fiok">3.2 Email sign-in and account creation</a></li>
+            <li><a href="#belepesi-adatvedelem">3.3 Privacy consent</a></li>
+            <li><a href="#helyengedely">3.4 Conditional location permission</a></li>
+            <li><a href="#onboarding">3.5 Required profile setup</a></li>
+          </ol>
+        </li>
+        <li><a href="#navigacio">4. Navigation, installation, and availability</a></li>
+        <li><a href="#ajanlasok">5. Recommendations, filters, and ratings</a></li>
+        <li><a href="#profil">6. Profile, impressions, and contacts</a></li>
+        <li><a href="#esemenyek-resztvevo">7. Events as a participant</a></li>
+        <li><a href="#esemenyek-szervezo">8. Creating and hosting events</a></li>
+        <li><a href="#foglalas">9. Booking, cart, policies, and prices</a></li>
+        <li><a href="#eszkozok">10. My assets, resources, and tickets</a></li>
+        <li><a href="#kommunikacio">11. Chats and notifications</a></li>
+        <li><a href="#biztonsag">12. Safety, privacy, and account management</a></li>
+        <li><a href="#offline">13. Offline and limited operation</a></li>
+        <li><a href="#hibaelharitas">14. Troubleshooting</a></li>
+        <li><a href="#fogalomtar">15. Glossary</a></li>
+      </ol>
+    </nav>
+
+    <section class="major" id="bevezetes" aria-labelledby="bevezetes-cim">
+      <h1 id="bevezetes-cim">1. Using this manual</h1>
+
+      <h2 id="cel-es-hatakor">1.1 Purpose and scope</h2>
+      <p>
+        MyScoutee is a group- and event-centred social application. Users can
+        create a profile, assign an affinity priority from 1 to 10 to other
+        profiles or pair suggestions, find and organise activities, and
+        manage event-related chats and resources.
+      </p>
+      <p>
+        This manual describes the standard user workspace. System
+        administration and operations are covered in separate manuals. Host
+        features are included here because a standard user can create and
+        manage an event.
+      </p>
+
+      <h2 id="fogalmi-jelolesek">1.2 Notation and interface conventions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Notation</th>
+            <th scope="col">Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>“Label”</td>
+            <td>A button, menu item, or field shown in the interface. Exact wording may differ because of translation or branding.</td>
+          </tr>
+          <tr>
+            <td>Green tick</td>
+            <td>Save, apply, or approve. When shown in red, it generally indicates missing required information.</td>
+          </tr>
+          <tr>
+            <td>Three-dot/card menu</td>
+            <td>Actions for the relevant profile, event, message, or asset.</td>
+          </tr>
+          <tr>
+            <td>Red counter</td>
+            <td>An unread item or pending action; it does not necessarily indicate an error.</td>
+          </tr>
+          <tr>
+            <td>Dialog</td>
+            <td>Most features open above the <code>/game</code> workspace rather than on a separate browser route.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warning">
+        <strong>Actions requiring confirmation</strong>
+        Always read the confirmation dialog before deleting or rejecting an
+        item, leaving an event, publishing or unpublishing an event, or
+        deleting an account. Some list removals move an item to Trash, whereas
+        account deletion is scheduled and ultimately removes data
+        permanently.
+      </div>
+
+      <h2 id="adatmodok">1.3 Boundary between demo and real data</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Operating mode</th>
+            <th scope="col">Where is the data?</th>
+            <th scope="col">What does it mean for the user?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Local/offline prototype, including the GitHub Pages prototype</td>
+            <td>The browser's local seed adapter and local storage.</td>
+            <td>Demo data. It is not a real account or community, and it is not reliable production storage.</td>
+          </tr>
+          <tr>
+            <td>Backend-connected Explore demo in development, E2E, or production environments</td>
+            <td>Angular interface → Java HTTP API → isolated MongoDB <code>demo_db</code>. Registry operations use a separately seeded Go demo registry, SQLite database, signing identity, and volume.</td>
+            <td>Server-side, but still isolated demo data. It neither shares nor controls live operator registry state.</td>
+          </tr>
+          <tr>
+            <td>Live production mode</td>
+            <td>The authentication, account, and application backends of the relevant deployment.</td>
+            <td>Real user data. The deployment's privacy notice and retention rules apply.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout danger">
+        <strong>Do not treat a demo as a live service</strong>
+        Joining, rating, chatting, booking, or deleting in a demo does not
+        prove that the action involved a real person, event, or payment. Do
+        not enter real payment information or personal information that you
+        would not want stored in a demonstration environment.
+      </div>
+      <p>
+        Payment integration is disabled in the current 1.0.0 frontend
+        configurations. A cart, pricing, or payment summary may be displayed,
+        but its presence alone does not indicate an active payment provider.
+      </p>
+    </section>
+
+    <section class="major page-break" id="gyorskezdes" aria-labelledby="gyorskezdes-cim">
+      <h1 id="gyorskezdes-cim">2. Quick start</h1>
+      <div class="quick-grid">
+        <article class="quick-card">
+          <h3>1. Sign in</h3>
+          <p>Open the landing page, accept the active privacy version, and select an available Google, email, or demo sign-in method.</p>
+        </article>
+        <article class="quick-card">
+          <h3>2. Profile</h3>
+          <p>Enter the required basic details, upload at least three images, select a language, and save the profile.</p>
+        </article>
+        <article class="quick-card">
+          <h3>3. Explore</h3>
+          <p>On <code>/game</code>, select a recommendation mode, apply filters if needed, and assign a value from 1 to 10 to the displayed cards.</p>
+        </article>
+        <article class="quick-card">
+          <h3>4. Event</h3>
+          <p>In the avatar menu, open “Activities” → “Events”, start Explore, then view the event or request to join.</p>
+        </article>
+      </div>
+
+      <div class="procedure">
+        <h3>First successful session</h3>
+        <ol>
+          <li>Open the URL of the relevant deployment. The landing route is <code>/</code>, and the sign-in route is <code>/entry</code>.</li>
+          <li>Read the privacy document, select optional sections according to your own choices, and approve the active version.</li>
+          <li>Select a sign-in method. For live use, use authentication enabled by the deployment. For demonstrations, select only a profile explicitly identified as a demo.</li>
+          <li>If required by the deployment, allow location access and wait for the regional eligibility check.</li>
+          <li>Complete and save the required profile setup. Closing it signs you out, so do not abandon it without saving.</li>
+          <li>Open a profile from a recommendation card, then select an affinity value from 1 to 10.</li>
+          <li>Use the avatar menu to review notifications and counters for pending actions.</li>
+        </ol>
+      </div>
+      <div class="callout success">
+        <strong>You are ready</strong>
+        Once the profile is saved and the <code>/game</code> workspace is
+        displayed, recommendations, profiles, events, and—while online—chat
+        are available.
+      </div>
+    </section>
+
+    <section class="major" id="hozzaferes" aria-labelledby="hozzaferes-cim">
+      <h1 id="hozzaferes-cim">3. Sign-in, registration, and first launch</h1>
+
+      <h2 id="belepesi-modok">3.1 Sign-in methods</h2>
+      <p>
+        Options shown on the landing page depend on the deployment. A
+        Firebase-based deployment may provide Google and email sign-in. The
+        Facebook option is disabled and marked “Coming soon” in the 1.0.0
+        interface. A build with Firebase sign-in disabled may open a
+        demonstration profile selector instead.
+      </p>
+
+      <div class="procedure">
+        <h3>Sign in with a Google account</h3>
+        <ol>
+          <li>On the sign-in page, select Continue and then the Google provider.</li>
+          <li>Select the account in the Google window and review the requested permissions.</li>
+          <li>Return to MyScoutee. For a new account, the application opens profile setup.</li>
+          <li>If the provider requests email verification or another check, complete it as instructed by the provider.</li>
+        </ol>
+      </div>
+
+      <div class="procedure">
+        <h3>Sign in with a demo profile</h3>
+        <ol>
+          <li>Use this only on a deployment whose interface clearly identifies a demo or profile selector.</li>
+          <li>Read and accept the active privacy notice.</li>
+          <li>Select a demonstration profile.</li>
+          <li>Treat every item in the resulting workspace as non-live, isolated demonstration data.</li>
+        </ol>
+      </div>
+
+      <h2 id="email-fiok">3.2 Email sign-in and account creation</h2>
+      <div class="procedure">
+        <h3>Use an existing email account</h3>
+        <ol>
+          <li>Select “Continue with email”.</li>
+          <li>On the “Email sign-in” panel, select the sign-in tab.</li>
+          <li>Enter a valid email address and a password of at least 6 characters.</li>
+          <li>You may use the eye icon to check the password, but shield the screen in public.</li>
+          <li>Select “Sign in” and wait for the profile to load.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Create a new email account</h3>
+        <ol>
+          <li>On the email panel, select the account creation tab.</li>
+          <li>Enter a valid email address.</li>
+          <li>Create a password of at least 8 characters containing a letter and a number. A symbol is recommended but optional.</li>
+          <li>Enter the same password again; the two fields must match exactly.</li>
+          <li>Select “Create account”.</li>
+          <li>If a verification email arrives, open it, complete verification, and return to the application.</li>
+          <li>Complete the required profile setup.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>Password security</strong>
+        Use a unique password, do not share it, and do not enter it into a
+        demo or a deployment of unknown origin. The 1.0.0 sign-in panel does
+        not provide a separate “forgot password” workflow; use the support
+        channel for the relevant deployment.
+      </div>
+
+      <h2 id="belepesi-adatvedelem">3.3 Privacy consent</h2>
+      <p>
+        The active privacy document must load before you sign in or open a
+        demo profile. In addition to the mandatory approval, the document may
+        contain optional sections that you can select separately.
+      </p>
+      <div class="procedure">
+        <h3>Set privacy choices</h3>
+        <ol>
+          <li>Read the displayed privacy version and all its sections.</li>
+          <li>For optional sections, select only those to which you genuinely consent.</li>
+          <li>Select the approve/continue action.</li>
+          <li>After signing in, review and save the current choices under “Settings” → “Privacy”.</li>
+        </ol>
+      </div>
+      <p>
+        The sign-in choice creates local state and an audit entry. The
+        authenticated account's settings view also synchronises the choice
+        with the backend. A new privacy version may require consent again.
+        Public documents are available without signing in at
+        <code>/privacy-policy</code> and <code>/terms</code>.
+      </p>
+
+      <h2 id="helyengedely">3.4 Conditional location permission</h2>
+      <p>
+        Location is not mandatory on every deployment. If the active sign-in
+        policy requires location data, the application displays a separate
+        “Enable location” dialog, requests browser GPS/location permission,
+        and asks the backend to check regional eligibility.
+      </p>
+      <div class="procedure">
+        <h3>Check location-based eligibility</h3>
+        <ol>
+          <li>Select “Enable location”.</li>
+          <li>In the browser permission request, allow access only if you trust the deployment.</li>
+          <li>Wait for the region check result.</li>
+          <li>If permission is denied, location is unavailable, or the region is ineligible, sign-in cannot continue. Change the browser's site permission or contact deployment support.</li>
+        </ol>
+      </div>
+
+      <h2 id="onboarding">3.5 Required profile setup</h2>
+      <p>
+        Setup is mandatory for a new Firebase account, a profile in
+        <em>onboarding</em> state, or an outdated profile form version. The
+        visible required information is name, date of birth, city, height,
+        body type, at least one language, and at least three profile images.
+      </p>
+      <div class="procedure">
+        <h3>Complete profile setup</h3>
+        <ol>
+          <li>In “Basics”, enter your name, date of birth, city, height, and body type, then select at least one spoken language.</li>
+          <li>Enter any additional information you wish to share: introduction, gender, work experience, or education.</li>
+          <li>In “Photos”, upload at least 3 and no more than 8 images.</li>
+          <li>Under “Lifestyle”, optionally set alcohol use, smoking, exercise, pets, family plans, children, love and communication styles, sexual orientation, religion, values, and interests.</li>
+          <li>Review required fields; an incomplete field may be highlighted in red.</li>
+          <li>Select the green save tick and wait for a successful save.</li>
+        </ol>
+      </div>
+      <div class="callout danger">
+        <strong>Do not close an incomplete setup</strong>
+        Closing the mandatory profile setup signs you out and redirects you to
+        <code>/entry</code>. Uploaded images must not show identity documents,
+        financial data, an exact home address, or another person without their
+        consent.
+      </div>
+    </section>
+
+    <section class="major" id="navigacio" aria-labelledby="navigacio-cim">
+      <h1 id="navigacio-cim">4. Navigation, installation, and availability</h1>
+      <p>
+        After a successful sign-in, the main workspace is <code>/game</code>.
+        <code>/home</code> redirects to it. If you open a protected page
+        without authentication, the application redirects to
+        <code>/entry?redirect=…</code>; onboarding also opens when the profile
+        is incomplete. An administrator or operator role is directed to its
+        own workspace rather than the standard user view.
+      </p>
+
+      <h2>4.1 The avatar menu</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Group</th>
+            <th scope="col">Features</th>
+            <th scope="col">Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Impressions</td>
+            <td>Impressions, Feedback</td>
+            <td>Host and attendee impressions and post-event feedback actions.</td>
+          </tr>
+          <tr>
+            <td>Activities</td>
+            <td>Ratings, Chats, Invitations, Events, My events</td>
+            <td>Previous activity, pending event actions, and hosted events.</td>
+          </tr>
+          <tr>
+            <td>My assets</td>
+            <td>Transport, Accommodation, Supplies, Tickets, Contacts</td>
+            <td>Owned or managed resources, admission codes, and quick contact methods.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Header actions include “Notifications”, the explanatory help overlay
+        toggle, sharing the currently branded product, and “Settings”. Badge
+        counts indicate pending or new items.
+      </p>
+
+      <h2>4.2 Settings</h2>
+      <ul>
+        <li><strong>Help:</strong> active only when a help version has been released for the deployment.</li>
+        <li><strong>Send feedback:</strong> submit a product observation or defect description.</li>
+        <li><strong>Global identity:</strong> manage a separate, voluntary, privacy-preserving identity link.</li>
+        <li><strong>Report bugs:</strong> open the external GitHub issue page.</li>
+        <li><strong>Privacy and Terms:</strong> view the current legal documents.</li>
+        <li><strong>Delete account and Sign out:</strong> account actions that require confirmation.</li>
+      </ul>
+
+      <h2>4.3 Install on the home screen</h2>
+      <div class="procedure">
+        <h3>Install the PWA</h3>
+        <ol>
+          <li>On a deployment released with service-worker support, wait for the “Add to home screen” offer.</li>
+          <li>Select install/add. If the browser does not show the offer, use its “Install app” or “Add to home screen” menu.</li>
+          <li>After acceptance, the interface may request notification registration for the active user. Decide separately whether to grant the browser permission.</li>
+          <li>Launch the application from the new icon and verify that the correct deployment opened.</li>
+        </ol>
+      </div>
+      <div class="callout note">
+        <strong>Deployment-dependent feature</strong>
+        The PWA offer is available only in a build where the service worker is
+        enabled and the browser satisfies the installability requirements.
+      </div>
+    </section>
+
+    <section class="major" id="ajanlasok" aria-labelledby="ajanlasok-cim">
+      <h1 id="ajanlasok-cim">5. Recommendations, filters, and ratings</h1>
+
+      <h2>5.1 Select a recommendation mode</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Mode</th>
+            <th scope="col">Content</th>
+            <th scope="col">Additional field</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Preferences</td>
+            <td>Individual profile cards.</td>
+            <td>No required pair of people.</td>
+          </tr>
+          <tr>
+            <td>Friends in Common</td>
+            <td>Individual profiles suggested through shared network connections; this is not a pair mode.</td>
+            <td>No paired-person search.</td>
+          </tr>
+          <tr>
+            <td>Inside Network</td>
+            <td>A pair suggestion showing two people inside the network.</td>
+            <td>Person and friend search fields may be shown.</td>
+          </tr>
+          <tr>
+            <td>Outside Network</td>
+            <td>A pair suggestion showing two people outside the network.</td>
+            <td>No text-based person or friend search is shown.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="procedure">
+        <h3>Rate a profile or pair</h3>
+        <ol>
+          <li>Open the mode selector in the <code>/game</code> header.</li>
+          <li>Select the required individual or pair mode.</li>
+          <li>In “Inside Network”, use person and friend search if needed. The “Outside Network” pair mode does not display these text searches.</li>
+          <li>Open the card and review the visible profile. Only fields that the person has shared for your context are displayed.</li>
+          <li>Select a value from 1 to 10 on the “Affinity” bar.</li>
+          <li>After saving, the interface moves to the next card. A previous value can be changed in “Ratings” when the card remains editable.</li>
+        </ol>
+      </div>
+      <div class="callout note">
+        <strong>Profile status</strong>
+        A profile generally needs “Public” status to appear and be rateable in
+        normal recommendations. “Friends only”, “Host only”, and “Inactive”
+        restrict or pause visibility.
+      </div>
+
+      <h2>5.2 Recommendation filters</h2>
+      <div class="procedure">
+        <h3>Apply a filter</h3>
+        <ol>
+          <li>Select the filter icon in the recommendation view.</li>
+          <li>Set values under “Basics”: age and height ranges, body type, languages, genders, zodiac sign, and highlighted trait.</li>
+          <li>Under “Beliefs”, select values and religion.</li>
+          <li>Under “Lifestyle”, filter by interests, smoking, alcohol use, exercise, and pets.</li>
+          <li>Under “Relationships”, set family plans, children, love and communication styles, and sexual orientation.</li>
+          <li>Apply the filter with the green tick. Closing the dialog without applying discards the changes.</li>
+        </ol>
+      </div>
+
+      <h2>5.3 Rating history</h2>
+      <p>
+        Open the list with the history icon or “Activities” → “Ratings” in the
+        avatar menu. Individual mode provides “Given”, “Received”, “Mutual”,
+        and “We met” filters. Pair suggestions provide “Given” and “Received”.
+      </p>
+      <div class="procedure">
+        <h3>Change a previous value</h3>
+        <ol>
+          <li>Open “Ratings” and select the appropriate mode and filter.</li>
+          <li>Find the card; switch to full-screen view if necessary.</li>
+          <li>Open your rating and select a new value from 1 to 10.</li>
+          <li>Verify that the new value appears on the card. A pair-mode “Received” row may be read-only.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="major" id="profil" aria-labelledby="profil-cim">
+      <h1 id="profil-cim">6. Profile, impressions, and contacts</h1>
+
+      <h2>6.1 Open your profile and set its status</h2>
+      <div class="procedure">
+        <h3>Edit the profile</h3>
+        <ol>
+          <li>Open the avatar menu, then select your profile or the profile header.</li>
+          <li>In the profile dialog, switch among “Profile”, “Images”, and “Experience”.</li>
+          <li>Change the required fields. Required form fields may remain red until they are valid.</li>
+          <li>Set profile visibility in the header status selector.</li>
+          <li>Select the green tick and wait for saving to finish. A progress indicator or error may also appear beside the avatar.</li>
+        </ol>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Profile status</th>
+            <th scope="col">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Public</td>
+            <td>The profile can appear in normal recommendation and discovery workflows.</td>
+          </tr>
+          <tr>
+            <td>Friends only</td>
+            <td>Visibility is restricted to a friend or network context.</td>
+          </tr>
+          <tr>
+            <td>Host only</td>
+            <td>The profile remains available to a host context.</td>
+          </tr>
+          <tr>
+            <td>Inactive</td>
+            <td>Normal discovery presence is paused.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        “Blocked” and “Deleted” are system states and cannot be selected from
+        the normal status menu. They are managed by moderation and account
+        deletion processes respectively.
+      </p>
+
+      <h2>6.2 Profile information and field-level visibility</h2>
+      <p>
+        Basic information, introduction, languages, detailed lifestyle and
+        relationship information, values, and interests can be changed in the
+        profile. Detailed fields can have separate visibility: “Public”,
+        “Friends”, “Hosts”, or “Private”.
+      </p>
+      <div class="procedure">
+        <h3>Change the visibility of a profile field</h3>
+        <ol>
+          <li>Open your profile editor and find the field.</li>
+          <li>Open the visibility control shown beside the field.</li>
+          <li>Select “Public”, “Friends”, “Hosts”, or “Private”.</li>
+          <li>Save the profile with the green tick.</li>
+          <li>When viewing another profile, remember that you likewise see only fields permitted for your context.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>Data minimisation</strong>
+        Do not enter an exact home address, identity-document number,
+        financial information, a password, or another person's information
+        without consent. “Private” reduces interface visibility, but it is not
+        a substitute for omitting unnecessary data.
+      </div>
+
+      <h2>6.3 Profile images</h2>
+      <div class="procedure">
+        <h3>Add or replace an image</h3>
+        <ol>
+          <li>Open “Images” in the profile editor.</li>
+          <li>Select an empty image position or the image to replace.</li>
+          <li>Select an appropriate image file, then wait for upload and preview.</li>
+          <li>Reorder or remove images with the available card action.</li>
+          <li>Keep at least 3 images; no more than 8 can be used.</li>
+          <li>Save the profile.</li>
+        </ol>
+      </div>
+      <p>
+        Use only images for which you have the necessary rights. Do not upload
+        intimate, unlawful, misleading, or safety-threatening content.
+      </p>
+
+      <h2>6.4 Create and import experience entries</h2>
+      <p>
+        The “Experience” panel supports “Workplace”, “School”, “Online
+        occasion”, and “Additional project”. An entry includes type, city,
+        title, organisation, start and end dates, and description.
+      </p>
+      <div class="procedure">
+        <h3>Add an experience manually</h3>
+        <ol>
+          <li>Open “Experience”, then select create.</li>
+          <li>Select a type and complete the relevant fields.</li>
+          <li>Set visibility for the entry.</li>
+          <li>Save the entry and then the complete profile.</li>
+          <li>To change or remove it, open the card menu and select edit or delete.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Import experience from a document</h3>
+        <ol>
+          <li>Select the upload/import action.</li>
+          <li>Upload a supported file: <code>.pdf</code>, <code>.doc</code>, <code>.docx</code>, <code>.odt</code>, <code>.rtf</code>, or <code>.txt</code>.</li>
+          <li>In the preview, review recognised entries, entries ready for import, and possible duplicates.</li>
+          <li>Confirm only correct items. Afterwards, open them and correct any misidentified fields.</li>
+          <li>Save the profile.</li>
+        </ol>
+      </div>
+
+      <h2>6.5 View another profile</h2>
+      <p>
+        Profile details can be opened from a recommendation card, event
+        member, contact card, and other supported contexts. Displayed fields
+        depend on the owner's field-level visibility settings, your
+        relationship, and the opening context.
+      </p>
+      <div class="procedure">
+        <h3>Review a profile before an action</h3>
+        <ol>
+          <li>Select the person's image, name, or “View profile”.</li>
+          <li>Review the visible basic information, details, and experience.</li>
+          <li>Do not infer that missing information does not exist; it may be private to you.</li>
+          <li>Close the dialog to return to the original event, contact, or recommendation.</li>
+        </ol>
+      </div>
+
+      <h2>6.6 Impressions</h2>
+      <p>
+        “Impressions” in the avatar menu shows separate Host and Attendee
+        summaries. The interface may display a badge, level, and notable
+        traits. A change indicator means that a new or changed impression has
+        arrived.
+      </p>
+      <div class="procedure">
+        <h3>View impressions</h3>
+        <ol>
+          <li>Open “Impressions” in the avatar menu.</li>
+          <li>Select the Host or Attendee segment.</li>
+          <li>Review the badge, aggregate level, and traits.</li>
+          <li>Close the dialog. The application may mark a viewed real-time change indicator as cleared.</li>
+        </ol>
+      </div>
+
+      <h2>6.7 Post-event feedback</h2>
+      <p>
+        “Impressions” → “Feedback” is tied to an event and actual
+        participation. It is different from a general profile rating and
+        product feedback. The list may distinguish pending, submitted, own
+        event, and removed entries.
+      </p>
+      <div class="procedure">
+        <h3>Submit event feedback</h3>
+        <ol>
+          <li>Open “Impressions” → “Feedback”, then the pending entries.</li>
+          <li>Select the event.</li>
+          <li>Answer the host and/or attendee cards that apply to your role, and select relevant traits.</li>
+          <li>Add a textual host note if available.</li>
+          <li>Submit the feedback and wait for the success message.</li>
+          <li>Verify that the item moved to “Feedback submitted”. For your own event, the host summary may show answers and notes.</li>
+        </ol>
+      </div>
+      <p>
+        If you do not wish to give feedback, you can remove the entry and
+        restore it from “Removed”. The application keeps a submitted result
+        and displays its saved state when reopened; it does not intentionally
+        create a duplicate response.
+      </p>
+
+      <h2>6.8 Contacts</h2>
+      <p>
+        “My assets” → “Contacts” manages quick-contact cards. Supported
+        methods are telephone, SMS, WhatsApp, email, Facebook, Instagram,
+        Telegram, LinkedIn, and website. A backend-connected deployment uses
+        backend data; a local build uses a local repository. The list
+        therefore cannot be assumed to be browser-only in every environment.
+      </p>
+      <div class="procedure">
+        <h3>Create or change a contact</h3>
+        <ol>
+          <li>Open “Contacts” and select add; for an existing item, open edit.</li>
+          <li>Select the person or enter the card details.</li>
+          <li>Add one or more contact methods and verify the phone number, address, username, or URL.</li>
+          <li>Save the card.</li>
+          <li>Use the A–Z filter to search. From the card, open the profile or contact method.</li>
+          <li>When deleting, confirm that you intend to remove only this quick-contact card.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>An external application may open</strong>
+        Selecting a telephone, email, social, or web contact may launch an
+        external application or website. Before sending, always verify the
+        recipient and the external service's data handling.
+      </div>
+
+      <h2>6.9 Send product feedback</h2>
+      <div class="procedure">
+        <h3>Submit an observation or defect description</h3>
+        <ol>
+          <li>Open “Settings” → “Send feedback” in the avatar menu.</li>
+          <li>Select a category, such as general feedback or bug report.</li>
+          <li>Enter the required subject.</li>
+          <li>Describe the experience in at least 8 characters. For a defect, include reproduction steps, expected result, and actual result.</li>
+          <li>Before submitting, remove passwords, tokens, personal messages, and unnecessary personal information.</li>
+          <li>Select send and wait for confirmation.</li>
+        </ol>
+      </div>
+
+      <h2>6.10 Global identity</h2>
+      <p>
+        Global identity is a separate, voluntary feature; it is not Google,
+        email, or Firebase sign-in. The interface may show status, linked
+        period, active/inactive period, and verification times. According to
+        the feature's privacy description, the raw identifier remains inside
+        the deployment, opaque commitments are sent externally, and
+        historical inference is limited.
+      </p>
+      <div class="procedure">
+        <h3>Link and manage global identity</h3>
+        <ol>
+          <li>Open “Settings” → “Global identity”.</li>
+          <li>Read the displayed privacy guarantees and limitations.</li>
+          <li>If the feature is not linked, select voluntary consent and start linking.</li>
+          <li>Review status and the active/inactive period.</li>
+          <li>For a synchronisation error, use “Reload” or “Retry”.</li>
+          <li>If rotation is required, select “Rotate”. To unlink, select “Unlink” and verify the result.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="major" id="esemenyek-resztvevo" aria-labelledby="esemenyek-resztvevo-cim">
+      <h1 id="esemenyek-resztvevo-cim">7. Events as a participant</h1>
+
+      <h2>7.1 Event lists and views</h2>
+      <p>
+        “Activities” → “Events” in the avatar menu opens event activity.
+        Scopes are “All”, “Active events”, “Pending”, “Invitations”, “My
+        events”, “Drafts”, and “Trash”. You can also select
+        “Upcoming”/“Relevant”/“Past” and a “Day”/“Distance”/“Week”/“Month”
+        view.
+      </p>
+      <div class="procedure">
+        <h3>Find an event in your activity</h3>
+        <ol>
+          <li>Open “Events”.</li>
+          <li>Select a scope such as “Invitations” or “Pending”.</li>
+          <li>Select the upcoming, relevant, or past time filter.</li>
+          <li>Set the list to day, distance, week, or month view.</li>
+          <li>Open the event card or its action menu.</li>
+        </ol>
+      </div>
+
+      <h2>7.2 Discover public events</h2>
+      <div class="procedure">
+        <h3>Use Explore</h3>
+        <ol>
+          <li>From the quick actions in “Events”, select “Explore”.</li>
+          <li>Select sorting: “Upcoming”, “Past events”, “Nearby”, “Most relevant”, or “Top rated”.</li>
+          <li>Select a day, distance, week, or month view.</li>
+          <li>Optionally enable “Friends going” and “Available places”, then select a topic.</li>
+          <li>On the card, check the title, time, location/distance, visibility, topics, capacity, and host impression.</li>
+          <li>Open the details before joining, joining a waitlist, or starting a booking.</li>
+        </ol>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Event setting</th>
+            <th scope="col">Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Public</td>
+            <td>Discoverable more widely, although joining may still depend on approval or capacity.</td>
+          </tr>
+          <tr>
+            <td>Friends only</td>
+            <td>Discovery and joining are restricted to the friend/network circle.</td>
+          </tr>
+          <tr>
+            <td>Invitation only</td>
+            <td>Not shown in normal discovery; a direct invitation or share is required.</td>
+          </tr>
+          <tr>
+            <td>Open Event</td>
+            <td>Standard participants can see the participant preview in advance.</td>
+          </tr>
+          <tr>
+            <td>Blind Event</td>
+            <td>The participant preview is hidden from standard members. This does not make the event secret; administrators and managers still manage members.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>7.3 Joining, approval, and waitlist</h2>
+      <p>
+        Available card actions depend on the event settings and your status.
+        They may include “Request to join”, “Book event”, “Join waitlist”,
+        “Continue booking”, “Ask host”, “Share”, and “Report host”.
+      </p>
+      <div class="procedure">
+        <h3>Request to join a free, unticketed event</h3>
+        <ol>
+          <li>Open the event and review its description, time, location, capacity, and required policies.</li>
+          <li>Select “Request to join”.</li>
+          <li>Confirm the request. With automatic approval, you may become an accepted member; otherwise your status becomes “Pending”.</li>
+          <li>Review the status under “Events” → “Pending” or “Active events”.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Join a waitlist</h3>
+        <ol>
+          <li>If the card shows that the event is full, select “Join waitlist”.</li>
+          <li>Confirm the request and monitor notifications and invitations.</li>
+          <li>If a place becomes available, you may receive a waitlist invitation. Acceptance can start further cart, policy, or approval steps.</li>
+          <li>Do not treat a waitlist place as confirmed participation until the status is accepted or confirmed.</li>
+        </ol>
+      </div>
+
+      <h2>7.4 Accept or decline an invitation</h2>
+      <div class="procedure">
+        <h3>Manage an invitation</h3>
+        <ol>
+          <li>Open “Activities” → “Invitations” or “Events” → “Invitations”.</li>
+          <li>Open the card and review the event.</li>
+          <li>To accept, select “Accept”. If slots, optional sub-events, policies, a ticket, or a price apply, complete the checkout that opens.</li>
+          <li>If an accepted member rather than an event administrator sent the invitation, acceptance may be sent for administrator approval.</li>
+          <li>To decline, select “Decline”, read the confirmation, and approve it.</li>
+          <li>A declined item may appear in Trash and can be restored from there if necessary.</li>
+        </ol>
+      </div>
+
+      <h2>7.5 Status-dependent event card actions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Status or role</th>
+            <th scope="col">Common actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Discovered, not yet a member</td>
+            <td>View, request to join/book/join waitlist, ask host, share, report.</td>
+          </tr>
+          <tr>
+            <td>Pending applicant</td>
+            <td>View, continue booking, ask host, share, report.</td>
+          </tr>
+          <tr>
+            <td>Accepted participant</td>
+            <td>View; access members, sub-events, and resources as permitted; payment summary; ask host; report; leave event.</td>
+          </tr>
+          <tr>
+            <td>Owned/hosted event</td>
+            <td>View or manage and notify participants; additional host actions are described in Chapter 8.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>7.6 Leave an event and use Trash</h2>
+      <div class="procedure">
+        <h3>End your participation</h3>
+        <ol>
+          <li>Select leave event from the event card menu.</li>
+          <li>Read the confirmation. If a booking or price applies, review cancellation terms and any refund preview.</li>
+          <li>Confirm that you want to leave.</li>
+          <li>Review Trash. The list action may move the participation record there rather than deleting it permanently at once.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Restore an item from Trash</h3>
+        <ol>
+          <li>Select “Trash” from the event scopes.</li>
+          <li>Find the deleted, declined, or left item.</li>
+          <li>Select “Restore”.</li>
+          <li>Check which active list it returned to. Restoration does not guarantee automatic membership or a new booking.</li>
+        </ol>
+      </div>
+
+      <h2>7.7 View members and roles</h2>
+      <p>
+        The member list can show accepted and pending members, roles,
+        participation state, and a capacity summary. “Pending only” filters
+        waiting items. A standard member can view profiles and their own
+        participation context. Inviting, approving, removing, promoting to
+        administrator, banning, and reinstating appear only with the required
+        host permissions.
+      </p>
+    </section>
+
+    <section class="major" id="esemenyek-szervezo" aria-labelledby="esemenyek-szervezo-cim">
+      <h1 id="esemenyek-szervezo-cim">8. Creating and hosting events</h1>
+
+      <h2>8.1 Create a new event draft</h2>
+      <div class="procedure">
+        <h3>Record the basic event</h3>
+        <ol>
+          <li>Open “Activities” → “Events”.</li>
+          <li>From quick actions, select “Create event” or the plus action.</li>
+          <li>Upload an event image if one is available.</li>
+          <li>Enter the required name and description.</li>
+          <li>Enter minimum and maximum capacity. The maximum cannot be lower than the minimum.</li>
+          <li>Enter the location. Verify the map-search result and add route points if required.</li>
+          <li>Enter start and end date/time. The end must be after the start.</li>
+          <li>Select visibility and event-intelligence settings.</li>
+          <li>Save with the green tick. The first save creates a draft; the event is not yet published.</li>
+        </ol>
+      </div>
+      <div class="callout note">
+        <strong>Save requirements</strong>
+        The implementation requires a name, description, both capacity
+        values, and start and end times before saving. The interface also
+        treats location as an event field. For a live event, always provide a
+        verified location or route that participants can use.
+      </div>
+
+      <h2>8.2 Visibility and event intelligence</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Setting</th>
+            <th scope="col">Available values</th>
+            <th scope="col">Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Visibility</td>
+            <td>Public, Friends only, Invitation only</td>
+            <td>Determines who can discover or request the event.</td>
+          </tr>
+          <tr>
+            <td>Participant preview</td>
+            <td>Open Event, Blind Event</td>
+            <td>Determines whether standard participants can see one another in advance; this is separate from visibility.</td>
+          </tr>
+          <tr>
+            <td>Topics</td>
+            <td>Up to 5</td>
+            <td>Supports discovery and relevance-based recommendations.</td>
+          </tr>
+          <tr>
+            <td>Auto Inviter</td>
+            <td>On / Off</td>
+            <td>When enabled, may help invite people to available places according to the priority plan.</td>
+          </tr>
+          <tr>
+            <td>Ticketing</td>
+            <td>On / Off</td>
+            <td>Connects ticket- and QR-based admission to the event.</td>
+          </tr>
+          <tr>
+            <td>Approval</td>
+            <td>Automatic / Approval required</td>
+            <td>Determines whether an applicant is accepted immediately or awaits an administrator decision.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warning">
+        <strong>A Blind Event is not a secret event</strong>
+        It hides only the participant preview from standard members. The
+        separate visibility setting controls discoverability, and
+        administrators and managers can still manage members.
+      </div>
+
+      <h2>8.3 Sub-events and stages</h2>
+      <p>
+        After enabling sub-events, select “Casual” or “Tournament”. Casual
+        mode supports required or optional sub-events. Tournament mode
+        supports a sequence of dependent stages.
+      </p>
+      <div class="procedure">
+        <h3>Add a Casual sub-event</h3>
+        <ol>
+          <li>Enable sub-events in the event editor and select “Casual”.</li>
+          <li>Select add, then choose whether the sub-event is required or optional.</li>
+          <li>Enter the required name and description.</li>
+          <li>Enter start and end times, or the required duration in the relevant view; keep the value within the main event's time boundaries.</li>
+          <li>Enter the location. For an optional sub-event, capacity and a separate price can be entered; the price of a required sub-event belongs to the main event summary.</li>
+          <li>Save the definition, then save the event.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Add a Tournament stage</h3>
+        <ol>
+          <li>Enable sub-events and select “Tournament”.</li>
+          <li>Add a stage and enter its name, description, duration/time, and location.</li>
+          <li>Set stage capacity and minimum/maximum group size.</li>
+          <li>Select a scoreboard type: “Score” or “Fifa”.</li>
+          <li>Set how many participants/groups advance from each group and check the estimated group count.</li>
+          <li>If required, position the stage before or after another stage and enter an offset in minutes.</li>
+          <li>Save the stage and event.</li>
+        </ol>
+      </div>
+      <p>
+        Definitions can be displayed in card or timeline view, edited, and
+        deleted. During a Tournament, an authorised host can manage groups,
+        results, advancement, and stage state. Before finalising, always check
+        all groups and advancement rules. Changing stage state requires
+        confirmation.
+      </p>
+
+      <h2>8.4 Recurrence and slots</h2>
+      <p>
+        With slots disabled, the event is “One-time”. For an enabled series,
+        available frequencies are “Custom”, “Daily”, “Weekly”, “Bi-weekly”,
+        “Monthly”, and “Yearly”. A particular occurrence can have a separate
+        sub-event or stage override.
+      </p>
+      <div class="procedure">
+        <h3>Set recurring times</h3>
+        <ol>
+          <li>Enable slots/recurrence in the scheduling section of the event editor.</li>
+          <li>Select the frequency.</li>
+          <li>Add and edit slot templates; review start, end, capacity, and the main event's time limits.</li>
+          <li>If one occurrence differs, select its date in the occurrence selector and enter the sub-event/stage override.</li>
+          <li>Page through nearby occurrences to ensure no incorrect time remains.</li>
+          <li>Save the event.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>Slot and occurrence</strong>
+        Changing the series template may affect several future occurrences;
+        an occurrence override belongs to one selected date. Before
+        publishing, verify which level you are editing.
+      </div>
+
+      <h2>8.5 Policies, pricing, and promotions</h2>
+      <div class="procedure">
+        <h3>Add an event policy</h3>
+        <ol>
+          <li>Enable the policies section and open the policy editor.</li>
+          <li>Enter a title and a clear description.</li>
+          <li>Specify whether explicit approval is required. A required policy must be accepted by a person joining.</li>
+          <li>Save the policy, then review it in the checkout preview.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Set a price and promotion</h3>
+        <ol>
+          <li>Open pricing and select the currency and fee items.</li>
+          <li>If the price differs by slot or optional sub-event, assign the line item to the relevant element.</li>
+          <li>Enter the promotion-code rule and validity period if supported by the interface.</li>
+          <li>In the summary, verify base price, line items, quantity, and total.</li>
+          <li>Save the event, but do not promise live online payment in the current release: frontend payment integration is disabled.</li>
+        </ol>
+      </div>
+
+      <h2>8.6 Publish and unpublish a draft</h2>
+      <div class="procedure">
+        <h3>Publish</h3>
+        <ol>
+          <li>Save the complete event draft and wait for it to reload.</li>
+          <li>Open card management in “My events”/“Drafts”.</li>
+          <li>Select “Publish”.</li>
+          <li>In the confirmation, review the title, time, visibility, and capacity, then confirm.</li>
+          <li>Verify that the status is active/published.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Unpublish and edit again</h3>
+        <ol>
+          <li>Select “Unpublish” from the published event card menu.</li>
+          <li>Read the confirmation about participants and visibility, then approve it.</li>
+          <li>Reopen the editor in draft state.</li>
+          <li>Change the structure, save it, and publish again if appropriate.</li>
+        </ol>
+      </div>
+      <div class="callout danger">
+        <strong>Published structure</strong>
+        The structure may be read-only in the management view of a published
+        event. Unpublish before making a structural change. A previously
+        published maximum capacity may remain as a lower bound and cannot be
+        reduced below the permitted floor.
+      </div>
+
+      <h2>8.7 Invite and manage members</h2>
+      <div class="procedure">
+        <h3>Invite a member</h3>
+        <ol>
+          <li>Open “Members” for the managed event or sub-event.</li>
+          <li>Select “Invite”.</li>
+          <li>Select candidates and send the invitation.</li>
+          <li>Use “Pending only” to monitor invitations and join requests.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Manage a join request and member role</h3>
+        <ol>
+          <li>From the pending member's card menu, select approve or reject/remove.</li>
+          <li>To promote the member, select “Promote to admin” and confirm that they may manage members and invitations.</li>
+          <li>To give up your own administrator role, select step down. The application may refuse if no other accepted administrator would remain.</li>
+          <li>For a serious event-level violation, an authorised host may ban the member and later reinstate them.</li>
+          <li>For user abuse, use the moderation “Report user” workflow. Removing membership is not a substitute for reporting.</li>
+        </ol>
+      </div>
+      <p>
+        A member's “Participation” view lists links to the event, slot,
+        sub-event, group, or resource. Use it to verify which context will be
+        affected by removal or a role change.
+      </p>
+
+      <h2>8.8 Notify participants and share an event</h2>
+      <div class="procedure">
+        <h3>Send a notification to participants</h3>
+        <ol>
+          <li>Select “Notify participants” from your event's card menu.</li>
+          <li>Write a short message directly related to the event.</li>
+          <li>Review the audience and timing if displayed.</li>
+          <li>Send it, then verify the result in the notification/chat context.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Share an event</h3>
+        <ol>
+          <li>Select share from the event card menu.</li>
+          <li>Copy the generated share link or use the system share interface.</li>
+          <li>Send it only to an appropriate recipient. The link cannot override event visibility and membership rules.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="major" id="foglalas" aria-labelledby="foglalas-cim">
+      <h1 id="foglalas-cim">9. Booking, cart, policies, and prices</h1>
+
+      <h2>9.1 When does checkout open?</h2>
+      <p>
+        Checkout may start after “Book event”, joining a paid or ticketed
+        event, accepting an invitation, accepting a waitlist place, or
+        continuing an unfinished cart. Depending on the deployment and event
+        settings, the workflow can include slots, optional sub-events,
+        policies, a promotion code, and a price summary.
+      </p>
+
+      <div class="procedure">
+        <h3>Review and confirm an event booking</h3>
+        <ol>
+          <li>Start booking from the event card or an invitation's “Accept” action.</li>
+          <li>In the slot selector, select the required time or, where supported, multiple required slots.</li>
+          <li>For each selected slot, select any optional sub-events. Required items may be added automatically.</li>
+          <li>Check “Booked”/“Full”, remaining capacity, and the date.</li>
+          <li>Read the policies. Select each required-policy checkbox only if you agree.</li>
+          <li>If you have a promotion code, open the promotion dialog, add the code, and verify that the summary actually changes. An invalid code can be removed.</li>
+          <li>Review cart line items, quantities, currency, discounts, and total.</li>
+          <li>Select confirm/accept. The result may be accepted, pending approval, or waitlisted.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>Price and capacity can change</strong>
+        The slot, optional item, available place, or price may change during
+        checkout. If the application reports “Cart changed”, review the whole
+        cart again rather than relying on the previous amount.
+      </div>
+
+      <h2>9.2 Checkout and result states</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Draft</td>
+            <td>The cart was left incomplete; continue or release it from the card.</td>
+          </tr>
+          <tr>
+            <td>Waitlist</td>
+            <td>No place is confirmed; wait for a notification or invitation.</td>
+          </tr>
+          <tr>
+            <td>Approval pending</td>
+            <td>Await the host's decision; do not treat this as accepted membership.</td>
+          </tr>
+          <tr>
+            <td>Approved</td>
+            <td>The request is approved, but further confirmation or payment may still be required.</td>
+          </tr>
+          <tr>
+            <td>Confirmed</td>
+            <td>The booking is active; review the event and ticket.</td>
+          </tr>
+          <tr>
+            <td>Pay</td>
+            <td>Can be completed only with an active provider integration. It is disabled in the current 1.0.0 frontend configurations.</td>
+          </tr>
+          <tr>
+            <td>Failed / Cancelled / Rejected</td>
+            <td>Read the reason, correct the cart, retry, or contact the host.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>9.3 Continue or release an unfinished cart</h2>
+      <div class="procedure">
+        <h3>Continue the cart</h3>
+        <ol>
+          <li>Open “Events” → “Pending” or select the cart badge.</li>
+          <li>Select “Continue booking”.</li>
+          <li>Refresh the slot, optional items, and policy acceptances.</li>
+          <li>Review the current amount and confirm.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Cancel or release the cart</h3>
+        <ol>
+          <li>Open the pending checkout.</li>
+          <li>Select cancel, delete, or release place, depending on the state.</li>
+          <li>Read whether the action affects only the cart, pending membership, or the reserved place as well.</li>
+          <li>Confirm, then verify that the item disappeared from Pending or received the appropriate result state.</li>
+        </ol>
+      </div>
+
+      <h2>9.4 Payment summary</h2>
+      <p>
+        After accepted membership or a previous checkout, “Payment summary”
+        on the event card may display a read-only cart, line items, currency,
+        total, and state. It proves neither a receipt nor a successful bank
+        charge unless that deployment also provides a separate confirmation
+        from an active payment provider.
+      </p>
+      <div class="callout danger">
+        <strong>Do not enter real card details in the current 1.0.0 release</strong>
+        Payment integration is <em>disabled</em> in the released frontend
+        environments. Displayed demo card numbers or locked payment fields
+        are interface previews only. Enter real card details only in a later
+        deployment that clearly names an active payment provider and shows a
+        secure provider redirect.
+      </div>
+    </section>
+
+    <section class="major" id="eszkozok" aria-labelledby="eszkozok-cim">
+      <h1 id="eszkozok-cim">10. My assets, resources, and tickets</h1>
+
+      <h2>10.1 Asset types</h2>
+      <p>
+        Under “My assets” in the avatar menu, the type selector opens
+        “Transport”, “Accommodation”, “Supplies”, and “Tickets”. The first
+        three are owned or managed assets that can be created. “Tickets” is a
+        separate event-admission list, not an editor for a physical asset.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Type</th>
+            <th scope="col">Example</th>
+            <th scope="col">Distinctive feature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Transport</td>
+            <td>Vehicle, seat, or transfer option.</td>
+            <td>Quantity and run-time route points can be set when assigning it to an event.</td>
+          </tr>
+          <tr>
+            <td>Accommodation</td>
+            <td>Lodging, room, bed, venue, or storage.</td>
+            <td>Location is required in the asset editor.</td>
+          </tr>
+          <tr>
+            <td>Supplies</td>
+            <td>Equipment, tool, food, package, or another consumable or physical stock item.</td>
+            <td>Quantity contributions and borrowing requests can be managed.</td>
+          </tr>
+          <tr>
+            <td>Tickets</td>
+            <td>Event admission and QR code.</td>
+            <td>Upcoming/past sorting, opening your QR code, and a QR scanner.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>10.2 Create an asset</h2>
+      <div class="procedure">
+        <h3>Add transport, accommodation, or supplies</h3>
+        <ol>
+          <li>Open the required asset list and select the plus action.</li>
+          <li>Under “Basics”, upload an image and enter the required title, optional subtitle, required total capacity, and required quantity.</li>
+          <li>Under “Details”, enter a source link, category, and description.</li>
+          <li>For Accommodation, enter the required location and verify it on the map.</li>
+          <li>In the header, select visibility: “Public”, “Friends only”, or “Invitation only”.</li>
+          <li>Optionally configure pricing.</li>
+          <li>Optionally enable borrowing policies and mark those that require explicit borrower approval.</li>
+          <li>Select the green tick and wait for saving to finish.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>Accurate and lawful description</strong>
+        Publish only an asset that you are entitled to offer. State its actual
+        capacity, quantity, condition, limitations, and costs. The source link
+        may open an external website.
+      </div>
+
+      <h2>10.3 View, edit, share, and delete an asset</h2>
+      <div class="procedure">
+        <h3>Manage an asset card</h3>
+        <ol>
+          <li>Open the type list and then the required card menu.</li>
+          <li>For “Edit”, change fields and save with the green tick.</li>
+          <li>For “Share”, the application creates a share token/link. Copy it and send it only to an appropriate recipient.</li>
+          <li>“External information” opens a validated <code>http</code>/<code>https</code> page.</li>
+          <li>For “Delete”, verify the card title in the confirmation and confirm. Do not delete while an active booking or event assignment remains unresolved.</li>
+        </ol>
+      </div>
+
+      <h2>10.4 Availability and requests</h2>
+      <p>
+        The card's availability badge opens month, week, and day views. The
+        day list can sort “Earlier first” or “Later first”; filters are “All”,
+        “Active items”, “Pending requests”, and “Borrowed items”.
+      </p>
+      <div class="procedure">
+        <h3>Process a pending borrowing request as owner</h3>
+        <ol>
+          <li>Open the asset's availability/request view.</li>
+          <li>Filter to “Pending requests” and open the request.</li>
+          <li>Review the requester, event/sub-event, duration, quantity, accepted policies, and any price.</li>
+          <li>To approve, select accept. Available inventory may decrease by the booked quantity.</li>
+          <li>To reject/remove, select remove and confirm.</li>
+          <li>If the request and permissions allow, select “Make manager” to make the person an asset manager.</li>
+        </ol>
+      </div>
+
+      <h2>10.5 Find and borrow a visible asset</h2>
+      <p>
+        From an event or sub-event resource view, “Explore” opens assets
+        visible for the relevant date range and category. Sort by “Available
+        first”, “Lowest price”, or “Fewest policies”. From a card, you can
+        view the asset, contact the owner, share it, report the owner, open a
+        payment summary, or start borrowing.
+      </p>
+      <div class="procedure">
+        <h3>Request to borrow an asset</h3>
+        <ol>
+          <li>Under event/sub-event resources, select the asset type and then “Explore”.</li>
+          <li>Set category, date range, and sorting.</li>
+          <li>Open the asset and review the owner, description, capacity, available quantity, price, and policies.</li>
+          <li>Select “Borrow”.</li>
+          <li>Enter start and end dates and a quantity within the available maximum.</li>
+          <li>Review line items, cancellation terms, and the current refund preview.</li>
+          <li>Accept required borrowing policies.</li>
+          <li>Submit the request. For a paid asset, the interface may indicate a payment step, but in the released 1.0.0 frontend this is a demo or locked state, not active card payment.</li>
+          <li>Monitor the request list for pending or accepted/borrowed status.</li>
+        </ol>
+      </div>
+
+      <h2>10.6 Assign an asset to an event</h2>
+      <div class="procedure">
+        <h3>Assign your asset as a host</h3>
+        <ol>
+          <li>Open the event slot/sub-event, then “Resources”.</li>
+          <li>Select the “Transport”, “Accommodation”, or “Supplies” filter.</li>
+          <li>Select the “Assign” quick action.</li>
+          <li>Select cards in your asset list. You can remove an accidental selection from the cart.</li>
+          <li>Save the selected assets with the green tick.</li>
+          <li>For Transport, open route configuration for the event run, set quantity and route points, then save the assignment.</li>
+        </ol>
+      </div>
+      <p>
+        Depending on permissions and state, an assigned resource card menu may
+        offer view, edit, request to join, leave, route, ask host, share,
+        payment summary, report manager/host, or remove assignment.
+      </p>
+
+      <h2>10.7 Join an assigned resource</h2>
+      <div class="procedure">
+        <h3>Request to join a resource</h3>
+        <ol>
+          <li>Open the card menu in the sub-event resource list.</li>
+          <li>Select “Join resource”.</li>
+          <li>Review duration, available quantity, your share or per-person price, and policies.</li>
+          <li>Accept required policies and submit the join request.</li>
+          <li>After acceptance, use “Leave resource” to leave. First review cancellation and inventory effects.</li>
+        </ol>
+      </div>
+
+      <h2>10.8 Supply contribution (“Bring Items”)</h2>
+      <div class="procedure">
+        <h3>Record the quantity you will bring</h3>
+        <ol>
+          <li>Open the sub-event supply resource and then its contribution list.</li>
+          <li>Select “Bring Items”.</li>
+          <li>Enter the quantity you commit to bring and save.</li>
+          <li>Verify your name, time added, and quantity in the list.</li>
+          <li>To correct it, edit the quantity. To remove it, delete the quantity row and confirm.</li>
+        </ol>
+      </div>
+
+      <h2>10.9 Ticket and QR code</h2>
+      <div class="procedure">
+        <h3>Display your ticket</h3>
+        <ol>
+          <li>Open “My assets” → “Tickets”.</li>
+          <li>Select “Upcoming” or “Past”.</li>
+          <li>Open the ticket card's QR badge.</li>
+          <li>In “Ticket”, review the person, role, event, and date, then show the QR code to an authorised admission operator.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Scan a ticket as a host</h3>
+        <ol>
+          <li>Select “Scan Ticket” from the Tickets toolbar.</li>
+          <li>Grant browser camera permission only on a trusted device and in an appropriate situation.</li>
+          <li>Point the camera at the QR code and wait for the scan.</li>
+          <li>Review the displayed person, role, event, and date.</li>
+          <li>Select “Scan again” for another code.</li>
+        </ol>
+      </div>
+      <div class="callout danger">
+        <strong>A QR code is an admission credential</strong>
+        Do not publish it or send it to an unauthorised person. The scanner
+        displays participant information from the code; the display alone
+        does not prove that admission was recorded in a separate backend.
+        Follow the event host's verification procedure as well.
+      </div>
+    </section>
+
+    <section class="major" id="kommunikacio" aria-labelledby="kommunikacio-cim">
+      <h1 id="kommunikacio-cim">11. Chats and notifications</h1>
+
+      <h2>11.1 Open a chat</h2>
+      <p>
+        Chat is an online feature. “Activities” → “Chats” in the avatar menu
+        can be filtered by “All”, “Event”, “Sub-event”, “Group”, “Service”,
+        and “Application support”. An event card, asking an asset owner, or
+        another context can also open the corresponding channel directly.
+      </p>
+      <div class="procedure">
+        <h3>Find a channel</h3>
+        <ol>
+          <li>While online, open “Chats”.</li>
+          <li>Select a context filter.</li>
+          <li>Use red counters to identify unread channels.</li>
+          <li>Open the channel. Its header may provide access to the related event, members, sub-event, or resource.</li>
+        </ol>
+      </div>
+
+      <h2>11.2 Text messages, replies, and reactions</h2>
+      <div class="procedure">
+        <h3>Send a message</h3>
+        <ol>
+          <li>Enter the message. You can select emoji from ASCII emoticon suggestions.</li>
+          <li>Select send.</li>
+          <li>Monitor delivery state. A locally optimistic message may first be “pending” and may receive a timeout indication after a delay.</li>
+          <li>Do not automatically resend identical content until you have checked whether the server/WebSocket confirmed it; this avoids duplicates.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Reply and react</h3>
+        <ol>
+          <li>Select a message and then the reply icon.</li>
+          <li>Above the input, verify which message you are replying to; clear the reply target if necessary.</li>
+          <li>Write and send the reply. Select the reply preview to jump back to the source.</li>
+          <li>To react, select the face icon and then a quick reaction or the searchable emoji menu.</li>
+          <li>Open the reaction summary to see who reacted. Selecting your own identical reaction again removes it.</li>
+        </ol>
+      </div>
+
+      <h2>11.3 Share images, voice clips, polls, events, and assets</h2>
+      <div class="procedure">
+        <h3>Send an attachment</h3>
+        <ol>
+          <li>Open the chat tools menu.</li>
+          <li>Select “Upload image”, “Send voice clip”, “Create poll”, “Share event”, or “Share asset”.</li>
+          <li>For an image, select the file, check the preview, and send it.</li>
+          <li>For a voice clip, allow microphone access, start and stop recording, listen to the clip, then send or delete it.</li>
+          <li>For a poll, enter a question and at least 2 but no more than 6 options, then create it.</li>
+          <li>When sharing an event or asset, select the relevant card and consider whether the recipient is entitled to open it.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Vote in a poll</h3>
+        <ol>
+          <li>Select “Vote” on the poll card.</li>
+          <li>Select one option and submit it.</li>
+          <li>To change your selection, select “Change vote”, choose a new option, and submit.</li>
+          <li>Review the current result through the bars and voter badges.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>Media permissions and personal information</strong>
+        Grant camera or microphone permission only while needed. Do not
+        disclose another person's sensitive information in an image, audio
+        clip, or shared card without consent.
+      </div>
+
+      <h2>11.4 Message actions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Action</th>
+            <th scope="col">Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>View</td>
+            <td>Open a shared event, asset, or link attachment. If the item is no longer available, the interface displays a reason.</td>
+          </tr>
+          <tr>
+            <td>Reply</td>
+            <td>Create a reply that references the original message.</td>
+          </tr>
+          <tr>
+            <td>Edit</td>
+            <td>Change your editable text; the message receives an “Edited” indicator.</td>
+          </tr>
+          <tr>
+            <td>Unsend</td>
+            <td>Delete your message; a deletion placeholder may remain in the conversation.</td>
+          </tr>
+          <tr>
+            <td>Pin / Unpin</td>
+            <td>Add the message to or remove it from the pinned-message list.</td>
+          </tr>
+          <tr>
+            <td>Report</td>
+            <td>Submit a moderation report for another user's message in an eligible context.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Open pinned messages with the pin icon in the header. Typing
+        indicators and read receipts appear when supported by the channel and
+        backend.
+      </p>
+
+      <h2>11.5 Open links and shared cards</h2>
+      <div class="procedure">
+        <h3>Open shared content safely</h3>
+        <ol>
+          <li>Review the card type, title, description, and availability state.</li>
+          <li>An internal event or asset card opens a MyScoutee detail view; visibility rules still apply.</li>
+          <li>For an external URL, review the domain in the confirmation before leaving the application.</li>
+          <li>Do not open suspicious or abusive content; report the message/user.</li>
+        </ol>
+      </div>
+
+      <h2>11.6 Notification centre</h2>
+      <div class="procedure">
+        <h3>Mark a notification as read</h3>
+        <ol>
+          <li>Select “Notifications” in the avatar-menu header.</li>
+          <li>Select “New” or “All”. The “New” badge summarises unread items and displays at most 99+.</li>
+          <li>Review the title, sender/source, category, time, and message.</li>
+          <li>In an unread row's menu, select “Mark as read”.</li>
+          <li>The item disappears from “New” and receives “Read” status in “All”.</li>
+        </ol>
+      </div>
+      <div class="procedure">
+        <h3>Mute the floating notification alert</h3>
+        <ol>
+          <li>Select the bell/mute toggle in the notification-centre header.</li>
+          <li>Read the confirmation and select mute.</li>
+          <li>To restore it, open the same toggle and confirm unmuting.</li>
+        </ol>
+      </div>
+      <div class="callout note">
+        <strong>Muting does not delete notifications</strong>
+        While muted, new notifications continue to be saved and increase the
+        counter. Only the floating attention button remains hidden until
+        unmuted.
+      </div>
+    </section>
+
+    <section class="major" id="biztonsag" aria-labelledby="biztonsag-cim">
+      <h1 id="biztonsag-cim">12. Safety, privacy, and account management</h1>
+
+      <h2>12.1 Report a user, host, manager, or message</h2>
+      <p>
+        “Report user” is not a general profile button. It appears only in a
+        verifiable context, such as an event host, event member, resource
+        manager, or chat message. The report pre-fills the user and
+        event/source context so that moderation can locate the case.
+      </p>
+      <div class="procedure">
+        <h3>Submit a moderation report</h3>
+        <ol>
+          <li>Open the menu for the relevant event, member, resource, or message card.</li>
+          <li>Select “Report user”, “Report host”, “Report manager”, or “Report”.</li>
+          <li>Verify the pre-filled user and event/resource context.</li>
+          <li>Select the appropriate reason, such as harassment or another policy violation.</li>
+          <li>In at least 12 characters, describe factually what happened, when, and at which message or event.</li>
+          <li>Do not include unnecessary health, financial, identity-document, or password information. Provide relevant evidence only through a supported secure method.</li>
+          <li>Submit the report and wait for confirmation.</li>
+        </ol>
+      </div>
+      <div class="callout danger">
+        <strong>Immediate danger</strong>
+        MyScoutee reporting is a moderation process, not an emergency service.
+        In immediate physical danger, first follow the local authority or
+        emergency procedure and use the application only when it is safe.
+      </div>
+
+      <h2>12.2 Separate product defects from moderation</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Problem</th>
+            <th scope="col">Correct channel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Harassment, abuse, a policy-violating user, or message</td>
+            <td>Contextual “Report user” / “Report”.</td>
+          </tr>
+          <tr>
+            <td>Product idea, usability feedback, or general application defect</td>
+            <td>“Settings” → “Send feedback”.</td>
+          </tr>
+          <tr>
+            <td>Reproducible open-source defect</td>
+            <td>“Settings” → “Report bugs”, which opens the <a href="https://github.com/fssrepository/myscoutee/issues">MyScoutee GitHub issue page</a>.</td>
+          </tr>
+          <tr>
+            <td>Deployment, access, or data-handling question</td>
+            <td>The deployment's help, operator, or privacy contact.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        GitHub is an external service. Do not copy a personal profile, private
+        chat, token, identifier from a log, or other sensitive information
+        into a public issue.
+      </p>
+
+      <h2>12.3 Manage privacy choices</h2>
+      <div class="procedure">
+        <h3>Review current privacy consent</h3>
+        <ol>
+          <li>Open “Settings” → “Privacy” in the avatar menu.</li>
+          <li>Review the document version and read the current sections.</li>
+          <li>Change optional selections according to your own choices.</li>
+          <li>Select “Approve privacy” or the save action.</li>
+          <li>Wait for “Privacy choices saved”. If an error occurs, do not assume that the change synchronised.</li>
+        </ol>
+      </div>
+      <p>
+        If no valid consent exists for the active privacy version, the
+        document cannot be freely closed until the mandatory decision is
+        made. The terms of use are available separately under “Settings” →
+        “Terms”.
+      </p>
+
+      <h2>12.4 Location, camera, microphone, and notification permissions</h2>
+      <ul class="checklist">
+        <li>Grant location permission only for the sign-in region check or a genuine location-based feature.</li>
+        <li>Grant camera permission for the ticket scanner. Revoke it afterwards in the browser's site settings if appropriate.</li>
+        <li>Grant microphone permission only while recording a voice clip.</li>
+        <li>Enable browser notifications only on a personal, locked device when lock-screen content presents no privacy risk.</li>
+        <li>On a shared or public computer, always sign out and do not save the password in a shared browser profile.</li>
+      </ul>
+
+      <h2>12.5 User state for a blocked account</h2>
+      <p>
+        When blocked by moderation, a user can view their blocked profile, but
+        rating, matching, profile editing, assets, events, and invitations are
+        paused. Chats may remain open, particularly to access the Application
+        support channel.
+      </p>
+      <div class="procedure">
+        <h3>What to do while blocked</h3>
+        <ol>
+          <li>Read the blocking or restriction notice shown in the interface.</li>
+          <li>Open the “Application support” chat if available.</li>
+          <li>Refer factually to the account and displayed status. Do not create a new account to evade the restriction.</li>
+          <li>Wait for an authorised moderation/administrative decision. The block cannot be removed through the normal profile-status selector.</li>
+        </ol>
+      </div>
+
+      <h2>12.6 Sign out</h2>
+      <div class="procedure">
+        <h3>Sign out safely</h3>
+        <ol>
+          <li>Open “Settings” → “Sign out” in the avatar menu.</li>
+          <li>Verify the account name in the confirmation, then select “Sign out”.</li>
+          <li>Wait for the server-side result. After an error, the application may retain the local session.</li>
+          <li>On success, the application clears the active profile from the interface, ends the authentication session, and redirects to <code>/entry</code>.</li>
+        </ol>
+      </div>
+
+      <h2>12.7 Delete an account</h2>
+      <div class="procedure">
+        <h3>Schedule deletion</h3>
+        <ol>
+          <li>Save any of your data that you lawfully need and resolve pending events, bookings, or loans.</li>
+          <li>Open “Settings” → “Delete account” in the avatar menu.</li>
+          <li>Read the warning: the account can be reactivated within 30 days and is permanently deleted afterwards.</li>
+          <li>Verify the account name and select “Delete”.</li>
+          <li>Wait for a successful backend response. On success, the account enters deleted/scheduled state, you are signed out, and the application redirects to <code>/entry</code>.</li>
+        </ol>
+      </div>
+      <div class="callout danger">
+        <strong>Permanent after 30 days</strong>
+        After the 30-day reactivation period, the backend permanently removes
+        the account in accordance with applicable retention and legal rules.
+        It cannot then be restored through the standard interface.
+      </div>
+
+      <h2>12.8 Reactivate a deleted account</h2>
+      <div class="procedure">
+        <h3>Reactivate during the 30-day period</h3>
+        <ol>
+          <li>Within 30 days of deletion, sign in with the same authentication account.</li>
+          <li>In the non-dismissible “Reactivate account?” dialog, select “Reactivate”.</li>
+          <li>Wait for the profile to save. The application restores the previous eligible profile status—such as Public, Friends only, Host only, Inactive, or Blocked—and may use Public for an unknown value.</li>
+          <li>Review profile, event, and asset states. Reactivation may not restore every separately deleted or expired related item.</li>
+        </ol>
+      </div>
+      <p>
+        Selecting “Cancel” in the dialog signs you out and redirects you to
+        sign-in. The dialog cannot be closed by selecting its backdrop or
+        pressing Escape.
+      </p>
+    </section>
+
+    <section class="major" id="offline" aria-labelledby="offline-cim">
+      <h1 id="offline-cim">13. Offline and limited operation</h1>
+
+      <h2>13.1 Without a network connection</h2>
+      <p>
+        In backend-connected standard user mode, the application restricts
+        server operations without a network. The member-facing notice says
+        that tickets already available may remain accessible offline; other
+        actions must wait for a connection. Chat is expressly online and may
+        be disabled in the avatar menu.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th scope="col">Expected offline state</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tickets</td>
+            <td>An already available ticket list/QR code may open. Load and verify it online before departure.</td>
+          </tr>
+          <tr>
+            <td>Chat</td>
+            <td>Unavailable; the menu item is disabled or sending cannot be confirmed.</td>
+          </tr>
+          <tr>
+            <td>Profile, rating, event, invitation, asset, booking</td>
+            <td>Waits for connection, may be disabled, or cannot be saved reliably.</td>
+          </tr>
+          <tr>
+            <td>Local/offline demo build</td>
+            <td>May behave differently because of the local seed adapter; resulting data is still not live production data.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="procedure">
+        <h3>Prepare for a weak network</h3>
+        <ol>
+          <li>While online before departure, open the ticket, event address, time, and location.</li>
+          <li>Verify that the PWA is installed and the required page has loaded once. This still does not guarantee full offline operation.</li>
+          <li>For a pending message or save, wait for the network to return and verify the state reloaded from the server.</li>
+          <li>Do not blindly repeat a booking, borrowing request, or message because the previous request may have arrived in the meantime.</li>
+        </ol>
+      </div>
+      <div class="callout warning">
+        <strong>An offline screen is not current proof</strong>
+        The cached state of a ticket, event, or asset may be outdated. Refresh
+        the list when a network is available and obtain host verification for
+        critical admission.
+      </div>
+
+      <h2>13.2 Browser and device limitations</h2>
+      <ul>
+        <li>The QR scanner requires a camera, a secure website, and browser QR/BarcodeDetector support. Without support, it cannot scan.</li>
+        <li>A voice clip requires a microphone and MediaRecorder support.</li>
+        <li>PWA installation requires an enabled service worker and browser-side installability.</li>
+        <li>External telephone, email, and social actions require the appropriate external application.</li>
+        <li>Location-based sign-in requires browser geolocation, user permission, and a backend region check.</li>
+      </ul>
+    </section>
+
+    <section class="major" id="hibaelharitas" aria-labelledby="hibaelharitas-cim">
+      <h1 id="hibaelharitas-cim">14. Troubleshooting</h1>
+
+      <h2>14.1 General diagnostic sequence</h2>
+      <ol>
+        <li>Record which deployment, route, and branded product name you see.</li>
+        <li>Check the network and confirm that you are not treating a demo environment as a live one.</li>
+        <li>Read the interface error and wait for any in-progress loading or saving.</li>
+        <li>Refresh the page once; do not immediately repeat a state-changing action.</li>
+        <li>Check browser site permissions and the device's exact date/time setting.</li>
+        <li>If the problem remains, collect reproduction steps, time, role, and non-sensitive screen information, then use the appropriate support channel.</li>
+      </ol>
+
+      <h2>14.2 Common problems</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Symptom</th>
+            <th scope="col">Likely cause</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>The continue button is unavailable at sign-in.</td>
+            <td>The privacy version has not loaded or has not been approved.</td>
+            <td>Wait for the document, read it, set optional choices, and approve it. After a network failure, try again later.</td>
+          </tr>
+          <tr>
+            <td>Google or email sign-in is not shown.</td>
+            <td>Firebase sign-in is disabled in the build, or a demo profile selector is running.</td>
+            <td>Check the deployment's purpose. Do not expect live account sign-in from the GitHub/local prototype.</td>
+          </tr>
+          <tr>
+            <td>The Facebook button is disabled.</td>
+            <td>It is marked “Coming soon” in the 1.0.0 interface.</td>
+            <td>Use an enabled Google or email method for that deployment.</td>
+          </tr>
+          <tr>
+            <td>An email account cannot be created.</td>
+            <td>Invalid email; password shorter than 8 characters; missing letter/number; or mismatched confirmation.</td>
+            <td>Meet the password rules and enter exactly the same confirmation.</td>
+          </tr>
+          <tr>
+            <td>Sign-in cannot continue after location access is denied.</td>
+            <td>The deployment requires location-based eligibility.</td>
+            <td>Enable location in browser site settings, reload, and complete the region check. Contact the operator for an ineligible region.</td>
+          </tr>
+          <tr>
+            <td>Profile setup cannot be saved.</td>
+            <td>A required name, date of birth, city, height, body type, language, or 3 images are missing.</td>
+            <td>Correct fields marked in red, wait for image upload, and save again.</td>
+          </tr>
+          <tr>
+            <td>Closing the profile returns to sign-in.</td>
+            <td>Required onboarding was closed without saving.</td>
+            <td>Sign in again, complete the full setup, and save.</td>
+          </tr>
+          <tr>
+            <td>There are no recommendation cards.</td>
+            <td>Filters are too narrow; the profile is not public or is inactive; the demo-data boundary applies; or the data source is empty.</td>
+            <td>Relax filters and review your profile status and current mode. Do not expect a live community inventory in a demo.</td>
+          </tr>
+          <tr>
+            <td>There is no person search in Outside Network.</td>
+            <td>This is intended behaviour.</td>
+            <td>The two text person/friend searches appear only in Inside Network.</td>
+          </tr>
+          <tr>
+            <td>A filter change disappeared.</td>
+            <td>The dialog was closed without the green tick.</td>
+            <td>Open it again, set the filter, and apply it with the green tick.</td>
+          </tr>
+          <tr>
+            <td>The Chat menu item is disabled.</td>
+            <td>The application is offline.</td>
+            <td>Restore the network; chat is an online feature.</td>
+          </tr>
+          <tr>
+            <td>A message is pending or timed out.</td>
+            <td>The server/WebSocket acknowledgement is delayed.</td>
+            <td>Wait and check the channel/refreshed list before sending the same message again.</td>
+          </tr>
+          <tr>
+            <td>The camera or microphone does not start.</td>
+            <td>No permission, no browser support, or another application is using the device.</td>
+            <td>Check site permission, close the other application, and use a supported browser over a secure connection.</td>
+          </tr>
+          <tr>
+            <td>The QR code cannot be scanned.</td>
+            <td>Poor light, damaged image, a non-MyScoutee payload, or no QR detector.</td>
+            <td>Increase light, hold the code steady, and retry. If necessary, verify ticket person/event information manually.</td>
+          </tr>
+          <tr>
+            <td>The event is full.</td>
+            <td>No capacity remains.</td>
+            <td>Join the waitlist if available; do not treat it as confirmed participation.</td>
+          </tr>
+          <tr>
+            <td>Accepting an invitation opens checkout.</td>
+            <td>A slot, optional sub-event, policy, ticket, price, or approval applies.</td>
+            <td>Complete every required step and then review the result status.</td>
+          </tr>
+          <tr>
+            <td>The cart contents changed.</td>
+            <td>Capacity, price, slot, or an optional item was updated.</td>
+            <td>Review the complete cart, currency, amount, and policies before confirming.</td>
+          </tr>
+          <tr>
+            <td>Payment fields are locked or show demo values.</td>
+            <td>Payment integration is disabled in the 1.0.0 frontend.</td>
+            <td>Do not enter real card details. Follow the booking state and operator instructions.</td>
+          </tr>
+          <tr>
+            <td>Published event fields cannot be edited.</td>
+            <td>The published structure is read-only.</td>
+            <td>Unpublish, edit the draft, save, and publish it again.</td>
+          </tr>
+          <tr>
+            <td>The event's maximum capacity cannot be reduced.</td>
+            <td>A publication or existing-membership capacity floor applies.</td>
+            <td>Do not reduce below that floor. Resolve membership and follow the minimum permitted by the interface.</td>
+          </tr>
+          <tr>
+            <td>An asset does not appear in Explore.</td>
+            <td>Visibility, category, date, quantity, or network eligibility does not match.</td>
+            <td>Review Public/Friends only/Invitation only, availability, category, and date.</td>
+          </tr>
+          <tr>
+            <td>Experience import reports duplicates.</td>
+            <td>Document items match existing entries.</td>
+            <td>Skip duplicates in the preview and import only verified items.</td>
+          </tr>
+          <tr>
+            <td>There is no floating notification alert, but the counter increases.</td>
+            <td>Notification attention is muted.</td>
+            <td>Unmute it in the notification-centre header.</td>
+          </tr>
+          <tr>
+            <td>“Reactivate account?” appears after sign-in.</td>
+            <td>The account is deleted but remains within the 30-day window.</td>
+            <td>Select Reactivate to use the account, or Cancel to sign out.</td>
+          </tr>
+          <tr>
+            <td>A label differs from the manual.</td>
+            <td>Custom deployment branding, translation, or a newer version.</td>
+            <td>Identify it from its context, icon, and deployment documentation, and verify the software version.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>14.3 Information for a useful defect report</h2>
+      <ul class="checklist">
+        <li>Deployment name and URL, without secret query parameters or tokens.</li>
+        <li>MyScoutee version and document/software version.</li>
+        <li>Browser, operating system, and device type.</li>
+        <li>Exact time and time zone.</li>
+        <li>Preconditions followed by numbered reproduction steps.</li>
+        <li>Expected and actual result and the exact error message.</li>
+        <li>Demo or live mode and online or offline state.</li>
+        <li>A screenshot without sensitive information, only when genuinely needed.</li>
+      </ul>
+      <div class="callout warning">
+        <strong>What must not be sent?</strong>
+        Do not put passwords, authentication tokens, a complete QR code, card
+        details, a private conversation, precise location coordinates,
+        identity documents, or unnecessary information about another person
+        into an issue.
+      </div>
+    </section>
+
+    <section class="major" id="fogalomtar" aria-labelledby="fogalomtar-cim">
+      <h1 id="fogalomtar-cim">15. Glossary</h1>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Term</th>
+            <th scope="col">Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Active event</td>
+            <td>Event activity for which the user has current membership, an action, or a host relationship.</td>
+          </tr>
+          <tr>
+            <td>Sub-event</td>
+            <td>A required or optional part of the main event with its own time, location, capacity, and possibly price.</td>
+          </tr>
+          <tr>
+            <td>Affinity</td>
+            <td>A user-assigned priority/affinity value from 1 to 10 for a profile or pair suggestion.</td>
+          </tr>
+          <tr>
+            <td>Application support</td>
+            <td>A chat context that may remain available to a restricted or blocked account as a support channel.</td>
+          </tr>
+          <tr>
+            <td>Auto Inviter</td>
+            <td>An event setting that may help invite people to available places according to the priority plan.</td>
+          </tr>
+          <tr>
+            <td>Backend-connected Explore demo</td>
+            <td>A mode using server-side but isolated demo data; it is not live operator registry or community state.</td>
+          </tr>
+          <tr>
+            <td>Blind Event</td>
+            <td>An event whose standard participant preview is hidden; it does not automatically make the event secret.</td>
+          </tr>
+          <tr>
+            <td>Checkout</td>
+            <td>The slot, sub-event, policy, promotion, and price review before joining or accepting an invitation.</td>
+          </tr>
+          <tr>
+            <td>Friends only</td>
+            <td>Profile, event, or asset visibility restricted to a friend/network context.</td>
+          </tr>
+          <tr>
+            <td>Invitation only</td>
+            <td>Event or asset visibility that excludes normal discovery and requires a direct invitation/share.</td>
+          </tr>
+          <tr>
+            <td>Host only</td>
+            <td>A profile status or field visibility that makes information available to a host context.</td>
+          </tr>
+          <tr>
+            <td>Demo profile</td>
+            <td>A non-live user account or social identity created for demonstration.</td>
+          </tr>
+          <tr>
+            <td>Event administrator</td>
+            <td>An accepted member with permission to manage members, invitations, and event actions.</td>
+          </tr>
+          <tr>
+            <td>Event feedback</td>
+            <td>A structured response about hosts/participants and the event experience after actual participation; it is not a general profile rating.</td>
+          </tr>
+          <tr>
+            <td>Global identity</td>
+            <td>A voluntary, separate privacy link using opaque commitments; it is not the sign-in account.</td>
+          </tr>
+          <tr>
+            <td>Local seed adapter</td>
+            <td>The demonstration data source for a local/offline build; it runs in the browser and does not provide production retention.</td>
+          </tr>
+          <tr>
+            <td>Inside Network</td>
+            <td>A pair recommendation mode in which person and friend search fields are shown.</td>
+          </tr>
+          <tr>
+            <td>Approval pending</td>
+            <td>A join or booking status still requiring a host decision; it is not accepted membership.</td>
+          </tr>
+          <tr>
+            <td>Required policy</td>
+            <td>A rule that a person joining or borrowing must explicitly accept before continuing.</td>
+          </tr>
+          <tr>
+            <td>Borrowing request</td>
+            <td>A request for an asset for a defined period and quantity that may require owner approval.</td>
+          </tr>
+          <tr>
+            <td>Trash</td>
+            <td>A restorable view of declined, left, or list-deleted event activity; it is not permanent account deletion.</td>
+          </tr>
+          <tr>
+            <td>Open Event</td>
+            <td>An event where standard participants can see the participant preview in advance.</td>
+          </tr>
+          <tr>
+            <td>Public</td>
+            <td>A status allowing wider recommendation or discovery visibility; further membership/approval restrictions may still apply.</td>
+          </tr>
+          <tr>
+            <td>Outside Network</td>
+            <td>A pair recommendation mode outside the network; it does not display text-based person/friend search.</td>
+          </tr>
+          <tr>
+            <td>Draft</td>
+            <td>A saved but unpublished event, or an unfinished checkout/cart.</td>
+          </tr>
+          <tr>
+            <td>Policy</td>
+            <td>An event or borrowing rule that can be required or optional.</td>
+          </tr>
+          <tr>
+            <td>PWA</td>
+            <td>A progressive web application that can be installed on the home screen in a supported build and browser.</td>
+          </tr>
+          <tr>
+            <td>QR ticket</td>
+            <td>A code linked to an event and person, displayed by the ticket interface and resolved to participant data by the scanner.</td>
+          </tr>
+          <tr>
+            <td>Participation</td>
+            <td>The user's membership link to an event, slot, sub-event, group, or resource.</td>
+          </tr>
+          <tr>
+            <td>Service worker</td>
+            <td>A browser component that can support PWA installation and limited caching; it does not guarantee full offline operation.</td>
+          </tr>
+          <tr>
+            <td>Slot</td>
+            <td>A selectable time/occurrence in an event series that may have its own capacity, sub-event, and price.</td>
+          </tr>
+          <tr>
+            <td>Poll</td>
+            <td>A chat attachment with one question and 2–6 options; a user's vote can be changed.</td>
+          </tr>
+          <tr>
+            <td>Ticketing</td>
+            <td>An event setting that enables the ticket- and QR-based admission interface.</td>
+          </tr>
+          <tr>
+            <td>Tournament</td>
+            <td>A multi-stage sub-event mode with group capacity, scoreboards, and advancement rules.</td>
+          </tr>
+          <tr>
+            <td>Waitlist</td>
+            <td>A queue for a full event; joining it does not guarantee participation.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <strong>End of manual</strong>
+        This is the released version 1.0.0 of user manual MSC-UM-001. For a
+        different software version, consult that release's documentation.
+      </div>
+      <p class="source-note">
+        Source basis: MyScoutee 1.0.0 frontend routes, components,
+        environment configurations, user-facing contracts, and project
+        documentation for the demo/live data-source boundary. Released:
+        <time datetime="2026-07-30">2026-07-30</time>.
+      </p>
+    </section>
+  </article>
+</body>
+</html>

@@ -10,6 +10,10 @@ export async function assertResponse({ ctx, result }) {
       path: '/api/operator/configuration'
     },
     {
+      label: 'TLS configuration controller',
+      path: '/api/operator/configuration/tls'
+    },
+    {
       label: 'registry controller',
       path: '/api/operator/registry'
     },

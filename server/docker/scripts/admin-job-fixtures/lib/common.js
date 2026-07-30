@@ -5,17 +5,29 @@
   const PREFIX = "admin-job-fixture:v1";
   const SNAPSHOT_COLLECTION = "adminJobFixtureSnapshots";
   const FIXTURE_ACTOR = `${PREFIX}:actor`;
-  const ADMIN_JOB_RULE_KEYS = [
-    "event-random-groups",
-    "event-auto-inviter",
-    "event-tournament-review",
-    "event-counter-expiry",
-    "event-checkout-basket-purge",
-    "notification-outbox",
-    "affinity-recompute",
-    "scheduled-messages",
-    "account-purge"
-  ];
+  const SECONDARY_RULE_KEYS_BY_JOB = {
+    "event-random-groups": ["notification-outbox"],
+    "event-auto-inviter": [
+      "event-random-groups",
+      "event-tournament-review",
+      "event-counter-expiry",
+      "notification-outbox",
+      "affinity-recompute"
+    ],
+    "event-tournament-review": [],
+    "event-counter-expiry": [],
+    "event-checkout-basket-purge": [],
+    "notification-outbox": [],
+    "notification-read-path": ["notification-outbox"],
+    "affinity-recompute": [],
+    "scheduled-messages": ["affinity-recompute", "event-random-groups"],
+    "account-purge": [],
+    "bell-rating-feedback": [
+      "notification-outbox",
+      "affinity-recompute",
+      "event-random-groups"
+    ]
+  };
   const command = String(process.env.FIXTURE_COMMAND || "").trim();
   const requestedJob = String(process.env.FIXTURE_JOB || "").trim();
   const requestedVariation = String(process.env.FIXTURE_VARIATION || "").trim();
@@ -204,7 +216,21 @@
     return result;
   }
 
-  function beginSnapshot(job, variation, expected, context, specs) {
+  function snapshotOptionalField(value, key) {
+    const source = value && typeof value === "object" ? value : {};
+    return Object.prototype.hasOwnProperty.call(source, key)
+      ? { present: true, value: source[key] }
+      : { present: false };
+  }
+
+  function secondaryRuleKeys(job) {
+    if (!Object.prototype.hasOwnProperty.call(SECONDARY_RULE_KEYS_BY_JOB, job)) {
+      fail(`fixture '${job}' has no secondary Admin Job rule mapping.`);
+    }
+    return [...new Set(SECONDARY_RULE_KEYS_BY_JOB[job] || [])];
+  }
+
+  function beginSnapshot(job, variation, expected, context, specs, primaryRuleKey) {
     const id = snapshotId(job);
     const existing = collection(SNAPSHOT_COLLECTION).findOne({});
     if (existing) {
@@ -219,32 +245,45 @@
       selector: spec.selector,
       documents: collection(spec.collection).find(spec.selector).toArray()
     }));
-    const ruleSnapshot = snapshots.find(
-      item => item.collection === "notificationRuleConfigs"
-    );
-    const snapshottedRuleKeys = new Set(
-      (ruleSnapshot && ruleSnapshot.documents || [])
-        .map(document => safeText(document.ruleKey))
-        .filter(Boolean)
-    );
-    if (snapshottedRuleKeys.size !== ADMIN_JOB_RULE_KEYS.length
-        || ADMIN_JOB_RULE_KEYS.some(ruleKey => !snapshottedRuleKeys.has(ruleKey))) {
-      fail(
-        `expected all ${ADMIN_JOB_RULE_KEYS.length} Admin Job rules before preparing `
-          + `'${job}'.`
-      );
+    const secondaryRuleKeysForSnapshot = secondaryRuleKeys(job)
+      .filter(ruleKey => ruleKey !== primaryRuleKey);
+    const affectedRuleKeys = [
+      ...(primaryRuleKey ? [primaryRuleKey] : []),
+      ...secondaryRuleKeysForSnapshot
+    ];
+    for (const ruleKey of affectedRuleKeys) {
+      const rule = requireRule(ruleKey);
+      if (rule.runState && rule.runState.currentStatus === "running") {
+        fail(
+          `rule '${ruleKey}' is currently running; wait for it to finish before `
+            + `preparing '${job}'.`
+        );
+      }
     }
+    const secondaryRuleCounters = secondaryRuleKeysForSnapshot.map(ruleKey => {
+      const rule = requireRule(ruleKey);
+      return {
+        ruleKey,
+        pendingCount: snapshotOptionalField(rule.runState, "pendingCount"),
+        pendingCountUnit: snapshotOptionalField(rule.runState, "pendingCountUnit"),
+        pendingCountUpdatedAtIso: snapshotOptionalField(
+          rule.runState,
+          "pendingCountUpdatedAtIso"
+        )
+      };
+    });
     const preparedAtIso = nowIso();
     const snapshot = {
       _id: id,
-      fixtureVersion: 1,
+      fixtureVersion: 2,
       job,
       variation,
       expected,
       context: context || {},
       preparedAtIso,
       database: db.getName(),
-      snapshots
+      snapshots,
+      secondaryRuleCounters
     };
     collection(SNAPSHOT_COLLECTION).insertOne(snapshot);
     return snapshot;
@@ -271,6 +310,21 @@
     const ruleSnapshots = snapshots.filter(
       item => item.collection === "notificationRuleConfigs"
     );
+    const primaryRuleKeys = ruleSnapshots.flatMap(item => (item.documents || [])
+      .map(document => safeText(document.ruleKey))
+      .filter(Boolean));
+    const secondaryRuleKeys = (snapshot.secondaryRuleCounters || [])
+      .map(item => safeText(item.ruleKey))
+      .filter(Boolean);
+    const runningRule = [...new Set([...primaryRuleKeys, ...secondaryRuleKeys])]
+      .map(ruleKey => collection("notificationRuleConfigs").findOne({ ruleKey }))
+      .find(rule => rule && rule.runState && rule.runState.currentStatus === "running");
+    if (runningRule) {
+      fail(
+        `rule '${safeText(runningRule.ruleKey)}' is currently running; wait for it `
+          + `to finish before resetting '${job}'.`
+      );
+    }
     for (const item of dataSnapshots) {
       collection(item.collection).deleteMany(item.selector);
     }
@@ -286,17 +340,64 @@
         if (!ruleKey) {
           fail("snapshotted notification rule is missing ruleKey.");
         }
-        collection(item.collection).replaceOne(
-          { ruleKey },
-          document,
-          { upsert: true }
+        const result = collection(item.collection).replaceOne(
+          {
+            ruleKey,
+            "runState.currentStatus": { $ne: "running" }
+          },
+          document
+        );
+        if (result.matchedCount !== 1) {
+          fail(
+            `rule '${ruleKey}' started running during reset; wait for it to finish `
+              + `and run reset '${job}' again.`
+          );
+        }
+      }
+    }
+    for (const item of snapshot.secondaryRuleCounters || []) {
+      const ruleKey = safeText(item.ruleKey);
+      if (!ruleKey) {
+        fail("snapshotted secondary notification rule is missing ruleKey.");
+      }
+      const update = { $set: {}, $unset: {} };
+      for (const field of [
+        "pendingCount",
+        "pendingCountUnit",
+        "pendingCountUpdatedAtIso"
+      ]) {
+        const fieldSnapshot = item[field] || { present: false };
+        const path = `runState.${field}`;
+        if (fieldSnapshot.present) {
+          update.$set[path] = fieldSnapshot.value;
+        } else {
+          update.$unset[path] = "";
+        }
+      }
+      if (Object.keys(update.$set).length === 0) {
+        delete update.$set;
+      }
+      if (Object.keys(update.$unset).length === 0) {
+        delete update.$unset;
+      }
+      const result = collection("notificationRuleConfigs").updateOne(
+        {
+          ruleKey,
+          "runState.currentStatus": { $ne: "running" }
+        },
+        update
+      );
+      if (result.matchedCount !== 1) {
+        fail(
+          `rule '${ruleKey}' started running during reset; wait for it to finish `
+            + `and run reset '${job}' again.`
         );
       }
     }
     collection(SNAPSHOT_COLLECTION).deleteOne({ _id: snapshot._id });
     print(
-      `[admin-job-fixtures] ${job}: exact snapshotted documents and all Admin Job `
-        + `rule counters restored; fixture namespace removed.`
+      `[admin-job-fixtures] ${job}: exact snapshotted documents, primary rule state, `
+        + `and secondary rule counters restored; fixture namespace removed.`
     );
   }
 
@@ -320,23 +421,22 @@
     };
   }
 
-  function standardSpecs(specs) {
+  function standardSpecs(ruleKey, specs) {
     const result = [...(specs || [])];
     const existingRuleSpec = result.find(
       spec => spec && spec.collection === "notificationRuleConfigs"
     );
-    const allRuleSelector = {
-      ruleKey: { $in: ADMIN_JOB_RULE_KEYS }
-    };
-    if (existingRuleSpec) {
-      existingRuleSpec.selector = {
-        $or: [existingRuleSpec.selector, allRuleSelector]
-      };
-    } else {
-      result.push({
-        collection: "notificationRuleConfigs",
-        selector: allRuleSelector
-      });
+    if (ruleKey) {
+      if (existingRuleSpec) {
+        existingRuleSpec.selector = {
+          $or: [existingRuleSpec.selector, { ruleKey }]
+        };
+      } else {
+        result.push({
+          collection: "notificationRuleConfigs",
+          selector: { ruleKey }
+        });
+      }
     }
     return result;
   }
@@ -366,7 +466,8 @@
         requestedVariation,
         setup.expected || "",
         setup.context || {},
-        standardSpecs(setup.specs)
+        standardSpecs(definition.ruleKey, setup.specs),
+        definition.ruleKey
       );
       try {
         definition.prepare(requestedVariation, setup.context || {}, snapshot);

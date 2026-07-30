@@ -20,6 +20,7 @@ const REGISTRY_LIFECYCLES = [
 const NODE_IDENTITY_STATES = ['MISSING', 'READY', 'INCOMPLETE', 'SIMULATED'];
 const CONFIGURATION_CAPABILITIES = ['AVAILABLE', 'BACKEND_UNAVAILABLE'];
 const FIREBASE_TEST_KINDS = ['FIREBASE_AUTHENTICATION', 'FIREBASE_MESSAGING'];
+const TLS_CERTIFICATE_MODES = ['AUTOMATIC', 'MANUAL'];
 const REPORT_STATUSES = ['PENDING', 'BLOCKED', 'ACCEPTED'];
 const SYNC_STATES = ['BUSY', 'DORMANT', 'BLOCKED', 'PENDING', 'SYNCHRONIZED', 'ERROR'];
 const WRITE_ONLY_CONFIGURATION_KEYS = new Set([
@@ -32,7 +33,9 @@ const WRITE_ONLY_CONFIGURATION_KEYS = new Set([
   'destinationToken',
   'browserReadinessToken',
   'browserConfigurationRevision',
-  'browserAppId'
+  'browserAppId',
+  'certificate',
+  'privateKey'
 ]);
 
 export function operatorHeaders(operatorUserId = 'operator-demo-dev') {
@@ -85,6 +88,58 @@ export function assertOperatorConfiguration(
   });
   assertFirebaseConfiguration(configuration.firebase, `${path}.firebase`);
   expectNullableIsoTimestamp(configuration.updatedAt, `${path}.updatedAt`);
+  assertNoWriteOnlyConfiguration(configuration, path, options.forbiddenValues ?? []);
+  return configuration;
+}
+
+export function assertOperatorTlsConfiguration(
+  value,
+  path = 'operator TLS configuration',
+  options = {}
+) {
+  const configuration = expectKeys(value, [
+    'capability',
+    'unavailableReason',
+    'enabled',
+    'mode',
+    'domain',
+    'contactEmail',
+    'autoRenew',
+    'certificateConfigured',
+    'certificateIssuer',
+    'certificateExpiresAt',
+    'updatedAt'
+  ], path);
+  expectOneOf(configuration.capability, CONFIGURATION_CAPABILITIES, `${path}.capability`);
+  expectNullableString(configuration.unavailableReason, `${path}.unavailableReason`);
+  expectBoolean(configuration.enabled, `${path}.enabled`);
+  expectOneOf(configuration.mode, TLS_CERTIFICATE_MODES, `${path}.mode`);
+  const domain = expectString(configuration.domain, `${path}.domain`, { allowEmpty: true });
+  const contactEmail = expectString(
+    configuration.contactEmail,
+    `${path}.contactEmail`,
+    { allowEmpty: true }
+  );
+  expectBoolean(configuration.autoRenew, `${path}.autoRenew`);
+  expectBoolean(configuration.certificateConfigured, `${path}.certificateConfigured`);
+  expectNullableString(configuration.certificateIssuer, `${path}.certificateIssuer`);
+  expectNullableIsoTimestamp(
+    configuration.certificateExpiresAt,
+    `${path}.certificateExpiresAt`
+  );
+  expectNullableIsoTimestamp(configuration.updatedAt, `${path}.updatedAt`);
+
+  assert(domain === domain.toLowerCase(), `${path}.domain should be normalized`);
+  assert(contactEmail === contactEmail.toLowerCase(), `${path}.contactEmail should be normalized`);
+  if (configuration.enabled) {
+    expectString(domain, `${path}.domain`);
+  }
+  if (configuration.enabled && configuration.mode === 'AUTOMATIC') {
+    assert(contactEmail.includes('@'), `${path}.contactEmail should look like an e-mail address`);
+  }
+  if (configuration.mode === 'MANUAL') {
+    assert(configuration.autoRenew === false, `${path}.autoRenew should be false in manual mode`);
+  }
   assertNoWriteOnlyConfiguration(configuration, path, options.forbiddenValues ?? []);
   return configuration;
 }

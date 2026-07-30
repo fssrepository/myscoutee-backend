@@ -5,6 +5,22 @@
 * Group dating allows to shift business model towards affiliate systems (e.g.: Booking.com) from subscription.
 * The algorithm can be used even on job site. (rate on jobs or ideas etc.)
 
+Official manuals
+----------------
+
+The released English manuals are versioned PDF files and can be downloaded
+directly from GitHub.
+
+| Manual | Document version | Applicable software | Download |
+|---|---:|---:|---|
+| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](docs/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf?raw=1) |
+| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](docs/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf?raw=1) |
+| User Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](docs/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf?raw=1) |
+
+The editable sources and PDF regeneration instructions are in
+[`docs/manuals`](docs/manuals/README.md). The remaining project documentation
+is indexed under [`docs`](docs/README.md).
+
 Contribution:
 -------------
 * MVP readiness with some issues - just notify me about your website that my effort is not wasted.
@@ -150,7 +166,7 @@ The signed item is immediately visible through the registry feed and remains
 in the isolated `myscoutee-registry-dev-demo-data-v1` volume after a registry
 container restart. Once an authenticated development deployment has selected,
 verified, initialized, and registered against that local registry, reopening
-Közösség loads the same signed feed through Java. An active `UPDATE`
+Community loads the same signed feed through Java. An active `UPDATE`
 announcement also drives the update badge; it still requires an explicit
 operator approval before any package is downloaded or installed. Complete
 publisher input, idempotency, update-manifest, cursor, restart, and optional

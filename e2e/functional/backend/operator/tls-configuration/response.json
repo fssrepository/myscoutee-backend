@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "body": {
+    "type": "object",
+    "required": [
+      "capability",
+      "unavailableReason",
+      "enabled",
+      "mode",
+      "domain",
+      "contactEmail",
+      "autoRenew",
+      "certificateConfigured",
+      "certificateIssuer",
+      "certificateExpiresAt",
+      "updatedAt"
+    ]
+  }
+}

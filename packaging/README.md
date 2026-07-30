@@ -269,7 +269,7 @@ MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
 This is a read-only artifact preflight, not an upgrade or restore. The complete
 oldest-supported upgrade, interruption, clean-host restore, multi-registry,
 load, and security procedures are documented in
-`plans/PRODUCTION_QUALIFICATION.md`.
+`docs/plans/PRODUCTION_QUALIFICATION.md`.
 
 The package separates locally generated deployment secrets from external
 provider credentials:

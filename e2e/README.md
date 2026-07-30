@@ -78,8 +78,9 @@ node e2e/functional/backend/run.mjs --case profile/auth-me --record
 Operator contracts use the seeded `operator-demo-dev` identity and exercise
 the distinct `O` authority across the operator controllers, bootstrap and
 request-validation boundaries, registry/configuration state, settlement
-queries, local revenue invariants, community providers, update visibility,
-and demo-isolated Firebase capability tests:
+queries, managed TLS fail-closed and secret boundaries, local revenue
+invariants, community providers, update visibility, and demo-isolated
+Firebase capability tests:
 
 ```bash
 node e2e/functional/backend/run.mjs --group operator

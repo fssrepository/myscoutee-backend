@@ -309,12 +309,6 @@
       {
         collection: "notificationOutbox",
         selector: outboxSelector
-      },
-      {
-        collection: "notificationRuleConfigs",
-        selector: {
-          ruleKey: { $in: ["notification-outbox", "affinity-recompute"] }
-        }
       }
     ];
     if (context.mode === "rating") {
