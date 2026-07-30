@@ -17,7 +17,7 @@ fail() {
   exit 1
 }
 
-for command_name in dpkg-deb jq python3 rsync tar; do
+for command_name in dpkg-deb jq node python3 rsync tar; do
   command -v "${command_name}" >/dev/null 2>&1 \
     || fail "required test command is missing: ${command_name}"
 done
@@ -38,6 +38,10 @@ bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
   || fail "numeric host ownership policy regression"
 bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
   || fail "production i18n runtime seed synchronization regression"
+bash "${REPO_ROOT}/server/docker/images/mongodb-sync/dev/mongodb-seed-sync-test.sh" >/dev/null \
+  || fail "Mongo seed watcher lost a file update during import"
+node "${REPO_ROOT}/tools/normalize-chat-seed.mjs" >/dev/null \
+  || fail "demo chat seed membership or message-summary regression"
 
 FRONTEND_SYNC_ROOT="${TEST_ROOT}/frontend-sync"
 FRONTEND_SYNC_TARGET="${TEST_ROOT}/nginx-html"
