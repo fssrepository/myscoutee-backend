@@ -347,6 +347,9 @@ public class OperatorGlobalIdentityPresenceReportService {
                     key,
                     qmau.getPeriod(),
                     detailed.qualifiedUserIds());
+            requireEveryQualifiedUserPrepared(
+                    detailed.qualifiedUserIds(),
+                    commitments);
         } catch (PresenceCapacityExceededException exception) {
             return blockCapacityExceeded(
                     runtime,
@@ -429,6 +432,18 @@ public class OperatorGlobalIdentityPresenceReportService {
         }
         commitments.sort(String::compareTo);
         return List.copyOf(commitments);
+    }
+
+    static void requireEveryQualifiedUserPrepared(
+            List<String> qualifiedUserIds,
+            List<String> commitments) {
+        long qualifiedUserCount = qualifiedUserIds.stream()
+                .distinct()
+                .count();
+        if (commitments.size() != qualifiedUserCount) {
+            throw new IllegalStateException(
+                    "Registry identity preparation must include every qualified user.");
+        }
     }
 
     private static boolean matchesAcceptedSource(
