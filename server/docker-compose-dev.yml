@@ -54,7 +54,7 @@ services:
       redis:
         condition: service_started
       profilemanagement:
-        condition: service_started
+        condition: service_healthy
       frontend-sync:
         condition: service_healthy
       #- certbot
@@ -211,12 +211,14 @@ services:
     working_dir: /workspace
     user: "${UID:-1000}:${GID:-1000}"
     command:
-      - sh
+      - bash
       - -lc
-      - set -e; /bin/sh /workspace/docker/scripts/ensure_operator_configuration_master_key.sh; BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; if [ "$${PROFILEMANAGEMENT_HOT_RELOAD}" = "true" ]; then ./gradlew :projects:profile:classes --continuous & fi; exec ./gradlew $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
+      - /bin/sh /workspace/docker/scripts/ensure_operator_configuration_master_key.sh && exec bash /workspace/docker/scripts/start_profilemanagement_dev.sh
     environment:
       HOME: /workspace
-      GRADLE_USER_HOME: /workspace/.gradle
+      # Do not share Gradle locks with host-side IDE/CLI daemons. The repository
+      # is bind-mounted, so the default /workspace/.gradle path is the host cache.
+      GRADLE_USER_HOME: /workspace/.gradle-docker
       PROFILEMANAGEMENT_HOT_RELOAD: "${PROFILEMANAGEMENT_HOT_RELOAD:-true}"
       PROFILEMANAGEMENT_DEBUG_PORT: "${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
       SPRING_PROFILES_ACTIVE: "dev"
@@ -229,7 +231,7 @@ services:
       CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
       FIREBASE_ENABLED: "false"
       DEV_USER: "dev@myscoutee.local"
-      OPERATOR_USER: "${OPERATOR_USER:-dev@myscoutee.local}"
+      OPERATOR_USER: "${OPERATOR_USER:-operator@myscoutee.local}"
       OPERATOR_CONFIGURATION_MASTER_KEY_PATH: "/workspace/data/configuration/deployment-master-key"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
@@ -255,6 +257,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '>/dev/tcp/127.0.0.1/8080'"]
+      interval: 2s
+      timeout: 2s
+      retries: 120
+      start_period: 20s
     depends_on:
       mongodb:
         condition: service_started
@@ -275,13 +283,10 @@ services:
     container_name: frontend-sync
     hostname: frontend-sync
     user: "${UID:-1000}:${GID:-1000}"
+    restart: unless-stopped
     command: >
       bash -c "rm -f /workspace/nginx-html/.frontend-ready;
-      while true; do
-      bash /scripts/frontend_auto_watch.sh || true;
-      echo 'frontend-sync watcher restarting in 3s...';
-      sleep 3;
-      done"
+      exec bash /scripts/frontend_auto_watch.sh"
     environment:
       FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
@@ -292,7 +297,6 @@ services:
       WATCHPACK_POLLING_INTERVAL: "${WATCHPACK_POLLING_INTERVAL:-1000}"
       CHOKIDAR_USEPOLLING: "${CHOKIDAR_USEPOLLING:-true}"
       CHOKIDAR_INTERVAL: "${CHOKIDAR_INTERVAL:-1000}"
-      WAIT_FOR_HOSTS: "profilemanagement:8080"
       SYNC_DEBOUNCE_SECONDS: "2"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:

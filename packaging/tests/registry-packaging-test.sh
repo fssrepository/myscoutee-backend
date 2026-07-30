@@ -768,6 +768,7 @@ for compose_file in \
 done
 
 DEMO_DEV_COMPOSE="${REPO_ROOT}/server/docker-compose-dev.yml"
+DEMO_DEV_PROFILE_SCRIPT="${REPO_ROOT}/server/docker/scripts/start_profilemanagement_dev.sh"
 CANONICAL_DEV_COMPOSE="${REPO_ROOT}/server/docker-compose.yml"
 DEMO_USERS="${REPO_ROOT}/server/docker/conf/mongodb/demo_db/users.json"
 E2E_USERS="${REPO_ROOT}/server/docker/conf/mongodb/e2e_db/users.json"
@@ -782,6 +783,21 @@ if grep -Fq 'REGISTRY_DEMO_MODE' "${DEMO_DEV_COMPOSE}"; then
 fi
 grep -Fq 'myscoutee-registry-dev-demo-data-v1' "${DEMO_DEV_COMPOSE}" \
   || fail "normal dev Compose does not use its explicit demo SQLite/signing-key volume"
+grep -Fq 'GRADLE_USER_HOME: /workspace/.gradle-docker' "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev Compose shares Gradle cache locks with host-side daemons"
+grep -Fq 'start_profilemanagement_dev.sh' "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev Compose does not serialize API startup before the continuous compiler"
+bash -n "${DEMO_DEV_PROFILE_SCRIPT}" \
+  || fail "normal dev profile startup script has invalid shell syntax"
+grep -Fq 'Profilemanagement is ready; starting the continuous compiler' "${DEMO_DEV_PROFILE_SCRIPT}" \
+  || fail "normal dev profile startup script starts both Gradle builds concurrently"
+grep -Fq 'exec bash /scripts/frontend_auto_watch.sh' "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev frontend sync hides watcher failures in a shell restart loop"
+if grep -Fq 'WAIT_FOR_HOSTS: "profilemanagement:8080"' "${DEMO_DEV_COMPOSE}"; then
+  fail "normal dev frontend sync is still coupled to API readiness"
+fi
+grep -Fq "bash -c '>/dev/tcp/127.0.0.1/8080'" "${DEMO_DEV_COMPOSE}" \
+  || fail "normal dev API does not expose a direct readiness healthcheck"
 grep -Fq '/workspace/data/registry-demo-keys/' "${DEMO_DEV_COMPOSE}" \
   || fail "local demo deployment keys are not separated from production keys"
 grep -Fq '/workspace/data/registry-demo-state' "${DEMO_DEV_COMPOSE}" \
@@ -879,7 +895,7 @@ if docker compose version >/dev/null 2>&1; then
     and .services.registry.environment.REGISTRY_SIGNING_KEY_PATH == "/data/registry-demo-signing-key.pem"
     and .volumes["registry-dev-demo-data"].name == "myscoutee-registry-dev-demo-data-v1"
     and .services.profilemanagement.environment.MONGODB_DATABASE == "demo_db"
-    and .services.profilemanagement.environment.OPERATOR_USER == "dev@myscoutee.local"
+    and .services.profilemanagement.environment.OPERATOR_USER == "operator@myscoutee.local"
     and .services.profilemanagement.environment.REGISTRY_DEMO_PRIVATE_KEY_PATH
       == "/workspace/data/registry-demo-keys/deployment-private-key.pem"
     and .services.profilemanagement.environment.REGISTRY_DEMO_STATE_DIR
