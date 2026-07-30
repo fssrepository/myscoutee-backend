@@ -22,6 +22,21 @@ for command_name in dpkg-deb jq python3 rsync tar; do
     || fail "required test command is missing: ${command_name}"
 done
 
+for verifier_source in \
+  README.md \
+  run.mjs \
+  checks.mjs \
+  lib/assertions.mjs \
+  lib/http.mjs; do
+  [[ -f "${REPO_ROOT}/packaging/verify-deployment/${verifier_source}" ]] \
+    || fail "deployment verifier source is missing: ${verifier_source}"
+done
+[[ ! -e "${REPO_ROOT}/smoke" && ! -e "${REPO_ROOT}/packaging/smoke" ]] \
+  || fail "deployment verifier still has an ambiguous smoke source path"
+
+bash "${SCRIPT_DIR}/numeric-ownership-policy-test.sh" >/dev/null \
+  || fail "numeric host ownership policy regression"
+
 FRONTEND_SYNC_ROOT="${TEST_ROOT}/frontend-sync"
 FRONTEND_SYNC_TARGET="${TEST_ROOT}/nginx-html"
 install -d \
@@ -156,6 +171,8 @@ DEB_PATH="$(
   bash "${PACKAGE_SCRIPT}" | tail -n 1
 )"
 [[ -f "${DEB_PATH}" ]] || fail "package-content fixture was not built"
+[[ "$(stat -c '%a' "${DEB_PATH}")" == "644" ]] \
+  || fail "Debian release artifact is not mode 0644"
 
 CONTENTS="${TEST_ROOT}/contents.txt"
 dpkg-deb --fsys-tarfile "${DEB_PATH}" | tar -tf - > "${CONTENTS}"
@@ -182,6 +199,10 @@ grep -Fxq \
   './opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh' \
   "${CONTENTS}" \
   || fail "operator configuration key initializer is missing"
+grep -Fxq \
+  './opt/myscoutee/packaging/scripts/image-content-fingerprint.sh' \
+  "${CONTENTS}" \
+  || fail "portable managed-image fingerprint helper is missing"
 if grep -Fxq './etc/myscoutee/configuration/deployment-master-key' \
   "${CONTENTS}"; then
   fail "operator configuration master key was embedded in the package"
@@ -207,11 +228,63 @@ grep -Fxq \
   './opt/myscoutee/packaging/scripts/myscoutee-tls-worker.sh' \
   "${CONTENTS}" \
   || fail "privileged TLS worker is missing"
+for host_helper in \
+  qualify-deployment.sh \
+  deployment-diagnostics.sh; do
+  grep -Fxq "./opt/myscoutee/packaging/scripts/${host_helper}" \
+    "${CONTENTS}" \
+    || fail "installed host qualification helper is missing: ${host_helper}"
+done
+for operator_helper in \
+  README.md \
+  VERSION \
+  install.env.example \
+  install.sh \
+  purge.sh \
+  forward-localhost.sh \
+  remote-transport.sh \
+  verify-release.sh \
+  verify-deployment/README.md \
+  verify-deployment/run.mjs \
+  verify-deployment/checks.mjs \
+  verify-deployment/lib/assertions.mjs \
+  verify-deployment/lib/http.mjs; do
+  grep -Fxq "./usr/share/myscoutee/client-tools/${operator_helper}" \
+    "${CONTENTS}" \
+    || fail "Operator client helper is missing: ${operator_helper}"
+done
+if grep -Fxq './usr/share/myscoutee/client-tools/install.env' "${CONTENTS}"; then
+  fail "local Operator target credentials were embedded in the package"
+fi
 grep -Fxq './opt/myscoutee/packaging/IMAGE-MANIFEST.json' "${CONTENTS}" \
   || fail "package image manifest is missing"
 
 EXTRACTED="${TEST_ROOT}/extracted"
 dpkg-deb -x "${DEB_PATH}" "${EXTRACTED}"
+[[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh" ]] \
+  || fail "portable managed-image fingerprint helper is not executable"
+CLIENT_TOOLS_ARCHIVE="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"
+[[ -s "${CLIENT_TOOLS_ARCHIVE}" ]] \
+  || fail "standalone Operator client-tools archive is missing"
+[[ "$(stat -c '%a' "${CLIENT_TOOLS_ARCHIVE}")" == "644" ]] \
+  || fail "standalone Operator client-tools archive is not mode 0644"
+CLIENT_TOOLS_CONTENTS="${TEST_ROOT}/client-tools-contents.txt"
+tar -tzf "${CLIENT_TOOLS_ARCHIVE}" > "${CLIENT_TOOLS_CONTENTS}"
+for verifier_member in \
+  README.md \
+  run.mjs \
+  checks.mjs \
+  lib/assertions.mjs \
+  lib/http.mjs; do
+  grep -Fxq "./verify-deployment/${verifier_member}" \
+    "${CLIENT_TOOLS_CONTENTS}" \
+    || fail "standalone Operator archive omits deployment verifier member ${verifier_member}"
+done
+grep -Fxq './install.env.example' "${CLIENT_TOOLS_CONTENTS}" \
+  || fail "standalone Operator archive omits safe configuration example"
+if grep -Fxq './install.env' "${CLIENT_TOOLS_CONTENTS}"; then
+  fail "local Operator target credentials were embedded in the client-tools archive"
+fi
 jq -e \
   '.schemaVersion == 1
     and .releaseVersion == "1.0.0"

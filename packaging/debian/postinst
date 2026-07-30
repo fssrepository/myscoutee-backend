@@ -1,40 +1,80 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+case "${1:-}" in
+  configure)
+    ;;
+  abort-upgrade|abort-remove|abort-deconfigure)
+    # A failed package transition must not rerun the full deployment
+    # configuration path as a recovery side effect.
+    exit 0
+    ;;
+  *)
+    echo "Unsupported MyScoutee postinst action: ${1:-missing}" >&2
+    exit 1
+    ;;
+esac
+
 MYSCOUTEE_API_UID=10001
 MYSCOUTEE_API_GID=10001
 
+install_numeric_owned_directory() {
+  local mode="$1"
+  local owner_uid="$2"
+  local owner_gid="$3"
+  shift 3
+
+  [[ "${owner_uid}" =~ ^[0-9]+$ && "${owner_gid}" =~ ^[0-9]+$ ]] || {
+    echo "MyScoutee directory ownership must use numeric IDs." >&2
+    return 1
+  }
+  install -d -m "${mode}" -- "$@"
+  chown "+${owner_uid}:+${owner_gid}" -- "$@"
+  chmod "${mode}" -- "$@"
+}
+
 install -d -m 0755 /etc/myscoutee
-install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/configuration
-install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry
+install_numeric_owned_directory \
+  0750 0 "${MYSCOUTEE_API_GID}" /etc/myscoutee/configuration
+install_numeric_owned_directory \
+  0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry
 install -d -m 0755 /opt/myscoutee/server
 install -d -m 0755 /opt/myscoutee/server/docker/conf/nginx/keys
 install -d -m 0755 /opt/myscoutee/server/projects/profile/secrets
 install -d -m 0755 /var/lib/myscoutee/data
-install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry
+install_numeric_owned_directory \
+  0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry
 install -d -m 0700 /var/lib/myscoutee/update
 install -d -m 0700 /var/lib/myscoutee/update/inbox
-install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/inbox/requests
-install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/inbox/staging
+install_numeric_owned_directory \
+  0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" \
+  /var/lib/myscoutee/update/inbox/requests \
+  /var/lib/myscoutee/update/inbox/staging
 install -d -m 0700 /var/lib/myscoutee/update/archive
 install -d -m 0700 /var/lib/myscoutee/update/archive/processing
 install -d -m 0700 /var/lib/myscoutee/update/archive/completed
 install -d -m 0700 /var/lib/myscoutee/update/archive/failed
 install -d -m 0700 /var/lib/myscoutee/update/archive/rejected
 install -d -m 0700 /var/lib/myscoutee/update/runtime
-install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/runtime/jobs
-install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/update
+install_numeric_owned_directory \
+  0750 0 "${MYSCOUTEE_API_GID}" \
+  /var/lib/myscoutee/update/runtime/jobs \
+  /etc/myscoutee/update
 install -d -m 0700 /var/cache/myscoutee-update
 install -d -m 0700 /var/cache/myscoutee-update/jobs
 install -d -m 0755 /var/log/myscoutee
 install -d -m 0700 /var/log/myscoutee/update
 install -d -m 0700 /var/lib/myscoutee/tls
 install -d -m 0700 /var/lib/myscoutee/tls/inbox
-install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/inbox/requests
+install_numeric_owned_directory \
+  0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" \
+  /var/lib/myscoutee/tls/inbox/requests
 install -d -m 0700 /var/lib/myscoutee/tls/archive
 install -d -m 0700 /var/lib/myscoutee/tls/archive/processing
-install -d -m 0750 -o root -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime
-install -d -m 2750 -o root -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime/jobs
+install_numeric_owned_directory \
+  0750 0 "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime
+install_numeric_owned_directory \
+  2750 0 "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime/jobs
 install -d -m 0755 /var/lib/myscoutee/data/certbot/conf
 install -d -m 0755 /var/lib/myscoutee/data/certbot/www
 install -d -m 0755 /var/backups/myscoutee
@@ -49,17 +89,19 @@ MYSCOUTEE_CONFIGURATION_OWNER_GID="${MYSCOUTEE_API_GID}" \
 # Migrate preserved registry identity/state to the unprivileged production API
 # user. Symlinks are not followed.
 chown -R --no-dereference \
-  "${MYSCOUTEE_API_UID}:${MYSCOUTEE_API_GID}" \
+  "+${MYSCOUTEE_API_UID}:+${MYSCOUTEE_API_GID}" \
   /etc/myscoutee/registry \
   /var/lib/myscoutee/registry
 if [[ -f /etc/myscoutee/update/release-public-key.pem \
   && ! -L /etc/myscoutee/update/release-public-key.pem ]]; then
-  chown root:"${MYSCOUTEE_API_GID}" /etc/myscoutee/update/release-public-key.pem
+  chown "+0:+${MYSCOUTEE_API_GID}" -- \
+    /etc/myscoutee/update/release-public-key.pem
   chmod 0640 /etc/myscoutee/update/release-public-key.pem
 fi
 if [[ -f /etc/myscoutee/firebase-service-account.json \
   && ! -L /etc/myscoutee/firebase-service-account.json ]]; then
-  chown root:"${MYSCOUTEE_API_GID}" /etc/myscoutee/firebase-service-account.json
+  chown "+0:+${MYSCOUTEE_API_GID}" -- \
+    /etc/myscoutee/firebase-service-account.json
   chmod 0640 /etc/myscoutee/firebase-service-account.json
 fi
 
@@ -76,6 +118,77 @@ generate_secret() {
 
   echo "Unable to generate production secrets: openssl is missing and /dev/urandom is unavailable." >&2
   exit 1
+}
+
+ensure_bootstrap_tls_pair() {
+  local certificate_path="$1"
+  local private_key_path="$2"
+  local certificate_exists=false
+  local private_key_exists=false
+  local certificate_directory
+  local private_key_directory
+  local temporary_directory
+
+  if [[ -e "${certificate_path}" || -L "${certificate_path}" ]]; then
+    certificate_exists=true
+  fi
+  if [[ -e "${private_key_path}" || -L "${private_key_path}" ]]; then
+    private_key_exists=true
+  fi
+
+  if [[ "${certificate_exists}" == true \
+    && "${private_key_exists}" == true ]]; then
+    return 0
+  fi
+
+  if [[ "${certificate_exists}" != "${private_key_exists}" ]]; then
+    echo "A partial operator-managed TLS configuration was found." >&2
+    echo "Preserving the existing certificate or private key without replacement." >&2
+    echo "Restore the missing counterpart, or explicitly remove the remaining file before reconfiguring the package:" >&2
+    echo "  certificate: ${certificate_path}" >&2
+    echo "  private key: ${private_key_path}" >&2
+    return 1
+  fi
+
+  if ! command -v openssl >/dev/null 2>&1; then
+    echo "openssl is missing; cannot create the initial localhost TLS certificate." >&2
+    return 1
+  fi
+
+  certificate_directory="$(dirname -- "${certificate_path}")"
+  private_key_directory="$(dirname -- "${private_key_path}")"
+  if [[ "${certificate_directory}" != "${private_key_directory}" ]]; then
+    echo "The bootstrap TLS certificate and private key must use the same directory." >&2
+    return 1
+  fi
+
+  temporary_directory="$(
+    mktemp -d "${certificate_directory}/.myscoutee-bootstrap-tls.XXXXXX"
+  )"
+  if ! openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+      -keyout "${temporary_directory}/nginx-nopass.key" \
+      -out "${temporary_directory}/nginx.crt" \
+      -subj "/CN=localhost" \
+      -sha256 \
+      -addext "subjectAltName=DNS:localhost,IP:127.0.0.1" \
+      >/dev/null 2>&1; then
+    rm -rf -- "${temporary_directory}"
+    echo "Failed to create the initial localhost TLS certificate." >&2
+    return 1
+  fi
+  chmod 0600 "${temporary_directory}/nginx-nopass.key"
+  chmod 0644 "${temporary_directory}/nginx.crt"
+
+  if [[ -e "${certificate_path}" || -L "${certificate_path}" \
+    || -e "${private_key_path}" || -L "${private_key_path}" ]]; then
+    rm -rf -- "${temporary_directory}"
+    echo "TLS files appeared while the bootstrap pair was being generated; preserving them without replacement." >&2
+    return 1
+  fi
+
+  mv -- "${temporary_directory}/nginx-nopass.key" "${private_key_path}"
+  mv -- "${temporary_directory}/nginx.crt" "${certificate_path}"
+  rmdir -- "${temporary_directory}"
 }
 
 install_generated_secrets_file() {
@@ -248,12 +361,15 @@ ensure_service_images() {
 }
 
 verify_packaged_image_manifest() {
-  local manifest version reference expected_id actual_id
+  local fingerprint_helper manifest version reference expected_fingerprint
+  local actual_fingerprint
   local -a images=()
 
+  fingerprint_helper="/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh"
   manifest="/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
   version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION)"
-  if [[ ! -f "${manifest}" || -L "${manifest}" ]] \
+  if [[ ! -f "${fingerprint_helper}" || -L "${fingerprint_helper}" ]] \
+    || [[ ! -f "${manifest}" || -L "${manifest}" ]] \
     || ! jq -e --arg version "${version}" '
       .schemaVersion == 1
       and .releaseVersion == $version
@@ -263,21 +379,23 @@ verify_packaged_image_manifest() {
         == ["minio", "nginx", "nginx-base", "profilemanagement", "registry-demo"])
       and all(.images[];
         (.reference | type == "string")
-        and (.imageId | test("^sha256:[0-9a-f]{64}$")))
+        and (.imageId | test("^sha256:[0-9a-f]{64}$"))
+        and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$")))
     ' "${manifest}" >/dev/null; then
     echo "The package bundled-image manifest is missing or invalid." >&2
     exit 1
   fi
 
   mapfile -t images < <(
-    jq -r '.images[] | [.reference, .imageId] | @tsv' "${manifest}"
+    jq -r '.images[] | [.reference, .contentFingerprint] | @tsv' "${manifest}"
   )
   for image in "${images[@]}"; do
-    IFS=$'\t' read -r reference expected_id <<< "${image}"
-    actual_id="$(docker image inspect --format '{{.Id}}' \
-      "${reference}" 2>/dev/null || true)"
-    if [[ "${actual_id}" != "${expected_id}" ]]; then
-      echo "Bundled image identity mismatch for ${reference}." >&2
+    IFS=$'\t' read -r reference expected_fingerprint <<< "${image}"
+    actual_fingerprint="$(
+      bash "${fingerprint_helper}" docker "${reference}" 2>/dev/null || true
+    )"
+    if [[ "${actual_fingerprint}" != "${expected_fingerprint}" ]]; then
+      echo "Bundled image content mismatch for ${reference}." >&2
       exit 1
     fi
   done
@@ -342,7 +460,8 @@ elif [[ ! -f /etc/myscoutee/firebase-service-account.json ]]; then
   fi
   printf '{}\n' > /etc/myscoutee/firebase-service-account.json
 fi
-chown root:"${MYSCOUTEE_API_GID}" /etc/myscoutee/firebase-service-account.json
+chown "+0:+${MYSCOUTEE_API_GID}" -- \
+  /etc/myscoutee/firebase-service-account.json
 chmod 0640 /etc/myscoutee/firebase-service-account.json
 
 if ! grep -q '^[[:space:]]*MONGO_REPLICA_SET_ENABLED=' /etc/myscoutee/myscoutee.env; then
@@ -378,18 +497,9 @@ if [[ ! -e /opt/myscoutee/server/data ]]; then
   ln -sfn /var/lib/myscoutee/data /opt/myscoutee/server/data
 fi
 
-if [[ ! -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt || ! -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key ]]; then
-  if command -v openssl >/dev/null 2>&1; then
-    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
-      -keyout /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key \
-      -out /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt \
-      -subj "/CN=localhost" >/dev/null 2>&1
-    chmod 0600 /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key
-    chmod 0644 /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt
-  else
-    echo "openssl is missing; create nginx.crt and nginx-nopass.key before starting MyScoutee." >&2
-  fi
-fi
+ensure_bootstrap_tls_pair \
+  /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt \
+  /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key
 
 if command -v docker >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
   systemctl enable --now docker

@@ -13,13 +13,13 @@ directly from GitHub.
 
 | Manual | Document version | Applicable software | Download |
 |---|---:|---:|---|
-| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
-| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
-| User Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/docs/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
+| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
+| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
+| User Manual | 1.0.0 | MyScoutee 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 
 The editable sources and PDF regeneration instructions are in
-[`docs/manuals`](docs/manuals/README.md). The remaining project documentation
-is indexed under [`docs`](docs/README.md).
+[`guides/manuals`](guides/manuals/README.md). The remaining project guidance
+is indexed under [`guides`](guides/README.md).
 
 Contribution:
 -------------
@@ -173,5 +173,5 @@ Community loads the same signed feed through Java. An active `UPDATE`
 announcement also drives the update badge; it still requires an explicit
 operator approval before any package is downloaded or installed. Complete
 publisher input, idempotency, update-manifest, cursor, restart, and optional
-dev-volume reset instructions are in
-`../myscoutee-registry/docs/announcements-v1.md`.
+dev-volume reset instructions are in the
+[MyScoutee Registry Protocol Developer Manual](../myscoutee-registry/guides/manuals/MyScoutee_Registry_Protocol_Developer_Manual_v1.0.0_EN.pdf).

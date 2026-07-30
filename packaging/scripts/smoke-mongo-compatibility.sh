@@ -190,7 +190,20 @@ http_get() {
 
 internal_get() {
   local path="$1"
-  docker exec myscoutee sh -lc "wget -qO- 'http://localhost:8080${path}'"
+  local internal_path="${path}"
+
+  [[ "${internal_path}" == /* \
+    && "${internal_path}" != *$'\n'* \
+    && "${internal_path}" != *$'\r'* ]] \
+    || fail "unsafe internal HTTP path"
+  case "${internal_path}" in
+    /api/*)
+      # Nginx removes the public /api prefix before proxying to Spring.
+      internal_path="${internal_path#/api}"
+      ;;
+  esac
+  docker exec myscoutee \
+    wget -qO- "http://localhost:8080${internal_path}"
 }
 
 check_http_or_internal() {

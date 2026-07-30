@@ -31,6 +31,21 @@ timestamp() {
   date -u '+%Y-%m-%dT%H:%M:%SZ'
 }
 
+install_numeric_owned_directory() {
+  local mode="$1"
+  local owner_uid="$2"
+  local owner_gid="$3"
+  shift 3
+
+  [[ "${owner_uid}" =~ ^[0-9]+$ && "${owner_gid}" =~ ^[0-9]+$ ]] || {
+    echo "TLS directory ownership must use numeric IDs." >&2
+    return 1
+  }
+  install -d -m "${mode}" -- "$@"
+  chown "+${owner_uid}:+${owner_gid}" -- "$@"
+  chmod "${mode}" -- "$@"
+}
+
 safe_domain() {
   local domain="$1"
   [[ -n "${domain}" && "${#domain}" -le 253 ]] || return 1
@@ -59,8 +74,10 @@ prepare_directories() {
   install -d -m 0700 \
     "${STATE_DIR}" "${STATE_DIR}/inbox" "${STATE_DIR}/archive" \
     "${PROCESSING_DIR}" "${STATE_DIR}/runtime" "${CERTBOT_CONF}"
-  install -d -m 0700 -o "${API_UID}" -g "${API_GID}" "${REQUEST_DIR}"
-  install -d -m 2750 -o "${WORKER_UID}" -g "${API_GID}" "${JOB_ROOT}"
+  install_numeric_owned_directory \
+    0700 "${API_UID}" "${API_GID}" "${REQUEST_DIR}"
+  install_numeric_owned_directory \
+    2750 "${WORKER_UID}" "${API_GID}" "${JOB_ROOT}"
   install -d -m 0755 "${CERTBOT_WWW}"
 }
 
@@ -70,7 +87,8 @@ write_status() {
   local job_dir="${JOB_ROOT}/${job_id}"
   local tmp
 
-  install -d -m 2750 -o "${WORKER_UID}" -g "${API_GID}" "${job_dir}"
+  install_numeric_owned_directory \
+    2750 "${WORKER_UID}" "${API_GID}" "${job_dir}"
   tmp="$(mktemp "${job_dir}/.status.XXXXXX")"
   jq -n \
     --arg jobId "${job_id}" \
@@ -88,7 +106,7 @@ write_status() {
       configuration: $configuration
     }' > "${tmp}"
   chmod 0640 "${tmp}"
-  chown "${WORKER_UID}:${API_GID}" "${tmp}"
+  chown "+${WORKER_UID}:+${API_GID}" -- "${tmp}"
   mv -f -- "${tmp}" "${job_dir}/status.json"
 }
 
@@ -200,7 +218,7 @@ persist_configuration() {
   tmp="$(mktemp "${STATE_DIR}/runtime/.configuration.XXXXXX")"
   printf '%s\n' "${configuration_json}" > "${tmp}"
   chmod 0640 "${tmp}"
-  chown "${WORKER_UID}:${API_GID}" "${tmp}"
+  chown "+${WORKER_UID}:+${API_GID}" -- "${tmp}"
   mv -f -- "${tmp}" "${CONFIGURATION_FILE}"
 }
 

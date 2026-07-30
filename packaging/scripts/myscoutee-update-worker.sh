@@ -13,6 +13,7 @@ AUDIT_DIR="${MYSCOUTEE_UPDATE_AUDIT_DIR:-/var/log/myscoutee/update}"
 RELEASE_PUBLIC_KEY="${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
 BACKUP_SCRIPT="${MYSCOUTEE_UPDATE_BACKUP_SCRIPT:-/opt/myscoutee/packaging/scripts/backup-production.sh}"
 SAFE_COPY_HELPER="${MYSCOUTEE_UPDATE_SAFE_COPY_HELPER:-${SCRIPT_DIR}/myscoutee-safe-copy.py}"
+IMAGE_CONTENT_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
 INSTALLED_MANIFEST_PATH="${MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH:-/opt/myscoutee/packaging/IMAGE-MANIFEST.json}"
 PACKAGE_NAME="myscoutee"
 MAX_ARTIFACT_BYTES="${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
@@ -69,6 +70,21 @@ JOB_CONTEXT_STATE=""
 
 timestamp() {
   date -u '+%Y-%m-%dT%H:%M:%SZ'
+}
+
+install_numeric_owned_directory() {
+  local mode="$1"
+  local owner_uid="$2"
+  local owner_gid="$3"
+  shift 3
+
+  [[ "${owner_uid}" =~ ^[0-9]+$ && "${owner_gid}" =~ ^[0-9]+$ ]] || {
+    echo "Update directory ownership must use numeric IDs." >&2
+    return 1
+  }
+  install -d -m "${mode}" -- "$@"
+  chown "+${owner_uid}:+${owner_gid}" -- "$@"
+  chmod "${mode}" -- "$@"
 }
 
 fsync_path() {
@@ -139,11 +155,11 @@ write_status() {
       backupPath: (if $backupPath == "" then null else $backupPath end)
     }' > "${tmp}"
   chmod 0640 "${tmp}"
-  chgrp "${API_GROUP_ID}" "${tmp}"
+  chgrp "+${API_GROUP_ID}" -- "${tmp}"
   mv -f -- "${tmp}" "${CURRENT_STATUS_FILE}"
   jq -c . "${CURRENT_STATUS_FILE}" >> "${CURRENT_EVENTS_FILE}"
   chmod 0640 "${CURRENT_EVENTS_FILE}"
-  chgrp "${API_GROUP_ID}" "${CURRENT_EVENTS_FILE}"
+  chgrp "+${API_GROUP_ID}" -- "${CURRENT_EVENTS_FILE}"
   fsync_path "${CURRENT_STATUS_FILE}"
   fsync_path "${CURRENT_EVENTS_FILE}"
   fsync_path "${CURRENT_JOB_DIR}"
@@ -179,6 +195,12 @@ require_runtime() {
   done
   [[ -x "${SAFE_COPY_HELPER}" && ! -L "${SAFE_COPY_HELPER}" ]] || {
     echo "The packaged safe-copy helper is missing or unsafe." >&2
+    return 1
+  }
+  [[ -f "${IMAGE_CONTENT_FINGERPRINT_HELPER}" \
+    && -x "${IMAGE_CONTENT_FINGERPRINT_HELPER}" \
+    && ! -L "${IMAGE_CONTENT_FINGERPRINT_HELPER}" ]] || {
+    echo "The packaged image fingerprint helper is missing or unsafe." >&2
     return 1
   }
   [[ "${MAX_ARTIFACT_BYTES}" =~ ^[1-9][0-9]*$ ]] || {
@@ -231,9 +253,11 @@ prepare_directories() {
     "${STATE_DIR}" "${INBOX_DIR}" "${ARCHIVE_DIR}" "${PROCESSING_DIR}" \
     "${COMPLETED_DIR}" "${FAILED_DIR}" "${REJECTED_DIR}" "${RUNTIME_DIR}" \
     "${CACHE_DIR}" "${CACHE_JOBS_DIR}" "${AUDIT_DIR}"
-  install -d -m 0700 -o "${API_USER_ID}" -g "${API_GROUP_ID}" \
+  install_numeric_owned_directory \
+    0700 "${API_USER_ID}" "${API_GROUP_ID}" \
     "${STAGING_DIR}" "${REQUEST_DIR}"
-  install -d -m 2750 -o "${WORKER_USER_ID}" -g "${API_GROUP_ID}" "${JOBS_DIR}"
+  install_numeric_owned_directory \
+    2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${JOBS_DIR}"
 }
 
 read_request() {
@@ -317,7 +341,7 @@ ensure_job_output_files() {
       : > "${path}"
     fi
     chmod 0640 "${path}"
-    chgrp "${API_GROUP_ID}" "${path}"
+    chgrp "+${API_GROUP_ID}" -- "${path}"
   done
 }
 
@@ -331,8 +355,8 @@ prepare_job_context() {
   done
 
   if [[ ! -e "${CURRENT_JOB_DIR}" && ! -e "${audit_job_dir}" ]]; then
-    install -d -m 2750 -o "${WORKER_USER_ID}" -g "${API_GROUP_ID}" \
-      "${CURRENT_JOB_DIR}"
+    install_numeric_owned_directory \
+      2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${CURRENT_JOB_DIR}"
     install -d -m 0700 "${audit_job_dir}"
     install -m 0600 "${CURRENT_REQUEST}" "${CURRENT_AUDIT_REQUEST}"
     ensure_job_output_files || return 1
@@ -341,8 +365,8 @@ prepare_job_context() {
   fi
 
   if [[ ! -d "${CURRENT_JOB_DIR}" ]]; then
-    install -d -m 2750 -o "${WORKER_USER_ID}" -g "${API_GROUP_ID}" \
-      "${CURRENT_JOB_DIR}"
+    install_numeric_owned_directory \
+      2750 "${WORKER_USER_ID}" "${API_GROUP_ID}" "${CURRENT_JOB_DIR}"
     JOB_CONTEXT_STATE="partial"
   fi
   if [[ ! -d "${audit_job_dir}" ]]; then
@@ -401,9 +425,10 @@ validate_image_manifest() {
     and all(.images[];
       type == "object"
       and ((keys | sort) == ([
-        "container", "imageId", "reference", "service"
+        "container", "contentFingerprint", "imageId", "reference", "service"
       ] | sort))
-      and (.imageId | test("^sha256:[0-9a-f]{64}$")))
+      and (.imageId | test("^sha256:[0-9a-f]{64}$"))
+      and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$")))
     and any(.images[];
       .service == "nginx-base"
       and .container == null
@@ -622,23 +647,30 @@ install_package() {
 
 verify_running_release() {
   local manifest="$1"
-  local container reference expected_image_id configured_reference running_image_id
+  local container reference expected_content_fingerprint configured_reference
+  local running_image_id actual_content_fingerprint
   local -a runtime_images=()
 
   validate_image_manifest "${manifest}" || return 1
   mapfile -t runtime_images < <(
     jq -r '.images[] | select(.container != null)
-      | [.container, .reference, .imageId] | @tsv' "${manifest}"
+      | [.container, .reference, .contentFingerprint] | @tsv' "${manifest}"
   )
   [[ "${#runtime_images[@]}" == "4" ]] || return 1
   for image in "${runtime_images[@]}"; do
-    IFS=$'\t' read -r container reference expected_image_id <<< "${image}"
+    IFS=$'\t' read -r \
+      container reference expected_content_fingerprint <<< "${image}"
     configured_reference="$(docker inspect --format '{{.Config.Image}}' \
       "${container}" 2>/dev/null || true)"
     running_image_id="$(docker inspect --format '{{.Image}}' \
       "${container}" 2>/dev/null || true)"
+    actual_content_fingerprint="$(
+      "${IMAGE_CONTENT_FINGERPRINT_HELPER}" \
+        docker "${running_image_id}" 2>/dev/null || true
+    )"
     [[ "${configured_reference}" == "${reference}" \
-      && "${running_image_id}" == "${expected_image_id}" ]] || return 1
+      && "${actual_content_fingerprint}" \
+        == "${expected_content_fingerprint}" ]] || return 1
     [[ "$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}missing{{end}}' \
       "${container}" 2>/dev/null || true)" == "healthy" ]] || return 1
   done

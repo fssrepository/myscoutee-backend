@@ -621,10 +621,10 @@ if grep -Fxq '/opt/myscoutee/packaging/scripts/ensure-deployment-identity.sh' \
   "${REPO_ROOT}/packaging/debian/postinst"; then
   fail "postinst initializes a node identity before operator consent"
 fi
-grep -Fq 'install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry' \
+grep -Fq '0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry' \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not create the API-owned deployment-key directory with mode 0700"
-grep -Fq 'install -d -m 0700 -o "${MYSCOUTEE_API_UID}" -g "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry' \
+grep -Fq '0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry' \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not create the API-owned registry-state directory with mode 0700"
 grep -Eq '^Depends:.*openssl' "${REPO_ROOT}/packaging/debian/control" \
@@ -715,23 +715,16 @@ if grep -Fq 'MONGO_IMAGE' "${REPO_ROOT}/packaging/debian/postrm" \
     || grep -Fq 'REDIS_IMAGE' "${REPO_ROOT}/packaging/debian/postrm"; then
   fail "package purge removes shared upstream MongoDB or Redis images"
 fi
-for managed_repository in \
-  myscoutee-api \
-  myscoutee-nginx \
-  myscoutee-minio \
-  myscoutee-registry; do
-  grep -Fq "${managed_repository}" \
-    "${REPO_ROOT}/tools/install/purge.sh" \
-    || fail "remote purge leaves managed repository ${managed_repository} behind"
-done
-grep -Fq 'registry-demo' \
-  "${REPO_ROOT}/tools/install/purge.sh" \
-  || fail "remote purge does not report a remaining Explore registry container"
-grep -Fq 'myscoutee-registry-demo-' \
-  "${REPO_ROOT}/tools/install/purge.sh" \
-  || fail "remote purge does not report remaining Explore registry volumes"
+OPERATOR_PURGE="${REPO_ROOT}/packaging/client-tools/purge.sh"
+grep -Fq 'apt-get purge -y myscoutee' "${OPERATOR_PURGE}" \
+  || fail "Operator purge wrapper does not delegate to Debian package lifecycle"
+if grep -Eq \
+    'myscoutee-(api|nginx|minio|registry)|registry-demo|docker (image|volume)' \
+    "${OPERATOR_PURGE}"; then
+  fail "Operator purge wrapper duplicates package-owned Docker cleanup policy"
+fi
 if grep -Fq 'rm -rf /var/backups/myscoutee' \
-    "${REPO_ROOT}/tools/install/purge.sh"; then
+    "${OPERATOR_PURGE}"; then
   fail "remote purge deletes the external deployment recovery archive"
 fi
 grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \

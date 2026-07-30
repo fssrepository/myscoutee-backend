@@ -17424,10 +17424,34 @@
     "value": "Compatibility"
   },
   {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-signing-key",
+    "key": "operator.community.announcement.artifact.signing.key",
+    "lang": "en",
+    "value": "Package signing key ID"
+  },
+  {
     "_id": "i18n-message-en-operator-community-announcement-artifact-signature",
     "key": "operator.community.announcement.artifact.signature",
     "lang": "en",
-    "value": "Signature"
+    "value": "Canonical Ed25519 signature"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-signature-status",
+    "key": "operator.community.announcement.artifact.signature.status",
+    "lang": "en",
+    "value": "Signature verification"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-signature-verified",
+    "key": "operator.community.announcement.artifact.signature.verified",
+    "lang": "en",
+    "value": "Release metadata verified by the pinned key"
+  },
+  {
+    "_id": "i18n-message-en-operator-community-announcement-artifact-signature-unverified",
+    "key": "operator.community.announcement.artifact.signature.unverified",
+    "lang": "en",
+    "value": "Release metadata not verified by the pinned key"
   },
   {
     "_id": "i18n-message-en-operator-community-announcement-link-release-notes",
@@ -35406,10 +35430,34 @@
     "value": "Kompatibilitás"
   },
   {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-signing-key",
+    "key": "operator.community.announcement.artifact.signing.key",
+    "lang": "hu",
+    "value": "Csomagaláíró kulcsazonosító"
+  },
+  {
     "_id": "i18n-message-hu-operator-community-announcement-artifact-signature",
     "key": "operator.community.announcement.artifact.signature",
     "lang": "hu",
-    "value": "Aláírás"
+    "value": "Kanonikus Ed25519-aláírás"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-signature-status",
+    "key": "operator.community.announcement.artifact.signature.status",
+    "lang": "hu",
+    "value": "Aláírás-ellenőrzés"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-signature-verified",
+    "key": "operator.community.announcement.artifact.signature.verified",
+    "lang": "hu",
+    "value": "Kiadási metaadat ellenőrizve a rögzített kulccsal"
+  },
+  {
+    "_id": "i18n-message-hu-operator-community-announcement-artifact-signature-unverified",
+    "key": "operator.community.announcement.artifact.signature.unverified",
+    "lang": "hu",
+    "value": "A kiadási metaadat nincs ellenőrizve a rögzített kulccsal"
   },
   {
     "_id": "i18n-message-hu-operator-community-announcement-link-release-notes",

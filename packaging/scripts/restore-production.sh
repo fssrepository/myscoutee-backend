@@ -556,7 +556,7 @@ restore_registry_identity() {
   fi
   if [[ "${EUID}" -eq 0 ]]; then
     chown -R --no-dereference \
-      "${MYSCOUTEE_API_UID:-10001}:${MYSCOUTEE_API_GID:-10001}" \
+      "+${MYSCOUTEE_API_UID:-10001}:+${MYSCOUTEE_API_GID:-10001}" \
       "${REGISTRY_KEY_DIR}" "${REGISTRY_STATE_DIR}"
   fi
 
@@ -584,7 +584,7 @@ stage_configuration_key() {
   chmod 0750 "${CONFIGURATION_KEY_DIR}"
   chmod 0640 "${STAGED_CONFIGURATION_KEY}"
   if [[ "${EUID}" -eq 0 ]]; then
-    chown root:"${MYSCOUTEE_API_GID:-10001}" \
+    chown "+0:+${MYSCOUTEE_API_GID:-10001}" -- \
       "${CONFIGURATION_KEY_DIR}" "${STAGED_CONFIGURATION_KEY}"
   fi
   sync -f "${STAGED_CONFIGURATION_KEY}"

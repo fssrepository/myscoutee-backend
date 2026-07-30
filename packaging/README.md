@@ -42,6 +42,16 @@ BUILD_ARTIFACTS=false PACKAGE_IMAGES=false \
 
 `package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images. During install, `postinst` checks Docker and prepares MongoDB, Redis, and MinIO images by pulling them if they are missing. Set `PACKAGE_OFFICIAL_IMAGES=true` only when you want a larger offline-style bundle that also includes those official service image archives.
 
+The same build also creates
+`packaging/dist/myscoutee-client-tools_<version>.tar.gz`. It contains only
+Operator-facing client wrappers, a secret-free configuration example, and the
+external read-only deployment verifier. Its canonical source is
+`packaging/verify-deployment`; release artifacts expose it at
+`verify-deployment` beside the client wrappers. The identical files are
+discoverable inside the DEB under `/usr/share/myscoutee/client-tools/`;
+development-only checkout and datastore-reset helpers are deliberately
+excluded.
+
 `MYSCOUTEE_VERSION` is always the plain SemVer core (`1.0.0`). Image purpose
 is expressed once in the derived tags (`1.0.0-base`, `1.0.0-dev`, and
 `1.0.0-prod`); do not use `1.0.0-prod` as the package/base version.
@@ -73,6 +83,11 @@ Nginx fails startup if the selected files are absent, empty, mismatched, or
 otherwise invalid. `postinst` creates a localhost self-signed pair only so a
 new node can be inspected locally before public TLS is configured. That pair
 is not a valid Internet-facing certificate and must not be treated as one.
+Normal package removal, deconfiguration, upgrade, and same-version reinstall
+preserve the operator-managed certificate and private key. If exactly one of
+the two files exists, package configuration fails closed and leaves that file
+unchanged; restore its counterpart or explicitly remove it before retrying if
+you intentionally want a new localhost bootstrap pair.
 
 For a first Let's Encrypt certificate, point the domain's public DNS at the
 deployment, make TCP port 80 reachable, stop MyScoutee so Certbot can bind that
@@ -217,6 +232,34 @@ The detached signature is canonical padded RFC 4648 base64. The release
 private key must never be installed on an application deployment or registry
 server.
 
+After building the DEB and matching client-tools archive, create the GitHub
+Release metadata with an externally stored, pre-existing Ed25519 PKCS#8 key:
+
+```bash
+tools/sign-release-artifacts.sh \
+  --private-key /secure/release-private-key.pem \
+  --deb packaging/dist/myscoutee_1.0.0_amd64.deb \
+  --client-tools packaging/dist/myscoutee-client-tools_1.0.0.tar.gz \
+  --channel stable \
+  --output-dir packaging/dist
+```
+
+The GitHub Release assets are the DEB, client-tools archive, and generated
+`myscoutee-release_<version>.json`; the public key may also be published for
+convenience. Its complete printed SPKI SHA-256 fingerprint must be pinned
+through an independent channel. Neither the public key downloaded beside the
+artifacts nor a key embedded in the first package can establish its own trust.
+The signer never creates, copies, or packages the private key.
+
+The release manifest separately signs the standalone client-tools archive
+with the domain `myscoutee-release-client-tools-v1`. Its embedded copy is also
+covered transitively by the DEB signature. The packaged
+`verify-release.sh` checks either downloaded artifact, both metadata
+signatures, the complete trusted-key fingerprint, and the selected artifact's
+size and SHA-256. `install.sh` refuses unsigned downloads by default; only a
+trusted locally built package may use the explicit
+`ALLOW_UNSIGNED_LOCAL_PACKAGE=true` development override.
+
 Progress is durable and reconnectable. Once the privileged worker accepts a
 request, its state supersedes the Java staging state and is available at:
 
@@ -250,9 +293,15 @@ rejection, and tamper rejection can be tested without starting the dev stack:
 ```bash
 bash packaging/tests/operator-bootstrap-test.sh
 bash packaging/tests/nginx-transport-policy-test.sh
+bash packaging/tests/debian-tls-lifecycle-test.sh
+bash packaging/tests/deployment-qualification-test.sh
+bash packaging/tests/client-tools-test.sh
+bash packaging/tests/numeric-ownership-policy-test.sh
 bash packaging/tests/update-worker-test.sh
+bash packaging/tests/image-content-fingerprint-test.sh
 bash packaging/tests/package-content-test.sh
 bash packaging/tests/debian-removal-contract-test.sh
+bash tools/tests/release-signing-test.sh
 ```
 
 Before a release drill, bind the evidence to the exact candidate package,
@@ -269,7 +318,14 @@ MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
 This is a read-only artifact preflight, not an upgrade or restore. The complete
 oldest-supported upgrade, interruption, clean-host restore, multi-registry,
 load, and security procedures are documented in
-`docs/plans/PRODUCTION_QUALIFICATION.md`.
+`guides/plans/PRODUCTION_QUALIFICATION.md`.
+
+Bundled managed images are bound both to their saved archive configuration
+digest and to a portable content fingerprint covering the platform, runtime
+configuration, and root filesystem layer digests. Installation and update
+health checks use the portable fingerprint because Docker daemon image IDs can
+change when the same archive is loaded through a different storage backend.
+Actual image content changes still fail closed.
 
 The package separates locally generated deployment secrets from external
 provider credentials:
