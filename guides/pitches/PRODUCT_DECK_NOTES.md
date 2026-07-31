@@ -10,6 +10,10 @@ Core pitch:
 > group candidates, and connects those groups directly to chat, events,
 > real-world coordination and structured feedback.
 
+Brand treatment: when the heart logo and product name form a wordmark, the
+logo replaces the leading **M** in **MyScoutee**; it is not placed before the
+complete product name.
+
 The product is designed around a different success event: a completed, mutually
 welcomed real-world meeting. The deck does not claim users, revenue, retention,
 product-market fit, or proven matching superiority.

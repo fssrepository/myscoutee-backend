@@ -702,7 +702,9 @@ public class OperatorConfigurationService {
                 request.productName(),
                 "Product name",
                 PRODUCT_NAME_MAX);
-        Integer logoCharacterIndex = request.logoCharacterIndex();
+        Integer logoCharacterIndex = request.logoCharacterIndex() == null
+                ? 0
+                : request.logoCharacterIndex();
         if (!validLogoCharacterIndex(productName, logoCharacterIndex)) {
             throw badRequest(
                     "Logo character index must identify a Unicode character "

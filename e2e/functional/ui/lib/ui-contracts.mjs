@@ -565,7 +565,7 @@ export async function performDemoLogin(page, options = {}) {
   await page.waitForSelector('app-entry-page', { timeoutMs });
   await acceptEntryPrivacyIfPresent(page, timeoutMs);
   await page.recordStep('suite-login-privacy-accepted');
-  await page.click('.entry-cta-primary', { timeoutMs });
+  await page.click('.entry-hero-cta-menu .app-menu__button-row-item:first-of-type', { timeoutMs });
   await waitForLoginDialogOrDemoSelector(page, timeoutMs);
   if (await page.isSelectorVisible('.dialog')) {
     await page.recordStep('suite-login-location-dialog');

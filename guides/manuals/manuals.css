@@ -196,22 +196,25 @@ tbody tr:nth-child(even) td {
 .cover-brand {
   align-items: center;
   border-bottom: 1px solid var(--line);
-  display: flex;
-  gap: 12px;
+  display: block;
   padding-bottom: 12px;
 }
 
-.cover-brand img {
-  height: 24mm;
-  object-fit: contain;
-  width: 24mm;
-}
-
 .cover-brand-name {
+  align-items: center;
   color: var(--navy);
+  display: flex;
   font-size: 22pt;
   font-weight: 800;
+  gap: 0.02em;
   letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.cover-brand-name img {
+  height: 1.18em;
+  object-fit: contain;
+  width: 1.18em;
 }
 
 .cover-brand-subtitle {

@@ -293,6 +293,16 @@ event editor create, and admin help editor image carousel checks.
 E2E_UI_BASE_URL=https://127.0.0.1 node e2e/functional/ui/run.mjs
 ```
 
+Run the mutation test that rates through the first game-card page and verifies
+the next page is fetched when two cards remain:
+
+```bash
+E2E_UI_BASE_URL=https://127.0.0.1 \
+node e2e/functional/ui/run.mjs \
+  --case game/last-two-preload \
+  --include-mutations
+```
+
 Record screenshots and per-step evidence:
 
 ```bash

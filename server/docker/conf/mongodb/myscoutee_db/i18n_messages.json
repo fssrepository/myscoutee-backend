@@ -16623,19 +16623,19 @@
     "_id": "i18n-message-en-operator-configuration-branding-logo-character-index",
     "key": "operator.configuration.branding.logo.character.index",
     "lang": "en",
-    "value": "Logo character position"
+    "value": "Logo replacement index"
   },
   {
     "_id": "i18n-message-en-operator-configuration-branding-logo-character-index-invalid",
     "key": "operator.configuration.branding.logo.character.index.invalid",
     "lang": "en",
-    "value": "Enter a whole number from 0 to the final character position, or leave it empty."
+    "value": "Enter a whole number from 0 to the final character position."
   },
   {
     "_id": "i18n-message-en-operator-configuration-branding-logo-guidance",
     "key": "operator.configuration.branding.logo.guidance",
     "lang": "en",
-    "value": "Recommended 512 × 512 px (1:1). JPEG, PNG, WebP or GIF; PNG/WebP preferred for transparency. Max 10 MB."
+    "value": "512 × 512 px (1:1) · PNG/WebP preferred · max 10 MB."
   },
   {
     "_id": "i18n-message-en-operator-configuration-branding-logo-heart-webp",
@@ -34821,19 +34821,19 @@
     "_id": "i18n-message-hu-operator-configuration-branding-logo-character-index",
     "key": "operator.configuration.branding.logo.character.index",
     "lang": "hu",
-    "value": "A logó karakterpozíciója"
+    "value": "A logó helyettesítési indexe"
   },
   {
     "_id": "i18n-message-hu-operator-configuration-branding-logo-character-index-invalid",
     "key": "operator.configuration.branding.logo.character.index.invalid",
     "lang": "hu",
-    "value": "Adj meg egész számot 0 és az utolsó karakter pozíciója között, vagy hagyd üresen."
+    "value": "Adj meg egész számot 0 és az utolsó karakter pozíciója között."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-branding-logo-guidance",
     "key": "operator.configuration.branding.logo.guidance",
     "lang": "hu",
-    "value": "Javasolt méret: 512 × 512 px (1:1). JPEG, PNG, WebP vagy GIF; átlátszó háttérhez PNG/WebP ajánlott. Legfeljebb 10 MB."
+    "value": "512 × 512 px (1:1) · PNG/WebP ajánlott · max. 10 MB."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-branding-logo-heart-webp",

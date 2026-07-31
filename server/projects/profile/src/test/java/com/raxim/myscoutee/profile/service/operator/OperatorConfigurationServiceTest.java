@@ -437,7 +437,7 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
-    void persistsNullableLogoCharacterIndexAndUsesUnicodeCodePoints()
+    void defaultsLogoCharacterIndexToZeroAndUsesUnicodeCodePoints()
             throws Exception {
         Fixture fixture = fixtureWithKey();
         OperatorConfigurationUpdateDto selectedCharacter =
@@ -454,12 +454,12 @@ class OperatorConfigurationServiceTest {
 
         var fullName = fixture.service().update(
                 brandingOnlyRequest("A🌟B", null));
-        assertThat(fullName.branding().logoCharacterIndex()).isNull();
+        assertThat(fullName.branding().logoCharacterIndex()).isZero();
         assertThat(fixture.persisted()
                         .get()
                         .getBranding()
                         .getLogoCharacterIndex())
-                .isNull();
+                .isZero();
 
         assertBadRequest(
                 () -> fixture.service().update(
@@ -474,7 +474,7 @@ class OperatorConfigurationServiceTest {
                         .getBranding()
                         .getLogoCharacterIndex())
                 .as("invalid indices are rejected rather than clamped")
-                .isNull();
+                .isZero();
     }
 
     @Test

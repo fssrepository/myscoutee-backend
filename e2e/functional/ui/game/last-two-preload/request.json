@@ -1,0 +1,11 @@
+{
+  "name": "game preloads the next page when two cards remain",
+  "group": "game",
+  "order": 25,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 90000
+}

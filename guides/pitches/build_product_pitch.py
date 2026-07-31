@@ -162,9 +162,9 @@ def slide_1(assets: dict[str, Path]) -> Image.Image:
     ui.add_glow(image, (-250, -250, 950, 900), PURPLE, blur=175, alpha=108)
     ui.add_glow(image, (1320, -240, 2200, 720), PINK, blur=180, alpha=72)
 
-    ui.paste_brand_logo(image, (90, 58, 164, 132))
-    ui.text(image, (184, 66), "MYSCOUTEE", size=25, weight="bold")
-    ui.text(image, (184, 101), "PRODUCT + PARTNER DECK", size=14, color=MUTED, weight="medium")
+    ui.paste_brand_logo(image, (90, 61, 125, 96))
+    ui.text(image, (122, 66), "YSCOUTEE", size=25, weight="bold")
+    ui.text(image, (90, 101), "PRODUCT + PARTNER DECK", size=14, color=MUTED, weight="medium")
     ui.pill(
         image,
         (1530, 64),

@@ -326,26 +326,15 @@ def paste_cover(
 
 
 def paste_brand_logo(image: Image.Image, box: tuple[int, int, int, int]) -> None:
-    """Place the trimmed transparent brand mark inside a clean badge.
+    """Place the trimmed transparent mark as the wordmark's first character.
 
     The older 1024px app-icon source includes a soft floor glow that turns into
     a white strip at small sizes. The dedicated heart mark is already trimmed,
-    so it scales without that edge artifact.
+    so it scales without that edge artifact or a surrounding badge.
     """
-    rounded_card(
-        image,
-        box,
-        fill="#0D1430",
-        alpha=255,
-        radius=20,
-        outline="#6174D5",
-        outline_width=3,
-        shadow=False,
-    )
     x1, y1, x2, y2 = box
-    inset = 7
-    target_w = x2 - x1 - inset * 2
-    target_h = y2 - y1 - inset * 2
+    target_w = x2 - x1
+    target_h = y2 - y1
     source = Image.open(ROOT / "frontend/src/assets/logo/heart.png").convert("RGBA")
     scale = min(target_w / source.width, target_h / source.height)
     resized = source.resize(
@@ -431,9 +420,9 @@ def slide_1() -> Image.Image:
     image = vertical_gradient("#070B1C", "#12183A")
     add_glow(image, (-240, -250, 900, 900), PURPLE, blur=160, alpha=100)
     add_glow(image, (1320, -200, 2200, 700), PINK, blur=170, alpha=75)
-    paste_brand_logo(image, (90, 58, 164, 132))
-    text(image, (184, 66), "MYSCOUTEE NETWORK", size=24, weight="bold")
-    text(image, (184, 100), "OPERATOR + STRATEGIC PARTNER DECK", size=14, color=MUTED, weight="medium")
+    paste_brand_logo(image, (90, 61, 124, 95))
+    text(image, (121, 66), "YSCOUTEE NETWORK", size=24, weight="bold")
+    text(image, (90, 101), "OPERATOR + STRATEGIC PARTNER DECK", size=14, color=MUTED, weight="medium")
     status_pill(image, (1585, 64), "MODEL — NOT TRACTION")
 
     text(
