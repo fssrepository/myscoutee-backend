@@ -34,7 +34,7 @@ All nine seeded jobs are enabled by default in production, development, demo, an
 
 | Job | Seed interval | Manual Run | Fixture execution |
 | --- | ---: | --- | --- |
-| `event-random-groups` | 24 hours | Yes | Use the Admin Jobs Run button |
+| `event-random-groups` | 24 hours | Yes | Existing scheduler after `prepare`; the Run button remains available |
 | `event-auto-inviter` | 2 hours | No | Existing scheduler |
 | `event-tournament-review` | 30 minutes | No | Existing scheduler |
 | `event-counter-expiry` | 5 minutes | No | Existing scheduler |
@@ -73,13 +73,16 @@ bash admin-job-fixtures.sh reset event-counter-expiry
 
 `prepare` already makes a non-manual job's registry rule due. `trigger` only re-arms that timestamp if another scheduler pass is wanted. It does not call a hidden endpoint and does not start an application.
 
-For the graph job, use the visible Admin UI:
+For the graph job:
 
 1. Prepare `event-random-groups`.
 2. Open **Admin → Admin Jobs → event-random-groups**.
-3. Press **Run**.
+3. Leave the already-running backend alone and wait for its next configured
+   scheduler poll. `prepare` makes the rule due and scopes this pass to the
+   fixture source event.
 4. Run `status event-random-groups`.
-5. Press **Run** once more to check idempotence.
+5. Press **Run** once more only when checking idempotence through the visible
+   manual control.
 6. Run `status` again and then `reset`.
 
 For other jobs, leave the already-running backend alone and wait for its next configured scheduler poll. If it has already polled, run `trigger <job>` to clear only that rule's last-run timestamp, then wait again. Long application-level worker delays are not shortened by this toolkit.
@@ -146,17 +149,17 @@ Variations:
 - `quality-200`: two hundred generated users arranged into forty known-affinity cohorts of five.
 - `quality-1000`: one thousand generated users arranged into two hundred known-affinity cohorts of five.
 
-Preparation temporarily changes every other canonical active demo event from
-`status:"A"` to `status:"I"`, after snapshotting those exact event IDs. Reset
-restores each complete original event document. This quarantine is important:
-the graph worker is global and parallel, and the regular demo seed contains many
-eligible events and hundreds of accepted memberships. Without quarantine it can
-be expensive and can change unrelated demo assignments.
+Preparation does not change or quarantine any unrelated event. It temporarily
+sets the random-room rule's `jobs.process.randomGroups.sourceEventIds` parameter
+to the fixture source event ID, so the real scheduler pass processes only that
+input event. Reset restores the complete original rule document.
 
-Expected after **Admin Jobs → Run**:
+Expected after the scheduler pass:
 
 - group definitions are derived at runtime from the stage capacities and are intentionally not persisted into `subEvents[].groups`;
-- each derived canonical group owner contains exactly the configured number of accepted `activityMembers`;
+- each derived room is a standalone `random-room` event with exactly the
+  configured number of accepted event members and a shared chat materialized
+  for those members;
 - every fixture event member appears in exactly one room;
 - anchors stay in their original rooms for `anchored` and
   `anchored-full-and-empty`;

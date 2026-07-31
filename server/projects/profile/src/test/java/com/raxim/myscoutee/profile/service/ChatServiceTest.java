@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,6 +132,38 @@ class ChatServiceTest {
         verify(usersRepository, times(1)).findByUserId("viewer");
         verify(chatMessagesRepository, never()).saveAll(anyList());
         verify(chatsRepository, never()).save(any(Chat.class));
+    }
+
+    @Test
+    void ensureMainEventChatCreatesOneSystemChannelViewForEveryRoomMember() {
+        ActivityEvent room = new ActivityEvent();
+        room.setSourceId("random-room:event-1:stage-1:room-1");
+        room.setTitle("Random Room R1");
+        List<Chat> persisted = new ArrayList<>();
+        when(chatsRepository.findByChatId(room.getSourceId()))
+                .thenReturn(List.of())
+                .thenAnswer(invocation -> List.copyOf(persisted));
+        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<Chat> saved = invocation.getArgument(0);
+            persisted.addAll(saved);
+            return saved;
+        });
+
+        String chatId = service.ensureMainEventChat(room, List.of("user-2", "user-1", "user-2"));
+
+        assertThat(chatId).isEqualTo(room.getSourceId());
+        assertThat(persisted).hasSize(2).allSatisfy(chat -> {
+            assertThat(chat.getChatId()).isEqualTo(room.getSourceId());
+            assertThat(chat.getEventId()).isEqualTo(room.getSourceId());
+            assertThat(chat.getOwnerId()).isEqualTo(room.getSourceId());
+            assertThat(chat.getChannelType()).isEqualTo("mainEvent");
+            assertThat(chat.getTitle()).isEqualTo("Random Room R1");
+            assertThat(chat.getAvatar()).isEqualTo("SY");
+            assertThat(chat.getMemberIds()).containsExactly("user-1", "user-2");
+        });
+        assertThat(persisted).extracting(Chat::getOwnerUserId)
+                .containsExactly("user-1", "user-2");
+        verify(chatsRepository).saveAll(anyList());
     }
 
     @Test

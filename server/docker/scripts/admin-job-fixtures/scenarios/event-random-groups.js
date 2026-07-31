@@ -7,7 +7,7 @@
   const subEventId = F.fixtureId(job, "stage");
   const defaultGroupIds = [`${subEventId}:group:1`, `${subEventId}:group:2`];
   const defaultGroupOwnerIds =
-    defaultGroupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
+    defaultGroupIds.map(groupId => `random-room:${eventId}:${subEventId}:${groupId}`);
 
   function roomIds(roomCount) {
     return Array.from(
@@ -182,7 +182,7 @@
   F.run({
     job,
     ruleKey: job,
-    manualTrigger: true,
+    manualTrigger: false,
     variations: [
       "balanced",
       "anchored",
@@ -284,11 +284,7 @@
           : [];
       const groupIds = roomIds(roomCount);
       const groupOwnerIds =
-        groupIds.map(groupId => `${eventId}:${subEventId}:${groupId}`);
-      const isolatedEventIds = F.collection("events")
-        .find({ status: "A", _id: { $ne: eventId } }, { projection: { _id: 1 } })
-        .map(event => event._id)
-        .toArray();
+        groupIds.map(groupId => `random-room:${eventId}:${subEventId}:${groupId}`);
       const memberIds = userIds.map((userId, index) => F.fixtureId(job, `event-member-${index + 1}`));
       const expectedAnchoredUserIdsByGroup = variation === "anchored"
         ? [[userIds[0]], [userIds[3]]]
@@ -333,7 +329,7 @@
                     ? "With 11 users and room capacity 3..5, all users stay assigned in three valid affinity cohorts of 5, 3, and 3; the one-user max-capacity remainder must be redistributed instead of dropped."
                     : variation === "partial-room"
                       ? "With 62 users and room capacity 2..3, all users should fit into twenty rooms of 3 and one valid partial room of 2."
-                      : `The ${userCount} accepted users are split into ${roomCount} generated groups of exactly ${roomCapacityMax}. A second Run should make no assignment changes.`,
+                      : `The ${userCount} accepted users are split into ${roomCount} new Random Room events of exactly ${roomCapacityMax}; every event has its own chat and system identity. A second scheduler pass should make no assignment changes.`,
         context: {
           eventId,
           subEventId,
@@ -352,7 +348,6 @@
           groupIds,
           groupOwnerIds,
           userIds,
-          isolatedEventIds,
           memberIds,
           anchorIds,
           affinityUserTaskIds,
@@ -364,7 +359,12 @@
         specs: [
           {
             collection: "events",
-            selector: { _id: { $in: [...isolatedEventIds, eventId] } }
+            selector: {
+              $or: [
+                { _id: eventId },
+                { sourceId: { $in: groupOwnerIds } }
+              ]
+            }
           },
           {
             collection: "users",
@@ -385,26 +385,42 @@
               $or: [
                 { _id: { $in: [...memberIds, ...anchorIds] } },
                 { ownerType: "event", ownerId: eventId },
-                { ownerType: "group", ownerId: { $in: groupOwnerIds } }
+                { ownerType: "event", ownerId: { $in: groupOwnerIds } }
               ]
             }
+          },
+          {
+            collection: "chats",
+            selector: { id: { $in: groupOwnerIds } }
           },
           {
             collection: "schedulerPlanMarkers",
             selector: {
               $or: [
-                { ownerId: { $in: groupIds } },
+                { ownerId: { $in: groupOwnerIds } },
                 { scopeId: { $regex: eventId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") } }
               ]
             }
           },
           {
             collection: "notificationOutbox",
-            selector: { $or: [{ entityId: eventId }, { "payload.eventId": eventId }] }
+            selector: {
+              $or: [
+                { entityId: { $in: groupOwnerIds } },
+                { "payload.eventId": { $in: groupOwnerIds } },
+                { "payload.parentEventId": eventId }
+              ]
+            }
           },
           {
             collection: "userNotifications",
-            selector: { $or: [{ sourceId: eventId }, { "payload.eventId": eventId }] }
+            selector: {
+              $or: [
+                { sourceId: { $in: groupOwnerIds } },
+                { "payload.eventId": { $in: groupOwnerIds } },
+                { "payload.parentEventId": eventId }
+              ]
+            }
           },
           {
             collection: "affinityRecomputeTasks",
@@ -430,18 +446,37 @@
             + "wait for the affinity worker to finish and prepare again."
         );
       }
-      if ((context.isolatedEventIds || []).length > 0) {
-        F.collection("events").updateMany(
-          { _id: { $in: context.isolatedEventIds } },
-          {
-            $set: {
-              status: "I",
-              updatedDate: now,
-              updatedUser: F.FIXTURE_ACTOR
-            }
+      const rule = F.requireRule(job);
+      const sourceScopeParameter = {
+        key: "jobs.process.randomGroups.sourceEventIds",
+        label: "Fixture event scope",
+        labelKey: "",
+        group: "Fixture",
+        groupKey: "",
+        valueType: "text",
+        numberValue: null,
+        textValue: context.eventId,
+        unit: "",
+        options: [],
+        strategy: "",
+        strategyKey: "",
+        readOnly: true
+      };
+      F.collection("notificationRuleConfigs").updateOne(
+        { ruleKey: job },
+        {
+          $set: {
+            parameters: [
+              ...(rule.parameters || []).filter(
+                parameter => parameter.key !== sourceScopeParameter.key
+              ),
+              sourceScopeParameter
+            ],
+            updatedDate: now,
+            updatedUser: F.FIXTURE_ACTOR
           }
-        );
-      }
+        }
+      );
       if (context.syntheticQuality) {
         F.collection("users").insertMany(context.userIds.map((userId, index) => ({
           _id: userId,
@@ -563,7 +598,7 @@
             anchorMembers.push({
               _id: anchorId,
               syncKey: anchorId,
-              ownerType: "group",
+              ownerType: "event",
               ownerId: context.groupOwnerIds[groupIndex],
               userId,
               role: "Member",
@@ -604,9 +639,8 @@
     },
     afterPrepare(variation, context) {
       print(
-        `[admin-job-fixtures] Existing published demo events were temporarily quarantined so the global `
-          + `parallel graph job stays limited to this ${context.userIds.length}-user fixture. `
-          + `Reset this job when finished.`
+        `[admin-job-fixtures] The rule is scoped to only '${context.eventId}'; no other `
+          + `published event was modified. The existing Java scheduler will pick it up automatically.`
       );
     },
     status(context, snapshot) {
@@ -614,8 +648,27 @@
       const event = F.collection("events").findOne({ _id: context.eventId || eventId });
       const groups = ownerIds.map(ownerId => ({
         ownerId,
+        event: F.collection("events").findOne(
+          { sourceId: ownerId },
+          {
+            _id: 1,
+            sourceId: 1,
+            title: 1,
+            status: 1,
+            eventType: 1,
+            creatorUserId: 1,
+            creatorName: 1,
+            imageUrl: 1,
+            parentEventId: 1
+          }
+        ),
+        chatOwnerUserIds: F.collection("chats")
+          .find({ id: ownerId }, { ownerUserId: 1 })
+          .sort({ ownerUserId: 1 })
+          .map(chat => chat.ownerUserId)
+          .toArray(),
         acceptedUserIds: F.collection("activityMembers")
-          .find({ ownerType: "group", ownerId, status: "accepted" })
+          .find({ ownerType: "event", ownerId, status: "accepted" })
           .sort({ userId: 1 })
           .map(member => member.userId)
           .toArray()
@@ -703,6 +756,22 @@
           )
         )
       );
+      const activeRoomArtifactsValid = groups.every((group, index) => {
+        if (group.acceptedUserIds.length === 0) {
+          return group.event == null && group.chatOwnerUserIds.length === 0;
+        }
+        const room = group.event || {};
+        return room.sourceId === group.ownerId
+          && room.title === `Random Room R${index + 1}`
+          && room.status === "A"
+          && room.eventType === "random-room"
+          && !room.creatorUserId
+          && room.creatorName === "MyScoutee System"
+          && room.imageUrl === "/media/public?key=images/system/random-room-default.png"
+          && !room.parentEventId
+          && JSON.stringify(group.chatOwnerUserIds)
+            === JSON.stringify(group.acceptedUserIds.slice().sort());
+      });
       const assignmentValid =
         actualRoomCount === expectedRoomCount
         && roomSizes.every(size => (
@@ -714,7 +783,8 @@
         && unassignedUserIdsMatchExpectation
         && unexpectedUserIds.length === 0
         && partialRoomSelectionValid
-        && anchorsPreserved;
+        && anchorsPreserved
+        && activeRoomArtifactsValid;
       let quality = null;
       if (context.syntheticQuality) {
         const expectedCohortSizes =
@@ -865,7 +935,7 @@
       }
       const groupMemberRows = F.collection("activityMembers")
         .find(
-          { ownerType: "group", ownerId: { $in: ownerIds } },
+          { ownerType: "event", ownerId: { $in: ownerIds } },
           {
             _id: 1,
             ownerId: 1,
@@ -879,7 +949,7 @@
         .toArray();
       const markerRows = F.collection("schedulerPlanMarkers")
         .find(
-          { ownerId: { $in: context.groupIds || defaultGroupIds } },
+          { ownerId: { $in: ownerIds } },
           {
             _id: 1,
             ownerId: 1,
@@ -893,8 +963,9 @@
         .toArray();
       const notificationSelector = {
         $or: [
-          { entityId: context.eventId || eventId },
-          { "payload.eventId": context.eventId || eventId }
+          { entityId: { $in: ownerIds } },
+          { "payload.eventId": { $in: ownerIds } },
+          { "payload.parentEventId": context.eventId || eventId }
         ]
       };
       const outboxRows = F.collection("notificationOutbox")
@@ -916,8 +987,9 @@
         .find(
           {
             $or: [
-              { sourceId: context.eventId || eventId },
-              { "payload.eventId": context.eventId || eventId }
+              { sourceId: { $in: ownerIds } },
+              { "payload.eventId": { $in: ownerIds } },
+              { "payload.parentEventId": context.eventId || eventId }
             ]
           },
           {
@@ -935,14 +1007,25 @@
         .toArray();
       const outboxCount = outboxRows.length;
       const bellCount = bellRows.length;
+      const generatedRoomEvents = groups
+        .map(group => group.event)
+        .filter(Boolean);
+      const roomChatRows = F.collection("chats")
+        .find({ id: { $in: ownerIds } }, { _id: 1, id: 1, ownerUserId: 1 })
+        .sort({ id: 1, ownerUserId: 1 })
+        .toArray();
       const noOutputArtifacts =
-        groupMemberRows.length === 0
+        generatedRoomEvents.length === 0
+        && roomChatRows.length === 0
+        && groupMemberRows.length === 0
         && markerRows.length === 0
         && outboxCount === 0
         && bellCount === 0;
       const currentAssignmentFingerprint = fingerprint({
         storedSubEventGroups:
           event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
+        generatedRoomEvents,
+        roomChatRows,
         groupMemberRows,
         markerRows,
         outboxRows,
@@ -1004,7 +1087,8 @@
         && currentRunAtIso !== baseline.runAtIso
       );
       return {
-        quarantinedPublishedEvents: (context.isolatedEventIds || []).length,
+        sourceScopeEventId: context.eventId || eventId,
+        unrelatedPublishedEventsModified: 0,
         fixtureEventPublished: Boolean(event && F.safeText(event.status) === "A"),
         storedSubEventGroups:
           event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
@@ -1024,6 +1108,7 @@
           missingUserIds,
           unexpectedUserIds,
           anchorsPreserved,
+          activeRoomArtifactsValid,
           expectedNoOutputArtifacts: Boolean(context.expectNoOutputArtifacts),
           noOutputArtifacts,
           repeatedRun: {
@@ -1057,8 +1142,10 @@
           quality
         },
         planMarkerCount: F.collection("schedulerPlanMarkers").countDocuments({
-          ownerId: { $in: context.groupIds || defaultGroupIds }
+          ownerId: { $in: ownerIds }
         }),
+        generatedRoomEventCount: generatedRoomEvents.length,
+        roomChatViewCount: roomChatRows.length,
         outboxCount,
         bellCount
       };

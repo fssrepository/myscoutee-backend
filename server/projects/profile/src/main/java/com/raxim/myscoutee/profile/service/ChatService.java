@@ -194,6 +194,83 @@ public class ChatService {
                 null).items();
     }
 
+    public String ensureMainEventChat(ActivityEvent event, Collection<String> participantUserIds) {
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        List<String> memberUserIds = participantUserIds == null
+                ? List.of()
+                : participantUserIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .sorted()
+                        .toList();
+        if (!StringUtils.hasText(eventId) || memberUserIds.isEmpty()) {
+            throw new IllegalStateException("A system event chat requires an event id and participants.");
+        }
+
+        String chatId = eventId;
+        String nowIso = Instant.now().toString();
+        List<Chat> existingDocuments = chatsRepository.findByChatId(chatId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
+        for (Chat existing : existingDocuments) {
+            String ownerUserId = normalizeId(existing.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                existingByOwnerUserId.putIfAbsent(ownerUserId, existing);
+            }
+        }
+
+        List<Chat> documentsToSave = new ArrayList<>();
+        for (String memberUserId : memberUserIds) {
+            Chat current = existingByOwnerUserId.get(memberUserId);
+            Chat document = current == null ? new Chat() : copyChat(current);
+            document.setMongoId(current == null
+                    ? buildMongoId(memberUserId, chatId)
+                    : current.getMongoId());
+            document.setChatId(chatId);
+            document.setOwnerUserId(memberUserId);
+            document.setAvatar("SY");
+            document.setTitle(firstNonBlank(event.getTitle(), "Random Room"));
+            document.setLastMessage(current == null
+                    ? "System-generated room is ready."
+                    : safeText(current.getLastMessage()));
+            document.setLastSenderId(current == null ? null : current.getLastSenderId());
+            document.setMemberIds(new ArrayList<>(memberUserIds));
+            document.setUnread(current == null ? 0 : normalizeCount(current.getUnread()));
+            document.setDateIso(current == null
+                    ? nowIso
+                    : firstNonBlank(current.getDateIso(), nowIso));
+            document.setChannelType(CHAT_CHANNEL_MAIN_EVENT);
+            document.setOwnerId(eventId);
+            document.setEventId(eventId);
+            document.setSubEventId(null);
+            document.setGroupId(null);
+            document.setDistanceKm(null);
+            document.setDistanceMetersExact(null);
+            document.setSupportCase(null);
+            documentsToSave.add(document);
+        }
+        chatsRepository.saveAll(documentsToSave);
+
+        List<Chat> staleDocuments = existingDocuments.stream()
+                .filter(document -> !memberUserIds.contains(normalizeId(document.getOwnerUserId())))
+                .toList();
+        if (!staleDocuments.isEmpty()) {
+            chatsRepository.deleteAll(staleDocuments);
+        }
+
+        Set<String> persistedOwnerUserIds = chatsRepository.findByChatId(chatId).stream()
+                .map(Chat::getOwnerUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        if (!persistedOwnerUserIds.equals(new LinkedHashSet<>(memberUserIds))) {
+            throw new IllegalStateException("Unable to materialize the main event chat for " + eventId + ".");
+        }
+        return chatId;
+    }
+
     public ChatPageResponseDto queryChatPage(
             String requestedUserId,
             String contextFilterValue,

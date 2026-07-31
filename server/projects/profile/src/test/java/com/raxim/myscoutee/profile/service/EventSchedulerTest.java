@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
@@ -75,6 +76,8 @@ class EventSchedulerTest {
     private EventCounterExpiryService eventCounterExpiryService;
     @Mock
     private EventCheckoutBasketService eventCheckoutBasketService;
+    @Mock
+    private ChatService chatService;
     @Mock
     private NotificationRuleRegistryService notificationRuleRegistryService;
     @Mock
@@ -303,7 +306,7 @@ class EventSchedulerTest {
     }
 
     @Test
-    void generateRandomPlansMaterializesGeneratedGroupMembers() {
+    void generateRandomPlansCreatesSystemEventsChatsAndMembersBeforeNotifications() {
         EventScheduler scheduler = createScheduler();
 
         ActivityEvent event = new ActivityEvent();
@@ -334,7 +337,7 @@ class EventSchedulerTest {
                 4);
         when(activitiesMembersService.buildBatchEventSnapshots(any()))
                 .thenReturn(Map.of("event-1", eventSnapshot));
-        when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("group"), anyCollection()))
+        when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("event"), anyCollection()))
                 .thenReturn(Map.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 org.mockito.ArgumentMatchers.eq("event-1"),
@@ -343,40 +346,87 @@ class EventSchedulerTest {
                 .thenReturn(List.of(
                         group("sub-1:group:1", "Group A"),
                         group("sub-1:group:2", "Group B")));
-        when(activitiesMembersService.syncGroupMembers("event-1:sub-1:sub-1:group:1", "creator-1", List.of("u1", "u2")))
-                .thenReturn(List.of("u1", "u2"));
-        when(activitiesMembersService.syncGroupMembers("event-1:sub-1:sub-1:group:2", "creator-1", List.of("u3", "u4")))
-                .thenReturn(List.of("u3", "u4"));
-
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 
+        String room1Id = "random-room:event-1:sub-1:sub-1:group:1";
+        String room2Id = "random-room:event-1:sub-1:sub-1:group:2";
         assertThat(plans).hasSize(2);
-        assertThat(plans).extracting(GeneratedEventPlan::seedId).containsExactly("sub-1:group:1", "sub-1:group:2");
+        assertThat(plans).extracting(GeneratedEventPlan::seedId).containsExactly(room1Id, room2Id);
         assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
                 .containsExactly(List.of("u1", "u2"), List.of("u3", "u4"));
         verify(activitiesEventLeaderboardService).materializeGeneratedGroups(
                 org.mockito.ArgumentMatchers.eq("event-1"),
                 org.mockito.ArgumentMatchers.eq("sub-1"),
                 anyList());
-        verify(activitiesMembersService).syncGroupMembers("event-1:sub-1:sub-1:group:1", "creator-1", List.of("u1", "u2"));
-        verify(activitiesMembersService).syncGroupMembers("event-1:sub-1:sub-1:group:2", "creator-1", List.of("u3", "u4"));
+        verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
+        verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
+        ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
+        verify(activityEventsRepository, times(2)).save(roomCaptor.capture());
+        assertThat(roomCaptor.getAllValues()).satisfiesExactly(room1 -> {
+            assertThat(room1.getSourceId()).isEqualTo(room1Id);
+            assertThat(room1.getTitle()).isEqualTo("Random Room R1");
+            assertThat(room1.getEventType()).isEqualTo("random-room");
+            assertThat(room1.getCreatorName()).isEqualTo("MyScoutee System");
+            assertThat(room1.getImageUrl()).isEqualTo("/media/public?key=images/system/random-room-default.png");
+        }, room2 -> {
+            assertThat(room2.getSourceId()).isEqualTo(room2Id);
+            assertThat(room2.getTitle()).isEqualTo("Random Room R2");
+            assertThat(room2.getEventType()).isEqualTo("random-room");
+        });
+        InOrder creationOrder = inOrder(activityEventsRepository, chatService, activitiesMembersService, notificationOutboxService);
+        creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
+        creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u1", "u2")));
+        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
+        creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
+        creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
+        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(intentCaptor.capture());
-        assertThat(intentCaptor.getValue()).satisfies(intent -> {
+        verify(notificationOutboxService, times(2)).enqueue(intentCaptor.capture());
+        assertThat(intentCaptor.getAllValues()).allSatisfy(intent -> {
             assertThat(intent.type()).isEqualTo(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
             assertThat(intent.entityType()).isEqualTo("event");
-            assertThat(intent.entityId()).isEqualTo("event-1");
-            assertThat(intent.recipientUserIds()).containsExactly("u1", "u2", "u3", "u4");
-            assertThat(intent.title()).isEqualTo("Room assignment ready");
-            assertThat(intent.body()).isEqualTo("Your room assignment for Board Game Night is ready.");
+            assertThat(intent.entityId()).startsWith("random-room:event-1:sub-1:");
+            assertThat(intent.title()).matches("Random Room R[12] is ready");
+            assertThat(intent.body()).isEqualTo("Your system-generated room for Board Game Night is ready.");
             assertThat(intent.payload()).containsKeys(
                     "eventId",
                     "eventTitle",
                     "eventScope",
                     "assignmentScope",
-                    "assignmentFingerprint");
+                    "assignmentFingerprint",
+                    "senderName");
+            assertThat(intent.payload()).containsEntry("eventScope", "random-room");
+            assertThat(intent.payload()).containsEntry("senderName", "MyScoutee System");
         });
+    }
+
+    @Test
+    void generateRandomPlansHonorsTheRuleSourceEventScopeWithoutChangingOtherEvents() {
+        EventScheduler scheduler = createScheduler();
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        NotificationRuleConfig.ParameterField sourceIds = new NotificationRuleConfig.ParameterField();
+        sourceIds.setKey("jobs.process.randomGroups.sourceEventIds");
+        sourceIds.setTextValue("fixture-event");
+        rule.setParameters(List.of(sourceIds));
+        when(notificationRuleRegistryService.findRule(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS))
+                .thenReturn(Optional.of(rule));
+
+        ActivityEvent unrelated = new ActivityEvent();
+        unrelated.setSourceId("unrelated-event");
+        unrelated.setStatus("A");
+        unrelated.setSubEvents(List.of(subEvent("unrelated-stage", 1, 2, 2)));
+        when(activityEventsRepository.findAll()).thenReturn(List.of(unrelated));
+        when(activitiesMembersService.buildBatchEventSnapshots(any())).thenReturn(Map.of());
+
+        List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
+
+        assertThat(plans).isEmpty();
+        verify(activitiesMembersService).buildBatchEventSnapshots(argThat(Map::isEmpty));
+        verify(activityEventsRepository, never()).save(any(ActivityEvent.class));
+        verify(activitiesMembersService, never()).syncSystemEventMembers(
+                anyString(), anyString(), anyList());
     }
 
     @Test
@@ -414,7 +464,7 @@ class EventSchedulerTest {
                                 List.of(),
                                 Set.of("creator-1"),
                                 5)));
-        when(activitiesMembersService.buildBatchOwnerSnapshots(eq("group"), anyCollection()))
+        when(activitiesMembersService.buildBatchOwnerSnapshots(eq("event"), anyCollection()))
                 .thenReturn(Map.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 eq("event-partial"),
@@ -424,29 +474,26 @@ class EventSchedulerTest {
                         group("stage-partial:group:1", "Group A"),
                         group("stage-partial:group:2", "Group B"),
                         group("stage-partial:group:3", "Group C")));
-        when(activitiesMembersService.syncGroupMembers(
-                anyString(),
-                eq("creator-1"),
-                anyList()))
-                .thenAnswer(invocation -> invocation.<List<String>>getArgument(2));
-
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 
+        String room1Id = "random-room:event-partial:stage-partial:stage-partial:group:1";
+        String room2Id = "random-room:event-partial:stage-partial:stage-partial:group:2";
+        String room3Id = "random-room:event-partial:stage-partial:stage-partial:group:3";
         assertThat(plans).hasSize(2);
         assertThat(plans).extracting(GeneratedEventPlan::seedId)
-                .containsExactly("stage-partial:group:1", "stage-partial:group:2");
+                .containsExactly(room1Id, room2Id);
         assertThat(plans).flatExtracting(GeneratedEventPlan::memberUserIds)
                 .containsExactlyInAnyOrder("a1", "a2", "b1", "b2")
                 .doesNotContain("outside");
-        verify(activitiesMembersService, times(2)).syncGroupMembers(
+        verify(activitiesMembersService, times(2)).syncSystemEventMembers(
                 anyString(),
-                eq("creator-1"),
+                eq("scheduler"),
                 anyList());
-        verify(activitiesMembersService, never()).syncGroupMembers(
-                eq("event-partial:stage-partial:stage-partial:group:3"),
+        verify(activitiesMembersService, never()).syncSystemEventMembers(
+                eq(room3Id),
                 anyString(),
                 anyList());
-        verify(activityTournamentGroupCounterService).syncParent("event-partial", "stage-partial");
+        verify(activityTournamentGroupCounterService, never()).syncParent("event-partial", "stage-partial");
     }
 
     @Test
@@ -514,9 +561,11 @@ class EventSchedulerTest {
                 List.of(),
                 Set.of("creator-1"),
                 4);
+        String roomAId = "random-room:event-2:sub-2:group-a";
+        String roomBId = "random-room:event-2:sub-2:group-b";
         ActivitiesMembersService.OwnerMembersSnapshot groupASnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
-                "group",
-                "event-2:sub-2:group-a",
+                "event",
+                roomAId,
                 List.of(),
                 List.of("u1"),
                 List.of(),
@@ -525,8 +574,8 @@ class EventSchedulerTest {
                 Set.of(),
                 2);
         ActivitiesMembersService.OwnerMembersSnapshot groupBSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
-                "group",
-                "event-2:sub-2:group-b",
+                "event",
+                roomBId,
                 List.of(),
                 List.of("u3"),
                 List.of(),
@@ -536,10 +585,10 @@ class EventSchedulerTest {
                 2);
         when(activitiesMembersService.buildBatchEventSnapshots(any()))
                 .thenReturn(Map.of("event-2", eventSnapshot));
-        when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("group"), anyCollection()))
+        when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("event"), anyCollection()))
                 .thenReturn(Map.of(
-                        "event-2:sub-2:group-a", groupASnapshot,
-                        "event-2:sub-2:group-b", groupBSnapshot));
+                        roomAId, groupASnapshot,
+                        roomBId, groupBSnapshot));
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 org.mockito.ArgumentMatchers.eq("event-2"),
                 org.mockito.ArgumentMatchers.eq("sub-2"),
@@ -547,19 +596,14 @@ class EventSchedulerTest {
                 .thenReturn(List.of(
                         group("group-a", "Group A"),
                         group("group-b", "Group B")));
-        when(activitiesMembersService.syncGroupMembers("event-2:sub-2:group-a", "creator-1", List.of("u1", "u2")))
-                .thenReturn(List.of("u1", "u2"));
-        when(activitiesMembersService.syncGroupMembers("event-2:sub-2:group-b", "creator-1", List.of("u3", "u4")))
-                .thenReturn(List.of("u3", "u4"));
-
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 
         assertThat(plans).hasSize(2);
-        assertThat(plans).extracting(GeneratedEventPlan::seedId).containsExactly("group-a", "group-b");
+        assertThat(plans).extracting(GeneratedEventPlan::seedId).containsExactly(roomAId, roomBId);
         assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
                 .containsExactly(List.of("u1", "u2"), List.of("u3", "u4"));
-        verify(activitiesMembersService).syncGroupMembers("event-2:sub-2:group-a", "creator-1", List.of("u1", "u2"));
-        verify(activitiesMembersService).syncGroupMembers("event-2:sub-2:group-b", "creator-1", List.of("u3", "u4"));
+        verify(activitiesMembersService).syncSystemEventMembers(roomAId, "scheduler", List.of("u1", "u2"));
+        verify(activitiesMembersService).syncSystemEventMembers(roomBId, "scheduler", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -1231,24 +1275,19 @@ class EventSchedulerTest {
                 anyList()))
                 .thenReturn(List.of(group("final-group", "Final")));
         when(activitiesMembersService.buildBatchOwnerSnapshots(
-                org.mockito.ArgumentMatchers.eq("group"),
+                org.mockito.ArgumentMatchers.eq("event"),
                 anyCollection()))
                 .thenReturn(Map.of());
-        when(activitiesMembersService.syncGroupMembers(
-                "event-advancement:final:final-group",
-                "creator-1",
-                List.of("u1", "u2")))
-                .thenReturn(List.of("u1", "u2"));
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 
         assertThat(plans).singleElement().satisfies(plan -> {
-            assertThat(plan.seedId()).isEqualTo("final-group");
+            assertThat(plan.seedId()).isEqualTo("random-room:event-advancement:final:final-group");
             assertThat(plan.memberUserIds()).containsExactly("u1", "u2");
         });
-        verify(activitiesMembersService).syncGroupMembers(
-                "event-advancement:final:final-group",
-                "creator-1",
+        verify(activitiesMembersService).syncSystemEventMembers(
+                "random-room:event-advancement:final:final-group",
+                "scheduler",
                 List.of("u1", "u2"));
     }
 
@@ -1289,19 +1328,16 @@ class EventSchedulerTest {
                 anyList()))
                 .thenReturn(List.of(group("second-group", "Second")));
         when(activitiesMembersService.buildBatchOwnerSnapshots(
-                org.mockito.ArgumentMatchers.eq("group"),
+                org.mockito.ArgumentMatchers.eq("event"),
                 anyCollection()))
                 .thenReturn(Map.of());
-        when(activitiesMembersService.syncGroupMembers(
-                "event-non-tournament:second:second-group",
-                "creator-1",
-                List.of("u1", "u2")))
-                .thenReturn(List.of("u1", "u2"));
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 
-        assertThat(plans).singleElement().satisfies(plan ->
-                assertThat(plan.memberUserIds()).containsExactly("u1", "u2"));
+        assertThat(plans).singleElement().satisfies(plan -> {
+            assertThat(plan.seedId()).isEqualTo("random-room:event-non-tournament:second:second-group");
+            assertThat(plan.memberUserIds()).containsExactly("u1", "u2");
+        });
         verify(activitiesEventLeaderboardService, never()).queryState("event-non-tournament", "first");
     }
 
@@ -1336,9 +1372,10 @@ class EventSchedulerTest {
                 org.mockito.ArgumentMatchers.eq("sub-4"),
                 anyList()))
                 .thenReturn(List.of(group("sub-4:group:1", "Group A")));
+        String roomId = "random-room:event-4:sub-4:sub-4:group:1";
         ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
-                "group",
-                "event-4:sub-4:sub-4:group:1",
+                "event",
+                roomId,
                 List.of(),
                 List.of("u1", "u2"),
                 List.of(),
@@ -1348,8 +1385,8 @@ class EventSchedulerTest {
                 2);
         when(activitiesMembersService.buildBatchEventSnapshots(any()))
                 .thenReturn(Map.of("event-4", eventSnapshot));
-        when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("group"), anyCollection()))
-                .thenReturn(Map.of("event-4:sub-4:sub-4:group:1", groupSnapshot));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("event"), anyCollection()))
+                .thenReturn(Map.of(roomId, groupSnapshot));
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 
@@ -1383,6 +1420,14 @@ class EventSchedulerTest {
 
     private EventScheduler createScheduler() {
         lenient().when(schedulerPlanMarkersRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
+        lenient().when(activityEventsRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
+        lenient().when(activityEventsRepository.save(any(ActivityEvent.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        lenient().when(activitiesMembersService.syncSystemEventMembers(
+                        anyString(),
+                        eq("scheduler"),
+                        anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(2));
         EventScheduler scheduler = new EventScheduler(
                 usersRepository,
                 userAffinityEdgesRepository,
@@ -1394,6 +1439,7 @@ class EventSchedulerTest {
                 eventInviteNotificationService,
                 eventCounterExpiryService,
                 eventCheckoutBasketService,
+                chatService,
                 notificationRuleRegistryService,
                 platformParametersService,
                 notificationOutboxService);
