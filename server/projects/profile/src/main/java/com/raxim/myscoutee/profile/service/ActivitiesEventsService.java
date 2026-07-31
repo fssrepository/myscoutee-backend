@@ -5699,7 +5699,9 @@ public class ActivitiesEventsService {
         int score = 0;
         // The creator-owned document is the canonical editor document. Participant
         // and member-scoped copies intentionally contain only list/runtime state.
-        if (normalizeId(record.getOwnerUserId()).equals(normalizeId(record.getCreatorUserId()))) {
+        String ownerUserId = normalizeId(record.getOwnerUserId());
+        String creatorUserId = normalizeId(record.getCreatorUserId());
+        if (StringUtils.hasText(ownerUserId) && ownerUserId.equals(creatorUserId)) {
             score += 1_000_000;
         }
         score += record.getSubEventDefinitions() == null ? 0 : record.getSubEventDefinitions().size() * 10_000;
