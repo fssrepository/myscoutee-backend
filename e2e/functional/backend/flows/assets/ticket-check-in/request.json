@@ -1,0 +1,148 @@
+{
+  "name": "e2e ticket check-in: authorize, consume once, reject replay, refresh holder card",
+  "group": "flows",
+  "order": 9015,
+  "method": "GET",
+  "path": "/api/assets/tickets",
+  "script": "ticket-check-in.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed ticket event host profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{ticketCheckInHostUserId}}",
+        "name": "E2E Ticket Host",
+        "age": 34,
+        "birthday": "1992-02-14",
+        "city": "Bratislava",
+        "height": "181 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "TH",
+        "gender": "man",
+        "statusText": "E2E ticket organizer",
+        "profileStatus": "public",
+        "locationCoordinates": {
+          "latitude": 48.1486,
+          "longitude": 17.1077
+        },
+        "images": []
+      }
+    },
+    {
+      "name": "seed ticket holder profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{ticketCheckInHolderUserId}}",
+        "name": "E2E Ticket Holder",
+        "age": 29,
+        "birthday": "1997-03-05",
+        "city": "Bratislava",
+        "height": "168 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "TK",
+        "gender": "woman",
+        "statusText": "E2E ticket holder",
+        "profileStatus": "public",
+        "locationCoordinates": {
+          "latitude": 48.149,
+          "longitude": 17.108
+        },
+        "images": []
+      }
+    },
+    {
+      "name": "seed active ticketing event",
+      "method": "POST",
+      "path": "/api/activities/events/sync",
+      "headers": {
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "{{ticketCheckInHostUserId}}"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "syncKey": "{{ticketCheckInEventId}}",
+        "id": "{{ticketCheckInEventId}}",
+        "status": "A",
+        "target": "hosting",
+        "title": "E2E Ticket Check-in",
+        "shortDescription": "Disposable one-use ticket functional test event.",
+        "timeframe": "Tomorrow",
+        "activity": 5,
+        "isAdmin": false,
+        "startAtIso": "{{ticketCheckInStartAtIso}}",
+        "endAtIso": "{{ticketCheckInEndAtIso}}",
+        "distanceKm": 1.2,
+        "imageUrl": "",
+        "acceptedMembers": 1,
+        "pendingMembers": 0,
+        "capacityTotal": 8,
+        "capacityMin": 2,
+        "capacityMax": 8,
+        "autoInviter": false,
+        "frequency": "One-time",
+        "ticketing": true,
+        "slotsEnabled": false,
+        "eventType": "meetup",
+        "visibility": "Public",
+        "blindMode": "Open Event",
+        "creatorUserId": "{{ticketCheckInHostUserId}}",
+        "creatorName": "E2E Ticket Host",
+        "creatorInitials": "TH",
+        "creatorGender": "man",
+        "creatorCity": "Bratislava",
+        "location": "Bratislava",
+        "locationCoordinates": {
+          "latitude": 48.1486,
+          "longitude": 17.1077
+        },
+        "topics": ["e2e", "ticket"],
+        "subEvents": [],
+        "subEventsDisplayMode": "list"
+      }
+    },
+    {
+      "name": "join ticket holder to the event",
+      "method": "POST",
+      "path": "/api/activities/events/join",
+      "headers": {
+        "X-App-Session-Kind": "demo",
+        "X-Demo-User-Id": "{{ticketCheckInHolderUserId}}"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "userId": "{{ticketCheckInHolderUserId}}",
+        "type": "events",
+        "sourceId": "{{ticketCheckInEventId}}",
+        "optionalSubEventIds": [],
+        "assetSelections": [],
+        "acceptedPolicyIds": [],
+        "bookingConfirmed": true
+      }
+    }
+  ],
+  "params": {
+    "userId": "{{ticketCheckInHolderUserId}}",
+    "page": "0",
+    "pageSize": "100",
+    "order": "upcoming"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

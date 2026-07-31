@@ -43,6 +43,7 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetPolicyRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.AssetRequest;
+import com.raxim.myscoutee.profile.data.document.EventTicket;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
@@ -54,6 +55,9 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusC
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketScanPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -291,7 +295,7 @@ public class AssetsService {
     }
 
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
-        String normalizedUserId = effectiveActorUserId(userId);
+        String normalizedUserId = ticketActorUserId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return new AssetTicketsPageDto(List.of(), 0);
         }
@@ -317,6 +321,31 @@ public class AssetsService {
         int startIndex = Math.min(visible.size(), normalizedPage * normalizedPageSize);
         int endIndex = Math.min(visible.size(), startIndex + normalizedPageSize);
         return new AssetTicketsPageDto(visible.subList(startIndex, endIndex), visible.size());
+    }
+
+    public AssetTicketValidationDto validateTicket(AssetTicketValidationRequestDto request) {
+        if (request == null) {
+            return invalidTicketValidation("invalid_code");
+        }
+        String actorUserId = ticketActorUserId(request.userId());
+        if (!StringUtils.hasText(actorUserId)) {
+            return invalidTicketValidation("not_authorized");
+        }
+
+        EventTicketService.CheckInResult result = eventParticipationTicketService.checkIn(
+                request.code(),
+                actorUserId,
+                Instant.now());
+        if (result == null || !result.valid() || result.ticket() == null || result.event() == null) {
+            return invalidTicketValidation(result == null ? "not_found" : result.reason());
+        }
+
+        AssetTicketScanPayloadDto payload = toTicketScanPayload(result.ticket(), result.event());
+        if (payload == null) {
+            return invalidTicketValidation("event_unavailable");
+        }
+        enqueueTicketCheckedInNotification(result.ticket(), result.event(), actorUserId);
+        return new AssetTicketValidationDto(true, "valid", payload);
     }
 
     public AssetDto upsert(AssetUpsertRequestDto request) {
@@ -1645,12 +1674,20 @@ public class AssetsService {
 
     private AssetTicketDto toAssetTicketDto(ActivityEvent event) {
         String sourceId = normalizeId(event.getSourceId());
-        if (!StringUtils.hasText(sourceId)) {
+        String holderUserId = normalizeId(event.getOwnerUserId());
+        if (!StringUtils.hasText(sourceId) || !StringUtils.hasText(holderUserId)) {
+            return null;
+        }
+        EventTicket credential = eventParticipationTicketService.findOrIssueCredential(event, Instant.now());
+        if (credential == null || !StringUtils.hasText(credential.getCode())) {
             return null;
         }
         boolean admin = Boolean.TRUE.equals(event.getIsAdmin());
         return new AssetTicketDto(
                 sourceId,
+                holderUserId,
+                credential.getCode(),
+                safeNullableText(credential.getUsedAtIso()),
                 admin ? "hosting" : "events",
                 safeText(event.getStatus()),
                 safeText(event.getTitle()),
@@ -1665,6 +1702,56 @@ public class AssetsService {
                 safeText(event.getVisibility()),
                 safeText(event.getCreatorInitials()),
                 safeText(event.getCreatorInitials()));
+    }
+
+    private AssetTicketScanPayloadDto toTicketScanPayload(EventTicket ticket, ActivityEvent event) {
+        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(holderUserId) || !StringUtils.hasText(eventId)) {
+            return null;
+        }
+        Users holder = usersRepository.findByUserId(holderUserId).orElse(null);
+        return new AssetTicketScanPayloadDto(
+                safeText(ticket.getCode()),
+                holderUserId,
+                firstNonBlank(holder == null ? null : holder.getName(), holderUserId),
+                firstNonBlank(
+                        holder == null ? null : holder.getInitials(),
+                        initialsFromText(holder == null ? null : holder.getName())),
+                firstUserImageUrl(holder),
+                Math.max(0, holder == null || holder.getAge() == null ? 0 : holder.getAge()),
+                safeText(holder == null ? null : holder.getCity()),
+                resolveTicketHolderRole(eventId, holderUserId, event),
+                eventId,
+                safeText(event.getTitle()),
+                safeText(event.getSubtitle()),
+                safeText(event.getTimeframe()),
+                firstNonBlank(event.getStartAtIso(), event.getTimeframe()),
+                safeNullableText(ticket.getIssuedAtIso()),
+                safeNullableText(ticket.getUsedAtIso()));
+    }
+
+    private String resolveTicketHolderRole(String eventId, String holderUserId, ActivityEvent event) {
+        if (holderUserId.equals(normalizeId(event == null ? null : event.getCreatorUserId()))) {
+            return ROLE_ADMIN;
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                        OWNER_TYPE_EVENT,
+                        eventId,
+                        holderUserId)
+                .filter(member -> MEMBER_STATUS_ACCEPTED.equals(safeText(member.getStatus())))
+                .map(ActivityMember::getRole)
+                .map(this::safeText)
+                .filter(role -> ROLE_ADMIN.equals(role) || ROLE_MANAGER.equals(role))
+                .orElse("Member");
+    }
+
+    private AssetTicketValidationDto invalidTicketValidation(String reason) {
+        String normalizedReason = safeText(reason);
+        return new AssetTicketValidationDto(
+                false,
+                StringUtils.hasText(normalizedReason) ? normalizedReason : "not_found",
+                null);
     }
 
     private String normalizeMemberStatus(String status) {
@@ -2541,6 +2628,42 @@ public class AssetsService {
                 normalizedActorUserId));
     }
 
+    private void enqueueTicketCheckedInNotification(
+            EventTicket ticket,
+            ActivityEvent event,
+            String actorUserId) {
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
+        String usedAtIso = safeText(ticket == null ? null : ticket.getUsedAtIso());
+        if (notificationOutboxService == null
+                || !StringUtils.hasText(eventId)
+                || !StringUtils.hasText(holderUserId)
+                || !StringUtils.hasText(usedAtIso)) {
+            return;
+        }
+        String eventTitle = firstNonBlank(event.getTitle(), "Event");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "tickets");
+        payload.put("ticketStatus", "checked-in");
+        payload.put("usedAtIso", usedAtIso);
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-ticket-checked-in",
+                "event",
+                eventId,
+                "ticket-holder",
+                List.of(holderUserId),
+                "Ticket checked in",
+                "Your ticket for " + eventTitle + " was checked in.",
+                "/game",
+                firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "event-ticket-checked-in-" + ticket.getId(),
+                payload,
+                normalizeId(actorUserId)));
+    }
+
     private void enqueueAssetRestoredNotification(Asset asset, String actorUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
@@ -2722,6 +2845,17 @@ public class AssetsService {
     private String firstNonBlank(String first, String second) {
         String normalizedFirst = safeText(first);
         return StringUtils.hasText(normalizedFirst) ? normalizedFirst : safeText(second);
+    }
+
+    private String firstUserImageUrl(Users user) {
+        if (user == null || user.getImages() == null) {
+            return "";
+        }
+        return user.getImages().stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse("");
     }
 
     private boolean isManagerRole(String role) {
@@ -3061,6 +3195,16 @@ public class AssetsService {
 
     private String currentActorUserId() {
         return normalizeId(accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication()));
+    }
+
+    private String ticketActorUserId(String requestedUserId) {
+        String authenticatedUserId = currentActorUserId();
+        if (accessControlService.requiresAuthenticatedActor()) {
+            return authenticatedUserId;
+        }
+        return StringUtils.hasText(authenticatedUserId)
+                ? authenticatedUserId
+                : normalizeId(requestedUserId);
     }
 
     private String effectiveActorUserId(String userId) {

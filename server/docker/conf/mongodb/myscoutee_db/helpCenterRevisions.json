@@ -1153,8 +1153,8 @@
     "version": 1,
     "active": true,
     "title": "Event tickets",
-    "summary": "View ticket cards, QR codes, and scanning.",
-    "description": "Learn how to open your code, scan another ticket, and view the details stored in its QR code.",
+    "summary": "Open your ticket or check in an attendee.",
+    "description": "See how ticket QR codes, one-time check-in, and used-ticket status work.",
     "headerColor": "violet",
     "createdDate": "2026-05-22T00:00:00.000Z",
     "createdUser": "system",
@@ -1165,8 +1165,8 @@
         "id": "assets-tickets",
         "icon": "qr_code_2",
         "title": "Your tickets",
-        "blurb": "View entry records linked to events.",
-        "contentHtml": "<p>Switch between <strong>Upcoming</strong> and <strong>Past</strong> tickets. <strong>Scan Ticket</strong> opens the QR reader for another person&rsquo;s ticket.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-tickets\" alt=\"Your tickets\"></figure>",
+        "blurb": "View your upcoming and past event tickets.",
+        "contentHtml": "<p>Switch between <strong>Upcoming</strong> and <strong>Past</strong>. If you manage an event, <strong>Scan Ticket</strong> opens the camera so you can check in an attendee.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-tickets\" alt=\"Your tickets\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/6074b4e9186e40ccb8ae6770.svg"
         ],
@@ -1176,8 +1176,8 @@
         "id": "assets-ticket-card",
         "icon": "confirmation_number",
         "title": "Ticket card",
-        "blurb": "See the event and open your entry code.",
-        "contentHtml": "<p>The card shows the event, date, and your ticket context. Tap its QR badge to open your own code; ticket details come from the event and cannot be edited here.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Ticket card\"></figure>",
+        "blurb": "Open your QR code or see when it was used.",
+        "contentHtml": "<p>Tap the QR badge to show your entry code. After check-in, the card changes to <strong>Checked in</strong>; the same popup then shows the scan time instead of the QR code.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Ticket card\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/c63b93f558678f70f154dc2c.svg"
         ],
@@ -1187,8 +1187,8 @@
         "id": "assets-ticket-scanner",
         "icon": "qr_code_scanner",
         "title": "Scan a ticket",
-        "blurb": "Read another ticket&rsquo;s QR code when camera scanning is supported.",
-        "contentHtml": "<p>After reading a QR code, the scanner shows the ticket holder and event details stored in it. It does not confirm validity, mark the ticket as used, create it, or edit it.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-scanner\" alt=\"Scan a ticket\"></figure>",
+        "blurb": "Check in an attendee with a valid, unused ticket.",
+        "contentHtml": "<p>The server checks that you can manage the event and that the ticket is active, eligible, unexpired, and unused. A successful scan checks in the named holder and uses the ticket once; another scan is rejected. The QR code contains only an anonymous ticket code.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-scanner\" alt=\"Scan a ticket\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/ad885244e5aa445d6870ebd4.svg"
         ],
@@ -1205,8 +1205,8 @@
     "version": 1,
     "active": true,
     "title": "Eseményjegyek",
-    "summary": "Jegykártyák, QR-kódok és beolvasás.",
-    "description": "Itt megtudhatod, hogyan nyisd meg a saját kódodat, olvass be egy másik jegyet, és nézd meg a QR-kódban tárolt adatokat.",
+    "summary": "Nyisd meg a jegyedet, vagy léptess be egy résztvevőt.",
+    "description": "Itt megtudhatod, hogyan működik a QR-kód, az egyszeri beléptetés és a felhasznált jegy jelzése.",
     "headerColor": "violet",
     "createdDate": "2026-05-22T00:00:00.000Z",
     "createdUser": "system",
@@ -1217,8 +1217,8 @@
         "id": "assets-tickets",
         "icon": "qr_code_2",
         "title": "Saját jegyek",
-        "blurb": "Nézd meg az eseményekhez tartozó belépési adatokat.",
-        "contentHtml": "<p>Válts a <strong>Közelgő</strong> és <strong>Korábbi</strong> jegyek között. A <strong>Jegy szkennelése</strong> gomb megnyitja a QR-olvasót egy másik ember jegyéhez.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-tickets\" alt=\"Saját jegyek\"></figure>",
+        "blurb": "Nézd meg a közelgő és korábbi eseményjegyeidet.",
+        "contentHtml": "<p>Válts a <strong>Közelgő</strong> és <strong>Korábbi</strong> jegyek között. Ha te kezeled az eseményt, a <strong>Jegy szkennelése</strong> gombbal beléptetheted a résztvevőt.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-tickets\" alt=\"Saját jegyek\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/b23fc9b2494ddc7c4d0d1211.svg"
         ],
@@ -1228,8 +1228,8 @@
         "id": "assets-ticket-card",
         "icon": "confirmation_number",
         "title": "Jegykártya",
-        "blurb": "Nézd meg az eseményt, és nyisd meg a belépőkódodat.",
-        "contentHtml": "<p>A kártya az eseményt, a dátumot és a jegyed adatait mutatja. A QR-jelvény megnyitja a saját kódodat; a jegy adatai az eseményből származnak, és itt nem szerkeszthetők.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Jegykártya\"></figure>",
+        "blurb": "Nyisd meg a QR-kódot, vagy nézd meg a beléptetés idejét.",
+        "contentHtml": "<p>A QR-jelvény megnyitja a belépőkódodat. Beléptetés után a kártyán a <strong>Beléptetve</strong> jelvény jelenik meg; ugyanaz a felugró ablak ekkor a beolvasás idejét mutatja a QR-kód helyett.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Jegykártya\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/45f386e7ae216b8c69d572af.svg"
         ],
@@ -1239,8 +1239,8 @@
         "id": "assets-ticket-scanner",
         "icon": "qr_code_scanner",
         "title": "Jegy beolvasása",
-        "blurb": "Támogatott kamerás eszközön olvasd be más jegyének QR-kódját.",
-        "contentHtml": "<p>A beolvasás után megjelennek a kódban tárolt jegytulajdonos- és eseményadatok. Ez a képernyő nem ellenőrzi a jegy érvényességét, nem jelöli felhasználtnak, és nem hoz létre vagy szerkeszt jegyet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-scanner\" alt=\"Jegy beolvasása\"></figure>",
+        "blurb": "Érvényes, még nem használt jeggyel léptesd be a résztvevőt.",
+        "contentHtml": "<p>A szerver ellenőrzi, hogy kezelheted-e az eseményt, és a jegy aktív, jogosult résztvevőhöz tartozik, nem járt le és még nem használták. A sikeres beolvasás egyszer használhatóan belépteti a megnevezett tulajdonost; az újabb próbát elutasítja. A QR-kód csak egy személytelen jegyazonosítót tartalmaz.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-scanner\" alt=\"Jegy beolvasása\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/86dda0eaaef232cc842d9be2.svg"
         ],

@@ -15,6 +15,7 @@ const requiredCollections = [
   'chats',
   'chatMessages',
   'events',
+  'eventTickets',
   'eventFeedbackStates',
   'eventFeedbackAnswers',
   'ideaPosts',
@@ -234,6 +235,19 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.userFilterPreferences.createIndex(
     { syncKey: 1 },
     { name: 'user_filter_preferences_sync_key', unique: true, sparse: true }
+  );
+
+  portalDb.eventTickets.createIndex(
+    { code: 1 },
+    { name: 'event_ticket_code', unique: true }
+  );
+  portalDb.eventTickets.createIndex(
+    { eventId: 1, holderUserId: 1 },
+    { name: 'event_ticket_event_holder', unique: true }
+  );
+  portalDb.eventTickets.createIndex(
+    { eventId: 1, usedAtIso: 1 },
+    { name: 'event_ticket_event_used' }
   );
   portalDb.userFilterPreferences.createIndex(
     { userId: 1 },

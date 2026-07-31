@@ -12573,13 +12573,13 @@
     "_id": "i18n-message-en-event-editor-ticketing-enabled-description",
     "key": "event.editor.ticketing.enabled.description",
     "lang": "en",
-    "value": "QR attendee check-in is enabled."
+    "value": "Accepted attendees receive a QR ticket. An event manager can check it in once."
   },
   {
     "_id": "i18n-message-en-event-editor-ticketing-disabled-description",
     "key": "event.editor.ticketing.disabled.description",
     "lang": "en",
-    "value": "No QR check-in scanning."
+    "value": "No attendee QR tickets are issued."
   },
   {
     "_id": "i18n-message-en-event-editor-auto-approve-on",
@@ -14206,6 +14206,120 @@
     "key": "event.editor.subevents.stage.create",
     "lang": "en",
     "value": "Create Stage Event"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-title",
+    "key": "asset.ticket.title",
+    "lang": "en",
+    "value": "Ticket"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-title",
+    "key": "asset.ticket.scan.title",
+    "lang": "en",
+    "value": "Scan Ticket"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-checked-in",
+    "key": "asset.ticket.checked.in",
+    "lang": "en",
+    "value": "Checked in"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-checkin-details-aria",
+    "key": "asset.ticket.checkin.details.aria",
+    "lang": "en",
+    "value": "Show check-in details"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-qr-open-aria",
+    "key": "asset.ticket.qr.open.aria",
+    "lang": "en",
+    "value": "Open ticket QR code"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-qr-alt",
+    "key": "asset.ticket.qr.alt",
+    "lang": "en",
+    "value": "Ticket QR code"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-used-readonly",
+    "key": "asset.ticket.used.readonly",
+    "lang": "en",
+    "value": "This ticket has already been used and cannot be checked in again."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-accepted",
+    "key": "asset.ticket.scan.accepted",
+    "lang": "en",
+    "value": "Ticket accepted and checked in."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-already-used",
+    "key": "asset.ticket.scan.already.used",
+    "lang": "en",
+    "value": "This ticket has already been used."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-not-authorized",
+    "key": "asset.ticket.scan.not.authorized",
+    "lang": "en",
+    "value": "Only an event manager can check in this ticket."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-expired",
+    "key": "asset.ticket.scan.expired",
+    "lang": "en",
+    "value": "This ticket has expired."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-revoked",
+    "key": "asset.ticket.scan.revoked",
+    "lang": "en",
+    "value": "This ticket is no longer valid."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-event-unavailable",
+    "key": "asset.ticket.scan.event.unavailable",
+    "lang": "en",
+    "value": "This event is not available for check-in."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-invalid",
+    "key": "asset.ticket.scan.invalid",
+    "lang": "en",
+    "value": "This QR code is not a valid ticket."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-error",
+    "key": "asset.ticket.scan.error",
+    "lang": "en",
+    "value": "Ticket verification failed. Check the camera and connection."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-prompt",
+    "key": "asset.ticket.scan.prompt",
+    "lang": "en",
+    "value": "Scan a ticket to show attendee details."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-reading",
+    "key": "asset.ticket.scan.reading",
+    "lang": "en",
+    "value": "Scanning QR code..."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-validating",
+    "key": "asset.ticket.scan.validating",
+    "lang": "en",
+    "value": "Checking ticket..."
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-again",
+    "key": "asset.ticket.scan.again",
+    "lang": "en",
+    "value": "Scan again"
   },
   {
     "_id": "i18n-message-en-asset-borrow-title",
@@ -30771,13 +30885,13 @@
     "_id": "i18n-message-hu-event-editor-ticketing-enabled-description",
     "key": "event.editor.ticketing.enabled.description",
     "lang": "hu",
-    "value": "A QR-kódos résztvevői beléptetés engedélyezve van."
+    "value": "Az elfogadott résztvevők QR-jegyet kapnak, amelyet egy eseménykezelő egyszer használhat fel beléptetésre."
   },
   {
     "_id": "i18n-message-hu-event-editor-ticketing-disabled-description",
     "key": "event.editor.ticketing.disabled.description",
     "lang": "hu",
-    "value": "Nincs QR-kódos beléptetés."
+    "value": "A résztvevők nem kapnak QR-jegyet."
   },
   {
     "_id": "i18n-message-hu-event-editor-auto-approve-on",
@@ -32404,6 +32518,120 @@
     "key": "event.editor.subevents.stage.create",
     "lang": "hu",
     "value": "Szakaszesemény létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-title",
+    "key": "asset.ticket.title",
+    "lang": "hu",
+    "value": "Jegy"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-title",
+    "key": "asset.ticket.scan.title",
+    "lang": "hu",
+    "value": "Jegy beolvasása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-checked-in",
+    "key": "asset.ticket.checked.in",
+    "lang": "hu",
+    "value": "Beléptetve"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-checkin-details-aria",
+    "key": "asset.ticket.checkin.details.aria",
+    "lang": "hu",
+    "value": "Beléptetés részleteinek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-qr-open-aria",
+    "key": "asset.ticket.qr.open.aria",
+    "lang": "hu",
+    "value": "Jegy QR-kódjának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-qr-alt",
+    "key": "asset.ticket.qr.alt",
+    "lang": "hu",
+    "value": "A jegy QR-kódja"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-used-readonly",
+    "key": "asset.ticket.used.readonly",
+    "lang": "hu",
+    "value": "Ezt a jegyet már felhasználták, ezért nem lehet újra beléptetni vele."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-accepted",
+    "key": "asset.ticket.scan.accepted",
+    "lang": "hu",
+    "value": "A jegy érvényes, a résztvevő beléptetve."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-already-used",
+    "key": "asset.ticket.scan.already.used",
+    "lang": "hu",
+    "value": "Ezt a jegyet már felhasználták."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-not-authorized",
+    "key": "asset.ticket.scan.not.authorized",
+    "lang": "hu",
+    "value": "Ezt a jegyet csak az esemény egyik kezelője használhatja beléptetésre."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-expired",
+    "key": "asset.ticket.scan.expired",
+    "lang": "hu",
+    "value": "Ez a jegy lejárt."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-revoked",
+    "key": "asset.ticket.scan.revoked",
+    "lang": "hu",
+    "value": "Ez a jegy már nem érvényes."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-event-unavailable",
+    "key": "asset.ticket.scan.event.unavailable",
+    "lang": "hu",
+    "value": "Ehhez az eseményhez most nem lehet beléptetni."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-invalid",
+    "key": "asset.ticket.scan.invalid",
+    "lang": "hu",
+    "value": "Ez a QR-kód nem érvényes jegy."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-error",
+    "key": "asset.ticket.scan.error",
+    "lang": "hu",
+    "value": "Nem sikerült ellenőrizni a jegyet. Ellenőrizd a kamerát és az internetkapcsolatot."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-prompt",
+    "key": "asset.ticket.scan.prompt",
+    "lang": "hu",
+    "value": "Olvass be egy jegyet a résztvevő adatainak megjelenítéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-reading",
+    "key": "asset.ticket.scan.reading",
+    "lang": "hu",
+    "value": "QR-kód keresése..."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-validating",
+    "key": "asset.ticket.scan.validating",
+    "lang": "hu",
+    "value": "Jegy ellenőrzése..."
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-again",
+    "key": "asset.ticket.scan.again",
+    "lang": "hu",
+    "value": "Újabb beolvasás"
   },
   {
     "_id": "i18n-message-hu-asset-borrow-title",

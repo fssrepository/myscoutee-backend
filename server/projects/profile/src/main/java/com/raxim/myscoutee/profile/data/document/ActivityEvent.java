@@ -54,10 +54,6 @@ public class ActivityEvent {
     private String id;
     @Indexed(name = "event_sync_key", unique = true, sparse = true)
     private String syncKey;
-    @Indexed(name = "event_ticket_code", unique = true, sparse = true)
-    private String ticketCode;
-    private String ticketUsedAtIso;
-    private String ticketUsedByUserId;
     private String sourceId;
     private String ownerUserId;
     private String status;
@@ -130,12 +126,6 @@ public class ActivityEvent {
     public void setId(String id) { this.id = id; }
     public String getSyncKey() { return syncKey; }
     public void setSyncKey(String syncKey) { this.syncKey = syncKey; }
-    public String getTicketCode() { return ticketCode; }
-    public void setTicketCode(String ticketCode) { this.ticketCode = ticketCode; }
-    public String getTicketUsedAtIso() { return ticketUsedAtIso; }
-    public void setTicketUsedAtIso(String ticketUsedAtIso) { this.ticketUsedAtIso = ticketUsedAtIso; }
-    public String getTicketUsedByUserId() { return ticketUsedByUserId; }
-    public void setTicketUsedByUserId(String ticketUsedByUserId) { this.ticketUsedByUserId = ticketUsedByUserId; }
     public String getSourceId() { return sourceId; }
     public void setSourceId(String sourceId) { this.sourceId = sourceId; }
     public String getOwnerUserId() { return ownerUserId; }
@@ -183,6 +173,9 @@ public class ActivityEvent {
     }
     public Boolean getPublished() {
         return STATUS_ACTIVE.equals(getStatus());
+    }
+    public boolean hasStoredStatus(String expectedStatus) {
+        return expectedStatus != null && expectedStatus.equals(status);
     }
     public Boolean getIsExpired() { return expired; }
     public void setIsExpired(Boolean expired) { this.expired = expired; }
