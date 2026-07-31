@@ -310,6 +310,10 @@
       const expectedFirstRunCount = variation === "anchored-full-and-empty"
         ? 3
         : userCount - expectedUnassignedUserIds.length;
+      const affinityUserTaskIds = userIds.map(
+        (_, index) => F.fixtureId(job, `affinity-user-task-${index + 1}`)
+      );
+      const affinityUserTaskKeys = userIds.map(userId => `USER:${userId}`);
       return {
         pendingCount: expectedFirstRunCount,
         pendingCountUnit: "admin.jobs.table.users",
@@ -351,6 +355,8 @@
           isolatedEventIds,
           memberIds,
           anchorIds,
+          affinityUserTaskIds,
+          affinityUserTaskKeys,
           expectedAnchoredUserIdsByGroup,
           syntheticEdgeIds: syntheticEdges.map(edge => edge._id),
           syntheticEdgePairKeys: syntheticEdges.map(edge => edge.pairKey)
@@ -402,13 +408,28 @@
           },
           {
             collection: "affinityRecomputeTasks",
-            selector: { targetId: eventId }
+            selector: {
+              $or: [
+                { targetId: eventId },
+                { taskKey: { $in: affinityUserTaskKeys } }
+              ]
+            }
           }
         ]
       };
     },
     prepare(variation, context) {
       const now = F.nowIso();
+      const runningUserTask = F.collection("affinityRecomputeTasks").findOne({
+        taskKey: { $in: context.affinityUserTaskKeys || [] },
+        status: "running"
+      });
+      if (runningUserTask) {
+        F.fail(
+          `random fixture user task '${runningUserTask.taskKey}' is currently running; `
+            + "wait for the affinity worker to finish and prepare again."
+        );
+      }
       if ((context.isolatedEventIds || []).length > 0) {
         F.collection("events").updateMany(
           { _id: { $in: context.isolatedEventIds } },
@@ -459,13 +480,44 @@
         sourceId: eventId,
         syncKey: eventId,
         title: "Admin fixture graph rooms",
+        subtitle: "Accepted participants are assigned to affinity-based event rooms.",
         status: "A",
-        randomGroups: true,
         ownerUserId: context.userIds[0],
         creatorUserId: context.userIds[0],
+        admins: [context.userIds[0]],
+        avatar: "RF",
+        creatorName: "Random room fixture host",
+        creatorInitials: "RF",
+        creatorCity: "Fixture graph",
+        visibility: "Public",
+        blindMode: "Open Event",
+        imageUrl: "https://picsum.photos/seed/admin-job-fixture-random-groups/1200/700",
+        location: "Fixture graph rooms",
         capacityMin: context.userIds.length,
         capacityMax: context.userIds.length,
         capacityTotal: context.userIds.length,
+        full: true,
+        autoInviter: false,
+        frequency: "One-time",
+        ticketing: false,
+        approvalRequired: false,
+        policiesEnabled: false,
+        slotsEnabled: false,
+        generated: false,
+        eventType: "main",
+        acceptedMembers: context.userIds.length,
+        pendingMembers: 0,
+        acceptedMemberUserIds: [...context.userIds],
+        pendingMemberUserIds: [],
+        invitedMemberUserIds: [],
+        pendingRequestMemberUserIds: [],
+        topics: ["#Fixture", "#Rooms"],
+        subEventsEnabled: true,
+        subEventDefinitions: [],
+        mode: "Casual",
+        rating: 0,
+        boost: 0,
+        affinity: 0,
         startAtIso: F.futureIso(180),
         endAtIso: F.futureIso(360),
         subEvents: [{
@@ -528,6 +580,27 @@
       if (anchorMembers.length > 0) {
         F.collection("activityMembers").insertMany(anchorMembers);
       }
+      F.collection("affinityRecomputeTasks").deleteMany({
+        taskKey: { $in: context.affinityUserTaskKeys || [] }
+      });
+      F.collection("affinityRecomputeTasks").insertMany(
+        context.userIds.map((userId, index) => ({
+          _id: context.affinityUserTaskIds[index],
+          version: 0,
+          taskKey: context.affinityUserTaskKeys[index],
+          targetType: "USER",
+          targetId: userId,
+          reasons: ["USER_CHANGED"],
+          status: "pending",
+          pendingCounterTracked: true,
+          availableAtIso: "2099-01-01T00:00:00.000Z",
+          rerunRequested: false,
+          attemptCount: 0,
+          createdDate: now,
+          updatedDate: now,
+          updatedUser: F.FIXTURE_ACTOR
+        }))
+      );
     },
     afterPrepare(variation, context) {
       print(
