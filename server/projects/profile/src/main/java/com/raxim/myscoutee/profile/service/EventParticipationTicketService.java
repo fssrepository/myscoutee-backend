@@ -10,10 +10,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -27,15 +34,23 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 @Service
 public class EventParticipationTicketService {
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final String TICKET_CODE_PREFIX = "TKT-";
+    private static final Pattern TICKET_CODE_PATTERN = Pattern.compile(
+            "^TKT-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            Pattern.CASE_INSENSITIVE);
+    private static final int TICKET_CODE_WRITE_ATTEMPTS = 5;
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
+    private final MongoTemplate mongoTemplate;
 
     public EventParticipationTicketService(
             ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository) {
+            ActivityMembersRepository activityMembersRepository,
+            MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<ActivityEvent> queryTicketRecordsForUser(String userId) {
@@ -67,7 +82,120 @@ public class EventParticipationTicketService {
                 preferredBySourceId.put(sourceId, record);
             }
         }
-        return new ArrayList<>(preferredBySourceId.values());
+        List<ActivityEvent> result = new ArrayList<>();
+        for (ActivityEvent record : preferredBySourceId.values()) {
+            ActivityEvent ticket = ensureTicketCode(record);
+            if (ticket != null) {
+                result.add(ticket);
+            }
+        }
+        return result;
+    }
+
+    public TicketInspection inspectTicketCode(String code, Instant now) {
+        String normalizedCode = normalizeTicketCode(code);
+        if (!StringUtils.hasText(normalizedCode)) {
+            return TicketInspection.invalid("invalid_code");
+        }
+
+        ActivityEvent ticketRecord = activityEventsRepository.findByTicketCode(normalizedCode).orElse(null);
+        if (ticketRecord == null) {
+            return TicketInspection.invalid("not_found");
+        }
+
+        String sourceId = normalizeId(ticketRecord.getSourceId());
+        String holderUserId = normalizeId(ticketRecord.getOwnerUserId());
+        if (!StringUtils.hasText(sourceId) || !StringUtils.hasText(holderUserId)) {
+            return TicketInspection.invalid("revoked", ticketRecord, null);
+        }
+
+        SourceTicketSnapshot snapshot = loadSnapshot(sourceId);
+        ActivityEvent eventRecord = snapshot == null ? null : snapshot.preferredRecord();
+        if (eventRecord == null || !isCreatorOwnedSourceRecord(eventRecord)) {
+            return TicketInspection.invalid("event_unavailable", ticketRecord, eventRecord);
+        }
+
+        ActivityEvent currentTicketRecord = holderUserId.equals(snapshot.creatorUserId())
+                ? eventRecord
+                : snapshot.existingOverlayByOwnerUserId().get(holderUserId);
+        if (currentTicketRecord == null
+                || !Objects.equals(normalizeId(currentTicketRecord.getId()), normalizeId(ticketRecord.getId()))
+                || !normalizedCode.equals(normalizeTicketCode(currentTicketRecord.getTicketCode()))) {
+            return TicketInspection.invalid("revoked", ticketRecord, eventRecord);
+        }
+        if (StringUtils.hasText(ticketRecord.getTicketUsedAtIso())) {
+            return TicketInspection.invalid("already_used", ticketRecord, eventRecord);
+        }
+
+        if (!Boolean.TRUE.equals(eventRecord.getPublished())
+                || Boolean.TRUE.equals(eventRecord.getIsTrashed())) {
+            return TicketInspection.invalid("event_unavailable", ticketRecord, eventRecord);
+        }
+        if (!Boolean.TRUE.equals(eventRecord.getTicketing())
+                || !Boolean.TRUE.equals(ticketRecord.getTicketing())
+                || Boolean.TRUE.equals(ticketRecord.getIsTrashed())
+                || !snapshot.acceptedMemberUserIds().contains(holderUserId)) {
+            return TicketInspection.invalid("revoked", ticketRecord, eventRecord);
+        }
+
+        Instant validationTime = now == null ? Instant.now() : now;
+        Instant endAt = parseInstant(eventRecord.getEndAtIso());
+        if (Boolean.TRUE.equals(eventRecord.getIsExpired())
+                || (endAt != null && !endAt.isAfter(validationTime))) {
+            return TicketInspection.invalid("expired", ticketRecord, eventRecord);
+        }
+        if (endAt == null) {
+            return TicketInspection.invalid("event_unavailable", ticketRecord, eventRecord);
+        }
+        return TicketInspection.valid(ticketRecord, eventRecord);
+    }
+
+    public TicketInspection consumeTicket(
+            TicketInspection inspection,
+            String actorUserId,
+            Instant now) {
+        if (inspection == null || !inspection.valid() || inspection.ticketRecord() == null) {
+            return inspection == null ? TicketInspection.invalid("not_found") : inspection;
+        }
+
+        ActivityEvent ticketRecord = inspection.ticketRecord();
+        String ticketId = normalizeId(ticketRecord.getId());
+        String ticketCode = normalizeTicketCode(ticketRecord.getTicketCode());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(ticketId)
+                || !StringUtils.hasText(ticketCode)
+                || !StringUtils.hasText(normalizedActorUserId)) {
+            return TicketInspection.invalid("not_authorized", ticketRecord, inspection.eventRecord());
+        }
+
+        Instant consumedAt = now == null ? Instant.now() : now;
+        Criteria unusedTicket = new Criteria().orOperator(
+                Criteria.where("ticketUsedAtIso").exists(false),
+                Criteria.where("ticketUsedAtIso").is(null),
+                Criteria.where("ticketUsedAtIso").is(""));
+        Query query = Query.query(Criteria.where("_id").is(ticketId)
+                .and("ticketCode").is(ticketCode)
+                .and("ticketing").is(true)
+                .andOperator(unusedTicket));
+        Update update = new Update()
+                .set("ticketUsedAtIso", consumedAt.toString())
+                .set("ticketUsedByUserId", normalizedActorUserId);
+        ActivityEvent consumed = mongoTemplate.findAndModify(
+                query,
+                update,
+                FindAndModifyOptions.options().returnNew(true),
+                ActivityEvent.class);
+        if (consumed != null) {
+            return TicketInspection.valid(consumed, inspection.eventRecord());
+        }
+
+        ActivityEvent current = activityEventsRepository.findById(ticketId).orElse(null);
+        if (current != null
+                && ticketCode.equals(normalizeTicketCode(current.getTicketCode()))
+                && StringUtils.hasText(current.getTicketUsedAtIso())) {
+            return TicketInspection.invalid("already_used", current, inspection.eventRecord());
+        }
+        return inspectTicketCode(ticketCode, consumedAt);
     }
 
     public void syncParticipationTicketsForEvent(String sourceId) {
@@ -163,7 +291,10 @@ public class EventParticipationTicketService {
             }
             String ownerUserId = normalizeId(record.getOwnerUserId());
             if (StringUtils.hasText(ownerUserId)) {
-                existingOverlayByOwnerUserId.put(ownerUserId, record);
+                ActivityEvent current = existingOverlayByOwnerUserId.get(ownerUserId);
+                if (current == null || preferSourceRecord(record, current)) {
+                    existingOverlayByOwnerUserId.put(ownerUserId, record);
+                }
             }
         }
 
@@ -238,6 +369,7 @@ public class EventParticipationTicketService {
         if (participantSuppressed
                 && (preferred == null || !Boolean.TRUE.equals(preferred.getIsTrashed()))) {
             ActivityEvent next = cloneDocument(existing);
+            next.setTicketCode(null);
             next.setTicketing(false);
             next.setApprovalRequired(false);
             next.setUpdatedDate(Instant.now().toString());
@@ -248,6 +380,7 @@ public class EventParticipationTicketService {
         ActivityEvent next = preferred == null
                 ? cloneDocument(existing)
                 : buildParticipationOverlay(snapshot, ownerUserId, existing);
+        next.setTicketCode(null);
         next.setTicketing(false);
         next.setApprovalRequired(false);
         boolean globallyTrashed = preferred != null && Boolean.TRUE.equals(preferred.getIsTrashed());
@@ -271,6 +404,9 @@ public class EventParticipationTicketService {
         ActivityEvent next = existing == null ? new ActivityEvent() : cloneDocument(existing);
         next.setId(existing != null && StringUtils.hasText(existing.getId()) ? existing.getId() : new ObjectId().toHexString());
         next.setSyncKey(existing != null && StringUtils.hasText(existing.getSyncKey()) ? existing.getSyncKey().trim() : UUID.randomUUID().toString());
+        next.setTicketCode(existing != null && StringUtils.hasText(existing.getTicketCode())
+                ? existing.getTicketCode().trim()
+                : newTicketCode());
         next.setSourceId(normalizeId(preferred.getSourceId()));
         next.setOwnerUserId(ownerUserId);
         next.setAvatar(safeText(preferred.getAvatar()));
@@ -358,6 +494,11 @@ public class EventParticipationTicketService {
         if (StringUtils.hasText(existing.getSyncKey())) {
             record.setSyncKey(existing.getSyncKey());
         }
+        if (StringUtils.hasText(existing.getTicketCode())) {
+            record.setTicketCode(existing.getTicketCode());
+        }
+        record.setTicketUsedAtIso(existing.getTicketUsedAtIso());
+        record.setTicketUsedByUserId(existing.getTicketUsedByUserId());
         record.setCreatedDate(normalizeDateTime(existing.getCreatedDate(), record.getCreatedDate()));
         record.setCreatedUser(StringUtils.hasText(existing.getCreatedUser()) ? existing.getCreatedUser() : record.getCreatedUser());
         record.setUnread(normalizeCount(existing.getUnread()));
@@ -425,6 +566,9 @@ public class EventParticipationTicketService {
         }
         return Objects.equals(left.getId(), right.getId())
                 && Objects.equals(left.getSyncKey(), right.getSyncKey())
+                && Objects.equals(left.getTicketCode(), right.getTicketCode())
+                && Objects.equals(left.getTicketUsedAtIso(), right.getTicketUsedAtIso())
+                && Objects.equals(left.getTicketUsedByUserId(), right.getTicketUsedByUserId())
                 && Objects.equals(left.getSourceId(), right.getSourceId())
                 && Objects.equals(left.getOwnerUserId(), right.getOwnerUserId())
                 && Objects.equals(left.getAvatar(), right.getAvatar())
@@ -482,6 +626,49 @@ public class EventParticipationTicketService {
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
         clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
+    }
+
+    private ActivityEvent ensureTicketCode(ActivityEvent record) {
+        if (record == null) {
+            return null;
+        }
+        if (StringUtils.hasText(normalizeTicketCode(record.getTicketCode()))) {
+            return record;
+        }
+        String ticketId = normalizeId(record.getId());
+        if (!StringUtils.hasText(ticketId)) {
+            return null;
+        }
+
+        for (int attempt = 0; attempt < TICKET_CODE_WRITE_ATTEMPTS; attempt++) {
+            String code = newTicketCode();
+            Criteria missingCode = new Criteria().orOperator(
+                    Criteria.where("ticketCode").exists(false),
+                    Criteria.where("ticketCode").is(null),
+                    Criteria.where("ticketCode").is(""));
+            Query query = Query.query(Criteria.where("_id").is(ticketId).andOperator(missingCode));
+            try {
+                ActivityEvent updated = mongoTemplate.findAndModify(
+                        query,
+                        new Update().set("ticketCode", code),
+                        FindAndModifyOptions.options().returnNew(true),
+                        ActivityEvent.class);
+                if (updated != null) {
+                    return updated;
+                }
+            } catch (DuplicateKeyException ignored) {
+                // A UUID collision is extraordinarily unlikely; retry with a new value.
+            }
+
+            ActivityEvent current = activityEventsRepository.findById(ticketId).orElse(null);
+            if (current == null) {
+                return null;
+            }
+            if (StringUtils.hasText(normalizeTicketCode(current.getTicketCode()))) {
+                return current;
+            }
+        }
+        return null;
     }
 
     private List<SubEventItem> cloneSubEvents(List<SubEventItem> source) {
@@ -563,6 +750,30 @@ public class EventParticipationTicketService {
         return StringUtils.hasText(value) ? value.trim() : null;
     }
 
+    private String normalizeTicketCode(String value) {
+        String normalized = safeText(value);
+        if (!TICKET_CODE_PATTERN.matcher(normalized).matches()) {
+            return null;
+        }
+        return TICKET_CODE_PREFIX + normalized.substring(TICKET_CODE_PREFIX.length())
+                .toLowerCase(java.util.Locale.ROOT);
+    }
+
+    private String newTicketCode() {
+        return TICKET_CODE_PREFIX + UUID.randomUUID();
+    }
+
+    private Instant parseInstant(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        try {
+            return Instant.parse(value.trim());
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
+    }
+
     private String safeText(String value) {
         return value == null ? "" : value.trim();
     }
@@ -582,6 +793,27 @@ public class EventParticipationTicketService {
             return Instant.parse(value.trim()).toEpochMilli();
         } catch (DateTimeParseException exception) {
             return Long.MIN_VALUE;
+        }
+    }
+
+    public record TicketInspection(
+            boolean valid,
+            String reason,
+            ActivityEvent ticketRecord,
+            ActivityEvent eventRecord) {
+        public static TicketInspection valid(ActivityEvent ticketRecord, ActivityEvent eventRecord) {
+            return new TicketInspection(true, "valid", ticketRecord, eventRecord);
+        }
+
+        public static TicketInspection invalid(String reason) {
+            return invalid(reason, null, null);
+        }
+
+        public static TicketInspection invalid(
+                String reason,
+                ActivityEvent ticketRecord,
+                ActivityEvent eventRecord) {
+            return new TicketInspection(false, reason, ticketRecord, eventRecord);
         }
     }
 

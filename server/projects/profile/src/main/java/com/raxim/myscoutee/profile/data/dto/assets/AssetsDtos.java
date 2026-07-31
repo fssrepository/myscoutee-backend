@@ -238,6 +238,9 @@ public final class AssetsDtos {
 
     public record AssetTicketDto(
             String id,
+            String holderUserId,
+            String scanCode,
+            String usedAtIso,
             String type,
             String status,
             String title,
@@ -252,6 +255,32 @@ public final class AssetsDtos {
             String visibility,
             String avatarInitials,
             String creatorInitials) {
+    }
+
+    public record AssetTicketValidationRequestDto(
+            String code,
+            String userId) {
+    }
+
+    public record AssetTicketScanPayloadDto(
+            String code,
+            String holderUserId,
+            String holderName,
+            Integer holderAge,
+            String holderCity,
+            String holderRole,
+            String eventId,
+            String eventTitle,
+            String eventSubtitle,
+            String eventTimeframe,
+            String eventDateLabel,
+            String issuedAtIso) {
+    }
+
+    public record AssetTicketValidationDto(
+            Boolean valid,
+            String reason,
+            AssetTicketScanPayloadDto ticket) {
     }
 
     public record AssetTicketsPageDto(

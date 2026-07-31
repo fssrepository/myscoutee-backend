@@ -12,6 +12,8 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 public interface ActivityEventsRepository extends MongoRepository<ActivityEvent, String> {
     Optional<ActivityEvent> findBySyncKey(String syncKey);
 
+    Optional<ActivityEvent> findByTicketCode(String ticketCode);
+
     Optional<ActivityEvent> findByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 
     List<ActivityEvent> findByOwnerUserId(String ownerUserId);

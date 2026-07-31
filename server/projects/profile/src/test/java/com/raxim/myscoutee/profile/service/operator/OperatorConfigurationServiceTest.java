@@ -437,7 +437,7 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
-    void defaultsLogoCharacterIndexToZeroAndUsesUnicodeCodePoints()
+    void supportsNoWordmarkLogoAndUsesUnicodeCodePoints()
             throws Exception {
         Fixture fixture = fixtureWithKey();
         OperatorConfigurationUpdateDto selectedCharacter =
@@ -452,6 +452,15 @@ class OperatorConfigurationServiceTest {
                         .getLogoCharacterIndex())
                 .isEqualTo(1);
 
+        var noWordmarkLogo = fixture.service().update(
+                brandingOnlyRequest("A🌟B", -1));
+        assertThat(noWordmarkLogo.branding().logoCharacterIndex()).isEqualTo(-1);
+        assertThat(fixture.persisted()
+                        .get()
+                        .getBranding()
+                        .getLogoCharacterIndex())
+                .isEqualTo(-1);
+
         var fullName = fixture.service().update(
                 brandingOnlyRequest("A🌟B", null));
         assertThat(fullName.branding().logoCharacterIndex()).isZero();
@@ -463,7 +472,7 @@ class OperatorConfigurationServiceTest {
 
         assertBadRequest(
                 () -> fixture.service().update(
-                        brandingOnlyRequest("A🌟B", -1)),
+                        brandingOnlyRequest("A🌟B", -2)),
                 "Logo character index");
         assertBadRequest(
                 () -> fixture.service().update(
@@ -475,6 +484,29 @@ class OperatorConfigurationServiceTest {
                         .getLogoCharacterIndex())
                 .as("invalid indices are rejected rather than clamped")
                 .isZero();
+    }
+
+    @Test
+    void clearsPersistedLogoUrl() throws Exception {
+        Fixture fixture = fixtureWithKey();
+        OperatorConfigurationUpdateDto request =
+                new OperatorConfigurationUpdateDto(
+                        List.of(),
+                        List.of(),
+                        new BrandingUpdateDto(
+                                "Product",
+                                -1,
+                                "",
+                                DeploymentThemePreset.OCEAN),
+                        null,
+                        null);
+
+        var cleared = fixture.service().update(request);
+
+        assertThat(cleared.branding().logoUrl()).isEmpty();
+        assertThat(cleared.branding().logoCharacterIndex()).isEqualTo(-1);
+        assertThat(fixture.persisted().get().getBranding().getLogoUrl())
+                .isEmpty();
     }
 
     @Test

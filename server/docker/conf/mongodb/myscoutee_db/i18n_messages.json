@@ -16629,7 +16629,7 @@
     "_id": "i18n-message-en-operator-configuration-branding-logo-character-index-invalid",
     "key": "operator.configuration.branding.logo.character.index.invalid",
     "lang": "en",
-    "value": "Enter a whole number from 0 to the final character position."
+    "value": "Enter -1 for no replacement, or a character position from 0 onward."
   },
   {
     "_id": "i18n-message-en-operator-configuration-branding-logo-guidance",
@@ -34827,7 +34827,7 @@
     "_id": "i18n-message-hu-operator-configuration-branding-logo-character-index-invalid",
     "key": "operator.configuration.branding.logo.character.index.invalid",
     "lang": "hu",
-    "value": "Adj meg egész számot 0 és az utolsó karakter pozíciója között."
+    "value": "Adj meg -1-et, ha a logó nem helyettesít karaktert, vagy egy karakterpozíciót 0-tól."
   },
   {
     "_id": "i18n-message-hu-operator-configuration-branding-logo-guidance",
