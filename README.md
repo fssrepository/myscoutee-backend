@@ -28,8 +28,3 @@ Editable manual sources and PDF build instructions are in
 |---|---:|---|---|
 | MyScoutee Network | 1.0.0 | [PDF](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
 | MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
-
-## Technical documentation
-
-- [Production packaging and operations](packaging/README.md)
-- [Project documentation index](guides/README.md)
