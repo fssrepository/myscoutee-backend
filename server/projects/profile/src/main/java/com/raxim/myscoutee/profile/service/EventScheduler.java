@@ -72,8 +72,14 @@ public class EventScheduler {
     private static final String MARKER_UPDATED_BY = "scheduler";
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
     private static final String RANDOM_ROOM_SYSTEM_NAME = "MyScoutee System";
+    private static final String PUBLIC_PROFILE_STATUS = "public";
     private static final String RANDOM_ROOM_IMAGE_URL =
             "/media/public?key=images/system/random-room-default.png";
+    private static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
+    private static final String RANDOM_ROOM_WELCOME_MESSAGE =
+            "Welcome! MyScoutee created this room automatically for participants matched by affinity "
+                    + "and previous interactions. You can leave the room or disable future random-room "
+                    + "participation in Global Settings.";
     private static final String RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER =
             "jobs.process.randomGroups.sourceEventIds";
     private static final String STAGE_STATUS_ACTIVE = "A";
@@ -748,6 +754,9 @@ public class EventScheduler {
             publishRandomProgress(progressConsumer, 10, snapshotsByEventId.size(), events.size(), requiredUserIds.size(), queryCount,
                     "Queried " + queryCount + " backend lookup(s); found " + requiredUserIds.size() + " candidate user(s).");
         }
+        Set<String> publicUserIds = resolvePublicUserIds(requiredUserIds);
+        incrementObservedQueries(observedQueries);
+        requiredUserIds.retainAll(publicUserIds);
         publishRandomProgress(progressConsumer, 20, 0, snapshotsByEventId.size(), requiredUserIds.size(), observedQueries.get(), "Loaded eligible random events.");
         int totalSubEvents = Math.max(1, events.stream()
                 .filter(event -> event != null && Boolean.TRUE.equals(event.getPublished()))
@@ -785,6 +794,10 @@ public class EventScheduler {
             if (snapshot == null) return;
 
             Set<String> acceptedUserIds = new LinkedHashSet<>(snapshot.acceptedMemberUserIds());
+            acceptedUserIds.retainAll(publicUserIds);
+            if (acceptedUserIds.size() < 2) {
+                return;
+            }
             FGraph eventGraph = graph.filter(acceptedUserIds, Set.of(), 0d);
             
             if (eventGraph.getNodes().isEmpty()) return;
@@ -883,6 +896,22 @@ public class EventScheduler {
                 observedQueries.get(), "Finalizing random event groups after " + observedQueries.get() + " backend lookup(s).");
         
         return plans;
+    }
+
+    private Set<String> resolvePublicUserIds(Collection<String> candidateUserIds) {
+        Set<String> normalizedCandidateUserIds = new LinkedHashSet<>(normalizeUserIds(candidateUserIds));
+        if (normalizedCandidateUserIds.isEmpty()) {
+            return Set.of();
+        }
+        Set<String> publicUserIds = new LinkedHashSet<>();
+        for (Users user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
+            String userId = normalizeId(user == null ? null : user.getId());
+            if (StringUtils.hasText(userId)
+                    && PUBLIC_PROFILE_STATUS.equalsIgnoreCase(safeText(user.getProfileStatus()))) {
+                publicUserIds.add(userId);
+            }
+        }
+        return publicUserIds;
     }
 
     public record RandomPlanProgress(
@@ -1770,7 +1799,11 @@ public class EventScheduler {
                             "Missing random-room target for " + normalizeId(plannedGroup.seedId()) + ".");
                 }
                 randomRoom = materializeRandomRoomEvent(event, assignmentTarget);
-                chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
+                String chatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
+                chatService.ensureInitialSystemMessage(
+                        chatId,
+                        RANDOM_ROOM_WELCOME_MESSAGE,
+                        RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
             }
             ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
             if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {

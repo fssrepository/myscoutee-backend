@@ -39,6 +39,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -720,6 +721,54 @@ public class ChatService {
         observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.system", "chats", normalizedChatId, "system");
+        return chatMessageMapper.toDto(message, "");
+    }
+
+    public ChatMessageDto ensureInitialSystemMessage(String chatId, String text, String systemType) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedText = normalizeText(text);
+        String normalizedSystemType = firstNonBlank(systemType, "welcome");
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
+            return null;
+        }
+        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty()) {
+            return null;
+        }
+
+        String messageId = "system:" + normalizedSystemType;
+        ChatMessage existing = chatMessagesRepository
+                .findByChatIdAndMessageId(normalizedChatId, messageId)
+                .orElse(null);
+        if (existing != null) {
+            return chatMessageMapper.toDto(existing, "");
+        }
+
+        ChatMessage message = buildSystemMessage(normalizedText, normalizedSystemType);
+        message.setId(messageId);
+        message.setSender("MyScoutee System");
+        message.setChatId(normalizedChatId);
+        message.setMongoId(ChatMessage.buildMongoId(normalizedChatId, messageId));
+        message.refreshMessageSearchFields();
+        try {
+            chatMessagesRepository.insert(message);
+        } catch (DuplicateKeyException duplicate) {
+            ChatMessage concurrentlyInserted = chatMessagesRepository
+                    .findByChatIdAndMessageId(normalizedChatId, messageId)
+                    .orElseThrow(() -> duplicate);
+            return chatMessageMapper.toDto(concurrentlyInserted, "");
+        }
+
+        ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(normalizedChatId, message);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
+        List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, message, "", false);
+        observeChatEventPublish(redisPublish, streamEvent);
+        chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record(
+                "chat.message.system.initial",
+                "chats",
+                normalizedChatId,
+                normalizedSystemType);
         return chatMessageMapper.toDto(message, "");
     }
 

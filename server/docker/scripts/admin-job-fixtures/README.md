@@ -53,7 +53,7 @@ The application scheduler runs each configured pass in the real and demo databas
 The Admin Job detail reads `runState.pendingCount`; it does not count, project, or aggregate the source collection when the screen opens.
 
 - Queue jobs atomically mark a work document as tracked and add one. A terminal worker transition removes one.
-- Event jobs receive dirty-work signals from the existing deduplicated affinity/outbox-style change path. Repeated signals still merge their reasons into the active worker task, but only a newly tracked task increments the displayed count. For random room assignment, only newly tracked user tasks increment the user count; event and config tasks still run but do not pretend to be one affected user. A run atomically claims the number accumulated before it started; changes arriving during the run remain for the next run. Failure restores the claimed number.
+- Event jobs receive dirty-work signals from the existing deduplicated affinity/outbox-style change path. Repeated signals still merge their reasons into the active worker task, but only a newly tracked task increments the displayed count. For random room assignment, only newly tracked users whose current `profileStatus` is `public` increment the user count; non-public user signals are discarded for this counter update, while their affinity worker task still runs. Event and config tasks do not pretend to be one affected user. A run atomically claims the number accumulated before it started; changes arriving during the run remain for the next run. Failure restores the claimed number.
 - The value is an informational work-item/signal count, not a promise that every item will still be eligible or that the final affected-row count will be identical. Deduplication, retries, and eligibility checks can make those numbers differ.
 - Existing legacy queue rows are not scanned or backfilled. They become tracked when a normal application transition touches them. This avoids introducing the expensive projection the field is intended to replace.
 - Updating one work document and updating the rule counter are separate Mongo documents. Their transitions are race-safe and the displayed value cannot go below zero, but exact crash consistency would require a cross-document transaction or a durable delta ledger.
@@ -161,6 +161,11 @@ Expected after the scheduler pass:
 - each derived room is a standalone `random-room` event with exactly the
   configured number of accepted event members and a shared chat materialized
   for those members;
+- every selected participant has a `public` profile; non-public accepted source
+  members are excluded from both the room plans and the affected-user result;
+- the system stores exactly one `random-room-welcome` message in every generated
+  chat before membership and notification fanout, and increments each member's
+  chat unread counters exactly once;
 - every fixture event member appears in exactly one room;
 - anchors stay in their original rooms for `anchored` and
   `anchored-full-and-empty`;
@@ -177,8 +182,8 @@ The generated `twenty-rooms`, remainder, and `quality-*` variations also have an
 For `under-min-connected-component`, the same oracle proves that connectivity
 alone cannot override the room minimum. For `below-minimum-total`,
 `expectedNoOutputArtifacts` and `noOutputArtifacts` must both be true. After a
-successful first pass, `status` stores a fixture-only fingerprint of memberships,
-markers, outbox, and bell rows. A second Admin **Run** must report zero affected
+successful first pass, `status` stores a fixture-only fingerprint of chat
+messages, memberships, markers, outbox, and bell rows. A second Admin **Run** must report zero affected
 users and `repeatedPassChangedZeroGroups:true` plus
 `assignmentFingerprintUnchanged:true`.
 

@@ -154,7 +154,13 @@
   function graphUsers(count) {
     const existingUsers = new Set(
       F.collection("users")
-        .find({ userId: { $exists: true, $nin: ["", null] } }, { projection: { userId: 1 } })
+        .find(
+          {
+            userId: { $exists: true, $nin: ["", null] },
+            profileStatus: "public"
+          },
+          { projection: { userId: 1 } }
+        )
         .map(user => F.safeText(user.userId || user._id))
         .toArray()
     );
@@ -392,6 +398,10 @@
           {
             collection: "chats",
             selector: { id: { $in: groupOwnerIds } }
+          },
+          {
+            collection: "chatMessages",
+            selector: { chatId: { $in: groupOwnerIds } }
           },
           {
             collection: "schedulerPlanMarkers",
@@ -1023,9 +1033,97 @@
         .find({ id: { $in: ownerIds } }, { _id: 1, id: 1, ownerUserId: 1 })
         .sort({ id: 1, ownerUserId: 1 })
         .toArray();
+      const roomMessageRows = F.collection("chatMessages")
+        .find(
+          { chatId: { $in: ownerIds } },
+          {
+            _id: 1,
+            chatId: 1,
+            id: 1,
+            clientId: 1,
+            sender: 1,
+            senderAvatar: 1,
+            text: 1,
+            sentAtIso: 1
+          }
+        )
+        .sort({ chatId: 1, id: 1 })
+        .toArray();
+      const snapshottedUsers = (
+        (snapshot && snapshot.snapshots) || []
+      ).find(item => item.collection === "users");
+      const baselineUsersById = new Map(
+        ((snapshottedUsers && snapshottedUsers.documents) || []).map(
+          user => [F.safeText(user.userId || user._id), user]
+        )
+      );
+      const currentUsersById = new Map(
+        F.collection("users")
+          .find(
+            { userId: { $in: expectedUserIds } },
+            {
+              _id: 1,
+              userId: 1,
+              name: 1,
+              profileStatus: 1,
+              activities: 1
+            }
+          )
+          .map(user => [F.safeText(user.userId || user._id), user])
+          .toArray()
+      );
+      const activityCounter = (user, path) => {
+        let value = user;
+        for (const key of path.split(".")) {
+          value = value && value[key];
+        }
+        return Number(value) || 0;
+      };
+      const chatCounterDeltas = expectedUserIds.map(userId => {
+        const baselineUser = baselineUsersById.get(userId);
+        const currentUser = currentUsersById.get(userId);
+        return {
+          userId,
+          name: currentUser && currentUser.name,
+          profileStatus: currentUser && currentUser.profileStatus,
+          expectedDelta: assignedCounts.has(userId) ? 1 : 0,
+          chats: activityCounter(currentUser, "activities.chats")
+            - activityCounter(baselineUser, "activities.chats"),
+          all: activityCounter(currentUser, "activities.chat.all")
+            - activityCounter(baselineUser, "activities.chat.all"),
+          event: activityCounter(currentUser, "activities.chat.event")
+            - activityCounter(baselineUser, "activities.chat.event")
+        };
+      });
+      const publicProfilesValid = chatCounterDeltas.every(
+        item => item.profileStatus === "public"
+      );
+      const chatCounterUpdatesValid = chatCounterDeltas.every(item => (
+        item.chats === item.expectedDelta
+        && item.all === item.expectedDelta
+        && item.event === item.expectedDelta
+      ));
+      const initialSystemMessagesValid = groups.every(group => {
+        const messages = roomMessageRows.filter(
+          message => message.chatId === group.ownerId
+        );
+        if (group.acceptedUserIds.length === 0) {
+          return messages.length === 0;
+        }
+        return messages.length === 1
+          && messages[0].id === "system:random-room-welcome"
+          && messages[0].clientId === "random-room-welcome"
+          && messages[0].sender === "MyScoutee System"
+          && messages[0].senderAvatar
+          && messages[0].senderAvatar.gender === "system"
+          && F.safeText(messages[0].text).includes(
+            "created this room automatically"
+          );
+      });
       const noOutputArtifacts =
         generatedRoomEvents.length === 0
         && roomChatRows.length === 0
+        && roomMessageRows.length === 0
         && groupMemberRows.length === 0
         && markerRows.length === 0
         && outboxCount === 0
@@ -1035,6 +1133,7 @@
           event && event.subEvents && event.subEvents[0] && event.subEvents[0].groups,
         generatedRoomEvents,
         roomChatRows,
+        roomMessageRows,
         groupMemberRows,
         markerRows,
         outboxRows,
@@ -1070,6 +1169,9 @@
         );
       const firstPassComplete =
         assignmentValid
+        && publicProfilesValid
+        && initialSystemMessagesValid
+        && chatCounterUpdatesValid
         && qualityValid
         && (!context.expectNoOutputArtifacts || noOutputArtifacts)
         && runObservedAfterPrepare
@@ -1118,6 +1220,10 @@
           unexpectedUserIds,
           anchorsPreserved,
           activeRoomArtifactsValid,
+          publicProfilesValid,
+          initialSystemMessagesValid,
+          chatCounterUpdatesValid,
+          chatCounterDeltas,
           expectedNoOutputArtifacts: Boolean(context.expectNoOutputArtifacts),
           noOutputArtifacts,
           repeatedRun: {
@@ -1155,6 +1261,7 @@
         }),
         generatedRoomEventCount: generatedRoomEvents.length,
         roomChatViewCount: roomChatRows.length,
+        roomMessageCount: roomMessageRows.length,
         outboxCount,
         bellCount
       };

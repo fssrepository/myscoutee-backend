@@ -339,6 +339,8 @@ class EventSchedulerTest {
                 .thenReturn(Map.of("event-1", eventSnapshot));
         when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("event"), anyCollection()))
                 .thenReturn(Map.of());
+        when(chatService.ensureMainEventChat(any(ActivityEvent.class), anyCollection()))
+                .thenAnswer(invocation -> ((ActivityEvent) invocation.getArgument(0)).getSourceId());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 org.mockito.ArgumentMatchers.eq("event-1"),
                 org.mockito.ArgumentMatchers.eq("sub-1"),
@@ -376,9 +378,17 @@ class EventSchedulerTest {
         InOrder creationOrder = inOrder(activityEventsRepository, chatService, activitiesMembersService, notificationOutboxService);
         creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u1", "u2")));
+        creationOrder.verify(chatService).ensureInitialSystemMessage(
+                eq(room1Id),
+                org.mockito.ArgumentMatchers.contains("created this room automatically"),
+                eq("random-room-welcome"));
         creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
         creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
+        creationOrder.verify(chatService).ensureInitialSystemMessage(
+                eq(room2Id),
+                org.mockito.ArgumentMatchers.contains("created this room automatically"),
+                eq("random-room-welcome"));
         creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
@@ -399,6 +409,64 @@ class EventSchedulerTest {
             assertThat(intent.payload()).containsEntry("eventScope", "random-room");
             assertThat(intent.payload()).containsEntry("senderName", "MyScoutee System");
         });
+    }
+
+    @Test
+    void generateRandomPlansExcludesNonPublicUsersFromRoomsAndAffectedUsers() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-public-only");
+        event.setStatus("A");
+        event.setCreatorUserId("creator-1");
+        event.setTitle("Public room test");
+        event.setSubEvents(List.of(subEvent("stage-public-only", 1, 2, 2)));
+
+        Users privateUser = user("private-user");
+        privateUser.setProfileStatus("friends only");
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("public-1"),
+                user("public-2"),
+                privateUser));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
+                user("public-1"),
+                user("public-2"),
+                privateUser));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
+                rate("public-1", "public-2", 1.0d),
+                rate("public-2", "private-user", 0.95d)));
+        when(activitiesMembersService.buildBatchEventSnapshots(any()))
+                .thenReturn(Map.of("event-public-only", new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-public-only",
+                        List.of(),
+                        List.of("public-1", "public-2", "private-user"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("creator-1"),
+                        3)));
+        when(activitiesMembersService.buildBatchOwnerSnapshots(eq("event"), anyCollection()))
+                .thenReturn(Map.of());
+        when(chatService.ensureMainEventChat(any(ActivityEvent.class), anyCollection()))
+                .thenAnswer(invocation -> ((ActivityEvent) invocation.getArgument(0)).getSourceId());
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                eq("event-public-only"),
+                eq("stage-public-only"),
+                anyList()))
+                .thenReturn(List.of(group("stage-public-only:group:1", "Group A")));
+
+        List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
+
+        assertThat(plans).singleElement().satisfies(plan -> {
+            assertThat(plan.memberUserIds()).containsExactlyInAnyOrder("public-1", "public-2");
+            assertThat(plan.memberUserIds()).doesNotContain("private-user");
+        });
+        verify(activitiesMembersService).syncSystemEventMembers(
+                anyString(),
+                eq("scheduler"),
+                argThat(userIds -> userIds.size() == 2 && !userIds.contains("private-user")));
     }
 
     @Test
@@ -1419,6 +1487,11 @@ class EventSchedulerTest {
     }
 
     private EventScheduler createScheduler() {
+        lenient().when(usersRepository.findByUserIdIn(anyCollection()))
+                .thenAnswer(invocation -> ((java.util.Collection<String>) invocation.getArgument(0))
+                        .stream()
+                        .map(this::user)
+                        .toList());
         lenient().when(schedulerPlanMarkersRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
         lenient().when(activityEventsRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
         lenient().when(activityEventsRepository.save(any(ActivityEvent.class)))
@@ -1451,6 +1524,7 @@ class EventSchedulerTest {
         Users user = new Users();
         user.setId(userId);
         user.setName(userId);
+        user.setProfileStatus("public");
         return user;
     }
 

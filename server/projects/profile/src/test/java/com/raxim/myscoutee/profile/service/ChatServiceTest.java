@@ -15,16 +15,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import com.mongodb.client.result.UpdateResult;
 
 import com.raxim.myscoutee.profile.data.document.Chat;
@@ -59,6 +64,8 @@ class ChatServiceTest {
     private ChatMessagesRepository chatMessagesRepository;
     @Mock
     private MongoTemplate mongoTemplate;
+    @Mock
+    private BulkOperations bulkOperations;
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -164,6 +171,58 @@ class ChatServiceTest {
         assertThat(persisted).extracting(Chat::getOwnerUserId)
                 .containsExactly("user-1", "user-2");
         verify(chatsRepository).saveAll(anyList());
+    }
+
+    @Test
+    void initialSystemMessageIsStoredOnceAndIncrementsEveryParticipantChatCounterOnce() {
+        Chat first = chat("random-room-1", "user-1", 0, "2026-05-26T08:00:00Z", "mainEvent");
+        Chat second = chat("random-room-1", "user-2", 0, "2026-05-26T08:00:00Z", "mainEvent");
+        first.setMemberIds(List.of("user-1", "user-2"));
+        second.setMemberIds(List.of("user-1", "user-2"));
+        AtomicReference<ChatMessage> inserted = new AtomicReference<>();
+
+        when(chatsRepository.findByChatId("random-room-1")).thenReturn(List.of(first, second));
+        when(chatMessagesRepository.findByChatIdAndMessageId(
+                "random-room-1",
+                "system:random-room-welcome"))
+                .thenAnswer(invocation -> Optional.ofNullable(inserted.get()));
+        when(chatMessagesRepository.insert(any(ChatMessage.class))).thenAnswer(invocation -> {
+            ChatMessage message = invocation.getArgument(0);
+            inserted.set(message);
+            return message;
+        });
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
+                .thenReturn(bulkOperations);
+
+        var firstResult = service.ensureInitialSystemMessage(
+                "random-room-1",
+                "Welcome to this automatically generated room.",
+                "random-room-welcome");
+        var repeatedResult = service.ensureInitialSystemMessage(
+                "random-room-1",
+                "Welcome to this automatically generated room.",
+                "random-room-welcome");
+
+        assertThat(firstResult).isNotNull();
+        assertThat(repeatedResult).isNotNull();
+        assertThat(inserted.get()).satisfies(message -> {
+            assertThat(message.getId()).isEqualTo("system:random-room-welcome");
+            assertThat(message.getSender()).isEqualTo("MyScoutee System");
+            assertThat(message.getText()).contains("automatically generated room");
+        });
+        verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
+        verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
+        ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(2)).updateFirst(
+                any(Query.class),
+                counterUpdates.capture(),
+                eq(Users.class));
+        assertThat(counterUpdates.getAllValues()).allSatisfy(update -> {
+            Document increments = update.getUpdateObject().get("$inc", Document.class);
+            assertThat(((Number) increments.get("activities.chats")).intValue()).isEqualTo(1);
+            assertThat(((Number) increments.get("activities.chat.all")).intValue()).isEqualTo(1);
+            assertThat(((Number) increments.get("activities.chat.event")).intValue()).isEqualTo(1);
+        });
     }
 
     @Test

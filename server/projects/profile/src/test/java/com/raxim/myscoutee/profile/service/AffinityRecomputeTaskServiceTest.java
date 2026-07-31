@@ -2,6 +2,9 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,10 +15,12 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.beans.factory.ObjectProvider;
 
 import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.AffinityRecomputeTasksRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
@@ -117,10 +122,12 @@ class AffinityRecomputeTaskServiceTest {
         @SuppressWarnings("unchecked")
         ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        when(mongoTemplate.exists(any(Query.class), eq(Users.class))).thenReturn(true);
         AffinityRecomputeTaskService service = new AffinityRecomputeTaskService(
                 repository,
                 properties,
-                mock(MongoTemplate.class));
+                mongoTemplate);
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueUserChanged("user-1");
@@ -136,5 +143,36 @@ class AffinityRecomputeTaskServiceTest {
                 NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                 1,
                 NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
+    }
+
+    @Test
+    void nonPublicUserDirtySignalDoesNotIncrementRandomRoomPendingUsers() {
+        AffinityRecomputeTasksRepository repository = mock(AffinityRecomputeTasksRepository.class);
+        AffinityRecomputeProperties properties = new AffinityRecomputeProperties();
+        when(repository.findByTaskKey("USER:user-1")).thenReturn(Optional.empty());
+        when(repository.save(any(AffinityRecomputeTask.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        when(provider.getIfAvailable()).thenReturn(registry);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        when(mongoTemplate.exists(any(Query.class), eq(Users.class))).thenReturn(false);
+        AffinityRecomputeTaskService service = new AffinityRecomputeTaskService(
+                repository,
+                properties,
+                mongoTemplate);
+        service.setNotificationRuleRegistryServiceProvider(provider);
+
+        service.enqueueUserChanged("user-1");
+
+        verify(registry).adjustPendingCount(
+                NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                1,
+                "admin.jobs.rule.affinity.recompute");
+        verify(registry, never()).adjustPendingCount(
+                eq(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS),
+                anyInt(),
+                eq(NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS));
     }
 }
