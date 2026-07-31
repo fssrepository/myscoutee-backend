@@ -32,9 +32,9 @@ locally.
 
 | Manual | Document version | Applies to | PDF |
 |---|---:|---:|---|
-| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
-| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
-| User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
+| Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
+| Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
+| User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 
 Editable manual sources and PDF build instructions are in
 [`guides/manuals`](guides/manuals/README.md).
@@ -43,5 +43,5 @@ Editable manual sources and PDF build instructions are in
 
 | Presentation | Version | PDF | PowerPoint |
 |---|---:|---|---|
-| MyScoutee Network | 1.0.0 | [PDF](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
-| MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
+| MyScoutee Network | 1.0.0 | [PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pdf) | [PPTX](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/pitches/network-output/MyScoutee_Network_Pitch_v1.0.0_EN.pptx) |
+| MyScoutee Product | 1.0.0 | [PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
