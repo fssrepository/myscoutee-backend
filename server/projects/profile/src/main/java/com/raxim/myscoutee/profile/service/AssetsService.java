@@ -18,6 +18,8 @@ import java.util.UUID;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -76,6 +78,7 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 @Service
 public class AssetsService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AssetsService.class);
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
     private static final String STATUS_TRASHED = "T";
@@ -340,11 +343,32 @@ public class AssetsService {
             return invalidTicketValidation(result == null ? "not_found" : result.reason());
         }
 
-        AssetTicketScanPayloadDto payload = toTicketScanPayload(result.ticket(), result.event());
+        AssetTicketScanPayloadDto payload;
+        try {
+            payload = toTicketScanPayload(result.ticket(), result.event());
+        } catch (RuntimeException exception) {
+            LOGGER.warn(
+                    "Ticket holder enrichment failed after a successful check-in; returning the canonical fallback payload. eventId={}, ticketId={}",
+                    safeText(result.event().getSourceId()),
+                    safeText(result.ticket().getId()),
+                    exception);
+            payload = toCanonicalTicketScanPayload(result.ticket(), result.event(), null, null);
+        }
+        if (payload == null) {
+            payload = toCanonicalTicketScanPayload(result.ticket(), result.event(), null, null);
+        }
         if (payload == null) {
             return invalidTicketValidation("event_unavailable");
         }
-        enqueueTicketCheckedInNotification(result.ticket(), result.event(), actorUserId);
+        try {
+            enqueueTicketCheckedInNotification(result.ticket(), result.event(), actorUserId);
+        } catch (RuntimeException exception) {
+            LOGGER.warn(
+                    "Ticket check-in notification failed after a successful check-in; the scanner response remains successful. eventId={}, ticketId={}",
+                    safeText(result.event().getSourceId()),
+                    safeText(result.ticket().getId()),
+                    exception);
+        }
         return new AssetTicketValidationDto(true, "valid", payload);
     }
 
@@ -1711,6 +1735,23 @@ public class AssetsService {
             return null;
         }
         Users holder = usersRepository.findByUserId(holderUserId).orElse(null);
+        String holderRole = resolveTicketHolderRole(eventId, holderUserId, event);
+        return toCanonicalTicketScanPayload(ticket, event, holder, holderRole);
+    }
+
+    private AssetTicketScanPayloadDto toCanonicalTicketScanPayload(
+            EventTicket ticket,
+            ActivityEvent event,
+            Users holder,
+            String holderRole) {
+        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(holderUserId) || !StringUtils.hasText(eventId)) {
+            return null;
+        }
+        String fallbackRole = holderUserId.equals(normalizeId(event.getCreatorUserId()))
+                ? ROLE_ADMIN
+                : "Member";
         return new AssetTicketScanPayloadDto(
                 safeText(ticket.getCode()),
                 holderUserId,
@@ -1721,7 +1762,7 @@ public class AssetsService {
                 firstUserImageUrl(holder),
                 Math.max(0, holder == null || holder.getAge() == null ? 0 : holder.getAge()),
                 safeText(holder == null ? null : holder.getCity()),
-                resolveTicketHolderRole(eventId, holderUserId, event),
+                firstNonBlank(holderRole, fallbackRole),
                 eventId,
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),

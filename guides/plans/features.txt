@@ -7,6 +7,4 @@ https://developers.facebook.com/ -> business verfication is needed
 feature
 -------
 1) background process tests, e.g.: purge, algorithm
-2) operator - configuration popup - http config, auto renewal as a on/off
-on/off for the entire panel like in event editor
-maybe pass signed keys, text the stack - nginx config
+2) operator config - test tls config

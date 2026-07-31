@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.mongodb.client.result.UpdateResult;
 
 import com.raxim.myscoutee.profile.data.AssetCatalog;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.AssetRequest;
+import com.raxim.myscoutee.profile.data.document.EventTicket;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
@@ -33,6 +36,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMemberStatusChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
@@ -55,6 +59,101 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void successfulTicketCheckInReturnsCanonicalPayloadWhenHolderLookupFails() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        EventTicket ticket = checkedInTicket();
+        ActivityEvent event = ticketEvent();
+
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.checkIn(eq(ticket.getCode()), eq("scanner-user"), any(Instant.class)))
+                .thenReturn(EventTicketService.CheckInResult.checkedIn(ticket, event));
+        when(usersRepository.findByUserId(ticket.getHolderUserId()))
+                .thenThrow(new IllegalStateException("holder lookup unavailable"));
+
+        AssetsService service = ticketValidationService(
+                usersRepository,
+                activityMembersRepository,
+                ticketService,
+                notificationOutboxService,
+                accessControlService);
+
+        SecurityContextHolder.clearContext();
+        var response = service.validateTicket(new AssetTicketValidationRequestDto(
+                ticket.getCode(),
+                "scanner-user"));
+
+        assertThat(response.valid()).isTrue();
+        assertThat(response.reason()).isEqualTo("valid");
+        assertThat(response.ticket()).isNotNull();
+        assertThat(response.ticket().code()).isEqualTo(ticket.getCode());
+        assertThat(response.ticket().holderUserId()).isEqualTo(ticket.getHolderUserId());
+        assertThat(response.ticket().holderName()).isEqualTo(ticket.getHolderUserId());
+        assertThat(response.ticket().holderAvatarUrl()).isEmpty();
+        assertThat(response.ticket().eventId()).isEqualTo(event.getSourceId());
+        assertThat(response.ticket().eventTitle()).isEqualTo(event.getTitle());
+        assertThat(response.ticket().usedAtIso()).isEqualTo(ticket.getUsedAtIso());
+        verify(notificationOutboxService).enqueue(any(NotificationIntent.class));
+    }
+
+    @Test
+    void successfulTicketCheckInRemainsSuccessfulWhenNotificationFails() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        EventTicket ticket = checkedInTicket();
+        ActivityEvent event = ticketEvent();
+        Users holder = user(ticket.getHolderUserId(), "Ticket Holder", "TH");
+        holder.setAge(31);
+        holder.setCity("Bratislava");
+        holder.setImages(List.of("https://media.example.test/holder.webp"));
+
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.checkIn(eq(ticket.getCode()), eq("scanner-user"), any(Instant.class)))
+                .thenReturn(EventTicketService.CheckInResult.checkedIn(ticket, event));
+        when(usersRepository.findByUserId(ticket.getHolderUserId())).thenReturn(Optional.of(holder));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event",
+                event.getSourceId(),
+                ticket.getHolderUserId())).thenReturn(Optional.of(member(
+                        "event",
+                        event.getSourceId(),
+                        ticket.getHolderUserId(),
+                        "Manager",
+                        "accepted")));
+        when(notificationOutboxService.enqueue(any(NotificationIntent.class)))
+                .thenThrow(new IllegalStateException("notification outbox unavailable"));
+
+        AssetsService service = ticketValidationService(
+                usersRepository,
+                activityMembersRepository,
+                ticketService,
+                notificationOutboxService,
+                accessControlService);
+
+        SecurityContextHolder.clearContext();
+        var response = service.validateTicket(new AssetTicketValidationRequestDto(
+                ticket.getCode(),
+                "scanner-user"));
+
+        assertThat(response.valid()).isTrue();
+        assertThat(response.reason()).isEqualTo("valid");
+        assertThat(response.ticket()).isNotNull();
+        assertThat(response.ticket().holderName()).isEqualTo("Ticket Holder");
+        assertThat(response.ticket().holderInitials()).isEqualTo("TH");
+        assertThat(response.ticket().holderAvatarUrl())
+                .isEqualTo("https://media.example.test/holder.webp");
+        assertThat(response.ticket().holderRole()).isEqualTo("Manager");
+        assertThat(response.ticket().usedAtIso()).isEqualTo(ticket.getUsedAtIso());
+        verify(notificationOutboxService).enqueue(any(NotificationIntent.class));
+    }
+
     @Test
     void resourceMemberActionsReturnOnlyStatusTransitionsAndCounterDeltas() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
@@ -1415,6 +1514,57 @@ class AssetsServiceTest {
         user.setProfileStatus("public");
         user.setStatus("A");
         return user;
+    }
+
+    private AssetsService ticketValidationService(
+            UsersRepository usersRepository,
+            ActivityMembersRepository activityMembersRepository,
+            EventParticipationTicketService ticketService,
+            NotificationOutboxService notificationOutboxService,
+            AccessControlService accessControlService) {
+        return new AssetsService(
+                mock(AssetsRepository.class),
+                usersRepository,
+                activityMembersRepository,
+                ticketService,
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+    }
+
+    private EventTicket checkedInTicket() {
+        EventTicket ticket = new EventTicket();
+        ticket.setId("ticket-document-1");
+        ticket.setCode("TKT-123e4567-e89b-42d3-a456-426614174000");
+        ticket.setEventId("event-1");
+        ticket.setHolderUserId("holder-user");
+        ticket.setStatus(EventTicket.STATUS_ACTIVE);
+        ticket.setIssuedAtIso("2026-07-31T08:45:00Z");
+        ticket.setUsedAtIso("2026-07-31T09:00:00Z");
+        ticket.setUsedByUserId("scanner-user");
+        return ticket;
+    }
+
+    private ActivityEvent ticketEvent() {
+        ActivityEvent event = new ActivityEvent();
+        event.setId("event-document-1");
+        event.setSourceId("event-1");
+        event.setOwnerUserId("host-user");
+        event.setCreatorUserId("host-user");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        event.setTicketing(true);
+        event.setTitle("Community Hike");
+        event.setSubtitle("Morning route");
+        event.setTimeframe("31 July");
+        event.setStartAtIso("2026-07-31T09:00:00Z");
+        event.setEndAtIso("2026-07-31T12:00:00Z");
+        return event;
     }
 
     private ActivityMember member(String ownerId, String userId, String role, String status) {

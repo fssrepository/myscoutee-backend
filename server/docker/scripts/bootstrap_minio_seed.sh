@@ -59,7 +59,9 @@ seed_directory() {
 
     object_key="${key_prefix}${child_name}"
     if [ -d "${child}" ]; then
-      seed_directory "${child}" "${object_key}/"
+      (
+        seed_directory "${child}" "${object_key}/"
+      )
     elif [ -f "${child}" ]; then
       seed_object "${child}" "${object_key}"
     fi
