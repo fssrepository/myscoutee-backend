@@ -44,6 +44,11 @@ export function assertSeededArticleImages(records, path = 'landing articles') {
       `${articlePath}.imageUrls should contain its primary imageUrl`,
       { contentKey, largeUrl, imageUrls }
     );
+    assert(
+      `${article?.contentHtml ?? ''}`.includes(largeUrl),
+      `${articlePath}.contentHtml should embed its primary imageUrl for the article detail popup`,
+      { contentKey, largeUrl }
+    );
 
     const objectKey = publicMediaObjectKey(largeUrl, `${articlePath}.imageUrl`);
     const expectedObjectKey = seededArticleObjectKey(contentKey, 'large');
