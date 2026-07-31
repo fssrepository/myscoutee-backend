@@ -378,18 +378,18 @@ class EventSchedulerTest {
         InOrder creationOrder = inOrder(activityEventsRepository, chatService, activitiesMembersService, notificationOutboxService);
         creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u1", "u2")));
+        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room1Id),
                 org.mockito.ArgumentMatchers.contains("created this room automatically"),
                 eq("random-room-welcome"));
-        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
         creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
+        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room2Id),
                 org.mockito.ArgumentMatchers.contains("created this room automatically"),
                 eq("random-room-welcome"));
-        creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService, times(2)).enqueue(intentCaptor.capture());

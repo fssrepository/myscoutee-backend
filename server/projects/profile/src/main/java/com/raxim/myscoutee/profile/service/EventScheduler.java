@@ -1793,20 +1793,23 @@ public class EventScheduler {
                     normalizeId(plannedGroup.seedId()));
             GroupAssignmentTarget assignmentTarget = targetByGroupId.get(normalizeId(plannedGroup.seedId()));
             ActivityEvent randomRoom = null;
+            String randomRoomChatId = "";
             if (randomRoomAssignment) {
                 if (assignmentTarget == null) {
                     throw new IllegalStateException(
                             "Missing random-room target for " + normalizeId(plannedGroup.seedId()) + ".");
                 }
                 randomRoom = materializeRandomRoomEvent(event, assignmentTarget);
-                String chatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
-                chatService.ensureInitialSystemMessage(
-                        chatId,
-                        RANDOM_ROOM_WELCOME_MESSAGE,
-                        RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
             }
             ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
             if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {
+                if (randomRoomAssignment) {
+                    chatService.ensureInitialSystemMessage(
+                            randomRoomChatId,
+                            RANDOM_ROOM_WELCOME_MESSAGE,
+                            RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                }
                 rememberPlanMarkerIfMissing(
                         wrapperType,
                         markerActionType,
@@ -1837,6 +1840,12 @@ public class EventScheduler {
                         "Membership synchronization failed for " + plannedGroup.seedId()
                                 + ": expected " + expectedSyncedUserIds
                                 + " but persisted " + normalizedSyncedUserIds + ".");
+            }
+            if (randomRoomAssignment) {
+                chatService.ensureInitialSystemMessage(
+                        randomRoomChatId,
+                        RANDOM_ROOM_WELCOME_MESSAGE,
+                        RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
             }
             recordPlanMarker(
                     wrapperType,

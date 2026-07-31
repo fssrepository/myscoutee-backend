@@ -678,7 +678,8 @@
             creatorUserId: 1,
             creatorName: 1,
             imageUrl: 1,
-            parentEventId: 1
+            parentEventId: 1,
+            createdDate: 1
           }
         ),
         chatOwnerUserIds: F.collection("chats")
@@ -961,6 +962,7 @@
             userId: 1,
             status: 1,
             requestKind: 1,
+            createdDate: 1,
             updatedDate: 1
           }
         )
@@ -997,7 +999,9 @@
             recipientUserIds: 1,
             entityType: 1,
             entityId: 1,
-            type: 1
+            type: 1,
+            payload: 1,
+            createdDate: 1
           }
         )
         .sort({ _id: 1 })
@@ -1120,6 +1124,43 @@
             "created this room automatically"
           );
       });
+      const artifactCreationOrderValid = groups.every(group => {
+        if (group.acceptedUserIds.length === 0) {
+          return true;
+        }
+        const eventCreatedAt = Date.parse(
+          F.safeText(group.event && group.event.createdDate)
+        );
+        const membershipTimes = groupMemberRows
+          .filter(member => member.ownerId === group.ownerId)
+          .map(member => Date.parse(F.safeText(
+            member.createdDate || member.updatedDate
+          )));
+        const roomMessages = roomMessageRows.filter(
+          message => message.chatId === group.ownerId
+        );
+        const messageCreatedAt = roomMessages.length === 1
+          ? Date.parse(F.safeText(roomMessages[0].sentAtIso))
+          : NaN;
+        const notificationTimes = outboxRows
+          .filter(item => (
+            item.entityId === group.ownerId
+            || (
+              item.payload
+              && item.payload.eventId === group.ownerId
+            )
+          ))
+          .map(item => Date.parse(F.safeText(item.createdDate)));
+        return Number.isFinite(eventCreatedAt)
+          && membershipTimes.length === group.acceptedUserIds.length
+          && membershipTimes.every(Number.isFinite)
+          && membershipTimes.every(value => value >= eventCreatedAt)
+          && Number.isFinite(messageCreatedAt)
+          && membershipTimes.every(value => value <= messageCreatedAt)
+          && notificationTimes.length >= 2
+          && notificationTimes.every(Number.isFinite)
+          && notificationTimes.every(value => value >= messageCreatedAt);
+      });
       const noOutputArtifacts =
         generatedRoomEvents.length === 0
         && roomChatRows.length === 0
@@ -1171,6 +1212,7 @@
         assignmentValid
         && publicProfilesValid
         && initialSystemMessagesValid
+        && artifactCreationOrderValid
         && chatCounterUpdatesValid
         && qualityValid
         && (!context.expectNoOutputArtifacts || noOutputArtifacts)
@@ -1222,6 +1264,7 @@
           activeRoomArtifactsValid,
           publicProfilesValid,
           initialSystemMessagesValid,
+          artifactCreationOrderValid,
           chatCounterUpdatesValid,
           chatCounterDeltas,
           expectedNoOutputArtifacts: Boolean(context.expectNoOutputArtifacts),
