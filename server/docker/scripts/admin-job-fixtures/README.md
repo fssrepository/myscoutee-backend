@@ -78,8 +78,8 @@ For the graph job:
 1. Prepare `event-random-groups`.
 2. Open **Admin → Admin Jobs → event-random-groups**.
 3. Leave the already-running backend alone and wait for its next configured
-   scheduler poll. `prepare` makes the rule due and scopes this pass to the
-   fixture source event.
+   scheduler poll. `prepare` temporarily changes the rule interval to one minute,
+   makes it due, and scopes this pass to the fixture source event.
 4. Run `status event-random-groups`.
 5. Press **Run** once more only when checking idempotence through the visible
    manual control.
@@ -151,8 +151,9 @@ Variations:
 
 Preparation does not change or quarantine any unrelated event. It temporarily
 sets the random-room rule's `jobs.process.randomGroups.sourceEventIds` parameter
-to the fixture source event ID, so the real scheduler pass processes only that
-input event. Reset restores the complete original rule document.
+to the fixture source event ID and its interval to one minute, so the real
+scheduler pass processes only that input event promptly. Reset restores the
+complete original rule document, including its original interval.
 
 Expected after the scheduler pass:
 

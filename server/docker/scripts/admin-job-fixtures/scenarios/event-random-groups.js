@@ -472,6 +472,14 @@
               ),
               sourceScopeParameter
             ],
+            "timing.mode": "interval",
+            "timing.intervalMinutes": 1,
+            "timing.intervalSeconds": 60,
+            "timing.intervalAmount": 1,
+            "timing.intervalUnit": "minutes",
+            "timing.time": "00:00",
+            "timing.timezone": "UTC",
+            "timing.cronExpression": "0 0/1 * * * ?",
             updatedDate: now,
             updatedUser: F.FIXTURE_ACTOR
           }
@@ -640,7 +648,8 @@
     afterPrepare(variation, context) {
       print(
         `[admin-job-fixtures] The rule is scoped to only '${context.eventId}'; no other `
-          + `published event was modified. The existing Java scheduler will pick it up automatically.`
+          + `published event was modified. Its fixture interval is 1 minute, and the existing `
+          + `Java scheduler will pick it up automatically.`
       );
     },
     status(context, snapshot) {
