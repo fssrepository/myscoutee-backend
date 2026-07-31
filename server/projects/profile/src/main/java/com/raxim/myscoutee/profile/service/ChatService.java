@@ -98,6 +98,13 @@ import com.raxim.myscoutee.profile.service.mapper.SubEventItemMapper;
 
 @Service
 public class ChatService {
+    public static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
+    public static final String RANDOM_ROOM_WELCOME_MESSAGE_ID =
+            "system:" + RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
+    public static final String RANDOM_ROOM_WELCOME_MESSAGE =
+            "Welcome! We matched you here by affinity and past interactions. Leave anytime. "
+                    + "Set visibility to non-public in Global Settings to stop future Random Rooms.";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());

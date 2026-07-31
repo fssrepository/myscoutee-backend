@@ -75,11 +75,6 @@ public class EventScheduler {
     private static final String PUBLIC_PROFILE_STATUS = "public";
     private static final String RANDOM_ROOM_IMAGE_URL =
             "/media/public?key=images/system/random-room-default.png";
-    private static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
-    private static final String RANDOM_ROOM_WELCOME_MESSAGE =
-            "Welcome! MyScoutee created this room automatically for participants matched by affinity "
-                    + "and previous interactions. You can leave the room or disable future random-room "
-                    + "participation in Global Settings.";
     private static final String RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER =
             "jobs.process.randomGroups.sourceEventIds";
     private static final String STAGE_STATUS_ACTIVE = "A";
@@ -1807,8 +1802,8 @@ public class EventScheduler {
                 if (randomRoomAssignment) {
                     chatService.ensureInitialSystemMessage(
                             randomRoomChatId,
-                            RANDOM_ROOM_WELCOME_MESSAGE,
-                            RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                            ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
+                            ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
                 }
                 rememberPlanMarkerIfMissing(
                         wrapperType,
@@ -1844,8 +1839,8 @@ public class EventScheduler {
             if (randomRoomAssignment) {
                 chatService.ensureInitialSystemMessage(
                         randomRoomChatId,
-                        RANDOM_ROOM_WELCOME_MESSAGE,
-                        RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                        ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
+                        ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
             }
             recordPlanMarker(
                     wrapperType,

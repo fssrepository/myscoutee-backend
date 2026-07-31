@@ -23,6 +23,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReact
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.ChatService;
 import com.raxim.myscoutee.profile.service.ChatStreamEvent;
 
 @Component
@@ -54,7 +55,7 @@ public class ChatMessageMapper {
                 senderInitials,
                 senderGender,
                 "deleted".equals(senderGender) ? "" : resolveUserImageUrl(sender),
-                deleted ? "" : message == null ? "" : safeText(message.getText()),
+                deleted ? "" : presentationText(message),
                 message == null ? Instant.now().toString() : safeText(message.getSentAtIso()),
                 Objects.equals(senderId, normalizeId(viewerUserId)),
                 deleted ? List.of() : safeReadBy(message == null ? null : message.getReadBy()).stream()
@@ -90,7 +91,7 @@ public class ChatMessageMapper {
                 deletedSender ? deletedUserInitials() : senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
                 senderGender,
                 "deleted".equals(senderGender) ? "" : resolveUserImageUrl(sender),
-                message == null ? "" : safeText(message.getText()),
+                presentationText(message),
                 message == null ? "" : safeText(message.getSentAtIso()),
                 safeReadBy(message == null ? null : message.getReadBy()).stream()
                         .map(this::toReadAvatarDto)
@@ -337,10 +338,21 @@ public class ChatMessageMapper {
         if ("deleted".equals(normalized)) {
             return "deleted";
         }
+        if ("system".equals(normalized)) {
+            return "system";
+        }
         if (normalized.startsWith("w") || normalized.startsWith("f")) {
             return "woman";
         }
         return "man";
+    }
+
+    private String presentationText(ChatMessage message) {
+        if (message != null
+                && ChatService.RANDOM_ROOM_WELCOME_MESSAGE_ID.equals(safeText(message.getId()))) {
+            return ChatService.RANDOM_ROOM_WELCOME_MESSAGE;
+        }
+        return message == null ? "" : safeText(message.getText());
     }
 
     private String normalizeAttachmentStatus(String value) {
