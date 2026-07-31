@@ -1620,6 +1620,12 @@
     "value": "Affected"
   },
   {
+    "_id": "i18n-message-en-admin-jobs-table-users",
+    "key": "admin.jobs.table.users",
+    "lang": "en",
+    "value": "Users"
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-table-duration",
     "key": "admin.jobs.table.duration",
     "lang": "en",
@@ -2199,55 +2205,55 @@
     "_id": "i18n-message-en-admin-jobs-rule-event-random-groups",
     "key": "admin.jobs.rule.event.random.groups",
     "lang": "en",
-    "value": "Matched rooms"
+    "value": "Automatic room assignment"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-random-groups-description",
     "key": "admin.jobs.rule.event.random.groups.description",
     "lang": "en",
-    "value": "Assigns accepted event members into generated rooms using affinity and prior-meeting signals."
+    "value": "Assigns accepted event members to generated rooms based on their connections and prior meetings."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-auto-inviter",
     "key": "admin.jobs.rule.event.auto.inviter",
     "lang": "en",
-    "value": "Auto inviter"
+    "value": "Fill open event spots"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-auto-inviter-description",
     "key": "admin.jobs.rule.event.auto.inviter.description",
     "lang": "en",
-    "value": "Invites the next eligible candidates while an event still has open places before tournament start."
+    "value": "Fills open event spots with the next eligible candidates."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-tournament-review",
     "key": "admin.jobs.rule.event.tournament.review",
     "lang": "en",
-    "value": "Tournament review"
+    "value": "Review tournament stages"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-tournament-review-description",
     "key": "admin.jobs.rule.event.tournament.review.description",
     "lang": "en",
-    "value": "Moves tournament stages into review states so admins can start, resume, or finalize them deliberately."
+    "value": "Finds tournament stages that need an admin decision before they can start or finish."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-counter-expiry",
     "key": "admin.jobs.rule.event.counter.expiry",
     "lang": "en",
-    "value": "Event counter expiry"
+    "value": "Close past events"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-counter-expiry-description",
     "key": "admin.jobs.rule.event.counter.expiry.description",
     "lang": "en",
-    "value": "Expires past event records and refreshes affected user activity counters every five minutes."
+    "value": "Closes past events and refreshes the affected activity counters."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge",
     "key": "admin.jobs.rule.event.checkout.basket.purge",
     "lang": "en",
-    "value": "Checkout basket cleanup"
+    "value": "Delete expired baskets"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge-description",
@@ -2259,49 +2265,49 @@
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "en",
-    "value": "Notification outbox"
+    "value": "Send notifications"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox-description",
     "key": "admin.jobs.rule.notification.outbox.description",
     "lang": "en",
-    "value": "Processes durable notification intents and delivers Firebase batches inside configured windows."
+    "value": "Sends queued in-app and push notifications."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-affinity-recompute",
     "key": "admin.jobs.rule.affinity.recompute",
     "lang": "en",
-    "value": "Affinity recompute"
+    "value": "Refresh affinities"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-affinity-recompute-description",
     "key": "admin.jobs.rule.affinity.recompute.description",
     "lang": "en",
-    "value": "Consumes durable recompute tasks and refreshes stored affinity, boost, and status-derived values."
+    "value": "Refreshes stored relationship scores after relevant profile and event changes."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-scheduled-messages",
     "key": "admin.jobs.rule.scheduled.messages",
     "lang": "en",
-    "value": "Scheduled messages"
+    "value": "Send scheduled messages"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-scheduled-messages-description",
     "key": "admin.jobs.rule.scheduled.messages.description",
     "lang": "en",
-    "value": "Scans due scheduled tasks such as stage reminders and inactivity follow-up actions."
+    "value": "Sends due messages and reminders, and handles scheduled inactivity actions."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-account-purge",
     "key": "admin.jobs.rule.account.purge",
     "lang": "en",
-    "value": "Account purge"
+    "value": "Finalize deleted accounts"
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-account-purge-description",
     "key": "admin.jobs.rule.account.purge.description",
     "lang": "en",
-    "value": "Purges user activity and private media after the configured deleted-account grace window expires."
+    "value": "Permanently removes account activity and private media after the deletion grace period."
   },
   {
     "_id": "i18n-message-en-admin-jobs-run-detail-rule-not-found",
@@ -3147,7 +3153,7 @@
     "_id": "i18n-message-en-event-scheduler-random-groups",
     "key": "event.scheduler.random-groups",
     "lang": "en",
-    "value": "Matched room assignment"
+    "value": "Event room assignment"
   },
   {
     "_id": "i18n-message-en-event-scheduler-random-groups-description",
@@ -3159,7 +3165,7 @@
     "_id": "i18n-message-en-event-scheduler-auto-inviter",
     "key": "event.scheduler.auto-inviter",
     "lang": "en",
-    "value": "Auto inviter"
+    "value": "Eligible candidates"
   },
   {
     "_id": "i18n-message-en-event-scheduler-auto-inviter-description",
@@ -3171,7 +3177,7 @@
     "_id": "i18n-message-en-event-scheduler-tournament-review",
     "key": "event.scheduler.tournament-review",
     "lang": "en",
-    "value": "Tournament review"
+    "value": "Tournament stages"
   },
   {
     "_id": "i18n-message-en-event-scheduler-tournament-review-description",
@@ -3183,7 +3189,7 @@
     "_id": "i18n-message-en-event-counter-expiry",
     "key": "event.counter.expiry",
     "lang": "en",
-    "value": "Event counter expiry"
+    "value": "Past events"
   },
   {
     "_id": "i18n-message-en-event-counter-expiry-description",
@@ -3192,10 +3198,22 @@
     "value": "Expires past events and refreshes affected counters."
   },
   {
+    "_id": "i18n-message-en-event-checkout-basket-purge",
+    "key": "event.checkout.basket.purge",
+    "lang": "en",
+    "value": "Expired checkout drafts"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-basket-purge-description",
+    "key": "event.checkout.basket.purge.description",
+    "lang": "en",
+    "value": "Removes expired checkout basket drafts."
+  },
+  {
     "_id": "i18n-message-en-notifications-outbox-worker",
     "key": "notifications.outbox.worker",
     "lang": "en",
-    "value": "Notification delivery"
+    "value": "Queued notifications"
   },
   {
     "_id": "i18n-message-en-notifications-outbox-worker-description",
@@ -3207,7 +3225,7 @@
     "_id": "i18n-message-en-affinity-recompute-worker",
     "key": "affinity.recompute.worker",
     "lang": "en",
-    "value": "Affinity recompute"
+    "value": "Connection scores"
   },
   {
     "_id": "i18n-message-en-affinity-recompute-worker-description",
@@ -3219,7 +3237,7 @@
     "_id": "i18n-message-en-scheduled-messages-worker",
     "key": "scheduled.messages.worker",
     "lang": "en",
-    "value": "Scheduled messages"
+    "value": "Messages and reminders"
   },
   {
     "_id": "i18n-message-en-scheduled-messages-worker-description",
@@ -3231,7 +3249,7 @@
     "_id": "i18n-message-en-users-deleted-account-purge",
     "key": "users.deleted-account-purge",
     "lang": "en",
-    "value": "Deleted account purge"
+    "value": "Accounts past grace period"
   },
   {
     "_id": "i18n-message-en-users-deleted-account-purge-description",
@@ -19932,6 +19950,12 @@
     "value": "Érintett"
   },
   {
+    "_id": "i18n-message-hu-admin-jobs-table-users",
+    "key": "admin.jobs.table.users",
+    "lang": "hu",
+    "value": "Felhasználó"
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-table-duration",
     "key": "admin.jobs.table.duration",
     "lang": "hu",
@@ -20511,55 +20535,55 @@
     "_id": "i18n-message-hu-admin-jobs-rule-event-random-groups",
     "key": "admin.jobs.rule.event.random.groups",
     "lang": "hu",
-    "value": "Illesztett szobák"
+    "value": "Automatikus szobakiosztás"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-random-groups-description",
     "key": "admin.jobs.rule.event.random.groups.description",
     "lang": "hu",
-    "value": "Elfogadott eseménytagokat oszt generált szobákba affinitás és korábbi találkozási jelek alapján."
+    "value": "Az elfogadott eseménytagokat automatikusan szobákba osztja a kapcsolataik és korábbi találkozásaik alapján."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-auto-inviter",
     "key": "admin.jobs.rule.event.auto.inviter",
     "lang": "hu",
-    "value": "Automata meghívó"
+    "value": "Szabad helyek feltöltése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-auto-inviter-description",
     "key": "admin.jobs.rule.event.auto.inviter.description",
     "lang": "hu",
-    "value": "A következő alkalmas jelölteket hívja meg, amíg van szabad hely a bajnokság indulása előtt."
+    "value": "A szabad eseményhelyeket a következő alkalmas jelentkezőkkel tölti fel."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-tournament-review",
     "key": "admin.jobs.rule.event.tournament.review",
     "lang": "hu",
-    "value": "Bajnokság ellenőrzés"
+    "value": "Bajnoksági szakaszok ellenőrzése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-tournament-review-description",
     "key": "admin.jobs.rule.event.tournament.review.description",
     "lang": "hu",
-    "value": "A bajnokság szakaszait admin ellenőrzésre teszi, hogy az indítás, folytatás és véglegesítés szándékos legyen."
+    "value": "Megkeresi azokat a bajnoksági szakaszokat, amelyek indításához vagy lezárásához admin döntés kell."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-counter-expiry",
     "key": "admin.jobs.rule.event.counter.expiry",
     "lang": "hu",
-    "value": "Esemény számláló lejáratás"
+    "value": "Lejárt események lezárása"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-counter-expiry-description",
     "key": "admin.jobs.rule.event.counter.expiry.description",
     "lang": "hu",
-    "value": "Ötpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
+    "value": "Lezárja a múltbeli eseményeket, és frissíti az érintett aktivitásszámlálókat."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge",
     "key": "admin.jobs.rule.event.checkout.basket.purge",
     "lang": "hu",
-    "value": "Pénztárkosár-tisztítás"
+    "value": "Lejárt kosarak törlése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge-description",
@@ -20571,49 +20595,49 @@
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "hu",
-    "value": "Értesítési outbox"
+    "value": "Értesítések kiküldése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox-description",
     "key": "admin.jobs.rule.notification.outbox.description",
     "lang": "hu",
-    "value": "Tartós értesítési intenteket dolgoz fel és Firebase batcheket küld a beállított ablakokban."
+    "value": "Kiküldi a sorban álló alkalmazáson belüli és push értesítéseket."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-affinity-recompute",
     "key": "admin.jobs.rule.affinity.recompute",
     "lang": "hu",
-    "value": "Affinitás újraszámítás"
+    "value": "Affinitások frissítése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-affinity-recompute-description",
     "key": "admin.jobs.rule.affinity.recompute.description",
     "lang": "hu",
-    "value": "Tartós recompute taskokat dolgoz fel, és frissíti az affinitás, boost és státusz alapú tárolt értékeket."
+    "value": "Profil- és eseményváltozások után frissíti a tárolt kapcsolati pontszámokat."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-scheduled-messages",
     "key": "admin.jobs.rule.scheduled.messages",
     "lang": "hu",
-    "value": "Ütemezett üzenetek"
+    "value": "Ütemezett üzenetek küldése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-scheduled-messages-description",
     "key": "admin.jobs.rule.scheduled.messages.description",
     "lang": "hu",
-    "value": "Esedékes ütemezett taskokat kezel, például szakasz emlékeztetőket és inaktivitási műveleteket."
+    "value": "Kiküldi az esedékes üzeneteket és emlékeztetőket, és kezeli az időzített inaktivitási műveleteket."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-account-purge",
     "key": "admin.jobs.rule.account.purge",
     "lang": "hu",
-    "value": "Fiók törlési purge"
+    "value": "Törölt fiókok véglegesítése"
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-account-purge-description",
     "key": "admin.jobs.rule.account.purge.description",
     "lang": "hu",
-    "value": "A törölt fiók türelmi ideje után törli a felhasználói aktivitást és privát médiát."
+    "value": "A törlési türelmi idő után végleg eltávolítja a fiók aktivitását és privát médiáját."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-run-detail-rule-not-found",
@@ -21459,7 +21483,7 @@
     "_id": "i18n-message-hu-event-scheduler-random-groups",
     "key": "event.scheduler.random-groups",
     "lang": "hu",
-    "value": "Illesztett szobák kiosztása"
+    "value": "Eseményszobák kiosztása"
   },
   {
     "_id": "i18n-message-hu-event-scheduler-random-groups-description",
@@ -21471,7 +21495,7 @@
     "_id": "i18n-message-hu-event-scheduler-auto-inviter",
     "key": "event.scheduler.auto-inviter",
     "lang": "hu",
-    "value": "Automata meghívó"
+    "value": "Alkalmas jelentkezők"
   },
   {
     "_id": "i18n-message-hu-event-scheduler-auto-inviter-description",
@@ -21483,7 +21507,7 @@
     "_id": "i18n-message-hu-event-scheduler-tournament-review",
     "key": "event.scheduler.tournament-review",
     "lang": "hu",
-    "value": "Bajnokság ellenőrzés"
+    "value": "Bajnoksági szakaszok"
   },
   {
     "_id": "i18n-message-hu-event-scheduler-tournament-review-description",
@@ -21495,7 +21519,7 @@
     "_id": "i18n-message-hu-event-counter-expiry",
     "key": "event.counter.expiry",
     "lang": "hu",
-    "value": "Esemény számláló lejáratás"
+    "value": "Múltbeli események"
   },
   {
     "_id": "i18n-message-hu-event-counter-expiry-description",
@@ -21504,10 +21528,22 @@
     "value": "Lejáratja a múltbeli eseményeket, és frissíti az érintett számlálókat."
   },
   {
+    "_id": "i18n-message-hu-event-checkout-basket-purge",
+    "key": "event.checkout.basket.purge",
+    "lang": "hu",
+    "value": "Lejárt fizetési piszkozatok"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-basket-purge-description",
+    "key": "event.checkout.basket.purge.description",
+    "lang": "hu",
+    "value": "Eltávolítja a lejárt fizetési piszkozatokat."
+  },
+  {
     "_id": "i18n-message-hu-notifications-outbox-worker",
     "key": "notifications.outbox.worker",
     "lang": "hu",
-    "value": "Értesítésküldés"
+    "value": "Sorban álló értesítések"
   },
   {
     "_id": "i18n-message-hu-notifications-outbox-worker-description",
@@ -21519,7 +21555,7 @@
     "_id": "i18n-message-hu-affinity-recompute-worker",
     "key": "affinity.recompute.worker",
     "lang": "hu",
-    "value": "Affinitás újraszámítás"
+    "value": "Kapcsolati pontszámok"
   },
   {
     "_id": "i18n-message-hu-affinity-recompute-worker-description",
@@ -21531,7 +21567,7 @@
     "_id": "i18n-message-hu-scheduled-messages-worker",
     "key": "scheduled.messages.worker",
     "lang": "hu",
-    "value": "Ütemezett üzenetek"
+    "value": "Üzenetek és emlékeztetők"
   },
   {
     "_id": "i18n-message-hu-scheduled-messages-worker-description",
@@ -21543,7 +21579,7 @@
     "_id": "i18n-message-hu-users-deleted-account-purge",
     "key": "users.deleted-account-purge",
     "lang": "hu",
-    "value": "Törölt fiók purge"
+    "value": "Türelmi időn túli fiókok"
   },
   {
     "_id": "i18n-message-hu-users-deleted-account-purge-description",

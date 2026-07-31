@@ -289,7 +289,7 @@ public class EventScheduler {
             notificationRuleRegistryService.restoreClaimedPendingCount(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     claimedPendingCount,
-                    "admin.jobs.table.affected");
+                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     0,

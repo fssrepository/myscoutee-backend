@@ -276,7 +276,7 @@ public class AdminNotificationService {
             notificationRuleRegistryService.restoreClaimedPendingCount(
                     ruleKey,
                     claimedPendingCount,
-                    "admin.jobs.table.affected");
+                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
             if (progress != null) {
                 progress.close();
             }

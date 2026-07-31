@@ -307,9 +307,12 @@
           && !expectedUnassignedUserIds.includes(edge.rightUserId)
         ))
         .length;
+      const expectedFirstRunCount = variation === "anchored-full-and-empty"
+        ? 3
+        : userCount - expectedUnassignedUserIds.length;
       return {
-        pendingCount: 1,
-        pendingCountUnit: "admin.jobs.table.affected",
+        pendingCount: expectedFirstRunCount,
+        pendingCountUnit: "admin.jobs.table.users",
         expected: variation === "anchored"
           ? "The 6 accepted users are split into two groups of 3, while the two pre-anchored users remain in their original rooms. A second Run should make no assignment changes."
           : variation === "anchored-full-and-empty"
@@ -334,10 +337,7 @@
           expectedStrongEdgeWeight: 0.95,
           expectedStrongEdgeCount,
           expectedRoomCount,
-          expectedFirstRunCount:
-            variation === "anchored-full-and-empty"
-              ? 3
-              : userCount - expectedUnassignedUserIds.length,
+          expectedFirstRunCount,
           expectNoOutputArtifacts: variation === "below-minimum-total",
           expectedRoomSize: roomCapacityMax,
           expectedRoomMin: roomCapacityMin,

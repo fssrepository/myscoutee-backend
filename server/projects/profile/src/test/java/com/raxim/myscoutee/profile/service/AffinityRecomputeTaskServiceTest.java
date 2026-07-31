@@ -55,7 +55,7 @@ class AffinityRecomputeTaskServiceTest {
     }
 
     @Test
-    void repeatedEventChangeSignalsAffectedJobsEvenWhileAffinityTaskIsAlreadyPending() {
+    void repeatedEventChangeMergesWorkerSignalWithoutIncrementingAffectedJobsAgain() {
         AffinityRecomputeTasksRepository repository = mock(AffinityRecomputeTasksRepository.class);
         AffinityRecomputeProperties properties = new AffinityRecomputeProperties();
         AtomicReference<AffinityRecomputeTask> stored = new AtomicReference<>();
@@ -77,27 +77,64 @@ class AffinityRecomputeTaskServiceTest {
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueEventChanged("event-1", "u1");
-        service.enqueueEventMembersChanged("event-1", "u2");
+        AffinityRecomputeTask merged = service.enqueueEventMembersChanged("event-1", "u2");
 
+        assertThat(merged.getReasons()).containsExactly(
+                AffinityRecomputeTaskService.REASON_EVENT_CHANGED,
+                AffinityRecomputeTaskService.REASON_EVENT_MEMBERS_CHANGED);
+        verify(repository, times(2)).save(any(AffinityRecomputeTask.class));
         verify(registry).adjustPendingCount(
                 NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
                 1,
                 "admin.jobs.rule.affinity.recompute");
-        verify(registry, times(2)).adjustPendingCount(
-                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                1,
-                "admin.jobs.table.affected");
-        verify(registry, times(2)).adjustPendingCount(
+        verify(registry).adjustPendingCount(
                 NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
                 1,
                 "admin.jobs.table.affected");
-        verify(registry, times(2)).adjustPendingCount(
+        verify(registry).adjustPendingCount(
                 NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
                 1,
                 "admin.jobs.table.affected");
-        verify(registry, times(2)).adjustPendingCount(
+        verify(registry).adjustPendingCount(
                 NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
                 1,
                 "admin.jobs.table.affected");
+    }
+
+    @Test
+    void repeatedUserChangeCountsOneAffectedUserWithoutDroppingTheWorkerUpdate() {
+        AffinityRecomputeTasksRepository repository = mock(AffinityRecomputeTasksRepository.class);
+        AffinityRecomputeProperties properties = new AffinityRecomputeProperties();
+        AtomicReference<AffinityRecomputeTask> stored = new AtomicReference<>();
+        when(repository.findByTaskKey("USER:user-1"))
+                .thenAnswer(ignored -> Optional.ofNullable(stored.get()));
+        when(repository.save(any(AffinityRecomputeTask.class))).thenAnswer(invocation -> {
+            AffinityRecomputeTask task = invocation.getArgument(0);
+            stored.set(task);
+            return task;
+        });
+        NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
+        @SuppressWarnings("unchecked")
+        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        when(provider.getIfAvailable()).thenReturn(registry);
+        AffinityRecomputeTaskService service = new AffinityRecomputeTaskService(
+                repository,
+                properties,
+                mock(MongoTemplate.class));
+        service.setNotificationRuleRegistryServiceProvider(provider);
+
+        service.enqueueUserChanged("user-1");
+        AffinityRecomputeTask merged = service.enqueueUserChanged("user-1");
+
+        assertThat(merged.getReasons()).containsExactly(AffinityRecomputeTaskService.REASON_USER_CHANGED);
+        verify(repository, times(2)).save(any(AffinityRecomputeTask.class));
+        verify(registry).adjustPendingCount(
+                NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                1,
+                "admin.jobs.rule.affinity.recompute");
+        verify(registry).adjustPendingCount(
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                1,
+                NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
     }
 }

@@ -263,8 +263,8 @@ public class AffinityRecomputeTaskService {
         AffinityRecomputeTask saved = tasksRepository.save(merge(task, reason, availableAt(debounce), actorUserId));
         if (newlyTracked) {
             adjustPendingCount(1);
+            markAffectedAdminJobsPending(targetType);
         }
-        markAffectedAdminJobsPending(targetType);
         return saved;
     }
 
@@ -290,13 +290,11 @@ public class AffinityRecomputeTaskService {
             return;
         }
         String normalizedTargetType = normalizeTargetType(targetType);
-        if (TARGET_USER.equals(normalizedTargetType)
-                || TARGET_EVENT.equals(normalizedTargetType)
-                || TARGET_CONFIG.equals(normalizedTargetType)) {
+        if (TARGET_USER.equals(normalizedTargetType)) {
             registry.adjustPendingCount(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     1,
-                    "admin.jobs.table.affected");
+                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
         }
         if (TARGET_EVENT.equals(normalizedTargetType)) {
             registry.adjustPendingCount(

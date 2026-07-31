@@ -43,6 +43,7 @@ public class NotificationRuleRegistryService {
     public static final String RULE_AFFINITY_RECOMPUTE = "affinity-recompute";
     public static final String RULE_SCHEDULED_MESSAGES = "scheduled-messages";
     public static final String RULE_ACCOUNT_PURGE = "account-purge";
+    public static final String PENDING_COUNT_UNIT_USERS = "admin.jobs.table.users";
 
     private static final String SYSTEM_USER = "notification-registry";
     private static final String INTERVAL_UNIT_SECONDS = "seconds";
