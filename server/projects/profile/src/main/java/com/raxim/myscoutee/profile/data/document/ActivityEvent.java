@@ -174,6 +174,9 @@ public class ActivityEvent {
     public Boolean getPublished() {
         return STATUS_ACTIVE.equals(getStatus());
     }
+    public boolean hasStoredStatus(String expectedStatus) {
+        return expectedStatus != null && expectedStatus.equals(status);
+    }
     public Boolean getIsExpired() { return expired; }
     public void setIsExpired(Boolean expired) { this.expired = expired; }
     public String getTrashedAtIso() { return trashedAtIso; }

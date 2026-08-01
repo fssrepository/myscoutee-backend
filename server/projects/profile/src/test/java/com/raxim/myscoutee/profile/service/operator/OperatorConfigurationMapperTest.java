@@ -81,8 +81,8 @@ class OperatorConfigurationMapperTest {
                     .isTrue();
             assertThat(singleton.path("branding")
                             .get("logoCharacterIndex")
-                            .isNull())
-                    .isTrue();
+                            .asInt())
+                    .isZero();
             assertThat(singleton.path("socialLinks").isArray()).isTrue();
             JsonNode privacyContact = singleton.path("privacyContact");
             assertThat(privacyContact.propertyNames())
@@ -155,6 +155,7 @@ class OperatorConfigurationMapperTest {
                         .path("privacyContactEmail")
                         .asText())
                 .isEqualTo("privacy@example.test");
+        assertThat(json.path("logoCharacterIndex").asInt()).isZero();
         assertThat(json.toString())
                 .doesNotContain("adminEmails")
                 .doesNotContain("credential")

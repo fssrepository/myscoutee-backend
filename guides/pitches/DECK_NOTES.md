@@ -6,6 +6,10 @@ Core pitch:
 
 > Keep your brand and community. Run a supported MyScoutee core. Prove your contribution with privacy-safe telemetry. Share the value the network creates.
 
+Brand treatment: when the heart logo and product name form a wordmark, the
+logo replaces the leading **M** in **MyScoutee**; it is not placed before the
+complete product name.
+
 ## Plain-language abbreviations
 
 - **MAU** = monthly active user(s).

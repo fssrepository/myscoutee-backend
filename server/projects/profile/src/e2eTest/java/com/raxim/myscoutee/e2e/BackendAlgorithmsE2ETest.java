@@ -50,6 +50,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
@@ -108,8 +109,8 @@ class BackendAlgorithmsE2ETest {
             RANDOM_STAGE_ID + ":group:2",
             RANDOM_STAGE_ID + ":group:3",
             RANDOM_STAGE_ID + ":group:4");
-    private static final List<String> RANDOM_GROUP_OWNER_IDS = RANDOM_GROUP_IDS.stream()
-            .map(groupId -> RANDOM_EVENT_ID + ":" + RANDOM_STAGE_ID + ":" + groupId)
+    private static final List<String> RANDOM_ROOM_EVENT_IDS = RANDOM_GROUP_IDS.stream()
+            .map(groupId -> "random-room:" + RANDOM_EVENT_ID + ":" + RANDOM_STAGE_ID + ":" + groupId)
             .toList();
     private static final String PRIORITY_EVENT_ID = "e2e-priority-auto-invite";
     private static final String SCORE_EVENT_ID = "e2e-score-event";
@@ -302,7 +303,7 @@ class BackendAlgorithmsE2ETest {
 
     private void assertRandomGroupsWereAssignedByAffinityClusters() {
         List<ActivityMember> groupMembers = fromDemo(() ->
-                activityMembersRepository.findByOwnerTypeAndOwnerIdIn("group", RANDOM_GROUP_OWNER_IDS));
+                activityMembersRepository.findByOwnerTypeAndOwnerIdIn("event", RANDOM_ROOM_EVENT_IDS));
         assertThat(groupMembers).hasSize(20);
 
         Map<String, List<String>> usersByGroupId = new LinkedHashMap<>();
@@ -312,7 +313,7 @@ class BackendAlgorithmsE2ETest {
             }
         }
         assertThat(usersByGroupId).hasSize(4);
-        assertThat(usersByGroupId.keySet()).containsExactlyInAnyOrderElementsOf(RANDOM_GROUP_OWNER_IDS);
+        assertThat(usersByGroupId.keySet()).containsExactlyInAnyOrderElementsOf(RANDOM_ROOM_EVENT_IDS);
         assertThat(usersByGroupId.values().stream().flatMap(Collection::stream).toList())
                 .containsExactlyInAnyOrderElementsOf(userIds(1, 20));
 
@@ -322,6 +323,52 @@ class BackendAlgorithmsE2ETest {
                     .as("each generated room should stay inside one high-affinity cluster")
                     .hasSize(1);
         }
+
+        List<ActivityEvent> roomEvents = fromDemo(() -> mongoTemplate.find(
+                Query.query(Criteria.where("sourceId").in(RANDOM_ROOM_EVENT_IDS)),
+                ActivityEvent.class));
+        assertThat(roomEvents).hasSize(4);
+        Map<String, ActivityEvent> roomById = roomEvents.stream().collect(
+                LinkedHashMap::new,
+                (rooms, room) -> rooms.put(room.getSourceId(), room),
+                Map::putAll);
+        for (int index = 0; index < RANDOM_ROOM_EVENT_IDS.size(); index += 1) {
+            ActivityEvent room = roomById.get(RANDOM_ROOM_EVENT_IDS.get(index));
+            assertThat(room).isNotNull();
+            assertThat(room.getTitle()).isEqualTo("Random Room R" + (index + 1));
+            assertThat(room.getEventType()).isEqualTo("random-room");
+            assertThat(room.getCreatorUserId()).isNull();
+            assertThat(room.getCreatorName()).isEqualTo("MyScoutee System");
+            assertThat(room.getParentEventId()).isNull();
+            assertThat(room.getImageUrl())
+                    .isEqualTo("/media/public?key=images/system/random-room-default.png");
+        }
+
+        List<Chat> roomChatViews = fromDemo(() -> mongoTemplate.find(
+                Query.query(Criteria.where("id").in(RANDOM_ROOM_EVENT_IDS)),
+                Chat.class));
+        assertThat(roomChatViews).hasSize(20);
+        for (String roomEventId : RANDOM_ROOM_EVENT_IDS) {
+            List<Chat> chatViews = roomChatViews.stream()
+                    .filter(chat -> roomEventId.equals(chat.getChatId()))
+                    .toList();
+            assertThat(chatViews).hasSize(5);
+            assertThat(chatViews).allSatisfy(chat -> {
+                assertThat(chat.getEventId()).isEqualTo(roomEventId);
+                assertThat(chat.getOwnerId()).isEqualTo(roomEventId);
+                assertThat(chat.getChannelType()).isEqualTo("mainEvent");
+                assertThat(chat.getMemberIds())
+                        .containsExactlyInAnyOrderElementsOf(usersByGroupId.get(roomEventId));
+            });
+        }
+
+        List<NotificationOutboxItem> roomNotifications = fromDemo(() -> mongoTemplate.find(
+                Query.query(Criteria.where("type")
+                        .is(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS)),
+                NotificationOutboxItem.class));
+        assertThat(roomNotifications).hasSize(4);
+        assertThat(roomNotifications).extracting(NotificationOutboxItem::getEntityId)
+                .containsExactlyInAnyOrderElementsOf(RANDOM_ROOM_EVENT_IDS);
     }
 
     private void assertPriorityAutoInvitesAndAffinityQueue() {
@@ -552,6 +599,7 @@ class BackendAlgorithmsE2ETest {
         mongoTemplate.remove(new Query(), Users.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
+        mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), UserAffinityEdge.class);
         mongoTemplate.remove(new Query(), EventLeaderboardEntry.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);

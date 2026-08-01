@@ -17,11 +17,14 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.AffinityRecomputeTasksRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
@@ -263,8 +266,8 @@ public class AffinityRecomputeTaskService {
         AffinityRecomputeTask saved = tasksRepository.save(merge(task, reason, availableAt(debounce), actorUserId));
         if (newlyTracked) {
             adjustPendingCount(1);
+            markAffectedAdminJobsPending(targetType, targetId);
         }
-        markAffectedAdminJobsPending(targetType);
         return saved;
     }
 
@@ -281,7 +284,7 @@ public class AffinityRecomputeTaskService {
         }
     }
 
-    private void markAffectedAdminJobsPending(String targetType) {
+    private void markAffectedAdminJobsPending(String targetType, String targetId) {
         if (notificationRuleRegistryServiceProvider == null) {
             return;
         }
@@ -290,13 +293,11 @@ public class AffinityRecomputeTaskService {
             return;
         }
         String normalizedTargetType = normalizeTargetType(targetType);
-        if (TARGET_USER.equals(normalizedTargetType)
-                || TARGET_EVENT.equals(normalizedTargetType)
-                || TARGET_CONFIG.equals(normalizedTargetType)) {
+        if (TARGET_USER.equals(normalizedTargetType) && isPublicRandomRoomCandidate(targetId)) {
             registry.adjustPendingCount(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     1,
-                    "admin.jobs.table.affected");
+                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
         }
         if (TARGET_EVENT.equals(normalizedTargetType)) {
             registry.adjustPendingCount(
@@ -312,6 +313,19 @@ public class AffinityRecomputeTaskService {
                     1,
                     "admin.jobs.table.affected");
         }
+    }
+
+    private boolean isPublicRandomRoomCandidate(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        return mongoTemplate.exists(
+                Query.query(Criteria.where("userId")
+                        .is(normalizedUserId)
+                        .and("profileStatus")
+                        .is("public")),
+                Users.class);
     }
 
     private AffinityRecomputeTask merge(

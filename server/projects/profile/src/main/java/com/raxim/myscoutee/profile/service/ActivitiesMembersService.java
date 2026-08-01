@@ -2089,14 +2089,44 @@ public class ActivitiesMembersService {
     }
 
     public List<String> syncGroupMembers(String groupId, String actorUserId, List<String> memberUserIds) {
-        String normalizedGroupId = normalizeId(groupId);
-        if (!StringUtils.hasText(normalizedGroupId)) {
+        return syncAcceptedOwnerMembers(OWNER_TYPE_GROUP, groupId, actorUserId, memberUserIds);
+    }
+
+    public List<String> syncSystemEventMembers(String eventId, String actorUserId, List<String> memberUserIds) {
+        String normalizedEventId = normalizeId(eventId);
+        List<String> syncedUserIds = syncAcceptedOwnerMembers(
+                OWNER_TYPE_EVENT,
+                normalizedEventId,
+                actorUserId,
+                memberUserIds);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return syncedUserIds;
+        }
+        refreshEmbeddedEventMembers(normalizedEventId, false);
+        LinkedHashSet<String> affectedUserIds = new LinkedHashSet<>(normalizeUserIds(memberUserIds));
+        loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(affectedUserIds::add);
+        userActivityCountersService.refreshEventCountersForUsers(new ArrayList<>(affectedUserIds));
+        return syncedUserIds;
+    }
+
+    private List<String> syncAcceptedOwnerMembers(
+            String ownerType,
+            String ownerId,
+            String actorUserId,
+            List<String> memberUserIds) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
             return List.of();
         }
 
         String normalizedActorUserId = resolveActorUserId(actorUserId);
         String nowIso = Instant.now().toString();
-        List<ActivityMember> existing = loadOwnerDocuments("group", normalizedGroupId);
+        List<ActivityMember> existing = loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId);
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
         for (ActivityMember member : existing) {
             if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
@@ -2119,10 +2149,14 @@ public class ActivitiesMembersService {
             next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey())
                     ? current.getSyncKey().trim()
                     : UUID.randomUUID().toString());
-            next.setOwnerType("group");
-            next.setOwnerId(normalizedGroupId);
+            next.setOwnerType(normalizedOwnerType);
+            next.setOwnerId(normalizedOwnerId);
             next.setUserId(userId);
-            next.setRole(normalizeRole(current == null ? null : current.getRole(), userId, "group", normalizedGroupId));
+            next.setRole(normalizeRole(
+                    current == null ? null : current.getRole(),
+                    userId,
+                    normalizedOwnerType,
+                    normalizedOwnerId));
             next.setStatus(STATUS_ACCEPTED);
             next.setPendingSource(null);
             next.setRequestKind(null);

@@ -45,6 +45,7 @@ import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -66,8 +67,16 @@ public class EventScheduler {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_GROUP = "group";
     private static final String MARKER_ACTION_GROUP_MEMBERS = "group-members";
+    private static final String MARKER_ACTION_RANDOM_ROOM_MEMBERS = "random-room-members";
     private static final String MARKER_ACTION_INVITE_BATCH = "invite-batch";
     private static final String MARKER_UPDATED_BY = "scheduler";
+    private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
+    private static final String RANDOM_ROOM_SYSTEM_NAME = "MyScoutee System";
+    private static final String PUBLIC_PROFILE_STATUS = "public";
+    private static final String RANDOM_ROOM_IMAGE_URL =
+            "/media/public?key=images/system/random-room-default.png";
+    private static final String RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER =
+            "jobs.process.randomGroups.sourceEventIds";
     private static final String STAGE_STATUS_ACTIVE = "A";
     private static final String STAGE_STATUS_START_REVIEW = "RS";
     private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
@@ -90,6 +99,7 @@ public class EventScheduler {
     private final EventInviteNotificationService eventInviteNotificationService;
     private final EventCounterExpiryService eventCounterExpiryService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
+    private final ChatService chatService;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
     private final NotificationOutboxService notificationOutboxService;
@@ -118,6 +128,7 @@ public class EventScheduler {
             EventInviteNotificationService eventInviteNotificationService,
             EventCounterExpiryService eventCounterExpiryService,
             EventCheckoutBasketService eventCheckoutBasketService,
+            ChatService chatService,
             NotificationRuleRegistryService notificationRuleRegistryService,
             PlatformParametersService platformParametersService,
             NotificationOutboxService notificationOutboxService) {
@@ -131,6 +142,7 @@ public class EventScheduler {
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.eventCounterExpiryService = eventCounterExpiryService;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
+        this.chatService = chatService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.platformParametersService = platformParametersService;
         this.notificationOutboxService = notificationOutboxService;
@@ -289,7 +301,7 @@ public class EventScheduler {
             notificationRuleRegistryService.restoreClaimedPendingCount(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     claimedPendingCount,
-                    "admin.jobs.table.affected");
+                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     0,
@@ -655,15 +667,35 @@ public class EventScheduler {
     }
 
     public List<GeneratedEventPlan> generateRandomPlans() {
-        return generateRandomPlans(null, null);
+        return generateRandomPlans(null, configuredRandomRoomSourceEventIds());
     }
 
     public List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer) {
-        return generateRandomPlans(progressConsumer, null);
+        return generateRandomPlans(progressConsumer, configuredRandomRoomSourceEventIds());
     }
 
     public List<GeneratedEventPlan> generateRandomPlansForEvents(Collection<String> sourceIds) {
         return generateRandomPlans(null, sourceIds);
+    }
+
+    private List<String> configuredRandomRoomSourceEventIds() {
+        NotificationRuleConfig rule = notificationRuleRegistryService
+                .findRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS)
+                .orElse(null);
+        if (rule == null || rule.getParameters() == null) {
+            return List.of();
+        }
+        return rule.getParameters().stream()
+                .filter(Objects::nonNull)
+                .filter(parameter -> RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER.equals(
+                        safeText(parameter.getKey())))
+                .map(NotificationRuleConfig.ParameterField::getTextValue)
+                .filter(StringUtils::hasText)
+                .flatMap(value -> List.of(value.split("[,;\\s]+")).stream())
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
     }
 
     private List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer, Collection<String> sourceIds) {
@@ -717,6 +749,9 @@ public class EventScheduler {
             publishRandomProgress(progressConsumer, 10, snapshotsByEventId.size(), events.size(), requiredUserIds.size(), queryCount,
                     "Queried " + queryCount + " backend lookup(s); found " + requiredUserIds.size() + " candidate user(s).");
         }
+        Set<String> publicUserIds = resolvePublicUserIds(requiredUserIds);
+        incrementObservedQueries(observedQueries);
+        requiredUserIds.retainAll(publicUserIds);
         publishRandomProgress(progressConsumer, 20, 0, snapshotsByEventId.size(), requiredUserIds.size(), observedQueries.get(), "Loaded eligible random events.");
         int totalSubEvents = Math.max(1, events.stream()
                 .filter(event -> event != null && Boolean.TRUE.equals(event.getPublished()))
@@ -754,6 +789,10 @@ public class EventScheduler {
             if (snapshot == null) return;
 
             Set<String> acceptedUserIds = new LinkedHashSet<>(snapshot.acceptedMemberUserIds());
+            acceptedUserIds.retainAll(publicUserIds);
+            if (acceptedUserIds.size() < 2) {
+                return;
+            }
             FGraph eventGraph = graph.filter(acceptedUserIds, Set.of(), 0d);
             
             if (eventGraph.getNodes().isEmpty()) return;
@@ -819,9 +858,6 @@ public class EventScheduler {
                 
                 List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
                         event, stageGraph, stageEligibleUserIds, targets, "random", "random:" + eventId + ":" + subEventId, observedQueries);
-                if (!assignedMembers.isEmpty()) {
-                    activityTournamentGroupCounterService.syncParent(eventId, subEventId);
-                }
                         
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
@@ -855,6 +891,22 @@ public class EventScheduler {
                 observedQueries.get(), "Finalizing random event groups after " + observedQueries.get() + " backend lookup(s).");
         
         return plans;
+    }
+
+    private Set<String> resolvePublicUserIds(Collection<String> candidateUserIds) {
+        Set<String> normalizedCandidateUserIds = new LinkedHashSet<>(normalizeUserIds(candidateUserIds));
+        if (normalizedCandidateUserIds.isEmpty()) {
+            return Set.of();
+        }
+        Set<String> publicUserIds = new LinkedHashSet<>();
+        for (Users user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
+            String userId = normalizeId(user == null ? null : user.getId());
+            if (StringUtils.hasText(userId)
+                    && PUBLIC_PROFILE_STATUS.equalsIgnoreCase(safeText(user.getProfileStatus()))) {
+                publicUserIds.add(userId);
+            }
+        }
+        return publicUserIds;
     }
 
     public record RandomPlanProgress(
@@ -1428,16 +1480,22 @@ public class EventScheduler {
 
         Set<String> eligibleUserIdSet = new LinkedHashSet<>(normalizeUserIds(eligibleUserIds));
         List<GroupAssignmentTarget> targets = new ArrayList<>();
+        boolean randomRoomTargets = "random".equals(normalizeId(wrapperType));
+        String membershipOwnerType = randomRoomTargets ? OWNER_TYPE_EVENT : OWNER_TYPE_GROUP;
         Map<String, String> memberOwnerIdByGroupId = groups.stream()
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new, (map, group) -> {
                     String groupId = normalizeId(group.id());
                     if (StringUtils.hasText(groupId)) {
-                        map.put(groupId, canonicalGroupOwnerId(eventId, subEventId, groupId));
+                        map.put(
+                                groupId,
+                                randomRoomTargets
+                                        ? randomRoomEventId(eventId, subEventId, groupId)
+                                        : canonicalGroupOwnerId(eventId, subEventId, groupId));
                     }
                 }, Map::putAll);
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByGroupId = preserveAnchors
-                ? activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, groups.stream()
+                ? activitiesMembersService.buildBatchOwnerSnapshots(membershipOwnerType, groups.stream()
                         .map(group -> memberOwnerIdByGroupId.get(normalizeId(group == null ? null : group.id())))
                         .filter(StringUtils::hasText)
                         .toList())
@@ -1470,7 +1528,8 @@ public class EventScheduler {
                     groupId,
                     memberOwnerIdByGroupId.get(groupId),
                     groupRange,
-                    lockedUserIds));
+                    lockedUserIds,
+                    targets.size() + 1));
         }
         return targets;
     }
@@ -1598,7 +1657,8 @@ public class EventScheduler {
                     target.groupId(),
                     target.memberOwnerId(),
                     target.range(),
-                    dedupedLockedUserIds));
+                    dedupedLockedUserIds,
+                    target.roomOrdinal()));
         }
 
         Set<String> remainingUserIds = new LinkedHashSet<>(normalizedPoolUserIds);
@@ -1697,9 +1757,20 @@ public class EventScheduler {
             }
         }
 
+        boolean randomRoomAssignment = "random".equals(normalizeId(wrapperType));
+        String membershipOwnerType = randomRoomAssignment ? OWNER_TYPE_EVENT : OWNER_TYPE_GROUP;
+        String markerActionType = randomRoomAssignment
+                ? MARKER_ACTION_RANDOM_ROOM_MEMBERS
+                : MARKER_ACTION_GROUP_MEMBERS;
+        Map<String, GroupAssignmentTarget> targetByGroupId = normalizedTargets.stream()
+                .collect(
+                        LinkedHashMap::new,
+                        (map, target) -> map.putIfAbsent(normalizeId(target.groupId()), target),
+                        Map::putAll);
         List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
+        List<RandomRoomAssignment> changedRandomRooms = new ArrayList<>();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByPlannedGroupId =
-                activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, plannedGroups.stream()
+                activitiesMembersService.buildBatchOwnerSnapshots(membershipOwnerType, plannedGroups.stream()
                         .map(plan -> memberOwnerIdByGroupId.get(plan.seedId()))
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
@@ -1715,20 +1786,42 @@ public class EventScheduler {
             String memberOwnerId = memberOwnerIdByGroupId.getOrDefault(
                     normalizeId(plannedGroup.seedId()),
                     normalizeId(plannedGroup.seedId()));
+            GroupAssignmentTarget assignmentTarget = targetByGroupId.get(normalizeId(plannedGroup.seedId()));
+            ActivityEvent randomRoom = null;
+            String randomRoomChatId = "";
+            if (randomRoomAssignment) {
+                if (assignmentTarget == null) {
+                    throw new IllegalStateException(
+                            "Missing random-room target for " + normalizeId(plannedGroup.seedId()) + ".");
+                }
+                randomRoom = materializeRandomRoomEvent(event, assignmentTarget);
+                randomRoomChatId = chatService.ensureMainEventChat(randomRoom, normalizedPlannedUserIds);
+            }
             ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(memberOwnerId);
             if (hasExactAcceptedMembership(groupSnapshot, normalizedPlannedUserIds)) {
+                if (randomRoomAssignment) {
+                    chatService.ensureInitialSystemMessage(
+                            randomRoomChatId,
+                            ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
+                            ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+                }
                 rememberPlanMarkerIfMissing(
                         wrapperType,
-                        MARKER_ACTION_GROUP_MEMBERS,
-                        plannedGroup.seedId(),
+                        markerActionType,
+                        randomRoomAssignment ? memberOwnerId : plannedGroup.seedId(),
                         context,
                         normalizedPlannedUserIds);
                 continue;
             }
-            List<String> syncedUserIds = activitiesMembersService.syncGroupMembers(
-                    memberOwnerId,
-                    resolveInviterUserId(event),
-                    normalizedPlannedUserIds);
+            List<String> syncedUserIds = randomRoomAssignment
+                    ? activitiesMembersService.syncSystemEventMembers(
+                            memberOwnerId,
+                            MARKER_UPDATED_BY,
+                            normalizedPlannedUserIds)
+                    : activitiesMembersService.syncGroupMembers(
+                            memberOwnerId,
+                            resolveInviterUserId(event),
+                            normalizedPlannedUserIds);
             incrementObservedQueries(observedQueries);
             List<String> normalizedSyncedUserIds = normalizeUserIds(syncedUserIds).stream().sorted().toList();
             List<String> expectedSyncedUserIds = normalizedPlannedUserIds.stream().sorted().toList();
@@ -1743,15 +1836,25 @@ public class EventScheduler {
                                 + ": expected " + expectedSyncedUserIds
                                 + " but persisted " + normalizedSyncedUserIds + ".");
             }
+            if (randomRoomAssignment) {
+                chatService.ensureInitialSystemMessage(
+                        randomRoomChatId,
+                        ChatService.RANDOM_ROOM_WELCOME_MESSAGE,
+                        ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE);
+            }
             recordPlanMarker(
                     wrapperType,
-                    MARKER_ACTION_GROUP_MEMBERS,
-                    plannedGroup.seedId(),
+                    markerActionType,
+                    randomRoomAssignment ? memberOwnerId : plannedGroup.seedId(),
                     context,
                     expectedSyncedUserIds);
-            syncedGroups.add(new GeneratedEventPlan(plannedGroup.seedId(), expectedSyncedUserIds));
+            String resultOwnerId = randomRoomAssignment ? memberOwnerId : plannedGroup.seedId();
+            syncedGroups.add(new GeneratedEventPlan(resultOwnerId, expectedSyncedUserIds));
+            if (randomRoomAssignment) {
+                changedRandomRooms.add(new RandomRoomAssignment(randomRoom, expectedSyncedUserIds));
+            }
         }
-        notifyChangedRandomGroupAssignments(event, wrapperType, context, syncedGroups);
+        notifyChangedRandomRoomAssignments(event, context, changedRandomRooms);
         return syncedGroups;
     }
 
@@ -1856,51 +1959,154 @@ public class EventScheduler {
                         .sum();
     }
 
-    private void notifyChangedRandomGroupAssignments(
-            ActivityEvent event,
-            String wrapperType,
+    private ActivityEvent materializeRandomRoomEvent(
+            ActivityEvent sourceEvent,
+            GroupAssignmentTarget assignmentTarget) {
+        String roomEventId = normalizeId(assignmentTarget == null ? null : assignmentTarget.memberOwnerId());
+        if (!StringUtils.hasText(roomEventId)) {
+            throw new IllegalStateException("A generated random room requires a stable event id.");
+        }
+        String syncKey = "scheduler:" + RANDOM_ROOM_EVENT_TYPE + ":" + roomEventId;
+        ActivityEvent existing = activityEventsRepository.findBySyncKey(syncKey).orElse(null);
+        ActivityEvent room = existing == null ? new ActivityEvent() : existing;
+        String nowIso = Instant.now().toString();
+        int roomOrdinal = Math.max(1, assignmentTarget.roomOrdinal());
+        String roomTitle = "Random Room R" + roomOrdinal;
+        int capacityMin = assignmentTarget.range() == null
+                ? 0
+                : Math.max(0, assignmentTarget.range().getMin());
+        int capacityMax = assignmentTarget.range() == null
+                ? capacityMin
+                : Math.max(capacityMin, assignmentTarget.range().getMax());
+
+        room.setId(existing == null ? new ObjectId().toHexString() : existing.getId());
+        room.setSyncKey(syncKey);
+        room.setSourceId(roomEventId);
+        room.setOwnerUserId(null);
+        room.setStatus(ActivityEvent.STATUS_ACTIVE);
+        room.setAdmins(List.of());
+        room.setAvatar("SY");
+        room.setTitle(roomTitle);
+        room.setSubtitle("System-generated affinity room.");
+        room.setTimeframe(safeText(sourceEvent == null ? null : sourceEvent.getTimeframe()));
+        room.setInviter(null);
+        room.setUnread(existing == null ? 0 : safeCount(existing.getUnread()));
+        room.setActivity(existing == null ? 0 : safeCount(existing.getActivity()));
+        room.setIsExpired(false);
+        room.setCreatorUserId(null);
+        room.setCreatorName(RANDOM_ROOM_SYSTEM_NAME);
+        room.setCreatorInitials("SY");
+        room.setCreatorGender(null);
+        room.setCreatorCity(null);
+        room.setVisibility("Invitation only");
+        room.setBlindMode("Open Event");
+        room.setStartAtIso(firstNonBlank(
+                sourceEvent == null ? null : sourceEvent.getStartAtIso(),
+                nowIso));
+        room.setEndAtIso(firstNonBlank(
+                sourceEvent == null ? null : sourceEvent.getEndAtIso(),
+                room.getStartAtIso()));
+        room.setDistanceKm(sourceEvent == null ? null : sourceEvent.getDistanceKm());
+        room.setImageUrl(RANDOM_ROOM_IMAGE_URL);
+        room.setSourceLink(null);
+        room.setLocation(safeText(sourceEvent == null ? null : sourceEvent.getLocation()));
+        room.setLocationCoordinates(sourceEvent == null ? null : sourceEvent.getLocationCoordinates());
+        room.setLocationGeo(sourceEvent == null ? null : sourceEvent.getLocationGeo());
+        room.setCapacityMin(capacityMin);
+        room.setCapacityMax(capacityMax);
+        room.setCapacityTotal(Math.max(
+                capacityMax,
+                existing == null ? 0 : safeCount(existing.getAcceptedMembers())));
+        room.setFull(existing != null && Boolean.TRUE.equals(existing.getFull()));
+        room.setAutoInviter(false);
+        room.setFrequency("One-time");
+        room.setTicketing(false);
+        room.setApprovalRequired(false);
+        room.setPricing(null);
+        room.setPoliciesEnabled(false);
+        room.setPolicies(List.of());
+        room.setSlotsEnabled(false);
+        room.setSlotTemplates(List.of());
+        // A random room is a canonical top-level event. Its scheduler origin is
+        // retained in the sync key and notification payload; parentEventId would
+        // make read models classify it as a generated slot occurrence.
+        room.setParentEventId(null);
+        room.setSlotTemplateId(null);
+        room.setGenerated(false);
+        room.setEventType(RANDOM_ROOM_EVENT_TYPE);
+        room.setUpcomingSlots(List.of());
+        room.setAcceptedMembers(existing == null ? 0 : safeCount(existing.getAcceptedMembers()));
+        room.setPendingMembers(existing == null ? 0 : safeCount(existing.getPendingMembers()));
+        room.setAcceptedMemberUserIds(existing == null ? List.of() : existing.getAcceptedMemberUserIds());
+        room.setPendingMemberUserIds(existing == null ? List.of() : existing.getPendingMemberUserIds());
+        room.setInvitedMemberUserIds(List.of());
+        room.setPendingRequestMemberUserIds(List.of());
+        room.setTopics(List.of("#RandomRoom", "#System"));
+        room.setSubEventsEnabled(false);
+        room.setSubEventDefinitions(List.of());
+        room.setSubEvents(List.of());
+        room.setMode("Casual");
+        room.setRating(existing == null ? 0d : existing.getRating());
+        room.setBoost(existing == null ? 0d : existing.getBoost());
+        room.setAffinity(existing == null ? 0d : existing.getAffinity());
+        room.setCreatedDate(existing == null
+                ? nowIso
+                : firstNonBlank(existing.getCreatedDate(), nowIso));
+        room.setCreatedUser(existing == null
+                ? MARKER_UPDATED_BY
+                : firstNonBlank(existing.getCreatedUser(), MARKER_UPDATED_BY));
+        room.setUpdatedDate(nowIso);
+        room.setUpdatedUser(MARKER_UPDATED_BY);
+        return activityEventsRepository.save(room);
+    }
+
+    private void notifyChangedRandomRoomAssignments(
+            ActivityEvent sourceEvent,
             String assignmentScope,
-            List<GeneratedEventPlan> syncedGroups) {
+            List<RandomRoomAssignment> changedRooms) {
         if (notificationOutboxService == null
-                || !"random".equals(normalizeId(wrapperType))
-                || syncedGroups == null
-                || syncedGroups.isEmpty()) {
+                || changedRooms == null
+                || changedRooms.isEmpty()) {
             return;
         }
-        List<String> recipientUserIds = syncedGroups.stream()
-                .filter(Objects::nonNull)
-                .flatMap(plan -> normalizeUserIds(plan.memberUserIds()).stream())
-                .distinct()
-                .toList();
-        if (recipientUserIds.isEmpty()) {
-            return;
+        String parentEventId = normalizeId(sourceEvent == null ? null : sourceEvent.getSourceId());
+        String parentEventTitle = firstNonBlank(
+                sourceEvent == null ? null : sourceEvent.getTitle(),
+                "your event");
+        for (RandomRoomAssignment changedRoom : changedRooms) {
+            ActivityEvent room = changedRoom == null ? null : changedRoom.room();
+            String roomEventId = normalizeId(room == null ? null : room.getSourceId());
+            List<String> recipientUserIds = normalizeUserIds(
+                    changedRoom == null ? null : changedRoom.memberUserIds());
+            if (!StringUtils.hasText(roomEventId) || recipientUserIds.isEmpty()) {
+                continue;
+            }
+            String roomTitle = firstNonBlank(room.getTitle(), "Random Room");
+            Map<String, String> payload = new LinkedHashMap<>();
+            payload.put("eventId", roomEventId);
+            payload.put("eventTitle", roomTitle);
+            payload.put("eventScope", RANDOM_ROOM_EVENT_TYPE);
+            payload.put("parentEventId", parentEventId);
+            payload.put("parentEventTitle", parentEventTitle);
+            payload.put("assignmentScope", safeText(assignmentScope));
+            payload.put("assignmentFingerprint", fingerprintUserIds(recipientUserIds));
+            payload.put("senderName", RANDOM_ROOM_SYSTEM_NAME);
+
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    OWNER_TYPE_EVENT,
+                    roomEventId,
+                    "random-room-participants",
+                    recipientUserIds,
+                    roomTitle + " is ready",
+                    "Your system-generated room for " + parentEventTitle + " is ready.",
+                    DEFAULT_CLICK_URL,
+                    firstNonBlank(room.getImageUrl(), RANDOM_ROOM_IMAGE_URL),
+                    APP_BADGE_URL,
+                    "event-random-room-" + roomEventId,
+                    payload,
+                    MARKER_UPDATED_BY));
         }
-
-        String eventId = normalizeId(event == null ? null : event.getSourceId());
-        String eventTitle = firstNonBlank(event == null ? null : event.getTitle(), "your event");
-        String title = "Room assignment ready";
-        String body = "Your room assignment for " + eventTitle + " is ready.";
-        Map<String, String> payload = new LinkedHashMap<>();
-        payload.put("eventId", eventId);
-        payload.put("eventTitle", eventTitle);
-        payload.put("eventScope", "random-groups");
-        payload.put("assignmentScope", safeText(assignmentScope));
-        payload.put("assignmentFingerprint", fingerprintAssignments(syncedGroups));
-
-        notificationOutboxService.enqueue(new NotificationIntent(
-                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
-                OWNER_TYPE_EVENT,
-                eventId,
-                "random-room-participants",
-                recipientUserIds,
-                title,
-                body,
-                DEFAULT_CLICK_URL,
-                firstNonBlank(event == null ? null : event.getImageUrl(), APP_FALLBACK_ICON_URL),
-                APP_BADGE_URL,
-                "event-random-groups-" + eventId,
-                payload,
-                MARKER_UPDATED_BY));
     }
 
     private int incrementObservedQueries(AtomicInteger observedQueries) {
@@ -2130,6 +2336,23 @@ public class EventScheduler {
                 : normalizedGroupId;
     }
 
+    private String randomRoomEventId(String eventId, String subEventId, String groupId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedGroupId)) {
+            throw new IllegalStateException("Unable to build a stable random-room identity.");
+        }
+        return String.join(
+                ":",
+                RANDOM_ROOM_EVENT_TYPE,
+                normalizedEventId,
+                normalizedSubEventId,
+                normalizedGroupId);
+    }
+
     private String normalizeId(String value) {
         return value == null ? "" : value.trim();
     }
@@ -2159,7 +2382,13 @@ public class EventScheduler {
             String groupId,
             String memberOwnerId,
             Range range,
-            List<String> lockedUserIds) {
+            List<String> lockedUserIds,
+            int roomOrdinal) {
+    }
+
+    private record RandomRoomAssignment(
+            ActivityEvent room,
+            List<String> memberUserIds) {
     }
 
     private record ScorePlanRunResult(

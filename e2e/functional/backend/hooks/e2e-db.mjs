@@ -17,6 +17,7 @@ const DEFAULT_COLLECTIONS = [
   'events',
   'eventFeedbackStates',
   'eventFeedbackAnswers',
+  'eventTickets',
   'helpCenterRevisions',
   'helpCenterAudit',
   'privacyConsents',

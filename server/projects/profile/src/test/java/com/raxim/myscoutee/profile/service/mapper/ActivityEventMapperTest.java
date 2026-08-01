@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -70,5 +71,27 @@ class ActivityEventMapperTest {
 
         assertThat(dto.pendingMembers()).isEqualTo(45);
         assertThat(dto.activity()).isEqualTo(3);
+    }
+
+    @Test
+    void systemEventWithoutCreatorUserDoesNotTryToResolveAUserAvatar() {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("random-room:event-1:stage-1:room-1");
+        event.setTitle("Random Room R1");
+        event.setCreatorUserId(null);
+        event.setCreatorName("MyScoutee System");
+        event.setEventType("random-room");
+
+        var dto = mapper.toDto(
+                event,
+                new ActivityEventMapper.MappingContext(
+                        null,
+                        Map.of(),
+                        Map.of(),
+                        Map.of()));
+
+        assertThat(dto.creatorUserId()).isEmpty();
+        assertThat(dto.creatorName()).isEqualTo("MyScoutee System");
+        assertThat(dto.creatorAvatarUrl()).isEmpty();
     }
 }

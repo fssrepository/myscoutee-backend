@@ -95,7 +95,11 @@ public class ActivityEventMapper {
         if (record == null || context == null) {
             return "";
         }
-        return safeText(context.creatorAvatarUrlsByUserId().get(normalizeId(record.getCreatorUserId())));
+        String creatorUserId = normalizeId(record.getCreatorUserId());
+        if (!StringUtils.hasText(creatorUserId)) {
+            return "";
+        }
+        return safeText(context.creatorAvatarUrlsByUserId().get(creatorUserId));
     }
 
     private int aggregateRuntimeActivity(ActivityEvent record) {

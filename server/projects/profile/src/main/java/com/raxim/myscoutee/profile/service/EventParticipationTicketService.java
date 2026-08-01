@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.EventTicket;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -30,12 +31,15 @@ public class EventParticipationTicketService {
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
+    private final EventTicketService eventTicketService;
 
     public EventParticipationTicketService(
             ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository) {
+            ActivityMembersRepository activityMembersRepository,
+            EventTicketService eventTicketService) {
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
+        this.eventTicketService = eventTicketService;
     }
 
     public List<ActivityEvent> queryTicketRecordsForUser(String userId) {
@@ -68,6 +72,23 @@ public class EventParticipationTicketService {
             }
         }
         return new ArrayList<>(preferredBySourceId.values());
+    }
+
+    public EventTicket findOrIssueCredential(ActivityEvent ticketRecord, Instant now) {
+        if (ticketRecord == null) {
+            return null;
+        }
+        return eventTicketService.findOrIssue(
+                normalizeId(ticketRecord.getSourceId()),
+                normalizeId(ticketRecord.getOwnerUserId()),
+                now);
+    }
+
+    public EventTicketService.CheckInResult checkIn(
+            String code,
+            String scannerUserId,
+            Instant now) {
+        return eventTicketService.checkIn(code, scannerUserId, now);
     }
 
     public void syncParticipationTicketsForEvent(String sourceId) {

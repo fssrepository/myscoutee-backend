@@ -702,11 +702,13 @@ public class OperatorConfigurationService {
                 request.productName(),
                 "Product name",
                 PRODUCT_NAME_MAX);
-        Integer logoCharacterIndex = request.logoCharacterIndex();
+        Integer logoCharacterIndex = request.logoCharacterIndex() == null
+                ? 0
+                : request.logoCharacterIndex();
         if (!validLogoCharacterIndex(productName, logoCharacterIndex)) {
             throw badRequest(
-                    "Logo character index must identify a Unicode character "
-                            + "in the product name.");
+                    "Logo character index must be -1 or identify a Unicode "
+                            + "character in the product name.");
         }
         String logoUrl = validateLogoUrl(request.logoUrl());
         if (request.themePreset() == null) {
@@ -736,7 +738,7 @@ public class OperatorConfigurationService {
         int characterCount = productName.codePointCount(
                 0,
                 productName.length());
-        return logoCharacterIndex >= 0
+        return logoCharacterIndex >= -1
                 && logoCharacterIndex < characterCount;
     }
 

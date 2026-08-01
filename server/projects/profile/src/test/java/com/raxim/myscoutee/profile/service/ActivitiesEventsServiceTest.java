@@ -920,6 +920,30 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void systemEventDetailDoesNotRequireAUserOwnerOrCreator() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+
+        ActivityEvent systemEvent = event("random-room:event-1:stage-1:room-1", "host", 0d);
+        systemEvent.setOwnerUserId(null);
+        systemEvent.setCreatorUserId(null);
+        systemEvent.setCreatorName("MyScoutee System");
+        systemEvent.setEventType("random-room");
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of(systemEvent.getSourceId())))
+                .thenReturn(List.of(systemEvent));
+
+        EventDetailDto result = service.loadEventDetailById("viewer", systemEvent.getSourceId());
+
+        assertThat(result).isNotNull();
+        assertThat(result.creatorUserId()).isEmpty();
+        assertThat(result.creatorName()).isEqualTo("MyScoutee System");
+        assertThat(result.eventType()).isEqualTo("random-room");
+    }
+
+    @Test
     void ownerEventFiltersUseCanonicalDraftRecord() {
         Users host = new Users();
         host.setId("host");

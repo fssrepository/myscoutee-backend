@@ -1,0 +1,11 @@
+{
+  "name": "e2e seeded article images use five contextual WebP variant families",
+  "group": "media",
+  "order": 4990,
+  "method": "GET",
+  "path": "/api/health",
+  "expectedStatus": 200,
+  "maxMs": 2500,
+  "script": "article-image-variants.mjs",
+  "e2eOnly": true
+}

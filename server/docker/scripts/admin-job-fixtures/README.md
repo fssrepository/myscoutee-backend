@@ -34,7 +34,7 @@ All nine seeded jobs are enabled by default in production, development, demo, an
 
 | Job | Seed interval | Manual Run | Fixture execution |
 | --- | ---: | --- | --- |
-| `event-random-groups` | 24 hours | Yes | Use the Admin Jobs Run button |
+| `event-random-groups` | 24 hours | Yes | Existing scheduler after `prepare`; the Run button remains available |
 | `event-auto-inviter` | 2 hours | No | Existing scheduler |
 | `event-tournament-review` | 30 minutes | No | Existing scheduler |
 | `event-counter-expiry` | 5 minutes | No | Existing scheduler |
@@ -53,7 +53,7 @@ The application scheduler runs each configured pass in the real and demo databas
 The Admin Job detail reads `runState.pendingCount`; it does not count, project, or aggregate the source collection when the screen opens.
 
 - Queue jobs atomically mark a work document as tracked and add one. A terminal worker transition removes one.
-- Event jobs receive dirty-work signals from the existing deduplicated affinity/outbox-style change path. A run atomically claims the number accumulated before it started; changes arriving during the run remain for the next run. Failure restores the claimed number.
+- Event jobs receive dirty-work signals from the existing deduplicated affinity/outbox-style change path. Repeated signals still merge their reasons into the active worker task, but only a newly tracked task increments the displayed count. For random room assignment, only newly tracked users whose current `profileStatus` is `public` increment the user count; non-public user signals are discarded for this counter update, while their affinity worker task still runs. Event and config tasks do not pretend to be one affected user. A run atomically claims the number accumulated before it started; changes arriving during the run remain for the next run. Failure restores the claimed number.
 - The value is an informational work-item/signal count, not a promise that every item will still be eligible or that the final affected-row count will be identical. Deduplication, retries, and eligibility checks can make those numbers differ.
 - Existing legacy queue rows are not scanned or backfilled. They become tracked when a normal application transition touches them. This avoids introducing the expensive projection the field is intended to replace.
 - Updating one work document and updating the rule counter are separate Mongo documents. Their transitions are race-safe and the displayed value cannot go below zero, but exact crash consistency would require a cross-document transaction or a durable delta ledger.
@@ -73,13 +73,16 @@ bash admin-job-fixtures.sh reset event-counter-expiry
 
 `prepare` already makes a non-manual job's registry rule due. `trigger` only re-arms that timestamp if another scheduler pass is wanted. It does not call a hidden endpoint and does not start an application.
 
-For the graph job, use the visible Admin UI:
+For the graph job:
 
 1. Prepare `event-random-groups`.
 2. Open **Admin → Admin Jobs → event-random-groups**.
-3. Press **Run**.
+3. Leave the already-running backend alone and wait for its next configured
+   scheduler poll. `prepare` temporarily changes the rule interval to one minute,
+   makes it due, and scopes this pass to the fixture source event.
 4. Run `status event-random-groups`.
-5. Press **Run** once more to check idempotence.
+5. Press **Run** once more only when checking idempotence through the visible
+   manual control.
 6. Run `status` again and then `reset`.
 
 For other jobs, leave the already-running backend alone and wait for its next configured scheduler poll. If it has already polled, run `trigger <job>` to clear only that rule's last-run timestamp, then wait again. Long application-level worker delays are not shortened by this toolkit.
@@ -146,17 +149,23 @@ Variations:
 - `quality-200`: two hundred generated users arranged into forty known-affinity cohorts of five.
 - `quality-1000`: one thousand generated users arranged into two hundred known-affinity cohorts of five.
 
-Preparation temporarily changes every other canonical active demo event from
-`status:"A"` to `status:"I"`, after snapshotting those exact event IDs. Reset
-restores each complete original event document. This quarantine is important:
-the graph worker is global and parallel, and the regular demo seed contains many
-eligible events and hundreds of accepted memberships. Without quarantine it can
-be expensive and can change unrelated demo assignments.
+Preparation does not change or quarantine any unrelated event. It temporarily
+sets the random-room rule's `jobs.process.randomGroups.sourceEventIds` parameter
+to the fixture source event ID and its interval to one minute, so the real
+scheduler pass processes only that input event promptly. Reset restores the
+complete original rule document, including its original interval.
 
-Expected after **Admin Jobs → Run**:
+Expected after the scheduler pass:
 
 - group definitions are derived at runtime from the stage capacities and are intentionally not persisted into `subEvents[].groups`;
-- each derived canonical group owner contains exactly the configured number of accepted `activityMembers`;
+- each derived room is a standalone `random-room` event with exactly the
+  configured number of accepted event members and a shared chat materialized
+  for those members;
+- every selected participant has a `public` profile; non-public accepted source
+  members are excluded from both the room plans and the affected-user result;
+- the system stores exactly one `random-room-welcome` message in every generated
+  chat before membership and notification fanout, and increments each member's
+  chat unread counters exactly once;
 - every fixture event member appears in exactly one room;
 - anchors stay in their original rooms for `anchored` and
   `anchored-full-and-empty`;
@@ -173,8 +182,8 @@ The generated `twenty-rooms`, remainder, and `quality-*` variations also have an
 For `under-min-connected-component`, the same oracle proves that connectivity
 alone cannot override the room minimum. For `below-minimum-total`,
 `expectedNoOutputArtifacts` and `noOutputArtifacts` must both be true. After a
-successful first pass, `status` stores a fixture-only fingerprint of memberships,
-markers, outbox, and bell rows. A second Admin **Run** must report zero affected
+successful first pass, `status` stores a fixture-only fingerprint of chat
+messages, memberships, markers, outbox, and bell rows. A second Admin **Run** must report zero affected
 users and `repeatedPassChangedZeroGroups:true` plus
 `assignmentFingerprintUnchanged:true`.
 

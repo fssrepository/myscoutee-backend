@@ -21,6 +21,8 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyPage
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyStatsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketValidationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
@@ -134,6 +136,12 @@ public class AssetsController {
             @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "upcoming") String order) {
         return assetsService.queryTicketPage(userId, page, pageSize, order);
+    }
+
+    @PostMapping("/tickets/validate")
+    public AssetTicketValidationDto validateTicket(
+            @RequestBody AssetTicketValidationRequestDto request) {
+        return assetsService.validateTicket(request);
     }
 
     @PostMapping("/upsert")

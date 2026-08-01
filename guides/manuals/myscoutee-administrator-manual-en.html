@@ -12,11 +12,11 @@
     <article class="manual">
       <section class="cover" id="cover">
         <div class="cover-brand">
-          <img src="../../frontend/src/assets/logo/heart.png" alt="MyScoutee logo">
-          <div>
-            <div class="cover-brand-name">MyScoutee</div>
-            <div class="cover-brand-subtitle">Official product documentation</div>
+          <div class="cover-brand-name" aria-label="MyScoutee">
+            <img src="../../frontend/src/assets/logo/heart.png" alt="" aria-hidden="true">
+            <span>yScoutee</span>
           </div>
+          <div class="cover-brand-subtitle">Official product documentation</div>
         </div>
 
         <div class="cover-title-block">
@@ -1354,7 +1354,7 @@
           <h3>Save lower-risk configuration</h3>
           <ol>
             <li>Open <strong>Operator → Configuration</strong>.</li>
-            <li>For branding, verify product name, logo image, logo-character index, and theme.</li>
+            <li>For branding, verify product name, logo image, logo-replacement index, and theme. The zero-based index identifies the product-name character replaced by the logo; the default index <strong>0</strong> replaces the <strong>M</strong> in <strong>MyScoutee</strong>. Use <strong>-1</strong> to show the full product name without a logo in the wordmark; the configured logo remains available to other branded surfaces.</li>
             <li>For privacy, enter the data-controller name and public privacy email address.</li>
             <li>For a social link, verify provider, label, HTTPS URL, icon, and handle; no more than 12 links can be added.</li>
             <li>Save the target section, then verify public presentation and links in a separate browser session.</li>

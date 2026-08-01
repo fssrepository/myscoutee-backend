@@ -2,6 +2,8 @@ package com.raxim.myscoutee.profile.data.dto.assets;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
@@ -238,6 +240,9 @@ public final class AssetsDtos {
 
     public record AssetTicketDto(
             String id,
+            String holderUserId,
+            String scanCode,
+            String usedAtIso,
             String type,
             String status,
             String title,
@@ -252,6 +257,36 @@ public final class AssetsDtos {
             String visibility,
             String avatarInitials,
             String creatorInitials) {
+    }
+
+    public record AssetTicketValidationRequestDto(
+            String code,
+            String userId) {
+    }
+
+    public record AssetTicketScanPayloadDto(
+            String code,
+            String holderUserId,
+            String holderName,
+            String holderInitials,
+            String holderAvatarUrl,
+            Integer holderAge,
+            String holderCity,
+            String holderRole,
+            String eventId,
+            String eventTitle,
+            String eventSubtitle,
+            String eventTimeframe,
+            String eventDateLabel,
+            String issuedAtIso,
+            String usedAtIso) {
+    }
+
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    public record AssetTicketValidationDto(
+            Boolean valid,
+            String reason,
+            AssetTicketScanPayloadDto ticket) {
     }
 
     public record AssetTicketsPageDto(

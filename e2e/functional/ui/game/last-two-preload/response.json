@@ -1,0 +1,17 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".game-page",
+    ".home-smart-list .smart-list__fullscreen-card--active",
+    ".home-smart-list app-menu-outlet .rate__commit"
+  ],
+  "network": [
+    "/api/game-cards/query"
+  ],
+  "absentSelectors": [
+    ".home-smart-list .smart-list__fullscreen-empty"
+  ],
+  "noCrashText": true,
+  "noConsoleErrors": true,
+  "maxMs": 90000
+}

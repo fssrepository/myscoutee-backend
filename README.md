@@ -1,34 +1,17 @@
 # MyScoutee Backend
 
-This repository contains the MyScoutee application server, the integrated
-frontend build, local Docker environments, production packaging, and the
-versioned product documentation.
+**The platform behind meetings, not swipes.**
 
-## Development quick start
+MyScoutee Backend powers group- and event-centred social experiences. It turns
+editable 1–10 priorities and mutual affinity into compatible groups, then
+supports their journey through chat, events, coordination, and feedback.
 
-Prerequisites are Docker Engine, Docker Compose v2, and a compatible local
-Registry source checkout for the Registry service declared by the development
-stack.
-
-```bash
-cd server
-./docker/scripts/bootstrap_mongodb_seed.sh
-docker compose up --build
-```
-
-The frontend is rebuilt and synchronized automatically. Open
-`https://localhost`; the development certificate may need to be trusted
-locally.
-
-## Production and test entry points
-
-- [Production packaging and operations](packaging/README.md)
-- [Full integration E2E collections](e2e/README.md)
-- [Project documentation index](guides/README.md)
+Its goal is a **completed, mutually welcomed real-world meeting**—not simply a
+match or a message.
 
 ## Downloads
 
-### Manuals
+### Official manuals
 
 | Manual | Document version | Applies to | PDF |
 |---|---:|---:|---|

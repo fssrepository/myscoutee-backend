@@ -32,7 +32,7 @@ public class OperatorConfigurationMapper {
         DeploymentConfiguration.Branding branding = configuration.getBranding();
         return new DeploymentBrandingDto(
                 requireText(branding.getProductName(), "Deployment product name"),
-                branding.getLogoCharacterIndex(),
+                logoCharacterIndex(branding),
                 requireText(branding.getHomeLabel(), "Deployment home label"),
                 safeText(branding.getLogoUrl()),
                 theme(branding.getThemePreset()),
@@ -45,7 +45,7 @@ public class OperatorConfigurationMapper {
         DeploymentConfiguration.Branding branding = configuration.getBranding();
         return new DeploymentPublicConfigurationDto(
                 requireText(branding.getProductName(), "Deployment product name"),
-                branding.getLogoCharacterIndex(),
+                logoCharacterIndex(branding),
                 requireText(branding.getHomeLabel(), "Deployment home label"),
                 safeText(branding.getLogoUrl()),
                 theme(branding.getThemePreset()),
@@ -204,6 +204,13 @@ public class OperatorConfigurationMapper {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private int logoCharacterIndex(
+            DeploymentConfiguration.Branding branding) {
+        return branding.getLogoCharacterIndex() == null
+                ? 0
+                : branding.getLogoCharacterIndex();
     }
 
     private FirebasePublicConfigurationDto toPublicFirebaseConfiguration(
