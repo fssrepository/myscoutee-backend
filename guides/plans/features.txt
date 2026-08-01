@@ -10,3 +10,4 @@ feature
 2) operator config - test tls config
 3) ha frissitve van az alkalmazas neha tobbszor ujra reloadol a landing site a webview-ban
 webview should check the latest before loading the cache
+4) demo payment, if it's configured by operator changing
