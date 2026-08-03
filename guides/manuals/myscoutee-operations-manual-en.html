@@ -1795,7 +1795,7 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
     </ul>
 
     <pre><code>MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
-  bash packaging/scripts/qualify-release-artifacts.sh \
+  bash packaging/release/qualify-release-artifacts.sh \
   /absolute/myscoutee_1.2.0_amd64.deb \
   /absolute/myscoutee_1.0.0_amd64.deb \
   myscoutee-registry:1.2.0-prod</code></pre>
@@ -1990,19 +1990,19 @@ sudo /opt/myscoutee/packaging/scripts/myscoutee-compose.sh ps</code></pre>
     <h3>A.1. Build Production Artifacts from Source</h3>
     <p>From the repository root:</p>
     <pre><code>MYSCOUTEE_VERSION=1.0.0 \
-  bash packaging/scripts/build-production.sh</code></pre>
+  bash packaging/release/build-production.sh</code></pre>
     <p>By default, the script builds and synchronizes the production frontend bundle, runs the Gradle <code>bootJar</code> build, creates the base Nginx image, and then builds the source-production Compose images. The build environment must also have access to the adjacent MyScoutee registry source.</p>
 
     <h3>A.2. Build the Debian Package and Client Bundle</h3>
     <p>In one step, including an automatic artifact build:</p>
     <pre><code>MYSCOUTEE_VERSION=1.0.0 \
-  bash packaging/scripts/package-production.sh</code></pre>
+  bash packaging/release/package-production.sh</code></pre>
     <p>If the preceding production build was created from exactly the same source state and version, avoid rebuilding it:</p>
     <pre><code>MYSCOUTEE_VERSION=1.0.0 \
   BUILD_ARTIFACTS=false \
-  bash packaging/scripts/package-production.sh</code></pre>
-    <p>Expected outputs are <code>packaging/dist/myscoutee_1.0.0_amd64.deb</code> and <code>packaging/dist/myscoutee-client-tools_1.0.0.tar.gz</code>. The package build saves the five managed MyScoutee images into the Debian archive, creates an image manifest, runs a credential audit, embeds a byte-identical copy of the versioned client archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code>, and emits the standalone workstation archive. It does not install expanded client scripts on the deployment host. The source-only convenience entry point <code>tools/build-debian-release.sh</code> invokes the same package builder.</p>
-    <p>Building does not by itself establish a published release. On an isolated release workstation, use the source-only <code>tools/sign-release-artifacts.sh</code> with an approved pre-existing Ed25519 PKCS#8 private key to validate and sign the matching Debian and client artifacts and to produce <code>myscoutee-release_1.0.0.json</code>. The signing tool neither creates nor copies the private key. Publish the Debian package, client archive, signed manifest, and public key; distribute the full SPKI fingerprint through an independent trusted channel. Production use still requires release qualification and approval.</p>
+  bash packaging/release/package-production.sh</code></pre>
+    <p>Expected outputs are <code>packaging/dist/myscoutee_1.0.0_amd64.deb</code> and <code>packaging/dist/myscoutee-client-tools_1.0.0.tar.gz</code>. The package build saves the five managed MyScoutee images into the Debian archive, creates an image manifest, runs a credential audit, embeds a byte-identical copy of the versioned client archive at <code>/usr/share/myscoutee/myscoutee-client-tools_1.0.0.tar.gz</code>, and emits the standalone workstation archive. It does not install expanded client scripts on the deployment host. The source-only convenience entry point <code>packaging/release/build-debian-release.sh</code> invokes the same package builder.</p>
+    <p>Building does not by itself establish a published release. On an isolated release workstation, use the source-only <code>packaging/release/sign-release-artifacts.sh</code> with an approved pre-existing Ed25519 PKCS#8 private key to validate and sign the matching Debian and client artifacts and to produce <code>myscoutee-release_1.0.0.json</code>. The signing tool neither creates nor copies the private key. Publish the Debian package, client archive, signed manifest, and public key; distribute the full SPKI fingerprint through an independent trusted channel. Production use still requires release qualification and approval.</p>
 
     <p>The release lifecycle is therefore: build both artifacts; sign them on the controlled release host; publish the two artifacts, signed manifest, and public key; authenticate the full SPKI fingerprint independently; verify the client archive with an already trusted verifier; extract it; and let its installer reverify the Debian package before SCP and APT.</p>
 

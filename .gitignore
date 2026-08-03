@@ -39,6 +39,7 @@ packaging/dist/
 # misc
 .sass-cache
 .e2e-artifacts/
+.trust-mode.local
 connect.lock
 coverage
 libpeerconnection.log

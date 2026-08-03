@@ -146,7 +146,7 @@ Code volume demonstrates implementation breadth, not traction or defensibility.
   `server/projects/profile/src/main/java/com/raxim/myscoutee/profile/controller/admin/AdminController.java`,
   `server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/AdminModerationService.java`.
 - Packaging:
-  `packaging/README.md`, `packaging/scripts/package-production.sh`,
+  `packaging/README.md`, `packaging/release/package-production.sh`,
   `packaging/dist/myscoutee_1.0.0_amd64.deb`.
 
 ## Claims to avoid

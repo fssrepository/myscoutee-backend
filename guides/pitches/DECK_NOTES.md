@@ -150,7 +150,7 @@ then remains fixed at 10%; operators share the other 90%.
 - Group planning: `server/projects/profile/src/main/java/com/raxim/myscoutee/profile/algo/StableGroupPlanner.java`.
 - Events, chat, resources, ticketing, pricing, moderation, and admin surfaces:
   `frontend/src/app/shared/core/contracts/` and server controllers.
-- Packaging: `packaging/README.md`, `packaging/scripts/package-production.sh`,
+- Packaging: `packaging/README.md`, `packaging/release/package-production.sh`,
   and `packaging/dist/myscoutee_1.0.0_amd64.deb`.
 - Planned central metrics/rebrand layer: `guides/plans/features.txt`.
 - Local telemetry: `AdminTelemetryService.java`, `AdminStatsTelemetryWorkerService.java`,

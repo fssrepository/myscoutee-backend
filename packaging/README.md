@@ -14,30 +14,37 @@ The current packaging path builds and runs the production Docker stack from the 
 
 It intentionally does not add Java, Mongo, or Redis memory caps. Optional small/medium/large presets can be added later as explicit production profiles.
 
-## Scripts
+## Runtime and source tools
+
+`packaging/scripts/` contains deployment-host runtime scripts and is copied
+into the Debian package. `packaging/release/` contains checkout-only build,
+audit, qualification, rebuild, package, and signing helpers and is deliberately
+excluded from the DEB.
 
 Run from the repo root:
 
 ```bash
-bash packaging/scripts/build-production.sh
+bash packaging/release/build-debian-release.sh
+bash packaging/release/rebuild-production-services.sh --build-only
+bash packaging/release/build-production.sh
 bash packaging/scripts/start-production.sh
 bash packaging/scripts/status-production.sh
 bash packaging/scripts/stop-production.sh
 bash packaging/scripts/backup-production.sh
-bash packaging/scripts/package-production.sh
+bash packaging/release/package-production.sh
 bash packaging/scripts/smoke-mongo-compatibility.sh
 ```
 
 Useful overrides:
 
 ```bash
-MYSCOUTEE_VERSION=1.0.0 bash packaging/scripts/build-production.sh
-BUILD_FRONTEND=false bash packaging/scripts/build-production.sh
-BUILD_BACKEND=false bash packaging/scripts/build-production.sh
-BUILD_IMAGES=false bash packaging/scripts/build-production.sh
+MYSCOUTEE_VERSION=1.0.0 bash packaging/release/build-production.sh
+BUILD_FRONTEND=false bash packaging/release/build-production.sh
+BUILD_BACKEND=false bash packaging/release/build-production.sh
+BUILD_IMAGES=false bash packaging/release/build-production.sh
 BUILD_ARTIFACTS=false PACKAGE_IMAGES=false \
   ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true \
-  bash packaging/scripts/package-production.sh
+  bash packaging/release/package-production.sh
 ```
 
 `package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images. During install, `postinst` checks Docker and prepares MongoDB, Redis, and MinIO images by pulling them if they are missing. Set `PACKAGE_OFFICIAL_IMAGES=true` only when you want a larger offline-style bundle that also includes those official service image archives.
@@ -238,7 +245,7 @@ After building the DEB and matching client-tools archive, create the GitHub
 Release metadata with an externally stored, pre-existing Ed25519 PKCS#8 key:
 
 ```bash
-tools/sign-release-artifacts.sh \
+packaging/release/sign-release-artifacts.sh \
   --private-key /secure/release-private-key.pem \
   --deb packaging/dist/myscoutee_1.0.0_amd64.deb \
   --client-tools packaging/dist/myscoutee-client-tools_1.0.0.tar.gz \
@@ -304,7 +311,7 @@ bash packaging/tests/update-worker-test.sh
 bash packaging/tests/image-content-fingerprint-test.sh
 bash packaging/tests/package-content-test.sh
 bash packaging/tests/debian-removal-contract-test.sh
-bash tools/tests/release-signing-test.sh
+bash packaging/tests/release-signing-test.sh
 ```
 
 Before a release drill, bind the evidence to the exact candidate package,
@@ -312,7 +319,7 @@ oldest-supported package, and production registry image:
 
 ```bash
 MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
-  bash packaging/scripts/qualify-release-artifacts.sh \
+  bash packaging/release/qualify-release-artifacts.sh \
     /absolute/myscoutee_1.2.0_amd64.deb \
     /absolute/myscoutee_1.0.0_amd64.deb \
     myscoutee-registry:1.2.0-prod
