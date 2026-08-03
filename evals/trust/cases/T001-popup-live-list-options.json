@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "T001",
+  "title": "Popup list exposes optional live behavior before implementation",
+  "tags": ["frontend", "popup", "smart-list", "polling"],
+  "prompt": "Create an Angular popup for pending asset handover requests. It should display a list and let an operator create, edit, approve, and delete entries.",
+  "assertions": [
+    {
+      "id": "asks-about-polling",
+      "kind": "required_question",
+      "description": "The response explicitly asks whether scheduled/background polling is wanted.",
+      "patterns": ["poll(?:ing)?", "scheduled (?:background )?refresh", "background refresh"]
+    },
+    {
+      "id": "routes-to-smart-list",
+      "kind": "required",
+      "description": "The shared SmartList is considered as the project-first list primitive.",
+      "patterns": ["SmartList", "app-smart-list"]
+    },
+    {
+      "id": "asks-another-visible-option",
+      "kind": "required_question",
+      "description": "At least one other relevant optional list capability is surfaced.",
+      "patterns": ["progress", "load(?:ing)? indicator", "filter", "sort", "pagination", "infinite", "selection", "row action"]
+    },
+    {
+      "id": "plans-visible-reconciliation",
+      "kind": "required",
+      "description": "CRUD results are reconciled into the visible list instead of default full reload.",
+      "patterns": ["patchVisibleItem", "upsertConvertedVisibleItem", "removeVisibleItemByIdentity", "reinsertVisibleItem", "in[- ]place", "without (?:a )?(?:full )?(?:reload|refetch)"]
+    }
+  ],
+  "reviewQuestions": [
+    "Did the model ask one concise capability question rather than silently selecting optional behavior?",
+    "Did it avoid treating polling as mandatory merely because SmartList supports it?",
+    "Did it keep transport/polling ownership out of the presentation component?"
+  ]
+}
+

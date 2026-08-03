@@ -8,6 +8,7 @@ myscoutee-backend (parent Git repository)
 ├── server/projects/profile/   Spring Boot application
 ├── server/docker/             development/E2E runtime and Mongo seeds
 ├── e2e/                       functional and stress harnesses
+├── evals/trust/               model-level trust regression specifications
 ├── packaging/                 production images, DEB, workers, verification
 ├── guides/                    manuals, roadmaps, product/deployment context
 └── tools/                     operator/release/development tooling
@@ -60,4 +61,3 @@ Angular operator UI
 
 Verify current Compose/configuration before relying on this table; if runtime
 code diverges, report the divergence rather than silently normalizing it.
-

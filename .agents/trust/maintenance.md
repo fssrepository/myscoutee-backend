@@ -54,6 +54,25 @@ Do not promote:
 - `off` disables this project library only. It cannot disable system/developer
   instructions or broaden the user's authorization.
 
+## Model regression evals
+
+- Keep behavioral instructions in `.agents/trust` and their black-box
+  regression cases in `evals/trust`; the model must not load its expected
+  answers during normal tasks.
+- Run `node tools/run-trust-evals.mjs --validate` after case edits. A live model
+  run always names the candidate with `--model` and stores raw artifacts only
+  under `.e2e-artifacts/trust-evals/`.
+- Prefer semantic assertions and required decision questions over exact output
+  snapshots. Preserve raw responses for human review.
+- Compare candidate and baseline with the same repository commit, trust mode,
+  cases, repetition count, and isolation flags.
+- Fix the smallest owning trust rule, then rerun focused failures and the full
+  suite. Do not leak case wording into the kernel or weaken the rubric to make a
+  candidate pass.
+- Accepted baseline reports may be committed under `evals/trust/baselines` only
+  after human review. Model output is evidence, not authority to redefine the
+  expected behavior.
+
 ## Review cadence
 
 After five to ten real tasks, review:

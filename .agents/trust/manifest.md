@@ -1,6 +1,6 @@
 # MyScoutee trust manifest
 
-Status: project-local continuity protocol, version 0.2
+Status: project-local continuity protocol, version 0.3
 Authority: subordinate to system/developer instructions and the current user
 request; stronger than agent defaults and repository frequency.
 
@@ -31,6 +31,10 @@ will eventually be skimmed or skipped.
 | `patterns/` | curated responsibility references, not copy templates |
 | `learnings/` | accepted, candidate, rejected, and provenance records |
 | `templates/` | optional working records; do not fill them ritualistically |
+
+The companion `evals/trust/` suite keeps model-regression prompts, semantic
+assertions, and accepted baseline reports outside the context loaded by the
+model. `tools/run-trust-evals.mjs` executes or validates that suite.
 
 ## Deep workflow
 

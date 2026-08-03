@@ -24,6 +24,9 @@ directory:
 - `trust-mode.sh status|off|light|standard|deep|default` selects a gitignored
   local trust-loading mode; `default` removes the override and restores
   `standard`.
+- `run-trust-evals.mjs` validates or runs the read-only model regression suite
+  in `evals/trust`; live runs require an explicit model and write only to
+  `.e2e-artifacts/trust-evals/`.
 - `work-day/list-login-sessions-for-day.sh YYYY-MM-DD` lists completed Linux
   login sessions for one day.
 - `work-day/work-hours-summary.sh` calculates daily, weekly, monthly, and

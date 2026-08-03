@@ -54,6 +54,18 @@ required=(
   .agents/trust/templates/task-ledger.md
   .agents/trust/templates/trust-record.md
   .agents/trust/templates/learning-candidate.md
+  evals/trust/README.md
+  evals/trust/case.schema.json
+  evals/trust/baselines/README.md
+  evals/trust/cases/T001-popup-live-list-options.json
+  evals/trust/cases/T002-smart-list-mutation.json
+  evals/trust/cases/T003-demo-bootstrap-efficiency.json
+  evals/trust/cases/T004-fixture-vs-product.json
+  evals/trust/cases/T005-history-not-authority.json
+  evals/trust/cases/T006-running-environment.json
+  evals/trust/cases/T007-persistence-proof.json
+  tools/run-trust-evals.mjs
+  tools/tests/trust-eval-runner-test.mjs
   tools/trust-mode.sh
   tools/validate-trust-library.sh
 )
@@ -108,6 +120,16 @@ fi
 
 if ! bash -n tools/trust-mode.sh; then
   printf 'tools/trust-mode.sh has invalid shell syntax\n' >&2
+  failed=1
+fi
+
+if ! node tools/run-trust-evals.mjs --validate >/dev/null; then
+  printf 'trust eval case validation failed\n' >&2
+  failed=1
+fi
+
+if ! node tools/tests/trust-eval-runner-test.mjs >/dev/null; then
+  printf 'trust eval runner self-test failed\n' >&2
   failed=1
 fi
 
