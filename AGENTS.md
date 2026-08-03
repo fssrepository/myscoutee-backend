@@ -24,7 +24,7 @@ Modes:
 
 An invalid local value falls back to `standard` and must be reported. Do not
 create or change `.trust-mode.local` unless the user asks. The local override is
-gitignored and can be managed with `tools/trust-mode.sh`.
+gitignored and can be managed with `tools/trust/trust-mode.sh`.
 
 The trust protocol is project context, not an optional skill. A skill or
 harness may automate it but does not override the selected mode or the current

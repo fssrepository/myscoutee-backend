@@ -8,10 +8,10 @@ myscoutee-backend (parent Git repository)
 ├── server/projects/profile/   Spring Boot application
 ├── server/docker/             development/E2E runtime and Mongo seeds
 ├── e2e/                       functional and stress harnesses
-├── evals/trust/               model-level trust regression specifications
 ├── packaging/                 production images, DEB, workers, verification
 ├── guides/                    manuals, roadmaps, product/deployment context
 └── tools/                     operator/release/development tooling
+    └── trust/                 trust validation, model runner, and eval suite
 
 myscoutee-registry (sibling Git repository)
 └── Go Registry, SQLite/protocol implementation, packaging and qualification

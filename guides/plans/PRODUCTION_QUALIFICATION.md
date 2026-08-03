@@ -42,7 +42,7 @@ the exact registry image runtime boundary.
 
 ```bash
 MYSCOUTEE_QUALIFICATION_EVIDENCE_DIR=/absolute/evidence/1.2.0 \
-  bash packaging/scripts/qualify-release-artifacts.sh \
+  bash packaging/release/qualify-release-artifacts.sh \
     /absolute/myscoutee_1.2.0_amd64.deb \
     /absolute/myscoutee_1.0.0_amd64.deb \
     myscoutee-registry:1.2.0-prod

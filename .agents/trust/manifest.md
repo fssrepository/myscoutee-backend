@@ -32,9 +32,9 @@ will eventually be skimmed or skipped.
 | `learnings/` | accepted, candidate, rejected, and provenance records |
 | `templates/` | optional working records; do not fill them ritualistically |
 
-The companion `evals/trust/` suite keeps model-regression prompts, semantic
+The companion `tools/trust/suite/` keeps model-regression prompts, semantic
 assertions, and accepted baseline reports outside the context loaded by the
-model. `tools/run-trust-evals.mjs` executes or validates that suite.
+model. `tools/trust/run-trust-evals.mjs` executes or validates that suite.
 
 ## Deep workflow
 
@@ -81,4 +81,4 @@ This library does not:
 - replace maintained canonical documentation with condensed memory.
 
 Maintain the library according to [maintenance.md](maintenance.md) and validate
-structural changes with `bash tools/validate-trust-library.sh`.
+structural changes with `tools/trust/validate-trust-library.sh`.

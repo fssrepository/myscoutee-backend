@@ -21,8 +21,8 @@ not already been explicitly accepted or rejected in the current request. If the
 user already chose an exact reference flow, confirm whether its polling behavior
 is part of the requested parity instead of silently copying it.
 
-In the same concise question, include only other unresolved, user-visible
-options relevant to the surface:
+Polling is the mandatory checkpoint. Do not turn the following capabilities
+into a generic "what else do you want?" questionnaire:
 
 - initial-load and background-refresh progress visibility;
 - search, filtering, sorting, grouping, views, pagination, or infinite loading;
@@ -35,8 +35,14 @@ Do not interrogate the user about internal mechanics with an established safe
 answer. Stable identity, cancellation, cleanup, bounded requests, store/service
 ownership, and local/HTTP parity remain engineering responsibilities.
 
-If the user explicitly delegates the options, state the selected defaults. Do
-not silently add polling merely because the component supports it.
+Resolve these from the current request, the nearest exact reference flow, and
+project defaults. Ask a focused follow-up only when a still-unknown choice
+blocks the current behavior or materially changes the product contract. Exact
+ordering or grouping is a reasonable later question when it becomes material;
+do not ask it preemptively when the user is likely to specify it with the next
+slice of work. If the user explicitly delegates an unresolved choice, state the
+selected default. Do not silently add polling merely because the component
+supports it.
 
 ## Project-first implementation
 
@@ -64,6 +70,11 @@ the visible SmartList instead of calling its loader again by default:
 | delete/remove | `removeVisibleItemByIdentity` or `removeVisibleItems` |
 | reconcile a polled/current window | `syncVisibleItems` |
 | replace a known local window | `replaceVisibleItems` |
+
+When the repository already exposes a matching operation, name the concrete
+SmartList API in the plan or review before implementation. Generic wording such
+as "patch/remove the visible row" is not enough: it leaves open whether the
+shared API will be reused or a parallel collection mechanism will be invented.
 
 “In place” means reconciling the rendered collection without another full
 network/storage load. It does not require mutating Angular objects or arrays in

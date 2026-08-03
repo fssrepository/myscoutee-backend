@@ -728,10 +728,10 @@ if grep -Fq 'rm -rf /var/backups/myscoutee' \
   fail "remote purge deletes the external deployment recovery archive"
 fi
 grep -Fq 'cp -a "${REPO_ROOT}/packaging/scripts"' \
-  "${REPO_ROOT}/packaging/scripts/package-production.sh" \
+  "${REPO_ROOT}/packaging/release/package-production.sh" \
   || fail "package staging does not include the deployment identity helper"
 grep -Fq 'find "${STAGING_DIR}/opt/myscoutee/packaging/scripts"' \
-  "${REPO_ROOT}/packaging/scripts/package-production.sh" \
+  "${REPO_ROOT}/packaging/release/package-production.sh" \
   || fail "package staging does not make the deployment identity helper executable"
 grep -Fq 'sync -f "${KEY_DIR}"' "${IDENTITY_SCRIPT}" \
   || fail "deployment identity helper does not durably sync its key directory"

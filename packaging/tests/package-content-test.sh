@@ -3,8 +3,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
-PACKAGE_SCRIPT="${REPO_ROOT}/packaging/scripts/package-production.sh"
-CREDENTIAL_AUDIT="${REPO_ROOT}/packaging/scripts/audit-package-credentials.sh"
+PACKAGE_SCRIPT="${REPO_ROOT}/packaging/release/package-production.sh"
+CREDENTIAL_AUDIT="${REPO_ROOT}/packaging/release/audit-package-credentials.sh"
 TEST_ROOT="$(mktemp -d /tmp/myscoutee-package-content-test.XXXXXX)"
 
 cleanup() {
@@ -40,7 +40,7 @@ bash "${SCRIPT_DIR}/i18n-runtime-seed-sync-test.sh" >/dev/null \
   || fail "production i18n runtime seed synchronization regression"
 bash "${REPO_ROOT}/server/docker/images/mongodb-sync/dev/mongodb-seed-sync-test.sh" >/dev/null \
   || fail "Mongo seed watcher lost a file update during import"
-node "${REPO_ROOT}/tools/normalize-chat-seed.mjs" >/dev/null \
+node "${REPO_ROOT}/tools/seeds/normalize-chat-seed.mjs" >/dev/null \
   || fail "demo chat seed membership or message-summary regression"
 
 FRONTEND_SYNC_ROOT="${TEST_ROOT}/frontend-sync"
@@ -189,6 +189,24 @@ fi
 if grep -Fq '/admin-job-fixtures/' "${CONTENTS}"; then
   fail "development admin-job fixtures were embedded in the production package"
 fi
+if grep -Eq '^\./opt/myscoutee/packaging/release(/|$)' "${CONTENTS}"; then
+  fail "source-only release tools were embedded in the production package"
+fi
+for source_only_helper in \
+  audit-nested-archive.py \
+  audit-package-credentials.sh \
+  build-debian-release.sh \
+  build-production.sh \
+  package-production.sh \
+  private_key_material.py \
+  qualify-release-artifacts.sh \
+  rebuild-production-services.sh \
+  sign-release-artifacts.sh \
+  purge-local-datastores.sh; do
+  if grep -Eq "/${source_only_helper}$" "${CONTENTS}"; then
+    fail "source-only helper was embedded in the production package: ${source_only_helper}"
+  fi
+done
 if grep -Eiq \
   '/(\.env\.secrets|application-secrets\.ya?ml|[^/]*(client-secret|provider-credentials)[^/]*\.json|[^/]*\.(p12|pfx|jks|keystore))$' \
   "${CONTENTS}"; then
