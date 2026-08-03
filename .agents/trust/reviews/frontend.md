@@ -48,7 +48,9 @@ An in-memory form update is not persistence proof.
 - Do not trade usability or required contrast/scrolling for a metric without
   evaluating the actual interaction.
 
-## Reference
+## Optional references
 
-Load [frontend-vertical-slice.md](../patterns/frontend-vertical-slice.md) and
-[ui-behavior-parity.md](../patterns/ui-behavior-parity.md).
+Use [frontend-vertical-slice.md](../patterns/frontend-vertical-slice.md) when
+creating or moving a service/adapter/store responsibility. Use
+[ui-behavior-parity.md](../patterns/ui-behavior-parity.md) only when the task
+asks one workflow to behave like another.

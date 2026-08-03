@@ -1,125 +1,80 @@
 # MyScoutee trust manifest
 
-Status: project-local protocol, version 0.1  
-Authority: subordinate to the current user request and system instructions;
-authoritative over agent defaults and repository frequency.
+Status: project-local continuity protocol, version 0.2
+Authority: subordinate to system/developer instructions and the current user
+request; stronger than agent defaults and repository frequency.
 
 ## Purpose
 
-This library is MyScoutee's continuity supervisor and mandatory habit loop. It
-makes an agent repeatedly recover the project's intended identity, boundaries,
-known-good patterns, user working context, and previously learned failure modes
-instead of reconstructing them from scratch.
+The trust library preserves MyScoutee's intended boundaries, useful working
+context, approved patterns, and lessons from repeated failures. It is model
+customization through versioned project habits, not a skill trigger, raw
+conversation archive, or replacement for canonical product and operations
+documents.
 
-It is not:
+The compact entrypoint is [kernel.md](kernel.md). `AGENTS.md` selects
+`off`, `light`, `standard`, or `deep` before loading the library. Progressive
+loading is a correctness feature: instructions that consume too much context
+will eventually be skimmed or skipped.
 
-- a replacement for canonical product, protocol, security, or operations docs;
-- a claim that the most frequent implementation in this AI-heavy codebase is
-  the correct one;
-- a checklist that can be satisfied with unsupported yes/no answers;
-- authorization to expand the user's requested scope.
+## Library map
 
-## Mandatory workflow
+| Area | Responsibility |
+| --- | --- |
+| `kernel.md` | small operating loop, interrupt questions, routing, completion |
+| `constitution.md` | stable product and architecture invariants |
+| `routing.md`, `risk-model.md` | expanded classification and escalation |
+| `evidence-model.md` | strength and honesty of completion evidence |
+| `system-map.md`, `sources.md` | ownership map and canonical-source index |
+| `habits/` | reusable decision behavior |
+| `reviews/` | surface-specific questions and proof obligations |
+| `patterns/` | curated responsibility references, not copy templates |
+| `learnings/` | accepted, candidate, rejected, and provenance records |
+| `templates/` | optional working records; do not fill them ritualistically |
 
-### 1. Establish current state
+## Deep workflow
 
-Before planning an edit:
+1. Establish parent, frontend-submodule, sibling-repository, and relevant
+   runtime state without disturbing user work.
+2. Classify behavior and risk with [routing.md](routing.md) and
+   [risk-model.md](risk-model.md).
+3. Recover intent from [sources.md](sources.md), current implementation, tests,
+   one relevant reference in [patterns/catalog.md](patterns/catalog.md), and
+   Git history when removal intent matters.
+4. State current behavior, required behavior, smallest owning layer, predicted
+   files, explicit non-goals, and root-cause evidence before behavioral edits.
+5. Apply only routed habits/reviews; run the efficiency scan on changed loops,
+   batch operations, storage access, projection, bootstrap, and multi-step
+   workflows.
+6. Verify the real mutation/read, save/reload, local/HTTP, restart/retry,
+   environment, security, or artifact contract using
+   [evidence-model.md](evidence-model.md).
+7. Finish with [reviews/completion.md](reviews/completion.md). Capture a user
+   correction as a candidate only when it generalizes beyond the current task.
 
-1. Inspect `git status --short` in the parent repository.
-2. Inspect `git -C frontend status --short` when the submodule is present.
-3. Identify active services or commands only when relevant; do not start a
-   duplicate stack merely to discover that one already exists.
-4. Restate internally the current task, queued additions, explicit exclusions,
-   and required verification.
-
-Load [habits/worktree-and-scope.md](habits/worktree-and-scope.md).
-
-### 2. Classify and route
-
-Use [routing.md](routing.md). Load every review selected by the touched
-behavior, not merely by filename. A frontend edit that changes a Java wire DTO
-is also a backend and contract task; a seed edit that affects packaged Explore
-is also an environment and packaging task.
-
-### 3. Recover intent before editing
-
-Read the relevant canonical sources from [sources.md](sources.md), then find:
-
-- the current implementation;
-- its tests and fixtures;
-- at least one approved or candidate reference from
-  [patterns/catalog.md](patterns/catalog.md);
-- relevant Git history, including evidence that a removed behavior may have
-  been intentionally removed.
-
-For a bug, record the observed behavior, expected behavior, reproducing
-environment, and smallest proven failing boundary. Load
-[habits/diagnosis-before-change.md](habits/diagnosis-before-change.md).
-
-### 4. Declare the behavior delta
-
-Before the first behavior-affecting edit, be able to state:
-
-```text
-Current behavior:
-Required behavior:
-Smallest owning layer:
-Files expected to change:
-Explicit non-goals:
-Evidence that this is the root cause:
-```
-
-If these cannot be answered, continue diagnosis. Do not compensate in a more
-convenient layer.
-
-### 5. Implement narrowly
-
-Apply [habits/change-discipline.md](habits/change-discipline.md). Preserve the
-current task ledger. Do not refactor adjacent code, add compatibility fallbacks,
-materialize new state, or rewrite fixtures unless the task and evidence require
-it. Run [habits/efficiency-scan.md](habits/efficiency-scan.md) on every changed
-loop, batch, query/projection, bootstrap, and multi-step workflow.
-
-### 6. Verify the real contract
-
-Use the routed review cards and [evidence-model.md](evidence-model.md). Prefer a
-focused proof first, then broaden in proportion to the blast radius. Verify
-save/reload, mutation/read, restart/retry, local/HTTP, or build/artifact parity
-when those are part of the behavior—not just the easiest in-memory path.
-
-### 7. Complete and learn
-
-Run [reviews/completion.md](reviews/completion.md). Report exact tests, failures,
-untested boundaries, and remaining risks. If the user had to correct a repeated
-agent behavior, create or update a learning candidate using
-[templates/learning-candidate.md](templates/learning-candidate.md); do not
-silently turn a one-off preference into a permanent rule.
-
-## Loading budget
-
-Always read:
-
-- this manifest;
-- [constitution.md](constitution.md);
-- [routing.md](routing.md);
-- [learnings/working-context.md](learnings/working-context.md);
-- [learnings/accepted.md](learnings/accepted.md);
-- [habits/worktree-and-scope.md](habits/worktree-and-scope.md);
-- [habits/efficiency-scan.md](habits/efficiency-scan.md);
-- [reviews/completion.md](reviews/completion.md).
-
-Read other files only when routed. This progressive loading is intentional: a
-trust system that exhausts the context window will eventually be skipped.
-
-## Rule precedence inside this library
+## Internal precedence
 
 1. Current explicit user instruction.
-2. Canonical project/trust/operations document.
+2. Canonical product, architecture, security, or operations source.
 3. Accepted invariant in `constitution.md`.
 4. Accepted learning.
 5. Approved reference pattern.
-6. Candidate reference or candidate learning.
+6. Candidate reference or learning.
 7. Repository frequency and historical code.
 
-If two higher-level sources conflict, stop the affected decision, name the
-conflict, and avoid an irreversible or behavior-changing guess.
+If higher-level sources conflict, expose the conflict and avoid an irreversible
+or behavior-changing guess. Git history is evidence, never automatic authority.
+
+## Boundaries
+
+This library does not:
+
+- authorize broader edits, builds, restarts, external writes, or destructive
+  actions;
+- make a frequent AI-generated implementation correct by popularity;
+- turn unsupported checkbox answers into evidence;
+- copy secrets, raw transcripts, personal data, or obsolete runtime commands;
+- replace maintained canonical documentation with condensed memory.
+
+Maintain the library according to [maintenance.md](maintenance.md) and validate
+structural changes with `bash tools/validate-trust-library.sh`.

@@ -7,6 +7,7 @@ cd "${repo_root}"
 
 required=(
   AGENTS.md
+  .agents/trust/kernel.md
   .agents/trust/manifest.md
   .agents/trust/constitution.md
   .agents/trust/routing.md
@@ -52,6 +53,8 @@ required=(
   .agents/trust/templates/task-ledger.md
   .agents/trust/templates/trust-record.md
   .agents/trust/templates/learning-candidate.md
+  tools/trust-mode.sh
+  tools/validate-trust-library.sh
 )
 
 failed=0
@@ -62,8 +65,48 @@ for path in "${required[@]}"; do
   fi
 done
 
-if ! rg -q '\.agents/trust/manifest\.md' AGENTS.md; then
-  printf 'AGENTS.md does not reference the trust manifest\n' >&2
+if ! rg -q '\.agents/trust/kernel\.md' AGENTS.md; then
+  printf 'AGENTS.md does not reference the trust kernel\n' >&2
+  failed=1
+fi
+
+if ! rg -q '\.trust-mode\.local' AGENTS.md; then
+  printf 'AGENTS.md does not document the local trust-mode override\n' >&2
+  failed=1
+fi
+
+if ! git check-ignore -q --no-index .trust-mode.local; then
+  printf '.trust-mode.local must remain gitignored\n' >&2
+  failed=1
+fi
+
+if [[ -f .trust-mode.local ]]; then
+  IFS= read -r local_mode < .trust-mode.local || true
+  case "${local_mode}" in
+    off|light|standard|deep) ;;
+    *)
+      printf 'invalid local trust mode: %q\n' "${local_mode}" >&2
+      failed=1
+      ;;
+  esac
+fi
+
+kernel_lines="$(wc -l < .agents/trust/kernel.md)"
+if (( kernel_lines > 140 )); then
+  printf 'trust kernel exceeds the 140-line loading budget: %s\n' \
+    "${kernel_lines}" >&2
+  failed=1
+fi
+
+agents_lines="$(wc -l < AGENTS.md)"
+if (( agents_lines > 45 )); then
+  printf 'AGENTS.md exceeds the 45-line mode-gate budget: %s\n' \
+    "${agents_lines}" >&2
+  failed=1
+fi
+
+if ! bash -n tools/trust-mode.sh; then
+  printf 'tools/trust-mode.sh has invalid shell syntax\n' >&2
   failed=1
 fi
 

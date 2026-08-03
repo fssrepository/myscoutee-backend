@@ -1,38 +1,31 @@
 # MyScoutee agent instructions
 
-These instructions apply to the backend repository, its `frontend` submodule,
-the deployment and packaging code, and work that crosses into the sibling
-`myscoutee-registry` repository.
+These instructions cover this repository, its `frontend` submodule, and work
+that crosses into the sibling `myscoutee-registry` repository.
 
-For every code, configuration, seed, test, packaging, operational, or
-architecture-documentation change, apply the repository trust protocol:
+## Trust mode gate
 
-1. Read [`.agents/trust/manifest.md`](.agents/trust/manifest.md).
-2. Classify the task with [`.agents/trust/routing.md`](.agents/trust/routing.md).
-3. Load the required review and habit cards before editing.
-4. Identify the current behavior and at least one relevant approved reference
-   or canonical source before creating or changing an implementation.
-5. Complete the evidence review before reporting the task as finished.
+For engineering investigations or changes involving code, configuration, seed,
+test, packaging, operations, or architecture, resolve one trust mode at task
+start. Precedence is:
 
-The trust library is part of the project and is versioned with the code.
-This protocol is mandatory and does not depend on an optional skill trigger. A
-skill or harness may automate routing and evidence capture, but it cannot
-replace, bypass, or override the repository habits.
+1. the user's explicit instruction for the current task (`trust off`, `trust
+   light`, `trust standard`, or `trust deep`);
+2. `.trust-mode.local`, when present;
+3. `standard` by default.
 
-The highest-priority behavioral rules are:
+Modes:
 
-- Preserve user work in both the parent repository and the `frontend`
-  submodule.
-- Do not introduce fallbacks, repair-on-read/write behavior, silent behavior
-  changes, or broad refactors while diagnosing a focused failure.
-- Treat test, fixture, seed, environment, and harness defects as distinct from
-  production-code defects. A failing test alone does not authorize a product
-  behavior change.
-- Never resurrect behavior from Git history merely because it used to exist.
-  History is evidence to inspect, not authority to restore.
-- Before accepting a loop, batch, bootstrap, projection, or multi-step flow,
-  run the efficiency habit: look for database/IndexedDB/HTTP/filesystem calls
-  inside iteration, repeated reads of the same state, and work that can be
-  batched or passed in memory without weakening correctness.
-- Respect explicit stop, no-edit, no-build, no-restart, and undo instructions
-  immediately.
+- `off`: do not load the trust library. System/developer instructions and the
+  user's current request still apply.
+- `light`: read [the trust kernel](.agents/trust/kernel.md) only.
+- `standard`: read the kernel, then only the cards it routes for the task.
+- `deep`: read the kernel and follow its deep-loading route before editing.
+
+An invalid local value falls back to `standard` and must be reported. Do not
+create or change `.trust-mode.local` unless the user asks. The local override is
+gitignored and can be managed with `tools/trust-mode.sh`.
+
+The trust protocol is project context, not an optional skill. A skill or
+harness may automate it but does not override the selected mode or the current
+user instruction.

@@ -35,8 +35,24 @@ Do not promote:
 - Include triggers and exceptions so cards do not run on every task.
 - Merge duplicate rules and delete obsolete ones; more text does not create
   more trust.
+- Keep `kernel.md` compact. Details belong in routed cards; do not duplicate a
+  full checklist in `AGENTS.md`, the kernel, and a review card.
+- A `standard` task should normally load the kernel plus one to three routed
+  cards. If a rule is not broadly useful, do not add it to the kernel.
 - When a code reference moves, update the catalog in the same change.
 - Run `bash tools/validate-trust-library.sh` after library changes.
+
+## Performance and local modes
+
+- The repository default is `standard`; no committed mode-state file is
+  required.
+- `.trust-mode.local` is a gitignored machine-local override. Valid
+  values are `off`, `light`, `standard`, and `deep`.
+- Use `tools/trust-mode.sh off` to disable trust loading locally and
+  `tools/trust-mode.sh default` to restore the repository default.
+- A current explicit user instruction overrides the local file for that task.
+- `off` disables this project library only. It cannot disable system/developer
+  instructions or broaden the user's authorization.
 
 ## Review cadence
 

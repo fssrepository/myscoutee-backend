@@ -21,6 +21,9 @@ directory:
   assets.
 - `validate-trust-library.sh` validates the repository-local agent trust
   protocol, its required files, Markdown links, and canonical code references.
+- `trust-mode.sh status|off|light|standard|deep|default` selects a gitignored
+  local trust-loading mode; `default` removes the override and restores
+  `standard`.
 - `work-day/list-login-sessions-for-day.sh YYYY-MM-DD` lists completed Linux
   login sessions for one day.
 - `work-day/work-hours-summary.sh` calculates daily, weekly, monthly, and
