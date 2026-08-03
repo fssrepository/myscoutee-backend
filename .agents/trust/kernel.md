@@ -64,6 +64,7 @@ Load every matching row, but no unrelated row:
 | Defect or failed test | [bugfix review](reviews/bugfix.md) |
 | Unclear defect crossing several boundaries | [diagnosis habit](habits/diagnosis-before-change.md) |
 | Angular/UI/shared-core | [frontend review](reviews/frontend.md) |
+| Popup/dialog/drawer/page surface containing a list or SmartList | [SmartList live-surface pattern](patterns/smart-list-live-surface.md) |
 | New frontend service/adapter/store slice | [frontend pattern](patterns/frontend-vertical-slice.md) |
 | Java controller/service/repository/model | [Java review](reviews/java-backend.md) |
 | New Java endpoint/domain slice | [Java pattern](patterns/java-domain-slice.md) |

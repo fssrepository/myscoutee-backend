@@ -7,6 +7,7 @@ matching rows.
 | --- | --- | --- |
 | Any defect investigation | `reviews/bugfix.md` | `habits/diagnosis-before-change.md` |
 | Any Angular/UI/shared-core change | `reviews/frontend.md` | `patterns/frontend-vertical-slice.md` |
+| Popup/dialog/drawer/page surface with a list, SmartList, or live collection | `reviews/frontend.md` | `patterns/smart-list-live-surface.md` |
 | Java controller/service/repository/model change | `reviews/java-backend.md` | `patterns/java-domain-slice.md` |
 | Mongo JSON, frontend seed, IndexedDB, demo fixture | `reviews/data-and-seeds.md` | `patterns/environment-isolation.md`, `habits/efficiency-scan.md` |
 | Environment, Compose, profile, routing-mode change | `reviews/demo-e2e-production.md` | `patterns/environment-isolation.md` |

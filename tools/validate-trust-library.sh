@@ -45,6 +45,7 @@ required=(
   .agents/trust/patterns/write-time-derived-state.md
   .agents/trust/patterns/external-durable-work.md
   .agents/trust/patterns/ui-behavior-parity.md
+  .agents/trust/patterns/smart-list-live-surface.md
   .agents/trust/learnings/accepted.md
   .agents/trust/learnings/candidates.md
   .agents/trust/learnings/rejected-patterns.md
@@ -133,6 +134,13 @@ references=(
   frontend/src/app/shared/ui/context/stores/operator-registry.store.ts
   frontend/src/app/shared/core/base/services/route-delay.service.ts
   frontend/src/app/shared/core/local/seed/services/demo-bootstrap.service.ts
+  frontend/src/app/shared/ui/components/core/smart-list/smart-list.component.ts
+  frontend/src/app/shared/ui/components/core/smart-list/smart-list.types.ts
+  frontend/src/app/shared/ui/scheduler/ui-task-scheduler.ts
+  frontend/src/app/shared/ui/components/notification-center-popup/notification-center-popup.component.ts
+  frontend/src/app/asset/components/asset-popup/asset-popup.component.ts
+  frontend/src/app/asset/components/asset-availability-popup/asset-availability-popup.component.ts
+  frontend/src/app/operator/components/operator-page/operator-page.component.ts
   server/projects/profile/src/main/java/com/raxim/myscoutee/profile/controller/operator/OperatorRegistryController.java
   server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/operator/OperatorRegistryService.java
   server/projects/profile/src/main/java/com/raxim/myscoutee/registry/RegistryOperatorNetworkService.java

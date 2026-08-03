@@ -9,6 +9,10 @@ contracts -> base service/route selection -> local or HTTP adapter
 -> mapper/repository -> shared signal store -> presentation component
 ```
 
+For a popup/dialog/drawer/page surface containing a list or live collection,
+load [smart-list-live-surface.md](../patterns/smart-list-live-surface.md) before
+choosing optional behavior or implementing the list.
+
 ## Questions
 
 - [ ] Is reusable or cross-component state in a shared store/service rather than

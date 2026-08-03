@@ -225,3 +225,23 @@ same in-memory graph between steps before flushing completed state.
 
 Provenance: explicit 2026-08-03 continuity requirement, reinforced by the
 canonical demo bootstrap architecture boundary.
+
+## L014 — Resolve optional live-list behavior before implementation
+
+Trigger: a popup, dialog, drawer, page surface, or nested section contains a
+list, SmartList, or periodically refreshed collection.
+
+Ask:
+
+- Has the user chosen whether scheduled background polling is wanted?
+- Which other user-visible capabilities remain optional and unresolved?
+- Can confirmed create/update/delete results reconcile the visible list without
+  another loader call?
+
+Action: always ask about scheduled polling when the current request has not
+already answered it, grouping only relevant optional capability questions in
+the same message. Use the shared SmartList lifecycle and visible-item APIs;
+require a concrete reason for full reload after a mutation.
+
+Provenance: explicit 2026-08-03 trust-library requirement backed by existing
+SmartList progress, scheduler, polling, and visible reconciliation APIs.
