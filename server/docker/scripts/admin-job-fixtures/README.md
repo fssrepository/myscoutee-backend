@@ -2,6 +2,8 @@
 
 This folder creates small, repeatable demo/e2e data states for manually checking every Admin Job and the rating/feedback bell flow. It is deliberately separate from the application seeds and production behavior.
 
+The cross-surface test contract, historical manual status, Statistics/Monitoring/Affinity Graph expectations, parameter tests, and XLSX execution tracker are in the [Admin dynamic surfaces manual QA plan](../../../../guides/plans/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md).
+
 The toolkit:
 
 - accepts only a database named exactly `demo_db` or `e2e_db`;
