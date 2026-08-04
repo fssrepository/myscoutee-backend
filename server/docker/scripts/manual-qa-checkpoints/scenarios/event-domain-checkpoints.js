@@ -1644,9 +1644,19 @@
       Q.fail("the three controlled membership rows do not match the required pre-retest boundary.");
     }
 
-    const existingChatCount = Q.collection("chats").countDocuments({
+    const existingChatDocuments = Q.collection("chats").find({
       $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }]
-    });
+    }).toArray();
+    const existingChatMessages = Q.collection("chatMessages").find({ chatId: eventId }).toArray();
+    const unexpectedChatOwnerIds = existingChatDocuments
+      .map(chat => Q.text(chat.ownerUserId))
+      .filter(userId => ![hostUserId, thirdUserId].includes(userId));
+    const nonSystemChatMessages = existingChatMessages.filter(message =>
+      Q.text(message.senderAvatar && message.senderAvatar.gender).toLowerCase() !== "system"
+    );
+    if (unexpectedChatOwnerIds.length > 0 || nonSystemChatMessages.length > 0) {
+      Q.fail("the retained chat contains an unexpected owner or participant-authored message; preserve that evidence and use a full checkpoint reset.");
+    }
     const existingAcceptanceOutboxCount = Q.collection("notificationOutbox").countDocuments({
       notificationType: "event-invitation-accepted",
       $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
@@ -1655,11 +1665,6 @@
       kind: "event-invitation-accepted",
       $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
     });
-    if (existingChatCount !== 0
-        || existingAcceptanceOutboxCount !== 0
-        || existingAcceptanceNotificationCount !== 0) {
-      Q.fail("chat or acceptance-notification artifacts already exist; retain them as evidence instead of re-arming this checkpoint.");
-    }
 
     const recipientUser = Q.collection("users").findOne({
       $or: [{ _id: thirdUserId }, { userId: thirdUserId }]
@@ -1672,6 +1677,64 @@
     }
 
     const preparedAtIso = Q.nowIso();
+    const chatUnreadByOwner = new Map(existingChatDocuments.map(chat => [
+      Q.text(chat.ownerUserId),
+      normalizeActivityCount(chat.unread)
+    ]));
+    Q.collection("notificationOutbox").deleteMany({
+      $or: [
+        {
+          notificationType: "event-invitation-accepted",
+          $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+        },
+        {
+          notificationType: "chat-message",
+          $or: [{ entityId: eventId }, { "payload.chatId": eventId }]
+        }
+      ]
+    });
+    Q.collection("userNotifications").deleteMany({
+      $or: [
+        {
+          kind: "event-invitation-accepted",
+          $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+        },
+        {
+          kind: "chat-message",
+          $or: [{ sourceId: eventId }, { "payload.chatId": eventId }]
+        }
+      ]
+    });
+    Q.collection("chatMessages").deleteMany({ chatId: eventId });
+    Q.collection("chats").deleteMany({
+      $and: [
+        { $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }] },
+        { ownerUserId: thirdUserId }
+      ]
+    });
+    Q.collection("chats").updateMany({
+      $and: [
+        { $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }] },
+        { ownerUserId: hostUserId }
+      ]
+    }, {
+      $set: {
+        memberIds: [hostUserId],
+        lastMessage: "",
+        lastSenderId: "",
+        unread: 0,
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    Q.collection("userNotifications").updateMany({
+      recipientUserId: thirdUserId,
+      kind: "event-invite",
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    }, {
+      $set: { readAtIso: null }
+    });
+
     const memberUpdate = Q.collection("activityMembers").updateOne({
       _id: acceptedRecipient._id,
       status: "accepted"
@@ -1718,11 +1781,44 @@
         "activities.events": currentEvents - 1,
         "activities.invitations": nestedNumber(recipientUser, "activities.invitations") + 1,
         "activities.event.active": currentActive - 1,
-        "activities.event.invitations": nestedNumber(recipientUser, "activities.event.invitations") + 1
+        "activities.event.invitations": nestedNumber(recipientUser, "activities.event.invitations") + 1,
+        "activities.chats": Math.max(
+          0,
+          nestedNumber(recipientUser, "activities.chats") - (chatUnreadByOwner.get(thirdUserId) || 0)
+        ),
+        "activities.chat.all": Math.max(
+          0,
+          nestedNumber(recipientUser, "activities.chat.all") - (chatUnreadByOwner.get(thirdUserId) || 0)
+        ),
+        "activities.chat.event": Math.max(
+          0,
+          nestedNumber(recipientUser, "activities.chat.event") - (chatUnreadByOwner.get(thirdUserId) || 0)
+        )
       }
     });
     if (activityUpdate.matchedCount !== 1) {
       Q.fail("the accepted-recipient activity projection disappeared; use reset to restore the original checkpoint snapshot.");
+    }
+    const hostUser = Q.collection("users").findOne({
+      $or: [{ _id: hostUserId }, { userId: hostUserId }]
+    });
+    if (!hostUser) Q.fail("the event Admin user no longer exists.");
+    const hostUnreadDelta = chatUnreadByOwner.get(hostUserId) || 0;
+    Q.collection("users").updateOne({ _id: hostUser._id }, { $set: {
+      "activities.chats": Math.max(0, nestedNumber(hostUser, "activities.chats") - hostUnreadDelta),
+      "activities.chat.all": Math.max(0, nestedNumber(hostUser, "activities.chat.all") - hostUnreadDelta),
+      "activities.chat.event": Math.max(0, nestedNumber(hostUser, "activities.chat.event") - hostUnreadDelta)
+    } });
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      Q.collection("users").updateOne({
+        $or: [{ _id: userId }, { userId }]
+      }, {
+        $set: { "activities.notifications": unreadNotifications }
+      });
     }
 
     Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
@@ -1736,7 +1832,10 @@
           eventId,
           acceptanceRecipientUserId: thirdUserId,
           pendingControlUserId: participantUserId,
-          eventAdminUserId: hostUserId
+          eventAdminUserId: hostUserId,
+          clearedAcceptanceOutboxCount: existingAcceptanceOutboxCount,
+          clearedAcceptanceNotificationCount: existingAcceptanceNotificationCount,
+          clearedSystemChatMessageCount: existingChatMessages.length
         }
       }
     });
@@ -1751,7 +1850,7 @@
       pendingControl: Q.user(participantUserId),
       eventAdmin: Q.user(hostUserId),
       baseline: oracle(refreshedState),
-      next: "Keep all three isolated sessions open. As Riley, accept this invitation exactly once. Then compare Event Members, Riley Chats, Nova Chats, Casey Chats and Casey Notifications without manually invoking a worker."
+      next: "Reload all three isolated sessions once. As Riley, accept this invitation exactly once. Then verify Casey and Nova each receive one acceptance event notification, Riley receives none, Casey and Riley share one event chat with one member-joined row, and no chat-message notification is created from that system row."
     });
   }
 
