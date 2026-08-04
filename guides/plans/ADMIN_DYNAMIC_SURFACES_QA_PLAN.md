@@ -98,9 +98,9 @@ from a human-visible UI confirmation.
 | `event-auto-inviter` notification | 2026-07-31 | `MANUAL UI PASS` | The user confirmed both expected bell items were visible. | Add Statistics and Monitoring before/after evidence. |
 | Notification read path and rating/feedback | 2026-07-29 | `MANUAL FUNCTIONAL PASS` | Notification read projection, rating submission and feedback submission API/database oracles passed. | Full visual presentation was not recorded as a separate pass. |
 | Statistics causal behavior | — | `NOT RUN` | No manual causal evidence found. | Run the Statistics pack below. |
-| Monitoring / Metrics causal behavior | — | `NOT RUN` | No manual causal evidence found. | Run the Monitoring pack below, especially queue transitions and job trigger telemetry. |
+| Monitoring / Metrics causal behavior | 2026-08-04 automated/runtime evidence | `AUTOMATED CONTRACT PASS`; manual `NOT RUN` | Service tests prove eight unique flows and exact config/start/terminal projection. After hot deploy, the real dev scheduler produced four starts and four completions for four zero-record jobs through Redis and the persisted Mongo snapshot. | Run the browser Monitoring pack below, especially live queue transitions and one fixture-backed run per job. |
 | Interactive Affinity Graph | — | `NOT RUN` | Controller/service tests cover full/meta/forest/tile/neighborhood/rebuild contracts. | Run visual interaction, lazy-loading and causal edge-change tests. |
-| Parameters UI | — | `NOT RUN` | Service tests cover versioning; an HTTP E2E test proves notification threshold save, recompute enqueue, delivery-strategy change, history and revert. | Manually test UI save/reopen/history/revert and one causal scenario per parameter section. |
+| Parameters UI | — | `NOT RUN` | Service tests cover versioning and exact-once save/revert telemetry; an HTTP E2E test proves notification threshold save, recompute enqueue, delivery-strategy change, history and revert. | Manually test UI save/reopen/history/revert and one causal scenario per parameter section. |
 | Other static input screens | — | `NOT RUN / not recorded` | Existing automated/UI work is not a durable manual execution record. | Use the compact static-form smoke pack only; these screens are not the focus of this dynamic plan. |
 
 Archived evidence sources:
@@ -208,26 +208,34 @@ Revert is version creation, not destructive deletion. After each parameter
 test, revert to the recorded starting values and wait for the revert's recompute
 task to finish.
 
-## Known observability gaps to test, not assume
+## Closed observability gaps that still need manual confirmation
 
-Code inspection on 2026-08-04 found two explicit gaps:
+Code inspection on 2026-08-04 found two explicit gaps; both now have automated
+regression coverage:
 
-1. All workers update their Admin Job `runState` and history, but most scheduled
-   paths only call `NotificationRuleRegistryService.recordRun`. That method does
-   not emit telemetry. Manual random-room execution emits
-   `jobs.run.started/completed/failed`; a non-empty event-counter expiry emits a
-   jobs-domain event; saving Admin Job configuration emits `jobs.config.saved`.
-   Therefore the Monitoring **scheduled triggers** metric is not currently a
-   universal counter for all nine jobs.
-2. The Monitoring Jobs flow reads `admin.params.changed` for its configuration
-   metric, but `AdminParamsService` currently creates the new version,
-   recompute task and outbox notification without emitting that telemetry key.
+1. `NotificationRuleRegistryService` emits `jobs.run.started` only after a
+   successful atomic start claim, then emits one normalized
+   `jobs.run.completed`, `jobs.run.failed` or `jobs.run.skipped` only after the
+   matching terminal update. The event amount is always one; processed count,
+   duration and manual/scheduled trigger are tags. The former random-room-only
+   calls were removed so that path is not double counted.
+2. `AdminParamsService` emits `admin.params.changed` once immediately after a
+   new save or revert version is persisted. Invalid/no-op revert paths emit
+   nothing. Section, version and save/revert kind are tags.
 
-The intended QA contract is that every actual scheduled start/terminal result
-is traceable and every parameter save is visible in the appropriate Monitoring
-flow. Until wiring is corrected, record the domain and Admin Job result as
-PASS, but record the missing Monitoring delta as a separate FAIL/GAP. Do not
-hide it by changing the expected result to `X`.
+The Monitoring Jobs projection now counts configuration changes from exact
+config event keys, scheduler triggers from `jobs.run.started`, and audit events
+from terminal run keys. A failed terminal event makes Jobs alert. Automated
+service tests cover successful, failed, zero/no-op and rejected atomic paths.
+After hot deploy on 2026-08-04, the real dev scheduler and telemetry worker
+persisted four `jobs.run.started` plus four `jobs.run.completed` events for
+`affinity-recompute`, `event-checkout-basket-purge`, `event-counter-expiry` and
+`notification-outbox`; every corresponding run processed zero rows, proving
+that trigger totals count runs rather than affected records.
+
+This closes the code gap, not the manual rows. Keep `MON-013` and `MON-014` in
+the execution ledger and record their browser-visible deltas when run. A domain
+PASS must still not hide a future Monitoring regression.
 
 Also note that a random-room system message emits `chat.message.system`, while
 the Statistics message timeline counts `chat.message.sent`. No Statistics
@@ -241,7 +249,7 @@ does not remove or rewrite the corresponding manual ledger row. It only adds
 automated evidence and may lower the row's automation-insufficiency component
 when the new oracle is demonstrably reliable.
 
-The first candidates are:
+Implemented regression coverage now proves:
 
 - emit and project `admin.params.changed` exactly once for a successful save
   and once for a successful revert, with no event on cancel/rejected save;
@@ -250,6 +258,11 @@ The first candidates are:
   event-counter paths that already emit selected telemetry;
 - prove the Monitoring Jobs counters consume those events once and preserve
   terminal status/failure semantics.
+
+The relevant automated evidence is in `AdminParamsServiceTest`,
+`NotificationRuleRegistryServiceTest` and `AdminMonitoringServiceTest`. The
+existing `BackendAdminParamsRealtimeE2ETest` supplies disposable HTTP fixture
+coverage for version creation, recompute/outbox effects, history and revert.
 
 Prefer service/projection tests with fixed data and an HTTP E2E test in a
 disposable database. Add a development fixture only when realistic source data
@@ -315,8 +328,8 @@ Mongo projections and background workers cooperate.
 | `MON-010` | Perform one event member mutation. | Events/Members source, model and downstream flow counts rise consistently. | Statistics event activity and member record agree. |
 | `MON-011` | Enqueue one affinity recompute task and let it finish. | Matching queue is observed pending/running, then zero terminal; failed remains zero; health returns from watch to OK. | Admin Job run and changed affinity output agree. |
 | `MON-012` | Enqueue one notification and let outbox process it with the configured Firebase mode. | Pending/running/sent or failed counts reflect the real path; failed produces alert; disabled Firebase uses the documented terminal behavior. | Outbox row and recipient/bell result agree. |
-| `MON-013` | Run each Admin Job with a non-empty fixture. | Jobs scheduler/audit trace should change once per real run, in addition to any domain flow. | Current universal telemetry gap may make this FAIL while Job/domain oracle passes. |
-| `MON-014` | Save and then revert one parameter section. | Jobs config change, Matching recompute queue and Notifications outbox show the expected transitions. | Current `admin.params.changed` gap may make only the Jobs/config delta fail. |
+| `MON-013` | Run each Admin Job with a non-empty fixture. | Jobs scheduler/audit trace should change once per real run, in addition to any domain flow. | The common lifecycle contract is automatically covered; still capture the browser delta and the independent domain oracle. |
+| `MON-014` | Save and then revert one parameter section. | Jobs config change once per new version, Matching recompute queue and Notifications outbox show the expected transitions. | Exact-once save/revert telemetry is automatically covered; still verify the assembled UI and worker window. |
 | `MON-015` | Exercise one controlled failed queue item, then recover it. | `watch`/`alert` filter contains the category while failed; recovery clears live failure state without decrementing accumulated history. | Failure and recovery evidence retained. |
 
 ## Affinity Graph manual pack
@@ -366,20 +379,20 @@ Parameter field groups:
 ## Admin Job cross-surface impact
 
 `Δ` is a required direct effect, `→` is conditional/indirect, `GAP` is an
-intended trace currently not universal, and `X` means no direct effect is
+unresolved intended trace, and `X` means no direct effect is
 expected. The spreadsheet contains the same rows in execution-ledger form.
 
 | Job | Statistics | Monitoring / Metrics | Affinity Graph | Admin Job detail | Domain / user-facing oracle |
 | --- | --- | --- | --- | --- | --- |
-| `event-random-groups` | `X` for system-message timeline | `→` Chat/outbox; `GAP` scheduled trigger | `X` | `Δ` status, count, duration, history | `Δ` rooms, memberships, shared chats, initial system messages, counters |
-| `event-auto-inviter` | `Δ` event/member activity when invites are created | `Δ` Events/Members/outbox; `GAP` scheduled trigger | `→` only after resulting affinity evidence/recompute | `Δ` | `Δ` invitations, member state and bell notification |
-| `event-tournament-review` | `X` under current direct telemetry | `→` domain/outbox; `GAP` scheduled trigger | `X` direct | `Δ` | `Δ` stage review/advancement/score-plan state and notifications |
-| `event-counter-expiry` | `X` direct | `Δ` Jobs when non-empty; `GAP` for zero/failure universal trace | `X` | `Δ` | `Δ` expired counters/tickets and refreshed user counters |
-| `event-checkout-basket-purge` | `X` | `GAP` scheduled trigger | `X` | `Δ` | `Δ` expired basket items marked deleted |
-| `notification-outbox` | `X` | `Δ` pending/running/sent/failed; `GAP` scheduled trigger | `X` | `Δ` | `Δ` terminal outbox state, Firebase/no-op result, token cleanup if applicable |
-| `affinity-recompute` | `Δ` graph summary after projection refresh | `Δ` recompute queue; `GAP` scheduled trigger | `Δ` edges/neighborhood/components where inputs changed | `Δ` | `Δ` recompute tasks terminal and discovery/affinity projections updated |
-| `scheduled-messages` | `X` | `→` Notifications/outbox; `GAP` scheduled trigger | `X` | `Δ` | `Δ` task audit plus notification/email result |
-| `account-purge` | `→` network graph after deleted user removal; ordinary deletion was counted earlier | `GAP` scheduled trigger; `X` for a new profile-deleted event at purge time | `→` member/edge totals after removal | `Δ` | `Δ` deleted/anonymized user data and purge job completion |
+| `event-random-groups` | `X` for system-message timeline | `Δ` scheduler/audit; `→` Chat/outbox | `X` | `Δ` status, count, duration, history | `Δ` rooms, memberships, shared chats, initial system messages, counters |
+| `event-auto-inviter` | `Δ` event/member activity when invites are created | `Δ` scheduler/audit and Events/Members/outbox | `→` only after resulting affinity evidence/recompute | `Δ` | `Δ` invitations, member state and bell notification |
+| `event-tournament-review` | `X` under current direct telemetry | `Δ` scheduler/audit; `→` domain/outbox | `X` direct | `Δ` | `Δ` stage review/advancement/score-plan state and notifications |
+| `event-counter-expiry` | `X` direct | `Δ` scheduler/audit for zero, success and failure; `→` domain event when non-empty | `X` | `Δ` | `Δ` expired counters/tickets and refreshed user counters |
+| `event-checkout-basket-purge` | `X` | `Δ` scheduler/audit | `X` | `Δ` | `Δ` expired basket items marked deleted |
+| `notification-outbox` | `X` | `Δ` scheduler/audit plus pending/running/sent/failed | `X` | `Δ` | `Δ` terminal outbox state, Firebase/no-op result, token cleanup if applicable |
+| `affinity-recompute` | `Δ` graph summary after projection refresh | `Δ` scheduler/audit and recompute queue | `Δ` edges/neighborhood/components where inputs changed | `Δ` | `Δ` recompute tasks terminal and discovery/affinity projections updated |
+| `scheduled-messages` | `X` | `Δ` scheduler/audit; `→` Notifications/outbox | `X` | `Δ` | `Δ` task audit plus notification/email result |
+| `account-purge` | `→` network graph after deleted user removal; ordinary deletion was counted earlier | `Δ` scheduler/audit; `X` for a new profile-deleted event at purge time | `→` member/edge totals after removal | `Δ` | `Δ` deleted/anonymized user data and purge job completion |
 
 ## Static input smoke pack
 

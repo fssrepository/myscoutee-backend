@@ -50,6 +50,15 @@ The pause control changes `enabled`. Resuming a non-manual job only makes it eli
 
 The application scheduler runs each configured pass in the real and demo database contexts when those are different databases. This is why an enabled graph rule in `demo_db` now starts according to its own schedule rather than being invisible to a scheduler thread that defaulted to the real database.
 
+Every successful atomic run claim now emits one `jobs.run.started` telemetry
+event, and every successful terminal update emits one
+`jobs.run.completed`, `jobs.run.failed`, or `jobs.run.skipped` event. Event
+amount is always one; processed rows, duration, and manual/scheduled trigger are
+metadata. The fixture `status` command remains a domain/run-state oracle and
+does not force the telemetry worker. For a Monitoring check, record the page
+before preparation, let the existing scheduler run, allow up to 75 seconds for
+the normal Redis worker, then refresh and expect scheduler/audit to rise once.
+
 ## What the pre-run number means
 
 The Admin Job detail reads `runState.pendingCount`; it does not count, project, or aggregate the source collection when the screen opens.

@@ -1,0 +1,33 @@
+Act as cinematography co-director for the locked 23-shot film “The City Between
+Us,” runtime 02:48, 16:9, 24 fps. Do not rewrite the script. Create and organize
+shots S01–S23 using the attached reusable Elements: @Founder, @Maya,
+@DanceStudent, @DancePartner, @Operator, @BudapestWorld, @LondonWorld,
+@DanceStudio, @EventVenue and @Notebook.
+
+Visual system: premium 2.5D hand-drawn characters integrated into dimensional
+miniature/paper city sets; tactile and painterly, motivated cinematic light,
+subtle facial acting, no photoreal uncanny result. Founder identity, age, navy
+coat, charcoal knit, rust scarf and cognac notebook never change. Supporting
+characters have autonomy and dignity. The dating locations create the friction;
+the dates are never mocked. No brand logos, readable generated text or baked UI.
+
+Camera plan: Act I uses restrained 28–55 mm lateral tracking and foreground
+occlusion to feel continuous; S06/S07/S09 expression shots are static or nearly
+static. Act II stops the camera, uses exact overhead notebook shots and measured
+dolly/focus changes. Act III uses balanced 35–50 mm ensemble framing, a gentle
+crane for the multi-city reveal and a calm founder close-up. One camera move per
+shot. Select Static, Dolly, Focus Change, Arc or Crane presets only when they
+match the locked storyboard; never add movement for spectacle.
+
+Model plan: use Kling 3.0 for structured character/multi-shot movement and
+start/end-frame continuity; use Veo 3.1 or Seedance only for atmosphere/native
+sound tests where identity remains locked. Generate draft 720p clips first, one
+variant at a time. Escalate an approved composition to 1080p/final quality
+without altering its prompt. For dialogue shots S06 and S08, generate restrained
+mouth/face motion but finish exact English or Hungarian speech in LipSync Studio
+from the approved voice stem.
+
+Return a shot setup table only: shot ID, attached Elements, model, duration,
+aspect, camera preset, lens, light, first-frame constraint, last-frame constraint
+and the locked shot prompt. Flag any shot whose complexity should be split. Do
+not generate until I approve the table.

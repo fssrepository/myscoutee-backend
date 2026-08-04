@@ -1,0 +1,30 @@
+Plan a 23-shot, 2 minute 48 second cinematic animated film called “The City
+Between Us.” Keep the supplied script and S01–S23 timings unchanged. Use the
+project assets @Founder, @Maya, @DanceStudent, @DancePartner, @Operator,
+@BudapestWorld, @LondonWorld, @DanceStudio, @EventVenue and @Notebook as stable
+references. Do not invent replacement faces, costumes, locations or dialogue.
+
+Look: premium 2.5D hand-drawn characters integrated into dimensional
+miniature/paper city sets, tactile wool and graphite, wet glass and pavement,
+motivated cinematic light, restrained painterly finish, subtle adult facial
+acting, 16:9 landscape and center-safe composition. No photoreal uncanny look,
+no named-studio imitation, no logos or readable generated text.
+
+Narrative: Budapest attempts across apps, real events and dance; three humane
+bad-date-location vignettes; transition through travel into lived London and a
+quiet return home; insight that the cities contain many beginnings but lack a
+bridge; notebook transformation into private editable priorities, reciprocal
+contextual affinity, optional small groups, purposeful chat and a shared public
+event; competent local operator; London, Budapest and three composite local
+communities; Founder passes the core to more authors. The Founder is persistent
+and confident, never resentful. Maya visualizes unmanageable attention and later
+chooses a group; she is not a romantic reward. Group-first is an option, not a
+guarantee. Do not make any traction, safety, revenue or matching-superiority
+claim.
+
+Recommend Nano Banana Pro image assets and Veo 3.1 model/settings per shot.
+Prefer Ingredients/References for identity-critical 8-second shots, Frames for
+locked transitions, Veo 3.1 Fast for drafts and Quality for approved finals.
+Return a planning table with shot ID, attached assets, generation mode, model,
+duration, aspect, first/last frame needs, prompt and risk. Do not generate or
+rewrite the story until I approve the plan.

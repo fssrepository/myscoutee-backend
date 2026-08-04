@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 
 @Service
 public class NotificationRuleRegistryService {
@@ -63,16 +64,19 @@ public class NotificationRuleRegistryService {
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
     private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
     private final MongoTemplate mongoTemplate;
+    private final AdminTelemetryService adminTelemetryService;
 
     private record IntervalSpec(int amount, String unit, int seconds, int minutes) {}
 
     public NotificationRuleRegistryService(
             NotificationRuleConfigsRepository notificationRuleConfigsRepository,
             AdminNotificationSocketSessionRegistry socketSessionRegistry,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            AdminTelemetryService adminTelemetryService) {
         this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
         this.socketSessionRegistry = socketSessionRegistry;
         this.mongoTemplate = mongoTemplate;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public List<NotificationRuleConfig> rules() {
@@ -201,6 +205,13 @@ public class NotificationRuleRegistryService {
                 FindAndModifyOptions.options().returnNew(true),
                 NotificationRuleConfig.class);
         if (saved != null) {
+            adminTelemetryService.record(
+                    "jobs.run.started",
+                    "jobs",
+                    safeText(ruleKey),
+                    firstNonBlank(actorUserId, SYSTEM_USER),
+                    1L,
+                    Map.of("trigger", runTrigger(saved, actorUserId)));
             socketSessionRegistry.broadcastRuleRuntime(saved);
         }
         return saved;
@@ -270,6 +281,18 @@ public class NotificationRuleRegistryService {
                 FindAndModifyOptions.options().returnNew(true),
                 NotificationRuleConfig.class);
         if (saved != null) {
+            String normalizedStatus = normalizeTerminalStatus(status);
+            adminTelemetryService.record(
+                    "jobs.run." + normalizedStatus,
+                    "jobs",
+                    safeText(ruleKey),
+                    firstNonBlank(actorUserId, SYSTEM_USER),
+                    1L,
+                    Map.of(
+                            "status", normalizedStatus,
+                            "trigger", runTrigger(saved, actorUserId),
+                            "processedCount", String.valueOf(Math.max(0, count)),
+                            "durationMillis", String.valueOf(durationMillis)));
             socketSessionRegistry.broadcastRuleRuntime(saved);
         }
         return saved;
@@ -765,9 +788,7 @@ public class NotificationRuleRegistryService {
             String actorUserId) {
         NotificationRuleConfig.RunHistoryEntry entry = new NotificationRuleConfig.RunHistoryEntry();
         entry.setId(UUID.randomUUID().toString());
-        entry.setTrigger(manualRunEnabled && !"scheduler".equals(safeText(actorUserId))
-                ? "manual"
-                : "scheduled");
+        entry.setTrigger(runTrigger(manualRunEnabled, actorUserId));
         entry.setRunnerUser(firstNonBlank(actorUserId, SYSTEM_USER));
         entry.setStartedAtIso(startedAtIso);
         entry.setFinishedAtIso(finishedAtIso);
@@ -776,6 +797,24 @@ public class NotificationRuleRegistryService {
         entry.setStatus(firstNonBlank(status, "completed"));
         entry.setDetail(safeText(detail));
         return entry;
+    }
+
+    private String runTrigger(NotificationRuleConfig rule, String actorUserId) {
+        return runTrigger(rule != null && Boolean.TRUE.equals(rule.getManualRunEnabled()), actorUserId);
+    }
+
+    private String runTrigger(boolean manualRunEnabled, String actorUserId) {
+        return manualRunEnabled && !"scheduler".equals(safeText(actorUserId))
+                ? "manual"
+                : "scheduled";
+    }
+
+    private String normalizeTerminalStatus(String status) {
+        return switch (safeText(status).toLowerCase()) {
+            case "failed" -> "failed";
+            case "skipped" -> "skipped";
+            default -> "completed";
+        };
     }
 
     private IntervalSpec intervalSpec(NotificationRuleConfig.Timing timing) {

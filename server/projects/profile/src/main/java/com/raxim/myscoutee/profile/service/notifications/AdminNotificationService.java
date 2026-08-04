@@ -189,7 +189,6 @@ public class AdminNotificationService {
                     runExecutor.submit(() -> runWithMongoSessionMode(
                             sessionMode,
                             () -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress)));
-                    adminTelemetryService.record("jobs.run.started", "jobs", normalizedRuleKey, admin.id());
                     String startedAtIso = startedAtIso(startedRule);
                     return new AdminNotificationRuleRunResultDto(
                             normalizedRuleKey,
@@ -271,7 +270,6 @@ public class AdminNotificationService {
                     detail,
                     adminUserId,
                     progress == null ? null : progress.startedAt());
-            adminTelemetryService.record("jobs.run.completed", "jobs", ruleKey, adminUserId, Math.max(1, affectedUsers));
         } catch (Exception exception) {
             notificationRuleRegistryService.restoreClaimedPendingCount(
                     ruleKey,
@@ -287,7 +285,6 @@ public class AdminNotificationService {
                     safeText(exception.getMessage()),
                     adminUserId,
                     progress == null ? null : progress.startedAt());
-            adminTelemetryService.record("jobs.run.failed", "jobs", ruleKey, adminUserId);
         } finally {
             if (progress != null) {
                 progress.close();
