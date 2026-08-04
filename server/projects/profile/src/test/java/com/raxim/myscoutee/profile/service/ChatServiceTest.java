@@ -67,6 +67,8 @@ class ChatServiceTest {
     @Mock
     private BulkOperations bulkOperations;
     @Mock
+    private BulkOperations userCounterBulkOperations;
+    @Mock
     private UsersRepository usersRepository;
     @Mock
     private ActivityMembersRepository activityMembersRepository;
@@ -171,6 +173,38 @@ class ChatServiceTest {
         assertThat(persisted).extracting(Chat::getOwnerUserId)
                 .containsExactly("user-1", "user-2");
         verify(chatsRepository).saveAll(anyList());
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(Users.class));
+    }
+
+    @Test
+    void publishedMainEventChatCreatesAnEmptyChannelWithoutChangingAttentionCounters() {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Published Event");
+        List<Chat> persisted = new ArrayList<>();
+        when(chatsRepository.findByChatId(event.getSourceId()))
+                .thenAnswer(invocation -> List.copyOf(persisted));
+        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<Chat> saved = invocation.getArgument(0);
+            persisted.clear();
+            persisted.addAll(saved);
+            return saved;
+        });
+        ChatService.PublishedMainEventChatResult firstResult =
+                service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
+        ChatService.PublishedMainEventChatResult repeatedResult =
+                service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
+
+        assertThat(firstResult.createdOwnerUserIds()).containsExactlyInAnyOrder("user-1", "user-2");
+        assertThat(repeatedResult.createdOwnerUserIds()).isEmpty();
+        assertThat(persisted).allSatisfy(chat -> {
+            assertThat(chat.getLastMessage()).isEmpty();
+            assertThat(chat.getLastSenderId()).isNull();
+            assertThat(chat.getUnread()).isZero();
+        });
+        verify(chatMessagesRepository, never()).insert(any(ChatMessage.class));
+        verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any(ChatStreamEvent.class));
+        verify(userCounterBulkOperations, never()).execute();
     }
 
     @Test
@@ -193,6 +227,8 @@ class ChatServiceTest {
         });
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
                 .thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
+                .thenReturn(userCounterBulkOperations);
 
         var firstResult = service.ensureInitialSystemMessage(
                 "random-room-1",
@@ -213,10 +249,10 @@ class ChatServiceTest {
         verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
         verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
         ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
-        verify(mongoTemplate, times(2)).updateFirst(
+        verify(userCounterBulkOperations, times(2)).updateOne(
                 any(Query.class),
-                counterUpdates.capture(),
-                eq(Users.class));
+                counterUpdates.capture());
+        verify(userCounterBulkOperations).execute();
         assertThat(counterUpdates.getAllValues()).allSatisfy(update -> {
             Document increments = update.getUpdateObject().get("$inc", Document.class);
             assertThat(((Number) increments.get("activities.chats")).intValue()).isEqualTo(1);

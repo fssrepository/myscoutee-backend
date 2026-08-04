@@ -275,7 +275,7 @@ public class AdminStatsService {
                         item("all-events", "stats.event.all.events", eventCount, eventCount + assetCount + eventInteractions + assetInteractions, "event", "blue"),
                         item("active-assets", "stats.event.active.assets", activeAssetCount, eventCount + assetCount + eventInteractions + assetInteractions, "inventory_2", "gold"),
                         item("all-assets", "stats.event.all.assets", assetCount, eventCount + assetCount + eventInteractions + assetInteractions, "category", "purple"),
-                        item("event.members.changed", "stats.event.event.members.changed", counters.getOrDefault("event.members.changed", 0L), eventInteractions + assetInteractions, "groups", "green"),
+                        item("event.members.changed", "stats.event.event.members.changed", eventInteractions, eventInteractions + assetInteractions, "groups", "green"),
                         item("asset.requests.changed", "stats.event.asset.requests.changed", counters.getOrDefault("asset.requests.changed", 0L), eventInteractions + assetInteractions, "handshake", "gold")
                 )),
                 segment("communication", "stats.segment.communication", "chat", communicationOps, List.of(

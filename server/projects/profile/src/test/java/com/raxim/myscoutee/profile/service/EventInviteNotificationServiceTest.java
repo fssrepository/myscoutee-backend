@@ -28,12 +28,13 @@ class EventInviteNotificationServiceTest {
         event.setTitle("Weekend hike");
         event.setUpdatedUser("stale-event-editor");
 
-        service.notifyInvitees(event, List.of("invitee-1"), "actual-inviter");
+        service.notifyInvitees(event, List.of("actual-inviter", "invitee-1"), "actual-inviter");
 
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(intentCaptor.capture());
         NotificationIntent intent = intentCaptor.getValue();
         assertThat(intent.createdUser()).isEqualTo("actual-inviter");
+        assertThat(intent.recipientUserIds()).containsExactly("invitee-1");
         assertThat(intent.payload()).containsEntry("senderUserId", "actual-inviter");
     }
 
@@ -70,5 +71,42 @@ class EventInviteNotificationServiceTest {
                 .extracting(value -> value.payload().get("invitationOccurrenceId"))
                 .doesNotContainNull()
                 .doesNotHaveDuplicates();
+    }
+
+    @Test
+    void notifiesOtherEventParticipantsButNotTheAcceptedInvitee() {
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        UserNotificationService userNotificationService = mock(UserNotificationService.class);
+        EventInviteNotificationService service = new EventInviteNotificationService(
+                notificationOutboxService,
+                userNotificationService);
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Weekend hike");
+        event.setLocation("Austin");
+
+        service.notifyInvitationAccepted(
+                event,
+                "invitee-1",
+                "Riley Outside",
+                "2026-08-04T13:49:00Z",
+                List.of("admin-1", "invitee-1", "admin-1"));
+
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("event-invitation-accepted");
+        assertThat(intent.recipientScope()).isEqualTo("event-participants");
+        assertThat(intent.recipientUserIds()).containsExactly("admin-1");
+        assertThat(intent.title()).isEqualTo("Event invitation accepted");
+        assertThat(intent.body()).isEqualTo("Riley Outside accepted the invitation to Weekend hike.");
+        assertThat(intent.createdUser()).isEqualTo("invitee-1");
+        assertThat(intent.payload())
+                .containsEntry("eventId", "event-1")
+                .containsEntry("memberUserId", "invitee-1")
+                .containsEntry("memberName", "Riley Outside")
+                .containsEntry("membershipAction", "accepted")
+                .containsEntry("notification_tone", "accent")
+                .containsEntry("acceptedAtIso", "2026-08-04T13:49:00Z");
     }
 }

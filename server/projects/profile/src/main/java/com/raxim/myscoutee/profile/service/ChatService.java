@@ -203,6 +203,24 @@ public class ChatService {
     }
 
     public String ensureMainEventChat(ActivityEvent event, Collection<String> participantUserIds) {
+        return ensureMainEventChatDocuments(event, participantUserIds).chatId();
+    }
+
+    public PublishedMainEventChatResult ensurePublishedMainEventChat(
+            ActivityEvent event,
+            Collection<String> participantUserIds) {
+        MainEventChatDocumentsResult result = ensureMainEventChatDocuments(event, participantUserIds);
+        Set<String> createdOwnerUserIds = result.createdDocuments().stream()
+                .map(Chat::getOwnerUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        return new PublishedMainEventChatResult(result.chatId(), createdOwnerUserIds);
+    }
+
+    private MainEventChatDocumentsResult ensureMainEventChatDocuments(
+            ActivityEvent event,
+            Collection<String> participantUserIds) {
         String eventId = normalizeId(event == null ? null : event.getSourceId());
         List<String> memberUserIds = participantUserIds == null
                 ? List.of()
@@ -230,6 +248,7 @@ public class ChatService {
         }
 
         List<Chat> documentsToSave = new ArrayList<>();
+        List<Chat> createdDocuments = new ArrayList<>();
         for (String memberUserId : memberUserIds) {
             Chat current = existingByOwnerUserId.get(memberUserId);
             Chat document = current == null ? new Chat() : copyChat(current);
@@ -240,9 +259,7 @@ public class ChatService {
             document.setOwnerUserId(memberUserId);
             document.setAvatar("SY");
             document.setTitle(firstNonBlank(event.getTitle(), "Random Room"));
-            document.setLastMessage(current == null
-                    ? "System-generated room is ready."
-                    : safeText(current.getLastMessage()));
+            document.setLastMessage(current == null ? "" : safeText(current.getLastMessage()));
             document.setLastSenderId(current == null ? null : current.getLastSenderId());
             document.setMemberIds(new ArrayList<>(memberUserIds));
             document.setUnread(current == null ? 0 : normalizeCount(current.getUnread()));
@@ -258,6 +275,9 @@ public class ChatService {
             document.setDistanceMetersExact(null);
             document.setSupportCase(null);
             documentsToSave.add(document);
+            if (current == null) {
+                createdDocuments.add(document);
+            }
         }
         chatsRepository.saveAll(documentsToSave);
 
@@ -266,7 +286,12 @@ public class ChatService {
                 .toList();
         if (!staleDocuments.isEmpty()) {
             chatsRepository.deleteAll(staleDocuments);
+            incrementStoredChatCounters(staleDocuments.stream()
+                    .map(document -> new ChatCounterChange(document, -normalizeCount(document.getUnread())))
+                    .toList());
         }
+        evictChatOwnerReadCaches(documentsToSave);
+        evictChatOwnerReadCaches(staleDocuments);
 
         Set<String> persistedOwnerUserIds = chatsRepository.findByChatId(chatId).stream()
                 .map(Chat::getOwnerUserId)
@@ -276,7 +301,7 @@ public class ChatService {
         if (!persistedOwnerUserIds.equals(new LinkedHashSet<>(memberUserIds))) {
             throw new IllegalStateException("Unable to materialize the main event chat for " + eventId + ".");
         }
-        return chatId;
+        return new MainEventChatDocumentsResult(chatId, List.copyOf(createdDocuments));
     }
 
     public ChatPageResponseDto queryChatPage(
@@ -732,15 +757,22 @@ public class ChatService {
     }
 
     public ChatMessageDto ensureInitialSystemMessage(String chatId, String text, String systemType) {
+        return ensureInitialSystemMessageResult(chatId, text, systemType).message();
+    }
+
+    private InitialSystemMessageResult ensureInitialSystemMessageResult(
+            String chatId,
+            String text,
+            String systemType) {
         String normalizedChatId = normalizeId(chatId);
         String normalizedText = normalizeText(text);
         String normalizedSystemType = firstNonBlank(systemType, "welcome");
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
-            return null;
+            return new InitialSystemMessageResult(null, false);
         }
         List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
         if (chatDocuments.isEmpty()) {
-            return null;
+            return new InitialSystemMessageResult(null, false);
         }
 
         String messageId = "system:" + normalizedSystemType;
@@ -748,7 +780,7 @@ public class ChatService {
                 .findByChatIdAndMessageId(normalizedChatId, messageId)
                 .orElse(null);
         if (existing != null) {
-            return chatMessageMapper.toDto(existing, "");
+            return new InitialSystemMessageResult(chatMessageMapper.toDto(existing, ""), false);
         }
 
         ChatMessage message = buildSystemMessage(normalizedText, normalizedSystemType);
@@ -763,7 +795,7 @@ public class ChatService {
             ChatMessage concurrentlyInserted = chatMessagesRepository
                     .findByChatIdAndMessageId(normalizedChatId, messageId)
                     .orElseThrow(() -> duplicate);
-            return chatMessageMapper.toDto(concurrentlyInserted, "");
+            return new InitialSystemMessageResult(chatMessageMapper.toDto(concurrentlyInserted, ""), false);
         }
 
         ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(normalizedChatId, message);
@@ -776,7 +808,7 @@ public class ChatService {
                 "chats",
                 normalizedChatId,
                 normalizedSystemType);
-        return chatMessageMapper.toDto(message, "");
+        return new InitialSystemMessageResult(chatMessageMapper.toDto(message, ""), true);
     }
 
     public ChatMessageDto sendMessage(
@@ -1329,10 +1361,33 @@ public class ChatService {
         }
         if (hasBulkUpdates) {
             bulk.execute();
-            counterChanges.forEach(change -> incrementStoredChatCounters(change.chat(), change.delta()));
+            incrementStoredChatCounters(counterChanges);
             evictChatOwnerReadCaches(updatedDocuments);
         }
         return updatedDocuments;
+    }
+
+    private void incrementStoredChatCounters(Collection<ChatCounterChange> changes) {
+        List<ChatCounterChange> applicable = changes == null
+                ? List.of()
+                : changes.stream()
+                        .filter(Objects::nonNull)
+                        .filter(change -> change.chat() != null)
+                        .filter(change -> change.delta() != 0)
+                        .filter(change -> StringUtils.hasText(normalizeId(change.chat().getOwnerUserId())))
+                        .toList();
+        if (applicable.isEmpty()) {
+            return;
+        }
+        BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class);
+        for (ChatCounterChange change : applicable) {
+            Chat chat = change.chat();
+            Update update = storedChatCounterUpdate(chat, change.delta());
+            bulk.updateOne(
+                    Query.query(Criteria.where("userId").is(normalizeId(chat.getOwnerUserId()))),
+                    update);
+        }
+        bulk.execute();
     }
 
     private void incrementStoredChatCounters(Chat chat, int unreadDelta) {
@@ -1340,6 +1395,13 @@ public class ChatService {
         if (!StringUtils.hasText(ownerUserId) || unreadDelta == 0) {
             return;
         }
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(ownerUserId)),
+                storedChatCounterUpdate(chat, unreadDelta),
+                Users.class);
+    }
+
+    private Update storedChatCounterUpdate(Chat chat, int unreadDelta) {
         Update update = new Update()
                 .inc("activities.chats", unreadDelta)
                 .inc("activities.chat.all", unreadDelta);
@@ -1347,10 +1409,7 @@ public class ChatService {
         if (StringUtils.hasText(contextField)) {
             update.inc("activities.chat." + contextField, unreadDelta);
         }
-        mongoTemplate.updateFirst(
-                Query.query(Criteria.where("userId").is(ownerUserId)),
-                update,
-                Users.class);
+        return update;
     }
 
     private String chatCounterContextField(String channelType) {
@@ -2952,6 +3011,18 @@ public class ChatService {
     private String buildMongoId(String ownerUserId, String chatId) {
         String stableKey = normalizeId(ownerUserId) + "|" + normalizeId(chatId);
         return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public record PublishedMainEventChatResult(String chatId, Set<String> createdOwnerUserIds) {
+        public PublishedMainEventChatResult {
+            createdOwnerUserIds = createdOwnerUserIds == null ? Set.of() : Set.copyOf(createdOwnerUserIds);
+        }
+    }
+
+    private record MainEventChatDocumentsResult(String chatId, List<Chat> createdDocuments) {
+    }
+
+    private record InitialSystemMessageResult(ChatMessageDto message, boolean inserted) {
     }
 
     private record ChatMetricLookup(

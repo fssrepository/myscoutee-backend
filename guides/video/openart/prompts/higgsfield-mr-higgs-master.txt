@@ -1,0 +1,33 @@
+Act as cinematography co-director for the locked 23-shot film “The City Between
+Us,” runtime 02:48, 9:16 portrait, 720x1280 delivery, 24 fps. Do not rewrite the supplied script or timings.
+Organize S01–S23 using @Founder, @Maya, @DanceStudent, @DancePartner, @Operator,
+@BudapestWorld, @LondonWorld, @WorksiteWorld, @SharedRoom, @DanceStudio,
+@EventVenue, @Notebook and the approved TravelMemory stills.
+
+Visual system: premium 2.5D hand-drawn adult characters integrated into
+dimensional miniature/paper sets; tactile, painterly, motivated light and subtle
+facial acting. Founder identity, age, navy coat, charcoal knit, rust scarf and
+cognac notebook never drift. Overseas work is anonymous; the inspection memory
+is quiet and non-identifying. Shared London housing is maintained and intentional,
+not misery. Travel is a three-second illustrated burst, not fake archive. Dating
+locations create friction; dates are never mocked. No logos, readable generated
+text, baked UI, public human rating or promised romantic outcome.
+
+Camera plan: S01–S09 use restrained 28–65 mm tracking, static reflection and
+foreground match transitions; S08's memory burst is assembled from stills in
+post. S10–S15 use readable social two/three-shots with restrained dance arcs.
+S16–S20 slow down into exact overhead notebook, focus change and measured orbit.
+S21–S22 use balanced ensemble framing, handoff match cuts and one gentle crane.
+One camera move per generated clip; reject spectacle presets.
+
+Use the best current reference-capable model visible in the account. Prefer
+Kling 3.0 for identity/ensemble and structured transitions, first/last-frame
+mode for S04–S06/S09, and Veo/Seedance only where atmosphere stays consistent.
+Draft at the cheapest visible tier; promote only an approved setup to 720p final
+without changing prompt. Do not render 1080p unless the 720×1280 phone QA fails. For
+S14 and S15, create clean restrained mouth motion, then finish exact English and
+Hungarian dialogue from isolated stems in LipSync Studio.
+
+Return a setup table only: shot ID, attached Elements, model, duration, aspect,
+camera preset, lens, light, first/last-frame constraint, locked prompt and split
+risk. Do not generate until I approve the table.

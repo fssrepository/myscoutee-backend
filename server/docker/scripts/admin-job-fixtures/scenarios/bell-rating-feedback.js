@@ -357,7 +357,7 @@
           ? "After the actor submits a non-zero rating, exactly one logical outbox item and one unread target bell appear with the expected source, sender, payload, and projection; the actor receives none."
           : "After the actor resubmits feedback, exactly one logical outbox fanout and one unread bell per submitted other-party target appear with no duplicate or actor notification.",
         next: variation === "rating"
-          ? "Use the existing demo app as the printed actor, submit a non-zero rating, inspect the target bell, then run status bell-rating-feedback."
+          ? "Use the existing demo app as the printed actor, select a non-zero rating for the target, and press Save exactly once. The slider only stages the value; Save queues it for the frontend's 30-second batch sync. The card remains with the selected score. After the batch reaches the backend, inspect the target bell, then run status bell-rating-feedback."
           : "Use the existing demo app as the printed actor, submit event feedback, inspect a printed target bell, then run status bell-rating-feedback.",
         context,
         specs: pairSelectors(context)
@@ -396,7 +396,7 @@
     afterPrepare(variation, context) {
       if (variation === "rating") {
         F.printObject({
-          manualAction: "Switch/impersonate the actor in the existing demo app, open the rating card for the target, and submit a non-zero rating. Then switch to the target and open the bell.",
+          manualAction: "Switch/impersonate the actor in the existing demo app, open the target's rating card, select a non-zero score, and press Save exactly once. The slider only stages the value; Save queues it for the frontend's 30-second batch sync, and the card remains with that score. After the batch reaches the backend, switch to the target and open the bell.",
           actor: { userId: context.actorUserId, name: context.actorName },
           target: { userId: context.targetUserId, name: context.targetName }
         });
@@ -496,7 +496,7 @@
             ? "PASS: rating persistence, exact outbox, exact unread target bell, actor exclusion, and projection all match."
             : actionStored
               ? "FAIL/GAP: rating persisted, but the exact outbox/bell recipient or unread projection contract failed."
-              : "WAITING: submit a non-zero rating in the app."
+              : "WAITING: select a non-zero rating, press Save exactly once, and allow up to 35 seconds for the frontend batch sync."
         };
       }
       const submissions = F.collection("eventFeedbackAnswers")

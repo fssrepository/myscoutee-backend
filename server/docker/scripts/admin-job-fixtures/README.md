@@ -2,6 +2,8 @@
 
 This folder creates small, repeatable demo/e2e data states for manually checking every Admin Job and the rating/feedback bell flow. It is deliberately separate from the application seeds and production behavior.
 
+The cross-surface test contract, historical manual status, Statistics/Monitoring/Affinity Graph expectations, parameter tests, and XLSX execution tracker are in the [Admin dynamic surfaces manual QA plan](../../../../guides/plans/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md).
+
 The toolkit:
 
 - accepts only a database named exactly `demo_db` or `e2e_db`;
@@ -47,6 +49,15 @@ All nine seeded jobs are enabled by default in production, development, demo, an
 The pause control changes `enabled`. Resuming a non-manual job only makes it eligible for a later configured scheduler slot; it does not run immediately. Its Run button remains disabled because `manualRunEnabled:false`, and the backend also rejects a direct manual-run request. Graph grouping remains both scheduled and manually runnable.
 
 The application scheduler runs each configured pass in the real and demo database contexts when those are different databases. This is why an enabled graph rule in `demo_db` now starts according to its own schedule rather than being invisible to a scheduler thread that defaulted to the real database.
+
+Every successful atomic run claim now emits one `jobs.run.started` telemetry
+event, and every successful terminal update emits one
+`jobs.run.completed`, `jobs.run.failed`, or `jobs.run.skipped` event. Event
+amount is always one; processed rows, duration, and manual/scheduled trigger are
+metadata. The fixture `status` command remains a domain/run-state oracle and
+does not force the telemetry worker. For a Monitoring check, record the page
+before preparation, let the existing scheduler run, allow up to 75 seconds for
+the normal Redis worker, then refresh and expect scheduler/audit to rise once.
 
 ## What the pre-run number means
 
@@ -485,9 +496,14 @@ This is an application interaction check, not a scheduled job:
 
 1. Prepare the variation.
 2. Use the existing demo app's user switch/impersonation flow for the printed actor.
-3. Submit the rating or event feedback.
-4. Switch to the printed target and open the bell.
-5. Run `status bell-rating-feedback`.
+3. For a rating, select a non-zero score and press **Save** exactly once. The
+   slider only stages the value; **Save** queues it in the frontend outbox. The
+   card remains under **Met** with the selected score displayed. For event
+   feedback, submit the feedback form.
+4. Allow up to 35 seconds for the frontend's 30-second, maximum-50-item batch
+   sync to push the queued rating to the backend.
+5. Switch to the printed target and open the bell.
+6. Run `status bell-rating-feedback`.
 
 Before the action, the fixture temporarily removes only the selected rating/event's matching historical bell/outbox documents behind the exact reset snapshot. It refuses to continue if one of those outbox items is still tracked by the running worker. This makes the oracle independent of unrelated target notifications.
 

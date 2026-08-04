@@ -201,6 +201,59 @@ class EventSchedulerTest {
     }
 
     @Test
+    void generatePriorityPlansUsesCreatorAsAnchorWhenEventHasNoMembers() {
+        EventScheduler scheduler = createScheduler();
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-empty");
+        event.setAutoInviter(true);
+        event.setStatus("A");
+        event.setCapacityTotal(1);
+        event.setCreatorUserId("creator-1");
+        event.setTitle("Initial auto-invite test");
+
+        when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+                user("creator-1"),
+                user("candidate-1")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
+                rate("creator-1", "candidate-1", 1.0d)));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-empty"))
+                .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-empty",
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("creator-1"),
+                        1));
+        when(activitiesMembersService.inviteUsers(
+                "event-empty",
+                "creator-1",
+                List.of("candidate-1"),
+                event))
+                .thenReturn(List.of("candidate-1"));
+
+        List<InviteBatchPlan> plans = scheduler.generatePriorityPlansForEvents(List.of("event-empty"));
+
+        assertThat(plans).singleElement().satisfies(plan -> {
+            assertThat(plan.ownerId()).isEqualTo("event-empty");
+            assertThat(plan.invitedUserIds()).containsExactly("candidate-1");
+        });
+        verify(activitiesMembersService).inviteUsers(
+                "event-empty",
+                "creator-1",
+                List.of("candidate-1"),
+                event);
+        verify(eventInviteNotificationService).notifyInvitees(
+                event,
+                List.of("candidate-1"),
+                "creator-1");
+    }
+
+    @Test
     void generatePriorityPlansInvitesOnlyCapacityNotReservedByPendingMembers() {
         EventScheduler scheduler = createScheduler();
 
@@ -381,15 +434,15 @@ class EventSchedulerTest {
         creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room1Id, "scheduler", List.of("u1", "u2"));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room1Id),
-                org.mockito.ArgumentMatchers.contains("created this room automatically"),
-                eq("random-room-welcome"));
+                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE),
+                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
         creationOrder.verify(activityEventsRepository).save(any(ActivityEvent.class));
         creationOrder.verify(chatService).ensureMainEventChat(any(ActivityEvent.class), eq(List.of("u3", "u4")));
         creationOrder.verify(activitiesMembersService).syncSystemEventMembers(room2Id, "scheduler", List.of("u3", "u4"));
         creationOrder.verify(chatService).ensureInitialSystemMessage(
                 eq(room2Id),
-                org.mockito.ArgumentMatchers.contains("created this room automatically"),
-                eq("random-room-welcome"));
+                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE),
+                eq(ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService, times(2)).enqueue(intentCaptor.capture());

@@ -155,8 +155,8 @@ public class ActivitiesEventsController {
             subject = "#actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public void publish(@RequestBody EventActionRequestDto request) {
-        activitiesEventsService.publish(request);
+    public EventParticipationActionResultDto publish(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.publish(request);
     }
 
     @PostMapping("/unpublish")
@@ -165,8 +165,8 @@ public class ActivitiesEventsController {
             subject = "#actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public void unpublish(@RequestBody EventActionRequestDto request) {
-        activitiesEventsService.unpublish(request);
+    public EventParticipationActionResultDto unpublish(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.unpublish(request);
     }
 
     @PostMapping("/restore")

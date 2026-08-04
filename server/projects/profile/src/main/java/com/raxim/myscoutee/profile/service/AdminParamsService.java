@@ -44,18 +44,21 @@ public class AdminParamsService {
     private final NotificationOutboxService notificationOutboxService;
     private final AdminAudienceService adminAudienceService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public AdminParamsService(
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
             NotificationOutboxService notificationOutboxService,
             AdminAudienceService adminAudienceService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.objectMapper = objectMapper;
         this.notificationOutboxService = notificationOutboxService;
         this.adminAudienceService = adminAudienceService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public AdminParamsStateDto state(String adminUserId) {
@@ -97,7 +100,8 @@ public class AdminParamsService {
                 next,
                 sectionKey,
                 request == null ? null : request.adminUserId(),
-                firstNonBlank(request == null ? null : request.summary(), "Updated " + labelFor(sectionKey) + " parameters."));
+                firstNonBlank(request == null ? null : request.summary(), "Updated " + labelFor(sectionKey) + " parameters."),
+                "save");
         return state(request == null ? null : request.adminUserId());
     }
 
@@ -119,7 +123,8 @@ public class AdminParamsService {
                 next,
                 section.key(),
                 request == null ? null : request.adminUserId(),
-                "Reverted " + section.label() + " parameters to version " + selectedVersion + ".");
+                "Reverted " + section.label() + " parameters to version " + selectedVersion + ".",
+                "revert");
         return state(request == null ? null : request.adminUserId());
     }
 
@@ -411,7 +416,8 @@ public class AdminParamsService {
             AffinityConfig next,
             String sectionKey,
             String actorUserId,
-            String summary) {
+            String summary,
+            String changeKind) {
         String key = firstNonBlank(current == null ? null : current.getKey(), CONFIG_KEY);
         String nowIso = Instant.now().toString();
         for (AffinityConfig active : affinityConfigsRepository.findByActiveTrue()) {
@@ -427,6 +433,18 @@ public class AdminParamsService {
         next.setChangedSection(sectionKey);
         next.setChangeSummary(summary);
         AffinityConfig saved = affinityConfigsRepository.save(next);
+        if (saved != null) {
+            adminTelemetryService.record(
+                    "admin.params.changed",
+                    "jobs",
+                    firstNonBlank(saved.getKey(), CONFIG_KEY) + ":" + safeText(sectionKey),
+                    firstNonBlank(actorUserId, "system"),
+                    1L,
+                    Map.of(
+                            "sectionKey", safeText(sectionKey),
+                            "version", String.valueOf(safeVersion(saved)),
+                            "changeKind", firstNonBlank(changeKind, "save")));
+        }
         affinityRecomputeTaskService.enqueueConfigChanged(saved == null ? null : saved.getKey(), actorUserId);
         notifyAdminParameterChange(saved, sectionKey, actorUserId, summary);
     }

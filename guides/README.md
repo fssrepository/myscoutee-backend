@@ -11,6 +11,12 @@ The project-level documentation is divided into three areas:
 The official manual PDFs can be downloaded directly from the
 [root README](../README.md#official-manuals).
 
+The living manual QA contract and its Excel execution ledger start with the
+[Admin dynamic surfaces QA plan](plans/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md). New
+manual feature packs should extend that ledger so previous execution status and
+evidence remain discoverable across sessions. Manual sampling frequency uses
+the separate [risk-based priority model](plans/MANUAL_QA_PRIORITY_MODEL.md).
+
 ## Presentation output directories
 
 - `pitches/network-output`: MyScoutee Network presentation

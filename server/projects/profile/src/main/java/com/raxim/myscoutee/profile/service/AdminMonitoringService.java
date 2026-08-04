@@ -366,7 +366,10 @@ public class AdminMonitoringService {
             Map<String, Long> categoryCounters,
             Map<String, Long> nodeCounters,
             Map<String, Long> alertCounters) {
-        long adminChanges = sum(counters, "admin.params.changed", "admin.notification.rule.changed", "admin.user.blocked", "admin.user.unblocked");
+        long configChanges = sum(counters, "admin.params.changed", "jobs.config.saved", "admin.notification.rule.changed");
+        long adminChanges = configChanges + sum(counters, "admin.user.blocked", "admin.user.unblocked");
+        long scheduledTriggers = counters.getOrDefault("jobs.run.started", 0L);
+        long terminalRuns = sum(counters, "jobs.run.completed", "jobs.run.failed", "jobs.run.skipped");
         return category(
                 "jobs",
                 "admin.monitoring.category.jobs",
@@ -379,16 +382,16 @@ public class AdminMonitoringService {
                         node("jobs.admin", "admin.monitoring.node.admin.ui", "admin_panel_settings", "source", "slate", List.of(
                                 metric("admin-changes", "admin.monitoring.metric.admin.changes", adminChanges, "slate", HEALTH_OK))),
                         node("jobs.config", "admin.monitoring.node.job.config", "tune", "writeModel", "blue", List.of(
-                                metric("config-changes", "admin.monitoring.metric.config.changes", counters.getOrDefault("admin.params.changed", 0L), "blue", HEALTH_OK))),
+                                metric("config-changes", "admin.monitoring.metric.config.changes", configChanges, "blue", HEALTH_OK))),
                         node("jobs.scheduler", "admin.monitoring.node.scheduler", "schedule", "worker", "gold", List.of(
-                                metric("scheduled-triggers", "admin.monitoring.metric.scheduled.triggers", nodeCounters.getOrDefault("jobs.scheduler", 0L), "gold", HEALTH_OK))),
+                                metric("scheduled-triggers", "admin.monitoring.metric.scheduled.triggers", scheduledTriggers, "gold", HEALTH_OK))),
                         node("jobs.audit", "admin.monitoring.node.audit.trail", "history", "storage", "green", List.of(
-                                metric("audit-events", "admin.monitoring.metric.audit.events", adminChanges, "green", HEALTH_OK)))
+                                metric("audit-events", "admin.monitoring.metric.audit.events", terminalRuns, "green", HEALTH_OK)))
                 ),
                 edges(
-                        edge("jobs.admin", "jobs.config", "admin.monitoring.edge.config.write", "blue", adminChanges),
-                        edge("jobs.config", "jobs.scheduler", "admin.monitoring.edge.worker.pickup", "gold", nodeCounters.getOrDefault("jobs.scheduler", 0L)),
-                        edge("jobs.scheduler", "jobs.audit", "admin.monitoring.edge.audit", "green", adminChanges)));
+                        edge("jobs.admin", "jobs.config", "admin.monitoring.edge.config.write", "blue", configChanges),
+                        edge("jobs.config", "jobs.scheduler", "admin.monitoring.edge.worker.pickup", "gold", scheduledTriggers),
+                        edge("jobs.scheduler", "jobs.audit", "admin.monitoring.edge.audit", "green", terminalRuns)));
     }
 
     private AdminMonitoringCategoryDto category(
@@ -471,7 +474,7 @@ public class AdminMonitoringService {
         if (eventKey.startsWith("profile.") || "profiles".equals(domain) || eventKey.startsWith("admin.user.")) {
             return "users";
         }
-        if (eventKey.startsWith("admin.") || eventKey.startsWith("job.") || "jobs".equals(domain)) {
+        if (eventKey.startsWith("admin.") || eventKey.startsWith("job.") || eventKey.startsWith("jobs.") || "jobs".equals(domain)) {
             return "jobs";
         }
         return StringUtils.hasText(domain) ? domain : "system";
@@ -497,6 +500,14 @@ public class AdminMonitoringService {
             return "outbox";
         }
         if ("jobs".equals(category)) {
+            if ("admin.params.changed".equals(eventKey)
+                    || "admin.notification.rule.changed".equals(eventKey)
+                    || eventKey.endsWith(".config.saved")) {
+                return "config";
+            }
+            if (eventKey.startsWith("jobs.run.") && !"jobs.run.started".equals(eventKey)) {
+                return "audit";
+            }
             return "scheduler";
         }
         return "writes";

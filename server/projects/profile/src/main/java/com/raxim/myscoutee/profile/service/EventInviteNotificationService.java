@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,9 +38,11 @@ public class EventInviteNotificationService {
         if (event == null || invitedUserIds == null || invitedUserIds.isEmpty()) {
             return;
         }
+        String senderUserId = safeText(actorUserId);
         List<String> recipients = invitedUserIds.stream()
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(senderUserId))
                 .distinct()
                 .toList();
         if (recipients.isEmpty()) {
@@ -60,7 +63,6 @@ public class EventInviteNotificationService {
         payload.put("startAtIso", safeText(event.getStartAtIso()));
         payload.put("eventScope", "invitations");
         payload.put("invitationOccurrenceId", UUID.randomUUID().toString());
-        String senderUserId = safeText(actorUserId);
         if (StringUtils.hasText(senderUserId)) {
             payload.put("senderUserId", senderUserId);
         }
@@ -87,6 +89,64 @@ public class EventInviteNotificationService {
         return userNotificationService.markEventInvitationResolved(
                 safeText(recipientUserId),
                 safeText(eventId));
+    }
+
+    public void notifyInvitationAccepted(
+            ActivityEvent event,
+            String acceptedUserId,
+            String acceptedUserName,
+            String acceptedAtIso,
+            List<String> recipientUserIds) {
+        if (event == null) {
+            return;
+        }
+        String memberUserId = safeText(acceptedUserId);
+        if (!StringUtils.hasText(memberUserId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        if (recipientUserIds != null) {
+            recipientUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(recipients::add);
+        }
+        recipients.remove(memberUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        List<String> notificationRecipients = List.copyOf(recipients);
+
+        String eventId = safeText(event.getSourceId());
+        String eventTitle = resolveTitle(event);
+        String memberName = StringUtils.hasText(safeText(acceptedUserName))
+                ? safeText(acceptedUserName)
+                : memberUserId;
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "members");
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", memberName);
+        payload.put("membershipAction", "accepted");
+        payload.put("notification_tone", "accent");
+        if (StringUtils.hasText(safeText(acceptedAtIso))) {
+            payload.put("acceptedAtIso", safeText(acceptedAtIso));
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-invitation-accepted",
+                "event",
+                eventId,
+                "event-participants",
+                notificationRecipients,
+                "Event invitation accepted",
+                memberName + " accepted the invitation to " + eventTitle + ".",
+                DEFAULT_CLICK_URL,
+                resolveImageUrl(event),
+                APP_BADGE_URL,
+                "event-invitation-accepted-" + eventId + "-" + memberUserId,
+                payload,
+                memberUserId));
     }
 
     private String resolveTitle(ActivityEvent event) {

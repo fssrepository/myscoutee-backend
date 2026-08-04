@@ -1,13 +1,16 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsHistoryDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsRevertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsStateDto;
 import com.raxim.myscoutee.profile.repository.AffinityConfigsRepository;
@@ -69,6 +73,7 @@ class AdminParamsServiceTest {
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         AdminAudienceService adminAudienceService = mock(AdminAudienceService.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
         when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
         when(repository.findByActiveTrue()).thenReturn(List.of(current));
@@ -84,7 +89,7 @@ class AdminParamsServiceTest {
         when(adminAudienceService.adminNotificationRecipientUserIds("admin-demo-ava"))
                 .thenReturn(List.of("admin-demo-ava", "admin-demo-noel"));
 
-        service(repository, notificationOutboxService, adminAudienceService, affinityRecomputeTaskService)
+        service(repository, notificationOutboxService, adminAudienceService, affinityRecomputeTaskService, adminTelemetryService)
                 .save(new AdminParamsSaveRequestDto("admin-demo-ava", "matching", List.of(), null));
 
         verify(affinityRecomputeTaskService).enqueueConfigChanged(eq("default"), eq("admin-demo-ava"));
@@ -96,24 +101,156 @@ class AdminParamsServiceTest {
         assertThat(notification.getValue().payload())
                 .containsEntry("recomputeScope", "config")
                 .containsEntry("sectionKey", "matching");
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, String>> telemetryTags = ArgumentCaptor.forClass(Map.class);
+        verify(adminTelemetryService).record(
+                eq("admin.params.changed"),
+                eq("jobs"),
+                eq("default:matching"),
+                eq("admin-demo-ava"),
+                eq(1L),
+                telemetryTags.capture());
+        assertThat(telemetryTags.getValue())
+                .containsEntry("sectionKey", "matching")
+                .containsEntry("version", "2")
+                .containsEntry("changeKind", "save");
+    }
+
+    @Test
+    void revertEmitsTelemetryOnlyAfterPersistingASelectedVersion() {
+        AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
+        AffinityConfig previous = config(1, false, "seed", "Initial parameter seed.");
+        AffinityConfig current = config(2, true, "matching", "Current matching parameters.");
+        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findByActiveTrue()).thenReturn(List.of(current));
+        when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
+        when(repository.findByKeyAndVersion("default", 1)).thenReturn(Optional.of(previous));
+        when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(current, previous));
+        when(repository.save(any(AffinityConfig.class))).thenAnswer(invocation -> {
+            AffinityConfig saved = invocation.getArgument(0);
+            if (saved.getId() == null) {
+                saved.setId("params-v3");
+            }
+            return saved;
+        });
+
+        service(
+                repository,
+                mock(NotificationOutboxService.class),
+                mock(AdminAudienceService.class),
+                mock(AffinityRecomputeTaskService.class),
+                adminTelemetryService)
+                .revert("matching", new AdminParamsRevertRequestDto("admin-demo-ava", 1));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Map<String, String>> telemetryTags = ArgumentCaptor.forClass(Map.class);
+        verify(adminTelemetryService).record(
+                eq("admin.params.changed"),
+                eq("jobs"),
+                eq("default:matching"),
+                eq("admin-demo-ava"),
+                eq(1L),
+                telemetryTags.capture());
+        assertThat(telemetryTags.getValue())
+                .containsEntry("sectionKey", "matching")
+                .containsEntry("version", "3")
+                .containsEntry("changeKind", "revert");
+
+        AdminTelemetryService noOpTelemetry = mock(AdminTelemetryService.class);
+        service(
+                repository,
+                mock(NotificationOutboxService.class),
+                mock(AdminAudienceService.class),
+                mock(AffinityRecomputeTaskService.class),
+                noOpTelemetry)
+                .revert("matching", new AdminParamsRevertRequestDto("admin-demo-ava", null));
+        verify(noOpTelemetry, never()).record(any(), any(), any(), any(), any(Long.class), any());
+    }
+
+    @Test
+    void persistedVersionStillEmitsTelemetryWhenAQueuedSideEffectFails() {
+        AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
+        AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
+        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findByActiveTrue()).thenReturn(List.of(current));
+        when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
+        when(repository.save(any(AffinityConfig.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        org.mockito.Mockito.doThrow(new IllegalStateException("queue unavailable"))
+                .when(affinityRecomputeTaskService)
+                .enqueueConfigChanged("default", "admin-demo-ava");
+        AdminParamsService service = service(
+                repository,
+                mock(NotificationOutboxService.class),
+                mock(AdminAudienceService.class),
+                affinityRecomputeTaskService,
+                adminTelemetryService);
+
+        assertThatThrownBy(() -> service.save(
+                new AdminParamsSaveRequestDto("admin-demo-ava", "matching", List.of(), null)))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("queue unavailable");
+
+        verify(adminTelemetryService).record(
+                eq("admin.params.changed"),
+                eq("jobs"),
+                eq("default:matching"),
+                eq("admin-demo-ava"),
+                eq(1L),
+                any());
+    }
+
+    @Test
+    void rejectedVersionDoesNotEmitTelemetry() {
+        AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
+        AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
+        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findByActiveTrue()).thenReturn(List.of(current));
+        when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
+        when(repository.save(any(AffinityConfig.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0))
+                .thenThrow(new IllegalStateException("persist rejected"));
+        AdminParamsService service = service(
+                repository,
+                mock(NotificationOutboxService.class),
+                mock(AdminAudienceService.class),
+                mock(AffinityRecomputeTaskService.class),
+                adminTelemetryService);
+
+        assertThatThrownBy(() -> service.save(
+                new AdminParamsSaveRequestDto("admin-demo-ava", "matching", List.of(), null)))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("persist rejected");
+
+        verify(adminTelemetryService, never()).record(any(), any(), any(), any(), any(Long.class), any());
     }
 
     private AdminParamsService service(AffinityConfigsRepository repository) {
-        return service(repository, mock(NotificationOutboxService.class), mock(AdminAudienceService.class), mock(AffinityRecomputeTaskService.class));
+        return service(
+                repository,
+                mock(NotificationOutboxService.class),
+                mock(AdminAudienceService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class));
     }
 
     private AdminParamsService service(
             AffinityConfigsRepository repository,
             NotificationOutboxService notificationOutboxService,
             AdminAudienceService adminAudienceService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         ObjectMapper objectMapper = JsonMapper.builder().build();
         return new AdminParamsService(
                 repository,
                 objectMapper,
                 notificationOutboxService,
                 adminAudienceService,
-                affinityRecomputeTaskService);
+                affinityRecomputeTaskService,
+                adminTelemetryService);
     }
 
     private AffinityConfig config(int version, boolean active, String changedSection, String summary) {

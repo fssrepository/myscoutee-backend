@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
@@ -20,6 +22,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 
 class NotificationRuleRegistryServiceTest {
     @Test
@@ -52,6 +55,7 @@ class NotificationRuleRegistryServiceTest {
         AdminNotificationSocketSessionRegistry socketRegistry =
                 mock(AdminNotificationSocketSessionRegistry.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
         rule.setEnabled(true);
@@ -73,7 +77,8 @@ class NotificationRuleRegistryServiceTest {
                 new NotificationRuleRegistryService(
                         repository,
                         socketRegistry,
-                        mongoTemplate);
+                        mongoTemplate,
+                        adminTelemetryService);
 
         Instant scheduledWindow = Instant.parse("2026-07-31T10:02:00Z");
         assertThat(service.shouldRunScheduledRule(rule.getRuleKey(), scheduledWindow)).isTrue();
@@ -94,6 +99,7 @@ class NotificationRuleRegistryServiceTest {
                 .contains("\"runState.currentStatus\"")
                 .contains("\"$ne\"")
                 .contains("\"running\"");
+        verifyNoInteractions(adminTelemetryService);
 
         runState.setCurrentStatus("completed");
         runState.setLastRunAtIso("2026-07-31T10:02:30Z");
@@ -107,6 +113,87 @@ class NotificationRuleRegistryServiceTest {
                 .isTrue();
     }
 
+    @Test
+    void successfulRunEmitsOneStartAndOneTerminalEventRegardlessOfProcessedCount() {
+        NotificationRuleConfigsRepository repository = mock(NotificationRuleConfigsRepository.class);
+        AdminNotificationSocketSessionRegistry socketRegistry = mock(AdminNotificationSocketSessionRegistry.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        rule.setRuleKey(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+        rule.setManualRunEnabled(true);
+        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        when(mongoTemplate.findAndModify(
+                any(Query.class),
+                any(Update.class),
+                any(FindAndModifyOptions.class),
+                eq(NotificationRuleConfig.class)))
+                .thenReturn(rule);
+        NotificationRuleRegistryService service = new NotificationRuleRegistryService(
+                repository,
+                socketRegistry,
+                mongoTemplate,
+                adminTelemetryService);
+
+        Instant startedAt = Instant.parse("2026-07-29T10:00:00Z");
+        service.beginRun(rule.getRuleKey(), "manual start", "admin-user", startedAt);
+        service.recordRun(rule.getRuleKey(), 200, "completed", "done", "admin-user", startedAt);
+
+        verify(adminTelemetryService).record(
+                eq("jobs.run.started"),
+                eq("jobs"),
+                eq(rule.getRuleKey()),
+                eq("admin-user"),
+                eq(1L),
+                org.mockito.ArgumentMatchers.argThat(tags -> "manual".equals(tags.get("trigger"))));
+        verify(adminTelemetryService).record(
+                eq("jobs.run.completed"),
+                eq("jobs"),
+                eq(rule.getRuleKey()),
+                eq("admin-user"),
+                eq(1L),
+                org.mockito.ArgumentMatchers.argThat(tags -> "completed".equals(tags.get("status"))
+                        && "manual".equals(tags.get("trigger"))
+                        && "200".equals(tags.get("processedCount"))
+                        && tags.containsKey("durationMillis")));
+        verify(adminTelemetryService, times(2)).record(any(), any(), any(), any(), eq(1L), any());
+    }
+
+    @Test
+    void failedRunEmitsTerminalEventOnlyWhenAtomicUpdateSucceeds() {
+        NotificationRuleConfigsRepository repository = mock(NotificationRuleConfigsRepository.class);
+        AdminNotificationSocketSessionRegistry socketRegistry = mock(AdminNotificationSocketSessionRegistry.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
+        NotificationRuleConfig rule = new NotificationRuleConfig();
+        rule.setRuleKey(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE);
+        rule.setManualRunEnabled(false);
+        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        when(mongoTemplate.findAndModify(
+                any(Query.class),
+                any(Update.class),
+                any(FindAndModifyOptions.class),
+                eq(NotificationRuleConfig.class)))
+                .thenReturn(rule, (NotificationRuleConfig) null);
+        NotificationRuleRegistryService service = new NotificationRuleRegistryService(
+                repository,
+                socketRegistry,
+                mongoTemplate,
+                adminTelemetryService);
+
+        service.recordRun(rule.getRuleKey(), 0, "failed", "boom", "affinity-worker");
+        service.recordRun(rule.getRuleKey(), 0, "completed", "stale completion", "affinity-worker");
+
+        verify(adminTelemetryService).record(
+                eq("jobs.run.failed"),
+                eq("jobs"),
+                eq(rule.getRuleKey()),
+                eq("affinity-worker"),
+                eq(1L),
+                org.mockito.ArgumentMatchers.argThat(tags -> "scheduled".equals(tags.get("trigger"))));
+        verify(adminTelemetryService, times(1)).record(any(), any(), any(), any(), eq(1L), any());
+    }
+
     private String runHistoryTrigger(
             String ruleKey,
             boolean manualRunEnabled,
@@ -116,6 +203,7 @@ class NotificationRuleRegistryServiceTest {
         AdminNotificationSocketSessionRegistry socketRegistry =
                 mock(AdminNotificationSocketSessionRegistry.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(ruleKey);
         rule.setManualRunEnabled(manualRunEnabled);
@@ -130,7 +218,8 @@ class NotificationRuleRegistryServiceTest {
                 new NotificationRuleRegistryService(
                         repository,
                         socketRegistry,
-                        mongoTemplate);
+                        mongoTemplate,
+                        adminTelemetryService);
 
         service.recordRun(
                 ruleKey,

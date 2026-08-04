@@ -65,7 +65,27 @@ public class AdminGraphScienceService {
         snapshot.setGraphBridgeUsers(result.bridgeUsers());
         snapshot.setGraphCommunities(result.communities());
         snapshot.setGraphSignals(result.signals());
-        snapshot.setDailyGraphActivity(result.dailyGraphActivity());
+        snapshot.setDailyGraphActivity(mergeDailyGraphActivity(
+                snapshot.getDailyGraphActivity(),
+                result.dailyGraphActivity()));
+    }
+
+    private Map<String, Map<String, Long>> mergeDailyGraphActivity(
+            Map<String, Map<String, Long>> existing,
+            Map<String, Map<String, Long>> calculated) {
+        Map<String, Map<String, Long>> merged = new LinkedHashMap<>();
+        if (calculated == null || calculated.isEmpty()) {
+            return merged;
+        }
+        String todayKey = LocalDate.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        calculated.forEach((dateKey, calculatedValues) -> {
+            Map<String, Long> values = calculatedValues;
+            if (!todayKey.equals(dateKey) && existing != null && existing.containsKey(dateKey)) {
+                values = existing.get(dateKey);
+            }
+            merged.put(dateKey, values == null ? new LinkedHashMap<>() : new LinkedHashMap<>(values));
+        });
+        return merged;
     }
 
     private GraphScienceResult calculate() {

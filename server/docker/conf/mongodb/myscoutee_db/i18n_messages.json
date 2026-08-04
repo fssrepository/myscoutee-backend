@@ -2286,6 +2286,18 @@
     "value": "Refreshes stored relationship scores after relevant profile and event changes."
   },
   {
+    "_id": "i18n-message-en-admin-jobs-rule-affinity-graph-layout",
+    "key": "admin.jobs.rule.affinity.graph.layout",
+    "lang": "en",
+    "value": "Rebuild affinity graph layout"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-affinity-graph-layout-description",
+    "key": "admin.jobs.rule.affinity.graph.layout.description",
+    "lang": "en",
+    "value": "Materializes the current affinity graph for the admin graph view."
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-rule-scheduled-messages",
     "key": "admin.jobs.rule.scheduled.messages",
     "lang": "en",
@@ -20614,6 +20626,18 @@
     "key": "admin.jobs.rule.affinity.recompute.description",
     "lang": "hu",
     "value": "Profil- és eseményváltozások után frissíti a tárolt kapcsolati pontszámokat."
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-affinity-graph-layout",
+    "key": "admin.jobs.rule.affinity.graph.layout",
+    "lang": "hu",
+    "value": "Affinitásgráf elrendezésének újraépítése"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-affinity-graph-layout-description",
+    "key": "admin.jobs.rule.affinity.graph.layout.description",
+    "lang": "hu",
+    "value": "Materializálja az aktuális affinitásgráfot az admin gráfnézethez."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-scheduled-messages",

@@ -33,7 +33,11 @@ public class ChatPushNotificationService {
     }
 
     public void notifyRecipients(List<Chat> chatDocuments, ChatStreamEvent event) {
-        if (event == null || chatDocuments == null || chatDocuments.isEmpty()) {
+        if (event == null
+                || chatDocuments == null
+                || chatDocuments.isEmpty()
+                || !"message".equals(safeText(event.type()))
+                || isSystemMessage(event)) {
             return;
         }
 
@@ -73,6 +77,10 @@ public class ChatPushNotificationService {
                 notificationTag,
                 payload,
                 safeText(event.senderId())));
+    }
+
+    private boolean isSystemMessage(ChatStreamEvent event) {
+        return "system".equalsIgnoreCase(safeText(event.senderGender()));
     }
 
     private Set<String> resolveRecipientUserIds(List<Chat> chatDocuments, String senderUserId) {

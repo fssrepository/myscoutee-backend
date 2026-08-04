@@ -344,6 +344,68 @@ public class ActivitiesMembersService {
         refreshEmbeddedEventMembers(eventId);
     }
 
+    public OwnerMembersSnapshot ensureEventCreatorAdminMembership(String eventId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return null;
+        }
+        synchronized (eventJoinLock(normalizedEventId)) {
+            ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
+            String creatorUserId = normalizeId(eventRecord == null ? null : eventRecord.getCreatorUserId());
+            if (!StringUtils.hasText(creatorUserId)) {
+                return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+            }
+
+            List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
+            ActivityMember current = existing.stream()
+                    .filter(member -> creatorUserId.equals(normalizeId(member == null ? null : member.getUserId())))
+                    .findFirst()
+                    .orElse(null);
+            if (isCanonicalEventCreatorAdminMembership(current)) {
+                return toOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId, existing);
+            }
+
+            Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
+            for (ActivityMember member : existing) {
+                String memberUserId = normalizeId(member == null ? null : member.getUserId());
+                if (StringUtils.hasText(memberUserId)) {
+                    existingByUserId.put(memberUserId, member);
+                }
+            }
+            String normalizedActorUserId = firstNonBlank(resolveActorUserId(actorUserId), creatorUserId);
+            String nowIso = Instant.now().toString();
+            ActivityMember creatorMembership = ensureOwnerAdminMembership(
+                            OWNER_TYPE_EVENT,
+                            normalizedEventId,
+                            normalizedEventId,
+                            current == null ? List.of() : List.of(current),
+                            existingByUserId,
+                            normalizedActorUserId,
+                            nowIso)
+                    .stream()
+                    .filter(member -> creatorUserId.equals(normalizeId(member == null ? null : member.getUserId())))
+                    .findFirst()
+                    .orElse(null);
+            if (creatorMembership == null) {
+                return toOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId, existing);
+            }
+
+            activityMembersRepository.saveAll(List.of(creatorMembership));
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, normalizedActorUserId);
+            adminTelemetryService.record(
+                    "event.members.changed",
+                    OWNER_TYPE_EVENT,
+                    normalizedEventId,
+                    normalizedActorUserId,
+                    1L);
+            eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
+            refreshEmbeddedEventMembers(normalizedEventId);
+            userActivityCountersService.refreshEventCountersForSourceIds(List.of(normalizedEventId));
+            OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+            return snapshot == null ? null : snapshot.withMutationApplied(true);
+        }
+    }
+
     public Set<String> findTrackedEventSourceIdsForUser(String userId) {
         return new LinkedHashSet<>(findTrackedEventMembershipStatusesForUser(userId).keySet());
     }
@@ -1154,11 +1216,25 @@ public class ActivitiesMembersService {
             }
             eventParticipationTicketService.syncParticipationTicketForUser(normalizedEventId, viewerUserId);
             refreshEmbeddedEventMembers(normalizedEventId);
+            if (accepted) {
+                postEventMembershipChangeMessages(normalizedEventId, List.of(current), List.of());
+            }
             userActivityCountersService.refreshEventCountersForUsers(List.of(viewerUserId));
             if (resolvingInvitation) {
                 eventInviteNotificationService.markInvitationResolved(
                         normalizedEventId,
                         viewerUserId);
+                if (accepted) {
+                    ActivityEvent notificationEvent = eventRecord == null
+                            ? findPreferredEventRecord(normalizedEventId)
+                            : eventRecord;
+                    eventInviteNotificationService.notifyInvitationAccepted(
+                            notificationEvent,
+                            viewerUserId,
+                            memberDisplayName(current),
+                            current.getActionAtIso(),
+                            eventAcceptanceRecipientUserIds(normalizedEventId, notificationEvent, viewerUserId));
+                }
             }
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
@@ -2701,6 +2777,7 @@ public class ActivitiesMembersService {
                         next.setStatus("accepted");
                         next.setPendingSource(null);
                         next.setRequestKind(null);
+                        next.setInvitedByUserId(null);
                         next.setUpdatedDate(nowIso);
                         next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, member));
                         return next;
@@ -2736,6 +2813,15 @@ public class ActivitiesMembersService {
         List<ActivityMember> merged = new ArrayList<>(nextDocuments);
         merged.add(creatorMembership);
         return merged;
+    }
+
+    private boolean isCanonicalEventCreatorAdminMembership(ActivityMember member) {
+        return member != null
+                && STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
+                && "Admin".equals(safeText(member.getRole()))
+                && !StringUtils.hasText(safeText(member.getPendingSource()))
+                && !StringUtils.hasText(safeText(member.getRequestKind()))
+                && !StringUtils.hasText(normalizeId(member.getInvitedByUserId()));
     }
 
     private void cascadeRemovedEventMembersFromAssignedAssets(
@@ -3885,6 +3971,18 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedEventId) || chatService == null) {
             return;
         }
+        ActivityEvent event = findPreferredEventRecord(normalizedEventId);
+        List<String> acceptedUserIds = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (event != null && !acceptedUserIds.isEmpty()) {
+            chatService.ensureMainEventChat(event, acceptedUserIds);
+        }
         for (ActivityMember member : joinedMembers == null ? List.<ActivityMember>of() : joinedMembers) {
             String displayName = memberDisplayName(member);
             if (StringUtils.hasText(displayName)) {
@@ -3900,6 +3998,30 @@ public class ActivitiesMembersService {
                 chatService.postSystemMessage(normalizedEventId, displayName + " left the event.", "member-left");
             }
         }
+    }
+
+    private List<String> eventAcceptanceRecipientUserIds(
+            String eventId,
+            ActivityEvent event,
+            String excludedUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedExcludedUserId = normalizeId(excludedUserId);
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(resolveEventAdminUserIds(event));
+        boolean memberListOpen = event == null
+                || !"Blind Event".equalsIgnoreCase(safeText(event.getBlindMode()));
+        loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !isHiddenMembershipStatus(member.getStatus()))
+                .filter(member -> memberListOpen || MANAGER_ROLES.contains(resolveStoredRole(
+                        member,
+                        OWNER_TYPE_EVENT,
+                        normalizedEventId)))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(recipientUserIds::add);
+        recipientUserIds.remove(normalizedExcludedUserId);
+        return List.copyOf(recipientUserIds);
     }
 
     private String memberDisplayName(ActivityMember member) {
@@ -3963,11 +4085,6 @@ public class ActivitiesMembersService {
             LinkedHashSet<String> adminUserIds = snapshot == null
                     ? new LinkedHashSet<>()
                     : new LinkedHashSet<>(snapshot.adminUserIds());
-            entry.getValue().stream()
-                    .map(ActivityEvent::getCreatorUserId)
-                    .map(this::normalizeId)
-                    .filter(StringUtils::hasText)
-                    .forEach(adminUserIds::add);
 
             for (ActivityEvent document : entry.getValue()) {
                 if (document == null) {
@@ -4030,10 +4147,6 @@ public class ActivitiesMembersService {
         for (ActivityEvent document : documents) {
             if (document == null) {
                 continue;
-            }
-            String creatorUserId = normalizeId(document.getCreatorUserId());
-            if (StringUtils.hasText(creatorUserId)) {
-                adminUserIds.add(creatorUserId);
             }
             document.setAcceptedMembers(acceptedMembers);
             document.setPendingMembers(pendingMembers);

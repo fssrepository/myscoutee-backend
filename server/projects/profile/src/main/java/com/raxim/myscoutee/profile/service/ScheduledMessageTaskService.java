@@ -390,6 +390,37 @@ public class ScheduledMessageTaskService {
             Collection<String> audienceUserIds,
             Collection<String> reasons,
             String actorUserId) {
+        return scheduleEventDefinitionChangedTask(
+                eventId,
+                eventTitle,
+                audienceUserIds,
+                reasons,
+                actorUserId,
+                eventDefinitionChangedTaskKey(eventId));
+    }
+
+    public ScheduledMessageTask scheduleEventLifecycleChanged(
+            String eventId,
+            String eventTitle,
+            Collection<String> audienceUserIds,
+            Collection<String> reasons,
+            String actorUserId) {
+        return scheduleEventDefinitionChangedTask(
+                eventId,
+                eventTitle,
+                audienceUserIds,
+                reasons,
+                actorUserId,
+                eventLifecycleChangedTaskKey(eventId));
+    }
+
+    private ScheduledMessageTask scheduleEventDefinitionChangedTask(
+            String eventId,
+            String eventTitle,
+            Collection<String> audienceUserIds,
+            Collection<String> reasons,
+            String actorUserId,
+            String requestedTaskKey) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return null;
@@ -400,7 +431,7 @@ public class ScheduledMessageTaskService {
         }
         String nowIso = Instant.now().toString();
         String updatedBy = updatedBy(actorUserId);
-        String taskKey = eventDefinitionChangedTaskKey(normalizedEventId);
+        String taskKey = safeText(requestedTaskKey);
         ScheduledMessageTask task = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
         if (!StringUtils.hasText(task.getId())) {
             task.setId(new ObjectId().toHexString());
@@ -1097,11 +1128,17 @@ public class ScheduledMessageTaskService {
 
     private Map<String, String> eventDefinitionChangedVariables(ScheduledMessageTask task, Users user) {
         Map<String, String> payload = task == null ? Map.of() : task.getPayload();
+        String changeReasons = payload == null ? null : payload.get("changeReasons");
         Map<String, String> variables = new LinkedHashMap<>();
         putPayload(variables, "user_name", user == null ? null : user.getName());
         putPayload(variables, "user_first_name", firstName(user == null ? null : user.getName()));
         putPayload(variables, "event_title", payload == null ? null : payload.get("eventTitle"));
-        putPayload(variables, "change_summary", eventDefinitionChangeSummary(payload == null ? null : payload.get("changeReasons")));
+        putPayload(variables, "change_summary", eventDefinitionChangeSummary(changeReasons));
+        putPayload(variables, "notification_tone", eventDefinitionChangeTone(changeReasons));
+        putPayload(variables, "notification_kind", eventDefinitionChangeKind(changeReasons));
+        putPayload(variables, "notification_source_type", "event");
+        putPayload(variables, "notification_source_id", task == null ? null : task.getEventId());
+        putPayload(variables, "notification_recipient_scope", "event-participants");
         putPayload(variables, "cta_label", "Open event");
         putPayload(variables, "cta_url", baseUrl() + "/game");
         return variables;
@@ -1214,6 +1251,10 @@ public class ScheduledMessageTaskService {
         return "event-definition-changed:" + normalizeId(eventId);
     }
 
+    private String eventLifecycleChangedTaskKey(String eventId) {
+        return "event-lifecycle-changed:" + normalizeId(eventId) + ":" + UUID.randomUUID();
+    }
+
     private Set<String> eventDefinitionChangedAudienceUserIds(ScheduledMessageTask task) {
         Map<String, String> payload = task == null ? Map.of() : task.getPayload();
         LinkedHashSet<String> userIds = normalizeCsv(payload == null ? null : payload.get("audienceUserIds"));
@@ -1246,6 +1287,12 @@ public class ScheduledMessageTaskService {
         if (reasons.contains("deleted")) {
             return "The event was deleted.";
         }
+        if (reasons.contains("under-review")) {
+            return "The event is under review.";
+        }
+        if (reasons.contains("modified")) {
+            return "The event was modified and is available again.";
+        }
         if (reasons.contains("unpublished")) {
             return "The event was unpublished.";
         }
@@ -1256,6 +1303,31 @@ public class ScheduledMessageTaskService {
             return "The sub-event setup changed.";
         }
         return "The event details changed.";
+    }
+
+    private String eventDefinitionChangeTone(String value) {
+        LinkedHashSet<String> reasons = normalizeCsv(value);
+        if (reasons.contains("deleted")) {
+            return "danger";
+        }
+        if (reasons.contains("under-review")) {
+            return "warning";
+        }
+        return "info";
+    }
+
+    private String eventDefinitionChangeKind(String value) {
+        LinkedHashSet<String> reasons = normalizeCsv(value);
+        if (reasons.contains("deleted")) {
+            return "event-deleted";
+        }
+        if (reasons.contains("under-review")) {
+            return "event-under-review";
+        }
+        if (reasons.contains("modified")) {
+            return "event-modified";
+        }
+        return "event-details-changed";
     }
 
     private LinkedHashSet<String> normalizeIds(Collection<String> values) {

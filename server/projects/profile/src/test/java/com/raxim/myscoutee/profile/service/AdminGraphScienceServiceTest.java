@@ -3,7 +3,11 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,6 +73,48 @@ class AdminGraphScienceServiceTest {
         assertThat(snapshot.getGraphSignals())
                 .containsKeys("reachability-2-hop", "clustering", "bridge-coverage");
         assertThat(snapshot.getDailyGraphActivity()).hasSize(14);
+    }
+
+    @Test
+    void refreshPreservesHistoricalGraphTimelineAndReplacesToday() {
+        when(usersRepository.findAll()).thenReturn(List.of());
+        when(userAffinityEdgesRepository.findAll()).thenReturn(List.of());
+        when(userRatesRepository.findAll()).thenReturn(List.of());
+        when(activityMembersRepository.findAll()).thenReturn(List.of());
+
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        String yesterdayKey = today.minusDays(1).toString();
+        String todayKey = today.toString();
+        Map<String, Long> historical = Map.of(
+                "activeEdges", 17L,
+                "bridgeUsers", 2L,
+                "communities", 2L,
+                "clusterQuality", 7L);
+        Map<String, Map<String, Long>> existing = new LinkedHashMap<>();
+        existing.put(yesterdayKey, historical);
+        existing.put(todayKey, Map.of(
+                "activeEdges", 99L,
+                "bridgeUsers", 9L,
+                "communities", 9L,
+                "clusterQuality", 99L));
+        AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
+        snapshot.setDailyGraphActivity(existing);
+
+        new AdminGraphScienceService(
+                userAffinityEdgesRepository,
+                userRatesRepository,
+                activityMembersRepository,
+                usersRepository)
+                .refresh(snapshot);
+
+        assertThat(snapshot.getDailyGraphActivity()).hasSize(14);
+        assertThat(snapshot.getDailyGraphActivity().get(yesterdayKey))
+                .containsExactlyInAnyOrderEntriesOf(historical);
+        assertThat(snapshot.getDailyGraphActivity().get(todayKey))
+                .containsEntry("activeEdges", 0L)
+                .containsEntry("bridgeUsers", 0L)
+                .containsEntry("communities", 0L)
+                .containsEntry("clusterQuality", 0L);
     }
 
     private Users user(String id, String name) {

@@ -220,6 +220,61 @@ class ScheduledMessageTaskServiceTest {
     }
 
     @Test
+    void eventLifecycleVariablesCarryContextualNotificationTones() {
+        ScheduledMessageTask underReview = eventChangeTask();
+        underReview.setPayload(Map.of(
+                "eventTitle", "Board Game Night",
+                "audienceUserIds", "user-1",
+                "changeReasons", "under-review"));
+        ScheduledMessageTask modified = eventChangeTask();
+        modified.setPayload(Map.of(
+                "eventTitle", "Board Game Night",
+                "audienceUserIds", "user-1",
+                "changeReasons", "modified"));
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> underReviewVariables = ReflectionTestUtils.invokeMethod(
+                service,
+                "eventDefinitionChangedVariables",
+                underReview,
+                recipient);
+        @SuppressWarnings("unchecked")
+        Map<String, String> modifiedVariables = ReflectionTestUtils.invokeMethod(
+                service,
+                "eventDefinitionChangedVariables",
+                modified,
+                recipient);
+
+        assertThat(underReviewVariables)
+                .containsEntry("change_summary", "The event is under review.")
+                .containsEntry("notification_tone", "warning")
+                .containsEntry("notification_kind", "event-under-review")
+                .containsEntry("notification_source_type", "event")
+                .containsEntry("notification_source_id", "event-1")
+                .containsEntry("notification_recipient_scope", "event-participants");
+        assertThat(modifiedVariables)
+                .containsEntry("change_summary", "The event was modified and is available again.")
+                .containsEntry("notification_tone", "info")
+                .containsEntry("notification_kind", "event-modified");
+    }
+
+    @Test
+    void lifecycleTransitionsUseDistinctTaskOccurrences() {
+        String first = ReflectionTestUtils.invokeMethod(
+                service,
+                "eventLifecycleChangedTaskKey",
+                "event-1");
+        String second = ReflectionTestUtils.invokeMethod(
+                service,
+                "eventLifecycleChangedTaskKey",
+                "event-1");
+
+        assertThat(first).startsWith("event-lifecycle-changed:event-1:");
+        assertThat(second).startsWith("event-lifecycle-changed:event-1:");
+        assertThat(second).isNotEqualTo(first);
+    }
+
+    @Test
     void stageReminderResolvesBrandingOnceAndSnapshotsItForPushAndEmail() {
         DeploymentBrandingResolver brandingResolver =
                 org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
