@@ -88,22 +88,23 @@ negative control. Riley accepts exactly once through the recipient UI. Require:
 - Riley's Invitations membership bucket changes `1 → 0` because the pending
   invitation is now terminally accepted;
 - Casey and Riley see the same main-event chat while Nova sees none;
+- Casey and Riley alone appear in the chat member/avatar stack, with no pending
+  `+1`; Sub-events > Members shows Nova as the single pending badge;
 - Riley gains the same empty chat row, but Riley's chat attention counters
   remain unchanged until an actual unread message exists;
-- Riley sends one unique proof message which Casey receives in that same chat;
 - the acceptance adds exactly one `member-joined` system row to the chat, but
   that row creates no Notification Center `chat-message` item;
 - Because this is an Open Event, Casey and still-pending Nova each receive
   exactly one invitation-accepted event notification naming Riley and the
   event; actor Riley receives none.
 
-The special `prepare-invitation-acceptance-retest` command is not required for
-this retained chain because Riley is still pending. Run the EVENT-INV-003
-read-only oracle after the UI evidence. Reset only after both the Publish and
-acceptance branches pass:
+The retained acceptance retest passed its UI and read-only oracle checks.
+Participant-authored message delivery remains in `CHAT-AUTH-001`; it is not a
+closure requirement for this checkpoint. Reset only after the retained state
+is no longer needed for that continuation:
 
 ```bash
-bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh reset event-domain EVENT-PUBLISH-CHAT-001
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh reset event-domain EVENT-INV-003
 ```
 
 ## Verification already completed

@@ -609,6 +609,11 @@ Execution evidence on 2026-08-04:
 - Keep three isolated sessions open for the accepted recipient, a still-pending
   control recipient and the event Admin. Both accepted roles must see the same
   event chat; the pending control must not see or directly read it.
+- The chat member/avatar stack contains only terminal accepted chat members;
+  the pending control must not appear there and must not create a hidden-avatar
+  `+1`. In the Sub-events popup, the event-level `Members` action must show the
+  pending control as a red `1`, sourced from the same current member signal
+  rather than a stale event record.
 - In the Admin session, verify exactly one acceptance notification that names
   the accepted recipient and the event. It must be distinct from the original
   invitation notification and from unrelated lifecycle notifications.
@@ -655,11 +660,16 @@ Execution evidence on 2026-08-04:
 - PASS — Casey received exactly one `event-invitation-accepted` notification
   naming Riley and the controlled event, while Riley's original `event-invite`
   notification was stored with `readAtIso`.
-- FAIL — the join transition wrote the same `member-joined` system message
-  twice and both copies leaked into Notification Center as `chat-message`
-  notifications. The retained retest must prove one chat system row, zero
-  system-derived chat notifications, one acceptance event notification for
-  Casey, and none for actor Riley before this checkpoint is closed.
+- PASS — the retained retest produced exactly one `member-joined` system row
+  and zero system-derived `chat-message` outbox or Notification Center items.
+- PASS — the Open-event acceptance notification was delivered exactly once to
+  Casey and still-pending Nova, while actor Riley received none. Riley's
+  original invite was resolved with `readAtIso`.
+- PASS — the chat avatar stack contained Casey and Riley only, without a
+  pending `+1`. The Sub-events `Members` action displayed Nova as the single
+  pending badge from the current members signal.
+- CLOSED — the manual UI evidence and independent database oracle agree on the
+  membership, chat, notification and pending-control projections.
 
 ### `EVENT-INV-004` — ordinary-member invitation approval chain
 
