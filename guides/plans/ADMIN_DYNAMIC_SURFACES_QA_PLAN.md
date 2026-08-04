@@ -54,6 +54,53 @@ The workbook can gain area-specific sheets later, but its first/master sheet
 must remain an index of every manual pack and its current status so the next
 session can resume without reconstructing prior conversations.
 
+## Manual scheduler checkpoints
+
+Scheduler-focused manual tests must separate direct setup from scheduler-created
+results. Use the dedicated
+[`manual-qa-checkpoints`](../../server/docker/scripts/manual-qa-checkpoints/README.md)
+harness; do not alter the automated `admin-job-fixtures` suite to create human
+observation pauses.
+
+For a reproducible fast run, stage the controlled data first while the persisted
+job schedule is held safely in the future. Open Monitoring, Statistics, Admin
+Job detail, and the target notification view before scheduling. Keep them in
+three separate Gmail/browser sessions so active-user state and cookies do not
+mix. Capture every post-stage baseline, then persist a short scheduler delay
+(normally 30 seconds) and wait for the already-running scheduler's normal
+60-second poll. The expected run window is therefore roughly 30–90 seconds,
+not a fixed three-minute wait. No Run button, hidden hook, direct job endpoint,
+or second application process may replace this path.
+
+The manual harness includes the original Hungarian requests and a reusable
+operator prompt in
+[`PROMPT.md`](../../server/docker/scripts/manual-qa-checkpoints/PROMPT.md).
+Every comparison must use the post-stage baseline; direct setup effects must
+never be attributed to the scheduler.
+
+For `STAT-012`, staging prints the exact deterministic `expectedInvitee` before
+the schedule is armed. The harness temporarily isolates one seeded affinity
+edge and materializes the test event in only the Statistics event-inventory
+baseline; reset restores those selected fields and edges. This lets session C
+open the correct notification center in advance and keeps Active/All event
+inventory changes out of the later scheduler-only delta.
+
+The completed 2026-08-04 Statistics workflows also have retrospective,
+non-rerun reproduction guides in
+[`completed-runs`](../../server/docker/scripts/manual-qa-checkpoints/completed-runs/README.md):
+BASE-STAT, STAT-010 rating/batch/bell, STAT-011 ordinary chat, and STAT-020
+graph-history immutability. These documents preserve the old checkpoints and
+prompts; their creation is not a new manual execution and does not change the
+matrix dates or results.
+
+Those four historical workflows now also have callable helpers through
+`manual-qa-checkpoints.sh`: `stage/status/reset` for all four, plus
+`schedule stat-020` for the affinity scheduler checkpoint. `STAT-010` keeps the
+real frontend rating batch and `STAT-011` keeps immediate chat persistence plus
+the normal projection workers; neither receives an artificial scheduler hook.
+The helper files were statically validated only when added. Historical manual
+PASS/PARTIAL statuses remain dated 2026-08-04 and were not rerun.
+
 ## Three different meanings of “graph”
 
 These must not be treated as the same feature:
