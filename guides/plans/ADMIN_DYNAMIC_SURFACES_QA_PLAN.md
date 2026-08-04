@@ -15,7 +15,7 @@ surfaces and how to prove that an input caused the displayed result. It covers:
 - **Monitoring / Metrics**;
 - the separate interactive **Affinity Graph** explorer;
 - **Parameters**, including every section outside Jobs;
-- all nine **Admin Jobs**, their domain effects, and their cross-surface effects;
+- all ten **Admin Jobs**, their domain effects, and their cross-surface effects;
 - the rating/feedback notification flow already exercised with the job fixtures;
 - a small smoke boundary for otherwise static input screens.
 
@@ -163,7 +163,7 @@ from a human-visible UI confirmation.
 
 | Area | Last evidence | Status | What was proved | What remains |
 | --- | --- | --- | --- | --- |
-| All nine Admin Jobs | 2026-07-29 | `MANUAL FUNCTIONAL PASS` | Each job was made due in `demo_db`, picked up by the real running scheduler, and its primary domain oracle passed. | Cross-surface Statistics/Monitoring/Affinity Graph effects were not qualified. Most job detail pages were not separately visually signed off. |
+| Original nine Admin Jobs | 2026-07-29 | `MANUAL FUNCTIONAL PASS` | Each then-existing job was made due in `demo_db`, picked up by the real running scheduler, and its primary domain oracle passed. | The later `affinity-graph-layout` job is `NOT RUN`. Cross-surface Statistics/Monitoring/Affinity Graph effects were not qualified. Most job detail pages were not separately visually signed off. |
 | `event-random-groups` variations | 2026-07-29 | `MANUAL FUNCTIONAL PASS` | Balanced, anchored, room-count, leftover, partial, large, disconnected and idempotence fixture oracles passed. | Dedicated Affinity Graph and Statistics graph remain separate tests. |
 | `event-random-groups` visible outcome | 2026-07-31 | `MANUAL FUNCTIONAL PASS`, UI `PARTIAL` | Two source events produced two shared rooms/chats and two real system messages; all 6/6 public users were assigned; all three chat counters rose by one. | Record screenshots of room, chat and counter presentation in one future execution. The later system-message text/icon edit was stylistic, not a functional retest blocker. |
 | `event-auto-inviter` notification | 2026-08-04 | `MANUAL UI + FUNCTIONAL PASS`; cleanup harness defect fixed | A controlled 30-second eligibility window was picked up by the real scheduler at 08:49 without a Run button. It processed exactly one Nova invitation in 131 ms; invitation, marker, logical outbox and bell recipient sets matched. Job Detail, Nova notification, Monitoring and Statistics screenshots all showed the exact once-only result. The initial reset removed the domain records but left Nova's activity-counter projection at one; the demo counter was repaired and the helper now snapshots/restores both selected users' activity counters. | Reload Nova and confirm the repaired Invitations and Notifications badges are zero; retain STAT-012 as a release-change sample. |
@@ -182,7 +182,7 @@ Archived evidence sources:
 
 ### Current continuation state
 
-A read-only `demo_db` audit on 2026-08-04 found all nine rules enabled and no
+A read-only `demo_db` audit on 2026-08-04 found all nine then-existing rules enabled and no
 rule running. The random-room fixture's source events and generated fixture
 rooms were absent, but a stale `admin-job-fixture:v1:event-random-groups`
 snapshot from the 2026-07-31 `balanced` preparation remained. Before
@@ -192,6 +192,14 @@ worker materialized the restored user later, which explains a separate API
 sample's community/tried-user `+1` and is not counted as a no-action refresh
 delta. Treat the prior random-room functional result and its cleanup as
 complete.
+
+On 2026-08-04 the development seed sync imported the new tenth rule,
+`affinity-graph-layout`, and the unchanged real scheduler claimed its initially
+due interval. It completed in 231 ms and published one materialized version
+with 54 nodes, 1126 edges and 4 forests; all stored collection counts matched
+the layout header. This is runtime smoke evidence only. `JOB-GRAPH-LAYOUT` and
+`GRAPH-LAYOUT-001` remain manual `NOT RUN` until the documented browser and
+screenshot checkpoints are executed.
 
 ## How the dynamic surfaces update
 
@@ -259,10 +267,13 @@ and Isolated totals. It must support:
 - stable totals and a consistent selected-member neighborhood.
 
 Women and men use the documented legend colors. A profile without an edge
-remains represented in the overview as isolated. The graph can use a
-materialized layout or a live fallback; `source` and `layoutVersion` determine
-which was returned. A parameter or rating change is qualified only after the
-affinity recompute queue finishes and the graph is reopened/reloaded.
+remains represented in the overview as isolated. The graph uses the latest
+successful daily materialized layout, with a live fallback only before a
+layout exists or where the requested graph operation explicitly reads live
+data; `source` and `layoutVersion` determine which was returned. A parameter or
+rating change first qualifies the direct affinity edge, then separately
+qualifies the materialized UI after the `affinity-graph-layout` job completes
+and the graph is reopened/reloaded.
 
 ### Parameters
 
@@ -327,7 +338,7 @@ Implemented regression coverage now proves:
 
 - emit and project `admin.params.changed` exactly once for a successful save
   and once for a successful revert, with no event on cancel/rejected save;
-- emit a common scheduled-job start/completion/failure trace for all nine jobs,
+- emit a common scheduled-job start/completion/failure trace for all ten jobs,
   including a zero-work completion, without double counting the random-room and
   event-counter paths that already emit selected telemetry;
 - prove the Monitoring Jobs counters consume those events once and preserve
@@ -469,6 +480,7 @@ Graph comparison remains.
 | `GRAPH-005` | Pan, rotate, wheel/pinch zoom, arrow-pan and reset. | Controls work, progress follows zoom/loading, panel does not clip, reset returns to overview. |
 | `GRAPH-006` | Create/change one controlled affinity edge, run recompute, reopen. | Expected edge weight/neighborhood/component changes; unrelated fixture edge remains stable. Statistics graph summary is directionally consistent after its refresh window. |
 | `GRAPH-RATING-001` | In two isolated sessions, save one single-user rating in each direction, capturing the one-way checkpoint before the reciprocal Save. | Both directional rows persist; the second Save carries reciprocal score and at least one row becomes `mutuallyRated`; the direct edge has `mutualSingleCount > 0`; the same pair and weight are visible at depth 1 after reopening the Admin Graph. Existing Met evidence may mean the edge changes rather than first appears. An older materialized layout is reported as a separate projection checkpoint. |
+| `GRAPH-LAYOUT-001` | Hold the daily graph-layout rule, capture the current layout, shorten the persisted schedule, and wait for the real scheduler. | One scheduled run publishes a newer materialized layout; member/link/component totals equal the stored node/edge/forest counts; reopening Admin Affinity Graph uses the new `layoutVersion`. |
 | `GRAPH-007` | Use a large/disconnected graph fixture. | Forest paging, semantic tiles and neighborhoods load within their budgets; disconnected users remain visible; no unbounded request loop. |
 
 ## Parameters manual pack
@@ -518,6 +530,7 @@ expected. The spreadsheet contains the same rows in execution-ledger form.
 | `event-checkout-basket-purge` | `X` | `Δ` scheduler/audit | `X` | `Δ` | `Δ` expired basket items marked deleted |
 | `notification-outbox` | `X` | `Δ` scheduler/audit plus pending/running/sent/failed | `X` | `Δ` | `Δ` terminal outbox state, Firebase/no-op result, token cleanup if applicable |
 | `affinity-recompute` | `Δ` graph summary after projection refresh | `Δ` scheduler/audit and recompute queue | `Δ` edges/neighborhood/components where inputs changed | `Δ` | `Δ` recompute tasks terminal and discovery/affinity projections updated |
+| `affinity-graph-layout` | `X` | `Δ` scheduler/audit | `Δ` newly published materialized layout and `layoutVersion` | `Δ` | `Δ` stored layout, node, edge and forest versions with matching totals |
 | `scheduled-messages` | `X` | `Δ` scheduler/audit; `→` Notifications/outbox | `X` | `Δ` | `Δ` task audit plus notification/email result |
 | `account-purge` | `→` network graph after deleted user removal; ordinary deletion was counted earlier | `Δ` scheduler/audit; `X` for a new profile-deleted event at purge time | `→` member/edge totals after removal | `Δ` | `Δ` deleted/anonymized user data and purge job completion |
 
@@ -576,7 +589,7 @@ checkpoints remain functionally correct.
 2. Run `PARAM-001` + `PARAM-010` so one input is followed through recompute,
    Monitoring, Affinity Graph and Statistics.
 3. Run `MON-011` and `GRAPH-006` on the same controlled pair.
-4. Re-run the nine Admin Jobs, concentrating on the impact-matrix cells rather
+4. Re-run the ten Admin Jobs, concentrating on the impact-matrix cells rather
    than repeating already-passed domain permutations.
 5. Run `PARAM-011`–`PARAM-016`, reverting after each section.
 6. Finish the Statistics action deltas, Monitoring failure/recovery and graph

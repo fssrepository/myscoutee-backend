@@ -36,6 +36,10 @@ text:
 > scenario genuinely uses a scheduler, shorten the persisted scheduler timing
 > before the human observation begins.
 
+> Refresh the materialized Admin Affinity Graph through a new once-per-day
+> scheduled job. Use the same worker and persisted rule in the HTTP demo and
+> production databases so the demo qualifies the real production path.
+
 Related standing instructions from the same QA session:
 
 - Always begin a manual step by explaining why it is performed and what is
@@ -132,6 +136,13 @@ second rating must create a brand-new edge: independent Met evidence may have
 already created it. Compare `mutualSingleCount`, edge weight, pair identity and
 the Admin Affinity Graph. Report an old materialized layout separately from a
 rating persistence failure.
+
+For `GRAPH-LAYOUT-001`, use `graph-layout` after the direct edge checkpoint.
+Capture the held daily job and graph baseline before shortening the persisted
+rule. Let the existing scheduler publish the new materialized layout; never
+call the rebuild endpoint. Require a scheduled run record, a newer
+`layoutVersion`, and matching layout/node/edge/forest totals before declaring
+the materialized graph ready.
 
 If a functional gap appears, retain the failed evidence, fix it with a focused
 regression test where appropriate, verify the existing hot deploy compiled it,

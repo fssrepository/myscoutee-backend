@@ -1,7 +1,9 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +14,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
@@ -182,6 +185,35 @@ class AdminAffinityGraphServiceTest {
         assertThat(forests.limit()).isEqualTo(20);
         assertThat(forests.offset()).isEqualTo(20);
         assertThat(forests.forests()).extracting("componentId").containsExactly("c20");
+    }
+
+    @Test
+    void rebuildLayoutPublishesTheLayoutOnlyAfterItsVersionedGraphDocuments() {
+        when(usersRepository.findAll()).thenReturn(List.of(
+                user("u1", "Ava", "woman", "public"),
+                user("u2", "Ben", "man", "public"),
+                user("u3", "Chloe", "woman", "public")));
+        when(userAffinityEdgesRepository.findAll()).thenReturn(List.of(
+                edge("u1", "u2", 0.82d)));
+
+        AdminAffinityGraphMetaDto result = service.rebuildLayout("admin-1");
+
+        assertThat(result.source()).isEqualTo("materialized");
+        assertThat(result.materialized()).isTrue();
+        assertThat(result.memberCount()).isEqualTo(3);
+        assertThat(result.linkCount()).isEqualTo(1);
+        assertThat(result.componentCount()).isEqualTo(2);
+        assertThat(result.isolatedCount()).isEqualTo(1);
+
+        InOrder publishOrder = inOrder(
+                graphNodesRepository,
+                graphEdgesRepository,
+                graphForestsRepository,
+                layoutsRepository);
+        publishOrder.verify(graphNodesRepository).saveAll(any());
+        publishOrder.verify(graphEdgesRepository).saveAll(any());
+        publishOrder.verify(graphForestsRepository).saveAll(any());
+        publishOrder.verify(layoutsRepository).save(any(AdminAffinityGraphLayout.class));
     }
 
     @Test

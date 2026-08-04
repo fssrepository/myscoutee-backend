@@ -280,6 +280,10 @@ public class AdminAffinityGraphService {
 
     public AdminAffinityGraphMetaDto rebuildLayout(String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
+        return rebuildMaterializedLayout();
+    }
+
+    AdminAffinityGraphMetaDto rebuildMaterializedLayout() {
         Instant generatedAt = Instant.now();
         String layoutVersion = "layout-" + generatedAt.toEpochMilli();
         GraphSnapshot snapshot = loadSnapshot(generatedAt.toString(), layoutVersion);

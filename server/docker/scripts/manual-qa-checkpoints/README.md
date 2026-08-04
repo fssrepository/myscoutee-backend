@@ -15,6 +15,7 @@ scheduler process and never calls a hidden/manual job endpoint.
 | `base-stat` | Captures the complete visible Statistics oracle | Statistics Refresh with no causal action |
 | `stat-010` | Resets one isolated rating pair and its logical bell/outbox | Real frontend rating batch plus Statistics/Monitoring workers |
 | `graph-rating` | Isolates both directions of one rating pair and reports direct versus materialized graph evidence | Two real frontend rating batches plus affinity recompute |
+| `graph-layout` | Holds and snapshots the materialized graph before shortening the persisted daily rule | Real daily affinity-graph layout scheduler in the HTTP demo/production path |
 | `stat-011` | Prints one unique message token for an existing chat | Real chat persistence plus Statistics/Monitoring workers |
 | `stat-020` | Holds one exact event recompute task and captures graph history | Short persisted affinity schedule/normal worker plus Statistics Refresh |
 | `stat-012` | Stages one deterministic event/invitee while holding the rule | Short persisted real auto-inviter schedule |
@@ -162,6 +163,26 @@ bash manual-qa-checkpoints.sh reset graph-rating
 The helper only stages and restores the controlled pair. It does not rebuild a
 graph layout or invoke a recompute hook. If status reports an old materialized
 layout, retain that as a separate projection checkpoint.
+
+`graph-layout` implements `GRAPH-LAYOUT-001`. It proves the separate daily
+projection boundary after a direct affinity edge has changed. The helper holds
+the persisted rule for one hour while screenshots are prepared, then shortens
+that same rule only for the manual observation window. It never calls the
+rebuild endpoint.
+
+```bash
+bash manual-qa-checkpoints.sh stage graph-layout
+# open Admin Jobs > Rebuild affinity graph layout and Admin Affinity Graph
+bash manual-qa-checkpoints.sh schedule graph-layout 30
+# wait for the existing scheduler and reopen Admin Affinity Graph
+bash manual-qa-checkpoints.sh status graph-layout
+bash manual-qa-checkpoints.sh reset graph-layout
+```
+
+The machine oracle requires a new materialized `layoutVersion`, a completed
+scheduled run, and exact agreement between layout totals and its stored node,
+edge and forest collections. The default product interval is one day in both
+`demo_db` and `myscoutee_db`.
 
 `stat-011` prints the exact unique text a QA must send once in **Host Circle
 Ops**. Stage itself does not insert a message:

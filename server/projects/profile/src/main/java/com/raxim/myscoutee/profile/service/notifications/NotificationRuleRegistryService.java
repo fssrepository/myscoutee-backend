@@ -42,6 +42,7 @@ public class NotificationRuleRegistryService {
     public static final String RULE_EVENT_CHECKOUT_BASKET_PURGE = "event-checkout-basket-purge";
     public static final String RULE_NOTIFICATION_OUTBOX = "notification-outbox";
     public static final String RULE_AFFINITY_RECOMPUTE = "affinity-recompute";
+    public static final String RULE_AFFINITY_GRAPH_LAYOUT = "affinity-graph-layout";
     public static final String RULE_SCHEDULED_MESSAGES = "scheduled-messages";
     public static final String RULE_ACCOUNT_PURGE = "account-purge";
     public static final String PENDING_COUNT_UNIT_USERS = "admin.jobs.table.users";

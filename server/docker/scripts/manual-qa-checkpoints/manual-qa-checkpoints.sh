@@ -16,6 +16,10 @@ Usage:
   bash manual-qa-checkpoints.sh stage graph-rating
   bash manual-qa-checkpoints.sh status graph-rating
   bash manual-qa-checkpoints.sh reset graph-rating
+  bash manual-qa-checkpoints.sh stage graph-layout
+  bash manual-qa-checkpoints.sh schedule graph-layout [delay-seconds]
+  bash manual-qa-checkpoints.sh status graph-layout
+  bash manual-qa-checkpoints.sh reset graph-layout
   bash manual-qa-checkpoints.sh stage stat-011
   bash manual-qa-checkpoints.sh status stat-011
   bash manual-qa-checkpoints.sh reset stat-011
@@ -85,6 +89,7 @@ run_scenario() {
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
     stat-010) scenario_script="${SCRIPT_DIR}/scenarios/stat-010-rating.js" ;;
     graph-rating) scenario_script="${SCRIPT_DIR}/scenarios/graph-rating.js" ;;
+    graph-layout) scenario_script="${SCRIPT_DIR}/scenarios/graph-layout.js" ;;
     stat-011) scenario_script="${SCRIPT_DIR}/scenarios/stat-011-chat.js" ;;
     stat-020) scenario_script="${SCRIPT_DIR}/scenarios/stat-020-graph-timeline.js" ;;
     stat-012) scenario_script="${SCRIPT_DIR}/scenarios/stat-012-auto-inviter.js" ;;
@@ -166,13 +171,14 @@ case "${scenario}:${command}" in
   base-stat:stage|base-stat:status|base-stat:reset|\
   stat-010:stage|stat-010:status|stat-010:reset|\
   graph-rating:stage|graph-rating:status|graph-rating:reset|\
+  graph-layout:stage|graph-layout:status|graph-layout:reset|\
   stat-011:stage|stat-011:status|stat-011:reset|\
   stat-020:stage|stat-020:status|stat-020:reset|\
   stat-012:stage|stat-012:hold|stat-012:status|stat-012:reset)
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
     ;;
-  stat-020:schedule|stat-012:schedule)
+  graph-layout:schedule|stat-020:schedule|stat-012:schedule)
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
