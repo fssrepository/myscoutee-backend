@@ -59,6 +59,68 @@
     }
   }
 
+  function normalizeActivityCount(value) {
+    const count = Number(value);
+    return Number.isFinite(count) ? Math.max(0, Math.trunc(count)) : 0;
+  }
+
+  function synchronizeHostEventActivityCounters(userId) {
+    const directEvents = Q.collection("events").find({
+      $or: [
+        { ownerUserId: userId },
+        { creatorUserId: userId },
+        { admins: userId }
+      ]
+    }).toArray();
+    const preferredBySourceId = new Map();
+    for (const event of directEvents) {
+      const parentEventId = Q.text(event.parentEventId);
+      const sourceId = parentEventId || Q.text(event.sourceId || event._id);
+      if (!sourceId) continue;
+      const current = preferredBySourceId.get(sourceId);
+      const preference = item => {
+        if (!item) return -1;
+        const status = Q.text(item.status).toUpperCase();
+        const trashed = item.isTrashed === true || status === "T";
+        const generated = item.generated === true || Q.text(item.parentEventId) || Q.text(item.eventType) === "slot";
+        return (generated ? 0 : 4) + (trashed ? 0 : 2) + (Q.text(item.ownerUserId) === userId ? 1 : 0);
+      };
+      if (!current || preference(event) > preference(current)) {
+        preferredBySourceId.set(sourceId, event);
+      }
+    }
+
+    let hosting = 0;
+    let drafts = 0;
+    for (const event of preferredBySourceId.values()) {
+      const status = Q.text(event.status).toUpperCase();
+      if (event.isTrashed === true || status === "T") continue;
+      hosting += 1;
+      if (event.published === false || status === "DR") drafts += 1;
+    }
+
+    const user = Q.collection("users").findOne({
+      $or: [{ _id: userId }, { userId }]
+    });
+    if (!user) Q.fail(`user '${userId}' disappeared while baseline activity counters were synchronized.`);
+    const eventCounters = user.activities && user.activities.event || {};
+    const eventAll = normalizeActivityCount(eventCounters.active)
+      + normalizeActivityCount(eventCounters.pending)
+      + normalizeActivityCount(eventCounters.invitations)
+      + hosting;
+    const result = Q.collection("users").updateOne({
+      $or: [{ _id: userId }, { userId }]
+    }, { $set: {
+      "activities.hosting": hosting,
+      "activities.event.all": eventAll,
+      "activities.event.hosting": hosting,
+      "activities.event.drafts": drafts
+    } });
+    if (result.matchedCount !== 1) {
+      Q.fail(`user '${userId}' disappeared while baseline activity counters were synchronized.`);
+    }
+  }
+
   const CHECKPOINTS = {
     "EVENT-EDITOR-001": {
       stage: "editor-empty",
@@ -73,6 +135,13 @@
       action: "As host, publish the staged draft once; compare host Hosting and unrelated-user Explore.",
       expected: "The same event becomes active once, survives reopen and is visible only to users allowed by its visibility setting.",
       worker: "MUST RUN: one event recompute; reminder and attachment consumers are conditional."
+    },
+    "EVENT-PUBLISH-CHAT-001": {
+      stage: "publish-chat-draft",
+      why: "Prove that publishing an event materializes its main chat from canonical accepted membership before any invitation is accepted.",
+      action: "Keep the Admin and two pending recipients in isolated sessions. Confirm all three event-chat lists have no row for the draft and record the Admin top-level Chats badge, publish once from the Admin Draft card, then reopen the Admin chat list while leaving both pending-recipient chat lists open for one SmartList interval.",
+      expected: "Exactly one unread main-event chat appears for the accepted Admin; the Admin top-level Chats badge and Chat > All/Event counters increase by exactly one immediately and remain identical after reload. My Events remains exactly 1 while Drafts changes from 1 to 0. Both pending recipients' chat counters and lists remain unchanged. The event returns to active with accepted occupancy 1/capacity and pending badge 2, and publish creates no invitation-accepted notification.",
+      worker: "Publish MUST RUN its normal event recompute and directly materialize the main chat. No scheduler is required; pending recipients MUST NOT be added by chat materialization."
     },
     "EVENT-EDITOR-003": {
       stage: "draft-no-auto",
@@ -363,6 +432,18 @@
 
   function sortedUnique(values) {
     return [...new Set((values || []).map(Q.text).filter(Boolean))].sort();
+  }
+
+  function sameIds(actual, expected) {
+    return JSON.stringify(sortedUnique(actual)) === JSON.stringify(sortedUnique(expected));
+  }
+
+  function nestedNumber(document, path) {
+    let value = document;
+    for (const segment of path.split(".")) {
+      value = value && value[segment];
+    }
+    return Number(value || 0);
   }
 
   function eventInviteArtifactsSummary(eventId) {
@@ -815,6 +896,23 @@
       }));
       return;
     }
+    if (stageKind === "publish-chat-draft") {
+      const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
+        ...future,
+        status: "DR",
+        acceptedUserIds: [hostUserId],
+        pendingUserIds: [participantUserId, thirdUserId],
+        invitedUserIds: [participantUserId, thirdUserId]
+      });
+      Q.collection("events").insertOne(event);
+      Q.collection("activityMembers").insertMany([
+        memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+        memberDocument(EVENT_ID, participantUserId, "Member", "pending", "invite"),
+        memberDocument(EVENT_ID, thirdUserId, "Member", "pending", "invite")
+      ]);
+      synchronizeHostEventActivityCounters(hostUserId);
+      return;
+    }
     if (stageKind === "slot-editor-draft") {
       insertHostOnlyEvent(eventDocument(EVENT_ID, EXPECTED_TITLE, {
         status: "DR",
@@ -1158,8 +1256,45 @@
         eventId: Q.text(chat.eventId),
         ownerUserId: Q.text(chat.ownerUserId),
         memberUserIds: sortedUnique(chat.memberIds || []),
-        channelType: Q.text(chat.channelType)
+        channelType: Q.text(chat.channelType),
+        unread: Number(chat.unread || 0)
       })),
+      userActivityCounters: checkpointId === "EVENT-PUBLISH-CHAT-001"
+        ? [hostUserId, participantUserId, thirdUserId].map(userId => {
+            const current = userActivitiesSnapshot(userId);
+            const baseline = (state.actionBaselineUserActivitySnapshots || [])
+              .find(saved => saved.userId === userId);
+            const currentActivities = current.activities.value || {};
+            const baselineActivities = baseline && baseline.activities.value || {};
+            const delta = path => nestedNumber(currentActivities, path) - nestedNumber(baselineActivities, path);
+            return {
+              user: Q.user(userId),
+              current: {
+                chats: nestedNumber(currentActivities, "chats"),
+                chat: currentActivities.chat || {},
+                invitations: nestedNumber(currentActivities, "invitations"),
+                events: nestedNumber(currentActivities, "events"),
+                hosting: nestedNumber(currentActivities, "hosting"),
+                event: currentActivities.event || {}
+              },
+              actionDelta: {
+                chats: delta("chats"),
+                chatAll: delta("chat.all"),
+                chatEvent: delta("chat.event"),
+                invitations: delta("invitations"),
+                events: delta("events"),
+                hosting: delta("hosting"),
+                eventAll: delta("event.all"),
+                eventActive: delta("event.active"),
+                eventPending: delta("event.pending"),
+                eventInvitations: delta("event.invitations"),
+                eventHosting: delta("event.hosting"),
+                eventDrafts: delta("event.drafts"),
+                eventTrash: delta("event.trash")
+              }
+            };
+          })
+        : [],
       invitationAcceptanceOutbox: invitationAcceptanceOutbox.map(item => ({
         notificationType: Q.text(item.notificationType),
         recipientUserIds: sortedUnique(item.recipientUserIds || []),
@@ -1242,7 +1377,7 @@
     if (hostUserId === participantUserId) Q.fail("host and participant must differ.");
     Q.ensureUser(hostUserId, "event host");
     Q.ensureUser(participantUserId, "event participant");
-    if (["invitation-ordinary", "invitation-full", "tournament", "slot-past-tournament"].includes(selected.stage)) {
+    if (["invitation-ordinary", "invitation-full", "tournament", "slot-past-tournament", "publish-chat-draft"].includes(selected.stage)) {
       Q.ensureUser(thirdUserId, "event third participant");
     }
     const colliding = Q.collection("events").findOne({
@@ -1268,12 +1403,23 @@
         expectedTitle: EXPECTED_TITLE,
         ...runtimeContext
       },
-      snapshots: Q.snapshotSpecs(selectors())
+      snapshots: Q.snapshotSpecs(selectors()),
+      userActivitySnapshots: selected.stage === "publish-chat-draft"
+        ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
+        : []
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
     try {
       clearFixture();
       stageData(selected.stage, stagedAtIso, runtimeContext);
+      if (selected.stage === "publish-chat-draft") {
+        state.actionBaselineUserActivitySnapshots = [hostUserId, participantUserId, thirdUserId]
+          .map(userActivitiesSnapshot);
+        Q.collection(Q.STATE_COLLECTION).updateOne(
+          { _id: state._id },
+          { $set: { actionBaselineUserActivitySnapshots: state.actionBaselineUserActivitySnapshots } }
+        );
+      }
     } catch (error) {
       Q.fail(`stage failed after snapshot: ${Q.text(error && error.message)}. Run reset event-domain ${checkpointId}.`);
     }
@@ -1358,6 +1504,159 @@
       expectedVisibleResult: selected.expected,
       workerExpectation: selected.worker,
       note: "The original snapshots are retained so one later reset restores the pre-chain baseline."
+    });
+  }
+
+  function prepareInvitationAcceptanceRetest() {
+    if (checkpointId !== "EVENT-INV-003") {
+      Q.fail("prepare-invitation-acceptance-retest is only valid for EVENT-INV-003.");
+    }
+    const state = requireMatchingState();
+    if (state.invitationAcceptanceRetest && state.invitationAcceptanceRetest.preparedAtIso) {
+      Q.fail("the invitation acceptance retest is already prepared for this checkpoint.");
+    }
+
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event) Q.fail("the retained manual event does not exist.");
+    const eventId = Q.text(event.sourceId || event._id);
+    if (Q.text(event.status) !== "A") {
+      Q.fail(`the retained event must be active, but status is '${Q.text(event.status)}'.`);
+    }
+    if (Number(event.acceptedMembers || 0) !== 2
+        || Number(event.pendingMembers || 0) !== 1
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId, thirdUserId])
+        || !sameIds(event.pendingMemberUserIds, [participantUserId])
+        || !sameIds(event.invitedMemberUserIds, [participantUserId])) {
+      Q.fail("the retained event is not at the expected Casey-accepted, Riley-accepted, Nova-pending pre-retest boundary.");
+    }
+
+    const controlledMembers = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId,
+      userId: { $in: [hostUserId, participantUserId, thirdUserId] }
+    }).toArray();
+    const memberByUserId = new Map(controlledMembers.map(member => [Q.text(member.userId), member]));
+    const hostMember = memberByUserId.get(hostUserId);
+    const pendingControl = memberByUserId.get(participantUserId);
+    const acceptedRecipient = memberByUserId.get(thirdUserId);
+    if (controlledMembers.length !== 3
+        || Q.text(hostMember && hostMember.status) !== "accepted"
+        || Q.text(hostMember && hostMember.role) !== "Admin"
+        || Q.text(pendingControl && pendingControl.status) !== "pending"
+        || Q.text(pendingControl && pendingControl.requestKind) !== "invite"
+        || Q.text(acceptedRecipient && acceptedRecipient.status) !== "accepted"
+        || Q.text(acceptedRecipient && acceptedRecipient.role) !== "Member") {
+      Q.fail("the three controlled membership rows do not match the required pre-retest boundary.");
+    }
+
+    const existingChatCount = Q.collection("chats").countDocuments({
+      $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }]
+    });
+    const existingAcceptanceOutboxCount = Q.collection("notificationOutbox").countDocuments({
+      notificationType: "event-invitation-accepted",
+      $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+    });
+    const existingAcceptanceNotificationCount = Q.collection("userNotifications").countDocuments({
+      kind: "event-invitation-accepted",
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    });
+    if (existingChatCount !== 0
+        || existingAcceptanceOutboxCount !== 0
+        || existingAcceptanceNotificationCount !== 0) {
+      Q.fail("chat or acceptance-notification artifacts already exist; retain them as evidence instead of re-arming this checkpoint.");
+    }
+
+    const recipientUser = Q.collection("users").findOne({
+      $or: [{ _id: thirdUserId }, { userId: thirdUserId }]
+    });
+    if (!recipientUser) Q.fail("the accepted-recipient user no longer exists.");
+    const currentEvents = nestedNumber(recipientUser, "activities.events");
+    const currentActive = nestedNumber(recipientUser, "activities.event.active");
+    if (currentEvents < 1 || currentActive < 1) {
+      Q.fail("the accepted-recipient activity projection is not active and cannot be safely re-armed.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const memberUpdate = Q.collection("activityMembers").updateOne({
+      _id: acceptedRecipient._id,
+      status: "accepted"
+    }, {
+      $set: {
+        status: "pending",
+        role: "Member",
+        pendingSource: "admin",
+        requestKind: "invite",
+        invitedByUserId: hostUserId,
+        actionAtIso: preparedAtIso,
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (memberUpdate.matchedCount !== 1) {
+      Q.fail("the accepted-recipient membership changed while the retest was being prepared.");
+    }
+
+    const eventUpdate = Q.collection("events").updateOne({
+      _id: event._id,
+      acceptedMembers: 2,
+      pendingMembers: 1
+    }, {
+      $set: {
+        acceptedMembers: 1,
+        pendingMembers: 2,
+        acceptedMemberUserIds: [hostUserId],
+        pendingMemberUserIds: [participantUserId, thirdUserId],
+        invitedMemberUserIds: [participantUserId, thirdUserId],
+        pendingRequestMemberUserIds: [],
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (eventUpdate.matchedCount !== 1) {
+      Q.fail("the retained event changed while the retest was being prepared; use reset to restore the original checkpoint snapshot.");
+    }
+
+    const activityUpdate = Q.collection("users").updateOne({
+      _id: recipientUser._id
+    }, {
+      $set: {
+        "activities.events": currentEvents - 1,
+        "activities.invitations": nestedNumber(recipientUser, "activities.invitations") + 1,
+        "activities.event.active": currentActive - 1,
+        "activities.event.invitations": nestedNumber(recipientUser, "activities.event.invitations") + 1
+      }
+    });
+    if (activityUpdate.matchedCount !== 1) {
+      Q.fail("the accepted-recipient activity projection disappeared; use reset to restore the original checkpoint snapshot.");
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "context.actualEventSourceId": eventId,
+        "context.acceptanceRecipientUserId": thirdUserId,
+        "context.pendingControlUserId": participantUserId,
+        "context.eventAdminUserId": hostUserId,
+        invitationAcceptanceRetest: {
+          preparedAtIso,
+          eventId,
+          acceptanceRecipientUserId: thirdUserId,
+          pendingControlUserId: participantUserId,
+          eventAdminUserId: hostUserId
+        }
+      }
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "invitation-acceptance-retest-ready",
+      preparedAtIso,
+      eventId,
+      acceptedRecipient: Q.user(thirdUserId),
+      pendingControl: Q.user(participantUserId),
+      eventAdmin: Q.user(hostUserId),
+      baseline: oracle(refreshedState),
+      next: "Keep all three isolated sessions open. As Riley, accept this invitation exactly once. Then compare Event Members, Riley Chats, Nova Chats, Casey Chats and Casey Notifications without manually invoking a worker."
     });
   }
 
@@ -1819,6 +2118,9 @@
     for (const saved of state.autoInviterRecipientActivitySnapshots || []) {
       restoreUserActivities(saved);
     }
+    for (const saved of state.userActivitySnapshots || []) {
+      restoreUserActivities(saved);
+    }
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     Q.printObject({
       scenario: SCENARIO,
@@ -1833,6 +2135,7 @@
   switch (command) {
     case "stage": stage(); break;
     case "advance": advance(); break;
+    case "prepare-invitation-acceptance-retest": prepareInvitationAcceptanceRetest(); break;
     case "hold-auto-inviter": holdAutoInviter(); break;
     case "prepare-auto-inviter": prepareAutoInviter(); break;
     case "capture-auto-inviter-baseline": captureAutoInviterBaseline(); break;

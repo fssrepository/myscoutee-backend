@@ -67,6 +67,8 @@ class ChatServiceTest {
     @Mock
     private BulkOperations bulkOperations;
     @Mock
+    private BulkOperations userCounterBulkOperations;
+    @Mock
     private UsersRepository usersRepository;
     @Mock
     private ActivityMembersRepository activityMembersRepository;
@@ -171,6 +173,55 @@ class ChatServiceTest {
         assertThat(persisted).extracting(Chat::getOwnerUserId)
                 .containsExactly("user-1", "user-2");
         verify(chatsRepository).saveAll(anyList());
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq(Users.class));
+    }
+
+    @Test
+    void publishedMainEventChatStoresOneSystemMessageAndIncrementsCountersOnce() {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Published Event");
+        List<Chat> persisted = new ArrayList<>();
+        AtomicReference<ChatMessage> inserted = new AtomicReference<>();
+        when(chatsRepository.findByChatId(event.getSourceId()))
+                .thenAnswer(invocation -> List.copyOf(persisted));
+        when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<Chat> saved = invocation.getArgument(0);
+            persisted.clear();
+            persisted.addAll(saved);
+            return saved;
+        });
+        when(chatMessagesRepository.findByChatIdAndMessageId("event-1", "system:event-published"))
+                .thenAnswer(invocation -> Optional.ofNullable(inserted.get()));
+        when(chatMessagesRepository.insert(any(ChatMessage.class))).thenAnswer(invocation -> {
+            ChatMessage message = invocation.getArgument(0);
+            inserted.set(message);
+            return message;
+        });
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
+                .thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
+                .thenReturn(userCounterBulkOperations);
+
+        ChatService.PublishedMainEventChatResult firstResult =
+                service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
+        ChatService.PublishedMainEventChatResult repeatedResult =
+                service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
+
+        assertThat(inserted.get()).isNotNull();
+        assertThat(inserted.get().getId()).isEqualTo("system:event-published");
+        assertThat(firstResult.initialMessageInserted()).isTrue();
+        assertThat(repeatedResult.initialMessageInserted()).isFalse();
+        verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
+        verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
+        ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
+        verify(userCounterBulkOperations, times(2)).updateOne(
+                any(Query.class),
+                counterUpdates.capture());
+        verify(userCounterBulkOperations).execute();
+        assertThat(counterUpdates.getAllValues()).extracting(update ->
+                        update.getUpdateObject().get("$inc", Document.class).getInteger("activities.chats"))
+                .containsExactly(1, 1);
     }
 
     @Test
@@ -193,6 +244,8 @@ class ChatServiceTest {
         });
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
                 .thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
+                .thenReturn(userCounterBulkOperations);
 
         var firstResult = service.ensureInitialSystemMessage(
                 "random-room-1",
@@ -213,10 +266,10 @@ class ChatServiceTest {
         verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
         verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
         ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
-        verify(mongoTemplate, times(2)).updateFirst(
+        verify(userCounterBulkOperations, times(2)).updateOne(
                 any(Query.class),
-                counterUpdates.capture(),
-                eq(Users.class));
+                counterUpdates.capture());
+        verify(userCounterBulkOperations).execute();
         assertThat(counterUpdates.getAllValues()).allSatisfy(update -> {
             Document increments = update.getUpdateObject().get("$inc", Document.class);
             assertThat(((Number) increments.get("activities.chats")).intValue()).isEqualTo(1);

@@ -34,7 +34,7 @@ the same prerequisite without depending on an earlier human action.
 | Producer | Persisted output | Direct UI projection | Automatic consumers | Required follow-up cases |
 | --- | --- | --- | --- | --- |
 | Event Editor draft save | Canonical draft event, `event.synced` telemetry, event recompute task | Hosting/Draft event card and reopened editor | Statistics worker, Monitoring projection, affinity recompute worker | `EVENT-EDITOR-001`, `GRAPH-006` |
-| Event publish | Active/published event and refreshed event counters | Hosting and Explore according to visibility | Statistics/Monitoring; slot/reminder consumers when configured | `EVENT-EDITOR-002` |
+| Event publish | Active/published event, accepted-member main chat and refreshed event counters | Hosting and Explore according to visibility; Chat only for accepted members | Statistics/Monitoring; direct chat materialization; slot/reminder consumers when configured | `EVENT-EDITOR-002`, `EVENT-PUBLISH-CHAT-001` |
 | Event lifecycle mutation | Draft, active or trashed canonical state plus `statusBeforeSuppression` where applicable | Hosting, Drafts, Explore and Trash buckets | Event affinity recompute; lifecycle notification, reminders and attachments where applicable | `EVENT-LIFE-001` through `EVENT-LIFE-005` |
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
 | Event save with Tournament mode/stages | Tournament definition, sub-event/stage definitions and runtime counts | Event editor, stage list and tournament group UI | Random grouping/start action, tournament review scheduler, reminders and notifications | `EVENT-EDITOR-004`, `TOURNAMENT-001` through `TOURNAMENT-003`, `JOB-TOURNAMENT` |
@@ -61,7 +61,7 @@ as proof for another case.
 
 The principal checkpoint chains are:
 
-- `EVENT-EDITOR-001` -> `EVENT-EDITOR-002` -> `EVENT-LIFE-001` ->
+- `EVENT-EDITOR-001` -> `EVENT-EDITOR-002` -> `EVENT-PUBLISH-CHAT-001` -> `EVENT-LIFE-001` ->
   `EVENT-LIFE-002` -> `EVENT-LIFE-003`: draft, publish, unpublish, trash and
   restore.
 - `EVENT-INV-001` -> `EVENT-INV-002` -> `EVENT-INV-003` ->
@@ -170,6 +170,56 @@ Execution evidence on 2026-08-04:
   hand-created event identity in task and outbox selectors; the corrected
   oracle reported exactly one. This was a QA-harness defect, not a product
   publish defect.
+
+### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
+
+- This checkpoint tests the Publish transition itself. It does not use an
+  invitation acceptance, scheduler, worker endpoint or fixture-created chat.
+- Stage the dedicated `Manual QA EVENT-PUBLISH-CHAT-001` checkpoint. It starts
+  exactly once in the Admin's Drafts bucket with Casey as the only accepted
+  Admin, Nova and Riley pending, and no event-chat document.
+- Use three isolated authenticated sessions: Casey Bridge as the accepted
+  Admin, and Nova Social plus Riley Outside as pending recipients.
+- First verify that none of the three Chat > All lists contains the controlled
+  event and record Casey's top-level Chats badge. Close only Casey's chat
+  popup, then publish once from the Draft card.
+- Reopen Casey's Chat > All list. Leave Nova and Riley's already-open chat
+  lists unchanged for at most one 30-second SmartList interval.
+- Require exactly one main-event chat for Casey. Nova and Riley must remain
+  denied because pending membership is not chat authorization.
+- Casey's top-level Chats badge and Chat > All/Event unread counters must
+  increase by exactly one immediately from the Publish response and retain the
+  same value after reload. Nova and Riley's chat counters must not change.
+- Require the active event projection to show accepted occupancy `1 / 8` and
+  pending badge `(2)`. Publish must not create an invitation-accepted
+  notification.
+- Repeat Publish only through a new explicit unpublish/publish lifecycle run.
+  The same event must still resolve to one main chat; duplicate chat documents
+  are a failure.
+
+Execution state on 2026-08-04:
+
+- HISTORICAL FAIL: the retained event published with Casey materialized as its
+  accepted Admin, but Casey's Chat list stayed empty. Nova and Riley correctly
+  had no chat while pending. This was a backend lifecycle omission, not a UI
+  fallback problem.
+- BACKEND FIX: Publish now resolves the canonical accepted
+  membership snapshot and idempotently materializes the main event chat before
+  downstream invitation work. Missing accepted membership fails the publish
+  transaction instead of synthesizing chat authorization from event fields;
+  the mutation persists only `Users.activities` counts and returns non-zero
+  operation-owned unit bucket directions (`-1`/`+1`) for immediate frontend
+  cache convergence. It never derives those directions from a global
+  `Users.activities` before/after diff; the periodic poll reconciles concurrent
+  external changes.
+- BUILD/LOCAL REGRESSION PASS: the running frontend and backend hot-deploy
+  builds are green, and the two focused local frontend suites passed 12/12.
+  A new backend unit run was deliberately stopped when laptop memory pressure
+  became visible; no second server or watcher was left running.
+- CLEAN MANUAL RETEST READY: a new isolated Draft is staged under
+  `manual-qa-checkpoint:v1:event-domain:event`. Its machine baseline has zero
+  event chats and zero action deltas. The next action is exactly one Casey
+  Draft-card Publish with Nova and Riley as negative controls.
 
 ### `EVENT-EDITOR-003` — save feeds the real auto-inviter
 
@@ -550,6 +600,22 @@ Execution evidence on 2026-08-04:
 - In the Admin session, verify exactly one acceptance notification that names
   the accepted recipient and the event. It must be distinct from the original
   invitation notification and from unrelated lifecycle notifications.
+- For the focused positive-branch retest after a previously consumed
+  acceptance, first continue the retained manual event into this checkpoint and
+  re-arm only the controlled transition:
+
+  ```bash
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh \
+    advance event-domain EVENT-EDITOR-003 EVENT-INV-003
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh \
+    prepare-invitation-acceptance-retest event-domain EVENT-INV-003
+  ```
+
+  The preparation command is intentionally guarded. It accepts only the exact
+  Casey-accepted, Riley-accepted, Nova-pending state, retains the original
+  chain snapshot for Reset, and restores Riley to pending without invoking a
+  worker. It prints the three identities and the read-only baseline before any
+  UI action.
 
 Execution evidence on 2026-08-04:
 

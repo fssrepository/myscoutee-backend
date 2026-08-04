@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.BeforeEach;
@@ -296,15 +297,37 @@ class ActivitiesEventsServiceTest {
         host.setName("Host User");
         ActivityEvent event = event("event-1", "host", 0d);
         event.setStatus(ActivityEvent.STATUS_DRAFT);
+        AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        8);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
-                .thenReturn(List.of(event));
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
         when(activityEventsRepository.findBySourceId("event-1"))
-                .thenReturn(List.of(event));
-        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> saved = invocation.getArgument(0);
+            currentEvent.set(saved.get(0));
+            return saved;
+        });
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(membersSnapshot);
+        when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
+                .thenReturn(Map.of("event-1", membersSnapshot));
+        when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
+                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", true));
 
-        service.publish(new EventActionRequestDto(
+        EventParticipationActionResultDto result = service.publish(new EventActionRequestDto(
                 "host",
                 "event-1",
                 null,
@@ -326,6 +349,16 @@ class ActivitiesEventsServiceTest {
             assertThat(record.getAdmins()).contains("host");
         });
         verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
+        ArgumentCaptor<ActivityEvent> chatEventCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
+        verify(chatService).ensurePublishedMainEventChat(chatEventCaptor.capture(), eq(List.of("host")));
+        assertThat(chatEventCaptor.getValue().getSourceId()).isEqualTo("event-1");
+        assertThat(chatEventCaptor.getValue().getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
+        assertThat(chatEventCaptor.getValue().getPublished()).isTrue();
+        assertThat(result.counterDelta().chats()).isEqualTo(1);
+        assertThat(result.counterDelta().chat().all()).isEqualTo(1);
+        assertThat(result.counterDelta().chat().event()).isEqualTo(1);
+        assertThat(result.counterDelta().event().drafts()).isEqualTo(-1);
+        assertThat(result.counterDelta().hosting()).isNull();
     }
 
     @Test

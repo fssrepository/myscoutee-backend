@@ -38,6 +38,7 @@ snapshot; `status` queries the resulting identities from Mongo.
 Supported checkpoint IDs:
 
 - `EVENT-EDITOR-001` through `EVENT-EDITOR-005`
+- `EVENT-PUBLISH-CHAT-001`
 - `EVENT-SLOT-001` through `EVENT-SLOT-004`
 - `EVENT-INV-001` through `EVENT-INV-005`
 - `EVENT-ACTIVITY-REFRESH-001`

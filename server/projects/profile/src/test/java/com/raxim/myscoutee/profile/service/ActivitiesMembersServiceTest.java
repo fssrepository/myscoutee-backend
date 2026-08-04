@@ -2260,8 +2260,6 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
-
         service.requestJoin("event-1", viewer, event, true, false, false);
 
         assertThat(stored.get())
@@ -2305,6 +2303,7 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
 
         service.requestJoin("event-1", viewer, event, true, false, false);
 
