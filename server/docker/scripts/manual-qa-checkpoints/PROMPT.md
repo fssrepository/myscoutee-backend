@@ -1,39 +1,40 @@
 # Reproducible manual-QA prompt
 
-## Original user requests
+## Source requirements translated into English
 
-The following Hungarian requests define why this harness exists and are kept
-verbatim so the workflow is reproducible:
+The following translated requests define why this harness exists. They preserve
+the requested workflow and constraints without retaining non-English source
+text:
 
-> lenyeg az, hogy a scheduler utemezesen lehet modositani, igy lehet tesztelni
-> a scheduler-t azt az adatbazisban atirod kb. es varjuk a csodat, de a tesztet
-> ugy kell megismetelni hogy nekem idom legyen legalab egy screenshotra es igy
-> a checkpointokrol tudok erdemi informaciot adni
+> Test the real scheduler by changing its persisted database schedule and then
+> waiting for the scheduler to pick up the work. Repeat the test with enough
+> time for the human observer to capture at least one screenshot and provide
+> meaningful evidence at every checkpoint.
 
-> ne a fixture-t alakitsd at, hanem ez most manualis teszt a fixture-t meg
-> automatan futtatod, ehez az 57 teszthez kulon ne nyulj, hanem keszits valamit
-> manualisra es esetleg berakod valami alkonyvtarba hogy ezen egy QA rajtam
-> fuggetlenul is at tud menni
+> Do not adapt or extend the automated fixture suite for this manual test. Do
+> not touch its 57 tests. Create a separate manual workflow in a dedicated
+> directory so another QA operator can execute it without depending on the
+> original human observer.
 
-> sot azt is rakd be hogy promtban mit kertem toled, hogy reprodukalhato legyen
-> a munkafolyamat
+> Include the request itself as a reusable prompt so the workflow is
+> reproducible.
 
-> azert probaljuk ugy hogy eloszor minden ablakot kinyitok van 3 gmailes
-> accountom igy a sessionok nem keverednek, igy csokkentheto az utemezesi ablak
-> is
+> Open every observation window before shortening the schedule. Use three
+> separate Gmail/browser accounts so sessions and active users cannot mix. This
+> allows a much shorter scheduling window.
 
-> es amugy ezt is leirhatod a tervbe, ha bvalaki reprodukalni szeretne
+> Document this multi-session setup in the plan for anyone reproducing the
+> test.
 
-> azert ne 3 percet varjak mar ra
+> Do not impose an unnecessary three-minute wait.
 
-> ugye itt amit mi leellenoriztunk arra is keszits qa manual scriptet (amit a
-> mostani folyamatban levo tesztre is csinalsz), hogy megismetelheto, legyen, de
-> most kulon nem ismeteljuk meg
+> Create equivalent reproducible manual QA scripts for the tests already
+> completed, but do not rerun those completed tests solely to create the
+> documentation.
 
-> na, akkor csinald meg, de ugye ezen most nem fogunk meg egyzser atmenni
-
-> ugye itt az is kell, hogy esetleg lefuttat valamit, amivel csokenti a scheuler
-> utemezeset is, tehat eloall valami amit utan kezdhet mar tesztelni
+> The manual helper must be able to prepare a testable state and, when the
+> scenario genuinely uses a scheduler, shorten the persisted scheduler timing
+> before the human observation begins.
 
 Related standing instructions from the same QA session:
 
@@ -71,6 +72,9 @@ time, waiting for the human screenshot/confirmation before continuing:
    Statistics event inventory baseline.
 3. Ask the human to capture post-stage Statistics, Monitoring/All, and
    event-auto-inviter Admin Job baseline screenshots. Do not schedule yet.
+   If evidence collection approaches the one-hour deadline, run
+   `hold stat-012`; record the new synthetic timing anchor and continue without
+   attributing it to a scheduler execution.
 4. Before scheduling, have the human open Monitoring, Statistics, Admin Job
    detail, and the `expectedInvitee` notification view across three isolated
    Gmail/browser sessions. After all baseline screenshots are confirmed, run

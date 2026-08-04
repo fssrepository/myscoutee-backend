@@ -21,6 +21,7 @@ Usage:
   bash manual-qa-checkpoints.sh status stat-020
   bash manual-qa-checkpoints.sh reset stat-020
   bash manual-qa-checkpoints.sh stage stat-012
+  bash manual-qa-checkpoints.sh hold stat-012
   bash manual-qa-checkpoints.sh status stat-012
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
@@ -143,7 +144,7 @@ case "${scenario}:${command}" in
   stat-010:stage|stat-010:status|stat-010:reset|\
   stat-011:stage|stat-011:status|stat-011:reset|\
   stat-020:stage|stat-020:status|stat-020:reset|\
-  stat-012:stage|stat-012:status|stat-012:reset)
+  stat-012:stage|stat-012:hold|stat-012:status|stat-012:reset)
     [ "$#" -eq 2 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}"
     ;;

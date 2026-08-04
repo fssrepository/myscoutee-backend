@@ -375,7 +375,7 @@ and 06:06 show the same visible KPI and section values before and after one
 no-action refresh; all dynamic panels rendered without an error or stuck
 loading state. The graph-evolution readout briefly showing Aug 1 is the hovered
 point, while the latest daily point remains Aug 4. `Simple`, `Board games`,
-`Fitness`, `Community 1/2` and `Cluster minőség` remain mixed-language labels;
+`Fitness`, `Community 1/2` and `Cluster quality` remain mixed-language labels;
 this is recorded as a cosmetic i18n observation and did not fail the functional
 baseline.
 
@@ -512,6 +512,30 @@ check rather than manufacturing scheduler-style E2E scenarios:
 These checks are manual UI smoke tests. A static form pass must not be reported
 as proof of its downstream scheduled or projection behavior.
 
+## Queued cross-surface performance defect
+
+`UI-POLL-JANK-001` is an `OPEN`, `P1 65` (`I2 L3 A5 N4 O2`) manual retest and
+must remain in the master spreadsheet until **both** checkpoints pass:
+
+1. **Admin Job checkpoint — observed, code path corroborated, trace pending.**
+   Pointer movement visibly stutters with Job Detail open. The Admin process
+   center polls its whole state every five seconds, replaces the shared state
+   signal, and does not use `OnPush`. The configured `detailOpen()` task state
+   does not currently gate the poll, although overlapping requests are blocked.
+2. **Chat checkpoint — reported, root cause unconfirmed, trace pending.** Similar
+   stutter was reported in an open chat. Chat itself uses `OnPush` and WebSocket
+   events; a separate global user realtime long-poll runs every 30 seconds, or
+   10 seconds in demo mode. Do not assume this is the same five-second Job path.
+
+Run this pack after the current `STAT-012` scheduler scenario; it does not block
+capturing that scheduler's functional evidence. Record 20–30 second browser
+Performance and Network traces for idle UI, Admin process list, Job Detail and
+Chat while continuously moving the pointer and, in Chat, scrolling/typing. Mark
+the exact hitch timestamps and correlate them with the five-second Job request,
+WebSocket messages, user realtime long-poll completion, scripting, layout and
+paint. A fix is accepted only when the affected trace no longer has the periodic
+hitch and both UI checkpoints remain functionally correct.
+
 ## Execution order for the next manual session
 
 1. Complete `STAT-001`, `MON-001` and `GRAPH-001` as a read-only baseline.
@@ -523,7 +547,8 @@ as proof of its downstream scheduled or projection behavior.
 5. Run `PARAM-011`–`PARAM-016`, reverting after each section.
 6. Finish the Statistics action deltas, Monitoring failure/recovery and graph
    interaction/large-data packs.
-7. Run the static-form smoke pack and record only newly found failures.
+7. Run `UI-POLL-JANK-001` for both Admin Job and Chat with browser traces.
+8. Run the static-form smoke pack and record only newly found failures.
 
 ## Completion rule
 

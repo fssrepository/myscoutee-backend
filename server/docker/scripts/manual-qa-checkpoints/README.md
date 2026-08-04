@@ -106,6 +106,17 @@ not eligible for one hour.
 Expected phase: `baseline-ready`; invitation, marker, outbox, and bell counts
 are all zero.
 
+If human evidence collection approaches the one-hour safety deadline, refresh
+the baseline hold without arming the scheduler:
+
+```bash
+bash manual-qa-checkpoints.sh hold stat-012
+```
+
+`hold` is accepted only before `schedule`, while the rule is not running and no
+invitation or scheduler marker exists. It refreshes only the synthetic timing
+anchor and keeps the real job ineligible for another hour.
+
 Capture these baseline screenshots before scheduling:
 
 1. **Admin → Monitoring / All**, including Events and Event members.
@@ -208,8 +219,8 @@ telemetry or run history.
   starts infrastructure.
 - Always reset after the screenshots and oracles have been captured.
 
-See [PROMPT.md](PROMPT.md) for the original requests and a reusable operator
-prompt.
+See [PROMPT.md](PROMPT.md) for the source requirements translated into English
+and a reusable operator prompt.
 
 The Statistics tests already completed in this QA session are preserved as
 retrospective, non-rerun workflows under

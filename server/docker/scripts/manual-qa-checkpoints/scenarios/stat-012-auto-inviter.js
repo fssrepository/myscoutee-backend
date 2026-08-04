@@ -564,6 +564,34 @@
     });
   }
 
+  function hold() {
+    const state = activeState(true);
+    assertRuleNotRunning(PRIMARY_RULE);
+    if (state.scheduledAtIso) {
+      fail("the short scheduler window has already been armed; reset before creating another baseline hold.");
+    }
+    const artifactCount = collection("activityMembers").countDocuments({
+      ownerType: "event",
+      ownerId: EVENT_ID,
+      status: "pending",
+      requestKind: "invite"
+    }) + collection("schedulerPlanMarkers").countDocuments({ ownerId: EVENT_ID });
+    if (artifactCount !== 0) {
+      fail("scheduler artifacts already exist; reset before creating another baseline hold.");
+    }
+    holdRule("Manual QA baseline checkpoint is held; schedule command has not been issued.");
+    const rule = ruleSummary();
+    printObject({
+      scenario: "stat-012",
+      phase: "baseline-ready",
+      heldAtIso: rule.lastRunAtIso,
+      schedulerHoldSeconds: HOLD_INTERVAL_SECONDS,
+      calculatedDueAtIso: rule.calculatedDueAtIso,
+      pendingCount: rule.pendingCount,
+      next: "Capture all remaining UI baselines, then run schedule stat-012."
+    });
+  }
+
   function ruleSummary() {
     const rule = requireRule(PRIMARY_RULE);
     const timing = rule.timing || {};
@@ -721,6 +749,7 @@
   assertDeploymentSafety();
   switch (command) {
     case "stage": stage(); break;
+    case "hold": hold(); break;
     case "schedule": schedule(); break;
     case "status": status(); break;
     case "reset": reset(); break;
