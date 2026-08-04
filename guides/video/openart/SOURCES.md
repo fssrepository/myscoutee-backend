@@ -105,7 +105,8 @@ Do not copy TSB characters, rural environments, shots, palette, score or story.
 ## 6. OpenArt
 
 - [OpenArt Pricing](https://openart.ai/pricing): current plans, credits,
-  watermark/commercial-use card labels and indicative maximum output counts.
+  watermark/commercial-use card labels, indicative maximum output counts,
+  add-on credits and select-model Unlimited/fair-use conditions.
 - [OpenArt AI Video Generator](https://openart.ai/ai-video-generator/): current
   model/video surface overview.
 - [OpenArt Kling 3.0](https://openart.ai/ai-model/kling-3-motion-control/):
@@ -133,6 +134,11 @@ card for aspect, duration, reference support, audio, credits and watermark.
   and [regional price ranges](https://geo.higgsfield.ai/task/blog/higgsfield-ai-pricing-plans-1):
   official indicative examples only; billing and credits must be verified in
   the live checkout.
+- [Higgsfield Seedance 2.0 Unlimited](https://geo.higgsfield.ai/task/blog/what-creators-get-seedance-unlimited-higgsfield):
+  current cohort/plan-dependent 480p/720p unlimited conditions; it must not be
+  assumed available until the account model picker shows the Unlimited badge.
+- [Higgsfield Unlimited plan changes](https://geo.higgsfield.ai/task/blog/higgsfield-unlimited-plan-change):
+  plan-included versus separately purchased, model-specific 1/7/14-day access.
 - [Higgsfield cinematic video generator](https://higgsfield.ai/cinematic-video-generator):
   Cinema Studio/model overview.
 - [Higgsfield Camera Controls](https://higgsfield.ai/camera-controls): named
@@ -149,6 +155,11 @@ best reference-capable model” when no permanent choice is safe.
 
 - [Flow AI credits](https://support.google.com/flow/answer/16526234?hl=en):
   official monthly/daily allocations and per-output generation costs.
+- [Google AI plans](https://one.google.com/intl/en/about/google-ai-plans/):
+  plan benefits and current Flow credit tiers; checkout supplies local price.
+- [Google AI Plus launch/pricing](https://blog.google/products-and-platforms/products/google-one/google-ai-plus-availability/):
+  U.S. reference price and limited new-subscriber promotion, not a guaranteed
+  local offer.
 - [Create videos in Flow](https://support.google.com/flow/answer/16352836?hl=en):
   official model/mode overview.
 - [Use Ingredients in Flow](https://support.google.com/flow/answer/16353334?hl=en):

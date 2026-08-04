@@ -97,7 +97,7 @@ from a human-visible UI confirmation.
 | `event-random-groups` visible outcome | 2026-07-31 | `MANUAL FUNCTIONAL PASS`, UI `PARTIAL` | Two source events produced two shared rooms/chats and two real system messages; all 6/6 public users were assigned; all three chat counters rose by one. | Record screenshots of room, chat and counter presentation in one future execution. The later system-message text/icon edit was stylistic, not a functional retest blocker. |
 | `event-auto-inviter` notification | 2026-07-31 | `MANUAL UI PASS` | The user confirmed both expected bell items were visible. | Add Statistics and Monitoring before/after evidence. |
 | Notification read path and rating/feedback | 2026-08-04 | `MANUAL FUNCTIONAL PASS`; rating bell `MANUAL UI PASS`; read/feedback UI `PARTIAL` | Historical read/rating/feedback API/database oracles passed. In the current controlled rating run, Nova's notification center showed exactly one unread **New rating** item from Casey after the frontend batch. | Click/read the controlled rating item and confirm its counter transition; repeat event-feedback notification presentation visually. |
-| Statistics baseline / causal behavior | 2026-08-04 | baseline and `STAT-010` `MANUAL UI + FUNCTIONAL PASS`; later causal rows `NOT RUN` | `STAT-001` rendered all dynamic sections and stayed stable across a no-action refresh. In `STAT-010`, Casey staged 4 and pressed **Save** once; the delayed frontend batch, exact single outbox/bell, actor exclusion and unread projection passed. Browser evidence then confirmed today's Ratings 0→1 and `rates.synced` 342→343 with unrelated domain totals stable. | Run `STAT-011` onward; qualify `STAT-010` Monitoring/Graph effects in their separate packs. |
+| Statistics baseline / causal behavior | 2026-08-04 | `STAT-001`, `STAT-010`, `STAT-011` `MANUAL UI + FUNCTIONAL PASS`; `STAT-020` defect fixed, runtime + Statistics UI `PASS` | Baseline refresh stayed stable. The controlled rating and ordinary chat produced their exact once-only deltas. The rating-induced graph refresh exposed retroactive timeline rewriting; the hot-deployed fix preserved all 13 past points while today's active/recurring edges changed 309→313/274→278. A subsequent real Refresh retained the selected Jul 22 values in the browser. | Run `STAT-012` onward and complete Monitoring/Affinity Graph comparisons. |
 | Monitoring / Metrics causal behavior | 2026-08-04 automated/runtime evidence | `AUTOMATED CONTRACT PASS`; manual `NOT RUN` | Service tests prove eight unique flows and exact config/start/terminal projection. After hot deploy, the real dev scheduler produced four starts and four completions for four zero-record jobs through Redis and the persisted Mongo snapshot. | Run the browser Monitoring pack below, especially live queue transitions and one fixture-backed run per job. |
 | Interactive Affinity Graph | — | `NOT RUN` | Controller/service tests cover full/meta/forest/tile/neighborhood/rebuild contracts. | Run visual interaction, lazy-loading and causal edge-change tests. |
 | Parameters UI | — | `NOT RUN` | Service tests cover versioning and exact-once save/revert telemetry; an HTTP E2E test proves notification threshold save, recompute enqueue, delivery-strategy change, history and revert. | Manually test UI save/reopen/history/revert and one causal scenario per parameter section. |
@@ -349,6 +349,31 @@ browser Statistics refresh remained for this row. Screenshots at 06:37 and
 342→343. Events/assets 1495, Communication 426 and Moderation 14 stayed stable.
 `STAT-010` is therefore closed as a Statistics and rating/bell functional/UI
 PASS; its indirect Monitoring and Graph cells remain in their separate packs.
+
+`STAT-011`, 2026-08-04: Farkas Anna sent the unique ordinary message `QA
+STAT-011 ordinary message 2026-08-04 06:48` once in **Host Circle Ops**. The UI
+showed one new bubble; the API showed total 41→42 and exactly one matching
+non-system row. The normal Statistics worker and 06:53 browser screenshots
+confirmed today's Messages 0→1, Communication/Messages 417→418 and
+Communication total 426→427. This row passed.
+
+`STAT-020` defect found during the same refresh: the current graph legitimately
+changed after the earlier rating/recompute, but the materializer also rewrote
+all Jul 22–Aug 3 points from two bridge users/two communities/7% cluster quality
+to zero/one/3%. Historical timeline points must remain immutable; only Aug 4
+may absorb the new graph state. The original FAIL remains recorded as evidence.
+The fix now merges newly calculated values into today only and preserves every
+stored prior date; a focused regression unit source covers first materialization,
+past-point preservation and today's replacement. The existing dev stack
+compiled the changed class one second after the source write. Runtime snapshots
+at 04:51:23 and 04:58:42 then proved the contract: today's active edges changed
+309→313 and recurring edges 274→278, while all 13 earlier points remained
+exactly unchanged. A standalone Gradle test process was intentionally not
+started. The post-fix 07:05 browser screenshot, using the 07:03 admin snapshot
+after another real Refresh, reselected Jul 22 and retained Active edges 16, New
+edges 0, Recurring 13, Weak ties 16, Network quality 67%, and Cluster quality
+3%. The manual Statistics UI retest therefore passed; only the direct Affinity
+Graph comparison remains.
 
 ## Monitoring / Metrics manual pack
 

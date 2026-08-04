@@ -244,7 +244,7 @@ rough cutja csak összehasonlítás; a Resolve timeline marad az igazság.
 **Alapból hagyd ki ezt a fejezetet.** Csak akkor használd, ha egy fontos
 OpenArt-shot ugyanazzal a jóváhagyott first frame-mel, egyszerűsített mozgással
 és három kontrollált próbálkozással is ugyanúgy hibás. Előfizetés előtt kövesd a
-[költségdöntés mentési szabályát](11_COST_AND_MODEL_DECISION.md#4-mikor-érdemes-higgsfieldet-venni).
+[költségdöntés mentési szabályát](11_COST_AND_MODEL_DECISION.md#4-when-should-i-buy-higgsfield).
 
 1. **Cinema Studio 3.5 → New project** → `TCBU_Master_9x16_720p_24fps`.
 2. **Elements** alatt hozd létre a [07_HIGGSFIELD_WORKFLOW.md](07_HIGGSFIELD_WORKFLOW.md)
@@ -281,7 +281,7 @@ csoporttagok száma és ruhája nem változik.
 vízjele miatt publikálható termékfilmhez nem ez az első választás. Csak akkor
 nyisd meg, ha már van hozzáférésed, egy konkrét OpenArt-átmenet elbukott, és
 előre ellenőrizted a végleges vízjelet/jogokat a
-[költségdöntés szerint](11_COST_AND_MODEL_DECISION.md#3-átugorjam-a-flow-t).
+[költségdöntés szerint](11_COST_AND_MODEL_DECISION.md#3-should-i-skip-flow).
 
 1. Flow → **New project** → `TCBU_Master_9x16_720p`.
 2. Töltsd fel és nevezd el az engedélyezett karakter-, világ- és travel asseteket.

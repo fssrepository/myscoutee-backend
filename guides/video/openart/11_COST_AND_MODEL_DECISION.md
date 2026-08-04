@@ -1,352 +1,516 @@
-# Költség- és modelldöntés — mit vegyek meg, mivel kezdjek?
+# Cost and model decision — what should I buy, and where should I start?
 
-Ellenőrizve: **2026-08-04**. Az árak, kreditek, modellek, vízjelek és régiós
-hozzáférések gyorsan változnak. A fizetés előtti utolsó szó mindig a saját
-fiókod checkout oldala. Az alábbi összegek USD-ben, helyi áfa, banki
-devizaváltás és opcionális zene-/hanglicenc nélkül értendők.
+Reviewed: **2026-08-04**. Prices, credits, models, watermarks, promotions and
+regional access change quickly. The checkout page shown in your own account is
+always authoritative before payment. All figures below are USD references,
+excluding local VAT, bank conversion fees and optional music or sound licences.
 
-## Rövid, egyértelmű döntés
+## Clear recommendation
 
-Ehhez a 02:48-as, 9:16-os, 720×1280-as MyScoutee-filmhez ezt válaszd:
+For this 02:48, 9:16, 720×1280 MyScoutee film, use:
 
-> **DaVinci Resolve Free + egy hónap a 12 000 kredites, kereskedelmi jogot jelölő
-> OpenArt csomagból (a felület Advanced vagy Plus néven mutathatja). A Flow-t
-> első körben ugord át. Higgsfieldet csak akkor fizess elő, ha az OpenArtban
-> ugyanaz az arc-/csoportjelenet három szabályozott próbálkozás után is hibás.**
+> **DaVinci Resolve Free plus one month of the 12,000-credit OpenArt tier that
+> explicitly includes commercial-use rights and watermark-free output. It may
+> be labelled Advanced or Plus. Skip Flow initially. Buy Higgsfield only if the
+> same identity- or group-critical OpenArt shot still fails after three
+> controlled attempts.**
 
-Ne fizess elő egyszerre három videós szolgáltatásra. Először készítsd el a
-hangos still animatikot nulla videógenerálással. Utána az OpenArtban építsd fel
-az összes karaktert, világot, állóképet és a szükséges mozgó snitteket. A
-Resolve-ban legyen a vágás, a felirat, a valódi UI, a logó és a végleges hang.
+Do not subscribe to all three video services at once. First build a narrated
+still animatic with no paid video generation. Then create the characters,
+worlds, stills and required moving shots in OpenArt. Use Resolve for editing,
+captions, real UI, the original logo and the final sound mix.
 
-### Miért ez a legjobb költség/minőség arány?
+### Why this is the best cost/control balance
 
-- Az OpenArt egy helyen ad Director-, karakter-, kép- és többféle
-  videómodellt. Ugyanazokat a referenciákat használhatod, ezért kisebb az
-  arc- és stíluseltérés.
-- A jelenlegi 12 000 kredites Advanced/Plus kártya kereskedelmi felhasználást
-  és vízjelmentes kimenetet jelöl. Ez termékfilmhez fontosabb, mint a
-  legolcsóbb tesztár.
-- Az OpenArt felületén elérhető lehet Kling, Seedance és Veo is, ezért a Flow
-  önálló előfizetése többnyire ugyanannak a képességnek a második megvásárlása.
-- A cél 720p mobilvideó. Nem érdemes 1080p/4K kreditet venni addig, amíg a kész
-  720×1280 export telefonon nem bukik el.
-- A 168 másodpercből több rész Resolve-ban olcsóbban és pontosabban készül:
-  évszakmontázs, utazási villanások, prioritásgrafika, affinity-vonalak, UI,
-  logó és end card.
+- OpenArt provides Director, character, image and multiple video models in one
+  workspace. Reusing the same references reduces identity and style drift.
+- The current 12,000-credit Advanced/Plus card explicitly lists commercial-use
+  rights and watermark-free output.
+- OpenArt may expose Kling, Seedance and Veo in the same workspace, so a
+  separate Flow subscription often buys overlapping model access.
+- The target is a 720p mobile film. Do not spend on 1080p or 4K until the
+  finished 720×1280 export actually fails phone QA.
+- Several parts of the 168-second film are cheaper and more controllable in
+  Resolve: seasons, travel flashes, priority graphics, affinity lines, product
+  UI, logo and end card.
 
-## 1. Mennyibe kerüljön?
+## 1. Cost
 
-### Ajánlott költségkeretek
+### Recommended budget ranges
 
-| Forgatókönyv | Mit veszel? | Tervezési keret | Mikor indokolt? |
+| Scenario | What you buy | Planning budget | When it makes sense |
 | --- | --- | ---: | --- |
-| **Nulladik próba** | Resolve Free + saját próba-VO + ingyenes/draft lehetőségek | **$0** | időzítés, történet és workflow ellenőrzésére; nem publikálható master ígérete |
-| **Ajánlott publikálható alap** | 1 hónap 12k-s OpenArt Advanced/Plus + Resolve Free | **$35–50** | ezt válaszd elsőként; áfa/árfolyam miatt van puffer |
-| **Célzott arcmentés** | 12k-s OpenArt + 1 hónap/keret Higgsfield Starter | **$50–75** | csak 3–5 makacs emberes snitt megmentésére |
-| **Sok javítás / kényelmi tartalék** | 24k-s OpenArt Infinite/Pro + Higgsfield középső csomag | **$90–130** | ha már az animatik jó, de sok végleges variáns kell |
-| **Flow Ultra hozzáadása** | előzőek + magas Flow csomag | **nem ajánlott** | egyetlen 720p termékfilmért aránytalan; csak külön Veo-igény esetén |
+| **Zero-cost proof** | Resolve Free, your own rough VO and free/draft options | **$0** | validate timing, story and workflow; not a promise of a publishable master |
+| **Recommended publishable baseline** | one month of 12k OpenArt Advanced/Plus plus Resolve Free | **$35–50** | start here; the buffer covers VAT and currency conversion |
+| **Targeted identity rescue** | 12k OpenArt plus one Higgsfield Starter period | **$50–75** | only for 3–5 persistent people shots |
+| **Heavy repair / convenience buffer** | 24k OpenArt Infinite/Pro plus a mid-tier Higgsfield plan | **$90–130** | only after the animatic works and many final variants are genuinely needed |
+| **Adding Flow Ultra** | any of the above plus a high Flow tier | **not recommended** | disproportionate for one 720p product film unless a separate Veo requirement exists |
 
-Ez nem árajánlat. A végső képlet:
+This is not a quote. Use:
 
-```text
-teljes helyi költség = OpenArt checkout
-                     + opcionális Higgsfield checkout
-                     + opcionális Flow checkout
-                     + áfa és devizaváltás
-                     + opcionális licencelt zene/hang
-```
+~~~text
+local total = OpenArt checkout
+            + optional Higgsfield checkout
+            + optional Flow checkout
+            + VAT and currency conversion
+            + optional licensed music and sound
+~~~
 
-### OpenArt — melyik csomag?
+### Three-platform price comparison
 
-A [hivatalos OpenArt pricing oldal](https://openart.ai/pricing) az ellenőrzés
-napján eltérő név-/árvariánst szolgált ki különböző oldalkérésekre. A 12 000
-kredites csomag például **Advanced** vagy **Plus**, $29 vagy $34 listaárral,
-$23.20 vagy $27.20 promóciós kijelzéssel jelent meg. Ezért a csomagot ne a név,
-hanem a kredit, a kereskedelmi jog, a vízjel és a saját checkout végösszege
-alapján azonosítsd.
+These are **USD reference prices**. Hungarian or Slovak checkout totals may
+differ because of VAT, currency, region, A/B pricing, annual billing and
+new-subscriber promotions.
 
-| Csomag | Oldalon látható lista/promó ár | Kredit | Feltüntetett videóbecslés | Döntés |
+| Platform | Cheapest entry | Practical film tier | Allowance | Watermark | Unlimited/promotion | For this film |
+| --- | --- | --- | --- | --- | --- | --- |
+| **OpenArt** | Essential/Starter: about $14 list or $12.60 displayed promotion; 4,000 credits | **Advanced/Plus: about $29–34 list or $23.20–27.20 displayed promotion; 12,000 credits** | indicative maximum of about 50 / 150 low-cost videos at those tiers | pricing card lists watermark-free output; the 12k tier also lists commercial-use rights | select models may be unlimited on Infinite/Wonder; separate model discounts can appear | **first choice** |
+| **Higgsfield** | Starter/Basic: about $9–15; 120–270 credits | Plus/Pro: about $29–39; 600–1,200 credits | one official example: 200 credits ≈ 33 Kling 3.0 Standard outputs or about four 5-second 1080p Seedance outputs | verify the exact paid export in checkout and on the model card | plan-, model- and cohort-specific 365-day or 30-day Unlimited; separate 1/7/14-day bundles may appear | targeted identity, camera or lip-sync rescue; interesting for many simple 720p clips when Unlimited is active |
+| **Google Flow** | eligible account: 50 credits/day for $0 | AI Pro: about $19.99 US reference and 1,000 credits; Ultra $100/10,000 or $200/25,000 | exact model charges: Lite 10, Fast 20, Quality 100 credits; Ultra Lite 5/Fast 10 | Free/Plus/Pro Veo videos have a visible watermark; Ultra only where required by local rules | no general Unlimited; daily/monthly credits do not roll over | inexpensive for drafts, not recommended for the publishable MyScoutee master |
+
+### OpenArt plans and promotions
+
+| OpenArt tier | Normal/promotional display | Credits | Public maximum estimate | Unlimited status |
 | --- | ---: | ---: | ---: | --- |
-| Essential / Starter | $14 / $12.60 | 4 000 | legfeljebb kb. 50 | teszthez elég lehet, de a kártyán nem ez a legegyértelműbb kereskedelmi csomag |
-| **Advanced / Plus** | **$29–34 / $23.20–27.20** | **12 000** | legfeljebb kb. 150 | **ajánlott egy hónapra**; kereskedelmi jog és vízjelmentes kimenet szerepel |
-| Infinite / Pro | $56 / $43.70 | 24 000 | legfeljebb kb. 300 | csak akkor válts rá, ha a 12k csomag várhatóan elfogy |
-| Wonder | $240 / $175.20 | 106 000 | nagy volumen | ehhez az egy filmhez túlméretezett |
+| Essential / Starter | $14 / $12.60 | 4,000 | about 50 videos | no general Unlimited |
+| **Advanced / Plus** | **$29–34 / $23.20–27.20** | **12,000** | about 150 videos | no general Unlimited; a 5,000-credit add-on may be about $15 |
+| Infinite / Pro | $56 / $43.70 | 24,000 | about 300 videos | selected models and advertised periods may be Unlimited |
+| Wonder | $240 / $175.20 | 106,000 | about 1,300 videos | selected models; fair-use and slower-queue rules may apply |
 
-Az „akár 150 videó” nem 150 Kling/Veo végleges snitt garanciája. A tényleges
-kreditár modell-, hossz-, minőség- és kimenetszám-függő. Az OpenArt nem közöl a
-pricing kártyán stabil, minden modellre érvényes snittenkénti árat. Ezért minden
-**Generate** előtt írd fel a felületen látható költséget.
+At the review date, the OpenArt pricing surface returned more than one
+name/price variant and advertised time-limited model discounts. Count a
+promotion only if checkout shows the same **total charged today**. Infinite or
+Wonder Unlimited applies only to the models and promotional periods named on
+the pricing page. Heavy use may move the account to a slower queue, while
+unusual automated activity can suspend Unlimited access.
 
-## 2. Pontosan milyen modelleket használjak?
+### Higgsfield plans, promotions and Unlimited
 
-### Az ajánlott OpenArt modellstack
+| Higgsfield tier/option | Indicative price | Credits/limits | What official examples suggest |
+| --- | ---: | ---: | --- |
+| Starter / Basic | about $9–15/month; $15 may be an annual plan expressed monthly | 120–270/month; one example uses 200 | about 33 Kling 3.0 Standard outputs or 100 Nano Banana images; at 45 credits for a 5-second 1080p Seedance clip, only about four clips |
+| Plus / Pro | about $29–39/month | 600–1,200/month; one example uses 1,000 | about 167 Kling Standard outputs or 22 five-second 1080p Seedance clips; the official example says all-model access |
+| Ultra / Max | from about $79 | 1,800–9,000/month by region/tier | higher volume, but model-specific charges still apply |
+| Auto-refill | official example: $1 = 20 credits; minimum $30 = 600 | purchased credits may expire after 90 days | only eligible Plus/Pro or higher plans; keep it off unless automatic charging is intentional |
+| Seedance 2.0 Fast Unlimited for a new cohort | may be included for 30 days with selected new Plus/Ultra purchases | 480p/720p, standard queue; commonly up to 8 seconds on monthly and 15 seconds on selected annual/higher plans | useful for many atmospheric drafts/finals, but it does not make Kling or Veo Unlimited |
+| Separate Unlimited bundle | model- and account-specific 1/7/14-day window | only the purchased model and period | one official Seedance example listed $35/1 day, $170/7 days and $299/14 days; never budget from an expired offer |
 
-| Feladat | Modell/funkció | Mire használd? | Mire ne? |
-| --- | --- | --- | --- |
-| történet és scene card | **OpenArt Director** | 23 kártya, sorrend, karakter- és világkapcsolat | ne kérd meg rögtön a teljes végleges film legenerálására |
-| karakter- és világ-still | **Nano Banana 2** vagy a fiók aktuális olcsó, reference-képes képmódja | Founder, mellékszereplők, London/Budapest, travel képek, first frame | ne generáltass vele logót vagy olvasható UI-t |
-| olcsó mozgásteszt | **Gemini Omni Flash** vagy az aktuális legolcsóbb gyors videómodell | kompozíció, kameraív, ritmus kipróbálása | ne fogadj el végleges arcot pusztán az alacsony ár miatt |
-| ember, mimika, tánc, csoport | **Kling 3.0** | arc- és tárgyreferencia, visszafogott mozgás, ensemble | ne kérj egyszerre sok szereplőt, nagy kameramozgást és hosszú akciót |
-| atmoszféra, helyszín, átmenet | **Seedance 2.0** | London, munkakörnyezet, üres termek, rövid hangulati mozgás | a 2.5-re ne építs, amíg a saját model pickerben nem érhető el |
-| drága környezetmentés | **Veo 3.1** az OpenArton belül | egy makacs, first/last-frame jellegű városi vagy atmoszférikus snitt | ne ez legyen mind a 23 snitt alapmodellje |
-| grafika és márka | **DaVinci Resolve/Fusion** | S07, S08, S16–S18, S20, S23; felirat, UI, logo | ne AI-videóval készíts olvasható termékfelületet |
+Higgsfield Unlimited is real for your account only when the model picker shows
+an **UNLIMITED** badge and Generate displays no credit charge. It does not mean
+every model, priority queue, 1080p/4K or API/MCP usage. An old promotional blog
+post may remain online after the offer has expired.
 
-Az OpenArt nyilvános Seedance 2.5 oldala az ellenőrzéskor **Coming Soon**
-állapotot jelzett. Emiatt most **Seedance 2.0** a tervezési alap. Csak akkor
-válassz 2.5-öt, ha a saját OpenArt fiókodban valóban aktív, és az első olcsó
-teszt sikeres.
+### Google Flow plans, outputs and promotions
 
-### Shot-felosztás az egyplatformos, olcsó verzióhoz
+| Google/Flow tier | US reference price | Flow credits | Theoretical maximum using one mode only | Watermark/limit |
+| --- | ---: | ---: | --- | --- |
+| no subscription | $0 | 50/day, no rollover | 5 Lite or 2 Fast per day | account/region access varies; visible watermark |
+| Google AI Plus | about $7.99/month | 200/month | 20 Lite, 10 Fast or 2 Quality | visible watermark; Plus cannot buy extra AI credits in every/current supported route |
+| **Google AI Pro** | about $19.99/month | **1,000/month** | 100 Lite, 50 Fast or 10 Quality | visible watermark; eligible regions may buy extra credits |
+| Google AI Ultra 5× | $100/month | 10,000/month | at Ultra rates: 2,000 Lite, 1,000 Fast or 100 Quality | visible watermark only where local rules require it; 4K upscale costs 50 credits |
+| Google AI Ultra 20× | $200/month | 25,000/month | at Ultra rates: 5,000 Lite, 2,500 Fast or 250 Quality | same rule; excessive for this one 720p film |
 
-| Shotok | Első megoldás | Véglegesítés |
+Google's 2026 US AI Plus announcement offered eligible new subscribers 50% off
+for the first two months for a limited time. It is country-, account- and
+time-dependent, not a permanent price. Flow has no general Unlimited plan:
+monthly credits do not roll over, and one request may create multiple billable
+outputs.
+
+### What “Unlimited” means on the three platforms
+
+| Platform | Is Unlimited available? | Important limitation |
 | --- | --- | --- |
-| S01, S03, S05, S11 | OpenArt still + Seedance 2.0/gyors draft | csak jóváhagyott képből finom mozgás |
-| S02, S04, S06, S09–S10, S12–S15, S19, S21–S22 | OpenArt karakterreferencia + Kling 3.0 | egy output; újra csak konkrét hibajeggyel |
-| S07 | négy jóváhagyott évszak-still | Resolve match cut/parallax |
-| S08 | nyolc külön illustrated travel still + egy reflection still | Resolve: 8 × 9 képkocka; nem kell nyolc videó |
-| S16 | egy felülnézeti still | Resolve/Fusion hídmotívum |
-| S17–S18 | tiszta portré/still plate | Resolve/Fusion prioritás és affinity grafika |
-| S20 | tiszta kéz-/asztalplate | a teljes UI és minden felirat Resolve-ban |
-| S23 | nincs generálás | eredeti `heart.png` + külön szerkeszthető MyScoutee szöveg |
+| OpenArt | yes, in selected Infinite/Wonder offers | only named models/periods; slower queue and fair-use controls may apply |
+| Higgsfield | yes, tied to a plan, cohort or separate bundle | only the badged model, set time, resolution and web workflow; Kling/Veo are not automatically Unlimited |
+| Flow | **no general Unlimited** | daily or monthly credit allowance with no rollover; zero-credit functions may still be rate-limited |
 
-Az S14–S15 szájmozgása nem kötelező. A legolcsóbb biztonságos megoldás az,
-hogy a rövid mondat képen kívül hangzik el, vagy tárgyközelire vágsz. Lip syncet
-csak egy már jóváhagyott képen vásárolj.
+If the selected model's Generate control does not explicitly show Unlimited or
+zero credits, budget as though Unlimited does not exist.
 
-## 3. Átugorjam a Flow-t?
+### Decision when a promotion appears
 
-**Igen, alapértelmezésben ugord át.**
+| Offer shown in your checkout | Worth it? | Decision |
+| --- | --- | --- |
+| OpenArt 12k Advanced/Plus around $23–27 | yes | buy this for the first MyScoutee film |
+| OpenArt 24k Infinite/Pro around $43–44, with another 30–60-second film definitely planned | yes | simpler and usually better than buying two later 5k add-ons |
+| the actual Kling/Seedance model needed is Unlimited in OpenArt Infinite | potentially excellent | count it only when Generate on that exact model shows zero credits |
+| Higgsfield Plus/Ultra includes 30 days of Seedance 2.0 Fast Unlimited at the displayed price | yes for many 720p atmospheric clips | the second simple film may be made there; keep the Founder-heavy main film in OpenArt |
+| separate Higgsfield $35/1-day Unlimited | only for an intensive, prepared render day | lock all stills and prompts first; it is expensive while learning |
+| Google AI Plus at 50% for the first two months | yes for a cheap Flow test | visible watermark still makes it unsuitable as the publishable final |
+| you already pay for Google AI Pro | zero additional subscription cost for Flow drafts | compare outputs, but do not place watermarked footage in the master |
+| Google AI Ultra $100/$200 bought only for this film | no | disproportionate for the 720p target |
 
-A [Google Flow kredittáblája](https://support.google.com/flow/answer/16526234?hl=en)
-az ellenőrzéskor a következő generálási költségeket írta egy kimenetre:
+If the second film is simple but not yet defined, a promotional **OpenArt 24k
+tier is usually more predictable** than buying a second platform. Higgsfield
+Unlimited becomes better only when it is genuinely active on the required
+Seedance model and you will generate enough clips inside the fixed window.
 
-| Flow mód | Kredit/kimenet | 23 snitt egyszer | 23 snitt kétszer | 6 mentősnitt egyszer |
+### Which OpenArt tier?
+
+At the review date, the [official OpenArt pricing page](https://openart.ai/pricing)
+served different name/price variants across requests. The 12,000-credit tier,
+for example, appeared as **Advanced** or **Plus**, at a $29 or $34 list price and
+a $23.20 or $27.20 promotional display. Identify it by credits, commercial
+rights, watermark status and your checkout total rather than by name alone.
+
+| Tier | Displayed list/promotional price | Credits | Displayed video estimate | Decision |
+| --- | ---: | ---: | ---: | --- |
+| Essential / Starter | $14 / $12.60 | 4,000 | up to about 50 | may cover tests, but it is not the clearest commercial tier on the pricing card |
+| **Advanced / Plus** | **$29–34 / $23.20–27.20** | **12,000** | up to about 150 | **recommended for one month**; commercial-use rights and watermark-free output are listed |
+| Infinite / Pro | $56 / $43.70 | 24,000 | up to about 300 | use when the 12k projection will be exceeded or a second film is planned |
+| Wonder | $240 / $175.20 | 106,000 | high volume | oversized for this project |
+
+“Up to 150 videos” does not guarantee 150 final Kling or Veo shots. Actual
+credit cost depends on model, duration, quality and output count. OpenArt does
+not publish one stable per-shot price covering every model on the pricing card.
+Record the displayed charge before every Generate action.
+
+### How much of 12,000 could the MyScoutee film use?
+
+The manifest contains 16 shot IDs that may need an OpenArt moving clip. Splits
+inside S03, S15 and S21 produce about **16–21 final moving clips**. With one
+draft, one final and repairs only where needed, the project will likely involve
+**40–54 video generations** plus about 50–70 still images.
+
+The figures below are **planning estimates**, not guaranteed OpenArt prices.
+Recalculate after the first five representative tests.
+
+| Production discipline | Estimated usage | Share of 12k | Meaning |
+| --- | ---: | ---: | --- |
+| very lean, more stills and Resolve | about 4,500–6,500 | 38–54% | many shots receive no separate AI motion |
+| **recommended realistic workflow** | **about 7,000–10,000** | **58–83%** | 16–21 finals, cheap drafts and moderate repair |
+| difficult identity/groups, many premium reruns | about 12,000–16,000 | 100–133% | 12k is insufficient; simplify, add credits or use 24k |
+
+Therefore **12,000 credits should cover this one film**, with perhaps
+2,000–5,000 left in a good run. Do not rely on a large remainder until the
+actual draft prices for S05, S09, S12, S19 and S22 have been recorded.
+
+### 12,000 or 24,000 when another video is planned?
+
+| Additional work in the same month | Recommendation |
+| --- | --- |
+| only this 02:48 film | **12k** |
+| this film plus one simple 15–30-second graphics/still-led video | **12k** if the five-test projection for the main film is no more than 8k |
+| this film plus one 30–60-second, 6–10-shot, single-character video | **24k** is safer |
+| this film plus two or more short campaign videos | **24k** |
+| no certainty about a second film | start with **12k** and decide after the five test shots |
+
+Allow approximately **1,500–4,000 credits** for a simple 15–30-second second
+film, or **3,000–7,000** for a more character-led 30–60-second film. These are
+workflow estimates because the actual model charge appears only at Generate.
+
+The pricing page may offer 5,000 extra credits for about **$15** on the 12k
+tier. Therefore:
+
+- if no more than 5,000 extra credits are needed, 12k plus one 5k add-on is
+  flexible;
+- if the known total will exceed 17,000, 24k Infinite/Pro is generally better;
+- the reason to buy 24k is the buffer and second film, not a strict requirement
+  of the first MyScoutee film.
+
+A displayed monthly discount may require annual billing or be temporary.
+Compare the **amount charged today**, not only the large monthly-equivalent
+number.
+
+## 2. Exact model choices
+
+### Recommended OpenArt model stack
+
+| Task | Model/function | Use it for | Do not use it for |
+| --- | --- | --- | --- |
+| story and scene cards | **OpenArt Director** | 23 cards, order, character/world relationships | do not ask it to render the complete final film immediately |
+| character and world stills | **Nano Banana 2** or the account's current low-cost reference-capable image model | Founder, supporting cast, London/Budapest, travel images, first frames | do not generate the logo or readable UI |
+| inexpensive motion test | **Gemini Omni Flash** or the current cheapest fast video model | composition, camera arc and rhythm tests | do not accept a final face merely because the run was cheap |
+| people, acting, dance and groups | **Kling 3.0** | face/object references, restrained motion and ensembles | avoid combining many people, large camera motion and long action in one request |
+| atmosphere, place and transitions | **Seedance 2.0** | London, work environments, empty rooms and short atmospheric motion | do not depend on 2.5 until it is active in the account model picker |
+| expensive environment rescue | **Veo 3.1 inside OpenArt** | one stubborn city/atmosphere shot needing first/last-frame control | do not make it the default for all 23 shots |
+| graphics and brand | **DaVinci Resolve/Fusion** | S07, S08, S16–S18, S20, S23, captions, UI and logo | do not use AI video to create readable product screens |
+
+The public OpenArt Seedance 2.5 page showed **Coming Soon** at the review date.
+Use **Seedance 2.0** as the production baseline. Choose 2.5 only when it is
+actually active in your account and passes a low-cost test.
+
+### Shot allocation for the low-cost, single-platform route
+
+| Shots | First approach | Finalisation |
+| --- | --- | --- |
+| S01, S03, S05, S11 | OpenArt still plus Seedance 2.0/fast draft | add subtle motion only from an approved frame |
+| S02, S04, S06, S09–S10, S12–S15, S19, S21–S22 | OpenArt character reference plus Kling 3.0 | one output; rerun only with a specific defect note |
+| S07 | four approved seasonal stills | Resolve match cuts/parallax |
+| S08 | eight separate illustrated travel stills plus one reflection still | Resolve: 8 × 9 frames; eight videos are unnecessary |
+| S16 | one approved overhead still | Resolve/Fusion bridge motif |
+| S17–S18 | clean portrait/still plates | Resolve/Fusion priority and affinity graphics |
+| S20 | clean hand/table plate | build all UI and text in Resolve |
+| S23 | no generation | original heart.png plus separate editable MyScoutee text |
+
+Lip sync is optional for S14–S15. The cheapest safe version keeps the short
+line off-screen or cuts to an object detail. Purchase lip sync only after the
+picture itself is approved.
+
+## 3. Should I skip Flow?
+
+**Yes, skip it by default.**
+
+The [official Google Flow credit table](https://support.google.com/flow/answer/16526234?hl=en)
+listed the following cost per output at the review date:
+
+| Flow mode | Credits/output | 23 shots once | 23 shots twice | 6 rescue shots once |
 | --- | ---: | ---: | ---: | ---: |
-| Veo 3.1 Lite, nem Ultra | 10 | 230 | 460 | 60 |
-| Veo 3.1 Fast, nem Ultra | 20 | 460 | 920 | 120 |
-| Veo 3.1 Quality | 100 | 2 300 | 4 600 | 600 |
+| Veo 3.1 Lite, non-Ultra | 10 | 230 | 460 | 60 |
+| Veo 3.1 Fast, non-Ultra | 20 | 460 | 920 | 120 |
+| Veo 3.1 Quality | 100 | 2,300 | 4,600 | 600 |
 
-A díj **kimenetenként**, nem feltétlenül kérésenként értendő. Ha egy kérés két
-eredményt ad, annak kreditköltsége is többszöröződhet. A Quality 8 másodperces;
-a különféle Lite/Fast hosszak és funkciók modellfüggők.
+Charges are **per generation/output**, not necessarily per request. A request
+that creates two results can charge twice. Quality is eight seconds; available
+Lite/Fast durations and features remain model-dependent.
 
-A Flow hivatalos súgója szerint:
+Official Flow help currently states:
 
-- az előfizetés nélküli jogosult fiók napi 50, nem továbbvihető kreditet kaphat;
-- AI Plus 200, AI Pro 1 000 havi kreditet jelöl;
-- a Free/Plus/Pro Veo-kimeneteknél látható vízjel van;
-- minden videó SynthID jelölést kap;
-- a hozzáférés fiók- és régiófüggő;
-- a feliratkozók 1080p upscale-je lehet 0 kredites, de erre a 720p filmnek nincs
-  szüksége.
+- an eligible unsubscribed account may receive 50 non-rollover credits/day;
+- AI Plus includes 200 and AI Pro 1,000 credits/month;
+- Free/Plus/Pro Veo outputs contain a visible watermark;
+- every output contains SynthID;
+- access is account- and region-dependent;
+- subscriber 1080p upscaling may cost zero credits, but this 720p film does not
+  need it.
 
-Az official credit oldal napi 50 kreditet ír a nem előfizetőknek, miközben a
-Getting Started oldal a teljes Flow-hozzáférés feltételeként támogatott
-előfizetést vagy jogosult Workspace-fiókot is felsorol. A napi keret tehát nem
-garantálja, hogy a te régiódban és fiókodban a teljes felület megnyílik.
+The credit page mentions 50 daily credits for non-subscribers, while Getting
+Started also lists a supported subscription or qualifying Workspace account as
+an access condition. A daily allowance therefore does not guarantee that the
+full interface opens for your account and region.
 
-Ezért a napi 50 kredit jó lehet **vázlatpróbára**, de a látható vízjel miatt ne
-építs rá publikálható MyScoutee-mestert. Az Ultra megvásárlása kizárólag egy
-720p, 168 másodperces filmért nem költséghatékony, és a látható vízjel helyi
-szabálytól ott is függhet.
+Daily credits can be useful for a draft, but the visible watermark makes them a
+poor foundation for the publishable MyScoutee master. Buying Ultra solely for
+this 168-second 720p film is not cost-effective, and even Ultra can show a
+visible watermark where local rules require it.
 
-### Csak akkor nyisd meg a Flow-t, ha mind igaz
+### Open Flow only when all five are true
 
-1. már van hozzá előfizetésed vagy ingyenes kredited;
-2. az OpenArtban ugyanaz az átmenet/környezeti snitt három kontrollált próbán
-   át elbukott;
-3. a Flow-változat először csak vízjeles draft lesz;
-4. előre ellenőrizted a végleges export vízjelét és felhasználási feltételeit;
-5. a karakterazonosságot first/last frame vagy referencia ténylegesen tartja.
+1. you already have a subscription or free credits;
+2. the same OpenArt environment/transition has failed three controlled tries;
+3. the first Flow version will only be a watermarked comparison draft;
+4. final-output watermark and release terms were checked in advance;
+5. first/last frames or references demonstrably hold the required identity.
 
-Flow-jelölt mentőshot legfeljebb: **S01, S05, S08 reflection, S11, S22 city
-plate**. Ne töltsd újra oda az egész filmet.
+Maximum Flow rescue candidates: **S01, S05, S08 reflection, S11 and the S22 city
+plate**. Do not regenerate the full film there.
 
-## 4. Mikor érdemes Higgsfieldet venni?
+## 4. When should I buy Higgsfield?
 
-Nem az elején. A [Higgsfield élő pricing oldal](https://higgsfield.ai/pricing)
-dinamikus és régiónként változhat. A hivatalos Higgsfield összefoglalók az
-ellenőrzéskor eltérő tájékoztató sávokat is közöltek:
+Not at the beginning. The [live Higgsfield pricing page](https://higgsfield.ai/pricing)
+is dynamic and regional. Official Higgsfield summaries showed different
+indicative ranges at the review date:
 
-- Starter körülbelül **$9–15/hó**, nagyjából 120–270 kredit régiótól és
-  számlázástól függően;
-- egy másik hivatalos példa éves számlázás mellett **$15 / 200 kredit**
-  Startert és **$39 / 1 000 kredit** Plus csomagot írt;
-- a példában 200 kredit körülbelül 33 Kling 3.0 kimenet volt, vagyis az adott
-  beállítással hozzávetőleg 6 kredit/kimenet. Ez nem állandó ár.
+- Starter at about **$9–15/month**, roughly 120–270 credits depending on region
+  and billing;
+- another official annual-billing example listed **$15 / 200 credits** for
+  Starter and **$39 / 1,000 credits** for Plus;
+- the same example equated 200 credits to about 33 Kling 3.0 outputs, or roughly
+  six credits/output under that exact configuration. It is not a fixed rate.
 
-Fizetés előtt a saját checkoutban ellenőrizd: havi vagy éves terhelés, kreditek,
-Kling 3.0 elérés, Soul ID, lip sync, vízjel, kereskedelmi jog és lejárat.
+Before paying, verify monthly versus annual charge, credits, Kling 3.0 access,
+Soul ID, lip sync, watermark, commercial rights and expiry in your checkout.
 
-### Higgsfield mentési szabály
+### Higgsfield rescue rule
 
-Csak akkor fizess elő, ha egy fontos emberes shotnál mindezt már megtetted:
+Subscribe only after all four are true for an important people shot:
 
-1. ugyanaz a jóváhagyott first frame és Founder referencia;
-2. csak egy arcreakció és egy kameramozgás;
-3. egy olcsó OpenArt draft, majd két konkrétan javított próbálkozás;
-4. mindháromnál ugyanaz a felismerhető hiba maradt.
+1. the same approved first frame and Founder reference were used;
+2. only one facial reaction and one camera move were requested;
+3. one cheap OpenArt draft and two specifically corrected attempts were made;
+4. the same recognisable defect remains in all three.
 
-Ekkor vidd át **csak** a hibás shotot Higgsfieldbe. Első prioritás:
+Transfer **only** the failed shot to Higgsfield. First rescue priorities:
 
-- S04 — visszafogott, arcérzékeny töréspont;
-- S09 — reményteljes hazatérés;
-- S14 — háromszereplős táncterem;
-- S19 — stabil ötfős csoport;
-- S22 — Founder és helyi szerzők átadása.
+- S04 — restrained, identity-sensitive breaking point;
+- S09 — hopeful return home;
+- S14 — three-person dance-room composition;
+- S19 — stable five-person group;
+- S22 — handoff between Founder and local authors.
 
-Ha az aktuális ár valóban kb. 6 kredit/Kling kimenet, akkor 10 próba kb. 60,
-20 próba kb. 120, 25 próba kb. 150 kredit. Soul ID, képgenerálás, lip sync,
-hossz és nagyobb minőség ezen felül fogyaszthat. A Starter csak 3–5 célzott
-mentőshothoz reális; az egész film újragenerálásához ne használd.
+If the current model really costs about six credits per Kling output, ten tries
+cost about 60, twenty about 120 and twenty-five about 150. Soul ID, images, lip
+sync, duration and higher quality consume additional credits. Starter is
+realistic only for 3–5 targeted rescue shots, not a complete rerender.
 
-## 5. Kreditkeret a 12 000 kredites OpenArt csomaghoz
+### OpenArt versus Higgsfield
 
-Ez nem modellárlista, hanem költési plafon. Ha egy fázis olcsóbb, a maradékot
-tedd a végleges emberes shotokhoz; ha drágább, állj meg és számolj újra.
+Raw balances cannot be compared: **12,000 OpenArt credits do not equal twelve
+times as many generations as 1,000 Higgsfield credits**. Each platform defines
+its own unit. Compare the selected model, duration, resolution and output count
+displayed beside Generate.
 
-| Fázis | Felső keret | Mit kell belőle elkészíteni? |
+| Criterion | OpenArt | Higgsfield | Decision for this project |
+| --- | --- | --- | --- |
+| entry tier suitable for a full film | 12k Advanced/Plus: about $29–34 list, up to about 150 low-cost videos | Starter/Basic: about $9–15 and 120–270 credits; one official example says 33 Kling outputs for 200 credits | **OpenArt** |
+| higher tier | 24k Infinite/Pro: about $56 list, up to about 300 low-cost videos | Plus/Pro: about $29–39 and 600–1,200 credits by region | OpenArt 24k for a second film; Higgsfield for targeted rescue |
+| story/scene planning | Director, Story and saved worlds in one workspace | project chat and Cinema Studio, but this package is already structured for OpenArt Director | **OpenArt** |
+| same Founder across many shots | OpenArt Character plus references may be sufficient | **Soul ID** and reusable Elements provide a stronger rescue path | OpenArt first; Higgsfield if drift persists |
+| precise camera language | per-model prompting and motion control | strong Cinema Studio/Camera Controls | Higgsfield may win on 3–5 hero shots |
+| lip sync | model-dependent; a Resolve cutaway is cheaper | Higgsfield Speak/LipSync is more integrated | potentially useful only for S14/S15 |
+| model selection | Kling, Seedance, Veo and others in one workspace | Kling, Seedance, Veo and others in one workspace | never rerender everything on both |
+| many simple 720p atmospheric clips | credit-based OpenArt workflow | some new accounts/plans may include Seedance 2.0 Fast Unlimited | Higgsfield is cheaper only when this is active in checkout |
+| final edit, UI and logo | not here | not here | **Resolve** |
+
+**If paying for only one generation service, choose OpenArt for this prepared
+document package.** Higgsfield becomes the better second purchase when the
+Founder identity, five-person group, camera move or lip sync specifically
+fails—not because its plan displays a smaller raw credit number.
+
+Official Higgsfield material says selected Plus/Ultra cohorts may receive 30
+days of 480p/720p **Enhanced Seedance 2.0 Fast Unlimited**. This can reverse the
+cost decision for many simple atmospheric clips, but it does not apply to every
+plan or model. Kling, Veo and other premium models may still consume credits.
+Count it only when confirmed by your checkout and model picker.
+
+## 5. Credit envelope for the 12,000-credit OpenArt tier
+
+This is a spending ceiling, not a model price list. If one phase costs less,
+move the balance to final people shots. If it costs more, stop and re-project.
+
+| Phase | Ceiling | Required result |
 | --- | ---: | --- |
-| karakter- és look development | 1 800 | Founder sheet, mellékszereplők, 7 világ, maximum 1–2 jó kép beállításonként |
-| 23 storyboard still + travel | 1 800 | egy jóváhagyható still/shot, 8 külön travel kép |
-| mozgásdraft | 2 400 | csak mozgáskritikus snittek, egy olcsó output |
-| végleges videók | 4 800 | jóváhagyott first frame-ekből, főként Kling/Seedance |
-| hibajavítási tartalék | 1 200 | kéz, arc, mozgás vagy export mentése |
-| **Összesen** | **12 000** | a keret teljes összege, nem kötelező elkölteni |
+| character and look development | 1,800 | Founder sheet, supporting cast, seven worlds, maximum 1–2 good images per setup |
+| 23 storyboard stills plus travel | 1,800 | one approvable still/shot and eight separate travel images |
+| motion drafts | 2,400 | motion-critical shots only, one low-cost output |
+| final videos | 4,800 | approved first frames, mainly Kling/Seedance |
+| repair reserve | 1,200 | hands, identity, motion or export rescue |
+| **Total** | **12,000** | maximum envelope, not a target to spend |
 
-Minden generálás előtt vezesd ezt az egyszerű sort egy táblázatban:
+Before every generation, log:
 
-```text
-dátum | shot | modell | mód | hossz | outputok | UI szerinti kredit | eredmény | hiba
-```
+~~~text
+date | shot | model | mode | duration | outputs | displayed credits | result | defect
+~~~
 
-A következő fázis becslése:
+Project the next phase with:
 
-```text
-várható végösszeg = eddig elköltött kredit
-                  + hátralévő darabszám × ugyanilyen teszt tényleges kreditára
-                  + 20% hibajavítási tartalék
-```
+~~~text
+projected total = credits already spent
+                + remaining count × actual charge from the matching test
+                + 20% repair reserve
+~~~
 
-Ha a várható végösszeg 12 000 fölé megy, ne vegyél rögtön extra kreditet.
-Előbb válts still + Resolve megoldásra S07, S08, S16–S18, S20 és S23 esetén,
-csökkentsd az outputszámot egyre, és csak utána hasonlítsd össze a Pro upgrade
-és az extra kredit checkout árát.
+If the projection exceeds 12,000, do not immediately buy more. First move S07,
+S08, S16–S18, S20 and S23 to still-plus-Resolve solutions, request one output
+at a time, then compare the live Pro upgrade and add-on prices.
 
-## 6. Pontos munkasorrend és vásárlási kapuk
+## 6. Exact production order and purchase gates
 
-### 0. kapu — $0, még semmire ne fizess elő
+### Gate 0 — $0, buy nothing yet
 
-1. Telepítsd a DaVinci Resolve Free-t.
-2. Vedd fel telefonra a próba angol és magyar narrációt.
-3. Hozd létre a 720×1280, 24 fps timeline-t.
-4. Rakd be a 23 üres shotot a `SHOT_MANIFEST.csv` idői alapján.
-5. Tedd alá a narrációt, és nézd meg, hogy a történet 02:48 alatt működik-e.
-6. Készíts három ingyenes/legolcsóbb tesztet, ha a fiók engedi:
-   S05 környezet, S09 Founder-arc, S19 ötfős csoport.
+1. Install DaVinci Resolve Free.
+2. Record rough English and Hungarian narration on a phone.
+3. Create the 720×1280, 24 fps timeline.
+4. Place 23 empty shots using SHOT_MANIFEST.csv timings.
+5. Add narration and verify the story works at 02:48.
+6. If the account allows it, run three free/cheapest tests: S05 environment,
+   S09 Founder identity and S19 five-person group.
 
-**Csak akkor vásárolj**, ha a hangos üres animatik érthető, a három fordulópont
-hatásos, és a fiókban ellenőrizted a checkoutot.
+**Buy only when** the narrated empty animatic is clear, the three main turns
+land emotionally and checkout has been verified.
 
-### 1. kapu — vedd meg a 12k-s OpenArt csomag egy hónapját
+### Gate 1 — buy one month of the 12k OpenArt tier
 
-1. Készíts képernyőképet a checkout árról, számlázási periódusról és jogokról.
-2. Ellenőrizd, hogy nincs-e éves elköteleződés a kedvezményes ár mögött.
-3. Válaszd azt az Advanced/Plus csomagot, amely 12 000 kreditet, kereskedelmi
-   jogot és vízjelmentes kimenetet ír; ne vegyél külön Flow/Higgsfield csomagot.
-4. Készítsd el a Founder és a világok approved stilljeit.
-5. Készítsd el a 23 storyboard stillt.
-6. Tedd őket Resolve-ba és zárd le az animatikot.
+1. Capture the checkout price, billing period and rights.
+2. Check whether the discounted display hides an annual commitment.
+3. Select the Advanced/Plus tier that states 12,000 credits, commercial-use
+   rights and watermark-free output. Do not buy Flow or Higgsfield yet.
+4. Build approved Founder and world stills.
+5. Build all 23 storyboard stills.
+6. Place them in Resolve and lock the animatic.
 
-**Stop:** ha a still animatik nem érzelmes és érthető, ne generálj videót. A
-scriptet, képkivágást vagy időt javítsd.
+**Stop:** if the still animatic is not emotional and clear, fix the script,
+framing or timing before video generation.
 
-### 2. kapu — mozgásdraft, még nem final
+### Gate 2 — motion draft, not final
 
-1. Először csak S05, S09, S12, S19 és S22 kapjon egy-egy olcsó motion draftot.
-2. Nézd meg telefonon: felismerhető-e a Founder, működik-e a mimika, nem esik-e
-   szét a csoport, nem túl erős-e a kameramozgás.
-3. Ha jó, generáld a többi szükséges motion shotot, mindig egy outputtal.
-4. A hibát szövegesen nevezd meg; egyszerre csak egy változót módosíts.
+1. Give only S05, S09, S12, S19 and S22 one inexpensive motion draft each.
+2. Review on a phone: Founder recognition, acting, group stability and camera
+   restraint.
+3. If they pass, draft the remaining motion shots, one output at a time.
+4. Name every defect in writing and change only one variable per retry.
 
-**Stop:** ha az öt reprezentatív shotból három rossz, ne válts platformot. Előbb
-egyszerűsítsd a promptot, kamerát és szereplőszámot.
+**Stop:** if three of the five representative shots fail, do not switch
+platform immediately. Simplify prompt, camera and cast count first.
 
-### 3. kapu — 720p végleges OpenArt klipek
+### Gate 3 — final 720p OpenArt clips
 
-1. Csak approved first frame és approved draft kaphat drágább final futást.
-2. A cél 720p, 9:16. Az ennél nagyobb felbontást ne válaszd automatikusan.
-3. Minden klipet azonnal nevezz át és tegyél a Resolve timeline-ba.
-4. A teljes 720p exportot nézd meg két valódi telefonon és a célplatform
-   tömörítéséhez hasonló exporttal.
+1. Only an approved first frame and approved draft receive a costly final run.
+2. Target 720p, 9:16; do not automatically select a larger resolution.
+3. Rename every clip immediately and place it in the Resolve timeline.
+4. Watch the full 720p export on two real phones and through a
+   platform-like compression test.
 
-### 4. kapu — opcionális mentés
+### Gate 4 — optional rescue
 
-- **Arc/csoport tartósan hibás:** vegyél Higgsfield Startert és csak 3–5 shotot
-  vigyél át.
-- **Környezeti átmenet tartósan hibás, Flow már jár:** készíts ott vízjeles
-  összehasonlító draftot.
-- **Flow csak külön előfizetéssel lenne elérhető:** hagyd ki; használj OpenArt
-  Veo/Seedance vagy Resolve transition megoldást.
-- **720p telefonon tiszta:** ne upscale-elj.
+- **Persistent identity/group defect:** buy Higgsfield Starter and transfer only
+  3–5 shots.
+- **Persistent environment transition and Flow is already included:** create
+  one watermarked comparison draft there.
+- **Flow requires a new subscription:** skip it; use OpenArt Veo/Seedance or a
+  Resolve transition.
+- **720p is clean on a phone:** do not upscale.
 
-### 5. kapu — lezárás
+### Gate 5 — close the project
 
-1. Resolve-ban add hozzá az eredeti `frontend/src/assets/logo/heart.png` fájlt.
-2. Külön szövegréteg legyen a `MyScoutee`; sem logót, sem UI-t ne generálj.
-3. Készíts EN, HU és textless exportot.
-4. Nézd végig mindet, ellenőrizd a vízjelet, a jogokat és a licenceket.
-5. Mentsd le a számlát és az aktuális feltételek képernyőképét.
-6. Ha nem kell több generálás, kapcsold ki az automatikus megújítást a saját
-   fiókodban.
+1. In Resolve, add the original frontend/src/assets/logo/heart.png.
+2. Keep MyScoutee as a separate text layer; generate neither logo nor UI.
+3. Export EN, HU and textless versions.
+4. Watch each master and verify watermark, rights and licences.
+5. Store the invoice and screenshots of the terms shown at purchase.
+6. Disable automatic renewal after generation is complete if no more work is
+   planned.
 
-## 7. Fizetés előtti ellenőrzőlap
+## 7. Pre-purchase checklist
 
-Mindegyik szolgáltatásnál írd le a választ. Ha bármelyik ismeretlen, még ne
-fizess.
+Record every answer. Do not pay while any required field is unknown.
 
-```text
-Szolgáltatás:
-Checkout dátuma:
-Havi vagy éves terhelés:
-Ma levont összeg:
-Helyi adó/áfa:
-Kapott kreditek:
-Kredit lejárata:
-Automatikus megújítás dátuma:
-Kiválasztott modell tényleges kreditára:
-Hány outputot ad egy kérés:
-Sikertelen generálás visszatérítése:
-Látható vízjel a végleges fájlban:
-Kereskedelmi felhasználás:
-Feltöltött saját arc kezelése/törlése:
-Lemondás módja:
-```
+~~~text
+Service:
+Checkout date:
+Monthly or annual charge:
+Amount charged today:
+Local tax/VAT:
+Credits received:
+Credit expiry:
+Automatic renewal date:
+Actual selected-model credit charge:
+Outputs created per request:
+Failed-generation refund rule:
+Visible watermark in final file:
+Commercial-use rights:
+Handling/deletion of uploaded face images:
+Cancellation method:
+~~~
 
-## 8. Végső ajánlás ehhez a filmhez
+## 8. Final recommendation for this film
 
-Az első teljes, kiadható változat reális célja **egy 12 000 kredites OpenArt
-Advanced/Plus hónap, $35–50 helyi keret és nulla Flow/Higgsfield költés**. A
-film értékét nem az adja, hogy három platform generált-e hozzá képet, hanem hogy
-az arc, a fény, a ritmus és a történet ugyanazt az érzelmi ívet tartja.
+The realistic first publishable version is **one month of 12,000-credit
+OpenArt Advanced/Plus, a $35–50 local budget and zero Flow/Higgsfield spend**.
+The film's value does not depend on using three platforms; it depends on
+identity, light, rhythm and story maintaining one emotional arc.
 
-Ha az OpenArt elkészíti az öt reprezentatív shotot, maradj ott. Ha csak néhány
-arc-/csoportshot hibás, vegyél Higgsfieldet kizárólag ezekhez. Flow-t csak már
-meglévő jogosultsággal, vízjeles draft vagy egy konkrét átmenet összehasonlítása
-miatt nyiss meg. A végleges 720p mastert minden esetben Resolve-ból add ki.
+If OpenArt completes the five representative shots, stay there. If only a few
+identity/group shots fail, buy Higgsfield for those shots only. Open Flow only
+with existing entitlement, for a watermarked draft or a specific transition
+comparison. Always deliver the final 720p master from Resolve.
 
-## Hivatalos ár- és funkcióforrások
+## Official pricing and feature sources
 
 - [OpenArt Pricing](https://openart.ai/pricing)
 - [OpenArt AI Video Generator](https://openart.ai/ai-video-generator/)
 - [OpenArt Kling 3.0](https://openart.ai/ai-model/kling-3-motion-control/)
-- [OpenArt Seedance 2.5 státusz](https://openart.ai/ai-model/seedance-2-5/)
+- [OpenArt Seedance 2.5 status](https://openart.ai/ai-model/seedance-2-5/)
 - [OpenArt Gemini Omni Flash](https://openart.ai/ai-model/gemini-omni-flash/)
 - [OpenArt Nano Banana 2](https://openart.ai/ai-model/nano-banana-2/)
 - [Higgsfield Pricing](https://higgsfield.ai/pricing)
-- [Higgsfield pricing-plan magyarázat](https://geo.higgsfield.ai/task/blog/understanding-higgsfield-ai-pricing-plans)
-- [Higgsfield régiós ársávok](https://geo.higgsfield.ai/task/blog/higgsfield-ai-pricing-plans-1)
-- [Google Flow kreditek és generálási költségek](https://support.google.com/flow/answer/16526234?hl=en)
-- [Google Flow indítás, hozzáférés és vízjel](https://support.google.com/flow/answer/16353333?hl=en)
-- [Google Flow modellek és módok](https://support.google.com/flow/answer/16352836?hl=en)
+- [Higgsfield pricing-plan explanation](https://geo.higgsfield.ai/task/blog/understanding-higgsfield-ai-pricing-plans)
+- [Higgsfield regional price ranges](https://geo.higgsfield.ai/task/blog/higgsfield-ai-pricing-plans-1)
+- [Higgsfield Seedance 2.0 Unlimited terms](https://geo.higgsfield.ai/task/blog/what-creators-get-seedance-unlimited-higgsfield)
+- [Higgsfield Unlimited model changes](https://geo.higgsfield.ai/task/blog/higgsfield-unlimited-plan-change)
+- [Google Flow credits and generation charges](https://support.google.com/flow/answer/16526234?hl=en)
+- [Google Flow access and watermark](https://support.google.com/flow/answer/16353333?hl=en)
+- [Google Flow models and modes](https://support.google.com/flow/answer/16352836?hl=en)
+- [Google AI plans](https://one.google.com/intl/en/about/google-ai-plans/)
+- [Google AI Plus US price and launch promotion](https://blog.google/products-and-platforms/products/google-one/google-ai-plus-availability/)
