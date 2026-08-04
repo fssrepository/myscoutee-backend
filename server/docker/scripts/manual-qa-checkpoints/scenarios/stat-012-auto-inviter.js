@@ -648,8 +648,10 @@
       .toArray();
     const bellDocuments = collection("userNotifications")
       .find({
-        notificationType: "event-invite",
-        $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }]
+        $and: [
+          { $or: [{ notificationType: "event-invite" }, { "payload.type": "event-invite" }] },
+          { $or: [{ sourceId: EVENT_ID }, { "payload.eventId": EVENT_ID }] }
+        ]
       })
       .toArray();
     const invitedUserIds = [...new Set(inviteMembers.map(member => text(member.userId)).filter(Boolean))].sort();
