@@ -83,6 +83,10 @@ negative control. Riley accepts exactly once through the recipient UI. Require:
 
 - Riley becomes accepted exactly once and the event changes to `2 / 8` with
   one pending recipient;
+- Riley's original `event-invite` notification becomes read/resolved with
+  `readAtIso`, and the unread notification counter decreases exactly once;
+- Riley's Invitations membership bucket changes `1 → 0` because the pending
+  invitation is now terminally accepted;
 - Casey and Riley see the same main-event chat while Nova sees none;
 - Riley gains the same empty chat row, but Riley's chat attention counters
   remain unchanged until an actual unread message exists;

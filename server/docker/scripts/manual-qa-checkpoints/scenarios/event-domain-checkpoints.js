@@ -210,7 +210,7 @@
       stage: "invitation-pending",
       why: "Prove that accepting an owner/admin invitation creates one terminal accepted membership and all of its authorized side effects.",
       action: "Keep three isolated sessions open: accepted recipient, still-pending control recipient and event Admin. Accept once as the selected recipient; then compare Event Members and the event-chat list in all three sessions, and inspect the Admin notification list.",
-      expected: "Pending becomes accepted once, invitation fields clear and no duplicate row remains. The accepted recipient and Admin can see the same event chat; the still-pending control recipient cannot. The Admin receives exactly one acceptance notification naming the accepted recipient and event.",
+      expected: "Pending becomes accepted once, invitation fields clear and no duplicate row remains. The accepted recipient's original event-invite notification becomes read/resolved exactly once. The accepted recipient and Admin can see the same event chat; the still-pending control recipient cannot. The Admin receives exactly one acceptance notification naming the accepted recipient and event.",
       worker: "CONDITIONAL direct membership recompute/outbox; no scheduler is required."
     },
     "EVENT-INV-004": {
@@ -1222,6 +1222,11 @@
       kind: "event-invitation-accepted",
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).toArray();
+    const eventInvitationNotifications = Q.collection("userNotifications").find({
+      kind: "event-invite",
+      recipientUserId: { $in: [hostUserId, participantUserId, thirdUserId] },
+      $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).toArray();
     const outboxCount = Q.collection("notificationOutbox").countDocuments({
       $and: [
         { $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }] },
@@ -1309,6 +1314,13 @@
         membershipAction: Q.text(item.payload && item.payload.membershipAction),
         title: Q.text(item.title),
         message: Q.text(item.message)
+      })),
+      eventInvitationNotifications: eventInvitationNotifications.map(item => ({
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        readAtIso: Q.text(item.readAtIso),
+        read: Boolean(Q.text(item.readAtIso))
       })),
       feedbackStates: feedbackStates.map(item => ({
         viewerUserId: Q.text(item.viewerUserId),

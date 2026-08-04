@@ -597,9 +597,12 @@ Execution evidence on 2026-08-04:
 ### `EVENT-INV-003` — owner/admin invitation acceptance
 
 - Accept an owner/admin invitation once through the recipient UI.
-- The invitation must become resolved, the event membership must become
-  accepted with invitation fields cleared, and Event Members must update from
-  pending to accepted without a duplicate row.
+- The invitation must become resolved: the accepted recipient's original
+  `event-invite` notification receives `readAtIso` and its unread notification
+  counter decreases exactly once. Separately, the Invitations membership
+  bucket changes `1 → 0`, the event membership becomes accepted with invitation
+  fields cleared, and Event Members updates from pending to accepted without a
+  duplicate row.
 - Accepted-only chat access may appear only after that terminal membership
   state. Send one unique message to prove read/write access and exact-once
   Statistics/Monitoring chat projection.
