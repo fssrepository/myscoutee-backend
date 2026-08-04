@@ -318,6 +318,7 @@ class ActivitiesEventsServiceTest {
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        verify(activitiesMembersService).ensureEventCreatorAdminMembership("event-1", "host");
         assertThat(savedCaptor.getAllValues().get(0)).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("event-1");
             assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
@@ -808,6 +809,7 @@ class ActivitiesEventsServiceTest {
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        verify(activitiesMembersService).ensureEventCreatorAdminMembership("draft-1", "host");
         verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("draft-1");
@@ -1082,7 +1084,7 @@ class ActivitiesEventsServiceTest {
                 .containsExactly("invite-1");
         assertThat(invitationResponse.records()).singleElement().satisfies(record ->
                 assertThat(record.adminIds())
-                        .containsExactly("other-host", "accepted-member")
+                        .containsExactly("accepted-member", "other-host")
                         .doesNotContain("host"));
         assertThat(trashResponse.records()).extracting(EventDto::id)
                 .containsExactly("trash-1");

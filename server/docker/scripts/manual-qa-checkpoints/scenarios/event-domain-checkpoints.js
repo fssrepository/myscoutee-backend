@@ -139,9 +139,9 @@
     },
     "EVENT-INV-003": {
       stage: "invitation-pending",
-      why: "Prove that accepting an owner/admin invitation creates one terminal accepted membership.",
-      action: "As invited participant, accept once; then reopen Event Members and the accepted-only event chat.",
-      expected: "Pending becomes accepted once, invitation fields clear, no duplicate row remains and chat appears only after the accepted state.",
+      why: "Prove that accepting an owner/admin invitation creates one terminal accepted membership and all of its authorized side effects.",
+      action: "Keep three isolated sessions open: accepted recipient, still-pending control recipient and event Admin. Accept once as the selected recipient; then compare Event Members and the event-chat list in all three sessions, and inspect the Admin notification list.",
+      expected: "Pending becomes accepted once, invitation fields clear and no duplicate row remains. The accepted recipient and Admin can see the same event chat; the still-pending control recipient cannot. The Admin receives exactly one acceptance notification naming the accepted recipient and event.",
       worker: "CONDITIONAL direct membership recompute/outbox; no scheduler is required."
     },
     "EVENT-INV-004": {
@@ -167,9 +167,9 @@
     },
     "CHAT-AUTH-001": {
       stage: "invitation-pending",
-      why: "Assemble the invitation-to-chat authorization boundary across pending, accepted and left states.",
-      action: "Prove direct chat denial while pending, accept the invitation, send one unique message, then leave and repeat the denial check.",
-      expected: "Only terminal accepted membership grants history read and one message write; pending and left states are server-denied.",
+      why: "Assemble the event-chat authorization boundary across Admin, accepted, pending and left states without inferring authorization from a hidden button.",
+      action: "Use three isolated sessions for the event Admin, one accepted recipient and one still-pending control recipient. Compare their event-chat lists: prove Admin and accepted visibility, pending absence plus direct server denial, send one unique message from the accepted session and prove the Admin receives it. Then leave and repeat the former participant denial check.",
+      expected: "The Admin and terminal accepted member can read the same event-chat history and exchange exactly one proof message. The pending and left users have no channel projection and are server-denied; they must not receive the proof message.",
       worker: "Chat write has normal realtime/counter consumers; authorization reads MUST NOT RUN a scheduler."
     },
     "TOURNAMENT-001": {
@@ -1109,6 +1109,21 @@
     const stageRuntime = Q.collection("activitySubEventStageRuntime").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const groups = Q.collection("activitySubEventGroups").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const leaderboard = Q.collection("eventLeaderboardEntries").find({ eventId: { $regex: `^${PREFIX}` } }).toArray();
+    const eventChats = Q.collection("chats").find({
+      $or: [
+        { chatId: { $in: dynamicEventIds } },
+        { eventId: { $in: dynamicEventIds } },
+        { ownerId: { $in: dynamicEventIds } }
+      ]
+    }).toArray();
+    const invitationAcceptanceOutbox = Q.collection("notificationOutbox").find({
+      notificationType: "event-invitation-accepted",
+      $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).toArray();
+    const invitationAcceptanceNotifications = Q.collection("userNotifications").find({
+      kind: "event-invitation-accepted",
+      $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).toArray();
     const outboxCount = Q.collection("notificationOutbox").countDocuments({
       $and: [
         { $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }] },
@@ -1137,6 +1152,28 @@
         pendingSource: Q.text(member.pendingSource),
         invitedByUserId: Q.text(member.invitedByUserId),
         updatedDate: member.updatedDate
+      })),
+      eventChats: eventChats.map(chat => ({
+        chatId: Q.text(chat.chatId || chat._id),
+        eventId: Q.text(chat.eventId),
+        ownerUserId: Q.text(chat.ownerUserId),
+        memberUserIds: sortedUnique(chat.memberIds || []),
+        channelType: Q.text(chat.channelType)
+      })),
+      invitationAcceptanceOutbox: invitationAcceptanceOutbox.map(item => ({
+        notificationType: Q.text(item.notificationType),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        memberUserId: Q.text(item.payload && item.payload.memberUserId),
+        membershipAction: Q.text(item.payload && item.payload.membershipAction),
+        status: Q.text(item.status)
+      })),
+      invitationAcceptanceNotifications: invitationAcceptanceNotifications.map(item => ({
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        memberUserId: Q.text(item.payload && item.payload.memberUserId),
+        membershipAction: Q.text(item.payload && item.payload.membershipAction),
+        title: Q.text(item.title),
+        message: Q.text(item.message)
       })),
       feedbackStates: feedbackStates.map(item => ({
         viewerUserId: Q.text(item.viewerUserId),

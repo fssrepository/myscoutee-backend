@@ -173,29 +173,17 @@ public class ActivityEventMapper {
             return List.of();
         }
         if (snapshot != null) {
-            LinkedHashSet<String> adminUserIds = new LinkedHashSet<>(snapshot.adminUserIds());
-            String creatorUserId = normalizeId(record.getCreatorUserId());
-            if (StringUtils.hasText(creatorUserId)) {
-                adminUserIds.add(creatorUserId);
-            }
-            return new ArrayList<>(adminUserIds);
+            return new ArrayList<>(snapshot.adminUserIds());
         }
         return normalizeStrings(record.getAdmins());
-    }
-
-    private List<String> fallbackAcceptedMemberUserIds(ActivityEvent record) {
-        List<String> projectedUserIds = normalizeIds(record == null ? null : record.getAcceptedMemberUserIds());
-        if (!projectedUserIds.isEmpty()) {
-            return projectedUserIds;
-        }
-        String creatorUserId = record == null ? null : normalizeId(record.getCreatorUserId());
-        return StringUtils.hasText(creatorUserId) ? List.of(creatorUserId) : List.of();
     }
 
     private List<String> resolveAcceptedMemberUserIds(
             ActivityEvent record,
             ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
-        return snapshot == null ? fallbackAcceptedMemberUserIds(record) : normalizeIds(snapshot.acceptedMemberUserIds());
+        return snapshot == null
+                ? normalizeIds(record == null ? null : record.getAcceptedMemberUserIds())
+                : normalizeIds(snapshot.acceptedMemberUserIds());
     }
 
     private List<String> resolvePendingMemberUserIds(

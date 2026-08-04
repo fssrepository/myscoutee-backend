@@ -11,6 +11,12 @@ For `EVENT-LIFE-*`, `EVENT-FEEDBACK-*`, `EVENT-IMPRESSION-001` and
 `event-domain` scenario and the exact checkpoint ID. Scheduler-producing cases
 use their named scheduler helpers instead of an invented event-domain timer.
 
+For focused Java regressions while the local dev stack owns the shared Gradle
+cache, stop only the existing `myscoutee` Java container, run the selected
+tests sequentially with `server/.gradle`, then restart that same container and
+wait for its health status to become `healthy`. Keep MongoDB and the frontend
+running. Do not start a parallel stack or create a second Gradle cache.
+
 ## Purpose
 
 This pack maps user-created domain state to every downstream projection that
@@ -243,10 +249,23 @@ Execution evidence on 2026-08-04:
   remained `1 / 8`; the red `(2)` is the pending-invitation count and pending
   invitations do not increment the accepted/capacity projection. The one-hour
   production-like interval remained configured after the run.
-- OPEN DEFECT CANDIDATE: immediately after Unpublish, the locally patched My
+- HISTORICAL DEFECT, FIX VERIFIED: immediately after the original Unpublish,
+  the locally patched My
   Events card briefly displayed `1 / 8`, while the authoritative member set
   was empty and the freshly queried Drafts card displayed `0 / 8`. Track this
-  as `EVENT-CAPACITY-SYNC-001`; it is not an Auto Inviter persistence failure.
+  as `EVENT-CAPACITY-SYNC-001`; it was not an Auto Inviter persistence failure.
+  The post-fix retest first converged every open projection to the canonical
+  `0 / 8 (2)` legacy-draft baseline, then CARD-PUBLISH converged all three
+  sessions to the repaired `1 / 8 (2)` state.
+- HISTORICAL FAIL, FIX VERIFIED — creator/admin membership consistency: after
+  Nova and Riley were both
+  invited, every event card correctly converged to accepted occupancy `1 / 8`
+  plus pending badge `(2)`. Event Members nevertheless reported
+  `0 members · 2 pending` and listed only Nova and Riley as pending. Casey, the
+  event creator whose fallback identity supplies the accepted occupancy, did
+  not appear as an accepted Admin. This is tracked as
+  `EVENT-MEMBER-CREATOR-001`; do not reinterpret the red `(2)` as accepted
+  occupancy.
 
 ### `EVENT-ACTIVITY-REFRESH-001` — event bucket live convergence
 
@@ -434,6 +453,54 @@ Execution evidence on 2026-08-04:
 
 ## Event invitation and membership cases
 
+### `EVENT-MEMBER-CREATOR-001` — creator/admin canonical membership
+
+- Create and publish an event whose creator has no pre-existing event member
+  document, then create at least one pending invitation.
+- Compare the host and recipient event-card capacity fraction with Event
+  Members and the exact membership oracle before any recipient accepts.
+- The creator must appear exactly once as an accepted Admin. Event Members
+  must report `1 member · N pending`, while every event card reports accepted
+  occupancy `1 / capacity` and pending badge `(N)`.
+- A creator identity synthesized by a Java DTO or projection mapper is not
+  sufficient. The UI must render canonical backend membership counts and must
+  not invent creator occupancy. A missing creator row is a failed
+  canonical-membership invariant because role, authorization, chat and
+  downstream graph projections read the actual membership collection.
+
+Execution evidence on 2026-08-04:
+
+- HISTORICAL FAIL: the three isolated event cards converged to `1 / 8 (2)`, but Event
+  Members reported `0 members · 2 pending` and displayed only Nova Social and
+  Riley Outside as pending. Casey Bridge was absent.
+- The read-only oracle agreed with Event Members: no accepted creator/admin
+  membership document existed. The Java event mapper and materialized event
+  projection synthesized Casey as accepted/admin; the frontend card only
+  rendered that backend value. This is a Java source-of-truth defect rather
+  than a frontend fallback, stale UI or Members filter.
+- Java fix implemented on 2026-08-04: event create/save and publish now
+  idempotently create or repair one `accepted + Admin` creator membership,
+  preserve unrelated pending invitations, refresh the embedded event
+  projection from that membership, and never synthesize creator membership in
+  read mappers.
+- Added focused regressions for materialization/idempotence, create/publish
+  invocation, no-fallback DTO mapping and preservation of stored admin order.
+  The production classes were hot-compiled by the existing dev stack. After
+  stopping only its Java container, the focused profile test selection passed
+  `99 / 99` against the existing `server/.gradle` cache; the same container
+  was restarted and reached `running / healthy`.
+- PASS — manual retest: after hot deploy, Unpublish produced the canonical
+  legacy-draft baseline `0 / 8 (2)` and removed the active invitation cards.
+  CARD-PUBLISH then repaired the same event identity and all three already
+  open sessions converged to `1 / 8 (2)`. Event Members reported
+  `1 member · 2 pending` and displayed Casey Bridge exactly once as Admin,
+  with Nova Social and Riley Outside unchanged as pending invitations.
+- PASS — independent oracle: the active event stored `acceptedMembers=1`,
+  `pendingMembers=2`, Casey in both `acceptedMemberUserIds` and `admins`, and
+  exactly three membership documents: Casey `accepted + Admin`, Nova pending
+  invite and Riley pending invite. No fixture or direct database mutation was
+  used during the repair or retest.
+
 ### `EVENT-INV-001` — manual invite and pending projections
 
 - From an owner/admin session, open Event Members, select one controlled user
@@ -454,6 +521,20 @@ Execution evidence on 2026-08-04:
 - A direct chat request or stale deep link must be rejected, not merely hidden
   by the menu.
 
+Execution evidence on 2026-08-04:
+
+- PARTIAL UI PASS: Riley could open the invitation card and the event's
+  read-only view. The editor fields were disabled, and no event chat or
+  participant-resource action was visible. Invitation-specific View, Accept
+  and Reject actions were present.
+- OPEN AUTHORIZATION CHECK: the event uses Open Event member preview, so the
+  Members affordance is expected to be visible. The demo session bypasses the
+  production authenticated access-policy gate; therefore this UI pass cannot
+  prove the required direct/deep-link server denial. Repeat that half in a
+  Firebase-enabled, non-demo operator configuration.
+- The Members screenshot also exposed `EVENT-MEMBER-CREATOR-001`; that separate
+  canonical-membership failure does not decide this privacy checkpoint.
+
 ### `EVENT-INV-003` — owner/admin invitation acceptance
 
 - Accept an owner/admin invitation once through the recipient UI.
@@ -463,6 +544,39 @@ Execution evidence on 2026-08-04:
 - Accepted-only chat access may appear only after that terminal membership
   state. Send one unique message to prove read/write access and exact-once
   Statistics/Monitoring chat projection.
+- Keep three isolated sessions open for the accepted recipient, a still-pending
+  control recipient and the event Admin. Both accepted roles must see the same
+  event chat; the pending control must not see or directly read it.
+- In the Admin session, verify exactly one acceptance notification that names
+  the accepted recipient and the event. It must be distinct from the original
+  invitation notification and from unrelated lifecycle notifications.
+
+Execution evidence on 2026-08-04:
+
+- PASS — Riley accepted the controlled invitation once through the recipient
+  UI. The already-open Riley Active Events, Nova Invitations and Casey My
+  Events projections converged without browser refresh from accepted occupancy
+  `1 / 8` with two pending invitations to `2 / 8` with one pending invitation.
+- PASS — Event Members reported `2 members · 1 pending`: Casey remained the
+  single accepted Admin, Riley appeared once as an accepted Member, and Nova
+  remained the single pending Member. No duplicate membership row appeared.
+- PASS — the independent read-only oracle stored Casey and Riley in
+  `acceptedMemberUserIds`, Nova alone in `pendingMemberUserIds`, cleared
+  Riley's invitation fields, and retained Nova's pending admin invitation.
+- PASS — Nova, the still-pending control, had no event-chat channel in her open
+  Chats list after Riley accepted.
+- FAIL — Riley, despite being a terminal accepted Member, had no event-chat
+  channel. Casey, despite being the accepted Admin, also had no event-chat
+  channel. The positive authorization projections therefore failed while the
+  pending negative control passed.
+- FAIL — Casey's notification list did not contain an acceptance notification
+  for Riley and `Manual QA EVENT-EDITOR-001`. The visible controlled items were
+  the earlier invitation and event lifecycle notification; the other visible
+  items were unrelated baseline invitations.
+- Continue only the failed positive branches after the backend fix: Riley and
+  Casey must see the same event chat, Riley must write one unique proof message
+  that Casey receives, and Casey must receive exactly one acceptance
+  notification. Nova must remain absent and server-denied.
 
 ### `EVENT-INV-004` — ordinary-member invitation approval chain
 
@@ -485,9 +599,18 @@ Execution evidence on 2026-08-04:
 
 - Use the same event and recipient as `EVENT-INV-002`/`EVENT-INV-003`, or stage
   an equivalent pending invitation independently.
-- Before terminal acceptance, prove both menu absence and server-side denial.
-- After terminal acceptance, prove channel visibility, history read and one
-  unique message write.
+- Keep three isolated sessions open: event Admin, terminal accepted member and
+  still-pending control member.
+- Before terminal acceptance, prove both menu absence and server-side denial
+  for the recipient; retain another pending identity as the negative control
+  after the selected recipient accepts.
+- After terminal acceptance, prove that both the Admin and accepted member see
+  the same channel and history. Send one unique message from the accepted
+  member, prove that the Admin receives exactly that message, and prove that
+  the pending control neither sees the channel nor receives the message.
+- Treat an empty channel list for either accepted role as a functional failure;
+  the pending control's empty list does not compensate for a missing Admin or
+  accepted-member projection.
 - After leave, disqualification or restored pending state, repeat the negative
   check. Treat any readable history outside accepted membership as a P0 privacy
   failure.

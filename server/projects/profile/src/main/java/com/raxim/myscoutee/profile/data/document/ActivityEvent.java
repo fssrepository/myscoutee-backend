@@ -327,7 +327,6 @@ public class ActivityEvent {
 
     private List<String> normalizeAdminIds(List<String> values) {
         ArrayList<String> normalized = new ArrayList<>();
-        addAdminId(normalized, creatorUserId);
         for (String value : values == null ? List.<String>of() : values) {
             addAdminId(normalized, value);
         }

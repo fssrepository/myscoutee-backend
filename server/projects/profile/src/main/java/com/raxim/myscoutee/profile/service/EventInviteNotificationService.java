@@ -89,6 +89,57 @@ public class EventInviteNotificationService {
                 safeText(eventId));
     }
 
+    public void notifyInvitationAccepted(
+            ActivityEvent event,
+            String acceptedUserId,
+            String acceptedUserName,
+            String acceptedAtIso,
+            List<String> adminUserIds) {
+        if (event == null || adminUserIds == null || adminUserIds.isEmpty()) {
+            return;
+        }
+        String memberUserId = safeText(acceptedUserId);
+        List<String> recipients = adminUserIds.stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(memberUserId))
+                .distinct()
+                .toList();
+        if (!StringUtils.hasText(memberUserId) || recipients.isEmpty()) {
+            return;
+        }
+
+        String eventId = safeText(event.getSourceId());
+        String eventTitle = resolveTitle(event);
+        String memberName = StringUtils.hasText(safeText(acceptedUserName))
+                ? safeText(acceptedUserName)
+                : memberUserId;
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "members");
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", memberName);
+        payload.put("membershipAction", "accepted");
+        if (StringUtils.hasText(safeText(acceptedAtIso))) {
+            payload.put("acceptedAtIso", safeText(acceptedAtIso));
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-invitation-accepted",
+                "event",
+                eventId,
+                "event-admins",
+                recipients,
+                "Event invitation accepted",
+                memberName + " accepted the invitation to " + eventTitle + ".",
+                DEFAULT_CLICK_URL,
+                resolveImageUrl(event),
+                APP_BADGE_URL,
+                "event-invitation-accepted-" + eventId + "-" + memberUserId,
+                payload,
+                memberUserId));
+    }
+
     private String resolveTitle(ActivityEvent event) {
         String title = safeText(event.getTitle());
         return StringUtils.hasText(title) ? title : "New event invitation";

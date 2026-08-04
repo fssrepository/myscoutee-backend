@@ -9,6 +9,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -150,6 +151,57 @@ class ActivitiesMembersServiceTest {
         verify(affinityRecomputeTaskService, atLeastOnce()).enqueueEventMembersChanged("event-1", "admin");
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
         verify(chatService).postSystemMessage("event-1", "Target User was disqualified from the event.", "member-disqualify");
+    }
+
+    @Test
+    void ensureEventCreatorAdminMembershipMaterializesCanonicalOwnerWithoutChangingPendingInvites() {
+        ActivityEvent event = event("event-1", "host", "host");
+        ActivityMember nova = member("nova-sync", "event-1", "nova", "Member", "pending");
+        nova.setPendingSource("admin");
+        nova.setRequestKind("invite");
+        nova.setInvitedByUserId("host");
+        ActivityMember riley = member("riley-sync", "event-1", "riley", "Member", "pending");
+        riley.setPendingSource("admin");
+        riley.setRequestKind("invite");
+        riley.setInvitedByUserId("host");
+        AtomicReference<List<ActivityMember>> storedMembers = new AtomicReference<>(List.of(nova, riley));
+
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            @SuppressWarnings("unchecked")
+            List<ActivityMember> saved = invocation.getArgument(0);
+            Map<String, ActivityMember> nextByUserId = new LinkedHashMap<>();
+            storedMembers.get().forEach(member -> nextByUserId.put(member.getUserId(), member));
+            saved.forEach(member -> nextByUserId.put(member.getUserId(), member));
+            storedMembers.set(List.copyOf(nextByUserId.values()));
+            return saved;
+        });
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitiesMembersService.OwnerMembersSnapshot first =
+                service.ensureEventCreatorAdminMembership("event-1", "host");
+        ActivitiesMembersService.OwnerMembersSnapshot second =
+                service.ensureEventCreatorAdminMembership("event-1", "host");
+
+        assertThat(first.mutationApplied()).isTrue();
+        assertThat(second.mutationApplied()).isFalse();
+        assertThat(second.acceptedMemberUserIds()).containsExactly("host");
+        assertThat(second.pendingMemberUserIds()).containsExactly("nova", "riley");
+        assertThat(second.adminUserIds()).containsExactly("host");
+        assertThat(storedMembers.get()).hasSize(3);
+        assertThat(storedMembers.get()).filteredOn(member -> "host".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getRole()).isEqualTo("Admin");
+                    assertThat(member.getStatus()).isEqualTo("accepted");
+                    assertThat(member.getPendingSource()).isNull();
+                    assertThat(member.getRequestKind()).isNull();
+                    assertThat(member.getInvitedByUserId()).isNull();
+                });
+        verify(activityMembersRepository, times(1)).saveAll(anyList());
+        verify(activityEventsRepository, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -821,6 +873,7 @@ class ActivitiesMembersServiceTest {
         assertThat(savedMember.getValue().getPendingSource()).isNull();
         assertThat(savedMember.getValue().getRequestKind()).isNull();
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        verify(chatService).ensureMainEventChat(event, List.of("target"));
         verify(chatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
     }
 
@@ -2207,6 +2260,7 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
 
         service.requestJoin("event-1", viewer, event, true, false, false);
 
@@ -2262,7 +2316,19 @@ class ActivitiesMembersServiceTest {
                     assertThat(member.getPendingSource()).isNull();
                     assertThat(member.getRequestKind()).isNull();
                 });
+        verify(chatService).ensureMainEventChat(event, List.of("accepted-user", "viewer"));
+        verify(chatService).postSystemMessage("event-1", "Viewer joined the event.", "member-joined");
         verify(eventInviteNotificationService).markInvitationResolved("event-1", "viewer");
+        verify(eventInviteNotificationService).notifyInvitationAccepted(
+                event,
+                "viewer",
+                "Viewer",
+                stored.get().stream()
+                        .filter(member -> "viewer".equals(member.getUserId()))
+                        .findFirst()
+                        .orElseThrow()
+                        .getActionAtIso(),
+                List.of("host"));
     }
 
     @Test

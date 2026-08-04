@@ -71,4 +71,40 @@ class EventInviteNotificationServiceTest {
                 .doesNotContainNull()
                 .doesNotHaveDuplicates();
     }
+
+    @Test
+    void notifiesEventAdminsWhenAnInviteeAccepts() {
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        UserNotificationService userNotificationService = mock(UserNotificationService.class);
+        EventInviteNotificationService service = new EventInviteNotificationService(
+                notificationOutboxService,
+                userNotificationService);
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Weekend hike");
+        event.setLocation("Austin");
+
+        service.notifyInvitationAccepted(
+                event,
+                "invitee-1",
+                "Riley Outside",
+                "2026-08-04T13:49:00Z",
+                List.of("admin-1", "invitee-1", "admin-1"));
+
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("event-invitation-accepted");
+        assertThat(intent.recipientScope()).isEqualTo("event-admins");
+        assertThat(intent.recipientUserIds()).containsExactly("admin-1");
+        assertThat(intent.title()).isEqualTo("Event invitation accepted");
+        assertThat(intent.body()).isEqualTo("Riley Outside accepted the invitation to Weekend hike.");
+        assertThat(intent.createdUser()).isEqualTo("invitee-1");
+        assertThat(intent.payload())
+                .containsEntry("eventId", "event-1")
+                .containsEntry("memberUserId", "invitee-1")
+                .containsEntry("memberName", "Riley Outside")
+                .containsEntry("membershipAction", "accepted")
+                .containsEntry("acceptedAtIso", "2026-08-04T13:49:00Z");
+    }
 }

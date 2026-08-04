@@ -3707,6 +3707,14 @@ public class ActivitiesEventsService {
                 ? activeSubEventResourceAudienceUserIds(sourceId)
                 : Set.of();
         List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(List.of(baseRecord));
+        ActivitiesMembersService.OwnerMembersSnapshot canonicalMembersSnapshot =
+                activitiesMembersService.ensureEventCreatorAdminMembership(sourceId, actorUserId);
+        List<ActivityEvent> canonicalDocuments = activityEventsRepository.findBySourceId(sourceId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (!canonicalDocuments.isEmpty()) {
+            savedDocuments = canonicalDocuments;
+        }
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
         Set<String> removedRuntimeAudienceUserIds = definitionChange.removedSubEventIds().isEmpty()
                 ? Set.of()
@@ -3741,7 +3749,11 @@ public class ActivitiesEventsService {
         }
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
-        notifyParticipantsWhenTicketingEnabled(existing, baseRecord, syncedMembersSnapshot, actorUserId);
+        notifyParticipantsWhenTicketingEnabled(
+                existing,
+                baseRecord,
+                canonicalMembersSnapshot == null ? syncedMembersSnapshot : canonicalMembersSnapshot,
+                actorUserId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId)) {
             String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
@@ -5142,7 +5154,24 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> ensurePublishedEventDocuments(List<ActivityEvent> documents, String actorUserId) {
-        return documents == null ? List.of() : documents;
+        List<ActivityEvent> normalizedDocuments = documents == null
+                ? List.of()
+                : documents.stream().filter(Objects::nonNull).toList();
+        LinkedHashSet<String> sourceIds = normalizedDocuments.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        for (String sourceId : sourceIds) {
+            activitiesMembersService.ensureEventCreatorAdminMembership(sourceId, actorUserId);
+        }
+        if (sourceIds.isEmpty()) {
+            return normalizedDocuments;
+        }
+        List<ActivityEvent> refreshed = activityEventsRepository.findBySourceIdIn(sourceIds).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        return refreshed.isEmpty() ? normalizedDocuments : refreshed;
     }
 
     private ActivityEvent buildSyncedRecord(
@@ -5183,7 +5212,7 @@ public class ActivitiesEventsService {
                 || "slot".equalsIgnoreCase(requestedEventType)
                 || StringUtils.hasText(parentEventId);
         List<String> acceptedMemberUserIds = syncedMembersSnapshot == null
-                ? fallbackAcceptedMemberUserIds(request, existing, ownerUserId)
+                ? persistedAcceptedMemberUserIds(existing)
                 : new ArrayList<>(syncedMembersSnapshot.acceptedMemberUserIds());
         int acceptedMembers = syncedMembersSnapshot == null
                 ? Math.max(normalizeCount(request.acceptedMembers()), acceptedMemberUserIds.size())
@@ -5311,9 +5340,9 @@ public class ActivitiesEventsService {
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(actorUserId);
-        document.setAdmins(existing != null && existing.getAdmins() != null
-                ? new ArrayList<>(existing.getAdmins())
-                : resolveAdminUserIds(StringUtils.hasText(parentEventId) ? parentEventId : sourceId, document.getCreatorUserId()));
+        document.setAdmins(syncedMembersSnapshot == null
+                ? normalizeIds(existing == null ? null : existing.getAdmins())
+                : new ArrayList<>(syncedMembersSnapshot.adminUserIds()));
         document.normalizeLifecycleState();
         return document;
     }
@@ -5368,22 +5397,8 @@ public class ActivitiesEventsService {
         return new ArrayList<>(participantsByUserId.values());
     }
 
-    private List<String> fallbackAcceptedMemberUserIds(
-            EventDetailDto request,
-            ActivityEvent existing,
-            String ownerUserId) {
-        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>();
-        String creatorUserId = normalizeId(request.creatorUserId());
-        if (!StringUtils.hasText(creatorUserId) && existing != null) {
-            creatorUserId = normalizeId(existing.getCreatorUserId());
-        }
-        if (!StringUtils.hasText(creatorUserId)) {
-            creatorUserId = normalizeId(ownerUserId);
-        }
-        if (StringUtils.hasText(creatorUserId)) {
-            acceptedMemberUserIds.add(creatorUserId);
-        }
-        return new ArrayList<>(acceptedMemberUserIds);
+    private List<String> persistedAcceptedMemberUserIds(ActivityEvent existing) {
+        return normalizeIds(existing == null ? null : existing.getAcceptedMemberUserIds());
     }
 
     private int resolveCapacityTotal(
@@ -5840,7 +5855,7 @@ public class ActivitiesEventsService {
         if (snapshot != null) {
             return new ArrayList<>(snapshot.acceptedMemberUserIds());
         }
-        return fallbackAcceptedMemberUserIds(record);
+        return persistedAcceptedMemberUserIds(record);
     }
 
     private List<String> resolvePendingMemberUserIds(ActivityEvent record) {
@@ -5865,15 +5880,6 @@ public class ActivitiesEventsService {
             return new ArrayList<>(snapshot.pendingRequestMemberUserIds());
         }
         return normalizeIds(record == null ? null : record.getPendingRequestMemberUserIds());
-    }
-
-    private List<String> fallbackAcceptedMemberUserIds(ActivityEvent record) {
-        List<String> projectedUserIds = normalizeIds(record == null ? null : record.getAcceptedMemberUserIds());
-        if (!projectedUserIds.isEmpty()) {
-            return projectedUserIds;
-        }
-        String creatorUserId = record == null ? null : normalizeId(record.getCreatorUserId());
-        return StringUtils.hasText(creatorUserId) ? List.of(creatorUserId) : List.of();
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
