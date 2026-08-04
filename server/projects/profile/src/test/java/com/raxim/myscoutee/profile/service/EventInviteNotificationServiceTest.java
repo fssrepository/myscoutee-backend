@@ -28,12 +28,13 @@ class EventInviteNotificationServiceTest {
         event.setTitle("Weekend hike");
         event.setUpdatedUser("stale-event-editor");
 
-        service.notifyInvitees(event, List.of("invitee-1"), "actual-inviter");
+        service.notifyInvitees(event, List.of("actual-inviter", "invitee-1"), "actual-inviter");
 
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(intentCaptor.capture());
         NotificationIntent intent = intentCaptor.getValue();
         assertThat(intent.createdUser()).isEqualTo("actual-inviter");
+        assertThat(intent.recipientUserIds()).containsExactly("invitee-1");
         assertThat(intent.payload()).containsEntry("senderUserId", "actual-inviter");
     }
 

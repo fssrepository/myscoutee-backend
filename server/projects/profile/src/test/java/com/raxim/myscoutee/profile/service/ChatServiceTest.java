@@ -177,12 +177,11 @@ class ChatServiceTest {
     }
 
     @Test
-    void publishedMainEventChatStoresOneSystemMessageAndIncrementsCountersOnce() {
+    void publishedMainEventChatCreatesAnEmptyChannelAndIncrementsBucketCountersOnce() {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
         event.setTitle("Published Event");
         List<Chat> persisted = new ArrayList<>();
-        AtomicReference<ChatMessage> inserted = new AtomicReference<>();
         when(chatsRepository.findByChatId(event.getSourceId()))
                 .thenAnswer(invocation -> List.copyOf(persisted));
         when(chatsRepository.saveAll(anyList())).thenAnswer(invocation -> {
@@ -191,15 +190,6 @@ class ChatServiceTest {
             persisted.addAll(saved);
             return saved;
         });
-        when(chatMessagesRepository.findByChatIdAndMessageId("event-1", "system:event-published"))
-                .thenAnswer(invocation -> Optional.ofNullable(inserted.get()));
-        when(chatMessagesRepository.insert(any(ChatMessage.class))).thenAnswer(invocation -> {
-            ChatMessage message = invocation.getArgument(0);
-            inserted.set(message);
-            return message;
-        });
-        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class))
-                .thenReturn(bulkOperations);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
                 .thenReturn(userCounterBulkOperations);
 
@@ -208,12 +198,15 @@ class ChatServiceTest {
         ChatService.PublishedMainEventChatResult repeatedResult =
                 service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
 
-        assertThat(inserted.get()).isNotNull();
-        assertThat(inserted.get().getId()).isEqualTo("system:event-published");
-        assertThat(firstResult.initialMessageInserted()).isTrue();
-        assertThat(repeatedResult.initialMessageInserted()).isFalse();
-        verify(chatMessagesRepository, times(1)).insert(any(ChatMessage.class));
-        verify(bulkOperations, times(2)).updateOne(any(Query.class), any(Update.class));
+        assertThat(firstResult.createdOwnerUserIds()).containsExactlyInAnyOrder("user-1", "user-2");
+        assertThat(repeatedResult.createdOwnerUserIds()).isEmpty();
+        assertThat(persisted).allSatisfy(chat -> {
+            assertThat(chat.getLastMessage()).isEmpty();
+            assertThat(chat.getLastSenderId()).isNull();
+            assertThat(chat.getUnread()).isZero();
+        });
+        verify(chatMessagesRepository, never()).insert(any(ChatMessage.class));
+        verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any(ChatStreamEvent.class));
         ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
         verify(userCounterBulkOperations, times(2)).updateOne(
                 any(Query.class),

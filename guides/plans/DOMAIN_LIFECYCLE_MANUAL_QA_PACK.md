@@ -187,12 +187,21 @@ Execution evidence on 2026-08-04:
   lists unchanged for at most one 30-second SmartList interval.
 - Require exactly one main-event chat for Casey. Nova and Riley must remain
   denied because pending membership is not chat authorization.
-- Casey's top-level Chats badge and Chat > All/Event unread counters must
+- Casey's top-level Chats badge and Chat > All/Event bucket counters must
   increase by exactly one immediately from the Publish response and retain the
-  same value after reload. Nova and Riley's chat counters must not change.
+  same value after reload. The new channel itself is empty with unread `0`:
+  Publish creates neither an automatic chat system message nor a Casey
+  notification. Nova and Riley's chat counters must not change.
 - Require the active event projection to show accepted occupancy `1 / 8` and
   pending badge `(2)`. Publish must not create an invitation-accepted
   notification.
+- For already pending owner/admin invitations, the first Publish creates an
+  `event-invite` occurrence for each pending recipient rather than a generic
+  published notification. Unpublish is an event-context `under-review`
+  lifecycle update with warning/amber presentation and Republish is an
+  event-context `modified`/available-again update with information/blue
+  presentation. Neither may surface under the Scheduled category. The actor
+  receives no self-notification.
 - Repeat Publish only through a new explicit unpublish/publish lifecycle run.
   The same event must still resolve to one main chat; duplicate chat documents
   are a failure.

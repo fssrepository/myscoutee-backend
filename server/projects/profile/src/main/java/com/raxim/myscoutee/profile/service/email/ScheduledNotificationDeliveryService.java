@@ -50,15 +50,27 @@ public class ScheduledNotificationDeliveryService {
                 .trim();
         String templateKey = safeText(template.getTemplateKey());
         String tag = "scheduled-" + firstNonBlank(ruleKey, templateKey);
+        String notificationKind = firstNonBlank(
+                variables == null ? null : variables.get("notification_kind"),
+                "scheduled-template");
+        String notificationSourceType = firstNonBlank(
+                variables == null ? null : variables.get("notification_source_type"),
+                "notification-template");
+        String notificationSourceId = firstNonBlank(
+                variables == null ? null : variables.get("notification_source_id"),
+                templateKey);
+        String notificationRecipientScope = firstNonBlank(
+                variables == null ? null : variables.get("notification_recipient_scope"),
+                "scheduled-user");
         Map<String, String> payload = notificationPayload(
                 variables,
                 ruleKey,
                 templateKey);
         return notificationOutboxService.enqueue(new NotificationIntent(
-                "scheduled-template",
-                "notification-template",
-                templateKey,
-                "scheduled-user",
+                notificationKind,
+                notificationSourceType,
+                notificationSourceId,
+                notificationRecipientScope,
                 List.of(safeText(user.getUserId())),
                 title,
                 body,
@@ -86,6 +98,7 @@ public class ScheduledNotificationDeliveryService {
         copyIfText(variables, payload, "product_logo_url");
         copyIfText(variables, payload, "productBrandingRevision");
         copyIfText(variables, payload, "product_branding_revision");
+        copyIfText(variables, payload, "notification_tone");
         return payload;
     }
 

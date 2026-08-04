@@ -203,21 +203,25 @@ public class ChatService {
     }
 
     public String ensureMainEventChat(ActivityEvent event, Collection<String> participantUserIds) {
-        return ensureMainEventChatDocuments(event, participantUserIds);
+        return ensureMainEventChatDocuments(event, participantUserIds).chatId();
     }
 
     public PublishedMainEventChatResult ensurePublishedMainEventChat(
             ActivityEvent event,
             Collection<String> participantUserIds) {
-        String chatId = ensureMainEventChatDocuments(event, participantUserIds);
-        InitialSystemMessageResult messageResult = ensureInitialSystemMessageResult(
-                chatId,
-                "Event published.",
-                "event-published");
-        return new PublishedMainEventChatResult(chatId, messageResult.inserted());
+        MainEventChatDocumentsResult result = ensureMainEventChatDocuments(event, participantUserIds);
+        incrementStoredChatCounters(result.createdDocuments().stream()
+                .map(document -> new ChatCounterChange(document, 1))
+                .toList());
+        Set<String> createdOwnerUserIds = result.createdDocuments().stream()
+                .map(Chat::getOwnerUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        return new PublishedMainEventChatResult(result.chatId(), createdOwnerUserIds);
     }
 
-    private String ensureMainEventChatDocuments(
+    private MainEventChatDocumentsResult ensureMainEventChatDocuments(
             ActivityEvent event,
             Collection<String> participantUserIds) {
         String eventId = normalizeId(event == null ? null : event.getSourceId());
@@ -247,6 +251,7 @@ public class ChatService {
         }
 
         List<Chat> documentsToSave = new ArrayList<>();
+        List<Chat> createdDocuments = new ArrayList<>();
         for (String memberUserId : memberUserIds) {
             Chat current = existingByOwnerUserId.get(memberUserId);
             Chat document = current == null ? new Chat() : copyChat(current);
@@ -257,9 +262,7 @@ public class ChatService {
             document.setOwnerUserId(memberUserId);
             document.setAvatar("SY");
             document.setTitle(firstNonBlank(event.getTitle(), "Random Room"));
-            document.setLastMessage(current == null
-                    ? "System-generated room is ready."
-                    : safeText(current.getLastMessage()));
+            document.setLastMessage(current == null ? "" : safeText(current.getLastMessage()));
             document.setLastSenderId(current == null ? null : current.getLastSenderId());
             document.setMemberIds(new ArrayList<>(memberUserIds));
             document.setUnread(current == null ? 0 : normalizeCount(current.getUnread()));
@@ -275,6 +278,9 @@ public class ChatService {
             document.setDistanceMetersExact(null);
             document.setSupportCase(null);
             documentsToSave.add(document);
+            if (current == null) {
+                createdDocuments.add(document);
+            }
         }
         chatsRepository.saveAll(documentsToSave);
 
@@ -298,7 +304,7 @@ public class ChatService {
         if (!persistedOwnerUserIds.equals(new LinkedHashSet<>(memberUserIds))) {
             throw new IllegalStateException("Unable to materialize the main event chat for " + eventId + ".");
         }
-        return chatId;
+        return new MainEventChatDocumentsResult(chatId, List.copyOf(createdDocuments));
     }
 
     public ChatPageResponseDto queryChatPage(
@@ -3010,7 +3016,13 @@ public class ChatService {
         return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public record PublishedMainEventChatResult(String chatId, boolean initialMessageInserted) {
+    public record PublishedMainEventChatResult(String chatId, Set<String> createdOwnerUserIds) {
+        public PublishedMainEventChatResult {
+            createdOwnerUserIds = createdOwnerUserIds == null ? Set.of() : Set.copyOf(createdOwnerUserIds);
+        }
+    }
+
+    private record MainEventChatDocumentsResult(String chatId, List<Chat> createdDocuments) {
     }
 
     private record InitialSystemMessageResult(ChatMessageDto message, boolean inserted) {

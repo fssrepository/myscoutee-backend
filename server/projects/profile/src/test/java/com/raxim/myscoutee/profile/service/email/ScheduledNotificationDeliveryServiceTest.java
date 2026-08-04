@@ -53,6 +53,8 @@ class ScheduledNotificationDeliveryServiceTest {
                         "/api/assets/community.webp",
                         "product_branding_revision",
                         "23",
+                        "notification_tone",
+                        "warning",
                         "user_first_name",
                         "Ada"),
                 "profile-rule");
@@ -76,6 +78,48 @@ class ScheduledNotificationDeliveryServiceTest {
                 .containsEntry(
                         "product_logo_url",
                         "/api/assets/community.webp")
-                .containsEntry("product_branding_revision", "23");
+                .containsEntry("product_branding_revision", "23")
+                .containsEntry("notification_tone", "warning");
+    }
+
+    @Test
+    void usesContextualEventIdentityInsteadOfExposingTheSchedulerCategory() {
+        NotificationOutboxService outboxService =
+                org.mockito.Mockito.mock(NotificationOutboxService.class);
+        when(outboxService.enqueue(any(NotificationIntent.class)))
+                .thenReturn(Optional.of(new NotificationOutboxItem()));
+        ScheduledNotificationDeliveryService service =
+                new ScheduledNotificationDeliveryService(
+                        new EmailProperties(),
+                        new EmailTemplateRenderer(),
+                        outboxService);
+        NotificationTemplate template = new NotificationTemplate();
+        template.setTemplateKey("event-definition-changed-v1");
+        template.setTitleTemplate("@event_title changed");
+        template.setBodyTemplate("@change_summary");
+        Users user = new Users();
+        user.setUserId("user-1");
+
+        service.send(
+                user,
+                template,
+                Map.of(
+                        "event_title", "Weekend hike",
+                        "change_summary", "The event is under review.",
+                        "notification_kind", "event-under-review",
+                        "notification_source_type", "event",
+                        "notification_source_id", "event-1",
+                        "notification_recipient_scope", "event-participants",
+                        "notification_tone", "warning"),
+                "event-lifecycle-change");
+
+        ArgumentCaptor<NotificationIntent> intent =
+                ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(outboxService).enqueue(intent.capture());
+        assertThat(intent.getValue().type()).isEqualTo("event-under-review");
+        assertThat(intent.getValue().entityType()).isEqualTo("event");
+        assertThat(intent.getValue().entityId()).isEqualTo("event-1");
+        assertThat(intent.getValue().recipientScope()).isEqualTo("event-participants");
+        assertThat(intent.getValue().payload()).containsEntry("notification_tone", "warning");
     }
 }

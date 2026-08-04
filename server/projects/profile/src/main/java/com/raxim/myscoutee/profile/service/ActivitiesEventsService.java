@@ -163,6 +163,7 @@ public class ActivitiesEventsService {
     private final MongoTemplate mongoTemplate;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final NotificationOutboxService notificationOutboxService;
+    private final EventInviteNotificationService eventInviteNotificationService;
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
     private final ChatService chatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
@@ -196,6 +197,7 @@ public class ActivitiesEventsService {
             MongoTemplate mongoTemplate,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
             NotificationOutboxService notificationOutboxService,
+            EventInviteNotificationService eventInviteNotificationService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
             ChatService chatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
@@ -227,6 +229,7 @@ public class ActivitiesEventsService {
         this.mongoTemplate = mongoTemplate;
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
         this.notificationOutboxService = notificationOutboxService;
+        this.eventInviteNotificationService = eventInviteNotificationService;
         this.eventSchedulerProvider = eventSchedulerProvider;
         this.chatService = chatService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
@@ -1976,6 +1979,11 @@ public class ActivitiesEventsService {
         boolean eventChatAdded = false;
         if (changed) {
             eventChatAdded = materializePublishedMainEventChats(publishedDocuments, userId);
+            if (eventChatAdded) {
+                notifyPublishedPendingInvitees(publishedDocuments, beforeSnapshot, userId);
+            } else {
+                scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
+            }
             syncStageReminderTasksForSavedEvents(publishedDocuments, userId);
             markEventAttachmentsAvailable(publishedDocuments);
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
@@ -2012,7 +2020,7 @@ public class ActivitiesEventsService {
             current.setStatus(ActivityEvent.STATUS_DRAFT);
         });
         if (changed) {
-            scheduleEventLifecycleChangedNotification(sourceId, updated, "unpublished", userId);
+            scheduleEventLifecycleChangedNotification(sourceId, updated, "under-review", userId);
             syncStageReminderTasksForSavedEvents(updated, userId);
             markEventAttachmentsUnavailable(updated, "unpublished");
         }
@@ -4069,7 +4077,8 @@ public class ActivitiesEventsService {
                 definitionChange,
                 preChangeAssignedAudienceUserIds,
                 removedRuntimeAudienceUserIds,
-                actorUserId);
+                actorUserId,
+                false);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
         if (!StringUtils.hasText(city)) {
@@ -4392,7 +4401,8 @@ public class ActivitiesEventsService {
             EventDefinitionChangeSummary definitionChange,
             Set<String> preChangeAssignedAudienceUserIds,
             Set<String> removedRuntimeAudienceUserIds,
-            String actorUserId) {
+            String actorUserId,
+            boolean lifecycleOccurrence) {
         if (definitionChange == null || !definitionChange.changed()) {
             return;
         }
@@ -4407,13 +4417,25 @@ public class ActivitiesEventsService {
         }
         audienceUserIds.addAll(preChangeAssignedAudienceUserIds == null ? Set.of() : preChangeAssignedAudienceUserIds);
         audienceUserIds.addAll(removedRuntimeAudienceUserIds == null ? Set.of() : removedRuntimeAudienceUserIds);
-        audienceUserIds.removeIf(userId -> !StringUtils.hasText(safeText(userId)));
-        scheduledMessageTaskService.scheduleEventDefinitionChanged(
-                sourceId,
-                event == null ? null : event.getTitle(),
-                audienceUserIds,
-                definitionChange.reasons(),
-                actorUserId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        audienceUserIds.removeIf(userId ->
+                !StringUtils.hasText(safeText(userId))
+                        || normalizeId(userId).equals(normalizedActorUserId));
+        if (lifecycleOccurrence) {
+            scheduledMessageTaskService.scheduleEventLifecycleChanged(
+                    sourceId,
+                    event == null ? null : event.getTitle(),
+                    audienceUserIds,
+                    definitionChange.reasons(),
+                    actorUserId);
+        } else {
+            scheduledMessageTaskService.scheduleEventDefinitionChanged(
+                    sourceId,
+                    event == null ? null : event.getTitle(),
+                    audienceUserIds,
+                    definitionChange.reasons(),
+                    actorUserId);
+        }
     }
 
     private void scheduleEventLifecycleChangedNotification(
@@ -4435,6 +4457,32 @@ public class ActivitiesEventsService {
                 new EventDefinitionChangeSummary(true, Set.of(), List.of(safeText(reason))),
                 activeSubEventResourceAudienceUserIds(normalizedSourceId),
                 Set.of(),
+                actorUserId,
+                true);
+    }
+
+    private void notifyPublishedPendingInvitees(
+            List<ActivityEvent> publishedRecords,
+            ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot,
+            String actorUserId) {
+        if (membershipSnapshot == null) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>(
+                normalizeIds(membershipSnapshot.invitedMemberUserIds()));
+        recipients.retainAll(normalizeIds(membershipSnapshot.pendingMemberUserIds()));
+        recipients.remove(normalizeId(actorUserId));
+        if (recipients.isEmpty()) {
+            return;
+        }
+        ActivityEvent event = computePreferredEventRecords(
+                publishedRecords == null ? List.of() : publishedRecords)
+                .stream()
+                .findFirst()
+                .orElse(null);
+        eventInviteNotificationService.notifyInvitees(
+                event,
+                List.copyOf(recipients),
                 actorUserId);
     }
 
@@ -5558,8 +5606,7 @@ public class ActivitiesEventsService {
             ChatService.PublishedMainEventChatResult result =
                     chatService.ensurePublishedMainEventChat(entry.getValue(), acceptedUserIds);
             if (result != null
-                    && result.initialMessageInserted()
-                    && acceptedUserIds.contains(normalizedActorUserId)) {
+                    && result.createdOwnerUserIds().contains(normalizedActorUserId)) {
                 actorChatAdded = true;
             }
         }

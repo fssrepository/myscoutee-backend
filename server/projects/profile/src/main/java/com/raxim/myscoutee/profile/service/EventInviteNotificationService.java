@@ -37,9 +37,11 @@ public class EventInviteNotificationService {
         if (event == null || invitedUserIds == null || invitedUserIds.isEmpty()) {
             return;
         }
+        String senderUserId = safeText(actorUserId);
         List<String> recipients = invitedUserIds.stream()
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(senderUserId))
                 .distinct()
                 .toList();
         if (recipients.isEmpty()) {
@@ -60,7 +62,6 @@ public class EventInviteNotificationService {
         payload.put("startAtIso", safeText(event.getStartAtIso()));
         payload.put("eventScope", "invitations");
         payload.put("invitationOccurrenceId", UUID.randomUUID().toString());
-        String senderUserId = safeText(actorUserId);
         if (StringUtils.hasText(senderUserId)) {
             payload.put("senderUserId", senderUserId);
         }

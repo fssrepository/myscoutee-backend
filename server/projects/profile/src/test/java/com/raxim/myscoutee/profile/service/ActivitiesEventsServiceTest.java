@@ -14,8 +14,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -104,6 +105,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private NotificationOutboxService notificationOutboxService;
     @Mock
+    private EventInviteNotificationService eventInviteNotificationService;
+    @Mock
     private ObjectProvider<EventScheduler> eventSchedulerProvider;
     @Mock
     private EventScheduler eventScheduler;
@@ -149,6 +152,7 @@ class ActivitiesEventsServiceTest {
                 mongoTemplate,
                 chatAttachmentLifecycleService,
                 notificationOutboxService,
+                eventInviteNotificationService,
                 eventSchedulerProvider,
                 chatService,
                 activitiesEventLeaderboardService,
@@ -304,8 +308,8 @@ class ActivitiesEventsServiceTest {
                         "event-1",
                         List.of(),
                         List.of("host"),
-                        List.of(),
-                        List.of(),
+                        List.of("pending-invitee"),
+                        List.of("pending-invitee"),
                         List.of(),
                         Set.of("host"),
                         8);
@@ -325,7 +329,7 @@ class ActivitiesEventsServiceTest {
         when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
                 .thenReturn(Map.of("event-1", membersSnapshot));
         when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
-                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", true));
+                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
 
         EventParticipationActionResultDto result = service.publish(new EventActionRequestDto(
                 "host",
@@ -359,6 +363,69 @@ class ActivitiesEventsServiceTest {
         assertThat(result.counterDelta().chat().event()).isEqualTo(1);
         assertThat(result.counterDelta().event().drafts()).isEqualTo(-1);
         assertThat(result.counterDelta().hosting()).isNull();
+        verify(eventInviteNotificationService).notifyInvitees(
+                any(ActivityEvent.class),
+                eq(List.of("pending-invitee")),
+                eq("host"));
+    }
+
+    @Test
+    void republishNotifiesOtherParticipantsAsModifiedWithoutDuplicatingTheInviteOrChatDelta() {
+        ActivityEvent event = event("event-1", "host", 0d);
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
+        AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host"),
+                        List.of("pending-invitee"),
+                        List.of("pending-invitee"),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> saved = invocation.getArgument(0);
+            currentEvent.set(saved.get(0));
+            return saved;
+        });
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(membersSnapshot);
+        when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
+                .thenReturn(Map.of("event-1", membersSnapshot));
+        when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
+                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of()));
+
+        EventParticipationActionResultDto result = service.publish(new EventActionRequestDto(
+                "host",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+                eq("event-1"),
+                eq("event-1"),
+                audienceCaptor.capture(),
+                eq(List.of("modified")),
+                eq("host"));
+        assertThat(audienceCaptor.getValue()).containsExactly("pending-invitee");
+        verify(eventInviteNotificationService, never())
+                .notifyInvitees(any(ActivityEvent.class), anyList(), anyString());
+        assertThat(result.counterDelta().chats()).isNull();
+        assertThat(result.counterDelta().event().drafts()).isEqualTo(-1);
     }
 
     @Test
@@ -399,6 +466,57 @@ class ActivitiesEventsServiceTest {
         verify(activityEventsRepository, never()).saveAll(anyList());
         verify(scheduledMessageTaskService, never()).scheduleEventStageReminders(any(), anyString());
         verify(chatAttachmentLifecycleService, never()).markEventUnavailable(anyString(), anyString());
+    }
+
+    @Test
+    void unpublishExcludesTheActorFromLifecycleNotificationAudience() {
+        ActivityEvent event = event("event-1", "host", 0d);
+        AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "accepted-member"),
+                        List.of("pending-invitee"),
+                        List.of("pending-invitee"),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> saved = invocation.getArgument(0);
+            currentEvent.set(saved.get(0));
+            return saved;
+        });
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(membersSnapshot);
+
+        service.unpublish(new EventActionRequestDto(
+                "host",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+                eq("event-1"),
+                eq("event-1"),
+                audienceCaptor.capture(),
+                eq(List.of("under-review")),
+                eq("host"));
+        assertThat(audienceCaptor.getValue())
+                .containsExactlyInAnyOrder("accepted-member", "pending-invitee");
     }
 
     @Test
