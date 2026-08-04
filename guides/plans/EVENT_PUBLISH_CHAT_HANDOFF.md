@@ -21,15 +21,15 @@ Do not start or rebuild the stack. The existing dev stack and both hot-deploy wa
 ## Publish evidence captured
 
 Casey published `Manual QA EVENT-PUBLISH-CHAT-001` exactly once. The read-only
-oracle confirmed one Casey event chat and unit chat bucket counter changes,
-Drafts `-1`, unchanged Hosting/My Events, no pending-recipient chat and no
-invitation-accepted notification. The run also exposed an invalid automatic
-`Event published.` chat message and Casey notification; that run is not PASS.
+oracle confirmed one Casey event chat, Drafts `-1`, unchanged Hosting/My Events,
+no pending-recipient chat and no invitation-accepted notification. That prior
+run also had outdated `+1` chat attention counters, an invalid automatic
+`Event published.` chat message and a Casey notification; that run is not PASS.
 
 Require immediately after the response:
 
-- Casey top-level Chats badge `+1`;
-- Casey Chat > All and Event bucket counters `+1`;
+- Casey top-level Chats badge unchanged;
+- Casey Chat > All and Event attention counters unchanged;
 - Casey My Events remains `1`; Drafts changes `1 → 0`;
 - exactly one empty Casey main-event chat with unread `0`;
 - no automatic Publish system message in the channel;
@@ -45,8 +45,9 @@ The read-only oracle used was:
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh status event-domain EVENT-PUBLISH-CHAT-001
 ```
 
-It showed one Casey event chat, no Nova/Riley event chat, Casey
-`actionDelta.chats/chatAll/chatEvent = 1`, and Nova/Riley chat deltas `0`.
+That invalid run showed one Casey event chat, no Nova/Riley event chat, Casey
+`actionDelta.chats/chatAll/chatEvent = 1`, and Nova/Riley chat deltas `0`. The
+clean retest must show Casey and Nova/Riley chat action deltas all `0`.
 
 ## Remaining acceptance branch
 
@@ -68,7 +69,7 @@ explicit Unpublish/Republish notification pass:
 - The original first Publish is the event-invite occurrence. Later lifecycle
   transitions remain separate and are not collapsed into that invite.
 - The existing empty main chat remains single; Republish creates no automatic
-  chat message and Casey's chat counters do not increase a second time.
+  chat message and Casey's chat attention counters remain unchanged throughout.
 
 Then retain the same event and continue the checkpoint metadata:
 
@@ -83,7 +84,8 @@ negative control. Riley accepts exactly once through the recipient UI. Require:
 - Riley becomes accepted exactly once and the event changes to `2 / 8` with
   one pending recipient;
 - Casey and Riley see the same main-event chat while Nova sees none;
-- Riley's chat counters increase by one unit and remain stable after reload;
+- Riley gains the same empty chat row, but Riley's chat attention counters
+  remain unchanged until an actual unread message exists;
 - Riley sends one unique proof message which Casey receives in that same chat;
 - Casey receives exactly one invitation-accepted notification naming Riley
   and the event.
@@ -106,9 +108,8 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh reset 
 - A fresh backend unit run was stopped under laptop memory pressure; do not rerun it during this manual pass.
 - No additional server, watcher, Angular test, Vitest, or Gradle test process remains running.
 
-The worktree contains intentional pre-existing QA changes plus this
-`Users.activities`/unit-direction implementation. No delta is persisted. Chat
-owner documents and their user-counter updates are written in batches. Do not
-reset or discard unrelated changes. Mutation responses contain only directions
-owned by that operation; the periodic poll reconciles concurrent external
-changes.
+The worktree contains intentional pre-existing QA changes plus the empty-chat
+materialization implementation. Chat owner documents are written in batches,
+but creating the empty channel writes no `Users.activities` chat attention
+counter and returns no chat counter direction. Do not reset or discard unrelated
+changes; the periodic poll still reconciles concurrent external changes.

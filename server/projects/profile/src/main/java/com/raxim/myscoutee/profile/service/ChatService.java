@@ -210,9 +210,6 @@ public class ChatService {
             ActivityEvent event,
             Collection<String> participantUserIds) {
         MainEventChatDocumentsResult result = ensureMainEventChatDocuments(event, participantUserIds);
-        incrementStoredChatCounters(result.createdDocuments().stream()
-                .map(document -> new ChatCounterChange(document, 1))
-                .toList());
         Set<String> createdOwnerUserIds = result.createdDocuments().stream()
                 .map(Chat::getOwnerUserId)
                 .map(this::normalizeId)

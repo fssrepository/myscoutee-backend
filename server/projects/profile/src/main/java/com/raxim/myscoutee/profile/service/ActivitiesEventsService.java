@@ -1999,7 +1999,7 @@ public class ActivitiesEventsService {
                         ? eventActivityTransition(
                                 beforeState,
                                 eventActivityState(refreshed, afterSnapshot, userId),
-                                eventChatAdded)
+                                false)
                         : null);
     }
 

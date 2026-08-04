@@ -177,7 +177,7 @@ class ChatServiceTest {
     }
 
     @Test
-    void publishedMainEventChatCreatesAnEmptyChannelAndIncrementsBucketCountersOnce() {
+    void publishedMainEventChatCreatesAnEmptyChannelWithoutChangingAttentionCounters() {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
         event.setTitle("Published Event");
@@ -190,9 +190,6 @@ class ChatServiceTest {
             persisted.addAll(saved);
             return saved;
         });
-        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
-                .thenReturn(userCounterBulkOperations);
-
         ChatService.PublishedMainEventChatResult firstResult =
                 service.ensurePublishedMainEventChat(event, List.of("user-2", "user-1"));
         ChatService.PublishedMainEventChatResult repeatedResult =
@@ -207,14 +204,7 @@ class ChatServiceTest {
         });
         verify(chatMessagesRepository, never()).insert(any(ChatMessage.class));
         verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any(ChatStreamEvent.class));
-        ArgumentCaptor<Update> counterUpdates = ArgumentCaptor.forClass(Update.class);
-        verify(userCounterBulkOperations, times(2)).updateOne(
-                any(Query.class),
-                counterUpdates.capture());
-        verify(userCounterBulkOperations).execute();
-        assertThat(counterUpdates.getAllValues()).extracting(update ->
-                        update.getUpdateObject().get("$inc", Document.class).getInteger("activities.chats"))
-                .containsExactly(1, 1);
+        verify(userCounterBulkOperations, never()).execute();
     }
 
     @Test

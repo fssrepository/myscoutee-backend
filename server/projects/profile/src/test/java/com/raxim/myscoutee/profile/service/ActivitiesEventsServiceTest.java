@@ -358,9 +358,8 @@ class ActivitiesEventsServiceTest {
         assertThat(chatEventCaptor.getValue().getSourceId()).isEqualTo("event-1");
         assertThat(chatEventCaptor.getValue().getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
         assertThat(chatEventCaptor.getValue().getPublished()).isTrue();
-        assertThat(result.counterDelta().chats()).isEqualTo(1);
-        assertThat(result.counterDelta().chat().all()).isEqualTo(1);
-        assertThat(result.counterDelta().chat().event()).isEqualTo(1);
+        assertThat(result.counterDelta().chats()).isNull();
+        assertThat(result.counterDelta().chat()).isNull();
         assertThat(result.counterDelta().event().drafts()).isEqualTo(-1);
         assertThat(result.counterDelta().hosting()).isNull();
         verify(eventInviteNotificationService).notifyInvitees(

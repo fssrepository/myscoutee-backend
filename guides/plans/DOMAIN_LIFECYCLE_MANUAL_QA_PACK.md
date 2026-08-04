@@ -187,9 +187,9 @@ Execution evidence on 2026-08-04:
   lists unchanged for at most one 30-second SmartList interval.
 - Require exactly one main-event chat for Casey. Nova and Riley must remain
   denied because pending membership is not chat authorization.
-- Casey's top-level Chats badge and Chat > All/Event bucket counters must
-  increase by exactly one immediately from the Publish response and retain the
-  same value after reload. The new channel itself is empty with unread `0`:
+- Casey's top-level Chats badge and Chat > All/Event attention counters must
+  remain unchanged immediately after Publish and after reload. The list gains
+  exactly one new channel, but that channel is empty with unread `0`:
   Publish creates neither an automatic chat system message nor a Casey
   notification. Nova and Riley's chat counters must not change.
 - Require the active event projection to show accepted occupancy `1 / 8` and
