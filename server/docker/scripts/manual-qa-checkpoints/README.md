@@ -40,6 +40,7 @@ Supported checkpoint IDs:
 - `EVENT-EDITOR-001` through `EVENT-EDITOR-005`
 - `EVENT-SLOT-001` through `EVENT-SLOT-004`
 - `EVENT-INV-001` through `EVENT-INV-005`
+- `EVENT-ACTIVITY-REFRESH-001`
 - `CHAT-AUTH-001`
 - `EVENT-LIFE-001` through `EVENT-LIFE-005`
 - `EVENT-FEEDBACK-001` through `EVENT-FEEDBACK-005`
@@ -73,9 +74,74 @@ MANUAL_QA_INVITEE_USER_ID=<participant-user-id> \
 bash manual-qa-checkpoints.sh stage event-domain EVENT-TICKET-002
 ```
 
-`EVENT-EDITOR-003` continues through the existing `stat-012` real auto-inviter
-helper. `TOURNAMENT-003` continues through the named real tournament-review
-scheduler workflow. The immediate runner does not impersonate either worker.
+`EVENT-EDITOR-003` keeps the manually created event and separates its three
+effects. Hold the rule before editing, prepare reversible eligibility only
+after the Draft Save, and never attribute the publish-time initial batch to the
+periodic scheduler:
+
+```bash
+bash manual-qa-checkpoints.sh hold-auto-inviter event-domain EVENT-EDITOR-003
+# Unpublish, enable Auto Inviter in Draft, Save, close and reopen.
+bash manual-qa-checkpoints.sh prepare-auto-inviter event-domain EVENT-EDITOR-003
+bash manual-qa-checkpoints.sh capture-auto-inviter-baseline event-domain EVENT-EDITOR-003
+# CARD-PUBLISH: use Publish once from the Draft card overflow menu without
+# reopening Event Editor, then capture the initial-batch recipient.
+bash manual-qa-checkpoints.sh prepare-periodic-auto-inviter event-domain EVENT-EDITOR-003
+# Keep Casey > Events > My Events and Riley > Events > Invitations open in
+# separate authenticated sessions. Do not close or reopen either popup.
+bash manual-qa-checkpoints.sh schedule-auto-inviter event-domain EVENT-EDITOR-003 30
+# After the real scheduler and at most one 30-second SmartList poll:
+bash manual-qa-checkpoints.sh status event-domain EVENT-EDITOR-003
+```
+
+The initial preparation command snapshots and isolates affinity edges, other
+auto-inviter events and wait-list rows. It creates no member, invitation,
+notification, marker or outbox record. The periodic preparation command then
+introduces Riley as a distinct eligible candidate only after Nova's
+publish-time invitation has been proven. It still creates no member,
+notification, marker or outbox record.
+
+The schedule command never calls the worker. It keeps the production-like
+one-hour interval, backdates only the persisted `lastRunAtIso` so the rule
+becomes eligible after the requested 10-120 second delay, and leaves
+`manualRunEnabled=false`. The already running scheduler must claim and execute
+the rule. Use the default 30 seconds only after all screenshot windows are
+open; this avoids a multi-minute wait while preserving time for one baseline
+screenshot. Eligibility is not the same as execution: the worker checks for a
+due rule every 60 seconds, so a run may begin up to one scheduler tick after the
+requested delay. A currently open event SmartList may then need up to one
+additional 30-second poll to display the result.
+
+The baseline-capture command records only the two recipient users' complete
+`activities` fields for reset. Run it after both recipient sessions have been
+visually checked and before Publish; it does not create an invitation or run a
+worker.
+
+`EVENT-ACTIVITY-REFRESH-001` is a cross-cutting UI-convergence checkpoint. Keep
+the recipient Invitations list and host My Events list open while the owning
+manual or scheduled checkpoint creates one invitation. Within one configured
+30-second SmartList interval, the open recipient list, the host card projection
+and their counters must converge without closing or reopening either popup.
+Pending invitations increment the red pending badge; they do not increment the
+accepted occupancy fraction. For the default checkpoint, the host card remains
+`1 / 8` while its pending badge changes from `1` to `2`.
+The poll is read-only and must not create a task, outbox item or job-history
+row. Reuse the same assertion with lifecycle checkpoints for All, Active
+Events, Pending, Drafts and Trash rather than inventing bucket-specific refresh
+rules.
+
+For the default identities, open Casey, Nova and Riley in three isolated
+browser/Gmail sessions before Publish. Record the current Invitations and
+Notifications counters, and verify the controlled event is absent for Nova and
+Riley; unrelated historical items may remain. Execute the `CARD-PUBLISH`
+variant from Casey's Draft card overflow menu without reopening Event Editor.
+The card must leave Drafts and remain once in My Events, with a consistent
+member/capacity badge. The publish-time initial batch must add the controlled
+event for Nova only. Keep Riley open without a controlled-event delta until
+Riley is introduced as the distinct later periodic candidate.
+
+`TOURNAMENT-003` continues through the named real tournament-review scheduler
+workflow. The immediate runner does not impersonate either worker.
 
 ## Asset-domain checkpoint runner
 

@@ -34,6 +34,11 @@ Usage:
   bash manual-qa-checkpoints.sh reset stat-012
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
+  bash manual-qa-checkpoints.sh hold-auto-inviter event-domain EVENT-EDITOR-003
+  bash manual-qa-checkpoints.sh prepare-auto-inviter event-domain EVENT-EDITOR-003
+  bash manual-qa-checkpoints.sh capture-auto-inviter-baseline event-domain EVENT-EDITOR-003
+  bash manual-qa-checkpoints.sh prepare-periodic-auto-inviter event-domain EVENT-EDITOR-003
+  bash manual-qa-checkpoints.sh schedule-auto-inviter event-domain EVENT-EDITOR-003 [delay-seconds]
   bash manual-qa-checkpoints.sh next event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh status event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh reset event-domain <checkpoint-id>
@@ -187,7 +192,7 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:next|event-domain:status|event-domain:reset|\
+  event-domain:stage|event-domain:next|event-domain:status|event-domain:reset|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
@@ -196,6 +201,11 @@ case "${scenario}:${command}" in
   event-domain:advance)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$4" "$3"
+    ;;
+  event-domain:schedule-auto-inviter)
+    [ "$#" -le 4 ] || { usage >&2; exit 2; }
+    [ "$#" -ge 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" "${4:-30}" "$3"
     ;;
   *)
     usage >&2

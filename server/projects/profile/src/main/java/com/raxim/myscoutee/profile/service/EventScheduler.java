@@ -998,6 +998,10 @@ public class EventScheduler {
             if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
             Set<String> lockedUserIds = new LinkedHashSet<>();
+            String creatorUserId = normalizeId(event.getCreatorUserId());
+            if (StringUtils.hasText(creatorUserId)) {
+                lockedUserIds.add(creatorUserId);
+            }
             if (snapshot != null) {
                 lockedUserIds.addAll(snapshot.acceptedMemberUserIds());
                 lockedUserIds.addAll(snapshot.pendingMemberUserIds());
@@ -1012,7 +1016,6 @@ public class EventScheduler {
             
             Set<String> candidateUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
             candidateUserIds.removeAll(lockedUserIds);
-            candidateUserIds.remove(normalizeId(event.getCreatorUserId()));
 
             InviteBatchPlan plan = eventGeneratorByPriority.generate(new PriorityGeneratorRequest(
                     eventId, graph, candidateUserIds, lockedUserIds, Range.of(openSpots, openSpots), List.of(), true, 0d));

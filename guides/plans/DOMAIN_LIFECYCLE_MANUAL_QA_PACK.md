@@ -148,16 +148,148 @@ Execution evidence on 2026-08-04:
 - Verify Statistics and Monitoring receive only the documented delayed deltas;
   an unchanged unrelated surface is an `X` pass.
 
+Execution evidence on 2026-08-04:
+
+- PASS: Casey published the retained `EVENT-EDITOR-001` draft once. The same
+  `h1785836388222` identity changed from draft to active, remained once in My
+  Events, left Drafts and retained the local `18:00-20:00` display.
+- PASS: the canonical event kept its `16:00Z-18:00Z` range and organizer
+  coordinates. The one deduplicated event recompute task was refreshed to the
+  publish timestamp; notification outbox remained unchanged.
+- PASS: Nova received neither an invitation nor an Events counter, and the
+  event was absent from Event Explore between its July 2026 and February 2027
+  visible date groups.
+- The first helper read incorrectly reported zero recomputes because its task
+  selector knew only fixture IDs. The manual helper now includes the real
+  hand-created event identity in task and outbox selectors; the corrected
+  oracle reported exactly one. This was a QA-harness defect, not a product
+  publish defect.
+
 ### `EVENT-EDITOR-003` — save feeds the real auto-inviter
 
-- Create or edit an active event with Auto inviter enabled, open capacity and a
-  controlled eligible user.
-- Capture the post-save event/member baseline before shortening the persisted
-  scheduler window.
-- Prove that save persisted every eligibility input and that the real
-  `event-auto-inviter` scheduler, not the fixture, creates the invitation.
+- Unpublish the retained event through the organizer action and verify it
+  returns to one editable Draft entry before changing its definition.
+- Enable Auto inviter and Save while the event is still a draft. Capture the
+  post-save event/member baseline before publishing or shortening the
+  persisted scheduler window; no invitation may exist at this checkpoint.
+- Treat republish-time initial auto-inviting and a later periodic
+  `event-auto-inviter` run as separate checkpoints. A publish-created
+  invitation is not evidence that the periodic scheduler ran.
+- Execute republish as the `CARD-PUBLISH` variation: use Publish once from the
+  Draft card overflow menu without reopening Event Editor. This additionally
+  checks command availability, removal from Drafts, insertion/retention in My
+  Events and a consistent member/capacity badge while retaining the same event
+  identity.
+- Prove that Save persisted every eligibility input and that any later
+  scheduler-attributed invitation was created by the named real scheduler,
+  not the fixture or the publish-time initial batch.
 - Continue with `EVENT-INV-002` or stage its equivalent prerequisite
   independently.
+
+Execution evidence on 2026-08-04:
+
+- PASS: the retained event was reopened as one draft, Auto Inviter was enabled
+  and Save was pressed once. MongoDB reported status `DR`, `autoInviter=true`,
+  no member, no invitation/outbox record and the same time and coordinates.
+- PASS: the held scheduler remained idle. Candidate preparation then isolated
+  exactly one publish-time candidate, Nova Social, without creating an
+  invitation artifact. Riley Outside is reserved as the distinct later
+  periodic candidate.
+- PASS: Casey, Nova and Riley have isolated browser sessions. The controlled
+  event was absent from Nova and Riley Invitations and Notifications before
+  Publish; the matching MongoDB baseline contained no member, invitation,
+  marker or notification outbox artifact. Recipient activity counters were
+  captured for reversible reset.
+- PASS — `CARD-PUBLISH`: Casey published once from the Draft card overflow menu
+  without reopening Event Editor. The same identity left Drafts, remained once
+  in My Events and synchronously created exactly one pending Nova invitation,
+  one matching notification and one outbox item. Riley remained unchanged and
+  the persisted periodic scheduler was still idle, so the initial batch and
+  later scheduler run remain independently attributable.
+- FIXED BACKEND DEFECT: the first card publish found that an event with no
+  existing member rows omitted its creator from the auto-inviter graph anchors,
+  producing no candidate plan. The scheduler now always anchors the creator;
+  the focused `generatePriorityPlansUsesCreatorAsAnchorWhenEventHasNoMembers`
+  regression passed against the normal Gradle cache after briefly stopping and
+  restarting only the existing backend container.
+- MANUAL UI DEFECT REPRODUCED: Nova's open Notifications list converged, while
+  the already-open Events > Invitations list stayed empty until the popup was
+  reopened. The invitation itself was authoritative and appeared as `1 / 8`
+  after reopen. This is tracked separately by
+  `EVENT-ACTIVITY-REFRESH-001`; it is not an Auto Inviter functional failure.
+- PASS — real periodic scheduler: the persisted rule became eligible at
+  14:38:20 local time and the already-running scheduler claimed it on its next
+  60-second check at 14:39:13. It completed in 140 ms with `processedCount=1`;
+  no Run action, direct worker endpoint or fixture-created invitation was used.
+  The exact post-run oracle contained Nova and Riley as the two pending event
+  members and notification/outbox recipients, while the scheduler marker
+  attributed only Riley to this periodic batch.
+- Reproduction continuation: run
+  `prepare-periodic-auto-inviter event-domain EVENT-EDITOR-003`, keep Casey's
+  Events > My Events and Riley's Events > Invitations lists open in separate
+  authenticated sessions, then run
+  `schedule-auto-inviter event-domain EVENT-EDITOR-003 30`. The first command
+  adds only Riley's reversible eligibility edge; the second changes only the
+  persisted due time and does not invoke the worker. After the real scheduler
+  and at most one SmartList interval, use `status event-domain
+  EVENT-EDITOR-003` to compare member, marker, outbox and notification
+  recipients.
+- PASS — open-list convergence: the 14:39:22 screenshot captured a valid
+  transient post-worker/pre-poll split across the three isolated sessions:
+  some projections already showed `1 / 8 (2)`, while another still showed
+  `1 / 8 (1)` and Riley's Invitations list was not yet populated. By 14:39:52,
+  without closing or refreshing a popup, the Nova, Riley and Casey event
+  projections all converged to `1 / 8 (2)`. Accepted occupancy correctly
+  remained `1 / 8`; the red `(2)` is the pending-invitation count and pending
+  invitations do not increment the accepted/capacity projection. The one-hour
+  production-like interval remained configured after the run.
+- OPEN DEFECT CANDIDATE: immediately after Unpublish, the locally patched My
+  Events card briefly displayed `1 / 8`, while the authoritative member set
+  was empty and the freshly queried Drafts card displayed `0 / 8`. Track this
+  as `EVENT-CAPACITY-SYNC-001`; it is not an Auto Inviter persistence failure.
+
+### `EVENT-ACTIVITY-REFRESH-001` — event bucket live convergence
+
+- Use one mutation already owned by another checkpoint; do not create a second
+  worker or fixture mutation merely to refresh the UI.
+- Before that mutation, keep the recipient's Events > Invitations list and the
+  host's Events > My Events list open in isolated sessions.
+- Do not close either popup and do not refresh the browser. Observe one
+  configured 30-second SmartList interval.
+- Require the recipient invitation row and Invitations counter to appear in the
+  open popup. Require the host event card to converge to the same authoritative
+  member/capacity projection and pending red counter.
+- Open All and every bucket affected by the owning lifecycle mutation. All,
+  Active Events, Pending, Invitations, My Events, Drafts and Trash share this
+  single refresh contract; there are no bucket-specific polling exceptions.
+- Unaffected buckets are `X` controls. The poll is a read-only visible-list
+  reconciliation and must not create domain writes, recompute tasks,
+  notification outbox items or job-history entries.
+
+Execution evidence on 2026-08-04:
+
+- FAIL before fix: during `EVENT-EDITOR-003` CARD-PUBLISH, Nova's notification
+  appeared through the normal realtime/notification path, but the already-open
+  Invitations list remained empty until close/reopen.
+- The frontend already used SmartList-owned visible-range reconciliation. Its
+  polling policy was enabled for Notifications and admin support chat but
+  returned `0` for event activity views.
+- FIX HOT-DEPLOYED: all open, non-calendar event activity buckets now use one
+  30-second SmartList poll. It is paused behind dialogs and event-chat sessions;
+  Rates and ordinary Chats were not changed. Compilation passed in the existing
+  `frontend-sync` hot-deploy container.
+- PASS after fix: Nova Invitations, Riley Invitations and Casey My Events
+  stayed open while the real scheduler created Riley's invitation at 14:39:13.
+  The 14:39:22 intermediate screenshot intentionally captured mixed
+  `1 / 8 (1)` and `1 / 8 (2)` projections before every open list had polled.
+  At 14:39:52, without close/reopen or browser refresh, Riley's invitation row
+  was visible and all three open projections agreed on `1 / 8 (2)`. The
+  accepted occupancy correctly remained `1 / 8`.
+- This checkpoint distinguishes accepted occupancy from pending demand: the
+  capacity fraction changes only after an acceptance checkpoint, while the red
+  pending badge changes when an additional invitation is created. Reuse the
+  same no-reopen assertion when sampling All or another affected bucket; do not
+  require unrelated historical counters to be zero.
 
 ### `EVENT-EDITOR-004` — save feeds tournament/group processing
 
@@ -242,6 +374,18 @@ Execution evidence on 2026-08-04:
   and attachment changes against their own records.
 - Reopening or refreshing the draft is read-only and must not create another
   recompute, notification or job-history entry.
+
+Execution evidence on 2026-08-04:
+
+- PASS: Casey chose Unpublish once for the retained
+  `h1785836388222` event. The card remained once in My Events, Drafts changed
+  to `1`, and the saved time remained `18:00-20:00`.
+- PASS: the independent database oracle reported canonical status `DR`, no
+  members, no invitation/outbox record, unchanged organizer coordinates and
+  the same `16:00Z-18:00Z` persisted range.
+- PASS: the held `event-auto-inviter` rule remained idle and ineligible during
+  the checkpoint. The event had already been proven absent from Nova's
+  invitation-only Explore boundary immediately before unpublish.
 
 ### `EVENT-LIFE-002` — organizer trash moves the event to Trash only
 

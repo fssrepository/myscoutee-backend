@@ -7,6 +7,10 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
   const sourceCheckpointId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID).toUpperCase();
+  const requestedDelaySeconds = Number.parseInt(
+    Q.text(process.env.MANUAL_QA_DELAY_SECONDS) || "30",
+    10
+  );
   const hostUserId = Q.text(process.env.MANUAL_QA_CREATOR_USER_ID)
     || "650000000000000000000061";
   const participantUserId = Q.text(process.env.MANUAL_QA_INVITEE_USER_ID)
@@ -19,7 +23,41 @@
   const PENDING_EVENT_ID = `${PREFIX}:feedback-pending`;
   const EVENT_IDS = [EVENT_ID, LOCKED_EVENT_ID, TRASHED_EVENT_ID, PENDING_EVENT_ID];
   const TICKET_CODE = "TKT-12345678-1234-4123-8123-123456789abc";
+  const AUTO_INVITER_RULE = "event-auto-inviter";
+  const AUTO_INVITER_HOLD_SECONDS = 3600;
+  const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
+  const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
   const EXPECTED_TITLE = `Manual QA ${checkpointId}`;
+
+  function optionalField(source, key) {
+    return source && Object.prototype.hasOwnProperty.call(source, key)
+      ? { present: true, value: source[key] }
+      : { present: false, value: null };
+  }
+
+  function userActivitiesSnapshot(userId) {
+    const user = Q.collection("users").findOne({
+      $or: [{ _id: userId }, { userId }]
+    });
+    if (!user) Q.fail(`user '${userId}' was not found while activity counters were snapshotted.`);
+    return {
+      userId,
+      activities: optionalField(user, "activities")
+    };
+  }
+
+  function restoreUserActivities(saved) {
+    if (!saved || !Q.text(saved.userId)) return;
+    const update = saved.activities && saved.activities.present
+      ? { $set: { activities: saved.activities.value } }
+      : { $unset: { activities: "" } };
+    const result = Q.collection("users").updateOne({
+      $or: [{ _id: saved.userId }, { userId: saved.userId }]
+    }, update);
+    if (result.matchedCount !== 1) {
+      Q.fail(`user '${saved.userId}' disappeared before activity counters could be restored.`);
+    }
+  }
 
   const CHECKPOINTS = {
     "EVENT-EDITOR-001": {
@@ -37,11 +75,11 @@
       worker: "MUST RUN: one event recompute; reminder and attachment consumers are conditional."
     },
     "EVENT-EDITOR-003": {
-      stage: "active-no-auto",
+      stage: "draft-no-auto",
       why: "Prove that editor persistence supplies the real auto-inviter rather than a fixture creating the invitation.",
-      action: "As host, enable Auto inviter and Save once. Then continue with the dedicated STAT-012 scheduler staging/arming workflow before waiting for the real scheduler.",
-      expected: "The saved event retains the eligibility inputs and the later real scheduler creates the one pending invitation.",
-      worker: "Editor Save MUST RUN event recompute. Invitation creation MUST RUN through the named real event-auto-inviter scheduler helper."
+      action: "Keep the retained event unpublished. As host, reopen the draft, enable Auto inviter and Save once without publishing. Capture the persisted draft baseline, then execute the CARD-PUBLISH variant from the Draft card's overflow menu without reopening Event Editor. After the initial candidate is verified, prepare the distinct periodic candidate, keep the recipient Invitations and host My Events lists open, and arm the short persisted real schedule.",
+      expected: "The same event remains one editable draft with Auto inviter enabled and no invitation or notification at baseline. CARD-PUBLISH moves that identity from Drafts to My Events and the synchronous initial batch invites only the prepared initial candidate. The later real periodic run invites only the newly eligible candidate, and both already-open event lists converge within one SmartList poll without reopening.",
+      worker: "Unpublish and changed Editor Save may refresh the one deduplicated event recompute. Draft events MUST NOT be consumed by the event-auto-inviter scheduler. Only schedule-auto-inviter may make the real periodic rule due; no fixture command may call the worker directly."
     },
     "EVENT-EDITOR-004": {
       stage: "draft",
@@ -119,6 +157,13 @@
       action: "Use the staged full event for one named branch in this run; reject or cancel the pending invite, or attempt one repeated accept.",
       expected: "Capacity is never exceeded; no duplicate member, stale live invitation or rejected-user chat access remains.",
       worker: "CONDITIONAL only for a real member transition; a repeated/no-op action MUST NOT duplicate effects."
+    },
+    "EVENT-ACTIVITY-REFRESH-001": {
+      stage: "invitation-empty",
+      why: "Prove that every event activity bucket follows one live-convergence contract instead of requiring popup reopen for selected buckets.",
+      action: "Keep the recipient Events > Invitations list and the host Events > My Events list open in isolated sessions. Create one controlled invitation through the owning manual or scheduled checkpoint, do not close either popup, and observe one configured 30-second SmartList poll interval. Then open All and the other relevant event buckets without a browser refresh.",
+      expected: "The recipient invitation row and Invitations counter appear without reopening; the host card shows the same member/capacity and pending badge projection; All and every affected event bucket agree, while unaffected buckets remain unchanged.",
+      worker: "The owning mutation may run its documented direct or scheduled consumers. The event-bucket poll itself MUST NOT create a domain write, recompute task, outbox item or job-history row."
     },
     "CHAT-AUTH-001": {
       stage: "invitation-pending",
@@ -271,6 +316,128 @@
   function activeEventSourceId() {
     const state = Q.activeState(SCENARIO, false);
     return Q.text(state && state.context && state.context.actualEventSourceId);
+  }
+
+  function autoInviterRule() {
+    const rules = Q.collection("notificationRuleConfigs")
+      .find({ ruleKey: AUTO_INVITER_RULE })
+      .limit(2)
+      .toArray();
+    if (rules.length !== 1) {
+      Q.fail(`expected exactly one '${AUTO_INVITER_RULE}' rule, found ${rules.length}.`);
+    }
+    return rules[0];
+  }
+
+  function autoInviterRuleSummary() {
+    const rule = autoInviterRule();
+    const timing = rule.timing || {};
+    const runState = rule.runState || {};
+    const intervalSeconds = Number(timing.intervalSeconds || 0);
+    const lastRunAt = new Date(Q.text(runState.lastRunAtIso));
+    const dueAt = Number.isFinite(lastRunAt.getTime()) && intervalSeconds > 0
+      ? new Date(lastRunAt.getTime() + intervalSeconds * 1000)
+      : null;
+    return {
+      enabled: rule.enabled === true,
+      manualRunEnabled: rule.manualRunEnabled === true,
+      intervalSeconds,
+      currentStatus: Q.text(runState.currentStatus),
+      lastRunAtIso: runState.lastRunAtIso,
+      calculatedDueAtIso: dueAt && dueAt.toISOString(),
+      secondsUntilEligible: dueAt
+        ? Math.max(0, Math.ceil((dueAt.getTime() - Date.now()) / 1000))
+        : null
+    };
+  }
+
+  function autoInviterAffinitySelector() {
+    return {
+      $or: [
+        { leftUserId: hostUserId },
+        { rightUserId: hostUserId },
+        { _id: { $in: [AUTO_INVITER_INITIAL_EDGE_ID, AUTO_INVITER_LATER_EDGE_ID] } }
+      ]
+    };
+  }
+
+  function sortedUnique(values) {
+    return [...new Set((values || []).map(Q.text).filter(Boolean))].sort();
+  }
+
+  function eventInviteArtifactsSummary(eventId) {
+    const members = Q.collection("activityMembers")
+      .find({
+        ownerType: "event",
+        ownerId: eventId,
+        status: "pending",
+        requestKind: "invite"
+      })
+      .toArray();
+    const markers = Q.collection("schedulerPlanMarkers")
+      .find({ ownerId: eventId })
+      .toArray();
+    const outbox = Q.collection("notificationOutbox")
+      .find({
+        notificationType: "event-invite",
+        $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+      })
+      .toArray();
+    const notifications = Q.collection("userNotifications")
+      .find({
+        $and: [
+          { $or: [{ notificationType: "event-invite" }, { "payload.type": "event-invite" }] },
+          { $or: [{ sourceId: eventId }, { "payload.eventId": eventId }] }
+        ]
+      })
+      .toArray();
+    return {
+      pendingInviteMemberCount: members.length,
+      pendingInviteUserIds: sortedUnique(members.map(member => member.userId)),
+      markerCount: markers.length,
+      markerUserIds: sortedUnique(markers.flatMap(marker => marker.userIds || [])),
+      outboxCount: outbox.length,
+      outboxUserIds: sortedUnique(outbox.flatMap(item => item.recipientUserIds || [])),
+      notificationCount: notifications.length,
+      notificationUserIds: sortedUnique(notifications.map(item => item.recipientUserId))
+    };
+  }
+
+  function autoInviterPeriodicSummary(state) {
+    if (!state || !state.autoInviterPeriodic) return null;
+    const event = Q.collection("events").findOne(manualEventSelector());
+    const eventId = event ? Q.text(event.sourceId || event._id) : "";
+    return {
+      preparedAtIso: state.autoInviterPeriodic.preparedAtIso,
+      scheduledAtIso: state.autoInviterScheduler && state.autoInviterScheduler.scheduledAtIso,
+      scheduledDelaySeconds: state.autoInviterScheduler && state.autoInviterScheduler.scheduledDelaySeconds,
+      expectedDueAtIso: state.autoInviterScheduler && state.autoInviterScheduler.expectedDueAtIso,
+      initialCandidate: Q.user(participantUserId),
+      periodicCandidate: Q.user(thirdUserId),
+      artifacts: eventId ? eventInviteArtifactsSummary(eventId) : null
+    };
+  }
+
+  function autoInviterEligibilitySummary(state) {
+    const prepared = state && state.autoInviterEligibility;
+    if (!prepared || !prepared.preparedAtIso) return null;
+    const edges = Q.collection("userAffinityEdges")
+      .find(autoInviterAffinitySelector())
+      .sort({ _id: 1 })
+      .toArray();
+    return {
+      preparedAtIso: prepared.preparedAtIso,
+      initialCandidate: Q.user(participantUserId),
+      laterCandidate: Q.user(thirdUserId),
+      incidentEdges: edges.map(edge => ({
+        id: Q.text(edge._id),
+        leftUserId: Q.text(edge.leftUserId),
+        rightUserId: Q.text(edge.rightUserId),
+        edgeWeight: Number(edge.edgeWeight || 0)
+      })),
+      isolatedAutoInviterEventCount: (prepared.isolatedEventIds || []).length,
+      quarantinedWaitlistCount: (prepared.isolatedWaitlistMemberIds || []).length
+    };
   }
 
   function manualEventSelector() {
@@ -944,12 +1111,12 @@
     const leaderboard = Q.collection("eventLeaderboardEntries").find({ eventId: { $regex: `^${PREFIX}` } }).toArray();
     const outboxCount = Q.collection("notificationOutbox").countDocuments({
       $and: [
-        { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] },
+        { $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }] },
         { createdDate: { $gt: state.stagedAtIso } }
       ]
     });
     const taskCount = Q.collection("affinityRecomputeTasks").countDocuments({
-      targetId: { $in: [...EVENT_IDS, hostUserId, participantUserId] },
+      targetId: { $in: [...dynamicEventIds, hostUserId, participantUserId] },
       updatedDate: { $gt: state.stagedAtIso }
     });
     return {
@@ -1020,7 +1187,14 @@
         updatedDate: item.updatedDate
       })),
       afterStageOutboxCount: outboxCount,
-      afterStageRecomputeTaskCount: taskCount
+      afterStageRecomputeTaskCount: taskCount,
+      autoInviterRule: checkpointId === "EVENT-EDITOR-003" ? autoInviterRuleSummary() : null,
+      autoInviterEligibility: checkpointId === "EVENT-EDITOR-003"
+        ? autoInviterEligibilitySummary(state)
+        : null,
+      autoInviterPeriodic: checkpointId === "EVENT-EDITOR-003"
+        ? autoInviterPeriodicSummary(state)
+        : null
     };
   }
 
@@ -1150,6 +1324,428 @@
     });
   }
 
+  function holdAutoInviter() {
+    if (checkpointId !== "EVENT-EDITOR-003") {
+      Q.fail("hold-auto-inviter is only valid for EVENT-EDITOR-003.");
+    }
+    const state = requireMatchingState();
+    if (state.autoInviterScheduler && state.autoInviterScheduler.heldAtIso) {
+      Q.fail("the auto-inviter scheduler is already held for this checkpoint.");
+    }
+    const rule = autoInviterRule();
+    if (Q.text(rule.runState && rule.runState.currentStatus) === "running") {
+      Q.fail("the auto-inviter rule is running; wait for its terminal state and retry.");
+    }
+    const heldAtIso = Q.nowIso();
+    const snapshot = {
+      collection: "notificationRuleConfigs",
+      selector: { ruleKey: AUTO_INVITER_RULE },
+      documents: [rule]
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $push: { snapshots: snapshot },
+      $set: {
+        autoInviterScheduler: {
+          heldAtIso,
+          originalIntervalSeconds: Number(rule.timing && rule.timing.intervalSeconds || 0),
+          scheduledAtIso: null,
+          expectedDueAtIso: null
+        }
+      }
+    });
+    const update = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: AUTO_INVITER_RULE, "runState.currentStatus": { $ne: "running" } },
+      {
+        $set: {
+          enabled: true,
+          manualRunEnabled: false,
+          scheduleSlots: [],
+          "timing.mode": "interval",
+          "timing.intervalAmount": 1,
+          "timing.intervalUnit": "hours",
+          "timing.intervalSeconds": AUTO_INVITER_HOLD_SECONDS,
+          "timing.intervalMinutes": 60,
+          "timing.time": "00:00",
+          "timing.timezone": "UTC",
+          "runState.currentStatus": "idle",
+          "runState.progressPercent": 0,
+          "runState.progressDetail": "Manual EVENT-EDITOR-003 baseline is held; the short schedule has not been armed.",
+          "runState.lastRunAtIso": heldAtIso,
+          "runState.pendingCount": 0,
+          "runState.pendingCountUnit": "admin.jobs.table.affected",
+          "runState.pendingCountUpdatedAtIso": heldAtIso,
+          updatedDate: heldAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": "",
+          "runState.lastError": ""
+        }
+      }
+    );
+    if (update.matchedCount !== 1) {
+      Q.fail("the auto-inviter rule started while the hold was being saved; use reset to restore its snapshot.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "auto-inviter-held",
+      heldAtIso,
+      rule: autoInviterRuleSummary(),
+      next: "Keep the retained event unpublished, enable Auto inviter and Save once. Do not publish yet. The scheduler remains ineligible for approximately one hour."
+    });
+  }
+
+  function prepareAutoInviter() {
+    if (checkpointId !== "EVENT-EDITOR-003") {
+      Q.fail("prepare-auto-inviter is only valid for EVENT-EDITOR-003.");
+    }
+    const state = requireMatchingState();
+    if (!state.autoInviterScheduler || !state.autoInviterScheduler.heldAtIso) {
+      Q.fail("hold the auto-inviter scheduler before preparing candidates.");
+    }
+    if (state.autoInviterEligibility && state.autoInviterEligibility.preparedAtIso) {
+      Q.fail("auto-inviter eligibility is already prepared for this checkpoint.");
+    }
+    const rule = autoInviterRule();
+    if (Q.text(rule.runState && rule.runState.currentStatus) === "running") {
+      Q.fail("the auto-inviter rule is running; wait for its terminal state and retry.");
+    }
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event) Q.fail("the retained manual event does not exist.");
+    if (Q.text(event.status) !== "DR" || event.autoInviter !== true) {
+      Q.fail("the retained event must be a draft with Auto inviter enabled before candidates are prepared.");
+    }
+    const eventId = Q.text(event.sourceId || event._id);
+    const existingArtifacts = Q.collection("activityMembers").countDocuments({
+      ownerType: "event",
+      ownerId: eventId,
+      status: "pending",
+      requestKind: "invite"
+    }) + Q.collection("schedulerPlanMarkers").countDocuments({ ownerId: eventId });
+    if (existingArtifacts !== 0) {
+      Q.fail("the retained event already has auto-inviter artifacts; reset before preparing candidates.");
+    }
+    Q.ensureUser(participantUserId, "initial auto-inviter candidate");
+    Q.ensureUser(thirdUserId, "later periodic auto-inviter candidate");
+    for (const candidateUserId of [participantUserId, thirdUserId]) {
+      const candidate = Q.collection("users").findOne({
+        $or: [{ _id: candidateUserId }, { userId: candidateUserId }]
+      });
+      if (Q.text(candidate && candidate.profileStatus).toLowerCase() !== "public") {
+        Q.fail(`candidate '${candidateUserId}' must have a public profile for the real auto-inviter.`);
+      }
+    }
+
+    const isolatedEventIds = Q.collection("events")
+      .find({
+        autoInviter: true,
+        $and: [
+          { _id: { $ne: event._id } },
+          { sourceId: { $ne: eventId } }
+        ]
+      }, { projection: { _id: 1 } })
+      .toArray()
+      .map(item => item._id);
+    const isolatedWaitlistMemberIds = Q.collection("activityMembers")
+      .find({
+        ownerType: "event",
+        status: "pending",
+        requestKind: { $in: ["waitlist", "waitlist-invite"] }
+      }, { projection: { _id: 1 } })
+      .toArray()
+      .map(item => item._id);
+    const addedSnapshots = Q.snapshotSpecs([
+      { collection: "events", selector: { _id: { $in: isolatedEventIds } } },
+      { collection: "activityMembers", selector: { _id: { $in: isolatedWaitlistMemberIds } } },
+      { collection: "userAffinityEdges", selector: autoInviterAffinitySelector() }
+    ]);
+    const preparedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $push: { snapshots: { $each: addedSnapshots } },
+      $set: {
+        autoInviterEligibility: {
+          preparedAtIso,
+          initialCandidateUserId: participantUserId,
+          laterCandidateUserId: thirdUserId,
+          isolatedEventIds,
+          isolatedWaitlistMemberIds
+        }
+      }
+    });
+    try {
+      if (isolatedEventIds.length > 0) {
+        Q.collection("events").updateMany(
+          { _id: { $in: isolatedEventIds } },
+          { $set: { autoInviter: false, updatedDate: preparedAtIso, updatedUser: Q.ACTOR } }
+        );
+      }
+      if (isolatedWaitlistMemberIds.length > 0) {
+        Q.collection("activityMembers").updateMany(
+          { _id: { $in: isolatedWaitlistMemberIds } },
+          {
+            $set: {
+              requestKind: "manual-qa-checkpoint-quarantined",
+              updatedDate: preparedAtIso,
+              updatedUser: Q.ACTOR
+            }
+          }
+        );
+      }
+      Q.collection("userAffinityEdges").deleteMany(autoInviterAffinitySelector());
+      const pair = [hostUserId, participantUserId].sort();
+      Q.collection("userAffinityEdges").insertOne({
+        _id: AUTO_INVITER_INITIAL_EDGE_ID,
+        pairKey: `${pair[0]}:${pair[1]}`,
+        leftUserId: hostUserId,
+        rightUserId: participantUserId,
+        affinityScore: 1,
+        edgeWeight: 1,
+        evidence: {
+          mutualSingleCount: 1,
+          singleOneSidedCount: 0,
+          pairOutsideNetworkCount: 0,
+          pairInsideNetworkCount: 0,
+          metCount: 0,
+          strongestAffinityScore: 1,
+          totalMultiplier: 1
+        },
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      });
+    } catch (error) {
+      Q.fail(`candidate preparation failed after snapshot: ${Q.text(error && error.message)}. Run reset event-domain ${checkpointId}.`);
+    }
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "initial-auto-inviter-candidate-ready",
+      event: { eventId, title: Q.text(event.title), status: Q.text(event.status), autoInviter: true },
+      eligibility: autoInviterEligibilitySummary(refreshedState),
+      invitationArtifacts: 0,
+      next: "Execute CARD-PUBLISH once from the retained Draft card's overflow menu without reopening Event Editor. The publish-time initial batch, not the periodic scheduler, should invite only the printed initial candidate."
+    });
+  }
+
+  function captureAutoInviterBaseline() {
+    if (checkpointId !== "EVENT-EDITOR-003") {
+      Q.fail("capture-auto-inviter-baseline is only valid for EVENT-EDITOR-003.");
+    }
+    const state = requireMatchingState();
+    if (!state.autoInviterEligibility || !state.autoInviterEligibility.preparedAtIso) {
+      Q.fail("prepare auto-inviter eligibility before capturing recipient counters.");
+    }
+    if (Array.isArray(state.autoInviterRecipientActivitySnapshots)) {
+      Q.fail("auto-inviter recipient activity counters are already captured for this checkpoint.");
+    }
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event) Q.fail("the retained manual event does not exist.");
+    const eventId = Q.text(event.sourceId || event._id);
+    if (Q.text(event.status) !== "DR" || event.autoInviter !== true) {
+      Q.fail("capture the recipient baseline while the retained event is still a draft with Auto inviter enabled.");
+    }
+    const controlledArtifacts = Q.collection("activityMembers").countDocuments({
+      ownerType: "event",
+      ownerId: eventId,
+      requestKind: "invite"
+    }) + Q.collection("schedulerPlanMarkers").countDocuments({ ownerId: eventId });
+    if (controlledArtifacts !== 0) {
+      Q.fail("the retained event already has invitation artifacts; reset and repeat the pre-publish baseline.");
+    }
+    const capturedAtIso = Q.nowIso();
+    const snapshots = [
+      userActivitiesSnapshot(participantUserId),
+      userActivitiesSnapshot(thirdUserId)
+    ];
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        autoInviterRecipientActivitySnapshots: snapshots,
+        autoInviterRecipientBaselineCapturedAtIso: capturedAtIso
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "auto-inviter-recipient-baseline-captured",
+      capturedAtIso,
+      eventId,
+      recipients: [Q.user(participantUserId), Q.user(thirdUserId)],
+      invitationArtifacts: 0,
+      executionVariant: "CARD-PUBLISH",
+      next: "From the retained Draft card's overflow menu, execute Publish once without reopening Event Editor. Keep both recipient sessions open and attribute the first invitation only to the synchronous publish-time initial batch."
+    });
+  }
+
+  function preparePeriodicAutoInviter() {
+    if (checkpointId !== "EVENT-EDITOR-003") {
+      Q.fail("prepare-periodic-auto-inviter is only valid for EVENT-EDITOR-003.");
+    }
+    const state = requireMatchingState();
+    if (!state.autoInviterEligibility || !state.autoInviterEligibility.preparedAtIso) {
+      Q.fail("prepare the initial auto-inviter candidate before the periodic candidate.");
+    }
+    if (!state.autoInviterScheduler || !state.autoInviterScheduler.heldAtIso) {
+      Q.fail("hold the auto-inviter scheduler before preparing the periodic candidate.");
+    }
+    if (state.autoInviterPeriodic && state.autoInviterPeriodic.preparedAtIso) {
+      Q.fail("the periodic auto-inviter candidate is already prepared for this checkpoint.");
+    }
+    const rule = autoInviterRule();
+    if (Q.text(rule.runState && rule.runState.currentStatus) === "running") {
+      Q.fail("the auto-inviter rule is running; wait for its terminal state and retry.");
+    }
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event) Q.fail("the retained manual event does not exist.");
+    const eventId = Q.text(event.sourceId || event._id);
+    if (Q.text(event.status) !== "A" || event.autoInviter !== true) {
+      Q.fail("the retained event must be active with Auto inviter enabled before the periodic candidate is prepared.");
+    }
+    const artifacts = eventInviteArtifactsSummary(eventId);
+    if (JSON.stringify(artifacts.pendingInviteUserIds) !== JSON.stringify([participantUserId])) {
+      Q.fail("the publish-time baseline must contain exactly the initial candidate invitation and no periodic candidate invitation.");
+    }
+    if (Q.collection("userAffinityEdges").countDocuments({ _id: AUTO_INVITER_LATER_EDGE_ID }) !== 0) {
+      Q.fail("the periodic candidate affinity edge already exists; reset before repeating this preparation.");
+    }
+    const preparedAtIso = Q.nowIso();
+    const pair = [hostUserId, thirdUserId].sort();
+    Q.collection("userAffinityEdges").insertOne({
+      _id: AUTO_INVITER_LATER_EDGE_ID,
+      pairKey: `${pair[0]}:${pair[1]}`,
+      leftUserId: hostUserId,
+      rightUserId: thirdUserId,
+      affinityScore: 1,
+      edgeWeight: 1,
+      evidence: {
+        mutualSingleCount: 1,
+        singleOneSidedCount: 0,
+        pairOutsideNetworkCount: 0,
+        pairInsideNetworkCount: 0,
+        metCount: 0,
+        strongestAffinityScore: 1,
+        totalMultiplier: 1
+      },
+      updatedDate: preparedAtIso,
+      updatedUser: Q.ACTOR
+    });
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        autoInviterPeriodic: {
+          preparedAtIso,
+          candidateUserId: thirdUserId,
+          edgeId: AUTO_INVITER_LATER_EDGE_ID
+        }
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "periodic-auto-inviter-candidate-ready",
+      why: "Prove that a later eligibility change is consumed by the real periodic scheduler and that an already-open event SmartList converges without reopening.",
+      event: { eventId, title: Q.text(event.title), status: Q.text(event.status), autoInviter: true },
+      publishTimeArtifacts: artifacts,
+      periodicCandidate: Q.user(thirdUserId),
+      rule: autoInviterRuleSummary(),
+      next: "Open the host My Events list and the periodic candidate Invitations list in separate authenticated sessions. Keep both lists open, then run schedule-auto-inviter with a 10-120 second delay."
+    });
+  }
+
+  function scheduleAutoInviter() {
+    if (checkpointId !== "EVENT-EDITOR-003") {
+      Q.fail("schedule-auto-inviter is only valid for EVENT-EDITOR-003.");
+    }
+    const state = requireMatchingState();
+    if (!state.autoInviterPeriodic || !state.autoInviterPeriodic.preparedAtIso) {
+      Q.fail("prepare the periodic auto-inviter candidate before scheduling the real worker.");
+    }
+    if (state.autoInviterScheduler && state.autoInviterScheduler.scheduledAtIso) {
+      Q.fail("the periodic auto-inviter run is already scheduled for this checkpoint.");
+    }
+    if (!Number.isInteger(requestedDelaySeconds)
+        || requestedDelaySeconds < 10
+        || requestedDelaySeconds > 120) {
+      Q.fail("delay-seconds must be an integer from 10 through 120.");
+    }
+    const rule = autoInviterRule();
+    if (Q.text(rule.runState && rule.runState.currentStatus) === "running") {
+      Q.fail("the auto-inviter rule is running; wait for its terminal state and retry.");
+    }
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event) Q.fail("the retained manual event does not exist.");
+    const eventId = Q.text(event.sourceId || event._id);
+    if (Q.text(event.status) !== "A" || event.autoInviter !== true) {
+      Q.fail("the retained event must remain active with Auto inviter enabled while the periodic run is scheduled.");
+    }
+    const artifacts = eventInviteArtifactsSummary(eventId);
+    if (JSON.stringify(artifacts.pendingInviteUserIds) !== JSON.stringify([participantUserId])) {
+      Q.fail("the pre-schedule baseline no longer contains exactly the initial candidate invitation.");
+    }
+    if (Q.collection("userAffinityEdges").countDocuments({ _id: AUTO_INVITER_LATER_EDGE_ID }) !== 1) {
+      Q.fail("the periodic candidate affinity edge is missing or duplicated.");
+    }
+    const scheduledAt = new Date();
+    const lastRunAt = new Date(
+      scheduledAt.getTime() - (AUTO_INVITER_HOLD_SECONDS - requestedDelaySeconds) * 1000
+    );
+    const dueAt = new Date(lastRunAt.getTime() + AUTO_INVITER_HOLD_SECONDS * 1000);
+    const scheduledAtIso = scheduledAt.toISOString();
+    const expectedDueAtIso = dueAt.toISOString();
+    const update = Q.collection("notificationRuleConfigs").updateOne(
+      { ruleKey: AUTO_INVITER_RULE, "runState.currentStatus": { $ne: "running" } },
+      {
+        $set: {
+          enabled: true,
+          manualRunEnabled: false,
+          scheduleSlots: [],
+          "timing.mode": "interval",
+          "timing.intervalAmount": 1,
+          "timing.intervalUnit": "hours",
+          "timing.intervalSeconds": AUTO_INVITER_HOLD_SECONDS,
+          "timing.intervalMinutes": 60,
+          "timing.time": "00:00",
+          "timing.timezone": "UTC",
+          "runState.currentStatus": "idle",
+          "runState.progressPercent": 0,
+          "runState.progressDetail": `Manual EVENT-EDITOR-003 periodic run is eligible after ${expectedDueAtIso}.`,
+          "runState.lastRunAtIso": lastRunAt.toISOString(),
+          "runState.pendingCount": 1,
+          "runState.pendingCountUnit": "admin.jobs.table.affected",
+          "runState.pendingCountUpdatedAtIso": scheduledAtIso,
+          updatedDate: scheduledAtIso,
+          updatedUser: Q.ACTOR
+        },
+        $unset: {
+          "runState.startedAtIso": "",
+          "runState.finishedAtIso": "",
+          "runState.lastError": ""
+        }
+      }
+    );
+    if (update.matchedCount !== 1) {
+      Q.fail("the auto-inviter started while its short schedule was being saved.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        "autoInviterScheduler.scheduledAtIso": scheduledAtIso,
+        "autoInviterScheduler.scheduledDelaySeconds": requestedDelaySeconds,
+        "autoInviterScheduler.expectedDueAtIso": expectedDueAtIso
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "periodic-auto-inviter-scheduled",
+      why: "Exercise the production scheduler path without directly invoking a worker or inserting an invitation.",
+      scheduledAtIso,
+      delaySeconds: requestedDelaySeconds,
+      expectedDueAtIso,
+      rule: autoInviterRuleSummary(),
+      expectedVisibleResult: "After the real scheduler run and at most one 30-second SmartList poll, Riley receives exactly one invitation, the already-open Invitations list shows its card without close/reopen, and the already-open host card keeps accepted occupancy at 1/8 while its pending badge changes from 1 to 2 without a full popup reload."
+    });
+  }
+
   function status() {
     const selected = config();
     const state = Q.activeState(SCENARIO, false);
@@ -1183,6 +1779,9 @@
     const state = requireMatchingState();
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
+    for (const saved of state.autoInviterRecipientActivitySnapshots || []) {
+      restoreUserActivities(saved);
+    }
     Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
     Q.printObject({
       scenario: SCENARIO,
@@ -1197,6 +1796,11 @@
   switch (command) {
     case "stage": stage(); break;
     case "advance": advance(); break;
+    case "hold-auto-inviter": holdAutoInviter(); break;
+    case "prepare-auto-inviter": prepareAutoInviter(); break;
+    case "capture-auto-inviter-baseline": captureAutoInviterBaseline(); break;
+    case "prepare-periodic-auto-inviter": preparePeriodicAutoInviter(); break;
+    case "schedule-auto-inviter": scheduleAutoInviter(); break;
     case "next": next(); break;
     case "status": status(); break;
     case "reset": reset(); break;
