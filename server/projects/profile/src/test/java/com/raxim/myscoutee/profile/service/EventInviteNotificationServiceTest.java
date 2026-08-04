@@ -74,7 +74,7 @@ class EventInviteNotificationServiceTest {
     }
 
     @Test
-    void notifiesEventAdminsWhenAnInviteeAccepts() {
+    void notifiesOtherEventParticipantsButNotTheAcceptedInvitee() {
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         UserNotificationService userNotificationService = mock(UserNotificationService.class);
         EventInviteNotificationService service = new EventInviteNotificationService(
@@ -96,7 +96,7 @@ class EventInviteNotificationServiceTest {
         verify(notificationOutboxService).enqueue(intentCaptor.capture());
         NotificationIntent intent = intentCaptor.getValue();
         assertThat(intent.type()).isEqualTo("event-invitation-accepted");
-        assertThat(intent.recipientScope()).isEqualTo("event-admins");
+        assertThat(intent.recipientScope()).isEqualTo("event-participants");
         assertThat(intent.recipientUserIds()).containsExactly("admin-1");
         assertThat(intent.title()).isEqualTo("Event invitation accepted");
         assertThat(intent.body()).isEqualTo("Riley Outside accepted the invitation to Weekend hike.");
@@ -106,6 +106,7 @@ class EventInviteNotificationServiceTest {
                 .containsEntry("memberUserId", "invitee-1")
                 .containsEntry("memberName", "Riley Outside")
                 .containsEntry("membershipAction", "accepted")
+                .containsEntry("notification_tone", "accent")
                 .containsEntry("acceptedAtIso", "2026-08-04T13:49:00Z");
     }
 }

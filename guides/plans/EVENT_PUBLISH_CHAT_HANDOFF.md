@@ -91,8 +91,11 @@ negative control. Riley accepts exactly once through the recipient UI. Require:
 - Riley gains the same empty chat row, but Riley's chat attention counters
   remain unchanged until an actual unread message exists;
 - Riley sends one unique proof message which Casey receives in that same chat;
-- Casey receives exactly one invitation-accepted notification naming Riley
-  and the event.
+- the acceptance adds exactly one `member-joined` system row to the chat, but
+  that row creates no Notification Center `chat-message` item;
+- Because this is an Open Event, Casey and still-pending Nova each receive
+  exactly one invitation-accepted event notification naming Riley and the
+  event; actor Riley receives none.
 
 The special `prepare-invitation-acceptance-retest` command is not required for
 this retained chain because Riley is still pending. Run the EVENT-INV-003

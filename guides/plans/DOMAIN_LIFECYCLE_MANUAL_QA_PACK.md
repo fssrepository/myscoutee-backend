@@ -39,8 +39,8 @@ the same prerequisite without depending on an earlier human action.
 | Event save with Auto inviter enabled | Active event, capacity, eligible audience and auto-inviter flag | Event detail and member management | Real `event-auto-inviter` scheduler, notification outbox | `EVENT-EDITOR-003`, `JOB-AUTO`, `EVENT-INV-002` |
 | Event save with Tournament mode/stages | Tournament definition, sub-event/stage definitions and runtime counts | Event editor, stage list and tournament group UI | Random grouping/start action, tournament review scheduler, reminders and notifications | `EVENT-EDITOR-004`, `TOURNAMENT-001` through `TOURNAMENT-003`, `JOB-TOURNAMENT` |
 | Event save with recurring slots | Parent schedule, slot templates and sub-event definitions | Upcoming/Past Sub-event list with occurrence sections | Slot-scoped resources, members, tournament runtime and leaderboard | `EVENT-SLOT-001` through `EVENT-SLOT-004` |
-| Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-005` |
-| Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `CHAT-AUTH-001` |
+| Manual or scheduled event invite | Pending event membership with `requestKind=invite`, notification intent and bell | Event Members pending row and recipient Invitations row | Notification outbox; acceptance/rejection flow | `EVENT-INV-001` through `EVENT-INV-006` |
+| Invitation acceptance | Accepted membership or pending admin approval, resolved invitation notification | Event Members, Activities and invitation detail | Tickets/counters, chat eligibility, visibility-scoped acceptance notification, Statistics/Monitoring and optional outbox | `EVENT-INV-003`, `EVENT-INV-004`, `EVENT-INV-006`, `CHAT-AUTH-001` |
 | Tournament grouping | Parent/stage/group membership and group runtime state | Tournament groups and member panels | Group chat/materialization and later tournament review | `TOURNAMENT-002`, `TOURNAMENT-003` |
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` |
@@ -612,6 +612,13 @@ Execution evidence on 2026-08-04:
 - In the Admin session, verify exactly one acceptance notification that names
   the accepted recipient and the event. It must be distinct from the original
   invitation notification and from unrelated lifecycle notifications.
+- Verify the accepted recipient does not receive their own acceptance
+  notification. Every other participant who may see the event member list
+  receives one: this includes a still-pending invitee for an Open Event, while
+  a hidden ordinary accepted or pending member of a Blind Event receives none.
+  The acceptance creates exactly one `member-joined` system row in the shared
+  chat, but that system row must not create a `chat-message` notification for
+  any participant. Only an actual participant-sent chat message may do that.
 - For the focused positive-branch retest after a previously consumed
   acceptance, first continue the retained manual event into this checkpoint and
   re-arm only the controlled transition:
@@ -643,18 +650,16 @@ Execution evidence on 2026-08-04:
   Riley's invitation fields, and retained Nova's pending admin invitation.
 - PASS — Nova, the still-pending control, had no event-chat channel in her open
   Chats list after Riley accepted.
-- FAIL — Riley, despite being a terminal accepted Member, had no event-chat
-  channel. Casey, despite being the accepted Admin, also had no event-chat
-  channel. The positive authorization projections therefore failed while the
-  pending negative control passed.
-- FAIL — Casey's notification list did not contain an acceptance notification
-  for Riley and `Manual QA EVENT-EDITOR-001`. The visible controlled items were
-  the earlier invitation and event lifecycle notification; the other visible
-  items were unrelated baseline invitations.
-- Continue only the failed positive branches after the backend fix: Riley and
-  Casey must see the same event chat, Riley must write one unique proof message
-  that Casey receives, and Casey must receive exactly one acceptance
-  notification. Nova must remain absent and server-denied.
+- PASS — Casey and Riley received owner copies of the same `mainEvent` channel,
+  with the same two accepted member IDs; Nova received none.
+- PASS — Casey received exactly one `event-invitation-accepted` notification
+  naming Riley and the controlled event, while Riley's original `event-invite`
+  notification was stored with `readAtIso`.
+- FAIL — the join transition wrote the same `member-joined` system message
+  twice and both copies leaked into Notification Center as `chat-message`
+  notifications. The retained retest must prove one chat system row, zero
+  system-derived chat notifications, one acceptance event notification for
+  Casey, and none for actor Riley before this checkpoint is closed.
 
 ### `EVENT-INV-004` — ordinary-member invitation approval chain
 
@@ -670,6 +675,34 @@ Execution evidence on 2026-08-04:
   reserved by an existing invitation, a full event and repeated accept/save.
 - No branch may create duplicate memberships, overbook capacity, leave a live
   invitation bell after resolution or grant chat access after reject/cancel.
+
+### `EVENT-INV-006` — acceptance notification visibility boundary
+
+- Stage the checkpoint independently. It creates two otherwise equivalent
+  active events: one `Open Event` and one `Blind Event`. Casey is Admin, while
+  Nova and Riley both start as pending admin invitees on both events.
+- Keep isolated Casey, Nova and Riley sessions open. Riley accepts the Open
+  invitation once and then the Blind invitation once.
+- Open Event expected notifications: Casey and Nova each receive exactly one
+  `event-invitation-accepted` item naming Riley and the Open event. Riley
+  receives none because Riley performed the action.
+- Blind Event expected notifications: Casey receives exactly one item. Nova
+  receives none because an ordinary pending member cannot see the Blind event's
+  member list; Riley again receives none as actor.
+- Both event chats contain exactly one `member-joined` system row for Riley.
+  Those rows create zero `chat-message` Notification Center items. This is
+  independent from the acceptance event notifications above.
+- Run the case and read-only oracle with:
+
+  ```bash
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh \
+    stage event-domain EVENT-INV-006
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh \
+    status event-domain EVENT-INV-006
+  ```
+
+  The oracle prints `blindMode` on each event and `eventId` on every acceptance
+  outbox/notification row so the Open and Blind results cannot be conflated.
 
 ## Chat authorization case
 

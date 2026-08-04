@@ -1233,7 +1233,7 @@ public class ActivitiesMembersService {
                             viewerUserId,
                             memberDisplayName(current),
                             current.getActionAtIso(),
-                            eventAdminRecipientUserIds(normalizedEventId, notificationEvent, viewerUserId));
+                            eventAcceptanceRecipientUserIds(normalizedEventId, notificationEvent, viewerUserId));
                 }
             }
         }
@@ -4000,26 +4000,28 @@ public class ActivitiesMembersService {
         }
     }
 
-    private List<String> eventAdminRecipientUserIds(
+    private List<String> eventAcceptanceRecipientUserIds(
             String eventId,
             ActivityEvent event,
             String excludedUserId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedExcludedUserId = normalizeId(excludedUserId);
-        LinkedHashSet<String> adminUserIds = new LinkedHashSet<>(resolveEventAdminUserIds(event));
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(resolveEventAdminUserIds(event));
+        boolean memberListOpen = event == null
+                || !"Blind Event".equalsIgnoreCase(safeText(event.getBlindMode()));
         loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId).stream()
                 .filter(Objects::nonNull)
-                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
-                .filter(member -> MANAGER_ROLES.contains(resolveStoredRole(
+                .filter(member -> !isHiddenMembershipStatus(member.getStatus()))
+                .filter(member -> memberListOpen || MANAGER_ROLES.contains(resolveStoredRole(
                         member,
                         OWNER_TYPE_EVENT,
                         normalizedEventId)))
                 .map(ActivityMember::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
-                .forEach(adminUserIds::add);
-        adminUserIds.remove(normalizedExcludedUserId);
-        return List.copyOf(adminUserIds);
+                .forEach(recipientUserIds::add);
+        recipientUserIds.remove(normalizedExcludedUserId);
+        return List.copyOf(recipientUserIds);
     }
 
     private String memberDisplayName(ActivityMember member) {

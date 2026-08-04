@@ -210,7 +210,7 @@
       stage: "invitation-pending",
       why: "Prove that accepting an owner/admin invitation creates one terminal accepted membership and all of its authorized side effects.",
       action: "Keep three isolated sessions open: accepted recipient, still-pending control recipient and event Admin. Accept once as the selected recipient; then compare Event Members and the event-chat list in all three sessions, and inspect the Admin notification list.",
-      expected: "Pending becomes accepted once, invitation fields clear and no duplicate row remains. The accepted recipient's original event-invite notification becomes read/resolved exactly once. The accepted recipient and Admin can see the same event chat; the still-pending control recipient cannot. The Admin receives exactly one acceptance notification naming the accepted recipient and event.",
+      expected: "Pending becomes accepted once, invitation fields clear and no duplicate row remains. The accepted recipient's original event-invite notification becomes read/resolved exactly once. The accepted recipient and Admin can see the same event chat; the still-pending control recipient cannot. The chat contains exactly one member-joined system message, but it creates no chat-message notification. Every other participant allowed to view the event member list receives exactly one acceptance event notification naming the accepted recipient and event; the actor and hidden ordinary members receive none.",
       worker: "CONDITIONAL direct membership recompute/outbox; no scheduler is required."
     },
     "EVENT-INV-004": {
@@ -226,6 +226,13 @@
       action: "Use the staged full event for one named branch in this run; reject or cancel the pending invite, or attempt one repeated accept.",
       expected: "Capacity is never exceeded; no duplicate member, stale live invitation or rejected-user chat access remains.",
       worker: "CONDITIONAL only for a real member transition; a repeated/no-op action MUST NOT duplicate effects."
+    },
+    "EVENT-INV-006": {
+      stage: "invitation-visibility",
+      why: "Prove that invitation-acceptance notifications follow the Open/Blind event-member visibility boundary.",
+      action: "Keep isolated Admin, pending-control and actor sessions open. As the actor, accept the Open invitation once and then the Blind invitation once; compare all three notification lists and both event chats.",
+      expected: "For Open, Admin and the still-pending control each receive exactly one acceptance event notification while the actor receives none. For Blind, Admin receives exactly one while the hidden pending control and actor receive none. Each chat contains exactly one member-joined system message and those system rows create zero chat-message notifications.",
+      worker: "CONDITIONAL direct membership recompute/outbox; no scheduler is required."
     },
     "EVENT-ACTIVITY-REFRESH-001": {
       stage: "invitation-empty",
@@ -563,6 +570,7 @@
       creatorUserId: hostUserId,
       admins: [hostUserId],
       visibility: "public",
+      blindMode: options.blindMode || "Open Event",
       autoInviter: false,
       ticketing: options.ticketing === true,
       approvalRequired: false,
@@ -849,12 +857,16 @@
     Q.collection("eventFeedbackStates").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventFeedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventTickets").deleteMany({ eventId: { $in: eventIds } });
-    Q.collection("notificationOutbox").deleteMany({
-      $or: [{ entityId: { $in: eventIds } }, { "payload.eventId": { $in: eventIds } }]
-    });
-    Q.collection("userNotifications").deleteMany({
-      $or: [{ sourceId: { $in: eventIds } }, { "payload.eventId": { $in: eventIds } }]
-    });
+    Q.collection("notificationOutbox").deleteMany({ $or: [
+      { entityId: { $in: [...eventIds, ...chatIds] } },
+      { "payload.eventId": { $in: eventIds } },
+      { "payload.chatId": { $in: chatIds } }
+    ] });
+    Q.collection("userNotifications").deleteMany({ $or: [
+      { sourceId: { $in: [...eventIds, ...chatIds] } },
+      { "payload.eventId": { $in: eventIds } },
+      { "payload.chatId": { $in: chatIds } }
+    ] });
     Q.collection("affinityRecomputeTasks").deleteMany({ targetId: { $in: eventIds } });
     Q.collection("schedulerPlanMarkers").deleteMany({ ownerId: { $in: eventIds } });
     Q.collection("events").deleteMany({
@@ -1076,6 +1088,32 @@
       ));
       return;
     }
+    if (stageKind === "invitation-visibility") {
+      const openEvent = eventDocument(EVENT_ID, `${EXPECTED_TITLE} OPEN`, {
+        ...future,
+        blindMode: "Open Event",
+        acceptedUserIds: [hostUserId],
+        pendingUserIds: [participantUserId, thirdUserId],
+        invitedUserIds: [participantUserId, thirdUserId]
+      });
+      const blindEvent = eventDocument(LOCKED_EVENT_ID, `${EXPECTED_TITLE} BLIND`, {
+        ...future,
+        blindMode: "Blind Event",
+        acceptedUserIds: [hostUserId],
+        pendingUserIds: [participantUserId, thirdUserId],
+        invitedUserIds: [participantUserId, thirdUserId]
+      });
+      Q.collection("events").insertMany([openEvent, blindEvent]);
+      Q.collection("activityMembers").insertMany([
+        memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+        memberDocument(EVENT_ID, participantUserId, "Member", "pending", "invite"),
+        memberDocument(EVENT_ID, thirdUserId, "Member", "pending", "invite"),
+        memberDocument(LOCKED_EVENT_ID, hostUserId, "Admin", "accepted"),
+        memberDocument(LOCKED_EVENT_ID, participantUserId, "Member", "pending", "invite"),
+        memberDocument(LOCKED_EVENT_ID, thirdUserId, "Member", "pending", "invite")
+      ]);
+      return;
+    }
     if (stageKind === "invitation-ordinary") {
       const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
         ...future,
@@ -1163,6 +1201,7 @@
       isTrashed: event.isTrashed,
       statusBeforeSuppression: event.statusBeforeSuppression,
       ticketing: event.ticketing,
+      blindMode: Q.text(event.blindMode),
       acceptedMemberUserIds: event.acceptedMemberUserIds || [],
       pendingMemberUserIds: event.pendingMemberUserIds || [],
       invitedMemberUserIds: event.invitedMemberUserIds || [],
@@ -1214,6 +1253,23 @@
         { ownerId: { $in: dynamicEventIds } }
       ]
     }).toArray();
+    const eventChatIds = sortedUnique(eventChats.map(chat => chat.chatId || chat._id));
+    const eventChatArtifactIds = sortedUnique([...eventChatIds, ...dynamicEventIds]);
+    const eventChatMessages = eventChatArtifactIds.length > 0
+      ? Q.collection("chatMessages").find({ chatId: { $in: eventChatArtifactIds } }).toArray()
+      : [];
+    const eventChatNotificationOutbox = eventChatArtifactIds.length > 0
+      ? Q.collection("notificationOutbox").find({
+          notificationType: "chat-message",
+          $or: [{ entityId: { $in: eventChatArtifactIds } }, { "payload.chatId": { $in: eventChatArtifactIds } }]
+        }).toArray()
+      : [];
+    const eventChatNotifications = eventChatArtifactIds.length > 0
+      ? Q.collection("userNotifications").find({
+          kind: "chat-message",
+          $or: [{ sourceId: { $in: eventChatArtifactIds } }, { "payload.chatId": { $in: eventChatArtifactIds } }]
+        }).toArray()
+      : [];
     const invitationAcceptanceOutbox = Q.collection("notificationOutbox").find({
       notificationType: "event-invitation-accepted",
       $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
@@ -1264,6 +1320,31 @@
         channelType: Q.text(chat.channelType),
         unread: Number(chat.unread || 0)
       })),
+      eventChatMessages: eventChatMessages.map(message => ({
+        chatId: Q.text(message.chatId),
+        messageId: Q.text(message.id || message._id),
+        clientId: Q.text(message.clientId),
+        sender: Q.text(message.sender),
+        senderUserId: Q.text(message.senderAvatar && message.senderAvatar.id),
+        senderGender: Q.text(message.senderAvatar && message.senderAvatar.gender),
+        text: Q.text(message.text),
+        sentAtIso: Q.text(message.sentAtIso)
+      })),
+      eventChatNotificationOutbox: eventChatNotificationOutbox.map(item => ({
+        notificationType: Q.text(item.notificationType),
+        chatId: Q.text(item.entityId || item.payload && item.payload.chatId),
+        messageId: Q.text(item.payload && item.payload.messageId),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        status: Q.text(item.status)
+      })),
+      eventChatNotifications: eventChatNotifications.map(item => ({
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        chatId: Q.text(item.sourceId || item.payload && item.payload.chatId),
+        messageId: Q.text(item.payload && item.payload.messageId),
+        title: Q.text(item.title),
+        message: Q.text(item.message)
+      })),
       userActivityCounters: checkpointId === "EVENT-PUBLISH-CHAT-001"
         ? [hostUserId, participantUserId, thirdUserId].map(userId => {
             const current = userActivitiesSnapshot(userId);
@@ -1302,6 +1383,7 @@
         : [],
       invitationAcceptanceOutbox: invitationAcceptanceOutbox.map(item => ({
         notificationType: Q.text(item.notificationType),
+        eventId: Q.text(item.entityId || item.payload && item.payload.eventId),
         recipientUserIds: sortedUnique(item.recipientUserIds || []),
         memberUserId: Q.text(item.payload && item.payload.memberUserId),
         membershipAction: Q.text(item.payload && item.payload.membershipAction),
@@ -1310,6 +1392,7 @@
       invitationAcceptanceNotifications: invitationAcceptanceNotifications.map(item => ({
         recipientUserId: Q.text(item.recipientUserId),
         kind: Q.text(item.kind),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
         memberUserId: Q.text(item.payload && item.payload.memberUserId),
         membershipAction: Q.text(item.payload && item.payload.membershipAction),
         title: Q.text(item.title),

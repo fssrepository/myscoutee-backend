@@ -2566,7 +2566,6 @@ public class ActivitiesEventsService {
                 if (joinedSlot) {
                     markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, slotSourceId);
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
-                    postMemberJoinedMessage(sourceId, viewer.user());
                 } else if (checkoutBasketUpdateRequested) {
                     enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
@@ -2602,7 +2601,6 @@ public class ActivitiesEventsService {
         if (joined) {
             markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, null);
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
-            postMemberJoinedMessage(sourceId, viewer.user());
         } else if (checkoutBasketUpdateRequested) {
             enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
         }
@@ -3864,19 +3862,6 @@ public class ActivitiesEventsService {
             text = stageTitle + " was updated.";
         }
         chatService.postSystemMessage(eventId, text, action);
-    }
-
-    private void postMemberJoinedMessage(String eventId, Users user) {
-        if (chatService == null || user == null) {
-            return;
-        }
-        String normalizedEventId = normalizeId(eventId);
-        if (StringUtils.hasText(normalizedEventId)) {
-            chatService.postSystemMessage(
-                    normalizedEventId,
-                    firstNonBlank(user.getName(), user.getId(), "A member") + " joined the event.",
-                    "member-joined");
-        }
     }
 
     private void maybePostMemberLeftMessage(EventActionRequestDto request) {

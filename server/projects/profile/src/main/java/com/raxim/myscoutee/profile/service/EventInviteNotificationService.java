@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -95,20 +96,26 @@ public class EventInviteNotificationService {
             String acceptedUserId,
             String acceptedUserName,
             String acceptedAtIso,
-            List<String> adminUserIds) {
-        if (event == null || adminUserIds == null || adminUserIds.isEmpty()) {
+            List<String> recipientUserIds) {
+        if (event == null) {
             return;
         }
         String memberUserId = safeText(acceptedUserId);
-        List<String> recipients = adminUserIds.stream()
-                .map(this::safeText)
-                .filter(StringUtils::hasText)
-                .filter(userId -> !userId.equals(memberUserId))
-                .distinct()
-                .toList();
-        if (!StringUtils.hasText(memberUserId) || recipients.isEmpty()) {
+        if (!StringUtils.hasText(memberUserId)) {
             return;
         }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        if (recipientUserIds != null) {
+            recipientUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(recipients::add);
+        }
+        recipients.remove(memberUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+        List<String> notificationRecipients = List.copyOf(recipients);
 
         String eventId = safeText(event.getSourceId());
         String eventTitle = resolveTitle(event);
@@ -122,6 +129,7 @@ public class EventInviteNotificationService {
         payload.put("memberUserId", memberUserId);
         payload.put("memberName", memberName);
         payload.put("membershipAction", "accepted");
+        payload.put("notification_tone", "accent");
         if (StringUtils.hasText(safeText(acceptedAtIso))) {
             payload.put("acceptedAtIso", safeText(acceptedAtIso));
         }
@@ -129,8 +137,8 @@ public class EventInviteNotificationService {
                 "event-invitation-accepted",
                 "event",
                 eventId,
-                "event-admins",
-                recipients,
+                "event-participants",
+                notificationRecipients,
                 "Event invitation accepted",
                 memberName + " accepted the invitation to " + eventTitle + ".",
                 DEFAULT_CLICK_URL,

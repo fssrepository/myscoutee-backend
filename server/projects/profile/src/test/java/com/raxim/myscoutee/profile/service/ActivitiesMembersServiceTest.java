@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
@@ -2275,6 +2276,7 @@ class ActivitiesMembersServiceTest {
     @Test
     void inviteeCanAcceptTheSeatAlreadyReservedForThem() {
         ActivityEvent event = event("event-1", "host", "host");
+        event.setBlindMode("Blind Event");
         event.setCapacityTotal(2);
         ActivityMember accepted =
                 member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
@@ -2328,6 +2330,18 @@ class ActivitiesMembersServiceTest {
                         .orElseThrow()
                         .getActionAtIso(),
                 List.of("host"));
+    }
+
+    @Test
+    void openEventAcceptanceNotifiesVisibleAcceptedAndPendingMembersButNotTheActor() {
+        assertThat(acceptInvitationAndCaptureRecipients("Open Event"))
+                .containsExactly("host", "accepted-user", "pending-observer");
+    }
+
+    @Test
+    void blindEventAcceptanceNotifiesManagersButNotHiddenOrdinaryMembersOrTheActor() {
+        assertThat(acceptInvitationAndCaptureRecipients("Blind Event"))
+                .containsExactly("host");
     }
 
     @Test
@@ -2593,6 +2607,66 @@ class ActivitiesMembersServiceTest {
         event.setAdmins(List.of(adminUserId));
         event.setCapacityTotal(10);
         return event;
+    }
+
+    private List<String> acceptInvitationAndCaptureRecipients(String blindMode) {
+        ActivityEvent event = event("event-visibility", "host", "host");
+        event.setBlindMode(blindMode);
+        ActivityMember host = member("host-sync", "event-visibility", "host", "Admin", "accepted");
+        ActivityMember accepted = member(
+                "accepted-sync",
+                "event-visibility",
+                "accepted-user",
+                "Member",
+                "accepted");
+        ActivityMember observer = member(
+                "observer-sync",
+                "event-visibility",
+                "pending-observer",
+                "Member",
+                "pending");
+        observer.setPendingSource("admin");
+        observer.setRequestKind("invite");
+        observer.setInvitedByUserId("host");
+        ActivityMember invitation = member(
+                "invite-sync",
+                "event-visibility",
+                "viewer",
+                "Member",
+                "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("host");
+        AtomicReference<List<ActivityMember>> stored =
+                new AtomicReference<>(List.of(host, accepted, observer, invitation));
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-visibility"))
+                .thenAnswer(invocation -> stored.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            stored.set(stored.get().stream()
+                    .map(member -> saved.getUserId().equals(member.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-visibility")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
+
+        service.requestJoin("event-visibility", viewer, event, true, false, false);
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<String>> recipients = ArgumentCaptor.forClass(List.class);
+        verify(eventInviteNotificationService).notifyInvitationAccepted(
+                eq(event),
+                eq("viewer"),
+                eq("Viewer"),
+                anyString(),
+                recipients.capture());
+        return recipients.getValue();
     }
 
     private ActivityMember member(String syncKey, String ownerId, String userId, String role, String status) {

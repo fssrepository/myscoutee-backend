@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -57,5 +58,43 @@ class ChatPushNotificationServiceTest {
         assertThat(intent.getValue().recipientUserIds())
                 .containsExactly("connected-viewer", "offline-viewer")
                 .doesNotContain("sender");
+    }
+
+    @Test
+    void doesNotCreateNotificationsForSystemChatMessages() {
+        UsersRepository usersRepository = org.mockito.Mockito.mock(UsersRepository.class);
+        NotificationOutboxService notificationOutboxService = org.mockito.Mockito.mock(NotificationOutboxService.class);
+        ChatPushNotificationService service = new ChatPushNotificationService(
+                usersRepository,
+                notificationOutboxService);
+        Chat chat = new Chat();
+        chat.setChatId("chat-1");
+        chat.setOwnerUserId("admin");
+        chat.setMemberIds(List.of("admin", "accepted-member"));
+        ChatStreamEvent event = ChatStreamEvent.message(
+                "chat-1",
+                "message-1",
+                "member-joined",
+                "",
+                "System",
+                "MS",
+                "system",
+                "",
+                "Accepted Member joined the event.",
+                "2026-08-04T19:55:00Z",
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                List.of());
+
+        service.notifyRecipients(List.of(chat), event);
+
+        verifyNoInteractions(usersRepository, notificationOutboxService);
     }
 }
