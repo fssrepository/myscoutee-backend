@@ -1,7 +1,7 @@
 # Periodic UI update jank diagnosis
 
-Status: code path corroborated; browser trace pending  
-Defect: `UI-POLL-JANK-001`  
+Status: Admin Job manual visual pass; performance trace and Chat retest pending
+Defect: `UI-POLL-JANK-001`
 Last updated: 2026-08-04
 
 ## Scope
@@ -16,7 +16,7 @@ The Admin Job mechanism is corroborated by the current code. The Chat symptom
 is retained as a separate trace checkpoint because it does not use the same
 five-second process-center poll.
 
-## Admin Job Detail: corroborated update path
+## Admin Job Detail: original corroborated update path
 
 The process-center component creates a `UiTaskScheduler` with a fixed
 five-second interval whenever the Admin Jobs popup is active. Its scheduler
@@ -84,6 +84,42 @@ five-second poll. Capture Chat independently and correlate any hitch with:
 
 Do not close the Chat checkpoint based on an Admin Job fix.
 
+## Implemented Admin Job remediation
+
+The Admin process table now uses the shared SmartList live-surface contract:
+
+1. SmartList owns the five-second polling interval, request cancellation,
+   stable row identity, equality checks, visible-item reconciliation and local
+   re-sorting.
+2. Rows are keyed by `ruleKey`. An unchanged response preserves every row
+   reference and causes no list state commit or DOM replacement.
+3. A changed response replaces only changed keyed rows. SmartList may reorder
+   those rows when their current filter sort key changes.
+4. The nested Job Detail is backed by a separate selected-row signal. It is
+   updated only when the selected rule changes; changes to another row do not
+   notify or re-render Job Detail.
+5. WebSocket and local Run/Suspend updates use the same SmartList
+   `patchVisibleItem` path instead of maintaining a second list scheduler.
+6. The component now uses Angular `OnPush` change detection.
+
+The full-center endpoint remains the table's data source. Opening Job Detail
+does not create a second poll and does not send the complete list into the
+detail surface. This preserves list freshness and filter ordering while
+isolating detail rendering.
+
+Focused component tests cover initial versus background loading, unchanged-row
+reference preservation, single-row replacement, selected-row detail delivery,
+non-selected-row isolation and local updates through SmartList patching.
+
+### Manual retest evidence
+
+On 2026-08-04, the running frontend hot-deploy completed the SmartList build at
+10:28:43 and published it at 10:28:45. With that build open, the previously
+visible Job Detail pointer stutter was no longer observed. This is a manual
+visual pass. No browser Performance trace was captured, so the long-task and
+frame-time acceptance bullets remain unmeasured. Chat remains a separate open
+checkpoint.
+
 ## Reproduction and evidence script
 
 Use the existing dev stack. Do not start a second frontend, backend, database
@@ -112,8 +148,10 @@ or scheduler.
    events, scripting, style recalculation, layout and paint.
 6. Record whether the response contained a material runtime/history delta.
 
-Expected before a fix: full center requests continue while detail is open, and
-an unchanged response still commits new center/rule/history references.
+Expected after the implemented fix: the SmartList-owned center request may
+continue while detail is open, but an unchanged response causes no row or
+detail state commit. A changed non-selected row patches only that keyed list
+row. A changed selected row also sends that one row to Job Detail.
 
 ### C. Chat
 
@@ -125,33 +163,17 @@ an unchanged response still commits new center/rule/history references.
 5. Mark the WebSocket event, user realtime long-poll completion and every
    visible hitch separately.
 
-## Fix direction
-
-No product-code fix is part of this diagnosis. A later implementation should
-consider these changes together and preserve runtime correctness:
-
-1. use WebSocket events as the primary Job runtime path;
-2. while detail is open, stop the full-center poll or poll only the selected
-   rule through the existing runtime endpoint;
-3. compare incoming runtime/history values and skip the state commit when
-   nothing changed;
-4. preserve references for unchanged rules and histories and use a keyed map
-   instead of repeated linear searches;
-5. use `OnPush` and memoized/computed selectors instead of sorting arrays from
-   template-invoked methods;
-6. keep timer/request work outside Angular where practical and enter Angular
-   only for a material state delta;
-7. suppress or reduce polling while the document is hidden.
-
 ## Acceptance criteria
 
 Admin Job Detail passes only when all of these are true:
 
 - no visible periodic pointer, scroll or input hitch during a 30-second trace;
 - no long main-thread task of 50 ms or more aligned with the refresh path;
-- an unchanged runtime response causes no component state commit or DOM
-  mutation;
-- the open detail no longer requires a full-center request every five seconds;
+- an unchanged table response causes no row state commit or DOM mutation;
+- changed table responses patch only affected keyed rows and preserve valid
+  sort order;
+- the open detail receives only its selected changed rule, never the complete
+  process list;
 - real WebSocket runtime progress and terminal history still appear within the
   documented freshness window;
 - list filters, Parameters, Schedule, Suspend and manual Run remain correct.

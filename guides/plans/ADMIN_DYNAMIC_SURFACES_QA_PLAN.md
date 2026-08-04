@@ -538,17 +538,21 @@ as proof of its downstream scheduled or projection behavior.
 
 ## Queued cross-surface performance defect
 
-`UI-POLL-JANK-001` is an `OPEN`, `P1 65` (`I2 L3 A5 N4 O2`) manual retest and
-must remain in the master spreadsheet until **both** checkpoints pass:
+`UI-POLL-JANK-001` has an Admin Job `MANUAL VISUAL PASS`, with its browser trace
+and the Chat retest still pending. It remains a `P1 65` (`I2 L3 A5 N4 O2`)
+checkpoint in the master spreadsheet until **both** UI checkpoints pass:
 
 Detailed code-path evidence and the reproducible trace procedure are in
 [`UI_POLL_JANK_DIAGNOSIS.md`](UI_POLL_JANK_DIAGNOSIS.md).
 
-1. **Admin Job checkpoint — observed, code path corroborated, trace pending.**
-   Pointer movement visibly stutters with Job Detail open. The Admin process
-   center polls its whole state every five seconds, replaces the shared state
-   signal, and does not use `OnPush`. The configured `detailOpen()` task state
-   does not currently gate the poll, although overlapping requests are blocked.
+1. **Admin Job checkpoint — manual visual pass, performance trace pending.** The process
+   table now delegates its five-second live refresh, cancellation, keyed
+   equality, visible-row patching and re-sorting to SmartList. The component
+   uses `OnPush`; unchanged rows preserve references; and Job Detail has a
+   separate signal that receives only its selected changed rule. The full
+   center remains the table source and does not create a second detail poll.
+   The stutter was no longer visible in the 2026-08-04 hot-deployed build, but
+   no Performance trace was captured.
 2. **Chat checkpoint — reported, root cause unconfirmed, trace pending.** Similar
    stutter was reported in an open chat. Chat itself uses `OnPush` and WebSocket
    events; a separate global user realtime long-poll runs every 30 seconds, or
@@ -560,8 +564,10 @@ Performance and Network traces for idle UI, Admin process list, Job Detail and
 Chat while continuously moving the pointer and, in Chat, scrolling/typing. Mark
 the exact hitch timestamps and correlate them with the five-second Job request,
 WebSocket messages, user realtime long-poll completion, scripting, layout and
-paint. A fix is accepted only when the affected trace no longer has the periodic
-hitch and both UI checkpoints remain functionally correct.
+paint. For Admin Jobs, also prove that unchanged polls do not mutate rows and a
+non-selected row update does not re-render Job Detail. A fix is accepted only
+when the affected trace no longer has the periodic hitch and both UI
+checkpoints remain functionally correct.
 
 ## Execution order for the next manual session
 
