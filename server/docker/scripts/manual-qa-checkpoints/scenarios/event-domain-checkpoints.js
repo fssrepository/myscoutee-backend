@@ -6,6 +6,7 @@
   const SCENARIO = "event-domain";
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   const checkpointId = Q.text(process.env.MANUAL_QA_CHECKPOINT_ID).toUpperCase();
+  const sourceCheckpointId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID).toUpperCase();
   const hostUserId = Q.text(process.env.MANUAL_QA_CREATOR_USER_ID)
     || "650000000000000000000061";
   const participantUserId = Q.text(process.env.MANUAL_QA_INVITEE_USER_ID)
@@ -24,8 +25,8 @@
     "EVENT-EDITOR-001": {
       stage: "editor-empty",
       why: "Prove that Event Editor creation persists one canonical draft rather than only updating local form state.",
-      action: `As host, create one casual draft titled exactly '${EXPECTED_TITLE}', Save once, close it and reopen it from Drafts/Hosting.`,
-      expected: "Exactly one canonical draft exists and every entered field reopens unchanged; it is absent from unrelated-user Explore.",
+      action: `As host, create one casual draft titled exactly '${EXPECTED_TITLE}'. Use capacity 2-8, location label 'Austin, TX', description 'Manual QA draft persistence checkpoint.', Invitation only, Open Event, topics Music and Outdoors, Auto inviter Off, Ticketing Off, Auto approve On, Sub Events Off, Slots Off, Pricing Off, Event Policies Off, and a one-time local 18:00-20:00 range. Save once, close it and reopen it from Drafts/Hosting.`,
+      expected: "Exactly one canonical draft exists and every entered field reopens unchanged; the event keeps the free-text venue label but its proximity coordinates equal the host user's current coordinates; it is absent from every unrelated-user event bucket.",
       worker: "MUST RUN on Save: one event recompute. Close, reopen and refresh MUST NOT RUN another task."
     },
     "EVENT-EDITOR-002": {
@@ -260,6 +261,29 @@
       Q.fail(`unsupported event-domain checkpoint '${checkpointId}'.`);
     }
     return value;
+  }
+
+  function activeExpectedTitle() {
+    const state = Q.activeState(SCENARIO, false);
+    return Q.text(state && state.context && state.context.expectedTitle) || EXPECTED_TITLE;
+  }
+
+  function activeEventSourceId() {
+    const state = Q.activeState(SCENARIO, false);
+    return Q.text(state && state.context && state.context.actualEventSourceId);
+  }
+
+  function manualEventSelector() {
+    const expectedTitle = activeExpectedTitle();
+    const actualEventSourceId = activeEventSourceId();
+    const sourceIds = actualEventSourceId ? [...EVENT_IDS, actualEventSourceId] : EVENT_IDS;
+    return {
+      $or: [
+        { _id: { $in: sourceIds } },
+        { sourceId: { $in: sourceIds } },
+        { title: expectedTitle }
+      ]
+    };
   }
 
   function dateIso(offsetMinutes) {
@@ -513,11 +537,7 @@
 
   function selectors() {
     return [
-      { collection: "events", selector: { $or: [
-        { _id: { $in: EVENT_IDS } },
-        { sourceId: { $in: EVENT_IDS } },
-        { title: EXPECTED_TITLE }
-      ] } },
+      { collection: "events", selector: manualEventSelector() },
       { collection: "activityMembers", selector: { $or: [
         { ownerType: "event", ownerId: { $in: EVENT_IDS } },
         { ownerId: { $regex: `^${PREFIX}` } }
@@ -543,13 +563,7 @@
   }
 
   function currentEventIds() {
-    const values = Q.collection("events").find({
-      $or: [
-        { _id: { $in: EVENT_IDS } },
-        { sourceId: { $in: EVENT_IDS } },
-        { title: EXPECTED_TITLE }
-      ]
-    }).toArray();
+    const values = Q.collection("events").find(manualEventSelector()).toArray();
     const ids = [...EVENT_IDS];
     for (const value of values) {
       const sourceId = Q.text(value.sourceId);
@@ -596,11 +610,7 @@
     Q.collection("affinityRecomputeTasks").deleteMany({ targetId: { $in: eventIds } });
     Q.collection("schedulerPlanMarkers").deleteMany({ ownerId: { $in: eventIds } });
     Q.collection("events").deleteMany({
-      $or: [
-        { _id: { $in: eventIds } },
-        { sourceId: { $in: eventIds } },
-        { title: EXPECTED_TITLE }
-      ]
+      $or: [{ _id: { $in: eventIds } }, { sourceId: { $in: eventIds } }, { title: activeExpectedTitle() }]
     });
   }
 
@@ -871,9 +881,16 @@
   }
 
   function eventSummary() {
-    return Q.collection("events").find({
-      $or: [{ sourceId: { $in: EVENT_IDS } }, { title: EXPECTED_TITLE }]
-    }).toArray().map(event => ({
+    const host = Q.collection("users").findOne({
+      $or: [{ _id: hostUserId }, { userId: hostUserId }]
+    }) || {};
+    const hostCoordinates = host.locationCoordinates || null;
+    const coordinatesMatch = eventCoordinates => {
+      if (!hostCoordinates || !eventCoordinates) return null;
+      return Number(hostCoordinates.latitude) === Number(eventCoordinates.latitude)
+        && Number(hostCoordinates.longitude) === Number(eventCoordinates.longitude);
+    };
+    return Q.collection("events").find(manualEventSelector()).toArray().map(event => ({
       eventId: Q.text(event.sourceId),
       title: Q.text(event.title),
       status: Q.text(event.status),
@@ -887,6 +904,10 @@
       mode: Q.text(event.mode),
       autoInviter: event.autoInviter === true,
       frequency: Q.text(event.frequency),
+      location: Q.text(event.location),
+      locationCoordinates: event.locationCoordinates || null,
+      hostLocationCoordinates: hostCoordinates,
+      locationCoordinatesMatchHost: coordinatesMatch(event.locationCoordinates),
       slotsEnabled: event.slotsEnabled === true,
       slotTemplates: (event.slotTemplates || []).map(item => ({
         id: Q.text(item.id),
@@ -910,9 +931,7 @@
 
   function oracle(state) {
     const dynamicEventIds = currentEventIds();
-    const event = Q.collection("events").findOne({
-      $or: [{ sourceId: EVENT_ID }, { title: EXPECTED_TITLE }]
-    }) || {};
+    const event = Q.collection("events").findOne(manualEventSelector()) || {};
     const members = Q.collection("activityMembers").find({ $or: [
       { ownerType: "event", ownerId: { $in: dynamicEventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
@@ -1087,6 +1106,50 @@
     });
   }
 
+  function advance() {
+    const selected = config();
+    const state = Q.activeState(SCENARIO, true);
+    const currentCheckpointId = Q.text(state.checkpointId).toUpperCase();
+    if (!sourceCheckpointId || currentCheckpointId !== sourceCheckpointId) {
+      Q.fail(`staged checkpoint is '${currentCheckpointId}', not source '${sourceCheckpointId}'.`);
+    }
+    const event = Q.collection("events").findOne(manualEventSelector());
+    if (!event) Q.fail("cannot advance without the manually created event.");
+    if (selected.stage === "draft" && Q.text(event.status) !== "DR") {
+      Q.fail(`next checkpoint requires a draft event, but status is '${Q.text(event.status)}'.`);
+    }
+    const advancedAtIso = Q.nowIso();
+    const history = Array.isArray(state.checkpointHistory) ? state.checkpointHistory : [];
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        checkpointId,
+        stagedAtIso: advancedAtIso,
+        "context.actualEventSourceId": Q.text(event.sourceId || event._id)
+      },
+      $push: {
+        checkpointHistory: {
+          checkpointId: sourceCheckpointId,
+          completedAtIso: advancedAtIso
+        }
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "continued-manual-checkpoint",
+      advancedFrom: sourceCheckpointId,
+      advancedAtIso,
+      retainedCheckpointCount: history.length + 1,
+      eventId: Q.text(event.sourceId || event._id),
+      eventTitle: Q.text(event.title),
+      why: selected.why,
+      action: selected.action,
+      expectedVisibleResult: selected.expected,
+      workerExpectation: selected.worker,
+      note: "The original snapshots are retained so one later reset restores the pre-chain baseline."
+    });
+  }
+
   function status() {
     const selected = config();
     const state = Q.activeState(SCENARIO, false);
@@ -1133,6 +1196,7 @@
   Q.assertDeploymentSafety();
   switch (command) {
     case "stage": stage(); break;
+    case "advance": advance(); break;
     case "next": next(); break;
     case "status": status(); break;
     case "reset": reset(); break;

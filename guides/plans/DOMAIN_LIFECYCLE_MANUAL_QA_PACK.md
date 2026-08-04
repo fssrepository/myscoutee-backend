@@ -1,6 +1,6 @@
 # Domain lifecycle manual QA pack
 
-Status: planned, not yet manually executed  
+Status: execution in progress  
 Last updated: 2026-08-04  
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
@@ -109,10 +109,35 @@ Every checkpoint record must contain these fields:
   Hosting/Drafts.
 - Require exact persistence of title, time, location, capacity, visibility,
   topics and every enabled editor section.
+- Treat the free-text venue label and proximity coordinates as separate inputs.
+  Without a venue geocoding provider, the event must retain the entered venue
+  label while `locationCoordinates` must exactly equal the organizer's current
+  user coordinates at the time of the save. A remote venue label is therefore
+  not evidence of a coordinate defect.
+- For the reproducible `EVENT-EDITOR-001` run, use capacity `2-8`, venue label
+  `Austin, TX`, description `Manual QA draft persistence checkpoint.`,
+  Invitation only, Open Event, topics Music and Outdoors, Auto inviter Off,
+  Ticketing Off, Auto approve On, Sub Events Off, Slots Off, Pricing Off,
+  Event Policies Off and a one-time local `18:00-20:00` range.
 - Require exactly one canonical event write, one `event.synced` telemetry
   occurrence and one deduplicated event recompute task.
 - Verify the event is not yet treated as published and is not eligible for an
   active-only scheduler.
+
+Execution evidence on 2026-08-04:
+
+- PASS: one canonical Casey draft was created and exactly one recompute task
+  followed the Save; close, reopen and unrelated-user refresh added no task or
+  notification-outbox entry.
+- PASS: Nova saw no matching item in All, Active Events or Invitations.
+- PASS: the saved venue label remained `Austin, TX`, while the event
+  `locationCoordinates` exactly matched Casey's current user coordinates
+  (`47.4939392`, `19.0676992`).
+- RESOLVED `EVENT-TIMEZONE-001`: the initial local `18:00-20:00` was stored as
+  `18:00Z-20:00Z` and reopened as `20:00-22:00` in Europe/Bratislava. After the
+  frontend persistence-boundary fix, the focused 12-test run passed and the
+  manual retest stored `16:00Z-18:00Z`; both the event card and reopened editor
+  showed `18:00-20:00`. The HTTP and IndexedDB paths now share this behavior.
 
 ### `EVENT-EDITOR-002` — publish and visibility
 

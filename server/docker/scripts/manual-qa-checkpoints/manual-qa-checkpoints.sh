@@ -33,6 +33,7 @@ Usage:
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh next event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh status event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh reset event-domain <checkpoint-id>
@@ -63,6 +64,7 @@ Environment:
   MANUAL_QA_CHAT_TITLE          optional STAT-011 chat title
   MANUAL_QA_EVENT_ID            optional STAT-020 event source/document ID
   MANUAL_QA_CHECKPOINT_ID       set internally for checkpoint-runner commands
+  MANUAL_QA_SOURCE_CHECKPOINT_ID set internally for event-domain advance
 USAGE
 }
 
@@ -76,6 +78,7 @@ run_scenario() {
   local scenario="$2"
   local delay_seconds="${3:-30}"
   local checkpoint_id="${4:-}"
+  local source_checkpoint_id="${5:-}"
   local target_db="${MANUAL_QA_DB:-demo_db}"
   local mongo_mode="${MANUAL_QA_MONGO_MODE:-auto}"
   local mongo_container="${MANUAL_QA_MONGO_CONTAINER:-mongodb}"
@@ -129,6 +132,7 @@ run_scenario() {
       -e "MANUAL_QA_CHAT_TITLE=${MANUAL_QA_CHAT_TITLE:-}" \
       -e "MANUAL_QA_EVENT_ID=${MANUAL_QA_EVENT_ID:-}" \
       -e "MANUAL_QA_CHECKPOINT_ID=${checkpoint_id}" \
+      -e "MANUAL_QA_SOURCE_CHECKPOINT_ID=${source_checkpoint_id}" \
       "${mongo_container}" \
       mongosh \
         --quiet \
@@ -152,6 +156,7 @@ run_scenario() {
     MANUAL_QA_CHAT_TITLE="${MANUAL_QA_CHAT_TITLE:-}" \
     MANUAL_QA_EVENT_ID="${MANUAL_QA_EVENT_ID:-}" \
     MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" \
+    MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
     mongosh \
       --quiet \
       --host "${mongo_host}" \
@@ -187,6 +192,10 @@ case "${scenario}:${command}" in
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  event-domain:advance)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$4" "$3"
     ;;
   *)
     usage >&2
