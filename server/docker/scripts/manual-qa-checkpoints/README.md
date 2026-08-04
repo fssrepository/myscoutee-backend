@@ -302,9 +302,9 @@ bash manual-qa-checkpoints.sh status stat-012
 ```
 
 Reset restores the exact selected documents, isolated affinity edges,
-Statistics inventory entries, quarantined data, primary rule, and secondary
-pending counters. It deliberately does not rewind legitimate scheduler
-telemetry or run history.
+Statistics inventory entries, the creator and invitee activity-counter
+projections, quarantined data, primary rule, and secondary pending counters.
+It deliberately does not rewind legitimate scheduler telemetry or run history.
 
 ## Safety
 

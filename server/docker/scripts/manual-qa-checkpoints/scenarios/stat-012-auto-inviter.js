@@ -144,6 +144,28 @@
     collection("adminStats").updateOne({ _id: saved.documentId }, update);
   }
 
+  function userActivitiesSnapshot(userId) {
+    const user = collection("users").findOne({ userId });
+    if (!user) {
+      fail(`user '${userId}' was not found while activity counters were snapshotted.`);
+    }
+    return {
+      userId,
+      activities: optionalField(user, "activities")
+    };
+  }
+
+  function restoreUserActivities(saved) {
+    if (!saved || !text(saved.userId)) return;
+    const update = saved.activities && saved.activities.present
+      ? { $set: { activities: saved.activities.value } }
+      : { $unset: { activities: "" } };
+    const result = collection("users").updateOne({ userId: saved.userId }, update);
+    if (result.matchedCount !== 1) {
+      fail(`user '${saved.userId}' disappeared before activity counters could be restored.`);
+    }
+  }
+
   function userIdOf(user) {
     return text(user && (user.userId || user._id));
   }
@@ -354,6 +376,10 @@
         knownEvents: optionalField(adminStats.knownEvents, EVENT_ID),
         activeEvents: optionalField(adminStats.activeEvents, EVENT_ID)
       },
+      userActivitySnapshots: [
+        userActivitiesSnapshot(context.creatorUserId),
+        userActivitiesSnapshot(context.expectedInviteeUserId)
+      ],
       secondaryRuleCounters
     };
     collection(STATE_COLLECTION).insertOne(state);
@@ -739,12 +765,15 @@
       restoreOptionalFields(saved.ruleKey, saved);
     }
     restoreStatsProjection(state.statsProjection);
+    for (const saved of state.userActivitySnapshots || []) {
+      restoreUserActivities(saved);
+    }
     collection(STATE_COLLECTION).deleteOne({ _id: state._id });
     printObject({
       scenario: "stat-012",
       phase: "reset-complete",
       restored: true,
-      detail: "Manual event data, isolated affinity edges, Statistics inventory fields, quarantined rows, primary rule, and secondary pending counters were restored. Legitimate scheduler telemetry/history was not rewound."
+      detail: "Manual event data, isolated affinity edges, Statistics inventory fields, participant activity counters, quarantined rows, primary rule, and secondary pending counters were restored. Legitimate scheduler telemetry/history was not rewound."
     });
   }
 

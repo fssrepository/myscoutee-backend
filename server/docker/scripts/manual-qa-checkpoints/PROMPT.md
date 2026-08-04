@@ -110,6 +110,9 @@ time, waiting for the human screenshot/confirmation before continuing:
 8. Record evidence and manual/automated status in the QA MD/CSV/XLSX without
    deleting existing rows or priorities.
 9. Run `reset stat-012`, confirm not-staged, and report what was restored.
+10. Reload the invitee session and prove that the Invitations and Notifications
+    badges return to their exact pre-stage values; an empty list with a non-zero
+    badge is a cleanup failure.
 
 The already completed BASE-STAT, STAT-010, STAT-011, and STAT-020 cases must be
 maintained as reproducible manual QA scripts under completed-runs, but do not

@@ -123,6 +123,18 @@ rule uses a two-hour interval, has its original pending count `38`, and was
 already eligible at cleanup time; any later normal dev-scheduler work is
 post-test activity and must not be attributed to STAT-012.
 
+The first reset implementation did not restore the selected users' activity
+counter projections. A later UI check found Nova's Invitations badge at `1`
+while the Invitations list was empty. Read-only database evidence confirmed no
+Nova event membership, owned/admin event, or notification, but persisted
+`activities.invitations`, `activities.event.all`,
+`activities.event.invitations`, and `activities.notifications` were still `1`.
+This was a QA harness cleanup defect, not a STAT-012 product-flow failure. The
+four stale demo counters were repaired with a guarded exact-state update, and
+the reusable helper now snapshots and restores the creator and invitee
+`activities` projections. Future cleanup is not complete until a reloaded
+invitee session also shows the original badge values.
+
 ## Separate UX observation
 
 `UI-POLL-JANK-001` / Job checkpoint: the human observer reports that pointer movement

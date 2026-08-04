@@ -14,7 +14,7 @@ rerun the scenarios or mutate the demo database.
 | [STAT-010 rating](STAT-010-RATING.md) | Statistics/bell/manual functional PASS; Monitoring/Graph partial | Documented only; not rerun |
 | [STAT-011 chat](STAT-011-CHAT.md) | Manual UI + functional PASS | Documented only; not rerun |
 | [STAT-020 graph timeline](STAT-020-GRAPH-TIMELINE.md) | Defect fixed; runtime + Statistics UI PASS; Affinity Graph comparison pending | Documented only; not rerun |
-| [STAT-012 auto-inviter](STAT-012-AUTO-INVITER.md) | Manual UI + functional PASS; cleanup verified | Executed with the real scheduler on 2026-08-04 |
+| [STAT-012 auto-inviter](STAT-012-AUTO-INVITER.md) | Manual UI + functional PASS; initial counter-cleanup defect repaired | Executed with the real scheduler on 2026-08-04 |
 
 Every future execution must create a new dated evidence entry. It must not erase
 or silently replace the historical result recorded here.
