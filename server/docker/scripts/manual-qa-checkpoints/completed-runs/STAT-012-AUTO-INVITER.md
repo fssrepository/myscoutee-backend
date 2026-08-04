@@ -1,6 +1,6 @@
-# STAT-012 — active manual run, 2026-08-04
+# STAT-012 — completed auto-inviter manual run, 2026-08-04
 
-Status: `MANUAL UI + FUNCTIONAL PASS / CLEANUP PENDING`.
+Status: `MANUAL UI + FUNCTIONAL PASS / CLEANUP VERIFIED`.
 
 ## Why and what
 
@@ -110,9 +110,18 @@ job reports `lastRunCount: 1`, `pendingCount: 0`, and completed at
   `418`; Trust & moderation remains `14`. Statistics manual causal checkpoint:
   PASS.
 
-All required pre/post UI and independent machine oracles now agree. The
-scenario is functionally complete; the guarded reset remains mandatory before
-the run is closed.
+All required pre/post UI and independent machine oracles now agree.
+
+## Cleanup
+
+The guarded `reset stat-012` completed and the subsequent read-only status
+reported `phase: not-staged`, `prepared: false`. It restored the controlled
+event data, isolated affinity edges, Statistics inventory fields, quarantined
+rows, primary rule configuration, and secondary pending counters. Legitimate
+scheduler telemetry/history was retained. The restored original auto-inviter
+rule uses a two-hour interval, has its original pending count `38`, and was
+already eligible at cleanup time; any later normal dev-scheduler work is
+post-test activity and must not be attributed to STAT-012.
 
 ## Separate UX observation
 
