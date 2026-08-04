@@ -51,6 +51,26 @@ Related standing instructions from the same QA session:
 - Open all observation windows first in three isolated Gmail/browser sessions,
   then use a short persisted schedule delay; the sessions must not share active
   users or cookies.
+- Split long product lifecycles into independently passable test cases. A later
+  case may consume a manually created event from the same campaign, but it must
+  also have an independent staging path.
+- Group cases by producer domain and explicitly map every downstream consumer.
+  Event Editor save/publish, invitation acceptance, tournament grouping, asset
+  linkage and operator authentication mode are causal workflows, not static
+  form smoke tests.
+- Define checkpoint chains, not cross-products. Every checkpoint has one
+  before state, one action, one immediate result, one named worker expectation,
+  one delayed consumer and explicit `X` surfaces. `MUST NOT RUN` is evidence,
+  not a missing scheduler setup.
+- Verify user-facing projections in addition to database state. Examples
+  include the invited user appearing once as pending in Event Members, the
+  matching recipient invitation, accepted-only chat access after terminal
+  acceptance, tournament group membership, and the correct asset-to-user or
+  event/sub-event assignment.
+- Treat feedback, Impressions, ticketing, lifecycle buckets and event
+  deletion/restore as Event-domain boundary checkpoints. Verify whether the
+  mutation must start a worker and explicitly prove no worker for read-only or
+  direct request-path checkpoints.
 
 ## Reusable prompt for another Codex or QA operator
 

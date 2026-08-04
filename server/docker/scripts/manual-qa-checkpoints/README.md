@@ -17,9 +17,105 @@ scheduler process and never calls a hidden/manual job endpoint.
 | `stat-011` | Prints one unique message token for an existing chat | Real chat persistence plus Statistics/Monitoring workers |
 | `stat-020` | Holds one exact event recompute task and captures graph history | Short persisted affinity schedule/normal worker plus Statistics Refresh |
 | `stat-012` | Stages one deterministic event/invitee while holding the rule | Short persisted real auto-inviter schedule |
+| `event-domain` | Stages one selected Editor, invitation/chat, lifecycle, feedback/Impressions, ticketing, or tournament checkpoint with exact identity-level oracles | No scheduler unless the selected checkpoint explicitly continues through its named real-scheduler helper |
+| `asset-domain` | Stages controlled asset invitations or one event/sub-event resource assignment with independent asset/event role oracles | No scheduler; direct resource/outbox consumers are conditional |
+| `operator-domain` | Snapshots the exact deployment configuration and prints a credentials-safe Firebase capability oracle | No scheduler; QA supplies disposable provider configuration through the Operator UI |
 
 Only one manual scenario may be staged at a time. The historical 2026-08-04
 results were **not** rerun while these helpers were added.
+
+## Event-domain checkpoint runner
+
+The event-domain runner implements executable setup and machine oracles for the
+checkpoint graph in
+[`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/plans/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+It does not merely print that document. `stage` creates the controlled event,
+membership, feedback or ticket prerequisite and stores a complete reset
+snapshot; `status` queries the resulting identities from Mongo.
+
+Supported checkpoint IDs:
+
+- `EVENT-EDITOR-001` through `EVENT-EDITOR-005`
+- `EVENT-SLOT-001` through `EVENT-SLOT-004`
+- `EVENT-INV-001` through `EVENT-INV-005`
+- `CHAT-AUTH-001`
+- `EVENT-LIFE-001` through `EVENT-LIFE-005`
+- `EVENT-FEEDBACK-001` through `EVENT-FEEDBACK-005`
+- `EVENT-IMPRESSION-001`
+- `EVENT-TICKET-001` through `EVENT-TICKET-004`
+- `TOURNAMENT-001` through `TOURNAMENT-003`
+
+Use one checkpoint at a time:
+
+```bash
+bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
+bash manual-qa-checkpoints.sh stage event-domain EVENT-FEEDBACK-002
+bash manual-qa-checkpoints.sh next event-domain EVENT-FEEDBACK-002
+# perform exactly the printed human UI action
+bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
+bash manual-qa-checkpoints.sh reset event-domain EVENT-FEEDBACK-002
+```
+
+`next` always prints why the action exists, what to do, the exact visible
+result and whether a named worker must run. For read-only, feedback-state and
+direct ticket request checkpoints it prints `MUST NOT RUN`; no artificial
+scheduler is added.
+
+The default controlled identities are Casey Bridge as host and Nova Social as
+participant. Override both together when the available isolated browser/Gmail
+sessions require other seeded users:
+
+```bash
+MANUAL_QA_CREATOR_USER_ID=<host-user-id> \
+MANUAL_QA_INVITEE_USER_ID=<participant-user-id> \
+bash manual-qa-checkpoints.sh stage event-domain EVENT-TICKET-002
+```
+
+`EVENT-EDITOR-003` continues through the existing `stat-012` real auto-inviter
+helper. `TOURNAMENT-003` continues through the named real tournament-review
+scheduler workflow. The immediate runner does not impersonate either worker.
+
+## Asset-domain checkpoint runner
+
+The asset runner supports `ASSET-MEMBER-001`, `ASSET-MEMBER-002` and
+`ASSET-ASSIGN-001`. It creates controlled assets and, where required, an event
+with one Transport sub-event. Its oracle reports asset members and event
+members separately so an accidental Asset Manager to Event Admin promotion is
+visible.
+
+```bash
+bash manual-qa-checkpoints.sh status asset-domain ASSET-MEMBER-001
+bash manual-qa-checkpoints.sh stage asset-domain ASSET-MEMBER-001
+bash manual-qa-checkpoints.sh next asset-domain ASSET-MEMBER-001
+# perform exactly the printed UI action
+bash manual-qa-checkpoints.sh status asset-domain ASSET-MEMBER-001
+bash manual-qa-checkpoints.sh reset asset-domain ASSET-MEMBER-001
+```
+
+`ASSET-ASSIGN-001` starts with no assignment record. The human UI action must
+create the resource linkage; the helper never writes the expected result in
+advance.
+
+## Operator-domain checkpoint runner
+
+`OPERATOR-FIREBASE-001` snapshots the exact deployment configuration before
+the QA changes it through the Operator UI. It prints only presence booleans,
+revision numbers and activation state. Raw Firebase client values and service
+credentials are never emitted.
+
+```bash
+bash manual-qa-checkpoints.sh status operator-domain OPERATOR-FIREBASE-001
+bash manual-qa-checkpoints.sh stage operator-domain OPERATOR-FIREBASE-001
+bash manual-qa-checkpoints.sh next operator-domain OPERATOR-FIREBASE-001
+# save, test and activate disposable Firebase configuration through the UI
+bash manual-qa-checkpoints.sh status operator-domain OPERATOR-FIREBASE-001
+bash manual-qa-checkpoints.sh reset operator-domain OPERATOR-FIREBASE-001
+```
+
+Run `reset` immediately after collecting fresh-session authentication evidence.
+It restores the complete prior configuration, including encrypted envelopes,
+without printing them. Verify the restored login mode in another fresh browser
+session.
 
 ### Previously completed Statistics scenarios
 

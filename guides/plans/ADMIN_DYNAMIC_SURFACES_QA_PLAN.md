@@ -54,6 +54,30 @@ The workbook can gain area-specific sheets later, but its first/master sheet
 must remain an index of every manual pack and its current status so the next
 session can resume without reconstructing prior conversations.
 
+## Domain lifecycle and downstream chains
+
+The wider ledger is grouped by producer domain as well as by observed admin
+surface. An Event Editor save is therefore not classified as a static form
+test: it produces canonical event state, telemetry, recompute work and, when
+configured, input for invitation, tournament, reminder and notification
+consumers. Likewise, an invitation is not complete when a bell appears; Event
+Members, recipient Activities, acceptance state, chat authorization and every
+linked asset/group projection have separate checkpoints.
+
+The detailed checkpoint graph and independently passable cases are maintained
+in [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+It covers Event Editor producers, lifecycle bucket mutations, manual and
+scheduled invitation origins, pre/post-acceptance chat access, feedback into
+Impressions, ticket issue/check-in, tournament group membership, asset
+membership versus event-resource assignment, and the operator
+Firebase-to-login-mode transition.
+
+A continuous campaign may carry a manually created event forward and record a
+shared lineage ID. This reduces duplicate human setup while preserving causal
+evidence. It does not make later cases dependent on the earlier run: every
+consumer case must still have a manual-only fixture capable of staging its
+documented prerequisite for another QA operator.
+
 ## Manual scheduler checkpoints
 
 Scheduler-focused manual tests must separate direct setup from scheduler-created
@@ -516,6 +540,9 @@ as proof of its downstream scheduled or projection behavior.
 
 `UI-POLL-JANK-001` is an `OPEN`, `P1 65` (`I2 L3 A5 N4 O2`) manual retest and
 must remain in the master spreadsheet until **both** checkpoints pass:
+
+Detailed code-path evidence and the reproducible trace procedure are in
+[`UI_POLL_JANK_DIAGNOSIS.md`](UI_POLL_JANK_DIAGNOSIS.md).
 
 1. **Admin Job checkpoint — observed, code path corroborated, trace pending.**
    Pointer movement visibly stutters with Job Detail open. The Admin process
