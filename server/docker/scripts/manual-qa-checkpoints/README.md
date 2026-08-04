@@ -14,6 +14,7 @@ scheduler process and never calls a hidden/manual job endpoint.
 | --- | --- | --- |
 | `base-stat` | Captures the complete visible Statistics oracle | Statistics Refresh with no causal action |
 | `stat-010` | Resets one isolated rating pair and its logical bell/outbox | Real frontend rating batch plus Statistics/Monitoring workers |
+| `graph-rating` | Isolates both directions of one rating pair and reports direct versus materialized graph evidence | Two real frontend rating batches plus affinity recompute |
 | `stat-011` | Prints one unique message token for an existing chat | Real chat persistence plus Statistics/Monitoring workers |
 | `stat-020` | Holds one exact event recompute task and captures graph history | Short persisted affinity schedule/normal worker plus Statistics Refresh |
 | `stat-012` | Stages one deterministic event/invitee while holding the rule | Short persisted real auto-inviter schedule |
@@ -138,6 +139,29 @@ bash manual-qa-checkpoints.sh stage stat-010
 bash manual-qa-checkpoints.sh status stat-010
 bash manual-qa-checkpoints.sh reset stat-010
 ```
+
+`graph-rating` implements `GRAPH-RATING-001`. It separates the first one-way
+rating from the reciprocal rating and never assumes that reciprocity is the
+pair's only graph evidence. In the seeded Casey/Nova pair, `met` evidence can
+already create a link before the second rating. The decisive reciprocal oracle
+is a positive rating in both directions, at least one `mutuallyRated` row, a
+direct edge with `mutualSingleCount > 0`, and the same pair in the reopened
+Admin Affinity Graph. Status also reports whether the UI is reading live edges
+or an older materialized layout.
+
+```bash
+bash manual-qa-checkpoints.sh stage graph-rating
+# Casey selects 4 for Nova and presses Save once; wait for the real frontend batch
+bash manual-qa-checkpoints.sh status graph-rating
+# Nova opens the received rating, selects a non-zero value for Casey, and saves once
+bash manual-qa-checkpoints.sh status graph-rating
+# reopen Admin Affinity Graph and compare the pair with the printed directEdge oracle
+bash manual-qa-checkpoints.sh reset graph-rating
+```
+
+The helper only stages and restores the controlled pair. It does not rebuild a
+graph layout or invoke a recompute hook. If status reports an old materialized
+layout, retain that as a separate projection checkpoint.
 
 `stat-011` prints the exact unique text a QA must send once in **Host Circle
 Ops**. Stage itself does not insert a message:

@@ -468,6 +468,7 @@ Graph comparison remains.
 | `GRAPH-004` | Change min/max link weight. | Only edges inside the range remain; overview keeps isolated members; visible/total labels remain meaningful. |
 | `GRAPH-005` | Pan, rotate, wheel/pinch zoom, arrow-pan and reset. | Controls work, progress follows zoom/loading, panel does not clip, reset returns to overview. |
 | `GRAPH-006` | Create/change one controlled affinity edge, run recompute, reopen. | Expected edge weight/neighborhood/component changes; unrelated fixture edge remains stable. Statistics graph summary is directionally consistent after its refresh window. |
+| `GRAPH-RATING-001` | In two isolated sessions, save one single-user rating in each direction, capturing the one-way checkpoint before the reciprocal Save. | Both directional rows persist; the second Save carries reciprocal score and at least one row becomes `mutuallyRated`; the direct edge has `mutualSingleCount > 0`; the same pair and weight are visible at depth 1 after reopening the Admin Graph. Existing Met evidence may mean the edge changes rather than first appears. An older materialized layout is reported as a separate projection checkpoint. |
 | `GRAPH-007` | Use a large/disconnected graph fixture. | Forest paging, semantic tiles and neighborhoods load within their budgets; disconnected users remain visible; no unbounded request loop. |
 
 ## Parameters manual pack

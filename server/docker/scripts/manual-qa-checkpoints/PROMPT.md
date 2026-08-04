@@ -125,6 +125,14 @@ persisted real scheduler window when that flow actually has a scheduler,
 temporary data/configuration. Never invent a scheduler for immediate chat or
 frontend-batched rating paths; preserve their real periodic mechanism.
 
+For `GRAPH-RATING-001`, run `graph-rating` in two isolated user sessions. Save
+the first direction, capture its machine oracle, then save the reciprocal
+direction and capture the changed mutual evidence. Do not assert that the
+second rating must create a brand-new edge: independent Met evidence may have
+already created it. Compare `mutualSingleCount`, edge weight, pair identity and
+the Admin Affinity Graph. Report an old materialized layout separately from a
+rating persistence failure.
+
 If a functional gap appears, retain the failed evidence, fix it with a focused
 regression test where appropriate, verify the existing hot deploy compiled it,
 and repeat only the affected manual checkpoint. Be explicit about which data
