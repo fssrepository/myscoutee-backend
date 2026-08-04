@@ -1,23 +1,25 @@
 Premium cinematic 2.5D animated short film, expressive hand-drawn character
 linework integrated into dimensional miniature and paper city sets, tactile wool,
 painted wood, wet pavement, fogged glass and graphite texture, realistic motivated
-cinematic lighting, restrained painterly finish, human imperfections, subtle
-facial acting, coherent spatial geometry. 16:9 landscape, 24 fps film language,
-center-safe action for a later 9:16 crop, natural 180-degree motion, 12-frame clean
+cinematic lighting, restrained painterly finish, human imperfections, subtle adult
+facial acting, coherent spatial geometry. 9:16 portrait mobile composition,
+720x1280 target, 24 fps film language, faces and essential action inside the
+central mobile-safe area, natural 180-degree motion, 12-frame clean
 handles. Use the attached locked references exactly: [FOUNDER_REF] is the same
 Founder with identical face, apparent age, navy mid-length field coat, charcoal
-knit, muted rust scarf, dark trousers, brown shoes, compact dark backpack and
-[NOTEBOOK_PROP] in every shot; [MAYA_REF], [DANCE_STUDENT_REF],
+knit, muted rust scarf when outdoors, dark trousers, brown shoes, compact dark
+backpack and [NOTEBOOK_PROP]; [MAYA_REF], [DANCE_STUDENT_REF],
 [DANCE_PARTNER_REF], [OPERATOR_REF], [BUDAPEST_WORLD], [LONDON_WORLD],
-[DANCE_STUDIO] and [EVENT_VENUE] also retain their approved identity and geometry.
-The Founder is observant, persistent and warm, never defeated or resentful. Every
-supporting character has autonomy and dignity. One clear subject action and one
-camera move only. No generated words, captions, interface labels, logos or final
-brand mark; deliver a clean visual plate for post-production graphics.
+[WORKSITE_WORLD], [SHARED_ROOM], [DANCE_STUDIO] and [EVENT_VENUE] keep their
+approved identity and geometry. The Founder is observant, persistent and warm,
+never defeated or resentful. Supporting adults have autonomy and dignity. One
+clear subject action and one camera move only. No generated words, captions,
+interface labels, logos or final brand mark; deliver clean plates for post.
 
 Avoid photoreal uncanny skin, plastic glossy 3D, imitation of a named studio or
 film, glamour retouching, changing identity or costume, extra or duplicate people,
 face morphing, bad hands, fused limbs, floating props, sexualized framing,
 melodramatic sadness, hostility between genders, public numerical ratings,
-app/transport/venue logos, readable fake text, frantic camera, multiple camera
-moves, extreme bokeh, flicker, exposure pumping and focus hunting.
+employer identity, police raid imagery, flags as cultural shorthand,
+poverty spectacle, app/transport/venue logos, readable fake text, frantic camera,
+multiple camera moves, extreme bokeh, flicker, exposure pumping and focus hunting.

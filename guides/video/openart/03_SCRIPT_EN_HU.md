@@ -97,6 +97,7 @@ words per minute; the voice does not need to occupy every second.
 
 | Time | English | Hungarian |
 | --- | --- | --- |
+| 00:00–00:01.2 | original `heart.png` + separate `MyScoutee` | eredeti `heart.png` + külön `MyScoutee` |
 | 00:50–00:58 | I WAS BUYING BACK MY TIME. | AZ IDŐMET VÁSÁROLTAM VISSZA. |
 | 01:06–01:13 | I LEFT TO MAKE A LIVING. / I CAME HOME TO FIND A PARTNER. | KIMENTEM PÉNZT KERESNI. / HAZAJÖTTEM TÁRSAT KERESNI. |
 | 01:53–02:01 | NOT ANOTHER MATCH. / A PATH TO A MEETING. | NEM MÉG EGY MATCH. / ÚT EGY TALÁLKOZÁSHOZ. |
@@ -109,7 +110,7 @@ text in the final editor.
 ## 4. Subtitle rules
 
 - Make SRT files after the final edit, not from planning timings.
-- Maximum two lines, approximately 42 characters per line in 16:9.
+- Maximum two lines, approximately 30–34 characters per line in 9:16.
 - Keep most subtitles at least one second and roughly 12–17 characters/second.
 - Break at natural phrases; identify off-screen dialogue and meaningful sounds.
 - Preserve a textless clean master for future languages.

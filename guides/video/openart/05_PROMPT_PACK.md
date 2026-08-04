@@ -31,6 +31,8 @@ Replace bracketed tokens only once in your working copy:
 | `[OPERATOR_REF]` | saved local-operator character |
 | `[BUDAPEST_WORLD]` | approved Budapest style/location reference |
 | `[LONDON_WORLD]` | approved lived-London style/location reference |
+| `[WORKSITE_WORLD]` | anonymous employer-free assignment/work-site reference |
+| `[SHARED_ROOM]` | approved maintained London shared-room reference |
 | `[DANCE_STUDIO]` | approved empty studio reference |
 | `[EVENT_VENUE]` | approved venue reference |
 | `[NOTEBOOK_PROP]` | approved cognac notebook reference |
@@ -109,12 +111,60 @@ clean plates from wide, medium and detail angles. No readable text or people.
 Create a lived-London location reference sheet in the same premium 2.5D animated
 film style: wet Zone 2 or 3 Overground-like platform without TfL branding,
 escalator, corner-shop glow, market queue, laundrette reflection, rainy side
-street, late-night train carriage, small rented flat and a warm independent
+street, late-night train carriage, clean compact shared bedroom with respectful
+roommate boundaries, two storage/sleeping zones, suitcase under bed, packed-meal
+shelf and one private notebook desk corner, plus a warm independent
 community/culture venue. Slate blue, rain green, sodium amber, tactile stone and
 fogged glass. Diverse everyday city, not Big Ben, red-bus or phone-box tourism
-shorthand. Empty clean plates, wide/medium/detail views, no readable text or
-logos.
+shorthand. Modest and maintained, never destitute. Empty clean plates,
+wide/medium/detail views, no readable text or logos.
 ```
+
+### Anonymous assignment work-site sheet
+
+```text
+Create [WORKSITE_WORLD], a deliberately unidentifiable overseas work environment
+in the same premium 2.5D animated style: industrial/service corridor, locker,
+translucent movable partition, anonymous loading/exterior fragments suitable for
+Europe, Asia and the Americas without claiming a country. Practical believable
+work equipment, fluorescent light, one quiet family-photo space. No company,
+uniform logo, flag, readable safety notice, police, raid, villain or unsafe
+instruction. Empty wide, medium and partition close-up plates with identical
+geometry.
+```
+
+### Shared London room sheet
+
+```text
+Create [SHARED_ROOM], a compact clean London shared bedroom in the same premium
+2.5D animated style: two clearly bounded sleeping or storage areas, suitcase
+under one bed, packed-meal containers on a shelf, one narrow private desk corner
+for a cognac notebook, overcast window, two warm bedside practicals, faded cream
+walls. Financially pragmatic and cared for, with privacy boundaries; not dirty,
+crowded beyond safety, homeless, luxurious or humiliating. Empty consistent
+wide, doorway, desk and shelf plates. No people, brands or readable text.
+```
+
+### Illustrated travel-memory sheet
+
+Generate one image at a time; never ask a model to merge these into a fake
+geographic panorama.
+
+```text
+Create an illustrated travel memory plate of [CONFIRMED_PLACE] in the same
+premium 2.5D painterly paper-world style as the film. Preserve the place's
+recognizable architecture, terrain, weather and ordinary human scale without
+tourism-poster saturation. This is a reconstructed memory, not archive footage.
+No flags, national costume shorthand, labels, logos, invented event or Founder
+unless explicitly attached. Compose one bold silhouette or motion shape that can
+match-cut into [NEXT_CONFIRMED_PLACE]. 9:16 portrait, mobile-safe, no text.
+```
+
+Approved production list: High Tatras, Schönbrunn, Neuschwanstein, Angkor Wat,
+one separately chosen city/view from India's Golden Triangle, Norwegian
+coast/mountain weather, one actual Italian/Portuguese/Spanish memory, and one
+separately chosen Chesapeake/Ocean City/Niagara memory. The three-second cut can
+use six to eight plates; the wider list stays available for variants.
 
 ### Event venue sheet
 
@@ -143,7 +193,9 @@ extra fingers, fused hands, impossible joint motion, floating objects, lip
 movement unless dialogue is explicitly requested, constant smiling,
 melodramatic crying, anger toward women or men, sexualized framing, public human
 ratings, app logos, transport logos, brand names, readable AI-generated text,
-watermarked fake UI, oversaturated neon, extreme bokeh, frantic camera, rolling
+watermarked fake UI, identifiable employer, police raid, prison imagery,
+invented travel country, flags or costumes as cultural shorthand, poverty
+spectacle, oversaturated neon, extreme bokeh, frantic camera, rolling
 shutter, low-shutter smear, flicker, exposure pumping and abrupt focus hunting.
 ```
 

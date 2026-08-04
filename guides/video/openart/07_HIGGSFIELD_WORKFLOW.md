@@ -20,7 +20,7 @@ acting, face continuity, camera intention or ensemble blocking.
 ## 1. Create project and Elements
 
 1. Open **Cinema Studio 3.5** and create a new project named
-   `TCBU_Master_16x9_24fps`.
+   `TCBU_Master_9x16_720p_24fps`.
 2. Open the **Elements** area.
 3. Create the following reusable assets using the approved sheets:
 
@@ -33,11 +33,14 @@ acting, face continuity, camera intention or ensemble blocking.
 | Character | `LocalOperator` | operator sheet |
 | Location | `BudapestWorld` | empty Budapest sheet |
 | Location | `LondonWorld` | empty London sheet |
+| Location | `WorksiteWorld` | anonymous work site/partition sheet |
+| Location | `SharedRoom` | maintained London shared-room sheet |
 | Location | `DanceStudio` | empty studio plate |
 | Location | `EventVenue` | identical empty venue plates |
 | Prop | `Notebook` | cognac notebook sheet |
+| Prop/reference | `Travel_*` | eight separate illustrated memory plates; attach only to S08 |
 
-4. Add café, bar and restaurant Locations only if S07–S09 will be finalized in
+4. Add café, bar and restaurant Locations only if S15 will be finalized in
    Higgsfield.
 5. Confirm `@Founder` etc. autocomplete in a test prompt.
 
@@ -62,7 +65,7 @@ the film.
 | Cinema Studio location | Paste/attach |
 | --- | --- |
 | project chat / **Mr. Higgs** prompt | entire [prompts/higgsfield-mr-higgs-master.txt](prompts/higgsfield-mr-higgs-master.txt) |
-| same prompt via `@` references | attach/tag all ten Elements listed above |
+| same prompt via `@` references | attach/tag the core Elements above; add only the shot-relevant travel plates later |
 | follow-up chat | `Use the locked 23-row shot manifest and return the setup table only. Do not generate and do not change narration.` |
 
 Compare its returned plan with [04_STORYBOARD.md](04_STORYBOARD.md). Mr. Higgs can
@@ -72,16 +75,18 @@ populate controls, but the locked storyboard wins every disagreement.
 
 | Model/tool | Recommended use | Relevant current capability | Caution |
 | --- | --- | --- | --- |
-| **Kling 3.0** | S04–S06, S10, S17–S20, S22 | 3–15 s, 720p/1080p, audio optional, structured 2–6-scene/multi-shot generation, subject consistency | keep a film shot to one scene unless a hidden transition truly needs two |
-| **Kling O1** | S01/S10 first-last-frame transitions, reference-heavy repair | start/end frame and multiple image references | current duration/mode differs by panel; inspect before spending |
-| **Veo 3.1** | S07–S12 atmosphere, rain, rail, London | cinematic environment and native audio path | identity may drift; use Elements/reference and external final dialogue |
-| **Seedance 2.0/current Seedance** | S08 or other sound-led tests | native audio/video option and motion | do not keep generated voice if it conflicts with locked actor voice |
+| **Kling 3.0** | S02–S07, S12–S15, S19–S22 | identity, ensemble and structured movement | keep one scene per clip unless a transition needs two |
+| **Kling O1** | S01/S04–S06/S09 boundary transitions and reference repair | start/end frame and multiple image references | inspect current duration/mode before spending |
+| **Veo 3.1** | S05–S09, S15, S21 atmosphere | cinematic environment and native-audio path | identity may drift; external final dialogue |
+| **Seedance current** | S03/S11 or sound-led tests | multi-scene motion and audio option | do not keep generated voice; S08 is better made from stills in post |
 | **Soul/Soul ID** | character stills/identity | persistent digital identity | consent and adequate varied source images required |
-| **LipSync Studio** | S06/S08 and localized dialogue | post-generation speech sync | test English and Hungarian separately; avoid long talking heads |
+| **LipSync Studio** | S14/S15 and localized dialogue | post-generation speech sync | test English and Hungarian separately; avoid long talking heads |
 
-Draft at 720p. When composition, performance and identity are approved, run the
-same prompt/settings at 1080p/final. Do not “improve” the prompt at the same time
-as changing quality, or you will not know which change caused drift.
+Draft at the lowest useful tier shown by the current model. When composition,
+performance and identity are approved, run the same prompt/settings at **720p
+9:16 final**. Do not automatically buy a 1080p pass; upgrade only a failed shot
+after reviewing the 720×1280 export on the target phone. Do not change prompt
+and quality together, or the cause of drift becomes unknowable.
 
 ## 4. Camera preset map
 
@@ -89,28 +94,28 @@ Higgsfield exposes many named Camera Controls. Use restraint.
 
 | Shot | Preset/control | Lens | Intensity/direction |
 | --- | --- | --- | --- |
-| S01 | Dolly Right or custom lateral | 35 mm | slow, waist height |
-| S02 | Static | 50 mm | no move |
-| S03 | Dolly Right | 28 mm | slow with foreground wipes |
-| S04 | Arc Right | 32 mm | about 20°, slow |
-| S05 | Arc Right | 32 mm | identical path, 60% of S04 speed |
-| S06 | Static | 55 mm | expression priority |
-| S07 | Static | 50 mm | foreground machine depth |
-| S08 | Handheld | 40 mm | very low intensity |
-| S09 | Static + custom slight Dutch | 58 mm | level by final frame |
-| S10 | Dolly/Through Object | 28 mm | use only with locked first/end frames |
-| S11 | Dolly Right | 35 mm | architecture occlusion |
-| S12 | Static then gentle Dolly In | 50–65 mm | preferably split into two clips |
-| S13 | Overhead | 35 mm | 5% push only |
-| S14 | Overhead/Dolly In | 45 mm | slow |
-| S15 | Focus Change | 55 mm | photo to dimensional behavior |
-| S16 | custom Tilt/Incline | 40 mm | gentle overhead-to-oblique |
-| S17 | Arc Right | 35 mm | 20° max |
-| S18 | Static/macro inserts | 50 mm | match action in edit |
-| S19 | Dolly In | 32→45 mm language | split doorway/table if needed |
-| S20 | Dolly In | 40 mm | keys to operator face |
-| S21 | Crane Up | 28 mm | slow, no aerial pullback |
-| S22 | Dolly In | 50 mm | 8% only |
+| S01 | Dolly In | 45 mm | 8%, desk height |
+| S02 | Dolly Right | 35 mm | slow, map to locker |
+| S03 | Dolly Right | 32 mm | foreground wipes; split by region if needed |
+| S04 | Static then Dolly In | 65 mm | 5%, expression priority |
+| S05 | Through Object/Dolly | 40 mm | train to rental window |
+| S06 | Dolly In | 28 mm | doorway to desk |
+| S07 | Static | 40–55 mm | seasonal plates; final push only |
+| S08 | Static | 50 mm | generate final reflection only; memory burst in post |
+| S09 | Arc Left | 35 mm | follow then gentle frontal arc |
+| S10 | Static | 50 mm | no move |
+| S11 | Dolly Right | 28 mm | three doorway wipes |
+| S12 | Arc Right | 32 mm | 18° slow |
+| S13 | Arc Right | 32 mm | identical, 60% speed |
+| S14 | Static | 55 mm | expression priority |
+| S15 | Static / Handheld / Static | 50/40/58 mm | three separate clips |
+| S16 | Overhead + Dolly In | 45 mm | 5% only |
+| S17 | Focus Change | 55 mm | portrait to context |
+| S18 | Tilt/Incline | 40 mm | overhead to oblique |
+| S19 | Arc Right | 35 mm | 20° max |
+| S20 | Static/macro inserts | 50→35 mm | build with match cuts |
+| S21 | Dolly In | 32→45 mm | split doorway/table if needed |
+| S22 | Dolly/Crane | 40–50 mm | handoff, then slow reveal |
 | S23 | Static | n/a | better built in post |
 
 Do not substitute Crash Zoom, FPV Drone, Bullet Time, Snorricam, Dolly Zoom or
@@ -135,14 +140,16 @@ For each S01–S22:
 6. In lens, lighting, mood and color controls enter the values in the shot block.
    If a control conflicts with the text, remove the duplicate from the text only
    after saving a version.
-7. Set 16:9, target duration and draft resolution. For S11's 9 seconds, choose a
-   supported 10/15-second setting and trim, or split at the office lift wipe.
+7. Set 9:16, target duration and the cheapest useful draft resolution. For S07's 12-second editorial
+   result, generate seasonal plates separately. S08's rapid memories and S15's
+   three locations are also assembled in post, not forced into one generation.
 8. Attach a first frame whenever a character or set must match a preceding shot.
    Attach a last frame when the storyboard names an exact transition.
-9. Generate one or two variants. More variants before diagnosis waste credits.
+9. Generate one variant first. Request a second only after writing the exact
+   defect; more variants before diagnosis waste credits.
 10. Put the approved clip on the **Canvas**, preserving the source version.
 
-Example for S06:
+Example for S14:
 
 | Field | Value |
 | --- | --- |
@@ -151,19 +158,19 @@ Example for S06:
 | Camera | Static |
 | Lens | 55 mm |
 | Light | warm bench practical, cool rainy doorway rim |
-| Prompt | continuity prefix + S06 block |
+| Prompt | continuity prefix + S14 block |
 | Audio | off for first visual approval |
 | Duration | 6 s |
-| Output | 16:9, draft 720p |
+| Output | 9:16, cheap draft; approved final 720×1280 |
 
 ## 6. Structured multi-shot Kling use
 
 Kling 3.0 currently allows a clip to contain 2–6 described scenes. Use that only
 for:
 
-- S03's corridor of three events;
-- S10's Budapest-to-London transition;
-- S21's multi-city operator reveal.
+- S03's three anonymous regional work fragments;
+- S11's three event rooms;
+- S22's multi-city operator reveal.
 
 For all other shots, a “scene” in the storyboard should remain one generation.
 Complexity harms face identity and acting. Assign explicit duration inside the
@@ -171,7 +178,8 @@ Kling scene structure and retain the overall shot duration.
 
 ## 7. Dialogue and lip sync
 
-Generate S06 and S08 first without final dialogue. When the visual is approved:
+Generate S14 and the bar fragment of S15 first without final dialogue. When the
+visual is approved:
 
 1. Export the clean clip.
 2. Open **LipSync Studio**.
@@ -193,8 +201,8 @@ film in a dedicated NLE.
 Naming:
 
 ```text
-TCBU_S06_higgsfield_kling3_en_v04_approved.mp4
-TCBU_S06_higgsfield_kling3_hu_lipsync_v02_approved.mp4
+TCBU_S14_higgsfield_kling3_en_v04_approved.mp4
+TCBU_S14_higgsfield_kling3_hu_lipsync_v02_approved.mp4
 ```
 
 Export:

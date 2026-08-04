@@ -16,7 +16,7 @@ This directory specifies a complete 2 minute 48 second MyScoutee hero film:
 - Hungarian title: **A város közöttünk**;
 - master language: English, for an international operator/community audience;
 - localized version: Hungarian voice-over and subtitles from the same picture;
-- format: cinematic 2.5D animation with hand-drawn character treatment inside
+- format: mobile-first 9:16 cinematic 2.5D animation with hand-drawn character treatment inside
   dimensional city sets;
 - story: unstable work at home leads to months-long assignments across Europe,
   Asia and the Americas, away from family. After an anonymous inspection-day
@@ -38,23 +38,24 @@ as an available, lower-pressure path, not as a guaranteed romantic result.
 
 ## Recommended production route
 
-For the highest control, use a hybrid pipeline:
+For the best cost/control balance, start with a single generation workspace:
 
 1. Lock the story, voice and timing with [03_SCRIPT_EN_HU.md](03_SCRIPT_EN_HU.md).
 2. Build the founder, supporting cast, locations, props and style frames from
    [02_CREATIVE_BIBLE.md](02_CREATIVE_BIBLE.md).
-3. Make a full rough version in OpenArt Director from
+3. Make the full still animatic and the required moving shots in OpenArt from
    [prompts/openart-director-master.txt](prompts/openart-director-master.txt).
-4. Replace its most important shots in Higgsfield Cinema Studio with reusable
-   Elements and controlled camera/lens/light settings.
-5. Use Google Flow/Veo for the London travel plates, seamless first/last-frame
-   transitions, and any shot that benefits from native atmosphere or scene
-   extension.
-6. Assemble, voice, mix, title and subtitle outside the generation tools. The
+4. Assemble at 720×1280, voice, mix, brand, title and subtitle outside the generation tools. The
    master should not depend on generated on-screen text.
+5. Buy/use Higgsfield only if an identity- or ensemble-critical OpenArt shot
+   still fails after three controlled attempts.
+6. Skip Google Flow by default. Use it only as a targeted transition/environment
+   rescue when access, credits, watermark and release terms have been checked.
 
 OpenArt-only, Higgsfield-only, and Flow-only variants are also documented. The
-same assets, shot IDs and filenames work in every route.
+same approved assets and shot IDs work in every route. `SHOT_MANIFEST.csv`
+contains the cost-recommended OpenArt/Resolve filenames; optional rescue files
+may keep their platform name until they replace the matching Sxx shot.
 
 ## Files
 
@@ -71,8 +72,9 @@ same assets, shot IDs and filenames work in every route.
 | [08_GOOGLE_FLOW_WORKFLOW.md](08_GOOGLE_FLOW_WORKFLOW.md) | Exact Flow asset, Ingredients, Frames, Veo and Scenebuilder workflow |
 | [09_AUDIO_EDIT_DELIVERY.md](09_AUDIO_EDIT_DELIVERY.md) | Voice, music, SFX, edit, grade, subtitles, aspect ratios and exports |
 | [10_PRODUCTION_CHECKLIST.md](10_PRODUCTION_CHECKLIST.md) | Asset intake, continuity, QA, claims, release and variant checklist |
+| [11_COST_AND_MODEL_DECISION.md](11_COST_AND_MODEL_DECISION.md) | Current cost scenarios, exact model choices, purchase gates and the Flow/Higgsfield decision |
 | [SOURCES.md](SOURCES.md) | Project evidence and external research/platform sources |
-| [SHOT_MANIFEST.csv](SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings, preferred platform/model and filenames |
+| [SHOT_MANIFEST.csv](SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings, cost-default platform/model and approved filenames |
 
 The `prompts/` directory contains plain-text copy blocks. Do not edit a master
 prompt for an individual shot; add the shot-specific block after the shared
@@ -126,8 +128,12 @@ safe or successful meeting.
   is not a compulsory group date and does not manufacture chemistry.
 - Product UI shown in generated plates must be abstract. Capture the real UI or
   rebuild clean motion graphics in post; do not publish AI-generated gibberish.
-- The final wordmark uses the heart logo in place of the leading **M** in
-  **MyScoutee**, not before the full product name.
+- Use the unmodified original `frontend/src/assets/logo/heart.png`. It is the
+  repository's high-resolution logo asset. Do not recolor, redraw, crop, glow or
+  AI-regenerate it. Keep **MyScoutee** as separate editable text in post rather
+  than creating a new combined bitmap.
+- Show the original logo briefly in S01 and fully in S23. Do not keep a permanent
+  corner watermark through the emotional middle of the film.
 
 ## Master settings
 
@@ -135,8 +141,8 @@ safe or successful meeting.
 | --- | --- |
 | Runtime | 02:48.000 |
 | Frame rate | 24 fps constant |
-| Raster | 3840×2160 UHD master; 1920×1080 working proxy |
-| Aspect | 16:9 with 9:16 and 1:1 center-safe action |
+| Raster | **720×1280 primary mobile master**; optional 1080×1920 only after a phone QA failure |
+| Aspect | **9:16 portrait**; important faces/text stay clear of the top/bottom platform UI zones |
 | Shutter language | natural 180-degree motion; no smeary low-shutter look |
 | Dialogue | 48 kHz / 24-bit WAV, mono voice stems |
 | Mix | 48 kHz / 24-bit stereo master plus separate M&E and dialogue stems |
@@ -144,11 +150,17 @@ safe or successful meeting.
 | Captions | English and Hungarian SRT plus textless clean master |
 | Accessibility | never rely on color alone; captions identify off-screen dialogue and key sound cues |
 
+Cost rule: storyboard stills first, motion draft second, approved 720p final
+third. Never render the whole film on all three platforms and never upscale just
+because a larger number is available. On the intended phone/platform, 720×1280
+is the acceptance target.
+
 ## First action
 
 If this is your first AI video, begin with
-[00_START_HERE_BEGINNER.md](00_START_HERE_BEGINNER.md). Do not generate video
-first. Record a rough English voice track, place the 23
+[00_START_HERE_BEGINNER.md](00_START_HERE_BEGINNER.md), then use
+[11_COST_AND_MODEL_DECISION.md](11_COST_AND_MODEL_DECISION.md) before buying a
+subscription. Do not generate video first. Record a rough English voice track, place the 23
 shot durations from `SHOT_MANIFEST.csv` on a timeline, and use still frames for
 an animatic. If the return at **01:06–01:13**, the product turn at
 **01:53–02:09**, or the operator invitation at **02:32–02:48** does not land in

@@ -246,10 +246,6 @@ became conversations. The method used only fourteen curated research profiles
 and an older platform version, so it supports a mechanism, not the viral claim
 that “90% of men get no matches.”
 
-A 2026 preprint models how different expectations plus finite time can amplify
-gender disparity in first-contact rates. It is useful conceptual support but
-must be labeled theoretical/preprint rather than established causal evidence.
-
 **Film image:** split-screen phone. One side remains still despite repeated
 swipes; the other accumulates so many generic notifications that individual
 names blur. Both hands eventually put the phone down. Neither person is mocked.
@@ -267,10 +263,8 @@ Common mechanisms:
 - a chat has no shared task, deadline or event around which to organize.
 
 Longitudinal work on dating-app burnout observed increasing emotional exhaustion
-and perceived inefficacy over twelve weeks among active single users. A recent
-working paper on an anti-ghosting platform intervention reports that directing
-attention toward existing matches can shift activity away from browsing for new
-ones. Do not turn either result into “apps are harmful for everyone.”
+and perceived inefficacy over twelve weeks among active single users. Do not
+turn that result into “apps are harmful for everyone.”
 
 **Film image:** two promising chat bubbles begin to meet; new profile cards slide
 between them until the conversation becomes a thin, blinking cursor.
@@ -361,7 +355,7 @@ The location is the antagonist; the date is not.
 | opposite side of the city | changing lines, delays, last train anxiety | travel map consumes more screen than the meeting | balance distance; show travel time; coordinate arrival window |
 | high-skill activity | one performs, one struggles | embarrassment replaces curiosity | beginner-friendly shared task with opt-out and no forced touch |
 
-Use three images in six seconds: coffee steam wipe → bass vibration match cut →
+Use three images in seven seconds: coffee steam wipe → bass vibration match cut →
 waiter unfolds a huge white cloth. Give both daters small, humane smiles. The
 audience should recognize the format, not enjoy another person's humiliation.
 
@@ -383,20 +377,22 @@ audience should recognize the format, not enjoy another person's humiliation.
 
 ## 9. Story synthesis
 
-The story needs only five claims:
+The story needs only seven claims:
 
-1. “I left home to make a living” — London represents work, movement and an
-   expanded world, while long hours leave little time for a private life.
-2. “I came home to find someone to live it with” — returning is an active,
+1. “I needed another path” — unstable work and long assignments had material
+   and family costs; the anonymous inspection day became a boundary.
+2. “I was buying back my time” — London shared rooms, long days and saving were
+   a deliberate route toward future choice, home and family planning.
+3. “Beauty is not belonging” — almost forty countries created real wonder but
+   did not automatically create shared life.
+4. “I came home to find someone to live it with” — returning is an active,
    hopeful decision, not retreat.
-3. “I showed up” — the founder tries both digital and physical routes.
-4. “The cities weren't empty; the path was incomplete” — encounters repeatedly
-   lacked reciprocal priority, repeat context and coordination.
-5. “I built a different path” — full focus becomes priority, affinity, small
-   groups and a real
-   event loop.
-6. “The next chapter needs more authors” — local operators and communities can
-   carry a product designed around their real city.
+5. “I showed up, but the path was incomplete” — digital and physical beginnings
+   repeatedly lacked reciprocal priority, repeat context and coordination.
+6. “I built a different path” — full focus becomes priority, reciprocal/context
+   affinity, small groups and a real event loop.
+7. “The next chapter needs local authors” — operators and communities can carry
+   a product designed around their real city.
 
 Everything else belongs in the research, pitch deck or product demonstration,
 not in the emotional hero film.

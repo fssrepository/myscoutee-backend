@@ -96,8 +96,8 @@ from a human-visible UI confirmation.
 | `event-random-groups` variations | 2026-07-29 | `MANUAL FUNCTIONAL PASS` | Balanced, anchored, room-count, leftover, partial, large, disconnected and idempotence fixture oracles passed. | Dedicated Affinity Graph and Statistics graph remain separate tests. |
 | `event-random-groups` visible outcome | 2026-07-31 | `MANUAL FUNCTIONAL PASS`, UI `PARTIAL` | Two source events produced two shared rooms/chats and two real system messages; all 6/6 public users were assigned; all three chat counters rose by one. | Record screenshots of room, chat and counter presentation in one future execution. The later system-message text/icon edit was stylistic, not a functional retest blocker. |
 | `event-auto-inviter` notification | 2026-07-31 | `MANUAL UI PASS` | The user confirmed both expected bell items were visible. | Add Statistics and Monitoring before/after evidence. |
-| Notification read path and rating/feedback | 2026-07-29 | `MANUAL FUNCTIONAL PASS` | Notification read projection, rating submission and feedback submission API/database oracles passed. | Full visual presentation was not recorded as a separate pass. |
-| Statistics causal behavior | — | `NOT RUN` | No manual causal evidence found. | Run the Statistics pack below. |
+| Notification read path and rating/feedback | 2026-08-04 | `MANUAL FUNCTIONAL PASS`; rating bell `MANUAL UI PASS`; read/feedback UI `PARTIAL` | Historical read/rating/feedback API/database oracles passed. In the current controlled rating run, Nova's notification center showed exactly one unread **New rating** item from Casey after the frontend batch. | Click/read the controlled rating item and confirm its counter transition; repeat event-feedback notification presentation visually. |
+| Statistics baseline / causal behavior | 2026-08-04 | baseline and `STAT-010` `MANUAL UI + FUNCTIONAL PASS`; later causal rows `NOT RUN` | `STAT-001` rendered all dynamic sections and stayed stable across a no-action refresh. In `STAT-010`, Casey staged 4 and pressed **Save** once; the delayed frontend batch, exact single outbox/bell, actor exclusion and unread projection passed. Browser evidence then confirmed today's Ratings 0→1 and `rates.synced` 342→343 with unrelated domain totals stable. | Run `STAT-011` onward; qualify `STAT-010` Monitoring/Graph effects in their separate packs. |
 | Monitoring / Metrics causal behavior | 2026-08-04 automated/runtime evidence | `AUTOMATED CONTRACT PASS`; manual `NOT RUN` | Service tests prove eight unique flows and exact config/start/terminal projection. After hot deploy, the real dev scheduler produced four starts and four completions for four zero-record jobs through Redis and the persisted Mongo snapshot. | Run the browser Monitoring pack below, especially live queue transitions and one fixture-backed run per job. |
 | Interactive Affinity Graph | — | `NOT RUN` | Controller/service tests cover full/meta/forest/tile/neighborhood/rebuild contracts. | Run visual interaction, lazy-loading and causal edge-change tests. |
 | Parameters UI | — | `NOT RUN` | Service tests cover versioning and exact-once save/revert telemetry; an HTTP E2E test proves notification threshold save, recompute enqueue, delivery-strategy change, history and revert. | Manually test UI save/reopen/history/revert and one causal scenario per parameter section. |
@@ -114,10 +114,13 @@ Archived evidence sources:
 A read-only `demo_db` audit on 2026-08-04 found all nine rules enabled and no
 rule running. The random-room fixture's source events and generated fixture
 rooms were absent, but a stale `admin-job-fixture:v1:event-random-groups`
-snapshot from the 2026-07-31 `balanced` preparation remained. Treat the prior
-random-room functional result as complete, but treat fixture cleanup as the
-first preflight step of the next session. Use the toolkit's guarded `status`
-and `reset` behavior; do not delete or overwrite the snapshot directly.
+snapshot from the 2026-07-31 `balanced` preparation remained. Before
+`STAT-001`, the snapshot and its exact documents were restored with the
+toolkit's guarded `reset`; no direct database deletion was used. The Statistics
+worker materialized the restored user later, which explains a separate API
+sample's community/tried-user `+1` and is not counted as a no-action refresh
+delta. Treat the prior random-room functional result and its cleanup as
+complete.
 
 ## How the dynamic surfaces update
 
@@ -312,13 +315,40 @@ Mongo projections and background workers cooperate.
 | ID | Action | Expected Statistics result | Cross-check |
 | --- | --- | --- | --- |
 | `STAT-001` | Open, record `generatedAt`, refresh without any action. | All sections render; values remain stable; refresh does not fabricate a new snapshot. | No browser errors; response schema complete. |
-| `STAT-010` | Submit one controlled user rating. | Today's Ratings +1; Matching `rates.synced` rises by the submitted row count; active-user data reflects the actor. | Rating persisted; recompute task created/processed. |
+| `STAT-010` | Stage one controlled non-zero rating, then press **Save** exactly once. Selection alone changes only the editor value; **Save** queues the local outbox. The **Met** card remains and shows the score. | After the frontend batch and Statistics worker run, today's Ratings +1; Matching `rates.synced` rises by the saved row count; active-user data reflects the actor. | Within 35 seconds the frontend's 30-second/max-50 batch persists the rating once; exact target notification created; recompute task created/processed. |
 | `STAT-011` | Send one ordinary chat message. | Today's Messages +1; Communication chat count +1. | Message exists once; system messages are excluded from this oracle. |
 | `STAT-012` | Invite or join one event member. | Today's event activity and the relevant Activities interaction change by the emitted amount. | Member status and Monitoring Members/Event flows agree. |
 | `STAT-013` | Change one asset request. | Today's asset activity and Activities asset-request count change. | Asset request state and Monitoring Assets flow agree. |
 | `STAT-014` | Submit one feedback/report or perform one isolated moderation action. | Today's Moderation and the matching Moderation item change; attention/health direction is explainable. | Bell/moderation record exists exactly once. |
 | `STAT-020` | Complete an affinity recompute after a controlled edge-affecting input. | Graph summary values correspond to the recomputed edge set; graph timeline's latest point changes only where the data changed. | Compare with Affinity Graph totals and a direct edge oracle. |
 | `STAT-021` | Drag/focus both timelines and select graph communities/bridges; open help. | Readouts follow the selected point/item, keyboard focus works, help defines every displayed graph signal. | Reset/reopen selects the latest point without corrupting data. |
+
+Execution note, 2026-08-04: `STAT-001` passed manually. Screenshots at 06:05
+and 06:06 show the same visible KPI and section values before and after one
+no-action refresh; all dynamic panels rendered without an error or stuck
+loading state. The graph-evolution readout briefly showing Aug 1 is the hovered
+point, while the latest daily point remains Aug 4. `Simple`, `Board games`,
+`Fitness`, `Community 1/2` and `Cluster minőség` remain mixed-language labels;
+this is recorded as a cosmetic i18n observation and did not fail the functional
+baseline.
+
+`STAT-010` progress, 2026-08-04: Casey staged score 4 for Nova and pressed
+**Save**. The slider change alone did not submit anything: **Save** enqueued the
+rating in the frontend outbox, then the normal 30-second, maximum-50-item batch
+sync pushed it to the backend. The UI correctly kept Nova's card under **Met**
+and displayed 4; disappearance is not an expected result. After the delayed
+sync, the fixture/database/API oracle passed with one stored rating, one target
+outbox and unread bell, no actor bell and a matching unread projection. The
+normal Statistics worker then materialized Ratings 0→1 and `rates.synced`
+342→343. Nova's 06:31 notification-center screenshot passed the bell
+presentation oracle: exactly one unread **New
+rating** item from Casey, timestamped 06:22. The English notification title and
+message on the Hungarian page remain a cosmetic i18n observation. Only the
+browser Statistics refresh remained for this row. Screenshots at 06:37 and
+06:38 then confirmed today's Ratings 0→1 and Matching / Rating activity
+342→343. Events/assets 1495, Communication 426 and Moderation 14 stayed stable.
+`STAT-010` is therefore closed as a Statistics and rating/bell functional/UI
+PASS; its indirect Monitoring and Graph cells remain in their separate packs.
 
 ## Monitoring / Metrics manual pack
 

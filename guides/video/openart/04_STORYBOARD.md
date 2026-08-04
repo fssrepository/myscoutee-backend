@@ -1,418 +1,386 @@
 # Complete storyboard and shot list
 
-Runtime: 02:48.000. Frame rate: 24 fps. Every shot must be delivered with at
-least 12-frame handles. The durations below are editorial targets, not requests
-to generate one 168-second take.
+Runtime: **02:48.000**. Frame rate: **24 fps**. Deliver every generated shot
+with at least 12-frame handles. The timings below are editorial targets; generate
+separate 5–10 second clips and trim them in the final editor.
 
-## Act I — I showed up
+Master composition is **9:16 portrait at 720×1280**. Stage depth vertically:
+foreground object/detail low, faces in the central band, architecture/light high.
+Do not miniaturize two people side by side; use staggered depth or clean
+two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
-### S01 — The first line · 00:00–00:08 · 8 s
+## Act I — Buying back time, seeking a life
 
-- **Picture:** Dawn in a modest Budapest flat. The founder buttons his navy
-  coat, pockets the cognac notebook and opens the door. Beyond the doorway, a
-  stylized yellow tram passes. Its overhead wire draws a fine line across frame.
-- **Blocking/mimic:** He checks himself once in the dark glass, not vainly; a
-  hopeful half-smile and a small preparatory breath. Shoulders open.
-- **Camera:** 35 mm equivalent, waist-height lateral dolly left-to-right. Begin
-  tight on pencil line inside notebook, pull through the closing cover and
-  continue to the door.
-- **Light:** 4600 K soft window key camera-left, warm corridor practical, tram
-  reflection adds one amber sweep across his eyes.
-- **Sound:** single felt-piano note, radiator tick, distant tram bell, coat cloth.
-- **VO:** “I did what people tell you…”
-- **Transition:** tram body fills frame; its window reflection becomes the phone
-  glass in S02.
-- **Generation:** Flow or Higgsfield; first/last frame lock recommended.
+### S01 — No future in the frame · 00:00–00:08 · 8 s
 
-### S02 — Two kinds of scarcity · 00:08–00:16 · 8 s
+- **Picture/blocking:** In a modest Budapest room, the Founder compares a thin
+  work folder, a calendar and a sketch of a future home. He closes the folder,
+  pockets the cognac notebook and looks toward the tram-lit window. No company
+  name, rejection letter or legal slogan appears.
+- **Face/body:** tired concentration, then a small resolved inhale; spine
+  straightens rather than slumps.
+- **Camera/lens:** 45 mm, desk height, slow 8% dolly from papers to reflected
+  eyes; locked horizon.
+- **Light/color:** 4600 K winter window key, warm 3000 K desk lamp, muted
+  terracotta and teal.
+- **Sound/VO:** radiator tick, pencil click, distant tram; “At home, I couldn't
+  find work I could build a future on.”
+- **Brand in post:** 00:00–00:01.2, unmodified repository `heart.png` in the
+  upper-left mobile-safe area with small separate `MyScoutee` text; opacity fade
+  only, no recolor, redraw, crop, glow or AI animation.
+- **Transition/generation:** tram wire crosses the window and becomes the route
+  line in S02. Flow Frames or Higgsfield Kling O1.
 
-- **Picture:** A single frame divided naturally by a tram-window mullion, not a
-  graphic split screen. Founder on the left moves through abstract profile cards
-  and receives silence. Maya on the right opens four generic notifications;
-  twelve more arrive and overlap before she can read them. No app logos or
-  readable names.
-- **Blocking/mimic:** Founder gives each card real attention, then his thumb slows.
-  Maya starts curious; eyes move faster, jaw firms slightly, then thumb stops.
-  Neither is angry.
-- **Camera:** 50 mm, static relative to the subjects while reflections travel.
-  Phone screens remain below eye line so faces stay primary.
-- **Light:** soft ambient key; cold phone fill limited to 20% of face exposure.
-- **Sound:** two clean notification ticks become a crowded, muffled flutter on
-  Maya's side; near-silence on founder's side.
-- **VO:** “I joined the apps.”
-- **Transition:** one notification card expands into a blank paper name tag.
-- **Generation:** Higgsfield Elements or OpenArt Director; add notification
-  graphics in post.
+### S02 — Months away · 00:08–00:15 · 7 s
 
-### S03 — A corridor of beginnings · 00:16–00:23 · 7 s
+- **Picture/blocking:** The notebook route runs over a paper map from home toward
+  anonymous foreign work sites. Calendar pages turn; the Founder video-calls
+  family from a plain rented room, then the call window becomes a small family
+  photograph inside his locker.
+- **Face/body:** affectionate half-smile on the call; the smile remains but eyes
+  reveal distance when the screen goes dark.
+- **Camera/lens:** 35 mm lateral track through map, station door and locker;
+  one continuous left-to-right motion.
+- **Light/color:** family image amber; travel/work environment cool grey-blue.
+- **Sound/VO:** station wash, zipper, restrained call-room tone; “Assignments
+  sent me abroad for months, away from my family…”
+- **Transition/generation:** locker door becomes three vertical regional panels.
+  OpenArt Director is preferred for the continuous set change.
 
-- **Picture:** The founder walks through a fluid corridor of three real-world
-  events: talk with folding chairs, community dinner, then social mixer with
-  name tags. Each doorway is inviting. He has brief, pleasant exchanges, but the
-  same movement carries everyone out through a different exit.
-- **Blocking/mimic:** open palm greeting; attentive nod; a conversation almost
-  settles, then the room turns over. Keep his expression interested.
-- **Camera:** 28 mm lateral tracking, three foreground wipes, no visible cut.
-- **Light:** Budapest terracotta/cream practicals; each room slightly warmer than
-  the corridor.
-- **Sound:** applause tail → plate clink → marker squeak on name tag.
-- **VO:** “I went to talks, dinners, classes…”
-- **Transition:** marker draws a curved name-tag line that becomes the dance-floor
-  marking.
-- **Generation:** OpenArt Director for multi-scene continuity; replace with
-  Higgsfield multi-shot if faces drift.
+### S03 — Europe, Asia, the Americas · 00:15–00:23 · 8 s
 
-### S04 — Beginner floor · 00:23–00:31 · 8 s
+- **Picture/blocking:** Three fast but readable anonymous assignment fragments:
+  industrial corridor in Europe, hot exterior work in Asia, rain-lit loading
+  space in the Americas. The same gloves, backpack and Founder link the scenes.
+  The locations are regional memories, not specific employer claims.
+- **Face/body:** focused competence; rubs one wrist once at the end of a long
+  shift, checks family photo, returns it carefully.
+- **Camera/lens:** 32 mm lateral track with foreground column wipes; one primary
+  action per fragment.
+- **Light/color:** fluorescent dawn → hard warm day → cold rain night; skin tones
+  remain neutral.
+- **Sound/VO:** machine hum, meal-box click, distant rain; “…across Europe, Asia
+  and the Americas. The days were long.”
+- **Transition/generation:** a moving work partition fills the lens. Kling 3.0
+  structured three-scene clip or three separate clips joined in post.
 
-- **Picture:** Busy beginner partner-dance class in the Budapest studio. Several
-  adult pairs rotate. The founder misses one step, recovers, and both partners
-  smile. The dance is social, not seductive.
-- **Blocking/mimic:** instructor claps the count; founder concentrates, brows
-  gently raised; dance student laughs with him, not at him.
-- **Camera:** 32 mm slow clockwise arc, chest height. Motion ends behind a passing
-  dancer for a hidden cut.
-- **Light:** broad 4200 K window/skylight; warm timber bounce; faces even.
-- **Sound/dialogue:** shoes, quiet count, “Partners, change.”
-- **VO:** “At dance class, beginners filled the floor.”
-- **Transition:** passing dancer occludes frame; same camera path reveals S05.
-- **Generation:** Higgsfield Kling 3.0, multi-character reference, gentle orbit.
+### S04 — Stay out of sight · 00:23–00:30 · 7 s
 
-### S05 — The same room, later · 00:31–00:38 · 7 s
+- **Picture/blocking:** At an unidentifiable work site, a supervisor's hand makes
+  a quiet “behind the partition” gesture as indistinct visitors enter far in the
+  background. The Founder pauses behind frosted material, sees his reflection,
+  then closes the locker on the family photograph and takes his notebook.
+- **Face/body:** first disbelief in the eyes, jaw settles, then calm decision.
+  No fear performance, confrontation or villain reaction.
+- **Camera/lens:** 65 mm medium close-up through translucent partition; static
+  until a 5% push on the decision.
+- **Light/color:** clinical 5000 K overhead narrows; notebook catches one amber
+  edge.
+- **Sound/VO:** footsteps beyond partition, ventilation, no siren; inspection VO
+  from the locked script. Record the safer alternate too.
+- **Transition/generation:** notebook opens on a hand-drawn route to London.
+  Higgsfield for expression; keep a neutral alternate visual.
 
-- **Picture:** Advanced class in the identical studio. The camera continues the
-  arc, but half the room is empty and unused floor dominates. A wall calendar
-  flips several pages without readable text. The founder practices a more complex
-  step with care.
-- **Blocking/mimic:** no slump. He notices the empty spaces during a turn, then
-  completes the step.
-- **Camera:** same 32 mm path and height as S04, now slower; preserve set geometry.
-- **Light:** exactly the same key/practicals as S04; only people are missing.
-- **Sound:** shoes now distinct in the room reverb; music thinner.
-- **VO:** “By the advanced lessons, familiar faces had thinned out.”
-- **Transition:** founder turns toward the side bench and begins a conversation.
-- **Generation:** same tool/model/seed/elements as S04; continuity-critical.
+### S05 — London arithmetic · 00:30–00:38 · 8 s
 
-### S06 — Context becomes visible · 00:38–00:44 · 6 s
+- **Picture/blocking:** The drawn route becomes a wet London rail line. At a
+  rental window, one imagined private flat fills most of a simple envelope,
+  leaving the founder's drawn home/family plan almost empty; he calmly replaces
+  it with a shared-room key. No prices, currency or landlord caricature.
+- **Face/body:** practical evaluation, not shock; he chooses the key knowingly.
+- **Camera/lens:** 40 mm through-object move from train window to rental window;
+  settle at chest-height two-thirds profile.
+- **Light/color:** slate rain, sodium amber, muted rust scarf as anchor.
+- **Sound/VO:** rail seam, rain, key on counter; London/rent line.
+- **Transition/generation:** key turns in S06's shared-room door. Flow first/last
+  frames or Higgsfield Kling O1.
 
-- **Picture:** Founder and dance student share a relaxed post-class sentence by
-  the bench. Her partner enters from rain, folds an umbrella, and greets both.
-  She turns toward him naturally. Founder understands the relationship context.
-- **Blocking/mimic:** founder's hopeful half-smile changes into a warm, socially
-  calibrated smile; one nearly invisible nod. The couple does not cling or mark
-  territory. The partner's body stays open to the founder.
-- **Camera:** 55 mm medium three-shot; static, no melodramatic push.
-- **Light:** warm bench practical, cool rain doorway rim.
-- **Sound/dialogue:** “Hey. Ready to go?” Umbrella shake. Founder says no line.
-- **VO:** “Sometimes a conversation began — and then the context changed.”
-- **Transition:** umbrella crosses lens; wet black fabric becomes café-machine
-  metal.
-- **Generation:** Higgsfield with three locked Character Elements; expression
-  control more important than camera movement.
+### S06 — The shared room · 00:38–00:46 · 8 s
 
-### S07 — Coffee louder than both of us · 00:44–00:50 · 6 s
+- **Picture/blocking:** A clean, compact shared London bedroom: two bounded
+  sleeping areas or visible roommate storage, one narrow private desk corner,
+  suitcase under bed, meal containers on a shelf. The Founder makes the bed,
+  places the notebook in his corner and nods politely to a flatmate passing the
+  doorway.
+- **Face/body:** composed, respectful, faint relief at having a workable plan.
+- **Camera/lens:** 28 mm doorway-to-desk dolly; avoid wide-angle distortion of
+  the face.
+- **Light/color:** overcast 6200 K window, warm 3200 K bedside practical, faded
+  cream walls.
+- **Sound/VO:** room key, fabric, shared kitchen murmur; “…So I lived in shared
+  rooms.”
+- **Transition/generation:** meal container lid closes and match-cuts to S07.
+  OpenArt/Higgsfield with locked room plate.
 
-- **Picture:** Fictional chain-like café at rush hour. Founder and a date lean
-  toward each other just as the steam wand erupts between their sight lines.
-  Both pause, then share a small laugh at the timing.
-- **Blocking/mimic:** effort, interruption, mutual humor. Date starts a sentence;
-  founder's eyes stay on them, not the machine.
-- **Camera:** 50 mm table-height two-shot; espresso machine occupies foreground
-  third and creates depth without hiding faces.
-- **Light:** intentionally flat 5200 K ceiling with faint green cast; preserve
-  natural skin colors through warm tabletop bounce.
-- **Sound:** steam burst briefly masks VO tail, cup impact, queue murmur.
-- **VO:** “Online introductions did become dates. A coffee machine louder than
-  both of us.”
-- **Transition:** white steam fills frame and becomes bar haze.
-- **Generation:** Flow/Veo for atmosphere, faces locked through Ingredients.
+### S07 — Five years, buying time · 00:46–00:58 · 12 s
 
-### S08 — The sentence repeated · 00:50–00:56 · 6 s
+- **Picture/blocking:** Four seasonal cycles repeat through the same frame:
+  pre-dawn departure, long workstation, packed simple meal, small amount moved
+  into a future envelope, late return. A fifth calendar edge settles. The meal is
+  modest but adequate; the work is tiring but the Founder remains capable.
+- **Face/body:** concentrated mornings, fatigue around eyes at night, then quiet
+  pride when he marks one more saved interval in the notebook.
+- **Camera/lens:** locked 40 mm composition for seasonal match cuts; final 55 mm
+  gentle push to the words added later in post.
+- **Light/color:** winter blue → spring rain → summer pale gold → autumn amber →
+  winter again; identical desk lamp anchors time.
+- **Sound/VO:** clock rhythm, lunch lid, keyboard, coins without cash-register
+  cliché; “For five years… Not for luxury. I was buying back my time.”
+- **Transition/generation:** the final saved line sweeps into a world-map arc.
+  Generate four plates, composite seasons in post; do not ask one clip to do all.
 
-- **Picture:** Crowded basement bar with fictional decor. Bass makes the water in
-  two glasses tremble. The date cups an ear; founder leans in once, then both
-  realize the room is impossible.
-- **Blocking/mimic:** date: apologetic concentration; founder: good-natured
-  resignation. Their shared recognition is the emotional beat.
-- **Camera:** 40 mm mild handheld, maximum 1% frame drift; no music-video whip.
-- **Light:** red/blue practical contamination but a soft neutral face key keeps
-  eyes readable.
-- **Sound/dialogue:** bass, “Sorry — what did you say?” / “Never mind.”
-- **VO:** “A bar where every sentence needed repeating.”
-- **Transition:** glass vibration becomes a silverware vibration at S09.
-- **Generation:** Higgsfield Seedance/Veo with atmosphere; dialogue will be
-  replaced or lip-synced in post.
+### S08 — Forty countries in three seconds · 00:58–01:06 · 8 s
 
-### S09 — The beautiful barrier · 00:56–01:02 · 6 s
+- **Picture/blocking:** 00:58–01:00: paper route and passport-like shapes without
+  readable stamps. **01:00–01:03:** eight illustrated memories flash at 8–12
+  frames each: High Tatras, Schönbrunn arch, Neuschwanstein silhouette, Angkor
+  Wat, Golden Triangle geometry, Norwegian weather, Mediterranean street,
+  Chesapeake/Niagara water. 01:03–01:06: the last water reflection becomes the
+  Founder alone beside an empty train/bench seat.
+- **Face/body:** the Founder is curious within the memories; final look-back seeks
+  someone to share the view, then softens into recognition. No crying.
+- **Camera/lens:** rapid graphic match cuts, not camera whips; final 50 mm locked
+  reflection.
+- **Light/color:** every place has truthful local atmosphere inside one painterly
+  grade; no flags or costume shorthand.
+- **Sound/VO:** eight-note percussive flutter drops to wind/rail hush; “After
+  almost forty countries…”
+- **Transition/generation:** create each memory as a still, animate 8–12 frames
+  in post or Flow; do not generate fake archive footage.
 
-- **Picture:** Overly formal restaurant. A long white table visually separates
-  founder and another date. A waiter unfolds more cloth and adds unnecessary
-  ceremony. Both sit too straight and exhale at the same time.
-- **Blocking/mimic:** nobody behaves badly. Their synchronized breath is tender
-  and mildly comic, showing pressure produced by the room.
-- **Camera:** 58 mm symmetrical two-shot with a restrained 2-degree Dutch angle;
-  correct it to level by the end.
-- **Light:** narrow warm keys, candles, low fill; table is brighter than faces at
-  first, then exposure settles.
-- **Sound:** cloth snap, single fork touch, distant room hush.
-- **VO:** “A beautiful table chosen because it looked right…”
-- **Transition:** white tablecloth rises and becomes an airport departure cloud.
-- **Generation:** OpenArt/Higgsfield; prioritize precise composition.
+### S09 — Home, deliberately · 01:06–01:13 · 7 s
 
-### S10 — Leaving one city · 01:02–01:10 · 8 s
+- **Picture/blocking:** The same route line folds back to Budapest. Founder opens
+  his old door into warm daylight, sets the London key beside the notebook and
+  turns a fresh page. Tram reflection moves in the opposite direction from S01.
+- **Face/body:** first clear hopeful half-smile; shoulders open, unhurried breath.
+- **Camera/lens:** 35 mm follows behind, arcs gently to a frontal medium close-up.
+- **Light/color:** warm 4200 K home light with winter teal outside.
+- **Sound/VO:** suitcase wheel stops, familiar tram bell; “I had gone out to earn
+  money. I came home to find a partner.”
+- **Transition/generation:** tram glass becomes two phone screens. Flow Frames or
+  Higgsfield.
 
-- **Picture:** Founder walks beneath the white cloth/cloud into a train/airport
-  passage. The yellow tram wire bends into a route line; the Danube reflection
-  turns into Thames rain on a carriage window. Budapest remains a warm miniature
-  behind him as London grows ahead.
-- **Blocking/mimic:** forward momentum, curiosity; he looks outward, not back in
-  defeat.
-- **Camera:** 28 mm tracking behind then beside him; impossible but smooth
-  geographic transition.
-- **Light:** warm Budapest backlight crosses to cool London overcast; rust scarf
-  remains the color anchor.
-- **Sound:** rail seam, airport wash, one muffled announcement without words.
-- **VO:** “Then London. Millions of people…”
-- **Transition:** pass through carriage door into S11.
-- **Generation:** Google Flow first+last frames or Higgsfield Kling 3.0.
+### S10 — Two kinds of app attention · 01:13–01:20 · 7 s
 
-### S11 — A new language inside the same language · 01:10–01:19 · 9 s
+- **Picture/blocking:** A horizontal tram-window rail divides the 9:16 image into
+  two natural portrait zones: Founder in the lower/near reflection gives profiles
+  attention but receives silence; Maya in the upper/far reflection tries to read
+  four generic messages while more overlap. No app logo, names or fake statistics.
+- **Face/body:** Founder: patient, thumb slows. Maya: curiosity becomes overload
+  and safety-checking caution. Both put phones down without anger.
+- **Camera/lens:** 50 mm static; phone below eye line, reflections move.
+- **Light/color:** soft ambient face key, cold phone fill no more than 20%.
+- **Sound/VO:** sparse tick on one side, muffled flutter on the other; app line.
+- **Transition/generation:** one message card becomes a blank name tag. Higgsfield
+  Elements; notification graphics only in post.
 
-- **Picture:** Lived London layers pass in one moving set: Overground platform,
-  market queue, office lift, community poster wall, rainy corner shop. People of
-  many backgrounds exchange quick words. Founder catches the literal words but
-  misses one joke, then smiles a beat late.
-- **Blocking/mimic:** attentive, slightly out of rhythm, never culturally
-  superior. A passerby returns the late smile.
-- **Camera:** 35 mm lateral track; architecture repeatedly divides and reunites
-  him with groups.
-- **Light:** soft 6500 K day, sodium/practical amber accents, wet reflections.
-- **Sound:** fragments of accents without caricature, Oyster-like gate tone made
-  original, rain and shop bell.
-- **VO:** “A new language inside the same language.”
-- **Transition:** an escalator handrail carries the visual line downward.
-- **Generation:** Flow/Veo 3.1 Quality with clean London world Ingredient.
+### S11 — Rooms full of beginnings · 01:20–01:26 · 6 s
 
-### S12 — Miles of motion, one quiet room · 01:19–01:27 · 8 s
+- **Picture/blocking:** A continuous corridor passes a talk, community dinner and
+  social evening. The Founder has pleasant short exchanges; each room turns over
+  before a second step forms. Nobody rejects him.
+- **Face/body:** open palm, attentive nod, steady interest.
+- **Camera/lens:** 28 mm lateral tracking with three foreground doorway wipes.
+- **Light/color:** Budapest cream/terracotta; rooms warmer than corridor.
+- **Sound/VO:** applause tail → plate clink → name-tag marker; events line.
+- **Transition/generation:** marker stroke becomes dance-floor tape. OpenArt
+  Director or three short plates in post.
 
-- **Picture:** Match-action travel montage within one train window: Tube tunnel,
-  national rail, plane wing, unfamiliar coast, then the founder reflected alone
-  in the same late-night London carriage. Cut to his flat; the empty chair is
-  visible but not spotlit.
-- **Blocking/mimic:** fatigue around eyes, composed mouth; he loosens scarf and
-  sets notebook down rather than collapsing.
-- **Camera:** 50 mm locked to window reflection; final 65 mm gentle push as the
-  notebook lands.
-- **Light:** blue night with passing warm streaks; flat has one 3200 K lamp.
-- **Sound:** rhythmic rail joins slow, key in lock, room tone.
-- **VO:** “…and still, some nights, I came home alone.”
-- **Transition:** dark window reflection dissolves into the ivory notebook page —
-  the only dissolve in the film.
-- **Generation:** Flow for travel plate, Higgsfield/OpenArt for founder close-up.
+### S12 — Beginner floor · 01:26–01:33 · 7 s
 
-### S13 — The missing bridge · 01:27–01:35 · 8 s
+- **Picture/blocking:** Busy beginner partner-dance class. Founder misses one
+  step, recovers, and he and the Dance Student share a genuine smile. Attendance
+  is social participation, not consent to be approached romantically.
+- **Face/body:** brows gently raised in concentration, self-aware half-smile.
+- **Camera/lens:** 32 mm slow 18° clockwise arc at chest height.
+- **Light/color:** broad 4200 K window key, warm timber bounce.
+- **Sound/dialogue:** shoe rhythm, instructor: “Partners, change.”
+- **Transition/generation:** passing dancer wipes to identical S13 room.
+  Higgsfield Kling 3.0 with Founder, Student and Studio Elements.
 
-- **Picture:** Top-down city map made from the earlier lines. Many bright paths
-  begin at doors/profile cards/events but stop centimeters before another person
-  or place. Budapest and London occupy opposite edges; both contain abundant
-  starts. The founder's hand hovers with pencil.
-- **Blocking/mimic:** only hand and lower face seen. Breath slows. Pencil does
-  not touch paper until the last second.
-- **Camera:** exact overhead 35 mm; then a subtle 5% push.
-- **Light:** warm desk pool, cool room beyond; single restored eye catchlight in
-  the page reflection.
-- **Sound:** music percussion drops; pencil tip clicks once.
-- **VO:** “The city wasn't empty. Neither was Budapest… What kept disappearing
-  was the bridge.”
-- **Transition:** pencil touches one dead-end line and continues it into S14.
-- **Generation:** still/image animation preferred; exact graphic control in post.
+### S13 — The advanced room · 01:33–01:40 · 7 s
+
+- **Picture/blocking:** Same studio, same camera path, but half the floor is
+  empty; a calendar changes without readable text. Founder completes a more
+  difficult step, then speaks casually with the Student near the bench.
+- **Face/body:** notices absence but finishes with satisfaction; relaxed,
+  ordinary conversation.
+- **Camera/lens:** same 32 mm arc at 60% of S12 speed; preserve window count and
+  bench position.
+- **Light/color:** exactly S12's setup; only density changes.
+- **Sound/VO:** individual shoes become audible in room reverb; advanced line.
+- **Transition/generation:** camera settles into S14 three-shot. Use identical
+  model, seed/references and location plate as S12.
+
+### S14 — Context becomes clear · 01:40–01:46 · 6 s
+
+- **Picture/blocking:** Student's partner arrives from rain, folds an umbrella
+  and greets both. Student turns naturally toward him; the Founder understands
+  the existing relationship and steps aside with warmth.
+- **Face/body:** hope becomes a socially calibrated smile and tiny nod. Partner's
+  body remains open; no territorial pose.
+- **Camera/lens:** 55 mm static medium three-shot; no melodramatic push.
+- **Light/color:** warm bench practical, cool rainy doorway rim.
+- **Sound/dialogue:** “Hey. Ready to go?” umbrella shake; no sarcastic reply.
+- **Transition/generation:** umbrella crosses lens into café metal. Higgsfield,
+  three locked Character Elements; expression outranks motion.
+
+### S15 — The wrong rooms for a first date · 01:46–01:53 · 7 s
+
+- **Picture/blocking:** Three sympathetic micro-dates in one rhythmic montage:
+  2.3 s café steam masks a sentence; 2.3 s basement bar forces “Sorry — what did
+  you say?”; 2.4 s formal table makes both strangers sit too straight and exhale
+  together. The location is the antagonist.
+- **Face/body:** mutual effort and mild humor; nobody checks a phone or judges
+  appearance.
+- **Camera/lens:** 50 mm table two-shot → 40 mm very mild handheld → 58 mm
+  symmetrical locked frame.
+- **Light/color:** flat café green, noisy bar practicals with neutral face key,
+  formal warm narrow keys.
+- **Sound/VO:** steam → bass → cloth/fork; dates line and one diegetic question.
+- **Transition/generation:** white tablecloth becomes notebook paper. Generate
+  three clips/stills and cut in post; OpenArt or Higgsfield.
+
+### S16 — The missing bridge · 01:53–02:01 · 8 s
+
+- **Picture/blocking:** Overhead paper city contains many bright beginnings from
+  cards, events and doors. Each route stops just short of another person or a
+  place. Founder holds pencil above the gap; phone chats fade into blinking
+  cursors at the edge.
+- **Face/body:** only hand and reflected lower face; breath slows, pencil touches
+  the page on “bridge.”
+- **Camera/lens:** exact overhead 45 mm, 5% push.
+- **Light/color:** warm ivory desk pool, cool world beyond; percussion drops.
+- **Sound/VO:** cursor ticks disappear, pencil click; bridge line.
+- **Transition/generation:** pencil extends the missing line. Build mostly as
+  controlled motion graphics; do not trust AI-rendered UI.
 
 ## Act II — Draw a path
 
-### S14 — From one beginning to the next step · 01:35–01:43 · 8 s
+### S17 — Priority, not human value · 02:01–02:09 · 8 s
 
-- **Picture:** The pencil connects four simple dimensional tableaux on the page:
-  interest → two-directional intent → five-person group → real venue. Each icon
-  becomes a miniature lived scene for half a second, then returns to linework.
-- **Blocking/mimic:** founder's hand is measured, not frantic. His shoulders
-  release slightly in an edge-of-frame reflection.
-- **Camera:** 45 mm overhead with one slow dolly in; line stays sharp.
-- **Light:** graphite/ivory with amber connection line; no full brand coral yet.
-- **Sound:** pencil texture becomes a soft melodic pulse.
-- **VO:** “From interest to mutual intent… a reason to meet again.”
-- **On-screen title:** appears in the negative page space, added in post.
-- **Transition:** one drawn profile frame stands upright into S15.
-- **Generation:** OpenArt stills + post animation, or Flow Nano Banana frame and
-  Veo frame animation.
+- **Picture/blocking:** A generic portrait becomes a dimensional adult listening,
+  helping and moving in context. Beside it, a **private** 1–10 control changes
+  from 4 to 8, then 7 as context changes. No number floats over a person and no
+  one else sees it.
+- **Face/body:** Founder considers, revises and accepts nuance; no reward grin.
+- **Camera/lens:** 55 mm focus change from flat card to lived context, then lock.
+- **Light/color:** neutral portrait warms; amber denotes personal priority.
+- **Sound/VO:** tactile ticks without casino sound; “full focus… editable
+  priority.”
+- **Transition/generation:** slider track extends into two directional lines.
+  Generate clean person plate, create exact UI in post.
 
-### S15 — Priority, not human value · 01:43–01:51 · 8 s
+### S18 — Both directions, with context · 02:09–02:17 · 8 s
 
-- **Picture:** A flat generic profile card becomes a translucent dimensional
-  window onto a whole person speaking, listening, helping and moving in context.
-  Beside it, a private 1–10 slider moves from 4 to 8, then back to 7 after new
-  context. No number appears over the person's body and nobody else sees it.
-- **Blocking/mimic:** founder considers, revises, and accepts uncertainty; no
-  gamified celebration.
-- **Camera:** 55 mm focus change from flat photo to dimensional behavior; static
-  after focus lands.
-- **Light:** neutral portrait light warms as context appears.
-- **Sound:** quiet tactile slider ticks, no slot-machine reward.
-- **VO:** “Priorities you can express and change.”
-- **Transition:** slider track extends into a line between two nodes.
-- **Generation:** create clean people plate; build the exact slider/UI in post.
+- **Picture/blocking:** Two faint lines strengthen only where interest is
+  reciprocal. Shared activity, distance and timing join as smaller aqua threads.
+  One one-sided line fades respectfully. Several nodes become a readable graph;
+  Maya calmly declines one context and accepts another.
+- **Face/body:** each portrait makes an autonomous choice; no rejection wound or
+  soulmate glow.
+- **Camera/lens:** 40 mm gentle overhead-to-oblique tilt.
+- **Light/color:** amber intent, aqua context, first restrained coral core.
+- **Sound/VO:** paired notes resolve on reciprocal links; affinity line.
+- **Transition/generation:** graph arcs become chairs. Motion graphics plus
+  approved portrait loops are preferred.
 
-### S16 — Both directions, with context · 01:51–01:59 · 8 s
+### S19 — A small group, not a forced pair · 02:17–02:25 · 8 s
 
-- **Picture:** Two nodes send faint lines toward each other. Only reciprocal
-  lines strengthen; context signals (shared activity, distance, timing) join as
-  smaller weighted threads. One one-sided line remains faint and respectfully
-  fades. Several nodes form a readable weighted graph.
-- **Blocking/mimic:** show small portraits making their own decisions; Maya
-  declines one invitation without consequence and accepts another group context.
-- **Camera:** 40 mm gentle overhead-to-oblique tilt, making abstract graph become
-  a social space.
-- **Light:** amber for intent, aqua for context, coral heart appears for the first
-  time as a small shared-core accent.
-- **Sound:** paired notes resolve only on reciprocal links.
-- **VO:** “Affinity that has to make sense in context — and in both directions.”
-- **Transition:** graph components rotate and settle as seating arcs in S17.
-- **Generation:** motion graphics/post preferred; use generated portrait loops as
-  node interiors.
+- **Picture/blocking:** Possible groups rebalance into five adults in a public
+  venue foyer. Accept and decline are equally calm; no pair is spotlighted.
+  Abstract nodes become full people, including Maya and the Founder.
+- **Face/body:** initial uncertainty eases when a member checks the shared route;
+  another decline leaves with a neutral smile and the arrangement adapts.
+- **Camera/lens:** 35 mm slow 20° orbit, eye-level at the end.
+- **Light/color:** graph glow resolves into equal 3500 K face light.
+- **Sound/VO:** distinct footsteps, soft decline tone; small-group line.
+- **Transition/generation:** a phone lifts to reveal plan-making. Higgsfield
+  Kling/Elements; maximum five readable faces.
 
-### S17 — A small group, not a forced pair · 01:59–02:07 · 8 s
+### S20 — Chat becomes a plan · 02:25–02:32 · 7 s
 
-- **Picture:** Several possible groups form, rebalance and settle into one
-  five-person arc. Accept and decline gestures are equally calm. No two people
-  are spotlighted as a couple. The empty chair motif becomes part of the arc.
-- **Blocking/mimic:** Maya accepts; another person declines and leaves the node
-  with a neutral smile; group spacing adjusts without collapse.
-- **Camera:** 35 mm, slow 20-degree orbit as abstract nodes become full
-  characters in a public venue foyer.
-- **Light:** warm 3500 K venue practicals replace graph glow; equal face exposure.
-- **Sound:** five distinct footsteps land on the beat, one soft decline tone.
-- **VO:** “Small groups, with room to say yes — or no.”
-- **Transition:** a phone lifts naturally, revealing purposeful group chat.
-- **Generation:** Higgsfield Kling 3.0 Elements; avoid more than five speaking
-  faces in one generated shot.
+- **Picture/blocking:** Different hands contribute a date, route, accessibility
+  note and ticket; abstract chat becomes one event card, then a real paper
+  ticket. Founder reads and puts the phone away.
+- **Face/body:** contribution is distributed; people look relieved by a concrete
+  next step.
+- **Camera/lens:** 50 mm hand inserts with match cuts; final 35 mm pullback.
+- **Light/color:** warm neutral light; coral/aqua UI added in post.
+- **Sound/dialogue:** “Saturday?” “I'm in.” “I'll bring the tickets.” Digital
+  taps become paper and zipper sounds.
+- **Transition/generation:** ticket fills frame and becomes venue entry card.
+  Generate clean hands/people; all legible text in post.
 
-### S18 — Chat becomes a plan · 02:07–02:15 · 8 s
+## Act III — The next chapter has local authors
 
-- **Picture:** Abstract group chat bubbles do not float aimlessly: one date card,
-  route, accessibility note and ticket icon assemble into a shared event card.
-  The card folds into a real paper ticket in a member's hand.
-- **Blocking/mimic:** close-ups of different hands contributing; no single person
-  performs all coordination. Founder reads, then puts the phone away.
-- **Camera:** 50 mm macro/hand inserts joined by match cuts; final 35 mm pullback.
-- **Light:** warm device-neutral face light; coral/aqua UI built in post.
-- **Sound/dialogue:** “Saturday?” “I'm in.” “I'll bring the tickets.” Message
-  sounds turn into physical paper/zipper/door sounds.
-- **VO:** “A chat with a purpose. A shared event. The practical things…”
-- **Transition:** ticket passes camera and becomes venue entry card in S19.
-- **Generation:** generate clean hands/faces; all UI and legible text in post.
+### S21 — Somewhere real · 02:32–02:38 · 6 s
 
-### S19 — The meeting loop becomes real · 02:15–02:23 · 8 s
+- **Picture/blocking:** Five arrive independently at a public community venue.
+  One checks route, one holds tickets, one shifts a chair, the local Operator
+  greets them; attention moves to a simple shared map/activity and a specific
+  first laugh.
+- **Face/body:** micro-awkwardness becomes task-focused ease; Founder listens and
+  is not centered.
+- **Camera/lens:** 32 mm doorway track into 45 mm table arc, split into two 3 s
+  clips if necessary.
+- **Light/color:** warm 3200–3500 K practical/daylight mix; exit remains visible.
+- **Sound/VO:** entry chime, chair, paper, natural laugh; “Not a promise…”
+- **Transition/generation:** Operator closes a preparation list. Higgsfield for
+  ensemble consistency.
 
-- **Picture:** The five arrive independently at the public community venue. One
-  scans a generic ticket, one checks the route, one offers a spare rain cover,
-  one moves a chair. They begin a simple shared tabletop map/activity, then walk
-  out together toward a city route. A brief post-event feedback gesture closes
-  the loop without scores shown.
-- **Blocking/mimic:** initial micro-awkwardness, then attention shifts to the
-  shared task. Laughter is staggered and specific. Founder listens.
-- **Camera:** 32 mm doorway track into a 45 mm table arc; no heroic centre.
-- **Light:** soft warm practical/window mix; entrance and exit remain visible.
-- **Sound:** entry chime, coat fabric, chair move, route paper, first natural
-  laugh.
-- **VO:** “Not a promise to manufacture chemistry. A system designed to give it
-  somewhere real to happen.”
-- **Transition:** venue operator closes a preparation checklist and turns to S20.
-- **Generation:** Higgsfield for controlled ensemble; two 4-second generations
-  may be safer than one complex 8-second shot.
+### S22 — One core, many local worlds · 02:38–02:44 · 6 s
 
-## Act III — More authors
-
-### S20 — The local operator · 02:23–02:31 · 8 s
-
-- **Picture:** Before the next group arrives, the operator checks the five-seat
-  arc, quiet zone, route/accessibility note and public entrance; greets venue
-  staff by name; switches the local branded sign while the small MyScoutee heart
-  remains a shared-core mark. No money animation.
-- **Blocking/mimic:** calm competence; eyes scan practical details, then soften
-  when the first participant enters.
-- **Camera:** 40 mm measured dolly following keys/clipboard to the operator's
-  face, ending in balanced two-shot with venue staff.
-- **Light:** venue's own warm palette, coral heart as restrained accent.
-- **Sound:** key turn, chair leg, friendly greeting, room tone opening up.
-- **VO:** “Every city has its own rhythms, venues, languages and trust.”
-- **Transition:** operator turns local sign; its color wipe reveals city tiles.
-- **Generation:** Higgsfield Cinema Studio; Character, Location and Prop Elements.
-
-### S21 — One core, many local worlds · 02:31–02:38 · 7 s
-
-- **Picture:** London venue, Budapest community room and three composite-city
-  operator spaces occupy dimensional layers. Each has a different brand palette,
-  activity and host. A thin coral line connects the core without making every
-  space visually identical. Participants remain local, not exported avatars.
-- **Blocking/mimic:** operators welcome, coordinate and listen; one adjusts a
-  sign, another talks with a local activity partner, another reviews group
-  seating.
-- **Camera:** 28 mm crane upward through the layers; no globe-from-space cliché.
-- **Light:** distinct local light, unified skin-tone care and coral connection.
-- **Sound:** short local room tones harmonize into the music pulse.
-- **VO:** continue operator sentence and begin “I built the core…”
-- **Transition:** coral line descends to the founder's pencil in S22.
-- **Generation:** OpenArt Director or Flow; build as three separate plates if
-  multi-city consistency fails.
-
-### S22 — The core is passed on · 02:38–02:44 · 6 s
-
-- **Picture:** Founder at the original desk, now daylight. The core graph is
-  stable on the page. He closes the notebook and passes it toward camera. Match
-  cuts show three operators receiving their own differently covered notebooks.
-  Founder remains visible in a small reflection as one network node.
-- **Blocking/mimic:** level eye line, relaxed brow, calm half-smile. The pass is
-  an invitation, not surrender.
-- **Camera:** 50 mm gentle 8% push, then match-cut handoffs; locked horizon.
-- **Light:** warm 4000 K day/desk key; no lonely night blue remains.
-- **Sound:** notebook close, music resolves, one inhale before CTA.
-- **VO:** “I built the core because I believe in it. The next chapter needs more
-  authors.”
-- **On-screen text:** the authors line, added in post.
-- **Transition:** notebook coral elastic becomes wordmark heart stroke.
-- **Generation:** Higgsfield/OpenArt expression-critical close-up.
+- **Picture/blocking:** Operator changes a local branded sign while the small
+  thin coral shared-core line remains. Match cuts reveal Budapest, London, an Atlantic
+  city, a Central European city and an East Asian neighborhood, each led by a
+  different competent host. Founder closes the core notebook and passes it
+  toward camera; local hands receive differently covered copies.
+- **Face/body:** Founder gives level eye contact and calm confidence. Operators
+  receive an opportunity, not a burden; they greet, coordinate and listen.
+- **Camera/lens:** 40 mm handoff match cuts ending in a restrained crane up.
+- **Light/color:** distinct local palettes connected by one thin coral line.
+- **Sound/VO:** notebook close, room tones harmonize; “I built the core because I
+  believe in it. Every city needs local authors.”
+- **Transition/generation:** notebook elastic becomes the end-card frame line. Build as
+  separate plates if multi-city faces drift; OpenArt/Flow plus Higgsfield close-up.
 
 ### S23 — Wordmark and invitation · 02:44–02:48 · 4 s
 
-- **Picture:** Deep navy clean field. Real coral heart logo replaces the leading
-  M in the MyScoutee wordmark. A faint network line settles, then becomes still.
-- **Camera:** no camera move; only the line and 2% logo scale settle.
-- **Light/color:** deep navy, warm ivory type, coral heart, optional aqua CTA dot.
-- **Sound:** final two-note motif, quiet room breath retained beneath it.
-- **VO:** “MyScoutee. Designed for the meeting. Not the swipe.”
-- **Text:** real post-production typography and CTA.
-- **Generation:** none. Build from repository brand assets in the editor.
+- **Picture:** Deep navy clean field. The original unmodified repository
+  `heart.png` appears centered, with **MyScoutee** as separate editable text
+  below it, followed by warm-ivory tagline and local-operator CTA.
+- **Camera/motion:** no generated camera; network line settles, logo scales 2%.
+- **Light/color:** deep navy and warm ivory around the logo's original colors;
+  no recolored mark or fake interface.
+- **Sound/VO:** resolved two-note motif; “MyScoutee. Designed for the meeting.”
+- **Build:** entirely in the final editor from repository brand assets; never
+  accept AI-generated spelling or a different logo.
 
 ## Continuity checkpoints
 
-Check these side by side before approving motion:
-
-- S01, S04, S06, S10, S12, S13, S19 and S22: founder face, coat, scarf,
-  notebook and apparent age.
-- S02, S16, S17 and S19: Maya face and moss-green coat.
-- S04–S06: identical dance studio layout, wall color and window count.
-- S07–S09: the dates are humane and the location is clearly the friction.
-- S13–S18: one line language; amber means personal priority/intent, aqua means
-  context, coral means shared MyScoutee core.
-- S17–S20: same five-person group and same venue geometry.
-- S20–S22: local operator does not become founder or generic executive.
+- **Founder:** compare S01, S04–S09, S12–S14, S17, S19, S21 and S22 for face,
+  age, body, navy coat/charcoal knit, rust scarf and cognac notebook.
+- **Work truth:** S02–S04 remain anonymous first-person memory; no country,
+  company or legal verdict is invented.
+- **London:** S05–S07 show rational saving in maintained shared housing, not
+  homelessness, starvation or hostile flatmates.
+- **Travel:** S08 is exactly a three-second visual burst inside an eight-second
+  shot; no unvisited destination or fake archive aesthetic.
+- **Dance:** S12–S14 use identical room geometry, and the couple is friendly.
+- **Dates:** S15 makes settings, not people, the friction.
+- **Product color language:** amber = private intent; aqua = context; coral =
+  common MyScoutee core.
+- **Autonomy:** S18–S20 visibly permit yes and no; no forced pair or promised
+  chemistry.
+- **Operator ending:** S21–S22 show an independent local author with real
+  context; no revenue, traction, deployment or superiority claim.
 
 ## Editorial fallback order
 
-If a complex shot cannot be generated cleanly:
-
-1. reduce simultaneous actions;
-2. split it into two shots without changing total timing;
-3. replace UI/text with post motion graphics;
-4. use still-frame parallax for two seconds;
-5. cut to hands, shoes, notebook, route or room detail while preserving VO;
-6. never accept face drift, extra limbs or contradictory group membership just
-   to keep a flashy camera move.
+If a complex generation fails: reduce simultaneous actions; split the shot
+without changing its total time; move UI/text to post; use two-second still
+parallax; cut to hands/notebook/route/room detail; or simplify the camera. Never
+accept face drift, extra limbs, false geography, unreadable text or gender blame
+for the sake of spectacle.

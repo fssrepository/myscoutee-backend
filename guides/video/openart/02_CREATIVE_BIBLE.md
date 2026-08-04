@@ -7,6 +7,7 @@
 | Working title | **The City Between Us** |
 | Hungarian title | **A város közöttünk** |
 | Runtime | 02:48 |
+| Primary canvas | 9:16 portrait, 720×1280 mobile master |
 | Form | cinematic animated founder story / operator invitation |
 | Audience | independent operators, community builders, venue/activity partners, product collaborators, early pilot communities |
 | Primary emotion | recognition → ache → clarity → agency → invitation |
@@ -128,10 +129,12 @@ Why this style:
 | Budapest return/attempts | desaturated terracotta, tobacco, winter teal, cream | familiar warmth, deliberate search |
 | app overload | cold cyan/white notification light; coral only as a scarce signal | fragmented attention |
 | insight/notebook | graphite, warm ivory, one amber line | clarity |
-| MyScoutee group | coral heart, warm amber, aqua, leaf green on deep navy | differentiated people forming context |
-| operator network | every city has its own controlled accent around the common coral heart | local ownership, shared core |
+| MyScoutee group | coral connection line, warm amber, aqua, leaf green on deep navy | differentiated people forming context |
+| operator network | every city has its own controlled accent around a common coral line | local ownership, shared core |
 
-The final frame background is deep navy, not black. The heart mark is coral.
+The final frame background is deep navy, not black. The original multicolor
+`heart.png` remains unmodified; coral belongs to the connection line, not to a
+recolored logo.
 
 ## 6. Character bible
 
@@ -319,7 +322,7 @@ to connect people and places without tying or trapping them.
 ### Doors and thresholds
 
 Every attempt uses a doorway. Early doors lead to another beginning. The event
-door in shot S19 remains open and visible, symbolizing both invitation and easy
+door in shot S21 remains open and visible, symbolizing both invitation and easy
 exit.
 
 ### The empty chair
@@ -329,11 +332,11 @@ workspace. In the event it is not “filled by the perfect partner”; it become
 part of a five-seat arc. The problem transforms from missing one person to
 creating a workable social context.
 
-### The heart mark
+### The product mark
 
-Do not introduce the MyScoutee heart until the notebook line becomes a graph.
-Before that, use no hearts in generic dating UI. This prevents confusion between
-the brand and binary swipe culture.
+Use the unmodified repository `heart.png` briefly during the first 1.2 seconds
+and fully on the end card. During the story use only the abstract coral
+connection line; before the product turn, generic dating UI contains no hearts.
 
 ## 9. Cinematography bible
 
@@ -348,8 +351,10 @@ the brand and binary swipe culture.
 Rules:
 
 - no more than one conspicuous camera move in a shot;
-- no constant push-in; reserve the strongest push for the insight at 01:22;
+- no constant push-in; reserve the strongest push for the insight at 01:53;
 - keep faces at least 15% of frame height when expression matters;
+- compose natively for 9:16: stagger multi-person depth vertically and reserve
+  the top/bottom mobile UI zones;
 - avoid extreme shallow depth on group shots; every participant needs agency;
 - stabilize horizon through emotional clarity; mild Dutch framing appears only
   for the formal restaurant and resolves immediately;
@@ -360,7 +365,8 @@ Rules:
 - foreground occlusion rather than dissolves in Act I;
 - graphic match on line/shape in Act II;
 - clean cuts on shared action in Act III;
-- one dissolve only: London night window into blank notebook at 01:22.
+- one short dissolve only: S08's last water memory into the solitary reflection
+  around 01:03.
 
 ## 10. Lighting bible
 
@@ -376,7 +382,7 @@ Rules:
 | London travel | cool overcast 6500 K | train-window fill | sodium/LED streaks | fatigue without grey corpse skin |
 | notebook insight | warm 4000 K desk key | soft page bounce | small practical halo | catchlight returns |
 | event | soft 3500 K motivated practical/window mix | group bounce | coral/aqua accents | equal exposure for all faces |
-| operator finale | local light varies | consistent skin-tone handling | coral heart common anchor | warm, credible confidence |
+| operator finale | local light varies | consistent skin-tone handling | coral line; original logo only on end card | warm, credible confidence |
 
 ## 11. Acting and facial direction
 
@@ -406,8 +412,9 @@ Avoid:
 
 The sonic line mirrors the visual line:
 
-- tram bell → app tick → dance count → espresso steam → bass pulse → rail seam
-  → pencil stroke → chat send → ticket scan → room tone → final two-note motif.
+- work ventilation → rail seam → room key → meal-box clock → eight travel hits
+  → tram bell → app tick → dance count → espresso steam → pencil stroke → chat
+  send → ticket scan → room tone → final two-note motif.
 
 Music begins with one felt-piano note and bowed texture. A restrained 7/8 pulse
 under the attempt montage produces slight incompleteness. At the insight, it
@@ -421,9 +428,12 @@ motivational delivery.
 
 On-screen text is minimal:
 
-- 01:31: **NOT ANOTHER MATCH. A PATH TO A MEETING.**
-- 02:38: **THE NEXT CHAPTER NEEDS MORE AUTHORS.**
-- 02:44: MyScoutee wordmark + **DESIGNED FOR THE MEETING. NOT THE SWIPE.**
+- 00:50: **I WAS BUYING BACK MY TIME.**
+- 01:06: **I LEFT TO MAKE A LIVING. I CAME HOME TO FIND A PARTNER.**
+- 01:53: **NOT ANOTHER MATCH. A PATH TO A MEETING.**
+- 02:38: **THE NEXT CHAPTER NEEDS LOCAL AUTHORS.**
+- 02:44: original `heart.png` + separate **MyScoutee** text +
+  **DESIGNED FOR THE MEETING.**
 - optional CTA under wordmark: **BUILD IT IN YOUR CITY.**
 
 Add all text in post. Use the project's real heart asset. Do not ask a video

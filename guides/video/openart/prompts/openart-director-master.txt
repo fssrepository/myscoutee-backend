@@ -1,56 +1,56 @@
-Create a 2 minute 48 second cinematic animated founder story titled “The City
-Between Us” for MyScoutee. This is a production storyboard and rough cut, not a
-claim of traction or guaranteed outcomes.
+Create a 2 minute 48 second, 23-shot cinematic animated founder story titled
+“The City Between Us” for MyScoutee. This is a production storyboard and rough
+cut, not a claim of traction, revenue, safety or guaranteed outcomes.
 
-Format and look: premium 2.5D animated short film; expressive hand-drawn
-characters inside dimensional miniature/paper city sets; tactile wool, wet
-pavement, fogged glass and graphite; realistic motivated light; restrained
-painterly finish; human, emotionally precise and slightly imperfect; 16:9,
-center-safe for 9:16, 24 fps film language. Keep every saved character, world,
-voice, costume, prop and color meaning consistent. Never imitate TSB: The Story
-at a frame level; take only the idea of an emotionally engaging long visual
-journey and mixed 2D/3D craft.
+Look: premium 2.5D hand-drawn adult characters inside dimensional miniature and
+paper worlds; tactile wool, wet pavement, fogged glass and graphite; realistic
+motivated light; restrained painterly finish; 9:16 portrait mobile frame,
+720x1280 delivery, 24 fps
+film language. Never copy the frames, character design or palette of TSB: The
+Story. Keep saved faces, costumes, worlds and props consistent. Use the Founder
+in navy coat/charcoal knit/rust scarf with cognac notebook. He is capable and
+observant, never bitter. All supporting adults retain dignity and autonomy.
 
-Use the saved Founder character as narrator and protagonist. He wears a navy
-field coat, charcoal knit, rust scarf and carries a worn cognac notebook. He is
-observant, persistent and capable, never bitter or defeated. Use the saved Maya
-character to show attention overload; she is an autonomous community member,
-not a romantic reward. Use the saved Budapest, London, dance studio and event
-venue worlds. Supporting women and men remain humane and are never punchlines.
+Locked chronology and timings:
+- S01 00:00–00:08: at home, the Founder cannot find work on which he feels able
+  to build a future.
+- S02–S03 00:08–00:23: months-long anonymous assignments separate him from
+  family while work crosses Europe, Asia and the Americas; long days, no flags
+  or identifiable employer.
+- S04 00:23–00:30: on one job, when inspectors arrive, workers are told to stay
+  out of sight. Show quiet first-person memory behind a partition, not a raid,
+  villain or legal verdict. Keep a neutral alternate.
+- S05–S07 00:30–00:58: he chooses London. Independent rent would leave too
+  little for his own home/family plan, so for five years he lives in maintained
+  shared rooms, works long days and saves even on food. This is rational agency,
+  not destitution: he is buying back his time.
+- S08 00:58–01:06: exactly three seconds inside this shot form a surprising fast
+  illustrated memory chain: High Tatras, Schönbrunn, Neuschwanstein, Angkor Wat,
+  India's Golden Triangle, Norway, Mediterranean Europe and eastern-US water.
+  No archive footage is claimed. It resolves to the Founder beside an empty seat.
+- S09 01:06–01:13: deliberate warm return home: he went out to earn money and
+  came home to find a partner.
+- S10–S11 01:13–01:26: apps show scarce attention for one adult and unmanageable
+  attention for Maya; talks, dinners and social rooms create many beginnings.
+- S12–S14 01:26–01:46: full beginner dance floor, thinner advanced room, then a
+  friendly existing partner arrives and the relationship context becomes clear.
+  Dance is worthwhile and nobody owes romantic availability.
+- S15 01:46–01:53: three humane micro-dates; café noise, basement-bar acoustics
+  and an over-formal table are the friction, not the partners.
+- S16 01:53–02:01: many beginnings stop before a real bridge.
+- S17–S18 02:01–02:17: the Founder gives the problem full focus; a private
+  editable 1–10 priority is not a human score; reciprocal and contextual affinity
+  is shown as two-directional weighted lines.
+- S19–S20 02:17–02:32: optional small group with calm accept/decline, purposeful
+  group chat and a concrete shared event plan.
+- S21 02:32–02:38: five adults meet at a public hosted venue. Do not manufacture
+  a romantic couple or claim guaranteed chemistry.
+- S22 02:38–02:44: a competent local operator and several culturally distinct
+  cities receive the core as capable local authors. This is an invitation from a
+  believing founder, not a rescue appeal or claim of current deployment.
+- S23 02:44–02:48: clean deep-navy plate only; real logo and typography in post.
 
-Story:
-00:00–01:22 feels like one continuous journey through hidden transitions. In
-Budapest the Founder shows up: generic dating apps, talks, dinners, name-tag
-events, a full beginner dance class, then a thin advanced class. A friendly
-conversation ends when a participant's partner arrives and the relationship
-context becomes clear. Online introductions lead to three dates whose locations,
-not people, create friction: a loud espresso machine, an impossibly noisy bar,
-and an over-formal restaurant table. He then moves to London. Show lived London,
-not landmarks: wet platform, market, escalator, corner shop, late train, travel
-through stations and airports. Millions of people surround him, yet some nights
-he returns alone. Visualize both sides of app attention: silence for one person,
-unmanageable notifications for another. No app logos or statistics.
-
-01:22–02:18 the camera stops and clarity begins. On a warm notebook page, many
-beginnings stop before a bridge. The Founder draws a different path: private,
-editable 1–10 priorities that are not public human scores; reciprocal and
-contextual affinity represented by two-directional weighted lines; several
-possible small groups with calm accept/decline choices; purposeful group chat;
-a shared public event; route, resources, tickets/check-in and post-event
-feedback. Show five adults meeting through a simple shared activity. Do not pair
-the Founder romantically and do not promise manufactured chemistry. The idea is
-a system designed to give connection somewhere real to happen.
-
-02:18–02:48 reveal a competent local operator preparing the public venue, quiet
-zone, seating arc and entrance. Expand to London, Budapest and three original
-composite cities with their own local branding and partners around a shared
-MyScoutee core. The Founder closes his notebook and passes it toward camera;
-several operators receive their own notebooks. This is an invitation, not a
-failure or surrender. End on a clean deep-navy field reserved for the real logo
-and typography to be added later.
-
-Use the exact locked English narration supplied separately; do not rewrite it.
-Keep on-screen footage textless. Build a 23-shot storyboard matching shot IDs
-S01–S23 and preserve the supplied timings. First generate low-resolution
-storyboard frames and an animatic. Ask before changing the story, characters,
-product claims, runtime or operator ending.
+Use the exact English narration supplied separately. Do not rewrite it. Build
+exactly 23 scene cards named S01–S23 with the locked timings. First return the
+cards and low-resolution still plan; do not spend video credits or generate
+motion until I approve. Keep all footage textless.

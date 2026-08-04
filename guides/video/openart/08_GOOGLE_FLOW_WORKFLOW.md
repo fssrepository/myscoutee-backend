@@ -18,13 +18,15 @@ Flow is strongest for:
 - saving frames back as future ingredients;
 - arranging a rough sequence in Scenebuilder.
 
-Recommended Flow assignments: S01, S07, S10–S12, S14 and S21. It can generate
+Recommended Flow assignments: S01–S09 environments/transitions, S11, S15, S16
+and S22 city plates. S08's three-second travel burst is assembled from generated
+still memories in the editor. Flow can generate
 the entire film, but identity- and dialogue-heavy shots require more care.
 
 ## 1. Start the project
 
 1. Open Google Flow in a desktop Chromium browser.
-2. Create a new project named `TCBU_Master_16x9`.
+2. Create a new project named `TCBU_Master_9x16_720p`.
 3. Create a Collection for:
 
    - `01_Characters`
@@ -47,7 +49,10 @@ the entire film, but identity- and dialogue-heavy shots require more care.
 4. Attach authorized references.
 5. Generate and save the approved results to the project.
 6. Name them `Founder`, `Maya`, `DanceStudent`, `DancePartner`, `Operator`,
-   `BudapestWorld`, `LondonWorld`, `DanceStudio`, `EventVenue`, `Notebook`.
+   `BudapestWorld`, `LondonWorld`, `WorksiteWorld`, `SharedRoom`, `DanceStudio`,
+   `EventVenue`, `Notebook`, and the eight `Travel_*` plates listed in the
+   OpenArt workflow. No founder travel photo survives; label these as
+   illustrated reconstructions, never as archive footage.
 
 Create clean, segmented character/background references. Google's current best
 practice recommends plain or segmented backgrounds and removing extra subjects
@@ -76,9 +81,9 @@ storyboard.
 | Need | Flow choice | Use |
 | --- | --- | --- |
 | quick composition draft | **Veo 3.1 Fast** or the currently displayed fast tier | first visual pass |
-| approved cinematic shot | **Veo 3.1 Quality** | final S01, S07, S10–S12, S19/S21 tests |
+| approved cinematic shot | **Veo 3.1 Quality** | final S01–S09, S11, S15, S21/S22 tests |
 | recurring subject/location | **Ingredients/References to Video** | identity-critical clips; Veo 3.1 currently constrains this mode to 8 s |
-| exact transformation/transition | **Frames → First** or **First + last** where supported | S01→S02, S09→S10, S10→S11, S14 |
+| exact transformation/transition | **Frames → First** or **First + last** where supported | S01→S02, S04→S05, S08→S09, S16 |
 | continuing an existing Veo shot | **Extend** | only when the original is an eligible Veo 3.1 8 s clip; current help routes extension through Veo 3.1 Lite |
 | video edit/custom voice | **Gemini Omni Flash** when available | test fixes and voice reference; not the default for every final |
 | image/style frame | **Nano Banana Pro** | characters, worlds and exact first/last frames |
@@ -97,7 +102,7 @@ survived.
 
 ## 5. Individual shot — Ingredients mode paste map
 
-Use for S02, S04–S08, S11, S17–S20 and S22 when keeping a face/world consistent.
+Use for S01–S07, S09–S15 and S19–S22 when keeping a face/world consistent.
 
 1. In the prompt box click the model name.
 2. Choose **Video**.
@@ -112,21 +117,23 @@ Use for S02, S04–S08, S11, S17–S20 and S22 when keeping a face/world consist
      [prompts/shot-prompts.txt](prompts/shot-prompts.txt).
 
 6. Replace bracket tokens with the actual `@AssetName` references in the text.
-7. Choose 16:9, one or two outputs, 8 seconds for Ingredients when required, and
+7. Choose 9:16, one output first, 8 seconds for Ingredients when required, and
    Veo 3.1 Fast for the first pass.
 8. Generate. Trim externally to the manifest duration.
-9. Repeat with Quality only after identity, action and composition are locked.
+9. Repeat with Quality/720p only after identity, action and composition are
+   locked. Do not buy a 1080p pass unless phone QA exposes a real defect.
 
-Example S07 asset line inside the prompt:
+Example S06 asset line inside the prompt:
 
 ```text
-Use @Founder as the Founder, @DateCafe as the other adult, and @CafeBadDate as
-the exact fictional café location. Preserve both faces and the location layout.
+Use @Founder as the Founder and @SharedRoom as the exact maintained shared-room
+location. Preserve the Founder's face and the room geometry. This is a practical
+saving choice, not destitution.
 ```
 
 ## 6. Individual shot — Frames mode paste map
 
-Use for S01, S10, S12→S13 and S14 transitions.
+Use for S01→S02, S04→S05, S08→S09 and S16 transitions.
 
 1. Generate exact start and end stills first with Nano Banana Pro.
 2. In the prompt box click the model name → **Video** → **Frames**.
@@ -140,20 +147,17 @@ Use for S01, S10, S12→S13 and S14 transitions.
 7. Choose duration/model, generate and compare the first/last generated frames
    with the supplied images.
 
-For S10, use a Budapest carriage-door start frame and a lived-London carriage-
-door end frame. Do not ask the model to reproduce branded geography in text.
+For S04→S05, use the anonymous translucent-partition decision frame as the start
+and a rain-lit London route/window as the end. Do not identify the former
+employer or ask the model for branded geography.
 
-## 7. S11 nine-second handling
+## 7. Multi-part shot handling
 
-Choose one:
-
-- generate 10 seconds with a compatible current Fast/Omni mode and trim to 9;
-- split into S11A platform/market (4 s) and S11B lift/shop (5 s) behind an
-  architectural wipe;
-- generate an 8-second Ingredients clip and hold the final shop-bell frame for
-  1 second only if the narration remains natural.
-
-Splitting is preferred over stretching motion.
+S07 is a 12-second edit of separate seasonal plates. For S08, generate each
+travel place as a still, animate only a small element (cloud, water, cloth or
+light) and cut 8–12 frames from each into the exact three-second burst. For S15,
+generate café, bar and restaurant separately. Splitting is preferred over
+stretching or asking one model to preserve too many places/faces.
 
 ## 8. Voice and audio
 
@@ -162,7 +166,7 @@ three platforms and two languages. Treat native audio as atmosphere reference.
 
 Recommended:
 
-- include environmental sound descriptions in prompts for S07–S12;
+- include environmental sound descriptions in prompts for S02–S15;
 - download useful ambience separately or rebuild it from licensed SFX;
 - record final voice-over externally;
 - do not ask Veo to speak the entire narration;
@@ -175,7 +179,7 @@ on eligible accounts. If testing:
 2. choose **Video → Ingredients**;
 3. click **Add Image → Voices**;
 4. choose or create an authorized voice and reference `@Voice` in the prompt;
-5. generate only S06/S08 dialogue tests;
+5. generate only S14/S15 dialogue tests;
 6. compare identity, language and timing to the external voice master.
 
 For Hungarian, external VO plus tested lip-sync remains the safer production
@@ -210,9 +214,9 @@ Before commercial publication:
 ## 11. Export naming
 
 ```text
-TCBU_S10_flow_veo31q_frames_v03_approved.mp4
-TCBU_S11A_flow_veo31q_ingredients_v02_approved.mp4
-TCBU_S11B_flow_veo31q_ingredients_v04_approved.mp4
+TCBU_S05_flow_veo31q_frames_v03_approved.mp4
+TCBU_S08_travel_burst_edit_v04_approved.mp4
+TCBU_S15B_flow_veo31q_ingredients_v02_approved.mp4
 ```
 
 Save the start/end frame PNGs beside each shot and keep a note of the final

@@ -496,9 +496,14 @@ This is an application interaction check, not a scheduled job:
 
 1. Prepare the variation.
 2. Use the existing demo app's user switch/impersonation flow for the printed actor.
-3. Submit the rating or event feedback.
-4. Switch to the printed target and open the bell.
-5. Run `status bell-rating-feedback`.
+3. For a rating, select a non-zero score and press **Save** exactly once. The
+   slider only stages the value; **Save** queues it in the frontend outbox. The
+   card remains under **Met** with the selected score displayed. For event
+   feedback, submit the feedback form.
+4. Allow up to 35 seconds for the frontend's 30-second, maximum-50-item batch
+   sync to push the queued rating to the backend.
+5. Switch to the printed target and open the bell.
+6. Run `status bell-rating-feedback`.
 
 Before the action, the fixture temporarily removes only the selected rating/event's matching historical bell/outbox documents behind the exact reset snapshot. It refuses to continue if one of those outbox items is still tracked by the running worker. This makes the oracle independent of unrelated target notifications.
 

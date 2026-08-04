@@ -34,6 +34,9 @@ Create a working asset directory outside this source folder and collect:
   `frontend/src/assets/logo/heart.png` and/or `heart.webp`;
 - one clean image for each world and prop generated from
   [05_PROMPT_PACK.md](05_PROMPT_PACK.md);
+- no founder travel photos survive, so create and label the approved destination
+  plates as illustrated reconstructions; never present unrelated stock as a
+  personal archive;
 - locked English rough voice-over WAV;
 - optional temp music for rhythm only; do not upload unlicensed commercial music;
 - this directory's script and storyboard as reference PDFs or plain text.
@@ -77,12 +80,18 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
 
    - `BudapestWorld`
    - `LondonWorld`
+   - `WorksiteWorld`
+   - `SharedRoom`
    - `DanceStudio`
    - `CafeBadDate`
    - `BarBadDate`
    - `RestaurantBadDate`
    - `EventVenue`
    - `Notebook`
+   - `Travel_Tatras`, `Travel_Schonbrunn`, `Travel_Neuschwanstein`
+   - `Travel_AngkorWat`, `Travel_GoldenTriangle_SelectedCity`
+   - `Travel_Norway`, `Travel_Mediterranean_SelectedPlace`
+   - `Travel_USWater_SelectedPlace`
 
 5. Generate empty location plates. They are useful for repairing a background
    without changing faces.
@@ -93,7 +102,7 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
 | --- | --- | --- |
 | **Director → New project → Describe your idea** prompt box | entire [prompts/openart-director-master.txt](prompts/openart-director-master.txt) | locks story, runtime, claims, act structure and look |
 | media/asset attachment area beside the Director prompt | rough English VO, optional temp music, approved world sheets | gives Director timing and visual references |
-| inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@DanceStudio`, `@EventVenue`, `@Notebook` | binds saved assets to names used in the brief |
+| inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@WorksiteWorld`, `@SharedRoom`, `@DanceStudio`, `@EventVenue`, `@Notebook`; attach travel plates only to S08 | binds saved assets to names used in the brief |
 | Ori/Director chat after its first response | `Use the supplied narration verbatim. Show me the 23 scene cards with exact S01–S23 IDs and timings before generating motion. Do not add product claims.` | prevents silent rewrite |
 | Director chat after storyboard appears | paste the relevant correction block below | fixes structure without regenerating the whole story |
 | an individual storyboard scene/shot prompt | [prompts/continuity-prefix.txt](prompts/continuity-prefix.txt) + the matching Sxx block from [prompts/shot-prompts.txt](prompts/shot-prompts.txt) | precise shot regeneration |
@@ -110,7 +119,10 @@ Verify:
 
 - exactly 23 cards, S01–S23;
 - total 02:48;
-- Budapest ends as origin/counterpoint, London remains the emotional centre;
+- overseas assignments precede London; S04 remains anonymous and quiet;
+- London shared housing is intentional saving, not destitution;
+- S08 has exactly a three-second illustrated burst and no fake archive;
+- Budapest return is hopeful and precedes apps/events/dance/dates;
 - Maya is not paired with the founder;
 - the dance partner arrival is a neutral boundary, not a confrontation;
 - bad-date partners are sympathetic and the locations create friction;
@@ -143,7 +155,7 @@ Useful Ori correction messages:
 ### Founder too sad
 
 ```text
-Revise S10–S13 only. The Founder is tired but composed and observant. Remove
+Revise S05–S09 only. The Founder is tired but composed and observant. Remove
 slumped posture, tears, self-pity and rejection imagery. Preserve forward motion
 and the quiet moment of pattern recognition.
 ```
@@ -151,7 +163,7 @@ and the quiet moment of pattern recognition.
 ### Dance scene reads as blame
 
 ```text
-Revise S04–S06 only. Keep the dance class warm and worthwhile. The student and
+Revise S12–S14 only. Keep the dance class warm and worthwhile. The student and
 her partner are friendly adults with an existing relationship. The Founder's
 expression is simply context understood. Do not imply that attendance at dance
 class creates romantic obligation.
@@ -160,7 +172,7 @@ class creates romantic obligation.
 ### Bad dates mock the partners
 
 ```text
-Revise S07–S09 only. Make every date humane and mutually well-intentioned. The
+Revise S15 only. Make every date humane and mutually well-intentioned. The
 espresso noise, bar acoustics and formal table create the failure. Both people
 share mild recognition or humor. No contempt, phone rejection or appearance gag.
 ```
@@ -168,7 +180,7 @@ share mild recognition or humor. No contempt, phone rejection or appearance gag.
 ### Product becomes magic
 
 ```text
-Revise S15–S19 only. Show users expressing private editable priority, reciprocal
+Revise S17–S21 only. Show users expressing private editable priority, reciprocal
 contextual lines, calm accept/decline choices, a small group and practical event
 coordination. Remove soulmate imagery, instant couple formation, safety claims
 and success statistics.
@@ -177,7 +189,7 @@ and success statistics.
 ### Ending becomes pleading
 
 ```text
-Revise S20–S22 only. The Founder has built a stable core and passes a notebook
+Revise S21–S22 only. The Founder has built a stable core and passes a notebook
 with calm confidence. Operators receive it as capable local authors. Remove
 rescue, failure, desperation, crowdfunding and lone-hero imagery.
 ```
@@ -191,11 +203,11 @@ every shot.
 | Need | Preferred current choice | Use on | Reason |
 | --- | --- | --- | --- |
 | full story plan/rough cut | **OpenArt Director** | all shots | long-form story, saved characters/worlds, scene review |
-| structured character/multi-shot motion | **Kling 3.0** | S04–S06, S17–S20, S22 | current strength in controlled motion and stable subject representation |
-| long atmospheric or reference-rich clip | **Seedance 2.5** where available | S03, S10–S12, S21 | OpenArt currently advertises up to 30 seconds and many references; test identity carefully |
-| cinematic environment/native sound | **Veo 3.1** | S07–S12, S19 | strong atmosphere and audio; use external final voice |
+| structured character/multi-shot motion | **Kling 3.0** | S02–S07, S12–S15, S19–S22 | controlled motion and stable subject representation |
+| long atmospheric or reference-rich clip | **Seedance 2.0**; use 2.5 only when the account model picker shows it as active | S03, S05–S08, S11 | the public 2.5 page was Coming Soon at the 2026-08-04 check; assemble S08 from stills in post |
+| cinematic environment/native sound | **Veo 3.1** | S05–S09, S15, S21 | strong atmosphere; use external final voice |
 | inexpensive iteration | **Gemini Omni Flash** or current fast model | composition tests | speed; do not final a face before comparison |
-| exact start/end transition | model offering **first/last frame** or Smart Shot | S01→S02, S09→S10, S10→S11 | locks visual handoff |
+| exact start/end transition | model offering **first/last frame** or Smart Shot | S01→S02, S04→S05, S08→S09 | locks visual handoff |
 
 The named models are a dated recommendation, not a permanent requirement. In
 the OpenArt video panel, inspect the current model card for duration, aspect,
@@ -216,17 +228,22 @@ reference, audio and credit cost before generation.
 4. If a separate negative field exists, paste the Negative/avoid block from
    [05_PROMPT_PACK.md](05_PROMPT_PACK.md). Otherwise it is already summarized in
    the continuity prefix.
-5. Set **16:9**, draft resolution, the duration closest to the shot manifest and
-   two outputs maximum.
+5. Set **9:16**, the cheapest draft tier, the duration closest to the shot
+   manifest and one output. Ask for a second only after naming the first result's
+   defect.
 6. Generate. Compare identity, acting and camera before visual spectacle.
 7. Regenerate one variable at a time. Example: `Keep everything unchanged.
    Reduce the camera arc by half and keep both faces in equal focus.`
 8. Download the approved clip and rename it immediately:
    `TCBU_S04_openart_kling3_v03_approved.mp4`.
 
+Do not automatically run a second final pass at 1080p. Put the approved 720p
+clip into the 720×1280 timeline, export a phone test and upgrade only a shot with
+visible face/detail damage after platform-like playback.
+
 ## 8. Dialogue and Hungarian localization
 
-OpenArt Director currently advertises a defined set of nine lip-sync languages;
+OpenArt Director currently advertises a defined set of lip-sync languages;
 Hungarian is not in that published list. Do not assume Director's automatic
 Hungarian speech is reliable.
 
@@ -237,14 +254,14 @@ Recommended:
 - use OpenArt Lip Sync only for tested supported-language dialogue;
 - for Hungarian diegetic lines, use Higgsfield LipSync Studio or a separate
   consented dubbing/lip-sync tool after verifying Hungarian performance;
-- keep S06/S08 mouth movement minimal enough that an audio cutaway or alternate
+- keep S14/S15 mouth movement minimal enough that an audio cutaway or alternate
   angle can hide a failed sync.
 
 ## 9. Export and handoff
 
 Download:
 
-- every approved shot separately at its highest practical quality;
+- every approved shot separately at 720p unless target-phone QA requires more;
 - OpenArt's full rough cut for comparison only;
 - still first/last frames used for transitions;
 - textless versions;
