@@ -22,14 +22,14 @@ STYLES_XML = "xl/styles.xml"
 NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 
 ROW_FILL_COLORS = {
-    "pass": "FFE2F0D9",
-    "partial": "FFFFF2CC",
-    "fail": "FFF4CCCC",
-    "not-run": "FFE7E6E6",
-    "legend-x": "FFE7E6E6",
-    "legend-delta": "FFD9EAF7",
-    "legend-indirect": "FFE4DFEC",
-    "legend-gap": "FFF4CCCC",
+    "pass": "FF92D050",
+    "partial": "FFFFC000",
+    "fail": "FFFF6666",
+    "not-run": "FFB4C6E7",
+    "legend-x": "FFBFBFBF",
+    "legend-delta": "FF5B9BD5",
+    "legend-indirect": "FFB4A7D6",
+    "legend-gap": "FFFF7C80",
 }
 HEADER_FILL_COLOR = "FF1F4E78"
 LEGEND_SECTION_FILL_COLOR = "FF44546A"
