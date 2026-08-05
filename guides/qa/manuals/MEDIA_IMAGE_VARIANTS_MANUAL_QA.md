@@ -1,6 +1,7 @@
 # Media image variants manual QA
 
-Status: `MEDIA-IMG-001` not run
+Status: `MEDIA-IMG-001` PASS / CLOSED as an Event Editor subcase;
+`ARTICLE-EDITOR-001` in progress
 Last updated: 2026-08-05
 
 ## Contract
@@ -10,8 +11,8 @@ objects: the original plus three WebP renditions.
 
 | Rendition | Maximum bounding box | Intended use |
 | --- | ---: | --- |
-| `small.webp` | 128 x 128 | avatar, row and editor carousel slot |
-| `medium.webp` | 640 x 640 | ordinary card and editor preview |
+| `small.webp` | 128 x 128 | avatar, row and compact thumbnail |
+| `medium.webp` | 640 x 640 | ordinary card and large editor slot/preview |
 | `large.webp` | 1280 x 1280 | fullscreen card, Article body/viewer and chat attachment |
 
 The resize preserves aspect ratio, applies orientation, strips metadata and
@@ -23,13 +24,13 @@ domain data.
 External, `data:`, `blob:` and local-mode URLs have no managed rendition key and
 must remain unchanged.
 
-## `MEDIA-IMG-001` — upload once, request the correct rendition everywhere
+## `MEDIA-IMG-001` — Event Editor managed-image subcase
 
 ### Preparation
 
 - Use the existing dev stack; do not start another server or frontend watcher.
-- Prepare one clearly identifiable JPEG or PNG larger than 1600 x 1200 with a
-  non-square aspect ratio and visible orientation marker.
+- Prepare one clearly identifiable non-square JPEG or PNG large enough to
+  exercise the 128, 640 and 1280 landscape or portrait bounds.
 - Open browser Network tools and preserve the log.
 - Record the source pixel dimensions, content type and file size.
 
@@ -40,31 +41,49 @@ must remain unchanged.
    `smallUrl`, `mediumUrl` and `largeUrl` values.
 3. Open each returned URL directly and record its decoded dimensions and
    content type.
-4. Require the carousel slot request to end in `small.webp` and the selected
-   editor preview request to end in `medium.webp`.
+4. Require the large Event Editor image slot and ordinary event card to request
+   `medium.webp`; a 128-pixel thumbnail must not be stretched across the editor.
 5. Save, close and reopen the Event. Require the same image and rendition
    selection without another upload or duplicated domain URL.
-6. Open the Event in an ordinary list/card and fullscreen presentation.
-   Require `medium.webp` for the card and `large.webp` for fullscreen.
+6. Do not claim an Event fullscreen image check: the Event Activities surface
+   has no fullscreen presentation control. Fullscreen card presentation belongs
+   to the separate Rates surface.
 
-### Admin Article reuse
+### Recorded Event result
 
-1. Create a disposable Article and upload the same source through its shared
-   image carousel.
-2. Require `small.webp` in carousel slots and `medium.webp` in the editor
-   preview.
-3. Insert a managed image URL into the Article body, save, reopen and publish.
-4. Require the Article list card to request `medium.webp` and both the admin
-   viewer and public Article body to request `large.webp`.
-5. Require the persisted Article HTML/domain DTO to retain the canonical URL;
+- Event ID: `manual-qa-checkpoint:v1:event-domain:event`.
+- Source: PNG, 1853 x 919, 52,326 bytes.
+- `small.webp`: 128 x 63, 242 bytes; `medium.webp`: 640 x 317,
+  1,930 bytes; `large.webp`: 1280 x 635, 5,766 bytes.
+- All four objects returned HTTP 200; the three renditions were WebP and kept
+  the landscape aspect ratio within pixel rounding.
+- Save/reopen retained one canonical `large.webp` URL in MongoDB and caused no
+  second upload. The event card requested `medium.webp`.
+- A fresh editor initially requested `small.webp` and rendered visibly blurred.
+  The Event Editor now opts its large slot into `medium.webp`; the focused
+  regression passed 3/3 and the reopened UI was sharp after hot deploy.
+- Result: PASS / CLOSED. This is a separate subcase beside the already closed
+  Event Editor create/save/reopen flow; it does not alter that flow's result.
+
+## `ARTICLE-EDITOR-001` — Article save/reopen with image subcase
+
+This is a separate owning editor checkpoint. Image upload is not an independent
+producer case; it is one subcase of the Article Save operation.
+
+1. Create one identifiable English Article with title, excerpt and HTML body.
+2. Upload the managed image once as part of that draft, then Save once.
+3. Reopen and require every field plus one canonical image URL to persist with
+   no second upload.
+4. Require the Article list card to request `medium.webp` and the admin Article
+   viewer body to request `large.webp`.
+5. Require persisted Article HTML/domain data to retain the canonical URL;
    rendition selection happens only while rendering.
+6. Leave publish-to-landing behavior to `LANDING-ARTICLE-001`.
 
-### Admin Help reuse
+## Deferred owning-editor split
 
-1. Upload the same source into one disposable Help section.
-2. Require the shared carousel to use `small.webp` for slots and `medium.webp`
-   for its editor preview.
-3. Save and reopen. Require no repeated upload and no broken image placeholder.
+Admin Help image behavior belongs under a future Help Editor save/reopen case,
+not under `MEDIA-IMG-001` or `ARTICLE-EDITOR-001`.
 
 ### Independent media oracle
 
@@ -80,8 +99,8 @@ The case passes only when all of these are true:
   the original for all sizes;
 - no extra server, watcher or build process was started for the test.
 
-Record Event ID, Article ID, Help section ID, the four returned URLs, decoded
-dimensions and one Network screenshot for each distinct screen class.
+Record the owning entity ID, the four returned URLs, decoded dimensions and one
+Network screenshot for each distinct screen class exercised by that editor.
 
 ## Automated evidence and remaining gap
 
@@ -93,5 +112,5 @@ dimensions and one Network screenshot for each distinct screen class.
   decoded by the automated test.
 - Frontend unit coverage verifies managed URL rewriting, Article HTML rewriting
   and the shared carousel's `small`/`medium` selection.
-- Exact decoded dimensions and the cross-screen Network mapping remain manual
-  until a real-image backend integration test and browser E2E are added.
+- Exact decoded dimensions and each owning editor's Network mapping remain
+  manual until a real-image backend integration test and browser E2E are added.

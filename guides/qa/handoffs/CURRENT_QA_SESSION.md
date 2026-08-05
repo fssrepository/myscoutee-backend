@@ -8,12 +8,12 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: MEDIA-IMG-001
-state: implementation-ready; manual cross-screen proof not run
+active_checkpoint: ARTICLE-EDITOR-001
+state: new English Article draft open; save/reopen not run
 next_actor: user
-next_action: upload one identifiable image larger than 1600x1200 in Event Editor
-next_codex_action: inspect the upload response and Network variant URLs; do not start a server
-queued_checkpoint: CHAT-AUTH-001
+next_action: upload the retained PNG once as a subcase of the Article Save flow
+next_codex_action: inspect the Article upload/save response, persistence and Network variant URLs; do not start a server
+queued_checkpoint: [LANDING-ARTICLE-001, CHAT-AUTH-001]
 ```
 
 ## Hard constraints
@@ -35,8 +35,8 @@ queued_checkpoint: CHAT-AUTH-001
 
 ## Repository baseline at this handoff
 
-- Parent: `6f533120` (`img fix`), clean.
-- Frontend submodule: `abe19606` (`img fix`), clean.
+- Parent: `132dbc40`, clean before this QA documentation update.
+- Frontend submodule: `93f13be5` (`img size fix`), clean.
 - Existing backend hot-deploy accepted the media change and remained healthy.
 - No Codex-started server, watcher, Gradle, Angular-test or Vitest process is
   intentionally left running.
@@ -60,13 +60,27 @@ work.
 - Riley's invite was resolved/read. Do not rerun acceptance before
   `CHAT-AUTH-001` merely to prove these facts again.
 
-### Media implementation — focused automated PASS
+### `MEDIA-IMG-001` — PASS / CLOSED Event Editor subcase
 
 - Managed images keep one canonical domain URL.
-- Carousel slots derive `small.webp`; the selected editor preview derives
-  `medium.webp`.
-- ordinary cards derive `medium.webp`; fullscreen and Article body/viewers
-  derive `large.webp`.
+- The tested 1853 x 919 PNG produced distinct original, 128 x 63 small,
+  640 x 317 medium and 1280 x 635 large objects; all returned HTTP 200.
+- The saved Event retained one canonical `large.webp` URL after reopen and no
+  second upload; the ordinary card requested `medium.webp`.
+- A fresh editor proved that stretching `small.webp` across its large image slot
+  was visibly blurred. The owning frontend fix lets the Event Editor request
+  `medium.webp`; its focused regression passed 3/3 and hot deploy was verified.
+- The Event Activities card exposes no fullscreen presentation, so no Event
+  fullscreen claim is recorded.
+- This remains a separate Event Editor media subcase and does not merge into or
+  reopen the already closed Event Editor create/save/reopen checkpoint.
+
+### Media implementation — prior focused automated PASS
+
+- Default compact carousel slots derive `small.webp`; configured large editor
+  slots and selected previews derive `medium.webp`.
+- Ordinary cards derive `medium.webp`; fullscreen-capable cards and Article
+  body/viewers derive `large.webp`.
 - Article HTML is rewritten only while rendering; three URLs are not persisted
   in the Article.
 - External, data, blob and local-mode URLs remain unchanged.
@@ -74,34 +88,43 @@ work.
   reported as three copies of the original.
 - Focused frontend result: 3 files, 11/11 tests passed.
 
-Detailed contract: [`MEDIA_IMAGE_VARIANTS_MANUAL_QA.md`](../manuals/MEDIA_IMAGE_VARIANTS_MANUAL_QA.md).
+Detailed contract and split cases:
+[`MEDIA_IMAGE_VARIANTS_MANUAL_QA.md`](../manuals/MEDIA_IMAGE_VARIANTS_MANUAL_QA.md).
 
-## Active checkpoint — `MEDIA-IMG-001`
+## Active checkpoint — `ARTICLE-EDITOR-001`
 
-What remains unproven is visual/network behavior, not the URL helper unit
-contract:
+The Article Editor owns one create/save/reopen operation. Its managed image is a
+subcase of that Save, not a standalone upload checkpoint:
 
-1. Upload one non-square source larger than 1600 x 1200 through Event Editor.
-2. Capture the response's distinct original/small/medium/large URLs.
-3. Verify decoded bounds 128/640/1280, aspect ratio and WebP variants.
-4. In Network, verify Event slot `small`, editor preview/card `medium`, and
-   fullscreen `large`.
-5. Reuse the same contract in Admin Article and Admin Help. Article list is
-   `medium`; admin/public Article body is `large`.
-6. Save/reopen and prove one canonical stored URL and no second upload.
+1. Complete the open English draft with an identifiable title, excerpt and HTML
+   body.
+2. Upload the retained PNG once into the Article as part of that draft.
+3. Save once, reopen and prove all fields plus one canonical managed URL persist
+   without another upload.
+4. Verify the admin Article list requests `medium.webp` and the admin viewer
+   body requests `large.webp`.
+5. Keep publication and landing propagation out of this checkpoint.
 
-Do not run a backend E2E for this manual pass. Exact dimensions and the browser
-Network mapping are intentionally the manual oracle.
+Do not run a backend E2E for this manual pass. Use the existing stack and the
+smallest focused test only if another code change is required.
 
-On PASS, update only the `MEDIA-IMG-001` ledger row and regenerate the XLSX:
+On PASS, update only the `ARTICLE-EDITOR-001` ledger row and regenerate the XLSX:
 
 ```bash
 python3 guides/qa/tools/sync-qa-matrix-xlsx.py
 ```
 
-Then change the resume block to `CHAT-AUTH-001`.
+Then change the resume block to `LANDING-ARTICLE-001`.
 
-## Queued checkpoint — `CHAT-AUTH-001`
+## Queued checkpoint — `LANDING-ARTICLE-001`
+
+Publish the retained Article once and compare the public landing behavior as a
+separate test case. Existing automated coverage proves fresh endpoint inclusion
+and frontend list/body mapping, but there is no browser test for the complete
+Admin publish-to-rendered-landing transition or live refresh of an already-open
+landing surface.
+
+## Later queued checkpoint — `CHAT-AUTH-001`
 
 The old positive failure was missing accepted-user chat materialization. The
 closed acceptance run now proves that Casey Admin and Riley accepted both have
