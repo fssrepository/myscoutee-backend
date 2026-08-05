@@ -43,6 +43,8 @@ class EventCounterExpiryServiceTest {
     private NotificationRuleRegistryService notificationRuleRegistryService;
     @Mock
     private AdminTelemetryService adminTelemetryService;
+    @Mock
+    private UserActivityCountersService userActivityCountersService;
 
     private EventCounterExpiryService service;
 
@@ -54,6 +56,7 @@ class EventCounterExpiryServiceTest {
                 mongoTemplate,
                 notificationRuleRegistryService,
                 adminTelemetryService,
+                userActivityCountersService,
                 20);
     }
 
@@ -78,7 +81,8 @@ class EventCounterExpiryServiceTest {
 
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of())
-                .thenReturn(List.of(pastTicket));
+                .thenReturn(List.of(pastTicket))
+                .thenReturn(List.of());
         when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
 
@@ -120,6 +124,7 @@ class EventCounterExpiryServiceTest {
 
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(dueEvent))
+                .thenReturn(List.of())
                 .thenReturn(List.of())
                 .thenReturn(List.of(dueEvent, pastMemberEvent))
                 .thenReturn(List.of(pastMemberEvent, liveMemberEvent, liveInvitation, pastInvitation))
@@ -168,6 +173,37 @@ class EventCounterExpiryServiceTest {
         assertThat(activities.game()).isEqualTo(1);
         assertThat(activities.adminJobs()).isEqualTo(14);
         verify(mongoTemplate).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void runExpiryPassNowProjectsOnlyDueFeedbackCounterSourcesThroughTheWriteModel() {
+        Instant now = Instant.now();
+        ActivityEvent feedbackDue = event(
+                "feedback-due",
+                "host",
+                "feedback",
+                now.minusSeconds(10_800L).toString(),
+                now.plusSeconds(3_600L).toString(),
+                false);
+        feedbackDue.setAcceptedMemberUserIds(List.of("member"));
+
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of())
+                .thenReturn(List.of())
+                .thenReturn(List.of(feedbackDue));
+        when(userActivityCountersService.syncFeedbackEligibilityForSourceIds(any(), any(Instant.class)))
+                .thenReturn(1);
+
+        int processed = service.runExpiryPassNow();
+
+        assertThat(processed).isEqualTo(1);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<java.util.Collection<String>> sourceIdsCaptor = ArgumentCaptor.forClass(java.util.Collection.class);
+        verify(userActivityCountersService).syncFeedbackEligibilityForSourceIds(
+                sourceIdsCaptor.capture(),
+                any(Instant.class));
+        assertThat(sourceIdsCaptor.getValue()).containsExactly("feedback-due");
+        verify(usersRepository, never()).saveAll(any());
     }
 
     @Test

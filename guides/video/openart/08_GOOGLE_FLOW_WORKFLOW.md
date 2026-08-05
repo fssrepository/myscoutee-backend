@@ -49,7 +49,7 @@ the entire film, but identity- and dialogue-heavy shots require more care.
 4. Attach authorized references.
 5. Generate and save the approved results to the project.
 6. Name them `Founder`, `Maya`, `DanceStudent`, `DancePartner`, `Operator`,
-   `BudapestWorld`, `LondonWorld`, `WorksiteWorld`, `SharedRoom`, `DanceStudio`,
+   `BudapestWorld`, `LondonWorld`, `SohoOffice`, `TottenhamHMO`, `DanceStudio`,
    `EventVenue`, `Notebook`, and the eight `Travel_*` plates listed in the
    OpenArt workflow. No founder travel photo survives; label these as
    illustrated reconstructions, never as archive footage.
@@ -126,9 +126,10 @@ Use for S01–S07, S09–S15 and S19–S22 when keeping a face/world consistent.
 Example S06 asset line inside the prompt:
 
 ```text
-Use @Founder as the Founder and @SharedRoom as the exact maintained shared-room
-location. Preserve the Founder's face and the room geometry. This is a practical
-saving choice, not destitution.
+Use @Founder as the Founder and @TottenhamHMO as the exact Victorian-house,
+bathroom, WC and shared-bedroom location. Preserve the Founder's face and the
+house geometry. Thirteen adults have distinct personal traces; this is a
+practical saving choice and crowded real life, not destitution.
 ```
 
 ## 6. Individual shot — Frames mode paste map

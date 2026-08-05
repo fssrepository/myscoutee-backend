@@ -760,6 +760,26 @@ Execution evidence on 2026-08-04:
 
 - Capture the participant's pending-feedback item, the host's received
   feedback baseline, the host's Impressions popup and the notification view.
+- Before submission, compare the source card under **Activities -> Events**
+  with both the feedback-list card and the feedback form. A persisted event
+  image must be identical on all three surfaces. If the event image is empty,
+  all three surfaces must use their neutral empty-image presentation; a
+  runtime-generated stock photo is forbidden. Apply the same assertion to the
+  backend HTTP and frontend local/demo paths: neither path may manufacture a
+  feedback-only image URL.
+- For the backend HTTP run, stage the dedicated `EVENT-FEEDBACK-002` event
+  directly with the generated
+  `server/docker/scripts/manual-qa-checkpoints/assets/event-feedback-002-cover.png`
+  fixture. Upload that file once through the normal HTTP media endpoint, pass
+  its returned canonical URL as `MANUAL_QA_EVENT_IMAGE_URL`, and let the
+  checkpoint persist that URL on the past event with the controlled accepted
+  participant. This is checkpoint setup, not a repeat of the already-closed
+  Event Editor save/reopen case. The feedback UI must read the event's
+  `imageUrl`; it must not replace it while mapping the list or detail response.
+- For the frontend local/demo run, the seed builder may choose and persist a
+  demo image while it creates the event. Activities, the feedback list and the
+  feedback form must all consume that same persisted event value; feedback
+  mapping itself must not generate a replacement.
 - Submit one controlled overall answer, improvement answer and one distinctive
   personality trait through the visible feedback flow.
 - Verify one submitted feedback state and one persisted answer per displayed

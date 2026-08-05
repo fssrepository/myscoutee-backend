@@ -1,23 +1,46 @@
 Act as cinematography co-director for the locked 23-shot film “The City Between
 Us,” runtime 02:48, 9:16 portrait, 720x1280 delivery, 24 fps. Do not rewrite the supplied script or timings.
 Organize S01–S23 using @Founder, @Maya, @DanceStudent, @DancePartner, @Operator,
-@BudapestWorld, @LondonWorld, @WorksiteWorld, @SharedRoom, @DanceStudio,
+@BudapestWorld, @LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio,
 @EventVenue, @Notebook and the approved TravelMemory stills.
 
 Visual system: premium 2.5D hand-drawn adult characters integrated into
 dimensional miniature/paper sets; tactile, painterly, motivated light and subtle
 facial acting. Founder identity, age, navy coat, charcoal knit, rust scarf and
-cognac notebook never drift. Overseas work is anonymous; the inspection memory
-is quiet and non-identifying. Shared London housing is maintained and intentional,
-not misery. Travel is a three-second illustrated burst, not fake archive. Dating
+cognac notebook never drift. London work is software programming in Soho, never
+a factory. The Victoria line leads home to a personal, maintained but crowded
+thirteen-adult Victorian HMO in Tottenham: one full bathroom, one separate WC
+and a shared bedroom. The five London years buy financial independence and time
+for the Founder's own work, not another home. Travel is a three-second illustrated burst, not fake archive. Dating
 locations create friction; dates are never mocked. No logos, readable generated
 text, baked UI, public human rating or promised romantic outcome.
+
+The documented product sequence follows a relationship from unknown to later
+change: a user sets an editable private 1–10 priority for an unknown individual
+profile or pair suggestion; reciprocal choices and profile/context evidence form
+balanced groups of strangers; every person may accept or decline; accepted
+participants gain a contextual group chat and manage their first real event.
+Show location, accessibility, resources, tickets, check-in and event-linked
+feedback. After the meeting, former strangers are known contacts who may be
+directly invited to later events, while Auto Inviter can fill available places
+according to the priority plan. Repetition can grow a community. End the product
+loop with a later respectful conflict: one person privately lowers the editable
+priority, making future shared group/event paths less likely without punishment.
+Avoid abstract affinity graphs. S22 begins with a verified package handoff to a
+technically capable local operator at a real server/workstation. The same shared
+core then appears in independently hosted, own-brand local deployments testing
+different communities and cultural contexts. Connect them voluntarily as a
+server network/virtual enterprise and show one clean opt-out branch that remains
+independent. Do not imply current deployments, proven efficiency, revenue or
+automatic trust.
 
 Camera plan: S01–S09 use restrained 28–65 mm tracking, static reflection and
 foreground match transitions; S08's memory burst is assembled from stills in
 post. S10–S15 use readable social two/three-shots with restrained dance arcs.
-S16–S20 slow down into exact overhead notebook, focus change and measured orbit.
-S21–S22 use balanced ensemble framing, handoff match cuts and one gentle crane.
+S16–S20 slow down into exact overhead notebook, familiar-member invitations,
+open event seats and a measured event-table orbit. S21 shows returning members
+welcoming newcomers; S22 uses a controlled package-verification handoff at an
+operator workstation.
 One camera move per generated clip; reject spectacle presets.
 
 Use the best current reference-capable model visible in the account. Prefer

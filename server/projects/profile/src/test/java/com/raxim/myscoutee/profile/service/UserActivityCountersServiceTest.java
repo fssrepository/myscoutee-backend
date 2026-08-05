@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -144,6 +146,50 @@ class UserActivityCountersServiceTest {
         assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(2);
         assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
         assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
+    }
+
+    @Test
+    void syncFeedbackEligibilityAddsPendingAndMenuAggregateDeltaOnlyOnce() {
+        Instant now = Instant.parse("2026-08-05T09:00:00Z");
+        ActivityEvent eligible = event("event-eligible", "host", "A");
+        eligible.setOwnerUserId("host");
+        eligible.setAdmins(List.of("host"));
+        eligible.setAcceptedMemberUserIds(List.of("host", "viewer"));
+        eligible.setStartAtIso(now.minusSeconds(10_800L).toString());
+        Users viewer = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 4, 0, 2, 1));
+        EventFeedbackState alreadyTracked = state("event-eligible", "viewer", "", "");
+        alreadyTracked.setEligible(true);
+        alreadyTracked.setCounterTracked(true);
+
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(eligible));
+        when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
+                .thenReturn(List.of())
+                .thenReturn(List.of(alreadyTracked));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(viewer));
+
+        int firstUpdatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-eligible"), now);
+        int secondUpdatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-eligible"), now);
+
+        assertThat(firstUpdatedUsers).isEqualTo(1);
+        assertThat(secondUpdatedUsers).isZero();
+        ArgumentCaptor<Iterable<EventFeedbackState>> stateCaptor = ArgumentCaptor.forClass(Iterable.class);
+        verify(eventFeedbackStatesRepository).saveAll(stateCaptor.capture());
+        assertThat(stateCaptor.getValue())
+                .singleElement()
+                .satisfies(state -> {
+                    assertThat(state.getViewerUserId()).isEqualTo("viewer");
+                    assertThat(state.getEventId()).isEqualTo("event-eligible");
+                    assertThat(state.getEligible()).isTrue();
+                    assertThat(state.getCounterTracked()).isTrue();
+                });
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(1)).updateFirst(any(Query.class), updateCaptor.capture(), eq(Users.class));
+        Document fields = updateCaptor.getValue().getUpdateObject().get("$set", Document.class);
+        assertThat(fields.getInteger("activities.feedback")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
+        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.removed")).isEqualTo(1);
     }
 
     @Test

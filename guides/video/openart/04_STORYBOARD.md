@@ -11,113 +11,101 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ## Act I — Buying back time, seeking a life
 
-### S01 — No future in the frame · 00:00–00:08 · 8 s
+### S01 — A home without stability · 00:00–00:08 · 8 s
 
 - **Picture/blocking:** In a modest Budapest room, the Founder compares a thin
-  work folder, a calendar and a sketch of a future home. He closes the folder,
-  pockets the cognac notebook and looks toward the tram-lit window. No company
-  name, rejection letter or legal slogan appears.
+  work folder and an uncertain calendar beside evidence of an already-lived-in,
+  already-owned home: his key, books and personal photographs. He closes the
+  folder, pockets the cognac notebook and looks toward the tram-lit window. No
+  future-house sketch, company name, rejection letter or legal slogan appears.
 - **Face/body:** tired concentration, then a small resolved inhale; spine
   straightens rather than slumps.
 - **Camera/lens:** 45 mm, desk height, slow 8% dolly from papers to reflected
   eyes; locked horizon.
 - **Light/color:** 4600 K winter window key, warm 3000 K desk lamp, muted
   terracotta and teal.
-- **Sound/VO:** radiator tick, pencil click, distant tram; “At home, I couldn't
-  find work I could build a future on.”
+- **Sound/VO:** radiator tick, pencil click, distant tram; “I already had a
+  home. What I did not have was the stability to build a future there.”
 - **Brand in post:** 00:00–00:01.2, unmodified repository `heart.png` in the
   upper-left mobile-safe area with small separate `MyScoutee` text; opacity fade
   only, no recolor, redraw, crop, glow or AI animation.
 - **Transition/generation:** tram wire crosses the window and becomes the route
   line in S02. Flow Frames or Higgsfield Kling O1.
 
-### S02 — Months away · 00:08–00:15 · 7 s
+### S02 — London arrival, Tottenham key · 00:08–00:15 · 7 s
 
-- **Picture/blocking:** The notebook route runs over a paper map from home toward
-  anonymous foreign work sites. Calendar pages turn; the Founder video-calls
-  family from a plain rented room, then the call window becomes a small family
-  photograph inside his locker.
-- **Face/body:** affectionate half-smile on the call; the smile remains but eyes
-  reveal distance when the screen goes dark.
-- **Camera/lens:** 35 mm lateral track through map, station door and locker;
-  one continuous left-to-right motion.
-- **Light/color:** family image amber; travel/work environment cool grey-blue.
-- **Sound/VO:** station wash, zipper, restrained call-room tone; “Assignments
-  sent me abroad for months, away from my family…”
-- **Transition/generation:** locker door becomes three vertical regional panels.
-  OpenArt Director is preferred for the continuous set change.
+- **Picture/blocking:** The tram wire from S01 becomes a rail line on the
+  notebook map. The Founder arrives with one suitcase on a wet Tottenham street,
+  passes lived-in Victorian terraces and receives the key to one shared house.
+- **Face/body:** alert, tired and practical; a small inhale before entering.
+- **Camera/lens:** one 35 mm left-to-right track from route line to front door.
+- **Light/color:** overcast street blue, warm windows, rust scarf as anchor.
+- **Sound/VO:** suitcase wheels, distant train, key; “I went to London for work.”
+- **Transition/generation:** the vertical front-door frame becomes the vertical
+  window frame of the Soho office.
 
-### S03 — Europe, Asia, the Americas · 00:15–00:23 · 8 s
+### S03 — Programmer in Soho · 00:15–00:23 · 8 s
 
-- **Picture/blocking:** Three fast but readable anonymous assignment fragments:
-  industrial corridor in Europe, hot exterior work in Asia, rain-lit loading
-  space in the Americas. The same gloves, backpack and Founder link the scenes.
-  The locations are regional memories, not specific employer claims.
-- **Face/body:** focused competence; rubs one wrist once at the end of a long
-  shift, checks family photo, returns it carefully.
-- **Camera/lens:** 32 mm lateral track with foreground column wipes; one primary
-  action per fragment.
-- **Light/color:** fluorescent dawn → hard warm day → cold rain night; skin tones
-  remain neutral.
-- **Sound/VO:** machine hum, meal-box click, distant rain; “…across Europe, Asia
-  and the Americas. The days were long.”
-- **Transition/generation:** a moving work partition fills the lens. Kling 3.0
-  structured three-scene clip or three separate clips joined in post.
+- **Picture/blocking:** In a compact, believable Soho software office, the
+  Founder writes code at a laptop, checks a build with a colleague and records a
+  thought in the cognac notebook. No factory, work site or employer branding.
+- **Face/body:** focused competence, dry warmth with colleagues, fatigue only at
+  the end of the day.
+- **Camera/lens:** restrained 40 mm desk-height drift toward the window.
+- **Light/color:** cool monitor fill below eye line, warm practicals, brick and
+  rain-softened Soho architecture outside.
+- **Sound/VO:** keyboard, quiet office, street wash; “By day I wrote software in
+  Soho…”
+- **Transition/generation:** the dark office window becomes the train window.
 
-### S04 — Stay out of sight · 00:23–00:30 · 7 s
+### S04 — Victoria line home · 00:23–00:30 · 7 s
 
-- **Picture/blocking:** At an unidentifiable work site, a supervisor's hand makes
-  a quiet “behind the partition” gesture as indistinct visitors enter far in the
-  background. The Founder pauses behind frosted material, sees his reflection,
-  then closes the locker on the family photograph and takes his notebook.
-- **Face/body:** first disbelief in the eyes, jaw settles, then calm decision.
-  No fear performance, confrontation or villain reaction.
-- **Camera/lens:** 65 mm medium close-up through translucent partition; static
-  until a 5% push on the decision.
-- **Light/color:** clinical 5000 K overhead narrows; notebook catches one amber
-  edge.
-- **Sound/VO:** footsteps beyond partition, ventilation, no siren; inspection VO
-  from the locked script. Record the safer alternate too.
-- **Transition/generation:** notebook opens on a hand-drawn route to London.
-  Higgsfield for expression; keep a neutral alternate visual.
+- **Picture/blocking:** The Founder sits on a late Victoria line train. Soho
+  office light remains briefly in the glass, then gives way to Tottenham roofs.
+  He holds the house key and notebook, not a factory locker or work gloves.
+- **Face/body:** capable but depleted; observes other passengers without becoming
+  isolated from the world.
+- **Camera/lens:** static 50 mm reflection, then a gentle five-percent push.
+- **Light/color:** deep navy glass, carriage white, sodium-orange city traces.
+- **Sound/VO:** rail seam and doors; “…at night the Victoria line took me back to
+  Tottenham.”
+- **Transition/generation:** the carriage door opens on the HMO's narrow hall.
 
-### S05 — London arithmetic · 00:30–00:38 · 8 s
+### S05 — Thirteen under one roof · 00:30–00:38 · 8 s
 
-- **Picture/blocking:** The drawn route becomes a wet London rail line. At a
-  rental window, one imagined private flat fills most of a simple envelope,
-  leaving the founder's drawn home/family plan almost empty; he calmly replaces
-  it with a shared-room key. No prices, currency or landlord caricature.
-- **Face/body:** practical evaluation, not shock; he chooses the key knowingly.
-- **Camera/lens:** 40 mm through-object move from train window to rental window;
-  settle at chest-height two-thirds profile.
-- **Light/color:** slate rain, sodium amber, muted rust scarf as anchor.
-- **Sound/VO:** rail seam, rain, key on counter; London/rent line.
-- **Transition/generation:** key turns in S06's shared-room door. Flow first/last
-  frames or Higgsfield Kling O1.
+- **Picture/blocking:** One continuous move follows the Founder into a converted
+  Victorian HMO. Thirteen distinct adults are implied across the hall, kitchen
+  and stairs through shoes, coats, meals and brief human exchanges; avoid a
+  staged crowd lineup. One full bathroom door and one separate WC are spatially
+  clear.
+- **Face/body:** familiar greetings and negotiated movement; nobody is anonymous
+  set dressing.
+- **Camera/lens:** 28 mm hall track with doorway reveals, no distorted faces.
+- **Light/color:** worn timber, maintained cream paint, warm practical islands.
+- **Sound/VO:** keys, kettle, footsteps, quiet greetings; “Thirteen of us lived
+  in one Victorian house.”
+- **Transition/generation:** the bathroom queue clears frame to reveal two doors.
 
-### S06 — The shared room · 00:38–00:46 · 8 s
+### S06 — One bath, one WC, one shared bedroom · 00:38–00:46 · 8 s
 
-- **Picture/blocking:** A clean, compact shared London bedroom: two bounded
-  sleeping areas or visible roommate storage, one narrow private desk corner,
-  suitcase under bed, meal containers on a shelf. The Founder makes the bed,
-  places the notebook in his corner and nods politely to a flatmate passing the
-  doorway.
-- **Face/body:** composed, respectful, faint relief at having a workable plan.
-- **Camera/lens:** 28 mm doorway-to-desk dolly; avoid wide-angle distortion of
-  the face.
-- **Light/color:** overcast 6200 K window, warm 3200 K bedside practical, faded
-  cream walls.
-- **Sound/VO:** room key, fabric, shared kitchen murmur; “…So I lived in shared
-  rooms.”
-- **Transition/generation:** meal container lid closes and match-cuts to S07.
-  OpenArt/Higgsfield with locked room plate.
+- **Picture/blocking:** The geography becomes precise: one full bathroom, one
+  separate small toilet, then the Founder's shared bedroom with two bounded
+  sleeping areas and two personal desk/storage zones. He places the notebook in
+  his corner while a flatmate pins up a small personal photograph.
+- **Face/body:** respectful coordination and quiet agency, not humiliation.
+- **Camera/lens:** one 32 mm move from bathroom threshold to bedroom desk.
+- **Light/color:** overcast window, warm bedside practical, faded cream walls.
+- **Sound/VO:** tap, latch, fabric, kitchen murmur; “We shared one bathroom and
+  one separate toilet, and I shared my bedroom.”
+- **Transition/generation:** meal-container lid closes and match-cuts to S07.
 
 ### S07 — Five years, buying time · 00:46–00:58 · 12 s
 
 - **Picture/blocking:** Four seasonal cycles repeat through the same frame:
   pre-dawn departure, long workstation, packed simple meal, small amount moved
-  into a future envelope, late return. A fifth calendar edge settles. The meal is
-  modest but adequate; the work is tiring but the Founder remains capable.
+  into a time-reserve ledger, late return. A fifth calendar edge settles. The
+  meal is modest but adequate; the work is tiring but the Founder remains
+  capable. No house drawing, mortgage target or future-home envelope appears.
 - **Face/body:** concentrated mornings, fatigue around eyes at night, then quiet
   pride when he marks one more saved interval in the notebook.
 - **Camera/lens:** locked 40 mm composition for seasonal match cuts; final 55 mm
@@ -125,7 +113,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Light/color:** winter blue → spring rain → summer pale gold → autumn amber →
   winter again; identical desk lamp anchors time.
 - **Sound/VO:** clock rhythm, lunch lid, keyboard, coins without cash-register
-  cliché; “For five years… Not for luxury. I was buying back my time.”
+  cliché; “For five years… Not for another home. I was buying financial
+  independence: time for my own work.”
 - **Transition/generation:** the final saved line sweeps into a world-map arc.
   Generate four plates, composite seasons in post; do not ask one clip to do all.
 
@@ -258,93 +247,106 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ## Act II — Draw a path
 
-### S17 — Priority, not human value · 02:01–02:09 · 8 s
+### S17 — Editable priority for an unknown person or pair · 02:01–02:09 · 8 s
 
-- **Picture/blocking:** A generic portrait becomes a dimensional adult listening,
-  helping and moving in context. Beside it, a **private** 1–10 control changes
-  from 4 to 8, then 7 as context changes. No number floats over a person and no
-  one else sees it.
-- **Face/body:** Founder considers, revises and accepts nuance; no reward grin.
-- **Camera/lens:** 55 mm focus change from flat card to lived context, then lock.
-- **Light/color:** neutral portrait warms; amber denotes personal priority.
-- **Sound/VO:** tactile ticks without casino sound; “full focus… editable
-  priority.”
-- **Transition/generation:** slider track extends into two directional lines.
-  Generate clean person plate, create exact UI in post.
+- **Picture/blocking:** Founder privately reviews one unknown individual profile
+  and one pair suggestion, then deliberately moves ten tactile amber beads from
+  a low position toward a high one. This is graded intent, not a public score.
+- **Face/body:** careful choice and curiosity; the people on cards retain dignity.
+- **Camera/lens:** 55 mm focus change from deciding face to beads, then lock.
+- **Light/color:** warm amber = editable priority; background suggestion marks
+  remain quieter than the explicit human input.
+- **Sound/VO:** tactile single ticks; “Give a person or pair an editable priority
+  from one to ten.”
+- **Transition/generation:** two independent amber choices approach from opposite
+  directions. Generate clean plates; create exact UI and numbers in post.
 
-### S18 — Both directions, with context · 02:09–02:17 · 8 s
+### S18 — Mutual evidence forms a group of strangers · 02:09–02:17 · 8 s
 
-- **Picture/blocking:** Two faint lines strengthen only where interest is
-  reciprocal. Shared activity, distance and timing join as smaller aqua threads.
-  One one-sided line fades respectfully. Several nodes become a readable graph;
-  Maya calmly declines one context and accepts another.
-- **Face/body:** each portrait makes an autonomous choice; no rejection wound or
-  soulmate glow.
-- **Camera/lens:** 40 mm gentle overhead-to-oblique tilt.
-- **Light/color:** amber intent, aqua context, first restrained coral core.
-- **Sound/VO:** paired notes resolve on reciprocal links; affinity line.
-- **Transition/generation:** graph arcs become chairs. Motion graphics plus
-  approved portrait loops are preferred.
+- **Picture/blocking:** Two-way choices and restrained cues for shared interests,
+  distance and current context fold into two possible group arrangements. One
+  balanced five-adult candidate becomes clear. None of these people has met yet;
+  faces dominate over the mechanism.
+- **Face/body:** cautious curiosity and autonomous choice, no romantic spotlight.
+- **Camera/lens:** 40 mm overhead relationship cues tilt into eye-level distinct
+  adults who remain separated until the proposal is accepted.
+- **Light/color:** amber priority, aqua reciprocal/context evidence, coral group.
+- **Sound/VO:** paired notes settle into one chord; “Mutual choices and context
+  form a group of strangers.”
+- **Transition/generation:** the candidate group becomes a shared chat context.
+  Avoid a giant affinity graph; exact controls remain in post.
 
-### S19 — A small group, not a forced pair · 02:17–02:25 · 8 s
+### S19 — Strangers choose, chat and plan · 02:17–02:25 · 8 s
 
-- **Picture/blocking:** Possible groups rebalance into five adults in a public
-  venue foyer. Accept and decline are equally calm; no pair is spotlighted.
-  Abstract nodes become full people, including Maya and the Founder.
-- **Face/body:** initial uncertainty eases when a member checks the shared route;
-  another decline leaves with a neutral smile and the arrangement adapts.
+- **Picture/blocking:** Five strangers receive one group proposal. Four accept
+  independently and one calmly declines. Accepted portraits settle around a
+  contextual group-chat table; blank cards for date, place and capacity turn the
+  chat into their first event draft. No pair is spotlighted.
+- **Face/body:** competent coordination; yes and no remain equally calm.
 - **Camera/lens:** 35 mm slow 20° orbit, eye-level at the end.
-- **Light/color:** graph glow resolves into equal 3500 K face light.
-- **Sound/VO:** distinct footsteps, soft decline tone; small-group line.
-- **Transition/generation:** a phone lifts to reveal plan-making. Higgsfield
-  Kling/Elements; maximum five readable faces.
+- **Light/color:** equal 3500 K face light; restrained coral event spine.
+- **Sound/VO:** one soft accept/decline cue, chat, paper; group-choice line.
+- **Transition/generation:** one blank event card becomes a physical ticket.
+  All readable interface details are composited in post.
 
-### S20 — Chat becomes a plan · 02:25–02:32 · 7 s
+### S20 — First managed event turns strangers into contacts · 02:25–02:32 · 7 s
 
-- **Picture/blocking:** Different hands contribute a date, route, accessibility
-  note and ticket; abstract chat becomes one event card, then a real paper
-  ticket. Founder reads and puts the phone away.
+- **Picture/blocking:** At the first real event, route/accessibility, one shared
+  resource, a ticket/check-in action and event-linked feedback appear as simple
+  physical actions. The group arrives as strangers and recognizes one another by
+  the end of a shared activity.
 - **Face/body:** contribution is distributed; people look relieved by a concrete
   next step.
 - **Camera/lens:** 50 mm hand inserts with match cuts; final 35 mm pullback.
 - **Light/color:** warm neutral light; coral/aqua UI added in post.
 - **Sound/dialogue:** “Saturday?” “I'm in.” “I'll bring the tickets.” Digital
-  taps become paper and zipper sounds.
-- **Transition/generation:** ticket fills frame and becomes venue entry card.
+  taps become ticket, room and feedback sounds.
+- **Transition/generation:** ticket fills frame, then becomes a later invitation.
   Generate clean hands/people; all legible text in post.
 
-## Act III — The next chapter has local authors
+## Act III — A community that can meet again
 
-### S21 — Somewhere real · 02:32–02:38 · 6 s
+### S21 — The editable relationship lifecycle · 02:32–02:38 · 6 s
 
-- **Picture/blocking:** Five arrive independently at a public community venue.
-  One checks route, one holds tickets, one shifts a chair, the local Operator
-  greets them; attention moves to a simple shared map/activity and a specific
-  first laugh.
-- **Face/body:** micro-awkwardness becomes task-focused ease; Founder listens and
-  is not centered.
-- **Camera/lens:** 32 mm doorway track into 45 mm table arc, split into two 3 s
-  clips if necessary.
+- **Picture/blocking:** First, people met at S20 are now known contacts who can be
+  directly invited to another event; Auto Inviter may fill one available place
+  from the priority plan with someone new. Repeated events begin to form a
+  community. Then a later ordinary disagreement changes one relationship: one
+  person privately lowers the same priority beads, and that pair's future shared
+  group/event path becomes quieter and less likely while other paths continue.
+- **Face/body:** recognition, then restrained disagreement and calm boundary;
+  nobody is villainized or publicly punished.
+- **Camera/lens:** 45 mm invitation/table match cut into 55 mm private priority
+  detail; two restrained moves at most.
 - **Light/color:** warm 3200–3500 K practical/daylight mix; exit remains visible.
-- **Sound/VO:** entry chime, chair, paper, natural laugh; “Not a promise…”
+- **Sound/VO:** invitation, room tone, one lower tactile tick; “Relationships
+  change too. Lower the priority, and meeting again becomes less likely.”
 - **Transition/generation:** Operator closes a preparation list. Higgsfield for
   ensemble consistency.
 
-### S22 — One core, many local worlds · 02:38–02:44 · 6 s
+### S22 — Shared core, local brands, voluntary network · 02:38–02:44 · 6 s
 
-- **Picture/blocking:** Operator changes a local branded sign while the small
-  thin coral shared-core line remains. Match cuts reveal Budapest, London, an Atlantic
-  city, a Central European city and an East Asian neighborhood, each led by a
-  different competent host. Founder closes the core notebook and passes it
-  toward camera; local hands receive differently covered copies.
-- **Face/body:** Founder gives level eye contact and calm confidence. Operators
-  receive an opportunity, not a burden; they greet, coordinate and listen.
-- **Camera/lens:** 40 mm handoff match cuts ending in a restrained crane up.
-- **Light/color:** distinct local palettes connected by one thin coral line.
-- **Sound/VO:** notebook close, room tones harmonize; “I built the core because I
-  believe in it. Every city needs local authors.”
-- **Transition/generation:** notebook elastic becomes the end-card frame line. Build as
-  separate plates if multi-city faces drift; OpenArt/Flow plus Higgsfield close-up.
+- **Picture/blocking:** At a real technical workspace, the Founder transfers a
+  verified installation package to one competent local operator. The operator
+  checks it, starts an independently hosted server and opens an own-brand
+  organizer workspace for local community/cultural testing. The coral shared
+  core then reveals several independent server workspaces cooperating as a
+  voluntary network/virtual enterprise; one node has a clean opt-out branch and
+  remains locally operable. This is accountable shared infrastructure, not
+  copies tossed to anonymous hands.
+- **Face/body:** level professional trust. The operator understands the system
+  and accepts operational responsibility; the Founder does not surrender the
+  core or become a central merchant.
+- **Camera/lens:** 45 mm over-shoulder package verification to a 50 mm two-shot;
+  one restrained move.
+- **Light/color:** deep navy technical space, warm human faces, one coral shared-
+  core line linking distinct local palettes without flattening them.
+- **Sound/VO:** package check, server start, several local room tones; “Local
+  operators test one shared core across brands and cultures — a voluntary server
+  network with opt-out.”
+- **Transition/generation:** the verified package outline becomes the end-card
+  frame. No claim of current deployments, proven efficiency, revenue or
+  automatic trust; all readable status text is added in post.
 
 ### S23 — Wordmark and invitation · 02:44–02:48 · 4 s
 
@@ -360,22 +362,26 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ## Continuity checkpoints
 
-- **Founder:** compare S01, S04–S09, S12–S14, S17, S19, S21 and S22 for face,
+- **Founder:** compare S01–S09, S12–S14, S17, S19, S21 and S22 for face,
   age, body, navy coat/charcoal knit, rust scarf and cognac notebook.
-- **Work truth:** S02–S04 remain anonymous first-person memory; no country,
-  company or legal verdict is invented.
-- **London:** S05–S07 show rational saving in maintained shared housing, not
-  homelessness, starvation or hostile flatmates.
+- **London truth:** S02–S07 remain one personal Soho-to-Tottenham account: the
+  Founder is a programmer, commutes on the Victoria line and lives in a
+  Victorian HMO with thirteen adults, one full bathroom, one separate WC and a
+  shared bedroom. Do not replace this with factory or generic migrant imagery.
+- **Humanity:** the HMO is crowded but lived-in and personal. Show distinct
+  flatmates and rational saving, not homelessness, starvation or hostility.
 - **Travel:** S08 is exactly a three-second visual burst inside an eight-second
   shot; no unvisited destination or fake archive aesthetic.
 - **Dance:** S12–S14 use identical room geometry, and the couple is friendly.
 - **Dates:** S15 makes settings, not people, the friction.
-- **Product color language:** amber = private intent; aqua = context; coral =
-  common MyScoutee core.
-- **Autonomy:** S18–S20 visibly permit yes and no; no forced pair or promised
-  chemistry.
-- **Operator ending:** S21–S22 show an independent local author with real
-  context; no revenue, traction, deployment or superiority claim.
+- **Product color language:** amber = editable private 1–10 priority; aqua =
+  reciprocal/context evidence; coral = candidate group, event and shared core.
+- **Autonomy and lifecycle:** S18–S21 visibly permit yes and no, begin with
+  strangers, make familiarity the result of meeting, and treat later priority
+  reduction as a private boundary rather than punishment.
+- **Operator ending:** S22 shows technically capable local operators, independent
+  own-brand servers, cultural/community testing, voluntary network cooperation
+  and opt-out; no revenue, traction, current-deployment or proven-efficiency claim.
 
 ## Editorial fallback order
 

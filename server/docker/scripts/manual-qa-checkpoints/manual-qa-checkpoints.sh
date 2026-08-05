@@ -70,6 +70,7 @@ Environment:
   MANUAL_QA_INVITEE_USER_ID    optional fixed target user; use with creator
   MANUAL_QA_CHAT_TITLE          optional STAT-011 chat title
   MANUAL_QA_EVENT_ID            optional STAT-020 event source/document ID
+  MANUAL_QA_EVENT_IMAGE_URL     uploaded EVENT-FEEDBACK fixture image URL
   MANUAL_QA_CHECKPOINT_ID       set internally for checkpoint-runner commands
   MANUAL_QA_SOURCE_CHECKPOINT_ID set internally for event-domain advance
 USAGE
@@ -138,6 +139,7 @@ run_scenario() {
       -e "MANUAL_QA_INVITEE_USER_ID=${MANUAL_QA_INVITEE_USER_ID:-}" \
       -e "MANUAL_QA_CHAT_TITLE=${MANUAL_QA_CHAT_TITLE:-}" \
       -e "MANUAL_QA_EVENT_ID=${MANUAL_QA_EVENT_ID:-}" \
+      -e "MANUAL_QA_EVENT_IMAGE_URL=${MANUAL_QA_EVENT_IMAGE_URL:-}" \
       -e "MANUAL_QA_CHECKPOINT_ID=${checkpoint_id}" \
       -e "MANUAL_QA_SOURCE_CHECKPOINT_ID=${source_checkpoint_id}" \
       "${mongo_container}" \
@@ -162,6 +164,7 @@ run_scenario() {
     MANUAL_QA_INVITEE_USER_ID="${MANUAL_QA_INVITEE_USER_ID:-}" \
     MANUAL_QA_CHAT_TITLE="${MANUAL_QA_CHAT_TITLE:-}" \
     MANUAL_QA_EVENT_ID="${MANUAL_QA_EVENT_ID:-}" \
+    MANUAL_QA_EVENT_IMAGE_URL="${MANUAL_QA_EVENT_IMAGE_URL:-}" \
     MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" \
     MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
     mongosh \

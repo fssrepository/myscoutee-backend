@@ -8,16 +8,22 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-001
-state: EVENT-FEEDBACK-001 baseline-ready; Nova has accepted Member rows on eligible, locked and trashed controls, a pending Member row on the pending control, and zero feedback states, answers, outbox rows or recompute tasks
+active_checkpoint: EVENT-FEEDBACK-002
+state: READY FOR HTTP UI ORACLE; a recognisable generated fixture image is stored at server/docker/scripts/manual-qa-checkpoints/assets/event-feedback-002-cover.png, uploaded through the normal media API, and its canonical large.webp URL is persisted on the directly staged past event Manual QA EVENT-FEEDBACK-002; Casey Bridge is host and Nova Social is the accepted participant; the existing eligibility worker materialized exactly one eligible/counterTracked pending state and Nova's exact stored feedback counter is 1 with ownEvents/pending/feedbacked/removed = 0/1/0/0; Event Editor is not being repeated
 next_actor: user
-next_action: in the Nova Social session click Feedback in the Impressions section of the side menu; the Event Feedback popup must open with only Manual QA feedback eligible visible
-next_codex_action: inspect the screenshot, then run the post-load read-only oracle proving that opening the list created no feedback state, answer, outbox row or recompute task
-queued_checkpoint: []
+next_action: in the Nova Social session, click the Visszajelzések tile in the profile menu; expect the Esemény-visszajelzés popup to show exactly one pending Manual QA EVENT-FEEDBACK-002 card with the generated lakeside meetup image and pending count 1
+next_codex_action: wait for that screenshot and compare the card identity, image and counters with the persisted oracle before giving the next single UI action
+queued_checkpoint: [EVENT-IMPRESSION-001]
 ```
+
+Active detail: [`EVENT-FEEDBACK-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
 
 ## Hard constraints
 
+- This QA session already has an owning dev hot-deploy pipeline: use it as the
+  only compile/build path and inspect its existing logs. Do not duplicate its
+  work with separate Gradle/npm/build processes. For a cache lock or stuck
+  deploy, identify and restart only the single owning process.
 - Use the already-running dev stack and its hot-deploy watchers.
 - Do not start, rebuild, stop or duplicate a server, Angular watcher, database
   or Compose stack.
@@ -61,6 +67,18 @@ work.
 - Casey UI proved Chats, All and Event unread cycles `0 -> 1 -> 0`, shared
   two-message history, and Notification Center `5 -> 6`; both chat owner copies
   finished at unread `0`.
+
+### `EVENT-FEEDBACK-001` — PASS / CLOSED
+
+- The popup exposed exactly one accepted, non-admin, non-trashed event only
+  after `start + 2h`; locked, trashed, admin and pending-member controls stayed
+  absent.
+- Eligibility is materialized once by the bounded scheduled write path. Menu
+  and popup reads do not recalculate or send deltas.
+- A fresh reload showed the profile-menu Feedback badge `1`. The persisted
+  exact main counter was `feedback=1`, with four buckets
+  `ownEvents/pending/feedbacked/removed = 0/1/0/0` and one
+  `eligible/counterTracked` state.
 
 ### `EVENT-INV-003` — PASS / CLOSED
 

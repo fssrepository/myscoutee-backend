@@ -27,6 +27,7 @@
   const AUTO_INVITER_HOLD_SECONDS = 3600;
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
   const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
+  const feedbackEventImageUrl = Q.text(process.env.MANUAL_QA_EVENT_IMAGE_URL);
   const EXPECTED_TITLE = `Manual QA ${checkpointId}`;
 
   function optionalField(source, key) {
@@ -615,6 +616,7 @@
       subEventDefinitions: options.subEventDefinitions || [],
       mode: options.mode || "Casual",
       topics: ["Manual QA"],
+      imageUrl: Q.text(options.imageUrl),
       startAtIso: options.startAtIso || dateIso(180),
       endAtIso: options.endAtIso || dateIso(300),
       createdDate: now,
@@ -1249,7 +1251,12 @@
     }
 
     const options = { ...future };
-    if (stageKind.startsWith("feedback-")) Object.assign(options, past);
+    if (stageKind.startsWith("feedback-")) {
+      if (!feedbackEventImageUrl) {
+        Q.fail("MANUAL_QA_EVENT_IMAGE_URL must contain the uploaded QA fixture image URL.");
+      }
+      Object.assign(options, past, { imageUrl: feedbackEventImageUrl });
+    }
     if (stageKind === "trashed") {
       options.status = "T";
       options.statusBeforeSuppression = "A";
@@ -1274,6 +1281,7 @@
     return Q.collection("events").find(manualEventSelector()).toArray().map(event => ({
       eventId: Q.text(event.sourceId),
       title: Q.text(event.title),
+      imageUrl: Q.text(event.imageUrl),
       status: Q.text(event.status),
       published: event.published,
       isTrashed: event.isTrashed,
@@ -1318,9 +1326,9 @@
       { ownerType: "event", ownerId: { $in: dynamicEventIds } },
       { ownerId: { $regex: `^${PREFIX}` } }
     ] }).toArray();
-    const feedbackStates = Q.collection("eventFeedbackStates").find({ eventId: { $in: EVENT_IDS } }).toArray();
-    const feedbackAnswers = Q.collection("eventFeedbackAnswers").find({ eventId: { $in: EVENT_IDS } }).toArray();
-    const tickets = Q.collection("eventTickets").find({ eventId: { $in: EVENT_IDS } }).toArray();
+    const feedbackStates = Q.collection("eventFeedbackStates").find({ eventId: { $in: dynamicEventIds } }).toArray();
+    const feedbackAnswers = Q.collection("eventFeedbackAnswers").find({ eventId: { $in: dynamicEventIds } }).toArray();
+    const tickets = Q.collection("eventTickets").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const stageRuntime = Q.collection("activitySubEventStageRuntime").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const groups = Q.collection("activitySubEventGroups").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const leaderboard = Q.collection("eventLeaderboardEntries").find({ eventId: { $regex: `^${PREFIX}` } }).toArray();
@@ -1361,6 +1369,34 @@
       recipientUserId: { $in: [hostUserId, participantUserId, thirdUserId] },
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).toArray();
+    const feedbackNotificationOutbox = Q.collection("notificationOutbox").find({
+      notificationType: "event-feedback-submitted",
+      $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).toArray();
+    const feedbackNotifications = Q.collection("userNotifications").find({
+      kind: "event-feedback-submitted",
+      $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).toArray();
+    const feedbackRecomputeTasks = Q.collection("affinityRecomputeTasks").find({
+      targetId: { $in: [hostUserId, participantUserId] },
+      updatedDate: { $gt: state.stagedAtIso }
+    }).toArray();
+    const feedbackTarget = Q.collection("users").findOne({
+      $or: [{ _id: hostUserId }, { userId: hostUserId }]
+    }) || {};
+    const summarizeImpressionsSection = section => ({
+      unreadCount: Number(section && section.unreadCount || 0),
+      averageRating: section && section.averageRating,
+      peopleMet: Number(section && section.peopleMet || 0),
+      totalEvents: Number(section && section.totalEvents || 0),
+      personalityTraits: (section && section.personalityTraits || []).map(trait => ({
+        id: Q.text(trait.id),
+        label: Q.text(trait.label),
+        percent: Number(trait.percent || 0),
+        evidenceCount: Number(trait.evidenceCount || 0),
+        lastRatedAtIso: Q.text(trait.lastRatedAtIso)
+      }))
+    });
     const outboxCount = Q.collection("notificationOutbox").countDocuments({
       $and: [
         { $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }] },
@@ -1458,6 +1494,23 @@
               }
             };
           })
+        : checkpointId.startsWith("EVENT-FEEDBACK-")
+          ? (() => {
+              const current = userActivitiesSnapshot(participantUserId);
+              const currentActivities = current.activities.value || {};
+              return [{
+                user: Q.user(participantUserId),
+                current: {
+                  feedback: nestedNumber(currentActivities, "feedback"),
+                  eventFeedback: {
+                    ownEvents: nestedNumber(currentActivities, "eventFeedback.ownEvents"),
+                    pending: nestedNumber(currentActivities, "eventFeedback.pending"),
+                    feedbacked: nestedNumber(currentActivities, "eventFeedback.feedbacked"),
+                    removed: nestedNumber(currentActivities, "eventFeedback.removed")
+                  }
+                }
+              }];
+            })()
         : [],
       invitationAcceptanceOutbox: invitationAcceptanceOutbox.map(item => ({
         notificationType: Q.text(item.notificationType),
@@ -1483,8 +1536,37 @@
         readAtIso: Q.text(item.readAtIso),
         read: Boolean(Q.text(item.readAtIso))
       })),
+      feedbackNotificationOutbox: feedbackNotificationOutbox.map(item => ({
+        notificationType: Q.text(item.notificationType),
+        eventId: Q.text(item.entityId || item.payload && item.payload.eventId),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        senderUserId: Q.text(item.payload && item.payload.senderUserId),
+        status: Q.text(item.status)
+      })),
+      feedbackNotifications: feedbackNotifications.map(item => ({
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        senderUserId: Q.text(item.payload && item.payload.senderUserId),
+        title: Q.text(item.title),
+        message: Q.text(item.message)
+      })),
+      feedbackRecomputeTasks: feedbackRecomputeTasks.map(item => ({
+        targetType: Q.text(item.targetType),
+        targetId: Q.text(item.targetId),
+        reason: Q.text(item.reason),
+        status: Q.text(item.status),
+        updatedDate: item.updatedDate
+      })),
+      feedbackTargetImpressions: {
+        user: Q.user(hostUserId),
+        host: summarizeImpressionsSection(feedbackTarget.impressions && feedbackTarget.impressions.host),
+        member: summarizeImpressionsSection(feedbackTarget.impressions && feedbackTarget.impressions.member)
+      },
       feedbackStates: feedbackStates.map(item => ({
         viewerUserId: Q.text(item.viewerUserId),
+        eligible: item.eligible === true,
+        counterTracked: item.counterTracked === true,
         removed: item.removed === true,
         submittedAtIso: item.submittedAtIso,
         organizerNote: Q.text(item.organizerNote),
@@ -1579,7 +1661,9 @@
       snapshots: Q.snapshotSpecs(selectors()),
       userActivitySnapshots: ["publish-chat-draft", "chat-authorized"].includes(selected.stage)
         ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
-        : []
+        : selected.stage.startsWith("feedback-")
+          ? [participantUserId].map(userActivitiesSnapshot)
+          : []
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
     try {

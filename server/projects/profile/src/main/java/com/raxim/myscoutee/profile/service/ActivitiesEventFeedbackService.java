@@ -800,7 +800,7 @@ public class ActivitiesEventFeedbackService {
                     safeText(record.getTitle()),
                     safeText(record.getSubtitle()),
                     safeText(record.getTimeframe()),
-                    firstNonBlank(record.getImageUrl(), "https://picsum.photos/seed/event-feedback-" + eventId + "/1200/700"),
+                    safeText(record.getImageUrl()),
                     startAtMs == null ? 0L : startAtMs,
                     pendingCards,
                     cards.size(),

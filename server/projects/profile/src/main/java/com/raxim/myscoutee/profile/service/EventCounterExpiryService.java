@@ -49,6 +49,7 @@ public class EventCounterExpiryService {
     private final MongoTemplate mongoTemplate;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final AdminTelemetryService adminTelemetryService;
+    private final UserActivityCountersService userActivityCountersService;
     private final int batchSize;
     private final AtomicBoolean processing = new AtomicBoolean(false);
 
@@ -57,7 +58,13 @@ public class EventCounterExpiryService {
             int affectedUsers,
             int updatedUsers,
             long markedEventRecords,
-            long markedTicketRecords) {}
+            long markedTicketRecords,
+            int feedbackProjectionSources,
+            int feedbackCounterUsers) {
+        int processedSources() {
+            return dueSources + feedbackProjectionSources;
+        }
+    }
     private record EventCounterState(int invitations, int events, int hosting) {}
 
     public EventCounterExpiryService(
@@ -66,26 +73,28 @@ public class EventCounterExpiryService {
             MongoTemplate mongoTemplate,
             NotificationRuleRegistryService notificationRuleRegistryService,
             AdminTelemetryService adminTelemetryService,
+            UserActivityCountersService userActivityCountersService,
             @Value("${events.counter-expiry.batch-size:200}") int batchSize) {
         this.activityMembersRepository = activityMembersRepository;
         this.usersRepository = usersRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.adminTelemetryService = adminTelemetryService;
+        this.userActivityCountersService = userActivityCountersService;
         this.batchSize = Math.max(1, Math.min(1000, batchSize));
     }
 
     public int runExpiryPassNow() {
-        return runExpiryPass(Instant.now(), false).dueSources();
+        return runExpiryPass(Instant.now(), false).processedSources();
     }
 
     public int runScheduledExpiryPass(Instant scheduledAt) {
-        return runExpiryPass(scheduledAt, true).dueSources();
+        return runExpiryPass(scheduledAt, true).processedSources();
     }
 
     private ExpiryRunResult runExpiryPass(Instant requestedStart, boolean scheduled) {
         if (!processing.compareAndSet(false, true)) {
-            return new ExpiryRunResult(0, 0, 0, 0L, 0L);
+            return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0);
         }
         Instant startedAt = requestedStart == null ? Instant.now() : requestedStart;
         int claimedPendingCount = 0;
@@ -97,7 +106,7 @@ public class EventCounterExpiryService {
                         "Scanning expired event counters.",
                         SYSTEM_USER,
                         startedAt) == null) {
-                    return new ExpiryRunResult(0, 0, 0, 0L, 0L);
+                    return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0);
                 }
             } else {
                 notificationRuleRegistryService.beginRun(
@@ -110,16 +119,18 @@ public class EventCounterExpiryService {
             claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
             ExpiryRunResult result = processDueEvents(Instant.now());
-            String detail = result.dueSources() == 0 && result.markedTicketRecords() == 0
-                    ? "No expired event counters or ticket records were due."
+            String detail = result.processedSources() == 0 && result.markedTicketRecords() == 0
+                    ? "No expired event counters, ticket records, or feedback counter projections were due."
                     : "Expired " + result.dueSources() + " event source(s), refreshed "
                     + result.updatedUsers() + "/" + result.affectedUsers()
                     + " affected user counter document(s), marked "
                     + result.markedEventRecords() + " event record(s), and marked "
-                    + result.markedTicketRecords() + " ticket record(s).";
+                    + result.markedTicketRecords() + " ticket record(s); projected feedback counters for "
+                    + result.feedbackCounterUsers() + " user(s) across "
+                    + result.feedbackProjectionSources() + " event source(s).";
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
-                    result.dueSources(),
+                    result.processedSources(),
                     "completed",
                     detail,
                     SYSTEM_USER,
@@ -150,7 +161,7 @@ public class EventCounterExpiryService {
                         SYSTEM_USER,
                         startedAt);
             }
-            return new ExpiryRunResult(0, 0, 0, 0L, 0L);
+            return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0);
         } finally {
             processing.set(false);
         }
@@ -160,10 +171,21 @@ public class EventCounterExpiryService {
         String nowIso = (now == null ? Instant.now() : now).toString();
         List<ActivityEvent> dueDocuments = dueEventDocuments(nowIso);
         List<ActivityEvent> dueTicketDocuments = dueTicketDocuments(nowIso);
+        LinkedHashSet<String> feedbackProjectionSourceIds = sourceIds(dueFeedbackProjectionDocuments(now));
+        int feedbackCounterUsers = userActivityCountersService.syncFeedbackEligibilityForSourceIds(
+                feedbackProjectionSourceIds,
+                now);
         LinkedHashSet<String> dueSourceIds = sourceIds(dueDocuments);
         long markedTicketRecords = markDueTicketsExpired(dueTicketDocuments, nowIso);
         if (dueSourceIds.isEmpty()) {
-            return new ExpiryRunResult(0, 0, 0, 0L, markedTicketRecords);
+            return new ExpiryRunResult(
+                    0,
+                    0,
+                    0,
+                    0L,
+                    markedTicketRecords,
+                    feedbackProjectionSourceIds.size(),
+                    feedbackCounterUsers);
         }
 
         List<ActivityEvent> sourceDocuments = loadEventDocumentsBySourceIds(dueSourceIds);
@@ -176,7 +198,22 @@ public class EventCounterExpiryService {
                 affectedUserIds.size(),
                 updatedUsers,
                 markedEventRecords,
-                markedTicketRecords);
+                markedTicketRecords,
+                feedbackProjectionSourceIds.size(),
+                feedbackCounterUsers);
+    }
+
+    private List<ActivityEvent> dueFeedbackProjectionDocuments(Instant now) {
+        Instant cutoff = (now == null ? Instant.now() : now).minusSeconds(2L * 60L * 60L);
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("feedbackCountersProjected").ne(true),
+                Criteria.where("generated").ne(true),
+                Criteria.where("sourceId").exists(true).nin("", null),
+                Criteria.where("status").ne(ActivityEvent.STATUS_TRASHED),
+                Criteria.where("startAtIso").lte(cutoff.toString())));
+        query.with(Sort.by(Sort.Order.asc("startAtIso"), Sort.Order.asc("sourceId")));
+        query.limit(batchSize);
+        return mongoTemplate.find(query, ActivityEvent.class);
     }
 
     private List<ActivityEvent> dueEventDocuments(String nowIso) {

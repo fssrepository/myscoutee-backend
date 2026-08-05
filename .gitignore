@@ -48,6 +48,17 @@ yarn-error.log
 testem.log
 /**/typings
 
+# Keep rejected and backup media out of Git. Approved/current renders may be
+# committed deliberately; filenames containing these markers remain local.
+**/renders/**/*rejected*
+**/renders/**/*discarded*
+**/renders/**/*superseded*
+**/renders/**/backups/
+**/renders/**/archive/
+**/renders/**/*.bak
+**/renders/**/*.orig
+**/renders/**/*.tmp
+
 # e2e
 #/**/e2e/*.js
 #/**/e2e/*.map

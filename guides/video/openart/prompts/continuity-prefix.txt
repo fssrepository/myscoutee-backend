@@ -10,16 +10,37 @@ Founder with identical face, apparent age, navy mid-length field coat, charcoal
 knit, muted rust scarf when outdoors, dark trousers, brown shoes, compact dark
 backpack and [NOTEBOOK_PROP]; [MAYA_REF], [DANCE_STUDENT_REF],
 [DANCE_PARTNER_REF], [OPERATOR_REF], [BUDAPEST_WORLD], [LONDON_WORLD],
-[WORKSITE_WORLD], [SHARED_ROOM], [DANCE_STUDIO] and [EVENT_VENUE] keep their
+[SOHO_OFFICE], [TOTTENHAM_HMO], [DANCE_STUDIO] and [EVENT_VENUE] keep their
 approved identity and geometry. The Founder is observant, persistent and warm,
 never defeated or resentful. Supporting adults have autonomy and dignity. One
 clear subject action and one camera move only. No generated words, captions,
 interface labels, logos or final brand mark; deliver clean plates for post.
 
+Product continuity follows a relationship through its lifecycle. A user gives
+an editable private 1–10 priority to an unknown individual profile or pair
+suggestion. Reciprocal choices plus profile/context evidence form weighted
+relationships and balanced groups of people who have not met; show this through
+people and choices, not an abstract affinity diagram. Every person can accept or
+decline. A high explicit priority may outweigh weaker automated/context signals;
+it does not override another person's consent. The group gains shared context in chat, then plans and manages a first
+real event through place/route, resources, tickets, check-in and event-linked
+feedback. After meeting, the former strangers are known contacts who can be
+directly invited to later events, while Auto Inviter may fill available places
+according to the priority plan. Repeated meetings can grow a community. If a
+relationship later changes, its private priority can move up or down; a lower
+priority makes future shared group/event paths less likely. Do not reduce MyScoutee to
+a dating matcher and do not erase existing relationships. Operators are
+technically capable and accountable. Each runs the shared core on an
+independently hosted local server under a local brand, tests it with real local
+communities and cultural differences, and may connect voluntarily to the wider
+server network/virtual enterprise. Show a credible opt-out path that leaves the
+local deployment independent. This is a proposed operating model, not current
+deployment or proven-efficiency evidence; never show indiscriminate package distribution.
+
 Avoid photoreal uncanny skin, plastic glossy 3D, imitation of a named studio or
 film, glamour retouching, changing identity or costume, extra or duplicate people,
 face morphing, bad hands, fused limbs, floating props, sexualized framing,
 melodramatic sadness, hostility between genders, public numerical ratings,
-employer identity, police raid imagery, flags as cultural shorthand,
+employer identity, factory or inspection imagery, flags as cultural shorthand,
 poverty spectacle, app/transport/venue logos, readable fake text, frantic camera,
 multiple camera moves, extreme bokeh, flicker, exposure pumping and focus hunting.

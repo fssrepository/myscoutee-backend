@@ -5,11 +5,11 @@ drága final renderben derüljön ki egy történeti, arculati vagy technikai hi
 
 ## A. Történet és személyes tények
 
-- [ ] A sorrend: itthoni munkakilátás → külföldi kiküldetések → ellenőrzési
-  határpillanat → London → öt év shared room/spórolás → világ → hazatérés →
+- [ ] A sorrend: itthoni munkakilátás → London → Soho-programozói munka →
+  Victoria line → tottenhami HMO → öt év shared room/spórolás → világ → hazatérés →
   ismerkedés → MyScoutee → operátor.
-- [ ] Európa, Ázsia és Amerika nem úgy jelenik meg, mintha minden út London után
-  történt volna; az egész külföldi időszak összegzése.
+- [ ] Nincs gyár, generikus worksite vagy ellenőrzési jelenet a londoni munka
+  helyén; az alapító Sohóban programozó.
 - [ ] A „közel negyven ország” az alapító állítása, nem pontos statisztikai
   felirat.
 - [ ] Csak valóban meglátogatott hely kerül a travel-listába.
@@ -18,11 +18,11 @@ drága final renderben derüljön ki egy történeti, arculati vagy technikai hi
 - [ ] A három másodperces travel burst pontosan 72 frame.
 - [ ] Tátra, Schönbrunn, Neuschwanstein, Angkor Wat, Golden Triangle, Norvégia,
   mediterrán és amerikai emlék nincs földrajzilag összeolvasztva.
-- [ ] Az ellenőrzéses jelenet nem nevez meg céget, országot, vezetőt vagy
-  jogsértést.
-- [ ] A nyilvános VO fő- vagy biztonságos változatát az alapító jóváhagyta.
-- [ ] A film nem tartalmazza a csak háttérként közölt későbbi jogi helyzetet.
-- [ ] A londoni megosztott szoba tiszta, fenntartott és tudatos pénzügyi döntés.
+- [ ] Tottenham, a Victoria line és a viktoriánus ház felismerhető, de nincs
+  beazonosítható lakcím vagy munkáltató.
+- [ ] Pontosan tizenhárom lakó, egy teljes fürdő, egy külön vécé és megosztott
+  hálószoba szerepel; az „1,5 fürdő” ezt jelenti.
+- [ ] A londoni ház fenntartott, zsúfolt és személyes; a lakótársak nem díszletek.
 - [ ] Az ételen spórolás nem éhezésként vagy nyomorpornóként jelenik meg.
 - [ ] „Az időmet vásároltam vissza” cselekvőképességet, nem sajnálatot közvetít.
 - [ ] A hazatérés pozitív, célzott döntés.

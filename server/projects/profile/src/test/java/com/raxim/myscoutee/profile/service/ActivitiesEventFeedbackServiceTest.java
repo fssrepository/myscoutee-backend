@@ -26,6 +26,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
@@ -125,6 +127,39 @@ class ActivitiesEventFeedbackServiceTest {
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 notificationOutboxService);
+    }
+
+    @Test
+    void loadPagePreservesEmptyEventImageForTheSharedNeutralPlaceholder() {
+        Users viewer = new Users();
+        viewer.setUserId("viewer");
+        viewer.setName("Viewer");
+        Users host = new Users();
+        host.setUserId("host");
+        host.setName("Host");
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Finished Event");
+        event.setCreatorUserId("host");
+        event.setOwnerUserId("host");
+        event.setAcceptedMemberUserIds(List.of("viewer"));
+        event.setStartAtIso("2020-01-01T10:00:00Z");
+        event.setImageUrl("");
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findAcceptedMembershipEvents("viewer")).thenReturn(List.of(event));
+        when(activityEventsRepository.findAdminVisibleEvents("viewer")).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
+        when(eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc("viewer"))
+                .thenReturn(List.of());
+        when(eventFeedbackAnswersRepository.findByViewerUserIdOrderByEventIdAscSubmittedAtIsoDesc("viewer"))
+                .thenReturn(List.of());
+
+        EventFeedbackPageResultDto page = service.loadPage(
+                new EventFeedbackPageQueryDto("viewer", "pending", 0, 20));
+
+        assertThat(page.items()).singleElement().satisfies(item -> assertThat(item.imageUrl()).isEmpty());
     }
 
     @Test

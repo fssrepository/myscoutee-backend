@@ -1,7 +1,7 @@
 Plan a locked 23-shot, 2 minute 48 second cinematic animated film called “The
 City Between Us.” Do not rewrite the supplied script, timings or claims. Use
 @Founder, @Maya, @DanceStudent, @DancePartner, @Operator, @BudapestWorld,
-@LondonWorld, @WorksiteWorld, @SharedRoom, @DanceStudio, @EventVenue, @Notebook
+@LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook
 and approved illustrated TravelMemory assets as stable references.
 
 Look: premium 2.5D hand-drawn adult characters integrated into dimensional
@@ -10,17 +10,38 @@ motivated cinematic light, restrained painterly finish, subtle facial acting,
 9:16 portrait, 720x1280 target and mobile-safe composition. No photoreal uncanny result, named-studio imitation,
 generated text, logos or fake UI.
 
-Narrative order: no dependable future at home; months-long assignments away from
-family across Europe, Asia and the Americas; anonymous inspection-day boundary;
-choice of London; five years of maintained shared rooms, long workdays and food
-saving to buy back time; an eight-second shot containing an exact three-second
+Narrative order: no dependable future at home; move to London and Tottenham;
+programming work in Soho; Victoria line commute; thirteen adults in one
+maintained Victorian HMO with one full bathroom, one separate WC and a shared
+bedroom; five years of long workdays and saving to buy financial independence
+and time for his own work, not another home; an
+eight-second shot containing an exact three-second
 fast chain of confirmed illustrated world memories and an empty seat; hopeful
 return home to find a partner; apps, events, dance and humane bad-location dates;
-missing bridge; private editable priority, reciprocal contextual affinity,
-optional small group, purposeful chat, real event; competent local operator and
-multiple culturally distinct local worlds; clean logo plate. The Founder is
+missing bridge; an editable 1–10 priority for an unknown individual or pair;
+reciprocal and contextual evidence forming balanced groups of strangers;
+accept/decline and contextual group chat; the first managed event with location,
+resources, tickets, check-in and feedback; former strangers becoming known
+contacts who can be invited again; Auto Inviter filling later open places
+according to the priority plan; repeated meetings growing a community; a later
+priority decrease making future shared paths less likely after a relationship changes;
+verified installation-package handoff to a technically capable local operator;
+own-brand local cultural/community testing; independently hosted deployments
+linked voluntarily around one shared core as a server network/virtual enterprise;
+a credible opt-out path; clean logo plate. The Founder is
 confident, never resentful. Maya is autonomous, not a reward. Do not make safety,
 traction, revenue, matching-superiority or current-deployment claims.
+
+Treat the product as an event and community operating system with matching
+capability, never as a dating matcher with an event added later. Use plain visual
+actions, not unexplained affinity jargon. No finished community or prior
+acquaintance exists at the start: show private priorities, mutual choices, a
+stranger-group proposal, chat and a real event before former strangers can be
+invited again and repeated meetings grow a community. Close the lifecycle by
+showing a changed relationship lowering its private priority and reducing future
+co-occurrence, never a public punishment. Distinguish later direct invitations
+from automatic filling of available places. Reserve clean caption
+space for post-produced narrator phrases and subtitles; generate no text.
 
 Recommend the current Flow image/video model and mode per shot. Prefer a fast
 tier for drafts, quality tier for approved finals, Ingredients/References for
