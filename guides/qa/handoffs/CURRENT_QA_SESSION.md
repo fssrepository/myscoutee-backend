@@ -9,10 +9,10 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-FEEDBACK-001
-state: STAT-011 PASS/CLOSED; unrelated affinity graph layout i18n source/seed gap fixed and audited, while EVENT-FEEDBACK-001 baseline remains pending
-next_actor: codex
-next_action: load only the EVENT-FEEDBACK-001 section of guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md and resolve the retained fixture plus exact first UI action
-next_codex_action: run read-only eligibility/time-boundary oracles first; do not import/reset fixtures, patch live Mongo i18n, or repeat any closed chat/statistics action
+state: EVENT-FEEDBACK-001 fixture stage blocked safely because closed CHAT-AUTH-001 is still staged; no mutation occurred
+next_actor: user
+next_action: explicitly authorize resetting the closed CHAT-AUTH-001 event-domain fixture so EVENT-FEEDBACK-001 can be staged
+next_codex_action: only after authorization, run reset event-domain CHAT-AUTH-001, stage EVENT-FEEDBACK-001, verify the four-event read-only oracle, then hand one Nova UI action
 queued_checkpoint: []
 ```
 
