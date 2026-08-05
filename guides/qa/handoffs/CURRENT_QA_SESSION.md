@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-005
-state: EVENT-FEEDBACK-002 is PASS and CLOSED. One event with two submitted viewers produced Casey main Feedback=2, Own Events=2 and one card with response badge=2; the existing auto-poll refreshed Casey without reload. The persisted oracle matched exact membership 3/8, two submitted states and three card answers. The end+2h, stored Pending, write-path Own Events and stored main aggregate implementation compiled through the existing hot-deploy pipelines. EVENT-FEEDBACK-005 is the next separate checkpoint and is not staged yet
-next_actor: codex
-next_action: switch the versioned event-domain harness from closed EVENT-FEEDBACK-002 to EVENT-FEEDBACK-005 without starting or duplicating any stack process
-next_codex_action: verify the staged baseline oracle, then give the user exactly the first Add note UI action and its expected visible result
-queued_checkpoint: [EVENT-IMPRESSION-001]
+active_checkpoint: EVENT-IMPRESSION-001
+state: EVENT-FEEDBACK-005 is PASS and CLOSED. EVENT-IMPRESSION-001 is staged with Casey Admin and Nova Member at exact 2/8 on the retained canonical event image. The clean persistence oracle began with one eligible/counter-tracked pending Nova state, no answers, no recompute task, no notification or outbox, and no stored Host or Attendee feedback evidence. Two-user visual baseline was captured: Casey Host was empty at 0/0 while Casey Attendee showed its existing profile presentation with `0 signals`; Nova independently saw an empty Member/organizer side plus the existing community/participant profile presentation with `0 signals`. Nova confirmed the single pending item at 1/1 and submitted one host-target answer with only `creative-soul`; the persisted answer agrees. The recompute task used its five-minute debounce, became due at 15:55:31 and completed normally at 15:55:57. Casey's ordinary realtime UI then showed Creative Soul at 18% in Host while Attendee retained Reliable One 56%, Empath 24% and Social Charmer 15%. Nova's unchanged post-submit control remains to be captured before PASS. A separate menu regression must not be folded into this checkpoint: Nova's Impressions-section Feedback badge showed 1, disappeared immediately when its tile was opened, and returned on the next realtime poll; this is recorded as failed queued checkpoint EVENT-IMPRESSION-002
+next_actor: user
+next_action: as Nova Social, reopen Impressions and capture the unchanged control: empty Member/organizer side and community/participant side still Social Charmer 56%, Adventurous 24%, Empathetic 15%, with 0 signals
+next_codex_action: compare Nova's post-submit screenshot with its retained baseline; if unchanged, record EVENT-IMPRESSION-001 PASS/CLOSED and continue to queued EVENT-IMPRESSION-002 without resetting or staging another checkpoint until its reproduction/fix scope is agreed
+queued_checkpoint: [EVENT-IMPRESSION-002]
 ```
 
-Active detail: [`EVENT-FEEDBACK-005`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
+Active detail: [`EVENT-IMPRESSION-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
 
 ## Hard constraints
 
@@ -92,6 +92,14 @@ work.
 - The final oracle matched two submitted viewer states and three card answers
   from the two viewers; the previously proven event opinion, target recompute
   and first-submit notification paths remained intact.
+
+### `EVENT-FEEDBACK-005` — PASS / CLOSED
+
+- Add note and Edit note worked on Nova's already-submitted feedback.
+- Nova's own-feedback view and Casey's received-feedback view displayed the
+  saved organizer note separately from the structured event answer.
+- The oracle proved the answer and counters unchanged and found no recompute,
+  notification or outbox effect from the note mutation.
 
 ### `EVENT-INV-003` — PASS / CLOSED
 

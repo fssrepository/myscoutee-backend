@@ -12,7 +12,7 @@ entry point with Docker-socket access granted on the first invocation. It only
 selects the existing `mongodb` container; a socket-access error must never
 trigger a new MongoDB, server, watcher or Compose process.
 
-For `EVENT-LIFE-*`, `EVENT-FEEDBACK-*`, `EVENT-IMPRESSION-001` and
+For `EVENT-LIFE-*`, `EVENT-FEEDBACK-*`, `EVENT-IMPRESSION-*` and
 `EVENT-TICKET-*`, run `stage`, `next`, `status` and `reset` with the
 `event-domain` scenario and the exact checkpoint ID. Scheduler-producing cases
 use their named scheduler helpers instead of an invented event-domain timer.
@@ -52,7 +52,7 @@ the same prerequisite without depending on an earlier human action.
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-003` |
-| Impression read | Profile data merged with event-feedback trait evidence | Host and Attendee sections in the Impressions popup | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001` |
+| Impression read and menu counter stability | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; stable Feedback badge | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or remove/restore | Feedback state mutation only | Organizer note or feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-004`, `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement and accepted participation | Ticket-enabled event overlay and one holder credential | Event checkout/ticket card and scanner | Direct ticket issue/check-in path; no scheduled worker is required | `EVENT-TICKET-001` through `EVENT-TICKET-004` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
@@ -872,6 +872,15 @@ Execution evidence on 2026-08-04:
 
 ### `EVENT-FEEDBACK-005` — participant note to organizer is separate feedback metadata
 
+Status: **PASS** on 2026-08-05.
+
+- Add note and Edit note remained available after the structured feedback was
+  submitted. The saved value `cyxcyxcxy-t` reopened successfully.
+- Nova's **View my feedback** and Casey's received-feedback view both displayed
+  the organizer note separately from the structured event answer.
+- The persisted answer and exact Casey/Nova counters remained unchanged; no
+  affinity recompute, notification or notification-outbox row was created.
+
 - As the participant, use **Add note** on the pending or already-feedbacked
   event card and save one unique note to the organizer through the dedicated
   note mutation. After the main feedback submission, the action must remain
@@ -891,16 +900,16 @@ Status: **PASS** on 2026-08-05.
 
 - Start from the staged zero-response state: the participant has exactly one
   pending, eligible and counter-tracked item; `feedback/pending/feedbacked/removed`
-  is exactly `1/1/0/0`, while Casey has `ownEvents=1`.
+  is exactly `1/1/0/0`, while Casey has `ownEvents=0`.
 - Choose **Remove** once. Open the **Removed** bucket and verify the same event
   title and persisted image appear exactly once while **Pending** is empty.
 - The exact participant counters become `0/0/0/1`; the state has
   `removed=true` and no `submittedAtIso`. Casey's `ownEvents` remains exactly
-  `1`.
+  `0`.
 - Choose **Restore** once. The Removed bucket becomes empty and the same title
   and persisted image return to Pending exactly once. The state returns to
   `removed=false` and the exact participant counters return to `1/1/0/0`;
-  Casey's `ownEvents` remains `1`.
+  Casey's `ownEvents` remains `0`.
 - No structured answer, event opinion, organizer note, affinity recompute,
   notification or notification-outbox row may be created by either transition.
   **Add organizer note** may remain visible in both buckets, but belongs to the
@@ -920,6 +929,11 @@ Status: **PASS** on 2026-08-05.
 
 - Open the target user's Impressions popup before `EVENT-FEEDBACK-002` and
   record Host and Attendee trait evidence separately.
+- Capture the second accepted participant's Impressions popup as an independent
+  control. In the retained run Nova saw an empty Member/organizer side and the
+  existing community/participant profile presentation with `0 signals`; this
+  second-user baseline must not be mistaken for evidence created on Casey by
+  Nova's later host-target feedback.
 - After the feedback save, wait only for the ordinary user-realtime delivery
   path and reopen or keep the popup visible. The backend read cache is bounded
   to five seconds; the browser still updates on its normal realtime poll.
@@ -931,6 +945,20 @@ Status: **PASS** on 2026-08-05.
   feedback is persisted and recompute finishes but the popup remains stale
   after the documented realtime window and a fresh profile read, retain both
   oracles and report a propagation defect.
+
+### `EVENT-IMPRESSION-002` — opening Feedback does not transiently clear its badge
+
+- Start with a non-zero Feedback badge in the Impressions section and retain
+  the corresponding server-side activity-counter oracle.
+- Open the Feedback tile once, then close or leave the resulting popup open
+  through at least one ordinary realtime poll without changing any feedback.
+- The badge must keep the same value before the click, immediately after the
+  click and after the poll. Opening a read surface is not a `-1` mutation and
+  must not locally acknowledge or clear the stored feedback bucket.
+- Retained 2026-08-05 evidence is a failure: Nova's badge showed `1`, vanished
+  immediately after opening the tile, then returned on the next poll. This
+  proves a transient client-side counter overwrite rather than a persisted
+  counter change; rerun this checkpoint after the fix.
 
 ## Event ticketing checkpoints
 
