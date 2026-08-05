@@ -827,6 +827,13 @@ Execution evidence on 2026-08-04:
 - Verify one submitted feedback state and one persisted answer per displayed
   card. The participant item moves from pending to feedbacked and the organizer
   received-feedback/stat view shows the same event and answer evidence.
+- Keep the participant feedback list or the organizer's **Own Events** list
+  open while the counterpart changes the feedback state. On the normal
+  30-second user-realtime snapshot, the existing shared feedback-counter signal
+  must refresh the main menu badge, dropdown bucket counts and the currently
+  visible SmartList card window together. A card must not remain stale after
+  its counters changed, and the feedback popup must not create a second polling
+  loop merely to achieve that refresh.
 - From the submitted card, open **View my feedback**. It must show the exact
   structured answers and exact event opinion. If a separate organizer note was
   saved, it must appear under its own label rather than being merged with the
