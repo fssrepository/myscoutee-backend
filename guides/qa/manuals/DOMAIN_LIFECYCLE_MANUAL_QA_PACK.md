@@ -754,14 +754,13 @@ Execution evidence on 2026-08-04:
 ### `EVENT-FEEDBACK-001` — eligibility unlock and closed-event boundary
 
 - Stage one accepted non-admin participant and one organizer on a non-trashed
-  event with a controlled start time.
-- Before start time plus two hours, the participant must not receive a pending
+  event with controlled start and end times.
+- Before end time plus two hours, the participant must not receive a pending
   Event Feedback item. At or after that boundary, the event must appear once
   with cards for the host and eligible fellow attendees.
 - Merely loading the list must not enqueue a worker or create feedback state.
-- The current implementation unlocks from `startAtIso + 2h`; it does not use
-  event end time or a separate closed status. Record a product-contract gap if
-  the visible UI claims that only ended/closed events are eligible.
+- Feedback unlocks at `endAtIso + 2h`; event duration must never shorten this
+  post-event delay by calculating the boundary from `startAtIso`.
 - A trashed event, an organizer evaluating their own event or a merely pending
   participant must remain ineligible.
 
@@ -776,22 +775,20 @@ Execution evidence on 2026-08-04:
   counter and is not evidence for feedback eligibility.
 - Feedback-ready staging changes the event's time boundary, not its normal
   membership aggregate. Under **Activities -> My Events -> Past**, the Members
-  popup must contain Casey Admin plus Nova Member and the source event card
-  must therefore show exactly `2/8`, matching persisted `acceptedMembers=2`
-  and `capacityTotal=8`. A `1/8` card while both accepted members are listed is
-  a fixture or projection defect.
+  popup must contain Casey Admin plus both accepted participants and the source
+  event card must therefore show exactly `3/8`, matching persisted
+  `acceptedMembers=3` and `capacityTotal=8`.
 - Before any participant submits, the feedback-ready event must already appear
   once in the host's **Own Events** bucket with response count `0`. The host's
-  persisted `eventFeedback.ownEvents` bucket must be `1`, while the main
-  actionable `activities.feedback` counter remains `0`; the latter is not a
-  read-time sum of feedback sub-buckets. The host's traits and Impressions may
-  remain empty until a real response is submitted.
+  persisted `eventFeedback.ownEvents` and main actionable
+  `activities.feedback` counters must both be `0`. The list contains owned
+  event cards, but the counter measures active submitted responses, not events.
+  The main counter is the stored sum of `pending + ownEvents`.
 - Record the zero-response host baseline through these required UI checks:
   1. Reload the host profile/menu. The main **Feedback** tile must have no red
-     badge while the exact main counter is `0`; the nonzero **Own Events**
-     sub-bucket must not leak into that aggregate.
+     badge while the exact main and **Own Events** counters are both `0`.
   2. Open **Event Feedback -> Own Events**. The trigger and bucket counter must
-     be `1`, and exactly one card for the controlled event must appear with its
+     be `0`, and exactly one card for the controlled event must appear with its
      persisted title and image even though nobody has submitted feedback yet.
   3. Open that card with **View Feedbacks**. The detail must retain the event
      identity and show the zero-response empty state, with no response rows or
@@ -827,6 +824,11 @@ Execution evidence on 2026-08-04:
 - Verify one submitted feedback state and one persisted answer per displayed
   card. The participant item moves from pending to feedbacked and the organizer
   received-feedback/stat view shows the same event and answer evidence.
+- Submit distinguishable feedback as the second accepted participant on the
+  same event. The host's stored main Feedback and Own Events counters must move
+  from `1` to `2`, while the Own Events list still contains exactly one event
+  card and that card's response badge becomes `2`. This is the required proof
+  that Own Events counts responses rather than event cards.
 - Keep the participant feedback list or the organizer's **Own Events** list
   open while the counterpart changes the feedback state. On the normal
   30-second user-realtime snapshot, the existing shared feedback-counter signal

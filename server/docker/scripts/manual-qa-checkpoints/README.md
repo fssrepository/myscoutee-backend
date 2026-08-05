@@ -72,6 +72,7 @@ Use one checkpoint at a time:
 ```bash
 bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh stage event-domain EVENT-FEEDBACK-002
+bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh next event-domain EVENT-FEEDBACK-002
 # perform exactly the printed human UI action
 bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002

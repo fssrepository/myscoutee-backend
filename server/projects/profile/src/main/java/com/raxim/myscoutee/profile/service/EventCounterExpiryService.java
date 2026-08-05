@@ -206,14 +206,12 @@ public class EventCounterExpiryService {
     private List<ActivityEvent> dueFeedbackProjectionDocuments(Instant now) {
         Instant cutoff = (now == null ? Instant.now() : now).minusSeconds(2L * 60L * 60L);
         Query query = new Query(new Criteria().andOperator(
-                new Criteria().orOperator(
-                        Criteria.where("feedbackCountersProjected").ne(true),
-                        Criteria.where("feedbackOwnEventCountersProjected").ne(true)),
+                Criteria.where("feedbackCountersProjected").ne(true),
                 Criteria.where("generated").ne(true),
                 Criteria.where("sourceId").exists(true).nin("", null),
                 Criteria.where("status").ne(ActivityEvent.STATUS_TRASHED),
-                Criteria.where("startAtIso").lte(cutoff.toString())));
-        query.with(Sort.by(Sort.Order.asc("startAtIso"), Sort.Order.asc("sourceId")));
+                Criteria.where("endAtIso").lte(cutoff.toString())));
+        query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("sourceId")));
         query.limit(batchSize);
         return mongoTemplate.find(query, ActivityEvent.class);
     }

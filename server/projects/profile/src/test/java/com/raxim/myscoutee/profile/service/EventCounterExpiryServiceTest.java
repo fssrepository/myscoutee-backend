@@ -183,7 +183,7 @@ class EventCounterExpiryServiceTest {
                 "host",
                 "feedback",
                 now.minusSeconds(10_800L).toString(),
-                now.plusSeconds(3_600L).toString(),
+                now.minusSeconds(10_800L).toString(),
                 false);
         feedbackDue.setAcceptedMemberUserIds(List.of("member"));
 

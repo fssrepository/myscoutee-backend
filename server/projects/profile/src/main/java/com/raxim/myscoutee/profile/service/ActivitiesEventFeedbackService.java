@@ -142,7 +142,7 @@ public class ActivitiesEventFeedbackService {
                 List.copyOf(organizerItems),
                 List.copyOf(receivedEvents),
                 state,
-                counts(allItems, organizerItems));
+                counts(activeUser));
     }
 
     public EventFeedbackStatDto loadStatById(EventFeedbackStatQueryDto request) {
@@ -283,7 +283,13 @@ public class ActivitiesEventFeedbackService {
             affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
         adminTelemetryService.record("event.feedback.submitted", "events", eventId, userId);
-        userActivityCountersService.applyFeedbackStateTransition(userId, wasSubmitted, wasRemoved, true, false);
+        userActivityCountersService.applyFeedbackStateTransition(
+                feedbackEvent,
+                userId,
+                wasSubmitted,
+                wasRemoved,
+                true,
+                false);
         return loadDetailForUser(activeUser, userId, eventId);
     }
 
@@ -361,6 +367,10 @@ public class ActivitiesEventFeedbackService {
         EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
         boolean wasSubmitted = StringUtils.hasText(previousState == null ? null : previousState.getSubmittedAtIso());
         boolean wasRemoved = Boolean.TRUE.equals(previousState == null ? null : previousState.getRemoved());
+        ActivityEvent feedbackEvent = findFeedbackEventForDetail(userId, eventId);
+        if (feedbackEvent == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The feedback event is not available for this user.");
+        }
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
         state.setRemoved(removed);
         state.setRemovedAtIso(removed ? nowIso : null);
@@ -368,6 +378,7 @@ public class ActivitiesEventFeedbackService {
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
         userActivityCountersService.applyFeedbackStateTransition(
+                feedbackEvent,
                 userId,
                 wasSubmitted,
                 wasRemoved,
@@ -935,14 +946,14 @@ public class ActivitiesEventFeedbackService {
         return ascending ? Long.compare(left, right) : Long.compare(right, left);
     }
 
-    private EventFeedbackPageCountsDto counts(
-            List<EventFeedbackDto> allItems,
-            List<EventFeedbackDto> organizerItems) {
+    private EventFeedbackPageCountsDto counts(Users activeUser) {
+        Users.UserActivitiesRecord activities = activeUser == null ? null : activeUser.getActivities();
+        Users.UserEventFeedbackCountersRecord feedback = activities == null ? null : activities.eventFeedback();
         return new EventFeedbackPageCountsDto(
-                organizerItems.size(),
-                (int) allItems.stream().filter(item -> !Boolean.TRUE.equals(item.isRemoved()) && positiveCount(item.pendingCards()) > 0).count(),
-                (int) allItems.stream().filter(item -> Boolean.TRUE.equals(item.isFeedbacked())).count(),
-                (int) allItems.stream().filter(item -> Boolean.TRUE.equals(item.isRemoved())).count());
+                positiveCount(feedback == null ? null : feedback.ownEvents()),
+                positiveCount(feedback == null ? null : feedback.pending()),
+                positiveCount(feedback == null ? null : feedback.feedbacked()),
+                positiveCount(feedback == null ? null : feedback.removed()));
     }
 
     private EventFeedbackPageStateSnapshotDto pageStateSnapshot(List<EventFeedbackStateDto> states) {
@@ -1038,8 +1049,20 @@ public class ActivitiesEventFeedbackService {
     }
 
     private boolean isFeedbackUnlocked(ActivityEvent record) {
-        Long startAtMs = eventStartAtMs(record);
-        return startAtMs != null && Instant.now().toEpochMilli() >= startAtMs + EVENT_FEEDBACK_UNLOCK_DELAY_MS;
+        Long endAtMs = eventEndAtMs(record);
+        return endAtMs != null && Instant.now().toEpochMilli() >= endAtMs + EVENT_FEEDBACK_UNLOCK_DELAY_MS;
+    }
+
+    private Long eventEndAtMs(ActivityEvent record) {
+        String endAtIso = safeText(record == null ? null : record.getEndAtIso());
+        if (!StringUtils.hasText(endAtIso)) {
+            return null;
+        }
+        try {
+            return Instant.parse(endAtIso).toEpochMilli();
+        } catch (RuntimeException ignored) {
+            return null;
+        }
     }
 
     private Long eventStartAtMs(ActivityEvent record) {
