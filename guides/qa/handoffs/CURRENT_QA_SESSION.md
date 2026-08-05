@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-002
-state: The counter defect is implemented across backend and local frontend: eligibility unlocks at event end +2h; Pending remains eligibility-maintained; Own Events changes only for active submitted responses (+1 submit, -1 remove, +1 restore); the stored main Feedback counter is pending + ownEvents; popup counts read stored buckets. The existing backend and frontend hot-deploy pipelines compiled successfully and Main restarted. The versioned harness now supports a second accepted feedback participant without discarding the existing response. It was applied to the live checkpoint: the event is exact 3/8 with Casey, Nova and Riley accepted; Nova remains feedbacked=1 with one persisted answer; Riley is pending=1; Casey is now persisted feedback=1 and ownEvents=1. Thus Casey reload must show the missing main badge 1. Riley's second submission is still required to prove one event card with two responses produces Own Events=2 and main Feedback=2. No separate build, test, watcher, server or Compose process was started
-next_actor: user
-next_action: reload Casey's profile once and capture the profile menu; the Feedback tile must now show red badge 1
-next_codex_action: after Casey badge 1 is visually confirmed, switch to Riley Outside and direct one distinguishable submission on the same EVENT-FEEDBACK-002 event; then verify Casey main Feedback=2, Own Events=2, exactly one event card, and response badge 2
-queued_checkpoint: [EVENT-FEEDBACK-005, EVENT-IMPRESSION-001]
+active_checkpoint: EVENT-FEEDBACK-005
+state: EVENT-FEEDBACK-002 is PASS and CLOSED. One event with two submitted viewers produced Casey main Feedback=2, Own Events=2 and one card with response badge=2; the existing auto-poll refreshed Casey without reload. The persisted oracle matched exact membership 3/8, two submitted states and three card answers. The end+2h, stored Pending, write-path Own Events and stored main aggregate implementation compiled through the existing hot-deploy pipelines. EVENT-FEEDBACK-005 is the next separate checkpoint and is not staged yet
+next_actor: codex
+next_action: switch the versioned event-domain harness from closed EVENT-FEEDBACK-002 to EVENT-FEEDBACK-005 without starting or duplicating any stack process
+next_codex_action: verify the staged baseline oracle, then give the user exactly the first Add note UI action and its expected visible result
+queued_checkpoint: [EVENT-IMPRESSION-001]
 ```
 
-Active detail: [`EVENT-FEEDBACK-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
+Active detail: [`EVENT-FEEDBACK-005`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
 
 ## Hard constraints
 
@@ -79,6 +79,19 @@ work.
   exact main counter was `feedback=1`, with four buckets
   `ownEvents/pending/feedbacked/removed = 0/1/0/0` and one
   `eligible/counterTracked` state.
+
+### `EVENT-FEEDBACK-002` — PASS / CLOSED
+
+- Casey, Nova and Riley remained exact accepted membership `3/8` on one staged
+  event with the retained canonical image.
+- Nova and Riley submitted separately. Casey ended with stored main
+  `feedback=2` and `eventFeedback.ownEvents=2`; the Own Events list still had
+  one event card and its response badge was `2`.
+- Casey's visible counters changed through the existing realtime auto-poll
+  without reload or a second popup-specific polling loop.
+- The final oracle matched two submitted viewer states and three card answers
+  from the two viewers; the previously proven event opinion, target recompute
+  and first-submit notification paths remained intact.
 
 ### `EVENT-INV-003` — PASS / CLOSED
 

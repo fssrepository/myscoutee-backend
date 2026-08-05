@@ -764,7 +764,7 @@ Execution evidence on 2026-08-04:
 - A trashed event, an organizer evaluating their own event or a merely pending
   participant must remain ineligible.
 
-### `EVENT-FEEDBACK-002` — submit once and follow the target projection
+### `EVENT-FEEDBACK-002` — submit responses and follow the target projection
 
 - Capture the participant's pending-feedback item, the host's received
   feedback baseline, the host's Impressions popup and the notification view.
