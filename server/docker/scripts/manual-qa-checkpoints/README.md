@@ -8,6 +8,24 @@ The harness creates observable checkpoints around a real persisted scheduler
 configuration. It never starts another backend, frontend, database, Gradle, or
 scheduler process and never calls a hidden/manual job endpoint.
 
+## Canonical Docker entry point
+
+When the development stack already owns the `mongodb` container, use the
+versioned Docker entry point from the repository root:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-FEEDBACK-006
+```
+
+It pins `MANUAL_QA_MONGO_MODE=container`, resolves the already-running
+`mongodb` container and delegates to the same checkpoint harness. It never
+starts, stops, restarts or rebuilds MongoDB or any other service. Agent/tool
+invocations must grant this command access to the existing Docker socket on
+the first attempt. If the socket is denied, the harness reports that condition
+separately; it must not be interpreted as a stopped container and must never
+trigger another stack or database process.
+
 ## Available scenarios
 
 | Scenario | Prepared path | Automatic path under test |
@@ -44,7 +62,7 @@ Supported checkpoint IDs:
 - `EVENT-ACTIVITY-REFRESH-001`
 - `CHAT-AUTH-001`
 - `EVENT-LIFE-001` through `EVENT-LIFE-005`
-- `EVENT-FEEDBACK-001` through `EVENT-FEEDBACK-005`
+- `EVENT-FEEDBACK-001` through `EVENT-FEEDBACK-006`
 - `EVENT-IMPRESSION-001`
 - `EVENT-TICKET-001` through `EVENT-TICKET-004`
 - `TOURNAMENT-001` through `TOURNAMENT-003`

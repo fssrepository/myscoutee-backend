@@ -6,6 +6,12 @@ Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAM
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
 
+With the already-running development stack, agents use the canonical
+[`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
+entry point with Docker-socket access granted on the first invocation. It only
+selects the existing `mongodb` container; a socket-access error must never
+trigger a new MongoDB, server, watcher or Compose process.
+
 For `EVENT-LIFE-*`, `EVENT-FEEDBACK-*`, `EVENT-IMPRESSION-001` and
 `EVENT-TICKET-*`, run `stage`, `next`, `status` and `reset` with the
 `event-domain` scenario and the exact checkpoint ID. Scheduler-producing cases
@@ -47,7 +53,7 @@ the same prerequisite without depending on an earlier human action.
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-003` |
 | Impression read | Profile data merged with event-feedback trait evidence | Host and Attendee sections in the Impressions popup | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001` |
-| Feedback note or remove/restore | Feedback state mutation only | Organizer note or feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-004`, `EVENT-FEEDBACK-005` |
+| Feedback note or remove/restore | Feedback state mutation only | Organizer note or feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-004`, `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement and accepted participation | Ticket-enabled event overlay and one holder credential | Event checkout/ticket card and scanner | Direct ticket issue/check-in path; no scheduled worker is required | `EVENT-TICKET-001` through `EVENT-TICKET-004` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 
@@ -69,6 +75,9 @@ The principal checkpoint chains are:
 - `EVENT-FEEDBACK-001` -> `EVENT-FEEDBACK-002` ->
   `EVENT-IMPRESSION-001`: feedback unlock, persisted feedback and target-user
   impression refresh.
+- `EVENT-FEEDBACK-006` is the isolated pending remove/restore branch. Run it
+  from the same zero-response baseline, prove both transitions, reset it
+  through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-003` ->
   `EVENT-TICKET-004`: ticket enablement, credential, check-in and lifecycle
   invalidation.
@@ -760,6 +769,11 @@ Execution evidence on 2026-08-04:
 
 - Capture the participant's pending-feedback item, the host's received
   feedback baseline, the host's Impressions popup and the notification view.
+- Before submission, the accepted participant's persisted main
+  `activities.feedback` counter and `eventFeedback.pending` sub-bucket must
+  both be exactly `1`; after a profile reload the red badge belongs to the
+  main **Feedback** tile. The similarly styled **Rates** tile is an independent
+  counter and is not evidence for feedback eligibility.
 - Before any participant submits, the feedback-ready event must already appear
   once in the host's **Own Events** bucket with response count `0`. The host's
   persisted `eventFeedback.ownEvents` bucket must be `1`, while the main
@@ -855,6 +869,31 @@ Execution evidence on 2026-08-04:
 - Verify exact persistence only in the feedback state. No participant answer,
   Impression trait, affinity task, notification or unrelated event bucket may
   change.
+
+### `EVENT-FEEDBACK-006` — remove and restore a pending item before submission
+
+Status: **PASS** on 2026-08-05.
+
+- Start from the staged zero-response state: the participant has exactly one
+  pending, eligible and counter-tracked item; `feedback/pending/feedbacked/removed`
+  is exactly `1/1/0/0`, while Casey has `ownEvents=1`.
+- Choose **Remove** once. Open the **Removed** bucket and verify the same event
+  title and persisted image appear exactly once while **Pending** is empty.
+- The exact participant counters become `0/0/0/1`; the state has
+  `removed=true` and no `submittedAtIso`. Casey's `ownEvents` remains exactly
+  `1`.
+- Choose **Restore** once. The Removed bucket becomes empty and the same title
+  and persisted image return to Pending exactly once. The state returns to
+  `removed=false` and the exact participant counters return to `1/1/0/0`;
+  Casey's `ownEvents` remains `1`.
+- No structured answer, event opinion, organizer note, affinity recompute,
+  notification or notification-outbox row may be created by either transition.
+  **Add organizer note** may remain visible in both buckets, but belongs to the
+  separate `EVENT-FEEDBACK-005` checkpoint and is not invoked here. This differs from
+  `EVENT-FEEDBACK-004`, which removes and restores an already submitted item
+  while preserving its answers and Impression evidence.
+- Finish through the checkpoint harness reset, then restage
+  `EVENT-FEEDBACK-002` before continuing the submission checkpoint.
 
 ### `EVENT-IMPRESSION-001` — feedback evidence reaches the target profile
 

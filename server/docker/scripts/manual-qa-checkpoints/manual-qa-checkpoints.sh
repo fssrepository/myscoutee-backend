@@ -33,6 +33,7 @@ Usage:
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh restage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh prepare-invitation-acceptance-retest event-domain EVENT-INV-003
@@ -122,9 +123,18 @@ run_scenario() {
   [ -f "${scenario_script}" ] || fail "Missing ${scenario_script}."
 
   local container_running="false"
-  if command -v docker >/dev/null 2>&1 \
-      && docker inspect --format '{{.State.Running}}' "${mongo_container}" >/dev/null 2>&1; then
-    container_running="$(docker inspect --format '{{.State.Running}}' "${mongo_container}")"
+  local docker_inspect_error=""
+  local docker_inspect_output=""
+  if command -v docker >/dev/null 2>&1; then
+    if docker_inspect_output="$(docker inspect --format '{{.State.Running}}' "${mongo_container}" 2>&1)"; then
+      container_running="${docker_inspect_output}"
+    else
+      case "${docker_inspect_output}" in
+        *"permission denied"*|*"Cannot connect to the Docker daemon"*|*"error during connect"*)
+          docker_inspect_error="${docker_inspect_output}"
+          ;;
+      esac
+    fi
   fi
 
   if [ "${mongo_mode}" = "container" ] || { [ "${mongo_mode}" = "auto" ] && [ "${container_running}" = "true" ]; }; then
@@ -151,6 +161,10 @@ run_scenario() {
         "${target_db}" \
         --file /dev/stdin
     return
+  fi
+
+  if [ -n "${docker_inspect_error}" ] && ! command -v mongosh >/dev/null 2>&1; then
+    fail "Docker daemon access was denied while resolving the already-running '${mongo_container}' container. Re-run this same harness command with Docker access; do not start another MongoDB, server, watcher or Compose stack. Docker reported: ${docker_inspect_error}"
   fi
 
   command -v mongosh >/dev/null 2>&1 \
@@ -197,7 +211,7 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|\
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

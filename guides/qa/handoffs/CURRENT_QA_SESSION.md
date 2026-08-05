@@ -8,12 +8,12 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-005
-state: EVENT-FEEDBACK-002 original structured submission and post-submit read-only oracle PASS; the saved response has excellent/communication/creative-soul and an empty eventComment because the optional 160-character event-opinion requirement was added afterward; hot deploy now keeps event opinion and note-to-organizer as separate persisted/viewed fields and restores Add/Edit note on the feedbacked participant card; no fixture or Git reset and no duplicate build/process was started
+active_checkpoint: EVENT-FEEDBACK-006
+state: Manual QA EVENT-FEEDBACK-006 removal is visually and independently proven; the same title/image moved from Pending to Removed, Pending became empty and Removed became 1; read-only oracle proves Casey feedback=0 ownEvents=1, Nova feedback=0 pending=0 feedbacked=0 removed=1, one eligible+counterTracked state with removed=true and submittedAtIso empty, and zero answer, organizerNote, notification/outbox or recompute rows; the checkpoint is now extended to prove Restore before reset; no server/build/watcher or Compose process was started
 next_actor: user
-next_action: in the Nova Social session, open the three-dot menu on the feedbacked Manual QA EVENT-FEEDBACK-002 card; expect exactly View my feedback and Add note, with no Edit my feedback action; do not select either action yet
-next_codex_action: after the menu screenshot, verify the two-action contract and give only the Add note selection as the next UI action
-queued_checkpoint: [EVENT-FEEDBACK-002, EVENT-IMPRESSION-001]
+next_action: click Visszaállítás exactly once on the currently open EVENT-FEEDBACK-006 Removed card; expect the card to leave Removed, Removed to become empty, and the main Feedback attention plus Pending bucket to return to 1
+next_codex_action: compare the restore screenshot, run the read-only oracle, record EVENT-FEEDBACK-006 PASS, then reset it and restage EVENT-FEEDBACK-002 through the versioned harness
+queued_checkpoint: [EVENT-FEEDBACK-002, EVENT-FEEDBACK-005, EVENT-IMPRESSION-001]
 ```
 
 Active detail: [`EVENT-FEEDBACK-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
