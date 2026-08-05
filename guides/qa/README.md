@@ -14,6 +14,10 @@ This directory keeps QA execution material separate from project plans.
 Start with the [reviewable XLSX ledger](matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx),
 the [manual QA plan](manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md), and the
 [domain lifecycle checkpoint pack](manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+The upload/rendition contract is isolated in the
+[media image variants case](manuals/MEDIA_IMAGE_VARIANTS_MANUAL_QA.md), and the
+bounded-session working correction is recorded in the
+[Codex compaction diagnosis](diagnostics/CODEX_SESSION_COMPACTION_DIAGNOSIS.md).
 The current publish/accept/chat continuation is recorded in the
 [minimal handoff](handoffs/EVENT_PUBLISH_CHAT_HANDOFF.md).
 

@@ -277,7 +277,8 @@ public class MediaStorageService {
         if (StringUtils.hasText(smallUrl) && StringUtils.hasText(mediumUrl) && StringUtils.hasText(largeUrl)) {
             return new StoredImageSet(largeUrl, originalUrl, smallUrl, mediumUrl, largeUrl);
         }
-        return new StoredImageSet(originalUrl, originalUrl, originalUrl, originalUrl, originalUrl);
+        deleteManagedImageSetObjects(originalKey);
+        return null;
     }
 
     private Map<ImageVariant, String> storeImageVariants(
