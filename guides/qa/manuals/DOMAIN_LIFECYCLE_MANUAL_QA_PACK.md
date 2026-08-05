@@ -962,6 +962,11 @@ Status: **PASS** on 2026-08-05.
   event-feedback lifecycle evidence for attendee presentation eligibility.
   The frontend must reject a payload that omits the field; it must not retain a
   stale value to repair an incomplete response.
+- Post-fix retest passed on the retained fixture. At 16:15:13 Nova's full reload
+  restored the exact Social Charmer 56%, Adventurous 24%, Empathetic 15%
+  control with `0 signals`; at 16:16:25 it remained identical after a normal
+  realtime poll plus close/reopen. Casey simultaneously retained the intended
+  Host-only Creative Soul 18% result. Record this run as PASS-after-fix.
 
 ### `EVENT-IMPRESSION-002` — opening Feedback does not transiently clear its badge
 
