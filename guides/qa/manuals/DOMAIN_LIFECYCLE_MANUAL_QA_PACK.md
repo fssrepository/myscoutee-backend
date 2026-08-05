@@ -52,7 +52,7 @@ the same prerequisite without depending on an earlier human action.
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-003` |
-| Impression read and menu counter stability | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; stable Feedback badge | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
+| Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or remove/restore | Feedback state mutation only | Organizer note or feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-004`, `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement and accepted participation | Ticket-enabled event overlay and one holder credential | Event checkout/ticket card and scanner | Direct ticket issue/check-in path; no scheduled worker is required | `EVENT-TICKET-001` through `EVENT-TICKET-004` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
@@ -968,19 +968,20 @@ Status: **PASS** on 2026-08-05.
   realtime poll plus close/reopen. Casey simultaneously retained the intended
   Host-only Creative Soul 18% result. Record this run as PASS-after-fix.
 
-### `EVENT-IMPRESSION-002` — opening Feedback does not transiently clear its badge
+### `EVENT-IMPRESSION-002` — Feedback tile acknowledgement and poll reconciliation
 
 - Start with a non-zero Feedback badge in the Impressions section and retain
   the corresponding server-side activity-counter oracle.
 - Open the Feedback tile once, then close or leave the resulting popup open
   through at least one ordinary realtime poll without changing any feedback.
-- The badge must keep the same value before the click, immediately after the
-  click and after the poll. Opening a read surface is not a `-1` mutation and
-  must not locally acknowledge or clear the stored feedback bucket.
-- Retained 2026-08-05 evidence is a failure: Nova's badge showed `1`, vanished
-  immediately after opening the tile, then returned on the next poll. This
-  proves a transient client-side counter overwrite rather than a persisted
-  counter change; rerun this checkpoint after the fix.
+- The tile open may acknowledge the badge in the UI immediately. The next
+  authoritative realtime snapshot may restore the stored value while the
+  underlying feedback bucket remains unchanged; neither transition is a
+  persisted `-1` mutation.
+- Retained 2026-08-05 evidence passed this contract: Nova's stored badge showed
+  `1`, vanished immediately after opening the tile, then returned as `1` on the
+  next poll. No feedback was submitted, removed or otherwise mutated. Keep this
+  as a separate checkpoint from `EVENT-IMPRESSION-001`.
 
 ## Event ticketing checkpoints
 

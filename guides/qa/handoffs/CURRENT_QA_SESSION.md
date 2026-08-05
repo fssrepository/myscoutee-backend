@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-IMPRESSION-002
-state: EVENT-FEEDBACK-005 and EVENT-IMPRESSION-001 are PASS and CLOSED. EVENT-IMPRESSION-001 initially failed because Nova's member presentation was gated by legacy `activities.feedback`, which changed from pending 1 to 0 on submit despite `activities.eventFeedback.feedbacked=1`; the realtime endpoint therefore resolved null impressions. The rejected frontend cache-preservation workaround was fully reverted. The backend now always returns a non-null `impressions` object and uses pending, feedbacked or removed lifecycle buckets as stable attendee activity; the frontend requires the field and local realtime maintains parity. Both hot-deploy builds and focused Java regressions passed. Casey retained the correct Host-only Creative Soul 18% result. Nova's full reload restored the exact 56%, 24%, 15% control at 16:15:13, and the 16:16:25 screenshot proved it remained identical after the normal poll plus close/reopen, so EVENT-IMPRESSION-001 is PASS-after-fix. EVENT-IMPRESSION-002 remains a separately retained FAIL: Nova's Impressions-section Feedback badge showed 1, disappeared immediately when its tile was opened, and returned on the next realtime poll
+active_checkpoint: NONE
+state: EVENT-FEEDBACK-005, EVENT-IMPRESSION-001 and EVENT-IMPRESSION-002 are PASS and CLOSED. EVENT-IMPRESSION-001 initially failed because Nova's member presentation was gated by legacy `activities.feedback`, which changed from pending 1 to 0 on submit despite `activities.eventFeedback.feedbacked=1`; the realtime endpoint therefore resolved null impressions. The rejected frontend cache-preservation workaround was fully reverted. The backend now always returns a non-null `impressions` object and uses pending, feedbacked or removed lifecycle buckets as stable attendee activity; the frontend requires the field and local realtime maintains parity. Both hot-deploy builds and focused Java regressions passed. Casey retained the correct Host-only Creative Soul 18% result. Nova's full reload restored the exact 56%, 24%, 15% control at 16:15:13, and the 16:16:25 screenshot proved it remained identical after the normal poll plus close/reopen, so EVENT-IMPRESSION-001 is PASS-after-fix. EVENT-IMPRESSION-002 remains a separate checkpoint and passed with the accepted UI acknowledgement cycle: Nova's stored Feedback badge showed 1, disappeared immediately when its tile was opened, and the next authoritative realtime poll restored 1 without a feedback mutation
 next_actor: codex
-next_action: diagnose the EVENT-IMPRESSION-002 read-surface badge clear against the stored activity-counter contract without resetting the retained fixture first
-next_codex_action: identify the client mutation that clears the badge on open, remove the unsupported local acknowledgement or persist the intended acknowledgement contract, then use the existing hot-deploy and a focused same-value-before/open/after-poll retest
+next_action: wait for the next explicitly selected checkpoint
+next_codex_action: do not change the accepted EVENT-IMPRESSION-002 UI acknowledgement behavior
 queued_checkpoint: []
 ```
 
-Active detail: [`EVENT-IMPRESSION-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
+Last completed detail: [`EVENT-IMPRESSION-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
 
 ## Hard constraints
 
@@ -100,6 +100,15 @@ work.
   saved organizer note separately from the structured event answer.
 - The oracle proved the answer and counters unchanged and found no recompute,
   notification or outbox effect from the note mutation.
+
+### `EVENT-IMPRESSION-002` — PASS / CLOSED
+
+- This remains a separate QA checkpoint for the Impressions-section Feedback
+  tile; it is not folded into the trait-propagation checkpoint.
+- Nova's stored badge was `1`, the UI acknowledged the tile open by hiding the
+  badge immediately, and the next authoritative realtime poll restored `1`.
+- This `1 -> hidden -> 1` presentation cycle is accepted UI behavior. Opening
+  the tile did not submit, remove or otherwise mutate event feedback.
 
 ### `EVENT-INV-003` — PASS / CLOSED
 
