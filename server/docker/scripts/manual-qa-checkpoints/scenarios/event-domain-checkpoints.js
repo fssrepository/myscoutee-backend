@@ -242,7 +242,7 @@
       worker: "The owning mutation may run its documented direct or scheduled consumers. The event-bucket poll itself MUST NOT create a domain write, recompute task, outbox item or job-history row."
     },
     "CHAT-AUTH-001": {
-      stage: "invitation-pending",
+      stage: "chat-authorized",
       why: "Assemble the event-chat authorization boundary across Admin, accepted, pending and left states without inferring authorization from a hidden button.",
       action: "Use three isolated sessions for the event Admin, one accepted recipient and one still-pending control recipient. Compare their event-chat lists: prove Admin and accepted visibility, pending absence plus direct server denial, send one unique message from the accepted session and prove the Admin receives it. Then leave and repeat the former participant denial check.",
       expected: "The Admin and terminal accepted member can read the same event-chat history and exchange exactly one proof message. The pending and left users have no channel projection and are server-denied; they must not receive the proof message.",
@@ -640,6 +640,28 @@
     Q.collection("activityMembers").insertOne(
       memberDocument(event.sourceId, hostUserId, "Admin", "accepted")
     );
+  }
+
+  function insertEmptyMainEventChat(event, acceptedUserIds, stagedAtIso) {
+    const chatId = Q.text(event.sourceId || event._id);
+    const memberIds = sortedUnique(acceptedUserIds);
+    Q.collection("chats").insertMany(memberIds.map(ownerUserId => ({
+      _id: `${PREFIX}:chat:${ownerUserId}`,
+      id: chatId,
+      ownerUserId,
+      avatar: "SY",
+      title: Q.text(event.title),
+      lastMessage: "",
+      lastSenderId: null,
+      memberIds,
+      unread: 0,
+      dateIso: stagedAtIso,
+      channelType: "mainEvent",
+      ownerId: chatId,
+      eventId: chatId,
+      subEventId: null,
+      groupId: null
+    })));
   }
 
   function tournamentStages() {
@@ -1088,6 +1110,23 @@
       ));
       return;
     }
+    if (stageKind === "chat-authorized") {
+      const acceptedUserIds = [hostUserId, thirdUserId];
+      const event = eventDocument(EVENT_ID, EXPECTED_TITLE, {
+        ...future,
+        acceptedUserIds,
+        pendingUserIds: [participantUserId],
+        invitedUserIds: [participantUserId]
+      });
+      Q.collection("events").insertOne(event);
+      Q.collection("activityMembers").insertMany([
+        memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+        memberDocument(EVENT_ID, thirdUserId, "Member", "accepted"),
+        memberDocument(EVENT_ID, participantUserId, "Member", "pending", "invite")
+      ]);
+      insertEmptyMainEventChat(event, acceptedUserIds, stagedAtIso);
+      return;
+    }
     if (stageKind === "invitation-visibility") {
       const openEvent = eventDocument(EVENT_ID, `${EXPECTED_TITLE} OPEN`, {
         ...future,
@@ -1253,7 +1292,7 @@
         { ownerId: { $in: dynamicEventIds } }
       ]
     }).toArray();
-    const eventChatIds = sortedUnique(eventChats.map(chat => chat.chatId || chat._id));
+    const eventChatIds = sortedUnique(eventChats.map(chat => chat.id || chat.chatId || chat._id));
     const eventChatArtifactIds = sortedUnique([...eventChatIds, ...dynamicEventIds]);
     const eventChatMessages = eventChatArtifactIds.length > 0
       ? Q.collection("chatMessages").find({ chatId: { $in: eventChatArtifactIds } }).toArray()
@@ -1313,7 +1352,7 @@
         updatedDate: member.updatedDate
       })),
       eventChats: eventChats.map(chat => ({
-        chatId: Q.text(chat.chatId || chat._id),
+        chatId: Q.text(chat.id || chat.chatId || chat._id),
         eventId: Q.text(chat.eventId),
         ownerUserId: Q.text(chat.ownerUserId),
         memberUserIds: sortedUnique(chat.memberIds || []),
@@ -1472,7 +1511,7 @@
     if (hostUserId === participantUserId) Q.fail("host and participant must differ.");
     Q.ensureUser(hostUserId, "event host");
     Q.ensureUser(participantUserId, "event participant");
-    if (["invitation-ordinary", "invitation-full", "tournament", "slot-past-tournament", "publish-chat-draft"].includes(selected.stage)) {
+    if (["invitation-ordinary", "invitation-full", "tournament", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)) {
       Q.ensureUser(thirdUserId, "event third participant");
     }
     const colliding = Q.collection("events").findOne({
@@ -2325,6 +2364,29 @@
     });
   }
 
+  function discardStale() {
+    config();
+    const state = requireMatchingState();
+    if (Q.collection("events").findOne(manualEventSelector())) {
+      Q.fail("the staged event still exists; use the normal reset command instead.");
+    }
+    const retainedDocuments = (state.snapshots || [])
+      .reduce((count, snapshot) => count + (snapshot.documents || []).length, 0);
+    if (retainedDocuments !== 0) {
+      Q.fail("the stale checkpoint contains original fixture documents and cannot be discarded safely.");
+    }
+    clearDynamicEventEffects(currentEventIds());
+    Q.collection(Q.STATE_COLLECTION).deleteOne({ _id: state._id });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "stale-checkpoint-discarded",
+      discardedAtIso: Q.nowIso(),
+      retainedUserActivities: true,
+      next: `Run stage event-domain ${checkpointId}.`
+    });
+  }
+
   Q.assertDeploymentSafety();
   switch (command) {
     case "stage": stage(); break;
@@ -2338,6 +2400,7 @@
     case "next": next(); break;
     case "status": status(); break;
     case "reset": reset(); break;
+    case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
 })();
