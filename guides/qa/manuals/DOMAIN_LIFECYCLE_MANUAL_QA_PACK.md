@@ -722,6 +722,10 @@ Execution evidence on 2026-08-04:
   an equivalent pending invitation independently.
 - Keep three isolated sessions open: event Admin, terminal accepted member and
   still-pending control member.
+- At the staged baseline, require the same event-bucket counters in both the
+  profile menu and the Activities dropdown: Casey has `My Events = 1`, Riley
+  has `Active Events = 1`, and Nova has `Invitations = 1`. Any list/counter
+  disagreement is a failed prerequisite, not chat-authorization evidence.
 - Before terminal acceptance, prove both menu absence and server-side denial
   for the recipient; retain another pending identity as the negative control
   after the selected recipient accepts.

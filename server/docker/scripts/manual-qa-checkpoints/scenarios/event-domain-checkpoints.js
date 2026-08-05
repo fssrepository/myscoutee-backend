@@ -121,6 +121,33 @@
     }
   }
 
+  function applyEventActivityCounterDeltas(userId, deltas) {
+    const user = Q.collection("users").findOne({
+      $or: [{ _id: userId }, { userId }]
+    });
+    if (!user) Q.fail(`user '${userId}' disappeared while event activity counter deltas were applied.`);
+    const activities = user.activities || {};
+    const event = activities.event || {};
+    const valueAfterDelta = (value, delta) => Math.max(
+      0,
+      normalizeActivityCount(value) + Math.trunc(Number(delta) || 0)
+    );
+    const update = {};
+    for (const [key, delta] of Object.entries(deltas.event || {})) {
+      update[`activities.event.${key}`] = valueAfterDelta(event[key], delta);
+    }
+    for (const [key, delta] of Object.entries(deltas.menu || {})) {
+      update[`activities.${key}`] = valueAfterDelta(activities[key], delta);
+    }
+    if (Object.keys(update).length === 0) return;
+    const result = Q.collection("users").updateOne({
+      $or: [{ _id: userId }, { userId }]
+    }, { $set: update });
+    if (result.matchedCount !== 1) {
+      Q.fail(`user '${userId}' disappeared while event activity counter deltas were applied.`);
+    }
+  }
+
   const CHECKPOINTS = {
     "EVENT-EDITOR-001": {
       stage: "editor-empty",
@@ -1125,6 +1152,18 @@
         memberDocument(EVENT_ID, participantUserId, "Member", "pending", "invite")
       ]);
       insertEmptyMainEventChat(event, acceptedUserIds, stagedAtIso);
+      applyEventActivityCounterDeltas(hostUserId, {
+        menu: { hosting: 1 },
+        event: { all: 1, hosting: 1 }
+      });
+      applyEventActivityCounterDeltas(thirdUserId, {
+        menu: { events: 1 },
+        event: { all: 1, active: 1 }
+      });
+      applyEventActivityCounterDeltas(participantUserId, {
+        menu: { invitations: 1 },
+        event: { all: 1, invitations: 1 }
+      });
       return;
     }
     if (stageKind === "invitation-visibility") {
@@ -1538,7 +1577,7 @@
         ...runtimeContext
       },
       snapshots: Q.snapshotSpecs(selectors()),
-      userActivitySnapshots: selected.stage === "publish-chat-draft"
+      userActivitySnapshots: ["publish-chat-draft", "chat-authorized"].includes(selected.stage)
         ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
         : []
     };
