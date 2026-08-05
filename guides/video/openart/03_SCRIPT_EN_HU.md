@@ -25,15 +25,15 @@ words per minute; the voice does not need to occupy every second.
 | 01:46–01:53 | FOUNDER VO | Dates happened too: a deafening café, a basement bar, a beautiful table that made two strangers perform. |
 | 01:49–01:51 | DATE, lightly under VO | Sorry — what did you say? |
 | 01:53–02:01 | FOUNDER VO | There were many ways to start. What kept disappearing was the bridge to something real. |
-| 02:01–02:09 | FOUNDER VO | Most apps stop at a match. MyScoutee follows a relationship from strangers to meeting — and beyond. |
-| 02:09–02:17 | FOUNDER VO | Give a person or pair an editable priority from one to ten. Mutual choices and context form a group of strangers. |
-| 02:17–02:25 | FOUNDER VO | Everyone may accept or decline. The group chats, then plans and manages its first real event. |
-| 02:25–02:32 | FOUNDER VO | After meeting, they are people you know. Invite them again; let new people fill open places. |
+| 02:01–02:09 | FOUNDER VO | Most apps stop at a match. MyScoutee follows a relationship through its whole life. |
+| 02:09–02:17 | FOUNDER VO | Set an editable one-to-ten priority. Mutual choices and context form a group of strangers. |
+| 02:17–02:25 | FOUNDER VO | They can accept, chat and manage their first real event. |
+| 02:25–02:32 | FOUNDER VO | After meeting, they can invite each other again. Repetition can grow a community. |
 | 02:25–02:27 | GROUP MEMBER 1 | Saturday? |
 | 02:27–02:29 | GROUP MEMBER 2 | I'm in. |
 | 02:29–02:31 | GROUP MEMBER 3 | I'll bring the tickets. |
 | 02:32–02:38 | FOUNDER VO | Relationships change too. Lower the priority, and meeting again becomes less likely. |
-| 02:38–02:44 | FOUNDER VO | Local operators test one shared core across brands and cultures — a voluntary server network with opt-out. |
+| 02:38–02:44 | FOUNDER VO | Local brands test one shared core across cultures — a voluntary server network with opt-out. |
 | 02:44–02:48 | FOUNDER VO | MyScoutee. Designed for the meeting. |
 
 ### English performance and legal notes
@@ -86,15 +86,15 @@ words per minute; the voice does not need to occupy every second.
 | 01:46–01:53 | ALAPÍTÓ narráció | Randi is lett: süketítő kávézó, pincebár, gyönyörű asztal, amely szereplésre kényszerített két idegent. |
 | 01:49–01:51 | RANDIPARTNER | Bocsánat — mit mondtál? |
 | 01:53–02:01 | ALAPÍTÓ narráció | Rengeteg módja volt elkezdeni. Ami újra eltűnt, az a híd volt valami valódi felé. |
-| 02:01–02:09 | ALAPÍTÓ narráció | A legtöbb app a matchnél megáll. A MyScoutee az ismeretlenségtől a találkozásig — és tovább — követi a kapcsolatot. |
-| 02:09–02:17 | ALAPÍTÓ narráció | Adj egy embernek vagy párosnak szerkeszthető prioritást egytől tízig. A kölcsönös döntésekből és a kontextusból ismeretlenek csoportja alakul. |
-| 02:17–02:25 | ALAPÍTÓ narráció | Mindenki elfogadhatja vagy visszautasíthatja. A csoport beszélget, majd megszervezi az első valódi eseményét. |
-| 02:25–02:32 | ALAPÍTÓ narráció | A találkozás után már ismeritek egymást. Hívd meg őket újra, a nyitott helyekre pedig jöhetnek újak. |
+| 02:01–02:09 | ALAPÍTÓ narráció | A legtöbb app a matchnél megáll. A MyScoutee egy kapcsolat teljes életútját követi. |
+| 02:09–02:17 | ALAPÍTÓ narráció | Adj szerkeszthető prioritást egytől tízig. Kölcsönös döntésekből és kontextusból ismeretlenek csoportja alakul. |
+| 02:17–02:25 | ALAPÍTÓ narráció | Elfogadhatják, beszélgethetnek, majd megszervezhetik az első valódi eseményt. |
+| 02:25–02:32 | ALAPÍTÓ narráció | A találkozás után újra meghívhatják egymást. Az ismétlődésből közösség épülhet. |
 | 02:25–02:27 | CSOPORTTAG 1 | Szombat? |
 | 02:27–02:29 | CSOPORTTAG 2 | Benne vagyok. |
 | 02:29–02:31 | CSOPORTTAG 3 | Viszem a jegyeket. |
 | 02:32–02:38 | ALAPÍTÓ narráció | A kapcsolat változhat is. Ha lejjebb veszed a prioritást, kisebb lesz az újabb találkozás esélye. |
-| 02:38–02:44 | ALAPÍTÓ narráció | Helyi üzemeltetők saját branddel és kultúrában tesztelik a közös magot — önkéntes szerverhálózatban, kilépési lehetőséggel. |
+| 02:38–02:44 | ALAPÍTÓ narráció | Helyi brandek kultúránként tesztelik a közös magot — önkéntes szerverhálózatban, opt-outtal. |
 | 02:44–02:48 | ALAPÍTÓ narráció | MyScoutee. Találkozásra tervezve. |
 
 ### Hungarian performance and legal notes

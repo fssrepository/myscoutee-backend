@@ -72,7 +72,7 @@ caption_by_slide=(
   "Egy ismeretlen embernek vagy párosnak szerkeszthető 1–10 prioritást adsz."
   "A prioritás privát, változtatható szándék — nem nyilvános emberi pontszám."
   "A kölcsönös döntések és a kontextus ismeretlenekből csoportot javasolnak."
-  "A szereplők emberek maradnak, nem egy megfejthetetlen affinitásgráf pontjai."
+  "A szereplők emberek maradnak; a rendszer kiegyensúlyozott csoportot javasol."
   "Mindenki elfogadhatja vagy visszautasíthatja a csoportjavaslatot."
   "Az elfogadott ismeretlenek közös kontextusban kezdenek csoportchatet."
   "A chatből az első valódi, kezelhető esemény terve lesz."

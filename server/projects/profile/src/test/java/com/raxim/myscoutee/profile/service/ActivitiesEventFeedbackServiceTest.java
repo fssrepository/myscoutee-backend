@@ -97,6 +97,7 @@ class ActivitiesEventFeedbackServiceTest {
                         "event-1",
                         "Event",
                         "2026-06-02T00:00:00Z",
+                        "",
                         List.of(new EventFeedbackCardDto(
                                 "card-1",
                                 "event-1",
@@ -118,6 +119,7 @@ class ActivitiesEventFeedbackServiceTest {
                                 "",
                                 "great",
                                 "clear",
+                                "A concise event opinion.",
                                 List.of("reliable-one")))))))
                 .hasMessageContaining("submit feedback");
 
@@ -160,6 +162,47 @@ class ActivitiesEventFeedbackServiceTest {
                 new EventFeedbackPageQueryDto("viewer", "pending", 0, 20));
 
         assertThat(page.items()).singleElement().satisfies(item -> assertThat(item.imageUrl()).isEmpty());
+    }
+
+    @Test
+    void loadPageIncludesFeedbackReadyOwnEventBeforeAnyResponses() {
+        Users host = new Users();
+        host.setUserId("host");
+        host.setName("Host");
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-own");
+        event.setTitle("Feedback-ready Event");
+        event.setCreatorUserId("host");
+        event.setOwnerUserId("host");
+        event.setAdmins(List.of("host"));
+        event.setStartAtIso("2020-01-01T10:00:00Z");
+        event.setImageUrl("/media/event-own.webp");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findAcceptedMembershipEvents("host")).thenReturn(List.of());
+        when(activityEventsRepository.findAdminVisibleEvents("host")).thenReturn(List.of(event));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(host));
+        when(eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc("host"))
+                .thenReturn(List.of());
+        when(eventFeedbackAnswersRepository.findByViewerUserIdOrderByEventIdAscSubmittedAtIsoDesc("host"))
+                .thenReturn(List.of());
+        when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(List.of("event-own")))
+                .thenReturn(List.of());
+        when(eventFeedbackAnswersRepository.findByEventIdInOrderByEventIdAscSubmittedAtIsoDesc(List.of("event-own")))
+                .thenReturn(List.of());
+
+        EventFeedbackPageResultDto page = service.loadPage(
+                new EventFeedbackPageQueryDto("host", "own-events", 0, 20));
+
+        assertThat(page.items()).singleElement().satisfies(item -> {
+            assertThat(item.eventId()).isEqualTo("event-own");
+            assertThat(item.imageUrl()).isEqualTo("/media/event-own.webp");
+            assertThat(item.pendingCards()).isZero();
+            assertThat(item.totalCards()).isZero();
+            assertThat(item.isOwnEvent()).isTrue();
+        });
+        assertThat(page.counts().ownEvents()).isEqualTo(1);
     }
 
     @Test
@@ -296,6 +339,7 @@ class ActivitiesEventFeedbackServiceTest {
                 "",
                 "excellent",
                 "resources",
+                "A focused and welcoming event.",
                 List.of("reliable-one"));
         AtomicReference<EventFeedbackState> persistedState = new AtomicReference<>();
         AtomicReference<List<EventFeedbackAnswer>> persistedAnswers = new AtomicReference<>(List.of());
@@ -332,12 +376,14 @@ class ActivitiesEventFeedbackServiceTest {
                         "event-1",
                         "Finished Event",
                         "2026-07-23T18:00:00Z",
+                        "",
                         List.of(card))));
 
         assertThat(persisted.submittedAtIso()).isEqualTo("2026-07-23T18:00:00Z");
         assertThat(persisted.cards()).hasSize(1);
         assertThat(persisted.cards().getFirst().answerPrimary()).isEqualTo("excellent");
         assertThat(persisted.cards().getFirst().answerSecondary()).isEqualTo("resources");
+        assertThat(persisted.cards().getFirst().eventComment()).isEqualTo("A focused and welcoming event.");
 
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(intentCaptor.capture());
@@ -407,6 +453,7 @@ class ActivitiesEventFeedbackServiceTest {
                         "event-1",
                         "Finished Event",
                         "2026-07-23T18:00:00Z",
+                        "",
                         List.of(new EventFeedbackCardDto(
                                 "feedback-event-event-1",
                                 "event-1",
@@ -428,6 +475,7 @@ class ActivitiesEventFeedbackServiceTest {
                                 "",
                                 "excellent",
                                 "resources",
+                                "",
                                 List.of())))));
 
         verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));

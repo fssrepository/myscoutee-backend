@@ -55,6 +55,7 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 @Service
 public class ActivitiesEventFeedbackService {
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
+    private static final int EVENT_COMMENT_MAX_CODE_POINTS = 160;
     private static final DateTimeFormatter EVENT_FEEDBACK_LABEL_FORMATTER =
             DateTimeFormatter.ofPattern("EEE, MMM d HH:mm", Locale.US).withZone(ZoneOffset.UTC);
 
@@ -190,6 +191,7 @@ public class ActivitiesEventFeedbackService {
                 eventId,
                 safeText(record.getTitle()),
                 safeText(state == null ? null : state.getSubmittedAtIso()),
+                safeText(state == null ? null : state.getOrganizerNote()),
                 buildFeedbackCards(record, usersById, activeUser).stream()
                         .map(card -> mergeFeedbackAnswer(
                                 card,
@@ -247,6 +249,9 @@ public class ActivitiesEventFeedbackService {
             document.setTargetRole(safeText(card.targetRole()));
             document.setPrimaryValue(safeText(card.answerPrimary()));
             document.setSecondaryValue(safeText(card.answerSecondary()));
+            document.setEventComment("event".equals(safeText(card.kind()))
+                    ? normalizeEventComment(card.eventComment())
+                    : "");
             document.setPersonalityTraitIds(card.selectedTraitIds() == null
                     ? List.of()
                     : card.selectedTraitIds().stream().map(this::safeText).filter(StringUtils::hasText).toList());
@@ -279,7 +284,6 @@ public class ActivitiesEventFeedbackService {
         }
         adminTelemetryService.record("event.feedback.submitted", "events", eventId, userId);
         userActivityCountersService.applyFeedbackStateTransition(userId, wasSubmitted, wasRemoved, true, false);
-        userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
         return loadDetailForUser(activeUser, userId, eventId);
     }
 
@@ -339,7 +343,6 @@ public class ActivitiesEventFeedbackService {
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
-        userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
     }
 
     public void markRemoved(EventFeedbackToggleRequestDto request, boolean removed) {
@@ -370,7 +373,6 @@ public class ActivitiesEventFeedbackService {
                 wasRemoved,
                 StringUtils.hasText(state.getSubmittedAtIso()),
                 removed);
-        userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
     }
 
     private List<EventFeedbackStateDto> queryStateDtos(String userId) {
@@ -538,6 +540,7 @@ public class ActivitiesEventFeedbackService {
         return uniqueFeedbackEvents(activityEventsRepository.findAdminVisibleEvents(userId)).stream()
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
                 .filter(record -> isEventAdmin(record, userId))
+                .filter(this::isFeedbackUnlocked)
                 .sorted(Comparator
                         .comparing((ActivityEvent record) -> eventStartAtMs(record), Comparator.nullsLast(Comparator.naturalOrder()))
                         .thenComparing(record -> safeText(record.getTitle()))
@@ -700,6 +703,7 @@ public class ActivitiesEventFeedbackService {
                 firstImageUrl(host),
                 "",
                 "",
+                "",
                 List.of()));
 
         for (Users attendee : feedbackAttendeesForEvent(record, usersById, activeUserId, hostId)) {
@@ -726,6 +730,7 @@ public class ActivitiesEventFeedbackService {
                     normalizeGender(attendee.getGender()),
                     safeText(attendee.getTraitLabel()),
                     firstImageUrl(attendee),
+                    "",
                     "",
                     "",
                     List.of()));
@@ -823,9 +828,6 @@ public class ActivitiesEventFeedbackService {
                 continue;
             }
             List<EventFeedbackReceivedEntryDto> entries = receivedByEventId.getOrDefault(eventId, List.of());
-            if (entries.isEmpty()) {
-                continue;
-            }
             Long startAtMs = eventStartAtMs(record);
             items.add(new EventFeedbackDto(
                     eventId,
@@ -1008,7 +1010,7 @@ public class ActivitiesEventFeedbackService {
     }
 
     private EventFeedbackDetailDto emptyDetailResult(String eventId) {
-        return new EventFeedbackDetailDto(safeText(eventId), "", "", List.of());
+        return new EventFeedbackDetailDto(safeText(eventId), "", "", "", List.of());
     }
 
     private EventFeedbackStatDto emptyStatResult(String eventId) {
@@ -1242,6 +1244,7 @@ public class ActivitiesEventFeedbackService {
                 card.targetImageUrl(),
                 safeText(answer.getPrimaryValue()),
                 safeText(answer.getSecondaryValue()),
+                safeText(answer.getEventComment()),
                 answer.getPersonalityTraitIds() == null
                         ? List.of()
                         : answer.getPersonalityTraitIds().stream()
@@ -1299,6 +1302,7 @@ public class ActivitiesEventFeedbackService {
                 safeText(answer.getTargetRole()),
                 safeText(answer.getPrimaryValue()),
                 safeText(answer.getSecondaryValue()),
+                safeText(answer.getEventComment()),
                 answer.getPersonalityTraitIds() == null
                         ? List.of()
                         : answer.getPersonalityTraitIds().stream().map(this::safeText).filter(StringUtils::hasText).toList(),
@@ -1306,6 +1310,16 @@ public class ActivitiesEventFeedbackService {
                         ? List.of()
                         : answer.getTags().stream().map(this::safeText).filter(StringUtils::hasText).toList(),
                 safeText(answer.getSubmittedAtIso()));
+    }
+
+    private String normalizeEventComment(String value) {
+        String normalized = safeText(value);
+        if (normalized.codePointCount(0, normalized.length()) > EVENT_COMMENT_MAX_CODE_POINTS) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Event feedback comments may contain at most 160 characters.");
+        }
+        return normalized;
     }
 
     private EventFeedbackStateDto toDto(EventFeedbackState state, Map<String, EventFeedbackAnswerDto> answersByCardId) {

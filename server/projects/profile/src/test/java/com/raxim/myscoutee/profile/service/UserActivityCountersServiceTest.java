@@ -193,26 +193,25 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
-    void refreshFeedbackReceivedCountersForUserCountsOwnedEventsWithExternalFeedback() {
-        Users user = user("host", activitiesWithAssetAndFeedback(2, 2, 2, 0, 0, 3, 1, 0));
-        when(usersRepository.findByUserId("host")).thenReturn(Optional.of(user));
-        when(activityEventsRepository.findByCreatorUserId("host")).thenReturn(List.of(
-                event("event-one", "host", "A"),
-                event("event-two", "host", "A"),
-                event("event-trash", "host", "T")));
-        when(activityEventsRepository.findByAdminsContaining("host")).thenReturn(List.of(
-                event("event-two", "other-host", "A")));
+    void syncFeedbackEligibilityAddsFeedbackReadyOwnEventWithoutChangingMainFeedback() {
+        Instant now = Instant.parse("2026-08-05T09:00:00Z");
+        ActivityEvent eligible = event("event-own", "host", "A");
+        eligible.setOwnerUserId("host");
+        eligible.setAdmins(List.of("host"));
+        eligible.setAcceptedMemberUserIds(List.of("host"));
+        eligible.setStartAtIso(now.minusSeconds(10_800L).toString());
+        Users host = user("host", activitiesWithAssetAndFeedback(2, 2, 2, 0, 0, 3, 1, 0));
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(eligible));
         when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
-                .thenReturn(List.of(
-                        state("event-one", "guest", "2026-03-01T10:00:00.000Z", ""),
-                        state("event-one", "host", "2026-03-01T10:00:00.000Z", ""),
-                        state("event-two", "guest", "", "Strong hosting.")));
+                .thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(host));
 
-        service.refreshFeedbackReceivedCountersForUser("host");
+        int updatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-own"), now);
 
+        assertThat(updatedUsers).isEqualTo(1);
         Document fields = updatedFields();
         assertThat(fields.getInteger("activities.feedback")).isEqualTo(3);
-        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(1);
         assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(3);
         assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(1);
         assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();

@@ -342,8 +342,16 @@
     "EVENT-FEEDBACK-002": {
       stage: "feedback-empty",
       why: "Follow one persisted event-feedback mutation into organizer, notification, recompute and profile projections.",
-      action: "As the participant, submit the staged event feedback once with one distinctive personality trait.",
-      expected: "One state and one answer per card persist; the organizer received view and first-submission bell agree with the target IDs.",
+      action: "As the participant, submit the staged event feedback once with one distinctive personality trait and one unique optional event opinion of at most 160 characters.",
+      expected: "Before submission the reloaded host profile has exact main feedback 0 with no red Feedback badge, while Own Events is 1 and contains exactly the staged zero-response card with its persisted image; opening View Feedbacks keeps the event identity and shows no response or trait evidence. After submission one state and one answer per card persist; View my feedback and the organizer received view show the exact event opinion separately from any organizer note, and the first-submission bell agrees with the target IDs.",
+      checks: [
+        "Reload the host profile/menu: the main Feedback tile has no red badge because activities.feedback is exactly 0; eventFeedback.ownEvents remains 1.",
+        "Open Event Feedback -> Own Events: its counter is 1 and exactly one staged event card is visible with the persisted title and image before any response exists.",
+        "Open View Feedbacks: the event identity remains visible and the zero-response detail contains no response rows or trait evidence.",
+        "Repeat the read-only oracle after those openings: no answer, submitted state, affinity recompute, notification or notification outbox may have been created.",
+        "On the first event-feedback page enter a unique event opinion of at most 160 characters; pasted and typed values share the same backend-enforced limit.",
+        "After submission open View my feedback and the organizer received-feedback detail: both show the exact event opinion, and neither merges it with the separate note-to-organizer field."
+      ],
       worker: "MUST RUN: target-user recompute and first-submission notification outbox."
     },
     "EVENT-FEEDBACK-003": {
@@ -362,9 +370,9 @@
     },
     "EVENT-FEEDBACK-005": {
       stage: "feedback-submitted",
-      why: "Prove that an organizer note is local metadata rather than new participant feedback.",
-      action: "As the host, open received feedback for the staged event, save one unique organizer note and reopen it.",
-      expected: "The exact note persists while participant answers, traits, event buckets, tasks and notifications stay unchanged.",
+      why: "Prove that a participant note to the organizer is separate metadata rather than a new structured feedback answer.",
+      action: "As the participant, use Add note on the pending or feedbacked staged event, save one unique note, then reopen View my feedback and the organizer received-feedback detail.",
+      expected: "The Add/Edit note action remains available after feedback submission. The exact note persists in feedback state and both viewers show it separately from the event opinion while participant answers, traits, event buckets, tasks and notifications stay unchanged.",
       worker: "MUST NOT RUN: only the documented feedback counter refresh is allowed."
     },
     "EVENT-IMPRESSION-001": {
@@ -1495,11 +1503,11 @@
             };
           })
         : checkpointId.startsWith("EVENT-FEEDBACK-")
-          ? (() => {
-              const current = userActivitiesSnapshot(participantUserId);
+          ? [hostUserId, participantUserId].map(userId => {
+              const current = userActivitiesSnapshot(userId);
               const currentActivities = current.activities.value || {};
-              return [{
-                user: Q.user(participantUserId),
+              return {
+                user: Q.user(userId),
                 current: {
                   feedback: nestedNumber(currentActivities, "feedback"),
                   eventFeedback: {
@@ -1509,8 +1517,8 @@
                     removed: nestedNumber(currentActivities, "eventFeedback.removed")
                   }
                 }
-              }];
-            })()
+              };
+            })
         : [],
       invitationAcceptanceOutbox: invitationAcceptanceOutbox.map(item => ({
         notificationType: Q.text(item.notificationType),
@@ -1563,6 +1571,50 @@
         host: summarizeImpressionsSection(feedbackTarget.impressions && feedbackTarget.impressions.host),
         member: summarizeImpressionsSection(feedbackTarget.impressions && feedbackTarget.impressions.member)
       },
+      feedbackHostZeroResponseBaseline: checkpointId === "EVENT-FEEDBACK-002"
+        ? (() => {
+            const hostActivities = feedbackTarget.activities || {};
+            const hostEventFeedback = hostActivities.eventFeedback || {};
+            const submittedStates = feedbackStates.filter(item => Boolean(item.submittedAtIso));
+            const hostImpressions = summarizeImpressionsSection(
+              feedbackTarget.impressions && feedbackTarget.impressions.host
+            );
+            return {
+              expected: {
+                mainFeedback: 0,
+                ownEvents: 1,
+                stagedCardCount: 1,
+                submittedStateCount: 0,
+                answerCount: 0,
+                hostTraitEvidenceCount: 0
+              },
+              current: {
+                mainFeedback: nestedNumber(hostActivities, "feedback"),
+                ownEvents: nestedNumber(hostActivities, "eventFeedback.ownEvents"),
+                stagedCardCount: Q.text(event.sourceId) === EVENT_ID ? 1 : 0,
+                eventId: Q.text(event.sourceId),
+                title: Q.text(event.title),
+                imageUrl: Q.text(event.imageUrl),
+                submittedStateCount: submittedStates.length,
+                answerCount: feedbackAnswers.length,
+                hostTraitEvidenceCount: hostImpressions.personalityTraits.reduce(
+                  (total, trait) => total + Number(trait.evidenceCount || 0),
+                  0
+                )
+              },
+              checks: {
+                mainBadgeMustBeAbsent: nestedNumber(hostActivities, "feedback") === 0,
+                ownEventsBucketMustBeOne: nestedNumber(hostActivities, "eventFeedback.ownEvents") === 1,
+                stagedIdentityMustMatch: Q.text(event.sourceId) === EVENT_ID
+                  && Q.text(event.title) === EXPECTED_TITLE,
+                persistedImageMustExist: Boolean(Q.text(event.imageUrl)),
+                zeroResponsesMustRemainVisible: submittedStates.length === 0
+                  && feedbackAnswers.length === 0,
+                traitsMustRemainEmpty: hostImpressions.personalityTraits.length === 0
+              }
+            };
+          })()
+        : null,
       feedbackStates: feedbackStates.map(item => ({
         viewerUserId: Q.text(item.viewerUserId),
         eligible: item.eligible === true,
@@ -1578,6 +1630,7 @@
         kind: Q.text(item.kind),
         primaryValue: Q.text(item.primaryValue),
         secondaryValue: Q.text(item.secondaryValue),
+        eventComment: Q.text(item.eventComment),
         personalityTraitIds: item.personalityTraitIds || [],
         updatedDate: item.updatedDate
       })),
@@ -1691,6 +1744,7 @@
       identities: state.context,
       why: selected.why,
       workerExpectation: selected.worker,
+      verificationSteps: selected.checks || [],
       baseline: oracle(state),
       next: selected.action,
       expectedVisibleResult: selected.expected
@@ -2460,6 +2514,7 @@
       phase: "inspect-manual-checkpoint",
       why: selected.why,
       workerExpectation: selected.worker,
+      verificationSteps: selected.checks || [],
       oracle: oracle(state),
       expectedVisibleResult: selected.expected,
       next: "Compare the UI screenshot with this identity-level oracle. If it agrees, record PASS and reset this checkpoint; otherwise retain both as defect evidence."

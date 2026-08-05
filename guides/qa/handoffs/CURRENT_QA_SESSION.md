@@ -8,12 +8,12 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-002
-state: READY FOR HTTP UI ORACLE; a recognisable generated fixture image is stored at server/docker/scripts/manual-qa-checkpoints/assets/event-feedback-002-cover.png, uploaded through the normal media API, and its canonical large.webp URL is persisted on the directly staged past event Manual QA EVENT-FEEDBACK-002; Casey Bridge is host and Nova Social is the accepted participant; the existing eligibility worker materialized exactly one eligible/counterTracked pending state and Nova's exact stored feedback counter is 1 with ownEvents/pending/feedbacked/removed = 0/1/0/0; Event Editor is not being repeated
+active_checkpoint: EVENT-FEEDBACK-005
+state: EVENT-FEEDBACK-002 original structured submission and post-submit read-only oracle PASS; the saved response has excellent/communication/creative-soul and an empty eventComment because the optional 160-character event-opinion requirement was added afterward; hot deploy now keeps event opinion and note-to-organizer as separate persisted/viewed fields and restores Add/Edit note on the feedbacked participant card; no fixture or Git reset and no duplicate build/process was started
 next_actor: user
-next_action: in the Nova Social session, click the Visszajelzések tile in the profile menu; expect the Esemény-visszajelzés popup to show exactly one pending Manual QA EVENT-FEEDBACK-002 card with the generated lakeside meetup image and pending count 1
-next_codex_action: wait for that screenshot and compare the card identity, image and counters with the persisted oracle before giving the next single UI action
-queued_checkpoint: [EVENT-IMPRESSION-001]
+next_action: in the Nova Social session, open the three-dot menu on the feedbacked Manual QA EVENT-FEEDBACK-002 card; expect exactly View my feedback and Add note, with no Edit my feedback action; do not select either action yet
+next_codex_action: after the menu screenshot, verify the two-action contract and give only the Add note selection as the next UI action
+queued_checkpoint: [EVENT-FEEDBACK-002, EVENT-IMPRESSION-001]
 ```
 
 Active detail: [`EVENT-FEEDBACK-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).

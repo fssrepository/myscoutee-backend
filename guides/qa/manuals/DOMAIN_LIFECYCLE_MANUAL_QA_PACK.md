@@ -760,6 +760,26 @@ Execution evidence on 2026-08-04:
 
 - Capture the participant's pending-feedback item, the host's received
   feedback baseline, the host's Impressions popup and the notification view.
+- Before any participant submits, the feedback-ready event must already appear
+  once in the host's **Own Events** bucket with response count `0`. The host's
+  persisted `eventFeedback.ownEvents` bucket must be `1`, while the main
+  actionable `activities.feedback` counter remains `0`; the latter is not a
+  read-time sum of feedback sub-buckets. The host's traits and Impressions may
+  remain empty until a real response is submitted.
+- Record the zero-response host baseline through these required UI checks:
+  1. Reload the host profile/menu. The main **Feedback** tile must have no red
+     badge while the exact main counter is `0`; the nonzero **Own Events**
+     sub-bucket must not leak into that aggregate.
+  2. Open **Event Feedback -> Own Events**. The trigger and bucket counter must
+     be `1`, and exactly one card for the controlled event must appear with its
+     persisted title and image even though nobody has submitted feedback yet.
+  3. Open that card with **View Feedbacks**. The detail must retain the event
+     identity and show the zero-response empty state, with no response rows or
+     trait evidence. The card itself must not be hidden merely because its
+     response count is `0`.
+  4. Treat all three steps as read-only: reload, list opening and empty-detail
+     opening must not create an answer, submit a state, enqueue affinity
+     recompute or create a notification/outbox item.
 - Before submission, compare the source card under **Activities -> Events**
   with both the feedback-list card and the feedback form. A persisted event
   image must be identical on all three surfaces. If the event image is empty,
@@ -780,11 +800,21 @@ Execution evidence on 2026-08-04:
   demo image while it creates the event. Activities, the feedback list and the
   feedback form must all consume that same persisted event value; feedback
   mapping itself must not generate a replacement.
-- Submit one controlled overall answer, improvement answer and one distinctive
-  personality trait through the visible feedback flow.
+- On the event card's first feedback page, submit one controlled overall
+  answer, improvement answer, one distinctive personality trait and one unique
+  optional event opinion of at most 160 characters. The event opinion belongs
+  to the structured event answer; it is not the separate organizer note.
 - Verify one submitted feedback state and one persisted answer per displayed
   card. The participant item moves from pending to feedbacked and the organizer
   received-feedback/stat view shows the same event and answer evidence.
+- From the submitted card, open **View my feedback**. It must show the exact
+  structured answers and exact event opinion. If a separate organizer note was
+  saved, it must appear under its own label rather than being merged with the
+  event opinion. The organizer received-feedback view must make the same
+  distinction.
+- A pasted or typed event opinion longer than 160 characters must not be
+  accepted; the backend owns the same limit and must not rely only on the
+  browser `maxlength` attribute.
 - Require `event.feedback.submitted`, one target-user recompute per changed
   target, refreshed activity counters and exactly one first-submission
   notification for each eligible non-self target.
@@ -811,12 +841,20 @@ Execution evidence on 2026-08-04:
   record that mismatch as a separate functional defect rather than silently
   changing this checkpoint.
 
-### `EVENT-FEEDBACK-005` — organizer note is local feedback metadata
+### `EVENT-FEEDBACK-005` — participant note to organizer is separate feedback metadata
 
-- Save one unique organizer note on a received-feedback event and reopen it.
-- Verify exact persistence and the documented received-feedback counter
-  refresh. No participant answer, Impression trait, affinity task,
-  notification or unrelated event bucket may change.
+- As the participant, use **Add note** on the pending or already-feedbacked
+  event card and save one unique note to the organizer through the dedicated
+  note mutation. After the main feedback submission, the action must remain
+  available as **Add note** or **Edit note**; it must not disappear.
+- Reopen **View my feedback** and verify the exact note under its own
+  **Note to organizer** label. If the event answer also contains an event
+  opinion, both values must remain visible as separate fields.
+- As the organizer, open the received-feedback detail and verify the same exact
+  note separately from the participant's event opinion.
+- Verify exact persistence only in the feedback state. No participant answer,
+  Impression trait, affinity task, notification or unrelated event bucket may
+  change.
 
 ### `EVENT-IMPRESSION-001` — feedback evidence reaches the target profile
 

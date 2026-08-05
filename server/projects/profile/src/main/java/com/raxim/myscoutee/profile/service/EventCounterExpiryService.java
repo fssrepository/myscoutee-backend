@@ -206,7 +206,9 @@ public class EventCounterExpiryService {
     private List<ActivityEvent> dueFeedbackProjectionDocuments(Instant now) {
         Instant cutoff = (now == null ? Instant.now() : now).minusSeconds(2L * 60L * 60L);
         Query query = new Query(new Criteria().andOperator(
-                Criteria.where("feedbackCountersProjected").ne(true),
+                new Criteria().orOperator(
+                        Criteria.where("feedbackCountersProjected").ne(true),
+                        Criteria.where("feedbackOwnEventCountersProjected").ne(true)),
                 Criteria.where("generated").ne(true),
                 Criteria.where("sourceId").exists(true).nin("", null),
                 Criteria.where("status").ne(ActivityEvent.STATUS_TRASHED),

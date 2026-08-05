@@ -303,6 +303,7 @@ public final class EventsDtos {
             String targetRole,
             String primaryValue,
             String secondaryValue,
+            String eventComment,
             List<String> personalityTraitIds,
             List<String> tags,
             String submittedAtIso) {
@@ -433,6 +434,7 @@ public final class EventsDtos {
             String targetImageUrl,
             String answerPrimary,
             String answerSecondary,
+            String eventComment,
             List<String> selectedTraitIds) {
     }
 
@@ -450,6 +452,7 @@ public final class EventsDtos {
             String eventId,
             String title,
             String submittedAtIso,
+            String organizerNote,
             List<EventFeedbackCardDto> cards) {
     }
 
