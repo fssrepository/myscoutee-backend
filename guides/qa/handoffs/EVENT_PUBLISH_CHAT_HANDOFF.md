@@ -1,5 +1,9 @@
 # EVENT-PUBLISH-CHAT-001 handoff
 
+Resume new work from [`CURRENT_QA_SESSION.md`](CURRENT_QA_SESSION.md). This file
+is retained as detailed fixture/evidence history and is not the canonical
+current-state summary.
+
 Status: implementation updated; a clean manual Publish retest is required before
 the retained event continues into the invitation-acceptance chat branch.
 
