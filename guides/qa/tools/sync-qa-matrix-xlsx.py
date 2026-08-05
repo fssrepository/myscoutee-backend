@@ -32,6 +32,10 @@ ROW_FILL_COLORS = {
     "legend-gap": "FFF4CCCC",
 }
 HEADER_FILL_COLOR = "FF1F4E78"
+LEGEND_SECTION_FILL_COLOR = "FF44546A"
+TEST_SECTION_FILL_COLOR = "FF4472C4"
+LEGEND_SECTION_TITLE = "LEGEND"
+TEST_SECTION_TITLE = "QA TEST CASES"
 
 ET.register_namespace("", NS)
 ET.register_namespace("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
@@ -58,6 +62,23 @@ def load_rows() -> list[list[str]]:
     if column_count == 0 or any(len(row) != column_count for row in rows):
         raise RuntimeError("QA matrix CSV has inconsistent column counts.")
     return rows
+
+
+def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
+    headers = source_rows[0]
+    legend_rows = [row for row in source_rows[1:] if row[0].startswith("LEGEND-")]
+    test_rows = [row for row in source_rows[1:] if not row[0].startswith("LEGEND-")]
+
+    def section_row(title: str) -> list[str]:
+        return [title, *("" for _ in headers[1:])]
+
+    return [
+        section_row(LEGEND_SECTION_TITLE),
+        *legend_rows,
+        section_row(TEST_SECTION_TITLE),
+        headers,
+        *test_rows,
+    ]
 
 
 def shared_string_table(rows: list[list[str]]) -> tuple[list[str], dict[str, int]]:
@@ -159,13 +180,34 @@ def build_styles(existing: bytes) -> tuple[bytes, dict[str, int]]:
         key: ensure_cell_style(cell_xfs, ensure_fill(fills, color))
         for key, color in ROW_FILL_COLORS.items()
     }
-    header_fill = ensure_fill(fills, HEADER_FILL_COLOR)
-    styles["header"] = ensure_cell_style(cell_xfs, header_fill, ensure_header_font(fonts))
+    header_font = ensure_header_font(fonts)
+    styles["header"] = ensure_cell_style(
+        cell_xfs,
+        ensure_fill(fills, HEADER_FILL_COLOR),
+        header_font,
+    )
+    styles["legend-section"] = ensure_cell_style(
+        cell_xfs,
+        ensure_fill(fills, LEGEND_SECTION_FILL_COLOR),
+        header_font,
+    )
+    styles["test-section"] = ensure_cell_style(
+        cell_xfs,
+        ensure_fill(fills, TEST_SECTION_FILL_COLOR),
+        header_font,
+    )
     styles["default"] = 0
     return ET.tostring(root, encoding="utf-8", xml_declaration=True), styles
 
 
 def row_style(values: list[str], headers: list[str]) -> str:
+    if values[0] == LEGEND_SECTION_TITLE:
+        return "legend-section"
+    if values[0] == TEST_SECTION_TITLE:
+        return "test-section"
+    if values == headers:
+        return "header"
+
     item = dict(zip(headers, values))
     identifier = item.get("ID", "")
     legend_styles = {
@@ -204,18 +246,30 @@ def build_sheet(
         raise RuntimeError("QA workbook sheet structure is unsupported.")
 
     last_column = cell_column(len(rows[0]) - 1)
+    headers = next((row for row in rows if row and row[0] == "ID"), None)
+    if headers is None:
+        raise RuntimeError("QA workbook rows do not contain the column header.")
     dimension.set("ref", f"A1:{last_column}{len(rows)}")
     sheet_data.clear()
 
+    existing_merges = root.find(f"{{{NS}}}mergeCells")
+    if existing_merges is not None:
+        root.remove(existing_merges)
+
+    section_row_indexes: list[int] = []
+
     for row_index, values in enumerate(rows, start=1):
-        style_key = "header" if row_index == 1 else row_style(values, rows[0])
+        style_key = row_style(values, headers)
         style_index = style_indexes[style_key]
+        is_section = style_key in {"legend-section", "test-section"}
+        if is_section:
+            section_row_indexes.append(row_index)
         row = ET.SubElement(sheet_data, f"{{{NS}}}row", {
             "r": str(row_index),
             "customFormat": "false",
-            "ht": "12.8",
+            "ht": "20" if is_section else "12.8",
             "hidden": "false",
-            "customHeight": "false",
+            "customHeight": "true" if is_section else "false",
             "outlineLevel": "0",
             "collapsed": "false",
         })
@@ -228,11 +282,20 @@ def build_sheet(
             })
             ET.SubElement(cell, f"{{{NS}}}v").text = str(indexes[value])
 
+    merges = ET.Element(f"{{{NS}}}mergeCells", {"count": str(len(section_row_indexes))})
+    for row_index in section_row_indexes:
+        ET.SubElement(merges, f"{{{NS}}}mergeCell", {
+            "ref": f"A{row_index}:{last_column}{row_index}",
+        })
+    sheet_position = list(root).index(sheet_data)
+    root.insert(sheet_position + 1, merges)
+
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 
 def synchronize() -> None:
-    rows = load_rows()
+    source_rows = load_rows()
+    rows = workbook_rows(source_rows)
     strings, indexes = shared_string_table(rows)
     with zipfile.ZipFile(XLSX_PATH, "r") as workbook:
         entries = {name: workbook.read(name) for name in workbook.namelist()}
@@ -262,7 +325,10 @@ def synchronize() -> None:
     finally:
         temporary_path.unlink(missing_ok=True)
 
-    print(f"Synchronized {XLSX_PATH.relative_to(REPOSITORY_ROOT)} from {CSV_PATH.name}: {len(rows) - 1} cases")
+    print(
+        f"Synchronized {XLSX_PATH.relative_to(REPOSITORY_ROOT)} "
+        f"from {CSV_PATH.name}: {len(source_rows) - 1} ledger rows"
+    )
 
 
 if __name__ == "__main__":

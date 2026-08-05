@@ -27,4 +27,5 @@ python3 guides/qa/tools/sync-qa-matrix-xlsx.py
 
 The generated workbook colors complete rows green, partial/open rows amber,
 failed or clean-retest-required rows red, and not-run rows gray. Legend rows
-retain their own contextual colors.
+retain their own contextual colors. Merged `LEGEND` and `QA TEST CASES`
+section headers keep the reading guide visually separate from executable rows.
