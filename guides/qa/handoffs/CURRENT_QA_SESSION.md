@@ -9,10 +9,10 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-FEEDBACK-001
-state: EVENT-FEEDBACK-001 fixture stage blocked safely because closed CHAT-AUTH-001 is still staged; no mutation occurred
+state: EVENT-FEEDBACK-001 baseline-ready; Nova has accepted Member rows on eligible, locked and trashed controls, a pending Member row on the pending control, and zero feedback states, answers, outbox rows or recompute tasks
 next_actor: user
-next_action: explicitly authorize resetting the closed CHAT-AUTH-001 event-domain fixture so EVENT-FEEDBACK-001 can be staged
-next_codex_action: only after authorization, run reset event-domain CHAT-AUTH-001, stage EVENT-FEEDBACK-001, verify the four-event read-only oracle, then hand one Nova UI action
+next_action: in the Nova Social session click Feedback in the Impressions section of the side menu; the Event Feedback popup must open with only Manual QA feedback eligible visible
+next_codex_action: inspect the screenshot, then run the post-load read-only oracle proving that opening the list created no feedback state, answer, outbox row or recompute task
 queued_checkpoint: []
 ```
 
