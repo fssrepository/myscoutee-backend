@@ -945,6 +945,23 @@ Status: **PASS** on 2026-08-05.
   feedback is persisted and recompute finishes but the popup remains stale
   after the documented realtime window and a fresh profile read, retain both
   oracles and report a propagation defect.
+- Retained 2026-08-05 evidence is a failure despite the correct target-side
+  update. Nova submitted only `creative-soul` toward Casey Host; the debounced
+  recompute completed and Casey Host gained Creative Soul at 18% while Casey
+  Attendee remained unchanged. Nova's independent control did not remain
+  unchanged: its prior community/participant presentation (Social Charmer 56%,
+  Adventurous 24%, Empathetic 15%, `0 signals`) was replaced by the whole-popup
+  empty state `Még nincs elérhető adat`. The empty state remained through a
+  normal realtime poll and one close/reopen, confirming a persistent rather
+  than transient control-user regression.
+- Root cause was the backend member-presentation gate still reading legacy
+  `activities.feedback`: submit changed that aggregate from pending `1` to
+  `0`, although the stable lifecycle bucket became
+  `activities.eventFeedback.feedbacked=1`. The fix makes `impressions`
+  mandatory on every realtime snapshot and uses pending, feedbacked or removed
+  event-feedback lifecycle evidence for attendee presentation eligibility.
+  The frontend must reject a payload that omits the field; it must not retain a
+  stale value to repair an incomplete response.
 
 ### `EVENT-IMPRESSION-002` — opening Feedback does not transiently clear its badge
 
