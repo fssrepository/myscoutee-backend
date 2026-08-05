@@ -387,7 +387,7 @@ public class MediaStorageService {
     }
 
     private boolean deleteManagedImageSetObjects(String key) {
-        String imageGroupKey = managedImageSetGroupKey(key);
+        String imageGroupKey = managedImageSetGroupKeyFromObjectKey(key);
         if (!StringUtils.hasText(imageGroupKey)) {
             return false;
         }
@@ -398,7 +398,11 @@ public class MediaStorageService {
         return true;
     }
 
-    private String managedImageSetGroupKey(String key) {
+    String managedImageSetGroupKey(String mediaUrlOrKey) {
+        return managedImageSetGroupKeyFromObjectKey(extractPublicObjectKey(mediaUrlOrKey));
+    }
+
+    private String managedImageSetGroupKeyFromObjectKey(String key) {
         String normalized = safeText(key);
         if (!normalized.startsWith(IMAGE_MEDIA_KIND + "/")) {
             return "";

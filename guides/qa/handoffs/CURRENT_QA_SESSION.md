@@ -8,12 +8,12 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: ARTICLE-EDITOR-001
-state: new English Article draft open; save/reopen not run
+active_checkpoint: CHAT-AUTH-001
+state: Riley channel visibility PASS; correct title, Casey plus Riley avatars only, no pending +1, and no participant-authored message yet
 next_actor: user
-next_action: upload the retained PNG once as a subcase of the Article Save flow
-next_codex_action: inspect the Article upload/save response, persistence and Network variant URLs; do not start a server
-queued_checkpoint: [LANDING-ARTICLE-001, CHAT-AUTH-001]
+next_action: in the open Riley channel, send exactly `CHAT-AUTH-001 Riley proof A-20260805-0823` once and capture the resulting channel
+next_codex_action: verify single local rendering, run read-only persisted-message/delivery/counter oracles, then inspect the same history from Casey and retain Nova as the negative control
+queued_checkpoint: []
 ```
 
 ## Hard constraints

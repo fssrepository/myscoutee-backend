@@ -1,7 +1,7 @@
 # Media image variants manual QA
 
 Status: `MEDIA-IMG-001` PASS / CLOSED as an Event Editor subcase;
-`ARTICLE-EDITOR-001` in progress
+`ARTICLE-EDITOR-001` PASS / CLOSED
 Last updated: 2026-08-05
 
 ## Contract
@@ -79,6 +79,26 @@ producer case; it is one subcase of the Article Save operation.
 5. Require persisted Article HTML/domain data to retain the canonical URL;
    rendition selection happens only while rendering.
 6. Leave publish-to-landing behavior to `LANDING-ARTICLE-001`.
+
+### Recorded Article result
+
+- Draft: `Manual QA ARTICLE-SRC-002`, content key
+  `idea-1785909541279`.
+- Source: PNG, 1229 x 706, 119,898 bytes. `small.webp`: 128 x 74,
+  556 bytes; `medium.webp`: 640 x 368, 6,948 bytes; `large.webp`:
+  1229 x 706, 20,462 bytes. All four objects returned HTTP 200.
+- Save/reopen retained one canonical `large.webp` URL in `imageUrl`,
+  `imageUrls` and Article HTML. The list requested `medium.webp`; the admin
+  viewer requested `large.webp` and rendered it without a broken link.
+- Removing an image without replacement removed its HTML reference, persisted
+  empty image fields, and deleted `original` plus all three renditions (all
+  returned HTTP 404 afterward) while retaining the Article body.
+- Copying raw HTML from a rendered code snippet initially pasted a `<code>`
+  wrapper; the editor now prefers plain-text HTML fragments and preserves raw
+  URL pastes inside existing tags. Focused frontend coverage passed 5/5; the
+  focused Article service coverage passed.
+- Result: PASS / CLOSED. Publication and landing propagation remain owned by
+  `LANDING-ARTICLE-001`.
 
 ## Deferred owning-editor split
 
