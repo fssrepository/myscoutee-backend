@@ -78,6 +78,18 @@ bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh reset event-domain EVENT-FEEDBACK-002
 ```
 
+For a feedback checkpoint transition, use one snapshot-protected command
+instead of a manual reset followed by a separate stage:
+
+```bash
+bash manual-qa-checkpoints-docker.sh switch event-domain \
+  EVENT-FEEDBACK-006 EVENT-FEEDBACK-002
+```
+
+`switch` verifies the currently staged source ID, restores its saved baseline,
+then stages the named feedback checkpoint and records a fresh reset snapshot in
+the same harness invocation. It never starts or restarts a service.
+
 `next` always prints why the action exists, what to do, the exact visible
 result and whether a named worker must run. For read-only, feedback-state and
 direct ticket request checkpoints it prints `MUST NOT RUN`; no artificial

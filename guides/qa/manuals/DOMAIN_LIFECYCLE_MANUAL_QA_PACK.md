@@ -774,6 +774,12 @@ Execution evidence on 2026-08-04:
   both be exactly `1`; after a profile reload the red badge belongs to the
   main **Feedback** tile. The similarly styled **Rates** tile is an independent
   counter and is not evidence for feedback eligibility.
+- Feedback-ready staging changes the event's time boundary, not its normal
+  membership aggregate. Under **Activities -> My Events -> Past**, the Members
+  popup must contain Casey Admin plus Nova Member and the source event card
+  must therefore show exactly `2/8`, matching persisted `acceptedMembers=2`
+  and `capacityTotal=8`. A `1/8` card while both accepted members are listed is
+  a fixture or projection defect.
 - Before any participant submits, the feedback-ready event must already appear
   once in the host's **Own Events** bucket with response count `0`. The host's
   persisted `eventFeedback.ownEvents` bucket must be `1`, while the main
@@ -893,7 +899,13 @@ Status: **PASS** on 2026-08-05.
   `EVENT-FEEDBACK-004`, which removes and restores an already submitted item
   while preserving its answers and Impression evidence.
 - Finish through the checkpoint harness reset, then restage
-  `EVENT-FEEDBACK-002` before continuing the submission checkpoint.
+  `EVENT-FEEDBACK-002` before continuing the submission checkpoint. The
+  canonical transition is one snapshot-protected command:
+
+  ```bash
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+    switch event-domain EVENT-FEEDBACK-006 EVENT-FEEDBACK-002
+  ```
 
 ### `EVENT-IMPRESSION-001` — feedback evidence reaches the target profile
 

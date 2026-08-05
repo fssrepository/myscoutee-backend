@@ -34,6 +34,7 @@ Usage:
   bash manual-qa-checkpoints.sh reset stat-012
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh restage event-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh switch event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh prepare-invitation-acceptance-retest event-domain EVENT-INV-003
@@ -218,6 +219,10 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:advance)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$4" "$3"
+    ;;
+  event-domain:switch)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$4" "$3"
     ;;

@@ -502,6 +502,7 @@
       action: "As the participant, submit the staged event feedback once with one distinctive personality trait and one unique optional event opinion of at most 160 characters.",
       expected: "Before submission the reloaded host profile has exact main feedback 0 with no red Feedback badge, while Own Events is 1 and contains exactly the staged zero-response card with its persisted image; opening View Feedbacks keeps the event identity and shows no response or trait evidence. After submission one state and one answer per card persist; View my feedback and the organizer received view show the exact event opinion separately from any organizer note, and the first-submission bell agrees with the target IDs.",
       checks: [
+        "Open Activities -> My Events -> Past and compare its membership card with Members: Casey Admin plus Nova Member must produce acceptedMembers=2 and an exact 2/8 capacity badge; feedback staging must not rewrite the normal event membership aggregate.",
         "Reload the participant profile/menu: the main Feedback badge is exactly 1 because activities.feedback and eventFeedback.pending are both exactly 1; the independent Rates badge is not a substitute.",
         "Reload the host profile/menu: the main Feedback tile has no red badge because activities.feedback is exactly 0; eventFeedback.ownEvents remains 1.",
         "Open Event Feedback -> Own Events: its counter is 1 and exactly one staged event card is visible with the persisted title and image before any response exists.",
@@ -1441,7 +1442,10 @@
       if (!feedbackEventImageUrl) {
         Q.fail("MANUAL_QA_EVENT_IMAGE_URL must contain the uploaded QA fixture image URL.");
       }
-      Object.assign(options, past, { imageUrl: feedbackEventImageUrl });
+      Object.assign(options, past, {
+        imageUrl: feedbackEventImageUrl,
+        acceptedUserIds: [hostUserId, participantUserId]
+      });
       if (stageKind === "feedback-empty" || stageKind === "feedback-submitted") {
         Object.assign(options, {
           feedbackCountersProjected: true,
@@ -1481,6 +1485,8 @@
       statusBeforeSuppression: event.statusBeforeSuppression,
       ticketing: event.ticketing,
       blindMode: Q.text(event.blindMode),
+      acceptedMembers: Number(event.acceptedMembers || 0),
+      capacityTotal: Number(event.capacityTotal || 0),
       acceptedMemberUserIds: event.acceptedMemberUserIds || [],
       pendingMemberUserIds: event.pendingMemberUserIds || [],
       invitedMemberUserIds: event.invitedMemberUserIds || [],
@@ -2745,6 +2751,22 @@
     stage();
   }
 
+  function switchCheckpoint() {
+    const selected = config();
+    if (!selected.stage.startsWith("feedback-")) {
+      Q.fail("switch is currently restricted to feedback checkpoints.");
+    }
+    const state = Q.activeState(SCENARIO, true);
+    const currentCheckpointId = Q.text(state.checkpointId).toUpperCase();
+    if (!sourceCheckpointId || currentCheckpointId !== sourceCheckpointId) {
+      Q.fail(`staged checkpoint is '${currentCheckpointId}', not source '${sourceCheckpointId}'.`);
+    }
+    backfillLegacyFeedbackHostSnapshot(state);
+    reconcileLegacyFeedbackSnapshots(state);
+    resetState(state);
+    stage();
+  }
+
   function discardStale() {
     config();
     const state = requireMatchingState();
@@ -2772,6 +2794,7 @@
   switch (command) {
     case "stage": stage(); break;
     case "restage": restage(); break;
+    case "switch": switchCheckpoint(); break;
     case "advance": advance(); break;
     case "prepare-invitation-acceptance-retest": prepareInvitationAcceptanceRetest(); break;
     case "hold-auto-inviter": holdAutoInviter(); break;

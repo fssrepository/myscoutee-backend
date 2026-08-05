@@ -8,12 +8,12 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-006
-state: Manual QA EVENT-FEEDBACK-006 removal is visually and independently proven; the same title/image moved from Pending to Removed, Pending became empty and Removed became 1; read-only oracle proves Casey feedback=0 ownEvents=1, Nova feedback=0 pending=0 feedbacked=0 removed=1, one eligible+counterTracked state with removed=true and submittedAtIso empty, and zero answer, organizerNote, notification/outbox or recompute rows; the checkpoint is now extended to prove Restore before reset; no server/build/watcher or Compose process was started
+active_checkpoint: EVENT-FEEDBACK-002
+state: EVENT-FEEDBACK-006 is PASS and CLOSED. EVENT-FEEDBACK-002 pre-submit baselines are visually PASS on both sides. Membership is Casey+Nova and exact 2/8; Casey Own Events exposes the retained-image zero-response card and empty detail; Nova main Feedback/Pending are 1 with one retained-image card. The feedback form opens on page 1/2 with the same event identity/image, no preselected answers, required overall/improvement/trait controls, and a separate empty optional event-opinion textarea with 0/160 counter. Adding that textarea exposed a layout regression: the formerly full-width traits control ceased to be the odd last child. The converter now explicitly marks the traits control wide; hot-deploy must be verified visually before filling the form. The post-organizer-opening read-only oracle still proves no answer/submission/recompute/notification/outbox side effect. Hot-deploy remains the only deploy path; no separate server/build/watcher or Compose process was started
 next_actor: user
-next_action: click Visszaállítás exactly once on the currently open EVENT-FEEDBACK-006 Removed card; expect the card to leave Removed, Removed to become empty, and the main Feedback attention plus Pending bucket to return to 1
-next_codex_action: compare the restore screenshot, run the read-only oracle, record EVENT-FEEDBACK-006 PASS, then reset it and restage EVENT-FEEDBACK-002 through the versioned harness
-queued_checkpoint: [EVENT-FEEDBACK-002, EVENT-FEEDBACK-005, EVENT-IMPRESSION-001]
+next_action: close the currently open EVENT-FEEDBACK-002 feedback form with its top-right X; expect to return to the Pending feedback card without changing its Pending state or counters
+next_codex_action: compare the closed-form screenshot, then ask for the single reopen action so the hot-deployed full-width traits layout can be verified
+queued_checkpoint: [EVENT-FEEDBACK-005, EVENT-IMPRESSION-001]
 ```
 
 Active detail: [`EVENT-FEEDBACK-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
