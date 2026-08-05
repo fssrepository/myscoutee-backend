@@ -1,21 +1,22 @@
 # MyScoutee documentation
 
-The project-level documentation is divided into three areas:
+The project-level documentation is divided into four areas:
 
 | Directory | Content |
 |---|---|
 | [`manuals`](manuals/README.md) | Released and versioned operations, administrator, and user manuals, including their PDF sources |
 | [`pitches`](pitches/) | Sources and generated outputs for the Network and Product presentations |
 | [`plans`](plans/) | Project plans, technical context, qualification material, and roadmaps |
+| [`qa`](qa/) | Manual QA contracts, execution matrices, diagnostics, handoffs, references, and QA tooling |
 
 The official manual PDFs can be downloaded directly from the
 [root README](../README.md#official-manuals).
 
 The living manual QA contract and its Excel execution ledger start with the
-[Admin dynamic surfaces QA plan](plans/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md). New
+[Admin dynamic surfaces QA plan](qa/manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md). New
 manual feature packs should extend that ledger so previous execution status and
 evidence remain discoverable across sessions. Manual sampling frequency uses
-the separate [risk-based priority model](plans/MANUAL_QA_PRIORITY_MODEL.md).
+the separate [risk-based priority model](qa/reference/MANUAL_QA_PRIORITY_MODEL.md).
 
 ## Presentation output directories
 

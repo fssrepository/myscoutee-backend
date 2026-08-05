@@ -2,9 +2,9 @@
 
 Status: living manual execution plan and evidence index  
 Last updated: 2026-08-04  
-Companion tracker: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)  
-Reviewable spreadsheet source: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-Priority model: [`MANUAL_QA_PRIORITY_MODEL.md`](MANUAL_QA_PRIORITY_MODEL.md)
+Companion tracker: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)  
+Reviewable spreadsheet source: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+Priority model: [`MANUAL_QA_PRIORITY_MODEL.md`](../reference/MANUAL_QA_PRIORITY_MODEL.md)
 
 ## Purpose and scope
 
@@ -82,7 +82,7 @@ documented prerequisite for another QA operator.
 
 Scheduler-focused manual tests must separate direct setup from scheduler-created
 results. Use the dedicated
-[`manual-qa-checkpoints`](../../server/docker/scripts/manual-qa-checkpoints/README.md)
+[`manual-qa-checkpoints`](../../../server/docker/scripts/manual-qa-checkpoints/README.md)
 harness; do not alter the automated `admin-job-fixtures` suite to create human
 observation pauses.
 
@@ -98,7 +98,7 @@ or second application process may replace this path.
 
 The manual harness includes the original Hungarian requests and a reusable
 operator prompt in
-[`PROMPT.md`](../../server/docker/scripts/manual-qa-checkpoints/PROMPT.md).
+[`PROMPT.md`](../../../server/docker/scripts/manual-qa-checkpoints/PROMPT.md).
 Every comparison must use the post-stage baseline; direct setup effects must
 never be attributed to the scheduler.
 
@@ -111,7 +111,7 @@ inventory changes out of the later scheduler-only delta.
 
 The completed 2026-08-04 Statistics workflows also have retrospective,
 non-rerun reproduction guides in
-[`completed-runs`](../../server/docker/scripts/manual-qa-checkpoints/completed-runs/README.md):
+[`completed-runs`](../../../server/docker/scripts/manual-qa-checkpoints/completed-runs/README.md):
 BASE-STAT, STAT-010 rating/batch/bell, STAT-011 ordinary chat, and STAT-020
 graph-history immutability. These documents preserve the old checkpoints and
 prompts; their creation is not a new manual execution and does not change the
@@ -178,7 +178,7 @@ Archived evidence sources:
 
 - `rollout-2026-07-29T07-04-45-019fac42-c6fe-7971-9435-e6c731bdbd45.jsonl`
 - `rollout-2026-07-31T05-12-00-019fb628-46ea-7a41-a28b-9dab563da772.jsonl`
-- [`server/docker/scripts/admin-job-fixtures/README.md`](../../server/docker/scripts/admin-job-fixtures/README.md)
+- [`server/docker/scripts/admin-job-fixtures/README.md`](../../../server/docker/scripts/admin-job-fixtures/README.md)
 
 ### Current continuation state
 
@@ -557,7 +557,7 @@ and the Chat retest still pending. It remains a `P1 65` (`I2 L3 A5 N4 O2`)
 checkpoint in the master spreadsheet until **both** UI checkpoints pass:
 
 Detailed code-path evidence and the reproducible trace procedure are in
-[`UI_POLL_JANK_DIAGNOSIS.md`](UI_POLL_JANK_DIAGNOSIS.md).
+[`UI_POLL_JANK_DIAGNOSIS.md`](../diagnostics/UI_POLL_JANK_DIAGNOSIS.md).
 
 1. **Admin Job checkpoint — manual visual pass, performance trace pending.** The process
    table now delegates its five-second live refresh, cancellation, keyed

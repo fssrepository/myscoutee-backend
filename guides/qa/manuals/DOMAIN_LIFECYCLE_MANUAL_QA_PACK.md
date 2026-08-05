@@ -2,9 +2,9 @@
 
 Status: execution in progress  
 Last updated: 2026-08-04  
-Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
-[`manual-qa-checkpoints.sh`](../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
+[`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
 
 For `EVENT-LIFE-*`, `EVENT-FEEDBACK-*`, `EVENT-IMPRESSION-001` and
 `EVENT-TICKET-*`, run `stage`, `next`, `status` and `reset` with the

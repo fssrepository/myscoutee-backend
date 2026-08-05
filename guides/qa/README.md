@@ -1,0 +1,30 @@
+# MyScoutee QA documentation
+
+This directory keeps QA execution material separate from project plans.
+
+| Directory | Content |
+|---|---|
+| [`matrices`](matrices/) | Canonical CSV ledger and its reviewable XLSX workbook |
+| [`manuals`](manuals/) | Manual QA contracts and checkpoint procedures |
+| [`handoffs`](handoffs/) | Minimal resumable session state for an active QA chain |
+| [`diagnostics`](diagnostics/) | Focused defect investigations and pending measurements |
+| [`reference`](reference/) | Shared QA policy and prioritization rules |
+| [`tools`](tools/) | QA document generation and synchronization utilities |
+
+Start with the [reviewable XLSX ledger](matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx),
+the [manual QA plan](manuals/ADMIN_DYNAMIC_SURFACES_QA_PLAN.md), and the
+[domain lifecycle checkpoint pack](manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+The current publish/accept/chat continuation is recorded in the
+[minimal handoff](handoffs/EVENT_PUBLISH_CHAT_HANDOFF.md).
+
+The canonical execution ledger is
+[`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv).
+Regenerate the XLSX after changing it with:
+
+```bash
+python3 guides/qa/tools/sync-qa-matrix-xlsx.py
+```
+
+The generated workbook colors complete rows green, partial/open rows amber,
+failed or clean-retest-required rows red, and not-run rows gray. Legend rows
+retain their own contextual colors.

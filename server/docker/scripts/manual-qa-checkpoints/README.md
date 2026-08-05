@@ -30,7 +30,7 @@ results were **not** rerun while these helpers were added.
 
 The event-domain runner implements executable setup and machine oracles for the
 checkpoint graph in
-[`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/plans/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+[`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
 It does not merely print that document. `stage` creates the controlled event,
 membership, feedback or ticket prerequisite and stores a complete reset
 snapshot; `status` queries the resulting identities from Mongo.

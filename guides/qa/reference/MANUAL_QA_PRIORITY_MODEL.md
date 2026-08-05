@@ -81,7 +81,7 @@ proves that the assembled scheduler, Redis worker and browser display cooperate.
 ## Initial scoring ownership
 
 The initial scores in
-[`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+[`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 are an engineering risk assessment based on current code, historical evidence
 and known gaps. Recalculate a row when its implementation, automated oracle,
 failure history, external dependency or cleanup behavior changes. Record the
