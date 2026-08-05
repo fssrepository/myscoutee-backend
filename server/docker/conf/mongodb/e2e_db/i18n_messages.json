@@ -3246,6 +3246,18 @@
     "value": "Processes stored recompute tasks."
   },
   {
+    "_id": "i18n-message-en-affinity-graph-layout-rebuild",
+    "key": "affinity.graph.layout.rebuild",
+    "lang": "en",
+    "value": "Materialized graph layout"
+  },
+  {
+    "_id": "i18n-message-en-affinity-graph-layout-rebuild-description",
+    "key": "affinity.graph.layout.rebuild.description",
+    "lang": "en",
+    "value": "Rebuilds the materialized affinity graph layout used by admin views."
+  },
+  {
     "_id": "i18n-message-en-scheduled-messages-worker",
     "key": "scheduled.messages.worker",
     "lang": "en",
@@ -21586,6 +21598,18 @@
     "key": "affinity.recompute.worker.description",
     "lang": "hu",
     "value": "Feldolgozza a tárolt recompute taskokat."
+  },
+  {
+    "_id": "i18n-message-hu-affinity-graph-layout-rebuild",
+    "key": "affinity.graph.layout.rebuild",
+    "lang": "hu",
+    "value": "Materializált gráfelrendezés"
+  },
+  {
+    "_id": "i18n-message-hu-affinity-graph-layout-rebuild-description",
+    "key": "affinity.graph.layout.rebuild.description",
+    "lang": "hu",
+    "value": "Újraépíti az admin nézetek által használt materializált affinitásgráf-elrendezést."
   },
   {
     "_id": "i18n-message-hu-scheduled-messages-worker",

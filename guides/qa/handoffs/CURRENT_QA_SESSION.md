@@ -8,11 +8,11 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: CHAT-AUTH-001
-state: Riley channel visibility PASS; correct title, Casey plus Riley avatars only, no pending +1, and no participant-authored message yet
-next_actor: user
-next_action: in the open Riley channel, send exactly `CHAT-AUTH-001 Riley proof A-20260805-0823` once and capture the resulting channel
-next_codex_action: verify single local rendering, run read-only persisted-message/delivery/counter oracles, then inspect the same history from Casey and retain Nova as the negative control
+active_checkpoint: EVENT-FEEDBACK-001
+state: STAT-011 PASS/CLOSED; unrelated affinity graph layout i18n source/seed gap fixed and audited, while EVENT-FEEDBACK-001 baseline remains pending
+next_actor: codex
+next_action: load only the EVENT-FEEDBACK-001 section of guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md and resolve the retained fixture plus exact first UI action
+next_codex_action: run read-only eligibility/time-boundary oracles first; do not import/reset fixtures, patch live Mongo i18n, or repeat any closed chat/statistics action
 queued_checkpoint: []
 ```
 
@@ -46,6 +46,21 @@ Recheck these facts with `git status --short` and
 work.
 
 ## Proven behavior — do not repeat without a related code change
+
+### `CHAT-AUTH-001` — PASS / CLOSED
+
+- Casey Admin and accepted Riley share one `mainEvent` chat; pending Nova has no
+  chat owner copy, no chat-message notification and direct history access
+  returns `404 Chat not found`.
+- A WebSocket query-param defect encoded `:` as `%3A` and caused the first send
+  to fail without persistence. The handshake now decodes query parameters; its
+  focused regression passed and hot deploy was verified.
+- Two deliberate Riley messages each persisted once and produced one Casey-only
+  notification/outbox row. The second message separately proved the Event
+  bucket after the first was read.
+- Casey UI proved Chats, All and Event unread cycles `0 -> 1 -> 0`, shared
+  two-message history, and Notification Center `5 -> 6`; both chat owner copies
+  finished at unread `0`.
 
 ### `EVENT-INV-003` — PASS / CLOSED
 
