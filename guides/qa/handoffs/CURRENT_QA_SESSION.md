@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: NONE
-state: EVENT-FEEDBACK-005, EVENT-IMPRESSION-001 and EVENT-IMPRESSION-002 are PASS and CLOSED. EVENT-IMPRESSION-001 initially failed because Nova's member presentation was gated by legacy `activities.feedback`, which changed from pending 1 to 0 on submit despite `activities.eventFeedback.feedbacked=1`; the realtime endpoint therefore resolved null impressions. The rejected frontend cache-preservation workaround was fully reverted. The backend now always returns a non-null `impressions` object and uses pending, feedbacked or removed lifecycle buckets as stable attendee activity; the frontend requires the field and local realtime maintains parity. Both hot-deploy builds and focused Java regressions passed. Casey retained the correct Host-only Creative Soul 18% result. Nova's full reload restored the exact 56%, 24%, 15% control at 16:15:13, and the 16:16:25 screenshot proved it remained identical after the normal poll plus close/reopen, so EVENT-IMPRESSION-001 is PASS-after-fix. EVENT-IMPRESSION-002 remains a separate checkpoint and passed with the accepted UI acknowledgement cycle: Nova's stored Feedback badge showed 1, disappeared immediately when its tile was opened, and the next authoritative realtime poll restored 1 without a feedback mutation
-next_actor: codex
-next_action: wait for the next explicitly selected checkpoint
-next_codex_action: do not change the accepted EVENT-IMPRESSION-002 UI acknowledgement behavior
+active_checkpoint: EVENT-FEEDBACK-004
+state: EVENT-FEEDBACK-005, EVENT-IMPRESSION-001 and EVENT-IMPRESSION-002 are PASS and CLOSED. Submitted structured-feedback editing is not a product feature and has no QA checkpoint. The retained submitted fixture was advanced without reset to EVENT-FEEDBACK-004; it still has exactly one Nova feedback state, one Casey-target answer, one first-submit notification and one first-submit outbox row
+next_actor: user
+next_action: as Nova, remove the submitted Manual QA EVENT-IMPRESSION-001 feedback item once and stop before Restore
+next_codex_action: inspect the removed bucket, counters, saved answer, Casey Impressions evidence, recompute tasks and notification/outbox before authorizing the single Restore
 queued_checkpoint: []
 ```
 
-Last completed detail: [`EVENT-IMPRESSION-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
+Active detail: [`EVENT-FEEDBACK-004`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
 
 ## Hard constraints
 

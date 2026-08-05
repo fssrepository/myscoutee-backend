@@ -540,13 +540,6 @@
       ],
       worker: "MUST RUN: target-user recompute and first-submission notification outbox."
     },
-    "EVENT-FEEDBACK-003": {
-      stage: "feedback-submitted",
-      why: "Prove that editing feedback updates existing evidence without duplicating first-submit effects.",
-      action: "As the participant, reopen the staged submitted feedback, change one answer and Save once.",
-      expected: "Existing answer/state rows update; there is no duplicate state or first-submission bell/outbox item.",
-      worker: "CONDITIONAL: changed targets may recompute; duplicate first-submission delivery MUST NOT RUN."
-    },
     "EVENT-FEEDBACK-004": {
       stage: "feedback-submitted",
       why: "Verify feedback list removal/restoration separately from answer evidence used by Impressions.",

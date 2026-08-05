@@ -51,7 +51,7 @@ the same prerequisite without depending on an earlier human action.
 | Asset member invite | Pending asset-scoped membership | Asset Members pending row and recipient invitation state | Asset acceptance/rejection and optional notifications | `ASSET-MEMBER-001`, `ASSET-MEMBER-002` |
 | Event resource assignment | Event/sub-event/asset-owner assignment record | Event Resources and assigned asset UI | Availability/capacity projection and borrower notifications | `ASSET-ASSIGN-001` |
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
-| Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-003` |
+| Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or remove/restore | Feedback state mutation only | Organizer note or feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-004`, `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement and accepted participation | Ticket-enabled event overlay and one holder credential | Event checkout/ticket card and scanner | Direct ticket issue/check-in path; no scheduled worker is required | `EVENT-TICKET-001` through `EVENT-TICKET-004` |
@@ -849,14 +849,6 @@ Execution evidence on 2026-08-04:
   notification for each eligible non-self target.
 - Continue to `EVENT-IMPRESSION-001` for the target-user popup. Do not treat the
   notification or recompute task alone as proof that Impressions refreshed.
-
-### `EVENT-FEEDBACK-003` — edit/resubmit does not duplicate first-submit effects
-
-- Reopen the already submitted feedback, change one answer and save once.
-- Verify the existing feedback answer/state is updated rather than duplicated.
-  Changed targets may receive a fresh recompute, but the original submitted
-  counter and first-submission bell/outbox item must not be duplicated.
-- An unchanged reopen/close without Save is a full `MUST NOT RUN` checkpoint.
 
 ### `EVENT-FEEDBACK-004` — remove and restore the feedback list item
 
