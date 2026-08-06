@@ -1599,6 +1599,15 @@ Restart evidence on 2026-08-06:
   actor, and the users-table unread counter changes once per inserted row.
   Polling is read-only and creates no task, outbox, notification, event, ticket
   or counter write.
+- First manual retest result: the concise notification row and its independent
+  poll passed, but the already-open Activities -> Chats channel list did not
+  show the lifecycle badge. The write oracle was correct (`DR` and an advanced
+  revision on both physical owner copies); the frontend had attached the
+  versioned header poll only to the inner chat popup. The fix adds one shared
+  foreground `UiTaskScheduler` job to the open ordinary chat list. It sends
+  each visible row's known revision through the existing indexed header-delta
+  service and patches only changed rows; it does not reload or rerender the
+  stable page and does not add a component timer.
 - The current logical notification checkpoint reuses the physical
   `EVENT-TICKET-003` fixture, whose compact title is `QA EVENT-TICKET-003`.
   The notification title therefore fits the mobile row without a fixture-only
