@@ -332,6 +332,10 @@
     }
   }
 
+  function isTicketingStage(stageKind) {
+    return ["ticketing-off", "ticketing-on", "ticket-ready"].includes(stageKind);
+  }
+
   const CHECKPOINTS = {
     "EVENT-EDITOR-001": {
       stage: "editor-empty",
@@ -1486,6 +1490,16 @@
     } else {
       insertEventWithMembers(event);
     }
+    if (isTicketingStage(stageKind)) {
+      applyEventActivityCounterDeltas(hostUserId, {
+        menu: { hosting: 1 },
+        event: { all: 1, hosting: 1 }
+      });
+      applyEventActivityCounterDeltas(participantUserId, {
+        menu: { events: 1 },
+        event: { all: 1, active: 1 }
+      });
+    }
     if (stageKind === "feedback-submitted") insertSubmittedFeedback(stagedAtIso);
     if (stageKind === "ticket-ready") insertReadyTicket(stagedAtIso);
   }
@@ -1718,7 +1732,30 @@
               }
             };
           })
-        : checkpointId.startsWith("EVENT-FEEDBACK-")
+        : checkpointId.startsWith("EVENT-TICKET-")
+          ? [hostUserId, participantUserId].map(userId => {
+              const current = userActivitiesSnapshot(userId);
+              const baseline = savedUserActivity(state, userId);
+              const currentActivities = current.activities.value || {};
+              const baselineActivities = baseline && baseline.activities.value || {};
+              const delta = path => nestedNumber(currentActivities, path) - nestedNumber(baselineActivities, path);
+              return {
+                user: Q.user(userId),
+                current: {
+                  events: nestedNumber(currentActivities, "events"),
+                  hosting: nestedNumber(currentActivities, "hosting"),
+                  event: currentActivities.event || {}
+                },
+                stageDelta: {
+                  events: delta("events"),
+                  hosting: delta("hosting"),
+                  eventAll: delta("event.all"),
+                  eventActive: delta("event.active"),
+                  eventHosting: delta("event.hosting")
+                }
+              };
+            })
+          : checkpointId.startsWith("EVENT-FEEDBACK-")
           ? (checkpointId === "EVENT-FEEDBACK-002"
               ? [hostUserId, participantUserId, thirdUserId]
               : [hostUserId, participantUserId]).map(userId => {
@@ -1933,11 +1970,13 @@
       snapshots: Q.snapshotSpecs(selectors()),
       userActivitySnapshots: ["publish-chat-draft", "chat-authorized"].includes(selected.stage)
         ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
-        : selected.stage.startsWith("feedback-")
-          ? (checkpointId === "EVENT-FEEDBACK-002"
-              ? [hostUserId, participantUserId, thirdUserId]
-              : [hostUserId, participantUserId]).map(userActivitiesSnapshot)
-          : []
+        : isTicketingStage(selected.stage)
+          ? [hostUserId, participantUserId].map(userActivitiesSnapshot)
+          : selected.stage.startsWith("feedback-")
+            ? (checkpointId === "EVENT-FEEDBACK-002"
+                ? [hostUserId, participantUserId, thirdUserId]
+                : [hostUserId, participantUserId]).map(userActivitiesSnapshot)
+            : []
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
     try {

@@ -9,9 +9,9 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-001
-state: The valid Event Feedback and Impressions checkpoints are closed. EVENT-TICKET-001 was freshly staged at 2026-08-06T02:49:47.425Z. The active event is Manual QA EVENT-TICKET-001 with ticketing=false, Casey as Admin and Nova as the single accepted Member; there are no pending/invited members, tickets or checkpoint side effects. EVENT-TICKET-003 is documented as a required physical Android phone test: Casey Admin scans Nova's QR through adb reverse tcp:8080 tcp:80 at http://localhost:8080 with the real phone camera
+state: The valid Event Feedback and Impressions checkpoints are closed. The ticket fixture's missing event-activity projection was corrected and EVENT-TICKET-001 was freshly staged at 2026-08-06T03:05:48.629Z. The active event is Manual QA EVENT-TICKET-001 with ticketing=false, Casey as Admin and Nova as the single accepted Member; Casey has the exact staged hosting/event.hosting/all +1 and Nova the exact events/event.active/all +1, with both pre-stage activity records snapshotted for reset. There are no pending/invited members, tickets or checkpoint side effects. EVENT-TICKET-003 is documented as a required physical Android phone test: Casey Admin scans Nova's QR through adb reverse tcp:8080 tcp:80 at http://localhost:8080 with the real phone camera
 next_actor: user
-next_action: as Casey, open Manual QA EVENT-TICKET-001 in Event Editor, enable Ticketing, Save exactly once, close, then reopen the same event
+next_action: as Casey, reload once and confirm the My Events badge is 1 and the staged event remains in the open My Events popup across a normal poll; then open it in Event Editor, enable Ticketing, Save exactly once, close, and reopen the same event
 next_codex_action: inspect the canonical event, exact member roles and normal event recompute after Save; then compare the reopened editor and Nova participant surface without invoking a ticket scheduler
 queued_checkpoint: [EVENT-TICKET-002, EVENT-TICKET-003]
 ```
