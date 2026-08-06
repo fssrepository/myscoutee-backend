@@ -283,6 +283,7 @@ class UserNotificationServiceTest {
                 notification.getSourceType(),
                 notification.getSourceId(),
                 Map.of(),
-                1);
+                1,
+                1L);
     }
 }

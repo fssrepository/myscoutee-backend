@@ -16,6 +16,8 @@ import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserN
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationPreferenceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationReadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationsPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationsSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationsSyncResponseDto;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.notifications.UserNotificationService;
 
@@ -39,6 +41,13 @@ public class UserNotificationsController {
             @RequestParam(value = "cursor", required = false) String cursor,
             @RequestParam(value = "userId", required = false) String userId) {
         return userNotificationService.queryPage(resolveCurrentUserId(userId), bucket, limit, cursor);
+    }
+
+    @PostMapping("/sync")
+    public UserNotificationsSyncResponseDto sync(
+            @RequestBody UserNotificationsSyncRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return userNotificationService.sync(resolveCurrentUserId(userId), request);
     }
 
     @PostMapping("/{notificationId}/read")

@@ -1,4 +1,4 @@
-/* global ManualQa, db, process */
+/* global ManualQa, UUID, db, process */
 (() => {
   "use strict";
 
@@ -25,14 +25,16 @@
   const TRASHED_EVENT_ID = `${PREFIX}:feedback-trashed`;
   const PENDING_EVENT_ID = `${PREFIX}:feedback-pending`;
   const EVENT_IDS = [EVENT_ID, ISOLATION_EVENT_ID, LOCKED_EVENT_ID, TRASHED_EVENT_ID, PENDING_EVENT_ID];
-  const TICKET_CODE = "TKT-12345678-1234-4123-8123-123456789abc";
-  const ISOLATION_TICKET_CODE = "TKT-87654321-4321-4321-8321-cba987654321";
   const AUTO_INVITER_RULE = "event-auto-inviter";
   const AUTO_INVITER_HOLD_SECONDS = 3600;
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
   const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
   const eventImageUrl = Q.text(process.env.MANUAL_QA_EVENT_IMAGE_URL);
   const EXPECTED_TITLE = `Manual QA ${checkpointId}`;
+
+  function newFixtureTicketCode() {
+    return `TKT-${UUID().toUUID().toString()}`;
+  }
 
   function optionalField(source, key) {
     return source && Object.prototype.hasOwnProperty.call(source, key)
@@ -656,7 +658,7 @@
     "EVENT-TICKET-003": {
       stage: "ticket-ready",
       why: "Verify physical-phone Admin QR check-in is exact-once and negative scans are no-ops.",
-      action: `Connect and authorize the Android phone, run adb reverse tcp:8080 tcp:80, open http://localhost:8080 as Casey Admin and grant camera access. Display Nova's ${TICKET_CODE} QR on a separate screen, scan it once with the phone, scan it again, then try one invalid code from an unauthorized session.`,
+      action: "Connect and authorize the Android phone, run adb reverse tcp:8080 tcp:80, open http://localhost:8080 as Casey Admin and grant camera access. Display Nova's newly issued QR on a separate screen, retain its screenshot, scan it once with the phone, scan it again, then try one invalid code from an unauthorized session.",
       expected: "The physical-phone first scan succeeds and sets one used timestamp; repeat is already-used and negative scans do not mutate it.",
       worker: "MUST NOT RUN: check-in is a direct request path."
     },
@@ -1131,7 +1133,7 @@
       stagedAtIso,
       eventId = EVENT_ID,
       ticketId = `${PREFIX}:ticket`,
-      code = TICKET_CODE) {
+      code = newFixtureTicketCode()) {
     Q.collection("eventTickets").insertOne({
       _id: ticketId,
       code,
@@ -1153,7 +1155,7 @@
     };
   }
 
-  function insertTicketIsolationBaseline(stagedAtIso, future) {
+  function insertTicketIsolationBaseline(stagedAtIso, future, ticketCodes) {
     if (!eventImageUrl) {
       Q.fail("MANUAL_QA_EVENT_IMAGE_URL must contain the uploaded QA fixture image URL.");
     }
@@ -1179,12 +1181,12 @@
         pendingSource: "member"
       })
     ]));
-    insertReadyTicket(stagedAtIso, EVENT_ID, `${PREFIX}:ticket:isolation:a`, TICKET_CODE);
+    insertReadyTicket(stagedAtIso, EVENT_ID, `${PREFIX}:ticket:isolation:a`, ticketCodes.ticketCode);
     insertReadyTicket(
       stagedAtIso,
       ISOLATION_EVENT_ID,
       `${PREFIX}:ticket:isolation:b`,
-      ISOLATION_TICKET_CODE);
+      ticketCodes.isolationTicketCode);
     applyEventActivityCounterDeltas(hostUserId, {
       menu: { hosting: 2 },
       event: { all: 2, hosting: 2 }
@@ -1218,7 +1220,7 @@
       ] } },
       { collection: "eventFeedbackStates", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventFeedbackAnswers", selector: { eventId: { $in: EVENT_IDS } } },
-      { collection: "eventTickets", selector: { $or: [{ eventId: { $in: EVENT_IDS } }, { code: TICKET_CODE }] } },
+      { collection: "eventTickets", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventTicketAudit", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "userNotifications", selector: { $or: [{ sourceId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
@@ -1293,7 +1295,7 @@
     const past = { startAtIso: dateIso(-240), endAtIso: dateIso(-120) };
     if (stageKind === "editor-empty") return;
     if (stageKind === "ticket-isolation") {
-      insertTicketIsolationBaseline(stagedAtIso, future);
+      insertTicketIsolationBaseline(stagedAtIso, future, context);
       return;
     }
     if (stageKind === "feedback-boundary") {
@@ -1699,7 +1701,7 @@
       Q.collection("events").insertOne(
         participationOverlay(event, EVENT_ID, stageKind)
       );
-      insertReadyTicket(stagedAtIso);
+      insertReadyTicket(stagedAtIso, EVENT_ID, `${PREFIX}:ticket`, context.ticketCode);
       applyTicketActivityCounterDelta(participantUserId, 1);
     }
   }
@@ -2225,7 +2227,15 @@
       Q.fail(`an unrelated event already uses the reserved title '${EXPECTED_TITLE}'. Rename it before staging.`);
     }
     const stagedAtIso = Q.nowIso();
-    const runtimeContext = slotContext(selected.stage, stagedAtIso);
+    const runtimeContext = {
+      ...slotContext(selected.stage, stagedAtIso),
+      ...(isTicketingStage(selected.stage)
+        ? {
+            ticketCode: newFixtureTicketCode(),
+            isolationTicketCode: newFixtureTicketCode()
+          }
+        : {})
+    };
     const state = {
       _id: Q.stateId(SCENARIO),
       scenario: SCENARIO,
@@ -3314,7 +3324,9 @@
     const eventBTickets = Q.collection("eventTickets").find({ eventId: ISOLATION_EVENT_ID }).toArray();
     const originalA = eventATickets.find(ticket => Q.text(ticket._id) === `${PREFIX}:ticket:isolation:a`);
     const activeA = eventATickets.filter(ticket => Q.text(ticket.status) === "A");
-    if (!originalA || Q.text(originalA.code) !== TICKET_CODE || Q.text(originalA.status) !== "D") {
+    if (!originalA
+        || Q.text(originalA.code) !== Q.text(state.context && state.context.ticketCode)
+        || Q.text(originalA.status) !== "D") {
       Q.fail("event A's original physical ticket must remain exactly once as the unchanged D audit record.");
     }
     if (expectedPhase === "unpublished" && (eventATickets.length !== 1 || activeA.length !== 0)) {
@@ -3329,7 +3341,7 @@
     }
     if (eventBTickets.length !== 1
         || Q.text(eventBTickets[0]._id) !== `${PREFIX}:ticket:isolation:b`
-        || Q.text(eventBTickets[0].code) !== ISOLATION_TICKET_CODE
+        || Q.text(eventBTickets[0].code) !== Q.text(state.context && state.context.isolationTicketCode)
         || Q.text(eventBTickets[0].status) !== "A"
         || Q.text(eventBTickets[0].holderUserId) !== participantUserId) {
       Q.fail("control event B's physical ticket id/code/holder/A status changed or was duplicated.");

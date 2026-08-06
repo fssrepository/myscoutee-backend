@@ -85,7 +85,10 @@ public class UserNotificationMapper {
                 payload,
                 notification.getOccurrenceCount() == null
                         ? 1
-                        : Math.max(1, notification.getOccurrenceCount()));
+                        : Math.max(1, notification.getOccurrenceCount()),
+                notification.getRevision() == null
+                        ? 1L
+                        : Math.max(1L, notification.getRevision()));
     }
 
     private String firstImage(Users user) {

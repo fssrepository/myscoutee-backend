@@ -166,6 +166,12 @@ opens. Reapply `adb reverse tcp:8080 tcp:80` after an ADB daemon restart, USB
 reconnection or phone restart. The tunnel never requires starting, rebuilding
 or restarting the application stack.
 
+Every clean Ticket checkpoint stage creates a fresh UUID-shaped `TKT-` code.
+Reset followed by a new stage must therefore produce a different QR even when
+the controlled event, ticket document ID and holder remain the same. The
+checkpoint state retains that generated code so later status/verification
+commands compare against the staged physical object instead of regenerating it.
+
 For a feedback checkpoint transition, use one snapshot-protected command
 instead of a manual reset followed by a separate stage:
 

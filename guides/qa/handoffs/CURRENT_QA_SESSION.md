@@ -9,11 +9,11 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-003
-state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. EVENT-TICKET-003 is OPEN/PARTIAL. Casey's first authorized scan persisted exactly one use at 2026-08-06T06:59:21.130578868Z on Nova's status=A ticket; usedByUserId is Casey. The user repeated the saved QR and saw already-used, while the persisted ticket remained byte-for-byte canonical. Invalid-code and unauthorized-participant scans remain. EVENT-TICKET-010 replay audit plus aggregated holder warning is now hot-deployed on the same used ticket. Its baseline is replay audits 0, replay outbox 0 and Nova aggregated warning rows 0
+state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. EVENT-TICKET-003 plus its EVENT-TICKET-010 replay extension restarted from a clean baseline at 2026-08-06T09:29:57.060Z. Nova owns one unused status=A ticket with a fresh random UUID-v4 QR code; usedAtIso and usedByUserId are null, ticket replay audits/outbox/warnings are empty, and her server-side New Notifications bucket/unread count is 0/0. The fixed fixture code was removed: every clean ticket stage now creates and stores a new code, matching production UUID issuance semantics. Scanner metadata shows Member/Manager/Admin only as an i18n contextual badge beneath the avatar; the event title is a separate unprefixed line. Notification page DTOs carry server-issued revisions; the optional SmartList delta poll sends every cached page's `{id, revision}` plus the loaded tail, and the server returns only upserts/removals. Identical rows are discarded server-side and unchanged cached object identities remain. The hot-deploy builds and focused role-layout converter regression are green; reload Nova once, then run the complete scan/replay sequence from zero
 next_actor: user
-next_action: run guides/qa/tools/open-three-chrome-sessions.sh and manually choose three different existing Google profiles for Casey, Nova and Riley; confirm the named MyScoutee user in each window. Then restore Nova to No throttling/online and reload; scan the saved QR once as Casey; on online Nova confirm warning count 1/unread 1, mark that row read and confirm bell 0; scan again and confirm the same row reopens unread at count 2/bell 1; scan a third time without reading and confirm the same row reaches count 3 while bell remains 1
-next_codex_action: verify three immutable Casey replay audits, one aggregated Nova warning row with occurrenceCount=3 and readAtIso cleared, rawCodePresent=false everywhere, and unchanged ticket status=A/usedAtIso/usedByUserId; outbox row count is non-exact because pending intents may collapse
-queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-010, EVENT-VISIBILITY-001]
+next_action: reload online Nova once and confirm New Notifications is empty. Open Nova's Ticket and retain a complete QR screenshot. Scan once as Casey and require one check-in row; replay once and require the warning to prepend without removing/rerendering the check-in row. Mark only the warning read and record remaining unread baseline B; replay again and require the same warning at count 2/B+1, then replay once more without reading and require count 3 while total unread remains B+1
+next_codex_action: after the first successful scan record the canonical use, then verify three immutable Casey replay audits, one aggregated Nova warning row with occurrenceCount=3 and readAtIso cleared, rawCodePresent=false everywhere, and unchanged ticket status=A/usedAtIso/usedByUserId; outbox row count is non-exact because pending intents may collapse
+queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-010, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
 ```
 
 Active detail: [`EVENT-TICKET-003`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
@@ -154,12 +154,17 @@ work.
 
 ## Active checkpoint — `EVENT-TICKET-003`
 
-- Clean baseline restaged at `2026-08-06T06:44:35.639Z`: active Ticketing On,
+- Clean baseline restaged at `2026-08-06T09:29:57.060Z`: active Ticketing On,
   Casey accepted Admin, Nova accepted Member, one Nova `A` physical ticket and
   users counters `1 / 1`; the ticket is unused and Nova's participant-owned
   event overlay is present.
-- Ticket code is `TKT-12345678-1234-4123-8123-123456789abc`; the canonical
-  event image is the retained managed MinIO `large.webp` URL.
+- Ticket code is the newly generated UUID-v4 value
+  `TKT-fbfd8c02-af26-4812-b314-ef754ee6b82c`; the canonical event image is the
+  retained managed MinIO `large.webp` URL. A later reset/stage or republish must
+  produce a different code/QR.
+- The ticket is unused again (`usedAtIso=null`, `usedByUserId=null`). Replay
+  audits/outbox/warnings are empty, and Nova's server-side New Notifications
+  bucket plus unread count are both zero.
 - Physical Android `aer8vgcmyd9lzxv8` is authorized. The existing reverse is
   `tcp:8080 tcp:80`; do not restart the dev stack.
 - Before scanning, Nova displays the QR on desktop and saves a screenshot with
@@ -171,12 +176,14 @@ work.
 - The first physical scan persisted one use at
   `2026-08-06T06:18:07.529719781Z` by Casey, but the checkpoint is restarting
   because the required pre-scan QR screenshot was not retained.
-- The current rerun's first scan is PASS: the revised scanner UI worked on the
+- The preceding used baseline's first scan is retained PASS evidence: the
+  revised scanner UI worked on the
   physical phone and the persisted ticket has
   `usedAtIso=2026-08-06T06:59:21.130578868Z` and `usedByUserId=Casey`. Reuse the
   saved QR next and prove those values do not change before running invalid and
   unauthorized branches.
-- The user also completed the saved-QR repeat and saw **already used**. The
+- On that preceding baseline the user also completed the saved-QR repeat and
+  saw **already used**. The
   persisted oracle still reports the exact same `status=A`, `usedAtIso` and
   Casey `usedByUserId`, so the original repeat no-op is PASS.
 - The scanner UI now uses one contextual `app-menu` Kamera be/ki toggle. Off
@@ -187,6 +194,9 @@ work.
 - Scanner reading/validating text now occupies a centered top badge overlay in
   the camera target. The toggle remains in one stable layout position and is
   merely disabled during validation, so state changes cannot move it vertically.
+- Ticket holder roles `Member`, `Manager` and `Admin` render only as an i18n
+  contextual badge beneath the avatar. The event title is a separate line and
+  must never be prefixed with `Tag ·`, `Manager ·` or `Admin ·`.
 - The four camera labels are present in both frontend local bundles and the
   generated `demo_db`/`e2e_db`/`myscoutee_db` Mongo JSON seeds. Bundle versions
   are `2026.08.06.en.51` and `2026.08.06.hu.51`; the i18n seed audit passed

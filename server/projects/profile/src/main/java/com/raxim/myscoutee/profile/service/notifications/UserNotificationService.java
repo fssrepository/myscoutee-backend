@@ -10,6 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,9 @@ import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserN
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationPreferenceDto;
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationReadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationsPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationSyncKnownItemDto;
+import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationsSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationsSyncResponseDto;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationCursor;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationSlice;
@@ -39,6 +44,7 @@ public class UserNotificationService {
     private static final String EVENT_SOURCE_TYPE = "event";
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_PAGE_SIZE = 50;
+    private static final int MAX_SYNC_ITEMS = 500;
 
     private final UserNotificationsRepository userNotificationsRepository;
     private final UserNotificationPageRepository userNotificationPageRepository;
@@ -101,6 +107,83 @@ public class UserNotificationService {
         return new UserNotificationReadResponseDto(
                 userNotificationMapper.toDto(notification),
                 unreadCount);
+    }
+
+    public UserNotificationsSyncResponseDto sync(
+            String recipientUserId,
+            UserNotificationsSyncRequestDto request) {
+        String normalizedRecipientUserId = requiredUserId(recipientUserId);
+        String bucket = normalizeBucket(request == null ? null : request.bucket());
+        boolean unreadOnly = BUCKET_NEW.equals(bucket);
+        List<UserNotificationSyncKnownItemDto> knownItems = request == null || request.knownItems() == null
+                ? List.of()
+                : request.knownItems().stream()
+                        .filter(item -> item != null && StringUtils.hasText(item.id()))
+                        .limit(MAX_SYNC_ITEMS + 1L)
+                        .toList();
+        if (knownItems.size() > MAX_SYNC_ITEMS) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Notification sync supports at most " + MAX_SYNC_ITEMS + " cached items.");
+        }
+
+        Map<String, Long> knownRevisions = knownItems.stream()
+                .collect(Collectors.toMap(
+                        item -> item.id().trim(),
+                        item -> Math.max(1L, item.revision() == null ? 1L : item.revision()),
+                        (left, right) -> right,
+                        LinkedHashMap::new));
+        List<UserNotification> cachedRecords = userNotificationPageRepository.findByRecipientAndIds(
+                normalizedRecipientUserId,
+                List.copyOf(knownRevisions.keySet()));
+        Map<String, UserNotification> cachedRecordsById = cachedRecords.stream()
+                .collect(Collectors.toMap(
+                        UserNotification::getId,
+                        Function.identity(),
+                        (left, right) -> right,
+                        LinkedHashMap::new));
+
+        LinkedHashSet<String> removedIds = new LinkedHashSet<>();
+        LinkedHashMap<String, UserNotification> upsertsById = new LinkedHashMap<>();
+        for (Map.Entry<String, Long> known : knownRevisions.entrySet()) {
+            UserNotification current = cachedRecordsById.get(known.getKey());
+            if (current == null || (unreadOnly && StringUtils.hasText(current.getReadAtIso()))) {
+                removedIds.add(known.getKey());
+                continue;
+            }
+            if (notificationRevision(current) != known.getValue()) {
+                upsertsById.put(current.getId(), current);
+            }
+        }
+
+        var tail = request == null ? null : request.loadedTail();
+        int windowLimit = Math.min(
+                MAX_SYNC_ITEMS,
+                knownItems.size() + normalizeLimit(request == null ? null : request.limit()));
+        List<UserNotification> loadedWindow = userNotificationPageRepository.findLoadedWindow(
+                normalizedRecipientUserId,
+                unreadOnly,
+                tail == null ? null : tail.createdAtIso(),
+                tail == null ? null : tail.id(),
+                windowLimit);
+        for (UserNotification current : loadedWindow) {
+            Long knownRevision = knownRevisions.get(current.getId());
+            if (knownRevision == null || notificationRevision(current) != knownRevision) {
+                upsertsById.put(current.getId(), current);
+            }
+        }
+
+        UserNotificationSlice summary = userNotificationPageRepository.findPage(
+                normalizedRecipientUserId,
+                unreadOnly,
+                1,
+                null);
+        return new UserNotificationsSyncResponseDto(
+                userNotificationMapper.toDtos(List.copyOf(upsertsById.values())),
+                List.copyOf(removedIds),
+                summary.total(),
+                currentUnreadCount(normalizedRecipientUserId),
+                isMuted(normalizedRecipientUserId));
     }
 
     public int markEventInvitationResolved(String recipientUserId, String eventId) {
@@ -216,12 +299,19 @@ public class UserNotificationService {
         notification.setSourceId(sourceId);
         notification.setPayload(payload);
         notification.setOccurrenceCount(1);
+        notification.setRevision(1L);
         notification.setReadAtIso(null);
         notification.setCreatedDate(createdDate);
         notification.setCreatedUser(nullableText(outboxItem.getCreatedUser()));
         notification.setUpdatedDate(nowIso);
         notification.setUpdatedUser(nullableText(outboxItem.getCreatedUser()));
         return notification;
+    }
+
+    private long notificationRevision(UserNotification notification) {
+        return notification == null || notification.getRevision() == null
+                ? 1L
+                : Math.max(1L, notification.getRevision());
     }
 
     private String resolveCategory(String kind, String recipientScope, String sourceType) {

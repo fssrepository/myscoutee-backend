@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -129,19 +130,22 @@ class UserNotificationPageRepositoryTest {
         assertThat(changed).isEqualTo(2L);
         ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
         ArgumentCaptor<Update> update = ArgumentCaptor.forClass(Update.class);
-        verify(mongoTemplate).updateMulti(
+        verify(mongoTemplate, times(2)).updateMulti(
                 query.capture(),
                 update.capture(),
                 eq(UserNotification.class));
-        assertThat(query.getValue().getQueryObject().toJson())
+        Query mutationQuery = query.getAllValues().getLast();
+        Update mutationUpdate = update.getAllValues().getLast();
+        assertThat(mutationQuery.getQueryObject().toJson())
                 .contains("\"recipientUserId\": \"viewer-1\"")
                 .contains("\"kind\": \"event-invite\"")
                 .contains("\"sourceType\": \"event\"")
                 .contains("\"sourceId\": \"event-1\"")
                 .contains("\"readAtIso\": {\"$exists\": false}")
                 .contains("\"readAtIso\": null");
-        assertThat(update.getValue().getUpdateObject().toJson())
-                .contains("\"readAtIso\": \"2026-07-27T20:00:00Z\"");
+        assertThat(mutationUpdate.getUpdateObject().toJson())
+                .contains("\"readAtIso\": \"2026-07-27T20:00:00Z\"")
+                .contains("\"revision\": 1");
     }
 
     private UserNotification notification(String id, String createdDate) {

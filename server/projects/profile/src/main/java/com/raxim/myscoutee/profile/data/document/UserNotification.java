@@ -46,6 +46,7 @@ public class UserNotification {
     private String sourceId;
     private Map<String, String> payload = new LinkedHashMap<>();
     private Integer occurrenceCount;
+    private Long revision;
     private String readAtIso;
     private String createdDate;
     private String createdUser;
@@ -170,6 +171,14 @@ public class UserNotification {
 
     public void setOccurrenceCount(Integer occurrenceCount) {
         this.occurrenceCount = occurrenceCount;
+    }
+
+    public Long getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
     }
 
     public String getReadAtIso() {

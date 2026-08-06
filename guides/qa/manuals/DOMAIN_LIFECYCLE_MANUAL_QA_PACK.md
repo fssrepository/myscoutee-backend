@@ -1,7 +1,7 @@
 # Domain lifecycle manual QA pack
 
 Status: execution in progress  
-Last updated: 2026-08-04  
+Last updated: 2026-08-06
 Master ledger: [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 Executable manual helper:
 [`manual-qa-checkpoints.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints.sh)
@@ -56,6 +56,7 @@ the same prerequisite without depending on an earlier human action.
 | Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement and accepted participation | Ticket-enabled event overlay and one physical holder credential | Event checkout/ticket card and scanner | Event publish/terminal acceptance owns ticket creation; list/open and check-in are direct request paths | `EVENT-TICKET-001` through `EVENT-TICKET-007` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
+| Operator payment credential and network access policy | Server-held payment token revision plus trusted-client-IP allowlist | Masked payment configuration state and explicit access denial | Payment provider calls and immutable operator security audit | `OPERATOR-PAYMENT-001`, `OPERATOR-PAYMENT-IP-001` |
 
 ## Checkpoint graph
 
@@ -97,6 +98,9 @@ The principal checkpoint chains are:
   own close state, groups and leaderboard evidence.
 - `ASSET-MEMBER-001` -> `ASSET-MEMBER-002` and `ASSET-ASSIGN-001`: asset
   invitation and event/sub-event assignment are separate branches.
+- `OPERATOR-PAYMENT-001` and `OPERATOR-PAYMENT-IP-001` are separate future
+  operator-security branches: first prove secret lifecycle, then enforce a
+  trusted resolved-client-IP allowlist without relying on frontend hiding.
 
 Every checkpoint record must contain these fields:
 
@@ -1177,6 +1181,10 @@ Execution evidence on 2026-08-06:
   place of a black target; rejected/error results must not present that frame as
   accepted evidence. Turning **Kamera be** on starts a fresh scanner session,
   so no separate **Újabb beolvasás** button is present.
+- In ticket-holder metadata, `Member`, `Manager` or `Admin` appears only as an
+  i18n contextual badge beneath the avatar. The event title remains its own
+  unprefixed line; `Tag · Event`, `Manager · Event` and `Admin · Event` are not
+  valid layouts.
 - Before the first scan, display Nova's controlled active credential QR code
   on the separate screen and save a screenshot containing the complete QR.
   Keep that screenshot until every scan branch is complete: after a successful
@@ -1191,11 +1199,12 @@ Execution evidence on 2026-08-06:
 
 Current staged baseline on 2026-08-06:
 
-- Restaged at `2026-08-06T06:44:35.639Z` with Casey accepted Admin and Nova
+- Restaged at `2026-08-06T09:29:57.060Z` with Casey accepted Admin and Nova
   accepted Member at `2 / 8`; the event is active, Ticketing On and uses the
   retained managed MinIO image.
-- Nova owns one active physical ticket with code
-  `TKT-12345678-1234-4123-8123-123456789abc`; Casey has no participant ticket.
+- Nova owns one active physical ticket with a freshly generated UUID-shaped
+  `TKT-` code; every reset plus new stage must produce a different code/QR.
+  Casey has no participant ticket.
 - The ticket is unused (`usedAtIso=null`, `usedByUserId=null`) and Nova's
   participant-owned event overlay plus both Ticket counters are present.
 - The Android device `aer8vgcmyd9lzxv8` is authorized and `adb reverse --list`
@@ -1384,6 +1393,9 @@ Restart evidence on 2026-08-06:
   transition and bell contribution can be observed through normal realtime
   synchronization. Asymmetric offline holder behavior belongs exclusively to
   `EVENT-TICKET-009` and must not be mixed into this warning test.
+- Capture Nova's pre-warning total unread count as `B`; unrelated retained
+  notifications remain part of that baseline. Assertions below concern the
+  warning row's one unread contribution, not an absolute zero/one bell value.
 - Start with a Nova ticket that Casey has already checked in successfully.
   Scan the same saved QR through the authorized Casey server-side scanner path.
 - The replay must still return **already used** and must not change ticket
@@ -1398,13 +1410,22 @@ Restart evidence on 2026-08-06:
   code/QR. Casey must not receive the holder warning merely because Casey made
   the request.
 - After the first replay, Nova has one unread warning row with occurrence count
-  `1` and the bell contributes `1`. Nova marks that warning read: the same row
-  remains at count `1`, gains `readAtIso`, and the bell contribution becomes
-  `0`. Casey then scans the same saved QR again. The existing row must become
-  unread again, move to occurrence count `2`, refresh its last actor/time and
-  restore exactly one bell contribution.
+  `1` and total unread becomes `B+1`. Nova marks that warning read: the same row
+  remains at count `1`, gains `readAtIso`, and total unread returns to `B`.
+  Casey then scans the same saved QR again. The existing row must become unread
+  again, move to occurrence count `2`, refresh its last actor/time and restore
+  total unread to `B+1`.
+- While Nova's Notification popup is already open, the first replay warning is
+  prepended above the existing check-in notification. The normal SmartList poll
+  sends every cached page's server-issued `{id, revision}` pairs and the loaded
+  tail boundary to the notification delta endpoint. Equal pairs are discarded
+  server-side; only changed/new rows return as upserts and bucket exits return
+  as removed IDs. Previously cached unchanged rows and their object identities
+  remain untouched, so the insertion must not recreate every rendered row or
+  require close/reopen. The revision is created and incremented by notification
+  write-side persistence and merely stored by the frontend page cache.
 - Scan once more while that row is already unread. The row becomes count `3`
-  but the bell remains `1`; no second/third inbox row is allowed. The outbox may
+  but total unread remains `B+1`; no second/third inbox row is allowed. The outbox may
   collapse equivalent pending delivery intents, so immutable replay audits and
   the aggregated inbox occurrence count—not raw outbox document count—are the
   exact attempt oracles.
@@ -1416,6 +1437,80 @@ Restart evidence on 2026-08-06:
   was newly inserted or had previously been read.
 - Invalid, revoked, expired and unauthorized codes remain separate rejection
   paths and must not create replay audits or masquerade as this warning.
+
+### `AUTH-SESSION-001` — two-session limit, new-login warning and audit
+
+- Run this as a separate security checkpoint after the active Ticket campaign;
+  it must not reuse the Casey/Nova/Riley role-isolation windows as evidence.
+  Use three isolated browser profiles to authenticate the **same** controlled
+  user from client A, B and C.
+- Enforce a maximum of two active server-authoritative sessions per user. This
+  is an authentication/session write-side rule, not a frontend counter, query
+  projection or local-storage restriction. A reload or token refresh in an
+  already registered client must keep the same session slot.
+- Login from client A creates the first active session and no remote-login
+  warning because no other active session exists. Login from distinct client B
+  creates the second active session and exactly one security-warning
+  notification for the account. Both A and B remain usable.
+- The warning text identifies the normalized client, for example **Chrome on
+  Linux desktop**. The notification's own persisted/displayed timestamp is the
+  event time; do not duplicate relative wording such as "12 seconds ago" in
+  its message. Do not expose a raw user-agent, IP address, token, cookie or
+  browser fingerprint in the notification.
+- Attempt login from distinct client C while A and B are active. The server
+  rejects the third active session, keeps A and B valid, and writes another
+  security warning describing the attempted client. After explicitly logging
+  out or revoking one existing slot, retry C: it becomes the second active
+  session and creates one further new-login warning.
+- Persist active-session state separately from an immutable login audit. Each
+  explicit login attempt records a new audit row with user ID, opaque
+  session/device identifier, normalized device/browser/OS label, provider,
+  outcome (`ACCEPTED` or `BLOCKED_LIMIT`), attempt time and the server-known
+  source metadata required for investigation. Never persist credentials or
+  raw authentication tokens. Refreshes may have their own audit event type but
+  must not masquerade as a new-device login or create a warning.
+- Verify exact audit cardinality and ordering, no third active session, warning
+  delivery/realtime counter convergence in both permitted clients, stable A/B
+  sessions after the rejected attempt, and successful C admission only after
+  one slot is released. Notifications may be read independently from the
+  immutable audit history.
+
+### `LANDING-ELIGIBILITY-001` — browser-coordinate login eligibility
+
+- Run this later in a fresh, unauthenticated browser profile against a
+  Firebase-login-enabled environment. An already restored member session skips
+  the landing login gate and is not valid evidence. Keep this checkpoint
+  separate from offline cached-session behavior.
+- The browser Geolocation API supplies the coordinates, but the backend
+  `/auth/eligibility` write-free decision is authoritative. For assisted QA,
+  use a target-scoped CDP geolocation override and geolocation permission; for
+  manual QA use DevTools **More tools -> Sensors -> Location**. Do not change a
+  country partition or user record to manufacture the result.
+- Eligible branch: override the browser to Budapest (`47.4979, 19.0402`),
+  allow location, and reload the landing page. Require
+  `eligible=true`, `partitionKey=country:hu`, the security gate enabled and the
+  normal login action available. Completing login must retain the resolved
+  partition through the ordinary authentication/profile path.
+- Not-yet-enabled branch: use a clearly external control outside Hungary's demo
+  bounds, London (`51.5074, -0.1278`), in a fresh anonymous context. This is
+  not a banned region: it has no enabled `countryPartition` yet. Require
+  `eligible=false`, no partition key, the configured country-not-available
+  message and an unavailable login path. No user session may be created.
+- Permission-denied branch: reset the site's location permission, choose
+  **Block**, and reload. The landing page must keep the explicit **Allow
+  location** gate and must not silently assume Hungary, submit invented
+  coordinates or start authentication. Granting permission afterward must
+  retry normally without clearing unrelated landing content.
+- Between branches reset only that target's geolocation override, permission
+  and landing eligibility/session storage, then prove the next result is not a
+  stale prior coordinate. Record the browser-supplied coordinates and the
+  server response but no precise location in screenshots beyond the controlled
+  QA values.
+- Treat browser coordinates as untrusted client input: reject non-finite and
+  out-of-range latitude/longitude and do not claim this functional client-side
+  gate alone prevents deliberate geolocation spoofing. If eligibility is a
+  security boundary, a separately specified server-trusted corroborating
+  signal is required.
 
 ## Tournament cases
 
@@ -1467,7 +1562,7 @@ Restart evidence on 2026-08-06:
 - Verify assignment visibility and availability/capacity effects without
   changing the user's event role or creating a second asset membership.
 
-## Operator authentication case
+## Operator configuration and security cases
 
 ### `OPERATOR-FIREBASE-001` — activate, observe login mode, roll back
 
@@ -1480,6 +1575,42 @@ Restart evidence on 2026-08-06:
   boundary.
 - Restore the original deployment capability and verify the original login
   mode. Record credentials only as masked/absent evidence.
+
+### `OPERATOR-PAYMENT-001` — configure and rotate the payment token
+
+Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+
+- In a disposable operator deployment, save a valid payment-provider token,
+  validate it through the named server-side provider check and activate only
+  the verified revision.
+- The raw token must never be returned in a row DTO, stored in frontend/local
+  cache, written to logs, notifications or audit payloads, or redisplayed after
+  save. The UI may expose only masked metadata such as provider, state,
+  fingerprint/last characters and updated time.
+- Prove invalid-token rejection leaves the prior active revision unchanged.
+  Rotate to a second valid token and prove new payment operations use only the
+  new revision; then revoke it and prove payment operations fail closed while
+  operator recovery remains available through its documented boundary.
+- Record an immutable actor/configuration audit for save, validation,
+  activation, rotation and revocation without recording either raw token.
+
+### `OPERATOR-PAYMENT-IP-001` — restrict payment access by client IP
+
+Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
+
+- Configure an explicit server-side IP/CIDR allowlist for payment-token
+  management and payment operations. `127.0.0.1` is the required loopback-only
+  checkpoint: the same host is accepted and a request whose trusted resolved
+  client IP does not match is denied before token access or provider traffic.
+- Resolve client IP only through the deployment's trusted proxy chain. A raw or
+  spoofed `X-Forwarded-For` value from an untrusted source must not bypass the
+  policy; malformed addresses and an empty effective allowlist fail closed.
+- Prove the denial is enforced by the backend even when the operator UI/action
+  is called directly. Frontend hiding is neither enforcement nor PASS evidence.
+- Audit allowed and denied attempts with actor, resolved client IP, policy
+  revision and outcome, but never the raw payment token. After restoring the
+  prior policy, prove access changes exactly once and no stale browser state
+  overrides the authoritative server decision.
 
 ## Execution and evidence rules
 
