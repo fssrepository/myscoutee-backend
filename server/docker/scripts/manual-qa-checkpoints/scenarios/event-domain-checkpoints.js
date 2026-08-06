@@ -27,7 +27,7 @@
   const AUTO_INVITER_HOLD_SECONDS = 3600;
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
   const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
-  const feedbackEventImageUrl = Q.text(process.env.MANUAL_QA_EVENT_IMAGE_URL);
+  const eventImageUrl = Q.text(process.env.MANUAL_QA_EVENT_IMAGE_URL);
   const EXPECTED_TITLE = `Manual QA ${checkpointId}`;
 
   function optionalField(source, key) {
@@ -333,7 +333,7 @@
   }
 
   function isTicketingStage(stageKind) {
-    return ["ticketing-off", "ticketing-on", "ticket-ready"].includes(stageKind);
+    return ["ticketing-off", "ticketing-on", "ticket-ready", "ticket-pending", "ticket-expiring"].includes(stageKind);
   }
 
   const CHECKPOINTS = {
@@ -581,11 +581,11 @@
       worker: "MUST RUN: the normal event recompute for Save. Ticket UI reads MUST NOT RUN a scheduler."
     },
     "EVENT-TICKET-002": {
-      stage: "ticketing-on",
-      why: "Verify exact-one credential issue and reuse for an eligible accepted participant.",
-      action: "As the accepted participant, open the staged event ticket twice.",
-      expected: "Both opens show the same event/holder/code and the database contains exactly one credential.",
-      worker: "MUST NOT RUN: credential issue is a direct request path, not a scheduler."
+      stage: "ticketing-off",
+      why: "Verify that the real publish write creates exactly one eligible participant physical ticket and no Admin ticket.",
+      action: "As Casey, unpublish the staged event, enable Ticketing, and publish it again through the UI. After publish succeeds, switch to Nova and open the Ticket list twice.",
+      expected: "Publish creates one Nova status A EventTicket and no Casey ticket/overlay/counter. Both Ticket opens read the same event/holder/code, and the card requests the retained managed medium.webp.",
+      worker: "MUST RUN: the publish mutation owns its normal event recompute, participant projection and physical ticket creation. MUST NOT RUN: subsequent credential reads require no scheduler or write."
     },
     "EVENT-TICKET-003": {
       stage: "ticket-ready",
@@ -596,10 +596,24 @@
     },
     "EVENT-TICKET-004": {
       stage: "ticket-ready",
-      why: "Verify that one event lifecycle mutation invalidates ticket use without deleting holder membership.",
-      action: "Choose one named lineage for this run: disable ticketing, unpublish, trash, or move past end; then open/scan the same ticket.",
-      expected: "The ticket is unavailable, revoked or expired as appropriate; the accepted holder identity remains correct.",
-      worker: "Only the owning event mutation MUST RUN recompute. The rejected ticket read/scan MUST NOT RUN another job."
+      why: "Verify the physical ticket A/D lifecycle and its audit trail across Ticketing Off and a later republish.",
+      action: "As Casey, disable Ticketing and save once; verify Nova's current physical ticket becomes D. Then enable Ticketing and publish again, and open Nova's new ticket.",
+      expected: "The old ticket remains stored as D. Republish creates a new A ticket object with a different id, QR code and issuedAtIso; Nova stays accepted and exactly one active ticket is visible.",
+      worker: "Each owning event mutation may run its one normal recompute. Ticket reads MUST NOT create or reactivate a credential."
+    },
+    "EVENT-TICKET-005": {
+      stage: "ticket-pending",
+      why: "Prove that approval, not pending membership or a Ticket list read, creates the physical participant ticket.",
+      action: "Confirm Nova is pending and has no ticket, then approve Nova once as Casey. Keep Nova's menu open through its normal poll and open Ticket twice after approval.",
+      expected: "Before approval there is no Nova EventTicket, overlay or Ticket badge. Approval creates one A ticket for Nova; both reads show the same object and code. Casey Admin receives none.",
+      worker: "The approval write owns ticket creation and its normal counter/recompute effects. Pending and subsequent Ticket reads MUST NOT create a ticket or scheduler job."
+    },
+    "EVENT-TICKET-006": {
+      stage: "ticket-expiring",
+      why: "Prove that event expiry changes ticket bucketing, not the physical ticket's A/D lifecycle.",
+      action: "Before the staged end time, open Nova's Upcoming Ticket list and capture the ticket id/code/status. Keep the session open through the end-time poll, then open Past and scan the same QR once.",
+      expected: "The same A ticket disappears from Upcoming and appears once in Past with unchanged id and code. Scan returns expired without changing the ticket to D or creating another object.",
+      worker: "The normal event-expiry counter worker may mark event projections expired. Ticket list reads and the rejected expired scan MUST NOT create a ticket or another scheduler job."
     }
   };
 
@@ -1039,7 +1053,7 @@
       code: TICKET_CODE,
       eventId: EVENT_ID,
       holderUserId: participantUserId,
-      status: "active",
+      status: "A",
       issuedAtIso: stagedAtIso,
       usedAtIso: null,
       usedByUserId: null
@@ -1455,12 +1469,14 @@
     }
 
     const options = { ...future };
+    if ((stageKind.startsWith("feedback-") || isTicketingStage(stageKind)) && !eventImageUrl) {
+      Q.fail("MANUAL_QA_EVENT_IMAGE_URL must contain the uploaded QA fixture image URL.");
+    }
+    if (stageKind.startsWith("feedback-") || isTicketingStage(stageKind)) {
+      options.imageUrl = eventImageUrl;
+    }
     if (stageKind.startsWith("feedback-")) {
-      if (!feedbackEventImageUrl) {
-        Q.fail("MANUAL_QA_EVENT_IMAGE_URL must contain the uploaded QA fixture image URL.");
-      }
       Object.assign(options, past, {
-        imageUrl: feedbackEventImageUrl,
         acceptedUserIds: [hostUserId, participantUserId]
       });
       if (stageKind === "feedback-empty" || stageKind === "feedback-submitted") {
@@ -1478,7 +1494,15 @@
       options.status = "T";
       options.statusBeforeSuppression = "A";
     }
-    if (stageKind === "ticketing-on" || stageKind === "ticket-ready") options.ticketing = true;
+    if (["ticketing-on", "ticket-ready", "ticket-pending", "ticket-expiring"].includes(stageKind)) options.ticketing = true;
+    if (stageKind === "ticket-pending") {
+      options.acceptedUserIds = [];
+      options.pendingUserIds = [participantUserId];
+    }
+    if (stageKind === "ticket-expiring") {
+      options.startAtIso = dateIso(-60);
+      options.endAtIso = dateIso(2);
+    }
     const event = eventDocument(EVENT_ID, `Manual QA ${checkpointId}`, options);
     if (checkpointId === "EVENT-FEEDBACK-002") {
       Q.collection("events").insertOne(event);
@@ -1488,7 +1512,7 @@
         memberDocument(EVENT_ID, thirdUserId, "Member", "accepted")
       ]);
     } else {
-      insertEventWithMembers(event);
+      insertEventWithMembers(event, stageKind === "ticket-pending" ? "pending" : "accepted");
     }
     if (isTicketingStage(stageKind)) {
       applyEventActivityCounterDeltas(hostUserId, {
@@ -1501,7 +1525,9 @@
       });
     }
     if (stageKind === "feedback-submitted") insertSubmittedFeedback(stagedAtIso);
-    if (stageKind === "ticket-ready") insertReadyTicket(stagedAtIso);
+    if (stageKind === "ticket-ready" || stageKind === "ticket-expiring") {
+      insertReadyTicket(stagedAtIso);
+    }
   }
 
   function eventSummary() {
@@ -1515,7 +1541,10 @@
         && Number(hostCoordinates.longitude) === Number(eventCoordinates.longitude);
     };
     return Q.collection("events").find(manualEventSelector()).toArray().map(event => ({
+      recordId: Q.text(event._id),
       eventId: Q.text(event.sourceId),
+      ownerUserId: Q.text(event.ownerUserId),
+      creatorUserId: Q.text(event.creatorUserId),
       title: Q.text(event.title),
       imageUrl: Q.text(event.imageUrl),
       status: Q.text(event.status),
@@ -1744,11 +1773,15 @@
                 current: {
                   events: nestedNumber(currentActivities, "events"),
                   hosting: nestedNumber(currentActivities, "hosting"),
+                  tickets: nestedNumber(currentActivities, "tickets"),
+                  assetTickets: nestedNumber(currentActivities, "asset.tickets"),
                   event: currentActivities.event || {}
                 },
                 stageDelta: {
                   events: delta("events"),
                   hosting: delta("hosting"),
+                  tickets: delta("tickets"),
+                  assetTickets: delta("asset.tickets"),
                   eventAll: delta("event.all"),
                   eventActive: delta("event.active"),
                   eventHosting: delta("event.hosting")
@@ -1890,10 +1923,12 @@
         updatedDate: item.updatedDate
       })),
       tickets: tickets.map(ticket => ({
+        id: Q.text(ticket._id),
         code: Q.text(ticket.code),
         eventId: Q.text(ticket.eventId),
         holderUserId: Q.text(ticket.holderUserId),
         status: Q.text(ticket.status),
+        issuedAtIso: ticket.issuedAtIso,
         usedAtIso: ticket.usedAtIso,
         usedByUserId: ticket.usedByUserId
       })),

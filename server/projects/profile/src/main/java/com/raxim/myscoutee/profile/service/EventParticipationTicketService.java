@@ -47,23 +47,21 @@ public class EventParticipationTicketService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        Set<String> acceptedSourceIds = activityMembersRepository
-                .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
-                .filter(Objects::nonNull)
-                .filter(member -> "accepted".equals(normalizeMemberStatus(member.getStatus())))
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        Set<String> activeTicketSourceIds = eventTicketService.findActiveEventIdsForHolder(normalizedUserId);
+        if (activeTicketSourceIds.isEmpty()) {
+            return List.of();
+        }
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : activityEventsRepository.findDirectOwnerEvents(normalizedUserId)) {
             if (record == null
+                    || !record.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)
                     || !Boolean.TRUE.equals(record.getTicketing())
-                    || Boolean.TRUE.equals(record.getIsTrashed())) {
+                    || Boolean.TRUE.equals(record.getIsTrashed())
+                    || isEventAdmin(record, normalizedUserId)) {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());
-            if (!StringUtils.hasText(sourceId) || !acceptedSourceIds.contains(sourceId)) {
+            if (!StringUtils.hasText(sourceId) || !activeTicketSourceIds.contains(sourceId)) {
                 continue;
             }
             ActivityEvent current = preferredBySourceId.get(sourceId);
@@ -74,14 +72,13 @@ public class EventParticipationTicketService {
         return new ArrayList<>(preferredBySourceId.values());
     }
 
-    public EventTicket findOrIssueCredential(ActivityEvent ticketRecord, Instant now) {
+    public EventTicket findActiveCredential(ActivityEvent ticketRecord) {
         if (ticketRecord == null) {
             return null;
         }
-        return eventTicketService.findOrIssue(
+        return eventTicketService.findActive(
                 normalizeId(ticketRecord.getSourceId()),
-                normalizeId(ticketRecord.getOwnerUserId()),
-                now);
+                normalizeId(ticketRecord.getOwnerUserId()));
     }
 
     public EventTicketService.CheckInResult checkIn(
@@ -98,8 +95,9 @@ public class EventParticipationTicketService {
         }
 
         List<ActivityEvent> toSave = new ArrayList<>();
-        reconcileSource(normalizedSourceId, null, toSave);
+        SourceTicketSnapshot snapshot = reconcileSource(normalizedSourceId, null, toSave);
         flushChanges(toSave);
+        syncPhysicalTickets(snapshot);
     }
 
     public void syncParticipationTicketForUser(String sourceId, String userId) {
@@ -110,17 +108,18 @@ public class EventParticipationTicketService {
         }
 
         List<ActivityEvent> toSave = new ArrayList<>();
-        reconcileSource(normalizedSourceId, Set.of(normalizedUserId), toSave);
+        SourceTicketSnapshot snapshot = reconcileSource(normalizedSourceId, Set.of(normalizedUserId), toSave);
         flushChanges(toSave);
+        syncPhysicalTickets(snapshot);
     }
 
-    private void reconcileSource(
+    private SourceTicketSnapshot reconcileSource(
             String sourceId,
             Set<String> limitedUserIds,
             List<ActivityEvent> toSave) {
         SourceTicketSnapshot snapshot = loadSnapshot(sourceId);
         if (snapshot == null) {
-            return;
+            return null;
         }
 
         Set<String> candidateUserIds = new LinkedHashSet<>();
@@ -135,6 +134,22 @@ public class EventParticipationTicketService {
         for (String ownerUserId : candidateUserIds) {
             reconcileUserOverlay(snapshot, ownerUserId, toSave);
         }
+        return snapshot;
+    }
+
+    private void syncPhysicalTickets(SourceTicketSnapshot snapshot) {
+        if (snapshot == null || snapshot.preferredRecord() == null) {
+            return;
+        }
+        Set<String> eligibleHolderUserIds = snapshot.acceptedMemberUserIds().stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !isEventAdmin(snapshot.preferredRecord(), userId))
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        eventTicketService.synchronizeForEvent(
+                snapshot.preferredRecord(),
+                eligibleHolderUserIds,
+                Instant.now());
     }
 
     private SourceTicketSnapshot loadSnapshot(String sourceId) {
@@ -209,7 +224,7 @@ public class EventParticipationTicketService {
         ActivityEvent existing = snapshot.existingOverlayByOwnerUserId().get(normalizedOwnerUserId);
         ActivityEvent preferred = snapshot.preferredRecord();
         boolean acceptedParticipant = snapshot.acceptedMemberUserIds().contains(normalizedOwnerUserId)
-                && !normalizedOwnerUserId.equals(snapshot.creatorUserId());
+                && !isEventAdmin(preferred, normalizedOwnerUserId);
 
         if (preferred == null || !acceptedParticipant) {
             if (existing != null) {
@@ -221,13 +236,13 @@ public class EventParticipationTicketService {
             return;
         }
 
-        boolean ticketingEnabled = Boolean.TRUE.equals(preferred.getTicketing());
-        boolean eventTrashed = Boolean.TRUE.equals(preferred.getIsTrashed());
-        if (existing == null && (!ticketingEnabled || eventTrashed)) {
+        boolean ticketingEnabled = Boolean.TRUE.equals(preferred.getTicketing())
+                && preferred.hasStoredStatus(ActivityEvent.STATUS_ACTIVE);
+        if (existing == null && !ticketingEnabled) {
             return;
         }
 
-        if (!ticketingEnabled || eventTrashed) {
+        if (!ticketingEnabled) {
             ActivityEvent next = buildInactiveParticipationOverlay(snapshot, normalizedOwnerUserId, existing);
             if (existing != null && equivalentOverlay(existing, next)) {
                 return;
@@ -280,6 +295,19 @@ public class EventParticipationTicketService {
         next.setUpdatedUser(resolveUpdatedUser(preferred, existing, ownerUserId));
         next.normalizeLifecycleState();
         return next;
+    }
+
+    private boolean isEventAdmin(ActivityEvent event, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (event == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(event.getCreatorUserId()))) {
+            return true;
+        }
+        return event.getAdmins() != null && event.getAdmins().stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
     }
 
     private ActivityEvent buildParticipationOverlay(

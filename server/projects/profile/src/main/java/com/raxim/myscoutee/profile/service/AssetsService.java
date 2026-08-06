@@ -1702,7 +1702,7 @@ public class AssetsService {
         if (!StringUtils.hasText(sourceId) || !StringUtils.hasText(holderUserId)) {
             return null;
         }
-        EventTicket credential = eventParticipationTicketService.findOrIssueCredential(event, Instant.now());
+        EventTicket credential = eventParticipationTicketService.findActiveCredential(event);
         if (credential == null || !StringUtils.hasText(credential.getCode())) {
             return null;
         }

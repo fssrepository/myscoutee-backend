@@ -54,7 +54,7 @@ the same prerequisite without depending on an earlier human action.
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
-| Ticketing enablement and accepted participation | Ticket-enabled event overlay and one holder credential | Event checkout/ticket card and scanner | Direct ticket issue/check-in path; no scheduled worker is required | `EVENT-TICKET-001` through `EVENT-TICKET-004` |
+| Ticketing enablement and accepted participation | Ticket-enabled event overlay and one physical holder credential | Event checkout/ticket card and scanner | Event publish/approval owns ticket creation; list/open and check-in are direct request paths | `EVENT-TICKET-001` through `EVENT-TICKET-006` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 
 ## Checkpoint graph
@@ -79,8 +79,10 @@ The principal checkpoint chains are:
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-003` ->
-  `EVENT-TICKET-004`: ticket enablement, credential, check-in and lifecycle
-  invalidation.
+  `EVENT-TICKET-004` -> `EVENT-TICKET-005` -> `EVENT-TICKET-006` ->
+  `EVENT-TICKET-007`:
+  ticket enablement, physical credential, check-in, A/D audit lifecycle,
+  join approval, Past bucketing and two-step invitation acceptance.
 - `EVENT-EDITOR-004` -> `TOURNAMENT-001` -> `TOURNAMENT-002` ->
   `TOURNAMENT-003`: tournament definition, grouping and advancement.
 - `EVENT-SLOT-001` -> `EVENT-SLOT-002`: one saved recurring template becomes
@@ -683,10 +685,10 @@ Execution evidence on 2026-08-04:
 ### `EVENT-INV-004` — ordinary-member invitation approval chain
 
 - Have an ordinary accepted member invite the recipient.
-- Recipient acceptance must remain pending for admin approval; chat and other
-  accepted-only projections must remain unavailable.
-- An admin then approves once. Only this terminal transition may create the
-  accepted projection and chat access.
+- Admin approval must leave the recipient pending until the recipient responds;
+  chat and other accepted-only projections remain unavailable.
+- The recipient then accepts once. Only this terminal transition may create
+  the accepted projection and chat access.
 
 ### `EVENT-INV-005` — reject, cancel, capacity and idempotence
 
@@ -967,8 +969,9 @@ Status: **PASS** on 2026-08-05.
 
 - On a controlled active event with one accepted participant, enable ticketing
   in Event Editor and save once.
-- Verify ticketing survives reopen, the participant overlay reflects the same
-  event setting and no unrelated membership role changes.
+- Verify ticketing survives reopen and no unrelated membership role changes.
+  A participant ticket overlay is not expected while the event remains an
+  unpublished draft; publish-to-overlay is owned by `EVENT-TICKET-002`.
 - The editor save requires its normal event recompute. Merely opening the
   participant ticket surface after the save must not start a scheduler.
 
@@ -985,12 +988,28 @@ Execution evidence on 2026-08-06:
 
 ### `EVENT-TICKET-002` — accepted participant receives one usable credential
 
-- Open the ticket affordance as the accepted non-organizer participant.
-- Verify one event/holder credential with a stable code is issued or reused;
-  repeated opens must not create a second ticket.
+- Start from the controlled published, Ticketing Off event. The fixture must
+  not insert a participant-owned ticket overlay or credential. Fixture reset
+  must also restore both `activities.tickets` and `activities.asset.tickets`;
+  after the next normal poll the Ticket menu badge must be absent.
+- As Casey, perform the real UI sequence **Unpublish -> Ticketing On ->
+  Publish**. Require the publish mutation to create/update Nova's eligible
+  participant-owned projection and create one physical `EventTicket` with
+  `status=A`. Ticket list/open is read-only and must never manufacture it.
+- Only after publish succeeds, switch to Nova and open the Ticket affordance
+  twice.
+- Verify one event/holder credential with a stable code is read twice;
+  repeated opens must not create a second ticket. Casey Admin must have no
+  physical ticket, participant overlay or Ticket counter.
+- The canonical fixture image is the retained managed `large.webp` URL. The
+  ordinary ticket card must derive and request its 640 x 317 `medium.webp`;
+  the remote Picsum fallback is not valid checkpoint data.
 - A pending, rejected, removed or organizer-only identity must not receive a
   participant credential. The credential event ID and holder ID must agree
   with Event Members and the visible ticket card.
+- The publish mutation owns its normal event recompute and ticket projection.
+  The two Nova Ticket reads are direct request-path operations and must not
+  start a scheduler or an additional event recompute.
 
 ### `EVENT-TICKET-003` — authorized check-in is exact-once
 
@@ -1021,18 +1040,59 @@ Execution evidence on 2026-08-06:
 - An ordinary participant scanner and an invalid code must be rejected with no
   ticket, membership, counter, notification or worker change.
 
-### `EVENT-TICKET-004` — lifecycle invalidates ticket use
+### `EVENT-TICKET-004` — Ticketing Off/On preserves an auditable A/D history
 
-- Check the same credential while ticketing is disabled, the event is
-  unpublished, the event is trashed and the event is past its end, using one
-  lifecycle mutation at a time.
-- The participant ticket affordance must disappear or become unavailable and
-  the scanner must return the documented revoked, unavailable or expired
-  result. The holder must not be silently removed from the event.
-- Restore or republish according to the preserved event state and verify the
-  credential is reused only when the event and holder are eligible again.
-- The lifecycle mutation owns the event recompute; the subsequent ticket read
-  and rejected scan must not create an additional scheduled job.
+- Start with Nova's physical `status=A` ticket from the preceding publish.
+- Disable Ticketing and save once. The existing ticket object must remain in
+  `eventTickets` with `status=D`; Nova's active Ticket counter/list entry must
+  disappear without changing membership.
+- Enable Ticketing and publish again. This must create a new physical ticket
+  object with a new ID, QR code and `issuedAtIso`; it must not reactivate or
+  overwrite the prior `D` audit record.
+- Exactly one `A` ticket may exist for an event/holder pair. Ticket reads never
+  change `D` to `A` and never create another object.
+
+### `EVENT-TICKET-005` — join-request approval owns ticket creation
+
+- Stage a published Ticketing On event where Nova joined from the event and is
+  pending admin approval (`requestKind=join`), with no Nova ticket, overlay or
+  Ticket counter.
+- As Casey, approve Nova once. This is the terminal transition directly to
+  accepted; there is no second participant-acceptance step. The approval write
+  creates exactly one Nova participant overlay and one physical `status=A`
+  ticket.
+- Nova's normal poll exposes Ticket counter `1`; opening Ticket twice reads the
+  same ID/code. Before approval and during both reads, no credential may be
+  created.
+- Casey and every other Admin remain without a participant ticket.
+
+### `EVENT-TICKET-006` — expiry moves the active ticket to Past
+
+- Start shortly before the event end with Nova's physical `status=A` ticket
+  visible once under Upcoming; retain its ID and code.
+- After the ordinary end-time/expiry convergence, the same ticket disappears
+  from Upcoming and appears once under Past. Event expiry does not change the
+  ticket to `D` and does not create a replacement.
+- Scanning the retained code returns expired without consuming or mutating the
+  ticket. `A`/`D` is owned by Ticketing On/Off, while Upcoming/Past is derived
+  from the event time boundary.
+
+### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
+
+- Stage a published Ticketing On event where an ordinary accepted member has
+  invited Nova. There must initially be no Nova ticket and both stored
+  `users.activities.tickets` and `users.activities.asset.tickets` remain `0`.
+- Approve the invitation as Casey Admin. Nova remains pending until she accepts;
+  this admin preapproval must not create a physical ticket or increment either
+  stored user counter.
+- Nova accepts the invitation once. Only this terminal transition to accepted
+  creates exactly one physical Nova `status=A` ticket and changes both stored
+  user counters to `1`; the next normal profile poll exposes the Ticket red
+  badge `1`.
+- Repeating the acceptance request or opening Ticket twice must preserve the
+  same ticket ID/code and counters. Casey, the ordinary inviter and every other
+  pending identity remain ticketless unless they independently become accepted
+  non-admin participants.
 
 ## Tournament cases
 

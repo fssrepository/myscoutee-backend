@@ -65,8 +65,26 @@ Supported checkpoint IDs:
 - `EVENT-FEEDBACK-001`, `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-005`, and
   `EVENT-FEEDBACK-006`
 - `EVENT-IMPRESSION-001`
-- `EVENT-TICKET-001` through `EVENT-TICKET-004`
+- `EVENT-TICKET-001` through `EVENT-TICKET-006`
 - `TOURNAMENT-001` through `TOURNAMENT-003`
+
+`EVENT-TICKET-002` intentionally starts with a published, Ticketing Off event.
+The harness must not manufacture the participant-owned ticket overlay or its
+credential. Casey performs Unpublish -> Ticketing On -> Publish through the UI;
+that real publish path owns the overlay, after which Nova opens Ticket twice to
+prove that both reads reuse the one physical credential created by publish.
+`EVENT-TICKET-004` proves the retained `D` audit record plus a new object and
+QR after Off -> On -> Publish. `EVENT-TICKET-005` isolates pending -> approved
+creation. `EVENT-TICKET-006` keeps the physical ticket `A` while the ended
+event moves it from Upcoming to Past.
+Reset removes only the checkpoint's event/ticket artifacts and restores the
+saved activity snapshot. Both `activities.tickets` and
+`activities.asset.tickets` must therefore return to baseline, and the Ticket
+menu badge must disappear on the next ordinary poll.
+Ticket checkpoints require `MANUAL_QA_EVENT_IMAGE_URL`; use the retained
+managed QA image's canonical `large.webp` URL so ordinary ticket cards can be
+verified against the derived `medium.webp` request instead of the remote
+placeholder.
 
 Use one checkpoint at a time:
 
@@ -127,6 +145,7 @@ sessions require other seeded users:
 ```bash
 MANUAL_QA_CREATOR_USER_ID=<host-user-id> \
 MANUAL_QA_INVITEE_USER_ID=<participant-user-id> \
+MANUAL_QA_EVENT_IMAGE_URL='/media/public?key=images%2F650000000000000000000061%2Fmanual-qa-checkpoint-v1-event-domain-event%2F1785904818563-084b9c3d-2bec-4d84-86f6-fb7140562c60%2Flarge.webp' \
 bash manual-qa-checkpoints.sh stage event-domain EVENT-TICKET-002
 ```
 

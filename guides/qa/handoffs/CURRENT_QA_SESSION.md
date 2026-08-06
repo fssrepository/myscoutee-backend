@@ -9,11 +9,11 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-002
-state: EVENT-TICKET-001 is PASS/CLOSED. After the fixture's shared event-counter projection was corrected, Casey's My Events badge and event survived repeated polls; Casey then unpublished for editing, enabled Ticketing, saved once and reopened with ticketing=true, unchanged Casey Admin and Nova accepted Member roles, and exactly one event recompute. The 001 fixture was reset. EVENT-TICKET-002 was freshly staged at 2026-08-06T03:10:16.898Z as active/published with ticketing=true, Casey accepted Admin and Nova the single accepted Member. Casey has the exact staged hosting/event.hosting/all +1 and Nova events/event.active/all +1; there are no credentials, pending/invited members, recompute tasks or outbox side effects at baseline. EVENT-TICKET-003 remains the required physical Android phone scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080
+state: EVENT-TICKET-001 is PASS/CLOSED. The first real EVENT-TICKET-002 publish exposed that opening Ticket could manufacture a Casey Admin credential. Ticket is now a physical EventTicket with A/D lifecycle, created only by publish or a terminal participant-acceptance write; Ticket list/open is read-only and the admin is ineligible. The red Ticket badge is sourced from the users table, specifically activities.tickets and activities.asset.tickets, rather than counted from ticket reads. Focused backend tests pass. Fixture reset restored both Casey and Nova stored ticket counters to zero, and the next normal poll must remove the badge. EVENT-TICKET-002 was freshly staged at 2026-08-06T03:50:16.422Z with the retained managed large image URL, active/published Ticketing Off, Casey accepted Admin, Nova accepted Member, no ticket, overlay, recompute or outbox side effect. EVENT-TICKET-003 remains the physical Android scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080. Local/SeedBuilder Ticket and QR behavior is being aligned to this HTTP contract in repository/service/mapper/seed layers only, never a component
 next_actor: user
-next_action: as Nova, reload once, open the staged Manual QA EVENT-TICKET-002 participant ticket, close it, then open it a second time without performing any other event mutation
-next_codex_action: compare the two visible event/holder/code identities with the stored ticket collection and prove exact-one reuse with no recompute, notification or scheduler side effect
-queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004]
+next_action: as Casey, open Manual QA EVENT-TICKET-002 and perform Unpublish -> Ticketing On -> Publish through the UI; stop before Nova opens Ticket and report that publish completed
+next_codex_action: immediately prove one Nova A physical ticket, zero Casey ticket/overlay/counter and one normal publish recompute; then ask Nova to open Ticket twice and prove stable id/code, no read write, and a medium.webp card request
+queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007]
 ```
 
 Active detail: [`EVENT-TICKET-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
@@ -39,11 +39,15 @@ Active detail: [`EVENT-TICKET-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.m
 - Run the smallest focused test only after code changes. A manual checkpoint
   does not authorize a broad suite.
 
-## Repository baseline at this handoff
+## Repository state at this handoff
 
-- Parent: `132dbc40`, clean before this QA documentation update.
-- Frontend submodule: `93f13be5` (`img size fix`), clean.
-- Existing backend hot-deploy accepted the media change and remained healthy.
+- Parent worktree contains the in-progress Ticket physical-object implementation,
+  fixture and QA-documentation changes; preserve them.
+- Frontend submodule contains the in-progress local physical Ticket,
+  repository/service/mapper and SeedBuilder parity implementation; no component
+  file is part of that implementation.
+- Existing backend hot-deploy compiled the Ticket changes and remained healthy;
+  the two focused Ticket service test classes pass.
 - No Codex-started server, watcher, Gradle, Angular-test or Vitest process is
   intentionally left running.
 
@@ -62,6 +66,35 @@ work.
   unpublish-for-edit, Ticketing On persisted across save/reopen; Casey remained
   accepted Admin, Nova accepted Member, and exactly one event recompute followed
   the save.
+
+## Active checkpoint — `EVENT-TICKET-002`
+
+- The clean reset baseline contains no physical ticket and both Casey and Nova
+  have `activities.tickets=0` and `activities.asset.tickets=0`. The next normal
+  poll must therefore remove any stale Ticket red badge.
+- Casey must perform the real `Unpublish -> Ticketing On -> Publish` UI flow.
+  Stop before opening Nova's Ticket list so the write side can be proved first.
+- Publish must create exactly one physical `A` ticket for accepted Member Nova,
+  none for Admin Casey, and exactly one normal event recompute.
+- Opening Nova's Ticket list twice must preserve the same ticket id, QR code and
+  `issuedAt`; reads must create no ticket or side effect.
+- The canonical Event image is the retained MinIO `large.webp`; the Ticket card
+  must request its derived `medium.webp`, not the external fallback URL.
+- Local/SeedBuilder behavior is a parity subcase: compare lifecycle,
+  eligibility, counters and QR scan outcome with the HTTP-backed flow before
+  changing it.
+- Local parity implementation now persists physical A/D ticket records and
+  keeps both `users.activities.tickets` and
+  `users.activities.asset.tickets` synchronized from those records. Publish
+  performs the full accepted-participant sync; a membership write evaluates
+  only its target user. Ticket list/open and QR reads never issue a ticket.
+  The targeted seed checkpoint passes, and the ticket repository plus event
+  service suites pass 17/17. No component file contains ticket lifecycle logic.
+- Keep the two later acceptance producers separate: `EVENT-TICKET-005` is a
+  member-origin join where admin approval directly makes the member accepted;
+  `EVENT-TICKET-007` is an ordinary-member invitation where admin preapproval
+  remains ticketless and only the invitee's later acceptance creates the
+  physical ticket and updates both `users` table counters.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 
@@ -163,67 +196,6 @@ work.
 
 Detailed contract and split cases:
 [`MEDIA_IMAGE_VARIANTS_MANUAL_QA.md`](../manuals/MEDIA_IMAGE_VARIANTS_MANUAL_QA.md).
-
-## Active checkpoint — `ARTICLE-EDITOR-001`
-
-The Article Editor owns one create/save/reopen operation. Its managed image is a
-subcase of that Save, not a standalone upload checkpoint:
-
-1. Complete the open English draft with an identifiable title, excerpt and HTML
-   body.
-2. Upload the retained PNG once into the Article as part of that draft.
-3. Save once, reopen and prove all fields plus one canonical managed URL persist
-   without another upload.
-4. Verify the admin Article list requests `medium.webp` and the admin viewer
-   body requests `large.webp`.
-5. Keep publication and landing propagation out of this checkpoint.
-
-Do not run a backend E2E for this manual pass. Use the existing stack and the
-smallest focused test only if another code change is required.
-
-On PASS, update only the `ARTICLE-EDITOR-001` ledger row and regenerate the XLSX:
-
-```bash
-python3 guides/qa/tools/sync-qa-matrix-xlsx.py
-```
-
-Then change the resume block to `LANDING-ARTICLE-001`.
-
-## Queued checkpoint — `LANDING-ARTICLE-001`
-
-Publish the retained Article once and compare the public landing behavior as a
-separate test case. Existing automated coverage proves fresh endpoint inclusion
-and frontend list/body mapping, but there is no browser test for the complete
-Admin publish-to-rendered-landing transition or live refresh of an already-open
-landing surface.
-
-## Later queued checkpoint — `CHAT-AUTH-001`
-
-The old positive failure was missing accepted-user chat materialization. The
-closed acceptance run now proves that Casey Admin and Riley accepted both have
-the channel while Nova pending does not. Do not redo `EVENT-INV-003`.
-
-The remaining auth proof is one participant-authored message:
-
-- keep Casey Admin, Riley accepted and Nova pending isolated;
-- Riley sends one uniquely identifiable ordinary message;
-- Casey and Riley see the same single persisted message/history;
-- Nova still has no channel and remains server-denied;
-- only a real unread message may change chat attention; join/system rows do
-  not.
-
-Use the detailed event handoff only for fixture IDs or its read-only oracle:
-[`EVENT_PUBLISH_CHAT_HANDOFF.md`](EVENT_PUBLISH_CHAT_HANDOFF.md).
-
-## Known documentation conflict — do not turn it into an automatic retest
-
-`EVENT-PUBLISH-CHAT-001` is still labelled `CLEAN RETEST REQUIRED` in the
-ledger and at the top of the older handoff, while that handoff later records a
-successful retained acceptance run. The subsequent run proves the chain could
-continue, but it does not by itself reconstruct every publish-only counter
-oracle. This is an evidence-reconciliation item, not part of `MEDIA-IMG-001` or
-`CHAT-AUTH-001`. Revisit it only when the user explicitly returns to the
-Publish checkpoint.
 
 ## Update rule
 
