@@ -1219,6 +1219,7 @@
       { collection: "eventFeedbackStates", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventFeedbackAnswers", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventTickets", selector: { $or: [{ eventId: { $in: EVENT_IDS } }, { code: TICKET_CODE }] } },
+      { collection: "eventTicketAudit", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "userNotifications", selector: { $or: [{ sourceId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: EVENT_IDS } } },
@@ -1265,6 +1266,7 @@
     Q.collection("eventFeedbackStates").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventFeedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventTickets").deleteMany({ eventId: { $in: eventIds } });
+    Q.collection("eventTicketAudit").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("notificationOutbox").deleteMany({ $or: [
       { entityId: { $in: [...eventIds, ...chatIds] } },
       { "payload.eventId": { $in: eventIds } },
@@ -1769,6 +1771,19 @@
     const feedbackStates = Q.collection("eventFeedbackStates").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const feedbackAnswers = Q.collection("eventFeedbackAnswers").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const tickets = Q.collection("eventTickets").find({ eventId: { $in: dynamicEventIds } }).toArray();
+    const ticketReplayAudits = Q.collection("eventTicketAudit").find({
+      eventId: { $in: dynamicEventIds },
+      action: "check-in-replay",
+      result: "already_used"
+    }).sort({ createdDate: 1 }).toArray();
+    const ticketReplayOutbox = Q.collection("notificationOutbox").find({
+      notificationType: "event-ticket-replay-warning",
+      $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).sort({ createdDate: 1 }).toArray();
+    const ticketReplayNotifications = Q.collection("userNotifications").find({
+      kind: "event-ticket-replay-warning",
+      $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).sort({ createdDate: 1 }).toArray();
     const stageRuntime = Q.collection("activitySubEventStageRuntime").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const groups = Q.collection("activitySubEventGroups").find({ ownerId: { $regex: `^${PREFIX}` } }).toArray();
     const leaderboard = Q.collection("eventLeaderboardEntries").find({ eventId: { $regex: `^${PREFIX}` } }).toArray();
@@ -2109,6 +2124,38 @@
         issuedAtIso: ticket.issuedAtIso,
         usedAtIso: ticket.usedAtIso,
         usedByUserId: ticket.usedByUserId
+      })),
+      ticketReplayAudits: ticketReplayAudits.map(item => ({
+        id: Q.text(item._id),
+        action: Q.text(item.action),
+        result: Q.text(item.result),
+        ticketId: Q.text(item.ticketId),
+        eventId: Q.text(item.eventId),
+        holderUserId: Q.text(item.holderUserId),
+        actorUserId: Q.text(item.actorUserId),
+        attemptedAtIso: item.attemptedAtIso,
+        originalUsedAtIso: item.originalUsedAtIso,
+        originalUsedByUserId: Q.text(item.originalUsedByUserId)
+      })),
+      ticketReplayOutbox: ticketReplayOutbox.map(item => ({
+        id: Q.text(item._id),
+        notificationType: Q.text(item.notificationType),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        actorUserId: Q.text(item.payload && item.payload.actorUserId),
+        ticketId: Q.text(item.payload && item.payload.ticketId),
+        rawCodePresent: Boolean(Q.text(item.payload && (item.payload.code || item.payload.ticketCode))),
+        status: Q.text(item.status)
+      })),
+      ticketReplayNotifications: ticketReplayNotifications.map(item => ({
+        id: Q.text(item._id),
+        recipientUserId: Q.text(item.recipientUserId),
+        senderUserId: Q.text(item.senderUserId),
+        ticketId: Q.text(item.payload && item.payload.ticketId),
+        occurrenceCount: Number(item.occurrenceCount || 1),
+        notificationTone: Q.text(item.payload && item.payload.notification_tone),
+        aggregationKey: Q.text(item.aggregationKey),
+        readAtIso: Q.text(item.readAtIso),
+        rawCodePresent: Boolean(Q.text(item.payload && (item.payload.code || item.payload.ticketCode)))
       })),
       stageRuntime: stageRuntime.map(item => ({
         ownerId: Q.text(item.ownerId),

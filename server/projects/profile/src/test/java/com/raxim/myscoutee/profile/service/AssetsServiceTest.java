@@ -155,6 +155,80 @@ class AssetsServiceTest {
     }
 
     @Test
+    void alreadyUsedTicketAuditsActorAndAggregatesOneHolderWarning() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        EventTicketAuditService auditService = mock(EventTicketAuditService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        EventTicket ticket = checkedInTicket();
+        ActivityEvent event = ticketEvent();
+
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.checkIn(eq(ticket.getCode()), eq("scanner-user"), any(Instant.class)))
+                .thenReturn(EventTicketService.CheckInResult.invalid("already_used", ticket, event));
+
+        AssetsService service = ticketValidationService(
+                usersRepository,
+                activityMembersRepository,
+                ticketService,
+                notificationOutboxService,
+                accessControlService);
+        service.setEventTicketAuditService(auditService);
+
+        var response = service.validateTicket(new AssetTicketValidationRequestDto(
+                ticket.getCode(),
+                "scanner-user"));
+
+        assertThat(response.valid()).isFalse();
+        assertThat(response.reason()).isEqualTo("already_used");
+        assertThat(response.ticket()).isNull();
+        verify(auditService).recordAlreadyUsedAttempt(
+                eq(ticket),
+                eq(event),
+                eq("scanner-user"),
+                any(Instant.class));
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("event-ticket-replay-warning");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("holder-user");
+        assertThat(notification.getValue().createdUser()).isEqualTo("scanner-user");
+        assertThat(notification.getValue().payload())
+                .containsEntry("actorUserId", "scanner-user")
+                .containsEntry("notification_tone", "warning")
+                .containsEntry("notification_aggregation_key", "event-ticket-replay:ticket-document-1")
+                .doesNotContainValue(ticket.getCode());
+    }
+
+    @Test
+    void unrelatedTicketRejectionDoesNotAuditOrWarnTheHolder() {
+        EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        EventTicketAuditService auditService = mock(EventTicketAuditService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+        when(ticketService.checkIn(eq("invalid"), eq("scanner-user"), any(Instant.class)))
+                .thenReturn(EventTicketService.CheckInResult.invalid("not_found"));
+        AssetsService service = ticketValidationService(
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                ticketService,
+                notificationOutboxService,
+                accessControlService);
+        service.setEventTicketAuditService(auditService);
+
+        var response = service.validateTicket(new AssetTicketValidationRequestDto(
+                "invalid",
+                "scanner-user"));
+
+        assertThat(response.valid()).isFalse();
+        assertThat(response.reason()).isEqualTo("not_found");
+        verify(auditService, never()).recordAlreadyUsedAttempt(any(), any(), any(), any());
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
+    }
+
+    @Test
     void resourceMemberActionsReturnOnlyStatusTransitionsAndCounterDeltas() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);

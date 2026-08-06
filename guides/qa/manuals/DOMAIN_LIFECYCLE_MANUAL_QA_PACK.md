@@ -1221,6 +1221,11 @@ Restart evidence on 2026-08-06:
   remains `status=A`; the remaining closure sequence is the saved-QR repeat,
   invalid-code and unauthorized-participant scans. Each must leave that exact
   `usedAtIso` and `usedByUserId` unchanged.
+- PASS partial evidence: the user repeated the saved QR before replay-warning
+  implementation and received **already used**. The persisted oracle remained
+  `status=A`, `usedAtIso=2026-08-06T06:59:21.130578868Z` and
+  `usedByUserId=Casey`, proving the original exact-once no-op. Invalid-code and
+  unauthorized-participant scans still remain for closure.
 
 ### `EVENT-TICKET-004` — Unpublish/republish preserves an auditable A/D history
 
@@ -1316,6 +1321,14 @@ Restart evidence on 2026-08-06:
   application shell, ticket record and QR presentation are warmed. Record the
   ticket ID/code and the online QR. A cold client that has never loaded the
   ticket is not equivalent.
+- This checkpoint owns offline session restoration as well as the cached QR.
+  A persisted, warmed member session must survive reload and route from `/`
+  back into the cached application; it must not be treated as logout merely
+  because Firebase/profile revalidation cannot reach the network. Firebase
+  local persistence may resume the existing user while its cached credential
+  remains usable, but a new login or token refresh is not an offline promise.
+  An anonymous client may still display the cached landing page with **No
+  network**.
 - Isolate only Nova's browser client with DevTools **Network -> Offline** (or a
   target-scoped CDP network override), then reload that browser. Do not stop the
   shared backend, proxy or frontend, and do not affect Casey's phone session.
@@ -1344,24 +1357,65 @@ Restart evidence on 2026-08-06:
   manual DevTools procedure controlled Nova's network and when online mode was
   restored.
 
-### `EVENT-TICKET-010` — warn the holder about an already-used replay attempt
+### `EVENT-TICKET-010` — audit replay actors and aggregate the holder warning
 
-- This is a planned security checkpoint and must not block closure of the
-  current exact-once contract until the warning feature is implemented.
+- Run this security extension on the currently used `EVENT-TICKET-003` ticket;
+  no restage is required. The backend and frontend implementation is
+  hot-deployed. The pre-test persisted baseline has zero replay audits, zero
+  replay-warning outbox rows and zero aggregated holder-warning rows.
+- Prepare three isolated sessions before continuing. Run
+  `guides/qa/tools/open-three-chrome-sessions.sh`; for each prompt the tester
+  manually chooses a different existing Google profile and confirms the named
+  Casey, Nova or Riley MyScoutee session. The helper deliberately contains no
+  Chrome profile-directory names and never selects a Google profile itself.
+  Chrome permits only one active profile picker at a time, so the helper opens
+  the three pickers sequentially with a seven-second selection window. The
+  tester clicks a different existing Google profile after every popup; after
+  the third selection, the resulting Casey, Nova and Riley profile windows
+  remain open concurrently. Keep the helper process running for the whole QA
+  checkpoint because it owns the launched Chrome process; press its final
+  Enter only when all three sessions may close. Override the selection delay
+  with `PROFILE_PICK_DELAY_SECONDS` only when another tester needs more time.
+  The script itself still contains no profile-directory selection or mapping.
+  Three windows of one Google profile are invalid because their MyScoutee
+  session storage is shared and a later user selection overwrites the earlier
+  one. Riley is the idle independent control for this checkpoint.
+- Keep Nova online throughout this checkpoint so the notification row, read
+  transition and bell contribution can be observed through normal realtime
+  synchronization. Asymmetric offline holder behavior belongs exclusively to
+  `EVENT-TICKET-009` and must not be mixed into this warning test.
 - Start with a Nova ticket that Casey has already checked in successfully.
-  Scan the same QR again through the authorized server-side scanner path.
+  Scan the same saved QR through the authorized Casey server-side scanner path.
 - The replay must still return **already used** and must not change ticket
   `status`, `usedAtIso`, `usedByUserId`, membership, event counters or create a
   replacement credential.
-- Deliver a warning notification to the ticket holder, Nova, stating that the
-  already-used credential was presented again. Do not expose the raw ticket
-  code/QR payload in notification text or metadata. The scanner actor must not
-  receive the holder warning merely because they made the request.
-- One deliberate replay must create exactly one observable holder warning.
-  Before implementation is closed, define and prove bounded deduplication for
-  rapid repeated scans so the protection cannot be used to flood the holder.
-  Invalid, revoked, expired and unauthorized codes remain separate rejection
-  paths and must not masquerade as this already-used warning.
+- Persist one immutable `eventTicketAudit` record per replay, including ticket,
+  event, holder, authenticated scanner actor, attempt time and the original
+  canonical `usedAtIso`/`usedByUserId`. The raw ticket code/QR must not be
+  stored in the audit.
+- Deliver the warning to holder Nova. Its sender is the authenticated scanner
+  actor, Casey, and its payload uses warning tone without the raw ticket
+  code/QR. Casey must not receive the holder warning merely because Casey made
+  the request.
+- After the first replay, Nova has one unread warning row with occurrence count
+  `1` and the bell contributes `1`. Nova marks that warning read: the same row
+  remains at count `1`, gains `readAtIso`, and the bell contribution becomes
+  `0`. Casey then scans the same saved QR again. The existing row must become
+  unread again, move to occurrence count `2`, refresh its last actor/time and
+  restore exactly one bell contribution.
+- Scan once more while that row is already unread. The row becomes count `3`
+  but the bell remains `1`; no second/third inbox row is allowed. The outbox may
+  collapse equivalent pending delivery intents, so immutable replay audits and
+  the aggregated inbox occurrence count—not raw outbox document count—are the
+  exact attempt oracles.
+- HTTP persists the immutable audit and aggregates the inbox row. Frontend
+  local mode mirrors both semantics in its ticket repository and shared
+  notification repository; the UI converter displays the repeat count only
+  when it exceeds one. The atomic aggregate upsert clears `readAtIso` on a new
+  occurrence and increments the unread users-table counter only when the row
+  was newly inserted or had previously been read.
+- Invalid, revoked, expired and unauthorized codes remain separate rejection
+  paths and must not create replay audits or masquerade as this warning.
 
 ## Tournament cases
 

@@ -9,10 +9,10 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-003
-state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. EVENT-TICKET-003 is OPEN/PARTIAL. Its current baseline was staged at 2026-08-06T06:44:35.639Z and the revised physical-phone scanner UI worked end to end. Casey's first authorized scan persisted exactly one use at 2026-08-06T06:59:21.130578868Z on Nova's status=A ticket; usedByUserId is Casey. The app-menu camera toggle, stable overlay position, automatic stream stop and accepted-frame result are user-confirmed. The saved-QR repeat, invalid-code and unauthorized-participant scans remain; none may change the canonical use. EVENT-TICKET-010 records a later planned holder-warning notification for already-used replay attempts and does not alter the current checkpoint baseline
+state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. EVENT-TICKET-003 is OPEN/PARTIAL. Casey's first authorized scan persisted exactly one use at 2026-08-06T06:59:21.130578868Z on Nova's status=A ticket; usedByUserId is Casey. The user repeated the saved QR and saw already-used, while the persisted ticket remained byte-for-byte canonical. Invalid-code and unauthorized-participant scans remain. EVENT-TICKET-010 replay audit plus aggregated holder warning is now hot-deployed on the same used ticket. Its baseline is replay audits 0, replay outbox 0 and Nova aggregated warning rows 0
 next_actor: user
-next_action: on Casey's authorized phone tap Kamera be and scan the saved screenshot of the same complete Nova QR; expect already-used and an automatic stream stop, then leave the result visible for persisted verification
-next_codex_action: after the repeat result, verify ticket status=A and the exact unchanged usedAtIso 2026-08-06T06:59:21.130578868Z plus usedByUserId=Casey; then guide the invalid-code and unauthorized-participant no-op scans
+next_action: run guides/qa/tools/open-three-chrome-sessions.sh and manually choose three different existing Google profiles for Casey, Nova and Riley; confirm the named MyScoutee user in each window. Then restore Nova to No throttling/online and reload; scan the saved QR once as Casey; on online Nova confirm warning count 1/unread 1, mark that row read and confirm bell 0; scan again and confirm the same row reopens unread at count 2/bell 1; scan a third time without reading and confirm the same row reaches count 3 while bell remains 1
+next_codex_action: verify three immutable Casey replay audits, one aggregated Nova warning row with occurrenceCount=3 and readAtIso cleared, rawCodePresent=false everywhere, and unchanged ticket status=A/usedAtIso/usedByUserId; outbox row count is non-exact because pending intents may collapse
 queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-010, EVENT-VISIBILITY-001]
 ```
 
@@ -176,6 +176,9 @@ work.
   `usedAtIso=2026-08-06T06:59:21.130578868Z` and `usedByUserId=Casey`. Reuse the
   saved QR next and prove those values do not change before running invalid and
   unauthorized branches.
+- The user also completed the saved-QR repeat and saw **already used**. The
+  persisted oracle still reports the exact same `status=A`, `usedAtIso` and
+  Casey `usedByUserId`, so the original repeat no-op is PASS.
 - The scanner UI now uses one contextual `app-menu` Kamera be/ki toggle. Off
   stops detection and MediaStream tracks and shows the white/red-X state;
   successful validation stops the stream and retains the recognized frame;
@@ -197,10 +200,21 @@ work.
   otherwise use the documented Nova-tab DevTools Network Offline procedure.
   Always restore Nova online afterward. Never stop the shared server for this
   case.
-- `EVENT-TICKET-010` is planned security hardening: a server-confirmed replay
-  of an already-used QR may create a bounded warning notification for holder
-  Nova, without exposing the raw QR and without any ticket/counter mutation.
-  It is not implemented and does not retroactively block `EVENT-TICKET-003`.
+- The first offline reload exposed a real session-route defect: the cached
+  anonymous landing loaded, but an already-open member session was not routed
+  back into the app. Session restore, root routing and warmed HTTP-demo cache
+  fallback are hot-deployed; the dedicated 009 retest must start with one
+  online reload so the new bundle and member cache are warm. This result is
+  not part of the online notification checkpoint.
+- `EVENT-TICKET-010` is hot-deployed on the same used fixture. Every
+  server-confirmed replay writes an immutable actor audit, while Nova gets one
+  aggregated warning row whose occurrence badge increments. The required
+  sequence is replay -> mark read -> replay -> replay, proving read-to-unread
+  reactivation and no unread-counter inflation while already unread. The
+  baseline is zero audits/outbox/warning rows.
+  Nova remains online for the complete replay/read/replay sequence.
+  Neither audit nor notification may expose the raw QR or alter the canonical
+  ticket use.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 
