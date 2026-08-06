@@ -1181,10 +1181,10 @@ Execution evidence on 2026-08-06:
   place of a black target; rejected/error results must not present that frame as
   accepted evidence. Turning **Kamera be** on starts a fresh scanner session,
   so no separate **Újabb beolvasás** button is present.
-- In ticket-holder metadata, `Member`, `Manager` or `Admin` appears only as an
-  i18n contextual badge beneath the avatar. The event title remains its own
-  unprefixed line; `Tag · Event`, `Manager · Event` and `Admin · Event` are not
-  valid layouts.
+- Canonical roles `Manager`, `Admin` and `Member` appear verbatim on Casey's
+  scanner as contextual badges beneath the avatar; the scanner does not
+  localize `Member` to `Tag`. Nova's own QR surface may retain its localized
+  contextual badge. The event title remains its own unprefixed line.
 - Before the first scan, display Nova's controlled active credential QR code
   on the separate screen and save a screenshot containing the complete QR.
   Keep that screenshot until every scan branch is complete: after a successful
@@ -1199,18 +1199,52 @@ Execution evidence on 2026-08-06:
 
 Current staged baseline on 2026-08-06:
 
+- Post-fix clean retest staged at `2026-08-06T10:12:01.825Z` with Casey
+  accepted Admin and Nova accepted Member at `2 / 8`. Nova's fresh physical
+  ticket is `status=A`, unused, and has code
+  `TKT-1a7df4b6-c8a6-44bd-b859-dac4cd412d15`; replay audit, replay outbox and
+  aggregated warning collections are all empty. Retain the new complete QR;
+  the earlier screenshot belongs to the reset credential and is invalid.
 - Restaged at `2026-08-06T09:29:57.060Z` with Casey accepted Admin and Nova
   accepted Member at `2 / 8`; the event is active, Ticketing On and uses the
   retained managed MinIO image.
 - Nova owns one active physical ticket with a freshly generated UUID-shaped
   `TKT-` code; every reset plus new stage must produce a different code/QR.
   Casey has no participant ticket.
-- The ticket is unused (`usedAtIso=null`, `usedByUserId=null`) and Nova's
-  participant-owned event overlay plus both Ticket counters are present.
+- The complete QR was retained before scanning. Casey's first scan on the
+  current baseline persisted exactly one canonical use at
+  `2026-08-06T09:54:28.300791752Z`; the ticket remains `status=A`, and the
+  replay audit/warning collections were still empty immediately afterward.
 - The Android device `aer8vgcmyd9lzxv8` is authorized and `adb reverse --list`
   reports `tcp:8080 tcp:80`.
 
 Restart evidence on 2026-08-06:
+
+- Post-fix PASS evidence through first replay: Casey's first scan used the
+  freshly staged ticket exactly once at
+  `2026-08-06T10:16:50.744525385Z`. A saved-QR replay at
+  `2026-08-06T10:18:11.470491618Z` returned **already used**, retained that
+  canonical use, and wrote one immutable Casey audit, one sanitized pending
+  outbox row and one unread Nova warning with `occurrenceCount=1`. Nova's open
+  UI received both the warning and red-counter change. The persisted
+  `users.activities.notifications=2` equals the unread check-in row plus the
+  unread replay warning, proving row creation and users-table counter increment
+  occurred together after the aggregate-upsert fix.
+- The first saved-QR replay on the `09:29:57.060Z` baseline returned **already
+  used** and preserved `status=A`, canonical `usedAtIso` and Casey
+  `usedByUserId`. The persisted oracle found one immutable Casey replay audit
+  at `2026-08-06T10:01:10.053713457Z` and one sanitized pending replay-warning
+  outbox row, but zero Nova warning rows. Nova's notification list and
+  users-table unread/red counter consequently remained unchanged even after
+  reload. Root cause was a conflicting Mongo aggregate upsert that addressed
+  `revision` in both `$setOnInsert` and `$inc`. The repository now lets `$inc`
+  initialize/increment `revision` atomically. Reset/restage is required before
+  repeating this checkpoint; do not patch the partially executed documents.
+- Current rerun: Nova's notification baseline was opened and the complete
+  fresh QR was retained before use. Casey's authorized physical-phone scan
+  succeeded once; the persisted oracle records
+  `usedAtIso=2026-08-06T09:54:28.300791752Z`, Casey as `usedByUserId`, unchanged
+  `status=A`, and zero replay audits/warnings before the saved-QR replay phase.
 
 - The first authorized physical-phone scan succeeded and persisted exactly one
   use at `2026-08-06T06:18:07.529719781Z`, performed by Casey. The checkpoint

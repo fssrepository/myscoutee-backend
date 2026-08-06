@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -146,6 +147,28 @@ class UserNotificationPageRepositoryTest {
         assertThat(mutationUpdate.getUpdateObject().toJson())
                 .contains("\"readAtIso\": \"2026-07-27T20:00:00Z\"")
                 .contains("\"revision\": 1");
+    }
+
+    @Test
+    void aggregatedUpsertLetsIncInitializeRevisionWithoutAConflictingSetOnInsert() {
+        UserNotification notification = notification("notification-1", "2026-07-27T19:00:00Z");
+        notification.setAggregationKey("viewer-1:event-ticket-replay:ticket-1");
+        notification.setSyncKey("warning-1:viewer-1");
+
+        repository.upsertAggregated(notification);
+
+        ArgumentCaptor<Update> update = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).findAndModify(
+                any(Query.class),
+                update.capture(),
+                any(FindAndModifyOptions.class),
+                eq(UserNotification.class));
+        Document updateDocument = update.getValue().getUpdateObject();
+        assertThat((Document) updateDocument.get("$setOnInsert"))
+                .doesNotContainKey("revision");
+        assertThat((Document) updateDocument.get("$inc"))
+                .containsEntry("occurrenceCount", 1L)
+                .containsEntry("revision", 1L);
     }
 
     private UserNotification notification(String id, String createdDate) {

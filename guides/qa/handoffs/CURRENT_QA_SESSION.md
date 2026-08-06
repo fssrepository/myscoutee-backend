@@ -9,10 +9,10 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-003
-state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. EVENT-TICKET-003 plus its EVENT-TICKET-010 replay extension restarted from a clean baseline at 2026-08-06T09:29:57.060Z. Nova owns one unused status=A ticket with a fresh random UUID-v4 QR code; usedAtIso and usedByUserId are null, ticket replay audits/outbox/warnings are empty, and her server-side New Notifications bucket/unread count is 0/0. The fixed fixture code was removed: every clean ticket stage now creates and stores a new code, matching production UUID issuance semantics. Scanner metadata shows Member/Manager/Admin only as an i18n contextual badge beneath the avatar; the event title is a separate unprefixed line. Notification page DTOs carry server-issued revisions; the optional SmartList delta poll sends every cached page's `{id, revision}` plus the loaded tail, and the server returns only upserts/removals. Identical rows are discarded server-side and unchanged cached object identities remain. The hot-deploy builds and focused role-layout converter regression are green; reload Nova once, then run the complete scan/replay sequence from zero
+state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. The post-fix EVENT-TICKET-003/EVENT-TICKET-010 retest is live on the 2026-08-06T10:12:01.825Z baseline. Casey's canonical first scan used Nova's fresh ticket exactly once at 2026-08-06T10:16:50.744525385Z. The first replay at 2026-08-06T10:18:11.470491618Z returned already-used, preserved that canonical use, wrote one immutable Casey replay audit, one sanitized pending outbox row and exactly one unread Nova warning row with occurrenceCount=1. Nova visibly received the warning and red counter; persisted users.activities.notifications=2, representing the unread check-in row plus the unread replay warning. This proves the Mongo aggregate-upsert fix creates the row and increments the users-table counter in the same write-side transition. Continue with mark-read/replay aggregation
 next_actor: user
-next_action: reload online Nova once and confirm New Notifications is empty. Open Nova's Ticket and retain a complete QR screenshot. Scan once as Casey and require one check-in row; replay once and require the warning to prepend without removing/rerendering the check-in row. Mark only the warning read and record remaining unread baseline B; replay again and require the same warning at count 2/B+1, then replay once more without reading and require count 3 while total unread remains B+1
-next_codex_action: after the first successful scan record the canonical use, then verify three immutable Casey replay audits, one aggregated Nova warning row with occurrenceCount=3 and readAtIso cleared, rawCodePresent=false everywhere, and unchanged ticket status=A/usedAtIso/usedByUserId; outbox row count is non-exact because pending intents may collapse
+next_action: in Nova's already-open Notifications, mark only the replay warning read; require the warning row to remain at occurrenceCount=1 and the red counter to decrease 2 -> 1 while the check-in row remains unread. Then Casey scans the same saved QR again; require already-used, the same warning row to become unread at occurrenceCount=2, and the red counter to return 1 -> 2 without creating a second warning row
+next_codex_action: after mark-read verify the warning readAtIso and users.activities.notifications=1; after the second replay verify the canonical ticket use is unchanged, two immutable Casey audits exist, the single warning row has occurrenceCount=2/readAtIso cleared, and users.activities.notifications=2
 queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-010, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
 ```
 
@@ -154,6 +154,20 @@ work.
 
 ## Active checkpoint — `EVENT-TICKET-003`
 
+- Current clean retest baseline staged at `2026-08-06T10:12:01.825Z` after the
+  aggregate-upsert fix: fresh code
+  `TKT-1a7df4b6-c8a6-44bd-b859-dac4cd412d15`, `status=A`, unused, Casey Admin
+  plus Nova Member accepted at `2 / 8`, and zero replay audits/outbox/warning
+  rows. The retained canonical MinIO `large.webp` image is present. The old QR
+  screenshot is invalid; Nova must retain this newly issued complete QR.
+- Current post-fix evidence: Casey's first scan set
+  `usedAtIso=2026-08-06T10:16:50.744525385Z`. The first saved-QR replay at
+  `2026-08-06T10:18:11.470491618Z` preserved it and produced one immutable
+  Casey audit, one sanitized pending outbox row, and one unread Nova warning
+  with `occurrenceCount=1`. Nova visibly received the row and red badge;
+  persisted `users.activities.notifications=2` is the unread check-in row plus
+  this warning. The fixed aggregate write therefore materializes the inbox row
+  and increments the users-table counter together.
 - Clean baseline restaged at `2026-08-06T09:29:57.060Z`: active Ticketing On,
   Casey accepted Admin, Nova accepted Member, one Nova `A` physical ticket and
   users counters `1 / 1`; the ticket is unused and Nova's participant-owned
@@ -162,9 +176,18 @@ work.
   `TKT-fbfd8c02-af26-4812-b314-ef754ee6b82c`; the canonical event image is the
   retained managed MinIO `large.webp` URL. A later reset/stage or republish must
   produce a different code/QR.
-- The ticket is unused again (`usedAtIso=null`, `usedByUserId=null`). Replay
-  audits/outbox/warnings are empty, and Nova's server-side New Notifications
-  bucket plus unread count are both zero.
+- The retained QR was captured before use. Casey's first scan persisted the
+  canonical use at `2026-08-06T09:54:28.300791752Z`; ticket status remains `A`.
+  Replay audits/outbox/warnings were still empty immediately after first use.
+- The first saved-QR replay at `2026-08-06T10:01:10.053713457Z` correctly
+  returned **already used**, preserved the canonical use and wrote one Casey
+  replay audit plus one sanitized pending outbox row. It exposed a backend
+  aggregate-upsert defect: no Nova warning row was materialized and the
+  users-table unread/red counter did not increment. Reload therefore could not
+  repair the UI. `UserNotificationPageRepository.upsertAggregated` incorrectly
+  targeted `revision` in both `$setOnInsert` and `$inc`; the fix retains only
+  `$inc`, which initializes an absent revision and increments existing rows.
+  This partially executed baseline must be reset/restaged before retest.
 - Physical Android `aer8vgcmyd9lzxv8` is authorized. The existing reverse is
   `tcp:8080 tcp:80`; do not restart the dev stack.
 - Before scanning, Nova displays the QR on desktop and saves a screenshot with
@@ -194,9 +217,10 @@ work.
 - Scanner reading/validating text now occupies a centered top badge overlay in
   the camera target. The toggle remains in one stable layout position and is
   merely disabled during validation, so state changes cannot move it vertically.
-- Ticket holder roles `Member`, `Manager` and `Admin` render only as an i18n
-  contextual badge beneath the avatar. The event title is a separate line and
-  must never be prefixed with `Tag ·`, `Manager ·` or `Admin ·`.
+- Canonical roles `Manager`, `Admin` and `Member` render verbatim on Casey's
+  scanner as contextual badges beneath the avatar; the scanner must not
+  localize `Member` to `Tag`. Nova's own QR surface may retain its localized
+  contextual badge. The event title is always a separate unprefixed line.
 - The four camera labels are present in both frontend local bundles and the
   generated `demo_db`/`e2e_db`/`myscoutee_db` Mongo JSON seeds. Bundle versions
   are `2026.08.06.en.51` and `2026.08.06.hu.51`; the i18n seed audit passed

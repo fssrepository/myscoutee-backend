@@ -116,7 +116,6 @@ public class UserNotificationPageRepository {
                 .setOnInsert("syncKey", notification.getSyncKey())
                 .setOnInsert("aggregationKey", notification.getAggregationKey())
                 .setOnInsert("recipientUserId", notification.getRecipientUserId())
-                .setOnInsert("revision", 0L)
                 .set("outboxId", notification.getOutboxId())
                 .set("kind", notification.getKind())
                 .set("category", notification.getCategory())
