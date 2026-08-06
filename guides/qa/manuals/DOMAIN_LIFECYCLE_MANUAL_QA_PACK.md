@@ -53,7 +53,7 @@ the same prerequisite without depending on an earlier human action.
 | Feedback eligibility boundary | Accepted non-admin membership on a non-trashed event at least two hours after its start | Pending Event Feedback item and feedback cards | None; this is a read-only eligibility projection | `EVENT-FEEDBACK-001` |
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
-| Feedback note or remove/restore | Feedback state mutation only | Organizer note or feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-004`, `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
+| Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
 | Ticketing enablement and accepted participation | Ticket-enabled event overlay and one holder credential | Event checkout/ticket card and scanner | Direct ticket issue/check-in path; no scheduled worker is required | `EVENT-TICKET-001` through `EVENT-TICKET-004` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 
@@ -850,18 +850,6 @@ Execution evidence on 2026-08-04:
 - Continue to `EVENT-IMPRESSION-001` for the target-user popup. Do not treat the
   notification or recompute task alone as proof that Impressions refreshed.
 
-### `EVENT-FEEDBACK-004` — remove and restore the feedback list item
-
-- Remove one submitted feedback item, verify the removed feedback bucket and
-  counters, then restore it once.
-- The action changes the viewer's feedback state; it must not delete the saved
-  answer documents, enqueue affinity recompute or create a notification.
-- The current Impressions aggregation reads saved answers independently of the
-  removed list flag. Therefore the target's trait evidence is expected to stay
-  unchanged across remove/restore. If product intent is to retract evidence,
-  record that mismatch as a separate functional defect rather than silently
-  changing this checkpoint.
-
 ### `EVENT-FEEDBACK-005` — participant note to organizer is separate feedback metadata
 
 Status: **PASS** on 2026-08-05.
@@ -905,9 +893,7 @@ Status: **PASS** on 2026-08-05.
 - No structured answer, event opinion, organizer note, affinity recompute,
   notification or notification-outbox row may be created by either transition.
   **Add organizer note** may remain visible in both buckets, but belongs to the
-  separate `EVENT-FEEDBACK-005` checkpoint and is not invoked here. This differs from
-  `EVENT-FEEDBACK-004`, which removes and restores an already submitted item
-  while preserving its answers and Impression evidence.
+  separate `EVENT-FEEDBACK-005` checkpoint and is not invoked here.
 - Finish through the checkpoint harness reset, then restage
   `EVENT-FEEDBACK-002` before continuing the submission checkpoint. The
   canonical transition is one snapshot-protected command:

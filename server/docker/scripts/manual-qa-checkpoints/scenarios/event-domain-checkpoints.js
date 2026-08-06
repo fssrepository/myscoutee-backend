@@ -540,13 +540,6 @@
       ],
       worker: "MUST RUN: target-user recompute and first-submission notification outbox."
     },
-    "EVENT-FEEDBACK-004": {
-      stage: "feedback-submitted",
-      why: "Verify feedback list removal/restoration separately from answer evidence used by Impressions.",
-      action: "As the participant, remove the staged feedback item, capture it, then restore it once.",
-      expected: "Only the feedback state/bucket changes; answer rows and target Impression evidence remain present.",
-      worker: "MUST NOT RUN: no affinity recompute and no notification outbox for remove/restore."
-    },
     "EVENT-FEEDBACK-005": {
       stage: "feedback-submitted",
       why: "Prove that a participant note to the organizer is separate metadata rather than a new structured feedback answer.",

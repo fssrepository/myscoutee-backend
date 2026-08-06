@@ -1,6 +1,6 @@
 # Current QA session handoff
 
-Updated: 2026-08-05  
+Updated: 2026-08-06
 Purpose: this is the first and normally the only file to read after context
 compaction. Load a linked detailed document only when its checkpoint becomes
 active. Do not reconstruct current state from the full conversation.
@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-FEEDBACK-004
-state: EVENT-FEEDBACK-005, EVENT-IMPRESSION-001 and EVENT-IMPRESSION-002 are PASS and CLOSED. Submitted structured-feedback editing is not a product feature and has no QA checkpoint. The retained submitted fixture was advanced without reset to EVENT-FEEDBACK-004; it still has exactly one Nova feedback state, one Casey-target answer, one first-submit notification and one first-submit outbox row
-next_actor: user
-next_action: as Nova, remove the submitted Manual QA EVENT-IMPRESSION-001 feedback item once and stop before Restore
-next_codex_action: inspect the removed bucket, counters, saved answer, Casey Impressions evidence, recompute tasks and notification/outbox before authorizing the single Restore
+active_checkpoint: NONE
+state: EVENT-FEEDBACK-005, EVENT-FEEDBACK-006, EVENT-IMPRESSION-001 and EVENT-IMPRESSION-002 are PASS and CLOSED. Submitted structured feedback is immutable in the product UI: neither editing nor removal/restoration exists after submission, so those are not QA checkpoints. Pending Ignore/Restore remains covered by EVENT-FEEDBACK-006. The temporary submitted-feedback fixture was reset successfully and no event-domain checkpoint is staged
+next_actor: codex
+next_action: wait for the next explicitly selected checkpoint
+next_codex_action: do not stage another scenario until it is selected
 queued_checkpoint: []
 ```
 
-Active detail: [`EVENT-FEEDBACK-004`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
+Last completed detail: [`EVENT-IMPRESSION-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-feedback-and-impressions-checkpoints).
 
 ## Hard constraints
 
