@@ -1311,9 +1311,27 @@ Restart evidence on 2026-08-06:
   approval. Casey is the only accepted Admin; Nova is not yet a member and has
   no ticket or stored ticket counter.
 - As Nova, find the event through Event Explore and choose Join. Require one
-  pending membership with `requestKind=join` and `pendingSource=member`, while
+  pending membership with `requestKind=approval` and `pendingSource=member`, while
   both `users.activities.tickets` and
   `users.activities.asset.tickets` remain `0` and no physical ticket exists.
+  Within one notification poll Casey receives one new event-admin row for this
+  action, with Nova as sender and the contextual **Pending** badge. Nova does
+  not receive her own admin-facing row.
+- Before admin approval, Nova opens the pending participation and chooses
+  **Cancel request**. The visible pending projection is removed and occupancy
+  returns from `1 pending / 8` to `0 pending / 8`; the physical membership is
+  retained only as a `suppressed` audit record with its previous pending state,
+  and Nova's own event overlay is retained as `status=T`. Nova's pending
+  activity counter/list entry disappears and both ticket counters remain `0`.
+  No ticket, active participant overlay, chat owner copy or acceptance
+  notification may be created by cancellation. Casey instead receives a
+  separate new event-admin notification row with Nova as sender and the
+  contextual **Cancelled** badge. The Public event remains discoverable.
+- Nova chooses Join again. This creates exactly one new pending member-origin
+  request by reopening the suppressed pending audit record and its activity
+  projection, never resurrects it as accepted, creates another new **Pending**
+  notification occurrence for Casey, and still creates no ticket. Continue the
+  approval proof from this second request.
 - As Casey, approve Nova once. This is the terminal transition directly to
   accepted; there is no second participant-acceptance step. The approval write
   creates exactly one Nova participant overlay and one physical `status=A`
@@ -1322,6 +1340,21 @@ Restart evidence on 2026-08-06:
   same ID/code. Before approval and during both reads, no credential may be
   created.
 - Casey and every other Admin remain without a participant ticket.
+- First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
+  accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
+  `requestKind=approval` membership, pending activity `1`, both stored ticket
+  counters `0`, and `eventTickets` remained empty. The first implementation
+  omitted both admin notification writes; the first Cancel observation proved
+  the domain transition but exposed the same omission. The write-side fix and
+  cancel-after-rejoin handling are hot-deployed; repeat this whole sequence
+  from a clean stage before closing the checkpoint.
+- Clean notification retest evidence (2026-08-06): Join delivered exactly one
+  Casey `Pending` row and retained `1 accepted + 1 pending / 8` with zero
+  tickets. Cancel delivered a separate Casey `Cancelled` row, changed Nova's
+  physical membership to `suppressed` with
+  `statusBeforeSuppression=pending`, retained Nova's own overlay as `status=T`,
+  changed pending activity `1 -> 0` and trash `0 -> 1`, and left every ticket
+  object and both controlled ticket counters at zero.
 
 ### `EVENT-TICKET-006` — expiry moves the active ticket to Past
 

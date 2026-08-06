@@ -1171,11 +1171,18 @@ public class ActivitiesMembersService {
         }
 
         ActivityMember current = existingByUserId.get(viewerUserId);
+        boolean rejoiningCancelledRequest = current != null
+                && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatusBeforeSuppression()))
+                && normalizedEventId.equals(normalizeId(current.getSuppressionRootOwnerId()));
         boolean resolvingInvitation = current != null
                 && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                     || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
                 && isInvitationMembership(current);
-        if (current != null && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))) {
+        boolean adminApprovalAlreadyPending = isAdminApprovalMembership(current);
+        if (current != null
+                && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
+                && !rejoiningCancelledRequest) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
         if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
@@ -1203,12 +1210,23 @@ public class ActivitiesMembersService {
             current.setPendingSource(accepted ? null : "member");
             current.setRequestKind(accepted ? null : pendingJoinRequestKind(waitingList, approvalRequested));
             current.setInvitedByUserId(null);
+            current.setStatusBeforeSuppression(null);
+            current.setSuppressionRootOwnerId(null);
+            current.setSuppressedAtIso(null);
             current.setActionAtIso(nowIso);
             current.setMetAtIso(normalizeDateTime(current.getMetAtIso(), nowIso));
             current.setMetWhere(safeText(current.getMetWhere()));
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
+            if (rejoiningCancelledRequest) {
+                restoreTrashedParticipationOverlays(
+                        loadEventDocumentsBySourceId(List.of(normalizedEventId)),
+                        viewerUserId,
+                        viewerUserId,
+                        nowIso,
+                        false);
+            }
             enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, viewerUserId);
             adminTelemetryService.record("event.member.joined", "events", normalizedEventId, viewerUserId);
             if (accepted) {
@@ -1220,6 +1238,17 @@ public class ActivitiesMembersService {
                 postEventMembershipChangeMessages(normalizedEventId, List.of(current), List.of());
             }
             userActivityCountersService.refreshEventCountersForUsers(List.of(viewerUserId));
+            if (!adminApprovalAlreadyPending && isAdminApprovalMembership(current)) {
+                ActivityEvent notificationEvent = eventRecord == null
+                        ? findPreferredEventRecord(normalizedEventId)
+                        : eventRecord;
+                eventInviteNotificationService.notifyJoinRequested(
+                        notificationEvent,
+                        viewerUserId,
+                        memberDisplayName(current),
+                        current.getActionAtIso(),
+                        List.copyOf(resolveEventAdminUserIds(notificationEvent)));
+            }
             if (resolvingInvitation) {
                 eventInviteNotificationService.markInvitationResolved(
                         normalizedEventId,
@@ -1270,6 +1299,13 @@ public class ActivitiesMembersService {
                     && (STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                         || STATUS_INVITED.equals(normalizeStatus(current.getStatus())))
                     && isInvitationMembership(current);
+            boolean cancellingJoinRequest = isAdminApprovalMembership(current);
+            ActivityEvent joinRequestEvent = cancellingJoinRequest
+                    ? findPreferredEventRecord(normalizedEventId)
+                    : null;
+            String cancellingMemberName = cancellingJoinRequest
+                    ? memberDisplayName(current)
+                    : "";
             boolean alreadySuppressed = current != null
                     && STATUS_SUPPRESSED.equals(normalizeStatus(current.getStatus()))
                     && normalizedEventId.equals(normalizeId(current.getSuppressionRootOwnerId()))
@@ -1434,6 +1470,14 @@ public class ActivitiesMembersService {
                 eventInviteNotificationService.markInvitationResolved(
                         normalizedEventId,
                         normalizedUserId);
+            }
+            if (cancellingJoinRequest) {
+                eventInviteNotificationService.notifyJoinRequestCancelled(
+                        joinRequestEvent,
+                        normalizedUserId,
+                        cancellingMemberName,
+                        nowIso,
+                        List.copyOf(resolveEventAdminUserIds(joinRequestEvent)));
             }
             OwnerMembersSnapshot updatedSnapshot =
                     queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);

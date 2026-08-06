@@ -671,10 +671,10 @@
     },
     "EVENT-TICKET-005": {
       stage: "ticket-join",
-      why: "Prove the complete Public Explore join flow: Join creates only a pending membership and the later Admin approval creates the physical participant ticket.",
-      action: "As Nova, find the public staged event in Event Explore and choose Join. Stop once Nova is pending and prove there is no ticket or stored ticket counter. Then approve Nova once as Casey, keep Nova's menu open through its normal poll and open Ticket twice.",
-      expected: "The baseline has Casey as the only accepted Admin and Nova is not yet a member. Explore Join creates one Nova pending join with no EventTicket and both stored users ticket counters at 0. Casey approval directly makes Nova accepted and creates one A ticket; both reads show the same object/code and Casey receives none.",
-      worker: "The Join write owns only its pending membership/counter effects. The terminal Admin approval owns ticket creation and its normal counter/recompute effects. Explore and Ticket reads MUST NOT create a ticket or scheduler job."
+      why: "Prove the complete Public Explore Join, Cancel request, re-Join and Admin approval flow with action-owned notifications and ticket creation only at terminal acceptance.",
+      action: "Keep Casey Notifications open. As Nova Join and wait for Casey's Pending row; Cancel request and wait for a separate Cancelled row; Join again and wait for a new Pending row. Stop at every boundary for a zero-ticket oracle. Then approve Nova once as Casey and open Nova Ticket twice.",
+      expected: "Join creates one pending member-origin approval request, no EventTicket and a Casey Pending notification. Cancel removes the visible pending projection while retaining suppressed membership/T-overlay audit, keeps ticket counters zero and adds a separate Casey Cancelled row. Re-Join reopens only as fresh pending, adds another Pending row and still creates no ticket. Casey approval directly accepts Nova and creates one A ticket; Casey receives none and repeated Ticket reads reuse it.",
+      worker: "Join, Cancel and re-Join own their membership, counter and separate notification writes but are ticket non-producers. Only terminal Admin approval owns ticket creation. Explore, Notification and Ticket reads MUST NOT create a ticket or scheduler job."
     },
     "EVENT-TICKET-006": {
       stage: "ticket-expiring",

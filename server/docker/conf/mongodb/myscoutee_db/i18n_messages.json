@@ -14388,6 +14388,30 @@
     "value": "The event is under review."
   },
   {
+    "_id": "i18n-message-en-notification-event-join-requested-message",
+    "key": "notification.event.join.requested.message",
+    "lang": "en",
+    "value": "Join request received."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-join-cancelled-message",
+    "key": "notification.event.join.cancelled.message",
+    "lang": "en",
+    "value": "Join request cancelled."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-join-pending-badge",
+    "key": "notification.event.join.pending.badge",
+    "lang": "en",
+    "value": "Pending"
+  },
+  {
+    "_id": "i18n-message-en-notification-event-join-cancelled-badge",
+    "key": "notification.event.join.cancelled.badge",
+    "lang": "en",
+    "value": "Cancelled"
+  },
+  {
     "_id": "i18n-message-en-notification-ticket-checked-in-message",
     "key": "notification.ticket.checked.in.message",
     "lang": "en",
@@ -32794,6 +32818,30 @@
     "key": "notification.event.under.review.message",
     "lang": "hu",
     "value": "Az esemény ellenőrzés alatt áll."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-join-requested-message",
+    "key": "notification.event.join.requested.message",
+    "lang": "hu",
+    "value": "Csatlakozási kérelem érkezett."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-join-cancelled-message",
+    "key": "notification.event.join.cancelled.message",
+    "lang": "hu",
+    "value": "A csatlakozási kérelmet visszavonták."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-join-pending-badge",
+    "key": "notification.event.join.pending.badge",
+    "lang": "hu",
+    "value": "Függő"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-join-cancelled-badge",
+    "key": "notification.event.join.cancelled.badge",
+    "lang": "hu",
+    "value": "Visszavonva"
   },
   {
     "_id": "i18n-message-hu-notification-ticket-checked-in-message",

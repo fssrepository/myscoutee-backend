@@ -9,14 +9,14 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-005
-state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010, EVENT-TICKET-012, EVENT-NOTIFICATION-001 and EVENT-CHAT-LIFECYCLE-001 are PASS/CLOSED. The repaired ordinary Activities Chats list poll passed manually in both directions: Unpublish added Under review and Republish removed it within one 30-second interval without opening, closing or reloading the chat. Independent concise notification polling remained live. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
-next_actor: Codex
-next_action: prepare the isolated Public, published, Ticketing On, admin-approval baseline for EVENT-TICKET-005 with Casey as the only accepted Admin and Nova outside the event with no physical ticket or stored ticket counters
-next_codex_action: stage and prove the pre-join oracle, then hand Nova the Event Explore Join step; after the pending no-ticket oracle, hand Casey the single approval step and verify that approval creates exactly one accepted membership overlay and one physical active Nova ticket
+state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010, EVENT-TICKET-012, EVENT-NOTIFICATION-001 and EVENT-CHAT-LIFECYCLE-001 are PASS/CLOSED. EVENT-TICKET-005 is active. Its clean Join notification retest passed: one pending Nova, one Casey Pending row and zero tickets. Its Cancel retest also passed: a separate Casey Cancelled row, Nova suppressed-pending audit plus T overlay, zero visible pending and zero tickets/counters. Re-Join and terminal Casey approval remain. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
+next_actor: user
+next_action: as Nova find QA EVENT-TICKET-005 in Explore and Join again; keep Casey Notifications open and stop when a second, separate Pending row appears
+next_codex_action: prove re-Join reopened the suppressed audit only as one fresh pending request, restored the activity projection, retained zero tickets and emitted a new Pending occurrence; then hand Casey the terminal approval
 queued_checkpoint: [EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-011, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
 ```
 
-Active detail: [`EVENT-NOTIFICATION-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
+Active detail: [`EVENT-TICKET-005`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation).
 
 ## Hard constraints
 
