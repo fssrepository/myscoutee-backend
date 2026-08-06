@@ -1989,6 +1989,7 @@ public class ActivitiesEventsService {
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
             runInitialAutoInviteBatch(publishedDocuments);
         }
+        eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         userActivityCountersService.refreshEventCountersForDocuments(publishedDocuments);
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         ActivitiesMembersService.OwnerMembersSnapshot afterSnapshot =

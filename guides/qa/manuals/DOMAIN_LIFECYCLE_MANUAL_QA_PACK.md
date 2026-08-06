@@ -1045,6 +1045,27 @@ Execution evidence on 2026-08-06:
   The two Nova Ticket reads are direct request-path operations and must not
   start a scheduler or an additional event recompute.
 
+Execution evidence on 2026-08-06 (retest still open):
+
+- PASS: the real UI sequence preserved the intended membership projection:
+  Casey and Nova remained accepted at `2 / 8`, Riley remained the single
+  pending control, and the editor persisted Ticketing On before publish.
+- FAIL: before Nova opened Ticket, the independent oracle found no physical
+  ticket and Nova's two stored `users` ticket counters remained `0 / 0`.
+  Casey and Riley correctly remained ticketless. Runtime logs showed the
+  publish save, chat materialization, recompute and counter refresh, but no
+  event-level ticket synchronization.
+- Root cause: the canonical save/sync path invoked accepted-participant ticket
+  synchronization, but the separate lifecycle `publish()` path did not. The
+  owning backend write path now synchronizes physical tickets before refreshing
+  the stored user counters. The existing hot-deploy compiled successfully and
+  restarted the same server; no read-side issuance or frontend workaround was
+  added.
+- The failed state was reset. A clean baseline was staged at
+  `2026-08-06T05:01:50.062Z` with the retained managed image, Ticketing Off,
+  Casey and Nova accepted, Riley pending, `2 / 8`, no physical tickets and all
+  three users at stored ticket counters `0 / 0`.
+
 ### `EVENT-TICKET-003` — authorized check-in is exact-once
 
 - This is a required physical-phone test. Use an Android phone connected by

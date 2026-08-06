@@ -9,7 +9,7 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-002
-state: EVENT-TICKET-001 is PASS/CLOSED. The first real EVENT-TICKET-002 publish exposed that opening Ticket could manufacture a Casey Admin credential. Ticket is now a physical EventTicket with A/D lifecycle, created only by publish or a terminal participant-acceptance write; Ticket list/open is read-only and the admin is ineligible. The red Ticket badge is sourced from the users table, specifically activities.tickets and activities.asset.tickets, rather than counted from ticket reads. Focused backend tests pass. EVENT-TICKET-002 was reset and freshly staged at 2026-08-06T04:47:51.294Z with the retained managed large image URL, active/published Ticketing Off, Casey accepted Admin, Nova accepted Member, Riley pending join, accepted occupancy 2 / 8 and no physical ticket. All three users have both stored ticket counters at zero; Riley's nested event counters correctly show all=1 and pending=1. Stage created no recompute or outbox side effect. EVENT-TICKET-003 remains the physical Android scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080. Local/SeedBuilder Ticket and QR behavior is aligned to this HTTP contract in repository/service/mapper/seed layers only, never a component
+state: EVENT-TICKET-001 is PASS/CLOSED. EVENT-TICKET-002 has now exposed two independent write-boundary defects. The earlier Ticket read could manufacture a Casey Admin credential; issuance is now write-side only and Admin is ineligible. In the next clean real UI run, Casey's Unpublish -> Ticketing On -> Publish preserved the correct 2 / 8 with Riley pending, but the pre-read oracle found zero physical tickets and Nova's stored users-table counters still 0 / 0. Runtime was current: the separate lifecycle publish() method omitted the accepted-participant ticket sync that already existed in the canonical save/sync path. The publish write now invokes that sync before refreshing users.activities.tickets and users.activities.asset.tickets; the existing hot-deploy reported BUILD SUCCESSFUL and restarted the same server. No frontend/read-side repair was added. The failed state was reset and EVENT-TICKET-002 freshly staged at 2026-08-06T05:01:50.062Z with the retained MinIO large image, active/published Ticketing Off, Casey accepted Admin, Nova accepted Member, Riley pending join, accepted occupancy 2 / 8, no physical ticket, all three stored ticket counters 0 / 0, Riley event all=1/pending=1, and no stage recompute/outbox side effect. EVENT-TICKET-003 remains the physical Android scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080. Local/SeedBuilder Ticket and QR behavior remains aligned in repository/service/mapper/seed layers only, never a component
 next_actor: user
 next_action: as Casey, open Manual QA EVENT-TICKET-002 and perform Unpublish -> Ticketing On -> Publish through the UI; stop before Nova opens Ticket and report that publish completed
 next_codex_action: immediately prove the event remains 2 / 8 with Riley pending, one Nova A physical ticket, zero Casey and Riley tickets/users-table counters, and one normal publish recompute; then ask Nova to open Ticket twice and prove stable id/code, no read write, and a medium.webp card request
@@ -80,6 +80,11 @@ work.
   Stop before opening Nova's Ticket list so the write side can be proved first.
 - Publish must create exactly one physical `A` ticket for accepted Member Nova,
   none for Admin Casey or pending Riley, and exactly one normal event recompute.
+- The first publish attempt after the corrected `2 / 8` fixture failed this
+  oracle before any Ticket read: Nova still had no physical ticket and both
+  stored counters were zero. The missing lifecycle-publish ticket sync was
+  added before counter refresh and hot-deploy compilation passed. The active
+  baseline is the clean restage from `2026-08-06T05:01:50.062Z`.
 - Opening Nova's Ticket list twice must preserve the same ticket id, QR code and
   `issuedAt`; reads must create no ticket or side effect.
 - The canonical Event image is the retained MinIO `large.webp`; the Ticket card

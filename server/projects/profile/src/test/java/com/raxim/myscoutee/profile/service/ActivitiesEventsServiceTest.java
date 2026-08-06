@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -366,6 +367,13 @@ class ActivitiesEventsServiceTest {
                 any(ActivityEvent.class),
                 eq(List.of("pending-invitee")),
                 eq("host"));
+        InOrder ticketCounterOrder = org.mockito.Mockito.inOrder(
+                eventParticipationTicketService,
+                userActivityCountersService);
+        ticketCounterOrder.verify(eventParticipationTicketService)
+                .syncParticipationTicketsForEvent("event-1");
+        ticketCounterOrder.verify(userActivityCountersService)
+                .refreshEventCountersForDocuments(anyList());
     }
 
     @Test
