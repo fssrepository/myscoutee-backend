@@ -983,8 +983,28 @@ Status: **PASS** on 2026-08-05.
 
 ### `EVENT-TICKET-003` — authorized check-in is exact-once
 
-- Scan the controlled active credential once from an authorized event-manager
-  session.
+- This is a required physical-phone test. Use an Android phone connected by
+  USB/ADB for the authorized Casey Admin scanner session; desktop camera
+  emulation is not sufficient for PASS. The Nova participant session displays
+  the issued ticket QR code on a separate desktop browser or other screen.
+- Enable Developer options and USB debugging on the phone, connect it by USB,
+  accept the **Allow USB debugging** prompt, then verify and configure the
+  local tunnel from the repository host:
+
+  ```bash
+  adb devices -l
+  adb reverse tcp:8080 tcp:80
+  adb reverse --list
+  ```
+
+- `adb devices -l` must report the phone as `device`, not `unauthorized`.
+  `adb reverse --list` must contain `tcp:8080 tcp:80`. Open
+  `http://localhost:8080` in the phone browser, sign in as Casey Admin, open
+  the ticket scanner and grant camera permission. Reapply the reverse command
+  after an ADB daemon restart, USB reconnection or device restart; do not
+  restart the application stack merely to recreate the tunnel.
+- Display Nova's controlled active credential QR code on the separate screen
+  and scan it once with Casey's physical phone camera.
 - Verify one used timestamp and a successful visible result. A second scan of
   the same code must return already used and must not mutate the timestamp.
 - An ordinary participant scanner and an invalid code must be rejected with no

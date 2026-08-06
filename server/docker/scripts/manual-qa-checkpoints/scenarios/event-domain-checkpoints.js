@@ -585,9 +585,9 @@
     },
     "EVENT-TICKET-003": {
       stage: "ticket-ready",
-      why: "Verify authorized ticket check-in is exact-once and negative scans are no-ops.",
-      action: `As host, scan ${TICKET_CODE} once, scan it again, then try one invalid code from an unauthorized session.`,
-      expected: "The first scan succeeds and sets one used timestamp; repeat is already-used and negative scans do not mutate it.",
+      why: "Verify physical-phone Admin QR check-in is exact-once and negative scans are no-ops.",
+      action: `Connect and authorize the Android phone, run adb reverse tcp:8080 tcp:80, open http://localhost:8080 as Casey Admin and grant camera access. Display Nova's ${TICKET_CODE} QR on a separate screen, scan it once with the phone, scan it again, then try one invalid code from an unauthorized session.`,
+      expected: "The physical-phone first scan succeeds and sets one used timestamp; repeat is already-used and negative scans do not mutate it.",
       worker: "MUST NOT RUN: check-in is a direct request path."
     },
     "EVENT-TICKET-004": {

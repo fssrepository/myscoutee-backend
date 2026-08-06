@@ -80,6 +80,29 @@ bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh reset event-domain EVENT-FEEDBACK-002
 ```
 
+### Physical-phone QR check-in
+
+`EVENT-TICKET-003` is a required physical Android phone test. The phone owns
+the Casey Admin scanner session and uses its real camera; Nova's participant
+session displays the ticket QR code on a separate desktop browser or other
+screen. Do not replace this checkpoint with desktop camera emulation.
+
+Enable Developer options and USB debugging on the phone, connect it by USB and
+accept **Allow USB debugging**. From the repository host run:
+
+```bash
+adb devices -l
+adb reverse tcp:8080 tcp:80
+adb reverse --list
+```
+
+The device state must be `device`, not `unauthorized`, and the reverse list
+must contain `tcp:8080 tcp:80`. Open `http://localhost:8080` in the phone
+browser, sign in as Casey Admin and grant camera permission when the scanner
+opens. Reapply `adb reverse tcp:8080 tcp:80` after an ADB daemon restart, USB
+reconnection or phone restart. The tunnel never requires starting, rebuilding
+or restarting the application stack.
+
 For a feedback checkpoint transition, use one snapshot-protected command
 instead of a manual reset followed by a separate stage:
 
