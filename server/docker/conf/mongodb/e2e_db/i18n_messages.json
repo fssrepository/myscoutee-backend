@@ -300,6 +300,12 @@
     "value": "Warned"
   },
   {
+    "_id": "i18n-message-en-activities-chat-event-status-underreview",
+    "key": "activities.chat.event.status.underReview",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
     "_id": "i18n-message-en-add-myscoutee-to-your-home-screen",
     "key": "add.myscoutee.to.your.home.screen",
     "lang": "en",
@@ -18676,6 +18682,12 @@
     "key": "activities.support.case.status.warned",
     "lang": "hu",
     "value": "Figyelmeztetett"
+  },
+  {
+    "_id": "i18n-message-hu-activities-chat-event-status-underreview",
+    "key": "activities.chat.event.status.underReview",
+    "lang": "hu",
+    "value": "Under review"
   },
   {
     "_id": "i18n-message-hu-add-myscoutee-to-your-home-screen",

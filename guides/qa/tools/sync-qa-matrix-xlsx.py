@@ -93,18 +93,28 @@ def workbook_rows(source_rows: list[list[str]]) -> list[list[str]]:
             f"{(counts['done'] / len(test_rows)):.0%}" if test_rows else "0%",
         ),
     ]
-    overview_rows = []
-    for row_index in range(max(len(legend_items), len(status_items))):
+    overview_rows = [compact_row(
+        EFFECT_MARKERS_TITLE,
+        "",
+        "",
+        status_items[0][0],
+        status_items[0][1],
+    )]
+    remaining_status_items = status_items[1:]
+    for row_index in range(max(len(legend_items), len(remaining_status_items))):
         marker, marker_explanation = (
             legend_items[row_index] if row_index < len(legend_items) else ("", "")
         )
-        status, count = status_items[row_index]
+        status, count = (
+            remaining_status_items[row_index]
+            if row_index < len(remaining_status_items)
+            else ("", "")
+        )
         overview_rows.append(
             compact_row(marker, marker_explanation, "", status, count)
         )
 
     return [
-        compact_row(EFFECT_MARKERS_TITLE),
         *overview_rows,
         compact_row(QA_TEST_CASES_TITLE),
         headers,
@@ -362,12 +372,17 @@ def build_sheet(
     columns = root.find(f"{{{NS}}}cols")
     if columns is None:
         raise RuntimeError("QA workbook sheet does not contain column definitions.")
+    overview_last_row = next(
+        row_index - 1
+        for row_index, values in enumerate(rows, start=1)
+        if values[0] == QA_TEST_CASES_TITLE
+    )
     overview_widths = {
-        1: 10.5,
-        2: 68.0,
+        1: float(max(len(row[0]) for row in rows[:overview_last_row]) + 1),
+        2: float(max(len(row[1]) for row in rows[:overview_last_row]) + 1),
         3: 2.5,
-        4: 13.0,
-        5: 7.0,
+        4: float(max(len(row[3]) for row in rows[:overview_last_row]) + 1),
+        5: float(max(len(row[4]) for row in rows[:overview_last_row]) + 1),
     }
     for column in columns.findall(f"{{{NS}}}col"):
         minimum = int(column.get("min", "0"))
@@ -381,11 +396,9 @@ def build_sheet(
         root.remove(existing_merges)
 
     merged_ranges: list[str] = []
-    overview_last_row = next(
-        row_index - 1
-        for row_index, values in enumerate(rows, start=1)
-        if values[0] == QA_TEST_CASES_TITLE
-    )
+    effect_markers_last_row = 1 + len([
+        row for row in rows[1:overview_last_row] if row[0] in {"X", "DELTA", "INDIRECT", "GAP"}
+    ])
 
     marker_styles = {
         "X": "legend-x",
@@ -424,6 +437,8 @@ def build_sheet(
             if is_overview_title:
                 if column_index in (0, 1):
                     cell_style_key = "legend-section"
+                elif column_index in (3, 4):
+                    cell_style_key = status_styles[values[3]]
                 else:
                     cell_style_key = "default"
             elif is_test_section:
@@ -435,13 +450,25 @@ def build_sheet(
                     cell_style_key = status_styles[values[3]]
                 else:
                     cell_style_key = "default"
-            if row_index <= overview_last_row and column_index <= 4:
+            if row_index <= effect_markers_last_row and column_index in (0, 1):
+                border_parts = []
+                if row_index == 1:
+                    border_parts.append("top")
+                elif row_index == effect_markers_last_row:
+                    border_parts.append("bottom")
+                if column_index == 0:
+                    border_parts.append("left")
+                elif column_index == 1:
+                    border_parts.append("right")
+                if border_parts:
+                    cell_style_key = f"{cell_style_key}-{'-'.join(border_parts)}"
+            elif row_index <= overview_last_row and column_index in (3, 4):
                 border_parts = []
                 if row_index == 1:
                     border_parts.append("top")
                 elif row_index == overview_last_row:
                     border_parts.append("bottom")
-                if column_index == 0:
+                if column_index == 3:
                     border_parts.append("left")
                 elif column_index == 4:
                     border_parts.append("right")

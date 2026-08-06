@@ -269,6 +269,7 @@ public class ChatService {
             document.setChannelType(CHAT_CHANNEL_MAIN_EVENT);
             document.setOwnerId(eventId);
             document.setEventId(eventId);
+            document.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
             document.setSubEventId(null);
             document.setGroupId(null);
             document.setDistanceKm(null);
@@ -302,6 +303,29 @@ public class ChatService {
             throw new IllegalStateException("Unable to materialize the main event chat for " + eventId + ".");
         }
         return new MainEventChatDocumentsResult(chatId, List.copyOf(createdDocuments));
+    }
+
+    public long updateEventChatOwnerStatus(String eventId, String ownerStatus) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedOwnerStatus = safeText(ownerStatus);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedOwnerStatus)) {
+            return 0L;
+        }
+        List<Chat> chatDocuments = chatsRepository.findByEventId(normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (chatDocuments.isEmpty()) {
+            return 0L;
+        }
+        Query query = Query.query(Criteria.where("eventId").is(normalizedEventId));
+        long modifiedCount = mongoTemplate.updateMulti(
+                query,
+                Update.update("ownerStatus", normalizedOwnerStatus),
+                Chat.class).getModifiedCount();
+        if (modifiedCount > 0L) {
+            evictChatOwnerReadCaches(chatDocuments);
+        }
+        return modifiedCount;
     }
 
     public ChatPageResponseDto queryChatPage(
@@ -431,6 +455,7 @@ public class ChatService {
             baseChat.setChannelType(CHAT_CHANNEL_SERVICE_EVENT);
             baseChat.setOwnerId(eventId);
             baseChat.setEventId(eventId);
+            baseChat.setOwnerStatus(event.getStatus());
             baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
             chatsRepository.save(baseChat);
             chatDocuments = List.of(baseChat);
@@ -1551,10 +1576,10 @@ public class ChatService {
         Set<String> eventIds = new LinkedHashSet<>();
         for (Chat record : records) {
             ChatOwnerParts parts = chatOwnerParts(record);
-            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(chatChannelType(record))
-                    || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(chatChannelType(record)))
-                    && StringUtils.hasText(parts.eventId())
-                    && StringUtils.hasText(parts.subEventId())) {
+            String channelType = chatChannelType(record);
+            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
+                    || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))
+                    && StringUtils.hasText(parts.eventId())) {
                 eventIds.add(parts.eventId());
             }
         }
@@ -1591,12 +1616,15 @@ public class ChatService {
             ChatDto dto = dtos.get(index);
             Chat record = index < records.size() ? records.get(index) : null;
             ChatOwnerParts parts = chatOwnerParts(record);
+            String eventId = parts.eventId();
             ActivityEvent event = eventsByViewerAndId.get(normalizeId(record == null ? null : record.getOwnerUserId())
-                    + ":" + parts.eventId());
+                    + ":" + eventId);
             if (event == null) {
-                event = fallbackEventsById.get(parts.eventId());
+                event = fallbackEventsById.get(eventId);
             }
-            result.add(chatMapper.withNavigationContext(dto, chatNavigationContext(record, dto, event, parts)));
+            result.add(chatMapper.withNavigationContext(
+                    dto,
+                    chatNavigationContext(record, dto, event, parts)));
         }
         return result;
     }
@@ -2278,6 +2306,7 @@ public class ChatService {
         copy.setChannelType(source.getChannelType());
         copy.setOwnerId(source.getOwnerId());
         copy.setEventId(source.getEventId());
+        copy.setOwnerStatus(source.getOwnerStatus());
         copy.setSubEventId(source.getSubEventId());
         copy.setGroupId(source.getGroupId());
         copy.setDistanceKm(null);

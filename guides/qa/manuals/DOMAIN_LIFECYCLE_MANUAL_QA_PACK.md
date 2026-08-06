@@ -54,7 +54,7 @@ the same prerequisite without depending on an earlier human action.
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
-| Ticketing enablement and accepted participation | Ticket-enabled event overlay and one physical holder credential | Event checkout/ticket card and scanner | Event publish/terminal acceptance owns ticket creation; list/open and check-in are direct request paths | `EVENT-TICKET-001` through `EVENT-TICKET-007` |
+| Ticketing enablement, accepted participation and attendance | Ticket-enabled event overlay, one physical holder credential and event-scoped member attendance | Event checkout/ticket card, scanner and Event Members | Event publish/terminal acceptance owns ticket creation; first valid check-in owns ticket use plus attendance projection; list/open and rejected revoked QR scans are non-producers | `EVENT-TICKET-001` through `EVENT-TICKET-012` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 | Operator payment credential and network access policy | Server-held payment token revision plus trusted-client-IP allowlist | Masked payment configuration state and explicit access denial | Payment provider calls and immutable operator security audit | `OPERATOR-PAYMENT-001`, `OPERATOR-PAYMENT-IP-001` |
 
@@ -84,8 +84,10 @@ The principal checkpoint chains are:
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
-  `EVENT-TICKET-003` -> `EVENT-TICKET-009` ->
-  `EVENT-TICKET-004` -> `EVENT-TICKET-005` -> `EVENT-TICKET-006` ->
+  `EVENT-TICKET-003` -> `EVENT-TICKET-011` -> `EVENT-TICKET-009` ->
+  `EVENT-TICKET-004` (Unpublish midpoint) -> `EVENT-TICKET-012` ->
+  `EVENT-TICKET-004` (Republish completion) -> `EVENT-CHAT-LIFECYCLE-001` ->
+  `EVENT-TICKET-005` -> `EVENT-TICKET-006` ->
   `EVENT-TICKET-007` -> `EVENT-VISIBILITY-001`:
   ticket enablement, physical credential, check-in, A/D audit lifecycle,
   join approval, Past bucketing, two-step invitation acceptance and finally
@@ -1230,6 +1232,16 @@ Restart evidence on 2026-08-06:
   `users.activities.notifications=2` equals the unread check-in row plus the
   unread replay warning, proving row creation and users-table counter increment
   occurred together after the aggregate-upsert fix.
+- Final PASS/CLOSED evidence: Nova marked the first warning read, then Casey
+  replayed the same saved QR again at
+  `2026-08-06T10:24:44.951720573Z`. The ticket retained its original
+  `usedAtIso`/Casey actor; exactly two immutable replay audits exist and the
+  single Nova warning advanced to `occurrenceCount=2`, `revision=3`, with
+  `readAtIso` cleared. Persisted `users.activities.notifications=2` again
+  represents the unread check-in row plus the reactivated warning. The user
+  accepted the physical check-in/replay checkpoint as complete; the further
+  already-unread occurrence/no-inflation branch remains in automated aggregate
+  coverage.
 - The first saved-QR replay on the `09:29:57.060Z` baseline returned **already
   used** and preserved `status=A`, canonical `usedAtIso` and Casey
   `usedByUserId`. The persisted oracle found one immutable Casey replay audit
@@ -1282,6 +1294,16 @@ Restart evidence on 2026-08-06:
   overwrite the prior `D` audit record.
 - Exactly one `A` ticket may exist for an event/holder pair. Ticket reads never
   change `D` to `A` and never create another object.
+- PASS/CLOSED evidence: Republish retained the original used ticket as
+  `status=D` with code
+  `TKT-1a7df4b6-c8a6-44bd-b859-dac4cd412d15` and created exactly one new,
+  unused `status=A` object `6a74645b7c85995dcf3955eb` with code
+  `TKT-942126c0-4c90-44b0-8017-baf5c0810a82` and
+  `issuedAtIso=2026-08-06T10:39:23.880809028Z`. Nova's stored Ticket counters
+  returned to `1 / 1`; Casey/Nova membership remained accepted at `2 / 8`.
+  The missing participant-facing republish notification is intentionally
+  separated into `EVENT-NOTIFICATION-001`; it does not invalidate the physical
+  ticket lifecycle proof.
 
 ### `EVENT-TICKET-005` — join-request approval owns ticket creation
 
@@ -1471,6 +1493,141 @@ Restart evidence on 2026-08-06:
   was newly inserted or had previously been read.
 - Invalid, revoked, expired and unauthorized codes remain separate rejection
   paths and must not create replay audits or masquerade as this warning.
+
+### `EVENT-TICKET-011` — successful check-in projects attendance into Event Members
+
+- This is a newly captured GAP checkpoint. The current implementation consumes
+  the physical ticket but leaves Nova's `activityMembers.status=accepted` and
+  has no separate event-scoped attendance field or Members-row check-in badge.
+- Membership eligibility and attendance are independent dimensions. A valid
+  check-in must **not** replace `status=accepted`; it must persist a separate
+  attendance projection such as `attendanceStatus=checked-in`, together with
+  `checkedInAtIso`, `checkedInByUserId` and the physical `checkedInTicketId`.
+  Global user/profile status must remain untouched.
+- Stage Casey as accepted Admin and Nova as accepted Member with one unused
+  physical ticket. Open Casey's Event Members popup before scanning. Nova's row
+  begins accepted and not checked in, with no false attendance badge.
+- Casey performs the first authorized QR scan. The same owning server write
+  path that atomically consumes the ticket must project Nova as **Checked in /
+  Beléptetve** for this event. The already-open Members list must converge by
+  its normal shared member signal/poll without close/reopen or full-list
+  replacement.
+- Persisted oracle: ticket `usedAtIso` equals member `checkedInAtIso`, scanner
+  Casey equals `checkedInByUserId`, and the member references the exact ticket
+  ID. Casey's Admin membership, accepted-member count and capacity remain
+  unchanged.
+- Replaying the same QR may create the separate `EVENT-TICKET-010` security
+  audit/warning, but it must not rewrite attendance time/actor/ticket, add a
+  second Members row or increment any attendance count. Invalid, unauthorized,
+  revoked and expired scans leave attendance absent and the Members UI
+  unchanged.
+- Event-end attendance/no-show classification is a later lifecycle concern.
+  This checkpoint proves only the first successful entry projection and its
+  exact-once identity; it must not infer no-show merely from an unused ticket
+  before the event is closed.
+
+### `EVENT-TICKET-012` — a saved QR is revoked immediately after Unpublish
+
+- Run this between the Unpublish and Republish halves of `EVENT-TICKET-004`.
+  Retain Nova's previously saved complete QR and its old physical ticket
+  identity. Casey Unpublishes the event once while Ticketing remains configured
+  On in the draft.
+- First prove the lifecycle midpoint independently: canonical event is `DR`,
+  the same physical ticket object is retained with `status=D`, Nova's active
+  Ticket list/counter contribution is gone, and Casey/Nova membership remains
+  accepted at `2 / 8`.
+- Without republishing, Casey scans that saved QR through the normal authorized
+  physical-phone scanner. The backend must reject it as **revoked/inactive**.
+  Revocation takes precedence over its earlier `usedAtIso`; the result must not
+  masquerade as another **already used** replay.
+- The rejection is a strict no-op: the D ticket retains its original ID, code,
+  `issuedAtIso`, `usedAtIso` and `usedByUserId`; event and membership remain
+  unchanged; no replacement credential is issued.
+- Capture replay-security counts immediately before and after the scan. A
+  revoked credential must not add an `eventTicketAudit` replay row, increment
+  the existing aggregated warning occurrence, create replay outbox work or
+  change Nova's unread/red counter. The raw QR remains absent from all audit and
+  notification documents.
+- After this checkpoint passes, return to `EVENT-TICKET-004` and Publish once.
+  The later active ticket must be a new physical object/code; the saved revoked
+  QR must remain rejected and must never address the replacement credential.
+- PASS/CLOSED evidence: Unpublish first produced its own normal unread Nova
+  `event-under-review` notification at
+  `2026-08-06T10:30:47.791763232Z`, changing persisted
+  `users.activities.notifications` from `2` to `3`. Casey then scanned the
+  retained QR and received the revoked/inactive result. The scan itself created
+  no notification: the D ticket retained its identity and original use, replay
+  audits stayed `2`, replay-warning outbox stayed `2`, the single warning stayed
+  `occurrenceCount=2`, and the users-table counter stayed `3`.
+
+### `EVENT-NOTIFICATION-001` — lifecycle notifications poll independently of popup ownership
+
+- This is a separate follow-up to the closed physical-ticket lifecycle case.
+  The first observed Republish correctly created the replacement ticket but
+  produced no Nova **available again** row. Persisted evidence contained only
+  the earlier Unpublish `event-under-review` task/notification: the Publish
+  branch treated a recreated actor chat as mutually exclusive with lifecycle
+  notification scheduling.
+- The event Publish write must always schedule the lifecycle notification for
+  accepted non-actor participants even when main-chat owner copies are created
+  or restored. Pending invitees retain their separate invitation path. The
+  expected Nova row is `kind=event-modified` with the existing event title and
+  a message stating that the event is available again; the frontend must never
+  synthesize this row.
+- Keep Nova authenticated with a non-notification popup such as Ticket open.
+  Casey Unpublishes the active event once. Without closing or reloading Nova,
+  the independent notification lane must expose the new under-review unread
+  count/attention within one configured poll interval, while ordinary
+  side-menu activity reconciliation remains paused behind popup ownership.
+- Casey then Publishes with Ticketing still On. Without closing/reloading Nova,
+  the same notification lane must expose exactly one new available-again
+  unread contribution. Opening or already having Notification Center open must
+  show the new row through its keyed delta SmartList without replacing stable
+  rows.
+- Notification polling owns a separate serialized lane in the shared
+  `UiPollCoordinator`: it is never cancelled by popup presence and is not
+  blocked behind a foreground SmartList poll. Background side-menu polling
+  retains the original popup suppression rule. While a popup is open, the
+  bundled realtime snapshot applies only the notification counter; it does not
+  advance the normal profile cursor, so closing the popup lets the next normal
+  snapshot reconcile all deferred side-menu counters.
+- Persisted oracle: one completed lifecycle scheduled task and one Nova inbox
+  row for each Unpublish/Republish mutation, no notification for Casey as the
+  actor, and the users-table unread counter changes once per inserted row.
+  Polling is read-only and creates no task, outbox, notification, event, ticket
+  or counter write.
+
+### `EVENT-CHAT-LIFECYCLE-001` — Unpublish/republish keeps physical event chats and history
+
+- Run this on an event that has already been published and has at least a main
+  event chat plus one optional, group or event-service chat. Capture each
+  physical `chats` owner-copy `_id`, public `id`, `eventId`, `channelType`,
+  `memberIds`, `lastMessage`, unread value and representative persisted message
+  IDs before changing the event. Pending Riley remains the negative control and
+  must have no unauthorized owner copy or history access.
+- Casey Unpublishes once. The event lifecycle write performs one indexed Mongo
+  batch over physical `chats` documents with the same `eventId` and sets only
+  their denormalized `ownerStatus=DR`. It covers `mainEvent`,
+  `optionalSubEvent`, `groupSubEvent` and event-bound `serviceEvent` documents;
+  chat list/query code must not join or project the Event collection to derive
+  this value.
+- Every accepted participant can still open, read and send in the same chat.
+  The chat row and opened popup title show one compact contextual
+  **Under review** badge. The badge is inline beside the title rather than in
+  the right-side control/badge area. Chat IDs, owner-copy IDs, members, message
+  history, last message, unread state and authorization remain unchanged.
+- Casey Publishes again. The same write path sets all event-bound physical chat
+  documents back to `ownerStatus=A`; the **Under review** badge disappears on
+  the normal chat refresh. No chat or message is deleted/recreated, no system
+  message or unread increment is manufactured, and no cross-event chat is
+  touched.
+- Compare HTTP/Mongo and frontend-local behavior. Local repository and
+  SeedBuilder records must persist `eventId` plus `ownerStatus` on the physical
+  chat object and perform the same write-side transition; component-only state
+  or read-side event projection is a FAIL.
+- This checkpoint may share the same real Unpublish/Publish mutations as
+  `EVENT-NOTIFICATION-001`, but its chat-document/history oracle and the
+  notification task/inbox oracle are recorded independently.
 
 ### `AUTH-SESSION-001` — two-session limit, new-login warning and audit
 

@@ -43,6 +43,7 @@ public final class ChatDtos {
             String eventId,
             String subEventId,
             String groupId,
+            String ownerStatus,
             ChatNavigationContextDto navigationContext) {
     }
 

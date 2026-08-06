@@ -1979,8 +1979,15 @@ public class ActivitiesEventsService {
         boolean eventChatAdded = false;
         if (changed) {
             eventChatAdded = materializePublishedMainEventChats(publishedDocuments, userId);
+            chatService.updateEventChatOwnerStatus(sourceId, ActivityEvent.STATUS_ACTIVE);
             if (eventChatAdded) {
                 notifyPublishedPendingInvitees(publishedDocuments, beforeSnapshot, userId);
+                scheduleAcceptedEventLifecycleChangedNotification(
+                        sourceId,
+                        publishedDocuments,
+                        beforeSnapshot,
+                        "modified",
+                        userId);
             } else {
                 scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
             }
@@ -2021,6 +2028,7 @@ public class ActivitiesEventsService {
             current.setStatus(ActivityEvent.STATUS_DRAFT);
         });
         if (changed) {
+            chatService.updateEventChatOwnerStatus(sourceId, ActivityEvent.STATUS_DRAFT);
             scheduleEventLifecycleChangedNotification(sourceId, updated, "under-review", userId);
             syncStageReminderTasksForSavedEvents(updated, userId);
             markEventAttachmentsUnavailable(updated, "unpublished");
@@ -4446,6 +4454,34 @@ public class ActivitiesEventsService {
                 Set.of(),
                 actorUserId,
                 true);
+    }
+
+    private void scheduleAcceptedEventLifecycleChangedNotification(
+            String sourceId,
+            List<ActivityEvent> updatedRecords,
+            ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot,
+            String reason,
+            String actorUserId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId) || membershipSnapshot == null) {
+            return;
+        }
+        LinkedHashSet<String> audienceUserIds = new LinkedHashSet<>(
+                normalizeIds(membershipSnapshot.acceptedMemberUserIds()));
+        audienceUserIds.remove(normalizeId(actorUserId));
+        if (audienceUserIds.isEmpty()) {
+            return;
+        }
+        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
+                .stream()
+                .findFirst()
+                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
+        scheduledMessageTaskService.scheduleEventLifecycleChanged(
+                normalizedSourceId,
+                event == null ? null : event.getTitle(),
+                audienceUserIds,
+                List.of(safeText(reason)),
+                actorUserId);
     }
 
     private void notifyPublishedPendingInvitees(

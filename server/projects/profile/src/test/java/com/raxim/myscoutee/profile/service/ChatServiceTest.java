@@ -166,6 +166,7 @@ class ChatServiceTest {
             assertThat(chat.getEventId()).isEqualTo(room.getSourceId());
             assertThat(chat.getOwnerId()).isEqualTo(room.getSourceId());
             assertThat(chat.getChannelType()).isEqualTo("mainEvent");
+            assertThat(chat.getOwnerStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
             assertThat(chat.getTitle()).isEqualTo("Random Room R1");
             assertThat(chat.getAvatar()).isEqualTo("SY");
             assertThat(chat.getMemberIds()).containsExactly("user-1", "user-2");
@@ -201,10 +202,33 @@ class ChatServiceTest {
             assertThat(chat.getLastMessage()).isEmpty();
             assertThat(chat.getLastSenderId()).isNull();
             assertThat(chat.getUnread()).isZero();
+            assertThat(chat.getOwnerStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
         });
         verify(chatMessagesRepository, never()).insert(any(ChatMessage.class));
         verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any(ChatStreamEvent.class));
         verify(userCounterBulkOperations, never()).execute();
+    }
+
+    @Test
+    void updateEventChatOwnerStatusMutatesEveryPhysicalEventChatDocumentWithoutReplacingThem() {
+        Chat casey = chat("event-1", "casey", 0, "2026-08-06T08:00:00Z", "mainEvent");
+        casey.setEventId("event-1");
+        Chat nova = chat("event-1:optional-1", "nova", 1, "2026-08-06T08:01:00Z", "optionalSubEvent");
+        nova.setEventId("event-1");
+        when(chatsRepository.findByEventId("event-1")).thenReturn(List.of(casey, nova));
+        when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(Chat.class)))
+                .thenReturn(UpdateResult.acknowledged(2L, 2L, null));
+
+        long modified = service.updateEventChatOwnerStatus("event-1", ActivityEvent.STATUS_DRAFT);
+
+        assertThat(modified).isEqualTo(2L);
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateMulti(any(Query.class), updateCaptor.capture(), eq(Chat.class));
+        assertThat(updateCaptor.getValue().getUpdateObject().get("$set", Document.class))
+                .containsEntry("ownerStatus", ActivityEvent.STATUS_DRAFT);
+        verify(homeUserProfileService).evictUserReadCaches(java.util.Set.of("casey", "nova"));
+        verify(chatsRepository, never()).deleteAll(anyList());
+        verify(chatsRepository, never()).saveAll(anyList());
     }
 
     @Test
@@ -452,6 +476,7 @@ class ChatServiceTest {
         groupChat.setTitle("Group B · Group Channel");
         groupChat.setOwnerId("event-1:stage-1:stage-1:group:2");
         groupChat.setEventId("event-1");
+        groupChat.setOwnerStatus(ActivityEvent.STATUS_DRAFT);
         groupChat.setSubEventId("stage-1");
         groupChat.setGroupId("stage-1:group:2");
 
@@ -459,6 +484,7 @@ class ChatServiceTest {
         event.setSourceId("event-1");
         event.setOwnerUserId("viewer");
         event.setCreatorUserId("viewer");
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
         event.setTitle("Tournament");
         event.setPendingMembers(2);
         event.setSubEvents(List.of(subEvent("stage-1", "Qualifiers")));
@@ -494,6 +520,7 @@ class ChatServiceTest {
         assertThat(item.eventId()).isEqualTo("event-1");
         assertThat(item.subEventId()).isEqualTo("stage-1");
         assertThat(item.groupId()).isEqualTo("stage-1:group:2");
+        assertThat(item.ownerStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
         assertThat(item.navigationContext()).isNotNull();
         assertThat(item.navigationContext().eventTitle()).isEqualTo("Tournament");
         assertThat(item.navigationContext().eventTarget()).isEqualTo("hosting");

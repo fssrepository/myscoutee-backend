@@ -347,6 +347,7 @@ class ActivitiesEventsServiceTest {
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
         verify(activitiesMembersService).ensureEventCreatorAdminMembership("event-1", "host");
+        verify(chatService).updateEventChatOwnerStatus("event-1", ActivityEvent.STATUS_ACTIVE);
         assertThat(savedCaptor.getAllValues().get(0)).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("event-1");
             assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
@@ -436,6 +437,63 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void republishWithRecreatedActorChatStillNotifiesAcceptedParticipantsAsAvailableAgain() {
+        ActivityEvent event = event("event-1", "host", 0d);
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
+        AtomicReference<ActivityEvent> currentEvent = new AtomicReference<>(event);
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host", "accepted-member"),
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenAnswer(invocation -> List.of(currentEvent.get()));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityEvent> saved = invocation.getArgument(0);
+            currentEvent.set(saved.get(0));
+            return saved;
+        });
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1"))
+                .thenReturn(membersSnapshot);
+        when(activitiesMembersService.buildBatchOwnerSnapshots("event", Set.of("event-1")))
+                .thenReturn(Map.of("event-1", membersSnapshot));
+        when(chatService.ensurePublishedMainEventChat(
+                any(ActivityEvent.class),
+                eq(List.of("host", "accepted-member"))))
+                .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+
+        service.publish(new EventActionRequestDto(
+                "host",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+                eq("event-1"),
+                eq("event-1"),
+                audienceCaptor.capture(),
+                eq(List.of("modified")),
+                eq("host"));
+        assertThat(audienceCaptor.getValue()).containsExactly("accepted-member");
+    }
+
+    @Test
     void publishStopsBeforeSaveWhenPolicyDenies() {
         when(accessControlService.canCurrentActorPublishEvent("event-1")).thenReturn(false);
 
@@ -513,6 +571,8 @@ class ActivitiesEventsServiceTest {
                 null,
                 null,
                 null));
+
+        verify(chatService).updateEventChatOwnerStatus("event-1", ActivityEvent.STATUS_DRAFT);
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);

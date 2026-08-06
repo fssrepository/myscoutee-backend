@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-TICKET-003
-state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. The post-fix EVENT-TICKET-003/EVENT-TICKET-010 retest is live on the 2026-08-06T10:12:01.825Z baseline. Casey's canonical first scan used Nova's fresh ticket exactly once at 2026-08-06T10:16:50.744525385Z. The first replay at 2026-08-06T10:18:11.470491618Z returned already-used, preserved that canonical use, wrote one immutable Casey replay audit, one sanitized pending outbox row and exactly one unread Nova warning row with occurrenceCount=1. Nova visibly received the warning and red counter; persisted users.activities.notifications=2, representing the unread check-in row plus the unread replay warning. This proves the Mongo aggregate-upsert fix creates the row and increments the users-table counter in the same write-side transition. Continue with mark-read/replay aggregation
+active_checkpoint: EVENT-NOTIFICATION-001
+state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010 and EVENT-TICKET-012 are PASS/CLOSED. EVENT-TICKET-004 Republish retained the original used ticket as D and created exactly one new unused A ticket with different ID/code/issuedAt; Nova ticket counters returned to 1/1 and membership stayed 2/8. The missing participant-facing Republish notification is a separate EVENT-NOTIFICATION-001 defect: persisted state showed no event-modified task/row after Publish because recreated actor-chat handling skipped lifecycle scheduling. Backend write-side and frontend independent notification-poll-lane fixes are hot-deployed; manual retest is next. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
 next_actor: user
-next_action: in Nova's already-open Notifications, mark only the replay warning read; require the warning row to remain at occurrenceCount=1 and the red counter to decrease 2 -> 1 while the check-in row remains unread. Then Casey scans the same saved QR again; require already-used, the same warning row to become unread at occurrenceCount=2, and the red counter to return 1 -> 2 without creating a second warning row
-next_codex_action: after mark-read verify the warning readAtIso and users.activities.notifications=1; after the second replay verify the canonical ticket use is unchanged, two immutable Casey audits exist, the single warning row has occurrenceCount=2/readAtIso cleared, and users.activities.notifications=2
-queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-010, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
+next_action: leave Nova's Ticket popup open and capture the event-bound physical chat IDs/history. As Casey, Unpublish the active event once; verify the same main/optional/group/service chat documents remain usable with the inline and popup-title Under review badge, and wait one poll interval for Nova's independent notification count/attention. Then Publish once with Ticketing still On; verify the same chats return to A without the badge and wait for exactly one event-modified/available-again notification without closing or reloading Nova
+next_codex_action: verify one indexed eventId-scoped chats batch per lifecycle mutation changes only ownerStatus across all physical owner copies, chat/message identity and history stay unchanged, one new under-review task/row and one new event-modified task/row exist for Nova, users unread count increments exactly once per lifecycle row, Casey receives neither, polling creates no writes, and after Nova closes the Ticket popup the ordinary side-menu snapshot resumes and reconciles deferred event/ticket counters
+queued_checkpoint: [EVENT-NOTIFICATION-001, EVENT-CHAT-LIFECYCLE-001, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-011, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
 ```
 
-Active detail: [`EVENT-TICKET-003`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
+Active detail: [`EVENT-NOTIFICATION-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
 
 ## Hard constraints
 
@@ -152,7 +152,7 @@ work.
   counters became zero, and membership remained exact. PASS/CLOSED; reset
   completed at `2026-08-06T06:09:19.840Z`.
 
-## Active checkpoint — `EVENT-TICKET-003`
+## Completed checkpoint — `EVENT-TICKET-003` + `EVENT-TICKET-010`
 
 - Current clean retest baseline staged at `2026-08-06T10:12:01.825Z` after the
   aggregate-upsert fix: fresh code
@@ -168,6 +168,12 @@ work.
   persisted `users.activities.notifications=2` is the unread check-in row plus
   this warning. The fixed aggregate write therefore materializes the inbox row
   and increments the users-table counter together.
+- Final manual closure: Nova marked the first warning occurrence read and Casey
+  replayed the same retained QR. The exact ticket use remained unchanged; two
+  immutable replay audits now exist, while one and only one Nova warning row
+  advanced to `occurrenceCount=2`, `revision=3` and unread. Persisted
+  `users.activities.notifications=2` is again the unread check-in plus warning.
+  The user accepted this physical check-in/replay checkpoint as PASS/CLOSED.
 - Clean baseline restaged at `2026-08-06T09:29:57.060Z`: active Ticketing On,
   Casey accepted Admin, Nova accepted Member, one Nova `A` physical ticket and
   users counters `1 / 1`; the ticket is unused and Nova's participant-owned
@@ -249,6 +255,75 @@ work.
   Nova remains online for the complete replay/read/replay sequence.
   Neither audit nor notification may expose the raw QR or alter the canonical
   ticket use.
+- `EVENT-TICKET-011` is a newly captured GAP: successful ticket use currently
+  leaves Nova's membership merely `accepted`, with no separate attendance
+  projection. The intended contract keeps membership acceptance unchanged but
+  adds event-scoped checked-in time/actor/ticket identity and a localized
+  Beléptetve/Checked in badge to the Event Members row. Replay and negative
+  scans are exact no-ops for attendance.
+
+## Completed checkpoint — `EVENT-TICKET-004`
+
+- Reuse the just-closed active event and its used physical Nova ticket; do not
+  reset or manufacture another credential before the lifecycle mutation.
+- Casey Unpublishes once while Ticketing remains configured On in the draft.
+  Stop before republish. The oracle must retain the existing ticket object with
+  `status=D`, remove only its active Nova Ticket projection/counter, and keep
+  Casey Admin plus Nova Member accepted at `2 / 8`.
+- Unpublish midpoint PASS: persisted canonical event is `DR` with Ticketing On;
+  the retained used Nova ticket is `status=D`, Nova active Ticket counters are
+  `0 / 0`, and membership remains `2 / 8`. Do not republish until the saved-QR
+  revocation checkpoint below completes.
+- After that persisted midpoint passes, Casey publishes again. Republish must
+  create a different physical object/code/issued time rather than reactivate
+  the old D ticket.
+- PASS/CLOSED: Republish kept the old used object D and created one new unused
+  A ticket `6a74645b7c85995dcf3955eb`, code
+  `TKT-942126c0-4c90-44b0-8017-baf5c0810a82`, issued at
+  `2026-08-06T10:39:23.880809028Z`. Nova counters returned to `1 / 1` and
+  membership stayed `2 / 8`. The missing available-again notification is the
+  separate active checkpoint below.
+
+## Completed inserted checkpoint — `EVENT-TICKET-012`
+
+- Casey scans the saved QR of the now-D Nova ticket before Republish. Expected
+  visible result is revoked/inactive, not already-used.
+- Unpublish itself created one ordinary unread `event-under-review` notification
+  for Nova at `2026-08-06T10:30:47.791763232Z`; this correctly changed the
+  users-table notification counter `2 -> 3` before the QR rejection oracle.
+- The later saved-QR scan returned revoked/inactive. No notification was created
+  by the scan: the only post-Unpublish row is the lifecycle notification above.
+  Two replay audits, two sanitized replay outbox rows, the single aggregated
+  warning at `occurrenceCount=2`, users notification counter `3`, and the D
+  ticket's identity/original use all remained unchanged. PASS/CLOSED.
+
+## Active checkpoint — `EVENT-NOTIFICATION-001`
+
+- The failed observation is exact: the first Republish created the replacement
+  ticket but no `event-modified` task or Nova inbox row. The only lifecycle row
+  in the screenshot/database was the earlier Unpublish `event-under-review`.
+- Backend root cause: Publish skipped lifecycle notification scheduling whenever
+  main-chat materialization reported that Casey's owner copy was created. The
+  write now additionally schedules accepted non-actor participants in that
+  branch; Nova receives available-again, Casey does not.
+- Frontend root cause: the closed notification center relied on the background
+  side-menu long poll, which popup presence suppresses. Notification realtime
+  now owns a separate shared-coordinator lane that runs during popup ownership
+  and concurrently with foreground SmartList polling. While a popup is open it
+  applies only the notification count; ordinary side-menu reconciliation waits
+  until close and then reuses the unadvanced cursor.
+- Existing backend hot-deploy reports `BUILD SUCCESSFUL` and restarted healthy;
+  existing frontend-sync reports successful bundle generation/sync.
+- Manual retest: keep Nova Ticket open, Casey Unpublish, observe the independent
+  under-review count/attention without reload, then Casey Publish and observe
+  exactly one `event-modified` available-again contribution the same way. Close
+  Ticket only afterward and prove ordinary event/ticket counters resume.
+- The same lifecycle mutations also own `EVENT-CHAT-LIFECYCLE-001`: before the
+  Unpublish capture physical main/optional/group/service chat owner-copy and
+  message identities. Unpublish must batch only `ownerStatus=DR` by indexed
+  `eventId`, keep every accepted chat usable and show a compact **Under review**
+  badge; Publish batches `ownerStatus=A`, removes the badge and preserves all
+  captured identities/history. Chat reads do not query-project Event status.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 

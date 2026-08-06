@@ -57,6 +57,7 @@ public class ChatMapper {
                 normalizeId(record.getEventId()),
                 normalizeId(record.getSubEventId()),
                 normalizeId(record.getGroupId()),
+                StringUtils.hasText(safeText(record.getOwnerStatus())) ? safeText(record.getOwnerStatus()) : null,
                 null);
     }
 
@@ -99,6 +100,7 @@ public class ChatMapper {
                 dto.eventId(),
                 dto.subEventId(),
                 dto.groupId(),
+                dto.ownerStatus(),
                 dto.navigationContext());
     }
 
@@ -130,6 +132,7 @@ public class ChatMapper {
                 dto.eventId(),
                 dto.subEventId(),
                 dto.groupId(),
+                dto.ownerStatus(),
                 dto.navigationContext());
     }
 
@@ -156,6 +159,7 @@ public class ChatMapper {
                 dto.eventId(),
                 dto.subEventId(),
                 dto.groupId(),
+                dto.ownerStatus(),
                 navigationContext);
     }
 
