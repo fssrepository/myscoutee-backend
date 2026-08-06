@@ -44,7 +44,14 @@ public final class ChatDtos {
             String subEventId,
             String groupId,
             String ownerStatus,
+            Long revision,
             ChatNavigationContextDto navigationContext) {
+    }
+
+    public record ChatHeaderSyncResponseDto(
+            Long revision,
+            boolean changed,
+            String ownerStatus) {
     }
 
     public record ChatNavigationContextDto(

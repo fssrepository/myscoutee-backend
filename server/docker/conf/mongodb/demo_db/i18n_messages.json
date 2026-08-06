@@ -14376,6 +14376,30 @@
     "value": "Camera on"
   },
   {
+    "_id": "i18n-message-en-notification-event-available-again-message",
+    "key": "notification.event.available.again.message",
+    "lang": "en",
+    "value": "The event is available again."
+  },
+  {
+    "_id": "i18n-message-en-notification-event-under-review-message",
+    "key": "notification.event.under.review.message",
+    "lang": "en",
+    "value": "The event is under review."
+  },
+  {
+    "_id": "i18n-message-en-notification-ticket-checked-in-message",
+    "key": "notification.ticket.checked.in.message",
+    "lang": "en",
+    "value": "Your ticket was checked in."
+  },
+  {
+    "_id": "i18n-message-en-notification-ticket-reuse-message",
+    "key": "notification.ticket.reuse.message",
+    "lang": "en",
+    "value": "This ticket was already used."
+  },
+  {
     "_id": "i18n-message-en-asset-ticket-scan-camera-off",
     "key": "asset.ticket.scan.camera.off",
     "lang": "en",
@@ -32758,6 +32782,30 @@
     "key": "asset.ticket.scan.camera.on",
     "lang": "hu",
     "value": "Kamera be"
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-available-again-message",
+    "key": "notification.event.available.again.message",
+    "lang": "hu",
+    "value": "Az esemény újra elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-notification-event-under-review-message",
+    "key": "notification.event.under.review.message",
+    "lang": "hu",
+    "value": "Az esemény ellenőrzés alatt áll."
+  },
+  {
+    "_id": "i18n-message-hu-notification-ticket-checked-in-message",
+    "key": "notification.ticket.checked.in.message",
+    "lang": "hu",
+    "value": "A jegyeddel beléptettek."
+  },
+  {
+    "_id": "i18n-message-hu-notification-ticket-reuse-message",
+    "key": "notification.ticket.reuse.message",
+    "lang": "hu",
+    "value": "Ezt a jegyet már felhasználták."
   },
   {
     "_id": "i18n-message-hu-asset-ticket-scan-camera-off",

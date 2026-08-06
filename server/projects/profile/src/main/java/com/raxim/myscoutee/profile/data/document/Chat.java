@@ -44,6 +44,7 @@ public class Chat {
     @Indexed(name = "chat_event")
     private String eventId;
     private String ownerStatus;
+    private Long revision = 1L;
     private String subEventId;
     private String groupId;
     private Double distanceKm;
@@ -163,6 +164,14 @@ public class Chat {
 
     public void setOwnerStatus(String ownerStatus) {
         this.ownerStatus = ownerStatus;
+    }
+
+    public Long getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
     }
 
     public String getSubEventId() {

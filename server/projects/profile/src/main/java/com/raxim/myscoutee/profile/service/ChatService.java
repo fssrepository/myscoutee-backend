@@ -70,6 +70,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceDelete
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatGroupContextDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatHeaderSyncResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricBucketDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatNavigationContextDto;
@@ -270,6 +271,7 @@ public class ChatService {
             document.setOwnerId(eventId);
             document.setEventId(eventId);
             document.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
+            document.setRevision(current == null ? 1L : normalizeChatRevision(current.getRevision()));
             document.setSubEventId(null);
             document.setGroupId(null);
             document.setDistanceKm(null);
@@ -317,15 +319,38 @@ public class ChatService {
         if (chatDocuments.isEmpty()) {
             return 0L;
         }
-        Query query = Query.query(Criteria.where("eventId").is(normalizedEventId));
+        Query query = Query.query(Criteria.where("eventId").is(normalizedEventId)
+                .and("ownerStatus").ne(normalizedOwnerStatus));
         long modifiedCount = mongoTemplate.updateMulti(
                 query,
-                Update.update("ownerStatus", normalizedOwnerStatus),
+                Update.update("ownerStatus", normalizedOwnerStatus)
+                        .set("revision", Instant.now().toEpochMilli()),
                 Chat.class).getModifiedCount();
         if (modifiedCount > 0L) {
             evictChatOwnerReadCaches(chatDocuments);
         }
         return modifiedCount;
+    }
+
+    public ChatHeaderSyncResponseDto syncChatHeader(
+            String chatId,
+            String requestedUserId,
+            Long knownRevision) {
+        String userId = requireResolvedUserId(requestedUserId);
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
+        }
+        Chat chat = chatsRepository.findByOwnerUserIdAndChatId(userId, normalizedChatId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found."));
+        long revision = normalizeChatRevision(chat.getRevision());
+        boolean changed = knownRevision == null || knownRevision.longValue() != revision;
+        return new ChatHeaderSyncResponseDto(
+                revision,
+                changed,
+                changed && StringUtils.hasText(safeText(chat.getOwnerStatus()))
+                        ? safeText(chat.getOwnerStatus())
+                        : null);
     }
 
     public ChatPageResponseDto queryChatPage(
@@ -2307,12 +2332,17 @@ public class ChatService {
         copy.setOwnerId(source.getOwnerId());
         copy.setEventId(source.getEventId());
         copy.setOwnerStatus(source.getOwnerStatus());
+        copy.setRevision(normalizeChatRevision(source.getRevision()));
         copy.setSubEventId(source.getSubEventId());
         copy.setGroupId(source.getGroupId());
         copy.setDistanceKm(null);
         copy.setDistanceMetersExact(null);
         copy.setSupportCase(copySupportCase(source.getSupportCase()));
         return copy;
+    }
+
+    private long normalizeChatRevision(Long value) {
+        return value == null || value < 1L ? 1L : value;
     }
 
     private ChatMessageReplyRecord normalizeReply(ChatMessageReplyDto replyTo) {

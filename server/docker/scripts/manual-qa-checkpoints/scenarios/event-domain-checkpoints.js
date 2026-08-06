@@ -30,7 +30,7 @@
   const AUTO_INVITER_INITIAL_EDGE_ID = `${PREFIX}:auto-inviter-initial-edge`;
   const AUTO_INVITER_LATER_EDGE_ID = `${PREFIX}:auto-inviter-later-edge`;
   const eventImageUrl = Q.text(process.env.MANUAL_QA_EVENT_IMAGE_URL);
-  const EXPECTED_TITLE = `Manual QA ${checkpointId}`;
+  const EXPECTED_TITLE = `QA ${checkpointId}`;
 
   function newFixtureTicketCode() {
     return `TKT-${UUID().toUUID().toString()}`;
@@ -1657,7 +1657,7 @@
       options.startAtIso = dateIso(-60);
       options.endAtIso = dateIso(2);
     }
-    const event = eventDocument(EVENT_ID, `Manual QA ${checkpointId}`, options);
+    const event = eventDocument(EVENT_ID, EXPECTED_TITLE, options);
     if (checkpointId === "EVENT-FEEDBACK-002") {
       Q.collection("events").insertOne(event);
       Q.collection("activityMembers").insertMany([

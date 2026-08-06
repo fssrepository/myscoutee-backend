@@ -58,6 +58,7 @@ public class ChatMapper {
                 normalizeId(record.getSubEventId()),
                 normalizeId(record.getGroupId()),
                 StringUtils.hasText(safeText(record.getOwnerStatus())) ? safeText(record.getOwnerStatus()) : null,
+                normalizeRevision(record.getRevision()),
                 null);
     }
 
@@ -101,6 +102,7 @@ public class ChatMapper {
                 dto.subEventId(),
                 dto.groupId(),
                 dto.ownerStatus(),
+                dto.revision(),
                 dto.navigationContext());
     }
 
@@ -133,6 +135,7 @@ public class ChatMapper {
                 dto.subEventId(),
                 dto.groupId(),
                 dto.ownerStatus(),
+                dto.revision(),
                 dto.navigationContext());
     }
 
@@ -160,7 +163,12 @@ public class ChatMapper {
                 dto.subEventId(),
                 dto.groupId(),
                 dto.ownerStatus(),
+                dto.revision(),
                 navigationContext);
+    }
+
+    private long normalizeRevision(Long value) {
+        return value == null || value < 1L ? 1L : value;
     }
 
     private List<ChatMemberDto> toMemberDtos(List<String> memberIds, Map<String, Users> usersById) {

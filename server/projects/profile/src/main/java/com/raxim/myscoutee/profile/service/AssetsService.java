@@ -106,6 +106,7 @@ public class AssetsService {
     private final UserActivityCountersService userActivityCountersService;
     private ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider;
     private EventTicketAuditService eventTicketAuditService;
+    private TranslationService translationService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -145,6 +146,11 @@ public class AssetsService {
     @Autowired(required = false)
     void setEventTicketAuditService(EventTicketAuditService eventTicketAuditService) {
         this.eventTicketAuditService = eventTicketAuditService;
+    }
+
+    @Autowired(required = false)
+    void setTranslationService(TranslationService translationService) {
+        this.translationService = translationService;
     }
 
     public List<AssetDto> queryAssets(String userId) {
@@ -2703,6 +2709,7 @@ public class AssetsService {
         payload.put("eventScope", "tickets");
         payload.put("ticketStatus", "checked-in");
         payload.put("usedAtIso", usedAtIso);
+        payload.put("notification_message_key", "notification.ticket.checked.in.message");
         notificationOutboxService.enqueue(new NotificationIntent(
                 "event-ticket-checked-in",
                 "event",
@@ -2710,7 +2717,9 @@ public class AssetsService {
                 "ticket-holder",
                 List.of(holderUserId),
                 "Ticket checked in",
-                "Your ticket for " + eventTitle + " was checked in.",
+                translated(
+                        "notification.ticket.checked.in.message",
+                        "Your ticket was checked in."),
                 "/game",
                 firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
@@ -2761,6 +2770,7 @@ public class AssetsService {
         payload.put("ticketStatus", "already-used");
         payload.put("usedAtIso", safeText(ticket.getUsedAtIso()));
         payload.put("actorUserId", normalizeId(actorUserId));
+        payload.put("notification_message_key", "notification.ticket.reuse.message");
         payload.put("notification_tone", "warning");
         payload.put("notification_aggregation_key", "event-ticket-replay:" + ticketId);
         try {
@@ -2771,7 +2781,9 @@ public class AssetsService {
                     "ticket-holder",
                     List.of(holderUserId),
                     "Ticket reuse warning",
-                    "Your already-used ticket for " + eventTitle + " was presented again.",
+                    translated(
+                            "notification.ticket.reuse.message",
+                            "This ticket was already used."),
                     "/game",
                     firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
                     "/assets/logo/heart.webp",
@@ -3397,6 +3409,17 @@ public class AssetsService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String translated(String key, String fallback) {
+        if (translationService == null) {
+            return fallback;
+        }
+        try {
+            return translationService.t(key);
+        } catch (RuntimeException exception) {
+            return fallback;
+        }
     }
 
     private String initialsFromText(String value) {

@@ -1571,9 +1571,12 @@ Restart evidence on 2026-08-06:
 - The event Publish write must always schedule the lifecycle notification for
   accepted non-actor participants even when main-chat owner copies are created
   or restored. Pending invitees retain their separate invitation path. The
-  expected Nova row is `kind=event-modified` with the existing event title and
-  a message stating that the event is available again; the frontend must never
-  synthesize this row.
+  expected Nova row is `kind=event-modified` with only the existing event title
+  (no `changed` suffix), success tone and the short bundle-resolved message **The event is available
+  again.** The under-review row uses **The event is under review.** The frontend
+  must never synthesize either row or hard-code either translated sentence:
+  transport payloads carry `notification_message_key`, and frontend plus Mongo
+  `en`/`hu` i18n bundles contain the same keys.
 - Keep Nova authenticated with a non-notification popup such as Ticket open.
   Casey Unpublishes the active event once. Without closing or reloading Nova,
   the independent notification lane must expose the new under-review unread
@@ -1596,6 +1599,9 @@ Restart evidence on 2026-08-06:
   actor, and the users-table unread counter changes once per inserted row.
   Polling is read-only and creates no task, outbox, notification, event, ticket
   or counter write.
+- The event-domain fixture uses the compact title `QA EVENT-NOTIFICATION-001`
+  (and the corresponding current checkpoint ID), so the notification title also
+  fits the mobile row without a fixture-only `Manual` prefix.
 
 ### `EVENT-CHAT-LIFECYCLE-001` — Unpublish/republish keeps physical event chats and history
 
@@ -1606,8 +1612,8 @@ Restart evidence on 2026-08-06:
   IDs before changing the event. Pending Riley remains the negative control and
   must have no unauthorized owner copy or history access.
 - Casey Unpublishes once. The event lifecycle write performs one indexed Mongo
-  batch over physical `chats` documents with the same `eventId` and sets only
-  their denormalized `ownerStatus=DR`. It covers `mainEvent`,
+  batch over physical `chats` documents with the same `eventId` and sets their
+  denormalized `ownerStatus=DR` plus the chat `revision` sync marker. It covers `mainEvent`,
   `optionalSubEvent`, `groupSubEvent` and event-bound `serviceEvent` documents;
   chat list/query code must not join or project the Event collection to derive
   this value.
@@ -1616,13 +1622,21 @@ Restart evidence on 2026-08-06:
   **Under review** badge. The badge is inline beside the title rather than in
   the right-side control/badge area. Chat IDs, owner-copy IDs, members, message
   history, last message, unread state and authorization remain unchanged.
+- Leave Nova's chat popup open before Casey changes the event. Without closing
+  or reloading Nova, the popup's 30-second versioned header poll must read the
+  indexed owner-copy by `(ownerUserId, chatId)` and show **Under review**. The
+  response contains only `revision`, `changed` and `ownerStatus`; it must not
+  reload the Event, full chat list or message history. The task uses the shared
+  `UiPollCoordinator` foreground lane, so ordinary side-menu polling remains
+  paused while the popup is open, while the independent notification lane
+  continues to run.
 - Casey Publishes again. The same write path sets all event-bound physical chat
-  documents back to `ownerStatus=A`; the **Under review** badge disappears on
-  the normal chat refresh. No chat or message is deleted/recreated, no system
+  documents back to `ownerStatus=A` and advances `revision`; the **Under review**
+  badge disappears through the same open-popup poll. No chat or message is deleted/recreated, no system
   message or unread increment is manufactured, and no cross-event chat is
   touched.
 - Compare HTTP/Mongo and frontend-local behavior. Local repository and
-  SeedBuilder records must persist `eventId` plus `ownerStatus` on the physical
+  SeedBuilder records must persist `eventId`, `ownerStatus` and `revision` on the physical
   chat object and perform the same write-side transition; component-only state
   or read-side event projection is a FAIL.
 - This checkpoint may share the same real Unpublish/Publish mutations as

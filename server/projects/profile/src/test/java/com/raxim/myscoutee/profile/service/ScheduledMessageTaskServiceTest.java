@@ -253,8 +253,9 @@ class ScheduledMessageTaskServiceTest {
                 .containsEntry("notification_source_id", "event-1")
                 .containsEntry("notification_recipient_scope", "event-participants");
         assertThat(modifiedVariables)
-                .containsEntry("change_summary", "The event was modified and is available again.")
-                .containsEntry("notification_tone", "info")
+                .containsEntry("change_summary", "The event is available again.")
+                .containsEntry("notification_message_key", "notification.event.available.again.message")
+                .containsEntry("notification_tone", "success")
                 .containsEntry("notification_kind", "event-modified");
     }
 
