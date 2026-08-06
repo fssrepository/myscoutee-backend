@@ -9,7 +9,7 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-NOTIFICATION-001
-state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010 and EVENT-TICKET-012 are PASS/CLOSED. EVENT-NOTIFICATION-001 write-side delivery and independent notification polling are hot-deployed, including short bundle-resolved lifecycle/ticket messages synchronized into all Mongo i18n seeds. EVENT-CHAT-LIFECYCLE-001 now has a physical chat revision and indexed owner-copy header-delta endpoint; the open chat popup schedules it on the shared foreground poll lane. Manual Unpublish/Republish poll retest is next. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
+state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010 and EVENT-TICKET-012 are PASS/CLOSED. EVENT-NOTIFICATION-001 write-side delivery and independent notification polling are hot-deployed, including short bundle-resolved lifecycle/ticket messages synchronized into all Mongo i18n seeds. Lifecycle notification title is exactly the event title, with no changed suffix. EVENT-CHAT-LIFECYCLE-001 now has a physical chat revision and indexed owner-copy header-delta endpoint; the open chat popup schedules it on the shared foreground poll lane. A clean QA EVENT-TICKET-003 baseline is staged at active 2/8 with Casey/Nova physical main-chat owner copies at ownerStatus A, revision 1. Manual Unpublish/Republish poll retest is next. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
 next_actor: user
 next_action: after restage/reload, open Nova's event chat and leave it open. As Casey, Unpublish once; without closing or reloading Nova wait one 30-second interval for the inline/popup-title Under review badge and the independently polled notification. Then Publish once with Ticketing still On and wait for the same open chat to lose the badge plus exactly one green available-again notification
 next_codex_action: verify one indexed eventId-scoped chats batch per lifecycle mutation changes only ownerStatus plus revision across all physical owner copies, the indexed ownerUserId/chatId header poll returns changed only after a revision advance, chat/message identity and history stay unchanged, lifecycle notification rows use bundle keys and concise text, polling creates no writes, and after Nova closes the chat popup the ordinary side-menu snapshot resumes
@@ -319,7 +319,7 @@ work.
   under-review count/attention without reload, then Casey Publish and observe
   exactly one `event-modified` available-again contribution the same way. Both
   notification titles must be only the compact fixture event name
-  `QA EVENT-NOTIFICATION-001`, without `Manual` or `changed`. Close Chat only
+  `QA EVENT-TICKET-003`, without `Manual` or `changed`. Close Chat only
   afterward and prove ordinary event/ticket counters resume.
 - The same lifecycle mutations also own `EVENT-CHAT-LIFECYCLE-001`: before the
   Unpublish capture physical main/optional/group/service chat owner-copy and

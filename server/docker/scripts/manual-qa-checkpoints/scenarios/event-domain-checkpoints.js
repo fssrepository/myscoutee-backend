@@ -988,6 +988,8 @@
       channelType: "mainEvent",
       ownerId: chatId,
       eventId: chatId,
+      ownerStatus: Q.text(event.status) || "A",
+      revision: 1,
       subEventId: null,
       groupId: null
     })));
@@ -1678,6 +1680,9 @@
       insertHostOnlyEvent(event);
     } else {
       insertEventWithMembers(event, "accepted");
+    }
+    if (stageKind === "ticket-ready") {
+      insertEmptyMainEventChat(event, [hostUserId, participantUserId], stagedAtIso);
     }
     if (isTicketingStage(stageKind)) {
       applyEventActivityCounterDeltas(hostUserId, {

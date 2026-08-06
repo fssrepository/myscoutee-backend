@@ -1599,9 +1599,10 @@ Restart evidence on 2026-08-06:
   actor, and the users-table unread counter changes once per inserted row.
   Polling is read-only and creates no task, outbox, notification, event, ticket
   or counter write.
-- The event-domain fixture uses the compact title `QA EVENT-NOTIFICATION-001`
-  (and the corresponding current checkpoint ID), so the notification title also
-  fits the mobile row without a fixture-only `Manual` prefix.
+- The current logical notification checkpoint reuses the physical
+  `EVENT-TICKET-003` fixture, whose compact title is `QA EVENT-TICKET-003`.
+  The notification title therefore fits the mobile row without a fixture-only
+  `Manual` prefix.
 
 ### `EVENT-CHAT-LIFECYCLE-001` — Unpublish/republish keeps physical event chats and history
 
