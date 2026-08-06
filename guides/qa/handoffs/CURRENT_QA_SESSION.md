@@ -8,12 +8,12 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-NOTIFICATION-001
-state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010 and EVENT-TICKET-012 are PASS/CLOSED. EVENT-NOTIFICATION-001 concise write-side delivery and independent notification polling passed manually. Lifecycle notification title is exactly the event title, with no changed suffix. The first EVENT-CHAT-LIFECYCLE-001 retest failed only on the already-open Activities Chats list because the versioned header poll was limited to the inner chat popup; persisted ownerStatus/revision were correct. The fix is hot-deployed: the ordinary open chat list now owns one shared foreground scheduler and patches only revision-changed rows through the existing indexed header-delta service. Clean Unpublish/Republish retest is next. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
-next_actor: user
-next_action: after restage/reload, leave Nova's Activities -> Chats channel list open on QA EVENT-TICKET-003. As Casey, Unpublish once; without opening the inner chat, closing or reloading Nova wait one 30-second interval for the inline Under review badge and the independently polled notification. Then Publish once with Ticketing still On and wait for the same open list row to lose the badge plus exactly one green available-again notification
-next_codex_action: verify one indexed eventId-scoped chats batch per lifecycle mutation changes only ownerStatus plus revision across all physical owner copies, the indexed ownerUserId/chatId header poll returns changed only after a revision advance, chat/message identity and history stay unchanged, lifecycle notification rows use bundle keys and concise text, polling creates no writes, and after Nova closes the chat popup the ordinary side-menu snapshot resumes
-queued_checkpoint: [EVENT-NOTIFICATION-001, EVENT-CHAT-LIFECYCLE-001, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-011, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
+active_checkpoint: EVENT-TICKET-005
+state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010, EVENT-TICKET-012, EVENT-NOTIFICATION-001 and EVENT-CHAT-LIFECYCLE-001 are PASS/CLOSED. The repaired ordinary Activities Chats list poll passed manually in both directions: Unpublish added Under review and Republish removed it within one 30-second interval without opening, closing or reloading the chat. Independent concise notification polling remained live. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
+next_actor: Codex
+next_action: prepare the isolated Public, published, Ticketing On, admin-approval baseline for EVENT-TICKET-005 with Casey as the only accepted Admin and Nova outside the event with no physical ticket or stored ticket counters
+next_codex_action: stage and prove the pre-join oracle, then hand Nova the Event Explore Join step; after the pending no-ticket oracle, hand Casey the single approval step and verify that approval creates exactly one accepted membership overlay and one physical active Nova ticket
+queued_checkpoint: [EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-011, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
 ```
 
 Active detail: [`EVENT-NOTIFICATION-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).

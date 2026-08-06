@@ -1612,6 +1612,13 @@ Restart evidence on 2026-08-06:
   `EVENT-TICKET-003` fixture, whose compact title is `QA EVENT-TICKET-003`.
   The notification title therefore fits the mobile row without a fixture-only
   `Manual` prefix.
+- PASS/CLOSED retest evidence: Nova left the ordinary Activities -> Chats list
+  open without entering the inner chat. Casey's Unpublish made the same visible
+  row show the compact **Under review** badge within one 30-second foreground
+  poll and no reload/close; Republish removed it through the same list poll.
+  The independently serialized notification lane continued to deliver the
+  concise lifecycle notification during the open list. This closes the earlier
+  list-only failure without changing the already-proven write-side oracle.
 
 ### `EVENT-CHAT-LIFECYCLE-001` — Unpublish/republish keeps physical event chats and history
 
