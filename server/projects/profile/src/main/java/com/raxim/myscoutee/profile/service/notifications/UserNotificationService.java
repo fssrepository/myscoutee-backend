@@ -158,7 +158,15 @@ public class UserNotificationService {
                     createdDate,
                     nowIso,
                     outboxKey);
-            if (userNotificationPageRepository.insertIfAbsent(notification)) {
+            boolean incrementUnread;
+            if (StringUtils.hasText(notification.getAggregationKey())) {
+                incrementUnread = userNotificationPageRepository
+                        .upsertAggregated(notification)
+                        .becameUnread();
+            } else {
+                incrementUnread = userNotificationPageRepository.insertIfAbsent(notification);
+            }
+            if (incrementUnread) {
                 userNotificationPageRepository.incrementUnreadCounter(recipientUserId, 1);
             }
         }
@@ -186,6 +194,10 @@ public class UserNotificationService {
         UserNotification notification = new UserNotification();
         notification.setId(new ObjectId().toHexString());
         notification.setSyncKey(outboxKey + ":" + recipientUserId);
+        String aggregationGroup = safeText(payload.get("notification_aggregation_key"));
+        notification.setAggregationKey(StringUtils.hasText(aggregationGroup)
+                ? recipientUserId + ":" + aggregationGroup
+                : null);
         notification.setOutboxId(nullableText(outboxItem.getId()));
         notification.setRecipientUserId(recipientUserId);
         notification.setKind(kind);
@@ -203,6 +215,7 @@ public class UserNotificationService {
         notification.setSourceType(sourceType);
         notification.setSourceId(sourceId);
         notification.setPayload(payload);
+        notification.setOccurrenceCount(1);
         notification.setReadAtIso(null);
         notification.setCreatedDate(createdDate);
         notification.setCreatedUser(nullableText(outboxItem.getCreatedUser()));

@@ -105,6 +105,7 @@ public class AssetsService {
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider;
+    private EventTicketAuditService eventTicketAuditService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -139,6 +140,11 @@ public class AssetsService {
     void setActivitiesResourcesServiceProvider(
             ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider) {
         this.activitiesResourcesServiceProvider = activitiesResourcesServiceProvider;
+    }
+
+    @Autowired(required = false)
+    void setEventTicketAuditService(EventTicketAuditService eventTicketAuditService) {
+        this.eventTicketAuditService = eventTicketAuditService;
     }
 
     public List<AssetDto> queryAssets(String userId) {
@@ -335,11 +341,19 @@ public class AssetsService {
             return invalidTicketValidation("not_authorized");
         }
 
+        Instant attemptedAt = Instant.now();
         EventTicketService.CheckInResult result = eventParticipationTicketService.checkIn(
                 request.code(),
                 actorUserId,
-                Instant.now());
+                attemptedAt);
         if (result == null || !result.valid() || result.ticket() == null || result.event() == null) {
+            if (result != null
+                    && "already_used".equals(result.reason())
+                    && result.ticket() != null
+                    && result.event() != null) {
+                recordTicketReplayAttempt(result.ticket(), result.event(), actorUserId, attemptedAt);
+                enqueueTicketReplayWarning(result.ticket(), result.event(), actorUserId);
+            }
             return invalidTicketValidation(result == null ? "not_found" : result.reason());
         }
 
@@ -2703,6 +2717,75 @@ public class AssetsService {
                 "event-ticket-checked-in-" + ticket.getId(),
                 payload,
                 normalizeId(actorUserId)));
+    }
+
+    private void recordTicketReplayAttempt(
+            EventTicket ticket,
+            ActivityEvent event,
+            String actorUserId,
+            Instant attemptedAt) {
+        if (eventTicketAuditService == null) {
+            return;
+        }
+        try {
+            eventTicketAuditService.recordAlreadyUsedAttempt(ticket, event, actorUserId, attemptedAt);
+        } catch (RuntimeException exception) {
+            LOGGER.warn(
+                    "Ticket replay audit failed; the already-used scanner response remains authoritative. eventId={}, ticketId={}, actorUserId={}",
+                    safeText(event == null ? null : event.getSourceId()),
+                    safeText(ticket == null ? null : ticket.getId()),
+                    safeText(actorUserId),
+                    exception);
+        }
+    }
+
+    private void enqueueTicketReplayWarning(
+            EventTicket ticket,
+            ActivityEvent event,
+            String actorUserId) {
+        String ticketId = normalizeId(ticket == null ? null : ticket.getId());
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
+        if (notificationOutboxService == null
+                || !StringUtils.hasText(ticketId)
+                || !StringUtils.hasText(eventId)
+                || !StringUtils.hasText(holderUserId)) {
+            return;
+        }
+        String eventTitle = firstNonBlank(event.getTitle(), "Event");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "tickets");
+        payload.put("ticketId", ticketId);
+        payload.put("ticketStatus", "already-used");
+        payload.put("usedAtIso", safeText(ticket.getUsedAtIso()));
+        payload.put("actorUserId", normalizeId(actorUserId));
+        payload.put("notification_tone", "warning");
+        payload.put("notification_aggregation_key", "event-ticket-replay:" + ticketId);
+        try {
+            notificationOutboxService.enqueue(new NotificationIntent(
+                    "event-ticket-replay-warning",
+                    "event",
+                    eventId,
+                    "ticket-holder",
+                    List.of(holderUserId),
+                    "Ticket reuse warning",
+                    "Your already-used ticket for " + eventTitle + " was presented again.",
+                    "/game",
+                    firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                    "/assets/logo/heart.webp",
+                    "event-ticket-replay-warning-" + ticketId,
+                    payload,
+                    normalizeId(actorUserId)));
+        } catch (RuntimeException exception) {
+            LOGGER.warn(
+                    "Ticket replay warning failed; the already-used scanner response remains authoritative. eventId={}, ticketId={}, actorUserId={}",
+                    eventId,
+                    ticketId,
+                    safeText(actorUserId),
+                    exception);
+        }
     }
 
     private void enqueueAssetRestoredNotification(Asset asset, String actorUserId) {

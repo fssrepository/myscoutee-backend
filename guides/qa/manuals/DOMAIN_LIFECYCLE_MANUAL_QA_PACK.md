@@ -83,7 +83,7 @@ The principal checkpoint chains are:
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
-  `EVENT-TICKET-003` ->
+  `EVENT-TICKET-003` -> `EVENT-TICKET-009` ->
   `EVENT-TICKET-004` -> `EVENT-TICKET-005` -> `EVENT-TICKET-006` ->
   `EVENT-TICKET-007` -> `EVENT-VISIBILITY-001`:
   ticket enablement, physical credential, check-in, A/D audit lifecycle,
@@ -1128,6 +1128,19 @@ Execution evidence on 2026-08-06:
   checkpoint. A later republish must create a new active physical ticket and
   QR before `EVENT-TICKET-003` can run.
 
+Execution evidence on 2026-08-06:
+
+- PASS: phase 1 kept Nova's Upcoming Ticket popup open while Casey published;
+  the list and shared Ticket counter converged `0 -> 1` without reload or
+  oscillation.
+- PASS: after closing the popup, Casey Unpublish let the resumed background
+  side-menu poll change Nova's Events and Ticket counters `1 -> 0` without
+  reopening or reload.
+- Persisted oracle at `2026-08-06T06:08:58.365Z` proved canonical `DR` with
+  Ticketing On, membership `2 / 8` plus Riley pending, Nova ticket
+  `6a741f2e66fe4ab1cd12e39b` retained as `D`, and Casey/Nova/Riley stored ticket
+  counters all `0 / 0`. The checkpoint was reset cleanly.
+
 ### `EVENT-TICKET-003` — authorized check-in is exact-once
 
 - This is a required physical-phone test. Use an Android phone connected by
@@ -1150,12 +1163,64 @@ Execution evidence on 2026-08-06:
   the ticket scanner and grant camera permission. Reapply the reverse command
   after an ADB daemon restart, USB reconnection or device restart; do not
   restart the application stack merely to recreate the tunnel.
-- Display Nova's controlled active credential QR code on the separate screen
-  and scan it once with Casey's physical phone camera.
+- On scanner open, require one shared `app-menu` camera toggle instead of a
+  custom retry button. **Kamera be** is the live/read state and also starts the
+  next scan; **Kamera ki** stops the detection loop and every MediaStream track.
+  While manually off, the camera target is white with a corner-to-corner red X.
+- **QR-kód keresése...** and **Jegy ellenőrzése...** render as a centered
+  top overlay badge inside the camera target. They consume no layout row; the
+  camera toggle remains mounted at the same position through reading,
+  validating and result states, becoming disabled rather than disappearing
+  while validation is in flight.
+- After any completed validation the stream must be off automatically. A valid
+  result retains exactly the camera frame on which the QR was recognized in
+  place of a black target; rejected/error results must not present that frame as
+  accepted evidence. Turning **Kamera be** on starts a fresh scanner session,
+  so no separate **Újabb beolvasás** button is present.
+- Before the first scan, display Nova's controlled active credential QR code
+  on the separate screen and save a screenshot containing the complete QR.
+  Keep that screenshot until every scan branch is complete: after a successful
+  check-in the current UI has no surface that displays the consumed ticket QR
+  again, so the repeat-scan branch must reuse this captured image rather than
+  depend on reopening the live Ticket surface.
+- Scan the live QR once with Casey's physical phone camera.
 - Verify one used timestamp and a successful visible result. A second scan of
   the same code must return already used and must not mutate the timestamp.
 - An ordinary participant scanner and an invalid code must be rejected with no
   ticket, membership, counter, notification or worker change.
+
+Current staged baseline on 2026-08-06:
+
+- Restaged at `2026-08-06T06:44:35.639Z` with Casey accepted Admin and Nova
+  accepted Member at `2 / 8`; the event is active, Ticketing On and uses the
+  retained managed MinIO image.
+- Nova owns one active physical ticket with code
+  `TKT-12345678-1234-4123-8123-123456789abc`; Casey has no participant ticket.
+- The ticket is unused (`usedAtIso=null`, `usedByUserId=null`) and Nova's
+  participant-owned event overlay plus both Ticket counters are present.
+- The Android device `aer8vgcmyd9lzxv8` is authorized and `adb reverse --list`
+  reports `tcp:8080 tcp:80`.
+
+Restart evidence on 2026-08-06:
+
+- The first authorized physical-phone scan succeeded and persisted exactly one
+  use at `2026-08-06T06:18:07.529719781Z`, performed by Casey. The checkpoint
+  was not closed because no pre-scan QR screenshot had been retained and the
+  consumed credential could not be displayed again for the repeat-scan branch.
+- Reset and restage the checkpoint, capture the QR before scanning, then repeat
+  the complete success/already-used/invalid/unauthorized sequence.
+- A second clean online scan persisted exactly one use at
+  `2026-08-06T06:32:04.164092685Z` by Casey. It remains partial evidence: the
+  scanner preview/control was then changed to the shared camera toggle with
+  accepted-frame retention. That used fixture was reset at
+  `2026-08-06T06:44:21.033Z`; the current unused baseline above owns the full
+  UI plus exact-once rerun.
+- PASS partial evidence on the current baseline: the revised physical-phone
+  scanner UI worked end to end and the first authorized scan persisted exactly
+  one use at `2026-08-06T06:59:21.130578868Z`, performed by Casey. The ticket
+  remains `status=A`; the remaining closure sequence is the saved-QR repeat,
+  invalid-code and unauthorized-participant scans. Each must leave that exact
+  `usedAtIso` and `usedByUserId` unchanged.
 
 ### `EVENT-TICKET-004` — Unpublish/republish preserves an auditable A/D history
 
@@ -1241,6 +1306,62 @@ Execution evidence on 2026-08-06:
   closing the checkpoint.
 - Repeated Ticket reads are no-ops. No physical ticket, QR, participant
   overlay or counter contribution may cross an `eventId` boundary.
+
+### `EVENT-TICKET-009` — holder can present a cached QR while offline
+
+- Run this as a separate physical-phone checkpoint after the online check-in
+  contract is closed. Start with a fresh active Nova ticket. The backend and
+  Casey Admin's physical-phone scanner remain online throughout this case.
+- In Nova's desktop browser, open the Ticket card and QR while online so the
+  application shell, ticket record and QR presentation are warmed. Record the
+  ticket ID/code and the online QR. A cold client that has never loaded the
+  ticket is not equivalent.
+- Isolate only Nova's browser client with DevTools **Network -> Offline** (or a
+  target-scoped CDP network override), then reload that browser. Do not stop the
+  shared backend, proxy or frontend, and do not affect Casey's phone session.
+- Preferred assisted execution: Codex attaches CDP only to the already-open
+  Nova page target, records its target ID/title/URL without cookies or tokens,
+  enables the Network domain, applies an offline network override, and reloads
+  that same target. It must prove Casey's phone/backend path is still online
+  and must restore Nova's target to online in a finally-style cleanup even when
+  the checkpoint fails. A browser-wide or host-wide network change is invalid.
+- Manual execution for another tester: in Nova's tab press **F12**, open
+  **Network**, leave **Disable cache** unchecked, change the throttling selector
+  from **No throttling** to **Offline**, keep DevTools open and reload that same
+  tab. After the scans, change the selector back to **No throttling** and reload
+  once online. Do not enable Offline in Casey's phone browser.
+- Require Nova's reloaded offline application to open from cache and display
+  the same physical ticket and complete QR without a server response.
+- With Casey's phone still online through the ADB reverse, scan the QR displayed
+  by Nova's offline browser. Require one successful server-side check-in with
+  exactly one canonical `usedAtIso` and `usedByUserId=Casey` on the original
+  ticket. Scan the still-visible cached QR again and require already-used with
+  no second mutation.
+- Restore Nova's browser network and reload. Require ordinary reconciliation:
+  no replacement/duplicate ticket and no counter, notification or worker side
+  effect. Capture Nova's offline reload/network evidence and the persisted
+  before/after ticket oracle. Evidence must also state whether Codex CDP or the
+  manual DevTools procedure controlled Nova's network and when online mode was
+  restored.
+
+### `EVENT-TICKET-010` — warn the holder about an already-used replay attempt
+
+- This is a planned security checkpoint and must not block closure of the
+  current exact-once contract until the warning feature is implemented.
+- Start with a Nova ticket that Casey has already checked in successfully.
+  Scan the same QR again through the authorized server-side scanner path.
+- The replay must still return **already used** and must not change ticket
+  `status`, `usedAtIso`, `usedByUserId`, membership, event counters or create a
+  replacement credential.
+- Deliver a warning notification to the ticket holder, Nova, stating that the
+  already-used credential was presented again. Do not expose the raw ticket
+  code/QR payload in notification text or metadata. The scanner actor must not
+  receive the holder warning merely because they made the request.
+- One deliberate replay must create exactly one observable holder warning.
+  Before implementation is closed, define and prove bounded deduplication for
+  rapid repeated scans so the protection cannot be used to flood the holder.
+  Invalid, revoked, expired and unauthorized codes remain separate rejection
+  paths and must not masquerade as this already-used warning.
 
 ## Tournament cases
 

@@ -82,7 +82,10 @@ public class UserNotificationMapper {
                 safeText(notification.getActionPath()),
                 safeText(notification.getSourceType()),
                 safeText(notification.getSourceId()),
-                payload);
+                payload,
+                notification.getOccurrenceCount() == null
+                        ? 1
+                        : Math.max(1, notification.getOccurrenceCount()));
     }
 
     private String firstImage(Users user) {

@@ -1694,6 +1694,9 @@
     }
     if (stageKind === "feedback-submitted") insertSubmittedFeedback(stagedAtIso);
     if (["ticket-ready", "ticket-invitation", "ticket-expiring"].includes(stageKind)) {
+      Q.collection("events").insertOne(
+        participationOverlay(event, EVENT_ID, stageKind)
+      );
       insertReadyTicket(stagedAtIso);
       applyTicketActivityCounterDelta(participantUserId, 1);
     }

@@ -735,6 +735,10 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("emailOutbox", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("notificationOutbox", List.of("recipientUserIds", "createdUser", "updatedUser"), userId);
         purgeUserNotifications(userId);
+        anonymizeUserFieldsByAnyField(
+                "eventTicketAudit",
+                List.of("holderUserId", "actorUserId", "originalUsedByUserId"),
+                userId);
         deleteDocumentsByAnyField("shareTokens", List.of("ownerUserId"), userId);
         deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);

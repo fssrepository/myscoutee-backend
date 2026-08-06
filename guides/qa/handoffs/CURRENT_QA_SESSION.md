@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-TICKET-POLL-001
-state: EVENT-TICKET-001 and EVENT-TICKET-002 are PASS/CLOSED. EVENT-TICKET-POLL-001 phase 1 is PASS: with Nova's Upcoming Ticket popup left open, Casey's real publish made the list and shared Ticket counter converge 0 -> 1 without reload or oscillation. Poll ownership is centralized in shared UiPollCoordinator: SmartList is foreground, side-menu realtime is background, only one poll runs at once, popup presence suppresses/aborts background ownership, and an aborted background response cannot update ActivityStore. Ticket and Activity/Event use this shared behavior. Phase 2 is ready with Nova's popup closed and side menu open. Correct lifecycle semantics are that Casey Unpublish preserves Ticketing On in the draft but revokes Nova's physical ticket A -> D and refreshes stored event/ticket counters. Existing frontend-sync hot-deploy compilation is green; backend hot-deploy must load the unpublish ticket-lifecycle fix before the manual action
+active_checkpoint: EVENT-TICKET-003
+state: EVENT-TICKET-001, EVENT-TICKET-002 and EVENT-TICKET-POLL-001 are PASS/CLOSED. EVENT-TICKET-003 is OPEN/PARTIAL. Its current baseline was staged at 2026-08-06T06:44:35.639Z and the revised physical-phone scanner UI worked end to end. Casey's first authorized scan persisted exactly one use at 2026-08-06T06:59:21.130578868Z on Nova's status=A ticket; usedByUserId is Casey. The app-menu camera toggle, stable overlay position, automatic stream stop and accepted-frame result are user-confirmed. The saved-QR repeat, invalid-code and unauthorized-participant scans remain; none may change the canonical use. EVENT-TICKET-010 records a later planned holder-warning notification for already-used replay attempts and does not alter the current checkpoint baseline
 next_actor: user
-next_action: after Codex confirms backend hot-deploy is green, keep Nova's Ticket popup closed and side menu open; in Casey's isolated session perform Unpublish once; do not open another popup or reload Nova and wait at most one 30-second background poll for both Events and Ticket counters to change 1 -> 0
-next_codex_action: after the user reports the phase-2 UI result, run verify-ticket-poll-resume and prove canonical DR with Ticketing On, exactly one Nova status D audit ticket, Nova users-table Events/Ticket counters zero, Casey counters zero and Riley still pending/ticketless; then close/reset POLL-001 and stage the next ticket checkpoint that produces a fresh active QR
-queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-VISIBILITY-001]
+next_action: on Casey's authorized phone tap Kamera be and scan the saved screenshot of the same complete Nova QR; expect already-used and an automatic stream stop, then leave the result visible for persisted verification
+next_codex_action: after the repeat result, verify ticket status=A and the exact unchanged usedAtIso 2026-08-06T06:59:21.130578868Z plus usedByUserId=Casey; then guide the invalid-code and unauthorized-participant no-op scans
+queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-010, EVENT-VISIBILITY-001]
 ```
 
-Active detail: [`EVENT-TICKET-POLL-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
+Active detail: [`EVENT-TICKET-003`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
 
 ## Hard constraints
 
@@ -115,7 +115,7 @@ work.
   them from Explore. Slot/tournament evolution is only a later planned branch
   and is not part of the current run.
 
-## Active checkpoint — `EVENT-TICKET-POLL-001`
+## Closed checkpoint — `EVENT-TICKET-POLL-001`
 
 - The existing Ticket SmartList 30-second poll is now wired to the same shared
   `ActivityStore` counter signal pattern as Activity/Event; `tickets` and
@@ -141,16 +141,66 @@ work.
   one normal recompute. Riley must remain pending and ticketless at `0 / 0`.
   The poll itself is read-only: no ticket replacement, recompute, notification
   or outbox write.
-- Phase 2 closes Nova's Ticket popup, leaves the side menu open, and performs
+- Phase 2 closed Nova's Ticket popup, left the side menu open, and performed
   Casey **Unpublish** once. Without reopening or reloading Nova, the resumed
-  background side-menu poll must change Events and Ticket from `1 -> 0` within
-  one 30-second interval.
+  background side-menu poll changed Events and Ticket from `1 -> 0` within one
+  30-second interval.
 - Unpublish preserves Ticketing On in the draft but owns the write-side ticket
   revocation: Nova's physical ticket changes `A -> D`; her stored event/ticket
   counters become zero; Casey and pending Riley remain ticketless.
-- After the UI observation, run `verify-ticket-poll-resume`. On PASS, close and
-  reset this checkpoint. A new active ticket/QR must be produced before the
-  physical-phone `EVENT-TICKET-003` check-in.
+- Persisted oracle proved the same ticket became `D`, all controlled ticket
+  counters became zero, and membership remained exact. PASS/CLOSED; reset
+  completed at `2026-08-06T06:09:19.840Z`.
+
+## Active checkpoint — `EVENT-TICKET-003`
+
+- Clean baseline restaged at `2026-08-06T06:44:35.639Z`: active Ticketing On,
+  Casey accepted Admin, Nova accepted Member, one Nova `A` physical ticket and
+  users counters `1 / 1`; the ticket is unused and Nova's participant-owned
+  event overlay is present.
+- Ticket code is `TKT-12345678-1234-4123-8123-123456789abc`; the canonical
+  event image is the retained managed MinIO `large.webp` URL.
+- Physical Android `aer8vgcmyd9lzxv8` is authorized. The existing reverse is
+  `tcp:8080 tcp:80`; do not restart the dev stack.
+- Before scanning, Nova displays the QR on desktop and saves a screenshot with
+  the complete QR; retain it because the consumed credential has no UI surface
+  from which to display the QR again. Casey then opens `http://localhost:8080`
+  on the phone, enters Ticket -> Scan Ticket, grants camera permission and
+  scans once. Capture the first success, then reuse the saved screenshot for
+  the repeat scan before invalid and unauthorized no-op scans.
+- The first physical scan persisted one use at
+  `2026-08-06T06:18:07.529719781Z` by Casey, but the checkpoint is restarting
+  because the required pre-scan QR screenshot was not retained.
+- The current rerun's first scan is PASS: the revised scanner UI worked on the
+  physical phone and the persisted ticket has
+  `usedAtIso=2026-08-06T06:59:21.130578868Z` and `usedByUserId=Casey`. Reuse the
+  saved QR next and prove those values do not change before running invalid and
+  unauthorized branches.
+- The scanner UI now uses one contextual `app-menu` Kamera be/ki toggle. Off
+  stops detection and MediaStream tracks and shows the white/red-X state;
+  successful validation stops the stream and retains the recognized frame;
+  Kamera be owns restart, with no separate retry button. Frontend hot-deploy
+  compilation completed successfully after the source sync.
+- Scanner reading/validating text now occupies a centered top badge overlay in
+  the camera target. The toggle remains in one stable layout position and is
+  merely disabled during validation, so state changes cannot move it vertically.
+- The four camera labels are present in both frontend local bundles and the
+  generated `demo_db`/`e2e_db`/`myscoutee_db` Mongo JSON seeds. Bundle versions
+  are `2026.08.06.en.51` and `2026.08.06.hu.51`; the i18n seed audit passed
+  `6126` messages, the existing Mongo watcher imported the active demo seed,
+  and the live API returned all four English and Hungarian values.
+- `EVENT-TICKET-009` is a later separate asymmetric-connectivity checkpoint:
+  warm Nova's Ticket/QR surface, put only Nova's desktop browser target offline
+  and reload it from cache while the backend and Casey's physical-phone scanner
+  remain online. Casey scans Nova's cached QR and the server must apply the use
+  exact-once. Prefer Codex target-scoped CDP control and record target metadata;
+  otherwise use the documented Nova-tab DevTools Network Offline procedure.
+  Always restore Nova online afterward. Never stop the shared server for this
+  case.
+- `EVENT-TICKET-010` is planned security hardening: a server-confirmed replay
+  of an already-used QR may create a bounded warning notification for holder
+  Nova, without exposing the raw QR and without any ticket/counter mutation.
+  It is not implemented and does not retroactively block `EVENT-TICKET-003`.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 

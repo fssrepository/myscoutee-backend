@@ -22,7 +22,8 @@ public final class NotificationDtos {
             String actionPath,
             String sourceType,
             String sourceId,
-            Map<String, String> payload) {
+            Map<String, String> payload,
+            Integer occurrenceCount) {
     }
 
     public record UserNotificationsPageResponseDto(

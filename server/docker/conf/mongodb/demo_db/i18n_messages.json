@@ -14364,6 +14364,30 @@
     "value": "Scan again"
   },
   {
+    "_id": "i18n-message-en-asset-ticket-scan-camera-on",
+    "key": "asset.ticket.scan.camera.on",
+    "lang": "en",
+    "value": "Camera on"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-camera-off",
+    "key": "asset.ticket.scan.camera.off",
+    "lang": "en",
+    "value": "Camera off"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-camera-turn-on",
+    "key": "asset.ticket.scan.camera.turn.on",
+    "lang": "en",
+    "value": "Turn camera on"
+  },
+  {
+    "_id": "i18n-message-en-asset-ticket-scan-camera-turn-off",
+    "key": "asset.ticket.scan.camera.turn.off",
+    "lang": "en",
+    "value": "Turn camera off"
+  },
+  {
     "_id": "i18n-message-en-asset-borrow-title",
     "key": "asset.borrow.title",
     "lang": "en",
@@ -32716,6 +32740,30 @@
     "key": "asset.ticket.scan.again",
     "lang": "hu",
     "value": "Újabb beolvasás"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-camera-on",
+    "key": "asset.ticket.scan.camera.on",
+    "lang": "hu",
+    "value": "Kamera be"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-camera-off",
+    "key": "asset.ticket.scan.camera.off",
+    "lang": "hu",
+    "value": "Kamera ki"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-camera-turn-on",
+    "key": "asset.ticket.scan.camera.turn.on",
+    "lang": "hu",
+    "value": "Kamera bekapcsolása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-ticket-scan-camera-turn-off",
+    "key": "asset.ticket.scan.camera.turn.off",
+    "lang": "hu",
+    "value": "Kamera kikapcsolása"
   },
   {
     "_id": "i18n-message-hu-asset-borrow-title",

@@ -67,6 +67,44 @@ public class UserNotificationPageRepository {
         }
     }
 
+    public AggregatedNotificationUpsert upsertAggregated(UserNotification notification) {
+        if (notification == null || notification.getAggregationKey() == null
+                || notification.getAggregationKey().isBlank()) {
+            return new AggregatedNotificationUpsert(false, false);
+        }
+        Criteria criteria = Criteria.where("aggregationKey").is(notification.getAggregationKey());
+        Update update = new Update()
+                .setOnInsert("_id", notification.getId())
+                .setOnInsert("syncKey", notification.getSyncKey())
+                .setOnInsert("aggregationKey", notification.getAggregationKey())
+                .setOnInsert("recipientUserId", notification.getRecipientUserId())
+                .set("outboxId", notification.getOutboxId())
+                .set("kind", notification.getKind())
+                .set("category", notification.getCategory())
+                .set("title", notification.getTitle())
+                .set("message", notification.getMessage())
+                .set("senderUserId", notification.getSenderUserId())
+                .set("actionPath", notification.getActionPath())
+                .set("sourceType", notification.getSourceType())
+                .set("sourceId", notification.getSourceId())
+                .set("payload", notification.getPayload())
+                .set("createdDate", notification.getCreatedDate())
+                .set("createdUser", notification.getCreatedUser())
+                .set("updatedDate", notification.getUpdatedDate())
+                .set("updatedUser", notification.getUpdatedUser())
+                .unset("readAtIso")
+                .inc("occurrenceCount", 1);
+        UserNotification previous = mongoTemplate.findAndModify(
+                Query.query(criteria),
+                update,
+                FindAndModifyOptions.options().upsert(true).returnNew(false),
+                UserNotification.class);
+        boolean inserted = previous == null;
+        boolean becameUnread = inserted
+                || (previous.getReadAtIso() != null && !previous.getReadAtIso().isBlank());
+        return new AggregatedNotificationUpsert(inserted, becameUnread);
+    }
+
     public Optional<UserNotification> markRead(
             String notificationId,
             String recipientUserId,
@@ -166,5 +204,10 @@ public class UserNotificationPageRepository {
             List<UserNotification> records,
             long total,
             boolean hasNext) {
+    }
+
+    public record AggregatedNotificationUpsert(
+            boolean inserted,
+            boolean becameUnread) {
     }
 }
