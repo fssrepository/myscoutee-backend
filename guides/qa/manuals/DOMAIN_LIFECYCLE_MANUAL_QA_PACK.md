@@ -82,7 +82,8 @@ The principal checkpoint chains are:
 - `EVENT-FEEDBACK-006` is the isolated pending remove/restore branch. Run it
   from the same zero-response baseline, prove both transitions, reset it
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
-- `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-003` ->
+- `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-POLL-001` ->
+  `EVENT-TICKET-003` ->
   `EVENT-TICKET-004` -> `EVENT-TICKET-005` -> `EVENT-TICKET-006` ->
   `EVENT-TICKET-007` -> `EVENT-VISIBILITY-001`:
   ticket enablement, physical credential, check-in, A/D audit lifecycle,
@@ -198,8 +199,10 @@ Execution evidence on 2026-08-04:
   member, pending request or invitee on this event. The harness pins Lina Park
   as Casey's friend control and Liam Parker as Casey's non-friend control.
 - As Casey, perform **Unpublish -> Friends Only -> Publish** on the same event.
-  Changing visibility must not replace either active physical ticket or alter
-  membership and stored ticket counters.
+  Unpublish must retain both former active tickets as `D`; republish must
+  create one new `A` ticket with a new ID/code for Nova and Riley. Membership
+  remains unchanged and their stored ticket counters return to their original
+  values after publish.
 - With Lina's and Liam's sessions already on Event Explore and configured to
   include the event's location/date, require Lina to see the event exactly once
   after the normal list poll and require Liam not to see it. A direct detail
@@ -1045,7 +1048,7 @@ Execution evidence on 2026-08-06:
   The two Nova Ticket reads are direct request-path operations and must not
   start a scheduler or an additional event recompute.
 
-Execution evidence on 2026-08-06 (retest still open):
+Execution evidence on 2026-08-06:
 
 - PASS: the real UI sequence preserved the intended membership projection:
   Casey and Nova remained accepted at `2 / 8`, Riley remained the single
@@ -1065,6 +1068,65 @@ Execution evidence on 2026-08-06 (retest still open):
   `2026-08-06T05:01:50.062Z` with the retained managed image, Ticketing Off,
   Casey and Nova accepted, Riley pending, `2 / 8`, no physical tickets and all
   three users at stored ticket counters `0 / 0`.
+- PASS after fix: the repeated real publish created exactly one Nova
+  `status=A` physical ticket and updated Nova's two stored `users` ticket
+  counters to `1 / 1`. Casey Admin and pending Riley remained at `0 / 0` with
+  no ticket; membership stayed `2 / 8` plus one pending control and the publish
+  produced one normal recompute.
+- Ticket list/reload reads preserved ticket ID
+  `6a7415d366fe4ab1cd12e373`, code and `issuedAtIso`, and produced no new ticket
+  or recompute. Nginx recorded HTTP 200 for the canonical managed
+  `medium.webp` request. On the first open the UI retained the earlier
+  **Previous** filter and therefore showed an empty list; a full reload reset
+  the surface to **Upcoming**, where the ticket appeared. Retain this as a
+  filter/reload observation, not a ticket-lifecycle failure.
+- FOLLOW-UP HOT-DEPLOYED: Ticket already had the shared SmartList-owned
+  30-second poll. Its completed list snapshot now publishes the Ticket count
+  through the same `ActivityStore` counter signal used by Activity/Event,
+  mirroring both `tickets` and `asset.tickets`. The popup dropdown no longer
+  substitutes a separate popup-only red counter. The separate
+  `EVENT-TICKET-POLL-001` checkpoint must prove live list/counter convergence
+  while Upcoming stays open, without close/reopen or browser reload.
+
+### `EVENT-TICKET-POLL-001` — open Ticket popup shares one live counter signal
+
+- Start from a clean published, Ticketing Off event with Casey accepted Admin,
+  Nova accepted Member at `2 / 8`, and Riley pending as the ticketless control.
+  There is no physical ticket and all three users' stored
+  `activities.tickets` plus `activities.asset.tickets` are `0 / 0`.
+- As Nova, open **Ticket -> Upcoming** and leave the empty popup open. Do not
+  close it and do not reload the browser.
+- In the isolated Casey session perform **Unpublish -> Ticketing On ->
+  Publish** once.
+- Within one 30-second SmartList poll interval, require Nova's already-open
+  Upcoming list to gain exactly one ticket row and the Ticket dropdown/menu red
+  counter to change `0 -> 1` from the same shared `ActivityStore` signal.
+- While that popup is open, the shared `UiPollCoordinator` gives its SmartList
+  poll foreground ownership. The side-menu realtime long poll must not execute
+  concurrently or overwrite the foreground snapshot; after the popup closes,
+  background polling resumes. Apply the same ownership rule to Activity/Event
+  SmartLists rather than adding a Ticket-specific timer or component gate.
+- The persisted oracle must independently prove exactly one Nova `status=A`
+  ticket, Nova's two stored `users` counters at `1 / 1`, no Casey ticket, and
+  Riley still pending and ticketless with counters at `0 / 0`, plus exactly one
+  normal publish recompute. The poll itself must create no ticket, recompute,
+  notification or outbox item.
+- Phase 1 is PASS when the already-open list and shared counter converge from
+  `0 -> 1` without popup close/reopen, reload or oscillation.
+- Phase 2 then closes Nova's Ticket popup but leaves the profile side menu
+  open. Casey performs **Unpublish** once. Do not reopen a popup and do not
+  reload Nova.
+- Within one 30-second background realtime poll, require both Nova's Events
+  and Ticket red counters to change `1 -> 0`. Unpublish preserves the draft's
+  Ticketing On setting but revokes the event credential: the one physical
+  ticket changes `A -> D`, while Casey and pending Riley remain ticketless.
+- Run `bash manual-qa-checkpoints.sh verify-ticket-poll-resume event-domain
+  EVENT-TICKET-POLL-001`. The persisted oracle must prove canonical `DR`,
+  Ticketing On, membership `2 / 8` plus Riley pending, exactly one Nova `D`
+  audit ticket, and Nova's stored Events/Ticket counters at zero.
+- If the background side-menu poll and persisted oracle agree, close this
+  checkpoint. A later republish must create a new active physical ticket and
+  QR before `EVENT-TICKET-003` can run.
 
 ### `EVENT-TICKET-003` — authorized check-in is exact-once
 
@@ -1095,13 +1157,14 @@ Execution evidence on 2026-08-06 (retest still open):
 - An ordinary participant scanner and an invalid code must be rejected with no
   ticket, membership, counter, notification or worker change.
 
-### `EVENT-TICKET-004` — Ticketing Off/On preserves an auditable A/D history
+### `EVENT-TICKET-004` — Unpublish/republish preserves an auditable A/D history
 
 - Start with Nova's physical `status=A` ticket from the preceding publish.
-- Disable Ticketing and save once. The existing ticket object must remain in
-  `eventTickets` with `status=D`; Nova's active Ticket counter/list entry must
-  disappear without changing membership.
-- Enable Ticketing and publish again. This must create a new physical ticket
+- Unpublish once while Ticketing remains configured On in the draft. The
+  existing ticket object must remain in `eventTickets` with `status=D`;
+  Nova's active Ticket counter/list entry must disappear without changing
+  membership.
+- Publish again with Ticketing still On. This must create a new physical ticket
   object with a new ID, QR code and `issuedAtIso`; it must not reactivate or
   overwrite the prior `D` audit record.
 - Exactly one `A` ticket may exist for an event/holder pair. Ticket reads never
@@ -1133,8 +1196,8 @@ Execution evidence on 2026-08-06 (retest still open):
   from Upcoming and appears once under Past. Event expiry does not change the
   ticket to `D` and does not create a replacement.
 - Scanning the retained code returns expired without consuming or mutating the
-  ticket. `A`/`D` is owned by Ticketing On/Off, while Upcoming/Past is derived
-  from the event time boundary.
+  ticket. Event time owns Upcoming/Past; Unpublish or loss of ticket
+  eligibility owns `A -> D`.
 
 ### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
 
@@ -1156,6 +1219,28 @@ Execution evidence on 2026-08-06 (retest still open):
 - Nova's original ticket ID/code and counters remain unchanged throughout.
   Repeating Riley's acceptance or opening Riley Ticket twice must preserve the
   same Riley ticket ID/code and counters. Casey remains ticketless.
+
+### `EVENT-TICKET-008` — two similar events keep physical tickets isolated
+
+- Stage two structurally similar published, Ticketing On events. Casey is
+  accepted Admin, Nova accepted Member, and Riley pending on both events.
+  Casey and Riley have no ticket; Nova has two distinct physical `status=A`
+  tickets, each bound to exactly one event ID.
+- Capture both event IDs and both ticket IDs, QR codes and `issuedAtIso`
+  values. Nova's Ticket list contains both cards once and both users-table
+  ticket counters equal `2`.
+- Unpublish only event A. Its ticket changes `A -> D`; event B stays active,
+  its ticket remains `A` with the same ID/code, the list contains only B, and
+  Nova's counters change `2 -> 1`.
+- Run `verify-ticket-isolation-unpublish event-domain EVENT-TICKET-008` and
+  retain its exact event-B identity oracle.
+- Publish event A again with Ticketing still On. A new event-A ticket with a
+  new ID/code is created while event B remains byte-for-byte stable; Nova's
+  counters return `1 -> 2` and each event appears once.
+- Run `verify-ticket-isolation-republish event-domain EVENT-TICKET-008` before
+  closing the checkpoint.
+- Repeated Ticket reads are no-ops. No physical ticket, QR, participant
+  overlay or counter contribution may cross an `eventId` boundary.
 
 ## Tournament cases
 

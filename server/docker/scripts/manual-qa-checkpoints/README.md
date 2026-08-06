@@ -66,7 +66,8 @@ Supported checkpoint IDs:
   `EVENT-FEEDBACK-006`
 - `EVENT-IMPRESSION-001`
 - `EVENT-VISIBILITY-001` (advance only from completed `EVENT-TICKET-007`)
-- `EVENT-TICKET-001` through `EVENT-TICKET-007`
+- `EVENT-TICKET-001` through `EVENT-TICKET-008`, plus
+  `EVENT-TICKET-POLL-001`
 - `TOURNAMENT-001` through `TOURNAMENT-003`
 
 `EVENT-TICKET-002` intentionally starts with a published, Ticketing Off event.
@@ -77,21 +78,39 @@ performs Unpublish -> Ticketing On -> Publish through the UI; that real publish
 path owns Nova's credential, while Casey and Riley remain ticketless. Nova then
 opens Ticket twice to prove that both reads reuse the one physical credential
 created by publish.
+`EVENT-TICKET-POLL-001` uses the same clean Ticketing Off write baseline,
+including Casey and Nova accepted at `2 / 8` plus Riley pending and ticketless,
+but keeps Nova's Upcoming Ticket popup open before Casey performs Unpublish ->
+Ticketing On -> Publish. Within one 30-second SmartList interval the new ticket
+row and the shared `tickets` / `asset.tickets` counter signal must converge
+together without close/reopen or browser reload; the poll itself is read-only
+and Riley must remain pending with no ticket or ticket counter. Its second
+phase closes Nova's popup, leaves the side menu open and has Casey Unpublish:
+the resumed background poll must change Events and Ticket from `1 -> 0`, while
+the same physical ticket is retained as a `D` audit record and Ticketing stays
+configured On in the draft.
 `EVENT-TICKET-004` proves the retained `D` audit record plus a new object and
-QR after Off -> On -> Publish. `EVENT-TICKET-005` starts with Casey alone and
+QR after Unpublish -> Publish with Ticketing still On. `EVENT-TICKET-005` starts with Casey alone and
 uses the real Public Explore -> Nova Join -> Casey approval path: Join is
 pending and ticketless, while the terminal approval creates Nova's ticket.
 `EVENT-TICKET-006` keeps the physical ticket `A` while the ended event moves it
 from Upcoming to Past. `EVENT-TICKET-007` starts with Casey and ticketed Nova
 accepted; Nova invites Riley, Casey preapproves without creating Riley's
 ticket, and only Riley's later terminal acceptance creates it.
-After that terminal state, advance to `EVENT-VISIBILITY-001` without resetting.
+Separately, `EVENT-TICKET-008` stages two similar published Ticketing On events with Casey
+Admin, Nova accepted and Riley pending on both. Nova starts with two distinct
+physical tickets. Unpublishing and republishing event A must revoke/reissue
+only A; event B keeps the same active ticket identity and the aggregate ticket
+counter follows `2 -> 1 -> 2`.
+After the `EVENT-TICKET-007` terminal state, advance to
+`EVENT-VISIBILITY-001` without resetting.
 Casey performs Unpublish -> Friends Only -> Publish on the same event. Lina
 Park is the external non-member friend control and Liam Parker the external
 non-member non-friend control; Nova and Riley are ineligible as Explore
-controls because they already have tracked event participation. Visibility
-changes must preserve both active physical tickets and all stored ticket
-counters. Explore reads must create no membership, invitation or ticket.
+controls because they already have tracked event participation. Unpublish
+retains the two old tickets as `D`; publish creates new `A` ticket IDs/codes
+and restores their stored counters. Explore reads must create no membership,
+invitation or ticket.
 
 ```bash
 bash manual-qa-checkpoints.sh advance event-domain \
@@ -100,7 +119,7 @@ bash manual-qa-checkpoints.sh advance event-domain \
 
 Direct `stage` is rejected for this checkpoint because it would lose the
 completed invitation/ticket baseline that the visibility transition must
-preserve.
+use as its before oracle.
 
 Reset removes only the checkpoint's event/ticket artifacts and restores the
 saved activity snapshot. Both `activities.tickets` and

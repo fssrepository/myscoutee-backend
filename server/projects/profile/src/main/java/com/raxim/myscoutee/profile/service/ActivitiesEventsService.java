@@ -2025,6 +2025,7 @@ public class ActivitiesEventsService {
             syncStageReminderTasksForSavedEvents(updated, userId);
             markEventAttachmentsUnavailable(updated, "unpublished");
         }
+        eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         ActivitiesMembersService.OwnerMembersSnapshot afterSnapshot =

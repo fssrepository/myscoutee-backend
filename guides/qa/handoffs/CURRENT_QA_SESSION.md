@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-TICKET-002
-state: EVENT-TICKET-001 is PASS/CLOSED. EVENT-TICKET-002 has now exposed two independent write-boundary defects. The earlier Ticket read could manufacture a Casey Admin credential; issuance is now write-side only and Admin is ineligible. In the next clean real UI run, Casey's Unpublish -> Ticketing On -> Publish preserved the correct 2 / 8 with Riley pending, but the pre-read oracle found zero physical tickets and Nova's stored users-table counters still 0 / 0. Runtime was current: the separate lifecycle publish() method omitted the accepted-participant ticket sync that already existed in the canonical save/sync path. The publish write now invokes that sync before refreshing users.activities.tickets and users.activities.asset.tickets; the existing hot-deploy reported BUILD SUCCESSFUL and restarted the same server. No frontend/read-side repair was added. The failed state was reset and EVENT-TICKET-002 freshly staged at 2026-08-06T05:01:50.062Z with the retained MinIO large image, active/published Ticketing Off, Casey accepted Admin, Nova accepted Member, Riley pending join, accepted occupancy 2 / 8, no physical ticket, all three stored ticket counters 0 / 0, Riley event all=1/pending=1, and no stage recompute/outbox side effect. EVENT-TICKET-003 remains the physical Android scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080. Local/SeedBuilder Ticket and QR behavior remains aligned in repository/service/mapper/seed layers only, never a component
+active_checkpoint: EVENT-TICKET-POLL-001
+state: EVENT-TICKET-001 and EVENT-TICKET-002 are PASS/CLOSED. EVENT-TICKET-POLL-001 phase 1 is PASS: with Nova's Upcoming Ticket popup left open, Casey's real publish made the list and shared Ticket counter converge 0 -> 1 without reload or oscillation. Poll ownership is centralized in shared UiPollCoordinator: SmartList is foreground, side-menu realtime is background, only one poll runs at once, popup presence suppresses/aborts background ownership, and an aborted background response cannot update ActivityStore. Ticket and Activity/Event use this shared behavior. Phase 2 is ready with Nova's popup closed and side menu open. Correct lifecycle semantics are that Casey Unpublish preserves Ticketing On in the draft but revokes Nova's physical ticket A -> D and refreshes stored event/ticket counters. Existing frontend-sync hot-deploy compilation is green; backend hot-deploy must load the unpublish ticket-lifecycle fix before the manual action
 next_actor: user
-next_action: as Casey, open Manual QA EVENT-TICKET-002 and perform Unpublish -> Ticketing On -> Publish through the UI; stop before Nova opens Ticket and report that publish completed
-next_codex_action: immediately prove the event remains 2 / 8 with Riley pending, one Nova A physical ticket, zero Casey and Riley tickets/users-table counters, and one normal publish recompute; then ask Nova to open Ticket twice and prove stable id/code, no read write, and a medium.webp card request
-queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-VISIBILITY-001]
+next_action: after Codex confirms backend hot-deploy is green, keep Nova's Ticket popup closed and side menu open; in Casey's isolated session perform Unpublish once; do not open another popup or reload Nova and wait at most one 30-second background poll for both Events and Ticket counters to change 1 -> 0
+next_codex_action: after the user reports the phase-2 UI result, run verify-ticket-poll-resume and prove canonical DR with Ticketing On, exactly one Nova status D audit ticket, Nova users-table Events/Ticket counters zero, Casey counters zero and Riley still pending/ticketless; then close/reset POLL-001 and stage the next ticket checkpoint that produces a fresh active QR
+queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-VISIBILITY-001]
 ```
 
-Active detail: [`EVENT-TICKET-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
+Active detail: [`EVENT-TICKET-POLL-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
 
 ## Hard constraints
 
@@ -67,7 +67,7 @@ work.
   accepted Admin, Nova accepted Member, and exactly one event recompute followed
   the save.
 
-## Active checkpoint — `EVENT-TICKET-002`
+## Completed checkpoint — `EVENT-TICKET-002`
 
 - The clean reset baseline contains no physical ticket and both Casey and Nova
   have `activities.tickets=0` and `activities.asset.tickets=0`. The next normal
@@ -107,12 +107,50 @@ work.
   leaves Riley pending and ticketless, and only Riley's later acceptance
   creates Riley's physical ticket and updates both Riley `users` table
   counters. After 007 is complete, `EVENT-VISIBILITY-001` retains the same
-  event and both physical tickets while Casey performs Unpublish -> Friends
-  Only -> Publish. External non-member Lina Park is the friend Explore control
+  event, memberships and pre-transition ticket identities while Casey performs
+  Unpublish -> Friends Only -> Publish. Unpublish retains the old tickets as
+  `D`; republish creates new `A` ticket IDs/codes. External non-member Lina Park is the friend Explore control
   and external non-member Liam Parker the non-friend control. Nova and Riley
   are not visibility controls because their tracked participation excludes
   them from Explore. Slot/tournament evolution is only a later planned branch
   and is not part of the current run.
+
+## Active checkpoint — `EVENT-TICKET-POLL-001`
+
+- The existing Ticket SmartList 30-second poll is now wired to the same shared
+  `ActivityStore` counter signal pattern as Activity/Event; `tickets` and
+  `asset.tickets` change together and the dropdown no longer reads a separate
+  popup-only red counter. Existing `frontend-sync` hot-deploy compilation is
+  green.
+- Baseline restaged at `2026-08-06T05:42:44.447Z`: published + Ticketing Off,
+  Casey Admin and Nova accepted at
+  `2 / 8`, Riley pending as the ticketless control, no physical tickets, and
+  all three users' stored ticket counters at `0 / 0`.
+- Nova opens Ticket in Upcoming mode and leaves the empty popup open. Casey then
+  performs real Unpublish -> Ticketing On -> Publish in an isolated session.
+- Without closing or reloading Nova, one 30-second SmartList poll must make the
+  list and shared Ticket dropdown/menu counter converge together from `0` to
+  `1`. This phase is PASS.
+- Shared `UiPollCoordinator` owns scheduling: the popup SmartList has
+  foreground priority, the side-menu realtime poll is background, and only one
+  poll may execute at once. Popup presence suppresses or aborts background
+  ownership; an aborted background response must not touch `ActivityStore`.
+  Closing the popup returns ownership to the normal side-menu poll. The same
+  rule covers Activity/Event SmartLists.
+- Casey's publish must create exactly one Nova status `A` physical ticket and
+  one normal recompute. Riley must remain pending and ticketless at `0 / 0`.
+  The poll itself is read-only: no ticket replacement, recompute, notification
+  or outbox write.
+- Phase 2 closes Nova's Ticket popup, leaves the side menu open, and performs
+  Casey **Unpublish** once. Without reopening or reloading Nova, the resumed
+  background side-menu poll must change Events and Ticket from `1 -> 0` within
+  one 30-second interval.
+- Unpublish preserves Ticketing On in the draft but owns the write-side ticket
+  revocation: Nova's physical ticket changes `A -> D`; her stored event/ticket
+  counters become zero; Casey and pending Riley remain ticketless.
+- After the UI observation, run `verify-ticket-poll-resume`. On PASS, close and
+  reset this checkpoint. A new active ticket/QR must be produced before the
+  physical-phone `EVENT-TICKET-003` check-in.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 

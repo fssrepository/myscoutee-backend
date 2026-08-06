@@ -112,13 +112,14 @@ public class EventTicketService {
         }
 
         boolean ticketingEnabled = Boolean.TRUE.equals(canonical.getTicketing());
+        boolean eventActive = canonical.hasStoredStatus(ActivityEvent.STATUS_ACTIVE);
         List<EventTicket> toDelete = new ArrayList<>();
         for (EventTicket ticket : eventTicketsRepository.findByEventId(eventId)) {
             if (ticket == null || !isActiveStatus(ticket.getStatus())) {
                 continue;
             }
             String holderUserId = normalizeId(ticket.getHolderUserId());
-            if (!ticketingEnabled || !eligible.contains(holderUserId)) {
+            if (!ticketingEnabled || !eventActive || !eligible.contains(holderUserId)) {
                 ticket.setStatus(EventTicket.STATUS_DELETED);
                 toDelete.add(ticket);
             }
@@ -127,7 +128,7 @@ public class EventTicketService {
             eventTicketsRepository.saveAll(toDelete);
         }
 
-        if (!ticketingEnabled || !canonical.hasStoredStatus(ActivityEvent.STATUS_ACTIVE)) {
+        if (!ticketingEnabled || !eventActive) {
             return;
         }
         Instant issuedAt = now == null ? Instant.now() : now;

@@ -154,6 +154,20 @@ class EventTicketServiceTest {
     }
 
     @Test
+    void unpublishedEventSoftDeletesThePhysicalActiveTicketEvenWhenTicketingStaysOn() {
+        ActivityEvent event = activeEvent();
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
+        EventTicket ticket = activeTicket();
+        when(eventTicketsRepository.findByEventId(EVENT_ID)).thenReturn(List.of(ticket));
+
+        service.synchronizeForEvent(event, Set.of(HOLDER_USER_ID), NOW);
+
+        assertThat(ticket.getStatus()).isEqualTo(EventTicket.STATUS_DELETED);
+        verify(eventTicketsRepository).saveAll(List.of(ticket));
+        verify(eventTicketsRepository, never()).save(any(EventTicket.class));
+    }
+
+    @Test
     void republishAfterTicketingOffCreatesANewPhysicalTicketAndQrCode() {
         ActivityEvent event = activeEvent();
         EventTicket deleted = activeTicket();

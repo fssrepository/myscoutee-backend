@@ -524,6 +524,13 @@ class ActivitiesEventsServiceTest {
                 eq("host"));
         assertThat(audienceCaptor.getValue())
                 .containsExactlyInAnyOrder("accepted-member", "pending-invitee");
+        InOrder ticketCounterOrder = org.mockito.Mockito.inOrder(
+                eventParticipationTicketService,
+                userActivityCountersService);
+        ticketCounterOrder.verify(eventParticipationTicketService)
+                .syncParticipationTicketsForEvent("event-1");
+        ticketCounterOrder.verify(userActivityCountersService)
+                .refreshEventCountersForDocuments(anyList());
     }
 
     @Test
