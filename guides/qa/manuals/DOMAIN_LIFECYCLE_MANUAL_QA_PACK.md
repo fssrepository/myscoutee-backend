@@ -972,6 +972,17 @@ Status: **PASS** on 2026-08-05.
 - The editor save requires its normal event recompute. Merely opening the
   participant ticket surface after the save must not start a scheduler.
 
+Execution evidence on 2026-08-06:
+
+- PASS: after correcting the fixture's missing shared event-counter projection,
+  Casey's My Events badge was `1` and the same event remained visible through
+  repeated realtime/list polls.
+- PASS: Casey unpublished the event for editing, enabled Ticketing, saved once
+  and reopened it with Ticketing still On. The preferred canonical state was
+  `DR` with `ticketing=true`; Casey remained accepted Admin and Nova accepted
+  Member, and exactly one event recompute followed the save. Credential issue
+  and participant ticket reuse remain isolated in `EVENT-TICKET-002`.
+
 ### `EVENT-TICKET-002` — accepted participant receives one usable credential
 
 - Open the ticket affordance as the accepted non-organizer participant.

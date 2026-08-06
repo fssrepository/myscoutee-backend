@@ -8,15 +8,15 @@ active. Do not reconstruct current state from the full conversation.
 ## Resume block
 
 ```yaml
-active_checkpoint: EVENT-TICKET-001
-state: The valid Event Feedback and Impressions checkpoints are closed. The ticket fixture's missing event-activity projection was corrected and EVENT-TICKET-001 was freshly staged at 2026-08-06T03:05:48.629Z. The active event is Manual QA EVENT-TICKET-001 with ticketing=false, Casey as Admin and Nova as the single accepted Member; Casey has the exact staged hosting/event.hosting/all +1 and Nova the exact events/event.active/all +1, with both pre-stage activity records snapshotted for reset. There are no pending/invited members, tickets or checkpoint side effects. EVENT-TICKET-003 is documented as a required physical Android phone test: Casey Admin scans Nova's QR through adb reverse tcp:8080 tcp:80 at http://localhost:8080 with the real phone camera
+active_checkpoint: EVENT-TICKET-002
+state: EVENT-TICKET-001 is PASS/CLOSED. After the fixture's shared event-counter projection was corrected, Casey's My Events badge and event survived repeated polls; Casey then unpublished for editing, enabled Ticketing, saved once and reopened with ticketing=true, unchanged Casey Admin and Nova accepted Member roles, and exactly one event recompute. The 001 fixture was reset. EVENT-TICKET-002 was freshly staged at 2026-08-06T03:10:16.898Z as active/published with ticketing=true, Casey accepted Admin and Nova the single accepted Member. Casey has the exact staged hosting/event.hosting/all +1 and Nova events/event.active/all +1; there are no credentials, pending/invited members, recompute tasks or outbox side effects at baseline. EVENT-TICKET-003 remains the required physical Android phone scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080
 next_actor: user
-next_action: as Casey, reload once and confirm the My Events badge is 1 and the staged event remains in the open My Events popup across a normal poll; then open it in Event Editor, enable Ticketing, Save exactly once, close, and reopen the same event
-next_codex_action: inspect the canonical event, exact member roles and normal event recompute after Save; then compare the reopened editor and Nova participant surface without invoking a ticket scheduler
-queued_checkpoint: [EVENT-TICKET-002, EVENT-TICKET-003]
+next_action: as Nova, reload once, open the staged Manual QA EVENT-TICKET-002 participant ticket, close it, then open it a second time without performing any other event mutation
+next_codex_action: compare the two visible event/holder/code identities with the stored ticket collection and prove exact-one reuse with no recompute, notification or scheduler side effect
+queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004]
 ```
 
-Active detail: [`EVENT-TICKET-001`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
+Active detail: [`EVENT-TICKET-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
 
 ## Hard constraints
 
@@ -52,6 +52,16 @@ Recheck these facts with `git status --short` and
 work.
 
 ## Proven behavior — do not repeat without a related code change
+
+### `EVENT-TICKET-001` — PASS / CLOSED
+
+- The ticket fixture now projects the same shared event-counter signal consumed
+  by the menu and popup: Casey received hosting/event.hosting/all `+1`, Nova
+  events/event.active/all `+1`, and reset owns both activity snapshots.
+- Casey's My Events badge was `1` and the event survived repeated polls. After
+  unpublish-for-edit, Ticketing On persisted across save/reopen; Casey remained
+  accepted Admin, Nova accepted Member, and exactly one event recompute followed
+  the save.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 
