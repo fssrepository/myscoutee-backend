@@ -9,11 +9,11 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-002
-state: EVENT-TICKET-001 is PASS/CLOSED. The first real EVENT-TICKET-002 publish exposed that opening Ticket could manufacture a Casey Admin credential. Ticket is now a physical EventTicket with A/D lifecycle, created only by publish or a terminal participant-acceptance write; Ticket list/open is read-only and the admin is ineligible. The red Ticket badge is sourced from the users table, specifically activities.tickets and activities.asset.tickets, rather than counted from ticket reads. Focused backend tests pass. Fixture reset restored both Casey and Nova stored ticket counters to zero, and the next normal poll must remove the badge. EVENT-TICKET-002 was freshly staged at 2026-08-06T03:50:16.422Z with the retained managed large image URL, active/published Ticketing Off, Casey accepted Admin, Nova accepted Member, no ticket, overlay, recompute or outbox side effect. EVENT-TICKET-003 remains the physical Android scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080. Local/SeedBuilder Ticket and QR behavior is being aligned to this HTTP contract in repository/service/mapper/seed layers only, never a component
+state: EVENT-TICKET-001 is PASS/CLOSED. The first real EVENT-TICKET-002 publish exposed that opening Ticket could manufacture a Casey Admin credential. Ticket is now a physical EventTicket with A/D lifecycle, created only by publish or a terminal participant-acceptance write; Ticket list/open is read-only and the admin is ineligible. The red Ticket badge is sourced from the users table, specifically activities.tickets and activities.asset.tickets, rather than counted from ticket reads. Focused backend tests pass. EVENT-TICKET-002 was reset and freshly staged at 2026-08-06T04:47:51.294Z with the retained managed large image URL, active/published Ticketing Off, Casey accepted Admin, Nova accepted Member, Riley pending join, accepted occupancy 2 / 8 and no physical ticket. All three users have both stored ticket counters at zero; Riley's nested event counters correctly show all=1 and pending=1. Stage created no recompute or outbox side effect. EVENT-TICKET-003 remains the physical Android scan through adb reverse tcp:8080 tcp:80 at http://localhost:8080. Local/SeedBuilder Ticket and QR behavior is aligned to this HTTP contract in repository/service/mapper/seed layers only, never a component
 next_actor: user
 next_action: as Casey, open Manual QA EVENT-TICKET-002 and perform Unpublish -> Ticketing On -> Publish through the UI; stop before Nova opens Ticket and report that publish completed
-next_codex_action: immediately prove one Nova A physical ticket, zero Casey ticket/overlay/counter and one normal publish recompute; then ask Nova to open Ticket twice and prove stable id/code, no read write, and a medium.webp card request
-queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007]
+next_codex_action: immediately prove the event remains 2 / 8 with Riley pending, one Nova A physical ticket, zero Casey and Riley tickets/users-table counters, and one normal publish recompute; then ask Nova to open Ticket twice and prove stable id/code, no read write, and a medium.webp card request
+queued_checkpoint: [EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-VISIBILITY-001]
 ```
 
 Active detail: [`EVENT-TICKET-002`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticketing-checkpoints).
@@ -72,10 +72,14 @@ work.
 - The clean reset baseline contains no physical ticket and both Casey and Nova
   have `activities.tickets=0` and `activities.asset.tickets=0`. The next normal
   poll must therefore remove any stale Ticket red badge.
+- The fixture baseline is Casey accepted Admin + Nova accepted Member + Riley
+  pending join: every event projection must show accepted occupancy `2 / 8`
+  with one pending control. Riley's two stored `users` ticket counters remain
+  zero before and after publish.
 - Casey must perform the real `Unpublish -> Ticketing On -> Publish` UI flow.
   Stop before opening Nova's Ticket list so the write side can be proved first.
 - Publish must create exactly one physical `A` ticket for accepted Member Nova,
-  none for Admin Casey, and exactly one normal event recompute.
+  none for Admin Casey or pending Riley, and exactly one normal event recompute.
 - Opening Nova's Ticket list twice must preserve the same ticket id, QR code and
   `issuedAt`; reads must create no ticket or side effect.
 - The canonical Event image is the retained MinIO `large.webp`; the Ticket card
@@ -90,11 +94,20 @@ work.
   only its target user. Ticket list/open and QR reads never issue a ticket.
   The targeted seed checkpoint passes, and the ticket repository plus event
   service suites pass 17/17. No component file contains ticket lifecycle logic.
-- Keep the two later acceptance producers separate: `EVENT-TICKET-005` is a
-  member-origin join where admin approval directly makes the member accepted;
-  `EVENT-TICKET-007` is an ordinary-member invitation where admin preapproval
-  remains ticketless and only the invitee's later acceptance creates the
-  physical ticket and updates both `users` table counters.
+- Keep the two later acceptance producers separate: `EVENT-TICKET-005` starts
+  with Casey alone on a Public, approval-required event; Nova discovers it in
+  Explore, Join creates only a pending membership, and Casey approval directly
+  makes Nova accepted and creates Nova's ticket. `EVENT-TICKET-007` starts with
+  Casey and ticketed Nova accepted; Nova invites Riley, Casey preapproval
+  leaves Riley pending and ticketless, and only Riley's later acceptance
+  creates Riley's physical ticket and updates both Riley `users` table
+  counters. After 007 is complete, `EVENT-VISIBILITY-001` retains the same
+  event and both physical tickets while Casey performs Unpublish -> Friends
+  Only -> Publish. External non-member Lina Park is the friend Explore control
+  and external non-member Liam Parker the non-friend control. Nova and Riley
+  are not visibility controls because their tracked participation excludes
+  them from Explore. Slot/tournament evolution is only a later planned branch
+  and is not part of the current run.
 
 ### `CHAT-AUTH-001` — PASS / CLOSED
 

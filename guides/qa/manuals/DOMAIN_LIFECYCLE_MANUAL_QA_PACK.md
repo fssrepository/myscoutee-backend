@@ -54,7 +54,7 @@ the same prerequisite without depending on an earlier human action.
 | Event feedback submit | Feedback state, per-card answers and `event.feedback.submitted` telemetry | Submitted feedback, organizer received-feedback view and recipient bell | One user recompute per changed target; first-submission notification outbox; activity counters | `EVENT-FEEDBACK-002` |
 | Impression read and menu counter acknowledgement | Profile data merged with event-feedback trait evidence; stored feedback bucket count | Host and Attendee sections in the Impressions popup; Feedback tile acknowledgement and poll reconciliation | None on open; normal user-realtime polling may deliver a later snapshot | `EVENT-IMPRESSION-001`, `EVENT-IMPRESSION-002` |
 | Feedback note or pending Ignore/Restore | Feedback state mutation only | Organizer note or pending feedback list bucket | Counter refresh only; no affinity recompute or notification outbox | `EVENT-FEEDBACK-005`, `EVENT-FEEDBACK-006` |
-| Ticketing enablement and accepted participation | Ticket-enabled event overlay and one physical holder credential | Event checkout/ticket card and scanner | Event publish/approval owns ticket creation; list/open and check-in are direct request paths | `EVENT-TICKET-001` through `EVENT-TICKET-006` |
+| Ticketing enablement and accepted participation | Ticket-enabled event overlay and one physical holder credential | Event checkout/ticket card and scanner | Event publish/terminal acceptance owns ticket creation; list/open and check-in are direct request paths | `EVENT-TICKET-001` through `EVENT-TICKET-007` |
 | Firebase configuration test and activation | Verified active deployment capability and public client configuration | Operator configuration state and entry authentication mode | Firebase authentication, notification delivery and session routing | `OPERATOR-FIREBASE-001` |
 
 ## Checkpoint graph
@@ -70,6 +70,10 @@ The principal checkpoint chains are:
 - `EVENT-EDITOR-001` -> `EVENT-EDITOR-002` -> `EVENT-PUBLISH-CHAT-001` -> `EVENT-LIFE-001` ->
   `EVENT-LIFE-002` -> `EVENT-LIFE-003`: draft, publish, unpublish, trash and
   restore.
+- `EVENT-VISIBILITY-001` continues only after `EVENT-TICKET-007` has completed:
+  Casey changes the same event to Friends Only, then one external non-member
+  friend and one external non-member non-friend compare Explore. The ticket
+  identities remain a retained no-change oracle.
 - `EVENT-INV-001` -> `EVENT-INV-002` -> `EVENT-INV-003` ->
   `CHAT-AUTH-001`: pending invitation, privacy boundary, acceptance and chat.
 - `EVENT-FEEDBACK-001` -> `EVENT-FEEDBACK-002` ->
@@ -80,9 +84,10 @@ The principal checkpoint chains are:
   through the checkpoint harness, then restage `EVENT-FEEDBACK-002`.
 - `EVENT-TICKET-001` -> `EVENT-TICKET-002` -> `EVENT-TICKET-003` ->
   `EVENT-TICKET-004` -> `EVENT-TICKET-005` -> `EVENT-TICKET-006` ->
-  `EVENT-TICKET-007`:
+  `EVENT-TICKET-007` -> `EVENT-VISIBILITY-001`:
   ticket enablement, physical credential, check-in, A/D audit lifecycle,
-  join approval, Past bucketing and two-step invitation acceptance.
+  join approval, Past bucketing, two-step invitation acceptance and finally
+  the same event's Friends Only discovery boundary.
 - `EVENT-EDITOR-004` -> `TOURNAMENT-001` -> `TOURNAMENT-002` ->
   `TOURNAMENT-003`: tournament definition, grouping and advancement.
 - `EVENT-SLOT-001` -> `EVENT-SLOT-002`: one saved recurring template becomes
@@ -181,6 +186,29 @@ Execution evidence on 2026-08-04:
   hand-created event identity in task and outbox selectors; the corrected
   oracle reported exactly one. This was a QA-harness defect, not a product
   publish defect.
+
+### `EVENT-VISIBILITY-001` — Friends Only Explore discovery boundary
+
+- Run only after `EVENT-TICKET-007` has fully completed. Retain the same event,
+  Casey/Nova/Riley memberships, Nova and Riley physical ticket IDs/codes and
+  all stored ticket counters as the before oracle.
+- Nova and Riley cannot serve as Explore visibility controls: Explore excludes
+  every identity with tracked participation, independently of how that person
+  was originally invited. Use two external identities that have never been a
+  member, pending request or invitee on this event. The harness pins Lina Park
+  as Casey's friend control and Liam Parker as Casey's non-friend control.
+- As Casey, perform **Unpublish -> Friends Only -> Publish** on the same event.
+  Changing visibility must not replace either active physical ticket or alter
+  membership and stored ticket counters.
+- With Lina's and Liam's sessions already on Event Explore and configured to
+  include the event's location/date, require Lina to see the event exactly once
+  after the normal list poll and require Liam not to see it. A direct detail
+  request by Liam must also be denied by the server; hiding only the card is
+  insufficient.
+- Opening, polling or searching Explore is read-only and must not create an
+  event, membership, invitation, ticket, counter mutation or worker task.
+- This continuation is a visibility checkpoint. Do not add Join, approval,
+  slot or tournament mutations to it; those remain separate checkpoints.
 
 ### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
 
@@ -992,6 +1020,10 @@ Execution evidence on 2026-08-06:
   not insert a participant-owned ticket overlay or credential. Fixture reset
   must also restore both `activities.tickets` and `activities.asset.tickets`;
   after the next normal poll the Ticket menu badge must be absent.
+- The baseline and every pre-acceptance projection must show `2 / 8`: Casey is
+  the accepted Admin and Nova the accepted Member. Riley is one pending join
+  control, so the pending indicator is `1`; Riley must have no physical ticket
+  and both of Riley's stored `users` ticket counters remain `0`.
 - As Casey, perform the real UI sequence **Unpublish -> Ticketing On ->
   Publish**. Require the publish mutation to create/update Nova's eligible
   participant-owned projection and create one physical `EventTicket` with
@@ -1005,8 +1037,10 @@ Execution evidence on 2026-08-06:
   ordinary ticket card must derive and request its 640 x 317 `medium.webp`;
   the remote Picsum fallback is not valid checkpoint data.
 - A pending, rejected, removed or organizer-only identity must not receive a
-  participant credential. The credential event ID and holder ID must agree
-  with Event Members and the visible ticket card.
+  participant credential. In this checkpoint Riley proves the pending branch:
+  publish must leave Riley ticketless and at stored user counters `0 / 0`.
+  The credential event ID and holder ID must agree with Event Members and the
+  visible ticket card.
 - The publish mutation owns its normal event recompute and ticket projection.
   The two Nova Ticket reads are direct request-path operations and must not
   start a scheduler or an additional event recompute.
@@ -1054,9 +1088,13 @@ Execution evidence on 2026-08-06:
 
 ### `EVENT-TICKET-005` — join-request approval owns ticket creation
 
-- Stage a published Ticketing On event where Nova joined from the event and is
-  pending admin approval (`requestKind=join`), with no Nova ticket, overlay or
-  Ticket counter.
+- Stage a **Public**, published, Ticketing On event that requires admin
+  approval. Casey is the only accepted Admin; Nova is not yet a member and has
+  no ticket or stored ticket counter.
+- As Nova, find the event through Event Explore and choose Join. Require one
+  pending membership with `requestKind=join` and `pendingSource=member`, while
+  both `users.activities.tickets` and
+  `users.activities.asset.tickets` remain `0` and no physical ticket exists.
 - As Casey, approve Nova once. This is the terminal transition directly to
   accepted; there is no second participant-acceptance step. The approval write
   creates exactly one Nova participant overlay and one physical `status=A`
@@ -1079,20 +1117,24 @@ Execution evidence on 2026-08-06:
 
 ### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
 
-- Stage a published Ticketing On event where an ordinary accepted member has
-  invited Nova. There must initially be no Nova ticket and both stored
-  `users.activities.tickets` and `users.activities.asset.tickets` remain `0`.
-- Approve the invitation as Casey Admin. Nova remains pending until she accepts;
-  this admin preapproval must not create a physical ticket or increment either
-  stored user counter.
-- Nova accepts the invitation once. Only this terminal transition to accepted
-  creates exactly one physical Nova `status=A` ticket and changes both stored
-  user counters to `1`; the next normal profile poll exposes the Ticket red
-  badge `1`.
-- Repeating the acceptance request or opening Ticket twice must preserve the
-  same ticket ID/code and counters. Casey, the ordinary inviter and every other
-  pending identity remain ticketless unless they independently become accepted
-  non-admin participants.
+- Stage a published Ticketing On event with Casey accepted Admin and Nova
+  accepted Member. Nova already owns one physical `status=A` ticket and both
+  of Nova's stored users-table ticket counters are `1`; Riley is not yet a
+  member and has no ticket/counter.
+- As Nova, invite Riley through the ordinary member UI. Riley becomes pending,
+  but no Riley ticket is created and both Riley stored ticket counters remain
+  `0`.
+- Approve Riley as Casey Admin. Because the invitation originated from an
+  ordinary member, Riley remains pending until Riley accepts; this
+  preapproval must still create no Riley ticket and increment no Riley ticket
+  counter.
+- Riley accepts the invitation once. Only this terminal transition to accepted
+  creates exactly one physical Riley `status=A` ticket and changes both Riley
+  stored ticket counters to `1`; the next normal profile poll exposes Riley's
+  Ticket red badge `1`.
+- Nova's original ticket ID/code and counters remain unchanged throughout.
+  Repeating Riley's acceptance or opening Riley Ticket twice must preserve the
+  same Riley ticket ID/code and counters. Casey remains ticketless.
 
 ## Tournament cases
 

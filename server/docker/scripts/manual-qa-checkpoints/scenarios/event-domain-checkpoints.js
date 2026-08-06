@@ -16,6 +16,8 @@
   const participantUserId = Q.text(process.env.MANUAL_QA_INVITEE_USER_ID)
     || "650000000000000000000062";
   const thirdUserId = "650000000000000000000063";
+  const visibilityFriendUserId = "178e8d0cbe164fa3fede5884";
+  const visibilityNonFriendUserId = "2d520f3c98b0440c1556f4af";
   const PREFIX = "manual-qa-checkpoint:v1:event-domain";
   const EVENT_ID = `${PREFIX}:event`;
   const LOCKED_EVENT_ID = `${PREFIX}:feedback-locked`;
@@ -332,8 +334,51 @@
     }
   }
 
+  function applyTicketActivityCounterDelta(userId, delta) {
+    const user = Q.collection("users").findOne({
+      $or: [{ _id: userId }, { userId }]
+    });
+    if (!user) Q.fail(`user '${userId}' disappeared while ticket activity counters were applied.`);
+    const activities = user.activities || {};
+    const asset = activities.asset || {};
+    const valueAfterDelta = value => Math.max(
+      0,
+      normalizeActivityCount(value) + Math.trunc(Number(delta) || 0)
+    );
+    const result = Q.collection("users").updateOne({
+      $or: [{ _id: userId }, { userId }]
+    }, { $set: {
+      "activities.tickets": valueAfterDelta(activities.tickets),
+      "activities.asset.tickets": valueAfterDelta(asset.tickets)
+    } });
+    if (result.matchedCount !== 1) {
+      Q.fail(`user '${userId}' disappeared while ticket activity counters were applied.`);
+    }
+  }
+
   function isTicketingStage(stageKind) {
-    return ["ticketing-off", "ticketing-on", "ticket-ready", "ticket-pending", "ticket-expiring"].includes(stageKind);
+    return [
+      "ticketing-off",
+      "ticketing-on",
+      "ticket-ready",
+      "ticket-join",
+      "ticket-invitation",
+      "ticket-expiring"
+    ].includes(stageKind);
+  }
+
+  function isFriendPair(firstUserId, secondUserId) {
+    const first = Q.text(firstUserId);
+    const second = Q.text(secondUserId);
+    if (!first || !second || first === second) return false;
+    const lower = first <= second ? first : second;
+    const upper = first <= second ? second : first;
+    const value = `friend-pair:${lower}:${upper}`;
+    let hash = 0;
+    for (let index = 0; index < value.length; index += 1) {
+      hash = (hash * 31 + value.charCodeAt(index)) % 104729;
+    }
+    return (Math.abs(hash) % 100) < 32;
   }
 
   const CHECKPOINTS = {
@@ -350,6 +395,13 @@
       action: "As host, publish the staged draft once; compare host Hosting and unrelated-user Explore.",
       expected: "The same event becomes active once, survives reopen and is visible only to users allowed by its visibility setting.",
       worker: "MUST RUN: one event recompute; reminder and attachment consumers are conditional."
+    },
+    "EVENT-VISIBILITY-001": {
+      stage: "visibility-friends",
+      why: "Reuse the completed ticket event to prove the Friends Only Explore boundary without confusing accepted participation with discovery eligibility.",
+      action: "After EVENT-TICKET-007 is fully complete, keep Nova's and Riley's ticket IDs, codes and stored counters as the before oracle. As Casey, use Unpublish -> Friends Only -> Publish on the same event. Then compare Event Explore in the external non-member Lina Park and Liam Parker sessions through a normal list poll.",
+      expected: "Lina Park, the deterministic Casey-friend control, sees the event exactly once in Explore. Liam Parker, the non-friend control, does not see it and direct detail access is denied. Neither control gains membership, invitation, ticket or counters; Casey/Nova/Riley membership and both existing A ticket IDs/codes/counters remain unchanged.",
+      worker: "Only Casey's owning lifecycle writes may run their normal event recompute. Explore polling and direct visibility reads MUST NOT write or run a scheduler."
     },
     "EVENT-PUBLISH-CHAT-001": {
       stage: "publish-chat-draft",
@@ -584,7 +636,7 @@
       stage: "ticketing-off",
       why: "Verify that the real publish write creates exactly one eligible participant physical ticket and no Admin ticket.",
       action: "As Casey, unpublish the staged event, enable Ticketing, and publish it again through the UI. After publish succeeds, switch to Nova and open the Ticket list twice.",
-      expected: "Publish creates one Nova status A EventTicket and no Casey ticket/overlay/counter. Both Ticket opens read the same event/holder/code, and the card requests the retained managed medium.webp.",
+      expected: "The event stays 2 / 8 from Casey accepted Admin plus Nova accepted Member, with Riley pending as a ticketless control. Publish creates one Nova status A EventTicket and no Casey or Riley ticket/counter. Both Ticket opens read the same event/holder/code, and the card requests the retained managed medium.webp.",
       worker: "MUST RUN: the publish mutation owns its normal event recompute, participant projection and physical ticket creation. MUST NOT RUN: subsequent credential reads require no scheduler or write."
     },
     "EVENT-TICKET-003": {
@@ -602,11 +654,11 @@
       worker: "Each owning event mutation may run its one normal recompute. Ticket reads MUST NOT create or reactivate a credential."
     },
     "EVENT-TICKET-005": {
-      stage: "ticket-pending",
-      why: "Prove that approval, not pending membership or a Ticket list read, creates the physical participant ticket.",
-      action: "Confirm Nova is pending and has no ticket, then approve Nova once as Casey. Keep Nova's menu open through its normal poll and open Ticket twice after approval.",
-      expected: "Before approval there is no Nova EventTicket, overlay or Ticket badge. Approval creates one A ticket for Nova; both reads show the same object and code. Casey Admin receives none.",
-      worker: "The approval write owns ticket creation and its normal counter/recompute effects. Pending and subsequent Ticket reads MUST NOT create a ticket or scheduler job."
+      stage: "ticket-join",
+      why: "Prove the complete Public Explore join flow: Join creates only a pending membership and the later Admin approval creates the physical participant ticket.",
+      action: "As Nova, find the public staged event in Event Explore and choose Join. Stop once Nova is pending and prove there is no ticket or stored ticket counter. Then approve Nova once as Casey, keep Nova's menu open through its normal poll and open Ticket twice.",
+      expected: "The baseline has Casey as the only accepted Admin and Nova is not yet a member. Explore Join creates one Nova pending join with no EventTicket and both stored users ticket counters at 0. Casey approval directly makes Nova accepted and creates one A ticket; both reads show the same object/code and Casey receives none.",
+      worker: "The Join write owns only its pending membership/counter effects. The terminal Admin approval owns ticket creation and its normal counter/recompute effects. Explore and Ticket reads MUST NOT create a ticket or scheduler job."
     },
     "EVENT-TICKET-006": {
       stage: "ticket-expiring",
@@ -614,6 +666,13 @@
       action: "Before the staged end time, open Nova's Upcoming Ticket list and capture the ticket id/code/status. Keep the session open through the end-time poll, then open Past and scan the same QR once.",
       expected: "The same A ticket disappears from Upcoming and appears once in Past with unchanged id and code. Scan returns expired without changing the ticket to D or creating another object.",
       worker: "The normal event-expiry counter worker may mark event projections expired. Ticket list reads and the rejected expired scan MUST NOT create a ticket or another scheduler job."
+    },
+    "EVENT-TICKET-007": {
+      stage: "ticket-invitation",
+      why: "Prove the complete ordinary-member invitation flow: Admin preapproval remains ticketless and only the invitee's later acceptance creates that invitee's physical ticket.",
+      action: "Keep Casey accepted Admin and Nova accepted Member. As Nova, invite Riley. Stop and prove Riley is pending with no ticket/counter. As Casey, approve Riley and prove Riley is still pending and ticketless. Then accept as Riley, keep Riley's menu open through its normal poll and open Ticket twice.",
+      expected: "Nova starts with one existing A ticket and both stored ticket counters at 1; Riley starts outside the membership with no ticket/counter. Nova's invite and Casey's preapproval leave Riley pending and ticketless. Riley's terminal acceptance creates exactly one Riley A ticket and changes both Riley users-table counters to 1 without replacing or duplicating Nova's ticket.",
+      worker: "Invite and Admin preapproval own their membership/counter effects but MUST NOT create Riley's ticket. Riley's terminal acceptance owns target-only ticket creation and its normal recompute effects. Ticket reads MUST NOT write."
     }
   };
 
@@ -814,7 +873,7 @@
       blindMode: options.blindMode || "Open Event",
       autoInviter: false,
       ticketing: options.ticketing === true,
-      approvalRequired: false,
+      approvalRequired: options.approvalRequired === true,
       capacityMin: 1,
       capacityMax: 8,
       capacityTotal: 8,
@@ -1475,6 +1534,12 @@
     if (stageKind.startsWith("feedback-") || isTicketingStage(stageKind)) {
       options.imageUrl = eventImageUrl;
     }
+    if (isTicketingStage(stageKind)) {
+      options.acceptedUserIds = [hostUserId, participantUserId];
+    }
+    if (checkpointId === "EVENT-TICKET-002") {
+      options.pendingUserIds = [thirdUserId];
+    }
     if (stageKind.startsWith("feedback-")) {
       Object.assign(options, past, {
         acceptedUserIds: [hostUserId, participantUserId]
@@ -1494,10 +1559,11 @@
       options.status = "T";
       options.statusBeforeSuppression = "A";
     }
-    if (["ticketing-on", "ticket-ready", "ticket-pending", "ticket-expiring"].includes(stageKind)) options.ticketing = true;
-    if (stageKind === "ticket-pending") {
-      options.acceptedUserIds = [];
-      options.pendingUserIds = [participantUserId];
+    if (["ticketing-on", "ticket-ready", "ticket-join", "ticket-invitation", "ticket-expiring"].includes(stageKind)) options.ticketing = true;
+    if (stageKind === "ticket-join") {
+      options.acceptedUserIds = [hostUserId];
+      options.pendingUserIds = [];
+      options.approvalRequired = true;
     }
     if (stageKind === "ticket-expiring") {
       options.startAtIso = dateIso(-60);
@@ -1511,22 +1577,41 @@
         memberDocument(EVENT_ID, participantUserId, "Member", "accepted"),
         memberDocument(EVENT_ID, thirdUserId, "Member", "accepted")
       ]);
+    } else if (checkpointId === "EVENT-TICKET-002") {
+      Q.collection("events").insertOne(event);
+      Q.collection("activityMembers").insertMany([
+        memberDocument(EVENT_ID, hostUserId, "Admin", "accepted"),
+        memberDocument(EVENT_ID, participantUserId, "Member", "accepted"),
+        memberDocument(EVENT_ID, thirdUserId, "Member", "pending", "join", {
+          pendingSource: "member"
+        })
+      ]);
+    } else if (stageKind === "ticket-join") {
+      insertHostOnlyEvent(event);
     } else {
-      insertEventWithMembers(event, stageKind === "ticket-pending" ? "pending" : "accepted");
+      insertEventWithMembers(event, "accepted");
     }
     if (isTicketingStage(stageKind)) {
       applyEventActivityCounterDeltas(hostUserId, {
         menu: { hosting: 1 },
         event: { all: 1, hosting: 1 }
       });
-      applyEventActivityCounterDeltas(participantUserId, {
-        menu: { events: 1 },
-        event: { all: 1, active: 1 }
-      });
+      if (stageKind !== "ticket-join") {
+        applyEventActivityCounterDeltas(participantUserId, {
+          menu: { events: 1 },
+          event: { all: 1, active: 1 }
+        });
+      }
+      if (checkpointId === "EVENT-TICKET-002") {
+        applyEventActivityCounterDeltas(thirdUserId, {
+          event: { all: 1, pending: 1 }
+        });
+      }
     }
     if (stageKind === "feedback-submitted") insertSubmittedFeedback(stagedAtIso);
-    if (stageKind === "ticket-ready" || stageKind === "ticket-expiring") {
+    if (["ticket-ready", "ticket-invitation", "ticket-expiring"].includes(stageKind)) {
       insertReadyTicket(stagedAtIso);
+      applyTicketActivityCounterDelta(participantUserId, 1);
     }
   }
 
@@ -1554,6 +1639,7 @@
       ticketing: event.ticketing,
       blindMode: Q.text(event.blindMode),
       acceptedMembers: Number(event.acceptedMembers || 0),
+      pendingMembers: Number(event.pendingMembers || 0),
       capacityTotal: Number(event.capacityTotal || 0),
       acceptedMemberUserIds: event.acceptedMemberUserIds || [],
       pendingMemberUserIds: event.pendingMemberUserIds || [],
@@ -1761,8 +1847,12 @@
               }
             };
           })
-        : checkpointId.startsWith("EVENT-TICKET-")
-          ? [hostUserId, participantUserId].map(userId => {
+        : (checkpointId.startsWith("EVENT-TICKET-") || checkpointId === "EVENT-VISIBILITY-001")
+          ? (checkpointId === "EVENT-VISIBILITY-001"
+              ? [hostUserId, participantUserId, thirdUserId, visibilityFriendUserId, visibilityNonFriendUserId]
+              : ["EVENT-TICKET-002", "EVENT-TICKET-007"].includes(checkpointId)
+                ? [hostUserId, participantUserId, thirdUserId]
+              : [hostUserId, participantUserId]).map(userId => {
               const current = userActivitiesSnapshot(userId);
               const baseline = savedUserActivity(state, userId);
               const currentActivities = current.activities.value || {};
@@ -1784,6 +1874,7 @@
                   assetTickets: delta("asset.tickets"),
                   eventAll: delta("event.all"),
                   eventActive: delta("event.active"),
+                  eventPending: delta("event.pending"),
                   eventHosting: delta("event.hosting")
                 }
               };
@@ -1964,19 +2055,31 @@
         : null,
       autoInviterPeriodic: checkpointId === "EVENT-EDITOR-003"
         ? autoInviterPeriodicSummary(state)
+        : null,
+      visibilityControls: checkpointId === "EVENT-VISIBILITY-001"
+        ? [visibilityFriendUserId, visibilityNonFriendUserId].map(userId => ({
+            user: Q.user(userId),
+            expectedFriendOfCasey: isFriendPair(hostUserId, userId),
+            trackedParticipation: members.some(member => Q.text(member.userId) === userId
+              && Q.text(member.status).toUpperCase() !== "D")
+          }))
         : null
     };
   }
 
   function stage() {
     const selected = config();
+    if (selected.stage === "visibility-friends") {
+      Q.fail("EVENT-VISIBILITY-001 must be advanced from a completed EVENT-TICKET-007 so the same event and physical tickets are retained.");
+    }
     Q.assertNotStaged(SCENARIO);
     Q.assertNoOtherActiveScenario(SCENARIO);
     if (hostUserId === participantUserId) Q.fail("host and participant must differ.");
     Q.ensureUser(hostUserId, "event host");
     Q.ensureUser(participantUserId, "event participant");
     if (["invitation-ordinary", "invitation-full", "tournament", "slot-past-tournament", "publish-chat-draft", "chat-authorized"].includes(selected.stage)
-        || checkpointId === "EVENT-FEEDBACK-002") {
+        || checkpointId === "EVENT-FEEDBACK-002"
+        || ["EVENT-TICKET-002", "EVENT-TICKET-007"].includes(checkpointId)) {
       Q.ensureUser(thirdUserId, "event third participant");
     }
     const colliding = Q.collection("events").findOne({
@@ -2006,7 +2109,9 @@
       userActivitySnapshots: ["publish-chat-draft", "chat-authorized"].includes(selected.stage)
         ? [hostUserId, participantUserId, thirdUserId].map(userActivitiesSnapshot)
         : isTicketingStage(selected.stage)
-          ? [hostUserId, participantUserId].map(userActivitiesSnapshot)
+          ? (["EVENT-TICKET-002", "EVENT-TICKET-007"].includes(checkpointId)
+              ? [hostUserId, participantUserId, thirdUserId]
+              : [hostUserId, participantUserId]).map(userActivitiesSnapshot)
           : selected.stage.startsWith("feedback-")
             ? (checkpointId === "EVENT-FEEDBACK-002"
                 ? [hostUserId, participantUserId, thirdUserId]
@@ -2185,6 +2290,46 @@
     }
     const event = Q.collection("events").findOne(manualEventSelector());
     if (!event) Q.fail("cannot advance without the manually created event.");
+    if (selected.stage === "visibility-friends") {
+      if (sourceCheckpointId !== "EVENT-TICKET-007") {
+        Q.fail("EVENT-VISIBILITY-001 must advance directly from EVENT-TICKET-007.");
+      }
+      Q.ensureUser(visibilityFriendUserId, "Friends Only friend control");
+      Q.ensureUser(visibilityNonFriendUserId, "Friends Only non-friend control");
+      if (!isFriendPair(hostUserId, visibilityFriendUserId)
+          || isFriendPair(hostUserId, visibilityNonFriendUserId)) {
+        Q.fail("the configured Friends Only controls no longer resolve to one Casey friend and one Casey non-friend.");
+      }
+      const eventId = Q.text(event.sourceId || event._id);
+      const trackedControls = Q.collection("activityMembers").find({
+        ownerType: "event",
+        ownerId: eventId,
+        userId: { $in: [visibilityFriendUserId, visibilityNonFriendUserId] },
+        status: { $ne: "D" }
+      }).toArray();
+      if (trackedControls.length > 0) {
+        Q.fail("Friends Only controls must remain external non-members with no tracked participation.");
+      }
+      const acceptedUserIds = sortedUnique(event.acceptedMemberUserIds || []);
+      if (!sameIds(acceptedUserIds, [hostUserId, participantUserId, thirdUserId])) {
+        Q.fail("EVENT-VISIBILITY-001 requires Casey, Nova and Riley to be accepted before the visibility transition.");
+      }
+      const activeTickets = Q.collection("eventTickets").find({
+        eventId,
+        status: "A"
+      }).toArray();
+      if (activeTickets.length !== 2
+          || !sameIds(activeTickets.map(ticket => ticket.holderUserId), [participantUserId, thirdUserId])) {
+        Q.fail("EVENT-VISIBILITY-001 requires the completed Nova and Riley active-ticket baseline.");
+      }
+      const visibilitySnapshots = [...(state.userActivitySnapshots || [])];
+      for (const userId of [visibilityFriendUserId, visibilityNonFriendUserId]) {
+        if (!visibilitySnapshots.some(saved => saved.userId === userId)) {
+          visibilitySnapshots.push(userActivitiesSnapshot(userId));
+        }
+      }
+      state.userActivitySnapshots = visibilitySnapshots;
+    }
     if (selected.stage === "draft" && Q.text(event.status) !== "DR") {
       Q.fail(`next checkpoint requires a draft event, but status is '${Q.text(event.status)}'.`);
     }
@@ -2194,7 +2339,10 @@
       $set: {
         checkpointId,
         stagedAtIso: advancedAtIso,
-        "context.actualEventSourceId": Q.text(event.sourceId || event._id)
+        userActivitySnapshots: state.userActivitySnapshots || [],
+        "context.actualEventSourceId": Q.text(event.sourceId || event._id),
+        "context.visibilityFriendUserId": selected.stage === "visibility-friends" ? visibilityFriendUserId : null,
+        "context.visibilityNonFriendUserId": selected.stage === "visibility-friends" ? visibilityNonFriendUserId : null
       },
       $push: {
         checkpointHistory: {

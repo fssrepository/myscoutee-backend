@@ -65,22 +65,48 @@ Supported checkpoint IDs:
 - `EVENT-FEEDBACK-001`, `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-005`, and
   `EVENT-FEEDBACK-006`
 - `EVENT-IMPRESSION-001`
-- `EVENT-TICKET-001` through `EVENT-TICKET-006`
+- `EVENT-VISIBILITY-001` (advance only from completed `EVENT-TICKET-007`)
+- `EVENT-TICKET-001` through `EVENT-TICKET-007`
 - `TOURNAMENT-001` through `TOURNAMENT-003`
 
 `EVENT-TICKET-002` intentionally starts with a published, Ticketing Off event.
 The harness must not manufacture the participant-owned ticket overlay or its
-credential. Casey performs Unpublish -> Ticketing On -> Publish through the UI;
-that real publish path owns the overlay, after which Nova opens Ticket twice to
-prove that both reads reuse the one physical credential created by publish.
+credential. Its consistent membership baseline is Casey accepted Admin plus
+Nova accepted Member (`2 / 8`) and Riley as one pending join control. Casey
+performs Unpublish -> Ticketing On -> Publish through the UI; that real publish
+path owns Nova's credential, while Casey and Riley remain ticketless. Nova then
+opens Ticket twice to prove that both reads reuse the one physical credential
+created by publish.
 `EVENT-TICKET-004` proves the retained `D` audit record plus a new object and
-QR after Off -> On -> Publish. `EVENT-TICKET-005` isolates pending -> approved
-creation. `EVENT-TICKET-006` keeps the physical ticket `A` while the ended
-event moves it from Upcoming to Past.
+QR after Off -> On -> Publish. `EVENT-TICKET-005` starts with Casey alone and
+uses the real Public Explore -> Nova Join -> Casey approval path: Join is
+pending and ticketless, while the terminal approval creates Nova's ticket.
+`EVENT-TICKET-006` keeps the physical ticket `A` while the ended event moves it
+from Upcoming to Past. `EVENT-TICKET-007` starts with Casey and ticketed Nova
+accepted; Nova invites Riley, Casey preapproves without creating Riley's
+ticket, and only Riley's later terminal acceptance creates it.
+After that terminal state, advance to `EVENT-VISIBILITY-001` without resetting.
+Casey performs Unpublish -> Friends Only -> Publish on the same event. Lina
+Park is the external non-member friend control and Liam Parker the external
+non-member non-friend control; Nova and Riley are ineligible as Explore
+controls because they already have tracked event participation. Visibility
+changes must preserve both active physical tickets and all stored ticket
+counters. Explore reads must create no membership, invitation or ticket.
+
+```bash
+bash manual-qa-checkpoints.sh advance event-domain \
+  EVENT-TICKET-007 EVENT-VISIBILITY-001
+```
+
+Direct `stage` is rejected for this checkpoint because it would lose the
+completed invitation/ticket baseline that the visibility transition must
+preserve.
+
 Reset removes only the checkpoint's event/ticket artifacts and restores the
 saved activity snapshot. Both `activities.tickets` and
-`activities.asset.tickets` must therefore return to baseline, and the Ticket
-menu badge must disappear on the next ordinary poll.
+`activities.asset.tickets` in every involved `users` row must therefore return
+to baseline; the UI badge sourced from those fields must disappear on the next
+ordinary poll.
 Ticket checkpoints require `MANUAL_QA_EVENT_IMAGE_URL`; use the retained
 managed QA image's canonical `large.webp` URL so ordinary ticket cards can be
 verified against the derived `medium.webp` request instead of the remote
