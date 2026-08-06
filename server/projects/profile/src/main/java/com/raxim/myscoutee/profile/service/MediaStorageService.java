@@ -277,7 +277,8 @@ public class MediaStorageService {
         if (StringUtils.hasText(smallUrl) && StringUtils.hasText(mediumUrl) && StringUtils.hasText(largeUrl)) {
             return new StoredImageSet(largeUrl, originalUrl, smallUrl, mediumUrl, largeUrl);
         }
-        return new StoredImageSet(originalUrl, originalUrl, originalUrl, originalUrl, originalUrl);
+        deleteManagedImageSetObjects(originalKey);
+        return null;
     }
 
     private Map<ImageVariant, String> storeImageVariants(
@@ -386,7 +387,7 @@ public class MediaStorageService {
     }
 
     private boolean deleteManagedImageSetObjects(String key) {
-        String imageGroupKey = managedImageSetGroupKey(key);
+        String imageGroupKey = managedImageSetGroupKeyFromObjectKey(key);
         if (!StringUtils.hasText(imageGroupKey)) {
             return false;
         }
@@ -397,7 +398,11 @@ public class MediaStorageService {
         return true;
     }
 
-    private String managedImageSetGroupKey(String key) {
+    String managedImageSetGroupKey(String mediaUrlOrKey) {
+        return managedImageSetGroupKeyFromObjectKey(extractPublicObjectKey(mediaUrlOrKey));
+    }
+
+    private String managedImageSetGroupKeyFromObjectKey(String key) {
         String normalized = safeText(key);
         if (!normalized.startsWith(IMAGE_MEDIA_KIND + "/")) {
             return "";

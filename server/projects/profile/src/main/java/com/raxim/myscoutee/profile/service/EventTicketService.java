@@ -2,9 +2,12 @@ package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -55,7 +58,86 @@ public class EventTicketService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public EventTicket findOrIssue(String eventId, String holderUserId, Instant now) {
+    public EventTicket findActive(String eventId, String holderUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedHolderUserId = normalizeId(holderUserId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedHolderUserId)) {
+            return null;
+        }
+        return eventTicketsRepository
+                .findByEventIdAndHolderUserIdAndStatus(
+                        normalizedEventId,
+                        normalizedHolderUserId,
+                        EventTicket.STATUS_ACTIVE)
+                .filter(this::isUsableCredential)
+                .orElse(null);
+    }
+
+    public Set<String> findActiveEventIdsForHolder(String holderUserId) {
+        String normalizedHolderUserId = normalizeId(holderUserId);
+        if (!StringUtils.hasText(normalizedHolderUserId)) {
+            return Set.of();
+        }
+        LinkedHashSet<String> eventIds = new LinkedHashSet<>();
+        for (EventTicket ticket : eventTicketsRepository.findByHolderUserIdAndStatus(
+                normalizedHolderUserId,
+                EventTicket.STATUS_ACTIVE)) {
+            if (!isUsableCredential(ticket)) {
+                continue;
+            }
+            String eventId = normalizeId(ticket.getEventId());
+            if (StringUtils.hasText(eventId)) {
+                eventIds.add(eventId);
+            }
+        }
+        return eventIds;
+    }
+
+    public void synchronizeForEvent(
+            ActivityEvent canonical,
+            Set<String> eligibleHolderUserIds,
+            Instant now) {
+        String eventId = normalizeId(canonical == null ? null : canonical.getSourceId());
+        if (!StringUtils.hasText(eventId)) {
+            return;
+        }
+
+        LinkedHashSet<String> eligible = new LinkedHashSet<>();
+        for (String holderUserId : eligibleHolderUserIds == null ? Set.<String>of() : eligibleHolderUserIds) {
+            String normalizedHolderUserId = normalizeId(holderUserId);
+            if (StringUtils.hasText(normalizedHolderUserId)
+                    && !isEventAdmin(canonical, normalizedHolderUserId)) {
+                eligible.add(normalizedHolderUserId);
+            }
+        }
+
+        boolean ticketingEnabled = Boolean.TRUE.equals(canonical.getTicketing());
+        boolean eventActive = canonical.hasStoredStatus(ActivityEvent.STATUS_ACTIVE);
+        List<EventTicket> toDelete = new ArrayList<>();
+        for (EventTicket ticket : eventTicketsRepository.findByEventId(eventId)) {
+            if (ticket == null || !isActiveStatus(ticket.getStatus())) {
+                continue;
+            }
+            String holderUserId = normalizeId(ticket.getHolderUserId());
+            if (!ticketingEnabled || !eventActive || !eligible.contains(holderUserId)) {
+                ticket.setStatus(EventTicket.STATUS_DELETED);
+                toDelete.add(ticket);
+            }
+        }
+        if (!toDelete.isEmpty()) {
+            eventTicketsRepository.saveAll(toDelete);
+        }
+
+        if (!ticketingEnabled || !eventActive) {
+            return;
+        }
+        Instant issuedAt = now == null ? Instant.now() : now;
+        for (String holderUserId : eligible) {
+            activateForEligibleHolder(eventId, holderUserId, issuedAt);
+        }
+    }
+
+    EventTicket activateForEligibleHolder(String eventId, String holderUserId, Instant now) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedHolderUserId = normalizeId(holderUserId);
         if (!StringUtils.hasText(normalizedEventId)
@@ -65,7 +147,10 @@ public class EventTicketService {
         }
 
         EventTicket existing = eventTicketsRepository
-                .findByEventIdAndHolderUserId(normalizedEventId, normalizedHolderUserId)
+                .findByEventIdAndHolderUserIdAndStatus(
+                        normalizedEventId,
+                        normalizedHolderUserId,
+                        EventTicket.STATUS_ACTIVE)
                 .orElse(null);
         if (isUsableCredential(existing)) {
             return existing;
@@ -87,7 +172,10 @@ public class EventTicketService {
                 return eventTicketsRepository.save(ticket);
             } catch (DuplicateKeyException ignored) {
                 EventTicket concurrent = eventTicketsRepository
-                        .findByEventIdAndHolderUserId(normalizedEventId, normalizedHolderUserId)
+                        .findByEventIdAndHolderUserIdAndStatus(
+                                normalizedEventId,
+                                normalizedHolderUserId,
+                                EventTicket.STATUS_ACTIVE)
                         .orElse(null);
                 if (isUsableCredential(concurrent)) {
                     return concurrent;
@@ -108,6 +196,12 @@ public class EventTicketService {
         }
 
         EventTicket ticket = eventTicketsRepository.findByCode(normalizedCode).orElse(null);
+        if (!isWellFormedCredential(ticket)) {
+            return CheckInResult.invalid("not_found");
+        }
+        if (EventTicket.STATUS_DELETED.equals(safeText(ticket.getStatus()))) {
+            return CheckInResult.invalid("revoked", ticket, findCanonicalEvent(ticket.getEventId()));
+        }
         if (!isUsableCredential(ticket)) {
             return CheckInResult.invalid("not_found");
         }
@@ -192,8 +286,8 @@ public class EventTicketService {
                 || !StringUtils.hasText(normalizedHolderUserId)) {
             return false;
         }
-        if (normalizedHolderUserId.equals(normalizeId(canonical.getCreatorUserId()))) {
-            return true;
+        if (isEventAdmin(canonical, normalizedHolderUserId)) {
+            return false;
         }
         return activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(
@@ -206,12 +300,34 @@ public class EventTicketService {
                 .isPresent();
     }
 
+    private boolean isEventAdmin(ActivityEvent event, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (event == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(event.getCreatorUserId()))) {
+            return true;
+        }
+        return event.getAdmins() != null && event.getAdmins().stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
+    }
+
     private boolean isUsableCredential(EventTicket ticket) {
+        return isWellFormedCredential(ticket)
+                && isActiveStatus(ticket.getStatus());
+    }
+
+    private boolean isWellFormedCredential(EventTicket ticket) {
         return ticket != null
-                && EventTicket.STATUS_ACTIVE.equals(safeText(ticket.getStatus()))
                 && StringUtils.hasText(normalizeCode(ticket.getCode()))
                 && StringUtils.hasText(normalizeId(ticket.getEventId()))
                 && StringUtils.hasText(normalizeId(ticket.getHolderUserId()));
+    }
+
+    private boolean isActiveStatus(String value) {
+        String status = safeText(value);
+        return EventTicket.STATUS_ACTIVE.equals(status) || "active".equalsIgnoreCase(status);
     }
 
     private String newCode() {

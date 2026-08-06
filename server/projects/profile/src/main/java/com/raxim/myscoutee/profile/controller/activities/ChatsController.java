@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatHeaderSyncResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageMutationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMembersPageResponseDto;
@@ -38,6 +39,14 @@ public class ChatsController {
     @GetMapping
     public List<ChatDto> queryChats(@RequestParam("userId") String userId) {
         return chatService.queryChats(userId);
+    }
+
+    @GetMapping("/{chatId}/header-sync")
+    public ChatHeaderSyncResponseDto syncChatHeader(
+            @PathVariable("chatId") String chatId,
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "knownRevision", required = false) Long knownRevision) {
+        return chatService.syncChatHeader(chatId, userId, knownRevision);
     }
 
     @GetMapping("/page")

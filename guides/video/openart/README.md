@@ -18,18 +18,25 @@ This directory specifies a complete 2 minute 48 second MyScoutee hero film:
 - localized version: Hungarian voice-over and subtitles from the same picture;
 - format: mobile-first 9:16 cinematic 2.5D animation with hand-drawn character treatment inside
   dimensional city sets;
-- story: unstable work at home leads to months-long assignments across Europe,
-  Asia and the Americas, away from family. After an anonymous inspection-day
-  breaking point, one person chooses London to earn and save; five years of
-  shared rooms, long workdays and careful spending buy back the time to build a
-  future. Nearly forty countries still do not cure loneliness, so he comes home
+- story: he already has a home but is pushed out by several sources of
+  instability and goes to London, where he works as a
+  programmer in Soho and takes the Victoria line home to a converted Victorian
+  HMO in Tottenham. Thirteen adults share one full bathroom and a separate WC;
+  he also shares his bedroom. Five years of long workdays and careful spending
+  buy financial independence and time for his own work, not another home.
+  Nearly forty countries still do not cure
+  loneliness, so he comes home
   deliberately to look for a partner. After trying online and
   real-world routes, he recognizes the missing bridge between encounter and a
-  meaningful shared meeting, gives that problem his full focus, builds
-  MyScoutee, then invites local operators and communities to carry the next
-  chapter;
-- ending: constructive and confident — the core exists because the founder
-  believes in it; a community product deserves more authors, not a lone hero.
+  meaningful shared meeting, gives that problem his full focus, and builds
+  MyScoutee as a full relationship-lifecycle and event system. Technically
+  capable local operators can test the shared core under their own brands and
+  cultural contexts while cooperating through a voluntary server network;
+- ending: constructive and accountable — the product follows strangers from
+  editable priority through group, chat and a first event; after meeting they
+  can be invited again, repeated events can form community, and later priority
+  changes alter the chance of meeting again. The core then passes through one
+  verified technical handoff rather than indiscriminate distribution.
 
 The film does **not** claim that every app, class, event, or date fails. It does
 not blame women or men. It shows two different scarcity problems: too little
@@ -90,20 +97,24 @@ The autobiographical hinges are:
 >
 > **Nem a luxusért. Az időmet vásároltam vissza.**
 
-> **I left home to make a living. I came home to find someone to live it with.**
+> **I went out to make a living. I came home to find a partner.**
 >
 > **Kimentem pénzt keresni. Hazajöttem társat keresni.**
 
 ## The product sentence
 
-> MyScoutee turns editable 1–10 priorities and reciprocal/contextual evidence
-> into weighted affinity, compatible small groups, and a workflow from chat to a
-> shared real-world event and feedback.
+> MyScoutee turns private editable 1–10 priorities and reciprocal/contextual
+> evidence into balanced groups of strangers, carries them through chat and a
+> managed real-world event, then lets the resulting contacts meet again and
+> evolve — including lowering a priority when a relationship changes.
 
 ## The operator sentence
 
-> The core can be run by independent local operators who understand their own
-> city, community, brand and partners; the next chapter needs more authors.
+> Technically capable operators can run the shared core on independent local
+> servers under their own brands, test it across different communities and
+> cultures, and cooperate through a voluntary network/virtual enterprise with
+> opt-out — addressing the same unsolved relationship-to-meeting problem without
+> rebuilding the whole path alone.
 
 Use “designed to,” “can,” and “operator model” where the result is a product
 intent rather than established market evidence. Never say that MyScoutee has

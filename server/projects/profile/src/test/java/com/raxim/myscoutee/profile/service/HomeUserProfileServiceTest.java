@@ -679,6 +679,49 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeSnapshotAlwaysIncludesImpressionsObject() {
+        Users active = user("realtime-empty-impressions", 0d);
+        when(usersRepository.findByUserId("realtime-empty-impressions")).thenReturn(Optional.of(active));
+        when(eventFeedbackAnswersRepository
+                .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-empty-impressions"))
+                .thenReturn(List.of());
+
+        var snapshot = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-empty-impressions", null));
+
+        assertThat(snapshot.impressions()).isNotNull();
+        assertThat(snapshot.impressions().host()).isNull();
+        assertThat(snapshot.impressions().member()).isNull();
+    }
+
+    @Test
+    void realtimeSnapshotKeepsMemberImpressionsAfterPendingFeedbackIsSubmitted() {
+        Users active = user("realtime-feedbacked-member", 0d);
+        active.setTraitLabel("Social Charmer");
+        active.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                null,
+                null,
+                null,
+                new Users.UserEventFeedbackCountersRecord(0, 0, 1, 0),
+                0, 0, 0));
+        when(usersRepository.findByUserId("realtime-feedbacked-member")).thenReturn(Optional.of(active));
+        when(eventFeedbackAnswersRepository
+                .findByTargetUserIdOrderBySubmittedAtIsoDesc("realtime-feedbacked-member"))
+                .thenReturn(List.of());
+
+        var snapshot = service.queryRealtimeSnapshot(
+                new UserRealtimeLongPollRequestDto("realtime-feedbacked-member", null));
+
+        assertThat(snapshot.impressions()).isNotNull();
+        assertThat(snapshot.impressions().member()).isNotNull();
+        assertThat(snapshot.impressions().member().personalityTraits())
+                .extracting(trait -> trait.id())
+                .contains("social-charmer");
+    }
+
+    @Test
     void realtimeSnapshotUsesAuthoritativeUnreadNotificationCount() {
         Users active = user("active", 0d);
         active.setActivities(storedActivityCounters());

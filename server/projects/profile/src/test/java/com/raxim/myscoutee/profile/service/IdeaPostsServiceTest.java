@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -31,6 +32,7 @@ import com.raxim.myscoutee.profile.data.document.IdeaPost;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostPublicPageDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.IdeaPostsRepository;
 import com.raxim.myscoutee.profile.repository.LandingArticlesRepository;
 import com.raxim.myscoutee.profile.repository.LandingArticlesRepository.LandingArticleCursor;
@@ -51,6 +53,8 @@ class IdeaPostsServiceTest {
     private AppSettingsService appSettingsService;
     @Mock
     private LandingArticlesRepository landingArticlesRepository;
+    @Mock
+    private MediaStorageService mediaStorageService;
 
     private IdeaPostsService service;
 
@@ -64,7 +68,8 @@ class IdeaPostsServiceTest {
                 adminTelemetryService,
                 appSettingsService,
                 landingArticlesRepository,
-                new IdeaPostMapper());
+                new IdeaPostMapper(),
+                mediaStorageService);
     }
 
     @AfterEach
@@ -234,6 +239,75 @@ class IdeaPostsServiceTest {
         assertThat(result.trashed()).isTrue();
         verify(ideaPostsRepository).save(existing);
         verify(ideaPostsRepository, never()).findAllByOrderBySubmittedAtIsoDesc();
+    }
+
+    @Test
+    void savePostPreservesRelativeManagedImageSources() {
+        String imageUrl = "/api/media/public?key=images%2Fadmin%2Fimage%2Fupload-1%2Flarge.webp";
+        when(ideaPostsRepository.save(any(IdeaPost.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.savePost(saveRequest(
+                null,
+                "<p>Body</p><img src=\"" + imageUrl + "\" alt=\"Managed\">",
+                List.of(imageUrl),
+                List.of()));
+
+        assertThat(result.contentHtml()).contains("src=\"" + imageUrl + "\"");
+    }
+
+    @Test
+    void savePostRemovesManagedImageReferencesThenDeletesTheStoredSet() {
+        String imageUrl = "/api/media/public?key=images%2Fadmin%2Fimage%2Fupload-1%2Flarge.webp";
+        String retainedImageUrl = "/api/media/public?key=images%2Fadmin%2Fimage%2Fupload-2%2Flarge.webp";
+        IdeaPost existing = post("article-a", "en", "2026-07-20T10:00:00Z");
+        existing.setImageUrl(imageUrl);
+        existing.setImageUrls(List.of(imageUrl, retainedImageUrl));
+        existing.setContentHtml(
+                "<figure><img src=\"" + imageUrl + "\" alt=\"Removed\"></figure>"
+                        + "<img alt=\"Already broken\">"
+                        + "<img src=\"" + retainedImageUrl + "\" alt=\"Retained\">");
+        when(ideaPostsRepository.findById("article-a")).thenReturn(Optional.of(existing));
+        when(ideaPostsRepository.save(existing)).thenReturn(existing);
+        when(mediaStorageService.managedImageSetGroupKey(imageUrl))
+                .thenReturn("images/admin/image/upload-1");
+        when(mediaStorageService.managedImageSetGroupKey(retainedImageUrl))
+                .thenReturn("images/admin/image/upload-2");
+
+        var result = service.savePost(saveRequest(
+                "article-a",
+                existing.getContentHtml(),
+                List.of(retainedImageUrl),
+                List.of(imageUrl)));
+
+        assertThat(result.imageUrls()).containsExactly(retainedImageUrl);
+        assertThat(result.contentHtml())
+                .contains(retainedImageUrl)
+                .doesNotContain("<figure", "Already broken", imageUrl);
+        var ordered = inOrder(ideaPostsRepository, mediaStorageService);
+        ordered.verify(ideaPostsRepository).save(existing);
+        ordered.verify(mediaStorageService).deletePublicObjectOrThrow(imageUrl);
+        verify(mediaStorageService, never()).deletePublicObjectOrThrow(retainedImageUrl);
+    }
+
+    private IdeaPostSaveRequestDto saveRequest(
+            String id,
+            String contentHtml,
+            List<String> imageUrls,
+            List<String> removedImageUrls) {
+        return new IdeaPostSaveRequestDto(
+                "admin",
+                id,
+                id,
+                "en",
+                "Article",
+                "Excerpt",
+                contentHtml,
+                imageUrls.isEmpty() ? "" : imageUrls.get(0),
+                imageUrls,
+                removedImageUrls,
+                false,
+                false,
+                "2026-07-20T10:00:00Z");
     }
 
     private IdeaPost post(String id, String lang, String submittedAtIso) {

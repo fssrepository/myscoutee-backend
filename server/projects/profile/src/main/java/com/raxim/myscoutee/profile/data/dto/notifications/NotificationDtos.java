@@ -22,7 +22,30 @@ public final class NotificationDtos {
             String actionPath,
             String sourceType,
             String sourceId,
-            Map<String, String> payload) {
+            Map<String, String> payload,
+            Integer occurrenceCount,
+            Long revision) {
+    }
+
+    public record UserNotificationSyncKnownItemDto(String id, Long revision) {
+    }
+
+    public record UserNotificationSyncBoundaryDto(String id, String createdAtIso) {
+    }
+
+    public record UserNotificationsSyncRequestDto(
+            String bucket,
+            Integer limit,
+            List<UserNotificationSyncKnownItemDto> knownItems,
+            UserNotificationSyncBoundaryDto loadedTail) {
+    }
+
+    public record UserNotificationsSyncResponseDto(
+            List<UserNotificationDto> upserts,
+            List<String> removedIds,
+            Long total,
+            Integer unreadCount,
+            Boolean muted) {
     }
 
     public record UserNotificationsPageResponseDto(

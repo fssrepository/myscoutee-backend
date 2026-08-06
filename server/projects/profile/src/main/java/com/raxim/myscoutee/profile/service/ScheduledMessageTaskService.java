@@ -105,6 +105,7 @@ public class ScheduledMessageTaskService {
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
     private DeploymentBrandingResolver deploymentBrandingResolver;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
+    private TranslationService translationService;
     private final ScheduledExecutorService taskExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable, "scheduled-message-task-controller");
         thread.setDaemon(true);
@@ -165,6 +166,11 @@ public class ScheduledMessageTaskService {
     void setDeploymentBrandingResolver(
             DeploymentBrandingResolver deploymentBrandingResolver) {
         this.deploymentBrandingResolver = deploymentBrandingResolver;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setTranslationService(TranslationService translationService) {
+        this.translationService = translationService;
     }
 
     @PreDestroy
@@ -1134,6 +1140,7 @@ public class ScheduledMessageTaskService {
         putPayload(variables, "user_first_name", firstName(user == null ? null : user.getName()));
         putPayload(variables, "event_title", payload == null ? null : payload.get("eventTitle"));
         putPayload(variables, "change_summary", eventDefinitionChangeSummary(changeReasons));
+        putPayload(variables, "notification_message_key", eventDefinitionChangeMessageKey(changeReasons));
         putPayload(variables, "notification_tone", eventDefinitionChangeTone(changeReasons));
         putPayload(variables, "notification_kind", eventDefinitionChangeKind(changeReasons));
         putPayload(variables, "notification_source_type", "event");
@@ -1288,10 +1295,14 @@ public class ScheduledMessageTaskService {
             return "The event was deleted.";
         }
         if (reasons.contains("under-review")) {
-            return "The event is under review.";
+            return translated(
+                    "notification.event.under.review.message",
+                    "The event is under review.");
         }
         if (reasons.contains("modified")) {
-            return "The event was modified and is available again.";
+            return translated(
+                    "notification.event.available.again.message",
+                    "The event is available again.");
         }
         if (reasons.contains("unpublished")) {
             return "The event was unpublished.";
@@ -1305,6 +1316,28 @@ public class ScheduledMessageTaskService {
         return "The event details changed.";
     }
 
+    private String translated(String key, String fallback) {
+        if (translationService == null) {
+            return fallback;
+        }
+        try {
+            return translationService.t(key);
+        } catch (RuntimeException exception) {
+            return fallback;
+        }
+    }
+
+    private String eventDefinitionChangeMessageKey(String value) {
+        LinkedHashSet<String> reasons = normalizeCsv(value);
+        if (reasons.contains("under-review")) {
+            return "notification.event.under.review.message";
+        }
+        if (reasons.contains("modified")) {
+            return "notification.event.available.again.message";
+        }
+        return "";
+    }
+
     private String eventDefinitionChangeTone(String value) {
         LinkedHashSet<String> reasons = normalizeCsv(value);
         if (reasons.contains("deleted")) {
@@ -1312,6 +1345,9 @@ public class ScheduledMessageTaskService {
         }
         if (reasons.contains("under-review")) {
             return "warning";
+        }
+        if (reasons.contains("modified")) {
+            return "success";
         }
         return "info";
     }

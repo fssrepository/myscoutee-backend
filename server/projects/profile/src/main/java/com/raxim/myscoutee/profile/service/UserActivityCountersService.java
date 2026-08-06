@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,6 +33,8 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class UserActivityCountersService {
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final long EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
+    private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
 
     private final UsersRepository usersRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -82,6 +86,7 @@ public class UserActivityCountersService {
             }
         }
         refreshEventCountersForUsers(userIds);
+        syncFeedbackEligibilityForSourceIds(normalizedSourceIds, Instant.now());
     }
 
     public void refreshEventCountersForUsers(Collection<String> userIds) {
@@ -114,6 +119,7 @@ public class UserActivityCountersService {
     }
 
     public void applyFeedbackStateTransition(
+            ActivityEvent event,
             String userId,
             boolean wasSubmitted,
             boolean wasRemoved,
@@ -123,59 +129,111 @@ public class UserActivityCountersService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
-        usersRepository.findByUserId(normalizedUserId).ifPresent(user -> {
-            FeedbackCounters counters = currentFeedbackCounters(user.getActivities());
-            String previousBucket = feedbackBucket(wasSubmitted, wasRemoved);
-            String nextBucket = feedbackBucket(isSubmitted, isRemoved);
-            if (!Objects.equals(previousBucket, nextBucket)) {
-                counters = counters.minus(previousBucket).plus(nextBucket);
+        Map<String, FeedbackBucketDelta> deltasByUserId = new LinkedHashMap<>();
+        String previousBucket = feedbackBucket(wasSubmitted, wasRemoved);
+        String nextBucket = feedbackBucket(isSubmitted, isRemoved);
+        if (!Objects.equals(previousBucket, nextBucket)) {
+            addFeedbackDelta(deltasByUserId, normalizedUserId, previousBucket, -1);
+            addFeedbackDelta(deltasByUserId, normalizedUserId, nextBucket, 1);
+        }
+
+        boolean wasActiveSubmission = wasSubmitted && !wasRemoved;
+        boolean isActiveSubmission = isSubmitted && !isRemoved;
+        if (wasActiveSubmission != isActiveSubmission) {
+            int ownEventDelta = isActiveSubmission ? 1 : -1;
+            for (String ownerUserId : feedbackAdminUserIds(event)) {
+                addFeedbackDelta(deltasByUserId, ownerUserId, "own-events", ownEventDelta);
             }
-            Users.UserActivitiesRecord next = withFeedbackCounters(user.getActivities(), counters);
-            if (!Objects.equals(user.getActivities(), next)) {
-                updateFeedbackCounters(normalizedUserId, next);
-            }
-        });
+        }
+        applyFeedbackBucketDeltas(deltasByUserId);
     }
 
-    public void refreshFeedbackReceivedCountersForEvent(String eventId) {
-        String normalizedEventId = normalizeId(eventId);
-        if (!StringUtils.hasText(normalizedEventId)) {
-            return;
+    public int syncFeedbackEligibilityForSourceIds(Collection<String> sourceIds, Instant requestedNow) {
+        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        if (normalizedSourceIds.isEmpty()) {
+            return 0;
         }
-        Set<String> ownerUserIds = new LinkedHashSet<>();
-        for (ActivityEvent event : activityEventsRepository.findBySourceId(normalizedEventId)) {
-            if (event == null || isTrashScopeStatus(event)) {
+
+        Instant now = requestedNow == null ? Instant.now() : requestedNow;
+        String nowIso = now.toString();
+        Map<String, ActivityEvent> eventsBySourceId = preferredFeedbackEventsBySourceId(
+                activityEventsRepository.findBySourceIdIn(normalizedSourceIds));
+        Map<FeedbackEligibilityKey, ActivityEvent> desiredEligibility = new LinkedHashMap<>();
+        for (ActivityEvent event : eventsBySourceId.values()) {
+            if (!isFeedbackUnlocked(event, now) || isTrashScopeStatus(event)) {
                 continue;
             }
-            String creatorUserId = normalizeId(event.getCreatorUserId());
-            if (StringUtils.hasText(creatorUserId)) {
-                ownerUserIds.add(creatorUserId);
+            Set<String> adminUserIds = feedbackAdminUserIds(event);
+            for (String userId : safeStrings(event.getAcceptedMemberUserIds())) {
+                if (!adminUserIds.contains(userId)) {
+                    desiredEligibility.put(new FeedbackEligibilityKey(userId, normalizeId(event.getSourceId())), event);
+                }
             }
-            safeStrings(event.getAdmins()).forEach(ownerUserIds::add);
         }
-        for (String ownerUserId : ownerUserIds) {
-            refreshFeedbackReceivedCountersForUser(ownerUserId);
-        }
-    }
 
-    public void refreshFeedbackReceivedCountersForUser(String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return;
-        }
-        usersRepository.findByUserId(normalizedUserId).ifPresent(user -> {
-            Users.UserActivitiesRecord current = user.getActivities();
-            FeedbackCounters counters = currentFeedbackCounters(current);
-            counters = new FeedbackCounters(
-                    resolveReceivedFeedbackEventCount(normalizedUserId),
-                    counters.pending(),
-                    counters.feedbacked(),
-                    counters.removed());
-            Users.UserActivitiesRecord next = withFeedbackCounters(current, counters);
-            if (!Objects.equals(current, next)) {
-                updateFeedbackCounters(normalizedUserId, next);
+        Map<FeedbackEligibilityKey, EventFeedbackState> existingStates = new LinkedHashMap<>();
+        for (EventFeedbackState state : eventFeedbackStatesRepository
+                .findByEventIdInOrderByEventIdAscUpdatedDateDesc(normalizedSourceIds)) {
+            FeedbackEligibilityKey key = feedbackEligibilityKey(state);
+            if (key != null) {
+                existingStates.putIfAbsent(key, state);
             }
-        });
+        }
+
+        Map<String, FeedbackBucketDelta> deltasByUserId = new LinkedHashMap<>();
+        List<EventFeedbackState> changedStates = new java.util.ArrayList<>();
+        Set<FeedbackEligibilityKey> allKeys = new LinkedHashSet<>(existingStates.keySet());
+        allKeys.addAll(desiredEligibility.keySet());
+        for (FeedbackEligibilityKey key : allKeys) {
+            EventFeedbackState state = existingStates.get(key);
+            boolean desired = desiredEligibility.containsKey(key);
+            boolean legacyTracked = state != null
+                    && (StringUtils.hasText(state.getSubmittedAtIso()) || Boolean.TRUE.equals(state.getRemoved()));
+            boolean currentEligible = state != null
+                    && (Boolean.TRUE.equals(state.getEligible())
+                    || (state.getEligible() == null && legacyTracked));
+            boolean counterTracked = state != null
+                    && (Boolean.TRUE.equals(state.getCounterTracked()) || legacyTracked);
+
+            if (state == null && desired) {
+                state = newFeedbackEligibilityState(key, nowIso);
+                changedStates.add(state);
+                addFeedbackDelta(deltasByUserId, key.userId(), "pending", 1);
+                continue;
+            }
+            if (state == null) {
+                continue;
+            }
+
+            if (desired && !currentEligible) {
+                addFeedbackDelta(deltasByUserId, key.userId(), feedbackBucket(state), 1);
+                state.setEligible(true);
+                state.setCounterTracked(true);
+                touchFeedbackEligibilityState(state, nowIso);
+                changedStates.add(state);
+            } else if (!desired && currentEligible) {
+                if (counterTracked) {
+                    addFeedbackDelta(deltasByUserId, key.userId(), feedbackBucket(state), -1);
+                }
+                state.setEligible(false);
+                state.setCounterTracked(false);
+                touchFeedbackEligibilityState(state, nowIso);
+                changedStates.add(state);
+            } else if (desired
+                    && (state.getEligible() == null || state.getCounterTracked() == null)) {
+                state.setEligible(true);
+                state.setCounterTracked(true);
+                touchFeedbackEligibilityState(state, nowIso);
+                changedStates.add(state);
+            }
+        }
+
+        if (!changedStates.isEmpty()) {
+            eventFeedbackStatesRepository.saveAll(changedStates);
+        }
+        int updatedUsers = applyFeedbackBucketDeltas(deltasByUserId);
+        markFeedbackProjectionState(normalizedSourceIds, eventsBySourceId, now);
+        return updatedUsers;
     }
 
     private EventCounters resolveEventCounters(String userId) {
@@ -266,36 +324,6 @@ public class UserActivityCountersService {
                 .distinct()
                 .count();
         return (int) Math.min(Integer.MAX_VALUE, ticketCount);
-    }
-
-    private int resolveReceivedFeedbackEventCount(String userId) {
-        Set<String> eventIds = new LinkedHashSet<>();
-        for (ActivityEvent event : activityEventsRepository.findByCreatorUserId(userId)) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
-            if (StringUtils.hasText(sourceId) && !isTrashScopeStatus(event)) {
-                eventIds.add(sourceId);
-            }
-        }
-        for (ActivityEvent event : activityEventsRepository.findByAdminsContaining(userId)) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
-            if (StringUtils.hasText(sourceId) && !isTrashScopeStatus(event)) {
-                eventIds.add(sourceId);
-            }
-        }
-        if (eventIds.isEmpty()) {
-            return 0;
-        }
-        Set<String> eventsWithFeedback = new LinkedHashSet<>();
-        for (EventFeedbackState state : eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(eventIds)) {
-            String eventId = normalizeId(state == null ? null : state.getEventId());
-            String viewerUserId = normalizeId(state == null ? null : state.getViewerUserId());
-            if (StringUtils.hasText(eventId)
-                    && !Objects.equals(userId, viewerUserId)
-                    && (StringUtils.hasText(state.getSubmittedAtIso()) || StringUtils.hasText(state.getOrganizerNote()))) {
-                eventsWithFeedback.add(eventId);
-            }
-        }
-        return eventsWithFeedback.size();
     }
 
     private Users.UserActivitiesRecord withEventCounters(
@@ -417,7 +445,7 @@ public class UserActivityCountersService {
                 count(safe.supplies()),
                 count(safe.tickets()),
                 count(safe.contacts()),
-                counters.pending(),
+                Math.max(0, counters.pending() + counters.ownEvents()),
                 safe.chat(),
                 safe.event(),
                 safe.asset(),
@@ -480,6 +508,159 @@ public class UserActivityCountersService {
             return "removed";
         }
         return submitted ? "feedbacked" : "pending";
+    }
+
+    private String feedbackBucket(EventFeedbackState state) {
+        return feedbackBucket(
+                StringUtils.hasText(state == null ? null : state.getSubmittedAtIso()),
+                Boolean.TRUE.equals(state == null ? null : state.getRemoved()));
+    }
+
+    private Map<String, ActivityEvent> preferredFeedbackEventsBySourceId(Collection<ActivityEvent> events) {
+        Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (!StringUtils.hasText(sourceId) || Boolean.TRUE.equals(event.getGenerated())) {
+                continue;
+            }
+            ActivityEvent current = preferred.get(sourceId);
+            if (current == null || feedbackEventPreferenceScore(event) > feedbackEventPreferenceScore(current)) {
+                preferred.put(sourceId, event);
+            }
+        }
+        return preferred;
+    }
+
+    private int feedbackEventPreferenceScore(ActivityEvent event) {
+        if (event == null) {
+            return 0;
+        }
+        boolean canonical = normalizeId(event.getCreatorUserId()).equals(normalizeId(event.getOwnerUserId()));
+        int acceptedCount = safeStrings(event.getAcceptedMemberUserIds()).size();
+        return (canonical ? 1_000_000 : 0) + acceptedCount;
+    }
+
+    private Set<String> feedbackAdminUserIds(ActivityEvent event) {
+        Set<String> userIds = new LinkedHashSet<>();
+        addUserId(userIds, event == null ? null : event.getOwnerUserId());
+        addUserId(userIds, event == null ? null : event.getCreatorUserId());
+        safeStrings(event == null ? List.of() : event.getAdmins()).forEach(userIds::add);
+        return userIds;
+    }
+
+    private boolean isFeedbackUnlocked(ActivityEvent event, Instant now) {
+        Instant endAt = parseInstant(event == null ? null : event.getEndAtIso());
+        return endAt != null
+                && !endAt.plusSeconds(EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS)
+                        .isAfter(now == null ? Instant.now() : now);
+    }
+
+    private Instant parseInstant(String value) {
+        try {
+            return StringUtils.hasText(value) ? Instant.parse(value) : null;
+        } catch (RuntimeException ignored) {
+            return null;
+        }
+    }
+
+    private FeedbackEligibilityKey feedbackEligibilityKey(EventFeedbackState state) {
+        String userId = normalizeId(state == null ? null : state.getViewerUserId());
+        String eventId = normalizeId(state == null ? null : state.getEventId());
+        return StringUtils.hasText(userId) && StringUtils.hasText(eventId)
+                ? new FeedbackEligibilityKey(userId, eventId)
+                : null;
+    }
+
+    private EventFeedbackState newFeedbackEligibilityState(FeedbackEligibilityKey key, String nowIso) {
+        EventFeedbackState state = new EventFeedbackState();
+        state.setId(new ObjectId().toHexString());
+        state.setSyncKey(UUID.randomUUID().toString());
+        state.setViewerUserId(key.userId());
+        state.setEventId(key.eventId());
+        state.setRemoved(false);
+        state.setEligible(true);
+        state.setCounterTracked(true);
+        state.setCreatedDate(nowIso);
+        state.setCreatedUser(FEEDBACK_COUNTER_PROJECTOR);
+        state.setUpdatedDate(nowIso);
+        state.setUpdatedUser(FEEDBACK_COUNTER_PROJECTOR);
+        return state;
+    }
+
+    private void touchFeedbackEligibilityState(EventFeedbackState state, String nowIso) {
+        state.setUpdatedDate(nowIso);
+        state.setUpdatedUser(FEEDBACK_COUNTER_PROJECTOR);
+    }
+
+    private void addFeedbackDelta(
+            Map<String, FeedbackBucketDelta> deltasByUserId,
+            String userId,
+            String bucket,
+            int amount) {
+        if (!StringUtils.hasText(userId) || amount == 0) {
+            return;
+        }
+        deltasByUserId.merge(
+                userId,
+                FeedbackBucketDelta.forBucket(bucket, amount),
+                FeedbackBucketDelta::plus);
+    }
+
+    private int applyFeedbackBucketDeltas(Map<String, FeedbackBucketDelta> deltasByUserId) {
+        if (deltasByUserId.isEmpty()) {
+            return 0;
+        }
+        int updated = 0;
+        for (Users user : usersRepository.findByUserIdIn(deltasByUserId.keySet())) {
+            String userId = normalizeId(user == null ? null : user.getUserId());
+            FeedbackBucketDelta delta = deltasByUserId.get(userId);
+            if (delta == null) {
+                continue;
+            }
+            FeedbackCounters current = currentFeedbackCounters(user.getActivities());
+            FeedbackCounters counters = new FeedbackCounters(
+                    Math.max(0, current.ownEvents() + delta.ownEvents()),
+                    Math.max(0, current.pending() + delta.pending()),
+                    Math.max(0, current.feedbacked() + delta.feedbacked()),
+                    Math.max(0, current.removed() + delta.removed()));
+            Users.UserActivitiesRecord next = withFeedbackCounters(user.getActivities(), counters);
+            if (!Objects.equals(user.getActivities(), next)) {
+                updateFeedbackCounters(userId, next);
+                updated += 1;
+            }
+        }
+        return updated;
+    }
+
+    private void markFeedbackProjectionState(
+            Collection<String> sourceIds,
+            Map<String, ActivityEvent> eventsBySourceId,
+            Instant now) {
+        Set<String> waitingSourceIds = new LinkedHashSet<>();
+        for (Map.Entry<String, ActivityEvent> entry : eventsBySourceId.entrySet()) {
+            ActivityEvent event = entry.getValue();
+            Instant endAt = parseInstant(event == null ? null : event.getEndAtIso());
+            if (!isTrashScopeStatus(event)
+                    && endAt != null
+                    && endAt.plusSeconds(EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS).isAfter(now)) {
+                waitingSourceIds.add(entry.getKey());
+            }
+        }
+        Set<String> projectedSourceIds = new LinkedHashSet<>(normalizeIds(sourceIds));
+        projectedSourceIds.removeAll(waitingSourceIds);
+        updateFeedbackProjectionMarker(projectedSourceIds, true);
+        updateFeedbackProjectionMarker(waitingSourceIds, false);
+    }
+
+    private void updateFeedbackProjectionMarker(Collection<String> sourceIds, boolean projected) {
+        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        if (normalizedSourceIds.isEmpty()) {
+            return;
+        }
+        mongoTemplate.updateMulti(
+                Query.query(Criteria.where("sourceId").in(normalizedSourceIds)),
+                new Update().set("feedbackCountersProjected", projected),
+                ActivityEvent.class);
     }
 
     private void collectEventUserIds(Set<String> userIds, ActivityEvent event) {
@@ -690,6 +871,28 @@ public class UserActivityCountersService {
                 case "feedbacked" -> new FeedbackCounters(ownEvents, pending, Math.max(0, feedbacked - 1), removed);
                 default -> new FeedbackCounters(ownEvents, Math.max(0, pending - 1), feedbacked, removed);
             };
+        }
+    }
+
+    private record FeedbackEligibilityKey(String userId, String eventId) {
+    }
+
+    private record FeedbackBucketDelta(int ownEvents, int pending, int feedbacked, int removed) {
+        static FeedbackBucketDelta forBucket(String bucket, int amount) {
+            return switch (bucket) {
+                case "own-events" -> new FeedbackBucketDelta(amount, 0, 0, 0);
+                case "removed" -> new FeedbackBucketDelta(0, 0, 0, amount);
+                case "feedbacked" -> new FeedbackBucketDelta(0, 0, amount, 0);
+                default -> new FeedbackBucketDelta(0, amount, 0, 0);
+            };
+        }
+
+        FeedbackBucketDelta plus(FeedbackBucketDelta other) {
+            return new FeedbackBucketDelta(
+                    ownEvents + other.ownEvents,
+                    pending + other.pending,
+                    feedbacked + other.feedbacked,
+                    removed + other.removed);
         }
     }
 }

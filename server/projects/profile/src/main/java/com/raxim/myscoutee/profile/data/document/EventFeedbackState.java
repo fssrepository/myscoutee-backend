@@ -23,6 +23,8 @@ public class EventFeedbackState {
     private String viewerUserId;
     private String eventId;
     private Boolean removed;
+    private Boolean eligible;
+    private Boolean counterTracked;
     private String submittedAtIso;
     private String removedAtIso;
     private String organizerNote;
@@ -69,6 +71,22 @@ public class EventFeedbackState {
 
     public void setRemoved(Boolean removed) {
         this.removed = removed;
+    }
+
+    public Boolean getEligible() {
+        return eligible;
+    }
+
+    public void setEligible(Boolean eligible) {
+        this.eligible = eligible;
+    }
+
+    public Boolean getCounterTracked() {
+        return counterTracked;
+    }
+
+    public void setCounterTracked(Boolean counterTracked) {
+        this.counterTracked = counterTracked;
     }
 
     public String getSubmittedAtIso() {

@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,13 +135,16 @@ class UserActivityCountersServiceTest {
 
     @Test
     void applyFeedbackStateTransitionMovesStoredMenuAndPopupBuckets() {
+        ActivityEvent event = event("event-feedback", "host", "A");
+        event.setOwnerUserId("host");
+        event.setAdmins(List.of("host"));
         Users user = user("viewer", activitiesWithAssetAndFeedback(2, 2, 2, 0, 4, 3, 1, 0));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(user));
 
-        service.applyFeedbackStateTransition("viewer", false, false, true, false);
+        service.applyFeedbackStateTransition(event, "viewer", false, false, true, false);
 
         Document fields = updatedFields();
-        assertThat(fields.getInteger("activities.feedback")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.feedback")).isEqualTo(6);
         assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
         assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(2);
         assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
@@ -147,26 +152,63 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
-    void refreshFeedbackReceivedCountersForUserCountsOwnedEventsWithExternalFeedback() {
-        Users user = user("host", activitiesWithAssetAndFeedback(2, 2, 2, 0, 0, 3, 1, 0));
-        when(usersRepository.findByUserId("host")).thenReturn(Optional.of(user));
-        when(activityEventsRepository.findByCreatorUserId("host")).thenReturn(List.of(
-                event("event-one", "host", "A"),
-                event("event-two", "host", "A"),
-                event("event-trash", "host", "T")));
-        when(activityEventsRepository.findByAdminsContaining("host")).thenReturn(List.of(
-                event("event-two", "other-host", "A")));
-        when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
-                .thenReturn(List.of(
-                        state("event-one", "guest", "2026-03-01T10:00:00.000Z", ""),
-                        state("event-one", "host", "2026-03-01T10:00:00.000Z", ""),
-                        state("event-two", "guest", "", "Strong hosting.")));
+    void syncFeedbackEligibilityAddsPendingAndMenuAggregateDeltaOnlyOnce() {
+        Instant now = Instant.parse("2026-08-05T09:00:00Z");
+        ActivityEvent eligible = event("event-eligible", "host", "A");
+        eligible.setOwnerUserId("host");
+        eligible.setAdmins(List.of("host"));
+        eligible.setAcceptedMemberUserIds(List.of("host", "viewer"));
+        eligible.setStartAtIso(now.minusSeconds(10_800L).toString());
+        eligible.setEndAtIso(now.minusSeconds(10_800L).toString());
+        Users viewer = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 4, 0, 2, 1));
+        EventFeedbackState alreadyTracked = state("event-eligible", "viewer", "", "");
+        alreadyTracked.setEligible(true);
+        alreadyTracked.setCounterTracked(true);
 
-        service.refreshFeedbackReceivedCountersForUser("host");
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(List.of(eligible));
+        when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
+                .thenReturn(List.of())
+                .thenReturn(List.of(alreadyTracked));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(viewer));
+
+        int firstUpdatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-eligible"), now);
+        int secondUpdatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-eligible"), now);
+
+        assertThat(firstUpdatedUsers).isEqualTo(1);
+        assertThat(secondUpdatedUsers).isZero();
+        ArgumentCaptor<Iterable<EventFeedbackState>> stateCaptor = ArgumentCaptor.forClass(Iterable.class);
+        verify(eventFeedbackStatesRepository).saveAll(stateCaptor.capture());
+        assertThat(stateCaptor.getValue())
+                .singleElement()
+                .satisfies(state -> {
+                    assertThat(state.getViewerUserId()).isEqualTo("viewer");
+                    assertThat(state.getEventId()).isEqualTo("event-eligible");
+                    assertThat(state.getEligible()).isTrue();
+                    assertThat(state.getCounterTracked()).isTrue();
+                });
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(1)).updateFirst(any(Query.class), updateCaptor.capture(), eq(Users.class));
+        Document fields = updateCaptor.getValue().getUpdateObject().get("$set", Document.class);
+        assertThat(fields.getInteger("activities.feedback")).isEqualTo(5);
+        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
+        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.removed")).isEqualTo(1);
+    }
+
+    @Test
+    void applyFeedbackStateTransitionAddsOwnEventAndStoredMenuAggregateForNewSubmission() {
+        ActivityEvent event = event("event-own", "host", "A");
+        event.setOwnerUserId("host");
+        event.setAdmins(List.of("host"));
+        Users host = user("host", activitiesWithAssetAndFeedback(2, 2, 2, 0, 0, 3, 1, 0));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(host));
+
+        service.applyFeedbackStateTransition(event, "viewer", false, false, true, false);
 
         Document fields = updatedFields();
-        assertThat(fields.getInteger("activities.feedback")).isEqualTo(3);
-        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.feedback")).isEqualTo(4);
+        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(1);
         assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(3);
         assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(1);
         assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
@@ -205,7 +247,7 @@ class UserActivityCountersServiceTest {
                 supplies,
                 tickets,
                 0,
-                pending,
+                pending + ownEvents,
                 new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(cars, accommodation, supplies, tickets),

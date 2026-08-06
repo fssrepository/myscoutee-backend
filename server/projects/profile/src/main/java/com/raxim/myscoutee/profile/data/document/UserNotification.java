@@ -31,6 +31,9 @@ public class UserNotification {
     @Indexed(name = "user_notifications_sync_key", unique = true, sparse = true)
     private String syncKey;
 
+    @Indexed(name = "user_notifications_aggregation_key", unique = true, sparse = true)
+    private String aggregationKey;
+
     private String outboxId;
     private String recipientUserId;
     private String kind;
@@ -42,6 +45,8 @@ public class UserNotification {
     private String sourceType;
     private String sourceId;
     private Map<String, String> payload = new LinkedHashMap<>();
+    private Integer occurrenceCount;
+    private Long revision;
     private String readAtIso;
     private String createdDate;
     private String createdUser;
@@ -62,6 +67,14 @@ public class UserNotification {
 
     public void setSyncKey(String syncKey) {
         this.syncKey = syncKey;
+    }
+
+    public String getAggregationKey() {
+        return aggregationKey;
+    }
+
+    public void setAggregationKey(String aggregationKey) {
+        this.aggregationKey = aggregationKey;
     }
 
     public String getOutboxId() {
@@ -150,6 +163,22 @@ public class UserNotification {
 
     public void setPayload(Map<String, String> payload) {
         this.payload = payload == null ? new LinkedHashMap<>() : new LinkedHashMap<>(payload);
+    }
+
+    public Integer getOccurrenceCount() {
+        return occurrenceCount;
+    }
+
+    public void setOccurrenceCount(Integer occurrenceCount) {
+        this.occurrenceCount = occurrenceCount;
+    }
+
+    public Long getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
     }
 
     public String getReadAtIso() {

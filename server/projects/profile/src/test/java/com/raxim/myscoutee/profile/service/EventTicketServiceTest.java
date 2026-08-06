@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,21 +67,23 @@ class EventTicketServiceTest {
     }
 
     @Test
-    void findOrIssueIsIdempotentAndIssuesAnOpaquePiiFreeCode() {
+    void writeSideActivationIsIdempotentAndIssuesAnOpaquePiiFreeCode() {
         stubEligibleHolder(activeEvent());
-        when(eventTicketsRepository.findByEventIdAndHolderUserId(EVENT_ID, HOLDER_USER_ID))
+        when(eventTicketsRepository.findByEventIdAndHolderUserIdAndStatus(
+                EVENT_ID, HOLDER_USER_ID, EventTicket.STATUS_ACTIVE))
                 .thenReturn(Optional.empty());
         when(eventTicketsRepository.save(any(EventTicket.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        EventTicket first = service.findOrIssue(
+        EventTicket first = service.activateForEligibleHolder(
                 " " + EVENT_ID + " ",
                 " " + HOLDER_USER_ID + " ",
                 NOW);
 
-        when(eventTicketsRepository.findByEventIdAndHolderUserId(EVENT_ID, HOLDER_USER_ID))
+        when(eventTicketsRepository.findByEventIdAndHolderUserIdAndStatus(
+                EVENT_ID, HOLDER_USER_ID, EventTicket.STATUS_ACTIVE))
                 .thenReturn(Optional.of(first));
-        EventTicket second = service.findOrIssue(EVENT_ID, HOLDER_USER_ID, NOW.plusSeconds(30));
+        EventTicket second = service.activateForEligibleHolder(EVENT_ID, HOLDER_USER_ID, NOW.plusSeconds(30));
 
         assertThat(first).isNotNull();
         assertThat(second).isSameAs(first);
@@ -98,18 +101,93 @@ class EventTicketServiceTest {
     }
 
     @Test
-    void findOrIssueReturnsTheConcurrentCredentialAfterAUniqueKeyRace() {
+    void writeSideActivationReturnsTheConcurrentCredentialAfterAUniqueKeyRace() {
         stubEligibleHolder(activeEvent());
         EventTicket concurrent = activeTicket();
-        when(eventTicketsRepository.findByEventIdAndHolderUserId(EVENT_ID, HOLDER_USER_ID))
+        when(eventTicketsRepository.findByEventIdAndHolderUserIdAndStatus(
+                EVENT_ID, HOLDER_USER_ID, EventTicket.STATUS_ACTIVE))
                 .thenReturn(Optional.empty(), Optional.of(concurrent));
         when(eventTicketsRepository.save(any(EventTicket.class)))
                 .thenThrow(new DuplicateKeyException("concurrent issue"));
 
-        EventTicket result = service.findOrIssue(EVENT_ID, HOLDER_USER_ID, NOW);
+        EventTicket result = service.activateForEligibleHolder(EVENT_ID, HOLDER_USER_ID, NOW);
 
         assertThat(result).isSameAs(concurrent);
         verify(eventTicketsRepository, times(1)).save(any(EventTicket.class));
+    }
+
+    @Test
+    void creatorCannotReceiveAParticipantCredential() {
+        ActivityEvent event = activeEvent();
+        when(activityEventsRepository.findBySourceId(EVENT_ID)).thenReturn(List.of(event));
+
+        EventTicket result = service.activateForEligibleHolder(EVENT_ID, SCANNER_USER_ID, NOW);
+
+        assertThat(result).isNull();
+        verifyNoInteractions(eventTicketsRepository, activityMembersRepository);
+    }
+
+    @Test
+    void eventAdminCannotReceiveAParticipantCredential() {
+        ActivityEvent event = activeEvent();
+        event.setAdmins(List.of(HOLDER_USER_ID));
+        when(activityEventsRepository.findBySourceId(EVENT_ID)).thenReturn(List.of(event));
+
+        EventTicket result = service.activateForEligibleHolder(EVENT_ID, HOLDER_USER_ID, NOW);
+
+        assertThat(result).isNull();
+        verifyNoInteractions(eventTicketsRepository, activityMembersRepository);
+    }
+
+    @Test
+    void ticketingOffSoftDeletesThePhysicalActiveTicket() {
+        ActivityEvent event = activeEvent();
+        event.setTicketing(false);
+        EventTicket ticket = activeTicket();
+        when(eventTicketsRepository.findByEventId(EVENT_ID)).thenReturn(List.of(ticket));
+
+        service.synchronizeForEvent(event, Set.of(HOLDER_USER_ID), NOW);
+
+        assertThat(ticket.getStatus()).isEqualTo(EventTicket.STATUS_DELETED);
+        verify(eventTicketsRepository).saveAll(List.of(ticket));
+        verify(eventTicketsRepository, never()).save(any(EventTicket.class));
+    }
+
+    @Test
+    void unpublishedEventSoftDeletesThePhysicalActiveTicketEvenWhenTicketingStaysOn() {
+        ActivityEvent event = activeEvent();
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
+        EventTicket ticket = activeTicket();
+        when(eventTicketsRepository.findByEventId(EVENT_ID)).thenReturn(List.of(ticket));
+
+        service.synchronizeForEvent(event, Set.of(HOLDER_USER_ID), NOW);
+
+        assertThat(ticket.getStatus()).isEqualTo(EventTicket.STATUS_DELETED);
+        verify(eventTicketsRepository).saveAll(List.of(ticket));
+        verify(eventTicketsRepository, never()).save(any(EventTicket.class));
+    }
+
+    @Test
+    void republishAfterTicketingOffCreatesANewPhysicalTicketAndQrCode() {
+        ActivityEvent event = activeEvent();
+        EventTicket deleted = activeTicket();
+        deleted.setStatus(EventTicket.STATUS_DELETED);
+        when(eventTicketsRepository.findByEventId(EVENT_ID)).thenReturn(List.of(deleted));
+        when(eventTicketsRepository.findByEventIdAndHolderUserIdAndStatus(
+                EVENT_ID, HOLDER_USER_ID, EventTicket.STATUS_ACTIVE))
+                .thenReturn(Optional.empty());
+        when(eventTicketsRepository.save(any(EventTicket.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        stubEligibleHolder(event);
+
+        service.synchronizeForEvent(event, Set.of(HOLDER_USER_ID), NOW);
+
+        ArgumentCaptor<EventTicket> created = ArgumentCaptor.forClass(EventTicket.class);
+        verify(eventTicketsRepository).save(created.capture());
+        assertThat(created.getValue().getId()).isNotEqualTo(deleted.getId());
+        assertThat(created.getValue().getCode()).isNotEqualTo(deleted.getCode());
+        assertThat(created.getValue().getStatus()).isEqualTo(EventTicket.STATUS_ACTIVE);
+        assertThat(created.getValue().getIssuedAtIso()).isEqualTo(NOW.toString());
     }
 
     @Test
@@ -166,7 +244,7 @@ class EventTicketServiceTest {
         assertThat(query.getValue().getQueryObject().toJson())
                 .contains("\"_id\": \"" + TICKET_ID + "\"")
                 .contains("\"code\": \"" + CODE + "\"")
-                .contains("\"status\": \"active\"")
+                .contains("\"status\": \"A\"")
                 .contains("\"usedAtIso\": {\"$exists\": false}")
                 .contains("\"usedAtIso\": null")
                 .contains("\"usedAtIso\": \"\"");

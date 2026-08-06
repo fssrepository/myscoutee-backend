@@ -32,6 +32,7 @@ public class EventFeedbackAnswer {
     private String targetRole;
     private String primaryValue;
     private String secondaryValue;
+    private String eventComment;
     private List<String> personalityTraitIds = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
     private String submittedAtIso;
@@ -118,6 +119,14 @@ public class EventFeedbackAnswer {
 
     public void setSecondaryValue(String secondaryValue) {
         this.secondaryValue = secondaryValue;
+    }
+
+    public String getEventComment() {
+        return eventComment;
+    }
+
+    public void setEventComment(String eventComment) {
+        this.eventComment = eventComment;
     }
 
     public List<String> getPersonalityTraitIds() {

@@ -41,7 +41,10 @@ public class Chat {
     private String dateIso;
     private String channelType;
     private String ownerId;
+    @Indexed(name = "chat_event")
     private String eventId;
+    private String ownerStatus;
+    private Long revision = 1L;
     private String subEventId;
     private String groupId;
     private Double distanceKm;
@@ -153,6 +156,22 @@ public class Chat {
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
+    }
+
+    public String getOwnerStatus() {
+        return ownerStatus;
+    }
+
+    public void setOwnerStatus(String ownerStatus) {
+        this.ownerStatus = ownerStatus;
+    }
+
+    public Long getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
     }
 
     public String getSubEventId() {

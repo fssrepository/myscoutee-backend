@@ -25,6 +25,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.notifications.NotificationDtos.UserNotificationDto;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository;
 import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.UserNotificationSlice;
+import com.raxim.myscoutee.profile.repository.UserNotificationPageRepository.AggregatedNotificationUpsert;
 import com.raxim.myscoutee.profile.repository.UserNotificationsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.mapper.UserNotificationMapper;
@@ -85,6 +86,43 @@ class UserNotificationServiceTest {
 
         verify(userNotificationPageRepository, org.mockito.Mockito.never())
                 .incrementUnreadCounter(any(String.class), eq(1));
+    }
+
+    @Test
+    void materializeAggregatesMatchingWarningsIntoOneUnreadRow() {
+        when(userNotificationPageRepository.upsertAggregated(any(UserNotification.class)))
+                .thenReturn(new AggregatedNotificationUpsert(false, false));
+        NotificationOutboxItem outbox = outbox("event-ticket-replay-warning", List.of("holder-1"));
+        outbox.setPayload(Map.of(
+                "notification_aggregation_key", "event-ticket-replay:ticket-1",
+                "notification_tone", "warning",
+                "actorUserId", "scanner-2"));
+
+        service.materialize(outbox);
+
+        ArgumentCaptor<UserNotification> notification = ArgumentCaptor.forClass(UserNotification.class);
+        verify(userNotificationPageRepository).upsertAggregated(notification.capture());
+        assertThat(notification.getValue().getAggregationKey())
+                .isEqualTo("holder-1:event-ticket-replay:ticket-1");
+        assertThat(notification.getValue().getOccurrenceCount()).isEqualTo(1);
+        assertThat(notification.getValue().getSenderUserId()).isEqualTo("scanner-2");
+        verify(userNotificationPageRepository, org.mockito.Mockito.never())
+                .insertIfAbsent(any(UserNotification.class));
+        verify(userNotificationPageRepository, org.mockito.Mockito.never())
+                .incrementUnreadCounter(any(String.class), eq(1));
+    }
+
+    @Test
+    void newAggregatedWarningIncrementsUnreadRowsOnlyOnce() {
+        when(userNotificationPageRepository.upsertAggregated(any(UserNotification.class)))
+                .thenReturn(new AggregatedNotificationUpsert(true, true));
+        NotificationOutboxItem outbox = outbox("event-ticket-replay-warning", List.of("holder-1"));
+        outbox.setPayload(Map.of(
+                "notification_aggregation_key", "event-ticket-replay:ticket-1"));
+
+        service.materialize(outbox);
+
+        verify(userNotificationPageRepository).incrementUnreadCounter("holder-1", 1);
     }
 
     @Test
@@ -244,6 +282,8 @@ class UserNotificationServiceTest {
                 notification.getActionPath(),
                 notification.getSourceType(),
                 notification.getSourceId(),
-                Map.of());
+                Map.of(),
+                1,
+                1L);
     }
 }

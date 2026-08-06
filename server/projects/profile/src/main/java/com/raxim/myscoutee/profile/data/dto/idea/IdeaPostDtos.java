@@ -59,6 +59,7 @@ public final class IdeaPostDtos {
             String contentHtml,
             String imageUrl,
             List<String> imageUrls,
+            List<String> removedImageUrls,
             Boolean featured,
             Boolean published,
             String submittedAtIso) {

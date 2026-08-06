@@ -149,6 +149,115 @@ public class EventInviteNotificationService {
                 memberUserId));
     }
 
+    public void notifyJoinRequested(
+            ActivityEvent event,
+            String memberUserId,
+            String memberName,
+            String requestedAtIso,
+            List<String> recipientUserIds) {
+        notifyJoinRequestChanged(
+                event,
+                memberUserId,
+                memberName,
+                requestedAtIso,
+                recipientUserIds,
+                false);
+    }
+
+    public void notifyJoinRequestCancelled(
+            ActivityEvent event,
+            String memberUserId,
+            String memberName,
+            String cancelledAtIso,
+            List<String> recipientUserIds) {
+        notifyJoinRequestChanged(
+                event,
+                memberUserId,
+                memberName,
+                cancelledAtIso,
+                recipientUserIds,
+                true);
+    }
+
+    private void notifyJoinRequestChanged(
+            ActivityEvent event,
+            String requestedMemberUserId,
+            String requestedMemberName,
+            String actionAtIso,
+            List<String> recipientUserIds,
+            boolean cancelled) {
+        if (event == null) {
+            return;
+        }
+        String memberUserId = safeText(requestedMemberUserId);
+        if (!StringUtils.hasText(memberUserId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>();
+        if (recipientUserIds != null) {
+            recipientUserIds.stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .forEach(recipients::add);
+        }
+        recipients.remove(memberUserId);
+        if (recipients.isEmpty()) {
+            return;
+        }
+
+        String eventId = safeText(event.getSourceId());
+        String eventTitle = resolveTitle(event);
+        String memberName = StringUtils.hasText(safeText(requestedMemberName))
+                ? safeText(requestedMemberName)
+                : memberUserId;
+        String action = cancelled ? "cancelled" : "requested";
+        String notificationKind = cancelled
+                ? "event-admin-join-request-cancelled"
+                : "event-admin-join-request";
+        String messageKey = cancelled
+                ? "notification.event.join.cancelled.message"
+                : "notification.event.join.requested.message";
+        String badgeKey = cancelled
+                ? "notification.event.join.cancelled.badge"
+                : "notification.event.join.pending.badge";
+        String badgeFallback = cancelled ? "Cancelled" : "Pending";
+        String tone = cancelled ? "warning" : "accent";
+        String normalizedActionAtIso = safeText(actionAtIso);
+
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "members");
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", memberName);
+        payload.put("membershipAction", action);
+        payload.put("senderUserId", memberUserId);
+        payload.put("notification_tone", tone);
+        payload.put("notification_message_key", messageKey);
+        payload.put("notification_status_badge_key", badgeKey);
+        payload.put("notification_status_badge_fallback", badgeFallback);
+        payload.put("notification_status_badge_tone", tone);
+        payload.put("joinRequestOccurrenceId", UUID.randomUUID().toString());
+        if (StringUtils.hasText(normalizedActionAtIso)) {
+            payload.put(cancelled ? "cancelledAtIso" : "requestedAtIso", normalizedActionAtIso);
+        }
+
+        notificationOutboxService.enqueue(new NotificationIntent(
+                notificationKind,
+                "event",
+                eventId,
+                "event-admins",
+                List.copyOf(recipients),
+                eventTitle,
+                cancelled ? "Join request cancelled." : "Join request received.",
+                DEFAULT_CLICK_URL,
+                resolveImageUrl(event),
+                APP_BADGE_URL,
+                notificationKind + "-" + eventId + "-" + memberUserId,
+                payload,
+                memberUserId));
+    }
+
     private String resolveTitle(ActivityEvent event) {
         String title = safeText(event.getTitle());
         return StringUtils.hasText(title) ? title : "New event invitation";

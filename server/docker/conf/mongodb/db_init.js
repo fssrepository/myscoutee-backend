@@ -243,7 +243,11 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   );
   portalDb.eventTickets.createIndex(
     { eventId: 1, holderUserId: 1 },
-    { name: 'event_ticket_event_holder', unique: true }
+    {
+      name: 'event_ticket_active_event_holder',
+      unique: true,
+      partialFilterExpression: { status: 'A' }
+    }
   );
   portalDb.eventTickets.createIndex(
     { eventId: 1, usedAtIso: 1 },

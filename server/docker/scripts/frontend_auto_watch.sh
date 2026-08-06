@@ -8,7 +8,7 @@ BUILD_CONFIGURATION="${FRONTEND_BUILD_CONFIGURATION:-}"
 BUILD_LOG_FILE="${BUILD_LOG_FILE:-}"
 BUILD_FRONTEND_ROOT="${BUILD_FRONTEND_ROOT:-}"
 SOURCE_SYNC_DEBOUNCE_SECONDS="${SOURCE_SYNC_DEBOUNCE_SECONDS:-1}"
-SOURCE_SYNC_EXCLUDE_REGEX='(^|/)(node_modules|local|dev|e2e|docs|prod|out-tsc|\.angular|\.git|\.agent)(/|$)'
+SOURCE_SYNC_EXCLUDE_REGEX="^${SOURCE_FRONTEND_ROOT}/(node_modules|local|dev|e2e|docs|prod|out-tsc|\\.angular|\\.git|\\.agent)(/|$)"
 TEMP_BUILD_ROOT_CREATED="false"
 BUILD_OUTPUT_DIR=""
 

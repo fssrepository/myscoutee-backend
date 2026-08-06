@@ -8,6 +8,24 @@ The harness creates observable checkpoints around a real persisted scheduler
 configuration. It never starts another backend, frontend, database, Gradle, or
 scheduler process and never calls a hidden/manual job endpoint.
 
+## Canonical Docker entry point
+
+When the development stack already owns the `mongodb` container, use the
+versioned Docker entry point from the repository root:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-FEEDBACK-006
+```
+
+It pins `MANUAL_QA_MONGO_MODE=container`, resolves the already-running
+`mongodb` container and delegates to the same checkpoint harness. It never
+starts, stops, restarts or rebuilds MongoDB or any other service. Agent/tool
+invocations must grant this command access to the existing Docker socket on
+the first attempt. If the socket is denied, the harness reports that condition
+separately; it must not be interpreted as a stopped container and must never
+trigger another stack or database process.
+
 ## Available scenarios
 
 | Scenario | Prepared path | Automatic path under test |
@@ -30,7 +48,7 @@ results were **not** rerun while these helpers were added.
 
 The event-domain runner implements executable setup and machine oracles for the
 checkpoint graph in
-[`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/plans/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
+[`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../../../../guides/qa/manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md).
 It does not merely print that document. `stage` creates the controlled event,
 membership, feedback or ticket prerequisite and stores a complete reset
 snapshot; `status` queries the resulting identities from Mongo.
@@ -44,21 +62,127 @@ Supported checkpoint IDs:
 - `EVENT-ACTIVITY-REFRESH-001`
 - `CHAT-AUTH-001`
 - `EVENT-LIFE-001` through `EVENT-LIFE-005`
-- `EVENT-FEEDBACK-001` through `EVENT-FEEDBACK-005`
+- `EVENT-FEEDBACK-001`, `EVENT-FEEDBACK-002`, `EVENT-FEEDBACK-005`, and
+  `EVENT-FEEDBACK-006`
 - `EVENT-IMPRESSION-001`
-- `EVENT-TICKET-001` through `EVENT-TICKET-004`
+- `EVENT-VISIBILITY-001` (advance only from completed `EVENT-TICKET-007`)
+- `EVENT-TICKET-001` through `EVENT-TICKET-008`, plus
+  `EVENT-TICKET-POLL-001`
 - `TOURNAMENT-001` through `TOURNAMENT-003`
+
+`EVENT-TICKET-002` intentionally starts with a published, Ticketing Off event.
+The harness must not manufacture the participant-owned ticket overlay or its
+credential. Its consistent membership baseline is Casey accepted Admin plus
+Nova accepted Member (`2 / 8`) and Riley as one pending join control. Casey
+performs Unpublish -> Ticketing On -> Publish through the UI; that real publish
+path owns Nova's credential, while Casey and Riley remain ticketless. Nova then
+opens Ticket twice to prove that both reads reuse the one physical credential
+created by publish.
+`EVENT-TICKET-POLL-001` uses the same clean Ticketing Off write baseline,
+including Casey and Nova accepted at `2 / 8` plus Riley pending and ticketless,
+but keeps Nova's Upcoming Ticket popup open before Casey performs Unpublish ->
+Ticketing On -> Publish. Within one 30-second SmartList interval the new ticket
+row and the shared `tickets` / `asset.tickets` counter signal must converge
+together without close/reopen or browser reload; the poll itself is read-only
+and Riley must remain pending with no ticket or ticket counter. Its second
+phase closes Nova's popup, leaves the side menu open and has Casey Unpublish:
+the resumed background poll must change Events and Ticket from `1 -> 0`, while
+the same physical ticket is retained as a `D` audit record and Ticketing stays
+configured On in the draft.
+`EVENT-TICKET-004` proves the retained `D` audit record plus a new object and
+QR after Unpublish -> Publish with Ticketing still On. `EVENT-TICKET-005` starts with Casey alone and
+uses the real Public Explore -> Nova Join -> Casey approval path: Join is
+pending and ticketless, while the terminal approval creates Nova's ticket.
+`EVENT-TICKET-006` keeps the physical ticket `A` while the ended event moves it
+from Upcoming to Past. `EVENT-TICKET-007` starts with Casey and ticketed Nova
+accepted; Nova invites Riley, Casey preapproves without creating Riley's
+ticket, and only Riley's later terminal acceptance creates it.
+Separately, `EVENT-TICKET-008` stages two similar published Ticketing On events with Casey
+Admin, Nova accepted and Riley pending on both. Nova starts with two distinct
+physical tickets. Unpublishing and republishing event A must revoke/reissue
+only A; event B keeps the same active ticket identity and the aggregate ticket
+counter follows `2 -> 1 -> 2`.
+After the `EVENT-TICKET-007` terminal state, advance to
+`EVENT-VISIBILITY-001` without resetting.
+Casey performs Unpublish -> Friends Only -> Publish on the same event. Lina
+Park is the external non-member friend control and Liam Parker the external
+non-member non-friend control; Nova and Riley are ineligible as Explore
+controls because they already have tracked event participation. Unpublish
+retains the two old tickets as `D`; publish creates new `A` ticket IDs/codes
+and restores their stored counters. Explore reads must create no membership,
+invitation or ticket.
+
+```bash
+bash manual-qa-checkpoints.sh advance event-domain \
+  EVENT-TICKET-007 EVENT-VISIBILITY-001
+```
+
+Direct `stage` is rejected for this checkpoint because it would lose the
+completed invitation/ticket baseline that the visibility transition must
+use as its before oracle.
+
+Reset removes only the checkpoint's event/ticket artifacts and restores the
+saved activity snapshot. Both `activities.tickets` and
+`activities.asset.tickets` in every involved `users` row must therefore return
+to baseline; the UI badge sourced from those fields must disappear on the next
+ordinary poll.
+Ticket checkpoints require `MANUAL_QA_EVENT_IMAGE_URL`; use the retained
+managed QA image's canonical `large.webp` URL so ordinary ticket cards can be
+verified against the derived `medium.webp` request instead of the remote
+placeholder.
 
 Use one checkpoint at a time:
 
 ```bash
 bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh stage event-domain EVENT-FEEDBACK-002
+bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh next event-domain EVENT-FEEDBACK-002
 # perform exactly the printed human UI action
 bash manual-qa-checkpoints.sh status event-domain EVENT-FEEDBACK-002
 bash manual-qa-checkpoints.sh reset event-domain EVENT-FEEDBACK-002
 ```
+
+### Physical-phone QR check-in
+
+`EVENT-TICKET-003` is a required physical Android phone test. The phone owns
+the Casey Admin scanner session and uses its real camera; Nova's participant
+session displays the ticket QR code on a separate desktop browser or other
+screen. Do not replace this checkpoint with desktop camera emulation.
+
+Enable Developer options and USB debugging on the phone, connect it by USB and
+accept **Allow USB debugging**. From the repository host run:
+
+```bash
+adb devices -l
+adb reverse tcp:8080 tcp:80
+adb reverse --list
+```
+
+The device state must be `device`, not `unauthorized`, and the reverse list
+must contain `tcp:8080 tcp:80`. Open `http://localhost:8080` in the phone
+browser, sign in as Casey Admin and grant camera permission when the scanner
+opens. Reapply `adb reverse tcp:8080 tcp:80` after an ADB daemon restart, USB
+reconnection or phone restart. The tunnel never requires starting, rebuilding
+or restarting the application stack.
+
+Every clean Ticket checkpoint stage creates a fresh UUID-shaped `TKT-` code.
+Reset followed by a new stage must therefore produce a different QR even when
+the controlled event, ticket document ID and holder remain the same. The
+checkpoint state retains that generated code so later status/verification
+commands compare against the staged physical object instead of regenerating it.
+
+For a feedback checkpoint transition, use one snapshot-protected command
+instead of a manual reset followed by a separate stage:
+
+```bash
+bash manual-qa-checkpoints-docker.sh switch event-domain \
+  EVENT-FEEDBACK-006 EVENT-FEEDBACK-002
+```
+
+`switch` verifies the currently staged source ID, restores its saved baseline,
+then stages the named feedback checkpoint and records a fresh reset snapshot in
+the same harness invocation. It never starts or restarts a service.
 
 `next` always prints why the action exists, what to do, the exact visible
 result and whether a named worker must run. For read-only, feedback-state and
@@ -72,6 +196,7 @@ sessions require other seeded users:
 ```bash
 MANUAL_QA_CREATOR_USER_ID=<host-user-id> \
 MANUAL_QA_INVITEE_USER_ID=<participant-user-id> \
+MANUAL_QA_EVENT_IMAGE_URL='/media/public?key=images%2F650000000000000000000061%2Fmanual-qa-checkpoint-v1-event-domain-event%2F1785904818563-084b9c3d-2bec-4d84-86f6-fb7140562c60%2Flarge.webp' \
 bash manual-qa-checkpoints.sh stage event-domain EVENT-TICKET-002
 ```
 

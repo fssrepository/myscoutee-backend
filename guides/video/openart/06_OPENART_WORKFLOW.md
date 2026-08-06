@@ -80,8 +80,8 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
 
    - `BudapestWorld`
    - `LondonWorld`
-   - `WorksiteWorld`
-   - `SharedRoom`
+   - `SohoOffice`
+   - `TottenhamHMO`
    - `DanceStudio`
    - `CafeBadDate`
    - `BarBadDate`
@@ -102,7 +102,7 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
 | --- | --- | --- |
 | **Director → New project → Describe your idea** prompt box | entire [prompts/openart-director-master.txt](prompts/openart-director-master.txt) | locks story, runtime, claims, act structure and look |
 | media/asset attachment area beside the Director prompt | rough English VO, optional temp music, approved world sheets | gives Director timing and visual references |
-| inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@WorksiteWorld`, `@SharedRoom`, `@DanceStudio`, `@EventVenue`, `@Notebook`; attach travel plates only to S08 | binds saved assets to names used in the brief |
+| inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@SohoOffice`, `@TottenhamHMO`, `@DanceStudio`, `@EventVenue`, `@Notebook`; attach travel plates only to S08 | binds saved assets to names used in the brief |
 | Ori/Director chat after its first response | `Use the supplied narration verbatim. Show me the 23 scene cards with exact S01–S23 IDs and timings before generating motion. Do not add product claims.` | prevents silent rewrite |
 | Director chat after storyboard appears | paste the relevant correction block below | fixes structure without regenerating the whole story |
 | an individual storyboard scene/shot prompt | [prompts/continuity-prefix.txt](prompts/continuity-prefix.txt) + the matching Sxx block from [prompts/shot-prompts.txt](prompts/shot-prompts.txt) | precise shot regeneration |
@@ -119,8 +119,8 @@ Verify:
 
 - exactly 23 cards, S01–S23;
 - total 02:48;
-- overseas assignments precede London; S04 remains anonymous and quiet;
-- London shared housing is intentional saving, not destitution;
+- S03 is software work in Soho and S04 is the Victoria line home to Tottenham;
+- the thirteen-person Victorian HMO is crowded and personal, not destitution;
 - S08 has exactly a three-second illustrated burst and no fake archive;
 - Budapest return is hopeful and precedes apps/events/dance/dates;
 - Maya is not paired with the founder;
@@ -180,18 +180,26 @@ share mild recognition or humor. No contempt, phone rejection or appearance gag.
 ### Product becomes magic
 
 ```text
-Revise S17–S21 only. Show users expressing private editable priority, reciprocal
-contextual lines, calm accept/decline choices, a small group and practical event
-coordination. Remove soulmate imagery, instant couple formation, safety claims
-and success statistics.
+Revise S17–S21 only. Follow the relationship lifecycle: private editable 1–10
+priority for unknown people/pairs; reciprocal/context evidence; a balanced group
+of strangers; calm accept/decline; contextual group chat; managed first event;
+former strangers becoming known contacts; later direct invitations and optional
+Auto Inviter for available places; community through repetition; and a later
+priority decrease making future shared paths less likely after conflict. Keep
+people and real meetings more important than UI. Remove giant affinity graphs,
+public punishment, soulmate imagery, safety claims and success statistics.
 ```
 
 ### Ending becomes pleading
 
 ```text
-Revise S21–S22 only. The Founder has built a stable core and passes a notebook
-with calm confidence. Operators receive it as capable local authors. Remove
-rescue, failure, desperation, crowdfunding and lone-hero imagery.
+Revise S21–S22 only. Close the relationship lifecycle, then show one accountable
+technical handoff at a real workstation. A capable local operator verifies the
+install package and runs an own-brand independent server. Reveal culturally
+distinct local community tests connected voluntarily around one shared core as
+a server network/virtual enterprise, with a credible opt-out branch. Remove
+anonymous copies, current-deployment/proven-efficiency claims, rescue,
+desperation, crowdfunding and lone-hero imagery.
 ```
 
 ## 6. Select models for individual OpenArt video shots

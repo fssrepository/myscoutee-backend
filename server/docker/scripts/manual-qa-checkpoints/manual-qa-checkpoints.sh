@@ -33,13 +33,20 @@ Usage:
   bash manual-qa-checkpoints.sh schedule stat-012 [delay-seconds]
   bash manual-qa-checkpoints.sh reset stat-012
   bash manual-qa-checkpoints.sh stage event-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh restage event-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh switch event-domain <current-checkpoint-id> <next-checkpoint-id>
   bash manual-qa-checkpoints.sh advance event-domain <current-checkpoint-id> <next-checkpoint-id>
+  bash manual-qa-checkpoints.sh discard-stale event-domain <checkpoint-id>
+  bash manual-qa-checkpoints.sh add-feedback-participant event-domain EVENT-FEEDBACK-002
   bash manual-qa-checkpoints.sh prepare-invitation-acceptance-retest event-domain EVENT-INV-003
   bash manual-qa-checkpoints.sh hold-auto-inviter event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh prepare-auto-inviter event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh capture-auto-inviter-baseline event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh prepare-periodic-auto-inviter event-domain EVENT-EDITOR-003
   bash manual-qa-checkpoints.sh schedule-auto-inviter event-domain EVENT-EDITOR-003 [delay-seconds]
+  bash manual-qa-checkpoints.sh verify-ticket-poll-resume event-domain EVENT-TICKET-POLL-001
+  bash manual-qa-checkpoints.sh verify-ticket-isolation-unpublish event-domain EVENT-TICKET-008
+  bash manual-qa-checkpoints.sh verify-ticket-isolation-republish event-domain EVENT-TICKET-008
   bash manual-qa-checkpoints.sh next event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh status event-domain <checkpoint-id>
   bash manual-qa-checkpoints.sh reset event-domain <checkpoint-id>
@@ -69,6 +76,7 @@ Environment:
   MANUAL_QA_INVITEE_USER_ID    optional fixed target user; use with creator
   MANUAL_QA_CHAT_TITLE          optional STAT-011 chat title
   MANUAL_QA_EVENT_ID            optional STAT-020 event source/document ID
+  MANUAL_QA_EVENT_IMAGE_URL     uploaded EVENT-FEEDBACK fixture image URL
   MANUAL_QA_CHECKPOINT_ID       set internally for checkpoint-runner commands
   MANUAL_QA_SOURCE_CHECKPOINT_ID set internally for event-domain advance
 USAGE
@@ -120,9 +128,18 @@ run_scenario() {
   [ -f "${scenario_script}" ] || fail "Missing ${scenario_script}."
 
   local container_running="false"
-  if command -v docker >/dev/null 2>&1 \
-      && docker inspect --format '{{.State.Running}}' "${mongo_container}" >/dev/null 2>&1; then
-    container_running="$(docker inspect --format '{{.State.Running}}' "${mongo_container}")"
+  local docker_inspect_error=""
+  local docker_inspect_output=""
+  if command -v docker >/dev/null 2>&1; then
+    if docker_inspect_output="$(docker inspect --format '{{.State.Running}}' "${mongo_container}" 2>&1)"; then
+      container_running="${docker_inspect_output}"
+    else
+      case "${docker_inspect_output}" in
+        *"permission denied"*|*"Cannot connect to the Docker daemon"*|*"error during connect"*)
+          docker_inspect_error="${docker_inspect_output}"
+          ;;
+      esac
+    fi
   fi
 
   if [ "${mongo_mode}" = "container" ] || { [ "${mongo_mode}" = "auto" ] && [ "${container_running}" = "true" ]; }; then
@@ -137,6 +154,7 @@ run_scenario() {
       -e "MANUAL_QA_INVITEE_USER_ID=${MANUAL_QA_INVITEE_USER_ID:-}" \
       -e "MANUAL_QA_CHAT_TITLE=${MANUAL_QA_CHAT_TITLE:-}" \
       -e "MANUAL_QA_EVENT_ID=${MANUAL_QA_EVENT_ID:-}" \
+      -e "MANUAL_QA_EVENT_IMAGE_URL=${MANUAL_QA_EVENT_IMAGE_URL:-}" \
       -e "MANUAL_QA_CHECKPOINT_ID=${checkpoint_id}" \
       -e "MANUAL_QA_SOURCE_CHECKPOINT_ID=${source_checkpoint_id}" \
       "${mongo_container}" \
@@ -150,6 +168,10 @@ run_scenario() {
     return
   fi
 
+  if [ -n "${docker_inspect_error}" ] && ! command -v mongosh >/dev/null 2>&1; then
+    fail "Docker daemon access was denied while resolving the already-running '${mongo_container}' container. Re-run this same harness command with Docker access; do not start another MongoDB, server, watcher or Compose stack. Docker reported: ${docker_inspect_error}"
+  fi
+
   command -v mongosh >/dev/null 2>&1 \
     || fail "No running '${mongo_container}' container and no local mongosh were found. Start neither through this tool."
   { sed -n '1,$p' "${COMMON_SCRIPT}"; sed -n '1,$p' "${scenario_script}"; } | \
@@ -161,6 +183,7 @@ run_scenario() {
     MANUAL_QA_INVITEE_USER_ID="${MANUAL_QA_INVITEE_USER_ID:-}" \
     MANUAL_QA_CHAT_TITLE="${MANUAL_QA_CHAT_TITLE:-}" \
     MANUAL_QA_EVENT_ID="${MANUAL_QA_EVENT_ID:-}" \
+    MANUAL_QA_EVENT_IMAGE_URL="${MANUAL_QA_EVENT_IMAGE_URL:-}" \
     MANUAL_QA_CHECKPOINT_ID="${checkpoint_id}" \
     MANUAL_QA_SOURCE_CHECKPOINT_ID="${source_checkpoint_id}" \
     mongosh \
@@ -193,13 +216,17 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:next|event-domain:status|event-domain:reset|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|\
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   event-domain:advance)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$4" "$3"
+    ;;
+  event-domain:switch)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$4" "$3"
     ;;

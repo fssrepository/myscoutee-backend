@@ -174,13 +174,16 @@ class BackendContentMediaE2ETest {
         String imageUrl = imageUpload.path("url").asString();
         assertThat(imageUrl).startsWith("/media/public?key=images/");
         String originalImageUrl = mediaUploadUrl(imageUpload, "originalUrl", imageUrl);
+        String smallImageUrl = mediaUploadUrl(imageUpload, "smallUrl", imageUrl);
+        String mediumImageUrl = mediaUploadUrl(imageUpload, "mediumUrl", imageUrl);
+        String largeImageUrl = mediaUploadUrl(imageUpload, "largeUrl", imageUrl);
+        assertThat(imageUrl).isEqualTo(largeImageUrl);
+        assertThat(List.of(originalImageUrl, smallImageUrl, mediumImageUrl, largeImageUrl))
+                .doesNotHaveDuplicates();
         assertPublicMedia(originalImageUrl, "image/png", pngBytes());
-        if (!imageUrl.equals(originalImageUrl)) {
-            assertPublicMediaContentType(imageUrl, "image/webp");
-            assertPublicMediaContentType(mediaUploadUrl(imageUpload, "smallUrl", imageUrl), "image/webp");
-            assertPublicMediaContentType(mediaUploadUrl(imageUpload, "mediumUrl", imageUrl), "image/webp");
-            assertPublicMediaContentType(mediaUploadUrl(imageUpload, "largeUrl", imageUrl), "image/webp");
-        }
+        assertPublicMediaContentType(smallImageUrl, "image/webp");
+        assertPublicMediaContentType(mediumImageUrl, "image/webp");
+        assertPublicMediaContentType(largeImageUrl, "image/webp");
 
         String profileImageUrl = uploadImage("/media/images", "image", Map.of(
                 "ownerId", MEDIA_USER_ID,

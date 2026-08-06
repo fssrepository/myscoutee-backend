@@ -12,19 +12,25 @@
 | Audience | independent operators, community builders, venue/activity partners, product collaborators, early pilot communities |
 | Primary emotion | recognition → ache → clarity → agency → invitation |
 | Promise | not “we find your perfect person”; “we are designed to carry mutual intent toward a real shared meeting” |
-| CTA | **Build the next chapter in your city.** |
+| CTA | **Test locally. Learn together. Keep the opt-out.** |
 
 ## 2. Logline
 
-A man whose work at home offers no dependable future spends months on overseas
-assignments away from family. An anonymous inspection-day boundary sends him
-toward London, where five years of shared rooms, long days and deliberate saving
-buy back his time. Nearly forty countries still do not make solitude belonging.
+A man who already has a home but lacks the stability to build his future there
+is pushed out for more than one reason. He moves to London, writes
+software in Soho and rides the Victoria line home to a crowded Victorian HMO in
+Tottenham. Thirteen adults, one bathroom, one separate WC, a shared bedroom and
+five years of deliberate saving buy financial independence and time for his own
+work. Nearly forty countries still
+do not make solitude belonging.
 He comes home to look for a partner, tries digital and real-world routes, and realizes
-that the missing piece is not another doorway to strangers but a bridge from
-reciprocal priority to a small group and a real shared event. He gives that
-problem his full focus, builds MyScoutee, then opens its next chapter to local
-operators who know their own cities.
+that the missing piece is not another doorway to strangers but a path that can
+carry strangers through mutual priority, group context, a first managed event
+and later meetings as known contacts. Relationships may strengthen, become
+community or weaken as their editable priorities change. He gives that problem his full
+focus, builds MyScoutee, then opens the shared core to technically capable local
+operators testing it under their own brands and cultural contexts within a
+voluntary server network.
 
 ## 3. Theme and thesis
 
@@ -34,13 +40,17 @@ Theme:
 
 Product thesis:
 
-> Richer, editable intent plus reciprocal/contextual affinity can support a
-> group and meeting workflow that a binary match alone does not provide.
+> Begin with editable private priorities for unknown people or pairs, use
+> reciprocal/contextual evidence to form a group of strangers, carry the group
+> through chat and a managed first event, then preserve the resulting contacts
+> for later invitations while priorities continue to evolve.
 
 Operator thesis:
 
-> Software can provide the core; local people provide context, trust, venues,
-> culture and continuity.
+> A common unsolved problem justifies one shared core. Technically capable local
+> operators provide independent infrastructure, brands, communities and cultural
+> testing while a voluntary server network/virtual enterprise provides shared
+> leverage and a real opt-out.
 
 The founder does not stand above the network. In the final shot he becomes one
 node among many, smiling because the idea has outgrown a single desk.
@@ -49,25 +59,26 @@ node among many, smiling because the idea has outgrown a single desk.
 
 ### Act I — Buying back time, then seeking a life (00:00–01:53)
 
-Work at home does not feel like a future. Months-long assignments take the
-founder away from family across Europe, Asia and the Americas. On an inspection
-day, workers are told to remain out of sight; without naming an employer, this
-becomes the quiet boundary that points him toward London. There he makes a hard,
-rational bargain: shared rooms, long days and careful food spending for five
-years so that rent does not consume the possibility of a home, a family and
-future choice. He is not buying luxury; he is buying back time.
+The founder already has a home, but instability makes a future there
+unworkable, so he moves to London. By day
+he writes software in Soho; at night the Victoria line carries him back to
+Tottenham. There he makes a hard, rational bargain: thirteen adults share a
+converted Victorian house, one full bathroom and one separate WC, while he also
+shares his bedroom. Long days and careful food spending for five years protect
+his earnings. He is not saving for another house; he is buying financial
+independence and time for his own work.
 
 Across the larger journey he reaches nearly forty countries. Six to eight
 illustrated memories flash by in a surprising three-second animated chain; the
 beauty is real, but the final look-back remains unshared. He then comes home on
-purpose: **“I left home to make a living. I came home to find someone to live it
-with.”** He uses apps, attends real events, dances and goes on dates. The failure
+purpose: **“I went out to make a living. I came home to find a partner.”** He
+uses apps, attends real events, dances and goes on dates. The failure
 is not effort, attractiveness or lack of people. Each encounter loses momentum
 at a different boundary.
 
 The first 113 seconds should feel like one unbroken thought, with hidden edits
-behind a work-site partition, train windows, a shared-room door, travel images,
-the returning front door,
+behind the Tottenham front door, the Soho office window, Victoria line glass,
+the HMO bathroom and shared-room doors, travel images, the returning front door,
 shoulders, dance turns, steam and the founder's dark coat.
 This is the formal echo of TSB: The Story's long moving historical shot. Do not
 copy its character design, rural sets, color system, story or compositions.
@@ -75,20 +86,25 @@ copy its character design, rural sets, color system, story or compositions.
 ### Act II — Draw a path (01:53–02:32)
 
 The moving world stops. The camera finally faces the founder. A blank notebook
-page becomes the MyScoutee loop. Flat profile cards gain depth; a binary gesture
-becomes an editable 1–10 priority; two-directional lines become a graph; the
-graph resolves into a small group; chat resolves into an event and attendance.
+page becomes the MyScoutee loop. Unknown individual and pair suggestions receive
+editable 1–10 priorities. Reciprocal choices and context form a balanced group
+of strangers; accepted members enter group chat and plan a managed first event.
+Blank planning cards become date, place, route/accessibility, resources, tickets,
+check-in and feedback. After meeting, those people become known contacts who can
+be invited again. A later priority change makes one future shared route fade.
 
 The pace becomes legible and deliberate. The audience should feel “of course —
 the missing step was the path,” not “an algorithm saved him.”
 
-### Act III — More authors (02:32–02:48)
+### Act III — Relationship evolution and voluntary local operation (02:32–02:48)
 
-The group event is seen through the eyes of a local operator/host. London,
-Budapest and several non-specific cities light up with distinct local palettes.
-The founder's notebook is passed across the frame and becomes many operator
-workspaces. The final invitation is confident: the core has been built; now it
-needs local authors.
+Former strangers can be invited again and repeated events can form community;
+when one relationship changes, lowering its private priority makes another
+shared path less likely. The Founder then makes an accountable technical handoff.
+One operator verifies the package and starts an own-brand independent server;
+distinct local community/cultural tests connect around the shared core as a
+voluntary network/virtual enterprise, with one credible opt-out branch. Do not
+imply current deployments or proven efficiency.
 
 ## 5. Visual world
 
@@ -123,8 +139,8 @@ Why this style:
 
 | Story phase | Colors | Meaning |
 | --- | --- | --- |
-| overseas work | industrial grey, travel blue, one family-photo amber | distance without spectacle |
-| London saving years | slate blue, rain green, sodium amber, faded room cream | discipline and costly time |
+| Soho work / Victoria line | monitor blue, wet brick, carriage white, sodium amber | competence and costly commuting time |
+| Tottenham saving years | slate blue, worn timber, warm practicals, faded room cream | crowded personal life and discipline |
 | three-second world burst | truthful regional color inside one painterly grade | wonder without automatic belonging |
 | Budapest return/attempts | desaturated terracotta, tobacco, winter teal, cream | familiar warmth, deliberate search |
 | app overload | cold cyan/white notification light; coral only as a scarce signal | fragmented attention |
@@ -248,12 +264,14 @@ branding around the shared core.
 ### London
 
 - no montage of Big Ben, red bus and phone box as shorthand;
-- use lived London: early office commute, wet Overground platform, Zone 2/3
-  street, corner shop glow, office lift, late workstation, escalator and late
-  Tube window;
+- use the specific lived route: a modest Soho software office, late Victoria
+  line carriage, Tottenham street and Victorian terrace;
 - one distant skyline glimpse is enough;
-- shared bedroom is modest, maintained and respectful: suitcase, packed-lunch
-  shelf and one private notebook corner; no misery-porn styling;
+- the converted Victorian HMO houses thirteen distinct adults. Make one full
+  bathroom and one separate WC spatially legible, then show the Founder's shared
+  bedroom with two personal zones;
+- every flatmate has a trace of individual life — food, photograph, coat,
+  greeting or routine — rather than becoming anonymous crowd texture;
 - an imagined independent rental may show why the founder chose sharing, but no
   invented rent, wage or savings figure appears;
 - accents/cultures live in faces, clothing, food steam and fragments of sound;
@@ -261,15 +279,10 @@ branding around the shared core.
 - long work is shown by changing daylight, emptied desks and repeated meals,
   never by humiliating the worker or blaming one employer.
 
-### Overseas assignments and illustrated travel memories
+### Illustrated travel memories
 
-- anonymous work site; no employer mark, uniform logo, country flag or readable
-  paperwork;
-- departure board and calendar express months away from family without invented
-  dates;
-- inspection beat is a quiet instruction to move behind a partition, not a
-  chase or raid;
-- Europe, Asia and the Americas appear first as an original paper-map route;
+- travel memories summarize the founder's wider life, not an invented sequence
+  of factory assignments before London;
 - no archive photos survive, so generate explicitly illustrated memories rather
   than fake home-video footage;
 - the three-second burst can match-cut High Tatras → Schönbrunn arch →
@@ -295,11 +308,15 @@ branding around the shared core.
 - clearly public and hosted, accessible route implied;
 - five seats in a soft arc, not opposing interview pairs.
 
-### Operator network cities
+### Local-operator network workspace
 
-Use London and Budapest plus three original composite cities: Atlantic coastal,
-Central European industrial/cultural, and East Asian dense neighborhood. These
-are not claims of current deployments. They visualize portability only.
+Use one credible Linux/server workstation beside an own-brand organizer surface
+and local community venue. A hardware key, compact install package and blank
+verification checklist show a technically accountable handoff. Reveal several
+independently hosted local servers and culturally distinct community tests around
+one common coral core; one node can opt out while staying independently operable.
+This is the intended virtual-enterprise model, not a claim of current deployment,
+proven efficiency or physical hardware shipment.
 
 ## 8. Recurring visual motifs
 
@@ -312,7 +329,7 @@ are not claims of current deployments. They visualize portability only.
 - coffee steam;
 - Tube map line;
 - notebook pencil line;
-- affinity edge;
+- direct invitation path and visibly open event chair;
 - walking route;
 - operator network connection.
 
@@ -346,7 +363,7 @@ connection line; before the product turn, generic dating UI contains no hearts.
 | --- | --- | --- | --- |
 | I | mostly 28–40 mm equivalent, occasionally 50 mm for faces | continuous lateral track, hidden transitions, mild handheld only on bad dates | protagonist often occluded or divided by architecture |
 | II | 50–65 mm for attention, top-down 35 mm for notebook | camera stops, then measured dolly/overhead moves | lines lead inward; faces gain breathing room |
-| III | 35–50 mm | rising crane and gentle orbit; no triumphal drone cliché | founder becomes one node in balanced ensemble |
+| III | 35–50 mm | doorway track, gentle table arc, restrained workstation move | returning members stay balanced; Founder and operator meet as accountable peers |
 
 Rules:
 
@@ -428,13 +445,13 @@ motivational delivery.
 
 On-screen text is minimal:
 
-- 00:50: **I WAS BUYING BACK MY TIME.**
+- 00:50: **FINANCIAL INDEPENDENCE. TIME FOR MY OWN WORK.**
 - 01:06: **I LEFT TO MAKE A LIVING. I CAME HOME TO FIND A PARTNER.**
-- 01:53: **NOT ANOTHER MATCH. A PATH TO A MEETING.**
-- 02:38: **THE NEXT CHAPTER NEEDS LOCAL AUTHORS.**
+- 01:53: **A MATCH IS NOT A COMMUNITY.**
+- 02:38: **ONE SHARED CORE. LOCAL BRANDS AND CULTURES. VOLUNTARY NETWORK.**
 - 02:44: original `heart.png` + separate **MyScoutee** text +
   **DESIGNED FOR THE MEETING.**
-- optional CTA under wordmark: **BUILD IT IN YOUR CITY.**
+- optional CTA under wordmark: **TEST LOCALLY. LEARN TOGETHER. OPT OUT REMAINS POSSIBLE.**
 
 Add all text in post. Use the project's real heart asset. Do not ask a video
 model to render typography or the final logo.

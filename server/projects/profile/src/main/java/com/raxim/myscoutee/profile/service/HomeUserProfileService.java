@@ -2986,9 +2986,6 @@ public class HomeUserProfileService {
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc(normalizeId(user.getId()));
         UserImpressionsSectionDto host = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().host(), "event", feedbackAnswers);
         UserImpressionsSectionDto member = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().member(), "attendee", feedbackAnswers);
-        if (host == null && member == null) {
-            return null;
-        }
         return new UserImpressionsDto(host, member);
     }
 
@@ -3036,10 +3033,14 @@ public class HomeUserProfileService {
                     || normalizeCount(activities.hosting()) > 0;
         }
         if ("attendee".equals(normalizedKind)) {
+            Users.UserEventFeedbackCountersRecord eventFeedback = activities.eventFeedback();
             return normalizeCount(activities.chats()) > 0
                     || normalizeCount(activities.invitations()) > 0
                     || normalizeCount(activities.tickets()) > 0
-                    || normalizeCount(activities.feedback()) > 0;
+                    || normalizeCount(activities.feedback()) > 0
+                    || normalizeCount(eventFeedback == null ? null : eventFeedback.pending()) > 0
+                    || normalizeCount(eventFeedback == null ? null : eventFeedback.feedbacked()) > 0
+                    || normalizeCount(eventFeedback == null ? null : eventFeedback.removed()) > 0;
         }
         return false;
     }

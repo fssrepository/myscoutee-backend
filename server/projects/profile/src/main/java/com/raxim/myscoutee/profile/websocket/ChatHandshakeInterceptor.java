@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.websocket;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
 
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 
@@ -26,10 +28,10 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map<String, Object> attributes) {
         var queryParams = UriComponentsBuilder.fromUri(request.getURI()).build().getQueryParams();
-        String chatId = queryParams.getFirst("chatId");
+        String chatId = decodeQueryParam(queryParams.getFirst("chatId"));
         String path = request.getURI() == null ? "" : request.getURI().getPath();
         if (path != null && path.endsWith("/admin/notifications/ws")) {
-            String userId = queryParams.getFirst("userId");
+            String userId = decodeQueryParam(queryParams.getFirst("userId"));
             if (StringUtils.hasText(userId)) {
                 attributes.put(USER_ID_ATTRIBUTE, userId.trim());
             }
@@ -40,11 +42,11 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
             return false;
         }
         attributes.put(CHAT_ID_ATTRIBUTE, chatId.trim());
-        String userId = queryParams.getFirst("userId");
+        String userId = decodeQueryParam(queryParams.getFirst("userId"));
         if (StringUtils.hasText(userId)) {
             attributes.put(USER_ID_ATTRIBUTE, userId.trim());
         }
-        String sessionKind = queryParams.getFirst("sessionKind");
+        String sessionKind = decodeQueryParam(queryParams.getFirst("sessionKind"));
         if (!StringUtils.hasText(sessionKind)) {
             sessionKind = request.getHeaders().getFirst(DemoSessionRequestSupport.SESSION_KIND_HEADER);
         }
@@ -52,6 +54,10 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
             attributes.put(SESSION_KIND_ATTRIBUTE, sessionKind.trim());
         }
         return true;
+    }
+
+    private String decodeQueryParam(String value) {
+        return value == null ? null : UriUtils.decode(value, StandardCharsets.UTF_8);
     }
 
     @Override

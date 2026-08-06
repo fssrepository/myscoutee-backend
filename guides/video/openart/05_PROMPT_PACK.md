@@ -28,13 +28,14 @@ Replace bracketed tokens only once in your working copy:
 | `[MAYA_REF]` | saved Maya character/reference |
 | `[DANCE_STUDENT_REF]` | saved dance-student character |
 | `[DANCE_PARTNER_REF]` | saved partner character |
-| `[OPERATOR_REF]` | saved local-operator character |
+| `[OPERATOR_REF]` | saved technically capable, accountable local-operator character |
 | `[BUDAPEST_WORLD]` | approved Budapest style/location reference |
 | `[LONDON_WORLD]` | approved lived-London style/location reference |
-| `[WORKSITE_WORLD]` | anonymous employer-free assignment/work-site reference |
-| `[SHARED_ROOM]` | approved maintained London shared-room reference |
+| `[SOHO_OFFICE]` | approved modest Soho software-office reference |
+| `[TOTTENHAM_HMO]` | approved Victorian HMO, bathroom and shared-room reference |
 | `[DANCE_STUDIO]` | approved empty studio reference |
 | `[EVENT_VENUE]` | approved venue reference |
+| `[DEPLOYMENT_PACKAGE]` | approved install-package prop and operator-workspace reference |
 | `[NOTEBOOK_PROP]` | approved cognac notebook reference |
 
 When the platform supports `@` references, use the actual saved asset name in
@@ -86,8 +87,9 @@ background, no text or logos.
 Create a cohesive supporting cast for a premium 2.5D animated film, all clearly
 adult, visually distinct and humane: dance student in teal practice top, her
 friendly partner in rain coat carrying a folded umbrella, three diverse first-
-date partners in ordinary smart-casual clothing, and a competent local community
-operator with practical keys and a tablet/clipboard. Every person has realistic
+date partners in ordinary smart-casual clothing, and a competent country
+operator who is visibly comfortable at a Linux/server workstation,
+with a hardware key and deployment checklist. Every person has realistic
 body variation and subtle facial asymmetry. Nobody is glamorous, grotesque,
 threatening, submissive or comic relief. Front and three-quarter reference views
 on segmented warm-grey background. No text, brands or stereotypes.
@@ -109,40 +111,37 @@ clean plates from wide, medium and detail angles. No readable text or people.
 
 ```text
 Create a lived-London location reference sheet in the same premium 2.5D animated
-film style: wet Zone 2 or 3 Overground-like platform without TfL branding,
-escalator, corner-shop glow, market queue, laundrette reflection, rainy side
-street, late-night train carriage, clean compact shared bedroom with respectful
-roommate boundaries, two storage/sleeping zones, suitcase under bed, packed-meal
-shelf and one private notebook desk corner, plus a warm independent
-community/culture venue. Slate blue, rain green, sodium amber, tactile stone and
-fogged glass. Diverse everyday city, not Big Ben, red-bus or phone-box tourism
-shorthand. Modest and maintained, never destitute. Empty clean plates,
-wide/medium/detail views, no readable text or logos.
+film style: modest Soho software office, late Victoria line carriage without TfL
+branding, wet Tottenham street, Victorian terrace, corner-shop glow and warm
+independent community venue. Slate blue, rain green, sodium amber, tactile brick,
+timber and fogged glass. Diverse everyday city, not Big Ben, red-bus or phone-box
+tourism shorthand. Empty clean plates, wide/medium/detail views, no readable text
+or logos.
 ```
 
-### Anonymous assignment work-site sheet
+### Soho software-office sheet
 
 ```text
-Create [WORKSITE_WORLD], a deliberately unidentifiable overseas work environment
-in the same premium 2.5D animated style: industrial/service corridor, locker,
-translucent movable partition, anonymous loading/exterior fragments suitable for
-Europe, Asia and the Americas without claiming a country. Practical believable
-work equipment, fluorescent light, one quiet family-photo space. No company,
-uniform logo, flag, readable safety notice, police, raid, villain or unsafe
-instruction. Empty wide, medium and partition close-up plates with identical
-geometry.
+Create [SOHO_OFFICE], a modest believable software office in Soho in the same
+premium 2.5D animated style: several individual desks, laptops with blank screen
+plates, practical cables and notebooks, warm lamps, cool monitor fill and a
+rain-softened brick Soho street outside. Competent colleagues and long workdays,
+not a glossy startup advertisement. No company, logo, readable code, factory,
+worksite, warehouse or inspection imagery. Empty wide, desk-height and window
+reflection plates with identical geometry.
 ```
 
-### Shared London room sheet
+### Tottenham Victorian HMO sheet
 
 ```text
-Create [SHARED_ROOM], a compact clean London shared bedroom in the same premium
-2.5D animated style: two clearly bounded sleeping or storage areas, suitcase
-under one bed, packed-meal containers on a shelf, one narrow private desk corner
-for a cognac notebook, overcast window, two warm bedside practicals, faded cream
-walls. Financially pragmatic and cared for, with privacy boundaries; not dirty,
-crowded beyond safety, homeless, luxurious or humiliating. Empty consistent
-wide, doorway, desk and shelf plates. No people, brands or readable text.
+Create [TOTTENHAM_HMO], one coherent converted Victorian house in Tottenham in
+the same premium 2.5D animated style. Show a narrow hall, lived-in shared kitchen,
+one full bathroom, one separate tiny WC, and a compact shared bedroom with two
+clearly bounded sleeping/storage and desk zones. Shoes, coats, meals and personal
+photographs imply thirteen distinct adult residents without lining them up.
+Maintained but genuinely crowded, financially pragmatic and humane; never dirty,
+homeless, luxurious, hostile or humiliating. Consistent wide, hall, bathroom,
+WC, doorway and desk plates. No address, brands or readable text.
 ```
 
 ### Illustrated travel-memory sheet
@@ -170,13 +169,57 @@ use six to eight plates; the wider list stays available for variants.
 
 ```text
 Design [EVENT_VENUE], a credible public independent community and culture venue
-in London, in the same premium 2.5D animated film style. Visible entrance and
-easy exit, accessible route implied, quiet conversation zone, five movable
+that can recur in one local city, in the same premium 2.5D animated film style.
+Visible entrance and easy exit, accessible route implied, quiet conversation
+zone, five movable
 chairs in a soft arc rather than opposing pairs, small shared tabletop map
 activity, books, plants and acoustic panels, warm 3200–3500 K practical lights
 with soft remaining daylight. Human scale, no luxury exclusivity, no dating-app
 branding, no alcohol focus. Provide empty wide, doorway, table, operator and
 detail plates with identical geometry. No text or people.
+```
+
+### Product visual-grammar sheet
+
+```text
+Create one clean visual reference sheet for MyScoutee as a system that follows
+the whole lifecycle of a relationship. Begin with unknown individual and pair
+profile suggestions. Use amber for one private editable 1–10 priority; a high
+explicit priority may outweigh weaker automated/context signals but never
+another person's consent. Use aqua for reciprocal/context evidence, and coral for a balanced candidate group of
+strangers. Continue through calm accept/decline, contextual group chat, then a
+first managed event with blank cards for capacity, place, route/accessibility,
+resources, tickets, check-in and event-linked feedback. After that first
+meeting, show the former strangers as known contacts who may be directly invited
+again; Auto Inviter may fill one available place from the priority plan with a
+new person. Repeated events begin to form community. Close the lifecycle with a
+later relationship change: one priority moves down privately and that pair's
+future shared group/event path fades while other relationships continue. Human
+faces and real meetings dominate; interface marks remain secondary, blank and
+suitable for exact post-production graphics. No public scores, revenge,
+punishment, soulmate graph, giant abstract affinity web, romantic pair
+spotlight, readable text, logo or invented performance metric.
+```
+
+### Deployment package and voluntary local-operator network sheet
+
+```text
+Create [DEPLOYMENT_PACKAGE], a restrained prop and workspace reference for an
+accountable technical handoff and voluntary operator network. At a real small
+Linux/server workstation, competent [OPERATOR_REF] verifies a compact encrypted
+installation package, hardware key and deployment checklist before connecting
+an independently hosted local core to an own-brand organizer workspace. Behind
+that workstation, show several distinct local servers and community/cultural
+test contexts cooperating around one coral shared core and the same unresolved
+relationship-to-meeting problem. Each local deployment keeps its brand and
+operational responsibility. One node has a clear opt-out route that remains
+independently operable. Make shared leverage, local learning and voluntary
+virtual-enterprise participation legible through actions, not labels. This is a
+future operating model, not evidence of current deployments or proven efficiency.
+No anonymous hands receiving copies, consumer gift box, cloud-company branding,
+readable code/text, flags, country stereotype, sales transaction, centralized
+merchant or hardware-shipping claim. Premium 2.5D animated-film style, deep navy
+technical space, warm faces, restrained coral shared-core line, no logo.
 ```
 
 ## Negative/avoid block

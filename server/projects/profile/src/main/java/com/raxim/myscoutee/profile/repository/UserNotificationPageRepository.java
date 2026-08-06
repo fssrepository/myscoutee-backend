@@ -55,6 +55,43 @@ public class UserNotificationPageRepository {
                 UserNotification.class);
     }
 
+    public List<UserNotification> findByRecipientAndIds(
+            String recipientUserId,
+            List<String> notificationIds) {
+        if (notificationIds == null || notificationIds.isEmpty()) {
+            return List.of();
+        }
+        return mongoTemplate.find(
+                Query.query(new Criteria().andOperator(
+                        Criteria.where("recipientUserId").is(recipientUserId),
+                        Criteria.where("_id").in(notificationIds))),
+                UserNotification.class);
+    }
+
+    public List<UserNotification> findLoadedWindow(
+            String recipientUserId,
+            boolean unreadOnly,
+            String tailCreatedDate,
+            String tailId,
+            int limit) {
+        boolean hasTail = tailCreatedDate != null && !tailCreatedDate.isBlank()
+                && tailId != null && !tailId.isBlank();
+        Criteria criteria = recipientCriteria(recipientUserId, unreadOnly);
+        if (hasTail) {
+            Criteria withinLoadedWindow = new Criteria().orOperator(
+                    Criteria.where("createdDate").gt(tailCreatedDate),
+                    new Criteria().andOperator(
+                            Criteria.where("createdDate").is(tailCreatedDate),
+                            Criteria.where("_id").gte(tailId)));
+            criteria = new Criteria().andOperator(criteria, withinLoadedWindow);
+        }
+        return mongoTemplate.find(
+                Query.query(criteria)
+                        .with(NOTIFICATION_SORT)
+                        .limit(Math.max(1, limit)),
+                UserNotification.class);
+    }
+
     public boolean insertIfAbsent(UserNotification notification) {
         if (notification == null) {
             return false;
@@ -67,6 +104,46 @@ public class UserNotificationPageRepository {
         }
     }
 
+    public AggregatedNotificationUpsert upsertAggregated(UserNotification notification) {
+        if (notification == null || notification.getAggregationKey() == null
+                || notification.getAggregationKey().isBlank()) {
+            return new AggregatedNotificationUpsert(false, false);
+        }
+        Criteria criteria = Criteria.where("aggregationKey").is(notification.getAggregationKey());
+        initializeMissingRevision(criteria);
+        Update update = new Update()
+                .setOnInsert("_id", notification.getId())
+                .setOnInsert("syncKey", notification.getSyncKey())
+                .setOnInsert("aggregationKey", notification.getAggregationKey())
+                .setOnInsert("recipientUserId", notification.getRecipientUserId())
+                .set("outboxId", notification.getOutboxId())
+                .set("kind", notification.getKind())
+                .set("category", notification.getCategory())
+                .set("title", notification.getTitle())
+                .set("message", notification.getMessage())
+                .set("senderUserId", notification.getSenderUserId())
+                .set("actionPath", notification.getActionPath())
+                .set("sourceType", notification.getSourceType())
+                .set("sourceId", notification.getSourceId())
+                .set("payload", notification.getPayload())
+                .set("createdDate", notification.getCreatedDate())
+                .set("createdUser", notification.getCreatedUser())
+                .set("updatedDate", notification.getUpdatedDate())
+                .set("updatedUser", notification.getUpdatedUser())
+                .unset("readAtIso")
+                .inc("occurrenceCount", 1)
+                .inc("revision", 1L);
+        UserNotification previous = mongoTemplate.findAndModify(
+                Query.query(criteria),
+                update,
+                FindAndModifyOptions.options().upsert(true).returnNew(false),
+                UserNotification.class);
+        boolean inserted = previous == null;
+        boolean becameUnread = inserted
+                || (previous.getReadAtIso() != null && !previous.getReadAtIso().isBlank());
+        return new AggregatedNotificationUpsert(inserted, becameUnread);
+    }
+
     public Optional<UserNotification> markRead(
             String notificationId,
             String recipientUserId,
@@ -75,12 +152,14 @@ public class UserNotificationPageRepository {
                 Criteria.where("_id").is(notificationId),
                 Criteria.where("recipientUserId").is(recipientUserId),
                 unreadCriteria());
+        initializeMissingRevision(criteria);
         UserNotification updated = mongoTemplate.findAndModify(
                 Query.query(criteria),
                 new Update()
                         .set("readAtIso", readAtIso)
                         .set("updatedDate", readAtIso)
-                        .set("updatedUser", recipientUserId),
+                        .set("updatedUser", recipientUserId)
+                        .inc("revision", 1L),
                 FindAndModifyOptions.options().returnNew(true),
                 UserNotification.class);
         return Optional.ofNullable(updated);
@@ -98,12 +177,14 @@ public class UserNotificationPageRepository {
                 Criteria.where("sourceType").is(sourceType),
                 Criteria.where("sourceId").is(sourceId),
                 unreadCriteria());
+        initializeMissingRevision(criteria);
         UpdateResult result = mongoTemplate.updateMulti(
                 Query.query(criteria),
                 new Update()
                         .set("readAtIso", readAtIso)
                         .set("updatedDate", readAtIso)
-                        .set("updatedUser", recipientUserId),
+                        .set("updatedUser", recipientUserId)
+                        .inc("revision", 1L),
                 UserNotification.class);
         return result.getModifiedCount();
     }
@@ -156,6 +237,17 @@ public class UserNotificationPageRepository {
                 Criteria.where("readAtIso").is(null));
     }
 
+    private void initializeMissingRevision(Criteria criteria) {
+        mongoTemplate.updateMulti(
+                Query.query(new Criteria().andOperator(
+                        criteria,
+                        new Criteria().orOperator(
+                                Criteria.where("revision").exists(false),
+                                Criteria.where("revision").is(null)))),
+                new Update().set("revision", 1L),
+                UserNotification.class);
+    }
+
     public record UserNotificationCursor(
             String bucket,
             String createdDate,
@@ -166,5 +258,10 @@ public class UserNotificationPageRepository {
             List<UserNotification> records,
             long total,
             boolean hasNext) {
+    }
+
+    public record AggregatedNotificationUpsert(
+            boolean inserted,
+            boolean becameUnread) {
     }
 }

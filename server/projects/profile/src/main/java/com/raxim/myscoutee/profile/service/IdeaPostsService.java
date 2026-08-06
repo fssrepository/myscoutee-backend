@@ -4,12 +4,15 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -69,6 +72,7 @@ public class IdeaPostsService {
     private final AppSettingsService appSettingsService;
     private final LandingArticlesRepository landingArticlesRepository;
     private final IdeaPostMapper ideaPostMapper;
+    private final MediaStorageService mediaStorageService;
 
     public IdeaPostsService(
             ConfigProperties configProperties,
@@ -77,7 +81,8 @@ public class IdeaPostsService {
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService,
             LandingArticlesRepository landingArticlesRepository,
-            IdeaPostMapper ideaPostMapper) {
+            IdeaPostMapper ideaPostMapper,
+            MediaStorageService mediaStorageService) {
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
         this.mongoTemplate = mongoTemplate;
@@ -85,6 +90,7 @@ public class IdeaPostsService {
         this.appSettingsService = appSettingsService;
         this.landingArticlesRepository = landingArticlesRepository;
         this.ideaPostMapper = ideaPostMapper;
+        this.mediaStorageService = mediaStorageService;
     }
 
     public List<IdeaPostDto> publicPosts() {
@@ -239,7 +245,16 @@ public class IdeaPostsService {
             post.setCreatedUser(actorUserId);
         }
 
-        String html = sanitizeHtml(request == null ? null : request.contentHtml());
+        List<String> requestedImageUrls = imageUrls(
+                request == null ? null : request.imageUrls(),
+                request == null ? null : request.imageUrl());
+        Map<String, String> removedManagedImages = removedManagedImages(
+                post,
+                requestedImageUrls,
+                request == null ? null : request.removedImageUrls());
+        String html = sanitizeHtml(removeManagedImageReferences(
+                request == null ? null : request.contentHtml(),
+                removedManagedImages.keySet()));
         String title = text(request == null ? null : request.title(), "Untitled idea");
         post.setContentKey(contentKey);
         post.setLang(language);
@@ -247,7 +262,7 @@ public class IdeaPostsService {
         post.setTitle(title);
         post.setContentHtml(html);
         post.setExcerpt(excerpt(request == null ? null : request.excerpt(), html));
-        post.setImageUrls(imageUrls(request == null ? null : request.imageUrls(), request == null ? null : request.imageUrl()));
+        post.setImageUrls(requestedImageUrls);
         post.setImageUrl(primaryImageUrl(request == null ? null : request.imageUrl(), post.getImageUrls()));
         post.setFeatured(request != null && Boolean.TRUE.equals(request.featured()));
         post.setPublished(request == null || !Boolean.FALSE.equals(request.published()));
@@ -258,6 +273,7 @@ public class IdeaPostsService {
         post.setUpdatedDate(nowIso);
         post.setUpdatedUser(actorUserId);
         IdeaPost saved = ideaPostsRepository.save(post);
+        removedManagedImages.values().forEach(mediaStorageService::deletePublicObjectOrThrow);
         adminTelemetryService.record("article.saved", "content", saved.getId(), actorUserId);
         return ideaPostMapper.toDto(saved);
     }
@@ -313,7 +329,72 @@ public class IdeaPostsService {
         if (!StringUtils.hasText(normalized)) {
             return "";
         }
-        return Jsoup.clean(normalized, IDEA_HTML_SAFELIST);
+        return Jsoup.clean(normalized, "https://myscoutee.invalid/", IDEA_HTML_SAFELIST);
+    }
+
+    private Map<String, String> removedManagedImages(
+            IdeaPost post,
+            List<String> requestedImageUrls,
+            List<String> explicitlyRemovedImageUrls) {
+        Set<String> retainedGroups = managedImageGroups(requestedImageUrls);
+        Map<String, String> removedImagesByGroup = new LinkedHashMap<>();
+        List<String> previousImageUrls = imageUrls(
+                post == null ? null : post.getImageUrls(),
+                post == null ? null : post.getImageUrl());
+        for (String imageUrl : previousImageUrls) {
+            addRemovedManagedImage(removedImagesByGroup, retainedGroups, imageUrl);
+        }
+        for (String imageUrl : explicitlyRemovedImageUrls == null ? List.<String>of() : explicitlyRemovedImageUrls) {
+            addRemovedManagedImage(removedImagesByGroup, retainedGroups, imageUrl);
+        }
+        return removedImagesByGroup;
+    }
+
+    private Set<String> managedImageGroups(List<String> imageUrls) {
+        Set<String> groups = new LinkedHashSet<>();
+        for (String imageUrl : imageUrls == null ? List.<String>of() : imageUrls) {
+            String group = mediaStorageService.managedImageSetGroupKey(imageUrl);
+            if (StringUtils.hasText(group)) {
+                groups.add(group);
+            }
+        }
+        return groups;
+    }
+
+    private void addRemovedManagedImage(
+            Map<String, String> removedImagesByGroup,
+            Set<String> retainedGroups,
+            String imageUrl) {
+        String group = mediaStorageService.managedImageSetGroupKey(imageUrl);
+        if (StringUtils.hasText(group) && !retainedGroups.contains(group)) {
+            removedImagesByGroup.putIfAbsent(group, imageUrl);
+        }
+    }
+
+    private String removeManagedImageReferences(String html, Set<String> removedGroups) {
+        String normalized = normalize(html);
+        if (!StringUtils.hasText(normalized) || removedGroups == null || removedGroups.isEmpty()) {
+            return normalized;
+        }
+        Document document = Jsoup.parseBodyFragment(normalized);
+        for (Element element : document.select("img, a[href]")) {
+            String attribute = "img".equals(element.normalName()) ? "src" : "href";
+            String reference = element.attr(attribute);
+            if ("img".equals(element.normalName()) && !StringUtils.hasText(reference)) {
+                element.remove();
+                continue;
+            }
+            String group = mediaStorageService.managedImageSetGroupKey(reference);
+            if (StringUtils.hasText(group) && removedGroups.contains(group)) {
+                element.remove();
+            }
+        }
+        for (Element figure : document.select("figure")) {
+            if (!StringUtils.hasText(figure.text()) && figure.children().isEmpty()) {
+                figure.remove();
+            }
+        }
+        return document.body().html();
     }
 
     private String excerpt(String explicitExcerpt, String contentHtml) {

@@ -39,6 +39,7 @@ import com.raxim.myscoutee.profile.data.document.SubEventItem;
         @CompoundIndex(name = "event_explore_feed_status", def = "{'status': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_end", def = "{'expired': 1, 'endAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_start", def = "{'expired': 1, 'startAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_feedback_counter_due", def = "{'feedbackCountersProjected': 1, 'endAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_qmau_host_window", def = "{'status': 1, 'generated': 1, 'createdDate': 1, 'creatorUserId': 1}")
 })
 public class ActivityEvent {
@@ -68,6 +69,9 @@ public class ActivityEvent {
     private Integer activity;
     @Field("expired")
     private Boolean expired;
+    private Boolean feedbackCountersProjected;
+    private Boolean feedbackOwnEventCountersProjected;
+    private List<String> feedbackOwnEventCounterUserIds = new ArrayList<>();
     private String trashedAtIso;
     private String creatorUserId;
     private String creatorName;
@@ -179,6 +183,16 @@ public class ActivityEvent {
     }
     public Boolean getIsExpired() { return expired; }
     public void setIsExpired(Boolean expired) { this.expired = expired; }
+    public Boolean getFeedbackCountersProjected() { return feedbackCountersProjected; }
+    public void setFeedbackCountersProjected(Boolean feedbackCountersProjected) { this.feedbackCountersProjected = feedbackCountersProjected; }
+    public Boolean getFeedbackOwnEventCountersProjected() { return feedbackOwnEventCountersProjected; }
+    public void setFeedbackOwnEventCountersProjected(Boolean feedbackOwnEventCountersProjected) { this.feedbackOwnEventCountersProjected = feedbackOwnEventCountersProjected; }
+    public List<String> getFeedbackOwnEventCounterUserIds() { return feedbackOwnEventCounterUserIds; }
+    public void setFeedbackOwnEventCounterUserIds(List<String> feedbackOwnEventCounterUserIds) {
+        this.feedbackOwnEventCounterUserIds = feedbackOwnEventCounterUserIds == null
+                ? new ArrayList<>()
+                : new ArrayList<>(feedbackOwnEventCounterUserIds);
+    }
     public String getTrashedAtIso() { return trashedAtIso; }
     public void setTrashedAtIso(String trashedAtIso) { this.trashedAtIso = trashedAtIso; }
     public String getCreatorUserId() { return creatorUserId; }

@@ -132,8 +132,9 @@ belőlük új, átrajzolt „logót”.
   városa/nézete, Norvégia, egy konkrét mediterrán emlék és egy konkrét amerikai
   vízparti emlék. Ne keverd össze egy képen Delhi–Agra–Jaipur vagy
   Chesapeake–Niagara földrajzát.
-- Az ellenőrzéses mondatnál tartsd meg a [biztonságos alternatívát](03_SCRIPT_EN_HU.md).
-  Név, céges ruha, ország, dokumentum és jogi minősítés nem kerülhet a képbe.
+- A londoni szál legyen konkrét: Soho-programozás, Victoria line, Tottenham,
+  viktoriánus HMO, tizenhárom lakó, egy teljes fürdő és egy külön vécé. Ne kerüljön
+  bele gyár, worksite vagy ellenőrzési jelenet.
 - A film nem beszél a felhasználó által csak háttérként megosztott későbbi jogi
   helyzetről.
 
@@ -193,8 +194,8 @@ hadarás; a hazatérés és a vég reményt ad.
 3. A leírás/prompt mezőbe másold a [05_PROMPT_PACK.md](05_PROMPT_PACK.md)
    **Founder identity sheet** blokkját.
 4. Mentsd pontosan `Founder` néven. Ugyanígy hozd létre a mellékszereplőket.
-5. Az image generatorban egyenként készítsd el a Budapest-, London-, Worksite-,
-   SharedRoom-, DanceStudio-, EventVenue- és Notebook-lapokat. A prompt helye és
+5. Az image generatorban egyenként készítsd el a Budapest-, London-, SohoOffice-,
+   TottenhamHMO-, DanceStudio-, EventVenue- és Notebook-lapokat. A prompt helye és
    a bemásolandó blokk a [06_OPENART_WORKFLOW.md](06_OPENART_WORKFLOW.md) fájlban
    szerepel.
 6. Készíts nyolc külön Travel stillt az illustrated-memory prompttal. Csak egy

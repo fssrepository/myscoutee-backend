@@ -9,27 +9,33 @@ The repository describes MyScoutee as **the platform behind meetings, not
 swipes**. Its target success event is not a profile view, binary match or message;
 it is a completed, mutually welcomed real-world meeting.
 
-The built product path evidenced in the repository is:
+The built product path evidenced in the repository is broader than matching:
 
-1. A user rates an individual or a pair on an editable 1–10 scale.
+1. A user gives an unknown individual or pair an editable private 1–10 priority.
 2. Reciprocal ratings, profile/experience signals, distance, impressions and
    context contribute to weighted affinity.
-3. A graph-based planner builds group candidates within type and size
-   constraints, then applies local swaps to improve total group affinity.
-4. Groups can continue through chat, invitations, event creation and joining,
+3. A graph-based planner forms balanced group candidates of people who may not
+   have met; people still accept or decline.
+4. Accepted groups continue through chat, invitations, event creation and joining,
    sub-events/stages, schedules, policies, resources, tickets/check-in and
    structured feedback.
-5. Moderation, privacy/account controls, notifications, administration,
+5. After the first meeting, former strangers are known contacts who can be
+   directly invited again; Auto Inviter can fill available places according to
+   the priority plan. Priorities remain editable, so lowering one later makes a
+   future shared group/event path less likely.
+6. Moderation, privacy/account controls, notifications, administration,
    branding and an authenticated operator surface support the operating loop.
 
-The film should compress this to:
+The film should compress this to plain human actions:
 
-> priority → reciprocal/context affinity → small group → purposeful chat →
-> shared event → coordination/check-in → feedback
+> editable priority for unknown people/pairs → reciprocal/context group of
+> strangers → accept/decline → contextual chat → first managed event → known
+> contacts and later invitations → evolving priority and possible community
 
-Do not animate the implementation as a magical black box that declares a
-perfect match. Show people making choices, the graph offering a compatible
-context, and people still deciding whether to accept and attend.
+Do not animate the implementation as a magical black box or giant affinity graph
+that declares a perfect match. Show strangers making private choices, deciding
+whether to accept a group, meeting in reality, then becoming known contacts whose
+future priority and invitations can change.
 
 ### Why the 1–10 priority matters in this story
 
@@ -53,8 +59,11 @@ more nuance with which to allocate scarce attention and form a group context.
 
 ## 2. What the operator model means in the film
 
-Every operator-hosted deployment can be an independent local business and can
-carry its own brand. The operator controls local community relationships,
+The intended film model is a verified install-package handoff to technically
+capable, accountable operators. Each can run the shared core on an independently
+hosted server under its own brand and test it with local communities and cultural
+differences. Those servers may cooperate through a voluntary network/virtual
+enterprise with opt-out. Each operator controls local community relationships,
 partners, pricing, payment account, proceeds, refunds, tax and the customer
 relationship. Attributable commission from a venue/activity/travel partner
 belongs to the operator who acquired that partner, not to the founder.
@@ -63,16 +72,19 @@ The two-and-a-half-minute emotional film should not teach registry protocols,
 contribution-unit formulas or exit allocation. The audience only needs to
 understand:
 
-- every city has its own rhythm, language, venues and trust boundaries;
-- a local operator can run and shape a branded community around the core;
+- the underlying relationship-to-meeting problem is shared and remains the
+  product's validation target;
+- every country and city has its own cultural, language, venue and trust boundaries;
+- each operator can test the shared core under its own brand and infrastructure;
 - the founder has built the core and believes in it;
-- scaling a community product calls for capable local authors, not a single
-  centralized personality.
+- network cooperation can be more efficient than rebuilding the same solution
+  alone, but this remains a hypothesis to prove;
+- participation is voluntary and an opt-out deployment remains independent.
 
 Safe film wording:
 
-> “A local operator can run a branded community, choose its relationships and
-> build around the people it actually knows.”
+> “Local operators can test one shared core under their own brands and cultures,
+> cooperate through a voluntary server network, and still keep an opt-out.”
 
 Avoid implying current proven operator income or live affiliate conversion.
 Production payment charging is disabled even though checkout, pricing,
@@ -114,28 +126,19 @@ festivals, sports, travel and community events as the real-world destination.
 ### Founder work context — personal testimony, not a market statistic
 
 The film starts before London. The founder reports that he could not find work
-at home on which he felt able to build a future. Overseas assignments then took
-him through Europe, Asia and the Americas, separated him from his family for
-months, and often required very long days. On one assignment he says workers
-were instructed to stay out of sight when labour inspectors arrived. That
-became a boundary moment before his eventual move to London.
+at home on which he felt able to build a future. He then moved to London, worked
+as a programmer in Soho and commuted home on the Victoria line to Tottenham.
+There he lived in a converted Victorian HMO with twelve other adults.
 
 Film-safe wording:
 
-> “Assignments sent me abroad for months, away from my family. On one job, when
-> inspectors arrived, we were told to stay out of sight. I knew I needed another
-> path.”
+> “I went to London for work. By day I wrote software in Soho; at night the
+> Victoria line took me back to Tottenham.”
 
-This is first-person testimony. Do not identify an employer, work site, country,
-manager or inspector. Do not state as an objective legal conclusion that
-employee rights “do not exist.” If a later documentary cut identifies anyone or
-uses the words “illegal” or “labour-law breach,” retain evidence and obtain
-jurisdiction-specific legal review first.
-
-The visual must not sensationalize the event. A supervisor's hand quietly
-motions workers behind a storage partition; fluorescent work light narrows; the
-founder looks at a family photo, then chooses a different route. No police, raid,
-villain close-up, prison bars or company mark.
+This is first-person testimony. Do not turn it into a generic claim about every
+EU migrant in London or identify an employer. The visual should be specific and
+ordinary: software work, commute, shared routines and recognizable house
+geography rather than factory, raid or anonymous work-site imagery.
 
 ### London — work, movement and solitude
 
@@ -161,11 +164,14 @@ contact;
 
 The London decision is materially specific. In the founder's experience, an
 ordinary independent rental would have left too little to save toward a home or
-plan a family. For five years he therefore lived in shared rooms, worked long
-days and economized even on food. The purpose was not deprivation as virtue or
-luxury deferred; it was to create future choice — **buying back time**.
+plan a family. For five years he therefore shared a Victorian Tottenham HMO with
+twelve other adults: one full bathroom, one separate WC (the founder's “one and
+a half bathrooms” shorthand), and a shared bedroom. He worked long days and
+economized even on food. The purpose was not deprivation as virtue or luxury
+deferred; it was to create future choice — **buying back time**.
 
-Show a modest, maintained shared room, respectful flatmates and careful meal
+Show a modest, maintained but genuinely crowded house, respectful and distinct
+flatmates, the one-bath/one-WC geography, a shared bedroom and careful meal
 packing. Do not portray homelessness, starvation, filth or London residents as
 the enemy. Do not show invented rent or wage figures. If a later factual cut
 uses cost figures, date and source them separately.
@@ -364,8 +370,8 @@ audience should recognize the format, not enjoy another person's humiliation.
 | Idea | Status | Allowed treatment |
 | --- | --- | --- |
 | editable 1–10 ratings/priorities | built | show a private slider moving from 4 to 8; never show public ranking |
-| reciprocal/context affinity | built | two directional lines strengthen only when both/context align |
-| graph-based group planning | built | several small group candidates form; people still accept/decline |
+| reciprocal/context affinity | built | internal product evidence only; in the film show mutual willingness, not an affinity graph |
+| graph-based group planning | built | show a balanced candidate group of strangers; people still accept/decline |
 | chat, events, resources, tickets, feedback | built operating surface | show the complete meeting workflow in compressed motion graphics |
 | production payment charging | disabled | do not show a real successful card charge |
 | operator branding/configuration | built | show distinct local brand colors around a shared core |
@@ -379,20 +385,23 @@ audience should recognize the format, not enjoy another person's humiliation.
 
 The story needs only seven claims:
 
-1. “I needed another path” — unstable work and long assignments had material
-   and family costs; the anonymous inspection day became a boundary.
-2. “I was buying back my time” — London shared rooms, long days and saving were
-   a deliberate route toward future choice, home and family planning.
+1. “I already had a home, but no stability” — being pushed out for more than one
+   reason led to London, programming in Soho and commuting home to Tottenham.
+2. “I was buying financial independence” — the thirteen-person Victorian HMO,
+   shared bedroom, one full bathroom plus separate WC, long days and saving were
+   a deliberate route toward time for his own work, not another home.
 3. “Beauty is not belonging” — almost forty countries created real wonder but
    did not automatically create shared life.
 4. “I came home to find someone to live it with” — returning is an active,
    hopeful decision, not retreat.
 5. “I showed up, but the path was incomplete” — digital and physical beginnings
    repeatedly lacked reciprocal priority, repeat context and coordination.
-6. “I built a different path” — full focus becomes priority, reciprocal/context
-   affinity, small groups and a real event loop.
-7. “The next chapter needs local authors” — operators and communities can carry
-   a product designed around their real city.
+6. “I built a different path” — follow strangers from editable priority through
+   group, chat and first event, then preserve the relationship as it strengthens,
+   becomes community or weakens through later priority changes.
+7. “One shared core, many local tests” — own-brand independent servers cooperate
+   voluntarily around the same unsolved problem, with opt-out and without
+   claiming current deployments or proven efficiency.
 
 Everything else belongs in the research, pitch deck or product demonstration,
 not in the emotional hero film.

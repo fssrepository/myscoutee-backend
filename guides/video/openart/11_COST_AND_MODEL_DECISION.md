@@ -31,8 +31,8 @@ captions, real UI, the original logo and the final sound mix.
 - The target is a 720p mobile film. Do not spend on 1080p or 4K until the
   finished 720×1280 export actually fails phone QA.
 - Several parts of the 168-second film are cheaper and more controllable in
-  Resolve: seasons, travel flashes, priority graphics, affinity lines, product
-  UI, logo and end card.
+  Resolve: seasons, travel flashes, invitation/priority graphics, exact event
+  operations UI, logo and end card.
 
 ## 1. Cost
 
@@ -239,7 +239,7 @@ actually active in your account and passes a low-cost test.
 | S07 | four approved seasonal stills | Resolve match cuts/parallax |
 | S08 | eight separate illustrated travel stills plus one reflection still | Resolve: 8 × 9 frames; eight videos are unnecessary |
 | S16 | one approved overhead still | Resolve/Fusion bridge motif |
-| S17–S18 | clean portrait/still plates | Resolve/Fusion priority and affinity graphics |
+| S17–S18 | clean unknown-person/pair and stranger-group still plates | Resolve/Fusion private 1–10 priority, reciprocal/context and group-candidate graphics |
 | S20 | clean hand/table plate | build all UI and text in Resolve |
 | S23 | no generation | original heart.png plus separate editable MyScoutee text |
 
@@ -326,7 +326,8 @@ Transfer **only** the failed shot to Higgsfield. First rescue priorities:
 - S09 — hopeful return home;
 - S14 — three-person dance-room composition;
 - S19 — stable five-person group;
-- S22 — handoff between Founder and local authors.
+- S22 — verified install-package handoff plus own-brand local-server and
+  voluntary-network/opt-out reveal.
 
 If the current model really costs about six credits per Kling output, ten tries
 cost about 60, twenty about 120 and twenty-five about 150. Soul ID, images, lip

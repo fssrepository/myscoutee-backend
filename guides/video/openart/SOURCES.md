@@ -92,6 +92,32 @@ chemistry somewhere real to happen,” never “group dates solve dating.”
 These sources show that doors into meeting exist. They do not prove why one
 person's encounters succeeded or failed, and they are not listed in the VO.
 
+### London migration and shared-housing context
+
+- [ONS — International migration and the changing nature of housing in
+  England](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/articles/internationalmigrationandthechangingnatureofhousinginenglandwhatdoestheavailableevidenceshow/latest):
+  recent EU-born arrivals were heavily concentrated in private renting. This
+  supports the housing context, not the founder's exact household details.
+- [English Housing Survey 2021–22 — private rented
+  sector](https://www.gov.uk/government/statistics/english-housing-survey-2021-to-2022-private-rented-sector/english-housing-survey-2021-to-2022-private-rented-sector):
+  official tenure and London-overcrowding context.
+- [Migration Observatory — Migrants and housing in the
+  UK](https://migrationobservatory.ox.ac.uk/resources/briefings/migrants-and-housing-in-the-uk/):
+  research synthesis on recent migrants, private renting and overcrowding.
+- [Haringey Council — 2014 additional HMO licensing in
+  Tottenham](https://www.minutes.haringey.gov.uk/mgAi.aspx?ID=35719):
+  historical local context for houses in multiple occupation in Tottenham.
+- [Haringey Council — HMO licensing](https://haringey.gov.uk/housing/private-sector-renting/property-licensing/house-multiple-occupation-hmo-licensing/do-i-need-an-hmo-licence):
+  current local licensing overview. Do not infer the status of the founder's
+  former house without an address, dates and records.
+- [Haringey HMO standards](https://www.haringey.gov.uk/sites/default/files/2023-11/hmo_standards.pdf):
+  current standards reference; it must not be projected backward as a legal
+  finding about a historical, unidentified household.
+
+The exact Soho job, Tottenham location, thirteen residents, one full bathroom,
+one separate WC and shared bedroom remain first-person founder testimony. The
+film must not imply that all EU migrants lived this way.
+
 ## 5. Creative reference
 
 - [Studio AKA — TSB: The Story](https://studioaka.co.uk/tsb-the-story/): official
@@ -189,10 +215,14 @@ phone/platform QA test.
 These are not externally researched claims. They remain first-person testimony:
 
 - difficulty finding work at home on which to build a future;
-- months-long overseas assignments and separation from family;
-- instruction to stay out of sight on an inspection day;
-- work across Europe, Asia and the Americas;
-- move to London, five years in shared rooms, long days and saving on food;
+- move to London and work as a programmer in Soho;
+- home in Tottenham near the Victoria line;
+- five years in a converted Victorian HMO with thirteen adults;
+- one full bathroom plus one separate WC, described by the founder as 1.5
+  bathrooms, and a shared bedroom;
+- long days and saving on food to gain financial independence and time for his
+  own work; the Founder already had a home, so earlier “future home/family”
+  shorthand is superseded;
 - nearly forty visited countries and the named destination memories;
 - return home to seek a partner;
 - personal experiences with apps, events, dance and date locations;
