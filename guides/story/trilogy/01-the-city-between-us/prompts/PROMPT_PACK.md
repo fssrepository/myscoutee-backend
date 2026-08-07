@@ -239,7 +239,9 @@ Use
 for the first Thursday-night grimace after the December 2015 return, the rapid
 Saturday decision to organize Thailand, the separate short rebuff, the contact
 that led to a meeting without attraction, and the good dance from which the
-Founder withdrew without asking for contact. The board assigns neither national
+Founder withdrew without asking for contact. Every social encounter is in
+Budapest; Thailand appears only as the journey he rapidly organizes and escapes
+into afterwards. The board assigns neither national
 character nor blame: it holds other people's boundaries beside the Founder's
 own fear, imperfect reading of rooms and reverse-culture-shock experience.
 

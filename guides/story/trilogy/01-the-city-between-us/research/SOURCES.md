@@ -864,11 +864,14 @@ These are not externally researched claims. They remain first-person testimony:
 - one of the first post-return Thursday nights in a public Budapest venue: a
   woman grimaced when the Founder approached; by Saturday he was organizing
   Thailand and left within days. Separate public-room memories include one
-  woman saying "Not you," another contact leading to a meeting where the
+  separate woman exclaiming "Well, not you!" before he could speak, another
+  contact leading to a meeting where the
   Founder felt no attraction, and a good dance after which he left without
   asking for contact and later wondered whether he had become frightened. These
-  are individual memories and self-reflection, not a national comparison or a
-  claim that one stranger caused the Thailand journey;
+  all happened in Budapest after the return. The first woman's reaction was one
+  of the reasons he fled into travel so quickly and organized the Thailand
+  journey. These are individual memories and self-reflection, not
+  a national comparison;
 - a recurring group forming through shared-interest events and remaining a
   friendship rather than becoming romance; the Founder considers that
   friendship an equally important human result, not failed dating;

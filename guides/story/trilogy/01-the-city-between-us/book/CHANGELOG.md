@@ -18,8 +18,8 @@ Founder explicitly locks it.
   only by a later explicit technical closure.
 - Replaced book-series terminology from `Volume` with the more natural `Part`:
   this is Part I of one continuous trilogy.
-- Added the post-return nightlife and re-entry-shock sequence: the first
-  Thursday-night grimace, rapid Saturday organization of Thailand, a separate
+- Added the post-return Budapest nightlife and re-entry-shock sequence: the
+  first Thursday-night grimace, rapid Saturday organization of Thailand, a separate
   short rebuff, a contact that did not become attraction, and a promising dance
   from which the Founder himself withdrew. The wording keeps each woman's
   agency and avoids turning personal encounters into a national judgment.

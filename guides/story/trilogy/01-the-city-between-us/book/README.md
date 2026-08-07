@@ -22,12 +22,13 @@ language and copyright. The builder places these values in the HTML and PDF;
 - Future Parts `II` and `III` receive their own version histories. Their exact
   English titles remain unassigned until the Founder confirms them.
 - While `locked` is `false`, the versioned PDF is written under
-  `../renders/draft/` and rebuilding may replace it.
+  `draft/` inside this book package and rebuilding may replace it.
 - When the Founder explicitly requests technical closure, set `locked` to
   `true`. The first subsequent build writes the versioned PDF under
-  `../renders/published/` together with an SHA-256 checksum and publication
-  manifest. The builder refuses to overwrite that published version; later
-  corrections require a new edition number.
+  the flat `../published/` directory together with an SHA-256
+  checksum and publication manifest, then removes the superseded draft PDF.
+  The builder refuses to overwrite that published version; later corrections
+  require a new edition number.
 - A checksum detects a byte-level change but does not physically prevent one.
   Immutability here means the builder's overwrite guard plus the checksum,
   publication manifest and Git history.
@@ -43,13 +44,15 @@ python3 guides/story/trilogy/01-the-city-between-us/book/build_public_book.py
 The builder writes:
 
 - `MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html` beside the source;
-- `../renders/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
+- `draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
   as the current editable export while `locked` is `false`;
 - the equivalent versioned PDF plus `.pdf.sha256` and `.publication.json` files
-  under `../renders/published/` only after explicit technical closure.
+  directly under the flat `../published/` directory only after explicit
+  technical closure.
 
-The former `0.1` review PDF is retained under `../renders/draft/` as a
-historical draft and is not the current edition.
+Only the current editable PDF is retained under `draft/`. Earlier
+edition history remains in `CHANGELOG.md` and Git rather than as a second,
+potentially confusing PDF export.
 
 The builder reads `version.json` and `metadata.json`; do not type a version or
 document metadata directly into the manuscript or generated HTML. Before

@@ -83,6 +83,7 @@ the Founder explicitly approves generation.
 
 - `scripts/build_checkpoint_hold_animatic.sh` is ready to assemble CP00–CP23
   without creating any new images. It must remain unrun until approval.
-- The existing `renders/myscoutee-storyboard-v01-3s-720x1280.mp4` is a
+- The existing
+  `storyboard/animatics/myscoutee-storyboard-v01-3s-720x1280.mp4` is a
   superseded review artifact and is not evidence that the current narrative has
   been approved.

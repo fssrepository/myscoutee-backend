@@ -78,8 +78,8 @@ the complete word and never duplicates the `M`.
 - [book document metadata](../book/metadata.json)
 - [book changelog](../book/CHANGELOG.md)
 - [browser edition](../book/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
-- [current editable v1.0.0 PDF](../renders/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
-- [published-artifact contract](../renders/published/README.md) — no sealed PDF
+- [current editable v1.0.0 PDF](../book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
+- [flat published-artifact contract](../published/README.md) — no sealed PDF
   exists until the Founder explicitly locks an edition
 
 The public edition is complete without generated imagery. Optional side-column
@@ -143,7 +143,8 @@ may keep their platform name until they replace the matching Sxx shot.
 
 Planned static review animatic after narrative approval:
 
-- `renders/myscoutee-storyboard-v01-checkpoint-hold-720x1280.mp4` uses only the
+- `storyboard/animatics/myscoutee-storyboard-v01-checkpoint-hold-720x1280.mp4`
+  uses only the
   24 true CP00–CP23 generation boundaries. Each interior checkpoint combines
   half of the preceding shot and half of the following shot, so most frames hold
   for roughly seven to eight seconds while the complete film remains exactly

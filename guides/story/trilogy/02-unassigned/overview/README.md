@@ -16,7 +16,7 @@ must be developed here from its own primary material.
 - [production package](../production/README.md)
 - [prompt package](../prompts/README.md)
 - [asset contract](../assets/README.md)
-- [render contract](../renders/README.md)
+- [published-artifact contract](../published/README.md)
 - [script/tooling contract](../scripts/README.md)
 
 Do not move the later legal/documentary story out of primary documents or into

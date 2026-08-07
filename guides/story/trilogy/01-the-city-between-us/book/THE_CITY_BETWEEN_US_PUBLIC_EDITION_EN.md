@@ -841,18 +841,6 @@ life.
 
 ## 14. Thailand, Cambodia, and the Price of a Ride
 
-That journey began only days after one of my first public nights out in
-Budapest following my return. On Thursday, I approached a woman in a nightlife
-venue and she looked at me with a grimace. The expression struck harder than it
-should have. I had known social spaces such as Adams Morgan where strangers
-sometimes smiled or approached first. Now I was home, yet I could no longer
-read the room I was supposed to know.
-
-By Saturday, I was organizing Thailand. Within days, I had left. One woman's
-look did not cause a journey of several weeks, and I will not turn her into a
-symbol of Hungary. The speed of my departure says more about me: when home felt
-foreign, movement was still easier than staying long enough to understand why.
-
 Thailand was not a short stop. I travelled for roughly two and a half to three
 weeks across different regions: north, west, the eastern Gulf side and the
 south. Bangkok, Pattaya, Phuket, the route toward the Phi Phi Islands and the
@@ -1073,12 +1061,22 @@ elsewhere. It exists across labour markets and inside digital dating. My point
 is personal: by the time I reached the room, somebody could already believe the
 most important fact about me was how many years I had lived.
 
+On one of my first public nights out in Budapest after returning, I approached
+a woman in a nightlife venue. It was Thursday. She looked at me with a grimace,
+and the expression hit me as culture shock. In places such as Adams
+Morgan, I had known strangers to smile and sometimes approach first. Now I was
+back in my own city and could no longer read a room I was supposed to know.
+
+By Saturday, I was organizing Thailand. Within days, I had left. Her expression
+was one of the reasons I fled into travel so quickly. I was escaping the feeling
+that Budapest had become foreign to me after I came home.
+
 Still, I tried.
 
 The first rebuff was not the only public-room memory. On another night, I moved
-toward a woman and heard, "Not you." The sentence was short enough to close the
-space before a conversation began. It remains one person's boundary in one
-moment, not a verdict on Budapest or Hungarian women.
+toward a woman. Before I could say a word, she exclaimed, "Well, not you!" The
+sentence closed the space before a conversation began. It remains one person's
+boundary in one moment, not a verdict on Budapest or Hungarian women.
 
 Another woman was already surrounded by several people. I stepped into the
 group, asked for a way to contact her and then left her to continue the

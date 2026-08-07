@@ -16,5 +16,5 @@ prompts, assets and release history remain independent from Parts I and II.
 - [production package](../production/README.md)
 - [prompt package](../prompts/README.md)
 - [asset contract](../assets/README.md)
-- [render contract](../renders/README.md)
+- [published-artifact contract](../published/README.md)
 - [script/tooling contract](../scripts/README.md)

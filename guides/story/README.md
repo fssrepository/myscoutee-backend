@@ -25,7 +25,8 @@ becoming Part `II`.
 ## Ownership boundary
 
 [`trilogy/`](trilogy/README.md) owns the story-specific packages. Every part keeps its
-own manuscript, evidence, film, storyboard, prompts, assets, renders, scripts,
+own manuscript, evidence, film, storyboard, prompts, assets, published outputs,
+scripts,
 version history and production handoff.
 
 [`shared/`](shared/README.md) owns only cross-part material:
@@ -54,8 +55,10 @@ Every part package keeps these concerns separate:
 - `production/`: part checklist, shot tracking and handoff material;
 - `prompts/`: character, location, memory and video-generation prompts specific
   to that part;
-- `assets/`, `renders/` and `scripts/`: inputs, generated review outputs and
-  reproducible local tooling.
+- `assets/`: source inputs;
+- `published/`: one flat directory for approved public book and film outputs;
+- `scripts/`: reproducible local tooling. Review videos and timing studies stay
+  with their owning storyboard or film package rather than in `published/`.
 
 Series metadata is recorded in
 [shared/metadata/series.json](shared/metadata/series.json). Exact English titles

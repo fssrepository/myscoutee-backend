@@ -28,7 +28,8 @@ detailed files only through the routes below.
   start, so a changed checkpoint normally requires only two adjacent motion
   intervals to be regenerated.
 - The planned post-approval review animatic is
-  `renders/myscoutee-storyboard-v01-checkpoint-hold-720x1280.mp4`: the 24 true
+  `storyboard/animatics/myscoutee-storyboard-v01-checkpoint-hold-720x1280.mp4`:
+  the 24 true
   CP00–CP23 boundaries, mostly held for roughly seven to eight seconds, total
   168 seconds at 720×1280 and 24 fps. It models the first/last-frame workflow
   without repeating a checkpoint every three seconds. Do not build it until the
@@ -152,9 +153,11 @@ detailed files only through the routes below.
   a partner.
 - One of his first post-return Thursday nights in a public Budapest venue
   produced a sharp re-entry-shock memory when a woman grimaced as he
-  approached. By Saturday he was organizing Thailand and left within days. Do
-  not claim that one woman caused the journey or generalize the moment to
-  Hungarian women. Separate memories include a brief "Not you" boundary, a
+  approached. By Saturday he was organizing Thailand and left within days. The
+  Budapest reaction was one of the reasons for his rapid flight into travel;
+  never stage the encounter in
+  Thailand or generalize it to Hungarian women. Separate memories include a
+  separate woman exclaiming "Well, not you!" before he could speak, a
   contact obtained from a woman surrounded by others followed by a meeting in
   which he felt no attraction, and a good dance from which he left without
   asking for contact because he may have become frightened. These memories

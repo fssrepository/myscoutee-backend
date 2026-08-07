@@ -29,9 +29,8 @@ def find_project_dir(start: Path) -> Path:
 PROJECT_DIR = find_project_dir(BOOK_DIR)
 DEFAULT_SOURCE = BOOK_DIR / "THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md"
 DEFAULT_HTML = BOOK_DIR / "MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html"
-RENDERS_DIR = BOOK_DIR.parent / "renders"
-DRAFT_DIR = RENDERS_DIR / "draft"
-PUBLISHED_DIR = RENDERS_DIR / "published"
+BOOK_DRAFT_DIR = BOOK_DIR / "draft"
+PUBLISHED_DIR = BOOK_DIR.parent / "published"
 LOGO = PROJECT_DIR / "frontend" / "src" / "assets" / "logo" / "heart.png"
 ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
 BOOK_VERSION = BOOK_DIR / "version.json"
@@ -211,8 +210,12 @@ def versioned_pdf_name(version: dict[str, object]) -> str:
 
 
 def default_pdf_path(version: dict[str, object]) -> Path:
-    stage_dir = PUBLISHED_DIR if version["locked"] else DRAFT_DIR
+    stage_dir = PUBLISHED_DIR if version["locked"] else BOOK_DRAFT_DIR
     return stage_dir / versioned_pdf_name(version)
+
+
+def draft_pdf_path(version: dict[str, object]) -> Path:
+    return BOOK_DRAFT_DIR / versioned_pdf_name(version)
 
 
 def display_date(value: object) -> str:
@@ -925,6 +928,8 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
         replacement_pdf = temp_dir / "full-bleed.pdf"
         merged_pdf = temp_dir / "merged.pdf"
         metadata_pdf = temp_dir / "metadata.pdf"
+        metadata_info = temp_dir / "metadata-info.txt"
+        final_pdf = temp_dir / "final.pdf"
 
         replacement_html.write_text(replacement_document, encoding="utf-8")
         chrome_print(html_path, base_pdf, chrome)
@@ -993,7 +998,36 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
             ],
             check=True,
         )
-        metadata_pdf.replace(pdf_path)
+        info_fields = (
+            ("Title", metadata["title"]),
+            ("Author", metadata["author"]),
+            ("Subject", metadata["subject"]),
+            ("Keywords", keywords),
+            ("Creator", metadata["creator"]),
+            ("Language", metadata["language"]),
+            ("Copyright", metadata["copyright"]),
+        )
+        metadata_info.write_text(
+            "".join(
+                "InfoBegin\n"
+                f"InfoKey: {key}\n"
+                f"InfoValue: {str(value).replace(chr(10), ' ').replace(chr(13), ' ')}\n"
+                for key, value in info_fields
+            ),
+            encoding="utf-8",
+        )
+        subprocess.run(
+            [
+                "pdftk",
+                str(metadata_pdf),
+                "update_info_utf8",
+                str(metadata_info),
+                "output",
+                str(final_pdf),
+            ],
+            check=True,
+        )
+        final_pdf.replace(pdf_path)
 
 
 def sha256_file(path: Path) -> str:
@@ -1067,6 +1101,10 @@ def main() -> None:
         print(f"Wrote {pdf_path}")
         if is_default_output and version["locked"]:
             write_publication_integrity_files(pdf_path, version)
+            editable_export = draft_pdf_path(version)
+            if editable_export.exists():
+                editable_export.unlink()
+                print(f"Removed superseded draft export {editable_export}")
 
 
 if __name__ == "__main__":
