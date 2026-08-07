@@ -29,16 +29,16 @@
     }
   }
   @page cover {
-    size: 6in 9in; margin: 0;
+    size: 6in 9in; margin: 0.68in 0.62in 0.7in;
     @bottom-center { content: none; }
   }
   @page part {
-    size: 6in 9in; margin: 0;
+    size: 6in 9in; margin: 0.68in 0.62in 0.7in;
     @bottom-center { content: none; }
   }
   .cover {
-    page: cover; width: 6in; height: 9in; margin: 0;
-    padding: 0.72in 0.72in 0.62in; color: #fff;
+    page: cover; width: 4.76in; height: 7.62in; margin: 0;
+    padding: 0.52in 0.52in 0.46in; color: #fff;
     background:
       radial-gradient(circle at 78% 18%, rgba(241,181,68,.34), transparent 18%),
       radial-gradient(circle at 22% 85%, rgba(109,79,211,.48), transparent 25%),
@@ -47,7 +47,7 @@
     text-align: center;
   }
   .cover::after {
-    content: ""; position: absolute; inset: 0.32in;
+    content: ""; position: absolute; inset: 0.24in;
     border: 1px solid rgba(255,255,255,.24); border-radius: 22px;
   }
   .brand-lockup {
@@ -74,16 +74,16 @@
     padding-left: .16in; text-transform: uppercase;
   }
   .cover h1 {
-    margin: .13in auto 0; max-width: 4.35in; font-size: 38pt; line-height: .98;
+    margin: .13in auto 0; max-width: 3.72in; font-size: 34pt; line-height: .98;
     font-weight: 500; letter-spacing: -.035em; color: #fff;
     position: relative; z-index: 2;
   }
   .cover h2 {
-    margin: .22in auto 0; max-width: 4in; font: 500 15pt/1.25 Arial, sans-serif;
+    margin: .2in auto 0; max-width: 3.62in; font: 500 13pt/1.25 Arial, sans-serif;
     color: #cddcf6; position: relative; z-index: 2;
   }
   .cover .route {
-    position: absolute; left: .72in; right: .72in; bottom: 1.55in; height: 1px;
+    position: absolute; left: .52in; right: .52in; bottom: 1.3in; height: 1px;
     background: linear-gradient(90deg, #efb544, #e36c57, #8eaaf0); z-index: 2;
   }
   .cover .route::before, .cover .route::after {
@@ -93,7 +93,7 @@
   .cover .route::before { left: 0; }
   .cover .route::after { right: 0; background: #efb544; }
   .cover .tagline {
-    position: absolute; left: .72in; right: .72in; bottom: .86in;
+    position: absolute; left: .52in; right: .52in; bottom: .6in;
     font: italic 10pt/1.4 Georgia, serif; color: #dce5f5; z-index: 2;
   }
   .cover .edition {
@@ -195,8 +195,8 @@
   }
   .edition-colophon p { margin: .06in 0; }
   .part-opener {
-    page: part; width: 6in; height: 9in; margin: 0;
-    padding: 2.65in .72in .7in;
+    page: part; width: 4.76in; height: 7.62in; margin: 0;
+    padding: 2.18in .52in .55in;
     color: #fff;
     background: linear-gradient(150deg, rgba(36,91,201,.82), rgba(22,34,57,.96)), var(--night);
     break-inside: avoid; page-break-before: always; page-break-after: always;
@@ -227,7 +227,7 @@
     box-shadow: 0 0 0 .35in rgba(255,255,255,.035), 0 0 0 .7in rgba(255,255,255,.025);
   }
   .part-opener h1 {
-    margin: 0; max-width: 4.4in; font-size: 30pt; line-height: 1.03;
+    margin: 0; max-width: 3.72in; font-size: 27pt; line-height: 1.03;
     font-weight: 500; color: #fff; position: relative;
   }
   .part-opener h1::before {
@@ -235,7 +235,7 @@
     font: 700 7.5pt/1 Arial, sans-serif; letter-spacing: .18em; color: #ffcf70;
   }
   .opener-watermark {
-    position: absolute; left: .3in; bottom: .55in; width: 5.4in; height: auto;
+    position: absolute; left: .25in; bottom: .45in; width: 4.26in; height: auto;
     opacity: .12; filter: grayscale(1) brightness(4.8); mix-blend-mode: screen;
   }
   .folk-divider {
@@ -243,6 +243,16 @@
     page-break-inside: avoid;
   }
   .folk-divider img { display: block; width: 100%; height: auto; }
+  .full-page-motif {
+    background: var(--paper); height: 7.62in; margin: 0; overflow: hidden;
+    page: part; position: relative; width: 4.76in;
+    break-before: page; break-after: page;
+  }
+  .full-page-motif img {
+    bottom: .55in; display: block; height: auto; left: 50%; position: absolute;
+    transform: translateX(-50%); width: 4.25in;
+  }
+  .compact-ending-tail > p { margin-bottom: .1in; }
   .pagebreak { page-break-before: always; height: 0; }
   .illustration { margin: .26in 0 .3in; break-inside: avoid; }
   .illustration img { display: block; width: 100%; border-radius: 12px; }
@@ -446,7 +456,6 @@
 <p>When a Polish man colleague was preparing to leave, we began looking for a farewell gift. An Indian woman colleague suggested an artificial penis, something like a vibrator, from a sex shop. It was her idea, and the two of us went into a Soho sex shop to buy it for him. The gift was an affectionate insult: a way of telling him that he was a fucking dick. We liked him, and he understood the joke. What stayed with me was how naturally three people from different countries could share a joke that depended on affection rather than nationality.</p>
 <p>Another Indian woman colleague—not the colleague from the farewell-gift memory—once told me that I should write a novel. I worked in that one London workplace through all five years. I did not write the novel then.</p>
 <p>For the first three years, the city felt inexhaustible.</p>
-<div class="pagebreak"></div>
 <h2 class="context-2" id="5-the-performance-of-not-being-hungry">5. The Performance of Not Being Hungry</h2>
 <p><span class="drop-cap context-2">M</span>y colleagues went out for lunch together. In Soho, lunch was not only food; it was where the workday became human. People loosened, told stories, complained, laughed and returned to their desks knowing a little more about one another.</p>
 <p>It was also expensive.</p>
@@ -485,7 +494,6 @@
 <p>That recognition placed me in front of my greatest fear. I had reached the financial target for a viable life in Budapest, but I could not build a viable London home around it. I left London with very little explanation. The company asked whether I wanted to make a complaint. I said no. The real reason had never been the company; it was the question of whether I could direct my own life without waiting for another institution to grant permission.</p>
 <p>On some visits home from London, I used online dating in Budapest while hiding that London was where I actually lived. I wanted to enter the immediate local possibility without letting the distance define me first. But the distance would have defined any continuation, and withholding it prevented the other person from judging the real plan. The concealment was mine.</p>
 <p>During that period I also met a former colleague who, in my memory, had barely noticed me while I was living in Budapest. The new encounter became intense almost immediately. She spoke in the language of love and of wanting a child before there was enough shared life for me to understand what the declaration meant. I interpreted the suddenness as a wish for motherhood attaching itself to me, rather than love growing from knowledge of me. That was my interpretation, not access to her private motive. What I can say safely is that speed without shared context frightened me, while my own hidden London life made the context less complete from the other direction too.</p>
-<div class="pagebreak"></div>
 <p>I sometimes imagine how different those years might have felt if a fast, group-first local path had already existed. It could not have promised me a partner or removed the price of housing. It might have helped the city's extraordinary variety become recurring human context sooner: a small local group, a shared activity, another invitation, and people who no longer vanished when one event ended.</p>
 <div class="ending-tail"><p>London could have been better still—not because its magic was false, but because more of that magic might have become belonging. This is a counterfactual hope, not a product result I can prove.</p>
 <p>In December 2015, after almost five years, I came home.</p>
@@ -640,17 +648,17 @@
 <p>Finding a person was only the beginning. The meeting still needed somewhere it could breathe.</p>
 <h2 class="context-4" id="24-a-whole-person-behind-the-frame">24. A Whole Person Behind the Frame</h2>
 <p><span class="drop-cap context-4">B</span>y then I had tried enough doors to stop blaming the existence of doors.</p>
-<p>Apps offered reach. Events offered presence. Dance offered shared action. Travel offered openness. Friends of friends offered context. Each route contained real value. Each lost continuity at a different boundary.</p>
+<div class="compact-ending-tail"><p>Apps offered reach. Events offered presence. Dance offered shared action. Travel offered openness. Friends of friends offered context. Each route contained real value. Each lost continuity at a different boundary.</p>
 <p>The common failure appeared on the notebook page.</p>
 <p>Before meeting, we reduced one another to filters: age, appearance, biography, distance, a short sentence, a delayed reply. After meeting, a person became three-dimensional again. We could see how somebody treated a waiter, waited for a slower walker, solved a practical problem, spoke when nervous, listened when another person needed space, and changed when the plan changed.</p>
 <p>A picture is powerful. It is also thin.</p>
 <p>The whole person includes difficulty. Housing insecurity, money, distance, health, age, fear and past disappointment do not automatically disqualify somebody from relationship. The question was not how to hide imperfection, but how to prevent one visible problem from becoming the whole verdict before two people had shared enough reality to understand it. Only then could acceptance, boundaries and mutual effort be tested together.</p>
 <p>I have come to believe that most people are not asking to be declared flawless. They are asking not to be reduced to the first visible problem before anybody knows them. They want acceptance: not automatic approval of every action, and not the surrender of another person's safety or boundaries, but the chance to be seen as a whole human being. Only then can two people decide freely whether they can continue together.</p>
 <p>Acceptance and speed are not opposites. We do not have infinite time. Endless catalogues and unmanageable queues of conversations do not become humane merely by delaying choice. The question is not whether choices are made, but what they are allowed to reduce a person to.</p>
-<div class="ending-tail"><p>I did not want to hide age or pretend that preferences do not exist. I wanted older adults to remain full participants rather than disappear from the visual and social field. Age could remain truthful context without becoming the public value of a human being.</p>
+<p>I did not want to hide age or pretend that preferences do not exist. I wanted older adults to remain full participants rather than disappear from the visual and social field. Age could remain truthful context without becoming the public value of a human being.</p>
 <p>Nobody needed to tell people whom to love.</p>
-<p>Mutual intention needed somewhere real to go.</p>
-<figure class="folk-divider divider-5" aria-label="Human heart and encounter"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMTUwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+CiAgPHRpdGxlIGlkPSJ0aXRsZSI+SHVtYW4gaGVhcnQgYW5kIGVuY291bnRlcjwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2MiPkFuIG9yaWdpbmFsIGdpbmdlcmJyZWFkLWNhcnZpbmctaW5zcGlyZWQgb3JuYW1lbnQgb2YgcGFpcmVkIGJpcmRzLCBhbiBvcGVuIGhlYXJ0LCBhbmQgcGF0aHMgdGhhdCBtZWV0IHdpdGhvdXQgZXJhc2luZyBkaWZmZXJlbmNlLjwvZGVzYz4KICA8ZGVmcz4KICAgIDxnIGlkPSJiaXJkIj4KICAgICAgPHBhdGggZD0iTTMwMiA3OEMyNzkgNTggMjQ3IDYwIDIzMSA3OUMyNTMgODAgMjY4IDkwIDI3NyAxMDdDMjkyIDEwMSAzMDMgOTEgMzA5IDc5WiIgZmlsbD0iI2I1MmQzYiIvPgogICAgICA8Y2lyY2xlIGN4PSIzMDEiIGN5PSI3MSIgcj0iMTEiIGZpbGw9IiNiNTJkM2IiLz4KICAgICAgPHBhdGggZD0iTTMxMSA3MGwxNiA3LTE2IDYiIGZpbGw9IiNmMWI1NDQiLz4KICAgICAgPGNpcmNsZSBjeD0iMzA0IiBjeT0iNjgiIHI9IjIuNSIgZmlsbD0iI2ZiZjdlZiIvPgogICAgICA8cGF0aCBkPSJNMjcxIDgwYzEyIDAgMjAgNSAyNiAxNU0yNTIgNzdjMTIgNiAxOCAxNCAyMiAyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJmN2VmIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDEwNmwtNCAxNE0yODggMTAzbDMgMTciIHN0cm9rZT0iIzdiNGYzNCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDwvZz4KICAgIDxnIGlkPSJoYWxmIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgICA8cGF0aCBkPSJNMzYwIDEyNkMzMjUgMTIxIDMwMSAxMTYgMjc3IDEwN0MyNDIgOTQgMjE2IDk5IDE4NiAxMTRDMTUxIDEzMiAxMTQgMTI4IDgyIDExMEM1NCA5NCAzMCA5NCA4IDEwNSIgc3Ryb2tlPSIjYjUyZDNiIiBzdHJva2Utd2lkdGg9IjUiLz4KICAgICAgPHBhdGggZD0iTTE4NiAxMTRDMTcwIDk5IDE2MyA4MiAxNjcgNjRDMTg1IDY4IDE5OCA4MCAyMDEgOTciIGZpbGw9IiNlMzZjNTciIHN0cm9rZT0iI2I1MmQzYiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICAgIDxwYXRoIGQ9Ik0xMTYgMTIxQzEwMSAxMDUgOTYgODkgMTAwIDcyQzExNyA3NiAxMzAgODggMTMzIDEwNSIgZmlsbD0iI2YxYjU0NCIgc3Ryb2tlPSIjYjUyZDNiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPGNpcmNsZSBjeD0iNDYiIGN5PSIxMDEiIHI9IjciIGZpbGw9IiMyNDViYzkiIHN0cm9rZT0iIzI0NWJjOSIvPgogICAgICA8Y2lyY2xlIGN4PSIxOCIgY3k9IjEwNCIgcj0iNCIgZmlsbD0iIzJlNzY1MCIgc3Ryb2tlPSIjMmU3NjUwIi8+CiAgICA8L2c+CiAgPC9kZWZzPgogIDx1c2UgaHJlZj0iI2hhbGYiLz4KICA8dXNlIGhyZWY9IiNoYWxmIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3MjAgMCkgc2NhbGUoLTEgMSkiLz4KICA8dXNlIGhyZWY9IiNiaXJkIi8+CiAgPHVzZSBocmVmPSIjYmlyZCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzIwIDApIHNjYWxlKC0xIDEpIi8+CiAgPHBhdGggZD0iTTM2MCAxMjZDMzQ2IDEwOCAzMjYgOTMgMzI2IDY5QzMyNiA1MSAzMzkgNDEgMzUzIDQxQzM2MyA0MSAzNjggNDcgMzYwIDU4QzM1MiA0NyAzNTcgNDEgMzY3IDQxQzM4MSA0MSAzOTQgNTEgMzk0IDY5QzM5NCA5MyAzNzQgMTA4IDM2MCAxMjZaIiBmaWxsPSJub25lIiBzdHJva2U9IiNiNTJkM2IiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0zNDUgNjhjOCA0IDEzIDEwIDE1IDIwIDItMTAgNy0xNiAxNS0yMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjFiNTQ0IiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt=""></figure></div>
+<p>Mutual intention needed somewhere real to go.</p></div>
+<section class="full-page-motif divider-5" aria-label="Human heart and encounter"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMTUwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+CiAgPHRpdGxlIGlkPSJ0aXRsZSI+SHVtYW4gaGVhcnQgYW5kIGVuY291bnRlcjwvdGl0bGU+CiAgPGRlc2MgaWQ9ImRlc2MiPkFuIG9yaWdpbmFsIGdpbmdlcmJyZWFkLWNhcnZpbmctaW5zcGlyZWQgb3JuYW1lbnQgb2YgcGFpcmVkIGJpcmRzLCBhbiBvcGVuIGhlYXJ0LCBhbmQgcGF0aHMgdGhhdCBtZWV0IHdpdGhvdXQgZXJhc2luZyBkaWZmZXJlbmNlLjwvZGVzYz4KICA8ZGVmcz4KICAgIDxnIGlkPSJiaXJkIj4KICAgICAgPHBhdGggZD0iTTMwMiA3OEMyNzkgNTggMjQ3IDYwIDIzMSA3OUMyNTMgODAgMjY4IDkwIDI3NyAxMDdDMjkyIDEwMSAzMDMgOTEgMzA5IDc5WiIgZmlsbD0iI2I1MmQzYiIvPgogICAgICA8Y2lyY2xlIGN4PSIzMDEiIGN5PSI3MSIgcj0iMTEiIGZpbGw9IiNiNTJkM2IiLz4KICAgICAgPHBhdGggZD0iTTMxMSA3MGwxNiA3LTE2IDYiIGZpbGw9IiNmMWI1NDQiLz4KICAgICAgPGNpcmNsZSBjeD0iMzA0IiBjeT0iNjgiIHI9IjIuNSIgZmlsbD0iI2ZiZjdlZiIvPgogICAgICA8cGF0aCBkPSJNMjcxIDgwYzEyIDAgMjAgNSAyNiAxNU0yNTIgNzdjMTIgNiAxOCAxNCAyMiAyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmJmN2VmIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogICAgICA8cGF0aCBkPSJNMjc1IDEwNmwtNCAxNE0yODggMTAzbDMgMTciIHN0cm9rZT0iIzdiNGYzNCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDwvZz4KICAgIDxnIGlkPSJoYWxmIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgICA8cGF0aCBkPSJNMzYwIDEyNkMzMjUgMTIxIDMwMSAxMTYgMjc3IDEwN0MyNDIgOTQgMjE2IDk5IDE4NiAxMTRDMTUxIDEzMiAxMTQgMTI4IDgyIDExMEM1NCA5NCAzMCA5NCA4IDEwNSIgc3Ryb2tlPSIjYjUyZDNiIiBzdHJva2Utd2lkdGg9IjUiLz4KICAgICAgPHBhdGggZD0iTTE4NiAxMTRDMTcwIDk5IDE2MyA4MiAxNjcgNjRDMTg1IDY4IDE5OCA4MCAyMDEgOTciIGZpbGw9IiNlMzZjNTciIHN0cm9rZT0iI2I1MmQzYiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgICAgIDxwYXRoIGQ9Ik0xMTYgMTIxQzEwMSAxMDUgOTYgODkgMTAwIDcyQzExNyA3NiAxMzAgODggMTMzIDEwNSIgZmlsbD0iI2YxYjU0NCIgc3Ryb2tlPSIjYjUyZDNiIiBzdHJva2Utd2lkdGg9IjMiLz4KICAgICAgPGNpcmNsZSBjeD0iNDYiIGN5PSIxMDEiIHI9IjciIGZpbGw9IiMyNDViYzkiIHN0cm9rZT0iIzI0NWJjOSIvPgogICAgICA8Y2lyY2xlIGN4PSIxOCIgY3k9IjEwNCIgcj0iNCIgZmlsbD0iIzJlNzY1MCIgc3Ryb2tlPSIjMmU3NjUwIi8+CiAgICA8L2c+CiAgPC9kZWZzPgogIDx1c2UgaHJlZj0iI2hhbGYiLz4KICA8dXNlIGhyZWY9IiNoYWxmIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3MjAgMCkgc2NhbGUoLTEgMSkiLz4KICA8dXNlIGhyZWY9IiNiaXJkIi8+CiAgPHVzZSBocmVmPSIjYmlyZCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzIwIDApIHNjYWxlKC0xIDEpIi8+CiAgPHBhdGggZD0iTTM2MCAxMjZDMzQ2IDEwOCAzMjYgOTMgMzI2IDY5QzMyNiA1MSAzMzkgNDEgMzUzIDQxQzM2MyA0MSAzNjggNDcgMzYwIDU4QzM1MiA0NyAzNTcgNDEgMzY3IDQxQzM4MSA0MSAzOTQgNTEgMzk0IDY5QzM5NCA5MyAzNzQgMTA4IDM2MCAxMjZaIiBmaWxsPSJub25lIiBzdHJva2U9IiNiNTJkM2IiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0zNDUgNjhjOCA0IDEzIDEwIDE1IDIwIDItMTAgNy0xNiAxNS0yMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjFiNTQ0IiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt=""></section>
 <section class="part-opener opener-5"><h1 id="part-five-drawing-the-path">Part Five — Drawing the Path</h1><img class="opener-watermark" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMTUwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+CiAgPHRpdGxlIGlkPSJ0aXRsZSI+TGFjZSBuZXR3b3JrIGFuZCBzdGFyPC90aXRsZT4KICA8ZGVzYyBpZD0iZGVzYyI+QW4gb3JpZ2luYWwgSMO2dmVqLWxhY2UtaW5zcGlyZWQgbmV0d29yayBvZiBzaXggcm9zZXR0ZXMsIGxlYWYgbG9vcHMsIGFuZCBhIGNlbnRyYWwgZ3VpZGluZyBzdGFyLjwvZGVzYz4KICA8ZGVmcz4KICAgIDxnIGlkPSJyb3NldHRlIiBmaWxsPSJub25lIiBzdHJva2U9IiM1MzZiOTQiIHN0cm9rZS13aWR0aD0iMyI+CiAgICAgIDxjaXJjbGUgcj0iOCIvPgogICAgICA8cGF0aCBkPSJNMC0yMkM4LTE5IDEyLTEzIDktN0MzLTgtMS0xNCAwLTIyWk0wIDIyQzggMTkgMTIgMTMgOSA3QzMgOC0xIDE0IDAgMjJaTS0yMiAwQy0xOS04LTEzLTEyLTctOUMtOC0zLTE0IDEtMjIgMFpNMjIgMEMxOS04IDEzLTEyIDctOUM4LTMgMTQgMSAyMiAwWiIvPgogICAgICA8Y2lyY2xlIHI9IjMiIGZpbGw9IiNmMWI1NDQiIHN0cm9rZT0iI2YxYjU0NCIvPgogICAgPC9nPgogICAgPGcgaWQ9ImhhbGYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzUzNmI5NCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICAgICAgPHBhdGggZD0iTTM1NCA4M0MzMTkgNTEgMjgzIDQ0IDI0NyA2MkMyMTEgODAgMTgwIDEwNCAxNDAgOThDMTA0IDkyIDc5IDY3IDQ1IDY5QzI4IDcwIDE1IDc3IDYgODkiIHN0cm9rZS13aWR0aD0iMy41Ii8+CiAgICAgIDxwYXRoIGQ9Ik0zNDYgOThDMzEwIDExOSAyNzcgMTIwIDI0NSAxMDRDMjEwIDg2IDE4MSA3MyAxNDYgODJDMTExIDkxIDgyIDExNyA0NSAxMTJDMjggMTEwIDE2IDEwNCA3IDk2IiBzdHJva2Utd2lkdGg9IjIuNSIvPgogICAgICA8cGF0aCBkPSJNMjc2IDUyYy03LTE1LTE4LTIzLTMzLTI1IDEgMTUgOSAyNSAyNCAzMU0yMTEgNzhjLTEzLTExLTI3LTE0LTQxLTcgNyAxMyAxOCAxOSAzNCAxOE0xNDQgOThjLTE1IDQtMjUgMTMtMzAgMjcgMTUgMiAyNy00IDM1LTE4IiBzdHJva2Utd2lkdGg9IjMiLz4KICAgIDwvZz4KICA8L2RlZnM+CiAgPHVzZSBocmVmPSIjaGFsZiIvPgogIDx1c2UgaHJlZj0iI2hhbGYiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcyMCAwKSBzY2FsZSgtMSAxKSIvPgogIDx1c2UgaHJlZj0iI3Jvc2V0dGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkwIDgxKSIvPgogIDx1c2UgaHJlZj0iI3Jvc2V0dGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwNSA3OCkiLz4KICA8dXNlIGhyZWY9IiNyb3NldHRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyOTQgNjIpIi8+CiAgPHVzZSBocmVmPSIjcm9zZXR0ZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjMwIDgxKSIvPgogIDx1c2UgaHJlZj0iI3Jvc2V0dGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUxNSA3OCkiLz4KICA8dXNlIGhyZWY9IiNyb3NldHRlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MjYgNjIpIi8+CiAgPGNpcmNsZSBjeD0iMzYwIiBjeT0iODIiIHI9IjM3IiBmaWxsPSJub25lIiBzdHJva2U9IiM2ZDRmZDMiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWRhc2hhcnJheT0iMyA2Ii8+CiAgPHBhdGggZD0iTTM2MCA0MmwxMCAyNSAyNyAyLTIxIDE3IDcgMjYtMjMtMTQtMjMgMTQgNy0yNi0yMS0xNyAyNy0yWiIgZmlsbD0iI2YxYjU0NCIgc3Ryb2tlPSIjNmQ0ZmQzIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8cGF0aCBkPSJNMzQ3IDkxaDI2TTM1MiA5OWgxNiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt="" aria-hidden="true"></section>
 <h2 class="context-5" id="25-the-idea-from-2016">25. The Idea from 2016</h2>
 <p><span class="drop-cap context-5">T</span>he idea that became MyScoutee dates to 2016.</p>
@@ -725,7 +733,6 @@
 <ul><li>technically capable local operators;</li><li>pilot communities willing to test the complete path;</li><li>product collaborators;</li><li>venue, activity, travel and experience partners;</li><li>later strategic partners who understand the difference between built scope and proven outcomes.</li></ul>
 <p>I am not looking for somebody to admire the notebook.</p>
 <p>I am looking for people willing to test the path.</p>
-<div class="pagebreak"></div>
 <h2 class="context-5" id="epilogue-the-star-above-the-open-space">Epilogue — The Star Above the Open Space</h2>
 <p><span class="drop-cap context-5">T</span>he MyScoutee mark contains a helmet-like shelter, a star and an open human space at its centre.</p>
 <p>I do not treat it as a guarantee. A logo cannot certify safety, direction or connection. It can only hold an intention.</p>

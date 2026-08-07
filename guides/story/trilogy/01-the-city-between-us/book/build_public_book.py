@@ -60,6 +60,9 @@ OPENER_WATERMARKS = (
     BOOK_DIR / "assets" / "opener-watermarks" / "04-indigo-world-routes.svg",
     *OPENER_WATERMARKS[4:],
 )
+# The human-encounter motif closes Part Four on its own cream page. It must not
+# share that page with prose or replace/enlarge the following part-cover art.
+SEPARATE_MOTIF_PAGE_INDEXES = frozenset({4})
 
 
 def slugify(value: str) -> str:
@@ -115,10 +118,31 @@ def render_ending_motif(index: int) -> str:
     )
 
 
+def render_full_page_motif(index: int) -> str:
+    motif_path, label = ENDING_MOTIFS[index]
+    return (
+        f'<section class="full-page-motif divider-{index + 1}" '
+        f'aria-label="{html.escape(label, quote=True)}">'
+        f'<img src="{data_url(motif_path)}" alt="">'
+        "</section>"
+    )
+
+
 def append_ending_tail(parts: list[str], motif_index: int) -> None:
     """Keep a meaningful closing text unit on the stamped ornament page."""
     if not parts:
         raise ValueError("An ending motif requires preceding content")
+    if motif_index in SEPARATE_MOTIF_PAGE_INDEXES:
+        tail_count = min(10, len(parts))
+        tail = parts[-tail_count:]
+        del parts[-tail_count:]
+        parts.append(
+            '<div class="compact-ending-tail">'
+            + "\n".join(tail)
+            + "</div>"
+        )
+        parts.append(render_full_page_motif(motif_index))
+        return
 
     # Invitation and colophon pages already supply their own full-page layout.
     # Ordinary part endings keep their final three rendered blocks together so
@@ -441,16 +465,16 @@ def stylesheet() -> str:
     }
   }
   @page cover {
-    size: 6in 9in; margin: 0;
+    size: 6in 9in; margin: 0.68in 0.62in 0.7in;
     @bottom-center { content: none; }
   }
   @page part {
-    size: 6in 9in; margin: 0;
+    size: 6in 9in; margin: 0.68in 0.62in 0.7in;
     @bottom-center { content: none; }
   }
   .cover {
-    page: cover; width: 6in; height: 9in; margin: 0;
-    padding: 0.72in 0.72in 0.62in; color: #fff;
+    page: cover; width: 4.76in; height: 7.62in; margin: 0;
+    padding: 0.52in 0.52in 0.46in; color: #fff;
     background:
       radial-gradient(circle at 78% 18%, rgba(241,181,68,.34), transparent 18%),
       radial-gradient(circle at 22% 85%, rgba(109,79,211,.48), transparent 25%),
@@ -459,7 +483,7 @@ def stylesheet() -> str:
     text-align: center;
   }
   .cover::after {
-    content: ""; position: absolute; inset: 0.32in;
+    content: ""; position: absolute; inset: 0.24in;
     border: 1px solid rgba(255,255,255,.24); border-radius: 22px;
   }
   .brand-lockup {
@@ -486,16 +510,16 @@ def stylesheet() -> str:
     padding-left: .16in; text-transform: uppercase;
   }
   .cover h1 {
-    margin: .13in auto 0; max-width: 4.35in; font-size: 38pt; line-height: .98;
+    margin: .13in auto 0; max-width: 3.72in; font-size: 34pt; line-height: .98;
     font-weight: 500; letter-spacing: -.035em; color: #fff;
     position: relative; z-index: 2;
   }
   .cover h2 {
-    margin: .22in auto 0; max-width: 4in; font: 500 15pt/1.25 Arial, sans-serif;
+    margin: .2in auto 0; max-width: 3.62in; font: 500 13pt/1.25 Arial, sans-serif;
     color: #cddcf6; position: relative; z-index: 2;
   }
   .cover .route {
-    position: absolute; left: .72in; right: .72in; bottom: 1.55in; height: 1px;
+    position: absolute; left: .52in; right: .52in; bottom: 1.3in; height: 1px;
     background: linear-gradient(90deg, #efb544, #e36c57, #8eaaf0); z-index: 2;
   }
   .cover .route::before, .cover .route::after {
@@ -505,7 +529,7 @@ def stylesheet() -> str:
   .cover .route::before { left: 0; }
   .cover .route::after { right: 0; background: #efb544; }
   .cover .tagline {
-    position: absolute; left: .72in; right: .72in; bottom: .86in;
+    position: absolute; left: .52in; right: .52in; bottom: .6in;
     font: italic 10pt/1.4 Georgia, serif; color: #dce5f5; z-index: 2;
   }
   .cover .edition {
@@ -607,8 +631,8 @@ def stylesheet() -> str:
   }
   .edition-colophon p { margin: .06in 0; }
   .part-opener {
-    page: part; width: 6in; height: 9in; margin: 0;
-    padding: 2.65in .72in .7in;
+    page: part; width: 4.76in; height: 7.62in; margin: 0;
+    padding: 2.18in .52in .55in;
     color: #fff;
     background: linear-gradient(150deg, rgba(36,91,201,.82), rgba(22,34,57,.96)), var(--night);
     break-inside: avoid; page-break-before: always; page-break-after: always;
@@ -639,7 +663,7 @@ def stylesheet() -> str:
     box-shadow: 0 0 0 .35in rgba(255,255,255,.035), 0 0 0 .7in rgba(255,255,255,.025);
   }
   .part-opener h1 {
-    margin: 0; max-width: 4.4in; font-size: 30pt; line-height: 1.03;
+    margin: 0; max-width: 3.72in; font-size: 27pt; line-height: 1.03;
     font-weight: 500; color: #fff; position: relative;
   }
   .part-opener h1::before {
@@ -647,7 +671,7 @@ def stylesheet() -> str:
     font: 700 7.5pt/1 Arial, sans-serif; letter-spacing: .18em; color: #ffcf70;
   }
   .opener-watermark {
-    position: absolute; left: .3in; bottom: .55in; width: 5.4in; height: auto;
+    position: absolute; left: .25in; bottom: .45in; width: 4.26in; height: auto;
     opacity: .12; filter: grayscale(1) brightness(4.8); mix-blend-mode: screen;
   }
   .folk-divider {
@@ -655,6 +679,16 @@ def stylesheet() -> str:
     page-break-inside: avoid;
   }
   .folk-divider img { display: block; width: 100%; height: auto; }
+  .full-page-motif {
+    background: var(--paper); height: 7.62in; margin: 0; overflow: hidden;
+    page: part; position: relative; width: 4.76in;
+    break-before: page; break-after: page;
+  }
+  .full-page-motif img {
+    bottom: .55in; display: block; height: auto; left: 50%; position: absolute;
+    transform: translateX(-50%); width: 4.25in;
+  }
+  .compact-ending-tail > p { margin-bottom: .1in; }
   .pagebreak { page-break-before: always; height: 0; }
   .illustration { margin: .26in 0 .3in; break-inside: avoid; }
   .illustration img { display: block; width: 100%; border-radius: 12px; }
@@ -814,10 +848,13 @@ def full_bleed_document(document: str) -> tuple[str, list[str]]:
     ]
     fragments = [cover_match.group(1), *part_fragments]
     standalone_css = r"""
-      @page { size: 6in 9in; margin: 0; }
-      html, body { width: 6in; margin: 0; padding: 0; background: #101d33; }
+      @page {
+        size: 6in 9in; margin: 0.68in 0.62in 0.7in;
+        @bottom-center { content: none; }
+      }
+      html, body { width: auto; margin: 0; padding: 0; background: #fff; }
       .cover, .part-opener {
-        page: auto !important; width: 6in !important; height: 9in !important;
+        page: auto !important; width: 4.76in !important; height: 7.62in !important;
         margin: 0 !important; break-before: auto !important;
         page-break-before: auto !important; break-after: page !important;
         page-break-after: always !important;
@@ -906,10 +943,12 @@ def stamp_ending_motifs(
     if len(set(ending_pages)) != len(ending_pages) or min(ending_pages) < 1:
         raise ValueError(f"Invalid ending-page map: {ending_pages}")
 
-    for index, ((motif_path, _), page_number) in enumerate(
-        zip(ENDING_MOTIFS, ending_pages, strict=True), start=1
+    for motif_index, ((motif_path, _), page_number) in enumerate(
+        zip(ENDING_MOTIFS, ending_pages, strict=True)
     ):
-        overlay_pdf = temp_dir / f"motif-overlay-{index}.pdf"
+        if motif_index in SEPARATE_MOTIF_PAGE_INDEXES:
+            continue
+        overlay_pdf = temp_dir / f"motif-overlay-{motif_index + 1}.pdf"
         stamped_pdf = temp_dir / f"stamped-{page_number}.pdf"
         render_motif_overlay(motif_path, overlay_pdf, inkscape)
         subprocess.run(

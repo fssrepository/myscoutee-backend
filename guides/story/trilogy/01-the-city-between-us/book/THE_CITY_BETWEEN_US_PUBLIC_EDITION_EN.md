@@ -421,8 +421,6 @@ workplace through all five years. I did not write the novel then.
 
 For the first three years, the city felt inexhaustible.
 
-<!-- pagebreak -->
-
 ## 5. The Performance of Not Being Hungry
 
 My colleagues went out for lunch together. In Soho, lunch was not only food; it
@@ -585,8 +583,6 @@ to me, rather than love growing from knowledge of me. That was my interpretation
 not access to her private motive. What I can say safely is that speed without
 shared context frightened me, while my own hidden London life made the context
 less complete from the other direction too.
-
-<!-- pagebreak -->
 
 I sometimes imagine how different those years might have felt if a fast,
 group-first local path had already existed. It could not have promised me a
@@ -1618,8 +1614,6 @@ That requires partners:
 I am not looking for somebody to admire the notebook.
 
 I am looking for people willing to test the path.
-
-<!-- pagebreak -->
 
 ## Epilogue — The Star Above the Open Space
 
