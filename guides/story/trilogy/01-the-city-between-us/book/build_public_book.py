@@ -628,8 +628,8 @@ def stylesheet() -> str:
   code { font: 8pt/1.3 "DejaVu Sans Mono", monospace; }
   strong { color: #142f59; }
   .closing-invitation {
-    align-items: center; break-before: page; display: flex; justify-content: center;
-    min-height: 6.15in; padding: .45in; text-align: center;
+    display: block; margin: .28in 0 .12in; padding: .12in .2in;
+    text-align: center;
     font: 600 17pt/1.35 Georgia, "Times New Roman", serif; color: #142f59;
   }
   .closing-invitation strong { color: inherit; }
