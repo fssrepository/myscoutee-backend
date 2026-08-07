@@ -105,6 +105,36 @@ chemistry somewhere real to happen,” never “group dates solve dating.”
 These sources show that doors into meeting exist. They do not prove why one
 person's encounters succeeded or failed, and they are not listed in the VO.
 
+### Unnamed friendship-centred event community
+
+At the Founder's request, public story material does not name or brand this
+Hungarian community and this evidence map omits its direct URL. Its public
+introduction was reviewed on 7 August 2026. It describes a purpose broader than
+dating: creating an open, friendly community through varied events, including
+social gatherings, cultural clubs, excursions and formats that deliberately
+mix strangers rather than preserve existing cliques. Its public material also
+describes expansion beyond Budapest. These are the community's own statements,
+not independent evidence of friendship, dating or inclusion outcomes.
+
+Founder testimony supplies the personal connection: a former date first told
+him about the community. After returning alone from London, he began attending
+its events occasionally, though never regularly, and the community eased that
+loneliness. He also attended hoping to find a partner. In the events he attended,
+people arrived as singles, yet his own outcome was programs,
+somewhere not to be alone, a few people he came to know, familiar faces,
+acquaintances and friendship rather than a partner. Crowd size,
+social caution and concern about group gossip are his possible explanations,
+not verified causes. Public wording may preserve that path and the value of
+friendship, but must omit the service name, marks, event titles, locations,
+founding date, audience figures and any implied endorsement.
+
+The Founder considers the community one source of inspiration but not the
+origin of MyScoutee. He distinguishes its organizer-led local event culture
+from MyScoutee's intended shared technical core and independently owned local
+operator identities. This is a product-design distinction and scaling ambition,
+not evidence that the unnamed community cannot expand or that MyScoutee will
+scale successfully.
+
 ### Return and re-entry context
 
 - [Szilasi, Fülöp and Nguyen Luu — Returning home: the decision to come home and
@@ -875,6 +905,13 @@ These are not externally researched claims. They remain first-person testimony:
 - a recurring group forming through shared-interest events and remaining a
   friendship rather than becoming romance; the Founder considers that
   friendship an equally important human result, not failed dating;
+- the unnamed friendship-centred event community was first mentioned by a
+  former date; after returning alone from London, the Founder began attending
+  occasionally, not regularly, and it eased that loneliness; he also sought a
+  partner there, but personally found programs, acquaintances and friendship
+  instead; it provided some inspiration but differs from his intended MyScoutee
+  concept and scaling model; its name, founding date and identifying program
+  details remain outside public materials;
 - roughly three years of withdrawn creative work after returning, during which
   larger journeys continued and a possible return to London remained unresolved;
   Film 1 does not mention administrative status;

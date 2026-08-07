@@ -26,6 +26,19 @@ Founder explicitly locks it.
 - Clarified that repeated public events did produce a group held together by
   shared interest and friendship. The book and film now treat that friendship
   as an equally valuable outcome rather than failed romance.
+- Added the unnamed friendship-centred event community introduced by a former
+  date. After returning alone from London, the Founder began attending
+  occasionally, never regularly, and it eased that loneliness. Its
+  broader-than-dating philosophy and later geographic spread remain generalized;
+  name, founding date, branding, event titles, locations and scale figures are
+  intentionally excluded.
+- Clarified the Founder's outcome there: adults attended as singles, but he
+  found somewhere not to be alone, met a few people and gained programs,
+  acquaintances and friendship rather than a partner. Crowd
+  size, social caution and fear of gossip remain possible explanations, not
+  asserted causes. The community supplied some inspiration, while its local
+  organizer-led model remains distinct from MyScoutee's intended shared-core,
+  local-operator scaling architecture.
 - Added the 2017 post-return dating memory: almost two years without a match, an
   unusually flattering profile photograph, a subjectively promising date with
   an anonymous investment-bank financial adviser, the Founder's evasive answer

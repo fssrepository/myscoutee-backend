@@ -151,6 +151,22 @@ detailed files only through the routes below.
 - Nearly forty countries did not automatically remove solitude. He returned
   home deliberately to make the achieved Budapest freedom livable and look for
   a partner.
+- A former date told him about an unnamed Budapest friendship-centred event
+  community whose identity is broader than dating and whose public philosophy
+  uses varied programs and deliberate mixing to help strangers meet. After
+  returning alone from London, he began attending occasionally, never regularly;
+  the community eased that loneliness. It later expanded beyond one city. He
+  also went there seeking a partner. In the events he attended,
+  adults arrived as singles, yet for him it produced programs, acquaintances
+  and friendship rather than a partner. It gave him somewhere to go, meant he
+  did not always have to be alone and allowed him to get to know a few people;
+  this is a real positive outcome. A large crowd, self-protection inside a
+  recurring community and fear of gossip are possible explanations only. It
+  gave some inspiration, but its organizer-led local event culture is not the
+  MyScoutee concept or the same scaling model. Keep its name, branding, event
+  titles, locations and scale figures out of all public material. Never claim
+  nobody found a relationship there or that MyScoutee has proven superiority;
+  never disclose or depict the community's founding date.
 - One of his first post-return Thursday nights in a public Budapest venue
   produced a sharp re-entry-shock memory when a woman grimaced as he
   approached. By Saturday he was organizing Thailand and left within days. The

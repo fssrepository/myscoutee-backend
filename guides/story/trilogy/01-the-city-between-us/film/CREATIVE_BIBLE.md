@@ -163,10 +163,21 @@ the next shot restates the purposeful but not yet permanent homecoming rather
 than pretending COVID preceded it: **“I went out to make a living. I came home
 to find a partner.”** London remains a possible destination after a break. He
 uses apps, attends real events, dances and goes on dates. One recurring event
-group preserves shared interest and friendship without becoming romance; that
-is a real human outcome, not failure. Other encounters lose momentum at
-different boundaries. The problem is not effort, attractiveness or lack of
-people, and friendship is never treated as a consolation prize.
+community—first introduced to him by a former date and attended only
+occasionally after he returns alone from London, never regularly—eases that
+loneliness and preserves shared interest and friendship without becoming
+romance; that is a real human outcome, not failure. Keep the community unnamed
+and unbranded, and never show a founding date. The Founder also attended hoping
+to find a partner. Adults arrived
+as singles, but in his experience the large recurring room did not provide a
+legible private path from romantic intention to a supported next meeting.
+It did give him somewhere to go, eased the immediate fact of being alone and
+allowed him to get to know a few people; preserve this as a real positive
+outcome.
+Crowd size, social caution and fear of gossip remain possible interpretations,
+not established causes. Other encounters lose momentum at different
+boundaries. The problem is not effort, attractiveness or lack of people, and
+friendship is never treated as a consolation prize.
 
 The first 113 seconds should feel like one unbroken thought, with hidden edits
 behind the Tottenham front door, the Soho office window, Victoria line glass,

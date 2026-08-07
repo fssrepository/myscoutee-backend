@@ -287,10 +287,20 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 - **Picture/blocking:** A continuous corridor passes a talk, community dinner and
   social evening. One doorway briefly repeats across several evenings: the same
-  small mixed adult group recognizes one another and friendship settles around
-  their shared interest, without romantic pairing. In the other rooms, pleasant
+  unbranded friendship-centred community, originally learned about through a
+  former date, is seen through occasional visits after the Founder returns alone
+  from London, but never as regular attendance. A small mixed adult group first
+  sees him arrive alone, then recognizes him on later visits; the room eases his
+  loneliness, gives him somewhere to go, lets him get to know a few people and
+  allows friendship to settle around their shared interest, without romantic
+  pairing. In the other rooms, pleasant
   short exchanges still turn over before a next step forms. Nobody rejects him,
-  and friendship is not presented as failed dating.
+  and friendship is not presented as failed dating. Do not show the former date
+  at these events, show a founding date or imply regular attendance, endorsement or membership. The
+  attending adults arrive independently, but do not turn the room into a dating
+  market: a large crowd and cautious social glances leave romantic intention
+  unreadable. This is the Founder's possible interpretation, not a diagnosed
+  reason or claim that nobody found a partner there.
 - **Face/body:** open palm, attentive nod, steady interest.
 - **Camera/lens:** 28 mm lateral tracking with three foreground doorway wipes.
 - **Light/color:** Budapest cream/terracotta; rooms warmer than corridor.

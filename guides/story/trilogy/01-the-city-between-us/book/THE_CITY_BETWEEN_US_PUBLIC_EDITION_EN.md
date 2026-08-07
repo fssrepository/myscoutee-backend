@@ -1162,7 +1162,41 @@ I did not remain behind the phone.
 
 I went to talks, community dinners, language and social evenings, exhibitions,
 events and other rooms where people had chosen to appear in public. Each room
-contained beginnings. Some of them did continue. Around shared interests, a
+contained beginnings.
+
+A woman I had once dated told me about an unnamed friendship-centred event
+community in Budapest. After returning from London, I began attending its events
+occasionally, though never regularly. I had come home alone, and this was one of
+the places that eased the loneliness. Its identity was broader than dating: it
+tried to create an open social environment through varied gatherings rather
+than asking every arrival to carry a romantic purpose. Some formats deliberately
+mixed strangers so established circles did not close the room. Over time, the
+community spread beyond one city.
+
+I also went there hoping to find a partner. In the events I attended, people
+arrived as single adults, yet that shared status did not become an effective
+path toward a relationship for me. I never knew exactly why. Perhaps the crowd
+was too large. Perhaps a recurring community made people guard themselves more
+carefully because nobody wanted an approach or refusal to become group gossip.
+Perhaps a friendship-centred room made romantic intention feel too exposed.
+Contact existed, but there was no private reciprocal signal and supported next
+step that I could recognize and use.
+
+For me, it worked for almost everything else. It gave me somewhere to go so I
+did not always have to be alone, and I came to know a few people. It offered
+programs, familiar faces, shared interests, acquaintances and friendship. It
+did not lead me to the partner I had also gone there hoping to find. That is a
+personal outcome, not evidence that nobody else formed a relationship there.
+
+The community gave me some inspiration, but it was not the MyScoutee concept.
+Its strength was an organizer-led local culture of events and belonging. It
+could carry that culture into more cities, as it later did, but I did not see it
+scaling in the same way I wanted a shared technical system to scale: different
+local operators, different cultures and brands, one reusable core, and a
+private path from intention to another real meeting. That ambition still has to
+be proven.
+
+Some of those beginnings did continue. Around shared interests, a
 recognizable group formed and friendship remained. Romance did not grow from
 it, but friendship was not a lesser result. It was one of the things I had been
 looking for without always knowing how to name it.
@@ -1544,6 +1578,13 @@ credible opt-out that leaves the local deployment operable.
 
 The common core should reduce duplicated technical effort. It should not erase
 local authorship.
+
+The unnamed friendship-centred community I attended had already taught me that
+a strong local event culture could spread to more places. It was one source of
+inspiration, not the blueprint. Its expansion carried an organizer-led social
+identity outward. MyScoutee is designed to scale differently: the shared layer
+is technical, while each operator owns the local social identity. That is an
+architectural intention, not proof that the network will succeed.
 
 A city walk in Budapest, a dance-linked group in London, a one-day coach toward
 the High Tatras, a community table in Lisbon or a cultural event in Cairo cannot
