@@ -1188,14 +1188,6 @@ programs, familiar faces, shared interests, acquaintances and friendship. It
 did not lead me to the partner I had also gone there hoping to find. That is a
 personal outcome, not evidence that nobody else formed a relationship there.
 
-The community gave me some inspiration, but it was not the MyScoutee concept.
-Its strength was an organizer-led local culture of events and belonging. It
-could carry that culture into more cities, as it later did, but I did not see it
-scaling in the same way I wanted a shared technical system to scale: different
-local operators, different cultures and brands, one reusable core, and a
-private path from intention to another real meeting. That ambition still has to
-be proven.
-
 Some of those beginnings did continue. Around shared interests, a
 recognizable group formed and friendship remained. Romance did not grow from
 it, but friendship was not a lesser result. It was one of the things I had been
