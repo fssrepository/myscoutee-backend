@@ -141,7 +141,9 @@ continuity and technical faults before an expensive final render.
 - [ ] The first group contains the same six adults: exactly three women and
   three men.
 - [ ] Every group member has a distinct face, age, body, clothing, temperament
-  and expectation; older adults have equal agency and visual weight.
+  and expectation. Cast reflects plausible reasons to use the product rather
+  than an age quota: the current working picture may lean toward the thirties,
+  forties and fifties without excluding adults in their twenties or sixties.
 - [ ] The Operator does not morph into the Founder or a corporate stereotype.
 - [ ] Hands, limbs, cups, umbrellas, chairs and tickets are physically credible.
 - [ ] There is no face morph, clone, disappearing person, floating object or

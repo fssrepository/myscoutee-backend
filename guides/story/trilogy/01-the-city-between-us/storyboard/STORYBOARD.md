@@ -399,8 +399,11 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 - **Picture/blocking:** Two-way choices and restrained cues for shared interests,
   distance and current context resolve into one candidate of exactly six distinct
-  adults: three women and three men, visibly varied from their thirties into
-  their early fifties. They remain physically separate because none has met yet.
+  adults: three women and three men whose work, relocation, changing friendships
+  or search for a partner makes the invitation plausible. The working picture
+  may lean toward the thirties, forties and fifties without imposing an age
+  boundary; a person in their twenties or sixties may fit naturally. They remain
+  physically separate because none has met yet.
   A different simple thought bubble above each person suggests a
   book, shared meal, tabletop game, route, music or sketching; faces and
   individuality dominate over the mechanism. Several possible conversations and
@@ -470,9 +473,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   privately lowers one priority and quiets that future shared path while other
   relationships and repeated events continue. The network carries context and
   memory, not gossip or public reputation.
-- **Age continuity:** The later-event background introduces one or two full
-  participants in their sixties, with the same decision agency and visual weight
-  as younger adults. They are not mascots, mentors or proof of inclusion.
+- **Community continuity:** Later-event background participants widen the mix of
+  adult ages and life stages organically rather than by quota. Each remains a
+  distinct participant who can decide, contribute and change course.
 - **Face/body:** recognition, then restrained disagreement and calm boundary;
   nobody is villainized or publicly punished.
 - **Camera/lens:** 45 mm invitation/table match cut into 55 mm private priority
@@ -590,8 +593,10 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Operator ending:** S22 shows technically capable local operators, independent
   own-brand servers, cultural/community testing, voluntary network cooperation
   and opt-out; no revenue, traction, current-deployment or proven-efficiency claim.
-- **Age:** S18 begins with adults from their thirties into their early fifties;
-  S21's later community extends into the sixties without making age a token role.
+- **Age:** S18 may lean toward adults in their thirties, forties and fifties, the
+  current working picture of likely users, but this is not a boundary: adults in
+  their twenties or sixties can fit naturally. S21 widens the community without
+  reducing anyone to an age category.
 - **Film boundary:** Film 1 ends as a complete MyScoutee product invitation and
   contains no hint of the Founder's later legal, tax or court matter. Film 2 may
   inherit the exact S23 final frame only and is written separately from documents.

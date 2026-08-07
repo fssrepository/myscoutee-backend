@@ -100,7 +100,7 @@ degree has a name that sounds almost like three professions trying to occupy one
 line. I liked that. Economics asked what people valued. Mathematics asked what
 could be proven. Programming asked whether an idea could be made to run.
 
-Years later, MyScoutee would need all three questions.
+Years later, those three questions would return together.
 
 ## 2. Budapest, Beautiful and Distant
 
@@ -1171,9 +1171,8 @@ could give one person confidence and the other an hour of public failure.
 Chemistry does not occur outside logistics. Light, noise, cost, travel, timing,
 alcohol, accessibility, weather and the ability to leave all shape the meeting.
 
-This became another MyScoutee principle: the platform behind a meeting cannot
-stop at identifying people. It must carry them toward a context in which they
-can actually meet.
+Finding a person was only the beginning. The meeting still needed somewhere it
+could breathe.
 
 ## 24. A Whole Person Behind the Frame
 
@@ -1195,10 +1194,10 @@ A picture is powerful. It is also thin.
 
 The whole person includes difficulty. Housing insecurity, money, distance,
 health, age, fear and past disappointment do not automatically disqualify
-somebody from relationship. MyScoutee should not classify imperfect people out
-of view. Its more modest purpose is to create enough reciprocal context and
-shared reality for people to see whether acceptance, boundaries and mutual
-effort can carry them through problems together.
+somebody from relationship. The question was not how to hide imperfection, but
+how to prevent one visible problem from becoming the whole verdict before two
+people had shared enough reality to understand it. Only then could acceptance,
+boundaries and mutual effort be tested together.
 
 I have come to believe that most people are not asking to be declared flawless.
 They are asking not to be reduced to the first visible problem before anybody
@@ -1207,20 +1206,19 @@ not the surrender of another person's safety or boundaries, but the chance to
 be seen as a whole human being. Only then can two people decide freely whether
 they can continue together.
 
-Acceptance and speed are not opposites. We do not have infinite time. An online
-dating system must filter, or people remain inside an endless catalogue and an
-unmanageable queue of conversations. The humane question is not whether to
-filter. It is what the filter decides.
+Acceptance and speed are not opposites. We do not have infinite time. Endless
+catalogues and unmanageable queues of conversations do not become humane merely
+by delaying choice. The question is not whether choices are made, but what they
+are allowed to reduce a person to.
 
-I did not want to hide age or pretend that preferences do not exist. MyScoutee
-is not age-blind, and it cannot abolish prejudice. I wanted older adults to
-remain full participants rather than disappear from the visual and social field.
-Age could remain truthful context without becoming the public value of a human
-being.
+I did not want to hide age or pretend that preferences do not exist. I wanted
+older adults to remain full participants rather than disappear from the visual
+and social field. Age could remain truthful context without becoming the public
+value of a human being.
 
-The product did not need to tell people whom to love.
+Nobody needed to tell people whom to love.
 
-It needed to give mutual intention somewhere real to go.
+Mutual intention needed somewhere real to go.
 
 <!-- pagebreak -->
 
@@ -1244,10 +1242,10 @@ to give the problem a form. The 2016 idea belongs inside this period of guarded
 independence, an unresolved London return and an unfinished attempt to make life
 in my homeland work differently.
 
-That independence mattered because MyScoutee could not have been built in the
-fragments left beside an ordinary full-time job. The idea has now occupied a
-long span of calendar time, but I did not spend ten continuous years developing
-it. What financial independence gave me was something more precise: the right
+That independence mattered because work of this scale could not have been built
+in the fragments left beside an ordinary full-time job. The idea has now
+occupied a long span of calendar time, but I did not spend ten continuous years
+developing it. What financial independence gave me was something more precise: the right
 to create sustained periods of attention. Without it, even the concentrated
 weeks needed to turn the idea into a broad system would not have been available.
 
@@ -1303,11 +1301,11 @@ group. Nobody is owed a meeting. Every invitation still requires an independent
 decision.
 
 This matters because software is tempted to make its own calculation look more
-important than the humans inside it. MyScoutee should not display a giant graph
+important than the humans inside it. The interface should not display a giant graph
 declaring compatibility. The mechanism belongs in the background. Faces,
 choices and real meetings belong in front.
 
-MyScoutee is built to be a rapid filter, but not a rapid verdict on human worth.
+The system is meant to be a rapid filter, but not a rapid verdict on human worth.
 Private priority, reciprocity, distance and context can narrow the field quickly
 enough to ask whether a small candidate group is worth offering. Independent
 acceptance then moves willing people toward chat and a real meeting instead of
@@ -1335,11 +1333,14 @@ A larger group also makes more kinds of real-world activity practical. People
 can share a place, transport, supplies, cost, knowledge and responsibility. The
 event has a purpose larger than evaluating one person across a table.
 
-They are not six copies of one desirable profile. They differ in age, body,
-ethnicity, temperament, clothing and expectation. The initial group spans
-adults from their thirties into their early fifties; later events can include
-people in their sixties with the same agency and visual weight. No one is cast
-as an “older user” whose only role is to prove inclusion.
+They are not six copies of one desirable profile. The group reflects the people
+I currently imagine using the idea most: adults whose work, relocation,
+changing friendships or search for a partner has made social time harder to
+organize. Many may be in their thirties, forties or fifties, but that is a
+working picture, not an age rule. Someone in their twenties or sixties may fit
+just as naturally when the event and mutual interest make sense. They also
+differ in body, ethnicity, temperament, clothing and expectation. Each arrives
+with a life of their own and a different reason for accepting the invitation.
 
 <!-- illustration: six_person_portraits -->
 
@@ -1363,7 +1364,7 @@ is a stranger becoming somebody who has actually been met.
 
 A real event needs more than a title.
 
-The current MyScoutee core can organize the people, transport, place or
+The current core can organize the people, transport, place or
 accommodation, and supplies required for a plan. Tickets, check-in and feedback
 remain separate actions. The distinction sounds technical until something is
 missing.
@@ -1448,7 +1449,7 @@ Most systems celebrate the beginning. Human life continues after it.
 
 My travels taught me that global reach without local meaning is only movement.
 
-MyScoutee therefore should not become one central culture distributed around
+The system therefore should not become one central culture distributed around
 the world. The core problem may be shared: how do mutual intention and available
 capacity become a real meeting? The answer still belongs to local people.
 
@@ -1462,7 +1463,7 @@ timetables and one narrow window. The product's task is to make that constraint
 visible early enough to coordinate a humane plan.
 
 Changing countries makes speed more important. A person arrives with finite
-time and often without a usable local network. The MyScoutee ambition is that
+time and often without a usable local network. The ambition is that
 the same group-first path can be available again under a new city's language,
 places, culture and operator, so relocation does not require inventing the route
 to human context from nothing.

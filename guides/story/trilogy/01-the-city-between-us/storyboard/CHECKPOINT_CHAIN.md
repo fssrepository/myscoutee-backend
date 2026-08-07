@@ -52,10 +52,10 @@ Rules:
 | CP15 | Three poor date settings | `assets/storyboard-rough/CP15.png` |
 | CP16 | Age/appearance/history verdicts fall away; the human-context bridge appears | `assets/storyboard-rough/CP16.png` |
 | CP17 | Editable private priority for an unknown person or pair | `assets/storyboard-rough/CP17.png` |
-| CP18 | Balanced candidate: three women and three men from thirties to early fifties | `assets/storyboard-rough/CP18.png` |
+| CP18 | Balanced candidate: three women and three men cast by plausible need rather than an age quota | `assets/storyboard-rough/CP18.png` |
 | CP19 | Independent choice, contextual chat and first in-person introductions | `assets/storyboard-rough/CP19.png` |
 | CP20 | Four event-resource buckets and a first shared event turn strangers into contacts | `assets/storyboard-rough/CP20.png` |
-| CP21 | Later invitations, adults into their sixties and editable relationship lifecycle | `assets/storyboard-rough/CP21.png` |
+| CP21 | Later invitations, an organically wider adult community and editable relationship lifecycle | `assets/storyboard-rough/CP21.png` |
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/storyboard-rough/CP22.png` |
 | CP23 | MyScoutee end frame | `assets/storyboard-rough/CP23.png` |
 

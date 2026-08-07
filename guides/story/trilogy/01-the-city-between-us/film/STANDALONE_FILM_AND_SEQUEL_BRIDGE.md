@@ -90,11 +90,11 @@ Safe product line:
 
 MyScoutee is not age-blind and does not promise to remove prejudice. Birthday
 and derived age exist in the current profile. The honest visual claim is that
-older adults remain full participants with private intent, agency, group
-context, invitations and real events rather than being visually erased. The
-first six-person group already includes adults from their thirties into their
-early fifties; later event/community frames should extend visibly into the
-sixties without turning one person into an “older-user” symbol.
+people across adult life stages remain full participants with private intent,
+agency, group context, invitations and real events rather than being visually
+erased. The first six-person group is cast by plausible need, not a quota. It
+may lean toward the thirties, forties and fifties, the current working picture
+of likely users, but an adult in their twenties or sixties can fit naturally.
 
 Research boundary:
 

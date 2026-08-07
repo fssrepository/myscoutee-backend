@@ -307,11 +307,13 @@ priority may outweigh weaker automated/context signals but never another
 person's consent. A faint people-in-common or inside/outside-network cue may add
 context, but it is never a public rating, endorsement, character reference,
 compatibility guarantee or safety guarantee. Use aqua for reciprocal/context
-evidence, and coral for a balanced candidate group of
-exactly six strangers, three women and three men visibly ranging from their
-thirties into their early fifties, each with a distinct identity and expectation.
-Later-community background adults extend into their sixties with equal agency,
-never token casting. Make the group-first reason legible through several possible
+evidence, and coral for a balanced candidate group of exactly six strangers,
+three women and three men, cast by plausible need rather than an age quota. The
+working picture may lean toward the thirties, forties and fifties but can
+naturally include an adult in their twenties or sixties. Give each a distinct
+identity and expectation. Later-community background adults widen the mix of
+ages and life stages organically while remaining distinct participants. Make
+the group-first reason legible through several possible
 conversations and one shared activity rather than one romantic winner: the
 meeting can retain human value even if one pair does not continue. This is
 design intent, not a measured outcome. Continue through calm accept/decline, contextual group chat,

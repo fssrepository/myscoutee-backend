@@ -358,11 +358,11 @@ the montage reads as format friction over time, not judgment of a single date.
 ### FIRST GROUP
 
 Exactly six adults: three women and three men, including Maya and the Founder,
-visibly varied from their thirties into their early fifties, as well as in
-ethnicity, body type, clothing and temperament. Keep every face readable and
-give each person a distinct visual identity and expectation. Their later event
-and community frames also include full participants in their sixties; nobody is
-inserted as a token “older user.” Their shared event is a low-pressure city walk
+cast by plausible need rather than an age quota. The working picture may lean
+toward the thirties, forties and fifties but can naturally include an adult in
+their twenties or sixties. Vary ethnicity, body type, clothing and temperament.
+Keep every face readable and give each person a distinct visual identity, life
+stage and expectation. Their shared event is a low-pressure city walk
 ending at a tabletop/community venue with a quiet conversation area. They arrive
 as strangers and visibly introduce themselves before planning together.
 
@@ -542,9 +542,8 @@ branding around the shared core.
 - clearly public and hosted, accessible route implied without turning it into an
   invented event-resource pictogram;
 - six seats in a soft arc, not opposing interview pairs.
-- later-event background participants extend visibly into their sixties and
-  retain the same agency, visual care and opportunity to accept or decline as
-  younger adults.
+- later-event background participants widen the mix of adult ages and life
+  stages organically; each remains visually distinct and able to accept or decline.
 
 ### Local-operator network workspace
 

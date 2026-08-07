@@ -116,6 +116,19 @@ The trilogy volume and the edition version are separate. This book is Volume
   departure to 10 November 2018. The memoir now says plainly that the Founder
   was not abroad throughout but felt he had disappeared from ordinary Hungarian
   institutional visibility; it does not claim legal untraceability.
+- Removed the premature MyScoutee product explanation from the end of the date-
+  setting chapter and replaced it with a shorter memoir transition: finding a
+  person is only the beginning; the meeting still needs somewhere it can breathe.
+- Delayed the first narrative use of the MyScoutee name until Part Five, “The
+  Idea from 2016.” Chapter 24 now remains entirely human observation—whole
+  people, visible problems, acceptance, age, time and mutual intention—with no
+  product or platform lecture. Later product chapters mostly use “the idea,”
+  “the system” and “the current core” instead of repeating the brand name.
+- Replaced the fixed thirties-to-sixties casting rule with a need-led working
+  picture. The likely early audience may lean toward adults in their thirties,
+  forties and fifties whose work, relocation, changing friendships or partner
+  search makes social time harder to organize, but this is not an age boundary;
+  adults in their twenties or sixties may fit just as naturally.
 
 ## Publication rule
 

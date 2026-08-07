@@ -270,9 +270,9 @@ detailed files only through the routes below.
   to London remained unresolved. Film 1 shows only notebook, seasonal and route
   imagery; it contains no tax, health-insurance, legal or administrative detail.
 - Age may appear as an early work/dating filter, but MyScoutee is not age-blind
-  and does not claim to cure ageism. S18 spans adults from their thirties into
-  their early fifties; later community frames extend into the sixties with equal
-  agency.
+  and does not claim to cure ageism. S18 is cast by plausible need, not an age
+  quota. Its working picture may lean toward the thirties, forties and fifties,
+  but adults in their twenties or sixties can fit naturally.
 - The product idea dates to 2016. AI later accelerated implementation but did
   not originate or validate it. The ending asks local operators, pilot
   communities and product/venue/activity/travel/experience partners to shape and
