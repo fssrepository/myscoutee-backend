@@ -115,6 +115,32 @@ def render_ending_motif(index: int) -> str:
     )
 
 
+def append_ending_tail(parts: list[str], motif_index: int) -> None:
+    """Keep a meaningful closing text unit on the stamped ornament page."""
+    if not parts:
+        raise ValueError("An ending motif requires preceding content")
+
+    # Invitation and colophon pages already supply their own full-page layout.
+    # Ordinary part endings keep their final three rendered blocks together so
+    # a short final sentence or the invisible ornament spacer cannot spill onto
+    # an otherwise empty page.
+    final_block = parts[-1]
+    tail_count = (
+        1
+        if "closing-invitation" in final_block or "edition-colophon" in final_block
+        else min(3, len(parts))
+    )
+    tail = parts[-tail_count:]
+    del parts[-tail_count:]
+    parts.append(
+        '<div class="ending-tail">'
+        + "\n".join(tail)
+        + "\n"
+        + render_ending_motif(motif_index)
+        + "</div>"
+    )
+
+
 def render_illustration(key: str, registry: dict[str, dict[str, object]]) -> str:
     entry = registry.get(key)
     if not entry:
@@ -303,7 +329,7 @@ def markdown_to_html(
         if stripped.startswith("# "):
             title = stripped[2:].strip()
             if parts:
-                parts.append(render_ending_motif(ending_motif_index))
+                append_ending_tail(parts, ending_motif_index)
                 ending_motif_index += 1
             current_context = ending_motif_index
             opener_motif = OPENER_WATERMARKS[ending_motif_index]
@@ -384,7 +410,7 @@ def markdown_to_html(
         else:
             parts.append(render_dropcap_paragraph(paragraph, pending_drop_cap_context))
             pending_drop_cap_context = None
-    parts.append(render_ending_motif(ending_motif_index))
+    append_ending_tail(parts, ending_motif_index)
     ending_motif_index += 1
     if ending_motif_index != len(ENDING_MOTIFS):
         raise ValueError(
@@ -652,7 +678,17 @@ def stylesheet() -> str:
   @media print {
     html, body { background: var(--paper); }
     body { width: auto; }
-    .folk-divider { display: none; }
+    /* Reserve the same lower-page band that receives the stamped ornament.
+       The image stays hidden here because the final coloured SVG is added
+       after pagination. Keeping the preceding block with this spacer prevents
+       both prose/ornament collisions and ornament-only spill pages. */
+    .folk-divider {
+      display: block; height: 1in; margin: 0 auto; visibility: hidden;
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    .ending-tail {
+      break-inside: avoid; page-break-inside: avoid;
+    }
   }
 """
     context_rules = "\n".join(
