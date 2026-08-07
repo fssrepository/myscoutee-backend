@@ -1,8 +1,8 @@
 PURPOSE
 Create a planning storyboard board, not a final video, for the Founder's
 self-organized six-day Egypt journey after he had already returned home from
-London. He coordinated four driver-led days in southern Nile Egypt through
-WhatsApp, local hotels and local people. The story is about improvised human
+London. He coordinated the southern Nile route through WhatsApp, one driver,
+local hotels and local people. The story is about improvised human
 coordination, wonder, humor and boundaries under uncertainty — not luxury,
 danger tourism or a claim that Egypt lacks systems.
 
@@ -18,26 +18,58 @@ This trip happened after the London homecoming. Any use inside the film's
 three-second world montage must visibly fold time through the cognac notebook;
 never imply that Egypt preceded the return.
 
-PANEL 1 — CAIRO AND GIZA, FIRST DAY
+PANEL 1 — CAIRO AIRPORT, AROUND MIDNIGHT
+The first Cairo memory begins around midnight, before Giza. A taxi driver makes
+a personal claim that unofficial exchange would be better than the formal
+counter. The Founder declines the expensive private ride and instead shares a
+vehicle with a Sudanese married couple. He and the woman begin a playful
+conversation while both partners react with visible amusement. As the taxi
+pulls away, the couple's roof-stacked suitcases fall and turn flirtation into a
+practical shared interruption. Hold one warm reaction tableau rather than a
+slapstick crash. The woman is an autonomous participant, the husband is not
+humiliated, the couple is not an ethnic joke and the driver's exchange claim is
+not film fact. This is the first alternate to Panel 5 for the main-film Egypt
+frame; use one or the other, never both inside the eight-image burst.
+
+PANEL 2 — GIZA, WAITING FOR THE 08:00 OPENING
 At the Giza Plateau, use the confirmed pyramids and camel experience without a
-tourism-ad pose. A camel handler overcharges the Founder despite posted pricing
-guidance. The Founder returns serious and shows one phone photograph of the
-camel. A helpful site manager notices, then two stern armed tourism-security
-officers seat him nearby while the handler is identified. He later rides in an
-ordinary police vehicle to request part of the money back. Treat this as one
-specific autobiographical dispute-resolution memory, not proof that vendors are
-dishonest or Egypt is unsafe. No readable price sign, humiliation, weapon
-close-up, chase, raid, triumph or comic nationality.
+tourism-ad pose. The Founder arrives well before 08:00 but cannot enter until
+the site opens at 08:00. While he waits outside, police carrying steel shields
+stand ahead of him and stray dogs wander behind. Preserve this observed spatial
+atmosphere without inventing a protest, attack, chase or threat. When the gates
+open, the Founder enters and negotiates a price before the ride. Afterward, three
+camel handlers surround him and demand more than the agreement; under pressure,
+he pays. The conflict is the changed agreement, not a high opening price. Had
+the higher price been stated in advance, he could have accepted or declined it
+without complaint. He does not know the posted guidance or return to pursue a
+refund. A helpful site manager notices his serious expression. One phone
+photograph of the camel supports an improvised search; two stern armed
+tourism-security officers seat him nearby while the handler is identified. They
+later drive him back in an ordinary police vehicle. Asked how much should be
+returned, the Founder names an amount almost by instinct; only later does the
+remaining payment appear roughly consistent with the guidance. He would not
+have pursued repayment independently and mainly wants the episode to end. Treat
+this as one specific autobiographical dispute-resolution memory, not proof that
+vendors are dishonest or Egypt is unsafe. No readable price sign, humiliation,
+weapon close-up, chase, raid, monetary triumph or comic nationality.
 
-PANEL 2 — FOUR DAYS ORGANIZED THROUGH PEOPLE
-Show a clean abstract WhatsApp-like planning plate without brand or readable
-text: the Founder coordinates a driver, local hotel contacts and four southern
-Nile days. A route line connects Cairo → Luxor → Edfu/Kom Ombo candidates →
-Aswan → Abu Simbel. Human handoffs, keys, calls and agreed times make the journey
-possible. Do not claim there was no transport anywhere; show only that this
-specific itinerary depended on driver and hotel coordination.
+PANEL 3 — NIGHT FLIGHT, ASWAN AND THE ROAD NORTH
+Continue the first-day chronology. After Giza, the Founder flies south to Aswan
+at night. The airport lies some distance from the city. Before dawn, a stern
+guard stands high on an armoured vehicle beside a mounted gun at the city edge;
+keep him distant, factual and non-spectacular. A police car leads a small convoy
+through the desert toward Abu Simbel. Back in Aswan, a Nile-side hotel room looks
+toward a beautiful unnamed Nubian island. The room has the scale of a honeymoon
+suite prepared for two, but the Founder is alone. A clean WhatsApp-like planning
+layer without brand or readable text then follows one driver north from Aswan
+to Luxor. The car is chosen because several special sights can become stops; the
+road leg is one long sightseeing day, not four days in transit. Keep Kom Ombo,
+Edfu and Esna as confirmed visited stops in that geographic order. Human
+handoffs, keys, calls and agreed times make the route possible. Do not claim
+there was no transport anywhere, identify the island without confirmation or
+turn security into action spectacle.
 
-PANEL 3 — LUXOR BETWEEN TWO WORLDS
+PANEL 4 — LUXOR BETWEEN TWO WORLDS
 From a modest West Bank hotel outside central Luxor, frame two directions in one
 visual sentence: rugged western necropolis landscape toward the Valley of the
 Kings on one side, and Luxor's eastern-bank lights reflected across the Nile on
@@ -47,7 +79,7 @@ from a fearful period; present that as personal atmosphere only. Confirm before
 final use: Karnak Temple, Luxor Temple, Valley of the Queens, Hatshepsut's temple
 at Deir el-Bahari and the Colossi of Memnon.
 
-PANEL 4 — BALLOON IN THE VEGETABLE GARDEN
+PANEL 5 — BALLOON IN THE VEGETABLE GARDEN
 At Luxor dawn, a hot-air balloon descends unexpectedly into a vegetable plot.
 Half the passengers exit through a private family home while residents, crew and
 travelers cooperate to lift or guide the basket and balloon equipment around or
@@ -55,45 +87,45 @@ over a fence for removal. Use hands, eye contact and practical teamwork; the
 landing is funny and communal, not a crash, disaster, invasion or mockery of the
 home. This is the preferred single Egypt frame for the main film.
 
-PANEL 5 — SOUTHERN NILE SITES, CONFIRM EACH
+PANEL 6 — SOUTHERN NILE SITES, CONFIRM EACH
 Create separate small candidate plates, never one impossible panorama:
 - EDFU CONFIRM: the Temple of Horus and its monumental pylon;
 - KOM OMBO CONFIRM: the dual-axis temple above the Nile;
 - ASWAN CONFIRM: Philae on Agilkia Island by boat, the Unfinished Obelisk, the
   High Dam, Nubian Museum or a felucca only if actually visited;
-- ELEPHANTINE PROBABLE: strongest candidate for the Nubian island visible from
-  the riverside hotel, with villages and Nile channels; visual confirmation is
-  mandatory;
+- UNNAMED NUBIAN ISLAND CONFIRMED AS VIEW: a beautiful island visible from the
+  riverside hotel; Elephantine remains only the strongest current candidate and
+  visual confirmation is mandatory before naming it;
 - ABU SIMBEL CONFIRMED CITY/STOP: the Great Temple of Ramesses II and Small
   Temple of Hathor/Nefertari; confirm which interiors or viewpoints were seen.
 
-PANEL 6 — THE LAST-DAY SHARED BUDGET
+PANEL 7 — THE LAST-DAY SHARED BUDGET
 On the final day the Founder does not want to exchange more Egyptian pounds. He
-still wants one modest souvenir for his mother and tells the taxi driver exactly
-how much money remains. The driver proposes a practical shared constraint: the
-amount the Founder can respectfully bargain off the souvenir is the amount left
-for the airport ride. Show one finite envelope split between a small gift and a
-car, mutual calculation and restrained humor. Do not show cheating a vendor,
-fake currency values, desperate poverty or a guaranteed fare.
+still wants a vase for his mother and tells the taxi driver exactly how much
+money remains. The Founder—not the driver—proposes the practical constraint:
+the vase is paid from that finite amount and everything left becomes the
+driver's airport fare. The driver then accompanies him on foot through successive
+shops to help him bargain. The first has damaged vases, so they continue to a
+better shop. There the driver helps negotiate in a way the Founder could not
+have managed alone as a tourist. The driver eventually holds his head in his
+hands. The Founder tells the vendor that he is now bargaining at the driver's
+expense; the vendor laughs and lets the negotiation end. Show one finite
+envelope split between the vase and the car, a taxi driver accompanying his
+passenger on foot, local negotiation and restrained humour. Do not show cheating
+a vendor, fake currency values, desperate poverty or a guaranteed fare. Treat
+the Founder's surprise that a taxi driver would accompany him between shops as
+personal comparison, not a
+universal claim about Europe or Egypt. Complete the route with two separate
+Luxor airport security gates, then an abstract three-leg flight chain: Luxor →
+Cairo → Athens → Budapest, with two connections. Treat the extra gate as this
+traveller's observed experience, not a universal comparison or security
+spectacle.
 
-PANEL 7 — CURRENCY UNCERTAINTY WITHOUT AN ECONOMIC CLAIM
+PANEL 8 — CURRENCY UNCERTAINTY WITHOUT AN ECONOMIC CLAIM
 Merchants hesitate to bargain because the local currency feels uncertain in the
 Founder's memory. Express this through paused hands, exchanged looks and a price
 tag deliberately kept unreadable. Do not state a devaluation date, rate or cause
 until the trip date and contemporary source are confirmed.
-
-PANEL 8 — CAIRO AIRPORT TAXI, A STORY CREATED IN SECONDS
-After arrival in Cairo, a taxi driver makes a personal claim that unofficial
-exchange would be better than the formal counter. The Founder declines the
-expensive private ride and instead shares a vehicle with a Sudanese married
-couple. He and the woman begin a playful conversation while both partners react
-with visible amusement. As the taxi pulls away, the couple's suitcases, stacked
-high on the roof, fall down and instantly turn flirtation into a practical
-shared interruption. Hold one warm reaction tableau rather than a slapstick
-crash. The woman is an autonomous participant, the husband is not humiliated,
-the couple is not an ethnic joke and the driver's exchange claim is not film
-fact. This is the first alternate to Panel 4 for the main-film Egypt frame; use
-one or the other, never both inside the eight-image burst.
 
 EMOTIONAL PURPOSE
 The Founder is not alone because nobody exists around him. He moves through a
@@ -105,6 +137,6 @@ path can continue. It does not claim MyScoutee would prevent scams, guarantee
 safety or replace local judgment.
 
 OUTPUT
-One clean planning board with seven separated panels and no generated text.
+One clean planning board with eight separated panels and no generated text.
 The editor adds city names, chronology and CONFIRM labels in post. Generate no
 motion and no invented landmark.

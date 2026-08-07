@@ -111,13 +111,22 @@ not need to occupy every second.
   understands the joke. Keep the humor between competent friends; nationality
   is never the punchline.
 - The shared-room resident swap, one-pound overnight coach to Edinburgh, Loch
-  Ness, Glasgow/Clyde powerboat and compressed London–Manchester–Liverpool–
-  North Wales–Cardiff–London circuit are personal memories. Use them as quiet
-  visual or sound beats under existing narration, not additional VO. The Founder
-  confirms every specific landmark before it is presented as visited.
+  Ness, Glasgow/Clyde powerboat and compressed five-person London–Manchester–
+  Liverpool–Barmouth–Cardiff–London rental-car circuit are personal memories.
+  The party is two couples plus the Founder; he plans the route but cannot drive,
+  so a travelling acquaintance drives as part of the group, not as a hired
+  driver. Budget hotels supply the overnight accommodation. The trip has three
+  days and needs a fourth to avoid the rush. Use these as quiet visual or sound
+  beats under existing narration, not additional VO. The Founder confirms every
+  specific landmark before it is presented as visited.
 - The COVID line is the Founder's personal break between the earlier carefree
   travel feeling and later movement. It does not claim that nobody can travel as
   before or judge the earlier journeys as irresponsible.
+- Most journeys were made alone and self-organized; a driver, host, hotel,
+  agency or excursion may carry one handoff without owning the whole route. S20
+  translates this into a DIY-first event model: fully self-organized, partially
+  provider-assisted or more completely organizer-managed. The last mode is an
+  intended operating direction, not a proven one-click delegation workflow.
 - “Through local people” is the global/local spine: different environments and
   local encounters help the Founder recognize different parts of himself. It is
   not a tourist's claim to possess cultures. The product mirrors this with a
@@ -142,8 +151,10 @@ not need to occupy every second.
   happened after the Founder had returned from London; do not edit it as if it
   preceded the homecoming. A time-fold through the notebook can include it
   without changing the spoken return line.
-- Lift warmly on “came home.” It is a purposeful turn toward relationship and
-  full focus, not a failed migration.
+- Lift warmly on “came home.” The physical return is purposeful and turns toward
+  relationship and full focus, but it is not yet accepted as permanent: London
+  remains a possible destination after a break. It is not a failed migration or
+  a final rejection of London.
 - Dance and date lines carry observation and dry warmth, never resentment.
 - Pause before “the bridge.” The product follows a relationship lifecycle:
   editable priority → reciprocal/context group of strangers → chat → managed

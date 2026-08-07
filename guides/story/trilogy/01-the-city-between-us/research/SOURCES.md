@@ -90,6 +90,11 @@ chemistry somewhere real to happen,” never “group dates solve dating.”
   connection across difference.
 - [London City Hall — Volunteering](https://www.london.gov.uk/programmes-strategies/volunteering):
   evidence that real-world civic routes exist.
+- [The Royal Parks — gardens in The Regent's Park & Primrose
+  Hill](https://www.royalparks.org.uk/visit/parks/regents-park-primrose-hill/gardens):
+  confirms the park's several public gardens. The Founder has confirmed
+  Regent's Park as the outing location; the source does not verify the personal
+  pizza memory or identify the exact garden/venue.
 - [GoodGym](https://www.goodgym.org/): repeated activity/community example in
   the UK; not a dating service.
 - [BAIS / We Move Budapest](https://www.wemovebudapest.com/join-our-team):
@@ -241,14 +246,14 @@ review.
 - [Visit Cardiff — official city
   guide](https://www.visitcardiff.com/discover/): Cardiff Castle, Victorian
   arcades and Cardiff Bay are candidate anchors only.
-- [Visit Conwy —
-  Llanfairfechan](https://www.visitconwy.org.uk/explore/towns-and-villages/llanfairfechan/):
-  a small Victorian seaside village with broad low-tide sands, sea in front and
-  steep hills behind. It is the strongest current match to the Founder's memory,
-  but remains unconfirmed.
-- [Visit Wales — North Wales Coast
-  Railway](https://www.visitwales.com/destinations/north-wales/things-do-along-north-wales-coast-railway-line):
-  supports the coast-and-mountain corridor and the Conwy–Llanfairfechan route.
+- [Visit Wales — Barmouth
+  Beach](https://www.visitwales.com/attraction/beach/barmouth-beach-528111):
+  supports the Founder-confirmed Barmouth location, low-tide walking, views
+  toward Tremadog Bay and the route beside the Mawddach Estuary.
+- [Barmouth Town Council — Water
+  Safety](https://www.barmouthtowncouncil.gov.uk/water-safety): supports the
+  harbour at the mouth of the Mawddach, the Cader Idris mountain view and the
+  exposed low-tide sandbar. It does not verify the Founder's exact viewpoint.
 - [VisitScotland — The Clyde
   Ride](https://www.visitscotland.com/info/tours/the-clyde-ride-4dd49b48):
   confirms Glasgow powerboat sightseeing on the River Clyde past bridges and
@@ -281,15 +286,18 @@ review.
   official route context for the separate gorge journey, including its wooden
   ladders, bridges and demanding climb.
 - [Mai Szállás — Vintgar and Bled day trip](https://maiszallas.hu/akciok/orszagos/lelegzetelallito-tura-a-vintgar-szurdokban-es-romantikus-kiruccanas-bledre-termeszet-tortenelem-es-elmenyek-egyetlen-napba-suritve-buszos-utazas-tobb-idopontban-29-490-ft-ert):
-  current bounded Slovenia example with a Budapest departure. Ljubljana remains
-  an alternate until confirmed.
+  current bounded Slovenia example with a Budapest departure. The Founder has
+  confirmed both Bled and Vintgar, remembers them as part of a circular walk and
+  explicitly excluded Ljubljana.
 - [Zagreb in a day — route example](https://valamerre.blog.hu/2019/08/30/zagrab_892):
   non-official recognition aid for Tomislav Square, Zrinjevac, Jelačić Square
-  and blue trams. It is not proof of the Founder's trip.
+  and blue trams. It is not proof of the Founder's trip and must not be used to
+  imply a Zagreb city visit; he saw Zagreb only from the coach while in transit.
 - [Ikarosz — Plitvice non-stop](https://www.ikarosz.hu/hu/1-napos-programok?tr=plitvice-non-stop4):
   evidence that a one-day Plitvice coach format exists, but the displayed
-  departure context is not strong enough to assert a Budapest route. Keep
-  Plitvice and Zagreb as alternatives.
+  departure context is not strong enough to prove the historic departure point.
+  The Founder has independently confirmed Plitvice as the destination and Zagreb
+  only as coach-window transit on the way there.
 
 ### Egypt location candidates
 
@@ -305,6 +313,11 @@ review.
   Aswan](https://www.experienceegypt.eg/en/attraction-details/210/ancient-aswan-):
   official route candidates include Philae, the Unfinished Obelisk, Kom Ombo
   and Edfu; Edfu lies roughly between Luxor and Aswan.
+- [Earth Trekkers — driving between Aswan and
+  Luxor](https://www.earthtrekkers.com/driving-between-aswan-and-luxor-how-to-visit-kom-ombo-edfu-esna/):
+  estimates a little over three hours for the direct drive and roughly 245 km,
+  5.75 hours of driving and 9.5 hours overall when Kom Ombo, Edfu and Esna are
+  visited. This supports one long sightseeing day, not four days in transit.
 - [Experience Egypt — Nubian
   culture](https://www.experienceegypt.eg/en/attraction-details/209/nubian-culture):
   locates Nubian villages on Elephantine Island and along the Nile, making
@@ -579,6 +592,10 @@ phone/platform QA test.
 These are not externally researched claims. They remain first-person testimony:
 
 - countryside small-producer ancestry and movement toward Budapest for work;
+- loving running before university and entering races; the Founder's personal
+  lesson that breathing, rhythm and endurance usually mattered more than
+  natural genetic advantage; and one secondary-school race in which classmates
+  caught his arms and tried to pull him back, yet he still finished first;
 - completion of university in 2004 after studies combining economics,
   programming and mathematics; a delayed dissertation made 2005 the earliest
   possible diploma year, but one missing intermediate-level language
@@ -628,7 +645,8 @@ These are not externally researched claims. They remain first-person testimony:
   this kept him from taking a foreign-currency mortgage;
 - working in the United States through an anonymous pre-London employer, the
   Founder's account that promised overtime followed extreme workload but the
-  overtime payment did not arrive, and his decision to leave;
+  overtime payment did not arrive, and his decision to leave around September
+  2010;
 - blood in the Founder's stool first appearing during that period of extreme
   work pressure, which he personally associated with the pressure without a
   published medical diagnosis or independent causation finding;
@@ -645,6 +663,7 @@ These are not externally researched claims. They remain first-person testimony:
 - move to London and work as a programmer in Soho;
 - finding London work within two weeks despite weak English, then being able to
   converse only minimally with colleagues for almost three years;
+- working at the same single London workplace throughout all five London years;
 - home in Tottenham near the Victoria line;
 - five years in a converted Victorian HMO with thirteen adults: the Founder and
   twelve other Hungarian flatmates;
@@ -678,6 +697,17 @@ These are not externally researched claims. They remain first-person testimony:
   return until 10 November 2018, longer travel, partner-seeking and private
   creative work during that interval, then re-registration and a renewed job
   search on 10 November 2018;
+- the three-year interval was not a single settled withdrawal: the Founder
+  considered returning to London after a short break, questioned whether coming
+  home had been the right choice, tried to discover whether he could make life
+  work differently in his homeland and blamed himself for having been unable to
+  remain there before. The self-blame is testimony about his inner experience,
+  not a finding that the earlier departure was his fault;
+- the wider arc from the employer departure around September 2010 to 10 November
+  2018 lasting roughly eight years. It was not continuous physical absence from
+  Hungary: the Founder was there before London, during visits and after December
+  2015. His statement that he “disappeared” describes institutional invisibility,
+  not proven legal untraceability;
 - Brexit intensifying the Founder's subjective sense of administrative distance;
   this does not establish that his location was impossible to verify;
 - the office search for a farewell gift for a departing Polish man colleague,
@@ -685,29 +715,74 @@ These are not externally researched claims. They remain first-person testimony:
   artificial penis, something like a vibrator, and her shared purchase with the
   Founder in a Soho sex shop; the gift affectionately called the departing man
   “a fucking dick,” while the colleagues liked him and he understood the joke;
+- a company pizza outing in the gardens of Regent's Park; and, in a separate
+  Soho terrace memory, trying sushi, rushing into the women's lavatory to spit
+  it out, then emerging relieved to see a beautiful woman smile and feeling for
+  one comic instant that he could have married her immediately;
+- a different Indian woman colleague in that London workplace once telling the
+  Founder that he should write a novel; she is not the colleague from the
+  farewell-gift memory;
 - the one-pound overnight coach to Edinburgh, other passengers' sock smell,
   Loch Ness, Glasgow/Clyde powerboat and almost paying for a German tourist's
   child's ticket;
-- the precisely completed but over-compressed London–Manchester–Liverpool–North
-  Wales–Cardiff–London route because companions could not take one extra day;
-- the unidentified North Wales low-tide village memory, with Llanfairfechan only
-  a current candidate until visual confirmation;
-- a six-day Egypt trip after the London homecoming, with four southern Nile days
-  self-organized through WhatsApp, driver and local hotels;
-- Cairo/Giza camel overcharge, help from a site manager and armed tourism-
-  security officers, photo-based identification and a police-vehicle return to
-  seek partial repayment;
+- the precisely completed but over-compressed five-person London–Manchester–
+  Liverpool–Barmouth–Cardiff–London route in a rented car; two couples and the
+  Founder travelled, the Founder organized the route but cannot drive, one
+  travelling acquaintance drove as a companion rather than a hired driver,
+  budget hotels supplied the accommodation, and the three-day route needed a
+  fourth day to avoid the exhausting pace;
+- the North Wales low-tide place, now identified by the Founder as Barmouth;
+- most longer journeys being made alone and self-organized, with local drivers,
+  hotels, agencies or organized excursions supplying bounded parts rather than
+  owning the entire route;
+- a six-day Egypt trip after the London homecoming, with the southern Nile
+  itinerary self-organized through WhatsApp, one driver and local hotels; the
+  earlier four-day memory refers, if retained, to the broader supported program,
+  not four days driving from Aswan to Luxor;
+- Cairo chronology beginning with an airport arrival around midnight, followed
+  by arrival at Giza well before its 08:00 opening; while waiting outside, the
+  Founder remembers police carrying steel shields ahead of him and stray dogs
+  wandering behind;
+- a night flight from Cairo to Aswan after Giza; Aswan airport some distance
+  from the city; a stern guard high on what the Founder remembers as a tank or
+  armoured vehicle beside a mounted gun at the city edge before dawn; and a
+  police vehicle leading a convoy through the desert toward Abu Simbel;
+- an Aswan hotel beside the Nile, a room experienced as a honeymoon suite
+  without a partner and a view toward a beautiful Nubian island whose exact
+  identity remains unconfirmed;
+- one long sightseeing day by car from Aswan to Luxor with one driver, visiting
+  Kom Ombo, Edfu and Esna in that geographic order; the Founder has confirmed
+  all three stops;
+- Cairo/Giza camel dispute: a price negotiated before the ride, followed by
+  three camel handlers surrounding the Founder and demanding more afterward.
+  He says a higher opening price would not itself have caused a complaint; the
+  broken agreement and pressure were the problem. He did not know at the time
+  that the total also exceeded posted guidance. A site manager and armed
+  tourism-security officers initiated photo-based identification and a police-
+  vehicle return rather than the Founder independently pursuing repayment.
+  Asked for a figure, he named an amount by instinct; the remainder only later
+  appeared roughly consistent with the guidance, and he mainly wanted the
+  episode to end;
 - Luxor West Bank hotel view toward the western necropolis landscape and across
   the Nile to Luxor's lights, with serious security nearby;
 - Luxor balloon landing in a vegetable plot, some passengers leaving through a
   private home, and residents/crew/passengers cooperating around a fence;
-- final-day Egyptian-pound constraint, a souvenir for the Founder's mother and a
-  taxi-driver proposal linking the bargained saving to the available airport
-  fare; currency fear remains personal memory until trip date confirmation;
+- final-day Egyptian-pound constraint and a vase for the Founder's mother. The
+  Founder—not the taxi driver—proposed that the purchase come from his remaining
+  cash and that everything left become the airport fare. The driver accompanied
+  him on foot between shops to help him bargain; damaged vases prompted them to
+  leave the first shop. At a better shop, the driver helped negotiate, then held
+  his head in his hands. The Founder told the vendor that he was bargaining at
+  the driver's expense; the vendor laughed and ended the negotiation. Currency
+  fear and the European comparison remain personal memory until trip-date
+  confirmation;
+- two separate security gates remembered at Luxor airport, followed by the
+  two-connection Luxor → Cairo → Athens → Budapest flight home; the comparison
+  with European airport experience remains personal observation;
 - Cairo, Luxor, Aswan and Abu Simbel as confirmed journey stops; Edfu, Kom Ombo,
   Philae, Elephantine and the other specific monuments remain candidate visited
   places until the Founder confirms them;
-- the Cairo airport taxi shared with a Sudanese married couple, a playful
+- the earlier Cairo airport taxi shared with a Sudanese married couple, a playful
   mutually amused conversation and the couple's roof-stacked suitcases falling
   as the vehicle pulled away;
 - a self-organized five-day November 2016 tourist trip via Dubai to see India's
@@ -726,8 +801,9 @@ These are not externally researched claims. They remain first-person testimony:
 - the compressed Cambodia/Angkor excursion inside the wider Thailand journey,
   midnight Cambodia arrival,
   visa-on-arrival payment memory, Siem Reap tuk-tuk negotiation, Angkor visit
-  and return to an airport around 16:00–17:00; exact route/border remain
-  `CONFIRM`;
+  and return to the airport around 16:00–17:00 are Founder-confirmed as one
+  continuous sequence; only the exact Cambodian entry point and any unverified
+  transport labels remain unnamed;
 - the Budapest Russian-tourist-visa invitation and multi-office process, then a
   local passenger using a monthly pass to help at an unidentified arrival
   airport bus; the several-day trip connected Moscow and Saint Petersburg while
@@ -751,15 +827,24 @@ These are not externally researched claims. They remain first-person testimony:
 - the personal global/local interpretation that different environments became
   meaningful through local people and revealed different parts of the Founder;
 - repeated one-day organized bus journeys from Budapest into the Slovak Tatras,
-  Austria, Croatia and Slovenia; exact sights remain `CONFIRM` through the
-  recognition board;
+  Austria, Croatia and Slovenia; the High Tatras visit is Founder-confirmed,
+  while Starý Smokovec, Hrebienok, Štrbské Pleso and Tatranská Lomnica remain
+  recognition candidates rather than asserted stops;
+- Croatia/Slovenia correction: Zagreb was only a coach-window transit view on
+  the way to the Founder-confirmed Plitvice Lakes visit; Bled is
+  Founder-confirmed together with Vintgar as a remembered circular walk;
+  Ljubljana was not visited;
+- separate family roots and cousins in the Slovak Ore Mountains; the cousins did
+  not speak Hungarian, and the Founder met them once as a small child. This is
+  not part of the later High Tatras coach-trip memory;
 - separate Austrian memories include Vienna with Schönbrunn, Klagenfurt with
   Minimundus near Lake Wörthersee, and Bärenschützklamm from the Mixnitz area;
   exact historical coach itineraries and any additional Austrian trips remain
   `CONFIRM` rather than being combined into one route;
 - return home to seek a partner;
 - roughly three years of withdrawn creative work after returning, during which
-  larger journeys continued; Film 1 does not mention administrative status;
+  larger journeys continued and a possible return to London remained unresolved;
+  Film 1 does not mention administrative status;
 - Budapest-cost financial independence providing the sustained time needed for
   MyScoutee, which the Founder says could not have been built alongside ordinary
   full-time employment; the long calendar span is not ten continuous development

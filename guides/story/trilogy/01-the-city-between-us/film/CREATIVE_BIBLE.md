@@ -159,8 +159,9 @@ beauty is real, and each place becomes personal through a local human threshold.
 Different environments also reveal different parts of the Founder. A restrained
 COVID threshold ends the earlier carefree-travel feeling. Because larger travel
 continued after the London return, the cognac notebook visibly folds chronology;
-the next shot restates the purposeful homecoming rather than pretending COVID
-preceded it: **“I went out to make a living. I came home to find a partner.”** He
+the next shot restates the purposeful but not yet permanent homecoming rather
+than pretending COVID preceded it: **“I went out to make a living. I came home
+to find a partner.”** London remains a possible destination after a break. He
 uses apps, attends real events, dances and goes on dates. The failure
 is not effort, attractiveness or lack of people. Each encounter loses momentum
 at a different boundary.
@@ -181,9 +182,12 @@ of exactly six strangers, three women and three men, each with a distinct
 expectation; accepted members enter group chat, introduce themselves and plan a
 managed first event. Four blank planning cards represent the actual resource
 buckets: members, transport, accommodation/venue and supplies. Tickets, check-in
-and feedback remain separate. After meeting, those people become known contacts
-who can be invited again. A later priority change makes one future shared route
-fade.
+and feedback remain separate. Event authorship is DIY-first, not DIY-only: a host
+may build the plan, share bounded parts with participants/providers or choose a
+more fully organizer-managed event. Show the collaborative middle mode and do
+not claim a finished one-click travel-agency workflow. After meeting, those
+people become known contacts who can be invited again. A later priority change
+makes one future shared route fade.
 
 The product is a rapid filter only in the bounded sense that finite attention
 reaches a reciprocal candidate invitation sooner. The group lowers the
@@ -478,9 +482,13 @@ branding around the shared core.
   never claim the community caused safety or make a general crime assertion;
 - the first three years retain wonder: a one-pound overnight coach to Edinburgh,
   Loch Ness, a Glasgow River Clyde powerboat, and an exact but over-compressed
-  London–Manchester–Liverpool–North Wales–Cardiff–London circuit may flash as
-  personal adventures. The point is the Founder's willingness to trade comfort
-  for discovery, not a tourism catalogue;
+  five-person London–Manchester–Liverpool–Barmouth–Cardiff–London rental-car
+  circuit may flash as personal adventures. Two couples and the Founder travel;
+  he plans but cannot drive, so a participating acquaintance drives, never a
+  hired chauffeur. Unbranded budget hotels supply accommodation during a
+  three-day itinerary that needs a fourth day to become humane rather than a
+  rush. The point is his willingness to trade comfort for discovery, not a
+  tourism catalogue;
 - the rent saved by sharing the bedroom finances travel and lets savings
   accumulate. By December 2015, the savings support financial independence only
   at Budapest's lower cost base, reinforced by the parent-assisted flat that has

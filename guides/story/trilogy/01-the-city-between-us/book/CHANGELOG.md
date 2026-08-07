@@ -29,6 +29,93 @@ The trilogy volume and the edition version are separate. This book is Volume
   artificial penis—approximately a vibrator—bought in a sex shop, and restored
   the office farewell setup, affectionate “fucking dick” meaning and recipient's
   understanding of the joke.
+- Moved the dense Part Two closing reflection onto a deliberate ending page so
+  its fixed-bottom ornament remains below the prose instead of covering it.
+- Corrected the Glasgow ticket-counter memory: the Founder was short of money by
+  London standards, but in that moment the German tourist could not cover his
+  child's ticket and the Hungarian stranger almost paid it for him.
+- Replaced the provisional Llanfairfechan identification with the
+  Founder-confirmed Barmouth location across the book, storyboard, research,
+  production handoff and generation prompts.
+- Corrected the UK circuit from an invented railway account to the
+  Founder-planned five-person rented-car journey: two couples and the Founder,
+  one travelling acquaintance driving because the Founder cannot, unbranded
+  budget-hotel accommodation, a three-day route that needed a fourth, and no
+  hired driver.
+- Restored Africa to the geographic summary of the Founder's almost forty
+  countries, consistent with the Egyptian journeys described in the book.
+- Added the self-organized, mostly solo character of the Founder's journeys and
+  connected it to MyScoutee's DIY-first event model: fully self-organized,
+  partially provider-assisted or organizer-managed, while clearly marking full
+  travel-agency delegation as a product direction rather than a proven workflow.
+- Added the distinct London colleague who once told the Founder to write a
+  novel, separated her from the farewell-gift colleague, and returned the memory
+  in the epilogue: “I did not write it then. I am writing it now.”
+- Corrected the Giza camel dispute: an advance price was renegotiated under
+  pressure after three handlers surrounded the Founder. He did not know the
+  posted guidance, did not independently pursue repayment and cared more about
+  ending the episode than recovering money; the manager and officers initiated
+  the return, and his instinctive repayment figure only later proved roughly
+  consistent with the guidance.
+- Added deliberate page breaks before Chapters 5 and 12 so their headings no
+  longer remain orphaned at the bottoms of the preceding pages.
+- Reordered the Cairo memories into their actual first-day chronology: airport
+  arrival around midnight and falling roof luggage first, then arrival at Giza
+  well before its 08:00 opening. Restored the wait outside with steel-shielded
+  police ahead and stray dogs behind. Rewrote the camel dispute as smoother
+  narrative prose while preserving the advance agreement, three-handler
+  pressure, manager-led intervention and the Founder's lack of interest in
+  pursuing repayment independently.
+- Restored the continuous route after Giza: night flight to Aswan, the distant
+  airport, pre-dawn armed city-edge image, police-led desert convoy toward Abu
+  Simbel, Nile-side hotel and unnamed Nubian-island view, the solitary
+  honeymoon-suite feeling and the one-driver road journey through the Nile
+  Valley to Luxor. Route research corrected the road leg from four days to one
+  long sightseeing day; the Founder then confirmed Kom Ombo, Edfu and Esna as
+  visited stops on the route.
+- Closed the Egypt route with the two remembered Luxor airport security gates
+  and the two-connection Luxor–Cairo–Athens–Budapest flight home.
+- Added the Founder's pre-university love of running, his personal emphasis on
+  breathing, rhythm and endurance, and the secondary-school race in which
+  classmates pulled at his arms but he still finished first, without turning
+  the memory into a universal genetics or bullying claim.
+- Added the Regent's Park gardens company-pizza memory and the self-directed
+  Soho sushi/lavatory/stranger's-smile episode as two brief examples of London's
+  social openness and comic unpredictability.
+- Corrected the final-day Luxor shopping memory: the Founder proposed the shared
+  vase-and-airport-fare budget; the taxi driver accompanied him on foot through
+  two shops to help him bargain; damaged vases prompted the first departure; and
+  the second vendor ended the bargaining with a laugh after the Founder observed
+  that he was negotiating at the driver's expense while the driver held his
+  head in his hands.
+- Removed the invented uncertainty and authorial refusal from the Cambodia
+  passage. The midnight arrival, visa at the Cambodian entry point, Siem Reap
+  tuk-tuk negotiation, Angkor visit and late-afternoon airport return are now
+  recorded as one Founder-confirmed sequence; only the unidentified entry point
+  remains unnamed.
+- Corrected the Budapest visa-agency location from a vague area near Oktogon and
+  Andrássy Avenue to the avenue itself, roughly twenty metres from an Oktogon
+  corner.
+- Corrected the High Tatras passage so the visit itself is stated as confirmed
+  and only Starý Smokovec, Hrebienok, Štrbské Pleso and Tatranská Lomnica remain
+  image-recognition candidates. Added the distinct childhood family connection
+  to the Slovak Ore Mountains: non-Hungarian-speaking cousins met once as a
+  small child, never merged into the later coach trip.
+- Corrected the Croatia and Slovenia memories: Zagreb was seen only through the
+  coach window while travelling to the Founder-confirmed Plitvice Lakes visit;
+  Bled and Vintgar are Founder-confirmed and remembered as part of a circular
+  walk; Ljubljana was not visited.
+- Reframed the roughly three years after the December 2015 return as a
+  multi-causal unresolved homecoming rather than one settled institutional
+  withdrawal: London remained a possible destination after a short break, the
+  Founder questioned whether coming home was right, tried to make life work
+  differently in his homeland and blamed himself for not having been able to
+  remain there before. The self-blame remains an internal experience, not an
+  objective finding of fault.
+- Added the wider, roughly eight-year arc from the September 2010 employer
+  departure to 10 November 2018. The memoir now says plainly that the Founder
+  was not abroad throughout but felt he had disappeared from ordinary Hungarian
+  institutional visibility; it does not claim legal untraceability.
 
 ## Publication rule
 

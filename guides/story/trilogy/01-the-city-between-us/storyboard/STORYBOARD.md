@@ -173,10 +173,14 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   crowding feel temporary. Very short match cuts show a one-pound overnight
   coach and someone else's sock before Edinburgh dawn; Loch Ness; a Glasgow
   River Clyde powerboat; then a meticulously planned but over-compressed
-  London–Manchester–Liverpool–North Wales–Cardiff–London circuit because no
-  companion could take one more day. One wide tidal North Wales beach backed by
-  steep hills is labelled **Llanfairfechan candidate — Founder confirmation
-  required**, never asserted as a locked memory. Each burst returns to the same
+  five-person London–Manchester–Liverpool–Barmouth–Cardiff–London road circuit
+  because nobody could take one more day. Two couples and the Founder travel in
+  a rented car; the Founder plans but cannot drive, so a participating
+  acquaintance drives, never a hired chauffeur. Unbranded budget hotels supply
+  the overnight accommodation. Three days carry the route, but a fourth is
+  needed to prevent the pace becoming a rush. The wide tidal North Wales location is
+  **Barmouth — Founder confirmed**: Mawddach Estuary, exposed low-tide sand,
+  mountains, town and sea. Each burst returns to the same
   shared-room lamp. Years four and five simplify into repeated work, rent,
   shared space and flatmates leaving or changing plans. Quiet Brexit-era
   argument appears only as unreadable public texture about work, wages and
@@ -227,6 +231,11 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   flowing route and bright public space stop at a restrained COVID threshold —
   quiet terminal geometry, an
   empty route and closed light — without medical spectacle or readable decree.
+- **Travel authorship:** Most journeys are solo and self-organized. Briefly show
+  the Founder joining his own flight, room, local-transport and driver notes in
+  the cognac notebook. Helpers carry individual thresholds; no package-tour
+  leader owns the whole journey. The five-person UK circuit remains the
+  Founder-planned group exception.
 - **Face/body:** the Founder is curious within the memories; final look-back seeks
   someone to share the view, then softens into recognition. No crying.
 - **Camera/lens:** rapid graphic match cuts, not camera whips; final 50 mm locked
@@ -239,17 +248,20 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** create each memory as a still, animate 8–12 frames
   in post or Flow; do not generate fake archive footage.
 
-### S09 — Home, constrained but purposeful · 01:06–01:13 · 7 s
+### S09 — Home, purposeful but not yet permanent · 01:06–01:13 · 7 s
 
 - **Picture/blocking:** The same route line folds back to Budapest. Founder opens
   the parent-assisted flat that has stood empty throughout his London years into
   warm daylight, sets the London key beside its Budapest key and the notebook,
-  and turns a fresh page. Dust and stillness show elapsed time without implying
-  neglect or dereliction. Tram reflection moves in the opposite direction from
-  S01.
+  but does not discard either key. He turns a fresh page while the London key
+  remains visibly available. Dust and stillness show elapsed time without
+  implying neglect or dereliction. Tram reflection moves in the opposite
+  direction from S01.
 - **Face/body:** relief at making the Budapest-cost independence livable and a
-  first hopeful half-smile about seeking a partner; return is neither defeat nor
-  pure lifestyle choice.
+  first hopeful half-smile about seeking a partner, followed by one restrained
+  glance toward the London key. The physical return is purposeful, but he has
+  not decided whether it will be permanent. It is neither defeat nor pure
+  lifestyle choice.
 - **Camera/lens:** 35 mm follows behind, arcs gently to a frontal medium close-up.
 - **Light/color:** warm 4200 K home light with winter teal outside.
 - **Sound/VO:** suitcase wheel stops, familiar tram bell; “I had gone out to earn
@@ -425,8 +437,13 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Picture/blocking:** At the first real event, the same six people manage four
   clear resource buckets together: members, transport, accommodation/venue and
   supplies. Ticket/check-in and event-linked feedback remain separate secondary
-  actions rather than invented resource categories. Introductions and one shared
-  task turn the six strangers into known contacts by the end.
+  actions rather than invented resource categories. Use the collaborative middle
+  of a DIY-first authorship ladder: the host assembles some parts, participants
+  contribute others and one local provider supplies a bounded component. The
+  wider model also permits a fully self-built event or a more completely managed
+  plan from an event or travel organizer; this is intended operating design,
+  not a proven one-click workflow. Introductions and one shared task turn the six strangers
+  into known contacts by the end.
 - **Face/body:** contribution is distributed; people look relieved by a concrete
   next step.
 - **Camera/lens:** 50 mm hand inserts with match cuts; final 35 mm pullback.

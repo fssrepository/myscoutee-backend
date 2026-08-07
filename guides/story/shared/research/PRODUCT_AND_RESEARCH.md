@@ -65,6 +65,31 @@ Safe wording is **“designed to restore intended capacity”**, not “the grou
 always full.” The repository does not prove fill rate, attendance or that
 participants experience every event as worthwhile.
 
+### DIY-first event authorship
+
+The Founder's travel history makes a further product principle explicit. Most
+of his longer journeys were made alone and organized by him. Self-organized did
+not mean unsupported: flights, local drivers, hotels, hosts and occasional
+organized excursions still carried parts of a route. The five-person UK road
+circuit was an exception in company but not in authorship; the Founder designed
+that route too.
+
+MyScoutee should therefore be described as **DIY-first, not DIY-only**. The
+intended event model allows three degrees of authorship:
+
+1. a host assembles the people, transport, place/accommodation, supplies and
+   schedule directly;
+2. a host or group organizes selected parts and uses local providers for the
+   rest;
+3. an accountable event or travel organizer offers a more completely managed
+   plan that participants may still freely accept or decline.
+
+The repository already evidences event creation, stages, schedules, policies,
+the four resource families, tickets/check-in, feedback and operator/partner
+surfaces. It does **not** yet prove a finished one-click travel-agency delegation
+workflow. Present the three-level authorship ladder as the intended operating
+model to validate, not as a deployed end-to-end travel product.
+
 ### Why the 1–10 priority matters in this story
 
 A binary swipe collapses several different states — curiosity, weak interest,
@@ -255,6 +280,15 @@ describes the Danube banks, Buda Castle Quarter and Andrássy Avenue as an
 outstanding urban landscape and a centre that received and disseminated cultural
 influences. The film therefore does not blame an ugly or lifeless city.
 
+Before university, the Founder loved running and entered races. His personal
+lesson was that breathing, rhythm and endurance usually mattered more than a
+natural genetic advantage, although natural ability could help. In one
+secondary-school race, classmates caught hold of his arms and tried to pull him
+back; he still finished first. Preserve this as a bounded first-person memory,
+not a universal sports-science claim, a bullying verdict or a triumph over
+humiliated classmates. The durable image is the runner recovering his breath
+and rhythm after interruption.
+
 Inside that beauty, the Founder finished university in 2004 after studies
 combining economics, programming and mathematics. A delayed dissertation meant
 that 2005 was the earliest year in which he could have collected the diploma.
@@ -344,8 +378,8 @@ London. The Founder reports that professional work did not become the stable
 housing and social future he had hoped education would open. Through his final
 pre-London employer, he worked in the United States. In his account, promised
 overtime followed an exhausting workload but the overtime payment did not
-arrive, so he left. The employer remains anonymous and the project makes no
-independent legal finding.
+arrive, so he left around September 2010. The employer remains anonymous and the
+project makes no independent legal finding.
 
 The Founder reports that blood in his stool first appeared under the extreme
 pressure of this assignment. He personally associated the symptom with work
@@ -486,12 +520,29 @@ from different countries, museums, exhibitions, nightlife and dates across
 cultures made London feel unlike anywhere else. In one true comic memory, the
 office is looking for a farewell gift for a departing Polish man colleague. An
 Indian woman colleague suggests what the Founder remembers as an artificial
-penis, something like a vibrator; it is her idea, and she and the Founder go into a Soho
-sex shop to buy it for him. The deliberately absurd gift is the joke, not
+penis, something like a vibrator; it is her idea, and she and the Founder go
+into a Soho sex shop to buy it for him. The deliberately absurd gift is the
 nationality or sexual conduct between colleagues. It is an affectionate roast:
 the object tells him that he is “a fucking dick.” They like him, and he
 understands the joke. Beyond “artificial penis, something like a vibrator,” the
 exact product type remains approximate in memory.
+
+A company outing took the Founder and colleagues to eat pizza in the gardens of
+Regent's Park. In a separate Soho memory, he tried sushi on a terrace, disliked
+the first mouthful and rushed into the women's lavatory to spit it out. On
+leaving, relieved and embarrassed, he saw a beautiful woman smiling at him and
+felt for one comic instant that he could have married her immediately. Preserve
+the self-directed humour: the woman is not a romantic promise, the sushi is not
+an ethnic joke and entering the lavatory is an awkward human mistake rather
+than sexualized behaviour. The Founder has confirmed Regent's Park as the
+location. The Royal Parks confirms that the park contains several public
+gardens; the exact garden and pizza setting remain unidentified.
+
+A different Indian woman colleague in that London office once told the Founder
+that he should write a novel. She is not the colleague in the farewell-gift
+memory. The Founder worked at that same single London workplace throughout all
+five London years. The novel advice can return at the end of the book as a quiet
+frame: he did not write it then; he is writing it now.
 
 Low-cost travel extended that magic while exposing incompatible capacity:
 
@@ -501,12 +552,15 @@ Low-cost travel extended that magic while exposing incompatible capacity:
 - at one ticket counter the Founder nearly paid for a German tourist's child
   after the parent found the price too high; the point is spontaneous generosity,
   not nationality or judgment;
-- a precisely planned London–Manchester–Liverpool–North Wales–Cardiff–London
-  circuit succeeded but became needlessly compressed because nobody in the
-  group could take one additional day;
-- a wide low-tide North Wales beach with steep hills and a village behind is
-  probably Llanfairfechan, but remains unconfirmed until the Founder recognizes
-  it visually.
+- a five-person London–Manchester–Liverpool–Barmouth–Cardiff–London road
+  circuit—two couples and the Founder—used a rented car. The Founder planned
+  the route but cannot drive, so one of the acquaintances travelling with the
+  group drove the car; he was a companion, not a hired driver. The Founder
+  used budget-hotel accommodation along the route. The three-day plan succeeded,
+  but a fourth day was needed to make the distance humane rather than a
+  continuous rush;
+- the wide low-tide North Wales beach and estuary, with mountains behind the
+  town, is confirmed by the Founder as Barmouth.
 
 These details should appear as two- or three-second visual/sound memories under
 existing narration. The product response is not “replace unavailable friends.”
@@ -556,14 +610,21 @@ founding decision are therefore one continuous visual thought.
 
 ### Nearly forty countries — beauty and global context
 
-The founder reports visiting nearly forty countries across Europe, Asia and the
-Americas. Confirmed memories named for development include Italy, Thailand,
+The founder reports visiting nearly forty countries across Europe, Africa, Asia
+and the Americas. Confirmed memories named for development include Italy, Thailand,
 Egypt, India's Golden Triangle, Portugal, Norway, Spain, Russia, Angkor Wat in
 Cambodia, Neuschwanstein Castle in Bavaria, the Netherlands, Belgium, Baltimore,
 Washington, Niagara, Virginia/Chesapeake, Ocean City, Slovakia's High Tatras and
 Schönbrunn in Austria. This list is for
-reference; the voice-over names only the three regions and “almost forty
+reference; the voice-over names only the four regions and “almost forty
 countries.”
+
+Most of these journeys were self-organized and made alone. The Founder often
+assembled flights, accommodation, local transport and human handoffs himself;
+an agency, driver, hotel or organized excursion could supply one part without
+owning the whole route. The five-person UK road circuit was also Founder-planned,
+even though it was shared with two couples and driven by one travelling
+acquaintance.
 
 No original photographs remain, so label the visual sequence **illustrated
 memory**, not archive footage. The Egypt trip happened after the London
@@ -621,11 +682,20 @@ shared product core surrounded by visibly independent local paths.
 ### Budapest as a regional starting point — one-day local encounters
 
 The Founder also remembers repeated one-day organized bus journeys from Budapest
-to the Slovak Tatras, Austria, Croatia and Slovenia. Current route examples make
-Starý Smokovec/Hrebienok and Štrbské Pleso, Vienna or Semmering, Zagreb or
-Plitvice, and Bled/Vintgar or Ljubljana plausible visual candidates. They are a
-recognition board, not a locked itinerary: each specific sight stays `CONFIRM`
-until the Founder recognizes it.
+to the Slovak Tatras, Austria, Croatia and Slovenia. The High Tatras visit itself
+is Founder-confirmed, not a candidate memory. Current route examples make Starý
+Smokovec/Hrebienok and Štrbské Pleso plausible visual candidates within that
+confirmed mountain visit. The Founder saw Zagreb only in transit through the
+coach window on the way to the Plitvice Lakes; Plitvice was the visited
+destination. Bled and Vintgar were both visited, and the Founder remembers them
+as part of a circular walk. Ljubljana was not visited. Each other unrecognized
+specific sight stays `CONFIRM` until the Founder identifies it.
+
+Keep a separate Slovak family memory geographically distinct from the High
+Tatras trip. The Founder reports family roots and cousins in the Slovak Ore
+Mountains. Those cousins did not speak Hungarian, and he met them only once as a
+small child. Do not place them inside the later coach excursion or invent an
+ongoing relationship.
 
 These compact journeys fit the product philosophy particularly well. A person
 does not need unlimited time or a permanent travel companion; a bounded local
@@ -638,19 +708,62 @@ board is
 ### Egypt after London — a temporary human network
 
 The six-day self-organized Egypt trip is valuable because almost every threshold
-depended on a different short-lived human bridge. The Founder arranged four
-driver-led southern Nile days through WhatsApp, local hotels and local people;
-handled a camel overcharge at Giza with a manager and tourism-security officers;
-stayed on Luxor's West Bank between the western necropolis landscape and eastern
-city lights across the Nile; joined a balloon landing that required passengers,
-crew and residents to cooperate through a vegetable plot and private home; and
-negotiated a final finite budget between a souvenir for his mother and the taxi
-to the airport.
+depended on a different short-lived human bridge. The first day began with the
+midnight Cairo airport memory, continued with arrival at Giza well before its
+08:00 opening and ended with a night flight south to Aswan. While waiting
+outside the closed Giza entrance, the Founder remembers police carrying steel
+shields ahead of him and stray dogs wandering behind. Preserve this as personal
+atmosphere, not evidence of a protest, attack or general danger. The Aswan
+airport lay some distance from the city. Before dawn, the Founder remembers a
+stern guard high on a tank or armoured
+vehicle beside a mounted gun at the city edge, then a police car leading the
+convoy into the desert toward Abu Simbel. His Nile-side Aswan hotel looked
+toward a beautiful Nubian island; the room felt like a honeymoon suite without
+a partner. Do not name the island until visually confirmed. From Aswan, one
+driver continued north with him by car toward Luxor. The car was chosen so that
+several special sights could become stops along the Nile. Route estimates make
+this a plausible single long sightseeing day: the direct drive is only a little
+over three hours, while an Aswan–Kom Ombo–Edfu–Esna–Luxor style route is roughly
+245 kilometres and about nine to ten hours including visits. Keep the exact
+route as **Aswan → Kom Ombo → Edfu → Esna → Luxor**: the Founder has now
+confirmed visiting all three intermediate stops. The earlier four-day figure
+belongs, if retained, to the wider driver-supported southern itinerary, not to
+the Aswan–Luxor road leg.
+
+Across the wider trip, the Founder coordinated through WhatsApp, local hotels
+and local people; moved through the broken camel-ride agreement at Giza with a
+manager and tourism-security officers; stayed on Luxor's West Bank between the
+western necropolis landscape and eastern city lights across the Nile; joined a
+balloon landing that required passengers, crew and residents to cooperate
+through a vegetable plot and private home; and negotiated a final finite budget
+between a vase for his mother and the taxi to the airport. The Founder proposed
+this arrangement himself: after the vase was paid for, everything remaining
+would become the driver's fare. The driver accompanied him on foot between
+shops to help him bargain; they rejected damaged vases at the first and
+continued to a better place. At the next shop, the driver helped negotiate in a
+way the Founder could not have managed alone as a tourist. When the driver held
+his head in his hands, the Founder pointed out to the vendor that he was
+effectively bargaining at the driver's expense. The vendor laughed and ended
+the negotiation. The Founder's surprise at a taxi driver accompanying him from
+shop to shop is a personal comparison with his European experience, not a
+general transport claim. At Luxor airport, he
+remembers passing through two separate security gates, more layering than he
+usually encountered in Europe. The homeward route then used two connections:
+Luxor → Cairo → Athens → Budapest.
 
 Use this as specific memory, not a country judgment. Armed security is period
 background in the Founder's recollection, never visual proof that Egypt is
 inherently dangerous. The camel dispute does not characterize vendors. The
-driver/taxi/hotel coordination does not prove an absence of public transport.
+Founder did not know the posted expected price at the time, did not independently
+seek repayment and would not have returned without the manager and officers
+taking the matter forward. When asked, he named a repayment amount by instinct;
+the remaining payment only later appeared roughly consistent with the posted
+guidance. The actual conflict was not a high opening price: the Founder and one
+handler agreed a price before the ride, then three handlers surrounded him and
+demanded more afterward. Had the higher price been stated in advance, he says he
+would not have complained. The broken agreement and pressure mattered more than
+the money, and ending the episode mattered more than recovering it. The driver/
+taxi/hotel coordination does not prove an absence of public transport.
 Currency uncertainty remains an unreadable hesitation until the trip date and
 contemporary exchange-rate context are confirmed.
 
@@ -672,11 +785,13 @@ main-film burst. The complete account remains available for a future personal
 film or a longer cut.
 
 One additional Cairo arrival memory is a strong **first alternate** to the
-balloon frame. After declining an expensive airport taxi and hearing a driver's
-personal claim about unofficial exchange rates, the Founder shared a vehicle
-with a Sudanese married couple. A playful, mutually amused conversation began;
-as the taxi pulled away, the couple's suitcases, stacked on the roof, fell down
-and abruptly turned flirtation into a small shared practical crisis. The moment
+balloon frame and chronologically precedes Giza. The Founder landed around
+midnight. After declining an expensive airport taxi and hearing a driver's
+personal claim about unofficial exchange rates, he shared a vehicle with a
+Sudanese married couple. A playful, mutually amused conversation began; as the
+taxi pulled away, the couple's suitcases, stacked on the roof, fell down and
+abruptly turned flirtation into a small shared practical crisis. Around ten that
+morning, only hours later, the Giza camel encounter began. The airport moment
 must remain warm and self-aware: the woman is an autonomous participant, the
 couple is not a comic ethnic type, and the falling luggage is not evidence about
 Egyptian transport. It demonstrates how quickly strangers can acquire a common
@@ -752,15 +867,16 @@ might need help and offered a ride to the pier without asking for payment. Do
 not label the area objectively dangerous or use the dogs as a national
 shorthand; the point is one person's situational care.
 
-Inside this wider Thailand journey, the Founder made a highly compressed
-Cambodia/Angkor excursion. He remembers arriving around midnight, obtaining a
-visa at the border after a small payment request, reaching Siem Reap, hiring a
-tuk-tuk with a driver for local movement and the Angkor visit, and being back at
-the airport around 16:00–17:00. Official Cambodian tourism information confirms
+Inside this wider Thailand journey, the Founder made a highly compressed,
+Founder-confirmed Cambodia/Angkor excursion: arrival around midnight, a visa at
+the Cambodian entry point after a small payment request, continuation into Siem
+Reap, a negotiated tuk-tuk and driver for local movement and the Angkor visit,
+then return to the airport around 16:00–17:00. Official Cambodian tourism information confirms
 that visa on arrival was an established border process and that Siem Reap's Pub
 Street is a compact nightlife, restaurant and market district. It does not
-verify the extra payment, exact border, transport mode or historical schedule;
-retain those as testimony and confirm them before a labelled route.
+verify the extra payment, exact entry point, transport labels or historical
+schedule. Retain the sequence as Founder testimony; keep only unidentified
+places and unverified labels out of generated text.
 
 The sequence is useful because almost every threshold depends on a different
 stranger, but none of those handoffs persists. It should not imply that
@@ -769,8 +885,9 @@ MyScoutee replaces visas, transport planning, local advice or personal judgment.
 ### Russia — bureaucracy followed by one unplanned welcome
 
 The Founder remembers needing a tourist invitation from Budapest. A travel
-agency near Oktogon/Andrássy arranged it, one office redirected him farther
-along Andrássy út and the process ultimately reached the Russian embassy. With
+agency on Andrássy Avenue, roughly twenty metres from an Oktogon corner,
+arranged it. One office redirected him farther along Andrássy út and the process
+ultimately reached the Russian embassy. With
 no usable advertised appointment in his account, the visa cost roughly three
 times what he expected. These are personal process memories; do not identify a
 specific agency or make a current consular claim without records.
@@ -864,8 +981,23 @@ intent, boundaries and choice remain legible.
 ### Return, private creative work and the unfinished product path
 
 After returning to Budapest, the Founder describes roughly three years of
-withdrawn creative work. The larger self-organized journeys continued during
-this period; the love of travel had begun in London but did not end with London.
+withdrawn creative work, but not as one clean decision to leave institutions
+behind. He initially considered Budapest a possible short break before returning
+to London and spent much of the period asking whether coming home had been the
+right choice. At the same time, he had returned to discover whether he could
+make life in his homeland work better than it had before he fled. He reports
+blaming himself for having been unable to remain in his own country. Preserve
+that self-blame as his internal experience, not an objective judgment that the
+earlier departure was his fault. The larger self-organized journeys continued
+during this period; the love of travel had begun in London but did not end with London.
+
+The Founder places the three post-return years inside a longer arc running from
+his departure from the final Hungarian employer around September 2010 to the 10
+November 2018 re-entry threshold: roughly eight years. He was not physically
+abroad throughout. The period included time in Hungary before London, visits and
+the years after December 2015. “I disappeared” describes his experience of
+institutional invisibility; it is not a legal claim that no authority could
+locate him.
 Do not mention health-insurance, tax or other administrative status in Film 1.
 The relevant human image is a quiet flat, an open notebook, routes leaving and
 returning, and sustained work that most people around him could not yet see.

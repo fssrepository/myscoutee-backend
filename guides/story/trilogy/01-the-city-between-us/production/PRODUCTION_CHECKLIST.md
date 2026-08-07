@@ -24,7 +24,8 @@ continuity and technical faults before an expensive final render.
   → Hungarian Tottenham HMO → five years of shared-room saving and travel →
   December 2015 Budapest-cost financial-independence threshold, never London
   independence → empty parent-assisted Budapest flat → London housing stop-loss
-  → deliberate return → three years of travel, partner-seeking and private
+  → purposeful physical return with permanence and a London return unresolved
+  → three years of travel, partner-seeking and private
   creative work → 10 November 2018 institutional re-entry → MyScoutee → local
   operator.
 - [ ] The film never implies that the Founder was financially independent in
@@ -58,8 +59,8 @@ continuity and technical faults before an expensive final render.
   humiliation of the person who lost money or the incoming resident.
 - [ ] The one-pound Edinburgh coach, Loch Ness, Glasgow/Clyde and the compressed
   England–Wales circuit remain personal adventure, not generic tourism copy.
-- [ ] Llanfairfechan remains unlabelled until the Founder confirms it from
-  visual evidence.
+- [ ] Barmouth is the locked North Wales location; depict its low-tide sand,
+  Mawddach Estuary, mountains, town and sea without substituting another place.
 - [ ] Crowded private life and expansive public adventure coexist with dignity,
   humour and emotional stakes.
 - [ ] South Tottenham/Stamford Hill Charedi context is respectful and never used
@@ -100,6 +101,9 @@ continuity and technical faults before an expensive final render.
   place/accommodation and supplies.
 - [ ] Ticket, check-in and feedback are separate process steps, not a fifth
   resource family.
+- [ ] Event authorship is DIY-first, not DIY-only: fully self-organized,
+  partially participant/provider-assisted or more completely organizer-managed.
+  The film does not claim a finished one-click travel-agency delegation flow.
 - [ ] Six accepted strangers introduce themselves; they are not already a
   friendship group.
 - [ ] The story reaches a real public meeting with an accountable host.

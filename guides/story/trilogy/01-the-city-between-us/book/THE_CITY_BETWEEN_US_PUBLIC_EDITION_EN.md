@@ -84,6 +84,17 @@ and work. It was not because the countryside had no dignity, and it was not
 because every Hungarian journey must end in the capital. It was my route. The
 station platform was small; the expectation attached to it was enormous.
 
+Before university, I loved to run. I entered races and learned to think in
+breath, rhythm and distance. Natural ability helped, but what running taught me
+was that breathing and endurance usually mattered more.
+
+In one secondary-school race, classmates caught hold of my arms and tried to
+pull me back. I still finished first.
+
+I do not turn that finish into a parable about defeating other people. What I
+remember is the rhythm returning after the interruption: breath finding its
+place again, and the line still waiting ahead.
+
 I studied economics, programming and mathematics together. In Hungarian, the
 degree has a name that sounds almost like three professions trying to occupy one
 line. I liked that. Economics asked what people valued. Mathematics asked what
@@ -320,6 +331,8 @@ had been promised, but the promised overtime payment never arrived. I left the
 employer. I keep the company anonymous because this is my memory of what
 happened, not an adjudicated claim in this book.
 
+I left around September 2010.
+
 What followed was six and a half months without work. The last Hungarian
 interview process I remember was with a small company. It continued through
 four rounds; the fourth included psychological testing. After all of that, the
@@ -383,6 +396,16 @@ desk. At first, much of that human world reached me as sound before it became
 conversation. Humour crossed borders imperfectly and sometimes became funnier
 because of the effort.
 
+Sometimes the office carried me into that social world. Once, the company took
+us to eat pizza in the gardens of Regent's Park. On another day, I tried sushi
+on a Soho terrace. I disliked the first mouthful so completely that I rushed
+into the women's lavatory to spit it out. When I emerged, relieved and slightly
+embarrassed, a beautiful woman smiled at me. For one absurd second, I felt that
+I could have married her on the spot.
+
+Nothing came of it. London could still compress embarrassment, beauty and
+possibility into a doorway only a few seconds wide.
+
 When a Polish man colleague was preparing to leave, we began looking for a
 farewell gift. An Indian woman colleague suggested an artificial penis,
 something like a vibrator, from a sex shop. It was her idea, and the two of us
@@ -392,7 +415,13 @@ understood the joke. What stayed with me was how naturally three people from
 different countries could share a joke that depended on affection rather than
 nationality.
 
+Another Indian woman colleague—not the colleague from the farewell-gift
+memory—once told me that I should write a novel. I worked in that one London
+workplace through all five years. I did not write the novel then.
+
 For the first three years, the city felt inexhaustible.
+
+<!-- pagebreak -->
 
 ## 5. The Performance of Not Being Hungry
 
@@ -557,6 +586,8 @@ not access to her private motive. What I can say safely is that speed without
 shared context frightened me, while my own hidden London life made the context
 less complete from the other direction too.
 
+<!-- pagebreak -->
+
 I sometimes imagine how different those years might have felt if a fast,
 group-first local path had already existed. It could not have promised me a
 partner or removed the price of housing. It might have helped the city's
@@ -593,8 +624,10 @@ From Edinburgh, the country opened farther. Loch Ness replaced the contained
 geometry of London with water, weather and distance. On the River Clyde in
 Glasgow, a powerboat transformed the industrial waterfront into speed, spray
 and bridges. At a ticket counter, a German tourist considered the price for his
-child too high. For a moment I almost paid it. I had very little money, but the
-impulse appeared before the calculation.
+child too high. I was short of money by London standards, yet for a moment the
+usual economic relation was reversed: the German tourist was the one who could
+not cover the child's ticket, and I, the Hungarian stranger beside him, almost
+paid it for him.
 
 Travel revealed parts of me that ordinary life kept hidden. Thrift could live
 beside generosity. Fear could live beside curiosity. Exhaustion could become a
@@ -606,25 +639,28 @@ act gives the place human scale.
 
 ## 10. The Extra Day Nobody Had
 
-I once planned a route from London through Manchester, Liverpool, North Wales
-and Cardiff, then back to London.
+I once planned a road circuit from London through Manchester, Liverpool,
+Barmouth and Cardiff, then back to London. Five of us travelled: two couples and
+me. I cannot drive, so we rented a car and one of the acquaintances travelling
+with us drove it. He was part of the group, not a hired driver. I designed the
+route, the sequence and the timing. We used budget hotels along the way.
 
 The plan worked. That was almost the problem.
 
-Railways and timetables connected the cities with impressive precision. In
-Manchester, brick, industry, libraries and new glass occupied the same streets.
-Liverpool opened toward the Mersey, the Pier Head and the old docks. Somewhere
-along the North Wales coast, two lines of hills seemed to lead the eye toward
-the sea. At low tide we could walk far onto the exposed shore and look back at a
-small village held against the slope. Llanfairfechan is now my strongest
-candidate for that memory, but I will not force certainty onto it. Cardiff added
-castle stone, arcades and the broad movement toward the bay.
+The rented car followed the itinerary with impressive precision. In Manchester,
+brick, industry, libraries and new glass occupied the same streets.
+Liverpool opened toward the Mersey, the Pier Head and the old docks. At Barmouth
+on the North Wales coast, two lines of hills seemed to lead the eye toward the
+sea. At low tide we could walk far onto the exposed shore and look back at the
+town held against the slope. Cardiff added castle stone, arcades and the broad
+movement toward the bay.
 
 Everything happened on time. Everything happened too quickly.
 
-Nobody travelling with me could take one additional day away from work. The
-missing day compressed a beautiful circuit into an exercise in endurance. The
-transport system had capacity. The places had capacity. Our lives did not.
+The route had three days. Nobody travelling with me could make a fourth day
+available, and that missing day compressed a beautiful circuit into an exercise
+in endurance. The car had five people and the plan reached every stop. What the
+journey did not have was slack.
 
 Years later, when I designed a path in which one invited person could decline
 and another could freely accept an available place, I remembered this journey.
@@ -635,8 +671,15 @@ relationship and still allow the event to live.
 
 ## 11. Forty Countries, No Collection
 
-Over the years I reached almost forty countries across Europe, Asia and the
-Americas.
+Over the years I reached almost forty countries across Europe, Africa, Asia and
+the Americas.
+
+I made most of those journeys alone, and I organized them myself. That did not
+mean that I moved without help. I still depended on airlines, hotels, local
+drivers, hosts, buses, ferries and sometimes an organized excursion. The work
+was in joining those pieces into one route and accepting responsibility when a
+handoff failed. The five-person British road circuit was an exception in
+company, not in authorship: I had planned that route too.
 
 The number is true and almost meaningless by itself.
 
@@ -665,36 +708,58 @@ principle:
 The route expands the world. The encounter makes it real. In the difference
 between the two, I discover something about myself.
 
+<!-- pagebreak -->
+
 ## 12. Egypt: Six Days of Temporary Trust
 
-I planned six days in Egypt largely by myself. Through WhatsApp, local hotels
-and drivers, I assembled four days along the southern Nile. The itinerary was
+I planned six days in Egypt largely by myself. Through WhatsApp, one driver and
+local hotels, I joined Cairo to Aswan, Abu Simbel and Luxor. The itinerary was
 short enough to look unreasonable and precise enough to work.
 
-In Cairo, I entered a landscape whose scale had already lived in my imagination
-for years. At Giza, a camel ride became a dispute over money. Even signs around
-the site tried to make expected prices legible, yet I still felt I had been
-overcharged. I walked back with the concentration of somebody trying not to
-turn embarrassment into anger.
+I landed in Cairo around midnight. At the airport, a taxi driver told me that
+unofficial exchange would be better than the formal counters. His private fare
+felt too expensive, so I ended up sharing transport with a Sudanese married
+couple. I was immediately drawn to the woman, and both of them seemed amused by
+how little I managed to hide it. Then the taxi pulled away and their suitcases,
+stacked on its roof, fell into the road. Before we had properly left the
+airport, flirtation had become a practical problem and we already had a story
+in common.
 
-A manager noticed. A photograph of the camel became evidence in an improvised
-search. For a time, I sat between two serious armed tourism-security officers
-while they tried to identify the person. Eventually I returned in a police
-vehicle to ask for part of the money back.
+I reached Giza well before eight, but the site did not open until eight. I waited
+outside with police carrying steel shields ahead of me and stray dogs wandering
+behind. When the gates opened, I went in. Before I climbed onto a camel, we
+agreed a price. When the ride ended, three handlers surrounded me and demanded
+more. If they had asked that at the beginning, I could have paid or walked away.
+What unsettled me was that the bargain changed once it was too late to choose.
 
-I do not tell this as a judgment on Egyptian vendors or a claim that the country
-was inherently dangerous. I tell it because the route through the problem
-depended on strangers who decided the problem was worth their time.
+I paid and walked back, ready to forget it. I had not noticed the posted price
+guidance and did not know that I had paid above it. A cheerful manager saw my
+expression and asked what had happened. The photograph of the camel on my phone
+gave them something to trace. While they searched, I sat between two armed
+tourism-security officers.
 
-Another Cairo memory began at the airport. A taxi driver told me that official
-exchange points were behind an unofficial market. I found his proposed ride too
-expensive and ended up sharing transport with a Sudanese married couple. A
-playful conversation began. I found myself drawn to the woman; the couple seemed
-amused by the transparent awkwardness of it. Then the taxi moved, the suitcases
-stacked on its roof fell, and whatever social performance had been forming was
-replaced by a practical crisis.
+They eventually drove me back in a police vehicle. Asked how much should be
+returned, I named a figure off the top of my head. By chance, it left the final
+price close to the posted guidance. I would never have returned for the money
+on my own. By then, I only wanted the episode to be over.
 
-The luggage hit the ground. We acquired a common story immediately.
+What stayed with me was that strangers intervened after I had already decided
+to let it go.
+
+That night, I flew south to Aswan. Its airport lay some distance from the city,
+and before dawn I was already on the road again. At the edge of Aswan, a stern
+guard stood high on an armoured vehicle beside a mounted gun. Beyond him, a
+police car took the lead and our convoy followed it into the desert toward Abu
+Simbel.
+
+Back in Aswan, my hotel stood beside the Nile. From my room I looked across the
+water to a beautiful Nubian island. The room felt like a honeymoon suite
+prepared for two, with only one guest inside.
+
+From Aswan, I continued to Luxor with one driver. I chose the road because it
+allowed us to stop at several special sights along the Nile. I visited Kom Ombo,
+Edfu and Esna before the road reached Luxor. The journey itself became part of
+the visit rather than a transfer between two cities.
 
 In Luxor, I stayed outside the usual centre on the west bank of the Nile. In one
 direction lay the landscape of tombs and desert. Across the water, the lights of
@@ -710,9 +775,23 @@ crew and travellers worked together to remove the balloon across the boundary.
 For a few minutes, nationality was less important than where to put one's hands.
 
 On my last day, I did not want to exchange more Egyptian pounds. I still wanted
-a small souvenir for my mother and needed enough money to reach the airport. A
-taxi driver proposed a simple equation: whatever I could bargain off the
-vendor's price would remain available for the fare.
+a vase for my mother and needed a taxi to the airport, so I told the driver
+exactly how much money I had left and proposed the arrangement myself: whatever
+remained after the vase would become his fare.
+
+He accompanied me on foot from shop to shop to help me bargain. The first place
+had damaged vases, so we continued to a better one. I could not imagine a taxi
+driver accompanying me like this in Europe, yet there he was, walking beside me
+and helping to make the same small budget solve two problems. At the second
+shop, he helped negotiate in a way I, as a tourist, could not have matched. At
+one point, the driver held his head in his hands. I told the vendor that he was
+now bargaining at the taxi driver's expense. The vendor laughed and let the
+negotiation end.
+
+At Luxor airport, I passed through two separate security gates, a degree of
+layering I had rarely encountered in Europe. From there, the return became a
+chain of airports: Luxor to Cairo, Cairo to Athens, Athens to Budapest. Two
+connections carried me home.
 
 The journey was full of such temporary networks. A hotel, a driver, a manager,
 a security officer, a resident, a taxi passenger—each carried me across one
@@ -780,11 +859,10 @@ before I had and decided that help mattered more than negotiation.
 I cannot prove what he thought. I remember the difference in tone.
 
 The Cambodia excursion was compressed almost beyond reason. I arrived around
-midnight, obtained a visa at the border or arrival threshold with far less
-preparation than my European bureaucratic instincts expected, negotiated with
-a tuk-tuk driver in Siem Reap, visited Angkor and returned toward an airport by
-late afternoon. The exact route still needs confirmation, and I refuse to make
-the geography cleaner than memory.
+midnight and obtained a visa at the Cambodian entry point with far less
+preparation than my European bureaucratic instincts expected. I continued into
+Siem Reap, negotiated with a tuk-tuk driver, visited Angkor and returned to the
+airport by late afternoon.
 
 What remains clear is the structure: every stage required a new handoff. Border
 official, driver, ticket, agreed return, another vehicle, another clock. The
@@ -793,8 +871,9 @@ temples offered scale and silence; the people made the day possible.
 ## 15. Moscow, Saint Petersburg, and an Open Gate
 
 Russia required a different kind of preparation. From Budapest, I needed an
-invitation for the visa. A travel agency near Oktogon and Andrássy Avenue helped
-arrange it. One office redirected me to another, and another toward the embassy.
+invitation for the visa. A travel agency on Andrássy Avenue, roughly twenty
+metres from an Oktogon corner, helped arrange it. One office redirected me to
+another, and another toward the embassy.
 The absence of an ordinary appointment route made the visa cost several times
 what I had expected.
 
@@ -819,11 +898,16 @@ Some journeys lasted only a day. Their brevity did not make them trivial. A bus
 created a temporary group: strangers, couples, a guide, a schedule, a fixed
 number of seats and a promise to return by night.
 
-In Slovakia, the High Tatras rose beyond forest and weather. Memories around
-Starý Smokovec, Hrebienok, Štrbské Pleso and Tatranská Lomnica remain candidates
-to be confirmed against images. What I remember most clearly is the change in
-scale when the bus stopped: the timetable remained human-sized while the
-mountain did not.
+In Slovakia, the High Tatras rose beyond forest and weather. I visited them;
+that is not a candidate memory. Only the possible identification of Starý
+Smokovec, Hrebienok, Štrbské Pleso or Tatranská Lomnica still requires
+recognition against images. What I remember most clearly is the change in scale
+when the bus stopped: the timetable remained human-sized while the mountain did
+not.
+
+Elsewhere in Slovakia, my family roots reached into the Slovak Ore Mountains.
+Cousins lived there, but they did not speak Hungarian. I met them only once,
+when I was a small child.
 
 Austria contains several separate journeys in my memory. Vienna includes
 Schönbrunn—palace geometry, gardens and the Gloriette holding the city at a
@@ -838,11 +922,10 @@ water and rock were crossed through a long construction of bridges and wooden
 ladders. Progress became physical and cooperative. Every person had a pace;
 every narrow section required awareness of the person ahead and behind.
 
-Croatia and Slovenia added other one-day or short-route memories: Zagreb's
-squares and blue trams, the possibility of Plitvice's boardwalks and layered
-water, Ljubljana's river and bridges, and the Bled or Vintgar landscape. The
-exact historic combinations must still be confirmed. I would rather preserve
-separate honest images than create one impossible itinerary.
+Croatia and Slovenia added other one-day memories. I saw Zagreb only in passing
+through the coach window on the way to the Plitvice Lakes; I did not visit it as
+a city. Plitvice was the destination. In Slovenia, I visited Bled and Vintgar. I
+remember them as part of a circular walk. Ljubljana was not part of my journey.
 
 These bus journeys later became a useful product metaphor. A complete event is
 not only a destination. It is members, capacity, transport, timing, place,
@@ -894,17 +977,33 @@ the next journey.
 
 ## 18. When the World Closed
 
-After I returned to Budapest in December 2015, I did not immediately return to
-Hungarian institutional life. For roughly three years, I did not register again
-with the Hungarian public-health-insurance system. I felt almost invisible: in
-the country physically, but not fully inside its ordinary administrative or
-social rhythm.
+After I returned to Budapest in December 2015, I did not yet know whether I had
+returned for good. Part of me treated Budapest as a short break before going
+back to London. Another part had come home to find out whether I could make a
+life in my homeland work better than it had before I fled. Throughout much of
+this period, I blamed myself for not having been able to remain in my own
+country.
 
-The later Brexit rupture added to my sense that the old connection between my
-British and Hungarian lives had become harder to read. I cannot responsibly
-claim that Brexit made my location administratively impossible to verify. What I
-can say is that I experienced those years as existing outside the view of the
-systems that had previously defined work, coverage and belonging.
+<!-- pagebreak -->
+
+I had left my last Hungarian employer around September 2010. By the time I
+returned to the health-insurance system on 10 November 2018, roughly eight years
+had passed. I had not spent all of them abroad. I had been in Hungary before
+London, during visits and again after December 2015. But official life did not
+follow physical geography. I was often here, yet I seemed absent. I felt that I
+had disappeared.
+
+For roughly three years, I did not register again with the Hungarian
+public-health-insurance system. The delay did not have one clean cause. It
+belonged to the unresolved decision about London, my attempt to preserve
+independence and my uncertainty about whether coming home had been the right
+choice. I felt almost invisible: in the country physically, but not fully inside
+its ordinary administrative or social rhythm.
+
+Brexit later widened the gap between my British and Hungarian lives. I do not
+mean that no authority could have found me. I mean that work, coverage and
+belonging no longer formed one continuous record of a life. From inside it, I
+felt unseen.
 
 This was also when many of the longest journeys became possible. Full-time work
 had made that duration almost impossible. Now I travelled, looked for a partner,
@@ -1141,8 +1240,9 @@ Back in Budapest, I gave long periods of my life to creative work in private.
 From the December 2015 return until the 10 November 2018 re-entry threshold, I
 withdrew far enough that the work became almost invisible from outside. I
 travelled, searched for a partner, returned, opened the notebook and kept trying
-to give the problem a form. The 2016 idea belongs inside this period of chosen
-independence, uncertainty and unfinished return.
+to give the problem a form. The 2016 idea belongs inside this period of guarded
+independence, an unresolved London return and an unfinished attempt to make life
+in my homeland work differently.
 
 That independence mattered because MyScoutee could not have been built in the
 fragments left beside an ordinary full-time job. The idea has now occupied a
@@ -1267,6 +1367,14 @@ The current MyScoutee core can organize the people, transport, place or
 accommodation, and supplies required for a plan. Tickets, check-in and feedback
 remain separate actions. The distinction sounds technical until something is
 missing.
+
+The principle is DIY-first, not DIY-only. A host should be able to assemble the
+whole event directly, organize only selected parts while local providers handle
+the rest, or choose a more completely managed plan from an event or travel
+organizer. Participants retain the same right to accept or decline in every
+case. The present core contains the event and resource building blocks for this
+direction; it does not yet prove a finished one-click travel-agency delegation
+workflow.
 
 Who is coming? How will they travel? Is the venue appropriate? Who has the key?
 What must be brought? Does somebody need a ticket? Did the person actually
@@ -1443,6 +1551,13 @@ gossip, and enough local humanity to turn a route into a meeting.
 The path cannot manufacture acceptance. It can give acceptance a fairer chance
 to become mutual, informed and real.
 
+Years ago, another Indian colleague in the London office told me that I should
+write a novel.
+
+I did not write it then.
+
+I am writing it now.
+
 My story does not end with a perfect match.
 
 It ends with an invitation.
@@ -1510,9 +1625,10 @@ Sources:
   landscapes remain unconfirmed. The public narrative therefore uses only the
   names the Founder remembers and avoids a false reconstructed route.
 - The United States assignment, promised-but-unreceived overtime payment,
-  departure, six-and-a-half-month unemployment period, final four-round
-  Hungarian interview and London job within two weeks are also first-person
-  memories. Employers remain anonymous, and the account makes no legal finding.
+  departure around September 2010, six-and-a-half-month unemployment period,
+  final four-round Hungarian interview and London job within two weeks are also
+  first-person memories. Employers remain anonymous, and the account makes no
+  legal finding.
 - The health chronology is first-person testimony: blood in the Founder's stool
   appeared during the American period's extreme work pressure; he associated
   it with that pressure; he moved to London in 2011 while still experiencing it;
@@ -1525,8 +1641,16 @@ Sources:
 - Practical English beginning in Trivandrum and weak conversational English in
   early London are compatible: the Founder reports that he could barely speak
   with colleagues for almost three years despite being able to perform the job.
+- A different Indian woman colleague at the same workplace once told the
+  Founder to write a novel. The Founder worked at that one London workplace
+  throughout his five years there. She is not the colleague from the
+  farewell-gift memory.
 - The impression that perhaps one person in three around the household no
   longer wanted to return is explicitly not a population statistic.
+- The roughly eight-year “disappeared” arc runs from the September 2010 employer
+  departure to 10 November 2018. It was not continuous physical absence from
+  Hungary. The phrase describes the Founder's experience of institutional
+  invisibility and does not claim that authorities could not locate him.
 - Research on return migration shows mixed experiences: foreign experience and
   language may be valued, while skill mismatch, weakened networks and employer
   stereotypes can also exist. No specific employer motive is asserted here.
@@ -1544,8 +1668,13 @@ Sources:
 
 ## Selected Journey Anchors
 
-- The North Wales low-tide village remains unconfirmed; Llanfairfechan is the
-  strongest current candidate.
+- The Founder has identified the North Wales low-tide place as Barmouth. The
+  exact visual perspective remains a first-person memory.
+- Five people made the road circuit: two couples and the Founder. He organized
+  the itinerary but cannot drive; an acquaintance travelling with the group
+  drove the rented car and was not a hired driver. Budget hotels supplied the
+  accommodation along the route. The trip lasted three days and needed a fourth
+  to avoid the rush. Exact hotel properties are not asserted.
 - The Egypt trip occurred after the London homecoming, so the memoir groups
   journeys thematically rather than claiming a strict film chronology.
 - The five-day November 2016 Golden Triangle structure, WhatsApp-arranged
@@ -1563,7 +1692,8 @@ Sources:
 
 Sources:
 
-- https://www.visitconwy.org.uk/explore/towns-and-villages/llanfairfechan/
+- https://www.visitwales.com/attraction/beach/barmouth-beach-528111
+- https://www.barmouthtowncouncil.gov.uk/water-safety
 - https://www.minimundus.at/en/
 - https://www.minimundus.at/en/location-how-to-get-here/
 - https://www.steiermark.com/en/Oststeiermark/Plan-your-holiday/Tours/Through-the-Barenschutzklamm-from-Mixnitz_tour_30999545
