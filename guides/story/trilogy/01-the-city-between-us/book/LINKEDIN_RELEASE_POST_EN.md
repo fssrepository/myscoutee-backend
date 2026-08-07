@@ -4,32 +4,35 @@
 
 MyScoutee — The Story · Part I · The City Between Us
 
-## Post copy
+## Company-page document post
 
-For years, I thought I was building a software product. Eventually I understood
-that I was also trying to answer a personal question:
+Today MyScoutee Network is publishing *MyScoutee — The Story, Part I: The City
+Between Us*.
 
-How can a world crowded with people leave so many of us without a path to one
+This first-person founder's memoir moves through rural roots, Budapest, London,
+shared rooms, loneliness, journeys across several continents, and the
+experiences that eventually became MyScoutee.
+
+The book asks one practical question: can technology help mutual intention
+travel far enough to become a real local meeting — and help one meeting become
 another?
 
-Today I am publishing *MyScoutee — The Story, Part I: The City Between Us*.
-
-It is a founder's memoir about rural roots, Budapest, London, shared rooms,
-work, loneliness, journeys across several continents, unexpected kindness from
-strangers, and the long path from those experiences to MyScoutee.
-
-The book does not claim that software can manufacture friendship, love or
-safety. MyScoutee is a built software core whose real social outcomes still
-need to be tested. The more modest ambition is to help mutual intention travel
-far enough to become a real, freely chosen meeting — and to help one meeting
-grow into a context in which people can meet again.
-
-This is the first public edition. It is also an invitation.
-
-If you organise communities, events, activities, venues or travel experiences;
-if you could test the idea in a local context; or if this story simply speaks to
-you, I would be glad to hear from you.
+This first public edition is also an invitation to community organisers,
+venues, activity and travel partners, and local operators willing to test the
+path in real life.
 
 MyScoutee. Test it with me in real communities.
 
-#MyScoutee #CommunityBuilding #SocialConnection #FounderStory #ProductDevelopment
+#MyScoutee #CommunityBuilding #SocialConnection #FounderStory
+
+## Personal-profile repost note
+
+This is the personal story behind why I built MyScoutee.
+
+It compresses decades of rooms, routes, work, loneliness, travel and unexpected
+human connections into Part I of a trilogy. The product still has to prove its
+social outcomes in real communities. This book explains why I believe that test
+is worth making.
+
+If the story speaks to you — or you could help test the path — I would be glad
+to hear from you.

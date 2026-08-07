@@ -32,6 +32,7 @@ DEFAULT_HTML = BOOK_DIR / "MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html"
 BOOK_DRAFT_DIR = BOOK_DIR / "draft"
 PUBLISHED_DIR = BOOK_DIR.parent / "published"
 LOGO = PROJECT_DIR / "frontend" / "src" / "assets" / "logo" / "heart.png"
+COVER_EMBLEM = BOOK_DIR / "assets" / "cover-emblem-v1.png"
 ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
 BOOK_VERSION = BOOK_DIR / "version.json"
 BOOK_METADATA = BOOK_DIR / "metadata.json"
@@ -64,7 +65,7 @@ OPENER_WATERMARKS = (
 # so their short lines return to the preceding page and the complete encounter
 # motif can remain below the prose, without colliding with it or spilling onto
 # an otherwise empty page.
-COMPACT_ENDING_MOTIF_INDEXES = frozenset({4})
+COMPACT_ENDING_MOTIF_INDEXES = frozenset({1, 4})
 
 
 def slugify(value: str) -> str:
@@ -135,14 +136,19 @@ def append_ending_tail(parts: list[str], motif_index: int) -> None:
     if not parts:
         raise ValueError("An ending motif requires preceding content")
     if motif_index in COMPACT_ENDING_MOTIF_INDEXES:
-        tail_count = min(27, len(parts))
+        tail_count = min(14 if motif_index == 1 else 27, len(parts))
         tail = parts[-tail_count:]
         del parts[-tail_count:]
         closing_count = min(3, len(tail))
         leading = tail[:-closing_count]
         closing = tail[-closing_count:]
+        compact_class = (
+            "compact-ending-tail compact-ending-tail-tight"
+            if motif_index == 1
+            else "compact-ending-tail"
+        )
         parts.append(
-            '<div class="compact-ending-tail">'
+            f'<div class="{compact_class}">'
             + "\n".join(leading)
             + '<div class="ending-tail">'
             + "\n".join(closing)
@@ -527,6 +533,10 @@ def stylesheet() -> str:
     margin: .2in auto 0; max-width: 3.62in; font: 500 13pt/1.25 Arial, sans-serif;
     color: #cddcf6; position: relative; z-index: 2;
   }
+  .cover .story-emblem {
+    display: block; height: auto; left: .27in; position: absolute; top: 4.35in;
+    width: 4.22in; z-index: 2;
+  }
   .cover .route {
     position: absolute; left: .52in; right: .52in; bottom: 1.3in; height: 1px;
     background: linear-gradient(90deg, #efb544, #e36c57, #8eaaf0); z-index: 2;
@@ -699,6 +709,9 @@ def stylesheet() -> str:
   }
   .compact-ending-tail > p,
   .compact-ending-tail .ending-tail > p { margin-bottom: .08in; }
+  .compact-ending-tail-tight { line-height: 1.43; }
+  .compact-ending-tail-tight > p,
+  .compact-ending-tail-tight .ending-tail > p { margin-bottom: .07in; }
   .pagebreak { page-break-before: always; height: 0; }
   .illustration { margin: .26in 0 .3in; break-inside: avoid; }
   .illustration img { display: block; width: 100%; border-radius: 12px; }
@@ -749,6 +762,7 @@ def build_document(source: Path) -> str:
     version = load_book_version()
     toc_items = collect_toc(body_lines)
     logo_url = data_url(LOGO)
+    cover_emblem_url = data_url(COVER_EMBLEM)
 
     toc = "\n".join(
         f'<li class="level-{level}"><a href="#{anchor}">{inline_markdown(title)}</a></li>'
@@ -802,6 +816,7 @@ def build_document(source: Path) -> str:
   </div>
   <h1>The Story</h1>
   <h2>{subtitle}</h2>
+  <img class="story-emblem" src="{cover_emblem_url}" alt="Six people meeting around a shared compass beneath a guiding star">
   <div class="route"></div>
   <div class="tagline">{tagline}<span class="edition">{edition}</span></div>
 </section>
@@ -1184,10 +1199,6 @@ def main() -> None:
         print(f"Wrote {pdf_path}")
         if is_default_output and version["locked"]:
             write_publication_integrity_files(pdf_path, version)
-            editable_export = draft_pdf_path(version)
-            if editable_export.exists():
-                editable_export.unlink()
-                print(f"Removed superseded draft export {editable_export}")
 
 
 if __name__ == "__main__":

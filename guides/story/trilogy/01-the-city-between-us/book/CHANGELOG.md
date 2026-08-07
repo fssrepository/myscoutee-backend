@@ -1,8 +1,7 @@
 # MyScoutee — The Story book changelog
 
 The trilogy part and the edition version are separate. This book is Part
-`I`; its current public edition is `1.0.0` and remains editable until the
-Founder explicitly locks it.
+`I`; its first public edition is `1.0.0`.
 
 ## 1.0.0 — 2026-08-07
 
@@ -12,10 +11,15 @@ Founder explicitly locks it.
 - Replaced remaining internal editorial language with publication-ready memory
   language while preserving uncertainty where exact routes or locations have
   faded.
-- Added public version metadata, publication date, copyright notice and a
-  versioned draft-stage artifact. The edition remains editable with
-  `locked: false`; the published-stage PDF, checksum and manifest are created
-  only by a later explicit technical closure.
+- Added public version metadata, publication date, copyright notice and the
+  technically closed PDF, checksum and publication manifest.
+- Added a generated six-person cover emblem beneath the subtitle: three women
+  and three men meet around a shared compass beneath a guiding star, with the
+  transparent indigo, cobalt, violet and gold artwork integrated into the
+  existing blue cover rather than replacing the MyScoutee mark.
+- Corrected the sparse Part One ending spread by compacting its closing text
+  block so the complete prose and contextual motif remain together on the
+  preceding page without deleting or rewriting memoir text.
 - Replaced book-series terminology from `Volume` with the more natural `Part`:
   this is Part I of one continuous trilogy.
 - Added the post-return Budapest nightlife and re-entry-shock sequence: the

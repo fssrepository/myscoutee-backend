@@ -4,8 +4,9 @@ This folder contains the English-first public edition of the MyScoutee origin
 story. It is Part `I` of a planned trilogy, a memoir-led product book, not a
 translation and not a claim of proven product outcomes.
 
-Current state: **Part I · Public edition v1.0.0 · published 7 August 2026 ·
-editable (`locked: false`)**.
+Current state: **Part I · Public edition v1.0.0 · pre-release correction build ·
+editable (`locked: false`)**. The edition will be technically closed immediately
+before its first LinkedIn publication.
 
 ## Versioning and trilogy rule
 
@@ -26,7 +27,9 @@ language and copyright. The builder places these values in the HTML and PDF;
 - When the Founder explicitly requests technical closure, set `locked` to
   `true`. The first subsequent build writes the versioned PDF under
   the flat `../published/` directory together with an SHA-256
-  checksum and publication manifest, then removes the superseded draft PDF.
+  checksum and publication manifest. The editable draft export remains under
+  `draft/`; technical closure protects the published artifact, not the source
+  manuscript or its working export.
   The builder refuses to overwrite that published version; later corrections
   require a new edition number.
 - A checksum detects a byte-level change but does not physically prevent one.
@@ -50,9 +53,9 @@ The builder writes:
   directly under the flat `../published/` directory only after explicit
   technical closure.
 
-Only the current editable PDF is retained under `draft/`. Earlier
-edition history remains in `CHANGELOG.md` and Git rather than as a second,
-potentially confusing PDF export.
+Only the current editable PDF is retained under `draft/`. The matching locked
+public edition remains under `../published/` with its checksum and manifest;
+earlier edition history remains in `CHANGELOG.md` and Git.
 
 The builder reads `version.json` and `metadata.json`; do not type a version or
 document metadata directly into the manuscript or generated HTML. Before
