@@ -13,6 +13,8 @@ The trilogy part and the edition version are separate. This book is Part
   faded.
 - Added public version metadata, publication date, copyright notice and the
   technically closed PDF, checksum and publication manifest.
+- Replaced the non-ASCII dash in the embedded PDF title metadata with a
+  viewer-safe hyphen so XMP-first document viewers display the title cleanly.
 - Added a generated six-person cover emblem beneath the subtitle: three women
   and three men meet around a shared compass beneath a guiding star, with the
   transparent indigo, cobalt, violet and gold artwork integrated into the
