@@ -88,7 +88,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   chairs/coats, door, quiet milk pour and spoon; “Within two weeks, I found Soho
   software work; with weak English, I hid hunger and isolation.”
 - **Transition/generation:** bowl rim becomes an exhibition frame in S04. Keep
-  the costume-tail colleague memory as one warm S04 insert; do not overload S03.
+  the Soho sex-shop farewell-gift memory as one warm S04 insert; do not overload
+  S03.
 
 ### S04 — The city's unrepeatable magic · 00:23–00:30 · 7 s
 
@@ -97,8 +98,13 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   then exhibition frames, museum objects, a public lecture,
   live music, a small club, late café and several mutually curious dates with
   women from different national and cultural backgrounds form one rhythmic
-  visual sentence. One friendly flash shows the Indian woman colleague and
-  Founder buying the comic costume tail for their departing Polish colleague;
+  visual sentence. One friendly flash begins with the office seeking a farewell
+  gift for a departing Polish man colleague. The Indian woman colleague proposes
+  what the Founder remembers as an artificial penis, something like a vibrator, then she
+  and the Founder buy it in a Soho sex shop. Keep the item's exact type uncertain and
+  the purchase discreet rather than anatomically explicit. The gift is an
+  affectionate way of calling him “a fucking dick”; they like him and he
+  understands the joke. Show familiarity, not humiliation or hostility;
   nationality is context, not the joke. This is reciprocal encounter, not
   conquest or an exotic catalogue. The final half-second reflection in a
   Victoria line window becomes the HMO front door.

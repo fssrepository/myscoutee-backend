@@ -160,10 +160,9 @@ also the formal obstacle between me and my diploma: I still needed the
 intermediate-level language certificate required before I could collect it. In
 Trivandrum, the language became less an examination subject than the ordinary
 means of asking, answering, misunderstanding, correcting and completing work
-together. It became usable; it did not yet become easy. I do not
-collapse that first professional stay into my later 2016 journey through
-northern India. This was an earlier threshold: the first international work
-environment in which a missing credential began to become a usable human skill.
+together. It became usable; it did not yet become easy. This was my first
+international work environment, where a missing credential began to become a
+usable human skill.
 
 The Indian company opened the professional door. On paper, the sequence now
 looked correct: countryside, university, international work, capital city. Yet
@@ -188,13 +187,12 @@ it, we spent about three hours on a date. I was strongly attracted to her. When
 our time was up, we walked together to the venue for the programme that had
 originally brought her to the city. Along the way she linked her arm through
 mine. At our quick goodbye she gave me a slightly shy kiss on the cheek, then
-went to her programme. I was living in the workers' hostel and could not offer
-her a place to stay, but she did not know that: I had not told her I was living
-in a workers' hostel. Where I left the circumstances unexplained, she formed her
+went to her programme. I could not invite her to stay because I was living in a
+workers' hostel, though she did not know that—I had kept it to myself. Where I
+left the circumstances unexplained, she formed her
 own picture of me and at one point described me as poor. Only later, once she was
-home in Debrecen, did she write to me in a chat: “You should have kissed me.” To
-her, the moment need not have ended with that shy cheek kiss; it could have
-become a real kiss.
+home in Debrecen, did she write in a chat that she should have kissed me instead
+of giving me only that shy kiss on the cheek.
 
 Even a three-hour date required us to coordinate an intercity journey and the
 other commitment that had brought her to Budapest: when she would arrive, where
@@ -203,7 +201,7 @@ would close the available window. Attraction did not remove geography or
 competing plans. The journey, her purpose in the city and our time together had
 to fit inside one another.
 
-The sentence remained with me because it arrived after the moment in which it
+Her message remained with me because it arrived after the moment in which it
 could have changed anything. She eventually found a partner and moved to
 Budapest. About a decade later, we met again. I read anger in the way she looked
 at me, but I cannot know what that expression contained. Memory can preserve a
@@ -385,11 +383,14 @@ desk. At first, much of that human world reached me as sound before it became
 conversation. Humour crossed borders imperfectly and sometimes became funnier
 because of the effort.
 
-Once, an Indian colleague suggested that we buy a costume animal tail as a
-farewell gift for a Polish colleague. We went into Soho to find it. The memory
-is ridiculous in exactly the right way: three nationalities are present, but
-none of them is the joke. The joke is that friendship can become specific very
-quickly when people share a task no sensible biography would predict.
+When a Polish man colleague was preparing to leave, we began looking for a
+farewell gift. An Indian woman colleague suggested an artificial penis,
+something like a vibrator, from a sex shop. It was her idea, and the two of us
+went into a Soho sex shop to buy it for him. The gift was an affectionate
+insult: a way of telling him that he was a fucking dick. We liked him, and he
+understood the joke. What stayed with me was how naturally three people from
+different countries could share a joke that depended on affection rather than
+nationality.
 
 For the first three years, the city felt inexhaustible.
 
@@ -720,15 +721,25 @@ because people mattered. It was fragile because the connection had no memory.
 
 ## 13. India in a Cash Discontinuity
 
-In November 2016, I flew through Dubai for a five-day journey to India. Roughly
-three days were available on the ground for the Golden Triangle; the rest
-belonged to airports and transfers.
+My first stay in India had shown me one southern region through work. It had not
+shown me the whole country. The Taj Mahal stood more than two thousand kilometres
+north of Trivandrum even in a straight line, inside a region with different
+languages, architecture, climate and everyday rhythms. I wanted to see it, so in
+November 2016 I returned as a tourist for a self-organized five-day journey
+through India's Golden Triangle.
 
-That month, the existing high-value 500- and 1,000-rupee notes were withdrawn
-from ordinary legal-tender use. A technical decision at national scale became a
-human problem in every queue. People waited at cash machines. Others were paid
-to hold places. Exchange became uncertain. My own driver, coordinated through
-WhatsApp, sometimes became the person from whom I had to ask for entrance money.
+One day went into flying there through Dubai and one into flying home. For the
+three days between them, I had arranged a car and driver through WhatsApp to
+carry me along the Delhi–Agra–Jaipur route.
+
+The journey coincided with a sudden cash discontinuity. On 8 November, the
+government announced that the existing series of 500- and 1,000-rupee notes
+would cease to be legal tender from 9 November. It was not the withdrawal of all
+Indian cash, but it affected the notes on which much ordinary cash use depended.
+A technical decision at national scale became a human problem in every queue.
+People waited at cash machines. Others were paid to hold places. Exchange became
+uncertain. The driver I had arranged through WhatsApp sometimes became the
+person from whom I had to ask for entrance money.
 
 The arrangement reversed the expected roles. I was the visitor, but I was not
 financially autonomous. The driver was providing transport and, for moments,
@@ -1537,6 +1548,13 @@ Sources:
   strongest current candidate.
 - The Egypt trip occurred after the London homecoming, so the memoir groups
   journeys thematically rather than claiming a strict film chronology.
+- The five-day November 2016 Golden Triangle structure, WhatsApp-arranged
+  driver, entrance-payment difficulty and reason for returning to northern
+  India are first-person memories. Distance references place Agra more than
+  2,000 kilometres from Thiruvananthapuram even in a straight line.
+- The Reserve Bank of India's 8 November 2016 notice withdrew legal-tender
+  status from the existing series of 500- and 1,000-rupee notes from 9 November.
+  It did not withdraw all Indian cash.
 - Specific monuments not clearly remembered remain candidates rather than
   asserted visits.
 - Minimundus is in Klagenfurt near Lake Wörthersee, not Vienna.
@@ -1551,6 +1569,8 @@ Sources:
 - https://www.steiermark.com/en/Oststeiermark/Plan-your-holiday/Tours/Through-the-Barenschutzklamm-from-Mixnitz_tour_30999545
 - https://www.schoenbrunn.at/en/
 - https://whc.unesco.org/en/list/87
+- https://www.travelmath.com/distance/from/Thiruvananthapuram%2C%2BIndia/to/Agra%2C%2BIndia
+- https://www.makemytrip.com/flights/trivandrum-agra-distance.html
 - https://systemhealth.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx_prid%3D38520%281%29.html
 
 ## Age and Digital Dating

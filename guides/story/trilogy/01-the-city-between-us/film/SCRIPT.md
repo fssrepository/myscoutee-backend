@@ -104,8 +104,12 @@ not need to occupy every second.
   imply that every resident felt the same.
 - The Founder arrived in London in 2011. The 2012 Jubilee/Olympic summer belongs
   to the following year of the London story. The Indian woman colleague,
-  departing Polish man colleague and comic Soho costume-tail gift are personal memories. Keep the
-  humor between competent friends; nationality is never the punchline.
+  departing Polish man colleague and approximately remembered artificial penis,
+  something like a vibrator, bought
+  as a comic farewell gift in a Soho sex shop are personal memories. The gift
+  affectionately calls him “a fucking dick”; the colleagues like him and he
+  understands the joke. Keep the humor between competent friends; nationality
+  is never the punchline.
 - The shared-room resident swap, one-pound overnight coach to Edinburgh, Loch
   Ness, Glasgow/Clyde powerboat and compressed London–Manchester–Liverpool–
   North Wales–Cardiff–London circuit are personal memories. Use them as quiet

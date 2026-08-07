@@ -17,6 +17,18 @@ The trilogy volume and the edition version are separate. This book is Volume
 - Replaced generic enlarged initials with contextual motif-backed drop caps.
 - Replaced the short flat-gold heading rule with full-width, part-coloured
   gradient separators.
+- Clarified that the November 2016 Golden Triangle journey was a separate
+  self-organized tourist visit, removed it from the Trivandrum work passage and
+  recorded its one-day-out/three-day-driver/one-day-back structure, northern–
+  southern cultural contrast and specified-note cash disruption.
+- Tightened the Debrecen date passage without changing the concealed
+  workers'-hostel context.
+- Corrected the Debrecen message: she wrote that she should have kissed the
+  Founder instead of giving him only a shy kiss on the cheek.
+- Corrected the Soho farewell gift from an invented costume animal tail to the
+  artificial penis—approximately a vibrator—bought in a sex shop, and restored
+  the office farewell setup, affectionate “fucking dick” meaning and recipient's
+  understanding of the joke.
 
 ## Publication rule
 

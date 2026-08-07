@@ -483,9 +483,15 @@ The emotional truth is not continuous grey deprivation. The Founder arrived in
 2011; the public energy of the 2012 Diamond Jubilee and Olympic summer entered
 his already established London life the following year. Soho colleagues
 from different countries, museums, exhibitions, nightlife and dates across
-cultures made London feel unlike anywhere else. A true comic memory has an Indian
-woman colleague and the Founder buying a costume animal tail in Soho for a
-departing Polish man colleague. The joke is friendship, not nationality.
+cultures made London feel unlike anywhere else. In one true comic memory, the
+office is looking for a farewell gift for a departing Polish man colleague. An
+Indian woman colleague suggests what the Founder remembers as an artificial
+penis, something like a vibrator; it is her idea, and she and the Founder go into a Soho
+sex shop to buy it for him. The deliberately absurd gift is the joke, not
+nationality or sexual conduct between colleagues. It is an affectionate roast:
+the object tells him that he is “a fucking dick.” They like him, and he
+understands the joke. Beyond “artificial penis, something like a vibrator,” the
+exact product type remains approximate in memory.
 
 Low-cost travel extended that magic while exposing incompatible capacity:
 
@@ -678,15 +684,23 @@ story, while still having no durable path to continue it.
 
 ### India in November 2016 — beauty inside a cash discontinuity
 
-The Founder dates his five-day Golden Triangle trip to November 2016: roughly
-three days on the ground and two travel days through Dubai. On 8 November the
-Indian government announced that existing ₹500 and ₹1000 notes would cease to
-be legal tender from 9 November; banks and ATMs then required a temporary
-closure and ATM reconfiguration. This supplies exact period context, not a
-timeless depiction of India.
+The Founder dates his self-organized five-day tourist trip to see India's Golden
+Triangle to November 2016. One day went into the outbound flight through Dubai,
+one into the return journey, and the three ground days used a car and driver
+arranged through WhatsApp for the Delhi–Agra–Jaipur route. His earlier stay had
+been a professional assignment in Kerala, a culturally and geographically
+distinct southern region. The Taj Mahal at Agra is more than 2,000 kilometres
+from Thiruvananthapuram in straight-line distance, so the later journey was a
+deliberate tourist return rather than an extension of the first assignment.
 
-The Founder remembers being unable to exchange money, depending on a WhatsApp-
-coordinated driver for some entrance payments, long ATM queues and people being
+On 8 November the Indian government announced that the existing series of ₹500
+and ₹1000 notes would cease to be legal tender from 9 November; banks and ATMs
+then required a temporary closure and ATM reconfiguration. This affected those
+specified high-value notes, not all Indian cash. It supplies exact period
+context, not a timeless depiction of India.
+
+The Founder remembers being unable to exchange money, depending on the
+WhatsApp-coordinated driver for some entrance payments, long ATM queues and people being
 paid to wait in those queues. The first two are autobiographical details; the
 last two remain personal observation unless a scene needs separate historical
 sourcing. Do not turn scarcity into spectacle or portray the driver as a wallet.

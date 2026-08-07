@@ -65,8 +65,7 @@ Use the corn row, sea horizon, table edge and closed diploma folder as repeating
 geometry. Preserve the difference between completing university studies and
 collecting the diploma. Do not invent the date of the later language examination
 or actual diploma receipt, exact beach, employer, campus, local colleagues, accommodation or
-tourist itinerary. Do not merge this first professional stay with the separate
-November 2016 Golden Triangle journey.
+tourist itinerary.
 
 OUTPUT
 Generate exactly one six-panel planning board. Do not animate, add narration,

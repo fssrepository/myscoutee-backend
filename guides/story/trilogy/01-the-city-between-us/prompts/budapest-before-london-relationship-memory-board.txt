@@ -32,12 +32,13 @@ and space, not rejection. No readable event name or invented institution.
 
 PANEL 2 — THE MESSAGE FROM DEBRECEN
 After she has returned home to Debrecen, the same woman writes to the Founder in
-a private chat: “You should have kissed me.” Do not render the quotation or any
-chat UI as readable text. Use a restrained visual echo of the unfinished goodbye
-outside the programme venue: for her, that moment need not have ended with the
-shy cheek kiss she had given him; it could have become a real kiss. Do not depict
-the later partner or invent broader regret, anger or blame. The point is that
-attraction does not make geography and timing disappear.
+a private chat that she should have kissed him instead of giving him only the
+shy kiss on the cheek. Do not render the message or any chat UI as readable
+text. Use a restrained visual echo of the unfinished goodbye outside the
+programme venue. Do not reverse the subject: her message concerned what she
+felt she should have done. Do not depict the later partner or invent broader
+regret, anger or blame. The point is that attraction does not make geography
+and timing disappear.
 
 PANEL 3 — A SPONTANEOUS OPENING
 A second woman approaches the Founder in a Budapest shopping centre, sits beside

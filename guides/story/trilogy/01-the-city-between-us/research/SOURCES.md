@@ -348,6 +348,15 @@ experience, not to Thiruvananthapuram district or Kerala as a whole.
 
 ### India November 2016 and Golden Triangle
 
+- [Travelmath's city-distance calculation](https://www.travelmath.com/distance/from/Thiruvananthapuram%2C%2BIndia/to/Agra%2C%2BIndia)
+  and [MakeMyTrip's route summary](https://www.makemytrip.com/flights/trivandrum-agra-distance.html)
+  place Thiruvananthapuram and Agra at roughly `2,070 km` apart in straight-line
+  distance and roughly `2,600 km` by road. The public
+  manuscript therefore uses the conservative phrase “more than two thousand
+  kilometres,” not the Founder's approximate remembered figure of `1,000 km`.
+  This supports geographic separation only; the five-day itinerary and motive
+  to return as a tourist remain Founder testimony.
+
 - [Reserve Bank of India — withdrawal of legal-tender status for ₹500 and
   ₹1000 notes](https://systemhealth.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx_prid%3D38520%281%29.html):
   official 8 November 2016 notice that the existing notes would cease to be
@@ -671,8 +680,11 @@ These are not externally researched claims. They remain first-person testimony:
   search on 10 November 2018;
 - Brexit intensifying the Founder's subjective sense of administrative distance;
   this does not establish that his location was impossible to verify;
-- the Indian woman colleague's costume-tail farewell idea for a departing Polish
-  man colleague, and the shared Soho purchase;
+- the office search for a farewell gift for a departing Polish man colleague,
+  the Indian woman colleague's idea of what the Founder remembers as an
+  artificial penis, something like a vibrator, and her shared purchase with the
+  Founder in a Soho sex shop; the gift affectionately called the departing man
+  “a fucking dick,” while the colleagues liked him and he understood the joke;
 - the one-pound overnight coach to Edinburgh, other passengers' sock smell,
   Loch Ness, Glasgow/Clyde powerboat and almost paying for a German tourist's
   child's ticket;
@@ -698,7 +710,9 @@ These are not externally researched claims. They remain first-person testimony:
 - the Cairo airport taxi shared with a Sudanese married couple, a playful
   mutually amused conversation and the couple's roof-stacked suitcases falling
   as the vehicle pulled away;
-- a five-day November 2016 India trip via Dubai with roughly three ground days,
+- a self-organized five-day November 2016 tourist trip via Dubai to see India's
+  Golden Triangle, with one outbound-flight day, three days in a car with a
+  WhatsApp-arranged driver and one return-flight day,
   a WhatsApp-coordinated driver, cash/entrance-payment friction during the
   ₹500/₹1000-note transition, and the Delhi–Agra–Jaipur Golden Triangle;
 - the reciprocal Taj Mahal bus conversation with a young woman travelling with
