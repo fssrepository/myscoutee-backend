@@ -1,0 +1,122 @@
+Act as cinematography co-director for the locked 23-shot film “The City Between
+Us,” runtime 02:48, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
+setup table only. Do not generate or rewrite the supplied narration and timings.
+
+Use @Founder, @Maya, @DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
+@BudapestWorld,
+@LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook,
+the approved six-person group, twelve-Hungarian-flatmate board and confirmed
+TravelMemory stills. Lock Founder age, face, navy coat, charcoal knit, rust scarf
+and cognac notebook. Lock the first group to exactly the same six adults, three
+women and three men, from proposal through later invitations.
+
+Visual system: premium painterly 2.5D hand-drawn adults integrated into tactile
+dimensional paper/miniature sets, motivated light and subtle micro-acting. One
+primary subject action and one camera move per clip. No photoreal uncanny skin,
+generated text/logo/UI, public human ratings, glamour casting, national
+stereotype or promised romantic outcome.
+
+STORY LOCK
+S01 moves from countryside small-producer roots through completed economics,
+programming and mathematics studies into beautiful Budapest. University ends in
+2004; a delayed dissertation makes 2005 the earliest possible diploma year, but
+actual receipt comes considerably later because one required intermediate-level
+language certificate is missing. S02 is a still/post
+sequence: neutral multinational-office exit, workers' hostel, late locked-room/
+corridor sleep, anonymous undisclosed summer-substitute room, predictable hostel
+return, then a parent-assisted flat key beside an unsigned, unused foreign-
+currency-loan form. S03 begins with a restrained 2011 London threshold and a
+multicultural Soho software office: the Founder finds work within two weeks
+despite weak English.
+Professional competence and conversational isolation coexist; he performs “not
+hungry” at lunch, then privately eats milk and muesli. S04 places the 2012
+Olympic/Diamond Jubilee public energy in the following year without official
+marks and holds the humane costume-tail
+colleague memory, London culture, nightlife and reciprocal cross-cultural dates; Victoria line
+only as a half-second link. S05 the Founder plus twelve Hungarian adults in one
+maintained Tottenham HMO inside multicultural London. Give residents different
+relations to home: some felt happier there and no longer wanted to return, but
+show no percentage or rootless label. S06 one bathroom, separate
+WC, shared bedroom and a dry resident-swap reveal through a different snore. S07
+cuts the same room lamp against an Edinburgh overnight coach, Loch Ness,
+Glasgow/Clyde powerboat and the exact but rushed London–Manchester–Liverpool–
+North Wales–Cardiff–London route; years four/five bring time and belonging into
+focus. Llanfairfechan is only a candidate until confirmed; Brexit is background,
+not a migrant job-displacement claim. Shared-room savings fund journeys and
+accumulate until a private December 2015 diagram reaches a Budapest-cost
+financial-independence threshold. The parent-assisted Budapest flat has stood
+empty throughout the London years. The Founder is never financially independent
+in London: normal private housing there would erode the Budapest position,
+while permanent room-sharing is no longer a viable life. Housing becomes his
+stop-loss; no second-home claim or invented figure.
+
+S08 is an eight-memory, 72-frame CPU-post burst. Egypt occurred after the London
+homecoming, so @Notebook folds chronology. Use a restrained Founder/tuk-tuk
+handoff at Angkor and a reciprocal Taj Mahal bus conversation. The chosen Egypt
+frame is cooperative: a Luxor balloon rests in a vegetable plot while passengers,
+crew and residents work around a wall. The Cairo taxi-roof luggage mishap is an
+alternate, not a ninth frame. Do not merge Cairo, Luxor, Aswan and Abu Simbel. S09 returns
+home deliberately to the Budapest flat that stood empty during the London years.
+Local drivers, passengers, hosts or residents open each
+human threshold; the different environments reveal parts of the Founder. Use the
+global-route/local-encounter motif and a restrained COVID endpoint. S10–S15 show two forms of app attention, social attempts,
+dance and dates whose settings or continuation fail; nobody is mocked.
+
+PRODUCT LOCK
+Time is finite, so MyScoutee is a fast filter toward reciprocal human context,
+never a fast verdict on human worth. The six-person group lowers one-pair,
+all-or-nothing pressure by allowing several conversations, shared activity,
+friendship or later invitations; this is design intent, not measured success.
+S16 shows premature age, appearance and biography verdicts falling away without
+erasing older adults. A common acquaintance, place,
+event or story opens a less-cold door without vouching. S17 is private editable
+1–10 intent for an unknown individual or pair; Friends in Common and Inside/
+Outside Network provide context only, never public rating, reputation, character
+reference, compatibility or safety guarantee. S18 proposes the same six distinct
+strangers, three women and three men from their thirties into their early
+fifties. S19 gives all six independent accept/decline, then chat, public doorway
+and first introductions. S20 shows members, transport, accommodation/venue and
+supplies as four resources; ticket, check-in and feedback stay separate. One
+clear narrator replaces overlapping generated dialogue.
+
+S21 shows known contacts and real meeting context. One invitee lacks time and
+declines; another invited adult independently accepts an open place. People are
+not replacement tokens. Auto Inviter targets intended accepted capacity but
+cannot guarantee a full group. Repeated events may grow community; lowering one private
+priority after a relationship change quietly reduces that future shared path,
+without public punishment. Later community frames include full participants in
+their sixties with equal agency. S22 begins with a post-added 2016 notebook
+origin. Budapest-cost financial independence supplies bounded periods of
+sustained work that ordinary full-time employment would not leave; do not imply
+ten continuous development years or weekend spare-time construction. Three
+restrained seasons of private creative work lead into later AI-accelerated
+implementation; show no legal, tax, health-insurance or
+administrative symbol. It then shows a verified installation-package handoff,
+competent local operator, own-brand independent server, culturally specific test,
+voluntary shared network and opt-out. Reserve a clean central plate for the exact
+unmodified `frontend/src/assets/logo/heart.png` in post. Its helmet-like shelter,
+star and heart may suggest protection, direction and connection, not certified
+safety. The core is globally reusable while local people, cultures and
+communities shape each test. Localization includes real distance, place, timing,
+transport, resources, language and boundaries. A country change may restart the
+same method, but never show profiles, chats, contacts or private-rate history
+automatically moving between independent operators. S23 is built entirely in CPU post from the real
+brand asset and editable text.
+
+CINEMATOGRAPHY AND MODEL DISCIPLINE
+S01–S09 use restrained 28–65 mm movement and foreground/shape transitions. S07
+and S08 are still/post assemblies, not single complex clips. S10–S15 use readable
+social two/three-shots. S16–S20 slow into notebook, human decisions and a real
+event. S21 prioritizes ensemble identity and autonomous response. S22 uses one
+controlled operator-verification move. Prefer the best current reference-capable
+model visible in the account; test cheaply and change only one variable per run.
+Lip sync is not required for S20 and remains optional/off-screen for S14–S15.
+
+OUTPUT
+Return shot ID, attached Elements, model, duration, aspect, camera preset, lens,
+light, first/last-frame constraint, locked one-action prompt, identity risk and
+estimated credits. Do not claim traction, safety, revenue, deployed operators,
+proven efficiency, superior matching or solved loneliness. Do not generate until
+the table is approved.
+Film 1 contains no hint of the Founder's later legal, tax or court matter; Film 2
+is outside this prompt.

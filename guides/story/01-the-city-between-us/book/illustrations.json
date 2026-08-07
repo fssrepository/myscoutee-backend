@@ -1,0 +1,74 @@
+{
+  "founder_budapest_portrait": {
+    "file": "assets/illustrations/founder-budapest-portrait.png",
+    "placement": "side-right",
+    "alt": "A stylized portrait of the Founder between rural memory and Budapest",
+    "caption": "One person can reach a beautiful city and still remain outside its human conversation."
+  },
+  "budapest_relationship_montage": {
+    "file": "assets/illustrations/budapest-relationship-memories-montage.png",
+    "placement": "full",
+    "alt": "Distinct Budapest relationship memories shaped by distance, space, commitment and incomplete context",
+    "caption": "Different openings, different constraints: no person can be reduced to the first visible problem."
+  },
+  "budapest_relationship_portraits": {
+    "files": [
+      "assets/illustrations/budapest-character-debrecen-woman.png",
+      "assets/illustrations/budapest-character-spontaneous-woman.png",
+      "assets/illustrations/budapest-character-online-date-woman.png",
+      "assets/illustrations/budapest-character-commitment-woman.png",
+      "assets/illustrations/budapest-character-former-colleague.png"
+    ],
+    "placement": "portrait-grid",
+    "alt": "Five individual stylized portraits from the Founder's Budapest relationship memories",
+    "caption": "The montage and portraits preserve individual women, not generic romantic roles."
+  },
+  "london_house_montage": {
+    "file": "assets/illustrations/london-house-residents-montage.png",
+    "placement": "full",
+    "alt": "Thirteen distinct Hungarian residents sharing a converted London house",
+    "caption": "Thirteen lives, one crowded house, and no single reason for leaving home."
+  },
+  "london_resident_portraits": {
+    "files": [
+      "assets/illustrations/london-resident-01.png",
+      "assets/illustrations/london-resident-02.png",
+      "assets/illustrations/london-resident-03.png",
+      "assets/illustrations/london-resident-04.png"
+    ],
+    "placement": "portrait-grid",
+    "alt": "Individual stylized portraits of four London house residents",
+    "caption": "Each resident needs a distinct inner life, not a generic migrant face."
+  },
+  "global_local_montage": {
+    "file": "assets/illustrations/global-local-encounters-montage.png",
+    "placement": "full",
+    "alt": "A montage of local human encounters across the Founder's journeys",
+    "caption": "The route expands the world. The encounter gives it human scale."
+  },
+  "six_person_montage": {
+    "file": "assets/illustrations/myscoutee-six-person-ensemble-montage.png",
+    "placement": "full",
+    "alt": "A balanced MyScoutee candidate group of three women and three men",
+    "caption": "Six separate inner worlds before the first shared meeting."
+  },
+  "six_person_portraits": {
+    "files": [
+      "assets/illustrations/myscoutee-character-01.png",
+      "assets/illustrations/myscoutee-character-02.png",
+      "assets/illustrations/myscoutee-character-03.png",
+      "assets/illustrations/myscoutee-character-04.png",
+      "assets/illustrations/myscoutee-character-05.png",
+      "assets/illustrations/myscoutee-character-06.png"
+    ],
+    "placement": "portrait-grid",
+    "alt": "Six individual MyScoutee character portraits",
+    "caption": "The montage and the individual portraits must use the same locked identities."
+  },
+  "first_event_montage": {
+    "file": "assets/illustrations/myscoutee-first-event-montage.png",
+    "placement": "full",
+    "alt": "Six people introducing themselves during a first shared MyScoutee event",
+    "caption": "The decisive transition is not a swipe becoming a match, but a stranger becoming somebody met."
+  }
+}

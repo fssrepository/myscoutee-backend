@@ -1,0 +1,154 @@
+# Story and prompt coverage
+
+Status: **repository-wide narrative synchronization, 2026-08-07**.
+
+This file records where each important Founder memory, product truth and
+production decision belongs. Coverage does not mean that every memory becomes a
+separate hero-film shot. The public book preserves the full human account; the
+02:48 film carries its emotional and product spine; planning boards preserve
+character and place detail; `SOURCES.md` separates testimony, research,
+uncertainty and public boundaries.
+
+## 1. Canonical hierarchy
+
+1. `book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md` is the full English public
+   first-person narrative and product-origin book.
+2. `../film/SCRIPT.md` is the time-coded spoken compression for the 02:48 hero
+   film. Its English master is authoritative for the international film.
+3. `../storyboard/STORYBOARD.md` and `../prompts/shot-prompts.txt` convert that script into
+   exact film actions. They must not add new autobiographical claims.
+4. The standalone `prompts/*-memory-board.txt` files preserve rich visual
+   recognition and character detail without expanding the hero-film runtime.
+5. `../research/PRODUCT_AND_RESEARCH.md` defines product meaning and claim limits;
+   `SOURCES.md` records external sources, Founder testimony and uncertainty.
+6. `handoff/CURRENT.md` is the compact resume state. If it conflicts with
+   the sources above, correct the handoff rather than silently changing the
+   story.
+7. `../film/STANDALONE_FILM_AND_SEQUEL_BRIDGE.md` keeps Film 1 complete and keeps the
+   later documented legal story outside it.
+
+## 2. Autobiographical coverage
+
+| Story block | Full public account | Hero-film compression | Visual-development prompt | Boundary/status |
+| --- | --- | --- | --- | --- |
+| Rural small-producer ancestry; university finished in 2004 after economics/programming/mathematics studies; dissertation delay made 2005 the earliest possible diploma year; missing intermediate-level language certificate delayed actual receipt considerably longer; movement to beautiful Budapest | Book 1–2 | S01, 00:00–00:08 | `hungarian-origin-rural-budapest-memory-board.txt` | Personal testimony; never imply all rural Hungarians follow this path or show the diploma as already issued. Actual examination and diploma-receipt dates remain `CONFIRM`. |
+| Budapest beauty, culture and nearby regional possibilities beside personal solitude | Book 2, 16 and notes | S01–S02 plus the later return | origin board and `central-europe-one-day-bus-localization-memory-board.txt` | Budapest is not portrayed as grey, backward or responsible for the Founder's solitude. |
+| First post-study Budapest attempt: about one month with relatives in their large house, feeling like an imposition, work unlike the employer's representation, return to parents, then several one-day interviews with employment-centre travel reimbursement | Book 2 | Omitted from the dense 02:48 cut; at most one rail-ticket echo if S02 timing allows | `budapest-first-attempt-and-interview-journeys-memory-board.txt` | Feeling burdensome is the Founder's internal experience, not criticism of the relatives. Employer stays anonymous; wording is first-person reported mismatch, not an adjudicated fraud claim. |
+| Hoeing corn when hired; joined Indian company in October 2005; almost immediate roughly six-week Trivandrum assignment with an Irish and Hungarian team; practical English and the missing diploma language gate; nearly tourist-free beach memory | Book 2 | Omitted from the locked 02:48 VO; optional match-flash only if the opening is later recut | `cornfield-to-trivandrum-first-assignment-memory-board.txt` | Exact company, campus and beach remain private/unconfirmed. “Almost no tourists” describes one visited shoreline, not Kerala tourism. Do not imply fluent English or date the later examination/diploma receipt without confirmation. |
+| Multinational work, workers' hostel, late lockout/corridor sleep | Book 2 | S02, 00:08–00:15 | origin board | He was employed; no homelessness claim. |
+| Undisclosed summer-substitute private room, return to predictable hostel rules | Book 2 | S02 visual compression | origin board | Street and people are anonymized; no legal accusation. |
+| Later normal shared flat with three separate non-passage bedrooms | Book 2 | Omitted from the dense hero cut | `budapest-before-london-relationship-memory-board.txt` | Preserved for book/character work, not another film beat. |
+| Woman travelling from Debrecen: three-hour date before another Budapest commitment, walk to its venue, arm linking, quick goodbye and her shy cheek kiss, then her later Debrecen chat message “You should have kissed me,” plus an uncertain glance about a decade later | Book 2 | Folded into the later distance/context thesis, not reenacted | Budapest relationship board | She did not know about the workers' hostel because the Founder had not told her; her description of him as poor came from an incomplete picture, not knowledge of his living conditions. The other commitment may have been a lecture or presentation but remains unconfirmed. Her later chat establishes that she experienced the goodbye as a moment that could have become a real kiss; do not infer broader regret, anger or later intent. |
+| Spontaneous shopping-centre/astrology opening, Margaret Island, later care journey | Book 2 | Folded into the human-context thesis, not reenacted | Budapest relationship board | Diagnosis, treatment, family violence and exact clinic/city stay private. |
+| Online-dating encounter in the normal flat; quick stereotype and one night | Book 2 | Folded into the premature-verdict thesis | Budapest relationship board | Tasteful, non-explicit and non-blaming. |
+| Pre-London online connection in which the woman wanted to continue and the Founder retreated from commitment | Book 2 | Folded into the Founder's accountable self-reflection | Budapest relationship board | Prevents the story from blaming every lost path on rooms, women or systems. |
+| Parents help acquire a flat; avoided foreign-currency-loan path; home without belonging | Book 3 | S02 | origin board | The avoided loan is personal counterfactual context, not certain alternate history. |
+| Roughly four-to-five-month United States assignment: Baltimore-area hotel base, company-rented car, Ocean City, Washington/Adams Morgan, Greyhound to New York, Niagara, Amish country, amusement park, eastern mountain/park landscapes and the New York-to-Baltimore “going home” feeling | Book 3 | Omitted from locked 02:48 cut | `united-states-assignment-dream-and-pressure-memory-board.txt` | First-person memory. Exact Ocean City and amusement park remain `CONFIRM`; Adams Morgan is social openness, not a generalization about women. Visa/work-authorization details stay outside public material pending documentary/legal review. |
+| United States work through anonymous employer; promised overtime payment did not arrive; departure; six and a half months unemployed; final four-round small-company interview with psychological testing and no offer | Book 3 | Omitted from locked 02:48 cut; emotional pressure folded into London departure | `pre-london-work-breakdown-and-exit-memory-board.txt` | First-person account only. Keep all employers anonymous; no adjudicated wage-theft claim and no claim that psychological testing is inherently abusive. |
+| Blood in stool appearing under extreme American work pressure; Founder-associated cause without medical diagnosis; still present at 2011 London departure; inactive Hungarian public-health-insurance coverage; medical care in London | Book 3–4 | Omitted from locked 02:48 VO and image | `pre-london-work-breakdown-and-exit-memory-board.txt` | Non-graphic first-person health testimony. No diagnosis, independent causation claim, clinical detail or health-system verdict. |
+| London arrival in 2011; 2012 Jubilee/Olympic public energy in the following year; Soho software work | Book 4 | S03–S04 | `london-five-year-dense-sequence.txt` | No official marks or employer identity; never depict 2012 as the arrival year. |
+| London job within two weeks despite weak English; almost three years of barely conversing with colleagues | Book 4–5 | S03, 00:15–00:23 | London dense sequence and pre-London exit board | Professional competence and conversational isolation coexist. Trivandrum began practical English; it did not create instant fluency. |
+| Hidden hunger: expensive group lunch, performed “not hungry,” two-litre milk and muesli, fear of early return | Book 5 | S03 | London dense sequence | Not a diet claim and not blame toward colleagues. |
+| London's museums, exhibitions, nightlife, multicultural dates and colleague costume-tail gift | Book 4 | S04 | London dense sequence | Reciprocal city life, never an exotic catalogue; nationality is not the joke. |
+| Victorian HMO: Founder plus twelve Hungarian adults, one full bath, separate WC, shared bedroom | Book 6 | S05–S06 | `london-hmo-residents-character-board.txt` | Thirteen individual lives, not faceless crowd scenery or legal refugees. |
+| Different flatmate paths: mortgage shock, language, adventure, career, family support, poker loss, rent consuming return money | Book 6–7 | S05–S06 | HMO character board | Fictionalized visual composites protect identities. |
+| Unannounced place swap revealed by a different snore | Book 7 | S06 | HMO board and London dense sequence | The housing absurdity is humorous; the person and gambling loss are not. |
+| Some residents happier in constraint and unwilling to return | Book 6–8 | S05–S07 | HMO board | Personal rough memory only; never publish `30%` or call anyone rootless. |
+| South Tottenham/Stamford Hill Charedi geography and subjective safety feeling | Book 6 notes | Background only | London world/HMO prompts | Respectful geography; no causal safety, blame or certification claim. |
+| First three London years of magic; shared-bedroom savings fund journeys and reach a December 2015 Budapest-cost independence threshold; parent-assisted Budapest flat stands empty; London independence is never reached; housing becomes stop-loss | Book 8 | S07 | London dense sequence | No second-home claim and no invented figures. A private London home would erode the Budapest position; permanent room-sharing is unlivable. |
+| December 2015 return; no Hungarian health-insurance re-registration until 10 November 2018; longer travel, partner search, private work and eventual institutional re-entry | Book 18 and 25 | Folded into S08–S09 and S22 without administrative imagery | travel boards and master prompts | First-person chronology. Brexit is subjective separation context, never proof that location could not be checked. |
+| London-to-Budapest home visits: concealed London residence; sudden love/child language from a former colleague | Book 8 | Omitted from the dense hero cut | Budapest relationship board | The concealment is the Founder's admitted action; the colleague's motive remains his interpretation, not fact. |
+| Brexit-era work/wage/belonging atmosphere | Book 8 and notes | Background texture in S07 | London dense sequence | Neutral context, never proof that migrants displaced British workers. |
+| One-pound Edinburgh coach, sock smell, Loch Ness, Clyde powerboat and near-paid German child's ticket | Book 9 | S07 flashes | `uk-adventure-availability-memory-board.txt` | Human adventure, not tourism conquest. |
+| London–Manchester–Liverpool–North Wales–Cardiff–London route and missing extra day | Book 10 | S07 and S16 callback | UK board | Exact low-tide village stays `CONFIRM`; Llanfairfechan is only a candidate. |
+| Nearly forty countries; global routes become meaningful through local encounters and self-recognition | Book 11 | Eight-second S08 folded-time burst | travel boards | The film deliberately does not list every destination. |
+| Six-day Egypt: Cairo/Giza, Luxor, Aswan, Abu Simbel, WhatsApp driver, balloon/vegetable plot, West Bank, taxi/currency/souvenir and Sudanese-couple luggage memories | Book 12 | One preferred cooperative balloon frame in S08 | `egypt-six-day-human-network-memory-board.txt` | Post-London chronology folds through notebook; uncertain sights remain `CONFIRM`. |
+| November 2016 India cash discontinuity, Golden Triangle, driver/payment friction and Taj bus conversation | Book 13 | Reciprocal Taj conversation candidate in S08 | `india-2016-human-bridge-memory-board.txt` | No claim that the brief connection had a future. |
+| Thailand multi-region journey, probable Phuket, Phi Phi kindness, neutral Pattaya; Cambodia arrival/visa/tuk-tuk/Angkor/airport timing | Book 14 | One restrained Angkor handoff in S08 | `thailand-cambodia-human-bridge-memory-board.txt` | Exact pier, border and some route details remain `CONFIRM`. |
+| Russian visa process, several-day Moscow–Saint Petersburg trip and arrival-pass kindness | Book 15 | Not in the eight-second hero burst | `russia-arrival-human-bridge-memory-board.txt` | Invitation offices, airport and ticket rules retain uncertainty labels. |
+| Italy Bergamo–Naples, Paris compass, probable Norway in a Nutshell, Rotterdam cabin, Spain room, Porto–Lisbon, Neuschwanstein | Book 16–17 | Select recognition flashes only | `europe-wonder-empty-capacity-memory-board.txt` | Memory pool, not a longer travel reel. |
+| Istanbul–Dubai circuit and carpet/tea invitation | Book 17 | Omitted from hero burst | `istanbul-dubai-hospitality-memory-board.txt` | Hospitality, craft and commerce remain simultaneous; exact shop/order stays uncertain. |
+| Slovak Tatras, Vienna/Schönbrunn, Klagenfurt/Wörthersee/Minimundus, Bärenschützklamm, Croatia and Slovenia day trips | Book 16 and notes | Regional/localization motif only | `central-europe-one-day-bus-localization-memory-board.txt` | Separate Austrian memories are not merged; exact historic itineraries stay `CONFIRM`. |
+| COVID as the end of the Founder's earlier carefree-travel feeling | Book 18 | S08 endpoint | travel boards | Personal era boundary, not a claim that travel became impossible or earlier travel was immoral. |
+| Return to Budapest to find a partner; age as stronger early filter | Book 19–20 | S09–S10 and S16 | product/lifecycle prompts | MyScoutee is not age-blind and does not claim to cure ageism. |
+| Apps: scarce attention for some, unmanageable attention for others | Book 20 | S10 | S10 shot prompt | No gender war or universal app-failure claim. |
+| Talks, dinners, social events, beginner/advanced dance and context revealed by a partner | Book 21–22 | S11–S14 | per-shot prompts | Personal observation, not entitlement or criticism of women. |
+| Bad first-date environments: noise, basement bar and formal performance | Book 23 | S15 | S15 shot prompt | Place/format is the friction; the other adult is never the punchline. |
+| Budapest-cost financial independence creates sustained work time; three years of private creative work after return; idea from 2016; later AI acceleration | Book 25 | S22 | deployment/operator prompts | Not ten continuous development years and not spare-time work beside a full-time job. AI did not invent or validate the product; Film 1 omits administrative details. |
+
+## 3. Product and brand coverage
+
+| Product truth | Public book | Film/prompt expression | Claim boundary |
+| --- | --- | --- | --- |
+| Most people want to be seen as whole humans; relationships may move through problems together | Book 24 and epilogue | Human thesis in creative bible; privacy-safe Budapest board; context-before-verdict in S16 | Acceptance never means hidden context, tolerated harm, lost safety, consent or boundaries. |
+| Time is finite; a dating path needs a rapid filter | Book 24 and 26 | S17 VO, captions, storyboard and master prompts | Fast toward reciprocal context, never fast judgment of human worth; outcome speed remains unproven. |
+| Private editable 1–10 priority for an unknown person or pair | Book 26 | S17 | Not attractiveness, morality, reputation or a public score. |
+| People/place/event in common and inside/outside-network context | Book 24, 26 and 29 | S16–S17 and S21 | Context is not vouching, endorsement, compatibility or safety guarantee. |
+| Exactly six strangers, three women and three men, with distinct identities and expectations | Book 27 | S18–S20; character benchmark and lifecycle prompt | No majority-women cast, romantic winner, faceless montage or automatic friendship. |
+| Why group-first: less one-pair all-or-nothing pressure; several conversations, activity, friendship or later invitation | Book 27 | S18 VO/visual, creative bible and all platform master prompts | Design rationale, not measured improvement. |
+| Independent accept/decline, chat, public doorway and real introductions | Book 27 | S19 | Consent is never overridden by another person's priority. |
+| Four event resources: members, transport, accommodation/venue and supplies; ticket/check-in/feedback separate | Book 28 | S20 | No invented wheelchair resource card; accessibility belongs in the real route and venue. |
+| Meeting changes strangers into known contacts | Book 28–29 | S20–S21 | A system state follows an actual meeting, not an algorithmic declaration. |
+| Personal intuition privately raises/lowers rates; later groups evolve dynamically | Book 26 and 29 | S21 | No public reputation, revenge score or single person's control over others. |
+| Auto Inviter can re-offer an open place toward intended accepted capacity | Book 29 | S21 and platform prompts | Every new person decides; no automatic replacement and no guarantee that a group stays full. |
+| Repetition may become community | Book 29 | S21 | Community is a possible result, never the starting state or guaranteed outcome. |
+| Localization is distance, place, timing, transport, resources, language, culture, venues and local responsibility | Book 30 | S22, central-Europe board and master prompts | More than translation, but not a complete travel planner. |
+| Country change may reuse the group-first method | Book 30 | S22 contextual note/master prompts | Current independent operators do not automatically exchange profiles, chats, contacts or private-rate history; migration is later work. |
+| Shared core, independent own-brand local operators, voluntary network and opt-out | Book 30–31 | S22 | Intended operating model, not proof of live deployments, revenue or efficiency. |
+| Broad built core, hardening/pilots/distribution/partners still needed | Book 31 and epilogue | S22–S23 | Built software is not validated social outcome, traction or solved loneliness. |
+| Brand mark: helmet-like shelter, guiding star and central heart | Book epilogue | S01, S22 and S23 | Use exact unmodified `frontend/src/assets/logo/heart.png`; symbolism is not safety certification. |
+| Book cover: mark replaces the initial M, then `yScoutee`; title `The Story`; large Roman `I` marks trilogy Volume I | Book build, `version.json` and book README | Generated HTML/PDF cover | Volume and edition version are separate; never place the mark beside the complete word or generate a fake logo. |
+
+## 4. Production decisions already synchronized
+
+- Character design is locked before video testing. The control group is exactly
+  three women and three men with varied age, ethnicity, body, clothing,
+  temperament and inner expectation. London crowds and flatmates also receive
+  individual motives rather than becoming scenery.
+- The identical CP18→CP19 eight-second stress shot is used to compare Flow and
+  OpenArt video models. Test generations are intended to remain usable, and
+  credit gates prevent testing every shot on every model.
+- The next storyboard review is endpoint-only: each intended eight-second
+  generator interval displays its first checkpoint for four seconds and its last
+  checkpoint for four seconds. The existing 56×3-second slideshow is a stale
+  legacy timing artifact, not the next reference method.
+- Final audio is separately timed voice-over, one continuous score for the whole
+  film and separate synchronized ambience/foley. Clip-generated background music
+  is discarded so music style does not restart at every cut. CPU FFmpeg handles
+  assembly, ducking, subtitles and delivery; supported-GPU Resolve is not
+  required.
+- Film 1 is complete at 02:48 and contains no hint of the later legal, tax or
+  court matter. Film 2 may inherit the exact lossless final frame only and must
+  be reconstructed from primary documents and legal review.
+
+## 5. Deliberate omissions, not missing coverage
+
+- The hero film does not reenact the pre-London Budapest relationships or the
+  London-to-Budapest dating visits.
+  Their combined lesson appears as whole-person/context-before-verdict product
+  logic; the full memories remain in the book and privacy-safe visual board.
+- The hero film gives the travel archive one eight-second folded-time burst.
+  Detailed routes remain in the book and recognition boards so the product story
+  stays under three minutes.
+- Sensitive third-party diagnosis, treatment, family violence, exact private
+  addresses and unverified inner motives are not public story material.
+- Unconfirmed places remain labelled `CONFIRM` or `PROBABLE` and cannot silently
+  become named film facts.
+- The later legal matter is not an unresolved hole in Film 1. It is the separate
+  documentary scope of Film 2.
+
+## 6. Release synchronization gate
+
+Before generating final characters or motion, verify that:
+
+1. any new Founder correction is first added to `SOURCES.md` with its privacy or
+   uncertainty boundary;
+2. the book receives the complete public form, while the 02:48 script changes
+   only if the correction alters the film's spine;
+3. the relevant memory board or shot prompt changes without copying the full
+   memoir into a video prompt;
+4. the same six approved identities appear in montage, individual portraits,
+   CP18/CP19 references and final group shots;
+5. the HTML and PDF book are rebuilt only after this source synchronization;
+6. all external claims and platform prices are rechecked at release time, while
+   first-person memories remain clearly labelled as testimony.
