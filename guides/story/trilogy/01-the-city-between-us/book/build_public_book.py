@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Build the English MyScoutee public-review book as HTML and PDF."""
+"""Build the English MyScoutee public edition as HTML and PDF."""
 
 from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import html
 import json
 import re
 import subprocess
 import tempfile
+from datetime import date
 from pathlib import Path
 
 
@@ -27,10 +29,13 @@ def find_project_dir(start: Path) -> Path:
 PROJECT_DIR = find_project_dir(BOOK_DIR)
 DEFAULT_SOURCE = BOOK_DIR / "THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md"
 DEFAULT_HTML = BOOK_DIR / "MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html"
-DEFAULT_PDF = BOOK_DIR.parent / "renders" / "MyScoutee_The_Story_Public_Review_EN.pdf"
+RENDERS_DIR = BOOK_DIR.parent / "renders"
+DRAFT_DIR = RENDERS_DIR / "draft"
+PUBLISHED_DIR = RENDERS_DIR / "published"
 LOGO = PROJECT_DIR / "frontend" / "src" / "assets" / "logo" / "heart.png"
 ILLUSTRATIONS = BOOK_DIR / "illustrations.json"
 BOOK_VERSION = BOOK_DIR / "version.json"
+BOOK_METADATA = BOOK_DIR / "metadata.json"
 ENDING_MOTIF_DIR = BOOK_DIR / "assets" / "ending-motifs"
 ENDING_MOTIFS = (
     (ENDING_MOTIF_DIR / "01-roots-and-open-horizon.svg", "Roots and the open horizon"),
@@ -153,10 +158,11 @@ def extract_front(lines: list[str]) -> tuple[dict[str, str], list[str]]:
 def load_book_version() -> dict[str, object]:
     version = json.loads(BOOK_VERSION.read_text(encoding="utf-8"))
     required = {
-        "trilogy_volume",
+        "trilogy_part",
         "trilogy_roman",
         "status",
         "version",
+        "locked",
         "updated",
         "published",
     }
@@ -167,7 +173,51 @@ def load_book_version() -> dict[str, object]:
         raise ValueError("Book status must be 'draft' or 'public'")
     if version["status"] == "public" and not version["published"]:
         raise ValueError("A public book version requires a publication date")
+    if not isinstance(version["locked"], bool):
+        raise ValueError("Book locked state must be a boolean")
     return version
+
+
+def load_book_metadata() -> dict[str, object]:
+    metadata = json.loads(BOOK_METADATA.read_text(encoding="utf-8"))
+    required = {
+        "title",
+        "author",
+        "subject",
+        "keywords",
+        "creator",
+        "language",
+        "copyright",
+    }
+    missing = required.difference(metadata)
+    if missing:
+        raise ValueError(f"Missing book metadata fields: {sorted(missing)}")
+    for field in required.difference({"keywords"}):
+        if not isinstance(metadata[field], str) or not metadata[field].strip():
+            raise ValueError(f"Book metadata field '{field}' must be non-empty text")
+    if not isinstance(metadata["keywords"], list) or not all(
+        isinstance(keyword, str) and keyword.strip()
+        for keyword in metadata["keywords"]
+    ):
+        raise ValueError("Book metadata keywords must be a non-empty-text list")
+    return metadata
+
+
+def versioned_pdf_name(version: dict[str, object]) -> str:
+    return (
+        "MyScoutee_The_Story_Part_I_The_City_Between_Us_"
+        f"v{version['version']}_EN.pdf"
+    )
+
+
+def default_pdf_path(version: dict[str, object]) -> Path:
+    stage_dir = PUBLISHED_DIR if version["locked"] else DRAFT_DIR
+    return stage_dir / versioned_pdf_name(version)
+
+
+def display_date(value: object) -> str:
+    parsed = date.fromisoformat(str(value))
+    return f"{parsed.day} {parsed.strftime('%B')} {parsed.year}"
 
 
 def collect_toc(lines: list[str]) -> list[tuple[int, str, str]]:
@@ -216,6 +266,36 @@ def markdown_to_html(
         if stripped == "---":
             parts.append("<hr>")
             index += 1
+            continue
+        if stripped == "<!-- closing-invitation -->":
+            index += 1
+            while index < len(lines) and not lines[index].strip():
+                index += 1
+            if index >= len(lines):
+                raise ValueError("Closing invitation marker requires text")
+            parts.append(
+                '<div class="closing-invitation">'
+                f"{inline_markdown(lines[index].strip())}</div>"
+            )
+            index += 1
+            continue
+        if stripped == "<!-- edition-colophon -->":
+            index += 1
+            colophon_lines: list[str] = []
+            while index < len(lines):
+                line = lines[index].strip()
+                if line:
+                    colophon_lines.append(line)
+                index += 1
+            if not colophon_lines:
+                raise ValueError("Edition colophon marker requires text")
+            parts.append(
+                '<div class="edition-colophon">'
+                + "".join(
+                    f"<p>{inline_markdown(line)}</p>" for line in colophon_lines
+                )
+                + "</div>"
+            )
             continue
         if stripped.startswith("# "):
             title = stripped[2:].strip()
@@ -485,6 +565,18 @@ def stylesheet() -> str:
   a { color: #2759a8; overflow-wrap: anywhere; }
   code { font: 8pt/1.3 "DejaVu Sans Mono", monospace; }
   strong { color: #142f59; }
+  .closing-invitation {
+    align-items: center; break-before: page; display: flex; justify-content: center;
+    min-height: 6.15in; padding: .45in; text-align: center;
+    font: 600 17pt/1.35 Georgia, "Times New Roman", serif; color: #142f59;
+  }
+  .closing-invitation strong { color: inherit; }
+  .edition-colophon {
+    align-items: center; break-before: page; display: flex; flex-direction: column;
+    justify-content: center; min-height: 6.15in; padding: .45in; text-align: center;
+    color: var(--muted); font: 9.5pt/1.5 Arial, sans-serif;
+  }
+  .edition-colophon p { margin: .06in 0; }
   .part-opener {
     page: part; width: 6in; height: 9in; margin: 0;
     padding: 2.65in .72in .7in;
@@ -583,7 +675,7 @@ def build_document(source: Path) -> str:
     title = html.escape(metadata["title"])
     subtitle = html.escape(metadata["subtitle"])
     tagline = html.escape(metadata["tagline"])
-    volume_roman = html.escape(str(version["trilogy_roman"]))
+    part_roman = html.escape(str(version["trilogy_roman"]))
     edition_version = html.escape(str(version["version"]))
     updated = html.escape(str(version["updated"]))
     status = str(version["status"])
@@ -595,7 +687,7 @@ def build_document(source: Path) -> str:
             "product outcomes."
         )
     else:
-        published = html.escape(str(version["published"]))
+        published = html.escape(display_date(version["published"]))
         edition = f"Public edition v{edition_version} · Published {published}"
         truth = (
             "A first-person public edition. Autobiographical memory is kept "
@@ -611,8 +703,8 @@ def build_document(source: Path) -> str:
 <meta name="description" content="A first-person MyScoutee origin story.">
 <meta name="book-version" content="{edition_version}">
 <meta name="book-status" content="{status}">
-<meta name="trilogy-volume" content="{volume_roman}">
-<title>{title} · Volume {volume_roman} · {subtitle} · v{edition_version}</title>
+<meta name="trilogy-part" content="{part_roman}">
+<title>{title} · Part {part_roman} · {subtitle} · v{edition_version}</title>
 <style>{stylesheet()}</style>
 </head>
 <body>
@@ -621,9 +713,9 @@ def build_document(source: Path) -> str:
     <img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span>
   </div>
   <div class="eyebrow">MyScoutee trilogy</div>
-  <div class="volume-lockup" aria-label="Volume {volume_roman}">
-    <span class="volume-roman">{volume_roman}</span>
-    <span class="volume-copy">Volume one<br>of the trilogy</span>
+  <div class="volume-lockup" aria-label="Part {part_roman}">
+    <span class="volume-roman">{part_roman}</span>
+    <span class="volume-copy">Part one<br>of the trilogy</span>
   </div>
   <h1>The Story</h1>
   <h2>{subtitle}</h2>
@@ -634,8 +726,8 @@ def build_document(source: Path) -> str:
   <div class="brand-lockup" aria-label="MyScoutee">
     <img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span>
   </div>
-  <span class="volume-roman">{volume_roman}</span>
-  <span class="volume-copy">Volume one of the MyScoutee trilogy</span>
+  <span class="volume-roman">{part_roman}</span>
+  <span class="volume-copy">Part one of the MyScoutee trilogy</span>
   <h1>The Story</h1>
   <h2>{subtitle}</h2>
   <p><em>{tagline}</em></p>
@@ -799,6 +891,32 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     document = html_path.read_text(encoding="utf-8")
     replacement_document, part_titles = full_bleed_document(document)
+    metadata = load_book_metadata()
+
+    def pdfmark_string(value: object) -> str:
+        text = str(value)
+        try:
+            text.encode("ascii")
+        except UnicodeEncodeError:
+            encoded = (b"\xfe\xff" + text.encode("utf-16-be")).hex().upper()
+            return f"<{encoded}>"
+        escaped = (
+            text.replace("\\", "\\\\")
+            .replace("(", "\\(")
+            .replace(")", "\\)")
+        )
+        return f"({escaped})"
+
+    keywords = ", ".join(str(item) for item in metadata["keywords"])
+    docinfo = (
+        f"[ /Title {pdfmark_string(metadata['title'])} "
+        f"/Author {pdfmark_string(metadata['author'])} "
+        f"/Subject {pdfmark_string(metadata['subject'])} "
+        f"/Keywords {pdfmark_string(keywords)} "
+        f"/Creator {pdfmark_string(metadata['creator'])} "
+        f"/Copyright {pdfmark_string(metadata['copyright'])} "
+        "/DOCINFO pdfmark"
+    )
 
     with tempfile.TemporaryDirectory(prefix="myscoutee-book-") as temp_name:
         temp_dir = Path(temp_name)
@@ -806,6 +924,7 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
         replacement_html = temp_dir / "full-bleed.html"
         replacement_pdf = temp_dir / "full-bleed.pdf"
         merged_pdf = temp_dir / "merged.pdf"
+        metadata_pdf = temp_dir / "metadata.pdf"
 
         replacement_html.write_text(replacement_document, encoding="utf-8")
         chrome_print(html_path, base_pdf, chrome)
@@ -855,26 +974,99 @@ def render_pdf(html_path: Path, pdf_path: Path, chrome: str, inkscape: str) -> N
             str(page_inputs[page_number])
             for page_number in range(1, len(base_page_text) + 1)
         ]
-        subprocess.run(["pdfunite", *merge_inputs, str(merged_pdf)], check=True)
-        merged_pdf.replace(pdf_path)
+        subprocess.run(
+            ["pdftk", *merge_inputs, "cat", "output", str(merged_pdf)],
+            check=True,
+        )
+        subprocess.run(
+            [
+                "gs",
+                "-q",
+                "-dBATCH",
+                "-dNOPAUSE",
+                "-sDEVICE=pdfwrite",
+                f"-sOutputFile={metadata_pdf}",
+                "-c",
+                docinfo,
+                "-f",
+                str(merged_pdf),
+            ],
+            check=True,
+        )
+        metadata_pdf.replace(pdf_path)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def write_publication_integrity_files(
+    pdf_path: Path,
+    version: dict[str, object],
+) -> None:
+    metadata = load_book_metadata()
+    digest = sha256_file(pdf_path)
+    checksum_path = pdf_path.with_suffix(f"{pdf_path.suffix}.sha256")
+    manifest_path = pdf_path.with_suffix(".publication.json")
+    checksum_path.write_text(f"{digest}  {pdf_path.name}\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "file": pdf_path.name,
+                "sha256": digest,
+                "part": version["trilogy_part"],
+                "part_roman": version["trilogy_roman"],
+                "edition_version": version["version"],
+                "published": version["published"],
+                "metadata": metadata,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    print(f"Wrote publication checksum {checksum_path}")
+    print(f"Wrote publication manifest {manifest_path}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--html", type=Path, default=DEFAULT_HTML)
-    parser.add_argument("--pdf", type=Path, default=DEFAULT_PDF)
+    parser.add_argument("--pdf", type=Path)
     parser.add_argument("--chrome", default="google-chrome")
     parser.add_argument("--inkscape", default="inkscape")
     parser.add_argument("--html-only", action="store_true")
     args = parser.parse_args()
 
+    version = load_book_version()
+    default_pdf = default_pdf_path(version)
+    pdf_path = args.pdf or default_pdf
+    is_default_output = args.pdf is None
+    if (
+        not args.html_only
+        and is_default_output
+        and version["locked"]
+        and pdf_path.exists()
+    ):
+        raise FileExistsError(
+            "Published versions are immutable: increment version.json before "
+            f"building another edition ({pdf_path})"
+        )
+
     args.html.parent.mkdir(parents=True, exist_ok=True)
     args.html.write_text(build_document(args.source.resolve()), encoding="utf-8")
     print(f"Wrote {args.html}")
     if not args.html_only:
-        render_pdf(args.html, args.pdf, args.chrome, args.inkscape)
-        print(f"Wrote {args.pdf}")
+        render_pdf(args.html, pdf_path, args.chrome, args.inkscape)
+        print(f"Wrote {pdf_path}")
+        if is_default_output and version["locked"]:
+            write_publication_integrity_files(pdf_path, version)
 
 
 if __name__ == "__main__":

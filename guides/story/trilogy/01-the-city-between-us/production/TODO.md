@@ -9,8 +9,8 @@ the Founder explicitly approves generation.
 
 ## 1. Current work — book and prompt synchronization only
 
-- [x] Keep the public manuscript in English and versioned as an unpublished
-  review draft.
+- [x] Keep the public manuscript in English and publish the Founder-approved
+  first edition as version `1.0.0`, still editable until a later explicit lock.
 - [x] Separate Founder testimony, external geography, uncertain recognition
   candidates and product claims.
 - [x] Add the post-university Budapest attempt and reimbursed interview journeys.
@@ -34,10 +34,13 @@ the Founder explicitly approves generation.
   sustained work intervals unavailable beside ordinary full-time employment,
   without claiming ten continuous development years.
 - [x] Rebuild the English HTML and PDF after the current synchronization pass.
-- [ ] Founder reads the complete PDF and marks factual, emotional, privacy and
+- [x] Founder reads the complete PDF and marks factual, emotional, privacy and
   pacing corrections.
-- [ ] Apply the Founder review and rebuild the PDF again.
-- [ ] Record explicit Founder approval for the narrative and prompt baseline.
+- [x] Apply the Founder review and rebuild the PDF again.
+- [x] Record explicit Founder approval for the public narrative and publish
+  Part I on 7 August 2026.
+- [ ] Approve the synchronized generation-prompt baseline separately before
+  character, image, slideshow or motion generation begins.
 
 ## 2. Facts still requiring confirmation before public generation
 

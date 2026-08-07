@@ -1,11 +1,11 @@
-# MyScoutee — The Story · Volume II
+# MyScoutee — The Story · Part II
 
 Status: **planned; exact English title unassigned**.
 
 Trilogy-wide product truth, benchmarks and platform workflows live in the
-[shared system](../../../shared/README.md); this directory owns only Volume II.
+[shared system](../../../shared/README.md); this directory owns only Part II.
 
-This is a separate volume package, not an appendix to Volume I. Its book,
+This is a separate part package, not an appendix to Part I. Its book,
 video, storyboard, prompts, characters, evidence boundaries and release version
 must be developed here from its own primary material.
 

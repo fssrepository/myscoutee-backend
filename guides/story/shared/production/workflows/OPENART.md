@@ -1,7 +1,7 @@
 # OpenArt workflow
 
-Scope: shared platform playbook for every volume. The named Sxx shots, prompts
-and assets below are Volume I's worked example; later volumes substitute their
+Scope: shared platform playbook for every part. The named Sxx shots, prompts
+and assets below are Part I's worked example; later parts substitute their
 own locked storyboard inputs without copying them into this shared directory.
 
 Checked against OpenArt's public product/help pages on 2026-08-04. The UI is
@@ -37,7 +37,7 @@ Create a working asset directory outside this source folder and collect:
 - repository logo files:
   `frontend/src/assets/logo/heart.png` and/or `heart.webp`;
 - one clean image for each world and prop generated from
-  [Volume I's PROMPT_PACK.md](../../../trilogy/01-the-city-between-us/prompts/PROMPT_PACK.md);
+  [Part I's PROMPT_PACK.md](../../../trilogy/01-the-city-between-us/prompts/PROMPT_PACK.md);
 - no founder travel photos survive, so create and label the approved destination
   plates as illustrated reconstructions; never present unrelated stock as a
   personal archive;

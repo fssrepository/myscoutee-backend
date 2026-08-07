@@ -35,7 +35,7 @@ Required technical properties:
 
 ## 2. Read these sources first
 
-1. [Volume overview](README.md)
+1. [Part overview](README.md)
 2. [Locked English script](../film/SCRIPT.md)
 3. [Storyboard](../storyboard/STORYBOARD.md)
 4. [Shared two-film credit-saver plan](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md)

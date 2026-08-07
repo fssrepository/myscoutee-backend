@@ -105,6 +105,25 @@ chemistry somewhere real to happen,” never “group dates solve dating.”
 These sources show that doors into meeting exist. They do not prove why one
 person's encounters succeeded or failed, and they are not listed in the VO.
 
+### Return and re-entry context
+
+- [Szilasi, Fülöp and Nguyen Luu — Returning home: the decision to come home and
+  the reintegration experiences of Hungarian adults
+  (2025)](https://link.springer.com/article/10.1007/s12144-025-07924-7):
+  qualitative interviews with Hungarian returnees and close contacts describe
+  reintegration as a psychological and relational process, including continued
+  cross-country comparison and nostalgia for the former host country.
+- [Lados and Hegedűs — Return migration and identity change: A Hungarian case
+  study
+  (2019)](https://publicatio.bibl.u-szeged.hu/16218/1/Lados_Hegedus_2019_Return_migration_and_identity_change_a_Hungarian_case_study_Regional_Statistics_090109.pdf):
+  places post-return stress, identity change and possible re-emigration inside
+  Hungarian return-migration research.
+
+These sources support the bounded use of `re-entry` or `reverse culture shock`
+for the Founder's felt mismatch after returning. They do not verify his
+nightlife memories and do not support a comparison of Hungarian and foreign
+women, venues or national character.
+
 ### Budapest visual and foreign-currency-loan context
 
 - [UNESCO — Budapest, including the Banks of the Danube, the Buda Castle
@@ -842,6 +861,17 @@ These are not externally researched claims. They remain first-person testimony:
   exact historical coach itineraries and any additional Austrian trips remain
   `CONFIRM` rather than being combined into one route;
 - return home to seek a partner;
+- one of the first post-return Thursday nights in a public Budapest venue: a
+  woman grimaced when the Founder approached; by Saturday he was organizing
+  Thailand and left within days. Separate public-room memories include one
+  woman saying "Not you," another contact leading to a meeting where the
+  Founder felt no attraction, and a good dance after which he left without
+  asking for contact and later wondered whether he had become frightened. These
+  are individual memories and self-reflection, not a national comparison or a
+  claim that one stranger caused the Thailand journey;
+- a recurring group forming through shared-interest events and remaining a
+  friendship rather than becoming romance; the Founder considers that
+  friendship an equally important human result, not failed dating;
 - roughly three years of withdrawn creative work after returning, during which
   larger journeys continued and a possible return to London remained unresolved;
   Film 1 does not mention administrative status;

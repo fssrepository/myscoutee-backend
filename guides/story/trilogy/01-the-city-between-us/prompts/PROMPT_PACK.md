@@ -218,8 +218,30 @@ Use
 to lock five privacy-safe, individual women and the Debrecen-distance,
 spontaneous-introduction, housing, commitment, London-home-visit,
 incomplete-disclosure, premature-judgment and acceptance memories.
+
+### 2017 photograph, date and unfinished return memory board
+
+Use
+[prompts/budapest-2017-photo-match-and-unfinished-return-memory-board.txt](budapest-2017-photo-match-and-unfinished-return-memory-board.txt)
+for the almost-two-year match silence, unusually flattering Founder photograph,
+subjectively compelling woman, anonymous investment-bank employment question,
+evasive London-facing answer, apparently good date from the Founder's side, no
+second date or conversation, and one modest nudge toward Hungarian institutional
+re-entry. Do not invent her reason for declining or turn the memory into an
+employment advertisement.
 This board supports the public book and character development; it is not a
 request to add six scenes to the 02:48 hero film.
+
+### Budapest return, nightlife and re-entry memory board
+
+Use
+[prompts/budapest-return-nightlife-reentry-memory-board.txt](budapest-return-nightlife-reentry-memory-board.txt)
+for the first Thursday-night grimace after the December 2015 return, the rapid
+Saturday decision to organize Thailand, the separate short rebuff, the contact
+that led to a meeting without attraction, and the good dance from which the
+Founder withdrew without asking for contact. The board assigns neither national
+character nor blame: it holds other people's boundaries beside the Founder's
+own fear, imperfect reading of rooms and reverse-culture-shock experience.
 
 ### UK adventure and availability memory board
 

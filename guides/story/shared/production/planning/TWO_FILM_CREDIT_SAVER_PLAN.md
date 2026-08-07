@@ -2,9 +2,9 @@
 
 Status: **current operating plan, 2026-08-07**.
 
-Scope: this is a trilogy-wide production plan. Volume I's CP18→CP19 sequence is
+Scope: this is a trilogy-wide production plan. Part I's CP18→CP19 sequence is
 the canonical worked stress test because it already combines the hardest
-ensemble, identity and endpoint-continuity requirements. Each later volume keeps
+ensemble, identity and endpoint-continuity requirements. Each later part keeps
 its own story assets and shot manifest.
 
 This plan covers two separate `9:16` films of roughly `2:30–3:00` each:
@@ -242,7 +242,7 @@ The production animatic uses:
 
 - one still for each real Sxx scene;
 - the true `4–12 s` duration in
-  [Volume I's SHOT_MANIFEST.csv](../../../trilogy/01-the-city-between-us/production/tracking/SHOT_MANIFEST.csv);
+  [Part I's SHOT_MANIFEST.csv](../../../trilogy/01-the-city-between-us/production/tracking/SHOT_MANIFEST.csv);
 - exact total runtime `02:48.000`;
 - no optical flow;
 - at most a restrained `1–2%` pan or push;

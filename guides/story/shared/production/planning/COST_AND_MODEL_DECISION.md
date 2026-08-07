@@ -1,7 +1,7 @@
 # Cost and model decision — what should I buy, and where should I start?
 
 Scope: shared historical planning context for the trilogy. Volume-specific
-story assets and delivery decisions remain in their owning volume.
+story assets and delivery decisions remain in their owning part.
 
 > **Historical snapshot, superseded on 2026-08-07.** The earlier OpenArt-first,
 > Resolve-based recommendation below is retained for price-history and platform

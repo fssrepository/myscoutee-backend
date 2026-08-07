@@ -1,13 +1,13 @@
-# MyScoutee — The Story · Volume III
+# MyScoutee — The Story · Part III
 
-Status: **planned final volume; exact English title unassigned**.
+Status: **planned final part; exact English title unassigned**.
 
 Trilogy-wide product truth, benchmarks and platform workflows live in the
-[shared system](../../../shared/README.md); this directory owns only Volume III.
+[shared system](../../../shared/README.md); this directory owns only Part III.
 
-Volume III owns the eventual outcome of the trilogy. No conclusion, verdict or
+Part III owns the eventual outcome of the trilogy. No conclusion, verdict or
 emotional resolution is written in advance. Its book, video, storyboard,
-prompts, assets and release history remain independent from Volumes I and II.
+prompts, assets and release history remain independent from Parts I and II.
 
 - [book package](../book/README.md)
 - [film scope](../film/FILM.md)

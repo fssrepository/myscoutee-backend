@@ -286,12 +286,16 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 ### S11 — Rooms full of beginnings · 01:20–01:26 · 6 s
 
 - **Picture/blocking:** A continuous corridor passes a talk, community dinner and
-  social evening. The Founder has pleasant short exchanges; each room turns over
-  before a second step forms. Nobody rejects him.
+  social evening. One doorway briefly repeats across several evenings: the same
+  small mixed adult group recognizes one another and friendship settles around
+  their shared interest, without romantic pairing. In the other rooms, pleasant
+  short exchanges still turn over before a next step forms. Nobody rejects him,
+  and friendship is not presented as failed dating.
 - **Face/body:** open palm, attentive nod, steady interest.
 - **Camera/lens:** 28 mm lateral tracking with three foreground doorway wipes.
 - **Light/color:** Budapest cream/terracotta; rooms warmer than corridor.
-- **Sound/VO:** applause tail → plate clink → name-tag marker; events line.
+- **Sound/VO:** applause tail → plate clink → familiar greeting → name-tag
+  marker; friendship/continuation line.
 - **Transition/generation:** marker stroke becomes dance-floor tape. OpenArt
   Director or three short plates in post.
 

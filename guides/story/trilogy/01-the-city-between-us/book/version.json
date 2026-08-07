@@ -1,8 +1,9 @@
 {
-  "trilogy_volume": 1,
+  "trilogy_part": 1,
   "trilogy_roman": "I",
-  "status": "draft",
-  "version": "0.1",
+  "status": "public",
+  "version": "1.0.0",
+  "locked": false,
   "updated": "2026-08-07",
-  "published": null
+  "published": "2026-08-07"
 }

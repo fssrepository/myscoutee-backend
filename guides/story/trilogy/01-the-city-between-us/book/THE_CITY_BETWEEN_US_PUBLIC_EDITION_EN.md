@@ -27,8 +27,8 @@ does not promise a perfect partner, guaranteed chemistry or complete safety. The
 idea is simpler and more difficult: help mutual intention travel far enough to
 become a real, freely chosen meeting.
 
-This review draft ends with that invitation. It does not contain the later
-legal and documentary chapter of my life.
+This first part ends with that invitation. The consequences of the next
+chapter in my working life belong to Part II.
 
 <!-- pagebreak -->
 
@@ -841,6 +841,18 @@ life.
 
 ## 14. Thailand, Cambodia, and the Price of a Ride
 
+That journey began only days after one of my first public nights out in
+Budapest following my return. On Thursday, I approached a woman in a nightlife
+venue and she looked at me with a grimace. The expression struck harder than it
+should have. I had known social spaces such as Adams Morgan where strangers
+sometimes smiled or approached first. Now I was home, yet I could no longer
+read the room I was supposed to know.
+
+By Saturday, I was organizing Thailand. Within days, I had left. One woman's
+look did not cause a journey of several weeks, and I will not turn her into a
+symbol of Hungary. The speed of my departure says more about me: when home felt
+foreign, movement was still easier than staying long enough to understand why.
+
 Thailand was not a short stop. I travelled for roughly two and a half to three
 weeks across different regions: north, west, the eastern Gulf side and the
 south. Bangkok, Pattaya, Phuket, the route toward the Phi Phi Islands and the
@@ -898,12 +910,11 @@ Some journeys lasted only a day. Their brevity did not make them trivial. A bus
 created a temporary group: strangers, couples, a guide, a schedule, a fixed
 number of seats and a promise to return by night.
 
-In Slovakia, the High Tatras rose beyond forest and weather. I visited them;
-that is not a candidate memory. Only the possible identification of Starý
-Smokovec, Hrebienok, Štrbské Pleso or Tatranská Lomnica still requires
-recognition against images. What I remember most clearly is the change in scale
-when the bus stopped: the timetable remained human-sized while the mountain did
-not.
+In Slovakia, the High Tatras rose beyond forest and weather. I know I visited
+them. The exact stop is less certain; it may have been Starý Smokovec,
+Hrebienok, Štrbské Pleso or Tatranská Lomnica. What I remember most clearly is
+the change in scale when the bus stopped: the timetable remained human-sized
+while the mountain did not.
 
 Elsewhere in Slovakia, my family roots reached into the Slovak Ore Mountains.
 Cousins lived there, but they did not speak Hungarian. I met them only once,
@@ -940,17 +951,17 @@ Some journeys were beautiful without producing a personal story, and that
 absence became part of the story.
 
 Italy gave me what I remember as my most beautiful route: rail from Bergamo
-toward Naples, with the exact intermediate sequence still to be confirmed.
-Landscape and city changed at high speed while the train held a continuous
-interior around them.
+toward Naples. The exact intermediate sequence has faded, but landscape and
+city changed at high speed while the train held a continuous interior around
+them.
 
 In Paris, I travelled as if following a compass. On different days I chose
 different directions: the city itself, Versailles, Disneyland Paris and routes
 beyond the centre. Paris was not empty of sights. The problem was deciding which
 direction a limited day could contain.
 
-From Bergen, a coordinated chain of rail, the Flåm Railway, fjord boat, bus and
-rail is the strongest candidate for the Norwegian circuit I remember. Each
+The Norwegian circuit I remember most closely resembles the coordinated chain
+from Bergen through rail, the Flåm Railway, a fjord boat, bus and rail. Each
 vehicle arrived to continue a route designed by people I never met. The system
 worked so well that it almost disappeared.
 
@@ -1064,6 +1075,32 @@ most important fact about me was how many years I had lived.
 
 Still, I tried.
 
+The first rebuff was not the only public-room memory. On another night, I moved
+toward a woman and heard, "Not you." The sentence was short enough to close the
+space before a conversation began. It remains one person's boundary in one
+moment, not a verdict on Budapest or Hungarian women.
+
+Another woman was already surrounded by several people. I stepped into the
+group, asked for a way to contact her and then left her to continue the
+conversation. We later met. The meeting taught me the opposite lesson from the
+rejection: I had succeeded in creating a next step, yet once we were together I
+did not feel the attraction I had expected. Access was not connection, and
+being chosen was not the same as choosing honestly.
+
+On another evening, a woman and I danced well. I sensed that she was waiting
+for me to ask for her contact details. Instead, I left the venue with people I
+knew without saying anything to her. Afterwards they asked why I had not asked.
+Had I become frightened? The possibility stayed with me because this time no
+one had rejected me. I had disappeared from an opening myself.
+
+I later found a useful name for part of this confusion: re-entry or reverse
+culture shock. A person can return expecting home to be familiar, while both
+the person and the remembered home have changed. I do not use the term as a
+diagnosis, an excuse or a comparison in which one country wins. It describes
+the mismatch I felt. My return to Hungary was physical long before it became
+social, and the missed beginnings contained my own fear as well as other
+people's boundaries.
+
 I tried because I had not returned to observe my life from behind the window. I
 wanted a person with whom the journeys, work, ordinary evenings and future could
 be shared.
@@ -1093,6 +1130,27 @@ listens, adapts, jokes, helps or respects a boundary. We form an opinion because
 the interface asks for one. The opinion can feel complete because no shared
 context exists to contradict it.
 
+One encounter in 2017 made that suspended state visible. After almost two years
+without a match, I used an unusually flattering profile photograph and finally
+met a woman whose own picture caught me immediately. That response was entirely
+subjective; the photograph had told me almost nothing about her.
+
+She worked in financial advisory for a multinational investment bank. During
+our conversation, she asked why I did not try applying there. I answered
+indirectly. Money was not the real obstacle. I had still not closed London
+inside myself. I was living in Hungary, but I was not yet fully here.
+
+From my side, the date felt good. She did not want another. I never learned why.
+I wondered whether something about me had felt wrong to her, but that was only
+my attempt to explain an answer I did not have. She did not close the door to
+continuing the chat, yet a second conversation never happened.
+
+This was still before I officially re-registered in Hungary on 10 November
+2018. The encounter did not decide that return on its own, but it nudged me. If
+I was going to live in Hungary, I could not remain indefinitely outside its
+ordinary systems while still facing London. I would eventually have to register
+myself back into Hungarian life and begin looking for work here.
+
 The old world was not automatically kinder. Introductions through friends could
 exclude, gossip and reproduce closed circles. A person in common could be wrong.
 Nostalgia is not a product requirement.
@@ -1106,11 +1164,16 @@ I did not remain behind the phone.
 
 I went to talks, community dinners, language and social evenings, exhibitions,
 events and other rooms where people had chosen to appear in public. Each room
-contained beginnings. A short conversation could be pleasant, intelligent and
-genuine. Then the event ended, the crowd changed, and the beginning had no
-supported next step.
+contained beginnings. Some of them did continue. Around shared interests, a
+recognizable group formed and friendship remained. Romance did not grow from
+it, but friendship was not a lesser result. It was one of the things I had been
+looking for without always knowing how to name it.
 
-This did not mean the events had failed. A lecture is allowed to be a lecture.
+Other short conversations were pleasant, intelligent and genuine, yet the
+event ended, the crowd changed, and the beginning had no supported next step.
+
+This did not mean the events had failed. A friendship is not failed dating, and
+a lecture is allowed to be a lecture.
 A volunteer group is not a dating market. A person attending a cultural evening
 has not consented to be evaluated romantically. The problem was not that every
 door should lead to a relationship. The problem was that, when two or more
@@ -1552,6 +1615,24 @@ gossip, and enough local humanity to turn a route into a meeting.
 The path cannot manufacture acceptance. It can give acceptance a fairer chance
 to become mutual, informed and real.
 
+After many interviews, I found a multinational position in Hungary in August
+2019. I had come close to retreating to London again; by chance, I no longer had
+to. The position looked stable. COVID quickly destroyed that expectation.
+
+The same pandemic opened a different door: cross-border remote work. I secured
+a contract role connected to another multinational in Brussels. It had looked
+less stable than the Hungarian position, yet proved more durable. Without the
+new remote arrangement, I would have had to move abroad again. Professionally,
+I was already standing with one foot beyond the border while still living at
+home.
+
+In my experience, 2021 was the one open year. Once the pandemic receded, a
+remote arrangement already secured could remain if the company did not require
+personal attendance. In 2022, as an unknown new applicant, I was no longer
+being accepted on the same terms.
+
+What followed belongs to Part II.
+
 Years ago, another Indian colleague in the London office told me that I should
 write a novel.
 
@@ -1563,6 +1644,8 @@ My story does not end with a perfect match.
 
 It ends with an invitation.
 
+<!-- closing-invitation -->
+
 **MyScoutee. Test it with me in real communities.**
 
 <!-- pagebreak -->
@@ -1570,7 +1653,7 @@ It ends with an invitation.
 # Notes on Memory, Geography, and Product Truth
 
 This section is intentionally separate from the memoir voice. It records the
-main public sources and truth boundaries used for this review edition.
+main public sources and truth boundaries used for this edition.
 
 ## Budapest and Its Surroundings
 
@@ -1619,8 +1702,8 @@ Sources:
 - The United States geography is deliberately bounded. Official Washington
   material supports Adams Morgan as a diverse, socially active neighbourhood;
   National Park Service material supports the Appalachian mountain/park
-  corridor west of Washington; Maryland tourism material supplies amusement-
-  park recognition candidates. None of those sources verifies the Founder's
+  corridor west of Washington; Maryland tourism material supplies possible
+  amusement-park identifications. None of those sources verifies the Founder's
   personal encounters or exact itinerary.
 - Ocean City's state, the exact Amish area, amusement park, hotel and protected
   landscapes remain unconfirmed. The public narrative therefore uses only the
@@ -1655,6 +1738,20 @@ Sources:
 - Research on return migration shows mixed experiences: foreign experience and
   language may be valued, while skill mismatch, weakened networks and employer
   stereotypes can also exist. No specific employer motive is asserted here.
+- The 2017 photograph, date, employment conversation and unfinished chat are
+  first-person memories. The investment bank remains unnamed. The Founder says
+  only that the date felt good to him; he does not know why the woman declined a
+  second date. The encounter occurred before the 10 November 2018 Hungarian
+  health-insurance re-registration and was one nudge toward institutional
+  re-entry, not its sole cause.
+- The August 2019 Hungarian multinational role after many interviews, the near
+  return to London, its rapid COVID-era end, the apparently less secure but more
+  durable Brussels contract and the narrow pandemic-enabled remote-work window
+  are first-person chronology. Both employers remain anonymous. The statement
+  that 2021 was the only open year and that unknown new applicants no longer
+  received the same remote opportunity in 2022 describes the Founder's own
+  experience, not a general labour-market rule. This edition states only the
+  threshold; its consequences belong to Part II.
 
 Sources:
 
@@ -1685,8 +1782,8 @@ Sources:
 - The Reserve Bank of India's 8 November 2016 notice withdrew legal-tender
   status from the existing series of 500- and 1,000-rupee notes from 9 November.
   It did not withdraw all Indian cash.
-- Specific monuments not clearly remembered remain candidates rather than
-  asserted visits.
+- The edition does not claim visits to specific monuments the Founder does not
+  clearly remember.
 - Minimundus is in Klagenfurt near Lake Wörthersee, not Vienna.
 - Bärenschützklamm begins near Mixnitz in Styria. Official tourism material
   describes the route's bridges, ladders, waterfalls and demanding elevation.
@@ -1724,6 +1821,8 @@ product-market fit. The operator network is an intended model to be tested.
 
 ---
 
-Unpublished review draft. Prepared for story, factual and visual-continuity
-review before character and video-model benchmarking. The build reads the
-current edition version from `version.json`.
+<!-- edition-colophon -->
+
+First public edition, version 1.0.0. Published 7 August 2026.
+
+© 2026 MyScoutee. All rights reserved.

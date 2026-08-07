@@ -162,9 +162,11 @@ continued after the London return, the cognac notebook visibly folds chronology;
 the next shot restates the purposeful but not yet permanent homecoming rather
 than pretending COVID preceded it: **“I went out to make a living. I came home
 to find a partner.”** London remains a possible destination after a break. He
-uses apps, attends real events, dances and goes on dates. The failure
-is not effort, attractiveness or lack of people. Each encounter loses momentum
-at a different boundary.
+uses apps, attends real events, dances and goes on dates. One recurring event
+group preserves shared interest and friendship without becoming romance; that
+is a real human outcome, not failure. Other encounters lose momentum at
+different boundaries. The problem is not effort, attractiveness or lack of
+people, and friendship is never treated as a consolation prize.
 
 The first 113 seconds should feel like one unbroken thought, with hidden edits
 behind the Tottenham front door, the Soho office window, Victoria line glass,

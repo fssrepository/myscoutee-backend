@@ -4,8 +4,8 @@ Status: research note and creative rationale. External observations are not
 MyScoutee performance claims. Research was checked on 2026-08-07.
 
 Scope: this is the trilogy-wide product-truth and claim-boundary source. Links
-to memory boards point to their owning volume; the boards themselves remain
-with that volume's narrative package.
+to memory boards point to their owning part; the boards themselves remain
+with that part's narrative package.
 
 ## 1. What MyScoutee is
 

@@ -5,5 +5,5 @@
 - [`workflows/`](workflows/README.md): platform operating playbooks for Flow, OpenArt
   and Higgsfield.
 
-Shot manifests, volume checklists and active handoffs stay inside the owning
-volume. The shared playbooks may point to Volume I assets as worked examples.
+Shot manifests, part checklists and active handoffs stay inside the owning
+part. The shared playbooks may point to Part I assets as worked examples.

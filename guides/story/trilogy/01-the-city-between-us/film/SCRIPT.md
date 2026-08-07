@@ -19,7 +19,7 @@ not need to occupy every second.
 | 00:58–01:06 | FOUNDER VO | Across almost forty countries, I discovered each place — and myself — through local people. Then the world closed. |
 | 01:06–01:13 | FOUNDER VO | I had gone out to earn money. I came home to find a partner. |
 | 01:13–01:20 | FOUNDER VO | I joined the apps. Some people waited for a reply; others drowned in attention. |
-| 01:20–01:26 | FOUNDER VO | I went to talks, dinners and social evenings — rooms full of beginnings. |
+| 01:20–01:26 | FOUNDER VO | Talks, dinners and social evenings formed friendships. Other beginnings still lost their next step. |
 | 01:26–01:46 | FOUNDER VO | At beginner dance classes, the floor was full. By the advanced classes, it thinned. Sometimes a conversation began, then a friendly partner arrived, and the context became clear. |
 | 01:28–01:30 | DANCE INSTRUCTOR | Partners, change. |
 | 01:41–01:43 | DANCE PARTNER, friendly | Hey. Ready to go? |

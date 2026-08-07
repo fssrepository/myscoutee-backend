@@ -1,4 +1,4 @@
-# Volume II renders
+# Part II renders
 
-Generated review and release exports for Volume II belong here. There are no
+Generated review and release exports for Part II belong here. There are no
 approved renders yet.

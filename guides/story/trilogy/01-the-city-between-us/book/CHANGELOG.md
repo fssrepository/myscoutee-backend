@@ -1,12 +1,49 @@
 # MyScoutee — The Story book changelog
 
-The trilogy volume and the edition version are separate. This book is Volume
-`I`; its current unpublished review version is `0.1`.
+The trilogy part and the edition version are separate. This book is Part
+`I`; its current public edition is `1.0.0` and remains editable until the
+Founder explicitly locks it.
+
+## 1.0.0 — 2026-08-07
+
+- Founder-approved first public edition for release on LinkedIn.
+- Closed the synchronized memoir and product-origin manuscript without changing
+  its explicit memory, privacy or product-truth boundaries.
+- Replaced remaining internal editorial language with publication-ready memory
+  language while preserving uncertainty where exact routes or locations have
+  faded.
+- Added public version metadata, publication date, copyright notice and a
+  versioned draft-stage artifact. The edition remains editable with
+  `locked: false`; the published-stage PDF, checksum and manifest are created
+  only by a later explicit technical closure.
+- Replaced book-series terminology from `Volume` with the more natural `Part`:
+  this is Part I of one continuous trilogy.
+- Added the post-return nightlife and re-entry-shock sequence: the first
+  Thursday-night grimace, rapid Saturday organization of Thailand, a separate
+  short rebuff, a contact that did not become attraction, and a promising dance
+  from which the Founder himself withdrew. The wording keeps each woman's
+  agency and avoids turning personal encounters into a national judgment.
+- Clarified that repeated public events did produce a group held together by
+  shared interest and friendship. The book and film now treat that friendship
+  as an equally valuable outcome rather than failed romance.
+- Added the 2017 post-return dating memory: almost two years without a match, an
+  unusually flattering profile photograph, a subjectively promising date with
+  an anonymous investment-bank financial adviser, the Founder's evasive answer
+  about applying there because London remained emotionally unfinished, no
+  second date or conversation, and the encounter's limited but real nudge toward
+  re-entering ordinary Hungarian institutional and working life.
+- Added the non-legal Part II bridge: after many interviews and a near return
+  to London, the Founder entered an apparently stable Hungarian multinational
+  role in August 2019; COVID ended it quickly, then enabled a Brussels-linked
+  contract that looked less secure but proved more durable without requiring
+  another move abroad. The memoir bounds 2021 as the Founder's one open remote-
+  hiring year and the 2022 closure as his own applicant experience, not a
+  universal labour-market claim.
 
 ## 0.1-draft — 2026-08-07
 
 - Established the first synchronized English public-review manuscript.
-- Added the MyScoutee manual-compatible cover lockup and Volume `I` trilogy mark.
+- Added the MyScoutee manual-compatible cover lockup and Part `I` trilogy mark.
 - Synchronized Founder memories, product truth, privacy boundaries, visual
   prompts and the 02:48 hero-film compression.
 - Added the optional illustration and same-identity portrait/montage contract.
@@ -132,12 +169,12 @@ The trilogy volume and the edition version are separate. This book is Volume
 
 ## Publication rule
 
-- Do not mark the book public or assign `1.0` without the Founder's explicit
-  instruction.
-- The first approved public edition becomes `1.0`.
-- After publication, use a patch increment for corrections that do not change
-  meaning (`1.0.1`), a minor increment for added or materially revised content
-  (`1.1`), and a major increment for a substantially restructured new edition
-  (`2.0`).
-- A later trilogy volume receives its own Volume number and its own independent
-  edition-version history; Volume `II` is not version `2.0` of Volume `I`.
+- The Founder approved and published the first public edition as `1.0.0` on
+  7 August 2026.
+- Until the Founder explicitly locks the edition, the current versioned export
+  may be rebuilt. After locking, use a patch increment for corrections that do
+  not change meaning (`1.0.1`), a minor increment for added or materially
+  revised content (`1.1.0`), and a major increment for a substantially
+  restructured new edition (`2.0.0`).
+- A later trilogy part receives its own Part number and its own independent
+  edition-version history; Part `II` is not version `2.0.0` of Part `I`.

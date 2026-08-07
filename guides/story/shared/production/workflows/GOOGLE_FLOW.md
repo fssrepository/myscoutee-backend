@@ -1,7 +1,7 @@
 # Google Flow workflow
 
-Scope: shared platform playbook for every volume. The named Sxx shots, prompts
-and assets below are Volume I's worked example; later volumes substitute their
+Scope: shared platform playbook for every part. The named Sxx shots, prompts
+and assets below are Part I's worked example; later parts substitute their
 own locked storyboard inputs without copying them into this shared directory.
 
 Checked against official Google Flow Help on 2026-08-04. Current public model
@@ -49,7 +49,7 @@ the entire film, but identity- and dialogue-heavy shots require more care.
 1. Click the model name in the prompt area.
 2. Choose **Image** and **Nano Banana Pro** for final asset sheets; use the
    current Lite/default image model for cheap drafts if needed.
-3. Paste one character/world prompt from [Volume I's PROMPT_PACK.md](../../../trilogy/01-the-city-between-us/prompts/PROMPT_PACK.md).
+3. Paste one character/world prompt from [Part I's PROMPT_PACK.md](../../../trilogy/01-the-city-between-us/prompts/PROMPT_PACK.md).
 4. Attach authorized references.
 5. Generate and save the approved results to the project.
 6. Name them `Founder`, `Maya`, `DanceStudent`, `DancePartner`, `Operator`,

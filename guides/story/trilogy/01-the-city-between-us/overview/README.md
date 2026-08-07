@@ -1,8 +1,8 @@
 # The City Between Us — production package
 
-Series position: **MyScoutee — The Story · Volume I**. This entire directory is
+Series position: **MyScoutee — The Story · Part I**. This entire directory is
 the independent book, video, storyboard, prompt, asset and render package for
-the trilogy's first volume. The [series hub](../../../README.md) is at the story
+the trilogy's first part. The [series hub](../../../README.md) is at the story
 package root.
 
 Status: **production concept and generation guide**, not a statement of user
@@ -65,8 +65,9 @@ as an available, lower-pressure path, not as a guaranteed romantic result.
 ## Public story book
 
 The English-first memoir and product-origin companion is **MyScoutee — The
-Story**, Volume **I** of the planned trilogy, with **The City Between Us** as its
-literary subtitle. The current artifact is an unpublished **Draft v0.1**. Its cover uses
+Story**, Part **I** of the planned trilogy, with **The City Between Us** as its
+literary subtitle. The current artifact is **Public edition v1.0.0**, published
+7 August 2026 and still editable until the Founder explicitly locks it. Its cover uses
 the same wordmark contract as the official manuals: the original mark replaces
 the initial `M`, followed only by `yScoutee`. It never displays the mark beside
 the complete word and never duplicates the `M`.
@@ -74,11 +75,14 @@ the complete word and never duplicates the `M`.
 - [English manuscript](../book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md)
 - [book build and illustration contract](../book/README.md)
 - [book version source](../book/version.json)
+- [book document metadata](../book/metadata.json)
 - [book changelog](../book/CHANGELOG.md)
-- [browser-review HTML](../book/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
-- [public review PDF](../renders/MyScoutee_The_Story_Public_Review_EN.pdf)
+- [browser edition](../book/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
+- [current editable v1.0.0 PDF](../renders/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
+- [published-artifact contract](../renders/published/README.md) — no sealed PDF
+  exists until the Founder explicitly locks an edition
 
-The review edition is complete without generated imagery. Optional side-column
+The public edition is complete without generated imagery. Optional side-column
 portraits, portrait grids and wide character montages are already wired into
 the build and appear after the character benchmark locks the identities. The
 montage and separate portraits must come from the same character references.
@@ -120,7 +124,7 @@ may keep their platform name until they replace the matching Sxx shot.
 | [SCRIPT.md](../film/SCRIPT.md) | Time-coded English narration, dialogue, titles and subtitle rules |
 | [STORYBOARD.md](../storyboard/STORYBOARD.md) | Shot-by-shot blocking, camera, light, expression, sound and transition |
 | [PROMPT_PACK.md](../prompts/PROMPT_PACK.md) | Character/world prompts, continuity lock, negative constraints and shot prompts |
-| [OPENART.md](../../../shared/production/workflows/OPENART.md) | Shared OpenArt Director/Storyboard workflow and Volume I paste map |
+| [OPENART.md](../../../shared/production/workflows/OPENART.md) | Shared OpenArt Director/Storyboard workflow and Part I paste map |
 | [HIGGSFIELD.md](../../../shared/production/workflows/HIGGSFIELD.md) | Shared Cinema Studio, Elements, Mr. Higgs, model and camera workflow |
 | [GOOGLE_FLOW.md](../../../shared/production/workflows/GOOGLE_FLOW.md) | Shared Flow asset, Ingredients, Frames, Veo and Scenebuilder workflow |
 | [AUDIO_EDIT_DELIVERY.md](../film/AUDIO_EDIT_DELIVERY.md) | Current CPU audio, edit, brand, subtitle and delivery specification |
@@ -159,6 +163,7 @@ Current standalone planning prompts:
 - [pre-London work breakdown, unemployment and rapid London entry memory board](../prompts/pre-london-work-breakdown-and-exit-memory-board.txt);
 - [United States assignment, borrowed-home and work-pressure memory board](../prompts/united-states-assignment-dream-and-pressure-memory-board.txt);
 - [Budapest relationships before and during London, plus acceptance memory board](../prompts/budapest-before-london-relationship-memory-board.txt);
+- [2017 photograph, date and unfinished-return memory board](../prompts/budapest-2017-photo-match-and-unfinished-return-memory-board.txt);
 - [twelve-flatmate Hungarian HMO character board](../prompts/london-hmo-residents-character-board.txt);
 - [dense five-year London sequence](../prompts/london-five-year-dense-sequence.txt);
 - [UK adventure and availability memory board](../prompts/uk-adventure-availability-memory-board.txt);

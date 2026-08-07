@@ -1,7 +1,7 @@
 # Higgsfield workflow
 
-Scope: shared platform playbook for every volume. The named Sxx shots, prompts
-and assets below are Volume I's worked example; later volumes substitute their
+Scope: shared platform playbook for every part. The named Sxx shots, prompts
+and assets below are Part I's worked example; later parts substitute their
 own locked storyboard inputs without copying them into this shared directory.
 
 Checked against Higgsfield's public Cinema Studio 3.5, Camera Controls, Soul ID,
@@ -72,7 +72,7 @@ the film.
 | same prompt via `@` references | attach/tag the core Elements above; add only the shot-relevant travel plates later |
 | follow-up chat | `Use the locked 23-row shot manifest and return the setup table only. Do not generate and do not change narration.` |
 
-Compare its returned plan with [Volume I's STORYBOARD.md](../../../trilogy/01-the-city-between-us/storyboard/STORYBOARD.md). Mr. Higgs can
+Compare its returned plan with [Part I's STORYBOARD.md](../../../trilogy/01-the-city-between-us/storyboard/STORYBOARD.md). Mr. Higgs can
 populate controls, but the locked storyboard wins every disagreement.
 
 ## 3. Model selection

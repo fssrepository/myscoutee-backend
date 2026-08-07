@@ -1,14 +1,14 @@
-# MyScoutee Volume I story package — compact session handoff
+# MyScoutee Part I story package — compact session handoff
 
 Updated: 2026-08-07
 
-This is the resume point for a fresh **Volume I narrative and production**
+This is the resume point for a fresh **Part I narrative and production**
 session. It is self-contained enough to avoid replaying the long chat. Load
 detailed files only through the routes below.
 
 ## Scope
 
-- Work only inside this volume directory unless the user explicitly expands the
+- Work only inside this part directory unless the user explicitly expands the
   task.
 - Do not edit repository-level `AGENTS.md`, application code, QA handoffs,
   pitches or unrelated documentation.
@@ -150,6 +150,15 @@ detailed files only through the routes below.
 - Nearly forty countries did not automatically remove solitude. He returned
   home deliberately to make the achieved Budapest freedom livable and look for
   a partner.
+- One of his first post-return Thursday nights in a public Budapest venue
+  produced a sharp re-entry-shock memory when a woman grimaced as he
+  approached. By Saturday he was organizing Thailand and left within days. Do
+  not claim that one woman caused the journey or generalize the moment to
+  Hungarian women. Separate memories include a brief "Not you" boundary, a
+  contact obtained from a woman surrounded by others followed by a meeting in
+  which he felt no attraction, and a good dance from which he left without
+  asking for contact because he may have become frightened. These memories
+  preserve both external boundaries and his own missed action.
 - Most journeys were made alone and self-organized. Helpers, hotels, drivers,
   agencies and organized excursions could carry bounded pieces, while the
   Founder assembled the route. This becomes MyScoutee's DIY-first, not DIY-only,
