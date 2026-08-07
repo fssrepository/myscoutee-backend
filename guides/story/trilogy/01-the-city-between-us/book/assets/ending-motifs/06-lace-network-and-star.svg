@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Lace network and star</title>
+  <desc id="desc">An original Hövej-lace-inspired network of six rosettes, leaf loops, and a central guiding star.</desc>
+  <defs>
+    <g id="rosette" fill="none" stroke="#536b94" stroke-width="3">
+      <circle r="8"/>
+      <path d="M0-22C8-19 12-13 9-7C3-8-1-14 0-22ZM0 22C8 19 12 13 9 7C3 8-1 14 0 22ZM-22 0C-19-8-13-12-7-9C-8-3-14 1-22 0ZM22 0C19-8 13-12 7-9C8-3 14 1 22 0Z"/>
+      <circle r="3" fill="#f1b544" stroke="#f1b544"/>
+    </g>
+    <g id="half" fill="none" stroke="#536b94" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M354 83C319 51 283 44 247 62C211 80 180 104 140 98C104 92 79 67 45 69C28 70 15 77 6 89" stroke-width="3.5"/>
+      <path d="M346 98C310 119 277 120 245 104C210 86 181 73 146 82C111 91 82 117 45 112C28 110 16 104 7 96" stroke-width="2.5"/>
+      <path d="M276 52c-7-15-18-23-33-25 1 15 9 25 24 31M211 78c-13-11-27-14-41-7 7 13 18 19 34 18M144 98c-15 4-25 13-30 27 15 2 27-4 35-18" stroke-width="3"/>
+    </g>
+  </defs>
+  <use href="#half"/>
+  <use href="#half" transform="translate(720 0) scale(-1 1)"/>
+  <use href="#rosette" transform="translate(90 81)"/>
+  <use href="#rosette" transform="translate(205 78)"/>
+  <use href="#rosette" transform="translate(294 62)"/>
+  <use href="#rosette" transform="translate(630 81)"/>
+  <use href="#rosette" transform="translate(515 78)"/>
+  <use href="#rosette" transform="translate(426 62)"/>
+  <circle cx="360" cy="82" r="37" fill="none" stroke="#6d4fd3" stroke-width="4" stroke-dasharray="3 6"/>
+  <path d="M360 42l10 25 27 2-21 17 7 26-23-14-23 14 7-26-21-17 27-2Z" fill="#f1b544" stroke="#6d4fd3" stroke-width="3"/>
+  <path d="M347 91h26M352 99h16" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Ground, key, and gate</title>
+  <desc id="desc">An original symmetrical ornament informed by cifraszűr flower composition, framing a keyhole, gate, furrow, and outward path.</desc>
+  <defs>
+    <g id="half" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M360 121C323 122 305 113 281 96C252 76 230 78 203 91C174 105 143 105 116 89C88 72 61 71 29 85" stroke="#9f2f38" stroke-width="5"/>
+      <path d="M314 108C298 84 301 59 320 40" stroke="#2e6f4d" stroke-width="5"/>
+      <path d="M316 72C295 67 282 55 278 38C296 38 310 47 319 61" fill="#2e6f4d" stroke="#2e6f4d" stroke-width="3"/>
+      <path d="M281 96C263 88 249 71 247 51M252 69C231 67 216 57 209 40M250 79C230 84 218 94 211 108" stroke="#2e6f4d" stroke-width="4"/>
+      <path d="M203 91C188 81 181 65 184 49C201 54 211 64 214 79" fill="#e36c57" stroke="#9f2f38" stroke-width="3"/>
+      <path d="M117 89C102 80 96 65 98 49C116 53 126 64 128 79" fill="#f1b544" stroke="#9f2f38" stroke-width="3"/>
+      <path d="M29 85C19 89 11 96 5 106" stroke="#245bc9" stroke-width="4"/>
+      <path d="M28 112H196M53 120H220M83 128H246" stroke="#b68955" stroke-width="3" opacity=".8"/>
+    </g>
+  </defs>
+  <use href="#half"/>
+  <use href="#half" transform="translate(720 0) scale(-1 1)"/>
+  <path d="M332 126V58Q360 31 388 58V126" fill="none" stroke="#172336" stroke-width="6"/>
+  <path d="M346 126V71Q360 55 374 71V126" fill="#fbf7ef" stroke="#b52d3b" stroke-width="4"/>
+  <circle cx="360" cy="87" r="7" fill="#f1b544"/>
+  <path d="M360 93v18l-6 8h12l-6-8" fill="#f1b544"/>
+  <path d="M325 126h70M337 134h46" stroke="#172336" stroke-width="5" stroke-linecap="round"/>
+</svg>

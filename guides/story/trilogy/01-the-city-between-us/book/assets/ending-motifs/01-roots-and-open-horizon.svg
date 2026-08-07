@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Roots and the open horizon</title>
+  <desc id="desc">An original symmetrical ornament joining a Hungarian-inspired life tree, seed, wheat, and outward route marks.</desc>
+  <defs>
+    <g id="half" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M360 119C318 116 300 87 264 80C224 72 211 98 172 101C132 104 101 88 68 68" stroke="#b52d3b" stroke-width="5"/>
+      <path d="M349 102C321 91 319 66 294 53C273 42 252 48 239 66" stroke="#b52d3b" stroke-width="5"/>
+      <path d="M267 81C241 75 223 58 216 36M219 51l-23-15M222 62l-27 1M206 43l3-24" stroke="#2d7650" stroke-width="4"/>
+      <path d="M172 101C149 92 135 72 130 48M135 66l-24-13M138 78l-27 2M127 55l3-22" stroke="#2d7650" stroke-width="4"/>
+      <path d="M69 68C49 61 31 62 15 71" stroke="#b52d3b" stroke-width="5"/>
+      <circle cx="66" cy="68" r="7" fill="#245bc9" stroke="#245bc9"/>
+      <circle cx="30" cy="68" r="3" fill="#f1b544" stroke="#f1b544"/>
+      <path d="M345 121C320 127 299 134 281 144M340 116C315 111 294 108 272 110" stroke="#7b4f34" stroke-width="4"/>
+    </g>
+  </defs>
+  <use href="#half"/>
+  <use href="#half" transform="translate(720 0) scale(-1 1)"/>
+  <path d="M360 132V58" fill="none" stroke="#7b4f34" stroke-width="6" stroke-linecap="round"/>
+  <path d="M360 62C344 51 340 35 347 22C357 27 362 36 360 48C358 36 363 27 373 22C380 35 376 51 360 62Z" fill="#b52d3b"/>
+  <path d="M360 75C345 71 336 62 333 49C346 48 355 53 360 64C365 53 374 48 387 49C384 62 375 71 360 75Z" fill="#e26b58"/>
+  <ellipse cx="360" cy="93" rx="8" ry="12" fill="#f1b544"/>
+  <path d="M360 132C351 135 344 141 339 147M360 132C369 135 376 141 381 147" fill="none" stroke="#7b4f34" stroke-width="4" stroke-linecap="round"/>
+</svg>
