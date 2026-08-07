@@ -60,9 +60,11 @@ OPENER_WATERMARKS = (
     BOOK_DIR / "assets" / "opener-watermarks" / "04-indigo-world-routes.svg",
     *OPENER_WATERMARKS[4:],
 )
-# The human-encounter motif closes Part Four on its own cream page. It must not
-# share that page with prose or replace/enlarge the following part-cover art.
-SEPARATE_MOTIF_PAGE_INDEXES = frozenset({4})
+# The closing chapters of Part Four use deliberately tighter paragraph spacing
+# so their short lines return to the preceding page and the complete encounter
+# motif can remain below the prose, without colliding with it or spilling onto
+# an otherwise empty page.
+COMPACT_ENDING_MOTIF_INDEXES = frozenset({4})
 
 
 def slugify(value: str) -> str:
@@ -132,16 +134,23 @@ def append_ending_tail(parts: list[str], motif_index: int) -> None:
     """Keep a meaningful closing text unit on the stamped ornament page."""
     if not parts:
         raise ValueError("An ending motif requires preceding content")
-    if motif_index in SEPARATE_MOTIF_PAGE_INDEXES:
-        tail_count = min(10, len(parts))
+    if motif_index in COMPACT_ENDING_MOTIF_INDEXES:
+        tail_count = min(27, len(parts))
         tail = parts[-tail_count:]
         del parts[-tail_count:]
+        closing_count = min(3, len(tail))
+        leading = tail[:-closing_count]
+        closing = tail[-closing_count:]
         parts.append(
             '<div class="compact-ending-tail">'
-            + "\n".join(tail)
+            + "\n".join(leading)
+            + '<div class="ending-tail">'
+            + "\n".join(closing)
+            + "\n"
+            + render_ending_motif(motif_index)
+            + "</div>"
             + "</div>"
         )
-        parts.append(render_full_page_motif(motif_index))
         return
 
     # Invitation and colophon pages already supply their own full-page layout.
@@ -688,7 +697,8 @@ def stylesheet() -> str:
     bottom: .55in; display: block; height: auto; left: 50%; position: absolute;
     transform: translateX(-50%); width: 4.25in;
   }
-  .compact-ending-tail > p { margin-bottom: .1in; }
+  .compact-ending-tail > p,
+  .compact-ending-tail .ending-tail > p { margin-bottom: .08in; }
   .pagebreak { page-break-before: always; height: 0; }
   .illustration { margin: .26in 0 .3in; break-inside: avoid; }
   .illustration img { display: block; width: 100%; border-radius: 12px; }
@@ -946,8 +956,6 @@ def stamp_ending_motifs(
     for motif_index, ((motif_path, _), page_number) in enumerate(
         zip(ENDING_MOTIFS, ending_pages, strict=True)
     ):
-        if motif_index in SEPARATE_MOTIF_PAGE_INDEXES:
-            continue
         overlay_pdf = temp_dir / f"motif-overlay-{motif_index + 1}.pdf"
         stamped_pdf = temp_dir / f"stamped-{page_number}.pdf"
         render_motif_overlay(motif_path, overlay_pdf, inkscape)
