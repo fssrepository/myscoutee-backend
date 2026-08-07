@@ -1307,6 +1307,15 @@ Restart evidence on 2026-08-06:
 
 ### `EVENT-TICKET-005` — join-request approval owns ticket creation
 
+- Prepare the required isolated browser actors with
+  `guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005`. The
+  checkpoint configuration opens Casey, Nova and the isolated Riley control,
+  uses separate ephemeral
+  Chrome user-data directories, installs the exact demo sessions through the
+  browser debugging endpoint and loads `/game`. No Google profile name or
+  directory is stored in the repository. Re-running the command replaces only
+  this checkpoint's previous managed windows; stale sessions and Chrome's
+  Restore prompt cannot select a different MyScoutee actor.
 - Stage a **Public**, published, Ticketing On event that requires admin
   approval. Casey is the only accepted Admin; Nova is not yet a member and has
   no ticket or stored ticket counter.
@@ -1317,20 +1326,33 @@ Restart evidence on 2026-08-06:
   Within one notification poll Casey receives one new event-admin row for this
   action, with Nova as sender and the contextual **Pending** badge. Nova does
   not receive her own admin-facing row.
+- Before cancelling, leave Nova's approval-pending checkout basket visible and
+  reload Explore once. The Public event card must remain present because the
+  basket is still displayable; its menu must still show the orange warning-tone
+  **Continue booking** action together with the other contextual actions. This retention is owned by the
+  visible basket state, not by the physical member's `pending` status. The
+  Explore response obtains all matching basket result states in one indexed,
+  field-limited batch query and must not load one basket or a full member
+  snapshot per card.
 - Before admin approval, Nova opens the pending participation and chooses
   **Cancel request**. The visible pending projection is removed and occupancy
   returns from `1 pending / 8` to `0 pending / 8`; the physical membership is
   retained only as a `suppressed` audit record with its previous pending state,
   and Nova's own event overlay is retained as `status=T`. Nova's pending
   activity counter/list entry disappears and both ticket counters remain `0`.
+  Without closing Explore or reloading, the same card menu changes from
+  **Continue booking** to the fresh **Join/Book** action. The next server
+  Explore response exposes `currentUserMembershipStatus=none` for Nova and no
+  checkout basket/session; a clean reload must preserve that fresh action.
   No ticket, active participant overlay, chat owner copy or acceptance
   notification may be created by cancellation. Casey instead receives a
   separate new event-admin notification row with Nova as sender and the
   contextual **Cancelled** badge. The Public event remains discoverable.
 - Nova chooses Join again. This creates exactly one new pending member-origin
   request by reopening the suppressed pending audit record and its activity
-  projection, never resurrects it as accepted, creates another new **Pending**
-  notification occurrence for Casey, and still creates no ticket. Continue the
+  projection, never resurrects it as accepted and does not reuse an old basket,
+  checkout session or policy selection. It creates another new **Pending**
+  notification occurrence for Casey and still creates no ticket. Continue the
   approval proof from this second request.
 - As Casey, approve Nova once. This is the terminal transition directly to
   accepted; there is no second participant-acceptance step. The approval write
@@ -1355,6 +1377,37 @@ Restart evidence on 2026-08-06:
   `statusBeforeSuppression=pending`, retained Nova's own overlay as `status=T`,
   changed pending activity `1 -> 0` and trash `0 -> 1`, and left every ticket
   object and both controlled ticket counters at zero.
+- Cancel fresh-flow regression (2026-08-06): the persisted server state already
+  had no basket/session and returned Nova-specific
+  `currentUserMembershipStatus=none`; a stale Explore row nevertheless retained
+  **Continue booking**. The contract now carries this request-specific status
+  from the physical membership snapshot and the Cancel action signal updates
+  the visible row directly. It is not an event-global field: simultaneous users
+  can receive different statuses for the same event.
+- Pending-basket reload regression (2026-08-06): Explore previously removed
+  Nova's card during reload because tracked participation was filtered before
+  the query considered her displayable checkout basket. Explore filtering now
+  retains tracked participation only while that user's basket is visible and
+  carries the same basket result state into the row DTO/menu. Cancel removes
+  the basket authority; the Public event then remains discoverable as a fresh
+  Join/Book candidate because Nova no longer has active tracked participation.
+- First physical-basket reload retest (2026-08-06): FAIL. Join persisted Nova's
+  pending membership but `eventCheckoutBasketItems` remained empty, so reload
+  correctly had no basket authority with which to retain the card. The popup
+  treated its local runtime basket as already persisted and omitted
+  `basketItems` from the Join payload; nginx showed only the successful Join
+  request and no independent basket write. The Join write now always carries
+  the physical basket payload for pending checkout, allowing the backend to
+  upsert it at the same authoritative boundary. Cancel the old basketless
+  attempt and repeat Join before accepting this regression as fixed.
+- Repeated Cancel/Join signal regression (2026-08-06): FAIL. Both checkout
+  Cancel entry points emitted the viewer-membership removal but then merely
+  cleared the shared event-sync value. They must publish the existing
+  ID-scoped `remove` message so the matching pending Activity row underneath
+  cannot survive and consume a later Join/approval upsert. Both paths now emit
+  `remove(eventId)`. Repeat at least two Cancel/Join cycles and prove every
+  Cancel removes only that event's pending Activity row while adjacent Explore
+  cards remain unchanged.
 
 ### `EVENT-TICKET-006` — expiry moves the active ticket to Past
 
@@ -1461,23 +1514,15 @@ Restart evidence on 2026-08-06:
   no restage is required. The backend and frontend implementation is
   hot-deployed. The pre-test persisted baseline has zero replay audits, zero
   replay-warning outbox rows and zero aggregated holder-warning rows.
-- Prepare three isolated sessions before continuing. Run
-  `guides/qa/tools/open-three-chrome-sessions.sh`; for each prompt the tester
-  manually chooses a different existing Google profile and confirms the named
-  Casey, Nova or Riley MyScoutee session. The helper deliberately contains no
-  Chrome profile-directory names and never selects a Google profile itself.
-  Chrome permits only one active profile picker at a time, so the helper opens
-  the three pickers sequentially with a seven-second selection window. The
-  tester clicks a different existing Google profile after every popup; after
-  the third selection, the resulting Casey, Nova and Riley profile windows
-  remain open concurrently. Keep the helper process running for the whole QA
-  checkpoint because it owns the launched Chrome process; press its final
-  Enter only when all three sessions may close. Override the selection delay
-  with `PROFILE_PICK_DELAY_SECONDS` only when another tester needs more time.
-  The script itself still contains no profile-directory selection or mapping.
-  Three windows of one Google profile are invalid because their MyScoutee
-  session storage is shared and a later user selection overwrites the earlier
-  one. Riley is the idle independent control for this checkpoint.
+- Prepare three isolated sessions before continuing with
+  `guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-010`.
+  The checkpoint configuration opens independent ephemeral Chrome profiles,
+  installs the exact Casey, Nova and Riley demo sessions, accepts only the
+  normal setup gates, dismisses the one-time explanation and leaves all three
+  `/game` windows untouched for manual QA. Re-running the command replaces
+  only its own prior `EVENT-TICKET-010` windows. No Google account profile or
+  local profile-directory mapping is stored in the repository. Riley is the
+  idle independent control for this checkpoint.
 - Keep Nova online throughout this checkpoint so the notification row, read
   transition and bell contribution can be observed through normal realtime
   synchronization. Asymmetric offline holder behavior belongs exclusively to

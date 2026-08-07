@@ -137,33 +137,38 @@ score, ownership or popularity.
 SHOT S18 — STRANGERS BECOME A GROUP CANDIDATE — 8 SECONDS
 Start with two independent adult choices pointing both ways, then add a few
 restrained physical context cues for shared interests, distance and current
-availability. The cues fold into two possible group arrangements around small
-tabletop silhouettes; one balanced five-person candidate becomes clear while the
-other stays optional. These adults have not met yet. Keep [FOUNDER_REF],
-[MAYA_REF] and the others visible as distinct strangers rather than nodes. One
+availability. The cues resolve into exactly six distinct adults, three women and
+three men, shown separately because they have not met yet. Give each one a
+different restrained icon-only thought bubble: book, shared meal, tabletop game,
+route, music or sketching. Keep [FOUNDER_REF], [MAYA_REF] and the four supporting
+adults visible as individual strangers rather than nodes. One
 gentle 40 mm overhead-to-eye-level tilt. Amber
 means graded priority, aqua means reciprocal/context evidence, coral means the
 candidate group. No giant abstract affinity network, soulmate beam, automatic
 couple, public score, generated labels or guaranteed compatibility.
 
 SHOT S19 — STRANGER GROUP CHOOSES AND PLANS — 8 SECONDS
-Five previously unknown adults including [FOUNDER_REF] and [MAYA_REF] receive
-one balanced group proposal. Each acts independently: four calmly accept while
-one declines without penalty. Accepted portraits settle around one shared blank
-group-chat table with a specific activity/context card at its center. The chat
-becomes a first event draft with date, place and capacity placeholders; no
+The same six previously unknown adults, exactly three women and three men,
+receive one balanced group proposal and decide independently. This candidate
+proceeds because all six accept, while decline remains visibly available without
+penalty. A blank contextual group-chat card becomes their first event draft,
+then match into the six arriving and introducing themselves around one table.
+Their different thought bubbles fade as they begin listening to one another. No
 one-to-one romantic chat is spotlighted. One slow 20-degree 35 mm orbit ending
-eye-level. Warm equal face light. Exact controls and chat are added in post; no
-readable AI text.
+eye-level. Warm equal face light and equal visibility for all six. Exact controls
+and chat are added in post; no readable AI text.
 
 SHOT S20 — FIRST MANAGED EVENT TURNS STRANGERS INTO CONTACTS — 7 SECONDS
-At public [EVENT_VENUE], the accepted strangers complete the first event they
-planned. Show route/accessibility, one shared resource, a ticket/check-in action
-and a brief blank event-feedback card without overcrowding the frame. They arrive
-without familiarity, complete one shared activity, and recognize one another by
-the end. Use 50 mm hand match-cuts followed by one 35 mm pullback. Minimal mouth
-motion for “Saturday?”, “I'm in,” and “I'll bring the tickets.” No readable AI
-text, floating UI clutter or instant friendship; exact graphics are added post.
+At public [EVENT_VENUE], the same six accepted strangers manage the first event
+they planned. Show exactly four icon-only resource cards: members with six human
+figures, transport with a bus and route, accommodation/venue with a building,
+door and key, and supplies with an open crate. A blank ticket/check-in card and a
+brief event-feedback card remain separate secondary actions. No wheelchair or
+invented accessibility pictogram. Introductions and one shared activity turn
+the strangers into known contacts by the end. Use 50 mm hand match-cuts followed
+by one 35 mm pullback. Minimal mouth motion for “Saturday?”, “I'm in,” and “I'll
+bring the supplies.” No readable AI text, floating UI clutter or instant
+friendship; exact graphics are added post.
 
 SHOT S21 — THE EDITABLE RELATIONSHIP LIFECYCLE — 6 SECONDS
 Show a compressed later chapter using two clean match cuts. First, people met at

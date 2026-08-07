@@ -22,9 +22,12 @@ suggestion. Reciprocal choices plus profile/context evidence form weighted
 relationships and balanced groups of people who have not met; show this through
 people and choices, not an abstract affinity diagram. Every person can accept or
 decline. A high explicit priority may outweigh weaker automated/context signals;
-it does not override another person's consent. The group gains shared context in chat, then plans and manages a first
-real event through place/route, resources, tickets, check-in and event-linked
-feedback. After meeting, the former strangers are known contacts who can be
+it does not override another person's consent. The balanced candidate shown here
+contains exactly six distinct adults, three women and three men, who gain shared
+context in chat and then introduce themselves in person. They plan and manage a
+first real event through the four actual resource buckets: members, transport,
+accommodation/venue and supplies. Tickets, check-in and event-linked feedback are
+separate secondary actions. After meeting, the former strangers are known contacts who can be
 directly invited to later events, while Auto Inviter may fill available places
 according to the priority plan. Repeated meetings can grow a community. If a
 relationship later changes, its private priority can move up or down; a lower

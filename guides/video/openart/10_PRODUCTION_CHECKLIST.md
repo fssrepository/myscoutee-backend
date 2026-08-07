@@ -48,7 +48,12 @@ drága final renderben derüljön ki egy történeti, arculati vagy technikai hi
 - [ ] A reciprocitás két irányt mutat.
 - [ ] Az affinitásnál legalább egy kontextus (aktivitás/távolság/idő) megjelenik.
 - [ ] A csoport nem automatikus kényszerpárosítás.
-- [ ] A chatből konkrét dátum/útvonal/akadálymentesség/jegy lesz.
+- [ ] Az esemény négy erőforrása külön olvasható: résztvevők,
+  közlekedés, szállás/helyszín és kellékek.
+- [ ] A jegy, check-in és feedback külön folyamatként jelenik meg, nem az
+  esemény négy erőforrásának egyikeként.
+- [ ] A hat elfogadott idegen először bemutatkozik egymásnak; nem úgy látszik,
+  mintha már eleve baráti közösség lennének.
 - [ ] A történet eljut a valódi, nyilvános találkozásig és megmutatja a hostot.
 - [ ] Nincs soulmate-, perfect-match-, sikerarány- vagy „megoldottuk a magányt”
   állítás.
@@ -76,7 +81,8 @@ drága final renderben derüljön ki egy történeti, arculati vagy technikai hi
   változik/kerül le.
 - [ ] Maya ugyanaz S10/S18/S19/S21 között.
 - [ ] Dance Student, Dance Partner és a terem S12–S14 között azonos.
-- [ ] Az első csoport pontosan öt, azonos felnőttből áll S19–S21-ben.
+- [ ] Az első csoport pontosan hat azonos felnőttből áll S19–S21-ben:
+  három nőből és három férfiból.
 - [ ] Operator nem változik Founder-ré és nem corporate CEO-karikatúra.
 - [ ] Kéz, ujj, kar, láb, pohár, esernyő, szék és jegy fizikailag vállalható.
 - [ ] Nincs face morph, clone, eltűnő szereplő, lebegő tárgy vagy flicker.
@@ -122,7 +128,8 @@ drága final renderben derüljön ki egy történeti, arculati vagy technikai hi
 - [ ] Privát célplatform-tömörítés tesztelve, ha lehetséges.
 - [ ] Top/bottom kezelőfelület nem takarja a címet, feliratot vagy arcot.
 - [ ] EN, HU, clean/textless és külön SRT fájlok megvannak.
-- [ ] Resolve project backup megvan.
+- [ ] Az FFmpeg assembly manifest/parancsfájl, a végleges stemek és az összes
+  forrásfájl archiválva van.
 - [ ] Licencek, consentek és AI-platform metaadatok archiválva.
 
 ## Stop-ship hibák

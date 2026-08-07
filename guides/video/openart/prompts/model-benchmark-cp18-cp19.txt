@@ -1,0 +1,56 @@
+Create exactly one continuous 8-second vertical 9:16 Frames-to-Video clip.
+
+Use the uploaded CP18 image as the exact first frame and the uploaded CP19 image
+as the exact last frame. Do not redesign, reinterpret or replace either endpoint.
+
+This is a controlled video-model benchmark. Preserve exactly the same six adults
+throughout the entire transition: exactly three women and three men. Preserve
+each person's face, age, skin tone, hairstyle, body type, clothing, personality
+and position continuity. Do not add, remove, duplicate, merge or replace anyone.
+
+0–2 seconds:
+Begin exactly on the six separated portrait panels from CP18. Add only subtle
+natural movement: breathing, blinking, small eye movements and slight paper
+movement. Each person remains physically separate. Preserve the six different
+icon-only thought bubbles.
+
+2–5 seconds:
+Transform the portrait-panel borders continuously into the vertical window,
+doorway and table geometry of the shared meeting room. The transition must be
+one visible spatial transformation, not a cut, dissolve, teleport or sudden
+background replacement.
+
+Keep all six people continuously trackable during the transformation. Their
+thought bubbles gradually become smaller and fainter as their attention shifts
+from their individual expectations toward the other people.
+
+5–8 seconds:
+The same six strangers arrive naturally around one shared table and begin their
+first introductions through tentative eye contact, listening, restrained smiles,
+small nods and open-hand gestures. Nobody behaves as if they already know the
+others. No romantic pair is emphasized. Give all six people equal visual
+importance.
+
+End exactly on the uploaded CP19 image.
+
+CAMERA:
+Use one restrained slow 35 mm push-in. No orbit, handheld shake, zoom jump,
+camera reset or change of lens.
+
+STYLE:
+Preserve the exact painterly cinematic 2.5D style, warm autumn palette, tactile
+paper texture, natural facial proportions and humane understated acting of both
+reference frames.
+
+AUDIO:
+Generate only quiet synchronized diegetic sound: subtle paper movement, clothing,
+chair movement and continuous restrained room tone. No music, dialogue,
+voice-over, singing or audio fade-in. Do not use silence at the beginning or end.
+
+FORBIDDEN:
+No cuts, dissolves, teleportation, extra people, missing people, duplicated
+people, face morphing, gender changes, clothing changes, fused bodies, malformed
+hands, floating limbs, romantic spotlight, readable text, generated labels,
+logos, interface overlays or camera jumps.
+
+Generate exactly one result.

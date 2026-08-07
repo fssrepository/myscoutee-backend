@@ -88,10 +88,13 @@ copy its character design, rural sets, color system, story or compositions.
 The moving world stops. The camera finally faces the founder. A blank notebook
 page becomes the MyScoutee loop. Unknown individual and pair suggestions receive
 editable 1–10 priorities. Reciprocal choices and context form a balanced group
-of strangers; accepted members enter group chat and plan a managed first event.
-Blank planning cards become date, place, route/accessibility, resources, tickets,
-check-in and feedback. After meeting, those people become known contacts who can
-be invited again. A later priority change makes one future shared route fade.
+of exactly six strangers, three women and three men, each with a distinct
+expectation; accepted members enter group chat, introduce themselves and plan a
+managed first event. Four blank planning cards represent the actual resource
+buckets: members, transport, accommodation/venue and supplies. Tickets, check-in
+and feedback remain separate. After meeting, those people become known contacts
+who can be invited again. A later priority change makes one future shared route
+fade.
 
 The pace becomes legible and deliberate. The audience should feel “of course —
 the missing step was the path,” not “an algorithm saved him.”
@@ -229,16 +232,18 @@ the montage reads as format friction over time, not judgment of a single date.
 
 ### FIRST GROUP
 
-Five adults including Maya, varied in gender presentation, age within a broad
-adult range, ethnicity and body type. Keep the group small enough for every face
-to be readable. Their shared event is a low-pressure city walk ending at a
-tabletop/community venue with a quiet conversation area.
+Exactly six adults: three women and three men, including Maya and the Founder,
+varied in age within a broad adult range, ethnicity, body type, clothing and
+temperament. Keep every face readable and give each person a distinct visual
+identity and expectation. Their shared event is a low-pressure city walk ending
+at a tabletop/community venue with a quiet conversation area. They arrive as
+strangers and visibly introduce themselves before planning together.
 
 Micro-actions reveal character:
 
-- one checks the route;
-- one carries shared tickets;
-- one helps move a chair without being asked;
+- one checks the transport route;
+- one confirms the venue key or booking;
+- one brings the shared supplies;
 - two discover a mutual joke;
 - Maya listens before adding a line;
 - the founder is part of the group, not its centre.
@@ -305,8 +310,9 @@ branding around the shared core.
 - entrance visible from the table;
 - quiet conversation zone plus shared activity;
 - warm 3200 K practicals, soft daylight residue, acoustic panels/books/plants;
-- clearly public and hosted, accessible route implied;
-- five seats in a soft arc, not opposing interview pairs.
+- clearly public and hosted, accessible route implied without turning it into an
+  invented event-resource pictogram;
+- six seats in a soft arc, not opposing interview pairs.
 
 ### Local-operator network workspace
 
@@ -346,7 +352,7 @@ exit.
 
 An empty chair appears in the café, formal restaurant, London flat and founder's
 workspace. In the event it is not “filled by the perfect partner”; it becomes
-part of a five-seat arc. The problem transforms from missing one person to
+part of a six-seat arc. The problem transforms from missing one person to
 creating a workable social context.
 
 ### The product mark

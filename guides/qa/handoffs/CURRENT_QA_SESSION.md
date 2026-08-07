@@ -9,10 +9,10 @@ active. Do not reconstruct current state from the full conversation.
 
 ```yaml
 active_checkpoint: EVENT-TICKET-005
-state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010, EVENT-TICKET-012, EVENT-NOTIFICATION-001 and EVENT-CHAT-LIFECYCLE-001 are PASS/CLOSED. EVENT-TICKET-005 is active. Its clean Join notification retest passed: one pending Nova, one Casey Pending row and zero tickets. Its Cancel retest also passed: a separate Casey Cancelled row, Nova suppressed-pending audit plus T overlay, zero visible pending and zero tickets/counters. Re-Join and terminal Casey approval remain. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
+state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010, EVENT-TICKET-012, EVENT-NOTIFICATION-001 and EVENT-CHAT-LIFECYCLE-001 are PASS/CLOSED. EVENT-TICKET-005 is active. Join now carries the physical approval-pending basket in the authoritative Join write. Repeated Cancel/Join exposed a second frontend signal FAIL: both Cancel entry points cleared the last event upsert signal instead of emitting an ID-scoped removal, so the pending Activity row underneath could survive and receive a later approval refresh. Both paths now emit remove(eventId), and frontend hot-deploy is green. Clean baseline staged at 2026-08-06T17:04:52.576Z: Casey alone accepted at 1/8; Nova has event/active/pending/ticket/asset-ticket counters 0; no Nova membership, basket or ticket exists. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
 next_actor: user
-next_action: as Nova find QA EVENT-TICKET-005 in Explore and Join again; keep Casey Notifications open and stop when a second, separate Pending row appears
-next_codex_action: prove re-Join reopened the suppressed audit only as one fresh pending request, restored the activity projection, retained zero tickets and emitted a new Pending occurrence; then hand Casey the terminal approval
+next_action: open the configured Casey, Nova and isolated Riley-control sessions with guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005, then reload Nova once and Join; stop before reload so Codex can prove one pending membership, one physical approval-pending basket and zero tickets. Continue with Cancel -> Join -> Cancel -> Join, checking each removal before terminal approval
+next_codex_action: run the member/basket/ticket oracle after the first corrected Join, then after every Cancel/Join boundary; hand Casey the terminal approval only after the repeated-cycle signal proof
 queued_checkpoint: [EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-011, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
 ```
 
@@ -20,6 +20,11 @@ Active detail: [`EVENT-TICKET-005`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.m
 
 ## Hard constraints
 
+- Before starting any manual checkpoint, record its exact active actors and
+  idle controls in `guides/qa/tools/browser-session-checkpoints.json`, and name
+  the launcher command in that checkpoint's QA steps. Do not reuse a larger
+  actor set by habit: the configured list and layout are part of the test
+  precondition and evidence.
 - This QA session already has an owning dev hot-deploy pipeline: use it as the
   only compile/build path and inspect its existing logs. Do not duplicate its
   work with separate Gradle/npm/build processes. For a cache lock or stuck

@@ -325,7 +325,7 @@ Transfer **only** the failed shot to Higgsfield. First rescue priorities:
 - S04 — restrained, identity-sensitive breaking point;
 - S09 — hopeful return home;
 - S14 — three-person dance-room composition;
-- S19 — stable five-person group;
+- S19 — stable six-person group with exactly three women and three men;
 - S22 — verified install-package handoff plus own-brand local-server and
   voluntary-network/opt-out reveal.
 
@@ -355,7 +355,7 @@ displayed beside Generate.
 
 **If paying for only one generation service, choose OpenArt for this prepared
 document package.** Higgsfield becomes the better second purchase when the
-Founder identity, five-person group, camera move or lip sync specifically
+Founder identity, six-person group, camera move or lip sync specifically
 fails—not because its plan displays a smaller raw credit number.
 
 Official Higgsfield material says selected Plus/Ultra cohorts may receive 30
@@ -406,7 +406,7 @@ at a time, then compare the live Pro upgrade and add-on prices.
 4. Place 23 empty shots using SHOT_MANIFEST.csv timings.
 5. Add narration and verify the story works at 02:48.
 6. If the account allows it, run three free/cheapest tests: S05 environment,
-   S09 Founder identity and S19 five-person group.
+   S09 Founder identity and S19 six-person group.
 
 **Buy only when** the narrated empty animatic is clear, the three main turns
 land emotionally and checkout has been verified.

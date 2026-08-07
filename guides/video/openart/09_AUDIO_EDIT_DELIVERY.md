@@ -1,4 +1,24 @@
-# Hang, vágás, branding és kiadás — DaVinci Resolve 21
+# Hang, vágás, branding és kiadás — célspecifikáció és Resolve-referencia
+
+> **Aktuális gépútvonal, 2026-08-07:** a telepített Resolve nem használható
+> a gép nem támogatott GPU-ja miatt. A két filmhez a CPU-s FFmpeg assembly,
+> narráció-, zene- és kreditfolyamat a
+> [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md) 8–9.
+> fejezetében a kötelező út. Az alábbi Resolve-lépések csak egy későbbi,
+> támogatott géphez tartozó kezelőfelületi referenciák; a hang-, branding-,
+> felirat- és exportcélok továbbra is érvényesek.
+
+## 0. Aktuális CPU-s út
+
+1. A képet előbb lezárjuk 720×1280, constant 24 fps timeline-on.
+2. A timecode-os narráció külön blokkokban készül; az alapértelmezés
+   voice-over, nem lipsync.
+3. Filmenként egyetlen folytonos instrumentális zene készül picture lock után.
+   A generált klipenkénti zene nem kerül a masterbe.
+4. Az ambience és foley külön sávon marad, hogy képkockára igazítható
+   legyen.
+5. FFmpeg végzi a trimet, normalizálást, overlayt, feliratot, duckingot,
+   loudness-mérést és H.264/AAC exportot.
 
 Elsődleges cél: **02:48.000, 720×1280, 9:16, 24 fps, mobilos MP4**. A végső
 filmet ne az OpenArt/Higgsfield/Flow belső editorából add ki. A dedikált timeline
@@ -145,7 +165,8 @@ Edit vagy Fusion oldalán add hozzá:
 - S17: privát 1–10 skála, amely `4 → 8 → 7`; a szám soha nem kerül az emberre;
 - S18: amber kétirányú szándék, aqua kontextus, coral közös rendszer;
 - S19: semleges Accept és Decline mozdulat, azonos vizuális súllyal;
-- S20: dátum, útvonal, akadálymentességi jelzés és jegy, majd fizikai papír.
+- S20: résztvevők, közlekedés, szállás/helyszín és kellékek mint a
+  négy erőforrás; a jegy, check-in és feedback külön lépésként.
 
 Ne mutass valótlan működő UI-t, felhasználószámot, sikerarányt, bevételt vagy
 „perfect match” üzenetet. Ha valódi appképernyőt használsz, csak tesztadat legyen
@@ -259,4 +280,6 @@ kezet, történetet vagy hangot.
 - eredeti zene/SFX licencek;
 - portré- és hangengedélyek;
 - végső shot manifest modellel, promptverzióval és forrásfájllal;
-- Resolve project archive vagy project backup.
+- FFmpeg assembly manifest/parancsfájl és minden forrásfájl;
+- opcionális Resolve project archive csak akkor, ha később támogatott gépen
+  ténylegesen használtuk.

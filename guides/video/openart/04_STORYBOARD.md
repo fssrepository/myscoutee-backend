@@ -264,9 +264,11 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 ### S18 — Mutual evidence forms a group of strangers · 02:09–02:17 · 8 s
 
 - **Picture/blocking:** Two-way choices and restrained cues for shared interests,
-  distance and current context fold into two possible group arrangements. One
-  balanced five-adult candidate becomes clear. None of these people has met yet;
-  faces dominate over the mechanism.
+  distance and current context resolve into one candidate of exactly six distinct
+  adults: three women and three men. They remain physically separate because none
+  has met yet. A different simple thought bubble above each person suggests a
+  book, shared meal, tabletop game, route, music or sketching; faces and
+  individuality dominate over the mechanism.
 - **Face/body:** cautious curiosity and autonomous choice, no romantic spotlight.
 - **Camera/lens:** 40 mm overhead relationship cues tilt into eye-level distinct
   adults who remain separated until the proposal is accepted.
@@ -278,11 +280,14 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ### S19 — Strangers choose, chat and plan · 02:17–02:25 · 8 s
 
-- **Picture/blocking:** Five strangers receive one group proposal. Four accept
-  independently and one calmly declines. Accepted portraits settle around a
-  contextual group-chat table; blank cards for date, place and capacity turn the
-  chat into their first event draft. No pair is spotlighted.
-- **Face/body:** competent coordination; yes and no remain equally calm.
+- **Picture/blocking:** The six strangers receive one group proposal and each
+  decides independently; this candidate proceeds because all six accept, while
+  the interface still makes decline equally available. A contextual group chat
+  produces the first plan, then the same three women and three men arrive and
+  introduce themselves around one table. Their separate thought bubbles fade as
+  attention moves to one another. No pair is spotlighted.
+- **Face/body:** tentative introductions become competent coordination; consent
+  and equal visibility stay clear.
 - **Camera/lens:** 35 mm slow 20° orbit, eye-level at the end.
 - **Light/color:** equal 3500 K face light; restrained coral event spine.
 - **Sound/VO:** one soft accept/decline cue, chat, paper; group-choice line.
@@ -291,16 +296,17 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ### S20 — First managed event turns strangers into contacts · 02:25–02:32 · 7 s
 
-- **Picture/blocking:** At the first real event, route/accessibility, one shared
-  resource, a ticket/check-in action and event-linked feedback appear as simple
-  physical actions. The group arrives as strangers and recognizes one another by
-  the end of a shared activity.
+- **Picture/blocking:** At the first real event, the same six people manage four
+  clear resource buckets together: members, transport, accommodation/venue and
+  supplies. Ticket/check-in and event-linked feedback remain separate secondary
+  actions rather than invented resource categories. Introductions and one shared
+  task turn the six strangers into known contacts by the end.
 - **Face/body:** contribution is distributed; people look relieved by a concrete
   next step.
 - **Camera/lens:** 50 mm hand inserts with match cuts; final 35 mm pullback.
 - **Light/color:** warm neutral light; coral/aqua UI added in post.
-- **Sound/dialogue:** “Saturday?” “I'm in.” “I'll bring the tickets.” Digital
-  taps become ticket, room and feedback sounds.
+- **Sound/dialogue:** “Saturday?” “I'm in.” “I'll bring the supplies.” Digital
+  taps become transport, room, ticket and feedback sounds.
 - **Transition/generation:** ticket fills frame, then becomes a later invitation.
   Generate clean hands/people; all legible text in post.
 

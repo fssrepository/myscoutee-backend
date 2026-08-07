@@ -3,7 +3,7 @@
 Status: **production concept and generation guide**, not a statement of user
 traction, product-market fit, or production readiness.
 
-Research and interface check: **2026-08-04**. OpenArt, Higgsfield, and Google
+Research and interface check: **2026-08-07**. OpenArt, Higgsfield, and Google
 Flow change quickly. Before spending a large credit batch, generate one low-cost
 test shot and confirm that the model/feature combination shown by the current UI
 still matches this guide.
@@ -45,23 +45,26 @@ as an available, lower-pressure path, not as a guaranteed romantic result.
 
 ## Recommended production route
 
-For the best cost/control balance, start with a single generation workspace:
+For the best cost/control balance, use the benchmark-first hybrid route:
 
 1. Lock the story, voice and timing with [03_SCRIPT_EN_HU.md](03_SCRIPT_EN_HU.md).
-2. Build the founder, supporting cast, locations, props and style frames from
+2. Follow the purchase gates and credit limits in
+   [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md).
+3. Compare Flow and OpenArt on the same reusable CP18→CP19 stress shot and
+   record every result in [MODEL_BENCHMARK_LOG.csv](MODEL_BENCHMARK_LOG.csv).
+4. Build and approve the founder, supporting cast, locations, props and style frames from
    [02_CREATIVE_BIBLE.md](02_CREATIVE_BIBLE.md).
-3. Make the full still animatic and the required moving shots in OpenArt from
-   [prompts/openart-director-master.txt](prompts/openart-director-master.txt).
-4. Assemble at 720×1280, voice, mix, brand, title and subtitle outside the generation tools. The
+5. Make one scene-duration animatic, then generate each required moving shot
+   only on its selected model.
+6. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
+   foley, brand, title and subtitles. The
    master should not depend on generated on-screen text.
-5. Buy/use Higgsfield only if an identity- or ensemble-critical OpenArt shot
+7. Buy/use Higgsfield only if an identity- or ensemble-critical winning-platform shot
    still fails after three controlled attempts.
-6. Skip Google Flow by default. Use it only as a targeted transition/environment
-   rescue when access, credits, watermark and release terms have been checked.
 
 OpenArt-only, Higgsfield-only, and Flow-only variants are also documented. The
 same approved assets and shot IDs work in every route. `SHOT_MANIFEST.csv`
-contains the cost-recommended OpenArt/Resolve filenames; optional rescue files
+contains the cost-recommended source filenames; optional rescue files
 may keep their platform name until they replace the matching Sxx shot.
 
 ## Files
@@ -77,9 +80,11 @@ may keep their platform name until they replace the matching Sxx shot.
 | [06_OPENART_WORKFLOW.md](06_OPENART_WORKFLOW.md) | Exact OpenArt Director/Storyboard workflow and paste map |
 | [07_HIGGSFIELD_WORKFLOW.md](07_HIGGSFIELD_WORKFLOW.md) | Exact Cinema Studio, Elements, Mr. Higgs, model and camera workflow |
 | [08_GOOGLE_FLOW_WORKFLOW.md](08_GOOGLE_FLOW_WORKFLOW.md) | Exact Flow asset, Ingredients, Frames, Veo and Scenebuilder workflow |
-| [09_AUDIO_EDIT_DELIVERY.md](09_AUDIO_EDIT_DELIVERY.md) | Voice, music, SFX, edit, grade, subtitles, aspect ratios and exports |
+| [09_AUDIO_EDIT_DELIVERY.md](09_AUDIO_EDIT_DELIVERY.md) | Audio/edit targets and the legacy Resolve reference; the current CPU route is in file 12 |
 | [10_PRODUCTION_CHECKLIST.md](10_PRODUCTION_CHECKLIST.md) | Asset intake, continuity, QA, claims, release and variant checklist |
 | [11_COST_AND_MODEL_DECISION.md](11_COST_AND_MODEL_DECISION.md) | Current cost scenarios, exact model choices, purchase gates and the Flow/Higgsfield decision |
+| [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md) | Current two-film Flow/OpenArt benchmark, credit, character, audio and CPU-post plan |
+| [MODEL_BENCHMARK_LOG.csv](MODEL_BENCHMARK_LOG.csv) | Comparable model settings, charged credits and blind visual scores |
 | [SOURCES.md](SOURCES.md) | Project evidence and external research/platform sources |
 | [SHOT_MANIFEST.csv](SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings, cost-default platform/model and approved filenames |
 
@@ -168,12 +173,9 @@ is the acceptance target.
 
 ## First action
 
-If this is your first AI video, begin with
-[00_START_HERE_BEGINNER.md](00_START_HERE_BEGINNER.md), then use
-[11_COST_AND_MODEL_DECISION.md](11_COST_AND_MODEL_DECISION.md) before buying a
-subscription. Do not generate video first. Record a rough English voice track, place the 23
-shot durations from `SHOT_MANIFEST.csv` on a timeline, and use still frames for
-an animatic. If the return at **01:06–01:13**, the product turn at
-**01:53–02:09**, or the operator invitation at **02:32–02:48** does not land in
-the animatic, fix the edit before buying
-high-quality generations.
+Open [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md), then
+run exactly the three Flow CP18→CP19 benchmark generations described there.
+Do not spend the remaining Flow or OpenArt production credits before the three
+Flow results and the matching OpenArt results have been scored. After model and
+character lock, place the 23 actual shot durations from `SHOT_MANIFEST.csv` on
+the scene-hold animatic and fix story timing before bulk motion generation.

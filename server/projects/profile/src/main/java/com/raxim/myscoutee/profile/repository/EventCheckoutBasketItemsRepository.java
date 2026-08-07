@@ -16,7 +16,9 @@ public interface EventCheckoutBasketItemsRepository extends MongoRepository<Even
             Collection<String> statuses,
             Collection<String> resultStates);
 
-    @Query(value = "{ 'userId': ?0, 'sourceId': { $in: ?1 }, 'status': { $in: ?2 }, $or: [ { 'resultState': { $exists: false } }, { 'resultState': { $in: ?3 } } ] }", sort = "{ 'sourceId': 1, 'selectedDateKey': 1, 'createdAtIso': 1, 'itemId': 1 }")
+    @Query(
+            value = "{ 'userId': ?0, 'sourceId': { $in: ?1 }, 'status': { $in: ?2 }, $or: [ { 'resultState': { $exists: false } }, { 'resultState': { $in: ?3 } } ] }",
+            fields = "{ '_id': 0, 'sourceId': 1, 'resultState': 1 }")
     List<EventCheckoutBasketItem> findByUserIdAndSourceIdInAndStatusInAndVisibleResultState(
             String userId,
             Collection<String> sourceIds,

@@ -44,9 +44,9 @@ Rules:
 | CP15 | Three poor date settings | `assets/storyboard-rough/CP15.png` |
 | CP16 | The missing bridge | `assets/storyboard-rough/CP16.png` |
 | CP17 | Editable private priority for an unknown person or pair | `assets/storyboard-rough/CP17.png` |
-| CP18 | Balanced candidate group of strangers | `assets/storyboard-rough/CP18.png` |
-| CP19 | Group choice, contextual chat and first-event plan | `assets/storyboard-rough/CP19.png` |
-| CP20 | First managed event turns strangers into contacts | `assets/storyboard-rough/CP20.png` |
+| CP18 | Balanced candidate: three women and three men with distinct expectations | `assets/storyboard-rough/CP18.png` |
+| CP19 | Independent choice, contextual chat and first in-person introductions | `assets/storyboard-rough/CP19.png` |
+| CP20 | Four event-resource buckets and a first shared event turn strangers into contacts | `assets/storyboard-rough/CP20.png` |
 | CP21 | Later invitations and editable relationship lifecycle | `assets/storyboard-rough/CP21.png` |
 | CP22 | Shared core, local brands, voluntary server network and opt-out | `assets/storyboard-rough/CP22.png` |
 | CP23 | MyScoutee end frame | `assets/storyboard-rough/CP23.png` |

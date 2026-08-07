@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "targetUrl": "http://localhost/game",
+    "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+    "storageScope": "http",
+    "bootstrapEntryConsent": true,
+    "geolocation": {
+      "latitude": 30.2672,
+      "longitude": -97.7431,
+      "accuracy": 10
+    },
+    "screenWidth": 1920,
+    "screenHeight": 1000
+  },
+  "checkpoints": {
+    "EVENT-TICKET-005": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-007": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-TICKET-010": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    }
+  }
+}

@@ -85,12 +85,17 @@ background, no text or logos.
 
 ```text
 Create a cohesive supporting cast for a premium 2.5D animated film, all clearly
-adult, visually distinct and humane: dance student in teal practice top, her
-friendly partner in rain coat carrying a folded umbrella, three diverse first-
-date partners in ordinary smart-casual clothing, and a competent country
-operator who is visibly comfortable at a Linux/server workstation,
-with a hardware key and deployment checklist. Every person has realistic
-body variation and subtle facial asymmetry. Nobody is glamorous, grotesque,
+adult, visually distinct and humane. Include four recurring first-group adults
+who combine with the Founder and Maya into exactly three women and three men: a
+Black woman in a rust cardigan with a sketchbook, an East Asian woman in teal
+with a reusable cup, a fair-skinned curly-haired man in a navy jacket holding one
+tabletop-game piece, and a South Asian man in an olive jacket with a folded
+transit map. Also include a dance student in a teal practice top, her friendly
+partner in a rain coat carrying a folded umbrella, three diverse first-date
+partners in ordinary smart-casual clothing, and a competent country operator who
+is visibly comfortable at a Linux/server workstation with a hardware key and
+deployment checklist. Every person has realistic body variation, subtle facial
+asymmetry and an individual prop or posture. Nobody is glamorous, grotesque,
 threatening, submissive or comic relief. Front and three-quarter reference views
 on segmented warm-grey background. No text, brands or stereotypes.
 ```
@@ -171,12 +176,13 @@ use six to eight plates; the wider list stays available for variants.
 Design [EVENT_VENUE], a credible public independent community and culture venue
 that can recur in one local city, in the same premium 2.5D animated film style.
 Visible entrance and easy exit, accessible route implied, quiet conversation
-zone, five movable
+zone, six movable
 chairs in a soft arc rather than opposing pairs, small shared tabletop map
 activity, books, plants and acoustic panels, warm 3200–3500 K practical lights
 with soft remaining daylight. Human scale, no luxury exclusivity, no dating-app
-branding, no alcohol focus. Provide empty wide, doorway, table, operator and
-detail plates with identical geometry. No text or people.
+branding, no alcohol focus. Do not turn accessibility into a wheelchair resource
+card. Provide empty wide, doorway, table, operator and detail plates with
+identical geometry. No text or people.
 ```
 
 ### Product visual-grammar sheet
@@ -187,9 +193,11 @@ the whole lifecycle of a relationship. Begin with unknown individual and pair
 profile suggestions. Use amber for one private editable 1–10 priority; a high
 explicit priority may outweigh weaker automated/context signals but never
 another person's consent. Use aqua for reciprocal/context evidence, and coral for a balanced candidate group of
-strangers. Continue through calm accept/decline, contextual group chat, then a
-first managed event with blank cards for capacity, place, route/accessibility,
-resources, tickets, check-in and event-linked feedback. After that first
+exactly six strangers, three women and three men, each with a distinct identity
+and expectation. Continue through calm accept/decline, contextual group chat,
+first introductions, then a managed event with four blank resource cards:
+members, transport, accommodation/venue and supplies. Keep tickets, check-in and
+event-linked feedback as separate secondary actions. After that first
 meeting, show the former strangers as known contacts who may be directly invited
 again; Auto Inviter may fill one available place from the priority plan with a
 new person. Repeated events begin to form community. Close the lifecycle with a

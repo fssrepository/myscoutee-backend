@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberStatusDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
@@ -45,6 +46,7 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.mapper.ActivityMemberMapper;
 
 @Service
 public class ActivitiesMembersService {
@@ -102,6 +104,7 @@ public class ActivitiesMembersService {
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
+    private final ActivityMemberMapper activityMemberMapper;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -120,7 +123,8 @@ public class ActivitiesMembersService {
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
-            ActivityTournamentGroupCounterService tournamentGroupCounterService) {
+            ActivityTournamentGroupCounterService tournamentGroupCounterService,
+            ActivityMemberMapper activityMemberMapper) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -137,6 +141,7 @@ public class ActivitiesMembersService {
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
         this.tournamentGroupCounterService = tournamentGroupCounterService;
+        this.activityMemberMapper = activityMemberMapper;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -420,18 +425,22 @@ public class ActivitiesMembersService {
             return Map.of();
         }
         Map<String, String> statusesByOwnerId = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId)) {
-            if (member == null) {
+        List<ActivityMember> memberships = activityMembersRepository.findMembershipStatusesByOwnerTypeAndUserId(
+                OWNER_TYPE_EVENT,
+                normalizedUserId);
+        for (ActivityMember member : memberships == null ? List.<ActivityMember>of() : memberships) {
+            ActivityMemberStatusDto membership = activityMemberMapper.toStatusDto(member);
+            if (membership == null) {
                 continue;
             }
-            String status = normalizeStatus(member.getStatus());
+            String status = normalizeStatus(membership.status());
             if (!STATUS_ACCEPTED.equals(status)
                     && !STATUS_PENDING.equals(status)
                     && !STATUS_INVITED.equals(status)
                     && !(includeDeleted && STATUS_DELETED.equals(status))) {
                 continue;
             }
-            String ownerId = normalizeId(member.getOwnerId());
+            String ownerId = normalizeId(membership.ownerId());
             if (StringUtils.hasText(ownerId)) {
                 statusesByOwnerId.put(ownerId, status);
             }

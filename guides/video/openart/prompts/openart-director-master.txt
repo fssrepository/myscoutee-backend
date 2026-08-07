@@ -43,14 +43,18 @@ Locked chronology and timings:
   individual profile or pair suggestion. The stronger explicit choice remains
   visually influential, but no number appears on a person's body.
 - S18 02:09–02:17: reciprocal choices and profile/context evidence resolve into
-  balanced group candidates. Keep real people dominant; avoid a giant abstract
-  affinity graph, soulmate lines or automatic couple formation.
-- S19 02:17–02:25: one proposed group of strangers gains shared context. Every
-  adult can calmly accept or decline; accepted participants enter a contextual
-  group chat that becomes a first event plan.
-- S20 02:25–02:32: show the managed first event: capacity, place, route,
-  resources, tickets, check-in and event-linked feedback. At arrival they are
-  strangers; after meeting they recognize one another as known contacts.
+  exactly six distinct strangers, three women and three men. Give each a
+  different icon-only thought bubble. Keep real people dominant; avoid a giant
+  abstract affinity graph, soulmate lines or automatic couple formation.
+- S19 02:17–02:25: the same six gain shared context. Every adult can calmly
+  accept or decline; this candidate proceeds after six independent accepts. A
+  contextual group chat becomes a first event plan, then the six introduce
+  themselves in person with equal visibility.
+- S20 02:25–02:32: show the managed first event through the four actual resource
+  buckets: members, transport, accommodation/venue and supplies. Tickets,
+  check-in and event-linked feedback are separate. At arrival they are strangers;
+  after introductions and a shared task they are known contacts. Do not use a
+  wheelchair or invented accessibility pictogram.
 - S21 02:32–02:38: compress the later relationship lifecycle. People met at the
   first event can be directly invited again; Auto Inviter may fill remaining
   places according to the priority plan; repeated meetings can grow community.

@@ -59,6 +59,13 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
 
     List<ActivityMember> findByOwnerTypeAndUserId(String ownerType, String userId);
 
+    @Query(
+            value = "{ 'ownerType': ?0, 'userId': ?1 }",
+            fields = "{ '_id': 0, 'ownerId': 1, 'status': 1 }")
+    List<ActivityMember> findMembershipStatusesByOwnerTypeAndUserId(
+            String ownerType,
+            String userId);
+
     List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String ownerType, Collection<String> ownerIds);
 
     @Query("{ 'userId': { $in: ?0 }, 'status': { $nin: ?1 }, '$or': [ { 'ownerType': ?2, 'ownerId': ?3 }, { 'ownerId': { '$regex': ?4 } } ] }")
