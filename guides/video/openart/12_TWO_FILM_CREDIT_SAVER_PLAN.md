@@ -13,6 +13,10 @@ ugyanazzal az egy nehéz, később ténylegesen is felhasználható jelenettel
 választunk modellt. Ezután csak a nyertes vagy a konkrét shothoz legjobb modell
 kap gyártási kreditet.
 
+**Kötelező végrehajtási sorrend:** karaktermodell-teszt → hat identitás lock →
+új CP18/CP19 referenciaframe-ek → videómodell-stresszteszt → motion production.
+A videótesztet nem futtatjuk le olyan arcokkal, amelyeket utána lecserélnénk.
+
 ## 1. Rögzített technikai cél
 
 - végleges képarány: 9:16;
@@ -52,9 +56,23 @@ Az ingyenes napi 50 kredit a fizetős csomagra váltáskor elveszik és a havi
 keret váltja fel. A havi kreditek nem görgethetők tovább. Forrás:
 [Google Flow kreditkezelés](https://support.google.com/flow/answer/16526234).
 
+**Vízjel-ellenőrzés:** a Google általános súgója látható Pro-vízjelet is
+említ, de a magyarországi Flow-felületen a látható vízjel kikapcsolható, a
+felhasználó fiókjában alapból ki volt kapcsolva, és a ténylegesen letöltött,
+végignézett videón sem jelent meg. Ezért a Flow-output használható finalként
+is. Minden generation előtt ellenőrizni kell a kapcsolót, minden letöltést
+pedig vizuálisan végig kell nézni. A láthatatlan SynthID megmaradhat. Az
+általános forrás:
+[Google Flow indulás és vízjel](https://support.google.com/flow/answer/16353333).
+Ezt a fiókspecifikus, ténylegesen ellenőrzött eredményt nem nyitjuk meg újra
+pusztán az általános súgó alapján; csak megváltozott UI, kapcsolóállapot vagy
+egy valóban vízjeles új letöltés indokol újraellenőrzést.
+
 ### OpenArt
 
-Az első OpenArt-vásárlás **Essential havi**, nem éves:
+Az első OpenArt-vásárlás a **4 000 kredites havi belépőcsomag**, nem éves.
+Ezt a jelenlegi nyilvános oldalon Starternek, más felületen Essentialnek is
+jelölhetik; a kreditszám és a havi checkout-total az azonosító:
 
 - listaár jelenleg 14 USD/hó;
 - 4 000 kredit/hó;
@@ -62,17 +80,19 @@ Az első OpenArt-vásárlás **Essential havi**, nem éves:
 - körülbelül 13 consistent character;
 - prémium kép-, videó- és hangmodellek elérése.
 
-Az Essential teszt- és karakterfejlesztési csomag, nem automatikusan a két film
-teljes gyártási kerete. Ha az OpenArt egyik modellje nyer, az Advanced havi
-csomag 12 000 kreditje és körülbelül 150 videója alkalmasabb a két filmre és az
-újrapróbálásokra.
+A belépőcsomag teszt- és karakterfejlesztési csomag, nem automatikusan a két
+film teljes gyártási kerete. Ha az OpenArt egyik modellje nyer, a 12 000
+kredites Plus/Advanced havi csomag és körülbelül 150 videó alkalmasabb a két
+filmre, az újrapróbálásokra és a tiszta kiadásra. A jelenlegi nyilvános pricing
+kártya a commercial-use jogot kifejezetten ezen a 12 000 kredites szinten
+sorolja fel; a 4 000 kredites szintet ezért csak tesztnek kezeljük.
 
 Az OpenArt szerint az upgrade azonnali, a magasabb csomag kreditjeit azonnal
-megadja, és csak az időarányos árkülönbözetet számlázza. Tehát az
-Essential→Advanced váltás normál fiókbeállításból elvégezhető; nem kell
+megadja, és csak az időarányos árkülönbözetet számlázza. Tehát a 4k→12k
+váltás normál fiókbeállításból elvégezhető; nem kell
 lemondani és újra előfizetni. Upgrade előtt és után képernyőképen rögzíteni kell
 a kreditmérleget és a következő számlázási dátumot, mert a help nem írja le
-egyértelműen, hogy a még megmaradt Essential-alapkeret hogyan jelenik meg az új
+egyértelműen, hogy a még megmaradt 4k alapkeret hogyan jelenik meg az új
 egyenlegben.
 
 A havi OpenArt-kreditek nem görgethetők tovább. Az add-on kreditek görgethetők,
@@ -81,6 +101,9 @@ de add-ont csak aktív, arra jogosult csomag mellett érdemes venni. Források:
 [OpenArt help](https://openart.ai/help).
 
 ## 3. Egyetlen újrafelhasználható stresszteszt
+
+Ez a videóteszt csak a 4. fejezet karaktertesztje, a hat kiválasztott identitás
+és az ezekből újragenerált CP18/CP19 elfogadása után indul.
 
 ### Jelenet
 
@@ -140,7 +163,7 @@ kell feljegyezni. Forrás: [OpenArt video models](https://openart.ai/ai-model/?c
 
 OpenArt stresszteszt-korlát:
 
-- cél: legfeljebb 600 Essential kredit;
+- cél: legfeljebb 600 kredit a 4k belépőcsomagból;
 - egy output modellenként;
 - ha három azonos módú modell együtt túllépné a 600 kreditet, csak Seedance és
   Kling fut;
@@ -172,6 +195,24 @@ A Character funkció identitást tart meg; szerethető karaktert először jó
 karaktertervvel kell létrehozni. A karaktertesztet nem szabad összekeverni a
 videómodell-teszttel.
 
+Ez a teljes gyártás első fázisa. Az első, tiszta modellteszt referencia nélkül
+fut, ugyanazzal a prompttal:
+
+- prompt: `prompts/character-model-benchmark-six-person-ensemble.txt`;
+- formátum: egyetlen 9:16 kép, 2×3 panel, pontosan 3 nő + 3 férfi;
+- prompt enhance/Auto Polish/style preset: kikapcsolva;
+- output: pontosan egy modellenként;
+- pontozás: `CHARACTER_BENCHMARK_LOG.csv`;
+- Codex kontroll:
+  `assets/character-benchmark/character-ensemble-control-codex-v01.png`.
+
+A meglévő 18 ingyenes OpenArt-kredit csak akkor használható, ha a Generate
+gomb mellett megjelenő egyképes ár legfeljebb 18 kredit. Első OpenArt-jelölt az
+aktuális UI legjobb karaktertervezésre alkalmas modellje, prioritási sorrendben
+GPT Image 2.0, Seedream 5 Pro, majd Nano Banana 2; csak a ténylegesen elérhető
+és keretbe férő modell fut. Flow-ban ugyanaz a prompt először a legolcsóbb
+aktuális Nano Banana 2 Lite képmódon fut.
+
 ### Olcsó karakterteszt
 
 Ugyanaz a karakterprompt, egy eredmény modellenként:
@@ -181,8 +222,8 @@ Ugyanaz a karakterprompt, egy eredmény modellenként:
   kreditár belefér;
 - kontroll: `assets/storyboard-rough/supporting-cast-placeholder.png`.
 
-Az első kör egy négyszereplős supporting-cast lap. Nem készül modelltraining és
-nem generálunk minden nézetből több változatot.
+Az első kör egy hatfős ensemble-lap. Nem készül modelltraining és nem
+generálunk minden nézetből több változatot.
 
 ### Végleges karakterek
 
@@ -194,12 +235,14 @@ Csak a nyertes karakterterv után:
 4. stabil, szöveg nélküli PNG export;
 5. Character/Consistent Character létrehozása csak a legalább három shotban
    visszatérő szereplőkhöz.
+6. CP18 és CP19 újragenerálása ugyanebből a hat lezárt reference sheetből;
+7. csak ezután indul ugyanazzal a két endpointtal a videómodell-benchmark.
 
-Az Essential körülbelül 13 karakterhelyét nem töltjük fel egyszer szereplő
+Az OpenArt 4k szint körülbelül 13 karakterhelyét nem töltjük fel egyszer szereplő
 statisztákkal. A két film visszatérő karaktereinek összesített célja legfeljebb
 10–12 trained character; minden más szereplő kép-referenciát kap.
 
-Karakterfejlesztési keret az Essentialben: legfeljebb 250 kredit az első
+Karakterfejlesztési keret a 4k belépőcsomagban: legfeljebb 250 kredit az első
 jóváhagyási kapuig. Drága video generation nem indul lezáratlan arccal.
 
 ## 5. Storyboard és animatik
@@ -265,10 +308,10 @@ A postban megoldható jelenetek miatt a valós motion-darabszámnak 45 alatt kel
 maradnia. Quality nem használható tömeggyártásra: 38–45 shot egyetlen Quality
 passza önmagában 3 800–4 500 kredit lenne.
 
-OpenArt esetén az Essential körülbelül 50 videója elegendő a stressztesztre,
+OpenArt esetén a 4k szint körülbelül 50 videója elegendő a stressztesztre,
 karakterfejlesztésre és egy korlátozott rough passra, de két kész filmhez nem ad
 biztonságos retry-keretet. Ha OpenArt nyer, a tömeggyártás csak az
-Essential→Advanced upgrade után indul.
+4k→12k Plus/Advanced upgrade után indul.
 
 ## 7. Retry- és stop-szabályok
 
@@ -360,17 +403,19 @@ nem függ tőle és nem igényel Resolve-ot vagy támogatott GPU-t.
 
 ## 9. Vásárlási és gyártási kapuk
 
-### Gate 0 — most
+### Gate 0 — most: karaktermodell-teszt
 
 - Google AI Pro havi előfizetés ellenőrzött checkouttal;
 - képernyőkép az 1 000 kredites egyenlegről és refill dátumról;
 - automatikus megújítás emlékeztető a promóció vége elé;
-- CP18→CP19 Flow Lite, Fast, Quality: összesen 130 kredit;
-- semmi más Flow-generálás a pontozás előtt.
+- ugyanaz az egyképes karakterprompt Codex, Flow és OpenArt modellen;
+- OpenArt free generation csak kijelzett ≤18 kreditnél;
+- karakterlapok vak pontozása, majd a hat identitás shortlistje;
+- semmilyen videógenerálás a karakterdöntés előtt.
 
-### Gate 1 — OpenArt Essential
+### Gate 1 — OpenArt 4k havi belépőcsomag
 
-- havi Essential, nem éves;
+- havi Starter/Essential, nem éves; a 4 000 kredit alapján azonosítsd;
 - képernyőkép az ár, 4 000 kredit és renewal dátum állapotáról;
 - azonos CP18→CP19 stresszteszt, legfeljebb 600 kredit;
 - karaktermodell-teszt és első shortlist, legfeljebb 250 kredit;
@@ -379,15 +424,19 @@ nem függ tőle és nem igényel Resolve-ot vagy támogatott GPU-t.
 ### Gate 2 — modell- és karakterlock
 
 - vak pontozás kész;
-- nyertes modellenkénti shot-típus rögzítve;
 - végleges visszatérő karakterek és world/style references elfogadva;
+- CP18 és CP19 ugyanabból a hat lezárt karakterből elkészült;
+- CP18→CP19 Flow Lite, Fast, Quality lefutott: összesen 130 kredit;
+- nyertes modellenkénti shot-típus rögzítve;
 - scene-hold animatik és narrációszöveg mindkét filmhez lezárva;
 - minden shot A/B/C kategóriában.
 
 ### Gate 3 — production purchase
 
 - ha Flow nyer: a már megvett Pro 1 000 kredites keretből hibrid gyártás;
-- ha OpenArt nyer: Essential→Advanced in-place upgrade, utána tömeggyártás;
+- minden Flow final előtt a magyarországi UI-ban kikapcsolt látható vízjel
+  ellenőrzése, majd a letöltött teljes klip vizuális QA-ja;
+- ha OpenArt nyer: 4k→12k Plus/Advanced in-place upgrade, utána tömeggyártás;
 - ha vegyes eredmény: Flow az olcsó alap és az OpenArt csak a dokumentált hero
   vagy rescue shotokra;
 - egyik platform sem kap automatikusan minden shotból teljes második passzt.
@@ -404,8 +453,12 @@ nem függ tőle és nem igényel Resolve-ot vagy támogatott GPU-t.
 
 - A 2 190 Ft-os Google AI Pro a jelenlegi promócióban jó ár az 1 000 Flow
   kreditért, de a keretet nem szabad Quality-tömeggyártásra használni.
-- Az OpenArt Essential jó és kockázatszegény tesztbelépő. Ha Seedance/Kling/Wan
-  érdemben jobb, az Advancedre váltás az OpenArt szerint azonnali és prorated.
+- Az OpenArt 4k Starter/Essential jó és kockázatszegény tesztbelépő. Ha
+  Seedance/Kling/Wan érdemben jobb, a 12k Plus/Advanced szintre váltás az
+  OpenArt szerint azonnali és prorated.
+- A magyarországi Flow-felületen a látható vízjel kikapcsolható és a
+  letöltött kontrollklipen nem jelent meg, ezért a Flow final is lehet; a
+  kapcsolót és a letöltést minden outputnál külön ellenőrizni kell.
 - Karaktereket a videók előtt kell jóváhagyni; a drága modell csak a shortlistet
   finomítja.
 - A 3 másodperces review slideshow helyett az elsődleges animatik jelenetenként
@@ -413,4 +466,3 @@ nem függ tőle és nem igényel Resolve-ot vagy támogatott GPU-t.
 - Az alapértelmezett hang voice-over + egyetlen folytonos score + külön foley;
   nem klipenként generált zene és nem tömeges lipsync.
 - Resolve helyett FFmpeg végzi a pontos, GPU-független összeállítást.
-

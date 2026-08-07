@@ -1,56 +1,77 @@
 Act as cinematography co-director for the locked 23-shot film “The City Between
-Us,” runtime 02:48, 9:16 portrait, 720x1280 delivery, 24 fps. Do not rewrite the supplied script or timings.
-Organize S01–S23 using @Founder, @Maya, @DanceStudent, @DancePartner, @Operator,
-@BudapestWorld, @LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio,
-@EventVenue, @Notebook and the approved TravelMemory stills.
+Us,” runtime 02:48, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
+setup table only. Do not generate or rewrite the supplied narration and timings.
 
-Visual system: premium 2.5D hand-drawn adult characters integrated into
-dimensional miniature/paper sets; tactile, painterly, motivated light and subtle
-facial acting. Founder identity, age, navy coat, charcoal knit, rust scarf and
-cognac notebook never drift. London work is software programming in Soho, never
-a factory. The Victoria line leads home to a personal, maintained but crowded
-thirteen-adult Victorian HMO in Tottenham: one full bathroom, one separate WC
-and a shared bedroom. The five London years buy financial independence and time
-for the Founder's own work, not another home. Travel is a three-second illustrated burst, not fake archive. Dating
-locations create friction; dates are never mocked. No logos, readable generated
-text, baked UI, public human rating or promised romantic outcome.
+Use @Founder, @Maya, @DanceStudent, @DancePartner, @Operator, @BudapestWorld,
+@LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook,
+the approved six-person group, twelve-Hungarian-flatmate board and confirmed
+TravelMemory stills. Lock Founder age, face, navy coat, charcoal knit, rust scarf
+and cognac notebook. Lock the first group to exactly the same six adults, three
+women and three men, from proposal through later invitations.
 
-The documented product sequence follows a relationship from unknown to later
-change: a user sets an editable private 1–10 priority for an unknown individual
-profile or pair suggestion; reciprocal choices and profile/context evidence form
-balanced groups of strangers; every person may accept or decline; accepted
-participants gain a contextual group chat and manage their first real event.
-Show location, accessibility, resources, tickets, check-in and event-linked
-feedback. After the meeting, former strangers are known contacts who may be
-directly invited to later events, while Auto Inviter can fill available places
-according to the priority plan. Repetition can grow a community. End the product
-loop with a later respectful conflict: one person privately lowers the editable
-priority, making future shared group/event paths less likely without punishment.
-Avoid abstract affinity graphs. S22 begins with a verified package handoff to a
-technically capable local operator at a real server/workstation. The same shared
-core then appears in independently hosted, own-brand local deployments testing
-different communities and cultural contexts. Connect them voluntarily as a
-server network/virtual enterprise and show one clean opt-out branch that remains
-independent. Do not imply current deployments, proven efficiency, revenue or
-automatic trust.
+Visual system: premium painterly 2.5D hand-drawn adults integrated into tactile
+dimensional paper/miniature sets, motivated light and subtle micro-acting. One
+primary subject action and one camera move per clip. No photoreal uncanny skin,
+generated text/logo/UI, public human ratings, glamour casting, national
+stereotype or promised romantic outcome.
 
-Camera plan: S01–S09 use restrained 28–65 mm tracking, static reflection and
-foreground match transitions; S08's memory burst is assembled from stills in
-post. S10–S15 use readable social two/three-shots with restrained dance arcs.
-S16–S20 slow down into exact overhead notebook, familiar-member invitations,
-open event seats and a measured event-table orbit. S21 shows returning members
-welcoming newcomers; S22 uses a controlled package-verification handoff at an
-operator workstation.
-One camera move per generated clip; reject spectacle presets.
+STORY LOCK
+S01 home without stability. S02 2012 Olympic/Jubilee summer arrival. S03
+multicultural Soho software office and the humane costume-tail colleague memory.
+S04 London culture, nightlife and reciprocal cross-cultural dates; Victoria line
+only as a half-second link. S05 the Founder plus twelve Hungarian adults in one
+maintained Tottenham HMO inside multicultural London. S06 one bathroom, separate
+WC, shared bedroom and a dry resident-swap reveal through a different snore. S07
+cuts the same room lamp against an Edinburgh overnight coach, Loch Ness,
+Glasgow/Clyde powerboat and the exact but rushed London–Manchester–Liverpool–
+North Wales–Cardiff–London route; years four/five bring time and belonging into
+focus. Llanfairfechan is only a candidate until confirmed; Brexit is background,
+not a migrant job-displacement claim.
 
-Use the best current reference-capable model visible in the account. Prefer
-Kling 3.0 for identity/ensemble and structured transitions, first/last-frame
-mode for S04–S06/S09, and Veo/Seedance only where atmosphere stays consistent.
-Draft at the cheapest visible tier; promote only an approved setup to 720p final
-without changing prompt. Do not render 1080p unless the 720×1280 phone QA fails. For
-S14 and S15, create clean restrained mouth motion, then finish exact English and
-Hungarian dialogue from isolated stems in LipSync Studio.
+S08 is an eight-memory, 72-frame CPU-post burst. Egypt occurred after the London
+homecoming, so @Notebook folds chronology. Use a restrained Founder/tuk-tuk
+handoff at Angkor and a reciprocal Taj Mahal bus conversation. The chosen Egypt
+frame is cooperative: a Luxor balloon rests in a vegetable plot while passengers,
+crew and residents work around a wall. The Cairo taxi-roof luggage mishap is an
+alternate, not a ninth frame. Do not merge Cairo, Luxor, Aswan and Abu Simbel. S09 returns
+home deliberately. S10–S15 show two forms of app attention, social attempts,
+dance and dates whose settings or continuation fail; nobody is mocked.
 
-Return a setup table only: shot ID, attached Elements, model, duration, aspect,
-camera preset, lens, light, first/last-frame constraint, locked prompt and split
-risk. Do not generate until I approve the table.
+PRODUCT LOCK
+S16 shows premature screen verdicts falling away. A common acquaintance, place,
+event or story opens a less-cold door without vouching. S17 is private editable
+1–10 intent for an unknown individual or pair; Friends in Common and Inside/
+Outside Network provide context only, never public rating, reputation, character
+reference, compatibility or safety guarantee. S18 proposes the same six distinct
+strangers. S19 gives all six independent accept/decline, then chat, public doorway
+and first introductions. S20 shows members, transport, accommodation/venue and
+supplies as four resources; ticket, check-in and feedback stay separate. One
+clear narrator replaces overlapping generated dialogue.
+
+S21 shows known contacts and real meeting context. One invitee lacks time and
+declines; another invited adult independently accepts an open place. People are
+not replacement tokens. Repeated events may grow community; lowering one private
+priority after a relationship change quietly reduces that future shared path,
+without public punishment. S22 shows a verified installation-package handoff,
+competent local operator, own-brand independent server, culturally specific test,
+voluntary shared network and opt-out. Reserve a clean central plate for the exact
+unmodified `frontend/src/assets/logo/heart.png` in post. Its helmet-like shelter,
+star and heart may suggest protection, direction and connection, not certified
+safety. S23 is built entirely in CPU post from the real brand asset and editable
+text.
+
+CINEMATOGRAPHY AND MODEL DISCIPLINE
+S01–S09 use restrained 28–65 mm movement and foreground/shape transitions. S07
+and S08 are still/post assemblies, not single complex clips. S10–S15 use readable
+social two/three-shots. S16–S20 slow into notebook, human decisions and a real
+event. S21 prioritizes ensemble identity and autonomous response. S22 uses one
+controlled operator-verification move. Prefer the best current reference-capable
+model visible in the account; test cheaply and change only one variable per run.
+Lip sync is not required for S20 and remains optional/off-screen for S14–S15.
+
+OUTPUT
+Return shot ID, attached Elements, model, duration, aspect, camera preset, lens,
+light, first/last-frame constraint, locked one-action prompt, identity risk and
+estimated credits. Do not claim traction, safety, revenue, deployed operators,
+proven efficiency, superior matching or solved loneliness. Do not generate until
+the table is approved.

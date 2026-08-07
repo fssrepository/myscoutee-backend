@@ -1,5 +1,12 @@
 # Cost and model decision — what should I buy, and where should I start?
 
+> **Historical snapshot, superseded on 2026-08-07.** The earlier OpenArt-first,
+> Resolve-based recommendation below is retained for price-history and platform
+> comparison only. The user's current two-film purchase, benchmark, watermark,
+> character and CPU-post decision is
+> [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md). Follow
+> file 12 wherever the two documents differ.
+
 Reviewed: **2026-08-04**. Prices, credits, models, watermarks, promotions and
 regional access change quickly. The checkout page shown in your own account is
 always authoritative before payment. All figures below are USD references,

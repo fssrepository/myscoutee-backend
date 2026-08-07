@@ -60,12 +60,15 @@ node among many, smiling because the idea has outgrown a single desk.
 ### Act I — Buying back time, then seeking a life (00:00–01:53)
 
 The founder already has a home, but instability makes a future there
-unworkable, so he moves to London. By day
-he writes software in Soho; at night the Victoria line carries him back to
-Tottenham. There he makes a hard, rational bargain: thirteen adults share a
-converted Victorian house, one full bathroom and one separate WC, while he also
-shares his bedroom. Long days and careful food spending for five years protect
-his earnings. He is not saving for another house; he is buying financial
+unworkable, so he moves to London during the Diamond Jubilee and Olympic summer.
+He writes software in Soho among colleagues from across the world. Museums,
+exhibitions, nightlife, multicultural dates and friendships make the first
+three years feel inexhaustible. The Victoria line is only a brief connective
+beat to Tottenham, not a commute sequence. There he makes a hard, rational
+bargain: the Founder and twelve other Hungarian adults share a converted
+Victorian house, one full bathroom and one separate WC, while he also shares his
+bedroom. Long days and careful food spending for five years protect his
+earnings. He is not saving for another house; he is buying financial
 independence and time for his own work.
 
 Across the larger journey he reaches nearly forty countries. Six to eight
@@ -98,6 +101,14 @@ fade.
 
 The pace becomes legible and deliberate. The audience should feel “of course —
 the missing step was the path,” not “an algorithm saved him.”
+
+The product turn also recovers a human function weakened by photo-first screens:
+people used to arrive with stories, places and people in common before making a
+verdict. MyScoutee may surface that shared context and make a warm introduction
+less cold, but it never publishes a human rating or asks an acquaintance to
+guarantee character, compatibility or safety. The same six adults must visibly
+progress from separate profiles to autonomous decisions, introductions, a real
+event and later recognition; do not replace this lifecycle with static cards.
 
 ### Act III — Relationship evolution and voluntary local operation (02:32–02:48)
 
@@ -269,17 +280,42 @@ branding around the shared core.
 ### London
 
 - no montage of Big Ben, red bus and phone box as shorthand;
-- use the specific lived route: a modest Soho software office, late Victoria
-  line carriage, Tottenham street and Victorian terrace;
+- begin in the exceptional public energy of the 2012 Diamond Jubilee and
+  Olympic summer without official marks or royal likenesses;
+- use the specific lived world: a modest Soho software office, museums,
+  exhibitions, nightlife, multicultural friendships and dates, one brief late
+  Victoria line reflection, then Tottenham street and Victorian terrace;
 - one distant skyline glimpse is enough;
-- the converted Victorian HMO houses thirteen distinct adults. Make one full
-  bathroom and one separate WC spatially legible, then show the Founder's shared
-  bedroom with two personal zones;
+- the surrounding city is visibly international, but the converted Victorian
+  HMO is a Hungarian microcosm: the Founder plus twelve other Hungarian adults;
+  make one full bathroom and one separate WC spatially legible, then show the
+  Founder's shared bedroom with two personal zones;
 - every flatmate has a trace of individual life — food, photograph, coat,
-  greeting or routine — rather than becoming anonymous crowd texture;
+  greeting, routine and a different reason for leaving Hungary — rather than
+  becoming anonymous crowd texture;
+- preserve one dry, humane memory as a short sound bridge: after a flatmate has
+  lost his money gambling and swaps places with an acquaintance, the Founder
+  notices the unannounced change only because a different man is snoring in the
+  shared room. The absurd housing turnover is the joke; debt and the person are
+  not;
+- South Tottenham sits beside the Stamford Hill/South Tottenham Charedi Jewish
+  community. Ordinary street details may locate the house respectfully, but no
+  religious resident becomes exotic background. The Founder may express that
+  his immediate area felt safer while nearby directions felt more volatile;
+  never claim the community caused safety or make a general crime assertion;
+- the first three years retain wonder: a one-pound overnight coach to Edinburgh,
+  Loch Ness, a Glasgow River Clyde powerboat, and an exact but over-compressed
+  London–Manchester–Liverpool–North Wales–Cardiff–London circuit may flash as
+  personal adventures. The point is the Founder's willingness to trade comfort
+  for discovery, not a tourism catalogue;
+- years four and five reveal that a temporary bargain is becoming a life.
+  Brexit appears only as quiet public context around work and belonging, not
+  proof that migrants displaced British workers or lowered wages;
 - an imagined independent rental may show why the founder chose sharing, but no
   invented rent, wage or savings figure appears;
-- accents/cultures live in faces, clothing, food steam and fragments of sound;
+- international cultures live in the office, public city, friendships and
+  dates; inside the house, individuality comes from personal history rather
+  than national variety;
 - travel is shown through repeated door frames and carriage windows;
 - long work is shown by changing daylight, emptied desks and repeated meals,
   never by humiliating the worker or blaming one employer.
@@ -291,8 +327,14 @@ branding around the shared core.
 - no archive photos survive, so generate explicitly illustrated memories rather
   than fake home-video footage;
 - the three-second burst can match-cut High Tatras → Schönbrunn arch →
-  Neuschwanstein silhouette → Angkor Wat towers → Golden Triangle geometry →
-  Norwegian weather → Mediterranean street → Chesapeake/Niagara water;
+  Neuschwanstein silhouette → Founder/tuk-tuk handoff at Angkor → reciprocal
+  Taj Mahal bus conversation → Norwegian weather → one confirmed Egypt human-
+  adventure frame → Chesapeake/Niagara water;
+- the Egypt trip occurred after the London homecoming. Fold time through the
+  notebook so the montage remains thematic rather than implying false
+  chronology. Prefer cooperation around the Luxor balloon's vegetable-field
+  landing over a landmark collage. Keep the Cairo taxi-roof luggage mishap as
+  the first human alternate, not an additional ninth frame;
 - hold each view for about 8–12 frames and use shape/motion continuity, not
   flags, souvenir costumes or landmark labels;
 - the last view resolves into the founder's reflection and an empty adjacent
@@ -321,6 +363,10 @@ and local community venue. A hardware key, compact install package and blank
 verification checklist show a technically accountable handoff. Reveal several
 independently hosted local servers and culturally distinct community tests around
 one common coral core; one node can opt out while staying independently operable.
+Reserve an exact central plate for the original unmodified repository
+`frontend/src/assets/logo/heart.png`, composited in post. Its helmet-like shelter,
+guiding star and central heart visually connect protection, direction and human
+connection without turning the mark into a certification or safety guarantee.
 This is the intended virtual-enterprise model, not a claim of current deployment,
 proven efficiency or physical hardware shipment.
 
@@ -345,7 +391,7 @@ to connect people and places without tying or trapping them.
 ### Doors and thresholds
 
 Every attempt uses a doorway. Early doors lead to another beginning. The event
-door in shot S21 remains open and visible, symbolizing both invitation and easy
+door in shot S20 remains open and visible, symbolizing both invitation and easy
 exit.
 
 ### The empty chair
@@ -357,8 +403,12 @@ creating a workable social context.
 
 ### The product mark
 
-Use the unmodified repository `heart.png` briefly during the first 1.2 seconds
-and fully on the end card. During the story use only the abstract coral
+Use the unmodified repository `heart.png` briefly during the first 1.2 seconds,
+at the shared MyScoutee Network core in S22 and fully on the end card. Composite
+it in post at original proportions and colors; never ask a model to redraw it.
+The helmet-like outer form suggests shelter, the star suggests direction and the
+central heart keeps the system human. This visual reading is a promise of design
+intent, not a safety certification. Elsewhere use only the abstract coral
 connection line; before the product turn, generic dating UI contains no hearts.
 
 ## 9. Cinematography bible
@@ -405,7 +455,7 @@ Rules:
 | London travel | cool overcast 6500 K | train-window fill | sodium/LED streaks | fatigue without grey corpse skin |
 | notebook insight | warm 4000 K desk key | soft page bounce | small practical halo | catchlight returns |
 | event | soft 3500 K motivated practical/window mix | group bounce | coral/aqua accents | equal exposure for all faces |
-| operator finale | local light varies | consistent skin-tone handling | coral line; original logo only on end card | warm, credible confidence |
+| operator finale | local light varies | consistent skin-tone handling | coral line; original logo at network core and end card | warm, credible confidence |
 
 ## 11. Acting and facial direction
 

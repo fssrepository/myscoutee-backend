@@ -20,15 +20,19 @@ This directory specifies a complete 2 minute 48 second MyScoutee hero film:
   dimensional city sets;
 - story: he already has a home but is pushed out by several sources of
   instability and goes to London, where he works as a
-  programmer in Soho and takes the Victoria line home to a converted Victorian
-  HMO in Tottenham. Thirteen adults share one full bathroom and a separate WC;
-  he also shares his bedroom. Five years of long workdays and careful spending
-  buy financial independence and time for his own work, not another home.
+  programmer in a multicultural Soho office and briefly takes the Victoria line
+  home to a converted Victorian HMO in Tottenham. The Founder and twelve other
+  Hungarian adults share one full bathroom and a separate WC; he also shares his
+  bedroom. London outside the house remains culturally expansive. Low-cost UK
+  adventures keep the first three years magical, while five years of long
+  workdays and careful spending buy financial independence and time for his own
+  work, not another home.
   Nearly forty countries still do not cure
   loneliness, so he comes home
   deliberately to look for a partner. After trying online and
   real-world routes, he recognizes the missing bridge between encounter and a
-  meaningful shared meeting, gives that problem his full focus, and builds
+  meaningful shared meeting. He sees that screens encourage verdicts before
+  people gain common human context, gives that problem his full focus, and builds
   MyScoutee as a full relationship-lifecycle and event system. Technically
   capable local operators can test the shared core under their own brands and
   cultural contexts while cooperating through a voluntary server network;
@@ -50,16 +54,19 @@ For the best cost/control balance, use the benchmark-first hybrid route:
 1. Lock the story, voice and timing with [03_SCRIPT_EN_HU.md](03_SCRIPT_EN_HU.md).
 2. Follow the purchase gates and credit limits in
    [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md).
-3. Compare Flow and OpenArt on the same reusable CP18→CP19 stress shot and
-   record every result in [MODEL_BENCHMARK_LOG.csv](MODEL_BENCHMARK_LOG.csv).
-4. Build and approve the founder, supporting cast, locations, props and style frames from
+3. Run the identical six-person character benchmark first and record every
+   result in [CHARACTER_BENCHMARK_LOG.csv](CHARACTER_BENCHMARK_LOG.csv).
+4. Lock the six identities, then compare Flow and OpenArt on the regenerated
+   CP18→CP19 stress shot and record every result in
+   [MODEL_BENCHMARK_LOG.csv](MODEL_BENCHMARK_LOG.csv).
+5. Build and approve the founder, supporting cast, locations, props and style frames from
    [02_CREATIVE_BIBLE.md](02_CREATIVE_BIBLE.md).
-5. Make one scene-duration animatic, then generate each required moving shot
+6. Make one scene-duration animatic, then generate each required moving shot
    only on its selected model.
-6. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
+7. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
    foley, brand, title and subtitles. The
    master should not depend on generated on-screen text.
-7. Buy/use Higgsfield only if an identity- or ensemble-critical winning-platform shot
+8. Buy/use Higgsfield only if an identity- or ensemble-critical winning-platform shot
    still fails after three controlled attempts.
 
 OpenArt-only, Higgsfield-only, and Flow-only variants are also documented. The
@@ -84,6 +91,7 @@ may keep their platform name until they replace the matching Sxx shot.
 | [10_PRODUCTION_CHECKLIST.md](10_PRODUCTION_CHECKLIST.md) | Asset intake, continuity, QA, claims, release and variant checklist |
 | [11_COST_AND_MODEL_DECISION.md](11_COST_AND_MODEL_DECISION.md) | Current cost scenarios, exact model choices, purchase gates and the Flow/Higgsfield decision |
 | [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md) | Current two-film Flow/OpenArt benchmark, credit, character, audio and CPU-post plan |
+| [CHARACTER_BENCHMARK_LOG.csv](CHARACTER_BENCHMARK_LOG.csv) | Comparable character-model cost and visual scoring log |
 | [MODEL_BENCHMARK_LOG.csv](MODEL_BENCHMARK_LOG.csv) | Comparable model settings, charged credits and blind visual scores |
 | [SOURCES.md](SOURCES.md) | Project evidence and external research/platform sources |
 | [SHOT_MANIFEST.csv](SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings, cost-default platform/model and approved filenames |
@@ -91,6 +99,20 @@ may keep their platform name until they replace the matching Sxx shot.
 The `prompts/` directory contains plain-text copy blocks. Do not edit a master
 prompt for an individual shot; add the shot-specific block after the shared
 continuity prefix so that global visual rules remain stable.
+
+Current standalone planning prompts:
+
+- [six-person character model benchmark](prompts/character-model-benchmark-six-person-ensemble.txt);
+- [twelve-flatmate Hungarian HMO character board](prompts/london-hmo-residents-character-board.txt);
+- [dense five-year London sequence](prompts/london-five-year-dense-sequence.txt);
+- [UK adventure and availability memory board](prompts/uk-adventure-availability-memory-board.txt);
+- [six-day Egypt human-network memory board](prompts/egypt-six-day-human-network-memory-board.txt);
+- [India 2016 human-bridge memory board](prompts/india-2016-human-bridge-memory-board.txt);
+- [Thailand/Cambodia human-bridge memory board](prompts/thailand-cambodia-human-bridge-memory-board.txt);
+- [Russia arrival human-bridge memory board](prompts/russia-arrival-human-bridge-memory-board.txt);
+- [European wonder and empty-capacity memory board](prompts/europe-wonder-empty-capacity-memory-board.txt);
+- [Istanbul–Dubai hospitality memory board](prompts/istanbul-dubai-hospitality-memory-board.txt);
+- [human-bridge product lifecycle](prompts/product-human-bridge-lifecycle-sequence.txt).
 
 ## The creative sentence
 
@@ -109,9 +131,10 @@ The autobiographical hinges are:
 ## The product sentence
 
 > MyScoutee turns private editable 1–10 priorities and reciprocal/contextual
-> evidence into balanced groups of strangers, carries them through chat and a
-> managed real-world event, then lets the resulting contacts meet again and
-> evolve — including lowering a priority when a relationship changes.
+> evidence — including real people, places or events in common — into balanced
+> groups of strangers, carries them through chat and a managed real-world event,
+> then lets the resulting contacts meet again and evolve. Shared context is not
+> a public rating, endorsement or guarantee.
 
 ## The operator sentence
 
@@ -148,8 +171,10 @@ safe or successful meeting.
   repository's high-resolution logo asset. Do not recolor, redraw, crop, glow or
   AI-regenerate it. Keep **MyScoutee** as separate editable text in post rather
   than creating a new combined bitmap.
-- Show the original logo briefly in S01 and fully in S23. Do not keep a permanent
-  corner watermark through the emotional middle of the film.
+- Show the original logo briefly in S01, at the common MyScoutee Network core in
+  S22 and fully in S23. Do not keep a permanent corner watermark through the
+  emotional middle of the film. The helmet–star–heart reading is visual intent,
+  not a safety certification.
 
 ## Master settings
 
@@ -174,8 +199,9 @@ is the acceptance target.
 ## First action
 
 Open [12_TWO_FILM_CREDIT_SAVER_PLAN.md](12_TWO_FILM_CREDIT_SAVER_PLAN.md), then
-run exactly the three Flow CP18→CP19 benchmark generations described there.
-Do not spend the remaining Flow or OpenArt production credits before the three
-Flow results and the matching OpenArt results have been scored. After model and
-character lock, place the 23 actual shot durations from `SHOT_MANIFEST.csv` on
-the scene-hold animatic and fix story timing before bulk motion generation.
+run the identical reference-free six-person prompt in Codex, Flow and any
+OpenArt image model whose displayed one-image cost fits the remaining free
+credits. Lock the six identities before regenerating CP18/CP19 or spending video
+benchmark credits. After character and model lock, place the 23 actual shot
+durations from `SHOT_MANIFEST.csv` on the scene-hold animatic and fix story
+timing before bulk motion generation.

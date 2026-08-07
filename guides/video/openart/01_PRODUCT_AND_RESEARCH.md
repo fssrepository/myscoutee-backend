@@ -121,6 +121,33 @@ MyScoutee is presented as one designed bridge, not as the replacement for every
 door. An operator can use existing dance schools, volunteer groups, venues,
 festivals, sports, travel and community events as the real-world destination.
 
+### Recover shared context without building a reputation system
+
+The founder's sharper observation is that photo-first screens invite an opinion
+before two people share a room, task, acquaintance or story. Older introductions
+often arrived with some human context: who brought someone, where they met, what
+they were trying to do together. That past was not universally kinder or safer,
+and a mutual acquaintance is not proof of character. The useful function to
+recover is **context before verdict**, not gatekeeping or nostalgia.
+
+The product can truthfully express this in a bounded way:
+
+- private editable priority records current intent without publishing human
+  value;
+- inside/outside-network and people-in-common cues may make an invitation less
+  cold;
+- after a real event, the event and meeting time become grounded context;
+- former strangers become known contacts who may be directly invited again;
+- when someone lacks time or declines, an available place can be offered through
+  the priority plan, but the next person still decides independently;
+- no acquaintance publicly endorses, guarantees or certifies another person;
+- no public reputation, gossip or punitive score follows a changed relationship.
+
+The film's visual answer is therefore a continuous human lifecycle, not four
+static cards: premature opinion falls away → private intent and shared context →
+six autonomous strangers → introductions and first event → known contacts and
+later invitations → capacity changes and relationships evolve.
+
 ## 4. London and Budapest
 
 ### Founder work context — personal testimony, not a market statistic
@@ -129,6 +156,13 @@ The film starts before London. The founder reports that he could not find work
 at home on which he felt able to build a future. He then moved to London, worked
 as a programmer in Soho and commuted home on the Victoria line to Tottenham.
 There he lived in a converted Victorian HMO with twelve other adults.
+
+All twelve flatmates were Hungarian. The house itself was therefore a Hungarian
+microcosm of different economic, professional and personal departures, while
+the surrounding office, streets, friendships, dates and cultural life were
+visibly international. Do not “diversify” the HMO by changing nationalities; give
+its residents individuality through age, body, region, work rhythm, ambition,
+temperament and personal history.
 
 Film-safe wording:
 
@@ -176,6 +210,54 @@ packing. Do not portray homelessness, starvation, filth or London residents as
 the enemy. Do not show invented rent or wage figures. If a later factual cut
 uses cost figures, date and source them separately.
 
+The emotional truth is not continuous grey deprivation. The Founder arrived in
+the public energy of the 2012 Diamond Jubilee and Olympic summer. Soho colleagues
+from different countries, museums, exhibitions, nightlife and dates across
+cultures made London feel unlike anywhere else. A true comic memory has an Indian
+woman colleague and the Founder buying a costume animal tail in Soho for a
+departing Polish man colleague. The joke is friendship, not nationality.
+
+Low-cost travel extended that magic while exposing incompatible capacity:
+
+- a one-pound overnight coach to Edinburgh traded comfort — including the smell
+  of other passengers' socks — for adventure;
+- Loch Ness and a Glasgow River Clyde powerboat opened a much larger landscape;
+- at one ticket counter the Founder nearly paid for a German tourist's child
+  after the parent found the price too high; the point is spontaneous generosity,
+  not nationality or judgment;
+- a precisely planned London–Manchester–Liverpool–North Wales–Cardiff–London
+  circuit succeeded but became needlessly compressed because nobody in the
+  group could take one additional day;
+- a wide low-tide North Wales beach with steep hills and a village behind is
+  probably Llanfairfechan, but remains unconfirmed until the Founder recognizes
+  it visually.
+
+These details should appear as two- or three-second visual/sound memories under
+existing narration. The product response is not “replace unavailable friends.”
+It is a consent-preserving capacity path: a person may decline, an open place may
+be offered to another suitable invitee, and that person independently decides.
+
+One shared-room memory captures the unstable private world in a single sound.
+A resident who had lost his money gambling exchanged his place with an
+acquaintance; the Founder realized someone new was in the room only when a
+different man snored. Present the unannounced turnover as dry housing absurdity,
+never as mockery of loss, debt or the resident.
+
+The former house was in the South Tottenham area adjoining Stamford Hill, where
+official local sources locate a major Charedi Jewish community. The Founder
+personally felt the immediate area was safer while nearby directions felt more
+volatile. That is subjective memory, not evidence that religion caused safety
+or a general claim about local crime. Use ordinary, respectful street life and
+avoid exoticizing visible religious residents.
+
+The first three years retained the city's wonder. By years four and five, the
+same work, rent and shared space made a temporary bargain feel permanent. Brexit
+is valid as the period's emotional and political background around work and
+belonging. Official UK analysis did not find clear overall employment harm to
+UK-born workers and did not support free-movement reform as a quick fix for low
+wages, so the film must not assert that migrants displaced British workers or
+caused low pay.
+
 London City Hall treats loneliness as partly structural and emphasizes the
 ability to build equal, meaningful relationships across difference. The film's
 line “The city wasn't empty. The path between people was” is an artistic
@@ -207,23 +289,29 @@ reference; the voice-over names only the three regions and “almost forty
 countries.”
 
 No original photographs remain, so label the visual sequence **illustrated
-memory**, not archive footage. The visible travel burst is only **three
-seconds**: a deliberately surprising, fast animated chain of six to eight
-reconstructed memories, each held roughly 8–12 frames at 24 fps and joined by
-matching shapes. The voice starts before the burst and ends after it, so the
-edit never has to recite locations.
+memory**, not archive footage. The Egypt trip happened after the London
+homecoming, so this sequence folds time through the notebook instead of claiming
+strict chronology. The visible travel burst is only **three seconds**: a
+deliberately surprising, fast animated chain of eight reconstructed memories,
+each held roughly 8–12 frames at 24 fps and joined by matching shapes. The voice
+starts before the burst and ends after it, so the edit never has to recite
+locations.
 
 Create eight respectful reconstructed plates:
 
 1. Norwegian coast or mountain weather;
-2. Angkor Wat in humid morning light;
-3. one Golden Triangle city memory without collapsing Delhi, Agra and Jaipur
-   into a single invented place;
-4. Mediterranean street/coast drawn from Italy, Portugal or Spain;
-5. Neuschwanstein as the Bavarian castle actually visited, not a “Disney castle”
+2. Angkor Wat in humid morning light, with the Founder and one negotiated
+   tuk-tuk handoff kept at ordinary human scale;
+3. one Agra/Taj Mahal bus memory: a brief reciprocal conversation with a young
+   woman travelling with her grandfather, followed by the Founder's recognition
+   that distance left no credible next step; never frame her as a prize or imply
+   that Delhi, Agra and Jaipur are one place;
+4. Neuschwanstein as the Bavarian castle actually visited, not a “Disney castle”
    or Disney-branded object;
-6. the High Tatras in Slovakia;
-7. Schönbrunn in Austria;
+5. the High Tatras in Slovakia;
+6. Schönbrunn in Austria;
+7. one human Egypt memory: the Luxor balloon resting in a vegetable plot while
+   crew, passengers and residents cooperate around a wall;
 8. an eastern-US water/city memory such as Chesapeake, Ocean City or Niagara,
    with the exact location chosen and labelled in production notes.
 
@@ -233,6 +321,224 @@ costumes and monuments. Show ordinary gestures and distinct spatial rhythms.
 Russia appears only if useful as a personal historic memory, without a current
 political claim. The emotional point is not a travel flex: extraordinary beauty
 does not automatically become shared life.
+
+### Egypt after London — a temporary human network
+
+The six-day self-organized Egypt trip is valuable because almost every threshold
+depended on a different short-lived human bridge. The Founder arranged four
+driver-led southern Nile days through WhatsApp, local hotels and local people;
+handled a camel overcharge at Giza with a manager and tourism-security officers;
+stayed on Luxor's West Bank between the western necropolis landscape and eastern
+city lights across the Nile; joined a balloon landing that required passengers,
+crew and residents to cooperate through a vegetable plot and private home; and
+negotiated a final finite budget between a souvenir for his mother and the taxi
+to the airport.
+
+Use this as specific memory, not a country judgment. Armed security is period
+background in the Founder's recollection, never visual proof that Egypt is
+inherently dangerous. The camel dispute does not characterize vendors. The
+driver/taxi/hotel coordination does not prove an absence of public transport.
+Currency uncertainty remains an unreadable hesitation until the trip date and
+contemporary exchange-rate context are confirmed.
+
+Likely route anchors, each requiring Founder confirmation before being labelled
+as visited:
+
+- Cairo/Giza: Giza Plateau, pyramids and Sphinx;
+- Luxor east: Karnak and Luxor temples;
+- Luxor west: Valley of the Kings, Valley of the Queens, Hatshepsut's temple at
+  Deir el-Bahari and the Colossi of Memnon;
+- between Luxor and Aswan: Edfu and Kom Ombo;
+- Aswan: Philae, the Unfinished Obelisk, High Dam and Elephantine Island, the
+  strongest candidate for the visible Nubian island;
+- Abu Simbel: the Great Temple of Ramesses II and the smaller Hathor/Nefertari
+  temple.
+
+Only the communal balloon landing is currently selected for the three-second
+main-film burst. The complete account remains available for a future personal
+film or a longer cut.
+
+One additional Cairo arrival memory is a strong **first alternate** to the
+balloon frame. After declining an expensive airport taxi and hearing a driver's
+personal claim about unofficial exchange rates, the Founder shared a vehicle
+with a Sudanese married couple. A playful, mutually amused conversation began;
+as the taxi pulled away, the couple's suitcases, stacked on the roof, fell down
+and abruptly turned flirtation into a small shared practical crisis. The moment
+must remain warm and self-aware: the woman is an autonomous participant, the
+couple is not a comic ethnic type, and the falling luggage is not evidence about
+Egyptian transport. It demonstrates how quickly strangers can acquire a common
+story, while still having no durable path to continue it.
+
+### India in November 2016 — beauty inside a cash discontinuity
+
+The Founder dates his five-day Golden Triangle trip to November 2016: roughly
+three days on the ground and two travel days through Dubai. On 8 November the
+Indian government announced that existing ₹500 and ₹1000 notes would cease to
+be legal tender from 9 November; banks and ATMs then required a temporary
+closure and ATM reconfiguration. This supplies exact period context, not a
+timeless depiction of India.
+
+The Founder remembers being unable to exchange money, depending on a WhatsApp-
+coordinated driver for some entrance payments, long ATM queues and people being
+paid to wait in those queues. The first two are autobiographical details; the
+last two remain personal observation unless a scene needs separate historical
+sourcing. Do not turn scarcity into spectacle or portray the driver as a wallet.
+The visible route is Delhi–Agra–Jaipur, the established Golden Triangle, with
+each city kept geographically distinct.
+
+The strongest human beat is not the monument. On a bus at the Taj Mahal, the
+Founder heard a pleasant voice behind him, turned and met a young woman visiting
+with her grandfather. They talked briefly and reciprocally; he then decided the
+distance made a continuation unrealistic. It is a clean MyScoutee problem beat:
+an encounter can be real and respectful yet disappear because it has no shared
+context, consented continuation or realistic capacity. The product must not be
+presented as able to erase geography or guarantee romance.
+
+### Thailand and Cambodia — paid handoffs and unsolicited kindness
+
+This was not a brief Thailand stop. The Founder spent roughly **two and a half
+to three weeks** moving through several parts of the country, including
+northern, western, eastern/Gulf and southern Thailand. “I saw everything” means
+wide regional range in memory, not a literal completeness claim for the film.
+
+The memory board distinguishes atmospheres instead of presenting one generic
+Thailand:
+
+- **Bangkok/central:** dense river-and-rail movement, temple compounds, markets
+  and modern city layers. Grand Palace, Wat Pho, Wat Arun and Chatuchak are
+  recognition candidates until the Founder confirms which were visited.
+- **North:** cooler mountain/Lanna atmosphere. Chiang Mai, Doi Suthep, Doi
+  Inthanon and Tha Phae are candidate anchors; Chiang Rai, White Temple and the
+  northern Golden Triangle stay separate candidates, never merged with India’s
+  Golden Triangle.
+- **West:** river, forest, waterfalls and historical infrastructure.
+  Kanchanaburi, the River Khwae bridge, Erawan and Sai Yok are candidate anchors.
+- **Pattaya/eastern Gulf:** a concentrated beach-resort and entertainment city.
+  The Founder remembers it as emotionally neutral and less enjoyable than the
+  rest of the trip. That is a personal response, not a verdict on the city or
+  its residents. Sanctuary of Truth, Jomtien, Pattaya Beach and Ko Lan are
+  recognition candidates.
+- **South/Andaman:** wider sea, limestone, piers and island movement. The large
+  tourist island remembered above Phi Phi is almost certainly **Phuket**.
+  Official Thai tourism material identifies Phuket as Thailand's largest island
+  and pairs Phuket with Ko Phi Phi; because Phi Phi is also reached from Krabi,
+  Phuket remains `PROBABLE` and the exact departure pier remains `CONFIRM`.
+
+Across the longer journey, ordinary ride offers were usually explicit
+transactions. On the way to the Phi Phi departure pier, the Founder was walking
+through an unfamiliar area with many dogs when a local person judged that he
+might need help and offered a ride to the pier without asking for payment. Do
+not label the area objectively dangerous or use the dogs as a national
+shorthand; the point is one person's situational care.
+
+Inside this wider Thailand journey, the Founder made a highly compressed
+Cambodia/Angkor excursion. He remembers arriving around midnight, obtaining a
+visa at the border after a small payment request, reaching Siem Reap, hiring a
+tuk-tuk with a driver for local movement and the Angkor visit, and being back at
+the airport around 16:00–17:00. Official Cambodian tourism information confirms
+that visa on arrival was an established border process and that Siem Reap's Pub
+Street is a compact nightlife, restaurant and market district. It does not
+verify the extra payment, exact border, transport mode or historical schedule;
+retain those as testimony and confirm them before a labelled route.
+
+The sequence is useful because almost every threshold depends on a different
+stranger, but none of those handoffs persists. It should not imply that
+MyScoutee replaces visas, transport planning, local advice or personal judgment.
+
+### Russia — bureaucracy followed by one unplanned welcome
+
+The Founder remembers needing a tourist invitation from Budapest. A travel
+agency near Oktogon/Andrássy arranged it, one office redirected him farther
+along Andrássy út and the process ultimately reached the Russian embassy. With
+no usable advertised appointment in his account, the visa cost roughly three
+times what he expected. These are personal process memories; do not identify a
+specific agency or make a current consular claim without records.
+
+After arrival he did not know how to buy a bus ticket. A local passenger used a
+monthly pass to let him through into the passenger area. This is a strong
+micro-story of unsolicited help after impersonal bureaucracy. The journey itself
+lasted several days and connected **Moscow and Saint Petersburg**. The arrival
+city, airport and historical ticketing system remain `CONFIRM`. Never present
+the helper's act as official transit policy or certify that it was permitted.
+
+Use the two cities as contrasting truthful atmospheres rather than one “Russian”
+collage. Moscow candidates are the radial scale of Red Square, Kremlin walls and
+Saint Basil's silhouette. Saint Petersburg candidates are the Neva, canals,
+bridges, ordered embankments, Winter Palace/Hermitage and broad horizontal light.
+These remain recognition candidates until the Founder confirms the exact visits.
+
+### What these travel stories contribute to MyScoutee
+
+The useful common pattern is not “travel was difficult.” It is that a life can
+be full of people, brief cooperation, attraction, humor and generosity while
+every connection is forced to restart from zero. MyScoutee's relevant promise is
+modest: with consent it can retain who met where, surface shared context, expose
+realistic capacity and make a later invitation possible. It does not promise
+safety, solve distance, authenticate strangers, fix currency or visas, or turn
+every beautiful encounter into a relationship.
+
+### Europe — flawless routes, empty capacity
+
+Several European memories carry wonder without a personal encounter. They still
+belong in the story when their visual function is precise: transport can join
+places perfectly while leaving unused human capacity beside one traveler.
+
+- **Italy:** the Founder describes the Bergamo-to-Naples rail journey as his
+  most beautiful trip. Bergamo is the personal starting point; the exact change
+  and intermediate-city sequence remains `CONFIRM`. Current Trenitalia material
+  supports a Milan–Naples high-speed spine, but must not be projected backward
+  as the exact historic ticket.
+- **Paris as a compass:** on successive days the Founder chose a different
+  direction from Paris. Versailles and Disneyland Paris are confirmed examples;
+  additional out-of-city destinations remain `CONFIRM`. Show a compass rose and
+  radiating rail lines, not the false claim that Paris's important sights are
+  mostly outside Paris.
+- **Norway:** the strongest match for the Bergen fjord memory is **Norway in a
+  Nutshell**, a coordinated self-guided rail–Flåm Railway–Nærøyfjord cruise–bus–
+  rail circuit that can begin/end in Bergen. Treat the name and exact direction
+  as `PROBABLE` until the Founder recognizes Myrdal, Flåm, Gudvangen and Voss.
+- **Rotterdam ferry:** the Founder remembers booking an approximately ten-berth
+  cabin and occupying it alone. Departure port, operator and berth count remain
+  `CONFIRM`.
+- **Spain:** a roughly three-bed university/hostel room also became a private
+  room by chance. City, property and traveler context remain `CONFIRM`.
+- **Portugal:** a four-day **Porto–Lisbon** journey is confirmed. Porto should
+  feel granite, steep and close to the Douro/Ribeira; Lisbon should feel lighter,
+  hillier and open toward the Tagus, with tram/Alfama/Baixa/Belém candidates
+  retained only if the Founder recognizes them.
+- **Bavaria:** Neuschwanstein remains a brief recognizable silhouette; never
+  call it a Disney castle in captions or imply Disney ownership.
+
+The ferry cabin and Spanish hostel room provide the strongest MyScoutee visual:
+seats and beds exist, but compatible people are not automatically present at
+the same time. Do not claim that the Founder was unhappy on every solo journey;
+wonder and solitude can coexist. These plates form a candidate pool, not extra
+duration already approved for the 2:48 hero film.
+
+### Istanbul–Dubai — hospitality, trade and two kinds of city scale
+
+The Founder also made a five-to-six-day flight circuit linking Istanbul and
+Dubai. Istanbul should feel layered and tactile: Bosphorus movement, domes,
+ferries, dense covered-market passages and tea-sized conversations. Candidate
+anchors include Hagia Sophia, the Blue Mosque, Grand Bazaar, Spice Bazaar,
+Galata/Bosphorus and ferry silhouettes; retain only confirmed visits. Dubai is
+the sharp counter-image: Creek and dhow/souk texture on one side, vertical glass,
+Sheikh Zayed Road and Burj Khalifa scale on the other. Do not reduce either city
+to “old East versus new money.”
+
+In Istanbul the Founder was invited inside for tea and a carpet presentation.
+The experience moved gradually from personal welcome and storytelling into a
+sales conversation. Official Turkish tourism material describes carpet buying,
+haggling and tea as intertwined bazaar rituals, so the scene can truthfully hold
+two realities at once: the welcome may be warm, and the invitation has a clear
+commercial purpose. Show the Founder listening, touching the weave and retaining
+the freedom to decline. No scam accusation, hypnotic salesman, forced purchase,
+fake price, exotic caricature or implication that Turkish hospitality is merely
+a tactic.
+
+This beat serves MyScoutee because context changes interpretation. A cup of tea
+can be hospitality, negotiation or both; the relationship becomes humane when
+intent, boundaries and choice remain legible.
 
 ## 5. Dating-app complaints: supported, qualified, usable
 

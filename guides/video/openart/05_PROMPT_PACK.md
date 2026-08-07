@@ -116,12 +116,17 @@ clean plates from wide, medium and detail angles. No readable text or people.
 
 ```text
 Create a lived-London location reference sheet in the same premium 2.5D animated
-film style: modest Soho software office, late Victoria line carriage without TfL
-branding, wet Tottenham street, Victorian terrace, corner-shop glow and warm
-independent community venue. Slate blue, rain green, sodium amber, tactile brick,
-timber and fogged glass. Diverse everyday city, not Big Ben, red-bus or phone-box
-tourism shorthand. Empty clean plates, wide/medium/detail views, no readable text
-or logos.
+film style. Include the public energy of the 2012 Diamond Jubilee and Olympic
+summer without official marks; a modest multicultural Soho software office;
+museums, exhibitions, nightlife and mutually curious dates; one brief late
+Victoria line reflection without TfL branding; wet South Tottenham street,
+Victorian terrace, corner-shop glow and a warm independent community venue.
+Respectfully imply the ordinary South Tottenham/Stamford Hill Charedi Jewish
+neighbourhood without turning religious residents into spectacle or claiming a
+safety effect. Slate blue, rain green, sodium amber, tactile brick, timber and
+fogged glass. Diverse everyday city, not Big Ben, red-bus or phone-box tourism
+shorthand. Empty clean plates, wide/medium/detail views, no readable text or
+logos.
 ```
 
 ### Soho software-office sheet
@@ -143,11 +148,49 @@ Create [TOTTENHAM_HMO], one coherent converted Victorian house in Tottenham in
 the same premium 2.5D animated style. Show a narrow hall, lived-in shared kitchen,
 one full bathroom, one separate tiny WC, and a compact shared bedroom with two
 clearly bounded sleeping/storage and desk zones. Shoes, coats, meals and personal
-photographs imply thirteen distinct adult residents without lining them up.
+photographs imply the Founder plus twelve other Hungarian adults without lining
+them up. They are a varied Hungarian microcosm inside multicultural London: each
+has an individual age, build, temperament, work rhythm and reason for leaving,
+but no national costume or caricature. Use the identity planning board in
+`prompts/london-hmo-residents-character-board.txt`. Include one clean night and
+morning shared-bedroom plate so an editor can reveal an unannounced resident
+swap through a different snore and silhouette; do not depict gambling, debt or
+the person as a joke.
 Maintained but genuinely crowded, financially pragmatic and humane; never dirty,
 homeless, luxurious, hostile or humiliating. Consistent wide, hall, bathroom,
 WC, doorway and desk plates. No address, brands or readable text.
 ```
+
+### UK adventure and availability memory board
+
+Use [prompts/uk-adventure-availability-memory-board.txt](prompts/uk-adventure-availability-memory-board.txt)
+as a planning board only. Any place marked `CONFIRM` remains excluded from final
+generation until the Founder recognizes it. The route is a contrast between a
+constricted private life and a vast public world, not a tourism montage.
+
+### Egypt six-day human-network memory board
+
+Use [prompts/egypt-six-day-human-network-memory-board.txt](prompts/egypt-six-day-human-network-memory-board.txt)
+to identify and confirm the post-London Egypt memories. Only the balloon landing
+is currently preferred for the main three-second world burst; the full board is
+archive and optional future-film material, not seven more shots in this film.
+
+### Travel human-bridge memory boards
+
+Use these as autobiographical planning/confirmation boards, primarily for the
+second personal film. They are not permission to lengthen the current 2:48 cut:
+
+- [India 2016 cash-discontinuity and Taj connection](prompts/india-2016-human-bridge-memory-board.txt);
+- [Thailand/Cambodia paid handoffs and unsolicited kindness](prompts/thailand-cambodia-human-bridge-memory-board.txt);
+- [Russia visa process and arrival kindness](prompts/russia-arrival-human-bridge-memory-board.txt).
+- [European wonder and empty-capacity memories](prompts/europe-wonder-empty-capacity-memory-board.txt).
+- [Istanbul–Dubai hospitality and city contrast](prompts/istanbul-dubai-hospitality-memory-board.txt).
+
+For the current S08 burst, only the reciprocal Taj Mahal bus conversation and
+one Angkor tuk-tuk handoff are selected. Every `CONFIRM` field remains out of
+location-labelled generation. These boards document why MyScoutee matters; they
+must not claim that the product solves border, currency, transport or safety
+problems.
 
 ### Illustrated travel-memory sheet
 
@@ -189,10 +232,17 @@ identical geometry. No text or people.
 
 ```text
 Create one clean visual reference sheet for MyScoutee as a system that follows
-the whole lifecycle of a relationship. Begin with unknown individual and pair
-profile suggestions. Use amber for one private editable 1–10 priority; a high
-explicit priority may outweigh weaker automated/context signals but never
-another person's consent. Use aqua for reciprocal/context evidence, and coral for a balanced candidate group of
+the whole lifecycle of a relationship. Start with the human problem: flat
+photo-first cards invite premature judgment before anyone meets, while an older
+warm introduction carried a person, place or story in common. Do not idealize a
+phone-free past; translate that missing shared context into privacy-preserving
+modern design. Begin the product path with unknown individual and pair profile
+suggestions. Use amber for one private editable 1–10 priority; a high explicit
+priority may outweigh weaker automated/context signals but never another
+person's consent. A faint people-in-common or inside/outside-network cue may add
+context, but it is never a public rating, endorsement, character reference,
+compatibility guarantee or safety guarantee. Use aqua for reciprocal/context
+evidence, and coral for a balanced candidate group of
 exactly six strangers, three women and three men, each with a distinct identity
 and expectation. Continue through calm accept/decline, contextual group chat,
 first introductions, then a managed event with four blank resource cards:
@@ -200,7 +250,10 @@ members, transport, accommodation/venue and supplies. Keep tickets, check-in and
 event-linked feedback as separate secondary actions. After that first
 meeting, show the former strangers as known contacts who may be directly invited
 again; Auto Inviter may fill one available place from the priority plan with a
-new person. Repeated events begin to form community. Close the lifecycle with a
+new invited person who still decides independently. When an earlier invitee lacks
+time for a planned activity, show a calm decline, an open place, then a different
+adult accepting; never depict people as interchangeable tokens. Repeated events
+begin to form community. Close the lifecycle with a
 later relationship change: one priority moves down privately and that pair's
 future shared group/event path fades while other relationships continue. Human
 faces and real meetings dominate; interface marks remain secondary, blank and
@@ -224,11 +277,20 @@ operational responsibility. One node has a clear opt-out route that remains
 independently operable. Make shared leverage, local learning and voluntary
 virtual-enterprise participation legible through actions, not labels. This is a
 future operating model, not evidence of current deployments or proven efficiency.
+Leave one exact, undistorted blank central plate at the shared network core for
+post-production placement of the original repository
+`frontend/src/assets/logo/heart.png`. Do not draw or approximate the logo. The
+final composite may let its helmet-like shelter, guiding star and central heart
+suggest protection, direction and human connection without claiming certified
+safety.
 No anonymous hands receiving copies, consumer gift box, cloud-company branding,
 readable code/text, flags, country stereotype, sales transaction, centralized
 merchant or hardware-shipping claim. Premium 2.5D animated-film style, deep navy
-technical space, warm faces, restrained coral shared-core line, no logo.
+technical space, warm faces, restrained coral shared-core line, blank logo plate.
 ```
+
+The exact product-sequence planning prompt is
+[prompts/product-human-bridge-lifecycle-sequence.txt](prompts/product-human-bridge-lifecycle-sequence.txt).
 
 ## Negative/avoid block
 

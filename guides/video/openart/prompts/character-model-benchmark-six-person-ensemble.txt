@@ -1,0 +1,67 @@
+Create exactly one portrait 9:16 character-design sheet for a premium animated
+short film. Show exactly six clearly distinct fictional adults: exactly three
+women and exactly three men. Arrange them in a clean two-column by three-row
+grid with one person in each equal panel. Give every character equal visual
+importance. Show a large three-quarter portrait, torso, natural hands and one
+small personal prop. They are six strangers preparing for a low-pressure first
+meeting; they do not already know each other and are not romantic couples.
+
+The six characters must be:
+
+1. MAN, early-to-mid 40s — the calm, observant Founder. Slightly weathered,
+   naturally asymmetric face, receding dark hair, ordinary lean build, navy
+   field coat, charcoal knit, muted rust scarf, worn cognac notebook. Attentive,
+   quietly persistent and capable; not sad, heroic or glamorous.
+
+2. WOMAN, late 30s to early 40s — Maya. Warm but self-possessed face, practical
+   moss-green coat, cream shirt, simple silver stud earrings. Curious, listening
+   before speaking, with clear personal boundaries. She is an autonomous group
+   member, not a romantic prize.
+
+3. WOMAN, early-to-mid 30s — Black, sturdy relaxed build, short natural curls,
+   rust cardigan, sketchbook and pencil. Visually curious, grounded posture and
+   dry gentle humor.
+
+4. WOMAN, late 30s — East Asian, compact athletic build, asymmetric bob, teal
+   overshirt, reusable cup. Practical, alert and observant, with a restrained
+   wry half-smile.
+
+5. MAN, early 30s — fair-skinned, tall and slightly awkward build, unruly
+   copper-brown curls, navy work jacket, holding one small tabletop-game piece.
+   Playful but considerate, open expression without a giant grin.
+
+6. MAN, late 40s to early 50s — South Asian, broader build, salt-and-pepper hair
+   and short beard, olive field jacket, folded public-transport map. Methodical,
+   reliable and calm, with kind eyes and practical competence.
+
+STYLE:
+Premium painterly cinematic 2.5D animation. Expressive hand-drawn facial
+linework over dimensional, softly lit figures. Natural facial proportions,
+subtle asymmetry, believable hands and tactile wool, cotton, leather and paper
+textures. Warm autumn palette with restrained teal, rust, moss, navy, olive and
+cream. Humane, memorable and approachable without becoming cute, childish or
+sentimental. Faces must remain readable at phone size.
+
+COMPOSITION:
+Exactly six equal panels in a two-column by three-row grid. One person per
+panel. No overlaps, no repeated faces, no cropped heads and no extra figures.
+Warm neutral paper background, consistent soft window light, clean separation
+between panels. Every identity must be immediately distinguishable by face,
+silhouette, age, body type, hairstyle, posture, clothing, prop and temperament.
+
+MOOD:
+Tentative curiosity immediately before meeting unfamiliar people. Each person
+should feel like someone with an inner life, not a demographic example or a
+stock-photo model.
+
+FORBIDDEN:
+No text, names, labels, logos, interface, thought bubbles, accessibility
+pictograms, romance coding, couples, celebrity likenesses, national-costume
+stereotypes, corporate stock-photo smiles, fashion-editorial posing, beauty
+retouching, influencer glamour, anime, photoreal uncanny skin, caricature,
+exaggerated sadness or giant smiles. No twins, cloned faces, repeated
+hairstyles, identical body shapes, merged people, extra people, missing people,
+malformed hands, childish appearance, watermark or copyrighted character
+imitation.
+
+Generate exactly one image.
