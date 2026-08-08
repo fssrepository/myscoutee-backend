@@ -75,6 +75,20 @@ The final edit receives one time-locked English narrator, one continuous
 three-minute score and synchronized post-produced ambience/foley. Any platform
 audio generated despite the prompt is discarded.
 
+For Google Flow/Veo, repeat this short block at the very end of every assembled
+shot prompt:
+
+```text
+VEO AUDIO HARD LOCK: Generate silent production picture only. Absolutely no
+dialogue, narration, singing, background music, cinematic score, melody,
+harmony, musical drone, rhythmic pulse, ambience or sound effects. Final sound
+is created only after all clips are joined. Discard any native platform audio.
+```
+
+Repeating the block does not make independent Veo clips share audio memory. It
+reduces the chance of a different generated score beginning at every cut. Part
+II receives one separately produced continuous score and one narrator in post.
+
 ## Evidence and privacy contract
 
 - Never upload raw tax, police, court, medical-adjacent or private email pages to

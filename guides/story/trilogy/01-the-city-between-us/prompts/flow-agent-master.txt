@@ -19,12 +19,17 @@ and one camera move per clip. No photoreal uncanny faces, generated text, fake
 UI, generated logo, national stereotypes or named-studio imitation.
 
 VOICE-OVER PERFORMANCE
-Final narration and the continuous soundtrack are post-production layers.
+Final narration and one continuous part-level score are post-production layers
+added only after the complete picture sequence is locked. Veo native audio may
+contain environmental room tone and physically motivated foley only: absolutely
+no background music, cinematic score, melody, harmony, musical drone or
+rhythmic pulse. Do not turn rain, traffic or urban hum into music.
 Unless a shot explicitly assigns one short diegetic cue, nobody visibly speaks,
 forms words or lip-syncs. Keep mouths naturally relaxed, with breathing, brief
 nonverbal smiles and minute jaw movement only. Use eye contact, listening, small
 nods and restrained hand gestures; never make several people visibly speak at
-once. Discard any unavoidable generated clip audio.
+once. If music, singing, narration or dialogue is generated anyway, discard the
+entire native clip audio.
 
 NARRATIVE LOCK
 S01 moves from countryside small-producer roots through completed economics,

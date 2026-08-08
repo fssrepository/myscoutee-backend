@@ -18,6 +18,27 @@ rewrite the founder description shot by shot. Consistency comes from stable
 references, Elements/Characters/Ingredients, a stable continuity prefix, the
 same costume tokens and conservative motion.
 
+## Veo Lite native-audio hard lock
+
+For every Google Flow/Veo interval, repeat this block once at the very end of
+the assembled shot prompt. The repetition is intentional: audio constraints
+buried inside a long visual prompt are easier for a video model to ignore.
+
+```text
+VEO AUDIO HARD LOCK: Generate environmental room tone and physically motivated
+foley only. Absolutely no background music, cinematic score, melody, harmony,
+musical drone, rhythmic pulse, singing, dialogue or narration. Do not reinterpret
+rain, traffic, room tone or urban hum as music. Final narration and one continuous
+score for the complete film are added only after all clips are joined. If native
+music or voice is generated anyway, that entire clip audio will be discarded.
+```
+
+This instruction does not promise acoustic continuity between independent Veo
+generations. It prevents per-clip music from repeatedly changing style. Carry
+useful room tone across edits with short crossfades, rebuild missing foley in
+post and run one separately produced score continuously under the assembled
+film.
+
 ## Prompt tokens
 
 Replace bracketed tokens only once in your working copy:

@@ -118,7 +118,11 @@ Use for S01–S07, S09–S15 and S19–S22 when keeping a face/world consistent.
    - [prompts/continuity-prefix.txt](../../../trilogy/01-the-city-between-us/prompts/continuity-prefix.txt);
    - one blank line;
    - one matching Sxx block from
-     [prompts/shot-prompts.txt](../../../trilogy/01-the-city-between-us/prompts/shot-prompts.txt).
+     [prompts/shot-prompts.txt](../../../trilogy/01-the-city-between-us/prompts/shot-prompts.txt);
+   - one blank line;
+   - the exact `VEO AUDIO HARD LOCK` block from the active part's
+     `PROMPT_PACK.md`, repeated at the end even though the continuity prefix
+     already contains the same policy.
 
 6. Replace bracket tokens with the actual `@AssetName` references in the text.
 7. Choose 9:16, one output first, 8 seconds for Ingredients when required, and
@@ -166,16 +170,29 @@ stretching or asking one model to preserve too many places/faces.
 
 ## 8. Voice and audio
 
-Veo can generate native audio, but the film needs one stable founder voice across
-three platforms and two languages. Treat native audio as atmosphere reference.
+Veo can generate native audio, but independent eight-second generations do not
+share reliable musical memory. A request for “the same music as the previous
+clip” cannot establish tempo, key, instrumentation, motif or mix continuity when
+the previous audio is not an accepted input. Never use clip-generated music as
+the master score.
 
-Recommended:
+Part I may retain only separable environmental room tone and physically
+motivated foley. Part II is generated as silent production picture. In both
+parts, append the active prompt pack's `VEO AUDIO HARD LOCK` block at the end of
+every Veo prompt. If Veo still creates music, singing, narration or dialogue,
+mute/discard the complete native clip audio rather than trying to hide a musical
+restart at the edit.
 
-- include environmental sound descriptions in prompts for S02–S15;
-- download useful ambience separately or rebuild it from licensed SFX;
-- record final voice-over externally;
-- do not ask Veo to speak the entire narration;
-- use no voice reference for a real person without explicit permission.
+Final audio order:
+
+1. lock and join the complete picture sequence;
+2. retain only approved separable ambience or rebuild synchronized foley;
+3. produce one narrator consistently across the entire part;
+4. produce one score against the exact assembled runtime, not per clip;
+5. duck and master the score under narration in the final CPU audio mix.
+
+Do not ask Veo to speak the full narration, and use no voice reference for a
+real person without explicit permission.
 
 Flow currently supports voice references through Gemini Omni Flash Ingredients
 on eligible accounts. If testing:
