@@ -55,6 +55,38 @@ book.ENDING_MOTIF_DIR = MOTIF_DIR
 book.ENDING_MOTIFS = MOTIFS
 book.OPENER_WATERMARKS = tuple(path for path, _ in MOTIFS)
 book.COMPACT_ENDING_MOTIF_INDEXES = frozenset()
+base_append_ending_tail = book.append_ending_tail
+
+
+def append_ending_tail(parts: list[str], motif_index: int) -> None:
+    """Use tighter, context-specific tails at the two proven Part II breaks."""
+    if motif_index == 0:
+        tail_count = min(3, len(parts))
+        tail = parts[-tail_count:]
+        del parts[-tail_count:]
+        parts.append(
+            '<div class="ending-tail compact-prologue-tail">'
+            + "\n".join(tail)
+            + "\n"
+            + book.render_ending_motif(motif_index)
+            + "</div>"
+        )
+        return
+    if motif_index == 1:
+        # Chapters 2 and 3 are already indivisible short-chapter blocks. Do not
+        # also pull the final sentence of Chapter 1 onto a page of its own.
+        tail_count = min(2, len(parts))
+        tail = parts[-tail_count:]
+        del parts[-tail_count:]
+        parts.append(
+            '<div class="ending-tail">'
+            + "\n".join(tail)
+            + "\n"
+            + book.render_ending_motif(motif_index)
+            + "</div>"
+        )
+        return
+    base_append_ending_tail(parts, motif_index)
 
 
 def versioned_pdf_name(version: dict[str, object]) -> str:
@@ -102,6 +134,15 @@ def stylesheet() -> str:
   .review-note { font-size: 10pt; line-height: 1.42; }
   .review-note p { margin-bottom: .08in; }
   main { overflow-wrap: anywhere; }
+  .toc h1 { margin-bottom: .18in; }
+  .toc li { margin-bottom: .035in; line-height: 1.12; }
+  .toc .level-1 { margin-top: .09in; font-size: 7.4pt; }
+  .toc .level-2 { font-size: 8pt; }
+  .compact-prologue-tail { line-height: 1.46; }
+  .compact-prologue-tail > p { margin-bottom: .08in; }
+  .compact-chapter-15 { line-height: 1.47; }
+  .compact-chapter-15 > p { margin-bottom: .09in; }
+  .compact-chapter-15 .illustration.portrait-right { margin-bottom: .08in; }
   .drop-cap { background-position: center 88%; background-size: .5in auto; }
 """
     return inherited + overrides
@@ -120,6 +161,26 @@ def build_document(source: Path) -> str:
         for level, title, anchor in toc_items
     )
     body = book.markdown_to_html(body_lines, registry)
+    chapter_15_heading = body.find(
+        'id="15-three-years-with-an-unlicensed-assistant"'
+    )
+    chapter_15_start = body.rfind(
+        '<div class="chapter-lead">', 0, chapter_15_heading
+    )
+    chapter_16_start = body.find(
+        '<div class="ending-tail"><section class="short-chapter"><h2 '
+        'class="context-5" id="16-the-house-as-a-human-archive">',
+        chapter_15_heading,
+    )
+    if min(chapter_15_heading, chapter_15_start, chapter_16_start) < 0:
+        raise ValueError("Could not isolate Chapter 15 for compact review layout")
+    body = (
+        body[:chapter_15_start]
+        + '<section class="compact-chapter-15">'
+        + body[chapter_15_start:chapter_16_start]
+        + "</section>"
+        + body[chapter_16_start:]
+    )
     note_start = body.find('<h2 class="context-0" id="a-note-to-the-reader">')
     note_break = body.find('<div class="pagebreak"></div>', note_start)
     if note_start < 0 or note_break < 0:
@@ -185,6 +246,7 @@ def build_document(source: Path) -> str:
 
 book._part_one_stylesheet = book.stylesheet
 book.stylesheet = stylesheet
+book.append_ending_tail = append_ending_tail
 book.versioned_pdf_name = versioned_pdf_name
 book.build_document = build_document
 

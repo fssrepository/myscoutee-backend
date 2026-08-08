@@ -158,6 +158,13 @@ handover and invoicing around the work that still had to move. I gave up the
 remaining value of later months rather than continue inside a route I no longer
 understood as safe.
 
+Nobody could move cleanly forward or back. The client still needed a proper
+handover, the accountant was interpreting the same sudden transition for many
+clients, and I was trying to close a live project without abandoning it. The
+handover could not be completed inside the remaining KATA period. I therefore
+had to issue an advance invoice before the cutoff for work whose transfer would
+continue beyond it.
+
 From the outside, an invoice is a rectangle containing a date and amount. From
 inside the project, it was time: work already performed, work still being
 transferred, a foreign client's expectations, the accountant's interpretation
@@ -332,6 +339,11 @@ response described errors, attempted corrections and processing details.
 From my perspective, the account had finally begun to tell the story I had been
 trying to tell.
 
+I corrected the return myself and paid the tax required by the corrected
+position. A tax officer then confirmed in writing that we had settled the
+matter. The delegated work had failed, but the underlying tax problem had not
+been left for somebody else to repair.
+
 Yet the dangerous sentence now possessed a different property from the
 correction. It could travel alone.
 
@@ -345,7 +357,8 @@ everything.
 
 ## 10. A Body With a Deadline
 
-In January 2023, I withdrew a large monetary demand and asked to be left in
+In January 2023, I withdrew a large monetary demand. I also gave advance notice
+of where and when the leg operation would take place and asked to be left in
 peace before surgery and rehabilitation.
 
 The operation took place privately in mid-February. Mobility became difficult,
@@ -580,6 +593,13 @@ The report contains an important tension. It records that I was calm,
 cooperative, oriented and cognitively intact. It also concludes that I had a
 paranoid personality disorder and that my responsibility was moderately
 limited.
+
+That was the absurd line in its shortest form. I had repaired the accountant's
+failed return myself, paid the resulting tax, received written confirmation
+that the matter had been settled, disclosed the place and date of my operation
+in advance and asked for quiet while I recovered. Roughly a year after the
+original dispute, that sequence had become a forensic psychiatric description
+of me.
 
 The report records substantial parts of my account: the tax and accounting
 chain, the operation and the restricted mobility. Then it transforms that
