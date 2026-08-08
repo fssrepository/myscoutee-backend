@@ -115,10 +115,13 @@ uncertainty and public boundaries.
 - The identical CP18→CP19 eight-second stress shot is used to compare Flow and
   OpenArt video models. Test generations are intended to remain usable, and
   credit gates prevent testing every shot on every model.
-- The canonical storyboard review is endpoint-only: each intended eight-second
-  generator interval displays its first checkpoint for four seconds and its last
-  checkpoint for four seconds. The stale 56×3-second slideshow and its generated
-  intermediate frames were removed after the replacement was verified.
+- The canonical storyboard review is checkpoint-only: every exact 9:16
+  checkpoint remains visible for one complete eight-second block at 00:00,
+  00:08, 00:16 and so on. Adjacent checkpoints remain the first and last frames
+  of the later eight-second motion clips. The review never splits an interval
+  into four-second halves and never invents intermediate images. Part I's
+  still-only inspection lasts 03:08 including the four-second CP23 end plate;
+  the moving film remains exactly 03:00.
 - Final audio is separately timed voice-over, one continuous score for the whole
   film and separate synchronized ambience/foley. Clip-generated background music
   is discarded so music style does not restart at every cut. CPU FFmpeg handles

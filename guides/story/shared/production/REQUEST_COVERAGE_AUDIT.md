@@ -55,12 +55,15 @@ become independently verified evidence.
 - [x] CP00–CP23 endpoint contract and Flow/OpenArt copy-paste prompt baseline.
 - [x] Privacy-safe character map for the Founder, five Budapest memories,
   twelve London residents and the six-person MyScoutee group.
-- [ ] Lock the final identity sheets and generate the missing book portraits
-  and scene plates. The current published v1.0.0 contains none of these images.
+- [x] Lock the current identity/reference set and generate the book portraits
+  and scene plates. The editable illustrated draft contains them; the hashed
+  published v1.0.0 remains intentionally unchanged.
 - [ ] Regenerate CP00–CP23 from the locked identities and exact location
   descriptions; the existing images are composition studies only.
-- [ ] Rebuild the endpoint-only 03:00 slideshow from those exact CP files.
-- [ ] Build and review a new illustrated draft. The hashed v1.0.0 publication
+- [ ] Build the checkpoint-only 03:08 inspection from those exact CP files:
+  CP00–CP22 held for eight seconds each, followed by the four-second CP23 end
+  plate. The finished moving film remains 03:00.
+- [x] Build and review a new illustrated draft. The hashed v1.0.0 publication
   remains immutable; any later illustrated release receives a new version.
 
 ## Part II — The System Between Us
@@ -112,13 +115,15 @@ become independently verified evidence.
 - [x] Role map includes the Founder, accountant, tax officer, police officer,
   fingerprint officer, two experts, judge, appointed defence counsel,
   probation officer and London housemate.
-- [ ] Replace the provisional seven-person board with the complete locked cast
-  inherited from Part I.
-- [ ] Replace narrow brown-padded portraits and add the missing police,
-  courtroom, two-expert, AI-work and home-inquiry book plates.
+- [x] Replace the provisional seven-person board with the complete Part II role
+  board while preserving the Founder inherited from Part I.
+- [x] Replace narrow brown-padded portraits and add the police, courtroom,
+  two-expert, AI-work and home-inquiry book plates.
 - [ ] Regenerate CP00–CP22. CP00–CP11 are provisional studies; CP12–CP22 do not
   yet exist.
-- [ ] Build and inspect the exact endpoint-only 03:00 slideshow.
+- [ ] Build and inspect the exact checkpoint-only 03:04 slideshow: CP00–CP22
+  held for eight seconds each. Keep the separate four-second E01 card out of
+  the checkpoint inspection; the finished moving film remains 03:00.
 - [ ] Complete Founder factual/privacy review, build the editable PDF and then
   prepare—not silently publish—the first versioned release package.
 

@@ -235,22 +235,22 @@ first approval gate: `250` credits from the entry plan.
 
 ## 5. Storyboard and animatic
 
-The existing `56 × 3 s` slideshow is useful for caption and checkpoint review,
-but it is not the primary picture animatic.
+The obsolete `56 × 3 s` review and the four-second-split endpoint review are
+not production masters. No intermediate image is generated for the slideshow.
 
-The production animatic uses:
+The checkpoint inspection uses:
 
-- one still for each real Sxx scene;
-- the true `4–12 s` duration in
-  [Part I's SHOT_MANIFEST.csv](../../../trilogy/01-the-city-between-us/production/tracking/SHOT_MANIFEST.csv);
-- exact total runtime `02:48.000`;
-- no optical flow;
-- at most a restrained `1–2%` pan or push;
-- one scene caption, not a new card every three seconds.
+- the exact 9:16 CP images that later become video endpoints;
+- one complete eight-second hold for every CP at 00:00, 00:08, 00:16 and so on;
+- no optical flow, pan, push or invented midpoint;
+- Part I inspection runtime `03:08.000`: CP00–CP22 at eight seconds plus the
+  four-second CP23 end plate;
+- Part II inspection runtime `03:04.000`: CP00–CP22 at eight seconds, with the
+  separate four-second E01 card reviewed outside this checkpoint chain.
 
-The later film receives the same scene-hold treatment before any motion spend.
-“About eight seconds per image” is a useful estimate; actual scene duration is
-the timing authority.
+These still-only inspection exports are deliberately longer than the finished
+03:00 moving films. In motion, adjacent checkpoints bound one eight-second clip
+rather than appearing sequentially for eight seconds each.
 
 ## 6. Motion budget for both films
 

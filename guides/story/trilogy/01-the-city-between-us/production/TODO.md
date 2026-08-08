@@ -1,6 +1,7 @@
 # Narrative-first TODO
 
-Status: **generation authorized by Founder, 2026-08-08; visual lock in progress**.
+Status: **book, illustration and prompt review in progress; checkpoint and
+motion generation remain paused**.
 
 The public book and generation prompts have been synchronized and the Founder
 has explicitly resumed character, book-image and checkpoint generation. Motion
@@ -73,9 +74,11 @@ review.
 - [x] Founder authorized the character/book/checkpoint generation pass; use the
   existing consistent Founder identity sheet as the continuity baseline while
   making supporting characters warmer and more individual.
-- [ ] Generate or revise Founder and supporting-character identity sheets.
-- [ ] Generate Part I book portraits and scene montages from the same locked
-  identities used by the checkpoint and motion prompts.
+- [x] Generate the Founder and supporting-character reference set used by the
+  illustrated review draft.
+- [x] Generate and register Part I book portraits and scene montages from that
+  same character set; the London resident row now uses four visibly distinct
+  identities from the complete H01–H12 board.
 - [ ] Run identical character/model benchmark prompts in Codex, Flow, OpenArt
   and any selected video platform.
 - [ ] Generate or revise CP00–CP23 reference frames from the approved prompts.
@@ -91,6 +94,7 @@ review.
 
 - `scripts/build_checkpoint_hold_animatic.sh` reproducibly assembles CP00–CP23
   without creating any new images.
-- `storyboard/animatics/myscoutee-part-i-8s-endpoints-720x1280.mp4` is the
-  verified 03:00 endpoint-only review. The superseded three-second review was
-  removed.
+- The obsolete 03:00 four-second-split endpoint review is removed. After the
+  final 9:16 checkpoints are approved, the script will build a 03:08 still-only
+  inspection: CP00–CP22 held for eight seconds each plus the four-second CP23
+  end plate. The finished moving film remains 03:00.

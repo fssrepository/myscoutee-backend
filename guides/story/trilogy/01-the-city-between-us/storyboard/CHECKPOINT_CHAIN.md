@@ -20,13 +20,14 @@ Rules:
 - Preserve identity, notebook, colour, light and camera direction at boundaries.
 - CP00 is the opening frame; CP23 is the deterministic brand end frame.
 - The present Founder and cast are fictional planning placeholders.
-- The canonical review export uses only each approved interval's first and last
-  checkpoint. For an eight-second video-generation interval, hold the first
-  checkpoint for four seconds and the last checkpoint for four seconds. Do not
-  insert artificial three-second repeats or intermediate stills; the selected
-  video model will create the motion once. S01–S22 are exactly eight seconds;
-  CP23 is a separate deterministic four-second end plate. Total runtime is
-  exactly 03:00.000.
+- The checkpoint inspection export holds every exact 9:16 checkpoint for one
+  complete eight-second block: CP00 at 00:00, CP01 at 00:08, CP02 at 00:16 and
+  so on. Do not split an interval into four-second halves and do not invent
+  intermediate stills. Adjacent checkpoints still become the exact first and
+  last frames of each later motion generation. S01–S22 form the 02:56 motion
+  chain; CP23 is the separate deterministic four-second end plate. The
+  still-only inspection therefore runs 03:08.000, while the finished moving
+  film remains exactly 03:00.000.
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |
@@ -55,5 +56,7 @@ Rules:
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/storyboard-rough/CP22.png` |
 | CP23 | MyScoutee end frame | `assets/storyboard-rough/CP23.png` |
 
-The superseded three-second review and its generated F00–F55 pseudo-motion
-frames were removed after the endpoint-only replacement was verified.
+The superseded three-second review, the earlier four-second-split endpoint
+review and their pseudo-motion frames are not production masters. Rebuild the
+checkpoint-hold review only after the approved 9:16 checkpoints replace the
+current composition studies.

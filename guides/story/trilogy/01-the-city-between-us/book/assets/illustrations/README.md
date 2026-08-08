@@ -1,9 +1,9 @@
 # Part I book illustrations
 
-This directory receives the approved book derivatives listed in
-[`../../illustrations.json`](../../illustrations.json). They do not exist yet;
-character generation remains paused until the Founder approves the character
-map and prompt baseline.
+This directory contains the approved book derivatives listed in
+[`../../illustrations.json`](../../illustrations.json). The editable illustrated
+draft now embeds these plates together with approved locked character crops;
+checkpoint generation remains a separate later gate.
 
 Canonical identity rules live in
 [`../../../assets/characters/CHARACTER_MAP.md`](../../../assets/characters/CHARACTER_MAP.md).
