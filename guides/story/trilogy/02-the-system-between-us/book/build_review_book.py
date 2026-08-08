@@ -138,7 +138,12 @@ def stylesheet() -> str:
   .toc li { margin-bottom: .035in; line-height: 1.12; }
   .toc .level-1 { margin-top: .09in; font-size: 7.4pt; }
   .toc .level-2 { font-size: 8pt; }
-  .compact-prologue-tail { line-height: 1.46; }
+  .compact-prologue { line-height: 1.46; }
+  .compact-prologue > p,
+  .compact-prologue .ending-tail > p { margin-bottom: .08in; }
+  .ending-tail.compact-prologue-tail {
+    break-inside: auto; page-break-inside: auto; line-height: 1.46;
+  }
   .compact-prologue-tail > p { margin-bottom: .08in; }
   .compact-chapter-15 { line-height: 1.47; }
   .compact-chapter-15 > p { margin-bottom: .09in; }
@@ -175,6 +180,21 @@ def build_document(source: Path) -> str:
         for level, title, anchor in toc_items
     )
     body = book.markdown_to_html(body_lines, registry)
+    prologue_start = body.find(
+        '<h2 class="context-0" id="prologue-the-line-changes-meaning">'
+    )
+    part_one_start = body.find(
+        '<section class="part-opener opener-1">', prologue_start
+    )
+    if prologue_start < 0 or part_one_start < 0:
+        raise ValueError("Could not isolate the prologue for compact layout")
+    body = (
+        body[:prologue_start]
+        + '<section class="compact-prologue">'
+        + body[prologue_start:part_one_start]
+        + "</section>"
+        + body[part_one_start:]
+    )
     chapter_15_heading = body.find(
         'id="15-three-years-with-an-unlicensed-assistant"'
     )

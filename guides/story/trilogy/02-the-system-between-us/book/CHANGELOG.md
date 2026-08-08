@@ -26,3 +26,5 @@ first public edition is `1.0.0`.
   sharing, while the same sharing was later held against the Founder. Added the
   Citizen Portal, representation and later two-factor context to the reference
   apparatus and synchronized S07 across narration, storyboard and prompts.
+- Kept the complete prologue and its closing motif together on one page by
+  tightening only that section's paragraph rhythm; no prose was removed.
