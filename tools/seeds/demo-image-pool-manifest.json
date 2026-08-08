@@ -51,63 +51,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a complete lakeside forest campsite with one dome tent, sleeping bags, backpacks, a lantern and compact cookware.\nSeed asset: \"Lakeside Basecamp Bundle\" — 4-person dome + sleep systems + lantern. Packed for a two-night lakeside stay; cookware and lighting are included.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 001 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nCamping exception: this is the only asset slot allowed to contain a tent.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "c2ef66a2e2b9f7ed8867acbe",
-        "5b0e5ed8787c7336d02d0cad",
-        "3ed9e4c96855432d3f981cf4",
-        "a296d445e8c02f282164b2a4",
-        "905728bd86174361fc78a025",
-        "6c8ac25e7a63755e53c46093",
-        "f6626dfb592933fba83db1c7"
+        "6c8ac25e7a63755e53c46093"
       ],
       "mongoRecords": [
-        {
-          "assetId": "c2ef66a2e2b9f7ed8867acbe",
-          "ownerUserId": "b5e2db6882d989d8532af12c",
-          "title": "Lakeside Basecamp Bundle",
-          "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
-        },
-        {
-          "assetId": "5b0e5ed8787c7336d02d0cad",
-          "ownerUserId": "23820c1e76d3bd843f61c799",
-          "title": "Lakeside Basecamp Bundle",
-          "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
-        },
-        {
-          "assetId": "3ed9e4c96855432d3f981cf4",
-          "ownerUserId": "904ee3c526298f6921cde3f3",
-          "title": "Lakeside Basecamp Bundle",
-          "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
-        },
-        {
-          "assetId": "a296d445e8c02f282164b2a4",
-          "ownerUserId": "ed4924c22a5240a54e48c0b5",
-          "title": "Lakeside Basecamp Bundle",
-          "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
-        },
-        {
-          "assetId": "905728bd86174361fc78a025",
-          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
-          "title": "Lakeside Basecamp Bundle",
-          "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
-        },
         {
           "assetId": "6c8ac25e7a63755e53c46093",
           "ownerUserId": "d182041b8a54132d5168034f",
           "title": "Lakeside Basecamp Bundle",
           "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
-        },
-        {
-          "assetId": "f6626dfb592933fba83db1c7",
-          "ownerUserId": "b29df68956f3fe15e04558de",
-          "title": "Lakeside Basecamp Bundle",
-          "subtitle": "4-person dome + sleep systems + lantern",
-          "category": "Camping"
+          "details": "Packed for a two-night lakeside stay; cookware and lighting are included.",
+          "category": "Camping",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -126,63 +81,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a desert hiking rest checkpoint with large water carriers, trekking poles, sun hats, neck shades and hydration packs arranged beside a trail marker without readable text.\nSeed asset: \"Desert Trail Hydration Set\" — Water carriers + sun protection + trekking poles. Heat-ready hiking supplies for a dry exposed route and a managed rest checkpoint.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 002 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "88885036aa01a07faf1f0587",
-        "f33ff1c5b4ab4886e6c890c6",
-        "1e70bb9b1ee15fdf7e7abf33",
-        "8c72508410a371b0396b9e60",
-        "fb81368c740f6a912907c1d4",
-        "9de5ed6cc72ab4474e95b84b",
         "18b8428be616a060f4637bb8"
       ],
       "mongoRecords": [
-        {
-          "assetId": "88885036aa01a07faf1f0587",
-          "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
-          "title": "Desert Trail Hydration Set",
-          "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
-        },
-        {
-          "assetId": "f33ff1c5b4ab4886e6c890c6",
-          "ownerUserId": "931a01221376d8e28a068fe8",
-          "title": "Desert Trail Hydration Set",
-          "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
-        },
-        {
-          "assetId": "1e70bb9b1ee15fdf7e7abf33",
-          "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
-          "title": "Desert Trail Hydration Set",
-          "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
-        },
-        {
-          "assetId": "8c72508410a371b0396b9e60",
-          "ownerUserId": "4b5bad1292fb6db05dc0e455",
-          "title": "Desert Trail Hydration Set",
-          "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
-        },
-        {
-          "assetId": "fb81368c740f6a912907c1d4",
-          "ownerUserId": "7313a9379f60200cba7b9f71",
-          "title": "Desert Trail Hydration Set",
-          "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
-        },
-        {
-          "assetId": "9de5ed6cc72ab4474e95b84b",
-          "ownerUserId": "7822c5f99eff99d63abe8933",
-          "title": "Desert Trail Hydration Set",
-          "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
-        },
         {
           "assetId": "18b8428be616a060f4637bb8",
           "ownerUserId": "bf057de7c586eede7e84bdc7",
           "title": "Desert Trail Hydration Set",
           "subtitle": "Water carriers + sun protection + trekking poles",
-          "category": "Hiking"
+          "details": "Heat-ready hiking supplies for a dry exposed route and a managed rest checkpoint.",
+          "category": "Hiking",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -201,12 +111,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a rocky coastal kayak launch with two sea kayaks, personal flotation vests, paddles, bright dry bags and a coiled tow line.\nSeed asset: \"Coastal Kayak Safety Set\" — PFDs + paddles + dry bags + tow line. Launch-ready water-safety equipment for a small sea-kayak group.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 003 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "df5d7fb9f3a6a22cdd64e5eb",
-        "0c7c6a620d6446dd0988e6e0",
-        "798932f6b233b637506ceb46",
-        "f6912201c98c4453c6d9c0ed",
-        "672248746ae60749efa2a9f3",
-        "b686e8960d209da426a923ff"
+        "df5d7fb9f3a6a22cdd64e5eb"
       ],
       "mongoRecords": [
         {
@@ -214,42 +119,10 @@
           "ownerUserId": "f01086c19a00a6f46b6d41a7",
           "title": "Coastal Kayak Safety Set",
           "subtitle": "PFDs + paddles + dry bags + tow line",
-          "category": "Watersports"
-        },
-        {
-          "assetId": "0c7c6a620d6446dd0988e6e0",
-          "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
-          "title": "Coastal Kayak Safety Set",
-          "subtitle": "PFDs + paddles + dry bags + tow line",
-          "category": "Watersports"
-        },
-        {
-          "assetId": "798932f6b233b637506ceb46",
-          "ownerUserId": "af0436815ab38f4864dd1e24",
-          "title": "Coastal Kayak Safety Set",
-          "subtitle": "PFDs + paddles + dry bags + tow line",
-          "category": "Watersports"
-        },
-        {
-          "assetId": "f6912201c98c4453c6d9c0ed",
-          "ownerUserId": "e1dccfc3443239865c6ac69a",
-          "title": "Coastal Kayak Safety Set",
-          "subtitle": "PFDs + paddles + dry bags + tow line",
-          "category": "Watersports"
-        },
-        {
-          "assetId": "672248746ae60749efa2a9f3",
-          "ownerUserId": "eac11b0685f9799953a40dd4",
-          "title": "Coastal Kayak Safety Set",
-          "subtitle": "PFDs + paddles + dry bags + tow line",
-          "category": "Watersports"
-        },
-        {
-          "assetId": "b686e8960d209da426a923ff",
-          "ownerUserId": "1d7d3545ba5e0f1d63918589",
-          "title": "Coastal Kayak Safety Set",
-          "subtitle": "PFDs + paddles + dry bags + tow line",
-          "category": "Watersports"
+          "details": "Launch-ready water-safety equipment for a small sea-kayak group.",
+          "category": "Watersports",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -268,12 +141,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a winter mountain equipment bench outside a small stone refuge, with crampons, ice axes, climbing rope, helmets and avalanche safety tools.\nSeed asset: \"Winter Mountaineering Safety Set\" — Crampons + ice axes + rope + helmets. Cold-weather technical equipment organized for a supervised alpine route.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 004 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft overcast light with a practical catalog-like composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "11eb582dc0bcc7581ac991e7",
-        "080119ed623a8e6044dc29e3",
-        "40caf34bda73b6ff66fdff39",
-        "09f940e5be3e93f40406b98f",
-        "5e1f90a51e467f8e635b9cb4",
-        "f25212b4b7dc77f57fa9160b"
+        "11eb582dc0bcc7581ac991e7"
       ],
       "mongoRecords": [
         {
@@ -281,42 +149,10 @@
           "ownerUserId": "e76d63199eff33a6945cb797",
           "title": "Winter Mountaineering Safety Set",
           "subtitle": "Crampons + ice axes + rope + helmets",
-          "category": "Mountaineering"
-        },
-        {
-          "assetId": "080119ed623a8e6044dc29e3",
-          "ownerUserId": "c033e546ef7c928fb8cf073b",
-          "title": "Winter Mountaineering Safety Set",
-          "subtitle": "Crampons + ice axes + rope + helmets",
-          "category": "Mountaineering"
-        },
-        {
-          "assetId": "40caf34bda73b6ff66fdff39",
-          "ownerUserId": "b0971e779dbdb71f9327eabb",
-          "title": "Winter Mountaineering Safety Set",
-          "subtitle": "Crampons + ice axes + rope + helmets",
-          "category": "Mountaineering"
-        },
-        {
-          "assetId": "09f940e5be3e93f40406b98f",
-          "ownerUserId": "9184901a15076d32ea8b626f",
-          "title": "Winter Mountaineering Safety Set",
-          "subtitle": "Crampons + ice axes + rope + helmets",
-          "category": "Mountaineering"
-        },
-        {
-          "assetId": "5e1f90a51e467f8e635b9cb4",
-          "ownerUserId": "0216b1ceb256d6f2c89073b8",
-          "title": "Winter Mountaineering Safety Set",
-          "subtitle": "Crampons + ice axes + rope + helmets",
-          "category": "Mountaineering"
-        },
-        {
-          "assetId": "f25212b4b7dc77f57fa9160b",
-          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
-          "title": "Winter Mountaineering Safety Set",
-          "subtitle": "Crampons + ice axes + rope + helmets",
-          "category": "Mountaineering"
+          "details": "Cold-weather technical equipment organized for a supervised alpine route.",
+          "category": "Mountaineering",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -335,55 +171,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a mobile group catering setup beside a public picnic pavilion, with large coolers, stainless preparation tables, insulated food carriers and washable crates.\nSeed asset: \"Mobile Group Catering Station\" — Coolers + prep tables + food crates. Group meal station packed for hygienic outdoor preparation and cold storage.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 005 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, golden-hour light with the subject centered and fully readable; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "51428532abd90dc1a00fd292",
-        "9ef35297d6f4b90d2a540654",
-        "e599600b9b13aad521e1378b",
-        "72fc53b36eedeaea93297d74",
-        "368edf4f148a30c24b738f58",
         "d20175905f5ca8bcd645e84d"
       ],
       "mongoRecords": [
-        {
-          "assetId": "51428532abd90dc1a00fd292",
-          "ownerUserId": "0cc9990d08304ab26ee67784",
-          "title": "Mobile Group Catering Station",
-          "subtitle": "Coolers + prep tables + food crates",
-          "category": "Catering"
-        },
-        {
-          "assetId": "9ef35297d6f4b90d2a540654",
-          "ownerUserId": "c100132b3ae88b47890def59",
-          "title": "Mobile Group Catering Station",
-          "subtitle": "Coolers + prep tables + food crates",
-          "category": "Catering"
-        },
-        {
-          "assetId": "e599600b9b13aad521e1378b",
-          "ownerUserId": "8f6ff3752a1f0912cd63e912",
-          "title": "Mobile Group Catering Station",
-          "subtitle": "Coolers + prep tables + food crates",
-          "category": "Catering"
-        },
-        {
-          "assetId": "72fc53b36eedeaea93297d74",
-          "ownerUserId": "4da20eb049179e73d4757808",
-          "title": "Mobile Group Catering Station",
-          "subtitle": "Coolers + prep tables + food crates",
-          "category": "Catering"
-        },
-        {
-          "assetId": "368edf4f148a30c24b738f58",
-          "ownerUserId": "2d520f3c98b0440c1556f4af",
-          "title": "Mobile Group Catering Station",
-          "subtitle": "Coolers + prep tables + food crates",
-          "category": "Catering"
-        },
         {
           "assetId": "d20175905f5ca8bcd645e84d",
           "ownerUserId": "f4b2ebd8f56628ab7df58221",
           "title": "Mobile Group Catering Station",
           "subtitle": "Coolers + prep tables + food crates",
-          "category": "Catering"
+          "details": "Group meal station packed for hygienic outdoor preparation and cold storage.",
+          "category": "Catering",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -402,55 +201,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an organized group safety desk in a community venue entrance, with plain unmarked first-aid cases, handheld radios, high-visibility vests, lanterns and incident supplies.\nSeed asset: \"Group Safety Base\" — First aid + radios + hi-vis equipment. Central safety point for moving groups, night checks, and incident response.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 006 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "0e78d70d6528b1ad3c854ee0",
-        "45237ded05692dea7770b422",
-        "81b3dba4098666fb66ab5c6f",
-        "0db30e17dd34d3803c380a2b",
-        "4523b57548e39167bb006aba",
         "93530c3d5db41f141f534de8"
       ],
       "mongoRecords": [
-        {
-          "assetId": "0e78d70d6528b1ad3c854ee0",
-          "ownerUserId": "af70e41dbe826cbd7d8b3500",
-          "title": "Group Safety Base",
-          "subtitle": "First aid + radios + hi-vis equipment",
-          "category": "Safety"
-        },
-        {
-          "assetId": "45237ded05692dea7770b422",
-          "ownerUserId": "25f4744ead36d038064d62c3",
-          "title": "Group Safety Base",
-          "subtitle": "First aid + radios + hi-vis equipment",
-          "category": "Safety"
-        },
-        {
-          "assetId": "81b3dba4098666fb66ab5c6f",
-          "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
-          "title": "Group Safety Base",
-          "subtitle": "First aid + radios + hi-vis equipment",
-          "category": "Safety"
-        },
-        {
-          "assetId": "0db30e17dd34d3803c380a2b",
-          "ownerUserId": "0b8e5df4ec85d858c304a350",
-          "title": "Group Safety Base",
-          "subtitle": "First aid + radios + hi-vis equipment",
-          "category": "Safety"
-        },
-        {
-          "assetId": "4523b57548e39167bb006aba",
-          "ownerUserId": "fcad6954169063f106a7a240",
-          "title": "Group Safety Base",
-          "subtitle": "First aid + radios + hi-vis equipment",
-          "category": "Safety"
-        },
         {
           "assetId": "93530c3d5db41f141f534de8",
           "ownerUserId": "178e8d0cbe164fa3fede5884",
           "title": "Group Safety Base",
           "subtitle": "First aid + radios + hi-vis equipment",
-          "category": "Safety"
+          "details": "Central safety point for moving groups, night checks, and incident response.",
+          "category": "Safety",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -469,55 +231,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a trailside bicycle repair station with a work stand, floor pump, patch kits, multi-tools, spare tubes and open bikepacking tool rolls.\nSeed asset: \"Trailside Bicycle Repair Kit\" — Pumps + patches + spare tubes + tools. Mobile maintenance supplies for punctures and basic repairs during a group ride.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 007 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "345b718fdf071d851e64a3c3",
-        "dbb67ab5cf58c35b6e27e027",
-        "bd50613a5f0cf6cba3898caa",
-        "1a13318f0aa405ea2a711115",
-        "9b5052d214d52a95aac425dd",
-        "45cca451f6e6fa44c0071014"
+        "9b5052d214d52a95aac425dd"
       ],
       "mongoRecords": [
-        {
-          "assetId": "345b718fdf071d851e64a3c3",
-          "ownerUserId": "41f4659dbd75a03abc20cd6d",
-          "title": "Trailside Bicycle Repair Kit",
-          "subtitle": "Pumps + patches + spare tubes + tools",
-          "category": "Cycling"
-        },
-        {
-          "assetId": "dbb67ab5cf58c35b6e27e027",
-          "ownerUserId": "e904dad402b47dd2cdaa8bec",
-          "title": "Trailside Bicycle Repair Kit",
-          "subtitle": "Pumps + patches + spare tubes + tools",
-          "category": "Cycling"
-        },
-        {
-          "assetId": "bd50613a5f0cf6cba3898caa",
-          "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
-          "title": "Trailside Bicycle Repair Kit",
-          "subtitle": "Pumps + patches + spare tubes + tools",
-          "category": "Cycling"
-        },
-        {
-          "assetId": "1a13318f0aa405ea2a711115",
-          "ownerUserId": "76da95a9109da485555c0d25",
-          "title": "Trailside Bicycle Repair Kit",
-          "subtitle": "Pumps + patches + spare tubes + tools",
-          "category": "Cycling"
-        },
         {
           "assetId": "9b5052d214d52a95aac425dd",
           "ownerUserId": "eb1ca0b761885bb0763e2929",
           "title": "Trailside Bicycle Repair Kit",
           "subtitle": "Pumps + patches + spare tubes + tools",
-          "category": "Cycling"
-        },
-        {
-          "assetId": "45cca451f6e6fa44c0071014",
-          "ownerUserId": "1b1c70be2349b3359a8f6f94",
-          "title": "Trailside Bicycle Repair Kit",
-          "subtitle": "Pumps + patches + spare tubes + tools",
-          "category": "Cycling"
+          "details": "Mobile maintenance supplies for punctures and basic repairs during a group ride.",
+          "category": "Cycling",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -536,55 +261,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an outdoor event power point beside a solid concrete amphitheater service wall, built around portable battery stations, color-organized charging leads, weatherproof cable covers and a compact distribution table.\nSeed asset: \"Outdoor Event Power Hub\" — Power stations + charging leads + cable covers. Shared low-voltage charging and equipment-power point for an outdoor gathering.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 008 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, natural window or ambient light with an uncluttered background; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "9e0382915323b9adf7460a3a",
-        "7a53e50e460c3af316c4c1f1",
-        "bae8cf8fde18bd87c7ee28c0",
-        "eefff5bef41b9d73979af7d2",
-        "9a48e2b549ff4909620096dc",
         "6662c393d5bdcde662c6130f"
       ],
       "mongoRecords": [
-        {
-          "assetId": "9e0382915323b9adf7460a3a",
-          "ownerUserId": "63bae8417bd352e5013c2e93",
-          "title": "Outdoor Event Power Hub",
-          "subtitle": "Power stations + charging leads + cable covers",
-          "category": "Event Technology"
-        },
-        {
-          "assetId": "7a53e50e460c3af316c4c1f1",
-          "ownerUserId": "4a008502646a200488911f45",
-          "title": "Outdoor Event Power Hub",
-          "subtitle": "Power stations + charging leads + cable covers",
-          "category": "Event Technology"
-        },
-        {
-          "assetId": "bae8cf8fde18bd87c7ee28c0",
-          "ownerUserId": "a0fb804ad6f347d6a9dab526",
-          "title": "Outdoor Event Power Hub",
-          "subtitle": "Power stations + charging leads + cable covers",
-          "category": "Event Technology"
-        },
-        {
-          "assetId": "eefff5bef41b9d73979af7d2",
-          "ownerUserId": "0c3ab5da9af33d4e688e809c",
-          "title": "Outdoor Event Power Hub",
-          "subtitle": "Power stations + charging leads + cable covers",
-          "category": "Event Technology"
-        },
-        {
-          "assetId": "9a48e2b549ff4909620096dc",
-          "ownerUserId": "d04cd419e735549e3f312977",
-          "title": "Outdoor Event Power Hub",
-          "subtitle": "Power stations + charging leads + cable covers",
-          "category": "Event Technology"
-        },
         {
           "assetId": "6662c393d5bdcde662c6130f",
           "ownerUserId": "9f3b3f085e23af6c89dbc432",
           "title": "Outdoor Event Power Hub",
           "subtitle": "Power stations + charging leads + cable covers",
-          "category": "Event Technology"
+          "details": "Shared low-voltage charging and equipment-power point for an outdoor gathering.",
+          "category": "Event Technology",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -603,63 +291,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a compact travel game collection opened on a weathered hostel common-room table, with small boards, cards, dice and score tokens.\nSeed asset: \"Travel Social Games Case\" — Compact boards + cards + dice + score tokens. Portable all-weather social games for four travelers during an evening stop.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 009 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "f7b9be40d648a5448d018308",
-        "75d01d7ede9bf4f5bac1e001",
-        "95d49c15fb42a208c729a382",
-        "032f55b15744e4e3957678ec",
-        "c3cd77b2be9412fcffadee7e",
-        "cefa7e50bd6cc0c6e16b6a57",
-        "907e57840f20cad5ab3cd7df"
+        "95d49c15fb42a208c729a382"
       ],
       "mongoRecords": [
-        {
-          "assetId": "f7b9be40d648a5448d018308",
-          "ownerUserId": "b5e2db6882d989d8532af12c",
-          "title": "Travel Social Games Case",
-          "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
-        },
-        {
-          "assetId": "75d01d7ede9bf4f5bac1e001",
-          "ownerUserId": "23820c1e76d3bd843f61c799",
-          "title": "Travel Social Games Case",
-          "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
-        },
         {
           "assetId": "95d49c15fb42a208c729a382",
           "ownerUserId": "904ee3c526298f6921cde3f3",
           "title": "Travel Social Games Case",
           "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
-        },
-        {
-          "assetId": "032f55b15744e4e3957678ec",
-          "ownerUserId": "ed4924c22a5240a54e48c0b5",
-          "title": "Travel Social Games Case",
-          "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
-        },
-        {
-          "assetId": "c3cd77b2be9412fcffadee7e",
-          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
-          "title": "Travel Social Games Case",
-          "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
-        },
-        {
-          "assetId": "cefa7e50bd6cc0c6e16b6a57",
-          "ownerUserId": "d182041b8a54132d5168034f",
-          "title": "Travel Social Games Case",
-          "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
-        },
-        {
-          "assetId": "907e57840f20cad5ab3cd7df",
-          "ownerUserId": "b29df68956f3fe15e04558de",
-          "title": "Travel Social Games Case",
-          "subtitle": "Compact boards + cards + dice + score tokens",
-          "category": "Games"
+          "details": "Portable all-weather social games for four travelers during an evening stop.",
+          "category": "Games",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -678,63 +321,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a route-navigation set arranged on a rocky overlook, with a handheld GPS, compass, blank waterproof map sleeves and a power bank.\nSeed asset: \"Route Navigation Kit\" — Handheld GPS + compass + waterproof map sleeves. Offline route-finding equipment for a small group traveling beyond reliable mobile coverage.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 010 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "33b1562aff2a2dde0bf64af1",
-        "ae4c60c35c92929e2d53d101",
-        "56b65a1027e9368c848f25f7",
-        "0e34ae88cf81e01a304d4b58",
-        "907c96accb1457fa64e41d03",
-        "a2d2bfa7c324eca90f046307",
-        "99a661e94878133d6737e5be"
+        "0e34ae88cf81e01a304d4b58"
       ],
       "mongoRecords": [
-        {
-          "assetId": "33b1562aff2a2dde0bf64af1",
-          "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
-          "title": "Route Navigation Kit",
-          "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
-        },
-        {
-          "assetId": "ae4c60c35c92929e2d53d101",
-          "ownerUserId": "931a01221376d8e28a068fe8",
-          "title": "Route Navigation Kit",
-          "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
-        },
-        {
-          "assetId": "56b65a1027e9368c848f25f7",
-          "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
-          "title": "Route Navigation Kit",
-          "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
-        },
         {
           "assetId": "0e34ae88cf81e01a304d4b58",
           "ownerUserId": "4b5bad1292fb6db05dc0e455",
           "title": "Route Navigation Kit",
           "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
-        },
-        {
-          "assetId": "907c96accb1457fa64e41d03",
-          "ownerUserId": "7313a9379f60200cba7b9f71",
-          "title": "Route Navigation Kit",
-          "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
-        },
-        {
-          "assetId": "a2d2bfa7c324eca90f046307",
-          "ownerUserId": "7822c5f99eff99d63abe8933",
-          "title": "Route Navigation Kit",
-          "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
-        },
-        {
-          "assetId": "99a661e94878133d6737e5be",
-          "ownerUserId": "bf057de7c586eede7e84bdc7",
-          "title": "Route Navigation Kit",
-          "subtitle": "Handheld GPS + compass + waterproof map sleeves",
-          "category": "Navigation"
+          "details": "Offline route-finding equipment for a small group traveling beyond reliable mobile coverage.",
+          "category": "Navigation",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -753,12 +351,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a field-cooking station on a designated gravel pad, with a twin burner, nesting pots, utensil roll and stable preparation board.\nSeed asset: \"Field Cooking Kit\" — Twin burner + nesting pots + utensil roll. Compact meal-preparation equipment for four people at an approved outdoor cooking point.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 011 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "98ace41a8993907087124578",
-        "d39c82d471edbcc627bdcb48",
-        "36972b332512eea963e6c7c3",
-        "ba470758bb0448474dc48f7c",
-        "ba5e66466b785c0da0c6f9b6",
-        "576aee600b3d3a34473b9a85"
+        "98ace41a8993907087124578"
       ],
       "mongoRecords": [
         {
@@ -766,42 +359,10 @@
           "ownerUserId": "f01086c19a00a6f46b6d41a7",
           "title": "Field Cooking Kit",
           "subtitle": "Twin burner + nesting pots + utensil roll",
-          "category": "Cooking"
-        },
-        {
-          "assetId": "d39c82d471edbcc627bdcb48",
-          "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
-          "title": "Field Cooking Kit",
-          "subtitle": "Twin burner + nesting pots + utensil roll",
-          "category": "Cooking"
-        },
-        {
-          "assetId": "36972b332512eea963e6c7c3",
-          "ownerUserId": "af0436815ab38f4864dd1e24",
-          "title": "Field Cooking Kit",
-          "subtitle": "Twin burner + nesting pots + utensil roll",
-          "category": "Cooking"
-        },
-        {
-          "assetId": "ba470758bb0448474dc48f7c",
-          "ownerUserId": "e1dccfc3443239865c6ac69a",
-          "title": "Field Cooking Kit",
-          "subtitle": "Twin burner + nesting pots + utensil roll",
-          "category": "Cooking"
-        },
-        {
-          "assetId": "ba5e66466b785c0da0c6f9b6",
-          "ownerUserId": "eac11b0685f9799953a40dd4",
-          "title": "Field Cooking Kit",
-          "subtitle": "Twin burner + nesting pots + utensil roll",
-          "category": "Cooking"
-        },
-        {
-          "assetId": "576aee600b3d3a34473b9a85",
-          "ownerUserId": "1d7d3545ba5e0f1d63918589",
-          "title": "Field Cooking Kit",
-          "subtitle": "Twin burner + nesting pots + utensil roll",
-          "category": "Cooking"
+          "details": "Compact meal-preparation equipment for four people at an approved outdoor cooking point.",
+          "category": "Cooking",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -820,55 +381,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a picnic comfort set in a green city park, with four distinct folding chairs, a patterned blanket, thermos carriers and reusable cups.\nSeed asset: \"Picnic Comfort Set\" — Folding chairs + blanket + thermos carriers. Packable seating and serving equipment for a relaxed daytime group stop.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 012 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft overcast light with a practical catalog-like composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "705a71b2cb4e12b242bca1bc",
-        "11615a40c2fdc5e1d7424c0c",
-        "6372a78a5bc989a1ecf0b24c",
-        "f2230b66d7f4918c25aaf9f7",
-        "5e0e0942fe81303b1b67101d",
         "16efec65153f9804ef9de2c3"
       ],
       "mongoRecords": [
-        {
-          "assetId": "705a71b2cb4e12b242bca1bc",
-          "ownerUserId": "e76d63199eff33a6945cb797",
-          "title": "Picnic Comfort Set",
-          "subtitle": "Folding chairs + blanket + thermos carriers",
-          "category": "Picnic"
-        },
-        {
-          "assetId": "11615a40c2fdc5e1d7424c0c",
-          "ownerUserId": "c033e546ef7c928fb8cf073b",
-          "title": "Picnic Comfort Set",
-          "subtitle": "Folding chairs + blanket + thermos carriers",
-          "category": "Picnic"
-        },
-        {
-          "assetId": "6372a78a5bc989a1ecf0b24c",
-          "ownerUserId": "b0971e779dbdb71f9327eabb",
-          "title": "Picnic Comfort Set",
-          "subtitle": "Folding chairs + blanket + thermos carriers",
-          "category": "Picnic"
-        },
-        {
-          "assetId": "f2230b66d7f4918c25aaf9f7",
-          "ownerUserId": "9184901a15076d32ea8b626f",
-          "title": "Picnic Comfort Set",
-          "subtitle": "Folding chairs + blanket + thermos carriers",
-          "category": "Picnic"
-        },
-        {
-          "assetId": "5e0e0942fe81303b1b67101d",
-          "ownerUserId": "0216b1ceb256d6f2c89073b8",
-          "title": "Picnic Comfort Set",
-          "subtitle": "Folding chairs + blanket + thermos carriers",
-          "category": "Picnic"
-        },
         {
           "assetId": "16efec65153f9804ef9de2c3",
           "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
           "title": "Picnic Comfort Set",
           "subtitle": "Folding chairs + blanket + thermos carriers",
-          "category": "Picnic"
+          "details": "Packable seating and serving equipment for a relaxed daytime group stop.",
+          "category": "Picnic",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -887,55 +411,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a portable audio system prepared on a small community stage, with two plain unmarked battery speakers, plain microphones, stands and a compact unmarked mixer.\nSeed asset: \"Portable Audio Rig\" — Battery speakers + microphones + compact mixer. Cable-managed sound equipment for announcements, music, or a small workshop.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 013 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, golden-hour light with the subject centered and fully readable; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "77ac5d0bdec19bfc72c940c4",
-        "2d86c6a3285d01ac096bd755",
-        "81881be727932c0a61c57ddc",
-        "ae8e897ff12054e0f1ed53e3",
-        "258bcba286ed105967e2b80f",
-        "7377ed587a2e871b515ac10b"
+        "2d86c6a3285d01ac096bd755"
       ],
       "mongoRecords": [
-        {
-          "assetId": "77ac5d0bdec19bfc72c940c4",
-          "ownerUserId": "0cc9990d08304ab26ee67784",
-          "title": "Portable Audio Rig",
-          "subtitle": "Battery speakers + microphones + compact mixer",
-          "category": "Audio"
-        },
         {
           "assetId": "2d86c6a3285d01ac096bd755",
           "ownerUserId": "c100132b3ae88b47890def59",
           "title": "Portable Audio Rig",
           "subtitle": "Battery speakers + microphones + compact mixer",
-          "category": "Audio"
-        },
-        {
-          "assetId": "81881be727932c0a61c57ddc",
-          "ownerUserId": "8f6ff3752a1f0912cd63e912",
-          "title": "Portable Audio Rig",
-          "subtitle": "Battery speakers + microphones + compact mixer",
-          "category": "Audio"
-        },
-        {
-          "assetId": "ae8e897ff12054e0f1ed53e3",
-          "ownerUserId": "4da20eb049179e73d4757808",
-          "title": "Portable Audio Rig",
-          "subtitle": "Battery speakers + microphones + compact mixer",
-          "category": "Audio"
-        },
-        {
-          "assetId": "258bcba286ed105967e2b80f",
-          "ownerUserId": "2d520f3c98b0440c1556f4af",
-          "title": "Portable Audio Rig",
-          "subtitle": "Battery speakers + microphones + compact mixer",
-          "category": "Audio"
-        },
-        {
-          "assetId": "7377ed587a2e871b515ac10b",
-          "ownerUserId": "f4b2ebd8f56628ab7df58221",
-          "title": "Portable Audio Rig",
-          "subtitle": "Battery speakers + microphones + compact mixer",
-          "category": "Audio"
+          "details": "Cable-managed sound equipment for announcements, music, or a small workshop.",
+          "category": "Audio",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -954,55 +441,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a rechargeable area-lighting kit tested in an open warehouse, with plain unmarked tripod work lights, plain lanterns and low-profile cable covers.\nSeed asset: \"Rechargeable Area Lighting Kit\" — Tripod lights + lanterns + safe cable covers. Flexible low-voltage lighting for an evening meeting point or work area.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 014 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "a39a3cf7fb41f5b6ee4695dc",
-        "871b167a3d07ab469365d76e",
-        "30b3000c189953476fd4225a",
-        "94aeee01b574e3b4f5ea95e6",
-        "8221722e9744a9eaffa80a5f",
-        "622bb4b03b9429d9a237adc1"
+        "30b3000c189953476fd4225a"
       ],
       "mongoRecords": [
-        {
-          "assetId": "a39a3cf7fb41f5b6ee4695dc",
-          "ownerUserId": "af70e41dbe826cbd7d8b3500",
-          "title": "Rechargeable Area Lighting Kit",
-          "subtitle": "Tripod lights + lanterns + safe cable covers",
-          "category": "Lighting"
-        },
-        {
-          "assetId": "871b167a3d07ab469365d76e",
-          "ownerUserId": "25f4744ead36d038064d62c3",
-          "title": "Rechargeable Area Lighting Kit",
-          "subtitle": "Tripod lights + lanterns + safe cable covers",
-          "category": "Lighting"
-        },
         {
           "assetId": "30b3000c189953476fd4225a",
           "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
           "title": "Rechargeable Area Lighting Kit",
           "subtitle": "Tripod lights + lanterns + safe cable covers",
-          "category": "Lighting"
-        },
-        {
-          "assetId": "94aeee01b574e3b4f5ea95e6",
-          "ownerUserId": "0b8e5df4ec85d858c304a350",
-          "title": "Rechargeable Area Lighting Kit",
-          "subtitle": "Tripod lights + lanterns + safe cable covers",
-          "category": "Lighting"
-        },
-        {
-          "assetId": "8221722e9744a9eaffa80a5f",
-          "ownerUserId": "fcad6954169063f106a7a240",
-          "title": "Rechargeable Area Lighting Kit",
-          "subtitle": "Tripod lights + lanterns + safe cable covers",
-          "category": "Lighting"
-        },
-        {
-          "assetId": "622bb4b03b9429d9a237adc1",
-          "ownerUserId": "178e8d0cbe164fa3fede5884",
-          "title": "Rechargeable Area Lighting Kit",
-          "subtitle": "Tripod lights + lanterns + safe cable covers",
-          "category": "Lighting"
+          "details": "Flexible low-voltage lighting for an evening meeting point or work area.",
+          "category": "Lighting",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1021,12 +471,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an outdoor projection setup beneath a solid pavilion roof, with a folding screen, compact projector, power station and four chairs.\nSeed asset: \"Outdoor Projection Pack\" — Projector + folding screen + power station. Portable film and presentation setup for a sheltered community gathering.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 015 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "f26cbd1becbfe2a33ff3035c",
-        "18be6c78470d17247e2294d9",
-        "9b680cab1f5570cb3af6204c",
-        "67acc5fdf65e08caa9baadee",
-        "566ed860ee2cab75a7bead00",
-        "8c5fb57390c1974f1568a1b6"
+        "f26cbd1becbfe2a33ff3035c"
       ],
       "mongoRecords": [
         {
@@ -1034,42 +479,10 @@
           "ownerUserId": "41f4659dbd75a03abc20cd6d",
           "title": "Outdoor Projection Pack",
           "subtitle": "Projector + folding screen + power station",
-          "category": "Projection"
-        },
-        {
-          "assetId": "18be6c78470d17247e2294d9",
-          "ownerUserId": "e904dad402b47dd2cdaa8bec",
-          "title": "Outdoor Projection Pack",
-          "subtitle": "Projector + folding screen + power station",
-          "category": "Projection"
-        },
-        {
-          "assetId": "9b680cab1f5570cb3af6204c",
-          "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
-          "title": "Outdoor Projection Pack",
-          "subtitle": "Projector + folding screen + power station",
-          "category": "Projection"
-        },
-        {
-          "assetId": "67acc5fdf65e08caa9baadee",
-          "ownerUserId": "76da95a9109da485555c0d25",
-          "title": "Outdoor Projection Pack",
-          "subtitle": "Projector + folding screen + power station",
-          "category": "Projection"
-        },
-        {
-          "assetId": "566ed860ee2cab75a7bead00",
-          "ownerUserId": "eb1ca0b761885bb0763e2929",
-          "title": "Outdoor Projection Pack",
-          "subtitle": "Projector + folding screen + power station",
-          "category": "Projection"
-        },
-        {
-          "assetId": "8c5fb57390c1974f1568a1b6",
-          "ownerUserId": "1b1c70be2349b3359a8f6f94",
-          "title": "Outdoor Projection Pack",
-          "subtitle": "Projector + folding screen + power station",
-          "category": "Projection"
+          "details": "Portable film and presentation setup for a sheltered community gathering.",
+          "category": "Projection",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1088,55 +501,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a reusable hygiene and cleanup station beside a solid brick community service building, with water containers, wash basins, sorting bins and cleaning tools.\nSeed asset: \"Hygiene and Cleanup Station\" — Water containers + wash basins + sorting bins. Reusable sanitation and cleanup equipment for a shared trip or outdoor event.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 016 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, natural window or ambient light with an uncluttered background; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "b39ae18f956b8426aa5cd13e",
-        "4420be96abbbb3a0f755a73b",
-        "229c3d4e6f3c87b4c9ad5826",
-        "5969f4b6161c8af7821b332d",
-        "fe1558a7646fb583db03a30c",
-        "43cfa9ca719b9fb85d3269d0"
+        "4420be96abbbb3a0f755a73b"
       ],
       "mongoRecords": [
-        {
-          "assetId": "b39ae18f956b8426aa5cd13e",
-          "ownerUserId": "63bae8417bd352e5013c2e93",
-          "title": "Hygiene and Cleanup Station",
-          "subtitle": "Water containers + wash basins + sorting bins",
-          "category": "Sanitation"
-        },
         {
           "assetId": "4420be96abbbb3a0f755a73b",
           "ownerUserId": "4a008502646a200488911f45",
           "title": "Hygiene and Cleanup Station",
           "subtitle": "Water containers + wash basins + sorting bins",
-          "category": "Sanitation"
-        },
-        {
-          "assetId": "229c3d4e6f3c87b4c9ad5826",
-          "ownerUserId": "a0fb804ad6f347d6a9dab526",
-          "title": "Hygiene and Cleanup Station",
-          "subtitle": "Water containers + wash basins + sorting bins",
-          "category": "Sanitation"
-        },
-        {
-          "assetId": "5969f4b6161c8af7821b332d",
-          "ownerUserId": "0c3ab5da9af33d4e688e809c",
-          "title": "Hygiene and Cleanup Station",
-          "subtitle": "Water containers + wash basins + sorting bins",
-          "category": "Sanitation"
-        },
-        {
-          "assetId": "fe1558a7646fb583db03a30c",
-          "ownerUserId": "d04cd419e735549e3f312977",
-          "title": "Hygiene and Cleanup Station",
-          "subtitle": "Water containers + wash basins + sorting bins",
-          "category": "Sanitation"
-        },
-        {
-          "assetId": "43cfa9ca719b9fb85d3269d0",
-          "ownerUserId": "9f3b3f085e23af6c89dbc432",
-          "title": "Hygiene and Cleanup Station",
-          "subtitle": "Water containers + wash basins + sorting bins",
-          "category": "Sanitation"
+          "details": "Reusable sanitation and cleanup equipment for a shared trip or outdoor event.",
+          "category": "Sanitation",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1155,63 +531,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of the closed exterior of a rustic lakeside timber cabin with solid walls, visible windows, a covered porch and a compact chimney, with no beds or interior cutaway visible.\nSeed asset: \"Lakeside Timber Cabin\" — Four beds + wood stove + covered porch. Simple group cabin for a quiet overnight stay beside a lake.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 017 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "87794730352c5e479238d730",
-        "100458364c6e855a19953edf",
-        "1afc95e6414033550eea2c21",
-        "b617d0aa224dad2be1676bee",
-        "b098eae4ae50dc68ddde6a7f",
-        "6dadd6bd151f2f485d28c4ca",
         "729fb7c46ed75e57dcc62d33"
       ],
       "mongoRecords": [
-        {
-          "assetId": "87794730352c5e479238d730",
-          "ownerUserId": "b5e2db6882d989d8532af12c",
-          "title": "Lakeside Timber Cabin",
-          "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
-        },
-        {
-          "assetId": "100458364c6e855a19953edf",
-          "ownerUserId": "23820c1e76d3bd843f61c799",
-          "title": "Lakeside Timber Cabin",
-          "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
-        },
-        {
-          "assetId": "1afc95e6414033550eea2c21",
-          "ownerUserId": "904ee3c526298f6921cde3f3",
-          "title": "Lakeside Timber Cabin",
-          "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
-        },
-        {
-          "assetId": "b617d0aa224dad2be1676bee",
-          "ownerUserId": "ed4924c22a5240a54e48c0b5",
-          "title": "Lakeside Timber Cabin",
-          "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
-        },
-        {
-          "assetId": "b098eae4ae50dc68ddde6a7f",
-          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
-          "title": "Lakeside Timber Cabin",
-          "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
-        },
-        {
-          "assetId": "6dadd6bd151f2f485d28c4ca",
-          "ownerUserId": "d182041b8a54132d5168034f",
-          "title": "Lakeside Timber Cabin",
-          "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
-        },
         {
           "assetId": "729fb7c46ed75e57dcc62d33",
           "ownerUserId": "b29df68956f3fe15e04558de",
           "title": "Lakeside Timber Cabin",
           "subtitle": "Four beds + wood stove + covered porch",
-          "category": "Cabin"
+          "details": "Simple group cabin for a quiet overnight stay beside a lake.",
+          "category": "Cabin",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1230,63 +561,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a clean urban hostel family room with two sturdy bunk beds, four lockers and a shared central table.\nSeed asset: \"Urban Hostel Family Room\" — Four bunks + lockers + shared table. Private four-person hostel room near public transport and city activities.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 018 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "8d3e6288bcb7c1c990db61c2",
-        "78b7facddece7e50b3cc7b6e",
-        "9d351105e42700867a792800",
-        "857cfd018ec254a98deeb3ea",
-        "2f77e1a609f5742bfafd66ed",
-        "4dbc3305c35f1366b029bf32",
-        "39e5a0b0cd34f4bdcb8b4611"
+        "2f77e1a609f5742bfafd66ed"
       ],
       "mongoRecords": [
-        {
-          "assetId": "8d3e6288bcb7c1c990db61c2",
-          "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
-          "title": "Urban Hostel Family Room",
-          "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
-        },
-        {
-          "assetId": "78b7facddece7e50b3cc7b6e",
-          "ownerUserId": "931a01221376d8e28a068fe8",
-          "title": "Urban Hostel Family Room",
-          "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
-        },
-        {
-          "assetId": "9d351105e42700867a792800",
-          "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
-          "title": "Urban Hostel Family Room",
-          "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
-        },
-        {
-          "assetId": "857cfd018ec254a98deeb3ea",
-          "ownerUserId": "4b5bad1292fb6db05dc0e455",
-          "title": "Urban Hostel Family Room",
-          "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
-        },
         {
           "assetId": "2f77e1a609f5742bfafd66ed",
           "ownerUserId": "7313a9379f60200cba7b9f71",
           "title": "Urban Hostel Family Room",
           "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
-        },
-        {
-          "assetId": "4dbc3305c35f1366b029bf32",
-          "ownerUserId": "7822c5f99eff99d63abe8933",
-          "title": "Urban Hostel Family Room",
-          "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
-        },
-        {
-          "assetId": "39e5a0b0cd34f4bdcb8b4611",
-          "ownerUserId": "bf057de7c586eede7e84bdc7",
-          "title": "Urban Hostel Family Room",
-          "subtitle": "Four bunks + lockers + shared table",
-          "category": "Hostel"
+          "details": "Private four-person hostel room near public transport and city activities.",
+          "category": "Hostel",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1305,55 +591,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of the bright interior and small deck of a moored houseboat, with two double berths, compact galley and calm river outside.\nSeed asset: \"Riverside Houseboat Berth\" — Two double berths + compact galley + deck. Moored floating accommodation for a small group on a calm urban river.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 019 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "e51be59b77bad85978bb96e3",
-        "115a851fcdd68a01a6fc2649",
-        "006321aab3401ee33bc6d5be",
-        "0af73c6b08e4f19a8b23a95d",
-        "10337d11b02831c86dc37dec",
-        "adb188297f3366a4d091b542"
+        "0af73c6b08e4f19a8b23a95d"
       ],
       "mongoRecords": [
-        {
-          "assetId": "e51be59b77bad85978bb96e3",
-          "ownerUserId": "f01086c19a00a6f46b6d41a7",
-          "title": "Riverside Houseboat Berth",
-          "subtitle": "Two double berths + compact galley + deck",
-          "category": "Houseboat"
-        },
-        {
-          "assetId": "115a851fcdd68a01a6fc2649",
-          "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
-          "title": "Riverside Houseboat Berth",
-          "subtitle": "Two double berths + compact galley + deck",
-          "category": "Houseboat"
-        },
-        {
-          "assetId": "006321aab3401ee33bc6d5be",
-          "ownerUserId": "af0436815ab38f4864dd1e24",
-          "title": "Riverside Houseboat Berth",
-          "subtitle": "Two double berths + compact galley + deck",
-          "category": "Houseboat"
-        },
         {
           "assetId": "0af73c6b08e4f19a8b23a95d",
           "ownerUserId": "e1dccfc3443239865c6ac69a",
           "title": "Riverside Houseboat Berth",
           "subtitle": "Two double berths + compact galley + deck",
-          "category": "Houseboat"
-        },
-        {
-          "assetId": "10337d11b02831c86dc37dec",
-          "ownerUserId": "eac11b0685f9799953a40dd4",
-          "title": "Riverside Houseboat Berth",
-          "subtitle": "Two double berths + compact galley + deck",
-          "category": "Houseboat"
-        },
-        {
-          "assetId": "adb188297f3366a4d091b542",
-          "ownerUserId": "1d7d3545ba5e0f1d63918589",
-          "title": "Riverside Houseboat Berth",
-          "subtitle": "Two double berths + compact galley + deck",
-          "category": "Houseboat"
+          "details": "Moored floating accommodation for a small group on a calm urban river.",
+          "category": "Houseboat",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -1372,55 +621,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a practical mountain-refuge room with four alpine bunks, boot-drying racks, stone walls and organized gear shelves.\nSeed asset: \"Mountain Refuge Room\" — Four alpine bunks + drying racks + gear shelf. Practical shared room inside a staffed mountain refuge.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 020 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft overcast light with a practical catalog-like composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "2ea5e07724c69e43a7101510",
-        "17cd70ddc97c5b8ebc49d218",
-        "71e2b1d24ab99e3648179d89",
-        "d0b356fa27c83fc33fe2dd10",
-        "0673021d69dd6c6943cae53b",
-        "3bad18c7d5fdd0da4484d98f"
+        "17cd70ddc97c5b8ebc49d218"
       ],
       "mongoRecords": [
-        {
-          "assetId": "2ea5e07724c69e43a7101510",
-          "ownerUserId": "e76d63199eff33a6945cb797",
-          "title": "Mountain Refuge Room",
-          "subtitle": "Four alpine bunks + drying racks + gear shelf",
-          "category": "Mountain Refuge"
-        },
         {
           "assetId": "17cd70ddc97c5b8ebc49d218",
           "ownerUserId": "c033e546ef7c928fb8cf073b",
           "title": "Mountain Refuge Room",
           "subtitle": "Four alpine bunks + drying racks + gear shelf",
-          "category": "Mountain Refuge"
-        },
-        {
-          "assetId": "71e2b1d24ab99e3648179d89",
-          "ownerUserId": "b0971e779dbdb71f9327eabb",
-          "title": "Mountain Refuge Room",
-          "subtitle": "Four alpine bunks + drying racks + gear shelf",
-          "category": "Mountain Refuge"
-        },
-        {
-          "assetId": "d0b356fa27c83fc33fe2dd10",
-          "ownerUserId": "9184901a15076d32ea8b626f",
-          "title": "Mountain Refuge Room",
-          "subtitle": "Four alpine bunks + drying racks + gear shelf",
-          "category": "Mountain Refuge"
-        },
-        {
-          "assetId": "0673021d69dd6c6943cae53b",
-          "ownerUserId": "0216b1ceb256d6f2c89073b8",
-          "title": "Mountain Refuge Room",
-          "subtitle": "Four alpine bunks + drying racks + gear shelf",
-          "category": "Mountain Refuge"
-        },
-        {
-          "assetId": "3bad18c7d5fdd0da4484d98f",
-          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
-          "title": "Mountain Refuge Room",
-          "subtitle": "Four alpine bunks + drying racks + gear shelf",
-          "category": "Mountain Refuge"
+          "details": "Practical shared room inside a staffed mountain refuge.",
+          "category": "Mountain Refuge",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -1439,55 +651,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of the open pop-top interior of a compact campervan at an official motorhome stop, showing four converted sleeping places and kitchenette.\nSeed asset: \"Compact Campervan Sleep Setup\" — Pop-top berths + convertible bench + kitchenette. Four-person mobile sleep setup prepared at a legal overnight stop.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 021 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, golden-hour light with the subject centered and fully readable; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "62084915e1f046a669cec5ed",
-        "7678964cf8512b5f48a92411",
-        "de2a18556c6a34010c44130b",
-        "de9a7a6e2ff08ef002fb087c",
-        "ebdc4e76a733b5a11ccf5ff0",
-        "fdc568bd9f72a79ba55caa2f"
+        "de2a18556c6a34010c44130b"
       ],
       "mongoRecords": [
-        {
-          "assetId": "62084915e1f046a669cec5ed",
-          "ownerUserId": "0cc9990d08304ab26ee67784",
-          "title": "Compact Campervan Sleep Setup",
-          "subtitle": "Pop-top berths + convertible bench + kitchenette",
-          "category": "Campervan"
-        },
-        {
-          "assetId": "7678964cf8512b5f48a92411",
-          "ownerUserId": "c100132b3ae88b47890def59",
-          "title": "Compact Campervan Sleep Setup",
-          "subtitle": "Pop-top berths + convertible bench + kitchenette",
-          "category": "Campervan"
-        },
         {
           "assetId": "de2a18556c6a34010c44130b",
           "ownerUserId": "8f6ff3752a1f0912cd63e912",
           "title": "Compact Campervan Sleep Setup",
           "subtitle": "Pop-top berths + convertible bench + kitchenette",
-          "category": "Campervan"
-        },
-        {
-          "assetId": "de9a7a6e2ff08ef002fb087c",
-          "ownerUserId": "4da20eb049179e73d4757808",
-          "title": "Compact Campervan Sleep Setup",
-          "subtitle": "Pop-top berths + convertible bench + kitchenette",
-          "category": "Campervan"
-        },
-        {
-          "assetId": "ebdc4e76a733b5a11ccf5ff0",
-          "ownerUserId": "2d520f3c98b0440c1556f4af",
-          "title": "Compact Campervan Sleep Setup",
-          "subtitle": "Pop-top berths + convertible bench + kitchenette",
-          "category": "Campervan"
-        },
-        {
-          "assetId": "fdc568bd9f72a79ba55caa2f",
-          "ownerUserId": "f4b2ebd8f56628ab7df58221",
-          "title": "Compact Campervan Sleep Setup",
-          "subtitle": "Pop-top berths + convertible bench + kitchenette",
-          "category": "Campervan"
+          "details": "Four-person mobile sleep setup prepared at a legal overnight stop.",
+          "category": "Campervan",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -1506,55 +681,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small stone farm guest cottage with two simple bedrooms, a wooden kitchen table and a sunny rural courtyard.\nSeed asset: \"Farm Guest Cottage\" — Two bedrooms + kitchen table + rural courtyard. Independent small cottage for a group visiting a working farm.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 022 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "f3187504ecd5344723182e39",
-        "287f0108aaf39e4b04027d0e",
-        "82441bc7210b7a3381f8751a",
-        "eb812a0e245572085510263d",
-        "ff760fade34e3933e99bb0cd",
-        "c03cb1a3d8f4a966fb9677f7"
+        "eb812a0e245572085510263d"
       ],
       "mongoRecords": [
-        {
-          "assetId": "f3187504ecd5344723182e39",
-          "ownerUserId": "af70e41dbe826cbd7d8b3500",
-          "title": "Farm Guest Cottage",
-          "subtitle": "Two bedrooms + kitchen table + rural courtyard",
-          "category": "Cottage"
-        },
-        {
-          "assetId": "287f0108aaf39e4b04027d0e",
-          "ownerUserId": "25f4744ead36d038064d62c3",
-          "title": "Farm Guest Cottage",
-          "subtitle": "Two bedrooms + kitchen table + rural courtyard",
-          "category": "Cottage"
-        },
-        {
-          "assetId": "82441bc7210b7a3381f8751a",
-          "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
-          "title": "Farm Guest Cottage",
-          "subtitle": "Two bedrooms + kitchen table + rural courtyard",
-          "category": "Cottage"
-        },
         {
           "assetId": "eb812a0e245572085510263d",
           "ownerUserId": "0b8e5df4ec85d858c304a350",
           "title": "Farm Guest Cottage",
           "subtitle": "Two bedrooms + kitchen table + rural courtyard",
-          "category": "Cottage"
-        },
-        {
-          "assetId": "ff760fade34e3933e99bb0cd",
-          "ownerUserId": "fcad6954169063f106a7a240",
-          "title": "Farm Guest Cottage",
-          "subtitle": "Two bedrooms + kitchen table + rural courtyard",
-          "category": "Cottage"
-        },
-        {
-          "assetId": "c03cb1a3d8f4a966fb9677f7",
-          "ownerUserId": "178e8d0cbe164fa3fede5884",
-          "title": "Farm Guest Cottage",
-          "subtitle": "Two bedrooms + kitchen table + rural courtyard",
-          "category": "Cottage"
+          "details": "Independent small cottage for a group visiting a working farm.",
+          "category": "Cottage",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -1573,55 +711,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of the closed exterior of a compact desert adobe guest house with rounded plaster walls, solid doors and windows, and a deeply shaded enclosed courtyard furnished only with a table and chairs; sleeping rooms remain enclosed and no beds are visible outdoors.\nSeed asset: \"Desert Adobe Casita\" — Cool plaster walls + shaded courtyard + sleeps four. Compact heat-conscious guest house with enclosed sleeping rooms and a furnished courtyard.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 023 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "8c104bc3d29cfe82b7e0fbfc",
-        "38758801caa30a672336e9f5",
-        "37b5d81c6c71c50123d6ef98",
-        "eb6d71defed35f5bb2290585",
-        "68ab3c0f310cebca7d345118",
-        "fc332f445040c16bda0f9927"
+        "37b5d81c6c71c50123d6ef98"
       ],
       "mongoRecords": [
-        {
-          "assetId": "8c104bc3d29cfe82b7e0fbfc",
-          "ownerUserId": "41f4659dbd75a03abc20cd6d",
-          "title": "Desert Adobe Casita",
-          "subtitle": "Cool plaster walls + shaded courtyard + sleeps four",
-          "category": "Casita"
-        },
-        {
-          "assetId": "38758801caa30a672336e9f5",
-          "ownerUserId": "e904dad402b47dd2cdaa8bec",
-          "title": "Desert Adobe Casita",
-          "subtitle": "Cool plaster walls + shaded courtyard + sleeps four",
-          "category": "Casita"
-        },
         {
           "assetId": "37b5d81c6c71c50123d6ef98",
           "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
           "title": "Desert Adobe Casita",
           "subtitle": "Cool plaster walls + shaded courtyard + sleeps four",
-          "category": "Casita"
-        },
-        {
-          "assetId": "eb6d71defed35f5bb2290585",
-          "ownerUserId": "76da95a9109da485555c0d25",
-          "title": "Desert Adobe Casita",
-          "subtitle": "Cool plaster walls + shaded courtyard + sleeps four",
-          "category": "Casita"
-        },
-        {
-          "assetId": "68ab3c0f310cebca7d345118",
-          "ownerUserId": "eb1ca0b761885bb0763e2929",
-          "title": "Desert Adobe Casita",
-          "subtitle": "Cool plaster walls + shaded courtyard + sleeps four",
-          "category": "Casita"
-        },
-        {
-          "assetId": "fc332f445040c16bda0f9927",
-          "ownerUserId": "1b1c70be2349b3359a8f6f94",
-          "title": "Desert Adobe Casita",
-          "subtitle": "Cool plaster walls + shaded courtyard + sleeps four",
-          "category": "Casita"
+          "details": "Compact heat-conscious guest house with enclosed sleeping rooms and a furnished courtyard.",
+          "category": "Casita",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -1640,55 +741,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a weatherproof timber treehouse lodge on strong stilts, with safe stairs, four beds and a leafy woodland deck.\nSeed asset: \"Forest Treehouse Lodge\" — Raised timber room + four beds + woodland deck. Weatherproof elevated lodge reached by a safe fixed stairway.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 024 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, natural window or ambient light with an uncluttered background; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "a714b5cffc8b33d8010abddd",
-        "6b2ce9e74332b0ce85b81626",
-        "af5bbed6bddb4e8ec98ade68",
-        "42dea16c568224696c546999",
-        "f3f29c490def11af2f848c3a",
-        "40b753008a7c3af659b8ba9a"
+        "6b2ce9e74332b0ce85b81626"
       ],
       "mongoRecords": [
-        {
-          "assetId": "a714b5cffc8b33d8010abddd",
-          "ownerUserId": "63bae8417bd352e5013c2e93",
-          "title": "Forest Treehouse Lodge",
-          "subtitle": "Raised timber room + four beds + woodland deck",
-          "category": "Treehouse"
-        },
         {
           "assetId": "6b2ce9e74332b0ce85b81626",
           "ownerUserId": "4a008502646a200488911f45",
           "title": "Forest Treehouse Lodge",
           "subtitle": "Raised timber room + four beds + woodland deck",
-          "category": "Treehouse"
-        },
-        {
-          "assetId": "af5bbed6bddb4e8ec98ade68",
-          "ownerUserId": "a0fb804ad6f347d6a9dab526",
-          "title": "Forest Treehouse Lodge",
-          "subtitle": "Raised timber room + four beds + woodland deck",
-          "category": "Treehouse"
-        },
-        {
-          "assetId": "42dea16c568224696c546999",
-          "ownerUserId": "0c3ab5da9af33d4e688e809c",
-          "title": "Forest Treehouse Lodge",
-          "subtitle": "Raised timber room + four beds + woodland deck",
-          "category": "Treehouse"
-        },
-        {
-          "assetId": "f3f29c490def11af2f848c3a",
-          "ownerUserId": "d04cd419e735549e3f312977",
-          "title": "Forest Treehouse Lodge",
-          "subtitle": "Raised timber room + four beds + woodland deck",
-          "category": "Treehouse"
-        },
-        {
-          "assetId": "40b753008a7c3af659b8ba9a",
-          "ownerUserId": "9f3b3f085e23af6c89dbc432",
-          "title": "Forest Treehouse Lodge",
-          "subtitle": "Raised timber room + four beds + woodland deck",
-          "category": "Treehouse"
+          "details": "Weatherproof elevated lodge reached by a safe fixed stairway.",
+          "category": "Treehouse",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1707,63 +771,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a historic townhouse guest room with one double bed, a reading nook, tall sash window and restrained period details.\nSeed asset: \"Historic Townhouse Room\" — Double bed + reading nook + tall window. Private two-person room in a carefully maintained older city home.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 025 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "2821aa70297d9d425044a3c1",
-        "82d86bab439fe39ed296427d",
-        "0a3a02ce62e8c2e998d3ab4f",
-        "927f526e284f30e62786768c",
-        "1919debb11da22f86e8a76ca",
-        "62458512590926b99199d390",
-        "265575ceace6381036e4d4ab"
+        "927f526e284f30e62786768c"
       ],
       "mongoRecords": [
-        {
-          "assetId": "2821aa70297d9d425044a3c1",
-          "ownerUserId": "b5e2db6882d989d8532af12c",
-          "title": "Historic Townhouse Room",
-          "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "82d86bab439fe39ed296427d",
-          "ownerUserId": "23820c1e76d3bd843f61c799",
-          "title": "Historic Townhouse Room",
-          "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "0a3a02ce62e8c2e998d3ab4f",
-          "ownerUserId": "904ee3c526298f6921cde3f3",
-          "title": "Historic Townhouse Room",
-          "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
-        },
         {
           "assetId": "927f526e284f30e62786768c",
           "ownerUserId": "ed4924c22a5240a54e48c0b5",
           "title": "Historic Townhouse Room",
           "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "1919debb11da22f86e8a76ca",
-          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
-          "title": "Historic Townhouse Room",
-          "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "62458512590926b99199d390",
-          "ownerUserId": "d182041b8a54132d5168034f",
-          "title": "Historic Townhouse Room",
-          "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "265575ceace6381036e4d4ab",
-          "ownerUserId": "b29df68956f3fe15e04558de",
-          "title": "Historic Townhouse Room",
-          "subtitle": "Double bed + reading nook + tall window",
-          "category": "Guest Room"
+          "details": "Private two-person room in a carefully maintained older city home.",
+          "category": "Guest Room",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1782,63 +801,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an airy beach bungalow room with one double bed, screened shutters, natural fiber furniture and a small veranda.\nSeed asset: \"Beach Bungalow Room\" — Double bed + screened shutters + small veranda. Simple two-person coastal stay designed for airflow and sandy gear.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 026 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "784eba3d7648f4624abc85da",
-        "c4372fcc9a049afc7937f402",
-        "713897fc4f68e7707b253c95",
-        "af33264e151ecc74d7a4cf4c",
-        "bd3ba65d1c046cbf5da9f56e",
-        "6938a7f810373c6590c98e86",
-        "f677e51258ae858a7eb29376"
+        "bd3ba65d1c046cbf5da9f56e"
       ],
       "mongoRecords": [
-        {
-          "assetId": "784eba3d7648f4624abc85da",
-          "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
-          "title": "Beach Bungalow Room",
-          "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
-        },
-        {
-          "assetId": "c4372fcc9a049afc7937f402",
-          "ownerUserId": "931a01221376d8e28a068fe8",
-          "title": "Beach Bungalow Room",
-          "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
-        },
-        {
-          "assetId": "713897fc4f68e7707b253c95",
-          "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
-          "title": "Beach Bungalow Room",
-          "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
-        },
-        {
-          "assetId": "af33264e151ecc74d7a4cf4c",
-          "ownerUserId": "4b5bad1292fb6db05dc0e455",
-          "title": "Beach Bungalow Room",
-          "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
-        },
         {
           "assetId": "bd3ba65d1c046cbf5da9f56e",
           "ownerUserId": "7313a9379f60200cba7b9f71",
           "title": "Beach Bungalow Room",
           "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
-        },
-        {
-          "assetId": "6938a7f810373c6590c98e86",
-          "ownerUserId": "7822c5f99eff99d63abe8933",
-          "title": "Beach Bungalow Room",
-          "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
-        },
-        {
-          "assetId": "f677e51258ae858a7eb29376",
-          "ownerUserId": "bf057de7c586eede7e84bdc7",
-          "title": "Beach Bungalow Room",
-          "subtitle": "Double bed + screened shutters + small veranda",
-          "category": "Bungalow"
+          "details": "Simple two-person coastal stay designed for airflow and sandy gear.",
+          "category": "Bungalow",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1857,55 +831,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a modern accessible garden suite with one double bed, wide circulation, low storage and a visible step-free bathroom entrance.\nSeed asset: \"Accessible Garden Suite\" — Wide circulation + low storage + roll-in bathroom. Step-free private suite for two guests beside a quiet garden.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 027 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "2d4f2b02c7e45f503195946c",
-        "bfc0d886c478d5d29cc729a4",
-        "842e57bdaaed0faa6b27a471",
-        "fee7299faa9f4d8f823a0f0b",
-        "86f2fdd9ca762be1f5450c3b",
         "dcfbb22cacc9455f510a421b"
       ],
       "mongoRecords": [
-        {
-          "assetId": "2d4f2b02c7e45f503195946c",
-          "ownerUserId": "f01086c19a00a6f46b6d41a7",
-          "title": "Accessible Garden Suite",
-          "subtitle": "Wide circulation + low storage + roll-in bathroom",
-          "category": "Accessible Suite"
-        },
-        {
-          "assetId": "bfc0d886c478d5d29cc729a4",
-          "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
-          "title": "Accessible Garden Suite",
-          "subtitle": "Wide circulation + low storage + roll-in bathroom",
-          "category": "Accessible Suite"
-        },
-        {
-          "assetId": "842e57bdaaed0faa6b27a471",
-          "ownerUserId": "af0436815ab38f4864dd1e24",
-          "title": "Accessible Garden Suite",
-          "subtitle": "Wide circulation + low storage + roll-in bathroom",
-          "category": "Accessible Suite"
-        },
-        {
-          "assetId": "fee7299faa9f4d8f823a0f0b",
-          "ownerUserId": "e1dccfc3443239865c6ac69a",
-          "title": "Accessible Garden Suite",
-          "subtitle": "Wide circulation + low storage + roll-in bathroom",
-          "category": "Accessible Suite"
-        },
-        {
-          "assetId": "86f2fdd9ca762be1f5450c3b",
-          "ownerUserId": "eac11b0685f9799953a40dd4",
-          "title": "Accessible Garden Suite",
-          "subtitle": "Wide circulation + low storage + roll-in bathroom",
-          "category": "Accessible Suite"
-        },
         {
           "assetId": "dcfbb22cacc9455f510a421b",
           "ownerUserId": "1d7d3545ba5e0f1d63918589",
           "title": "Accessible Garden Suite",
           "subtitle": "Wide circulation + low storage + roll-in bathroom",
-          "category": "Accessible Suite"
+          "details": "Step-free private suite for two guests beside a quiet garden.",
+          "category": "Accessible Suite",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -1924,55 +861,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a highly efficient urban micro-studio with a folded-down wall bed, tiny kitchenette and compact work surface.\nSeed asset: \"Urban Micro Studio\" — Wall bed + kitchenette + compact workspace. Efficient self-contained city stay for one or two travelers.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 028 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft overcast light with a practical catalog-like composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "914cc7f043623c31befbc2a6",
-        "a4d71d69ae8b6551004be597",
-        "fdae053d3f685a06d4d1ca8d",
-        "ad6fe3c6e82a3c34f51a3275",
-        "12d8697105a365dd17acecdf",
-        "bcd42dd9f5419bbf10c4a28b"
+        "12d8697105a365dd17acecdf"
       ],
       "mongoRecords": [
-        {
-          "assetId": "914cc7f043623c31befbc2a6",
-          "ownerUserId": "e76d63199eff33a6945cb797",
-          "title": "Urban Micro Studio",
-          "subtitle": "Wall bed + kitchenette + compact workspace",
-          "category": "Studio"
-        },
-        {
-          "assetId": "a4d71d69ae8b6551004be597",
-          "ownerUserId": "c033e546ef7c928fb8cf073b",
-          "title": "Urban Micro Studio",
-          "subtitle": "Wall bed + kitchenette + compact workspace",
-          "category": "Studio"
-        },
-        {
-          "assetId": "fdae053d3f685a06d4d1ca8d",
-          "ownerUserId": "b0971e779dbdb71f9327eabb",
-          "title": "Urban Micro Studio",
-          "subtitle": "Wall bed + kitchenette + compact workspace",
-          "category": "Studio"
-        },
-        {
-          "assetId": "ad6fe3c6e82a3c34f51a3275",
-          "ownerUserId": "9184901a15076d32ea8b626f",
-          "title": "Urban Micro Studio",
-          "subtitle": "Wall bed + kitchenette + compact workspace",
-          "category": "Studio"
-        },
         {
           "assetId": "12d8697105a365dd17acecdf",
           "ownerUserId": "0216b1ceb256d6f2c89073b8",
           "title": "Urban Micro Studio",
           "subtitle": "Wall bed + kitchenette + compact workspace",
-          "category": "Studio"
-        },
-        {
-          "assetId": "bcd42dd9f5419bbf10c4a28b",
-          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
-          "title": "Urban Micro Studio",
-          "subtitle": "Wall bed + kitchenette + compact workspace",
-          "category": "Studio"
+          "details": "Efficient self-contained city stay for one or two travelers.",
+          "category": "Studio",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -1991,55 +891,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a tidy two-person festival crew bunk nook with one bunk bed, personal shelves, durable linens and equipment hooks.\nSeed asset: \"Festival Crew Bunk Nook\" — Two bunks + personal shelves + durable linens. No-frills two-person sleep space for event or volunteer crew.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 029 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, golden-hour light with the subject centered and fully readable; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "b46ebd3cf7ea7b6c4b18c94b",
-        "bf370477fea1f66bdcdd84f6",
-        "d55dff56923730ebf46c8197",
-        "3b62092aec7a572cfcd95a54",
-        "b9a3e452d05a257ec53d0855",
-        "5794a4073a420b937104ed04"
+        "d55dff56923730ebf46c8197"
       ],
       "mongoRecords": [
-        {
-          "assetId": "b46ebd3cf7ea7b6c4b18c94b",
-          "ownerUserId": "0cc9990d08304ab26ee67784",
-          "title": "Festival Crew Bunk Nook",
-          "subtitle": "Two bunks + personal shelves + durable linens",
-          "category": "Bunkhouse"
-        },
-        {
-          "assetId": "bf370477fea1f66bdcdd84f6",
-          "ownerUserId": "c100132b3ae88b47890def59",
-          "title": "Festival Crew Bunk Nook",
-          "subtitle": "Two bunks + personal shelves + durable linens",
-          "category": "Bunkhouse"
-        },
         {
           "assetId": "d55dff56923730ebf46c8197",
           "ownerUserId": "8f6ff3752a1f0912cd63e912",
           "title": "Festival Crew Bunk Nook",
           "subtitle": "Two bunks + personal shelves + durable linens",
-          "category": "Bunkhouse"
-        },
-        {
-          "assetId": "3b62092aec7a572cfcd95a54",
-          "ownerUserId": "4da20eb049179e73d4757808",
-          "title": "Festival Crew Bunk Nook",
-          "subtitle": "Two bunks + personal shelves + durable linens",
-          "category": "Bunkhouse"
-        },
-        {
-          "assetId": "b9a3e452d05a257ec53d0855",
-          "ownerUserId": "2d520f3c98b0440c1556f4af",
-          "title": "Festival Crew Bunk Nook",
-          "subtitle": "Two bunks + personal shelves + durable linens",
-          "category": "Bunkhouse"
-        },
-        {
-          "assetId": "5794a4073a420b937104ed04",
-          "ownerUserId": "f4b2ebd8f56628ab7df58221",
-          "title": "Festival Crew Bunk Nook",
-          "subtitle": "Two bunks + personal shelves + durable linens",
-          "category": "Bunkhouse"
+          "details": "No-frills two-person sleep space for event or volunteer crew.",
+          "category": "Bunkhouse",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -2058,55 +921,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a realistic night-train sleeper compartment with two berths, fold-down table, corridor door and dark landscape beyond the window.\nSeed asset: \"Night Train Sleeper Cabin\" — Two berths + fold-down table + corridor window. Reserved overnight rail compartment for two travelers.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 030 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "83d40b410e782e443ccaa18c",
-        "d9b6e3506e7f35627174389e",
-        "9fba1fa6e8f6c2de8450030a",
-        "c04250512fe3a60ed6b7752d",
-        "35a3c7da4e282906ea167b37",
-        "3ef6d9d9d65852682ca14a0f"
+        "c04250512fe3a60ed6b7752d"
       ],
       "mongoRecords": [
-        {
-          "assetId": "83d40b410e782e443ccaa18c",
-          "ownerUserId": "af70e41dbe826cbd7d8b3500",
-          "title": "Night Train Sleeper Cabin",
-          "subtitle": "Two berths + fold-down table + corridor window",
-          "category": "Sleeper Cabin"
-        },
-        {
-          "assetId": "d9b6e3506e7f35627174389e",
-          "ownerUserId": "25f4744ead36d038064d62c3",
-          "title": "Night Train Sleeper Cabin",
-          "subtitle": "Two berths + fold-down table + corridor window",
-          "category": "Sleeper Cabin"
-        },
-        {
-          "assetId": "9fba1fa6e8f6c2de8450030a",
-          "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
-          "title": "Night Train Sleeper Cabin",
-          "subtitle": "Two berths + fold-down table + corridor window",
-          "category": "Sleeper Cabin"
-        },
         {
           "assetId": "c04250512fe3a60ed6b7752d",
           "ownerUserId": "0b8e5df4ec85d858c304a350",
           "title": "Night Train Sleeper Cabin",
           "subtitle": "Two berths + fold-down table + corridor window",
-          "category": "Sleeper Cabin"
-        },
-        {
-          "assetId": "35a3c7da4e282906ea167b37",
-          "ownerUserId": "fcad6954169063f106a7a240",
-          "title": "Night Train Sleeper Cabin",
-          "subtitle": "Two berths + fold-down table + corridor window",
-          "category": "Sleeper Cabin"
-        },
-        {
-          "assetId": "3ef6d9d9d65852682ca14a0f",
-          "ownerUserId": "178e8d0cbe164fa3fede5884",
-          "title": "Night Train Sleeper Cabin",
-          "subtitle": "Two berths + fold-down table + corridor window",
-          "category": "Sleeper Cabin"
+          "details": "Reserved overnight rail compartment for two travelers.",
+          "category": "Sleeper Cabin",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -2125,55 +951,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a bright canal-view guest room with one double bed, balcony doors and water reflected on nearby buildings.\nSeed asset: \"Canal View Guest Room\" — Double bed + balcony door + waterside outlook. Bright private room for two guests beside a quiet canal district.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 031 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "5e623228be55c3c7b560aa65",
-        "17c3f925300eff67c7e394f6",
-        "a6179186ac4f8848d4ba3126",
-        "8cb5eb0eda1d2964c0920000",
-        "977b36ef795164bba3832355",
-        "1fc130c0221cac402beda4e8"
+        "8cb5eb0eda1d2964c0920000"
       ],
       "mongoRecords": [
-        {
-          "assetId": "5e623228be55c3c7b560aa65",
-          "ownerUserId": "41f4659dbd75a03abc20cd6d",
-          "title": "Canal View Guest Room",
-          "subtitle": "Double bed + balcony door + waterside outlook",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "17c3f925300eff67c7e394f6",
-          "ownerUserId": "e904dad402b47dd2cdaa8bec",
-          "title": "Canal View Guest Room",
-          "subtitle": "Double bed + balcony door + waterside outlook",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "a6179186ac4f8848d4ba3126",
-          "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
-          "title": "Canal View Guest Room",
-          "subtitle": "Double bed + balcony door + waterside outlook",
-          "category": "Guest Room"
-        },
         {
           "assetId": "8cb5eb0eda1d2964c0920000",
           "ownerUserId": "76da95a9109da485555c0d25",
           "title": "Canal View Guest Room",
           "subtitle": "Double bed + balcony door + waterside outlook",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "977b36ef795164bba3832355",
-          "ownerUserId": "eb1ca0b761885bb0763e2929",
-          "title": "Canal View Guest Room",
-          "subtitle": "Double bed + balcony door + waterside outlook",
-          "category": "Guest Room"
-        },
-        {
-          "assetId": "1fc130c0221cac402beda4e8",
-          "ownerUserId": "1b1c70be2349b3359a8f6f94",
-          "title": "Canal View Guest Room",
-          "subtitle": "Double bed + balcony door + waterside outlook",
-          "category": "Guest Room"
+          "details": "Bright private room for two guests beside a quiet canal district.",
+          "category": "Guest Room",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -2192,55 +981,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a quiet remote-work guest suite with one double bed, ergonomic desk, acoustic door and soft daylight.\nSeed asset: \"Remote Work Guest Suite\" — Double bed + proper desk + acoustic door. Calm two-person suite with a reliable place for focused work.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 032 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, natural window or ambient light with an uncluttered background; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "72888a8f076939c2ea9cdca9",
-        "8f42dd53af3a8653e2e879ea",
-        "324d150cf3a4438b98915c3f",
-        "5ada50e01fb3b89d6b0652ee",
-        "623a5f516328f5a20df2a639",
-        "31470c0abc3cc5a24daf812d"
+        "8f42dd53af3a8653e2e879ea"
       ],
       "mongoRecords": [
-        {
-          "assetId": "72888a8f076939c2ea9cdca9",
-          "ownerUserId": "63bae8417bd352e5013c2e93",
-          "title": "Remote Work Guest Suite",
-          "subtitle": "Double bed + proper desk + acoustic door",
-          "category": "Guest Suite"
-        },
         {
           "assetId": "8f42dd53af3a8653e2e879ea",
           "ownerUserId": "4a008502646a200488911f45",
           "title": "Remote Work Guest Suite",
           "subtitle": "Double bed + proper desk + acoustic door",
-          "category": "Guest Suite"
-        },
-        {
-          "assetId": "324d150cf3a4438b98915c3f",
-          "ownerUserId": "a0fb804ad6f347d6a9dab526",
-          "title": "Remote Work Guest Suite",
-          "subtitle": "Double bed + proper desk + acoustic door",
-          "category": "Guest Suite"
-        },
-        {
-          "assetId": "5ada50e01fb3b89d6b0652ee",
-          "ownerUserId": "0c3ab5da9af33d4e688e809c",
-          "title": "Remote Work Guest Suite",
-          "subtitle": "Double bed + proper desk + acoustic door",
-          "category": "Guest Suite"
-        },
-        {
-          "assetId": "623a5f516328f5a20df2a639",
-          "ownerUserId": "d04cd419e735549e3f312977",
-          "title": "Remote Work Guest Suite",
-          "subtitle": "Double bed + proper desk + acoustic door",
-          "category": "Guest Suite"
-        },
-        {
-          "assetId": "31470c0abc3cc5a24daf812d",
-          "ownerUserId": "9f3b3f085e23af6c89dbc432",
-          "title": "Remote Work Guest Suite",
-          "subtitle": "Double bed + proper desk + acoustic door",
-          "category": "Guest Suite"
+          "details": "Calm two-person suite with a reliable place for focused work.",
+          "category": "Guest Suite",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -2259,111 +1011,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a rugged unbranded four-wheel-drive vehicle on a rocky trail access road, with high clearance and muddy washable cargo area.\nSeed asset: \"Trail Access 4x4\" — 4 seats + high clearance + washable cargo area. Unbranded four-wheel-drive vehicle for rough access roads and trail equipment.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 033 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "e542a342c4eec6fd6b328b11",
-        "e14e47d587c7b73b5c914c1c",
-        "2d9b6cae739b82e55e097dfb",
-        "8de7bc4e7e0e7f179d8b50c9",
-        "28906184dc2338a64fd7242c",
-        "432df05bf07d20fc921f5672",
-        "15d3049967690e9c3abcf0df",
-        "4b3713cf1ce8ded25db41fde",
-        "98ee0dcdcb5f09afa055db66",
-        "e5268fca90bf9e8cc9da9629",
-        "2aa1e961c824fe71f743ed18",
-        "db92d9b4e4d90bb023425984",
-        "514e7764853cc82bf4bb482c"
+        "15d3049967690e9c3abcf0df"
       ],
       "mongoRecords": [
-        {
-          "assetId": "e542a342c4eec6fd6b328b11",
-          "ownerUserId": "b5e2db6882d989d8532af12c",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "e14e47d587c7b73b5c914c1c",
-          "ownerUserId": "0cc9990d08304ab26ee67784",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "2d9b6cae739b82e55e097dfb",
-          "ownerUserId": "23820c1e76d3bd843f61c799",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "8de7bc4e7e0e7f179d8b50c9",
-          "ownerUserId": "c100132b3ae88b47890def59",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "28906184dc2338a64fd7242c",
-          "ownerUserId": "904ee3c526298f6921cde3f3",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "432df05bf07d20fc921f5672",
-          "ownerUserId": "8f6ff3752a1f0912cd63e912",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
         {
           "assetId": "15d3049967690e9c3abcf0df",
           "ownerUserId": "ed4924c22a5240a54e48c0b5",
           "title": "Trail Access 4x4",
           "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "4b3713cf1ce8ded25db41fde",
-          "ownerUserId": "4da20eb049179e73d4757808",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "98ee0dcdcb5f09afa055db66",
-          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "e5268fca90bf9e8cc9da9629",
-          "ownerUserId": "2d520f3c98b0440c1556f4af",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "2aa1e961c824fe71f743ed18",
-          "ownerUserId": "d182041b8a54132d5168034f",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "db92d9b4e4d90bb023425984",
-          "ownerUserId": "f4b2ebd8f56628ab7df58221",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
-        },
-        {
-          "assetId": "514e7764853cc82bf4bb482c",
-          "ownerUserId": "b29df68956f3fe15e04558de",
-          "title": "Trail Access 4x4",
-          "subtitle": "4 seats + high clearance + washable cargo area",
-          "category": "4x4"
+          "details": "Unbranded four-wheel-drive vehicle for rough access roads and trail equipment.",
+          "category": "4x4",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -2382,111 +1041,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded long-roof estate car at a coastal launch, carrying two sea kayaks securely on its roof rack.\nSeed asset: \"Kayak Roof-Rack Estate\" — 4 seats + twin kayak rack + wet-gear liner. Long-roof vehicle prepared for a four-person coastal paddling day.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 034 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "681598ed460b7c7ddaef278e",
-        "a941cf4ffcc409cd52c098ab",
-        "5ed51fe854714345c9867053",
-        "86498259d3b408d4763debbe",
-        "d5d1acd3f08fb80be2cfdd4c",
-        "fd14e4a34c52ec23335cf641",
-        "b4b9db192aa3959de05fdd6d",
-        "cea6c646307bd1421feb4364",
-        "127cf3c309c4bd841053a4e8",
-        "4e11d7a2aae2aef45368cdc0",
-        "d1f43a1dc42d6a0a81449ed8",
-        "fe5a65e961965f31558ec695",
-        "e1f9ca23e3d4b8ce24eb0d86"
+        "127cf3c309c4bd841053a4e8"
       ],
       "mongoRecords": [
-        {
-          "assetId": "681598ed460b7c7ddaef278e",
-          "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "a941cf4ffcc409cd52c098ab",
-          "ownerUserId": "af70e41dbe826cbd7d8b3500",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "5ed51fe854714345c9867053",
-          "ownerUserId": "931a01221376d8e28a068fe8",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "86498259d3b408d4763debbe",
-          "ownerUserId": "25f4744ead36d038064d62c3",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "d5d1acd3f08fb80be2cfdd4c",
-          "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "fd14e4a34c52ec23335cf641",
-          "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "b4b9db192aa3959de05fdd6d",
-          "ownerUserId": "4b5bad1292fb6db05dc0e455",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "cea6c646307bd1421feb4364",
-          "ownerUserId": "0b8e5df4ec85d858c304a350",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
         {
           "assetId": "127cf3c309c4bd841053a4e8",
           "ownerUserId": "7313a9379f60200cba7b9f71",
           "title": "Kayak Roof-Rack Estate",
           "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "4e11d7a2aae2aef45368cdc0",
-          "ownerUserId": "fcad6954169063f106a7a240",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "d1f43a1dc42d6a0a81449ed8",
-          "ownerUserId": "7822c5f99eff99d63abe8933",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "fe5a65e961965f31558ec695",
-          "ownerUserId": "178e8d0cbe164fa3fede5884",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "e1f9ca23e3d4b8ce24eb0d86",
-          "ownerUserId": "bf057de7c586eede7e84bdc7",
-          "title": "Kayak Roof-Rack Estate",
-          "subtitle": "4 seats + twin kayak rack + wet-gear liner",
-          "category": "Estate Car"
+          "details": "Long-roof vehicle prepared for a four-person coastal paddling day.",
+          "category": "Estate Car",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -2505,103 +1071,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded modern minivan at an open-road rest area, with sliding doors and a flexible four-passenger layout.\nSeed asset: \"Family Road-Trip Minivan\" — 4 reserved seats + flexible storage + sliding doors. Comfortable unbranded minivan configured for a longer regional journey.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 035 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "1919af74908ec4a61f95fb40",
-        "d5df7f84faf67d3578056e9c",
-        "f688d5559328f5fd44c1a2f5",
-        "63152de8dc166e09ec73c70a",
-        "53afcaaa7ff9e5587db7c541",
-        "8a636ec7bcb0c792ed068403",
-        "250610743661a18a24c9cfc8",
-        "30af7345645047274999fefb",
-        "657d4b979c995a50032cd59e",
-        "4b59cbe3980bfb4c1cc7aa36",
-        "e03ac53c78048be133e90081",
         "2366ebc6a0765906e2434089"
       ],
       "mongoRecords": [
-        {
-          "assetId": "1919af74908ec4a61f95fb40",
-          "ownerUserId": "f01086c19a00a6f46b6d41a7",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "d5df7f84faf67d3578056e9c",
-          "ownerUserId": "41f4659dbd75a03abc20cd6d",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "f688d5559328f5fd44c1a2f5",
-          "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "63152de8dc166e09ec73c70a",
-          "ownerUserId": "e904dad402b47dd2cdaa8bec",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "53afcaaa7ff9e5587db7c541",
-          "ownerUserId": "af0436815ab38f4864dd1e24",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "8a636ec7bcb0c792ed068403",
-          "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "250610743661a18a24c9cfc8",
-          "ownerUserId": "e1dccfc3443239865c6ac69a",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "30af7345645047274999fefb",
-          "ownerUserId": "76da95a9109da485555c0d25",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "657d4b979c995a50032cd59e",
-          "ownerUserId": "eac11b0685f9799953a40dd4",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "4b59cbe3980bfb4c1cc7aa36",
-          "ownerUserId": "eb1ca0b761885bb0763e2929",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
-        {
-          "assetId": "e03ac53c78048be133e90081",
-          "ownerUserId": "1d7d3545ba5e0f1d63918589",
-          "title": "Family Road-Trip Minivan",
-          "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
-        },
         {
           "assetId": "2366ebc6a0765906e2434089",
           "ownerUserId": "1b1c70be2349b3359a8f6f94",
           "title": "Family Road-Trip Minivan",
           "subtitle": "4 reserved seats + flexible storage + sliding doors",
-          "category": "Minivan"
+          "details": "Comfortable unbranded minivan configured for a longer regional journey.",
+          "category": "Minivan",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -2620,103 +1101,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded crossover at a forest bicycle trailhead, carrying two bicycles on a rear rack and an open repair tray.\nSeed asset: \"Bicycle Shuttle Crossover\" — 4 seats + rear rack + repair tray. Compact crossover carrying two bicycles and group riding equipment.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 036 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft overcast light with a practical catalog-like composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "102d5f6d370fa2c4beba8c14",
-        "defde0b7174ed792535a362c",
-        "82e5aefb7d8072b7d5e3943f",
-        "0570186ed1729be2658e73d9",
-        "6ce08189886a0283f91840a9",
-        "337b6523a738724ccc55e237",
-        "217ad77fbc06cbf840e38dae",
-        "400e8fbb289200aded77ca48",
-        "43d80c4003f92eb218d562bc",
-        "73bb43770868563fdd73788f",
-        "b2072afe4b888edf70cee5f4",
-        "e930f7a058f4ab02edd44ff7"
+        "400e8fbb289200aded77ca48"
       ],
       "mongoRecords": [
-        {
-          "assetId": "102d5f6d370fa2c4beba8c14",
-          "ownerUserId": "e76d63199eff33a6945cb797",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "defde0b7174ed792535a362c",
-          "ownerUserId": "63bae8417bd352e5013c2e93",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "82e5aefb7d8072b7d5e3943f",
-          "ownerUserId": "c033e546ef7c928fb8cf073b",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "0570186ed1729be2658e73d9",
-          "ownerUserId": "4a008502646a200488911f45",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "6ce08189886a0283f91840a9",
-          "ownerUserId": "b0971e779dbdb71f9327eabb",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "337b6523a738724ccc55e237",
-          "ownerUserId": "a0fb804ad6f347d6a9dab526",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "217ad77fbc06cbf840e38dae",
-          "ownerUserId": "9184901a15076d32ea8b626f",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
         {
           "assetId": "400e8fbb289200aded77ca48",
           "ownerUserId": "0c3ab5da9af33d4e688e809c",
           "title": "Bicycle Shuttle Crossover",
           "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "43d80c4003f92eb218d562bc",
-          "ownerUserId": "0216b1ceb256d6f2c89073b8",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "73bb43770868563fdd73788f",
-          "ownerUserId": "d04cd419e735549e3f312977",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "b2072afe4b888edf70cee5f4",
-          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
-        },
-        {
-          "assetId": "e930f7a058f4ab02edd44ff7",
-          "ownerUserId": "9f3b3f085e23af6c89dbc432",
-          "title": "Bicycle Shuttle Crossover",
-          "subtitle": "4 seats + rear rack + repair tray",
-          "category": "Crossover"
+          "details": "Compact crossover carrying two bicycles and group riding equipment.",
+          "category": "Crossover",
+          "visibility": "Friends only",
+          "status": "A"
         }
       ]
     },
@@ -2735,39 +1131,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a compact unbranded electric hatchback connected to an airport charging bay at dawn.\nSeed asset: \"Compact Airport EV\" — 4 seats + electric hatchback + terminal pickup. Small battery-electric car for a coordinated airport transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 037 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, golden-hour light with the subject centered and fully readable; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "e070d929e31d76b7badc78a6",
-        "3d1068c9689a192374ab0f9b",
-        "6f21bd2ebb9948aca02fad30",
-        "29be225c3de31815c99540b8"
+        "3d1068c9689a192374ab0f9b"
       ],
       "mongoRecords": [
-        {
-          "assetId": "e070d929e31d76b7badc78a6",
-          "ownerUserId": "d182041b8a54132d5168034f",
-          "title": "Compact Airport EV",
-          "subtitle": "4 seats + electric hatchback + terminal pickup",
-          "category": "Electric Car"
-        },
         {
           "assetId": "3d1068c9689a192374ab0f9b",
           "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
           "title": "Compact Airport EV",
           "subtitle": "4 seats + electric hatchback + terminal pickup",
-          "category": "Electric Car"
-        },
-        {
-          "assetId": "6f21bd2ebb9948aca02fad30",
-          "ownerUserId": "1b1c70be2349b3359a8f6f94",
-          "title": "Compact Airport EV",
-          "subtitle": "4 seats + electric hatchback + terminal pickup",
-          "category": "Electric Car"
-        },
-        {
-          "assetId": "29be225c3de31815c99540b8",
-          "ownerUserId": "bf057de7c586eede7e84bdc7",
-          "title": "Compact Airport EV",
-          "subtitle": "4 seats + electric hatchback + terminal pickup",
-          "category": "Electric Car"
+          "details": "Small battery-electric car for a coordinated airport transfer.",
+          "category": "Electric Car",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -2786,31 +1161,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded accessible passenger van at a civic-center curb, with side ramp deployed and clear securement space.\nSeed asset: \"Accessible Shuttle Van\" — 4 passenger places + ramp + securement points. Step-friendly van configured for an inclusive local transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 038 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "e363edf51a66e6ccb05c063a",
-        "52f7499337069d7cf075dd12",
         "11fc507bd2a049c3a297da19"
       ],
       "mongoRecords": [
-        {
-          "assetId": "e363edf51a66e6ccb05c063a",
-          "ownerUserId": "7822c5f99eff99d63abe8933",
-          "title": "Accessible Shuttle Van",
-          "subtitle": "4 passenger places + ramp + securement points",
-          "category": "Accessible Van"
-        },
-        {
-          "assetId": "52f7499337069d7cf075dd12",
-          "ownerUserId": "f4b2ebd8f56628ab7df58221",
-          "title": "Accessible Shuttle Van",
-          "subtitle": "4 passenger places + ramp + securement points",
-          "category": "Accessible Van"
-        },
         {
           "assetId": "11fc507bd2a049c3a297da19",
           "ownerUserId": "9f3b3f085e23af6c89dbc432",
           "title": "Accessible Shuttle Van",
           "subtitle": "4 passenger places + ramp + securement points",
-          "category": "Accessible Van"
+          "details": "Step-friendly van configured for an inclusive local transfer.",
+          "category": "Accessible Van",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -2829,9 +1191,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small unbranded high-roof courtesy minibus waiting beneath a solid masonry hotel porte-cochere built into the entrance at night.\nSeed asset: \"Hotel Courtesy Minibus\" — 4 reserved seats + high roof + hotel loop. Small courtesy bus assigned to a four-person late-arrival group.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 039 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "c136079d46f9e4ee2c8f325c",
-        "a3664b5165b094595c115193",
-        "9ea8064581cec7a64d788370"
+        "c136079d46f9e4ee2c8f325c"
       ],
       "mongoRecords": [
         {
@@ -2839,21 +1199,10 @@
           "ownerUserId": "1d7d3545ba5e0f1d63918589",
           "title": "Hotel Courtesy Minibus",
           "subtitle": "4 reserved seats + high roof + hotel loop",
-          "category": "Minibus"
-        },
-        {
-          "assetId": "a3664b5165b094595c115193",
-          "ownerUserId": "178e8d0cbe164fa3fede5884",
-          "title": "Hotel Courtesy Minibus",
-          "subtitle": "4 reserved seats + high roof + hotel loop",
-          "category": "Minibus"
-        },
-        {
-          "assetId": "9ea8064581cec7a64d788370",
-          "ownerUserId": "b29df68956f3fe15e04558de",
-          "title": "Hotel Courtesy Minibus",
-          "subtitle": "4 reserved seats + high roof + hotel loop",
-          "category": "Minibus"
+          "details": "Small courtesy bus assigned to a four-person late-arrival group.",
+          "category": "Minibus",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -2872,39 +1221,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded short-wheelbase cargo van at an expo loading dock, with side door open to a neatly secured equipment bay.\nSeed asset: \"Expo Equipment Cargo Van\" — 4 crew seats + enclosed load bay + tie-downs. Short-wheelbase van for people and protected event equipment.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 040 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, natural window or ambient light with an uncluttered background; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "a679af61eda591c309b8007d",
-        "90c9a84640fe9050f850101f",
-        "ae8ef636e344ea890020b5df",
         "11d65abc7188bfcd778b546b"
       ],
       "mongoRecords": [
-        {
-          "assetId": "a679af61eda591c309b8007d",
-          "ownerUserId": "f01086c19a00a6f46b6d41a7",
-          "title": "Expo Equipment Cargo Van",
-          "subtitle": "4 crew seats + enclosed load bay + tie-downs",
-          "category": "Cargo Van"
-        },
-        {
-          "assetId": "90c9a84640fe9050f850101f",
-          "ownerUserId": "e904dad402b47dd2cdaa8bec",
-          "title": "Expo Equipment Cargo Van",
-          "subtitle": "4 crew seats + enclosed load bay + tie-downs",
-          "category": "Cargo Van"
-        },
-        {
-          "assetId": "ae8ef636e344ea890020b5df",
-          "ownerUserId": "e1dccfc3443239865c6ac69a",
-          "title": "Expo Equipment Cargo Van",
-          "subtitle": "4 crew seats + enclosed load bay + tie-downs",
-          "category": "Cargo Van"
-        },
         {
           "assetId": "11d65abc7188bfcd778b546b",
           "ownerUserId": "eb1ca0b761885bb0763e2929",
           "title": "Expo Equipment Cargo Van",
           "subtitle": "4 crew seats + enclosed load bay + tie-downs",
-          "category": "Cargo Van"
+          "details": "Short-wheelbase van for people and protected event equipment.",
+          "category": "Cargo Van",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -2923,9 +1251,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded double-cab pickup truck beside a community hall, with a covered utility bed and portable tables being loaded.\nSeed asset: \"Community Equipment Pickup\" — 4 seats + covered utility bed + loading step. Double-cab pickup for bulky community-event supplies.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 041 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "72782ab8fc8635ee622b00be",
-        "79f1ff8172b3a9164f693e1d",
-        "a0662ee022800f4cc09a1333"
+        "72782ab8fc8635ee622b00be"
       ],
       "mongoRecords": [
         {
@@ -2933,21 +1259,10 @@
           "ownerUserId": "41f4659dbd75a03abc20cd6d",
           "title": "Community Equipment Pickup",
           "subtitle": "4 seats + covered utility bed + loading step",
-          "category": "Pickup Truck"
-        },
-        {
-          "assetId": "79f1ff8172b3a9164f693e1d",
-          "ownerUserId": "af0436815ab38f4864dd1e24",
-          "title": "Community Equipment Pickup",
-          "subtitle": "4 seats + covered utility bed + loading step",
-          "category": "Pickup Truck"
-        },
-        {
-          "assetId": "a0662ee022800f4cc09a1333",
-          "ownerUserId": "76da95a9109da485555c0d25",
-          "title": "Community Equipment Pickup",
-          "subtitle": "4 seats + covered utility bed + loading step",
-          "category": "Pickup Truck"
+          "details": "Double-cab pickup for bulky community-event supplies.",
+          "category": "Pickup Truck",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -2966,31 +1281,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a four-seat electric utility buggy on a colorful closed festival service lane with an open rear cargo deck.\nSeed asset: \"Festival Utility Buggy\" — 4 seats + open cargo deck + venue route. Low-speed electric utility vehicle for an enclosed event site.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 042 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "c555bf9becc4ff47b3caeba8",
-        "a7c430d377cb47da89c8a855",
         "5539911338c3a6a07f594417"
       ],
       "mongoRecords": [
-        {
-          "assetId": "c555bf9becc4ff47b3caeba8",
-          "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
-          "title": "Festival Utility Buggy",
-          "subtitle": "4 seats + open cargo deck + venue route",
-          "category": "Utility Vehicle"
-        },
-        {
-          "assetId": "a7c430d377cb47da89c8a855",
-          "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
-          "title": "Festival Utility Buggy",
-          "subtitle": "4 seats + open cargo deck + venue route",
-          "category": "Utility Vehicle"
-        },
         {
           "assetId": "5539911338c3a6a07f594417",
           "ownerUserId": "eac11b0685f9799953a40dd4",
           "title": "Festival Utility Buggy",
           "subtitle": "4 seats + open cargo deck + venue route",
-          "category": "Utility Vehicle"
+          "details": "Low-speed electric utility vehicle for an enclosed event site.",
+          "category": "Utility Vehicle",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3009,39 +1311,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small four-passenger motor launch with a rigid enclosed cockpit, life jackets and a calm waterfront terminal behind it.\nSeed asset: \"Waterfront Passenger Launch\" — 4 passenger seats + rigid cockpit + life jackets. Small licensed motor launch with an enclosed helm for a short sheltered-water transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 043 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "fc17844f494d81c7796a2c86",
-        "7552047f4771468fed3bea96",
-        "4ecb12ab88646a6de952328a",
         "b25dee76250d78b0057e8c69"
       ],
       "mongoRecords": [
-        {
-          "assetId": "fc17844f494d81c7796a2c86",
-          "ownerUserId": "e76d63199eff33a6945cb797",
-          "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
-          "category": "Passenger Boat"
-        },
-        {
-          "assetId": "7552047f4771468fed3bea96",
-          "ownerUserId": "4a008502646a200488911f45",
-          "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
-          "category": "Passenger Boat"
-        },
-        {
-          "assetId": "4ecb12ab88646a6de952328a",
-          "ownerUserId": "9184901a15076d32ea8b626f",
-          "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
-          "category": "Passenger Boat"
-        },
         {
           "assetId": "b25dee76250d78b0057e8c69",
           "ownerUserId": "d04cd419e735549e3f312977",
           "title": "Waterfront Passenger Launch",
           "subtitle": "4 passenger seats + rigid cockpit + life jackets",
-          "category": "Passenger Boat"
+          "details": "Small licensed motor launch with an enclosed helm for a short sheltered-water transfer.",
+          "category": "Passenger Boat",
+          "visibility": "Invitation only",
+          "status": "A"
         }
       ]
     },
@@ -3060,9 +1341,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a compact unbranded electric city taxi outside a lively restaurant district after sunset.\nSeed asset: \"Dinner District Electric Taxi\" — 4 seats + compact EV + city pickup. Quiet unbranded electric taxi reserved for an evening group.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 044 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft overcast light with a practical catalog-like composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "d1344cc795e50601c2a3441a",
-        "eb86262d442bc7ad1587f521",
-        "92be710e25b7ee0f70bc1a0d"
+        "d1344cc795e50601c2a3441a"
       ],
       "mongoRecords": [
         {
@@ -3070,21 +1349,10 @@
           "ownerUserId": "63bae8417bd352e5013c2e93",
           "title": "Dinner District Electric Taxi",
           "subtitle": "4 seats + compact EV + city pickup",
-          "category": "Electric Taxi"
-        },
-        {
-          "assetId": "eb86262d442bc7ad1587f521",
-          "ownerUserId": "b0971e779dbdb71f9327eabb",
-          "title": "Dinner District Electric Taxi",
-          "subtitle": "4 seats + compact EV + city pickup",
-          "category": "Electric Taxi"
-        },
-        {
-          "assetId": "92be710e25b7ee0f70bc1a0d",
-          "ownerUserId": "0c3ab5da9af33d4e688e809c",
-          "title": "Dinner District Electric Taxi",
-          "subtitle": "4 seats + compact EV + city pickup",
-          "category": "Electric Taxi"
+          "details": "Quiet unbranded electric taxi reserved for an evening group.",
+          "category": "Electric Taxi",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3103,9 +1371,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded passenger shuttle van in a clearly lit concert pickup zone at night.\nSeed asset: \"Concert Night Shuttle Van\" — 4 reserved seats + illuminated pickup zone. Compact passenger van for a clearly coordinated post-event return.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 045 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, golden-hour light with the subject centered and fully readable; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "91364d2cf1337e36879248a3",
-        "33d50dc49c586f133f529647",
-        "cbed8894bbf2f93276f550eb"
+        "91364d2cf1337e36879248a3"
       ],
       "mongoRecords": [
         {
@@ -3113,21 +1379,10 @@
           "ownerUserId": "c033e546ef7c928fb8cf073b",
           "title": "Concert Night Shuttle Van",
           "subtitle": "4 reserved seats + illuminated pickup zone",
-          "category": "Shuttle Van"
-        },
-        {
-          "assetId": "33d50dc49c586f133f529647",
-          "ownerUserId": "a0fb804ad6f347d6a9dab526",
-          "title": "Concert Night Shuttle Van",
-          "subtitle": "4 reserved seats + illuminated pickup zone",
-          "category": "Shuttle Van"
-        },
-        {
-          "assetId": "cbed8894bbf2f93276f550eb",
-          "ownerUserId": "0216b1ceb256d6f2c89073b8",
-          "title": "Concert Night Shuttle Van",
-          "subtitle": "4 reserved seats + illuminated pickup zone",
-          "category": "Shuttle Van"
+          "details": "Compact passenger van for a clearly coordinated post-event return.",
+          "category": "Shuttle Van",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3146,47 +1401,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded long-roof station wagon beneath a solid steel-and-glass railway-station overhang in daylight.\nSeed asset: \"Station Pickup Wagon\" — 4 seats + long cargo floor + rail connection. Unbranded estate wagon for a daytime station pickup.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 046 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "ca4311d7dd571b2ee4d7fe14",
-        "7d3224f9ec5f7cac9c672e03",
-        "34071caa96bd00042e32e1c7",
-        "4597bf3f35d69e76a51af32b",
-        "07bf581060f02dea6a38ddff"
+        "34071caa96bd00042e32e1c7"
       ],
       "mongoRecords": [
-        {
-          "assetId": "ca4311d7dd571b2ee4d7fe14",
-          "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
-          "title": "Station Pickup Wagon",
-          "subtitle": "4 seats + long cargo floor + rail connection",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "7d3224f9ec5f7cac9c672e03",
-          "ownerUserId": "931a01221376d8e28a068fe8",
-          "title": "Station Pickup Wagon",
-          "subtitle": "4 seats + long cargo floor + rail connection",
-          "category": "Estate Car"
-        },
         {
           "assetId": "34071caa96bd00042e32e1c7",
           "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
           "title": "Station Pickup Wagon",
           "subtitle": "4 seats + long cargo floor + rail connection",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "4597bf3f35d69e76a51af32b",
-          "ownerUserId": "4b5bad1292fb6db05dc0e455",
-          "title": "Station Pickup Wagon",
-          "subtitle": "4 seats + long cargo floor + rail connection",
-          "category": "Estate Car"
-        },
-        {
-          "assetId": "07bf581060f02dea6a38ddff",
-          "ownerUserId": "7313a9379f60200cba7b9f71",
-          "title": "Station Pickup Wagon",
-          "subtitle": "4 seats + long cargo floor + rail connection",
-          "category": "Estate Car"
+          "details": "Unbranded estate wagon for a daytime station pickup.",
+          "category": "Estate Car",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3205,47 +1431,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of two roofless open-air cycle pedicabs with passenger benches waiting together on a car-free cobbled old-town square.\nSeed asset: \"Historic District Pedicab Pair\" — 4 total seats + two open-air cycle taxis. Two coordinated roofless pedal-powered taxis for a short old-town transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 047 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "ed89c965071340ea7b072e00",
-        "73e996e26e42311c4efbe92f",
-        "7a83eaef9497d84818928cdb",
-        "83d78100cf25ca1b3363c705",
-        "1a0edec4d78c1eea281d6942"
+        "73e996e26e42311c4efbe92f"
       ],
       "mongoRecords": [
-        {
-          "assetId": "ed89c965071340ea7b072e00",
-          "ownerUserId": "af70e41dbe826cbd7d8b3500",
-          "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two open-air cycle taxis",
-          "category": "Pedicab"
-        },
         {
           "assetId": "73e996e26e42311c4efbe92f",
           "ownerUserId": "25f4744ead36d038064d62c3",
           "title": "Historic District Pedicab Pair",
           "subtitle": "4 total seats + two open-air cycle taxis",
-          "category": "Pedicab"
-        },
-        {
-          "assetId": "7a83eaef9497d84818928cdb",
-          "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
-          "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two open-air cycle taxis",
-          "category": "Pedicab"
-        },
-        {
-          "assetId": "83d78100cf25ca1b3363c705",
-          "ownerUserId": "0b8e5df4ec85d858c304a350",
-          "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two open-air cycle taxis",
-          "category": "Pedicab"
-        },
-        {
-          "assetId": "1a0edec4d78c1eea281d6942",
-          "ownerUserId": "fcad6954169063f106a7a240",
-          "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two open-air cycle taxis",
-          "category": "Pedicab"
+          "details": "Two coordinated roofless pedal-powered taxis for a short old-town transfer.",
+          "category": "Pedicab",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3264,39 +1461,18 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small enclosed four-person cable-car gondola traveling above a green mountain valley toward a ridge station.\nSeed asset: \"Mountain Cable-Car Cabin\" — 4 reserved places + enclosed gondola + ridge link. Small enclosed cable-car cabin representing an uphill group transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 048 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, natural window or ambient light with an uncluttered background; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "2ddc36d7e1cb3673504cbfbc",
-        "471c54ac181b43eaf307dadc",
-        "55eee2af2e3a84d9355842e2",
-        "32aabd7dd821b58799a439e6"
+        "55eee2af2e3a84d9355842e2"
       ],
       "mongoRecords": [
-        {
-          "assetId": "2ddc36d7e1cb3673504cbfbc",
-          "ownerUserId": "b5e2db6882d989d8532af12c",
-          "title": "Mountain Cable-Car Cabin",
-          "subtitle": "4 reserved places + enclosed gondola + ridge link",
-          "category": "Cable Car"
-        },
-        {
-          "assetId": "471c54ac181b43eaf307dadc",
-          "ownerUserId": "c100132b3ae88b47890def59",
-          "title": "Mountain Cable-Car Cabin",
-          "subtitle": "4 reserved places + enclosed gondola + ridge link",
-          "category": "Cable Car"
-        },
         {
           "assetId": "55eee2af2e3a84d9355842e2",
           "ownerUserId": "ed4924c22a5240a54e48c0b5",
           "title": "Mountain Cable-Car Cabin",
           "subtitle": "4 reserved places + enclosed gondola + ridge link",
-          "category": "Cable Car"
-        },
-        {
-          "assetId": "32aabd7dd821b58799a439e6",
-          "ownerUserId": "2d520f3c98b0440c1556f4af",
-          "title": "Mountain Cable-Car Cabin",
-          "subtitle": "4 reserved places + enclosed gondola + ridge link",
-          "category": "Cable Car"
+          "details": "Small enclosed cable-car cabin representing an uphill group transfer.",
+          "category": "Cable Car",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3315,9 +1491,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of two unbranded classic touring motorcycles with sidecars parked at a sunny foothill overlook.\nSeed asset: \"Foothill Sidecar Motorcycle Pair\" — 4 total seats + two touring sidecars. Two coordinated unbranded sidecar motorcycles for a scenic paved route.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 049 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, soft morning light and a slightly elevated three-quarter view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "9ea23c395c80321c0298280f",
-        "40bc009e063c2090b6d1596a",
-        "2b7550bc4cd4e172923e360c"
+        "9ea23c395c80321c0298280f"
       ],
       "mongoRecords": [
         {
@@ -3325,21 +1499,10 @@
           "ownerUserId": "0cc9990d08304ab26ee67784",
           "title": "Foothill Sidecar Motorcycle Pair",
           "subtitle": "4 total seats + two touring sidecars",
-          "category": "Motorcycle"
-        },
-        {
-          "assetId": "40bc009e063c2090b6d1596a",
-          "ownerUserId": "904ee3c526298f6921cde3f3",
-          "title": "Foothill Sidecar Motorcycle Pair",
-          "subtitle": "4 total seats + two touring sidecars",
-          "category": "Motorcycle"
-        },
-        {
-          "assetId": "2b7550bc4cd4e172923e360c",
-          "ownerUserId": "4da20eb049179e73d4757808",
-          "title": "Foothill Sidecar Motorcycle Pair",
-          "subtitle": "4 total seats + two touring sidecars",
-          "category": "Motorcycle"
+          "details": "Two coordinated unbranded sidecar motorcycles for a scenic paved route.",
+          "category": "Motorcycle",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     },
@@ -3358,9 +1521,7 @@
       },
       "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a compact tracked passenger snow shuttle with heated cab arriving at a snowy lodge entrance.\nSeed asset: \"Snow Lodge Tracked Shuttle\" — 4 passenger seats + rubber tracks + heated cab. Compact tracked passenger vehicle for a maintained snowy lodge route.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 050 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, clear midday light and a clean eye-level documentary view; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
-        "6d0dfc06cab190e33bfb4d87",
-        "4d6942b1040053ce67be0d1f",
-        "607283585a9ce97ebc48e636"
+        "6d0dfc06cab190e33bfb4d87"
       ],
       "mongoRecords": [
         {
@@ -3368,21 +1529,10 @@
           "ownerUserId": "23820c1e76d3bd843f61c799",
           "title": "Snow Lodge Tracked Shuttle",
           "subtitle": "4 passenger seats + rubber tracks + heated cab",
-          "category": "Snow Shuttle"
-        },
-        {
-          "assetId": "4d6942b1040053ce67be0d1f",
-          "ownerUserId": "8f6ff3752a1f0912cd63e912",
-          "title": "Snow Lodge Tracked Shuttle",
-          "subtitle": "4 passenger seats + rubber tracks + heated cab",
-          "category": "Snow Shuttle"
-        },
-        {
-          "assetId": "607283585a9ce97ebc48e636",
-          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
-          "title": "Snow Lodge Tracked Shuttle",
-          "subtitle": "4 passenger seats + rubber tracks + heated cab",
-          "category": "Snow Shuttle"
+          "details": "Compact tracked passenger vehicle for a maintained snowy lodge route.",
+          "category": "Snow Shuttle",
+          "visibility": "Public",
+          "status": "A"
         }
       ]
     }

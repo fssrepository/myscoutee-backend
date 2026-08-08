@@ -8,6 +8,8 @@ const EVENTS_PATH = path.join(DEMO_DB, 'events.json');
 const USERS_PATH = path.join(DEMO_DB, 'users.json');
 const CONTACTS_PATH = path.join(DEMO_DB, 'navigatorContacts.json');
 const ACTIVITY_MEMBERS_PATH = path.join(DEMO_DB, 'activityMembers.json');
+const ACTIVITY_RESOURCES_PATH = path.join(DEMO_DB, 'activityResources.json');
+const ASSET_REQUESTS_PATH = path.join(DEMO_DB, 'assetRequests.json');
 const USER_REPORTS_PATH = path.join(DEMO_DB, 'userReports.json');
 const FRONTEND_HELPER_PATH = path.join(
   ROOT,
@@ -38,11 +40,26 @@ const EVENT_PICSUM_IDS = [
   151, 152, 153, 154, 155
 ];
 
-const PUBLIC_LOCAL_USER_IDS = [
-  'u1', 'u2', 'u3', 'u4', 'u6', 'u7', 'u8', 'u10', 'u12', 'u13', 'u14', 'u15',
-  'u16', 'u18', 'u19', 'u20', 'u22', 'u24', 'u25', 'u26', 'u27', 'u28', 'u30',
-  'u31', 'u32', 'u34', 'u36', 'u37', 'u38', 'u39', 'u40', 'u42', 'u43', 'u44',
-  'u46', 'u48'
+// Exactly one existing Mongo record owns each generated asset image slot. Keeping
+// this explicit makes the owner/count distribution stable across regenerations.
+const CANONICAL_ASSET_ID_BY_SLOT = [
+  '6c8ac25e7a63755e53c46093', '18b8428be616a060f4637bb8', 'df5d7fb9f3a6a22cdd64e5eb',
+  '11eb582dc0bcc7581ac991e7', 'd20175905f5ca8bcd645e84d', '93530c3d5db41f141f534de8',
+  '9b5052d214d52a95aac425dd', '6662c393d5bdcde662c6130f', '95d49c15fb42a208c729a382',
+  '0e34ae88cf81e01a304d4b58', '98ace41a8993907087124578', '16efec65153f9804ef9de2c3',
+  '2d86c6a3285d01ac096bd755', '30b3000c189953476fd4225a', 'f26cbd1becbfe2a33ff3035c',
+  '4420be96abbbb3a0f755a73b', '729fb7c46ed75e57dcc62d33', '2f77e1a609f5742bfafd66ed',
+  '0af73c6b08e4f19a8b23a95d', '17cd70ddc97c5b8ebc49d218', 'de2a18556c6a34010c44130b',
+  'eb812a0e245572085510263d', '37b5d81c6c71c50123d6ef98', '6b2ce9e74332b0ce85b81626',
+  '927f526e284f30e62786768c', 'bd3ba65d1c046cbf5da9f56e', 'dcfbb22cacc9455f510a421b',
+  '12d8697105a365dd17acecdf', 'd55dff56923730ebf46c8197', 'c04250512fe3a60ed6b7752d',
+  '8cb5eb0eda1d2964c0920000', '8f42dd53af3a8653e2e879ea', '15d3049967690e9c3abcf0df',
+  '127cf3c309c4bd841053a4e8', '2366ebc6a0765906e2434089', '400e8fbb289200aded77ca48',
+  '3d1068c9689a192374ab0f9b', '11fc507bd2a049c3a297da19', 'c136079d46f9e4ee2c8f325c',
+  '11d65abc7188bfcd778b546b', '72782ab8fc8635ee622b00be', '5539911338c3a6a07f594417',
+  'b25dee76250d78b0057e8c69', 'd1344cc795e50601c2a3441a', '91364d2cf1337e36879248a3',
+  '34071caa96bd00042e32e1c7', '73e996e26e42311c4efbe92f', '55eee2af2e3a84d9355842e2',
+  '9ea23c395c80321c0298280f', '6d0dfc06cab190e33bfb4d87'
 ];
 
 const ASSET_SLOT_GROUPS = [
@@ -260,16 +277,44 @@ const PROFILE_PROMPTS = [
   profilePrompt('650000000000000000000063', 'Riley Outside', '29-year-old man', 'Austin', 'adventurous, relaxed and outdoors-oriented', 'green urban trailhead')
 ];
 
-const assets = JSON.parse(await readFile(ASSETS_PATH, 'utf8'));
+let assets = JSON.parse(await readFile(ASSETS_PATH, 'utf8'));
 const events = JSON.parse(await readFile(EVENTS_PATH, 'utf8'));
 const users = JSON.parse(await readFile(USERS_PATH, 'utf8'));
 const contacts = JSON.parse(await readFile(CONTACTS_PATH, 'utf8'));
-const activityMembers = JSON.parse(await readFile(ACTIVITY_MEMBERS_PATH, 'utf8'));
-const userReports = JSON.parse(await readFile(USER_REPORTS_PATH, 'utf8'));
+let activityMembers = JSON.parse(await readFile(ACTIVITY_MEMBERS_PATH, 'utf8'));
+const activityResources = JSON.parse(await readFile(ACTIVITY_RESOURCES_PATH, 'utf8'));
+let assetRequests = JSON.parse(await readFile(ASSET_REQUESTS_PATH, 'utf8'));
+let userReports = JSON.parse(await readFile(USER_REPORTS_PATH, 'utf8'));
+
+const assetById = new Map(assets.map(asset => [asset.assetId, asset]));
+const missingCanonicalAssetIds = CANONICAL_ASSET_ID_BY_SLOT.filter(assetId => !assetById.has(assetId));
+if (missingCanonicalAssetIds.length) {
+  throw new Error(`Missing canonical Mongo assets: ${missingCanonicalAssetIds.join(', ')}`);
+}
+assets = CANONICAL_ASSET_ID_BY_SLOT.map(assetId => assetById.get(assetId));
+const canonicalAssetIds = new Set(CANONICAL_ASSET_ID_BY_SLOT);
+assetRequests = assetRequests.filter(request => canonicalAssetIds.has(request.assetId));
+activityMembers = activityMembers.filter(member => member.ownerType !== 'asset' || canonicalAssetIds.has(member.ownerId));
+userReports = userReports.filter(report => report.sourceType !== 'asset' || canonicalAssetIds.has(report.assetId));
+for (const resource of activityResources) pruneActivityResourceAssets(resource, canonicalAssetIds);
+
+const demoAssetOwnerIds = new Set(users.slice(0, 50).map(user => user.userId));
+const assetCountByOwnerAndType = countAssetsByOwnerAndType(assets);
+for (const user of users) {
+  if (!demoAssetOwnerIds.has(user.userId)) continue;
+  const counts = assetCountByOwnerAndType.get(user.userId) ?? { Transport: 0, Accommodation: 0, Supplies: 0 };
+  user.activities.cars = counts.Transport;
+  user.activities.accommodation = counts.Accommodation;
+  user.activities.supplies = counts.Supplies;
+  user.activities.asset.cars = counts.Transport;
+  user.activities.asset.accommodation = counts.Accommodation;
+  user.activities.asset.supplies = counts.Supplies;
+}
 
 const assetSlots = buildAssetSlots(assets);
 const { slots: eventSlots, slotByEventKey } = buildEventSlots(events);
 const localEventSlotBySeed = buildLocalEventSlotMap(eventSlots, slotByEventKey, events);
+const { localAssetSlotBySeed, localAssetTemplateIdsByOwner } = buildLocalAssetSeedMaps(assetSlots, users);
 
 for (const asset of assets) {
   const slot = assetSlots.find(item => item.mongoAssetIds.includes(asset.assetId));
@@ -335,7 +380,11 @@ const manifest = {
     avatarUrl: contact.avatarUrl
   })))
 };
-const frontendHelper = buildFrontendHelper(localEventSlotBySeed);
+const frontendHelper = buildFrontendHelper(
+  localEventSlotBySeed,
+  localAssetSlotBySeed,
+  localAssetTemplateIdsByOwner
+);
 
 if (missingMode) {
   const prompts = [
@@ -362,6 +411,8 @@ const expected = new Map([
   [USERS_PATH, `${JSON.stringify(users, null, 2)}\n`],
   [CONTACTS_PATH, `${JSON.stringify(contacts, null, 2)}\n`],
   [ACTIVITY_MEMBERS_PATH, `${JSON.stringify(activityMembers, null, 2)}\n`],
+  [ACTIVITY_RESOURCES_PATH, `${JSON.stringify(activityResources, null, 2)}\n`],
+  [ASSET_REQUESTS_PATH, `${JSON.stringify(assetRequests, null, 2)}\n`],
   [USER_REPORTS_PATH, `${JSON.stringify(userReports, null, 2)}\n`],
   [FRONTEND_HELPER_PATH, frontendHelper],
   [MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`]
@@ -369,7 +420,7 @@ const expected = new Map([
 
 if (writeMode) {
   for (const [filePath, contents] of expected) await writeFile(filePath, contents);
-  console.log(JSON.stringify(summary(manifest, localEventSlotBySeed), null, 2));
+  console.log(JSON.stringify(summary(manifest, localEventSlotBySeed, localAssetTemplateIdsByOwner), null, 2));
 } else {
   const mismatches = [];
   for (const [filePath, contents] of expected) {
@@ -378,7 +429,7 @@ if (writeMode) {
     if (actual !== contents) mismatches.push(path.relative(ROOT, filePath));
   }
   if (mismatches.length) throw new Error(`Demo image pool is out of sync: ${mismatches.join(', ')}`);
-  console.log(JSON.stringify(summary(manifest, localEventSlotBySeed), null, 2));
+  console.log(JSON.stringify(summary(manifest, localEventSlotBySeed, localAssetTemplateIdsByOwner), null, 2));
 }
 
 function range(start, end) {
@@ -478,6 +529,76 @@ function classifyEvent(event) {
   return best.key;
 }
 
+function pruneActivityResourceAssets(resource, allowedAssetIds) {
+  for (const [type, assetIds] of Object.entries(resource.assetAssignmentIds ?? {})) {
+    resource.assetAssignmentIds[type] = (assetIds ?? []).filter(assetId => allowedAssetIds.has(assetId));
+  }
+  for (const [type, settingsByAssetId] of Object.entries(resource.assetSettingsByType ?? {})) {
+    resource.assetSettingsByType[type] = Object.fromEntries(
+      Object.entries(settingsByAssetId ?? {}).filter(([assetId]) => allowedAssetIds.has(assetId))
+    );
+  }
+  resource.supplyContributionEntriesByAssetId = Object.fromEntries(
+    Object.entries(resource.supplyContributionEntriesByAssetId ?? {})
+      .filter(([assetId]) => allowedAssetIds.has(assetId))
+  );
+}
+
+function countAssetsByOwnerAndType(records) {
+  const result = new Map();
+  for (const asset of records) {
+    const counts = result.get(asset.ownerUserId) ?? { Transport: 0, Accommodation: 0, Supplies: 0 };
+    if (!(asset.type in counts)) throw new Error(`Unsupported asset type ${asset.type}`);
+    counts[asset.type] += 1;
+    result.set(asset.ownerUserId, counts);
+  }
+  return result;
+}
+
+function buildLocalAssetSeedMaps(assetSlots, mongoUsers) {
+  const localUserIdByMongoUserId = new Map(
+    mongoUsers.slice(0, 50).map((user, index) => [user.userId, `u${index + 1}`])
+  );
+  const localAssetSlotBySeed = {};
+  const localAssetTemplateIdsByOwner = Object.fromEntries(
+    mongoUsers.slice(0, 50).map((_, index) => [`u${index + 1}`, []])
+  );
+
+  for (const slot of assetSlots) {
+    if (slot.mongoRecords.length !== 1) {
+      throw new Error(`Asset slot ${slot.slot} must have exactly one Mongo record`);
+    }
+    const record = slot.mongoRecords[0];
+    const localOwnerUserId = localUserIdByMongoUserId.get(record.ownerUserId);
+    if (!localOwnerUserId) throw new Error(`No frontend-local user for Mongo owner ${record.ownerUserId}`);
+    const templateId = localAssetTemplateId(slot.slot, localOwnerUserId);
+    const seed = `${localOwnerUserId}-${templateId}`;
+    if (localAssetSlotBySeed[seed]) throw new Error(`Duplicate frontend-local asset seed ${seed}`);
+    localAssetSlotBySeed[seed] = slot.slot;
+    localAssetTemplateIdsByOwner[localOwnerUserId].push(templateId);
+  }
+
+  return { localAssetSlotBySeed, localAssetTemplateIdsByOwner };
+}
+
+function localAssetTemplateId(slot, localOwnerUserId) {
+  // Keep the explicit asset-manager showcase connected while preserving the
+  // canonical Mongo owner for slot 35.
+  if (slot === 35 && localOwnerUserId === 'u4') return 'asset-transport-3';
+  if (slot <= 4) return 'asset-sup-1';
+  if (slot <= 8) return 'asset-sup-4';
+  if (slot <= 12) return 'asset-sup-2';
+  if (slot <= 16) return 'asset-sup-3';
+  if (slot <= 20) return 'asset-acc-1';
+  if (slot <= 24) return 'asset-acc-3';
+  if (slot <= 28) return 'asset-acc-2';
+  if (slot <= 32) return 'asset-acc-4';
+  if (slot <= 36) return 'asset-transport-1';
+  if (slot <= 39 || (slot >= 46 && slot <= 47)) return 'asset-transport-2';
+  if (slot <= 45) return 'asset-transport-3';
+  return 'asset-transport-4';
+}
+
 function buildAssetSlots(records) {
   const variations = [
     'soft morning light and a slightly elevated three-quarter view',
@@ -544,7 +665,16 @@ function buildAssetSlots(records) {
       },
       prompt: assetPrompt(definition, variations[(slotNumber - 1) % variations.length], slotNumber, slotVisual),
       mongoAssetIds: assigned.map(asset => asset.assetId),
-      mongoRecords: assigned.map(asset => ({ assetId: asset.assetId, ownerUserId: asset.ownerUserId, title: asset.title, subtitle: asset.subtitle, category: asset.category }))
+      mongoRecords: assigned.map(asset => ({
+        assetId: asset.assetId,
+        ownerUserId: asset.ownerUserId,
+        title: asset.title,
+        subtitle: asset.subtitle,
+        details: asset.details,
+        category: asset.category,
+        visibility: asset.visibility,
+        status: asset.status
+      }))
     };
   });
   return slots;
@@ -778,7 +908,7 @@ function buildLocalEventSlotMap(eventSlots, slotByEventKey, mongoEvents) {
   return result;
 }
 
-function buildFrontendHelper(localEventSlotBySeed) {
+function buildFrontendHelper(localEventSlotBySeed, localAssetSlotBySeed, localAssetTemplateIdsByOwner) {
   return `// Generated by tools/seeds/synchronize-demo-image-pools.mjs.\n` +
     `// Frontend-local keeps remote placeholders; the standalone HTTP demo uses the same logical slots from MinIO.\n` +
     `export interface DemoAssetPlaceholder {\n` +
@@ -788,13 +918,17 @@ function buildFrontendHelper(localEventSlotBySeed) {
     `  subtitle: string;\n` +
     `  details: string;\n` +
     `  category: string;\n` +
+    `  visibility: 'Public' | 'Friends only' | 'Invitation only';\n` +
+    `  status: string;\n` +
     `}\n\n` +
-    `type DemoAssetDefinition = Omit<DemoAssetPlaceholder, 'slot' | 'imageUrl'>;\n\n` +
+    `type DemoAssetDefinition = Omit<DemoAssetPlaceholder, 'slot' | 'imageUrl' | 'visibility' | 'status'>;\n\n` +
     `const ASSET_PICSUM_IDS = ${JSON.stringify(ASSET_PICSUM_IDS)} as const;\n` +
     `const EVENT_PICSUM_IDS = ${JSON.stringify(EVENT_PICSUM_IDS)} as const;\n\n` +
-    `const PUBLIC_LOCAL_USER_IDS = ${JSON.stringify(PUBLIC_LOCAL_USER_IDS)} as const;\n\n` +
     `const ASSET_SLOTS_BY_TEMPLATE: Readonly<Record<string, readonly number[]>> = ${JSON.stringify(LOCAL_ASSET_SLOTS_BY_TEMPLATE, null, 2)};\n\n` +
     `const ASSET_DEFINITION_BY_SLOT: Readonly<Record<number, DemoAssetDefinition>> = ${JSON.stringify(ASSET_SEED_DEFINITION_BY_SLOT, null, 2)};\n\n` +
+    `const ASSET_SLOT_BY_SEED: Readonly<Record<string, number>> = ${JSON.stringify(localAssetSlotBySeed, null, 2)};\n\n` +
+    `const ASSET_TEMPLATE_IDS_BY_OWNER: Readonly<Record<string, readonly string[]>> = ${JSON.stringify(localAssetTemplateIdsByOwner, null, 2)};\n\n` +
+    `const ASSET_RECORD_BY_SLOT: Readonly<Record<number, { visibility: DemoAssetPlaceholder['visibility']; status: string }>> = ${JSON.stringify(Object.fromEntries(assetSlots.map(slot => [slot.slot, { visibility: slot.mongoRecords[0].visibility, status: slot.mongoRecords[0].status }])), null, 2)};\n\n` +
     `const EVENT_SLOT_BY_SEED: Readonly<Record<string, number>> = ${JSON.stringify(localEventSlotBySeed, null, 2)};\n\n` +
     `export function demoAssetPlaceholder(seed: string): DemoAssetPlaceholder {\n` +
     `  const slot = demoAssetSlot(seed);\n` +
@@ -802,21 +936,24 @@ function buildFrontendHelper(localEventSlotBySeed) {
     `  return {\n` +
     `    ...definition,\n` +
     `    slot,\n` +
-    `    imageUrl: \`https://picsum.photos/id/\${ASSET_PICSUM_IDS[slot - 1]}/1200/700\`\n` +
+    `    imageUrl: \`https://picsum.photos/id/\${ASSET_PICSUM_IDS[slot - 1]}/1200/700\`,\n` +
+    `    visibility: ASSET_RECORD_BY_SLOT[slot]?.visibility ?? 'Public',\n` +
+    `    status: ASSET_RECORD_BY_SLOT[slot]?.status ?? 'A'\n` +
     `  };\n` +
     `}\n\n` +
     `export function demoAssetPlaceholderUrl(seed: string): string {\n` +
     `  return demoAssetPlaceholder(seed).imageUrl;\n` +
     `}\n\n` +
+    `export function demoAssetTemplateIds(ownerUserId: string): readonly string[] {\n` +
+    `  return ASSET_TEMPLATE_IDS_BY_OWNER[ownerUserId.trim().toLowerCase()] ?? [];\n` +
+    `}\n\n` +
     `function demoAssetSlot(seed: string): number {\n` +
     `  const normalized = seed.trim().toLowerCase();\n` +
+    `  const exactSlot = ASSET_SLOT_BY_SEED[normalized];\n` +
+    `  if (exactSlot) return exactSlot;\n` +
     `  const template = Object.keys(ASSET_SLOTS_BY_TEMPLATE).find(key => normalized.includes(key));\n` +
     `  const candidates = template ? ASSET_SLOTS_BY_TEMPLATE[template] : [1];\n` +
-    `  const ownerId = normalized.match(/(u\\d+)-asset-/)?.[1] ?? '';\n` +
-    `  const publicOwnerIndex = PUBLIC_LOCAL_USER_IDS.indexOf(ownerId as typeof PUBLIC_LOCAL_USER_IDS[number]);\n` +
-    `  const candidateIndex = publicOwnerIndex >= 0\n` +
-    `    ? publicOwnerIndex % candidates.length\n` +
-    `    : stableIndex(normalized, candidates.length);\n` +
+    `  const candidateIndex = stableIndex(normalized, candidates.length);\n` +
     `  return candidates[candidateIndex] ?? 1;\n` +
     `}\n\n` +
     `export function demoEventPlaceholderUrl(seed: string): string {\n` +
@@ -854,10 +991,15 @@ function profilePrompt(userId, name, ageAndGender, city, personality, backdrop) 
   };
 }
 
-function summary(manifest, localEventSlotBySeed) {
+function summary(manifest, localEventSlotBySeed, localAssetTemplateIdsByOwner) {
+  const frontendAssetCounts = Object.values(localAssetTemplateIdsByOwner).map(templateIds => templateIds.length);
   return {
     mongoAssets: assets.length,
     mongoAssetImageSlots: manifest.assets.length,
+    frontendLocalAssets: frontendAssetCounts.reduce((total, count) => total + count, 0),
+    frontendLocalAssetOwnersByCount: Object.fromEntries(
+      range(0, 3).map(count => [count, frontendAssetCounts.filter(value => value === count).length])
+    ),
     mongoEventsWithImages: events.filter(event => `${event.imageUrl ?? ''}`.trim()).length,
     mongoEventImageSlots: manifest.events.length,
     frontendLocalEventSeedKeys: Object.keys(localEventSlotBySeed).length,

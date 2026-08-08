@@ -50,31 +50,5 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-04-26T16:35:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7"
-  },
-  {
-    "_id": {
-      "$oid": "690000000000000000000103"
-    },
-    "syncKey": "admin-demo-report-asset-kai-003",
-    "userId": "b5e2db6882d989d8532af12c",
-    "handle": "Kai Morgan",
-    "reason": "Asset misuse",
-    "details": "Asset owner asked moderation to review a supplies request before approving future resource sharing.",
-    "targetUserId": "7822c5f99eff99d63abe8933",
-    "memberEntryId": null,
-    "eventId": "indoor-strategy-social-event",
-    "eventTitle": "Indoor Strategy Social",
-    "eventStartAtIso": "2026-05-02T17:30:00.000Z",
-    "sourceType": "asset",
-    "sourceId": "f7b9be40d648a5448d018308",
-    "sourceText": "Travel Social Games Case request needs moderation review.",
-    "chatId": null,
-    "messageId": null,
-    "assetId": "f7b9be40d648a5448d018308",
-    "assetType": "Supplies",
-    "createdDate": "2026-04-27T09:20:00.000Z",
-    "createdUser": "b5e2db6882d989d8532af12c",
-    "updatedDate": "2026-04-27T09:20:00.000Z",
-    "updatedUser": "b5e2db6882d989d8532af12c"
   }
 ]
