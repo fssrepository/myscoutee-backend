@@ -2,7 +2,8 @@
 
 Date: **8 August 2026**  
 Status: **Part I and Part II books and synchronized generation prompts are
-published and closed. No frame generation has begun in this phase.**
+published and closed. The first two benchmark frame candidates have been
+generated and are awaiting Founder approval; no video-model run has begun.**
 
 This is the clean resume point. Do not reconstruct the long editorial review
 from chat history. Do not build a slideshow or animatic.
@@ -30,7 +31,7 @@ from chat history. Do not build a slideshow or animatic.
   `trilogy/02-the-system-between-us/book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
 - Locked publication:
   `trilogy/02-the-system-between-us/published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- The 47-page public edition contains the registered role, police-room,
+- The 68-page public edition contains the registered role, police-room,
   courtroom, two-expert, AI-work and home-inquiry plates.
 - The Constitutional Court sequence is locked as seven initial recusals,
   followed by an eighth, leaving seven and no quorum.
@@ -57,11 +58,10 @@ editable sources remain available.
 Start this only in a fresh phase after the Founder confirms the AI subscriptions
 and models to compare.
 
-1. Read the two closed books and prompt coverage maps only as needed to select
-   **one deliberately difficult eight-second scene** where model differences
-   should be visible.
-2. Generate exactly **two** new reference images: the scene's exact first and
-   last frames.
+1. Review the selected Part I CP18→CP19 benchmark candidates recorded in
+   `shared/production/FRAME_APPROVALS.md`.
+2. Accept those exact files or generate a new numbered pair before any paid
+   video-model run.
 3. Both images must be **9:16 portrait**, composed for `720×1280` mobile
    delivery, with the locked character and location descriptions.
 4. Supply the Founder with the absolute paths and one copy/paste motion prompt.
@@ -81,6 +81,9 @@ Canonical inputs:
 - Part II character map:
   `trilogy/02-the-system-between-us/assets/characters/CHARACTER_MAP.md`
 - Shared model log: `shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv`
+- Frame approval ledger: `shared/production/FRAME_APPROVALS.md`
+- Current endpoint candidates:
+  `shared/benchmarks/assets/video-model-cp18-cp19/`
 
 ## 4. Hard boundaries for the next phase
 

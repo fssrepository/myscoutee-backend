@@ -8,3 +8,8 @@ The current video stress test uses Part I's CP18→CP19 scene because it exposes
 identity, six-person counting, anatomy, acting, endpoint fidelity and style in
 one potentially final shot. Future parts reuse the method and logs; they do
 not inherit Part I's characters as narrative canon.
+
+The exact `720×1280` v01 endpoint candidates awaiting Founder approval are in
+`assets/video-model-cp18-cp19/`. Approval state is recorded only in
+`../production/FRAME_APPROVALS.md`; neither candidate is accepted merely by
+being present here.
