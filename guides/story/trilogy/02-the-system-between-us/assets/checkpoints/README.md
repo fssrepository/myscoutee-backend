@@ -15,6 +15,21 @@ pack have completed factual review.
 - `CP12.png` through `CP22.png` must not be generated until the same review gate
   is complete.
 
+The reviewed late-film endpoint plan now reserves:
+
+- `CP14` for the exact police-room sequence ending on the fingerprint ridge;
+- `CP15` for the Danube/Fő Street threshold and exact C-shaped hearing room;
+- `CP16` for the two distinct experts and one contested report;
+- `CP17` for AI-assisted evidence work beside E-közig, MyScoutee and the finite
+  Navier–Stokes experiment;
+- `CP18` for the unannounced social inquiry inside the cold, puritan Budapest
+  flat;
+- `CP19` for the London debt memory carried into separate Budapest civic
+  movements.
+
+Any existing image with one of those names is provisional and must not override
+this reviewed scene contract.
+
 The final checkpoint set will be reused without intermediate image generation
 as the first/last frames for eight-second clips, the endpoint slideshow and any
 book illustrations selected from the same visual chain.

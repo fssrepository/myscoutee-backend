@@ -228,133 +228,135 @@ The letters belong in the production manifest, not the public image.
 - **Hazard:** no weapons, tactical entry, handcuffs, damage or claim of asset
   seizure beyond the documented devices.
 
-### S14 — The sharpest phrase survives · 01:44–01:52 · CP13→CP14
+### S14 — The rooms and the fingerprint · 01:44–01:52 · CP13→CP14
 
 - **Layer:** `M`.
-- **CP13:** evidence inventory.
-- **CP14:** a dry Founder remark produces one restrained softening in an
-  officer's expression; a paper-edge match cut carries a later judge's brief
-  smile into an anonymized defence stack. The stack compresses to one sharp
-  highlighted line while the wider return chain remains faint but visible.
-- **Procedural transfer inside the interval:** pass briefly through a plain
-  police interview room: officer opposite behind a desktop computer, appointed
-  counsel beside the Founder and one anonymous presence behind him. Counsel
-  requests time and they move into a second ordinary room. In a restrained
-  processing beat, a professional female officer photographs the Founder and
-  guides his fingertips onto paper. His awareness that she is attractive is
-  expressed only by one normal glance, never by flirtation or erotic framing.
-  Then use the Danube and the long brown Fő Street justice façade as one verified
-  Budapest threshold; its monumental effect is the Founder's impression, not a
-  style finding.
-- **Hearing-room geography:** from the Founder's viewpoint, prosecutor left,
-  clerk in the far-left corner, judge centre and court-appointed defence counsel
-  right around one C-shaped desk; the Founder sits before it with a table
-  microphone. Keep the roles spatially legible without theatrical grandeur.
-- **Narrative layer:** the documented written dismissal of an institution is
-  carried in narration as powerless sarcasm, never as actual authority.
-- **Motion:** restrained procedural match cuts—computer edge,
-  consultation-room door, fingerprint line, camera flash, Danube light, brown
-  façade, C-shaped desk—ending in the court composition. Nobody laughs openly.
-  No readable accusation or biometric data is generated.
-- **Meaning:** humour preserves personhood, then institutional attention reduces
-  a long accounting explanation to its most accusatory phrase.
-- **Sound in post:** pen stops for one beat, breath, paper resumes.
-- **Hazard:** no dark interrogation cliché, intimidation reenactment, invented
-  exact quotation, mocking court, slapstick, literal firing, triumphant
-  defendant, bias finding or criminal portrayal of the accountant.
+- **CP13:** phone and computer in neutral evidence sleeves.
+- **CP14:** the Founder's fingertips rest on fingerprint paper; one dark ridge
+  continues beyond the sheet as the visual route into the next interval.
+- **Room geography:** in the first ordinary police room, `[OFFICER_REF]` sits
+  opposite behind a desktop computer, `[DEFENCE_COUNSEL_REF]` sits beside the
+  Founder and one anonymous presence remains behind him. Counsel asks for time;
+  an unadorned door opens into a second room. Police later photograph the
+  Founder and `[FINGERPRINT_OFFICER_REF]` professionally guides his fingers onto
+  paper.
+- **Motion:** desktop edge becomes the counsel-room doorframe; the doorframe
+  becomes the edge of the fingerprint card. The Founder's awareness that the
+  female officer is attractive appears as one ordinary glance, never flirtation.
+- **Meaning:** advice receives one small room; identity becomes a photograph and
+  a pattern of lines. Humour and ordinary perception keep the Founder human.
+- **Sound in post:** computer fan, chair movement, door latch, camera shutter,
+  paper and ink.
+- **Hazard:** no dark interrogation chamber, weapon, shouting reenactment,
+  invented quotation, readable biometric data, romance or erotic framing.
 
-### S15 — The forensic mirror · 01:52–02:00 · CP14→CP15
+### S15 — Brown stone and the C-shaped room · 01:52–02:00 · CP14→CP15
+
+- **Layer:** `M/D-secondary`.
+- **CP14:** fingerprint ridge leaving the processing room.
+- **CP15:** exact hearing-room geography from the Founder's viewpoint:
+  prosecutor left, clerk far-left corner, `[JUDGE_REF]` centre and appointed
+  counsel right around one C-shaped desk; the Founder sits before them with a
+  table microphone. One highlighted unreadable phrase sits above a faint wider
+  accounting chain.
+- **Motion:** the fingerprint ridge catches a white camera flash, becomes Danube
+  light, then a line in the long brown monumental Fő Street façade. The camera
+  crosses the threshold and the line bends into the C-shaped desk. A long
+  explanation compresses toward one phrase while every person remains still and
+  human.
+- **Meaning:** the city becomes stone, stone becomes institutional geometry,
+  and a long causal sequence becomes its sharpest surviving sentence.
+- **Sound in post:** Danube air, heavy door, restrained courtroom room tone,
+  microphone breath and one page turn.
+- **On-screen text in post:** `ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE`.
+- **Hazard:** no Gothic courthouse, triumph, mocking judge, bias finding,
+  readable accusation, criminal portrayal of the accountant or legal verdict.
+
+### S16 — The forensic mirror · 02:00–02:08 · CP15→CP16
 
 - **Layer:** `D` plus contested interpretation.
-- **CP14:** judge's restrained human reaction.
-- **CP15:** two visually distinct experts share an ordinary examination room
-  with the Founder's composed face and one anonymized report: one side records
-  calm cooperation and intact cognition; the other holds a blank field for the
-  contested conclusion, added only in post if needed.
-- **Motion:** one restrained 65 mm move passes from `[EXPERT_A_REF]` to the
-  Founder and `[EXPERT_B_REF]`, then ends on the single report reflection. Their
-  differing remembered reactions are carried by spacing and expression, not
-  generated dialogue or text.
+- **CP15:** the C-shaped hearing room and surviving phrase.
+- **CP16:** two visually distinct experts, `[EXPERT_A_REF]` and
+  `[EXPERT_B_REF]`, share an ordinary examination room with the Founder's
+  composed face and one anonymized report. One side records calm cooperation
+  and intact cognition; the other holds an unreadable contested conclusion.
+- **Motion:** the C-shaped table closes into the curve of a report page. One
+  restrained 65 mm move crosses the two separate expert positions and ends on
+  the report reflected across the Founder's whole face.
+- **Meaning:** two remembered voices produce one document; observation becomes
+  a description capable of travelling farther than the room.
 - **Sound in post:** pencil, paper turn, low clinical tone.
 - **On-screen text in post:** `OBSERVATION ≠ WHOLE PERSON`.
-- **Hazard:** no floating diagnosis, split-personality effect or portrayal of
-  either expert as a villain; no readable severe-punishment quotation or claim
-  that it was a sentence.
+- **Hazard:** no floating diagnosis, split-personality effect, malicious expert,
+  generated punishment quote or implication that political change clinically
+  resolves the report.
 
-### S16 — AI-assisted self-defence · 02:00–02:08 · CP15→CP16
+### S17 — Work under the shadow · 02:08–02:16 · CP16→CP17
 
 - **Layer:** `D/M`.
-- **CP15:** report reflection.
-- **CP16:** Founder at two honest windows: anonymized evidence on one side and a
-  plain AI-assisted outline on the other; citations carry visible review marks.
-  Beyond them, three restrained, textless work tiles show the E-közig civic
-  prototype, MyScoutee's human network and a finite mathematical simulation.
-- **Motion:** report line becomes a heading; AI proposes structure, Founder
-  checks the source and rejects one uncertain suggestion.
-- **Meaning:** speed and organization, never legal authority or autonomous
-  representation. The work continues under legal uncertainty: civic software,
-  product, film and mathematics become evidence of agency rather than escape.
-- **Sound in post:** keyboard, page search, one subtle AI cursor tone.
-- **Hazard:** no branded chatbot UI, magical hologram lawyer or claim that AI
-- **On-screen text in post:** `THE PROCEEDING CONTINUED. SO DID THE WORK.`
+- **CP16:** report reflected across the Founder's face.
+- **CP17:** Founder at two honest windows: anonymized evidence on one side and a
+  plain AI-assisted outline on the other. Within the evidence window, one
+  restrained five-band document is the later *Public-Interest Action*: its
+  cover reverses the ordinary positions of state and citizen without readable
+  accusation or courtroom parody. Behind the windows, three textless work
+  planes show the E-közig civic prototype, MyScoutee's human network and finite
+  Navier–Stokes simulation geometry.
+- **Motion:** report line becomes an outline heading. The AI offers structure;
+  the Founder checks a source, rejects one uncertain suggestion and records a
+  restartable checkpoint. The five bands settle into the authored civic
+  document, then continue into the three work planes. A faint institutional
+  shadow remains outside the monitor light without becoming bars or a prison
+  cliché.
+- **Meaning:** AI supplies speed, not representation. Creating inspectable work
+  is how the Founder remains active beneath the possibility of imprisonment.
+- **Sound in post:** keyboard, page search, one subtle cursor tone and the return
+  of a restrained human pulse.
+- **On-screen text in post:** `THE PROCEEDING CONTINUED · SO DID THE WORK`.
+- **Hazard:** no branded chatbot UI, hologram lawyer, solved-prize claim,
+  courtroom exoneration, accepted-lawsuit implication, literal cell or heroic
+  genius montage.
 
-### S17 — What the case can reach · 02:08–02:16 · CP16→CP17
+### S18 — What the case can reach · 02:16–02:24 · CP17→CP18
 
 - **Layer:** `M/D-secondary`; no final confiscation order reviewed.
-- **CP16:** AI-assisted evidence desk.
-- **CP17:** an abstract courtroom line first rises toward unstable legislation,
-  then drops into a probation officer's unannounced clemency social inquiry in
-  the exact apartment. Four financial questions remain visible without text:
-  work, debt, the apartment key provided by the Founder's parents, and an
-  abstract government-bond account representing savings built principally
-  through London and cross-border work.
-- **Room continuity:** reuse the exact C-shaped hearing layout and microphone
-  established at CP14. Do not omit or exchange prosecutor, clerk or appointed
-  defence positions merely to simplify the composition.
-- **Motion:** the Founder's system diagram rises for one beat; a judge's closing
-  gesture redirects the line downward into the financial fields. A doorbell
-  turns the line into the `[PROBATION_OFFICER_REF]` entering an unstaged,
-  puritan, untidy apartment. The radiator is cold, there is no car key and no
-  display of consumption; this is deliberate thrift, not destitution. The
-  Founder places a protective hand near the notebook, not over money.
-- **Meaning:** existential reach and subjective injustice, not a visual claim
-  that forfeiture has already been ordered. The security built abroad was meant
-  to make life at home possible; the proceeding now appears to reach it.
-- **Sound in post:** courtroom room tone, key, paper/account line, low pulse.
-- **Hazard:** no cash pile, luxury property, bailiff, eviction or destruction;
-  no hoarding, filth, pity staging, thought bubble or claim that the judge or
-  probation officer agreed, changed position or offered an official legal view.
+- **CP17:** AI-assisted evidence and creative-work desk.
+- **CP18:** `[PROBATION_OFFICER_REF]` stands inside the exact Budapest flat
+  during the unannounced clemency social inquiry. The room is puritan,
+  temporarily untidy and unclean, the winter radiator is cold, and four quiet
+  objects carry the questions: work desk, absent car key, apartment key from the
+  Founder's parents and an abstract government-bond account plate representing
+  savings built principally abroad.
+- **Motion:** a line from the court microphone returns briefly across work,
+  debt, home and savings, then becomes the apartment doorbell. The visitor
+  enters; the Founder remains composed and places a hand near the cognac
+  notebook, not over money.
+- **Meaning:** security built abroad so the Founder could live at home now feels
+  legible to the proceeding. Deliberate thrift is not staged as destitution.
+- **Sound in post:** courtroom tail, doorbell, key, cold room tone, paper.
+- **Hazard:** no cash pile, luxury, bailiff, eviction, completed confiscation,
+  hoarding, filth spectacle, pity framing or official merits conclusion.
 
 ## Act IV — One file enters public time
 
-### S18 — The earlier Hungarian house · 02:16–02:24 · CP17→CP18
+### S19 — The earlier pattern enters the street · 02:24–02:32 · CP18→CP19
 
-- **Layer:** `M` with external legal context `C`.
-- **CP17:** apartment key and savings line.
-- **CP18:** the key becomes the shared London HMO key from Part I. An anonymized
-  Hungarian housemate studies a family photograph and foreign-currency-loan
-  papers while London rent and home obligations pull in opposite directions.
-- **Motion:** one doorway reveal; Founder observes but does not narratively own
-  the housemate's pain.
-- **Meaning:** foreign-currency loans and KATA are different legal problems that
-  rhyme in the transfer of systemic risk to an individual.
-- **Sound in post:** HMO kettle, distant family call, paper, rent envelope.
-- **Hazard:** no bank logo, named relative, courtroom conclusion or claim that
-  every emigrant left for debt.
-
-### S19 — The streets speak in separate voices · 02:24–02:32 · CP18→CP19
-
-- **Layer:** `C/M`.
-- **CP18:** London house doorway.
-- **CP19:** Budapest public space with a diverse composite of separate civic
-  movements—teachers, citizens and court staff—connected by route lines but not
-  merged into one invented demonstration. Founder remains at a laptop in a
-  window reflection.
-- **Motion:** route lines pass across time through clean match cuts; no riot
-  camera. The Founder submits a form while others occupy public space.
-- **Sound in post:** distant separate crowd washes, footsteps, submission click.
-- **Hazard:** no identifiable private protester, party flag or claim that the
-  movements represented the Founder's case.
+- **Layer:** `M/C`.
+- **CP18:** apartment key and foreign-earned security inside the inquiry.
+- **CP19:** Budapest public space carries separate civic movements through clean
+  temporal layers—teachers, citizens and court staff—while the Founder remains
+  visible at a laptop in a window reflection.
+- **Motion:** the Budapest key becomes the shared London HMO key from Part I. In
+  one short doorway memory, an anonymized Hungarian housemate holds a family
+  photograph beside foreign-currency-loan papers. The opposing paper lines
+  continue into separate Budapest crowds, then end at the Founder's laptop.
+- **Meaning:** the mortgage memory and KATA are different legal stories, but
+  both place systemic risk inside one life. The crowds do not represent the
+  Founder; they make the period's wider loss of trust visible.
+- **Sound in post:** HMO kettle, paper, distant separate crowd washes, footsteps
+  and one submission click.
+- **Hazard:** no bank logo, named relative, invented combined protest, party
+  flag, riot image or claim that every emigrant left because of debt.
 
 ### S20 — The country changes government · 02:32–02:40 · CP19→CP20
 
@@ -433,11 +435,11 @@ The letters belong in the production manifest, not the public image.
 | `CP11.png` | solitary rehabilitation routine and clinical close incision photo enter submission | S11/S12 |
 | `CP12.png` | archive begins to surround Founder | S12/S13 |
 | `CP13.png` | devices inventoried in parent-provided home | S13/S14 |
-| `CP14.png` | police processing, verified court geography and long explanation reduced to one phrase | S14/S15 |
-| `CP15.png` | two distinct experts and one report reflected across the whole face | S15/S16 |
-| `CP16.png` | AI-assisted, human-checked evidence outline | S16/S17 |
-| `CP17.png` | unannounced clemency social inquiry reads home, belongings and savings built abroad | S17/S18 |
-| `CP18.png` | London HMO foreign-currency-loan memory | S18/S19 |
+| `CP14.png` | exact police-room sequence ends on the Founder's fingerprint ridge | S14/S15 |
+| `CP15.png` | Fő Street threshold resolves into exact C-shaped hearing-room geography and one surviving phrase | S15/S16 |
+| `CP16.png` | two distinct experts and one report reflected across the whole face | S16/S17 |
+| `CP17.png` | AI-assisted, human-checked evidence and concurrent creative-work desk | S17/S18 |
+| `CP18.png` | unannounced clemency social inquiry reads home and security built abroad | S18/S19 |
 | `CP19.png` | separate civic movements, Founder at laptop | S19/S20 |
 | `CP20.png` | ballot becomes institutions on separate hinges | S20/S21 |
 | `CP21.png` | President and Founder reach Venice separately | S21/S22 |

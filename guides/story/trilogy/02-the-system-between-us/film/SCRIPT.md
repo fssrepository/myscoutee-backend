@@ -73,35 +73,35 @@ foley and breath.
 > A year later, police entered the home my parents had provided. My phone and
 > computer became evidence.
 
-### 01:44–01:52 — S14 · The smile
+### 01:44–01:52 — S14 · The rooms and the fingerprint
 
-> Police photographed and fingerprinted me. Counsel asked for time. Humour kept
-> me human as the procedure carried me toward court.
+> An officer faced me at a computer. Counsel found us another room. Then my
+> fingerprints became the next page.
 
-### 01:52–02:00 — S15 · The forensic mirror
+### 01:52–02:00 — S15 · The C-shaped room
 
-> Two experts did not sound like one voice. Their report called me calm and
-> clear—then gave my whole conflict a diagnosis.
+> Danube light became brown stone. Inside, a C-shaped table placed the roles; my
+> longest explanation collapsed into one phrase.
 
-### 02:00–02:08 — S16 · AI-assisted self-defence
+### 02:00–02:08 — S16 · The forensic mirror
 
-> Without continuous effective defence, I used AI to translate, organize and
-> question. It gave speed, never representation.
+> Two experts differed. Their report called me calm and clear—then turned the
+> conflict into my personality.
 
-### 02:08–02:16 — S17 · What the case can reach
+### 02:08–02:16 — S17 · Work under the shadow
 
-> A social inquiry entered my unheated, puritan flat. Security built abroad
-> became another financial question.
+> AI organized the file as defence became public-interest design. I kept
+> building MyScoutee, civic software and mathematics beneath prison's shadow.
 
-### 02:16–02:24 — S18 · The earlier house
+### 02:16–02:24 — S18 · What the case can reach
 
-> In London I had watched debt keep another Hungarian from returning. Different
-> law; the same transfer of systemic risk.
+> A social inquiry entered my cold flat. Security built abroad so I could live
+> at home became another question.
 
-### 02:24–02:32 — S19 · The streets
+### 02:24–02:32 — S19 · The earlier pattern enters the street
 
-> Teachers, citizens, judges and other communities entered the streets. My route
-> remained forms, petitions and a laptop.
+> Debt had kept another Hungarian in London. Now broken trust filled Budapest's
+> streets; my route remained a laptop.
 
 ### 02:32–02:40 — S20 · Election
 
@@ -135,9 +135,10 @@ Add all typography in post.
 | 01:12–01:20 | WORDS · CORRECTION · CONTEXT |
 | 01:20–01:28 | BODY · IMAGE · SARCASM |
 | 01:36–01:44 | 22 NOVEMBER 2023 |
-| 01:52–02:00 | OBSERVATION ≠ WHOLE PERSON |
-| 02:00–02:08 | AI-ASSISTED SELF-DEFENCE · NOT LEGAL REPRESENTATION |
-| 02:08–02:16 | WORK · DEBT · HOME · SAVINGS BUILT ABROAD |
+| 01:52–02:00 | ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE |
+| 02:00–02:08 | OBSERVATION ≠ WHOLE PERSON |
+| 02:08–02:16 | THE PROCEEDING CONTINUED · SO DID THE WORK |
+| 02:16–02:24 | WORK · DEBT · HOME · SAVINGS BUILT ABROAD |
 | 02:32–02:40 | 12 APRIL 2026 |
 | 02:40–02:48 | TOP OF THE STATE · BOTTOM OF THE FILE |
 | 02:48–02:56 | 15 JUDGES · 7 RECUSALS · NO QUORUM · TOO EARLY |

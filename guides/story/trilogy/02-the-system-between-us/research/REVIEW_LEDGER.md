@@ -12,6 +12,7 @@ The ledger controls reading order. File count is not narrative importance.
 | contract and handover records | Why was the business route used and abandoned? | reviewed at narrative level |
 | KATA returns, errors and corrections | What did the accountant, taxpayer and administration each do and see? | partially page-reviewed |
 | 1 Dec and 3 Dec submissions | What is the sequence around constructive proposal, outburst and correction? | reviewed; charged wording withheld |
+| 30 Oct 2025 *Public-Interest Action* | How did the earlier system proposals become a five-part authored civic claim, and which version controls? | root v8 and signed v5 reviewed; differences noted; procedural status not inferred from title |
 | 18–19 Dec tax response | What did the administration later reconstruct? | reviewed at narrative level |
 | surgery and rehabilitation material | What physical constraint overlapped the sequence? | reviewed; exact date reconciliation pending |
 | charge and forensic opinion | What positions did prosecution and expert record? | reviewed with contest boundary |

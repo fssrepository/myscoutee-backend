@@ -40,13 +40,35 @@ reviewed as authored submissions, not as adjudicated fact:
 - judicial-exclusion submissions and appendices;
 - complaint to the court-administration body;
 - procedural-clemency request;
-- public-interest claim/proposal;
+- constructive system proposal dated 1 December 2022;
+- later authored document titled *Public-Interest Action*, dated 30 October
+  2025;
 - unsigned cover letter;
 - MyScoutee product screenshot package.
 
 Duplicate ODT/PDF and signed/unsigned versions were treated as versions of the
 same source family. Wording differences must still be checked before any
 quotation is called final.
+
+## Public-interest document line
+
+The 1 December 2022 constructive proposal and the 30 October 2025
+*Public-Interest Action* are related, but they are not the same document.
+
+The later document is five pages long and organizes the Founder's argument into
+five parts: abrupt lawmaking, data protection and direct notification, public
+portal design, criminal procedure and moral redress. Its cover deliberately
+reverses the ordinary courtroom roles, placing the Hungarian State in the
+position of the accused and the Founder in the position representing the
+accusation. Its final proposal includes a self-referential KATA film fund and an
+ecological-restoration use for proceeds.
+
+The root PDF currently carries a version 8 marker. A separately signed PDF
+carries version 5 and differs in wording. The package therefore supports the
+document's authored content and revision history. Its title alone does not prove
+that a court accepted a formally classified public-interest action or reached
+its merits. The European Parliament petition and the much longer GDPR/taxation
+petition remain separate source families.
 
 ## Evidence bundles
 

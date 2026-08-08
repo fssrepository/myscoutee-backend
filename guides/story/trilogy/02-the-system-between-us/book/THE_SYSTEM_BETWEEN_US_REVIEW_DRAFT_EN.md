@@ -10,8 +10,7 @@
 
 ## A Note to the Reader
 
-This is a memoir-based documentary account of an unresolved period. It is not a
-judgment, a medical opinion or a legal submission.
+This is a memoir of an unresolved period.
 
 Part I ended with an invitation. I had returned from London, travelled, looked
 for a partner, and spent the independence I had built on a product that might
@@ -19,35 +18,20 @@ help people reach one another more humanely. The last pages moved through a
 Hungarian multinational role, COVID, and a cross-border remote opportunity. The
 sentence at the threshold was simple: *what followed belongs to Part II.*
 
-What followed is more difficult to tell because it survives in several forms at
-once. There are contracts, invoices, tax returns, portal records, emails,
-recorded calls, electronic submissions, medical dates, police records, an
-indictment, a forensic opinion, petitions, political events and my own memory of
-the rooms in which people spoke. These sources do not always describe one
-another in the same language.
+What followed survives as contracts, portal records, calls, police papers,
+petitions and public events. It also survives as rooms: the bedroom where my leg
+was raised above me, the ordinary police office, the smaller room where counsel
+asked for time, the C-shaped court table, and the desk where an AI cursor kept
+blinking beside the possibility of prison.
 
-I distinguish four layers. A document can show that something was sent, filed
-or decided. My memory can say how it felt. A later submission can record a
-remark that still needs to be checked against audio. A public event can provide
-context without proving the interpretation I gave an earlier private event.
+I wrote words I should not have written. I corrected and clarified them. The
+state later read parts of the sequence as a continuing threat. I remain
+responsible for my words; the system remains part of the path that produced
+them.
 
-The criminal proceeding described here has not reached the ending that belongs
-to Part III. The prosecution and I disagree about the meaning of written
-messages sent during an extreme period. I do not reproduce the most charged
-language in this edition. It is enough to say that I wrote words invoking harm,
-that I corrected and clarified them, and that the state later treated parts of
-the sequence as a continuing threat. I remain responsible for the words I
-wrote. Context does not erase agency. Neither should agency erase context.
-
-Private people remain unnamed. Official remarks are attributed to my filings or
-memory unless a surviving recording has been transcribed and checked. A smile
-is only a smile; it is not evidence of innocence, hostility or agreement.
-
-This is not a story in which one accountant, one tax officer, one police officer
-or one judge secretly controlled everything. It is a story about what can be
-assembled when a sudden law meets a low-trust culture, delegated access, partial
-information, physical vulnerability, institutional delay and one exhausted
-person who responds badly.
+The proceeding has not reached the ending reserved for Part III. The factual
+record, attribution limits and source references appear at the back, where they
+can protect accuracy without interrupting every scene.
 
 That matters because the pattern is not mine alone. Another person might never
 write my sentences and could still enter the same corridor.
@@ -101,9 +85,8 @@ position, a route back into ordinary life.
 COVID made the apparently stable unstable.
 
 Around the turn of 2020 and 2021, that path ended. A later position lasted only
-briefly. I do not reduce those employers to villains in this story. The pandemic
-rearranged organizations, offices, risks and expectations faster than many
-people could name what was happening.
+briefly. The pandemic rearranged organizations, offices, risks and expectations
+faster than many people could name what was happening.
 
 It also opened one unusual year.
 
@@ -116,10 +99,9 @@ me a more durable professional opportunity.
 It also required a legal form through which the work could be invoiced. In
 September 2021, I became a sole proprietor using KATA.
 
-I did not wake one morning with an entrepreneurial revelation. I was not opening
-a café, selling paintings or building a consultancy around a personal brand. I
-was using the legal route available for cross-border remote work during an
-exceptional labour-market moment.
+I had no entrepreneurial revelation. I was not opening a café, selling
+paintings or building a personal brand. I was using the legal route available
+for cross-border remote work during an exceptional labour-market moment.
 
 That distinction matters. A tax form can look like a free choice after the fact
 while functioning as the price of entry at the time.
@@ -140,14 +122,13 @@ at a worker and see not only a person's labour but a tax route. The worker could
 be described as an entrepreneur while carrying the dependence of an employee
 without all the protection of employment.
 
-I do not claim that every KATA user was a disguised employee or that nobody
-abused the system. I claim something narrower: the category contained very
-different lives, and the state had allowed those lives to accumulate inside it
-for a decade.
+The category contained very different lives, from genuine small businesses to
+workers carrying employee-like dependence through an enterprise form. The
+state had allowed those lives to accumulate inside it for a decade.
 
 When a route becomes normal, people build obligations around it. Accountants
-develop habits. software systems encode assumptions. contracts are signed.
-families calculate. foreign clients schedule work. A government can still
+develop habits. Software systems encode assumptions. Contracts are signed.
+Families calculate. Foreign clients schedule work. A government can still
 change the route. The manner and speed of change determine how much damage
 arrives before the new rule has even been understood.
 
@@ -282,21 +263,17 @@ I discovered the possible problem through an article and then through a portal
 whose categories and identifiers did not give me one coherent narrative. On 23
 and 24 November, I spent many hours checking. I called for help.
 
-One surviving recording is remembered by me as the call in which panic became
-audible. Other calls followed. The recordings still require a local transcript
-before this book quotes them. My later filings record remarks that I experienced
-as dismissive: that accountants usually did not cause problems, that
-entrepreneurs did not normally care what accountants did in their name, and
-questions about why credentials had been shared.
+In one surviving recording, panic became audible. Other calls followed. My
+later filings remember remarks that landed as dismissive: accountants usually
+did not cause problems; entrepreneurs did not normally care what accountants
+did in their name; why had I shared my credentials?
 
-Whether every remembered word is exact is less important at this review stage
-than the structure of the exchange. I had reached the institution because the
-delegated route had failed. The institution's questions returned me to the fact
-that I had used the delegated route.
+I had reached the institution because the delegated route had failed. Its
+questions returned me to the fact that I had used the delegated route.
 
 The circle was complete.
 
-## 7. The First Public-Interest Document
+## 7. The First Public-Interest Proposal
 
 On 1 December, I did something different from merely complaining.
 
@@ -335,10 +312,8 @@ makes the words disappear. It changes the question from a simple screenshot to
 a sequence.
 
 The prosecution would eventually extract legal meaning from parts of that
-sequence. My defence would insist that an acute outburst, correction, lack of
-operational intent and the administrative cause could not be separated.
-
-I am not asking the reader to decide the criminal case here.
+sequence. My defence would insist that the outburst, its correction, the lack of
+an operational plan and the administrative cause could not be separated.
 
 I am asking the reader to notice the asymmetry. A system can be fragmented for
 months, but a person's worst sentence appears at once. The fragmented system
@@ -369,11 +344,9 @@ everything.
 In January 2023, I withdrew a large monetary demand and asked to be left in
 peace before surgery and rehabilitation.
 
-The operation took place privately in mid-February. The exact day still needs
-reconciliation across my documents, so I do not manufacture precision here.
-What matters is the practical reality: mobility became difficult, rehabilitation
-required attention, and my body could not be separated from every call and
-deadline arriving through the same phone.
+The operation took place privately in mid-February. Mobility became difficult,
+rehabilitation required attention, and my body could not be separated from
+every call and deadline arriving through the same phone.
 
 For much of that period I had to remain in bed with the operated leg propped
 high above me. A special elevation shoe protected its position when I had to
@@ -406,9 +379,8 @@ absurdity visible to a system that had reduced both to fields. The photograph
 could show what my explanations could not: the medical pressure was not a
 metaphor.
 
-I do not present volume as clarity. Hundreds of submissions can contain real
-evidence and still make it harder for anyone to find the evidence. My intensity
-became another layer of the system.
+Hundreds of submissions can contain real evidence and still make the evidence
+harder to find. My intensity became another layer of the system.
 
 The larger my file grew, the easier it became to describe me through the size of
 the file.
@@ -436,9 +408,8 @@ unfinished MyScoutee system became evidence containers.
 The later police interview took place in an ordinary room, not a cinematic
 interrogation chamber. An officer sat opposite me behind a desktop computer. My
 court-appointed defence counsel sat beside me. Another person remained behind
-me and, as I remember it, sometimes sharply redirected me to answer the question
-being asked. I do not present that remembered instruction as a verified
-quotation. I remember the pressure of hearing it from outside my field of view.
+me and sometimes sharply redirected me to answer the question being asked. The
+voice came from outside my field of view.
 
 At one point my counsel asked for time. We moved into another room to speak.
 That small change of room mattered: the procedure briefly made physical space
@@ -446,11 +417,9 @@ for advice before carrying us back into the official account.
 
 The process also had a second, more mechanical room. Police escorted me there,
 photographed me and took my fingerprints. The woman guiding my fingers onto the
-paper was attractive to me. That detail is not evidence about the case and it
-does not make the procedure romantic. It is the kind of inconveniently ordinary
-human perception that survives even when a person is being converted into an
-image, a print and an entry in a file. Her work remained professional; my mind
-remained human.
+paper was attractive to me. It was an inconveniently ordinary perception at the
+exact moment I was being converted into an image, a print and an entry in a
+file. Her work remained professional; my mind remained human.
 
 I remember using humour.
 
@@ -459,29 +428,21 @@ present when every other available role was defendant, officer, device owner or
 subject. A police officer could ask a hard question, I could answer in a way
 that exposed the absurdity, and for a second somebody smiled.
 
-Later, a judge could smile too.
-
-I do not claim that the smiles proved agreement or bias. I claim almost the
-opposite. The people in the room could still recognize the joke while the
-procedure could not recognize the whole sequence that made the joke necessary.
+Later, a judge could smile too. The smiles decided nothing. They showed that
+the people in the room could still recognize a joke while the procedure could
+not recognize the whole sequence that made the joke necessary.
 
 The irony kept me from becoming only the file.
 
 ## 12. Remarks in the Margin
 
-My later defence submissions record remarks I attributed to police officers and
-the two forensic experts who examined me. They include questions about why I
-had returned home, what I lived on, why I had needed an accountant, why I had
-not sought psychological help, and comments about age, success and severe
-punishment. One defence speech records the words, “You will certainly receive
-life imprisonment for this.” That is an attributed remark from my own written
-account, not a sentence, a judicial prediction or an independently verified
-quotation.
+My later defence submissions remember questions and remarks from police and the
+two forensic experts. Why had I returned home? What did I live on? Why had I
+needed an accountant? Why had I not sought psychological help? What had I
+achieved at my age? One defence speech preserves the sentence that struck
+hardest: “You will certainly receive life imprisonment for this.”
 
-Those remarks are not all independently verified quotations. Some may be
-checked against surviving recordings; some may survive only through my account.
-I include their categories because they show how quickly biography can become a
-test.
+The questions turned biography into an examination.
 
 Why had I returned?
 
@@ -502,37 +463,24 @@ route to work across a border—and almost immediately entered the chain that
 became this case.
 
 Across the eleven years after I left London, I spent roughly nine outside
-conventional employment. That is not nine continuous years of official
-unemployment. Some were spent searching, some surviving on reserves, some
-travelling, and some building work no employer had commissioned. The usual
-statistical language calls twelve months long-term and twenty-four months very
-long-term. It has no equally simple name for a life that keeps working without
-being allowed to feel securely inside work.
+conventional employment. Some were spent searching, some surviving on reserves,
+some travelling, and some building work no employer had commissioned. There is
+no neat official category for a life that keeps working without feeling
+securely inside work.
 
-Research describes unemployment as capable of leaving a scar: return can become
-harder, health and confidence can suffer, and employment itself can improve
-well-being without erasing what came before. I cannot turn population research
-into a diagnosis of myself. I can say what made endurance possible. I planned,
-saved and kept creating. Financial independence did not make those years easy;
-it kept exclusion from becoming immediate collapse.
+What made endurance possible was planning. I saved, reduced my needs and kept
+creating. Financial independence did not make exclusion easy. It stopped
+exclusion from becoming immediate collapse.
 
-The court later asked about my apartment and belongings. Now my government-bond
-account has entered the discussion around my financial position. The apartment
-came from my parents. The reserve behind the account came principally from life
-and work abroad, not from the short Hungarian work sequence at the centre of
-this story.
+The court later asked about my apartment and belongings. My government-bond
+account entered the discussion of my financial position. The apartment came
+from my parents. The reserve came principally from life and work abroad, not
+from the short Hungarian work sequence at the centre of this story.
 
 That reversal carries the deepest contrast. I had built security abroad so that
-I could come home and live in my own country. When I finally dared to work again,
-the resulting case seemed to reach backwards toward the home, belongings and
-foreign-earned reserve that had made returning possible. This is how the risk
-felt from inside the proceeding; it is not a claim that forfeiture has been
-ordered.
-
-No final confiscation or financial penalty is recorded in this review draft.
-That distinction matters legally. It does not remove the personal meaning of
-the questions. I experience them as the proceeding reaching backwards into the
-only protection I managed to build before the proceeding existed.
+I could come home and live in my own country. When I finally dared to work
+again, the case seemed to reach backwards toward the home, belongings and
+foreign-earned reserve that had made returning possible.
 
 That answer could sound suspicious if the listener saw only present
 unemployment. From inside my life, it was the answer to why I had survived at
@@ -553,37 +501,33 @@ had spent years avoiding that trap, living below my means and preserving the
 debt-free home my parents had helped provide.
 
 After this sequence, taking out a domestic loan would have been one of the last
-risks I would choose. Returning to Hungarian work would have been nearly as
-difficult to imagine. The last time I had resumed work—especially cross-border
-work through a Hungarian legal route—the attempt had grown into the proceeding
-now asking why I was not working.
+risks I would choose. Returning to Hungarian work felt almost as difficult. The
+last time I had resumed work—especially cross-border work through a Hungarian
+legal route—the attempt had grown into the proceeding now asking why I was not
+working.
 
 My reserves were not an unexplained alternative to a normal life. They were the
 protective wall built because normal routes had repeatedly stopped feeling
 safe.
 
-The clemency process later brought those questions into my home. Hungarian
-procedure uses a probation officer to prepare a social inquiry for a clemency
-request. In my case the officer rang the bell without an appointment. The flat
-was not staged for inspection. It was puritan, untidy and unclean that day. I do
-not own a car, I usually do not heat the flat in winter, and I spend little
-because that is how I preserve independence. I can live that way. I was not
-asking the visitor to pity me.
+The clemency process later carried the same questions into my home. A probation
+officer rang the bell without an appointment. The flat had not been staged for
+inspection. It was puritan, untidy and unclean that day. I own no car, usually
+do not heat the flat in winter, and spend little because that is how I preserve
+independence. I can live that way. I was not asking the visitor to pity me.
 
 He asked what I lived on, why I was not working and what the apartment said
-about my life. I remember the bachelor-flat description, a reference to the
-proposed suspended sentence and his astonished reaction when he asked about the
-disputed line. Those remembered reactions are not an official interpretation of
-the case. The official product of the visit was a social inquiry about personal,
-housing, health, income and property circumstances. The human encounter was
-stranger: a life designed to need very little was being read as a condition to
-be explained.
+about my life. I remember the phrase *bachelor flat*, a reference to the
+proposed suspended sentence and his astonishment when he asked about the
+disputed line. A life designed to need very little was being read as a condition
+to be explained.
 
 Why had I not sought psychological help?
 
 Because at the relevant moment I was trying to repair a tax record and prepare
-for a mobility-limiting operation. That does not prove I needed no help. It
-explains why the question felt as though the story had been reversed.
+for a mobility-limiting operation. The question made the sequence run
+backwards: the pressure became proof that the pressured person had been the
+problem all along.
 
 ## 13. The Forensic Mirror
 
@@ -591,46 +535,39 @@ The forensic examination took place on 30 November 2023. Two experts were
 present and the resulting opinion bears two expert signatures. I remember the
 examination lasting roughly two hours and feeling hurried.
 
-The two people did not occupy one voice in my memory. I remember one making the
+The two people did not occupy one voice in my memory. One made the
 life-imprisonment remark before the causal sequence had been asked through and
 before I understood what material the examination was meant to rest on. Later,
-when the other expert asked what had happened and I described the accounting
-failure, the pressure, the operation and the circumstances in which words came
-out, I remember a sharply different response: certainly not for that. My later
-defence speech groups several further remarks under “forensic experts,”
-including references to an “old man,” lack of success, the need for an
-accountant and the absence of psychological treatment. It does not reliably
-assign every remark to one of the two people, so neither does this book.
+the other expert asked what had happened. I described the accounting failure,
+the pressure, the operation and the circumstances in which the words came out.
+His response felt like the mirror image: certainly not for that.
+
+Other remarks accumulated around the room: an “old man,” lack of success, the
+need for an accountant, the absence of psychological treatment. My later
+defence speech does not reliably assign each one to a particular expert. In my
+memory they hang between the two chairs.
 
 The report contains an important tension. It records that I was calm,
 cooperative, oriented and cognitively intact. It also concludes that I had a
 paranoid personality disorder and that my responsibility was moderately
 limited.
 
-The report does record substantial parts of my account, including the tax and
-accounting chain, the operation and the period of restricted mobility. I
-therefore cannot fairly say the experts knew nothing about those circumstances.
-My objection is narrower and stronger: I do not believe their final
-interpretation gave that documented causal pressure its proper weight, or
-distinguished clearly enough between a person under exceptional strain and a
-whole personality.
+The report records substantial parts of my account: the tax and accounting
+chain, the operation and the restricted mobility. Then it transforms that
+sequence into an interpretation of personality. I do not believe the final
+interpretation gave the documented pressure its proper weight or distinguished
+clearly enough between a person under exceptional strain and a whole person.
 
 I contest that interpretation.
 
-I also refuse to solve the disagreement by inventing a diagnosis of the
-experts. A forensic opinion is a document produced for a legal question under
-particular conditions. It is neither a complete biography nor an insult that
-can simply be answered with another insult.
+A forensic opinion is a document built to answer a legal question. It is not a
+complete biography. Yet once attached to a person, its language can travel as
+though it were one.
 
-The later political reversal in Hungary does not clinically disprove the
-report. It does, however, complicate the public meaning of words such as
-*paranoia* when institutions that appeared immovable in 2023 were openly being
-replaced in 2026.
-
-A prediction can be wrong, right, exaggerated or accidentally resonant. A later
-event does not tell us which mental process produced the earlier sentence.
-
-That uncertainty belongs in the book.
+The word *paranoia* became stranger with time. Institutions that had appeared
+immovable in 2023 were openly being replaced in 2026. That political reversal
+did not erase the report. It made the distance between a frightening prediction
+and a changing country impossible to ignore.
 
 ## 14. Defence by Accumulation
 
@@ -647,6 +584,22 @@ I responded by writing more.
 Defence strategy became public-interest proposal. Complaint became system map.
 Closing statement became impact study. I divided responsibility into percentages,
 then learned that percentages can create a false precision around a human chain.
+
+By October 2025, I had given the accumulation a deliberately inverted title:
+*Public-Interest Action*.
+
+Its cover reversed the room. The Hungarian State stood where the accused would
+normally stand. I appeared where the accusation would be represented. Inside, five
+strands of the experience were placed beside one another: abrupt lawmaking, data
+and notification, the design of the public portal, criminal procedure and moral
+redress.
+
+The last proposal was almost circular. Turn the story into a film fund, let the
+film carry a civic lesson, then use the proceeds to restore land and leave behind
+a line about the moment when an individual's failure becomes the mirror of a
+system's failure.
+
+The case was already trying to become the film I am now preparing.
 
 The better formulation is not that government, accountant, tax office and
 official each owned a mathematically exact share. It is that no participant's
@@ -668,9 +621,8 @@ All of those statements can be true at once.
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
 and the life outside the case. Then the long brown institutional façade on Fő
-Street filled the frame. Its rhythm and mass felt almost Roman to me: not an
-archaeological claim or a formal style label, but a monumental effect. I found
-it frightening. A human story was entering a closed institutional form.
+Street filled the frame. Its rhythm and mass felt almost Roman: monumental,
+closed and frightening. A human story was entering stone.
 
 The hearing room had a practical geometry I still remember. A C-shaped desk
 faced the seats where I sat. From my position, the prosecutor was on the left,
@@ -685,12 +637,11 @@ She asked why I had not asked the accountant. From the much longer defence
 speech, she selected my assertion that the accountant had entered what I called
 random figures in my return—figures I later tried to correct.
 
-The warning landed with particular force because this was the same proceeding
-in which a forensic report classified my personality in clinical terms I
-contested and carried formal weight in the discussion of responsibility. I was
-being told to protect another person's reputation while trying to defend myself
-from a description that could follow me far beyond the tax return. The two acts
-were not legally identical. Humanly, the contrast was brutal.
+The warning landed with particular force because the same proceeding carried a
+forensic description of my personality that I contested and that could follow
+me far beyond the tax return. I was being told to protect another person's
+reputation while trying to defend myself from that description. Humanly, the
+contrast was brutal.
 
 I experienced those questions as the system protecting its own version before
 reconstructing the system around the person. The sharp phrase was easy to
@@ -698,10 +649,9 @@ examine. The two-page return, the repeated attempts, the outside help, the
 missed messages and the fact that I said I had not known about the decisive
 filing were easier to push into the background.
 
-That is my account of the hearing. It is not a finding that the judge was
-biased, or that the accountant committed an offence. It is the moment when I
-understood that even my attempt to explain a failed process could be reduced to
-the most accusatory sentence inside the explanation.
+That was the moment I understood that even an attempt to explain a failed
+process could be reduced to the most accusatory sentence inside the
+explanation.
 
 The hearing ended on two different scales. I said that European institutions
 had already warned the government about unstable, rapidly changing lawmaking,
@@ -709,11 +659,9 @@ and that my case showed the size of the damage such lawmaking could create in
 one life. The judge closed by saying that we would continue with my financial
 position.
 
-There may be an ordinary procedural reason to ask a defendant about money. The
-emotional cut was still severe. I had lifted the lens toward legislation and
-institutional design; the room lowered it to my work, debt, home, belongings
-and savings. The system question became an asset question before the system
-question had been answered.
+I had lifted the lens toward legislation and institutional design; the room
+lowered it to my work, debt, home, belongings and savings. The system question
+became an asset question before the system question had been answered.
 
 <!-- pagebreak -->
 
@@ -736,13 +684,8 @@ generate questions and find contradictions that a human reader could then
 check. It made it possible to move through volumes that had become impossible
 for one exhausted person to hold in working memory.
 
-It was not my lawyer.
-
-It could misunderstand Hungarian procedure, invent a citation, smooth an
-uncertain fact into a confident sentence or reproduce the bias built into my
-question. It held no licence, attended no hearing and carried no professional
-responsibility if its answer was wrong.
-
+It was not my lawyer. It could misunderstand procedure, invent a citation or
+turn uncertainty into confidence. It held no licence and attended no hearing.
 The accurate phrase is **AI-assisted self-defence**.
 
 For roughly three years, the same class of tool helped me build MyScoutee and
@@ -758,60 +701,45 @@ which these two worlds could be understood. I also asked an AI system to choose
 one of the six unsolved Millennium Prize Problems as an autonomous research
 test. It chose Navier–Stokes.
 
-The point was not that I had become a specialist in nonlinear partial
-differential equations, or that the machine had solved the problem. It built a
-versioned, falsifiable research chain, rejected sixteen intermediate candidates
-and preserved a restartable handoff. A professor whose variational work had
-helped inspire the experiment read two notes and the proof plan. He found the
-ideas intriguing while asking the decisive question: exactly which mathematical
-statement was being tested? My answer made the boundary explicit. This was an
-AI-generated research experiment, not a verified proof, and I could not yet
-defend it in a specialist meeting.
+The machine did not solve the problem. It built a versioned, falsifiable
+research chain, rejected sixteen intermediate candidates and preserved a
+restartable handoff. A professor whose variational work had helped inspire the
+experiment read two notes and the proof plan. He found the ideas intriguing,
+then asked the decisive question: exactly which mathematical statement was
+being tested? The experiment had reached its honest boundary.
 
-All of this work happened while imprisonment remained a legal possibility in
-the background. I understood the charged offence as carrying a much wider
-statutory range than the suspended sentence then proposed by the prosecution.
-Neither was a final judgment. The point is not to turn software commits into a
-claim of innocence. It is to record what mental survival looked like: I did not
-spend those months only waiting to be classified. I kept making systems that
-could be inspected, tested, corrected and handed to another person.
+All of this happened with the possibility of imprisonment in the background.
+Software commits did not answer the charge. They recorded what survival looked
+like. I did not spend those months only waiting to be classified. I kept making
+systems that could be inspected, tested, corrected and handed to another
+person.
 
-My defence speech expressly raised routes under sections 25, 26 and 27 of the
-Act on the Constitutional Court. The trial court transmitted my complaint, and
-the Constitutional Court wrote to me on 21 October 2025. It said the criminal
-case was still pending and had produced no first-instance decision. Under the
-route I had invoked, the complaint was therefore premature. The letter did not
-decide the factual argument. It explained that the route could open after a
-final decision if the other conditions were met, and that my attempted direct
-challenge to the tax rule did not satisfy the exceptional route either.
+The trial court transmitted my constitutional complaint. The Constitutional
+Court wrote back on 21 October 2025: the criminal case was still pending, so the
+route I had invoked was premature. It did not enter the factual argument.
 
 The door did not say *wrong*. It said *too early*.
 
-The judges then became another sequence that had to be kept straight. The
-first assigned judge left the case, reportedly because of illness. I later
-sought the exclusion of the second judge. A different judge decided that
-request, called it unfounded and referred to the risk of a procedural fine for
-an unfounded exclusion request. Even asking whether the room was impartial had
-returned as another possible financial consequence.
+The judges became another sequence. The first assigned judge left the case,
+reportedly because of illness. I later sought the exclusion of the second. A
+third judge rejected the request as unfounded and warned of a possible
+procedural fine. Even asking whether the room was impartial returned as another
+possible financial consequence.
 
 In the communication around that decision, the challenged judge was described
 as having listened to me conscientiously. I later answered the court in the
 third person with a bitter inversion: yes, he had conscientiously defended the
-system failure. The line was mine, not the court's. At the end of the hearing, I
-read something less fixed in the judge's expression—as if he might have begun
-to see a person reached by the failure rather than only a person accused of a
-wrong. That was my reading of a face. He did not say it.
+system failure. At the end of the hearing, his expression seemed less fixed—as
+if he might have begun to see a person reached by the failure rather than only a
+person accused of a wrong. It was a reading of a face, not a spoken conclusion.
 
 The next hearing had been expected on 2 July and was moved by roughly two and a
-half months to 16 September. In my later account, the forensic experts had been
-invited but did not appear, and the court said expert availability prevented the
-earlier hearing. The exclusion request was also being processed during this
-period. I experienced the timing as its own piece of black comedy: the system
-had been able to turn an examination made soon after the search into a sweeping
-description of me, yet years later the expert could be unavailable while that
-description helped keep the proceeding open. I contest the report and its
-premises. I do not present my account of delay as a finding that an expert lied
-or deliberately obstructed the court.
+half months to 16 September. The experts had been invited but did not appear;
+the court referred to expert availability. The exclusion request was moving at
+the same time. The timing became black comedy. The system had needed only eight
+days after the search to turn an examination into a sweeping description of me.
+Years later, the expert was unavailable while that description helped keep the
+proceeding open.
 
 <!-- illustration: part_ii_judge -->
 
@@ -819,9 +747,9 @@ Those were three roles, not one: the judge who left, the judge I challenged and
 the judge who ruled on the challenge. From my side of the table, the substance
 had still not been answered; the route kept changing its custodian.
 
-My wider Drive now contains more than four gigabytes of material. Size is not
-proof. It is the residue left when a person without a stable professional guide
-tries to make every missing step impossible to ignore.
+My wider Drive now contains more than four gigabytes of material: the residue
+left when a person without a stable professional guide tries to make every
+missing step impossible to ignore.
 
 AI gave me speed.
 
@@ -846,11 +774,10 @@ He tried to service the loan and public debts from London. Returning did not
 feel possible. Separation stretched. His spouse and young child remained in
 Hungary, and the family broke apart.
 
-I keep the identifying details private. His life is not an exhibit against one
-bank, one authority or one political party. It is a remembered example of how a
-financial product can outlive the moment in which it was sold. The borrower
-continues to carry personal responsibility while exchange rates, legal doctrine,
-collection systems and later court decisions move around him.
+His name remains private. What remains public is the shape: a financial product
+outlived the moment in which it was sold. He carried the signature while
+exchange rates, collection systems, legal doctrine and court decisions moved
+around him.
 
 The foreign-currency-loan cases and KATA are not the same legal problem.
 
@@ -884,8 +811,6 @@ Part II tells the beauty of home without hiding why the system could make a
 returning person ask again whether he should leave.
 
 ## 18. Not Everyone Would Write My Sentence
-
-To call the story universal requires care.
 
 Not everyone facing an accounting error would react as I did. Not everyone
 undergoing surgery would send hundreds of messages. Not everyone in a police
@@ -926,9 +851,9 @@ My own path was quieter and stranger. I moved through electronic forms.
 
 A petition to the European Parliament was declared admissible in January 2025.
 The European Commission response described the data-protection framework and
-pointed enforcement back toward national authorities and courts. This was not
-vindication. It was a legitimate channel acknowledging that the category of the
-problem could be discussed.
+pointed enforcement back toward national authorities and courts. The private
+file had entered a legitimate public channel, only to be routed back toward the
+same national architecture.
 
 I had not become a politician.
 
@@ -952,10 +877,9 @@ Over time, my proposals acquired a structure:
 - use AI to categorize and explain, not to hide responsibility behind another
   opaque decision.
 
-These are proposals, not proven reforms. Some may be incomplete. Some may create
-new risks. The important change was personal: I had moved from demanding that
-somebody repair my account to asking how the next person could avoid entering
-the account in the first place.
+The important change was personal. I had moved from demanding that somebody
+repair my account to asking how the next person could avoid entering the account
+in the first place.
 
 That is political in the broad sense, but it did not begin with a party.
 
@@ -979,9 +903,8 @@ of law. In 2022 it looked detached from ordinary political possibility. Four
 years later, public actors were openly describing a change of regime and a
 restoration of the rule of law.
 
-I do not call this prophecy.
-
-I call it irony powerful enough to make time feel badly edited.
+It was not prophecy. It was irony powerful enough to make time feel badly
+edited.
 
 ## 22. Two Letters to Venice
 
@@ -1011,10 +934,8 @@ ministers and the parliamentary Speaker. Public reporting showed consultation
 and caution rather than a final opinion that resolved every issue before
 Parliament acted.
 
-I cannot prove that my email changed the Commission's position. I do not claim
-it did. What I can prove is that the same institution received warnings from
-the top and the bottom while Hungary's constitutional order was visibly between
-states.
+The same institution had received warnings from the top and the bottom while
+Hungary's constitutional order was visibly between states.
 
 ## 23. When Seven Judges Step Aside
 
@@ -1042,10 +963,9 @@ At one scale stood a President, an urgent request and a Court unable to assemble
 itself around the question. At the other stood one citizen, a laptop and an AI
 assistant trying to translate lived chaos into an admissible legal route.
 
-The contrast is not that my document equalled the President's.
-
-The contrast is that both exposed the distance between having a constitutional
-question and obtaining a constitutional answer.
+Their authority was radically different. Their shared image was the distance
+between having a constitutional question and obtaining a constitutional
+answer.
 
 My own route had already met that distance. The Constitutional Court received
 my complaint through the trial court, then stopped before the factual substance
@@ -1054,9 +974,9 @@ final, decision. The President's case was blocked because too many judges
 stepped aside. Mine, as I experienced it, was stopped because I had arrived at
 the constitutional door before ordinary procedure had finished with me.
 
-These were not equivalent cases. They revealed the same architectural fact:
-having a constitutional question does not guarantee a room in which anyone
-will answer it.
+Different cases had reached the same architectural fact: having a
+constitutional question does not guarantee a room in which anyone will answer
+it.
 
 ## 24. The List of Offices
 
@@ -1095,14 +1015,8 @@ mandate.
 The parliamentary Speaker became interim President. At the time of this draft,
 a new President had not yet been elected.
 
-The empty chair is not my victory.
-
-The election was not a verdict in my criminal case. A political majority did
-not clinically disprove a forensic opinion. The end of one office-holder's
-mandate did not establish every allegation made about the old system.
-
-It did establish something simpler: the country had decided that continuity was
-no longer enough.
+The empty chair was not a verdict in my case. It belonged to a country that had
+decided continuity was no longer enough.
 
 Whether the replacement deserves trust depends on how it treats the same
 problems when speed, power and inconvenience become its own.
@@ -1126,8 +1040,8 @@ Reciprocal evidence rather than one unanswerable score. Enough human space for
 the next meeting to change the meaning of the previous one.
 
 MyScoutee cannot repair a tax authority, court or constitution. A social product
-also has its own capacity for harm. Ratings can become gossip. automation can
-become coercion. matching can hide a judgment inside a number. local operators
+also has its own capacity for harm. Ratings can become gossip. Automation can
+become coercion. Matching can hide a judgment inside a number. Local operators
 can become unaccountable if the shared core provides no meaningful exit.
 
 The lesson of Part II is therefore not that my product already contains the
@@ -1149,17 +1063,15 @@ Humour was not disrespect for the seriousness of the case. It was an informal
 audit trail of humanity: proof only that, for one second, several people could
 see the absurdity together.
 
-That word was not added years later to make the story more literary. In one
-2024 submission, I wrote that the frightening part was in the absurdity. In
-another, I wrote that the irony was this: if everything had worked lawfully, I
-believed nothing would have happened. Those were my contemporaneous
-formulations, not findings made by a court or an institution.
+The word was not added years later to make the story more literary. In one 2024
+submission, I wrote that the frightening part was in the absurdity. In another,
+I wrote that if everything had worked lawfully, I believed nothing would have
+happened.
 
 The humour also appeared in writing. In one police submission, I ended by
-declaring the institution fired. Elsewhere, as I remember it, I sent
-institutions away to dispense justice in a pasture. A programmer with no power
-to dismiss the state was dismissing the state in prose. The first line survives
-in the reviewed record. The exact pasture sentence still needs to be isolated.
+declaring the institution fired. Elsewhere, I sent institutions away to
+dispense justice in a pasture. A programmer with no power to dismiss the state
+was dismissing the state in prose.
 
 Neither line described a real transfer of authority. Their point was the
 impossibility. When every office could redirect me but I could redirect none of
@@ -1201,10 +1113,9 @@ returned because Budapest costs made the independence earned in London usable.
 Now I felt that the price of trying foreign remote work from home might reach
 back and consume the independence that had made the attempt possible.
 
-The next hearing was scheduled for 16 September 2026 when this review draft was
-prepared. A short reply from the new justice administration had recently
-reached me, but its exact source file and significance still require review.
-The country had an interim President. The final legal result did not exist.
+The next hearing was scheduled for 16 September 2026. A short reply had arrived
+from the new justice administration. The country had an interim President. The
+final legal result did not exist.
 
 The line remains open.
 
@@ -1216,12 +1127,53 @@ The line remains open.
 
 # Notes on Evidence, Context, and the Open Ending
 
+## How to use these notes
+
+The story above is written as memoir. These notes provide the slower second
+track: provenance, legal orientation, attribution limits and links that a
+lawyer, journalist or specialist reader can follow without forcing every scene
+to carry its own footnote.
+
+Private people remain anonymous. Recollected speech is not presented as a
+verbatim quotation unless a recording or issued document supports it. A smile,
+silence or change of expression records the Founder's perception of a room; it
+does not establish agreement, bias or a legal conclusion. The two forensic
+experts are separate people. No final confiscation, financial penalty or final
+criminal judgment is asserted. Political change supplies public context; it
+does not decide the pending case or clinically resolve a contested expert
+opinion.
+
+The legal links below are orientation points, not a substitute for advice. A
+lawyer should match every proposed argument to the law in force on the relevant
+date, the exact charge, the filed submissions and the complete procedural
+record.
+
 ## The primary record
 
 The review draft was reconstructed from the private source package described in
 `research/SOURCE_INVENTORY.md`: tax and portal evidence, authored submissions,
 the charge, a forensic report, correspondence, product screenshots and thirteen
 private recordings awaiting local transcription.
+
+The public-interest material contains two related but distinct source lines. The
+first is the constructive system proposal of 1 December 2022 described in Chapter
+7. It begins the design line: direct notice, visible delegated action, granular
+authority, an auditable correction chain, health-crisis handling and safer tax
+transitions.
+
+The second is a five-page authored document dated 30 October 2025 and titled
+*Public-Interest Action*. Its cover deliberately reverses the ordinary positions:
+the Hungarian State is placed in the position of the accused and the Founder in
+the position representing the accusation. It organizes the argument under five
+headings: constitutional injury, data-protection injury, public-portal failures,
+criminal procedure and moral redress. Its final proposal imagines a KATA film fund
+whose cultural proceeds would support ecological restoration.
+
+The reviewed root PDF is marked version 8; a separately signed copy is marked
+version 5. Their wording differs in places. Both are authored advocacy. The title
+alone does not establish that a court accepted the document under that procedural
+classification or decided its merits. The later European petition and the wider
+GDPR/taxation petition are separate source families again.
 
 The raw package is not published with the book because it contains identifiers,
 private third-party data, medical-adjacent material and unresolved allegations.
@@ -1259,6 +1211,71 @@ The post-operative-leg image and the vulgar physical-comedy description are
 supported by authored defence material. The pasture image is presently a
 memoir-layer recollection and is paraphrased rather than presented as a verified
 quotation.
+
+## Legal reference map
+
+### The tax transition and the low-trust triangle
+
+- [Act CXLVII of 2012 on the former KATA and small-business tax
+  regime](https://njt.hu/jogszabaly/2012-147-00-00)
+- [Act XIII of 2022 on the new itemized tax for small
+  taxpayers](https://njt.hu/jogszabaly/2022-13-00-00)
+- [Official explanatory memorandum to Act XIII of
+  2022](https://njt.hu/jogszabaly/2022-13-K0-00)
+- [Constitutional Court Decision 29/2022 (XII. 6.) on challenges to the
+  KATA change](https://njt.hu/jogszabaly/2022-29-30-75)
+- [Act CL of 2017 on the Rules of
+  Taxation](https://njt.hu/jogszabaly/2017-150-00-00)
+- [Act CLI of 2017 on Tax Administration
+  Procedure](https://njt.hu/jogszabaly/2017-151-00-00)
+
+These texts frame the tax status, transition, taxpayer responsibility,
+representation, communication and administrative principles around which the
+documentary dispute developed. The exact notice path and filing history still
+have to be reconstructed from the account-specific record; the statutes alone
+do not answer who saw which message when.
+
+### Procedure, defence and expert evidence
+
+- [Act C of 2012, the Hungarian Criminal
+  Code](https://njt.hu/jogszabaly/2012-100-00-00)
+- [Act XC of 2017 on Criminal
+  Procedure](https://njt.hu/jogszabaly/2017-90-00-00)
+- [Act XXIX of 2016 on Forensic
+  Experts](https://njt.hu/jogszabaly/2016-29-00-00)
+- [Act CLI of 2011 on the Constitutional
+  Court](https://njt.hu/jogszabaly/2011-151-00-00), including the routes
+  discussed in sections 25–27
+- [The Fundamental Law of
+  Hungary](https://njt.hu/jogszabaly/2011-4301-02-00), especially the rule-of-law,
+  privacy, fair-administration, fair-trial and remedy provisions that appear in
+  the submissions
+
+The exact offence, statutory range, defence route and requested remedy must be
+read from the charge and filed papers. This book does not infer them from the
+headline name of an offence.
+
+### Data, identity and European guarantees
+
+- [Regulation (EU) 2016/679, the General Data Protection Regulation
+  (GDPR)](https://eur-lex.europa.eu/eli/reg/2016/679/oj), particularly the
+  principles of processing, transparency, access, security and remedies
+- [Act CXII of 2011 on Informational Self-Determination and Freedom of
+  Information](https://njt.hu/jogszabaly/2011-112-00-00)
+- [Charter of Fundamental Rights of the European
+  Union](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A12012P%2FTXT),
+  including dignity, private life, personal data, good administration, an
+  effective remedy and fair-trial guarantees, subject to the Charter's scope
+- [European Convention on Human
+  Rights](https://www.echr.coe.int/en/web/echr/european-convention-on-human-rights),
+  particularly Articles 6 and 8
+- [European Commission 2025 Rule of Law Report and country
+  material](https://commission.europa.eu/strategy-and-policy/policies/justice-and-fundamental-rights/upholding-rule-law/rule-law/annual-rule-law-cycle/2025-rule-law-report_en)
+
+These instruments explain why identity-sharing, delegated action, accessible
+records, personal data, home, reputation, defence and effective remedies can
+become more than software-design questions. They do not by themselves prove a
+breach in this case.
 
 ## Clemency social inquiry
 

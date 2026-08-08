@@ -13,6 +13,7 @@
 | Primary emotion | competence → compression → absurdity → vulnerability → agency → unfinished transition |
 | Human thesis | a person's worst response must not become more legible than the path that produced it |
 | Systems thesis | direct notice, granular authority, visible correction and human context are infrastructure |
+| Narrative rule | lived scene first; legal precision and source boundaries at the back |
 | Final line | **MyScoutee. Test the system between us.** |
 
 ## 2. Logline
@@ -58,7 +59,10 @@ network edge
 → portal progress line
 → hospital monitor trace
 → police evidence tape
-→ court timeline
+→ fingerprint ridge
+→ Danube light and brown stone
+→ C-shaped court line
+→ forensic report curve
 → protest route
 → constitutional fracture
 → open MyScoutee network
@@ -69,13 +73,18 @@ Palette arc:
 - `00:00–00:24`: Part I navy, cognac amber and calm screen light;
 - `00:24–01:20`: compressed graphite, tax-form ivory, warning red and sodium
   street amber;
-- `01:20–02:08`: clinical cyan, police blue and desaturated home warmth;
-- `02:08–02:40`: paper white, archive grey and cautious violet AI light;
+- `01:20–02:08`: clinical cyan, police blue, Danube silver, brown institutional
+  stone and forensic paper white;
+- `02:08–02:40`: archive grey, cautious violet AI light, desaturated home warmth
+  and widening civic gold;
 - `02:40–03:00`: civic gold, constitutional red, interim empty-chair navy and
   the original MyScoutee star colour.
 
 Do not use horror, riot spectacle, prison clichés, axes, flames, terrorism
 iconography, diagnostic labels floating over a face or a comic-book villain.
+Do not turn the film into a legal explainer. Statutes, citations and the
+reference apparatus belong to the book's end matter. The picture carries rooms,
+bodies, objects, lines, thresholds, expressions and consequences.
 
 ## 5. Character rules
 
@@ -193,8 +202,9 @@ Score arc:
 | 00:00–00:24 | Part I motif, thinned to piano/glass and low pulse |
 | 00:24–01:12 | restrained mechanical ostinato; pressure increases without action-trailer drums |
 | 01:12–01:36 | rhythm drops; breath, paper and clinical tone carry vulnerability |
-| 01:36–02:16 | pulse returns around seized devices and AI-assisted archive |
-| 02:16–02:40 | wider human strings as the private story enters public space |
+| 01:36–02:08 | pulse returns through seized devices, fingerprint rhythm, heavy door and forensic paper |
+| 02:08–02:24 | sparse cursor pulse and cold-room tone under continuing work and the home inquiry |
+| 02:24–02:40 | wider human strings as the London memory enters Budapest public space |
 | 02:40–02:56 | constitutional brass/choral colour, unresolved and morally ambiguous |
 | 02:56–03:00 | single star interval, no triumphant cadence |
 

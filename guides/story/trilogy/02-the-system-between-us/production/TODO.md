@@ -13,15 +13,28 @@ Status: **book and prompt review only; generation paused**.
 - [x] Research the July 2022 KATA change, civic protests, 2026 election,
   institutional transition, Venice Commission and Constitutional Court context.
 - [x] Draft an English Part II memoir continuous with Part I.
+- [x] Move repeated legal qualifications and source caveats out of the lived
+  narrative and into an end reference apparatus.
+- [x] Add a lawyer-facing reference map for the KATA transition, tax
+  administration, criminal procedure, experts, constitutional review,
+  data/identity and European guarantees.
+- [x] Separate the 1 December 2022 constructive system proposal from the later
+  five-page *Public-Interest Action* dated 30 October 2025; record the root v8
+  and signed v5 variants without inferring procedural acceptance from the
+  title.
 - [x] Draft an exactly three-minute English narration.
 - [x] Synchronize a CP00–CP22 storyboard and Flow/OpenArt prompt baseline.
+- [x] Separate the police rooms/fingerprint, Fő Street/C-shaped courtroom,
+  forensic mirror, AI work and social inquiry into legible late-film endpoint
+  scenes CP14–CP18.
 - [x] Separate contemporaneous authored irony, remembered reactions and later
   literary compression in a dedicated source ledger.
 - [x] Add the apartment, belongings and foreign-earned-savings thread without
   claiming that confiscation or a final financial penalty has been ordered.
 - [ ] Founder reads the whole English book and marks factual, emotional,
   privacy and pacing corrections.
-- [ ] Apply all Founder corrections across book, chronology, film and prompts.
+- [ ] Apply all Founder corrections across book, chronology, film and prompts;
+  the current pass is synchronized but review remains open.
 - [x] Build a clearly marked, editable review PDF in the Part I book style for
   the Founder to read; do not hash, lock or place it in `published/`.
 
