@@ -9,6 +9,8 @@ The manuscript is [THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_SYSTEM_BETWEEN_
 
 The current editable reading copy is
 [MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf).
+The browser edition is
+[MYSCOUTEE_THE_STORY_PART_II_PUBLIC_EDITION_EN.html](MYSCOUTEE_THE_STORY_PART_II_PUBLIC_EDITION_EN.html).
 The matching locked PDF, checksum and publication manifest live under
 [`../published/`](../published/).
 

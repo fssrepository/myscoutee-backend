@@ -74,7 +74,7 @@ and music remain downstream of the direct cross-model benchmark.
   existing consistent Founder identity sheet as the continuity baseline while
   making supporting characters warmer and more individual.
 - [x] Generate the Founder and supporting-character reference set used by the
-  illustrated review draft.
+  illustrated public edition.
 - [x] Generate and register Part I book portraits and scene montages from that
   same character set; the London resident row now uses four visibly distinct
   identities from the complete H01–H12 board.
