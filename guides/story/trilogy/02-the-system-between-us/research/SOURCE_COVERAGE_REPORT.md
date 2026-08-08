@@ -24,6 +24,22 @@ The resulting book is therefore based on a controlled source hierarchy:
 4. independent public sources for law and political context;
 5. explicit uncertainty where those layers do not reconcile.
 
+## Bounded primary package
+
+The deliberately assembled root package outside `backup/` contains 51 paths
+totalling 158,675,492 bytes:
+
+| Type | Paths | Review state |
+| --- | ---: | --- |
+| PDF | 27 | extracted/reviewed at narrative and source-family level; selected records reconciled more closely |
+| ODT | 11 | extracted/reviewed; duplicate or rendered variants treated as versions, not corroboration |
+| WAV | 13 | inventoried, approximately 94.5 minutes in total; complete local transcription pending |
+
+Accordingly, 38 written paths in the bounded package received content review.
+That does not mean every page received a legal line-by-line audit. The thirteen
+audio files are known and classified, but they must not be counted as fully
+reviewed conversations until local transcripts exist.
+
 ## Discovery coverage
 
 Read-only filesystem audit of the expanded backup:
