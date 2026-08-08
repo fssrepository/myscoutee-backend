@@ -10,5 +10,6 @@ After Founder approval, add only reproducible tools that are actually used:
 - final narration/score/foley/subtitle assembly and validation.
 
 The future slideshow must use the exact production checkpoints, holding each
-interval's first frame for four seconds and its last frame for four seconds. It
+every exact 9:16 checkpoint for one complete eight-second block: CP00 at 00:00,
+CP01 at 00:08, CP02 at 00:16 and so on. It
 must not generate or synthesize intermediate images.

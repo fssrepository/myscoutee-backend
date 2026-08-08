@@ -7,12 +7,13 @@ checkpoint_dir="${guide_dir}/assets/checkpoints"
 output_dir="${guide_dir}/storyboard/animatics"
 output_file="${1:-${output_dir}/myscoutee-part-ii-8s-endpoints-720x1280.mp4}"
 
-# S01–S22 each use CP(n-1) for four seconds and CP(n) for four seconds.
-# Interior checkpoints therefore remain continuously visible for eight seconds.
-# The final deterministic end card occupies the last four seconds.
+# This is a still-only checkpoint inspection master, not the 03:00 motion edit.
+# CP00 begins at 00:00, CP01 at 00:08, CP02 at 00:16 and so on. Every exact 9:16
+# checkpoint receives one complete eight-second hold. If the deterministic E01
+# end card exists, it is appended for four seconds.
 hold_seconds=(
-  4 8 8 8 8 8 8 8 8 8 8 8
-  8 8 8 8 8 8 8 8 8 8 4
+  8 8 8 8 8 8 8 8 8 8 8 8
+  8 8 8 8 8 8 8 8 8 8 8
 )
 
 if [[ ${#hold_seconds[@]} -ne 23 ]]; then
@@ -37,11 +38,21 @@ done
 
 printf "file '%s/CP22.png'\n" "${checkpoint_dir}" >> "${concat_list}"
 
+end_card="${checkpoint_dir}/E01.png"
+target_seconds=184
+if [[ -f "${end_card}" ]]; then
+  printf "file '%s'\nduration 4\nfile '%s'\n" \
+    "${end_card}" "${end_card}" >> "${concat_list}"
+  target_seconds=188
+fi
+
+target_frames=$((target_seconds * 24))
+
 ffmpeg -hide_banner -loglevel warning -y \
   -f concat -safe 0 -i "${concat_list}" \
   -vf "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,fps=24" \
-  -frames:v 4320 -t 180 \
+  -frames:v "${target_frames}" -t "${target_seconds}" \
   -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p \
   -an -movflags +faststart "${output_file}"
 
-echo "Built Part II endpoint review: ${output_file} (03:00.000)."
+echo "Built Part II 8-second checkpoint inspection slideshow: ${output_file} (${target_seconds}s)."

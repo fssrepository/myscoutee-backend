@@ -81,7 +81,7 @@ const ASSET_SEED_DEFINITION_BY_SLOT = {
   20: assetDefinition('Mountain Refuge Room', 'Four alpine bunks + drying racks + gear shelf', 'Practical shared room inside a staffed mountain refuge.', 'Mountain Refuge'),
   21: assetDefinition('Compact Campervan Sleep Setup', 'Pop-top berths + convertible bench + kitchenette', 'Four-person mobile sleep setup prepared at a legal overnight stop.', 'Campervan'),
   22: assetDefinition('Farm Guest Cottage', 'Two bedrooms + kitchen table + rural courtyard', 'Independent small cottage for a group visiting a working farm.', 'Cottage'),
-  23: assetDefinition('Desert Adobe Casita', 'Cool plaster walls + shaded patio + four beds', 'Compact heat-conscious guest house arranged around a shaded courtyard.', 'Casita'),
+  23: assetDefinition('Desert Adobe Casita', 'Cool plaster walls + shaded courtyard + sleeps four', 'Compact heat-conscious guest house with enclosed sleeping rooms and a furnished courtyard.', 'Casita'),
   24: assetDefinition('Forest Treehouse Lodge', 'Raised timber room + four beds + woodland deck', 'Weatherproof elevated lodge reached by a safe fixed stairway.', 'Treehouse'),
   25: assetDefinition('Historic Townhouse Room', 'Double bed + reading nook + tall window', 'Private two-person room in a carefully maintained older city home.', 'Guest Room'),
   26: assetDefinition('Beach Bungalow Room', 'Double bed + screened shutters + small veranda', 'Simple two-person coastal stay designed for airflow and sandy gear.', 'Bungalow'),
@@ -119,7 +119,7 @@ const ASSET_SCENE_BY_SLOT = {
   5: 'a mobile group catering setup beside a public picnic pavilion, with large coolers, stainless preparation tables, insulated food carriers and washable crates',
   6: 'an organized group safety desk in a community venue entrance, with plain unmarked first-aid cases, handheld radios, high-visibility vests, lanterns and incident supplies',
   7: 'a trailside bicycle repair station with a work stand, floor pump, patch kits, multi-tools, spare tubes and open bikepacking tool rolls',
-  8: 'an outdoor event power point built around portable battery stations, color-organized charging leads, weatherproof cable covers and a compact distribution table',
+  8: 'an outdoor event power point beside a solid concrete amphitheater service wall, built around portable battery stations, color-organized charging leads, weatherproof cable covers and a compact distribution table',
   9: 'a compact travel game collection opened on a weathered hostel common-room table, with small boards, cards, dice and score tokens',
   10: 'a route-navigation set arranged on a rocky overlook, with a handheld GPS, compass, blank waterproof map sleeves and a power bank',
   11: 'a field-cooking station on a designated gravel pad, with a twin burner, nesting pots, utensil roll and stable preparation board',
@@ -127,14 +127,14 @@ const ASSET_SCENE_BY_SLOT = {
   13: 'a portable audio system prepared on a small community stage, with two plain unmarked battery speakers, plain microphones, stands and a compact unmarked mixer',
   14: 'a rechargeable area-lighting kit tested in an open warehouse, with plain unmarked tripod work lights, plain lanterns and low-profile cable covers',
   15: 'an outdoor projection setup beneath a solid pavilion roof, with a folding screen, compact projector, power station and four chairs',
-  16: 'a reusable hygiene and cleanup station beside an event service area, with water containers, wash basins, sorting bins and cleaning tools',
-  17: 'a rustic lakeside timber cabin with a covered porch, four prepared beds and a compact wood stove',
+  16: 'a reusable hygiene and cleanup station beside a solid brick community service building, with water containers, wash basins, sorting bins and cleaning tools',
+  17: 'the closed exterior of a rustic lakeside timber cabin with solid walls, visible windows, a covered porch and a compact chimney, with no beds or interior cutaway visible',
   18: 'a clean urban hostel family room with two sturdy bunk beds, four lockers and a shared central table',
   19: 'the bright interior and small deck of a moored houseboat, with two double berths, compact galley and calm river outside',
   20: 'a practical mountain-refuge room with four alpine bunks, boot-drying racks, stone walls and organized gear shelves',
   21: 'the open pop-top interior of a compact campervan at an official motorhome stop, showing four converted sleeping places and kitchenette',
   22: 'a small stone farm guest cottage with two simple bedrooms, a wooden kitchen table and a sunny rural courtyard',
-  23: 'a cool desert adobe guest house with rounded plaster walls, four low beds and a deeply shaded patio',
+  23: 'the closed exterior of a compact desert adobe guest house with rounded plaster walls, solid doors and windows, and a deeply shaded enclosed courtyard furnished only with a table and chairs; sleeping rooms remain enclosed and no beds are visible outdoors',
   24: 'a weatherproof timber treehouse lodge on strong stilts, with safe stairs, four beds and a leafy woodland deck',
   25: 'a historic townhouse guest room with one double bed, a reading nook, tall sash window and restrained period details',
   26: 'an airy beach bungalow room with one double bed, screened shutters, natural fiber furniture and a small veranda',
@@ -567,6 +567,9 @@ function assetPrompt(definition, variation, slotNumber, slotVisual) {
     `Composition/framing: landscape 16:9, ${variation}; keep the main asset centered and recognizable even as a small thumbnail.`,
     'Lighting/mood: natural, friendly, practical and not luxury-advertising polished.',
     'Constraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.',
+    slotNumber === 1
+      ? 'Camping exception: this is the only asset slot allowed to contain a tent.'
+      : 'Hard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.',
     'Avoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.'
   ].join('\n');
 }

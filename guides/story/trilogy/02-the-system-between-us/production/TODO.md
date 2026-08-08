@@ -83,8 +83,9 @@ Status: **book/prompt audit and generation pass in progress**.
   defence counsel, probation officer and London-housemate references.
 - [ ] Generate or regenerate CP01–CP22 only after the book and prompts are
   approved.
-- [ ] Build the endpoint-only checkpoint slideshow: four seconds first frame,
-  four seconds last frame for every planned eight-second interval.
+- [ ] Build the checkpoint-only slideshow: every exact 9:16 CP remains visible
+  for a complete eight seconds at 00:00, 00:08, 00:16 and so on; no four-second
+  split and no generated intermediate image.
 - [ ] Review the slideshow against the book before spending video credits.
 - [ ] Test Flow and OpenArt on the identical CP05→CP06 stress interval.
 - [ ] Test the selected finalists on CP20→CP21 only if the first comparison is

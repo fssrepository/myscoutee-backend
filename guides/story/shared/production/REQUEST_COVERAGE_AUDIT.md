@@ -128,9 +128,11 @@ become independently verified evidence.
 2. Book illustrations, checkpoint endpoints and later Flow/OpenArt motion use
    the same role references; no attractive replacement face is introduced in a
    later stage.
-3. The slideshow contains no invented intermediate art. Each planned
-   eight-second interval displays its exact first endpoint for four seconds and
-   exact last endpoint for four seconds.
+3. The slideshow contains no invented intermediate art. It holds each exact
+   9:16 checkpoint for one complete eight-second block: `CP00` at 00:00,
+   `CP01` at 00:08, `CP02` at 00:16 and so on. The adjacent checkpoints still
+   define the first and last frames of each later eight-second motion clip; the
+   longer still-only review is not the final film timing.
 4. Narration and one continuous musical bed are post-production assets timed to
    the complete film. Clip-generated music is discarded.
 5. A local `published/` package means a versioned PDF/video, metadata and

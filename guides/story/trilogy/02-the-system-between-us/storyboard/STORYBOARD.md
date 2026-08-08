@@ -462,6 +462,7 @@ Before any checkpoint or motion generation:
 5. current 2026 office-holders, dates and the 16 September hearing are rechecked;
 6. CP00 is exported losslessly from Part I;
 7. only CP00–CP22 are generated—no unnecessary three-second slideshow frames;
-8. the review animatic holds each first checkpoint for four seconds and each
-   last checkpoint for four seconds;
+8. the still-only review slideshow holds every 9:16 checkpoint for one complete
+   eight-second block (`CP00` at 00:00, `CP01` at 00:08, and so on); adjacent
+   checkpoints remain the exact endpoints of the later motion clips;
 9. Flow/OpenArt motion testing begins only after explicit Founder approval.

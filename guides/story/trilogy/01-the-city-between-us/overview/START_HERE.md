@@ -98,14 +98,18 @@ separate editable text in post.
 3. Place the selected take against a `03:00.000` scene-hold animatic.
 4. Use the real durations in
    [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv).
-5. For every intended eight-second generator interval, use its exact first CP
-   for four seconds and exact last CP for four seconds. CP23 remains a separate
-   four-second deterministic end plate. Do not create intermediate slideshow
-   images or simulated pseudo-motion.
+5. In the still-only review slideshow, hold each exact 9:16 checkpoint for a
+   complete eight seconds: CP00 at 00:00, CP01 at 00:08, CP02 at 00:16 and so
+   on. CP23 remains a separate four-second deterministic end plate. Adjacent
+   checkpoints still become the exact first and last frames of each later
+   eight-second motion clip. Do not create intermediate slideshow images or
+   simulated pseudo-motion.
 6. Revise words or scene duration before buying motion generations.
 
-The endpoint-only `03:00.000` animatic is the review master. The superseded
-three-second slideshow and its generated intermediate frames are not retained.
+The checkpoint-hold slideshow is deliberately longer than the `03:00.000`
+motion edit because every endpoint receives its own eight-second inspection
+window. The superseded three-second slideshow and its generated intermediate
+frames are not retained.
 
 ## 6. Character benchmark before video
 

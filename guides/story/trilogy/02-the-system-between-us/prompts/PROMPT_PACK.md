@@ -105,8 +105,9 @@ Do not test every model on every shot.
 1. Generate character/reference sheets outside the final clip budget only after
    Founder approval.
 2. Generate CP00–CP22 once with the selected image model.
-3. Build the endpoint-only review animatic: four seconds on the first checkpoint,
-   four seconds on the last.
+3. Build the checkpoint-only review slideshow: hold CP00 for eight seconds,
+   CP01 for eight seconds, CP02 for eight seconds and continue at exact
+   eight-second boundaries. Do not split an interval into four-second halves.
 4. Use the identical `CP05→CP06` low-trust-triangle transition as the principal
    people/screen stress test.
 5. Use `CP20→CP21` as the secondary abstract/institutional stress test.
