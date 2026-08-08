@@ -34,6 +34,8 @@ it exists in the repository.
 
 Both candidates are exactly `720×1280`. Their paired prompt is
 `../benchmarks/prompts/model-benchmark-cp18-cp19.txt`.
+Their reproducible still-image generation specification is
+`../benchmarks/prompts/frame-generation-cp18-cp19-v01.txt`.
 
 ## Part I — The City Between Us
 
