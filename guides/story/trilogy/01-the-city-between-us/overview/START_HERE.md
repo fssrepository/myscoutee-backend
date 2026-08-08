@@ -1,6 +1,6 @@
 # Start here — complete production route
 
-This is the recommended path to a playable **02:48 English-language product
+This is the recommended path to a playable **03:00 English-language product
 film** without depending on a supported editing GPU:
 
 > **Character benchmark → identity lock → scene-duration animatic → one reusable
@@ -24,7 +24,7 @@ DELIVERY/
 
 Required technical properties:
 
-- exact duration: `02:48.000`;
+- exact duration: `03:00.000`;
 - raster and aspect ratio: `720×1280`, `9:16`;
 - constant `24 fps`;
 - H.264 video, AAC audio at `48 kHz`;
@@ -95,7 +95,7 @@ separate editable text in post.
    windows.
 2. Record two natural rough takes in a quiet, soft room. A phone recording is
    sufficient for timing.
-3. Place the selected take against a `02:48.000` scene-hold animatic.
+3. Place the selected take against a `03:00.000` scene-hold animatic.
 4. Use the real durations in
    [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv), not a uniform
    three-second or eight-second slideshow.

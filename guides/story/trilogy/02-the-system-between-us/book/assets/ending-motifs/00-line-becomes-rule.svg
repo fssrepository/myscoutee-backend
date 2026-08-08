@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">The connecting line becomes a rule</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 104C105 47 176 123 262 83C303 64 329 71 360 77C391 71 417 64 458 83C544 123 615 47 700 104" stroke="#2c668f" stroke-width="5"/>
+    <path d="M38 118H682" stroke="#c95f50" stroke-width="3"/>
+    <path d="M88 95c-10-25-3-43 22-54 18 21 12 42-8 55M632 95c10-25 3-43-22-54-18 21-12 42 8 55" fill="#e6ad52" stroke="#9b4e4e" stroke-width="3"/>
+    <circle cx="360" cy="77" r="17" fill="#fbf7ef" stroke="#76528f" stroke-width="5"/>
+    <path d="M360 53v48M348 65h24M348 89h24" stroke="#76528f" stroke-width="3"/>
+  </g>
+</svg>

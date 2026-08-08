@@ -64,7 +64,7 @@ The trilogy part and the edition version are separate. This book is Part
 - Established the first synchronized English public-review manuscript.
 - Added the MyScoutee manual-compatible cover lockup and Part `I` trilogy mark.
 - Synchronized Founder memories, product truth, privacy boundaries, visual
-  prompts and the 02:48 hero-film compression.
+  prompts and the 03:00 hero-film compression.
 - Added the optional illustration and same-identity portrait/montage contract.
 - Added full-bleed covers and seven original, chapter-contextual Hungarian/world
   ending ornaments fixed to the bottom of their closing pages.

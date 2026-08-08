@@ -15,7 +15,7 @@ still matches this guide.
 
 ## Outcome
 
-This directory specifies a complete 2 minute 48 second MyScoutee hero film:
+This directory specifies a complete 3 minute MyScoutee hero film:
 
 - working title: **The City Between Us**;
 - master language: English, for an international operator/community audience;
@@ -148,7 +148,7 @@ Planned static review animatic after narrative approval:
   24 true CP00–CP23 generation boundaries. Each interior checkpoint combines
   half of the preceding shot and half of the following shot, so most frames hold
   for roughly seven to eight seconds while the complete film remains exactly
-  02:48. The build script is ready, but the render remains deliberately deferred
+  03:00. The build script is ready, but the render remains deliberately deferred
   until the Founder has reviewed and approved the book and synchronized prompts.
 
 The `prompts/` directory contains plain-text copy blocks. Do not edit a master
@@ -239,7 +239,7 @@ safe or successful meeting.
 
 | Setting | Master |
 | --- | --- |
-| Runtime | 02:48.000 |
+| Runtime | 03:00.000 |
 | Frame rate | 24 fps constant |
 | Raster | **720×1280 primary mobile master**; optional 1080×1920 only after a phone QA failure |
 | Aspect | **9:16 portrait**; important faces/text stay clear of the top/bottom platform UI zones |

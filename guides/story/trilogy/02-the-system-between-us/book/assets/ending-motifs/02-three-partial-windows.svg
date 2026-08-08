@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">Three partial windows</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 112C93 68 169 126 250 100M702 112C627 68 551 126 470 100" stroke="#39727c" stroke-width="5"/>
+    <path d="M72 104c1-28 16-45 43-50 8 27-4 47-33 58M648 104c-1-28-16-45-43-50-8 27 4 47 33 58" fill="#d99a69" stroke="#39727c" stroke-width="3"/>
+    <rect x="238" y="43" width="68" height="66" rx="8" fill="#fbf7ef" stroke="#39727c" stroke-width="5"/>
+    <rect x="326" y="25" width="68" height="84" rx="8" fill="#fbf7ef" stroke="#e6ad52" stroke-width="5"/>
+    <rect x="414" y="43" width="68" height="66" rx="8" fill="#fbf7ef" stroke="#39727c" stroke-width="5"/>
+    <path d="M272 43v66M360 25v84M448 43v66M306 76h20M394 76h20" stroke="#7caeb3" stroke-width="3"/>
+  </g>
+</svg>

@@ -81,9 +81,8 @@ the Founder explicitly approves generation.
 
 ## 4. Prepared but deliberately not executed
 
-- `scripts/build_checkpoint_hold_animatic.sh` is ready to assemble CP00–CP23
-  without creating any new images. It must remain unrun until approval.
-- The existing
-  `storyboard/animatics/myscoutee-storyboard-v01-3s-720x1280.mp4` is a
-  superseded review artifact and is not evidence that the current narrative has
-  been approved.
+- `scripts/build_checkpoint_hold_animatic.sh` reproducibly assembles CP00–CP23
+  without creating any new images.
+- `storyboard/animatics/myscoutee-part-i-8s-endpoints-720x1280.mp4` is the
+  verified 03:00 endpoint-only review. The superseded three-second review was
+  removed.

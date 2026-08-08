@@ -230,7 +230,7 @@ second date or conversation, and one modest nudge toward Hungarian institutional
 re-entry. Do not invent her reason for declining or turn the memory into an
 employment advertisement.
 This board supports the public book and character development; it is not a
-request to add six scenes to the 02:48 hero film.
+request to add six scenes to the 03:00 hero film.
 
 ### Budapest return, nightlife and re-entry memory board
 

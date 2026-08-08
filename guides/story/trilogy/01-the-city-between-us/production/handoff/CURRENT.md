@@ -19,7 +19,7 @@ detailed files only through the routes below.
 ## Current film
 
 - Working title: **The City Between Us**.
-- Runtime: exactly 02:48.000; 720×1280, 9:16, constant 24 fps.
+- Runtime: exactly 03:00.000; 720×1280, 9:16, constant 24 fps.
 - Master language: English.
 - Style: continuous mobile-first cinematic 2.5D journey, not a collection of
   unrelated scenes.
@@ -27,18 +27,15 @@ detailed files only through the routes below.
   frame. Each interior checkpoint is both one interval's end and the next one's
   start, so a changed checkpoint normally requires only two adjacent motion
   intervals to be regenerated.
-- The planned post-approval review animatic is
-  `storyboard/animatics/myscoutee-storyboard-v01-checkpoint-hold-720x1280.mp4`:
-  the 24 true
-  CP00–CP23 boundaries, mostly held for roughly seven to eight seconds, total
-  168 seconds at 720×1280 and 24 fps. It models the first/last-frame workflow
-  without repeating a checkpoint every three seconds. Do not build it until the
-  Founder has approved the book and synchronized prompts. The older `-3s-`
-  render remains only as a superseded caption-review artifact.
+- The verified production review animatic is
+  `storyboard/animatics/myscoutee-part-i-8s-endpoints-720x1280.mp4`: the 24 true
+  CP00–CP23 boundaries, with each S01–S22 interval represented by four seconds
+  of its first frame and four seconds of its last frame, then a four-second CP23
+  end plate. Runtime is exactly 180 seconds at 720×1280 and 24 fps.
 - `assets/storyboard-rough/CP00.png`–`CP23.png` are planning checkpoints.
   CP00–CP22 use fictional identity placeholders; CP23 uses the real brand asset
-  deterministically. `assets/storyboard-3s/F00.jpg`–`F55.jpg` are review frames,
-  not additional generation checkpoints.
+  deterministically. The superseded three-second review and its generated
+  pseudo-motion frames were removed.
 
 ## Autobiographical truth lock
 
@@ -69,7 +66,7 @@ detailed files only through the routes below.
   to the later product insight. Their full, privacy-safe form belongs
   in the public book and
   `prompts/budapest-before-london-relationship-memory-board.txt`, not as six
-  extra beats in the 02:48 hero cut.
+  extra beats in the 03:00 hero cut.
 - He returned to the workers' hostel because impersonal, visible rules were more
   predictable than opaque personal acceptance. This is not a homelessness or
   poverty claim.
@@ -308,7 +305,7 @@ detailed files only through the routes below.
 
 ## Standalone-film boundary
 
-Film 1 is a complete 02:48 MyScoutee product film. It contains no mention, hint,
+Film 1 is a complete 03:00 MyScoutee product film. It contains no mention, hint,
 symbol or sound connected to the Founder's later legal, tax or court matter.
 Film 2 is future scope: it may inherit only Film 1's exact lossless final frame
 and must be reconstructed separately from primary documents and legal review.
@@ -458,7 +455,7 @@ Do not preload the full 2,500-line production pack.
 
 ## Media and cleanup rule
 
-Keep CP00–CP23, F00–F55 and the single selected 02:48 review MP4. Do not commit
+Keep CP00–CP23, F00–F55 and the single selected 03:00 review MP4. Do not commit
 discarded image variants, rejected renders, duplicate exports or backup videos.
 Keep filenames stable when regenerating a checkpoint. Do not delete the current
 selected asset before its replacement has been reviewed.

@@ -14,7 +14,7 @@ Do not regenerate the storyboard in bulk and do not create backup or discarded
 render files.
 
 In the first response, use at most ten short points to restate: the technical
-state of the 02:48 film, locked personal facts, exact MyScoutee relationship
+state of the 03:00 film, locked personal facts, exact MyScoutee relationship
 lifecycle, operator model, checkpoint logic and the single next decision. Then
 continue from the handoff. Identify every animatic fault by exact timecode and
 Fxx/CPxx/Sxx identifier. Modify only the smallest necessary file or image set.

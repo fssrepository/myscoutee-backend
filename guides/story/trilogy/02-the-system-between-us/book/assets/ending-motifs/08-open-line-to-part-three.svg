@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">The open line to Part III</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 108C103 55 178 128 270 88M702 108C617 55 542 128 450 88" stroke="#396c77" stroke-width="5"/>
+    <path d="M72 101c2-28 18-44 46-47 6 27-8 46-37 53M648 101c-2-28-18-44-46-47-6 27 8 46 37 53" fill="#c95f50" stroke="#396c77" stroke-width="3"/>
+    <path d="M272 88c34-31 62-38 88-20 26-18 54-11 88 20" stroke="#d09a61" stroke-width="6"/>
+    <circle cx="360" cy="68" r="17" fill="#fbf7ef" stroke="#76528f" stroke-width="5"/>
+    <path d="M360 45v46M337 68h46" stroke="#76528f" stroke-width="4"/>
+    <path d="M345 27l15-15 15 15" stroke="#e6ad52" stroke-width="4"/>
+    <circle cx="18" cy="108" r="6" fill="#2c668f" stroke="none"/><circle cx="702" cy="108" r="6" fill="#e6ad52" stroke="none"/>
+  </g>
+</svg>

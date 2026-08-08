@@ -1,0 +1,9 @@
+Direct “MyScoutee — The Story, Part II: The System Between Us” as a checkpoint-controlled 03:00 portrait animated-documentary film. The motion chain is 22 separate silent 8-second clips, CP00→CP01 through CP21→CP22, followed by a 4-second end card assembled outside the generator.
+
+Use one selected OpenArt video model at a time. Keep identical checkpoint images, prompt text, aspect ratio, duration and reference strengths during model comparison. The two benchmark intervals are CP05→CP06 for three-person identity, partial-screen staging and complex spatial continuity, then CP20→CP21 for institutional abstraction and two unequal document routes. Record the model, cost, seed/settings, endpoint accuracy, identity stability, motion quality and failure reason before selecting a production model.
+
+For each production clip, use the shared continuity prefix followed by only the matching SHOT Sxx block. Require exact first and last frames. If the model offers only image-to-video from one endpoint, treat the output as a labelled experiment, not part of the master continuity chain.
+
+Carry forward the exact Part I Founder and world references. This is a restrained civic memoir, not a legal thriller. All officials are ordinary human beings. Documents are anonymized unreadable plates. No raw evidence, private identifiers, charged quotation, diagnosis label, public-figure likeness, generated logo or completed-confiscation imagery.
+
+Generate picture without dialogue, narration, lip sync, music, ambience or sound effects. Final voice-over, one continuous score, foley, subtitles, dates, evidence-safe document text and the exact repository MyScoutee logo are post-production layers.

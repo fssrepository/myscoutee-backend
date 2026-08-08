@@ -6,16 +6,16 @@ This directory is the series hub. The three narrative packages live under
 part does not own a duplicate copy of a cross-part workflow.
 
 The known trilogy arc is **product and idea origin → independently documented
-middle chapter → actual final outcome**. This describes the narrative function
-of the three parts; it does not assign final English titles to Parts II and
-III before their stories are ready.
+middle chapter → actual final outcome**. Part II now has the working title
+**The System Between Us**; Part III remains unassigned until its real outcome
+exists.
 
 ## Parts
 
 | Part | Working identity | Status | Package |
 | --- | --- | --- | --- |
 | **I** | **The City Between Us** | public, editable book edition `v1.0.0`; 02:48 product-film package in development | [01-the-city-between-us](trilogy/01-the-city-between-us/overview/README.md) |
-| **II** | title unassigned | planned; story must be reconstructed from its own primary material | [02-unassigned](trilogy/02-unassigned/overview/README.md) |
+| **II** | **The System Between Us** | English book, 03:00 film and evidence package in review; no media generated | [02-the-system-between-us](trilogy/02-the-system-between-us/overview/README.md) |
 | **III** | title unassigned | planned final part; no ending is invented in advance | [03-unassigned](trilogy/03-unassigned/overview/README.md) |
 
 The Roman numeral is the trilogy position, not an edition version. Part `I`
@@ -61,5 +61,6 @@ Every part package keeps these concerns separate:
   with their owning storyboard or film package rather than in `published/`.
 
 Series metadata is recorded in
-[shared/metadata/series.json](shared/metadata/series.json). Exact English titles
-for Parts II and III remain unset until the Founder confirms them.
+[shared/metadata/series.json](shared/metadata/series.json). Part II's working
+title is recorded; Part III remains unset until its story can be concluded
+without invention.

@@ -3,10 +3,8 @@
 This directory contains timing and continuity previews built from storyboard
 frames. These files are planning artifacts, not public film masters.
 
-`myscoutee-storyboard-v01-3s-720x1280.mp4` is the legacy three-second-per-frame
-slideshow. The next approved animatic should use only the actual generation
-endpoints, holding each intended first and last frame for four seconds so one
-eight-second model interval is visible without generating unnecessary images.
-
-No new animatic or image generation is required until the book and prompt set
-have completed Founder review.
+`myscoutee-part-i-8s-endpoints-720x1280.mp4` is the canonical production review:
+S01–S22 each hold the exact first frame for four seconds and exact last frame
+for four seconds, followed by the four-second CP23 end plate. Runtime is exactly
+03:00.000 at 24 fps. The superseded `-3s-` MP4 and its generated F00–F55 review
+frames were removed after this replacement was verified.

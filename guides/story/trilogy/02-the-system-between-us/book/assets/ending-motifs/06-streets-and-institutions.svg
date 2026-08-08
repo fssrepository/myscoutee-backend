@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">Streets and institutions</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 112C97 62 172 127 264 93M702 112C623 62 548 127 456 93" stroke="#476b91" stroke-width="5"/>
+    <path d="M73 104c0-28 16-45 44-50 8 27-5 47-34 57M647 104c0-28-16-45-44-50-8 27 5 47 34 57" fill="#e6ad52" stroke="#476b91" stroke-width="3"/>
+    <path d="M286 112h148M304 112V66h112v46M292 66l68-39 68 39z" fill="#fbf7ef" stroke="#27374b" stroke-width="5"/>
+    <path d="M328 110V75M360 110V75M392 110V75" stroke="#c95f50" stroke-width="5"/>
+    <circle cx="360" cy="19" r="6" fill="#e6ad52" stroke="none"/>
+  </g>
+</svg>

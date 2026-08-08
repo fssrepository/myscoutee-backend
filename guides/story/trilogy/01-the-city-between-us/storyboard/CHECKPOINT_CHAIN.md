@@ -1,12 +1,12 @@
 # MyScoutee continuous-video checkpoint chain
 
-The 02:48 film is planned as one continuous journey. The 24 checkpoint images
+The 03:00 film is planned as one continuous journey. The 24 checkpoint images
 are not 24 isolated scenes: every checkpoint is the **last reference frame of
 one motion interval** and the **first reference frame of the next**.
 
 ```text
-CP00 -> CP01 -> CP02 -> ... -> CP22 -> CP23
-  interval 01    interval 02          interval 23
+CP00 -> CP01 -> CP02 -> ... -> CP22    CP23
+  interval 01    interval 02          end plate
 ```
 
 This makes later revision local. If one interior checkpoint changes, normally
@@ -20,17 +20,13 @@ Rules:
 - Preserve identity, notebook, colour, light and camera direction at boundaries.
 - CP00 is the opening frame; CP23 is the deterministic brand end frame.
 - The present Founder and cast are fictional planning placeholders.
-- The existing captioned animatic has 56 three-second slide slots and remains a
-  legacy story-timing artifact. Do not use that repeated-frame pattern for the
-  next generator-reference review.
-- The next review export uses only each approved interval's first and last
+- The canonical review export uses only each approved interval's first and last
   checkpoint. For an eight-second video-generation interval, hold the first
   checkpoint for four seconds and the last checkpoint for four seconds. Do not
   insert artificial three-second repeats or intermediate stills; the selected
-  video model will create the motion once.
-- Do not infer the final film runtime by multiplying every current checkpoint
-  interval by eight. After character and story lock, combine or retime the
-  checkpoint pairs against the approved narration before bulk generation.
+  video model will create the motion once. S01–S22 are exactly eight seconds;
+  CP23 is a separate deterministic four-second end plate. Total runtime is
+  exactly 03:00.000.
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |
@@ -59,7 +55,5 @@ Rules:
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/storyboard-rough/CP22.png` |
 | CP23 | MyScoutee end frame | `assets/storyboard-rough/CP23.png` |
 
-The generated `assets/storyboard-3s/F00.jpg`–`F55.jpg` files are retained only
-as the legacy 02:48 timing review. The next review builder must create an
-endpoint-only reference export from approved checkpoint pairs; it must not
-recreate intermediate pseudo-motion frames.
+The superseded three-second review and its generated F00–F55 pseudo-motion
+frames were removed after the endpoint-only replacement was verified.

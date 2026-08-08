@@ -71,4 +71,4 @@ OUTPUT
 Generate exactly one six-panel planning board. Do not animate, add narration,
 music, subtitles, flags, generated writing or corporate marks. This memory is
 primarily for the public book and character development; it is not automatically
-an additional shot in the locked 02:48 hero film.
+an additional shot in the locked 03:00 hero film.

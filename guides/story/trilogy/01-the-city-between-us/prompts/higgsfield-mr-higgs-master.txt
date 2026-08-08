@@ -1,5 +1,5 @@
 Act as cinematography co-director for the locked 23-shot film “The City Between
-Us,” runtime 02:48, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
+Us,” runtime 03:00, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
 setup table only. Do not generate or rewrite the supplied narration and timings.
 
 Use @Founder, @Maya, @DanceStudent, @DancePartner, @Operator, @HungarianOrigin,

@@ -1,6 +1,6 @@
 # Complete storyboard and shot list
 
-Runtime: **02:48.000**. Frame rate: **24 fps**. Deliver every generated shot
+Runtime: **03:00.000**. Frame rate: **24 fps**. Deliver every generated shot
 with at least 12-frame handles. The timings below are editorial targets; generate
 separate 5–10 second clips and trim them in the final editor.
 
@@ -40,7 +40,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   S02. Use separate still plates and CPU match movement if one clip cannot hold
   the transformation cleanly.
 
-### S02 — Work, unstable rooms and a secure key · 00:08–00:15 · 7 s
+### S02 — Work, unstable rooms and a secure key · 00:08–00:16 · 8 s
 
 - **Picture/blocking:** Compress four truthful still plates with match movement,
   not one overloaded generation. A neutral multinational-office exit leads to
@@ -65,7 +65,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** bridge cable/rail becomes the London route; one
   vertical museum frame becomes the Soho office window.
 
-### S03 — The hidden price of staying in London · 00:15–00:23 · 8 s
+### S03 — The hidden price of staying in London · 00:16–00:24 · 8 s
 
 - **Picture/blocking:** A brief suitcase/threshold flash places the Founder in
   London in 2011, then the frame settles in a compact multicultural Soho
@@ -91,7 +91,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   the Soho sex-shop farewell-gift memory as one warm S04 insert; do not overload
   S03.
 
-### S04 — The city's unrepeatable magic · 00:23–00:30 · 7 s
+### S04 — The city's unrepeatable magic · 00:24–00:32 · 8 s
 
 - **Picture/blocking:** The following-year public energy of the 2012 Diamond
   Jubilee and Olympic summer enters without official marks or royal likenesses,
@@ -118,7 +118,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   the city-feels-inexhaustible line.
 - **Transition/generation:** train-door edge becomes the narrow HMO hall.
 
-### S05 — Thirteen Hungarian lives under one roof · 00:30–00:38 · 8 s
+### S05 — Thirteen Hungarian lives under one roof · 00:32–00:40 · 8 s
 
 - **Picture/blocking:** One continuous move follows the Founder into a converted
   Victorian HMO that is internally a Hungarian microcosm inside multicultural
@@ -143,7 +143,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   thirteen-lives/thirteen-reasons line.
 - **Transition/generation:** the bathroom queue clears frame to reveal two doors.
 
-### S06 — Private hopes under crowded conditions · 00:38–00:46 · 8 s
+### S06 — Private hopes under crowded conditions · 00:40–00:48 · 8 s
 
 - **Picture/blocking:** The geography becomes precise: one full bathroom, one
   separate small toilet, then the Founder's shared bedroom with two bounded
@@ -166,7 +166,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   home.”
 - **Transition/generation:** meal-container lid closes and match-cuts to S07.
 
-### S07 — Three years of magic, five years to a threshold · 00:46–00:58 · 12 s
+### S07 — Three years of magic, five years to a threshold · 00:48–00:56 · 8 s
 
 - **Picture/blocking:** The first three seasonal cycles keep London's magic:
   software work, museums, colleagues and stubborn low-cost adventures make
@@ -210,11 +210,11 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** the final rent line sweeps into a world-map arc.
   Generate four plates, composite seasons in post; do not ask one clip to do all.
 
-### S08 — Forty countries across folded time · 00:58–01:06 · 8 s
+### S08 — Forty countries across folded time · 00:56–01:04 · 8 s
 
-- **Picture/blocking:** 00:58–01:00: paper route and passport-like shapes without
+- **Picture/blocking:** 00:56–00:58: paper route and passport-like shapes without
   readable stamps. The notebook visibly folds chronology so one post-London
-  memory does not appear to precede the return. **01:00–01:03:** eight
+  memory does not appear to precede the return. **00:58–01:01:** eight
   illustrated memories flash at 8–12 frames each: High Tatras, Schönbrunn arch,
   Neuschwanstein silhouette, Founder/tuk-tuk handoff at Angkor, a reciprocal
   Taj Mahal bus conversation, Norwegian weather, one confirmed Egypt human-
@@ -222,12 +222,12 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   balloon resting in a vegetable plot while
   passengers and residents cooperate across a wall; do not compress Cairo,
   Luxor, Aswan and Abu Simbel into one fake panorama. The Cairo taxi-roof luggage
-  mishap is the first alternate, not a ninth plate. 01:03–01:05: the last water
+  mishap is the first alternate, not a ninth plate. 01:01–01:03: the last water
   reflection becomes the Founder alone beside an empty train/bench seat, still
   looking back to share it. Across the plates, local people open the meaningful
   threshold: a driver indicates the route, a fellow passenger makes space, a
   resident helps at a wall, or a host points beyond the postcard view. Each
-  gesture also changes the Founder's reflected expression. 01:05–01:06: the
+  gesture also changes the Founder's reflected expression. 01:03–01:04: the
   flowing route and bright public space stop at a restrained COVID threshold —
   quiet terminal geometry, an
   empty route and closed light — without medical spectacle or readable decree.
@@ -248,7 +248,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** create each memory as a still, animate 8–12 frames
   in post or Flow; do not generate fake archive footage.
 
-### S09 — Home, purposeful but not yet permanent · 01:06–01:13 · 7 s
+### S09 — Home, purposeful but not yet permanent · 01:04–01:12 · 8 s
 
 - **Picture/blocking:** The same route line folds back to Budapest. Founder opens
   the parent-assisted flat that has stood empty throughout his London years into
@@ -269,7 +269,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** tram glass becomes two phone screens. Flow Frames or
   Higgsfield.
 
-### S10 — Two kinds of app attention · 01:13–01:20 · 7 s
+### S10 — Two kinds of app attention · 01:12–01:20 · 8 s
 
 - **Picture/blocking:** A horizontal tram-window rail divides the 9:16 image into
   two natural portrait zones: Founder in the lower/near reflection gives profiles
@@ -283,7 +283,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** one message card becomes a blank name tag. Higgsfield
   Elements; notification graphics only in post.
 
-### S11 — Rooms full of beginnings · 01:20–01:26 · 6 s
+### S11 — Rooms full of beginnings · 01:20–01:28 · 8 s
 
 - **Picture/blocking:** A continuous corridor passes a talk, community dinner and
   social evening. One doorway briefly repeats across several evenings: the same
@@ -309,7 +309,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** marker stroke becomes dance-floor tape. OpenArt
   Director or three short plates in post.
 
-### S12 — Beginner floor · 01:26–01:33 · 7 s
+### S12 — Beginner floor · 01:28–01:36 · 8 s
 
 - **Picture/blocking:** Busy beginner partner-dance class. Founder misses one
   step, recovers, and he and the Dance Student share a genuine smile. Attendance
@@ -321,7 +321,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** passing dancer wipes to identical S13 room.
   Higgsfield Kling 3.0 with Founder, Student and Studio Elements.
 
-### S13 — The advanced room · 01:33–01:40 · 7 s
+### S13 — The advanced room · 01:36–01:44 · 8 s
 
 - **Picture/blocking:** Same studio, same camera path, but half the floor is
   empty; a calendar changes without readable text. Founder completes a more
@@ -335,7 +335,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** camera settles into S14 three-shot. Use identical
   model, seed/references and location plate as S12.
 
-### S14 — Context becomes clear · 01:40–01:46 · 6 s
+### S14 — Context becomes clear · 01:44–01:52 · 8 s
 
 - **Picture/blocking:** Student's partner arrives from rain, folds an umbrella
   and greets both. Student turns naturally toward him; the Founder understands
@@ -348,7 +348,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** umbrella crosses lens into café metal. Higgsfield,
   three locked Character Elements; expression outranks motion.
 
-### S15 — The wrong rooms for a first date · 01:46–01:53 · 7 s
+### S15 — The wrong rooms for a first date · 01:52–02:00 · 8 s
 
 - **Picture/blocking:** Three sympathetic micro-dates in one rhythmic montage:
   2.3 s café steam masks a sentence; 2.3 s basement bar forces “Sorry — what did
@@ -364,7 +364,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** white tablecloth becomes notebook paper. Generate
   three clips/stills and cut in post; OpenArt or Higgsfield.
 
-### S16 — The missing bridge · 01:53–02:01 · 8 s
+### S16 — The missing bridge · 02:00–02:08 · 8 s
 
 - **Picture/blocking:** The earlier apps, talks, dinners, dancing and dates return
   as five small doorway memories: the Founder genuinely tried every available
@@ -389,7 +389,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ## Act II — Draw a path
 
-### S17 — Editable priority for an unknown person or pair · 02:01–02:09 · 8 s
+### S17 — Editable priority for an unknown person or pair · 02:08–02:16 · 8 s
 
 - **Picture/blocking:** Founder privately reviews one unknown individual profile
   and one pair suggestion, then deliberately moves ten tactile amber beads from
@@ -409,7 +409,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** two independent amber choices approach from opposite
   directions. Generate clean plates; create exact UI and numbers in post.
 
-### S18 — Mutual evidence forms a group of strangers · 02:09–02:17 · 8 s
+### S18 — Mutual evidence forms a group of strangers · 02:16–02:24 · 8 s
 
 - **Picture/blocking:** Two-way choices and restrained cues for shared interests,
   distance and current context resolve into one candidate of exactly six distinct
@@ -432,7 +432,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** the same six candidate portraits receive separate
   invitations. Avoid a giant affinity graph; exact controls remain in post.
 
-### S19 — Strangers choose, chat and plan · 02:17–02:25 · 8 s
+### S19 — Strangers choose, chat and plan · 02:24–02:32 · 8 s
 
 - **Picture/blocking:** The same six strangers each decide independently; this
   candidate proceeds because all six accept, while decline remains equally
@@ -449,7 +449,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** one blank event card becomes a physical ticket.
   All readable interface details are composited in post.
 
-### S20 — First managed event turns strangers into contacts · 02:25–02:32 · 7 s
+### S20 — First managed event turns strangers into contacts · 02:32–02:40 · 8 s
 
 - **Picture/blocking:** At the first real event, the same six people manage four
   clear resource buckets together: members, transport, accommodation/venue and
@@ -473,7 +473,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ## Act III — A community that can meet again
 
-### S21 — The editable relationship lifecycle · 02:32–02:38 · 6 s
+### S21 — The editable relationship lifecycle · 02:40–02:48 · 8 s
 
 - **Picture/blocking:** People met at S20 are now known contacts, with the event
   and meeting time retained as real context. One is directly invited again; a
@@ -500,7 +500,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** Operator closes a preparation list. Higgsfield for
   ensemble consistency.
 
-### S22 — Independence gives the 2016 idea time · 02:38–02:44 · 6 s
+### S22 — Independence gives the 2016 idea time · 02:48–02:56 · 8 s
 
 - **Picture/blocking:** For the first two seconds, the 2016 origin is added as
   exact editable post typography beside the cognac notebook. Three restrained
@@ -544,7 +544,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   deployments, proven efficiency, revenue or automatic trust; all readable
   status text is added in post.
 
-### S23 — Wordmark and invitation · 02:44–02:48 · 4 s
+### S23 — Wordmark and invitation · 02:56–03:00 · 4 s
 
 - **Picture:** Deep navy clean field. The original unmodified repository
   `heart.png` appears centered, with **MyScoutee** as separate editable text

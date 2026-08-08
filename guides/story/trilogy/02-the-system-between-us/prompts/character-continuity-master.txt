@@ -1,0 +1,19 @@
+PART II CHARACTER CONTINUITY — REQUIRED FOR EVERY PEOPLE SHOT
+
+Use only the exact saved character references named in CHARACTER_MAP.md. The
+Founder is the rust-scarf man inherited from Part I. Preserve face, age,
+hairline, proportions, navy field coat, charcoal knit, muted rust scarf and
+cognac notebook. Do not beautify, rejuvenate, caricature or replace him.
+
+The accountant is competent and overloaded, never villainous or coded as
+negligent. The tax officer is an ordinary professional with only a partial
+screen. The police officer is restrained and human. The forensic expert is
+analytical and neutral. The judge is anonymous, contemporary and visually
+distinct from every other role. The London housemate is dignified and private.
+
+Preserve each role's exact face, silhouette, clothing palette and prop across
+all of its checkpoints. A brief smile or softened expression communicates only
+human reaction. It never proves agreement, guilt, innocence, bias, ridicule or
+an official finding. Do not generate public-figure likenesses, readable private
+documents, official insignia, money piles, villain framing or cloned crowd
+faces.

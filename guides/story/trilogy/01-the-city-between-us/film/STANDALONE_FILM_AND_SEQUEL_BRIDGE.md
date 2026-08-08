@@ -4,7 +4,7 @@ Status: **Film 1 story boundary and future continuity note**.
 
 ## Film 1 remains a product film
 
-The 02:48 film contains no mention, hint, symbol, sound or title relating to the
+The 03:00 film contains no mention, hint, symbol, sound or title relating to the
 Founder's legal proceeding, NAV contact, accusation, investigation, hearing or
 possible asset consequences. Those belong only to a later documentary film,
 reconstructed from the exact surviving documents.
@@ -113,8 +113,8 @@ the product-development history:
 
 | Time | English VO |
 | --- | --- |
-| 02:38–02:44 | A 2016 idea, accelerated by AI: one shared core, shaped and tested by local communities. |
-| 02:44–02:48 | MyScoutee. Test it with me in real communities. |
+| 02:48–02:56 | A 2016 idea, accelerated by AI: one shared core, shaped and tested by local communities. |
+| 02:56–03:00 | MyScoutee. Test it with me in real communities. |
 
 Final editable text:
 

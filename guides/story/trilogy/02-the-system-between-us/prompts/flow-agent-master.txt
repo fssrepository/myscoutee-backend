@@ -1,0 +1,9 @@
+Build the visual plan for “MyScoutee — The Story, Part II: The System Between Us” as twenty-two separate silent Veo first/last-frame clips plus one post-produced four-second end card. The total edited runtime is exactly 03:00 in 9:16 portrait at 720×1280 and 24 fps.
+
+Do not generate the whole film in one request. Work in scene order S01–S22. For S01 upload CP00.png and CP01.png; for S02 upload CP01.png and CP02.png; continue through S22 with CP21.png and CP22.png. For every clip paste the shared continuity prefix and only the matching SHOT block. Generate exactly one 8-second result. Never use Extend as a substitute for the exact final checkpoint. If the selected mode cannot use both endpoints, stop and label it unsuitable for the continuity chain.
+
+Preserve the exact Part I Founder, apartment, London HMO, cognac notebook and painterly cinematic 2.5D visual grammar. Keep the accountant, tax officer, police officer, expert and judge humane and anonymized. Use abstract unreadable document plates. Do not reproduce the charged sentence, private data, account values, diagnoses, official logos or public-figure likenesses. Do not portray confiscation as completed. Seven constitutional judges step aside from one matter; they do not vanish from office.
+
+Generate silent picture only: no dialogue, narration, lip sync, music, ambience or sound effects. A single continuous score, synchronized narration and foley are added after picture lock.
+
+Test model quality first on CP05→CP06 and CP20→CP21. Keep all test settings and seed information in the production log. Do not spend credits on the other intervals until the Founder approves the book, script, storyboard, checkpoint animatic and benchmark result.

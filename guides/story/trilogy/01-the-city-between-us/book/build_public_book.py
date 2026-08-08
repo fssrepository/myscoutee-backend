@@ -718,8 +718,10 @@ def stylesheet() -> str:
   .illustration figcaption {
     margin-top: .09in; font: italic 8.2pt/1.4 Georgia, serif; color: var(--muted);
   }
-  .illustration.side-right { float: right; clear: right; width: 1.55in; margin: .02in 0 .16in .2in; }
-  .illustration.side-right img { aspect-ratio: 4 / 5; object-fit: cover; }
+  .illustration.side-right { float: right; clear: right; width: 2.2in; max-width: 48%; margin: .02in 0 .16in .22in; }
+  .illustration.side-left { float: left; clear: left; width: 2.2in; max-width: 48%; margin: .02in .22in .16in 0; }
+  .illustration.side-right img,
+  .illustration.side-left img { height: 2.35in; object-fit: cover; }
   .illustration.full { clear: both; width: 100%; }
   .illustration.full img { max-height: 4.8in; object-fit: cover; }
   .illustration.portrait-grid { clear: both; }

@@ -5,7 +5,7 @@
 | Field | Decision |
 | --- | --- |
 | Working title | **The City Between Us** |
-| Runtime | 02:48 |
+| Runtime | 03:00 |
 | Primary canvas | 9:16 portrait, 720×1280 mobile master |
 | Form | cinematic animated founder story / operator invitation |
 | Audience | independent operators, community builders, venue/activity partners, product collaborators, early pilot communities |
@@ -109,7 +109,7 @@ sends him almost immediately to Trivandrum for
 about six weeks. Working there with an Irish and Hungarian team teaches him
 practical English, the language also needed to clear the remaining diploma
 condition. This full threshold belongs to the book and memory board; the locked
-02:48 hero film compresses it rather than inventing another chronology. He
+03:00 hero film compresses it rather than inventing another chronology. He
 eventually enters settled professional work. Budapest is beautiful, culturally
 alive and full of people, but settled work initially means a workers' hostel:
 one late return ends at a locked room and a corridor. An undisclosed temporary
@@ -179,14 +179,14 @@ not established causes. Other encounters lose momentum at different
 boundaries. The problem is not effort, attractiveness or lack of people, and
 friendship is never treated as a consolation prize.
 
-The first 113 seconds should feel like one unbroken thought, with hidden edits
+The first 120 seconds should feel like one unbroken thought, with hidden edits
 behind the Tottenham front door, the Soho office window, Victoria line glass,
 the HMO bathroom and shared-room doors, travel images, the returning front door,
 shoulders, dance turns, steam and the founder's dark coat.
 This is the formal echo of TSB: The Story's long moving historical shot. Do not
 copy its character design, rural sets, color system, story or compositions.
 
-### Act II — Draw a path (01:53–02:32)
+### Act II — Draw a path (02:00–02:40)
 
 The moving world stops. The camera finally faces the founder. A blank notebook
 page becomes the MyScoutee loop. Unknown individual and pair suggestions receive
@@ -221,7 +221,7 @@ guarantee character, compatibility or safety. The same six adults must visibly
 progress from separate profiles to autonomous decisions, introductions, a real
 event and later recognition; do not replace this lifecycle with static cards.
 
-### Act III — Relationship evolution and voluntary local operation (02:32–02:48)
+### Act III — Relationship evolution and voluntary local operation (02:40–03:00)
 
 Former strangers can be invited again and repeated events can form community;
 when one relationship changes, lowering its private priority makes another

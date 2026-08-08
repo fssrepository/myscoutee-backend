@@ -5,7 +5,7 @@ this computer because its GPU is unsupported. The production master therefore
 uses CPU-based FFmpeg assembly. Kdenlive is optional for visual review with
 720p proxies; it is not a delivery dependency.
 
-Primary target: **02:48.000, 720×1280, 9:16, constant 24 fps, English-language
+Primary target: **03:00.000, 720×1280, 9:16, constant 24 fps, English-language
 mobile MP4**.
 
 ## 1. Audio architecture
@@ -53,18 +53,18 @@ de-essing only for audible sibilance, gentle `2:1–3:1` compression and a
 Generate music only after picture lock. Use a single instrumental score whose
 internal development follows the whole film:
 
-- `00:00–00:46`: sparse and personal; rural origin, Budapest, departure,
+- `00:00–00:48`: sparse and personal; rural origin, Budapest, departure,
   Tottenham, Soho and daily routine;
-- `00:46–01:26`: a subtle pulse through work, saving, travel and homecoming;
-- `01:26–01:53`: warmer social motion for events, dancing and imperfect dates;
-- `01:53–02:01`: remove most rhythm and leave an unresolved pause;
-- `02:01–02:09`: introduce one clear musical idea with the product insight;
-- `02:09–02:25`: separate musical voices gradually connect as six strangers
+- `00:48–01:28`: a subtle pulse through work, saving, travel and homecoming;
+- `01:28–02:00`: warmer social motion for events, dancing and imperfect dates;
+- `02:00–02:08`: remove most rhythm and leave an unresolved pause;
+- `02:08–02:16`: introduce one clear musical idea with the product insight;
+- `02:16–02:32`: separate musical voices gradually connect as six strangers
   form a group and introduce themselves;
-- `02:25–02:38`: warm collaborative lift through the first managed event and
+- `02:32–02:48`: warm collaborative lift through the first managed event and
   continuing relationship lifecycle;
-- `02:38–02:44`: simplify into a precise, quietly technical texture;
-- `02:44–02:48`: short, confident and restrained resolution.
+- `02:48–02:56`: simplify into a precise, quietly technical texture;
+- `02:56–03:00`: short, confident and restrained resolution.
 
 The score starts at `00:00.000` and ends exactly on the final frame. Under
 narration it should generally sit `6–10 dB` below its open level. Do not fill
