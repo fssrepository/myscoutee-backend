@@ -5,6 +5,18 @@ Status: **current research snapshot, 8 August 2026**.
 These sources supply public context. They do not prove the Founder's account of
 private calls, delegated filings or intent.
 
+## Fő Street justice-building geography
+
+The Hungarian National Archive identifies the building at Budapest II, Fő
+Street 61–73 as housing the Budai Central District Court's Investigating Judge
+Group, the Military Councils of the Budapest-Capital Regional Court and the
+Budapest Prosecutor's Office. This supports the Fő Street/Danube-side visual
+orientation. The Founder's description of its long brown mass as frightening
+and almost Roman in effect remains subjective, not an architectural style
+classification.
+
+- https://nemzetiarchivum.hu/photobank/item/FOTO-41127eacc78447af87c394bd09ea3c66
+
 ## KATA transition, July–September 2022
 
 Telex reported that the bill was proposed on Monday 11 July and passed on
@@ -214,3 +226,30 @@ of Hungarians working abroad:
 The book should say that large numbers left and that many personal reasons
 overlapped. It must not claim that everyone fled, that all emigrants were
 foreign-currency borrowers, or that Budapest's beauty made departure irrational.
+
+## Clemency social inquiry role
+
+The correct Hungarian procedural role is **probation officer** (*pártfogó
+felügyelő*) preparing a social inquiry (*környezettanulmány*) for the clemency
+file. It is not a “clemency commissioner” and the visitor does not decide the
+request or sentence.
+
+The official explanatory material for the 2022 amendment states that, in an
+ordinary clemency matter not involving a prisoner or a person under
+post-release supervision, the social inquiry is prepared by a probation
+officer. For a procedural-clemency request, the relevant focus includes personal
+and health circumstances cited by the request:
+
+- https://njt.hu/jogszabaly/2022-12-K3-06
+
+The underlying probation-service regulation explains that the competent
+government office appoints the probation officer and that social-inquiry work
+may cover personal, family, housing, education, employment, income and property
+circumstances:
+
+- https://njt.hu/jogszabaly/2013-8-20-2T
+
+Narrative boundary: those categories explain why the visitor asked how the
+Founder lived, worked and maintained the flat. They do not turn a remembered
+reaction, an untidy room or deliberate thrift into an official view of the
+case's merits.

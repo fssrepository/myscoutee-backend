@@ -8,7 +8,9 @@ Status: **mandatory anonymization map**.
 | the accountant | private accounting provider or relevant staff acting through that service | crime, conspiracy or sole causation |
 | the tax officer / tax administration | individual caller or institution, according to context | that one caller controlled the whole system |
 | the police officer / police | individual human reaction or investigative institution | that a smile proves support or bias |
-| the forensic experts / report | appointed examination and written opinion | that the label is the Founder's identity or that later politics clinically disproves it |
+| the two forensic experts / report | two appointed examiners and one signed written opinion; remembered oral reactions remain attributed memoir | that either remark was a sentence, that the label is the Founder's identity or that later politics clinically disproves it |
+| fingerprinting officer | professional police-processing role; the Founder remembers finding her attractive | flirtation, romance, consent beyond the procedure or evidential significance |
+| probation officer / clemency social inquiry | officer preparing a social inquiry into personal, housing, health, income and property circumstances | “clemency commissioner,” judge, sentencing authority or official merits decision |
 | the first assigned judge | judge reported to have left because of illness | that the exclusion motion concerned this judge |
 | the second assigned judge | judge challenged in the April 2026 exclusion motion | that this judge decided the motion against herself |
 | the deciding judge | separate judge who ruled on the exclusion request in the Founder's account | confusion with the generic filing-form warning |

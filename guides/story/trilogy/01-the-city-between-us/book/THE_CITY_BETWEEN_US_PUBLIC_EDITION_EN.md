@@ -979,8 +979,6 @@ life in my homeland work better than it had before I fled. Throughout much of
 this period, I blamed myself for not having been able to remain in my own
 country.
 
-<!-- pagebreak -->
-
 I had left my last Hungarian employer around September 2010. By the time I
 returned to the health-insurance system on 10 November 2018, roughly eight years
 had passed. I had not spent all of them abroad. I had been in Hungary before

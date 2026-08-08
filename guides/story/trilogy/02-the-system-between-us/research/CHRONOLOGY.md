@@ -45,13 +45,13 @@ independent verification, `C` external public context.
 | --- | --- | --- | --- |
 | 15 Jan | D/M | Further tax-account entries appear or become visible with retrospective effect. | The account does not feel settled after correction. |
 | 27 Jan | D | The Founder withdraws a monetary demand and asks for peace before surgery and rehabilitation. | Shows attempted de-escalation. |
-| mid-Feb | D/M | He undergoes private surgery followed by mobility-limiting rehabilitation. Exact day differs across the authored materials. | Use “mid-February” until confirmed. |
+| mid-Feb | D/M | He undergoes private surgery followed by mobility-limiting rehabilitation. He recalls prolonged bed rest alone with the operated leg propped high, a special elevation shoe, daily anti-thrombosis injections into the abdomen and food stocked in advance for several months because nobody came to care for him. Exact day differs across the authored materials. | Use “mid-February” until confirmed. Isolation and planning matter; do not invent a carer. Show the routine without needle penetration or medical spectacle. |
 | 8 Mar onward | D/M | A callback arrives despite a request for quiet; a large volume of distressed electronic submissions follows through May. | Quantity must be acknowledged without turning volume into intent. |
-| 17 Mar | D/M | An authored filing uses vulgar physical comedy about a photograph of the Founder's swollen, post-operative leg: the leg is imagined kicking an administration that was not doing its job. | Strong black-humour scene. It is prose and image-based protest, not a physical act or instruction to harm. |
+| 17 Mar | D/M | An authored filing uses vulgar physical comedy around a close photograph of the swollen operated area itself, with the incision rather than a bandage as the subject: the leg is imagined kicking an administration that was not doing its job. | Strong black-humour scene. It is prose and image-based protest, not a physical act or instruction to harm. Keep any incision clinical and non-graphic. |
 | 1 and 8 May | D | Additional disputed messages enter the later charge narrative. | Explain legal dispute without reproducing raw language. |
 | 17 Jul | D | NAV reports the matter to police. | Institutional threshold. |
-| 22 Nov | D/M | Police attend the home and question the Founder roughly one year after the first disputed sentence; phone and computer are seized. | The domestic room becomes an evidence scene. |
-| 30 Nov | D | Forensic psychiatric examination. | Separate observed cooperation/cognition from contested diagnosis. |
+| 22 Nov | D/M | Police attend the home and question the Founder roughly one year after the first disputed sentence; phone and computer are seized. A later procedural sequence includes a plain interview room, a brief counsel consultation in another room, police photographs and fingerprinting. | The domestic room becomes an evidence scene; then the person becomes an image, print and file entry without thriller staging. The attractive fingerprinting officer is a memoir detail, not a romantic or evidential claim. |
+| 30 Nov | D/M | A roughly two-hour forensic psychiatric examination is conducted by two experts. The later defence speech attributes sharply different remarks to the pair, including an early life-imprisonment remark and a later “certainly not for that” response after the Founder explains the causal sequence. | Keep the two experts distinct. The remembered remarks are not sentencing advice or independently verified quotations. Separate observed cooperation/cognition from the contested diagnosis. |
 
 ## 2024–2025 — the person becomes a case file
 
@@ -68,6 +68,7 @@ independent verification, `C` external public context.
 | 22 Feb 2025 | C | Judges and court staff rally publicly for judicial independence. | The courtroom is no longer isolated from public institutional debate. |
 | 26 Mar 2025 | D | Charge filed under case B.142/2025. | Use charge as prosecution position, not verdict. |
 | 2025 | D/C | Defence drafts, public-interest proposals, clemency work and constitutional/legal debate continue. | The Founder becomes a civic designer without having planned a political identity. |
+| 2025, exact date pending | D/M/C | A probation officer prepares the social inquiry connected to the clemency request. The Founder says the officer arrived without an appointment and asked about work, income, housing and the disputed sentence. The flat was puritan, untidy and unclean that day; he owned no car and usually did not heat it in winter as deliberate saving rather than a plea for pity. | Use the legally correct role: probation officer preparing a clemency social inquiry. Attribute remembered reactions and any reference to the proposed suspended sentence to the Founder; they are not an official merits decision. |
 
 ## 2026 — an open institutional transition
 

@@ -66,6 +66,7 @@ OPENER_WATERMARKS = (
 # motif can remain below the prose, without colliding with it or spilling onto
 # an otherwise empty page.
 COMPACT_ENDING_MOTIF_INDEXES = frozenset({1, 4})
+SHORT_CHAPTER_WORD_LIMIT = 250
 
 
 def slugify(value: str) -> str:
@@ -202,6 +203,22 @@ def render_illustration(key: str, registry: dict[str, dict[str, object]]) -> str
     )
 
 
+def keep_short_chapter_together(parts: list[str], start_index: int | None) -> None:
+    """Keep a genuinely short numbered chapter on one printed page."""
+    if start_index is None or start_index >= len(parts):
+        return
+    chapter = parts[start_index:]
+    if not chapter or not chapter[0].startswith(("<h2 ", '<div class="chapter-lead">')):
+        return
+    plain_text = html.unescape(re.sub(r"<[^>]+>", " ", " ".join(chapter)))
+    word_count = len(re.findall(r"\b[\w’'-]+\b", plain_text))
+    if word_count > SHORT_CHAPTER_WORD_LIMIT:
+        return
+    parts[start_index:] = [
+        '<section class="short-chapter">' + "\n".join(chapter) + "</section>"
+    ]
+
+
 def extract_front(lines: list[str]) -> tuple[dict[str, str], list[str]]:
     try:
         break_index = lines.index("<!-- pagebreak -->")
@@ -308,12 +325,17 @@ def markdown_to_html(
     ending_motif_index = 0
     current_context = 0
     pending_drop_cap_context: int | None = None
+    numbered_chapter_start: int | None = None
+    chapter_lead_start: int | None = None
     while index < len(lines):
         stripped = lines[index].strip()
         if not stripped:
             index += 1
             continue
         if stripped == "<!-- pagebreak -->":
+            keep_short_chapter_together(parts, numbered_chapter_start)
+            numbered_chapter_start = None
+            chapter_lead_start = None
             lookahead = index + 1
             while lookahead < len(lines) and not lines[lookahead].strip():
                 lookahead += 1
@@ -366,6 +388,9 @@ def markdown_to_html(
             )
             continue
         if stripped.startswith("# "):
+            keep_short_chapter_together(parts, numbered_chapter_start)
+            numbered_chapter_start = None
+            chapter_lead_start = None
             title = stripped[2:].strip()
             if parts:
                 append_ending_tail(parts, ending_motif_index)
@@ -381,7 +406,11 @@ def markdown_to_html(
             index += 1
             continue
         if stripped.startswith("## "):
+            keep_short_chapter_together(parts, numbered_chapter_start)
             title = stripped[3:].strip()
+            is_numbered_chapter = re.match(r"\d+\.\s", title) is not None
+            numbered_chapter_start = len(parts) if is_numbered_chapter else None
+            chapter_lead_start = len(parts) if is_numbered_chapter else None
             parts.append(
                 f'<h2 class="context-{current_context}" id="{slugify(title)}">'
                 f"{inline_markdown(title)}</h2>"
@@ -449,6 +478,14 @@ def markdown_to_html(
         else:
             parts.append(render_dropcap_paragraph(paragraph, pending_drop_cap_context))
             pending_drop_cap_context = None
+        if chapter_lead_start is not None:
+            lead = parts[chapter_lead_start:]
+            if not any('class="illustration ' in block for block in lead):
+                parts[chapter_lead_start:] = [
+                    '<div class="chapter-lead">' + "\n".join(lead) + "</div>"
+                ]
+            chapter_lead_start = None
+    keep_short_chapter_together(parts, numbered_chapter_start)
     append_ending_tail(parts, ending_motif_index)
     ending_motif_index += 1
     if ending_motif_index != len(ENDING_MOTIFS):
@@ -586,37 +623,40 @@ def stylesheet() -> str:
   }
   .toc .level-2 { font-size: 8.6pt; padding-left: .08in; }
   .toc a { color: inherit; text-decoration: none; }
-  main > h2 {
+  main h2 {
     margin: .48in 0 .08in; font-size: 19pt; line-height: 1.12;
     font-weight: 500; color: var(--night); break-after: avoid;
   }
-  main > h2::after {
+  main h2::after {
     background: var(--chapter-divider); content: ""; display: block;
     height: 2px; margin-top: .12in; width: 100%;
   }
-  main > h2.context-0 {
+  main h2.context-0 {
     --chapter-divider: linear-gradient(90deg, #b52d3b 0%, #2d7650 44%, rgba(45,118,80,.12) 100%);
   }
-  main > h2.context-1 {
+  main h2.context-1 {
     --chapter-divider: linear-gradient(90deg, #718050 0%, #f1b544 42%, rgba(113,128,80,.12) 100%);
   }
-  main > h2.context-2 {
+  main h2.context-2 {
     --chapter-divider: linear-gradient(90deg, #8f4f64 0%, #73849c 44%, rgba(115,132,156,.12) 100%);
   }
-  main > h2.context-3 {
+  main h2.context-3 {
     --chapter-divider: linear-gradient(90deg, #1f6f91 0%, #8fc6e8 44%, rgba(31,111,145,.12) 100%);
   }
-  main > h2.context-4 {
+  main h2.context-4 {
     --chapter-divider: linear-gradient(90deg, #a94359 0%, #e29a7c 44%, rgba(169,67,89,.12) 100%);
   }
-  main > h2.context-5 {
+  main h2.context-5 {
     --chapter-divider: linear-gradient(90deg, #6755b5 0%, #9ea7df 44%, rgba(103,85,181,.12) 100%);
   }
-  main > h2.context-6 {
+  main h2.context-6 {
     --chapter-divider: linear-gradient(90deg, #8a573a 0%, #d1a164 44%, rgba(138,87,58,.12) 100%);
   }
   h3 { font: 700 10pt/1.3 Arial, sans-serif; color: var(--blue); break-after: avoid; }
   p { margin: 0 0 .14in; orphans: 3; widows: 3; }
+  .chapter-lead { break-inside: avoid; page-break-inside: avoid; }
+  .short-chapter { break-inside: avoid; page-break-inside: avoid; }
+  .short-chapter > h2:first-child { margin-top: .48in; }
   .drop-cap {
     background-position: center; background-repeat: no-repeat;
     background-size: 2.28in auto; color: #18263b; display: inline-block;
@@ -722,6 +762,15 @@ def stylesheet() -> str:
   .illustration.side-left { float: left; clear: left; width: 2.2in; max-width: 48%; margin: .02in .22in .16in 0; }
   .illustration.side-right img,
   .illustration.side-left img { height: 2.35in; object-fit: cover; }
+  .illustration.portrait-right {
+    float: right; clear: right; width: 1.35in; max-width: 32%;
+    margin: .02in 0 .16in .22in;
+  }
+  .illustration.portrait-right .image-set { text-align: center; }
+  .illustration.portrait-right img {
+    display: inline-block; height: 2.35in; width: auto; max-width: 100%;
+    object-fit: contain;
+  }
   .illustration.full { clear: both; width: 100%; }
   .illustration.full img { max-height: 4.8in; object-fit: cover; }
   .illustration.portrait-grid { clear: both; }
@@ -842,19 +891,24 @@ def build_document(source: Path) -> str:
 
 
 def chrome_print(html_path: Path, pdf_path: Path, chrome: str) -> None:
-    subprocess.run(
-        [
-            chrome,
-            "--headless=new",
-            "--no-sandbox",
-            "--disable-gpu",
-            "--disable-dev-shm-usage",
-            "--no-pdf-header-footer",
-            f"--print-to-pdf={pdf_path}",
-            html_path.resolve().as_uri(),
-        ],
-        check=True,
-    )
+    # Chrome otherwise attempts to create a profile below the invoking user's
+    # configuration directory. That can be read-only in review/build
+    # environments and is unnecessary for deterministic local PDF printing.
+    with tempfile.TemporaryDirectory(prefix="myscoutee-chrome-") as profile_name:
+        subprocess.run(
+            [
+                chrome,
+                "--headless=new",
+                "--no-sandbox",
+                "--disable-gpu",
+                "--disable-dev-shm-usage",
+                "--no-pdf-header-footer",
+                f"--user-data-dir={profile_name}",
+                f"--print-to-pdf={pdf_path}",
+                html_path.resolve().as_uri(),
+            ],
+            check=True,
+        )
 
 
 def full_bleed_document(document: str) -> tuple[str, list[str]]:

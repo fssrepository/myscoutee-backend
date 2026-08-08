@@ -1,0 +1,98 @@
+PART I BOOK CHARACTER ILLUSTRATIONS — COPY-PASTE BASELINES
+
+STATUS
+Prepared for review only. Do not run these prompts until the character map and
+individual identity sheets are approved. Every prompt inherits
+`character-continuity-master.txt` and the exact references listed in
+`assets/characters/CHARACTER_MAP.md`.
+
+COMMON STYLE
+Premium painterly cinematic 2.5D illustration, expressive hand-drawn adult
+facial linework over dimensional figures, tactile ordinary clothing and paper,
+motivated light, humane documentary observation, subtle asymmetry, believable
+hands and restrained emotion. No readable text, logo, UI, watermark, glamour,
+named-studio imitation or photoreal uncanny skin.
+
+PROMPT 1 — FOUNDER IN BUDAPEST
+Create exactly one clean 4:5 book portrait from `[FOUNDER_REF]`. Preserve the
+exact approved identity. Place him between a modest Budapest interior and a
+soft Danube/tram reflection, holding the worn cognac notebook. His expression is
+capable and attentive with a trace of distance, never defeated. Keep the subject
+large enough for a 1.35-inch print crop. Restrained blue, terracotta and warm
+ivory; no postcard landmarks, words, border, coloured side bars or empty padded
+rectangle. Output filename: `founder-budapest-portrait.png`.
+
+PROMPT 2A — FIVE BUDAPEST MEMORY PORTRAITS
+Create exactly one five-panel casting board using the approved B01–B05
+references in order. Each panel is an independently crop-safe 4:5 portrait with
+equal visual weight and a quiet contextual prop: Debrecen programme doorway,
+shopping-centre bench with abstract astrology motif, ordinary three-bedroom
+flat doorway, calm continuation gesture, and a London-route reflection for the
+former colleague memory. Preserve five distinct adult women with agency and
+ordinary individual style. Do not show the Founder, readable messages,
+diagnosis, blame, regret or romantic-prize framing. This board is a review source
+for the five individual files named in `book/illustrations.json`.
+
+PROMPT 2B — BUDAPEST RELATIONSHIP MEMORY MONTAGE
+Create exactly one landscape book plate from `[FOUNDER_REF]` and the same
+approved B01–B05 identities. Compose separate memories through repeated doorway,
+bench, island-path, room-key and route-line geometry. Preserve distance,
+housing, timing, fear and incomplete context without declaring any person the
+problem. Every face must remain readable at A4 size. No text, app UI, explicit
+sexual scene or merged identity. Output filename:
+`budapest-relationship-memories-montage.png`.
+
+PROMPT 3A — TWELVE HUNGARIAN HOUSE RESIDENTS
+Use the full approved H01–H12 specification and references from
+`london-hmo-residents-character-board.txt` and the character map. Create exactly
+one four-column by three-row identity board, one distinct adult per panel, equal
+visual weight, no Founder. Preserve the individual objects, work rhythms and
+different relationships to returning home. No flags, folk costume, clones,
+slum/camp framing or displayed percentage. This board becomes the reusable
+source for the house montage and H01, H02, H04 and H05 book portraits.
+
+PROMPT 3B — LONDON HOUSE MONTAGE
+Create exactly one landscape book plate using `[FOUNDER_REF]` and H01–H12 inside
+one coherent maintained converted Victorian HMO. Show individual lives across a
+narrow hall, shared kitchen, one full bathroom, separate WC and shared bedroom
+without staging a thirteen-person lineup. Include quiet signs of studying,
+dating, night work, saving, returning and staying. Let the H04-to-H12 bedroom
+swap read through changed silhouette and distinct snore imagery without mocking
+either person. Output filename: `london-house-residents-montage.png`.
+
+PROMPT 4 — GLOBAL ROUTE, LOCAL ENCOUNTER
+Create exactly one landscape book montage using `[FOUNDER_REF]` and only
+approved scene-local references from the travel-memory boards. Join four to six
+human thresholds rather than landmarks: a local route explanation, space made
+by a passenger, a driver waiting, people cooperating at the Luxor balloon wall,
+a resident noticing danger before the Founder, and a host pointing beyond the
+postcard view. The Founder repeats; the local people do not. Each environment is
+truthful and distinct. No flags, one homogenized map, package-tour leader or
+unconfirmed monument. Output filename: `global-local-encounters-montage.png`.
+
+PROMPT 5A — SIX-PERSON MYSCOUTEE ENSEMBLE
+Create exactly one clean six-panel identity board using G01–G06 in order. Show
+exactly three women and three men with equal framing: Founder, Maya, Sketch
+Woman, Cup Woman, Game Man and Route Man. Preserve each approved identity,
+clothing, body, temperament, prop and motif. They are six separate strangers
+considering the same possible group, not friends or matched couples. Make every
+panel independently crop-safe for the six `myscoutee-character-01.png` through
+`06.png` book files. No names, text bubbles, public score or glamour hierarchy.
+
+PROMPT 5B — SIX STRANGERS BEFORE THE MEETING
+Create exactly one landscape book plate from the same G01–G06 references.
+Arrange all six as separate but visually connected inner worlds. Use small
+textless motifs for route, book, sketch, shared meal, tabletop game and music or
+listening; do not pair anyone romantically. Exactly three women and three men,
+six unique faces, equal visual weight. Output filename:
+`myscoutee-six-person-ensemble-montage.png`.
+
+PROMPT 6 — FIRST SHARED EVENT
+Create exactly one landscape book plate using the same G01–G06 identities at
+their first real public event. They have just introduced themselves and begin a
+shared task. One checks transport, one confirms the venue, one brings supplies,
+two discover a joke and one listens before speaking. The Founder participates
+but is not the centre. Show a visible entrance, easy exit and humane local venue;
+no romance guarantee, instant friendship, extra/missing person, floating UI or
+resource pictogram. Output filename: `myscoutee-first-event-montage.png`.
+

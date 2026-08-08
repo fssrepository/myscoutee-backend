@@ -177,18 +177,29 @@ The letters belong in the production manifest, not the public image.
 
 - **Layer:** `D/M`.
 - **CP10:** correction line.
-- **CP11:** the line becomes a private-surgery timeline and then a non-graphic
-  photograph of the Founder's bandaged, swollen post-operative leg attached to
-  an anonymized submission; mobility aid nearby.
-- **Motion:** message light cools into clinical light, then returns to the phone
-  screen as the image is sent. One steady camera move, no operating-room
-  spectacle and no literal kick.
+- **CP11:** the line becomes a private-surgery timeline: the Founder lies in bed
+  with the operated leg propped high, a special elevation shoe nearby and one
+  abstract daily anti-thrombosis injection marker at his abdomen. It resolves
+  into a close, clinical, non-graphic photograph of the swollen operated area
+  itself—not the bandage—with the closed incision visible, attached to an
+  anonymized submission.
+- **Isolation:** the Founder is completely alone. No carer, visitor, clinician
+  or family member enters the home. Several months of simply stored food are
+  visible at the edge of the room as preparation, not abundance.
+- **Motion:** message light cools into clinical light, follows the raised leg,
+  shoe and repeated injection routine, then returns to the phone screen as the
+  incision image is sent. One steady camera move, no operating-room spectacle
+  and no literal kick.
 - **Performance:** controlled fear and exhaustion, not diagnostic collapse.
 - **Sound in post:** room ventilation, fabric, restrained monitor tone and pulse.
 - **Meaning:** an obscene physical joke tries to make a real body legible to an
-  institution; it is not an act or instruction of violence.
-- **Hazard:** no exposed wound, blood, surgery reenactment, literal assault or
-  invented diagnosis.
+  institution; it is not an act or instruction of violence. It is also the
+  curse of solitude returning from Part I: preparation substitutes for care but
+  cannot substitute for presence.
+- **Hazard:** no open tissue, blood, needle penetration, surgery reenactment,
+  literal assault or invented diagnosis. The incision may be visible without
+  gore because it is the actual subject of the remembered photograph. Do not
+  invent bedside care or companionship.
 
 ### S12 — The file begins to describe the person · 01:28–01:36 · CP11→CP12
 
@@ -211,7 +222,8 @@ The letters belong in the production manifest, not the public image.
   parents; phone and computer enter neutral evidence sleeves.
 - **Motion:** knock, door opens, one officer remains human and professional; the
   camera follows the device rather than staging an armed raid.
-- **Continuity:** preserve the exact Part I apartment and workstation.
+- **Continuity:** preserve the exact Part I apartment and workstation. The home
+  is sparse and deliberately economical, not derelict or designed for pity.
 - **Sound in post:** knock, latch, sleeve, inventory pen.
 - **Hazard:** no weapons, tactical entry, handcuffs, damage or claim of asset
   seizure beyond the documented devices.
@@ -224,28 +236,50 @@ The letters belong in the production manifest, not the public image.
   officer's expression; a paper-edge match cut carries a later judge's brief
   smile into an anonymized defence stack. The stack compresses to one sharp
   highlighted line while the wider return chain remains faint but visible.
+- **Procedural transfer inside the interval:** pass briefly through a plain
+  police interview room: officer opposite behind a desktop computer, appointed
+  counsel beside the Founder and one anonymous presence behind him. Counsel
+  requests time and they move into a second ordinary room. In a restrained
+  processing beat, a professional female officer photographs the Founder and
+  guides his fingertips onto paper. His awareness that she is attractive is
+  expressed only by one normal glance, never by flirtation or erotic framing.
+  Then use the Danube and the long brown Fő Street justice façade as one verified
+  Budapest threshold; its monumental effect is the Founder's impression, not a
+  style finding.
+- **Hearing-room geography:** from the Founder's viewpoint, prosecutor left,
+  clerk in the far-left corner, judge centre and court-appointed defence counsel
+  right around one C-shaped desk; the Founder sits before it with a table
+  microphone. Keep the roles spatially legible without theatrical grandeur.
 - **Narrative layer:** the documented written dismissal of an institution is
   carried in narration as powerless sarcasm, never as actual authority.
-- **Motion:** two close medium compositions joined by a paper-edge wipe. Nobody
-  laughs openly. No readable accusation is generated.
+- **Motion:** restrained procedural match cuts—computer edge,
+  consultation-room door, fingerprint line, camera flash, Danube light, brown
+  façade, C-shaped desk—ending in the court composition. Nobody laughs openly.
+  No readable accusation or biometric data is generated.
 - **Meaning:** humour preserves personhood, then institutional attention reduces
   a long accounting explanation to its most accusatory phrase.
 - **Sound in post:** pen stops for one beat, breath, paper resumes.
-- **Hazard:** no mocking court, slapstick, literal firing, triumphant defendant,
-  bias finding or portrayal of the accountant as a criminal.
+- **Hazard:** no dark interrogation cliché, intimidation reenactment, invented
+  exact quotation, mocking court, slapstick, literal firing, triumphant
+  defendant, bias finding or criminal portrayal of the accountant.
 
 ### S15 — The forensic mirror · 01:52–02:00 · CP14→CP15
 
 - **Layer:** `D` plus contested interpretation.
 - **CP14:** judge's restrained human reaction.
-- **CP15:** anonymized report page reflected across the Founder's composed face:
-  one side records calm cooperation and intact cognition; the other holds a
-  blank field for the contested conclusion, added only in post if needed.
-- **Motion:** one 65 mm reflection shift, keeping the whole face visible.
+- **CP15:** two visually distinct experts share an ordinary examination room
+  with the Founder's composed face and one anonymized report: one side records
+  calm cooperation and intact cognition; the other holds a blank field for the
+  contested conclusion, added only in post if needed.
+- **Motion:** one restrained 65 mm move passes from `[EXPERT_A_REF]` to the
+  Founder and `[EXPERT_B_REF]`, then ends on the single report reflection. Their
+  differing remembered reactions are carried by spacing and expression, not
+  generated dialogue or text.
 - **Sound in post:** pencil, paper turn, low clinical tone.
 - **On-screen text in post:** `OBSERVATION ≠ WHOLE PERSON`.
 - **Hazard:** no floating diagnosis, split-personality effect or portrayal of
-  the experts as villains.
+  either expert as a villain; no readable severe-punishment quotation or claim
+  that it was a sentence.
 
 ### S16 — AI-assisted self-defence · 02:00–02:08 · CP15→CP16
 
@@ -269,21 +303,27 @@ The letters belong in the production manifest, not the public image.
 - **Layer:** `M/D-secondary`; no final confiscation order reviewed.
 - **CP16:** AI-assisted evidence desk.
 - **CP17:** an abstract courtroom line first rises toward unstable legislation,
-  then drops into four financial questions: work, debt, the apartment key
-  provided by the Founder's parents, and an abstract government-bond account
-  representing savings built principally through London and cross-border work.
+  then drops into a probation officer's unannounced clemency social inquiry in
+  the exact apartment. Four financial questions remain visible without text:
+  work, debt, the apartment key provided by the Founder's parents, and an
+  abstract government-bond account representing savings built principally
+  through London and cross-border work.
+- **Room continuity:** reuse the exact C-shaped hearing layout and microphone
+  established at CP14. Do not omit or exchange prosecutor, clerk or appointed
+  defence positions merely to simplify the composition.
 - **Motion:** the Founder's system diagram rises for one beat; a judge's closing
-  gesture redirects the line downward into the financial fields. For a single
-  restrained beat, the expression is human and less fixed, but its meaning
-  remains unreadable. The Founder places a protective hand near the notebook,
-  not over money.
+  gesture redirects the line downward into the financial fields. A doorbell
+  turns the line into the `[PROBATION_OFFICER_REF]` entering an unstaged,
+  puritan, untidy apartment. The radiator is cold, there is no car key and no
+  display of consumption; this is deliberate thrift, not destitution. The
+  Founder places a protective hand near the notebook, not over money.
 - **Meaning:** existential reach and subjective injustice, not a visual claim
   that forfeiture has already been ordered. The security built abroad was meant
   to make life at home possible; the proceeding now appears to reach it.
 - **Sound in post:** courtroom room tone, key, paper/account line, low pulse.
 - **Hazard:** no cash pile, luxury property, bailiff, eviction or destruction;
-  no thought bubble or claim that the judge agreed, changed position or regarded
-  the Founder as innocent.
+  no hoarding, filth, pity staging, thought bubble or claim that the judge or
+  probation officer agreed, changed position or offered an official legal view.
 
 ## Act IV — One file enters public time
 
@@ -390,13 +430,13 @@ The letters belong in the production manifest, not the public image.
 | `CP08.png` | repeated short-return versions | S08/S09 |
 | `CP09.png` | circular help call | S09/S10 |
 | `CP10.png` | charged unreadable line plus correction | S10/S11 |
-| `CP11.png` | non-graphic post-operative photo enters submission | S11/S12 |
+| `CP11.png` | solitary rehabilitation routine and clinical close incision photo enter submission | S11/S12 |
 | `CP12.png` | archive begins to surround Founder | S12/S13 |
 | `CP13.png` | devices inventoried in parent-provided home | S13/S14 |
-| `CP14.png` | human micro-smile and long explanation reduced to one phrase | S14/S15 |
-| `CP15.png` | report reflected across whole face | S15/S16 |
+| `CP14.png` | police processing, verified court geography and long explanation reduced to one phrase | S14/S15 |
+| `CP15.png` | two distinct experts and one report reflected across the whole face | S15/S16 |
 | `CP16.png` | AI-assisted, human-checked evidence outline | S16/S17 |
-| `CP17.png` | home, belongings and savings built abroad | S17/S18 |
+| `CP17.png` | unannounced clemency social inquiry reads home, belongings and savings built abroad | S17/S18 |
 | `CP18.png` | London HMO foreign-currency-loan memory | S18/S19 |
 | `CP19.png` | separate civic movements, Founder at laptop | S19/S20 |
 | `CP20.png` | ballot becomes institutions on separate hinges | S20/S21 |

@@ -9,8 +9,10 @@ the Founder explicitly approves generation.
 
 ## 1. Current work — book and prompt synchronization only
 
-- [x] Keep the public manuscript in English and publish the Founder-approved
-  first edition as version `1.0.0`, still editable until a later explicit lock.
+- [x] Keep the public manuscript in English and preserve the Founder-approved
+  version `1.0.0` as a technically locked published artifact, while retaining
+  the independently replaceable draft export and editable source for later
+  review corrections.
 - [x] Separate Founder testimony, external geography, uncertain recognition
   candidates and product claims.
 - [x] Add the post-university Budapest attempt and reimbursed interview journeys.

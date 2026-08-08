@@ -60,8 +60,8 @@ foley and breath.
 
 ### 01:20–01:28 — S11 · The body
 
-> After surgery, I sent a photograph of my swollen leg and wrapped helplessness
-> in one obscene, impossible joke.
+> Alone, I lived from stored food, raised my leg, injected daily—then sent the
+> swollen incision as an obscene joke.
 
 ### 01:28–01:36 — S12 · Volume
 
@@ -75,13 +75,13 @@ foley and breath.
 
 ### 01:44–01:52 — S14 · The smile
 
-> I fired institutions in prose; officers and later a judge smiled. Then a
-> defamation warning reduced my explanation.
+> Police photographed and fingerprinted me. Counsel asked for time. Humour kept
+> me human as the procedure carried me toward court.
 
 ### 01:52–02:00 — S15 · The forensic mirror
 
-> One report called me calm, cooperative and clear—then gave my whole conflict a
-> diagnosis I still contest.
+> Two experts did not sound like one voice. Their report called me calm and
+> clear—then gave my whole conflict a diagnosis.
 
 ### 02:00–02:08 — S16 · AI-assisted self-defence
 
@@ -90,8 +90,8 @@ foley and breath.
 
 ### 02:08–02:16 — S17 · What the case can reach
 
-> I had built security abroad to live at home. Now the case reached work, debt,
-> home and foreign-earned savings.
+> A social inquiry entered my unheated, puritan flat. Security built abroad
+> became another financial question.
 
 ### 02:16–02:24 — S18 · The earlier house
 

@@ -375,15 +375,27 @@ What matters is the practical reality: mobility became difficult, rehabilitation
 required attention, and my body could not be separated from every call and
 deadline arriving through the same phone.
 
+For much of that period I had to remain in bed with the operated leg propped
+high above me. A special elevation shoe protected its position when I had to
+move. Each day also required an anti-thrombosis injection into my abdomen. I was
+alone. Nobody came to look after me; food had simply been stocked in advance for
+several months. The routine was not an abstract reference to poor health: bed,
+raised leg, special shoe, injection, stored food, repeat.
+
+This was another curse of solitude. Planning could stock food. Savings could
+pay for private treatment. Discipline could carry me through the injections.
+None of them could place another person beside the bed.
+
 A call came in March despite my request for quiet. More messages followed over
 the next months—too many, sometimes angry, sometimes grandiose, sometimes
 trying to turn private harm into a public programme.
 
-At one point I sent the tax administration a photograph of my swollen,
-post-operative leg. The image was intimate and ugly: a body cut open and still
-trying to heal while the administrative sequence kept moving. I wrapped it in
-an obscene joke about using that half-cut, swollen leg to kick an institution
-in the backside because it was not doing its job.
+At one point I sent the tax administration a close photograph of the swollen,
+operated area itself. It was not a photograph of a bandage. The incision was
+visible: an intimate, ugly record of a body cut open and still trying to heal
+while the administrative sequence kept moving. I wrapped it in an obscene joke
+about using that half-cut, swollen leg to kick an institution in the backside
+because it was not doing its job.
 
 It was physical comedy written from a chair, not a physical act or an
 instruction to harm anyone. The joke was deliberately disproportionate because
@@ -421,6 +433,25 @@ Now it became a procedural location.
 My phone and computer were taken. Objects that had held work, memory and the
 unfinished MyScoutee system became evidence containers.
 
+The later police interview took place in an ordinary room, not a cinematic
+interrogation chamber. An officer sat opposite me behind a desktop computer. My
+court-appointed defence counsel sat beside me. Another person remained behind
+me and, as I remember it, sometimes sharply redirected me to answer the question
+being asked. I do not present that remembered instruction as a verified
+quotation. I remember the pressure of hearing it from outside my field of view.
+
+At one point my counsel asked for time. We moved into another room to speak.
+That small change of room mattered: the procedure briefly made physical space
+for advice before carrying us back into the official account.
+
+The process also had a second, more mechanical room. Police escorted me there,
+photographed me and took my fingerprints. The woman guiding my fingers onto the
+paper was attractive to me. That detail is not evidence about the case and it
+does not make the procedure romantic. It is the kind of inconveniently ordinary
+human perception that survives even when a person is being converted into an
+image, a print and an entry in a file. Her work remained professional; my mind
+remained human.
+
 I remember using humour.
 
 That may sound inappropriate. For me, humour was how a human being remained
@@ -439,9 +470,13 @@ The irony kept me from becoming only the file.
 ## 12. Remarks in the Margin
 
 My later defence submissions record remarks I attributed to police officers and
-forensic experts. They include questions about why I had returned home, what I
-lived on, why I had needed an accountant, why I had not sought psychological
-help, and comments about age, success and severe punishment.
+the two forensic experts who examined me. They include questions about why I
+had returned home, what I lived on, why I had needed an accountant, why I had
+not sought psychological help, and comments about age, success and severe
+punishment. One defence speech records the words, “You will certainly receive
+life imprisonment for this.” That is an attributed remark from my own written
+account, not a sentence, a judicial prediction or an independently verified
+quotation.
 
 Those remarks are not all independently verified quotations. Some may be
 checked against surviving recordings; some may survive only through my account.
@@ -527,6 +562,23 @@ My reserves were not an unexplained alternative to a normal life. They were the
 protective wall built because normal routes had repeatedly stopped feeling
 safe.
 
+The clemency process later brought those questions into my home. Hungarian
+procedure uses a probation officer to prepare a social inquiry for a clemency
+request. In my case the officer rang the bell without an appointment. The flat
+was not staged for inspection. It was puritan, untidy and unclean that day. I do
+not own a car, I usually do not heat the flat in winter, and I spend little
+because that is how I preserve independence. I can live that way. I was not
+asking the visitor to pity me.
+
+He asked what I lived on, why I was not working and what the apartment said
+about my life. I remember the bachelor-flat description, a reference to the
+proposed suspended sentence and his astonished reaction when he asked about the
+disputed line. Those remembered reactions are not an official interpretation of
+the case. The official product of the visit was a social inquiry about personal,
+housing, health, income and property circumstances. The human encounter was
+stranger: a life designed to need very little was being read as a condition to
+be explained.
+
 Why had I not sought psychological help?
 
 Because at the relevant moment I was trying to repair a tax record and prepare
@@ -535,14 +587,33 @@ explains why the question felt as though the story had been reversed.
 
 ## 13. The Forensic Mirror
 
-<!-- illustration: part_ii_expert -->
+The forensic examination took place on 30 November 2023. Two experts were
+present and the resulting opinion bears two expert signatures. I remember the
+examination lasting roughly two hours and feeling hurried.
 
-The forensic examination took place on 30 November 2023.
+The two people did not occupy one voice in my memory. I remember one making the
+life-imprisonment remark before the causal sequence had been asked through and
+before I understood what material the examination was meant to rest on. Later,
+when the other expert asked what had happened and I described the accounting
+failure, the pressure, the operation and the circumstances in which words came
+out, I remember a sharply different response: certainly not for that. My later
+defence speech groups several further remarks under “forensic experts,”
+including references to an “old man,” lack of success, the need for an
+accountant and the absence of psychological treatment. It does not reliably
+assign every remark to one of the two people, so neither does this book.
 
 The report contains an important tension. It records that I was calm,
 cooperative, oriented and cognitively intact. It also concludes that I had a
 paranoid personality disorder and that my responsibility was moderately
 limited.
+
+The report does record substantial parts of my account, including the tax and
+accounting chain, the operation and the period of restricted mobility. I
+therefore cannot fairly say the experts knew nothing about those circumstances.
+My objection is narrower and stronger: I do not believe their final
+interpretation gave that documented causal pressure its proper weight, or
+distinguished clearly enough between a person under exceptional strain and a
+whole personality.
 
 I contest that interpretation.
 
@@ -595,7 +666,20 @@ frame.
 
 All of those statements can be true at once.
 
-In court, the accounting failure returned in miniature. When I described what
+Approaching court, Budapest first remained visible as home—the Danube, the city
+and the life outside the case. Then the long brown institutional façade on Fő
+Street filled the frame. Its rhythm and mass felt almost Roman to me: not an
+archaeological claim or a formal style label, but a monumental effect. I found
+it frightening. A human story was entering a closed institutional form.
+
+The hearing room had a practical geometry I still remember. A C-shaped desk
+faced the seats where I sat. From my position, the prosecutor was on the left,
+the clerk at the far-left corner, the judge in the centre and my court-appointed
+defence counsel on the right. I sat in front of them with a table microphone
+directly before me. It did not look theatrical. Its shape nevertheless made the
+roles—and my place outside their working curve—immediately visible.
+
+In that room, the accounting failure returned in miniature. When I described what
 I believed the accountant had done, the judge warned me not to defame anyone.
 She asked why I had not asked the accountant. From the much longer defence
 speech, she selected my assertion that the accountant had entered what I called
@@ -1175,6 +1259,26 @@ The post-operative-leg image and the vulgar physical-comedy description are
 supported by authored defence material. The pasture image is presently a
 memoir-layer recollection and is paraphrased rather than presented as a verified
 quotation.
+
+## Clemency social inquiry
+
+Hungarian procedural rules identify the person preparing a social inquiry for
+an ordinary procedural-clemency request as a probation officer. The inquiry may
+describe personal, family, health, housing, employment, income and property
+circumstances. It is evidence assembled for the clemency file; the probation
+officer does not decide the request or sentence.
+
+Official sources:
+
+- National Legislation Database, explanatory material for Decree 12/2022:
+  https://njt.hu/jogszabaly/2022-12-K3-06
+- National Legislation Database, probation-service rules:
+  https://njt.hu/jogszabaly/2013-8-20-2T
+
+The absence of prior notice is recorded in the Founder's clemency submission.
+The condition of the flat, the visitor's reactions and the remembered reference
+to a proposed suspended sentence remain attributed memoir unless the completed
+social inquiry is isolated from the private archive.
 
 ## KATA
 

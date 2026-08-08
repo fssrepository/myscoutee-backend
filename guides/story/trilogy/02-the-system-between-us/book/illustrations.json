@@ -1,37 +1,37 @@
 {
   "part_ii_founder": {
-    "file": "assets/illustrations/founder.png",
-    "placement": "side-right",
+    "file": "assets/illustrations/founder-portrait.png",
+    "placement": "portrait-right",
     "alt": "The Founder continuing from Part I with his cognac notebook",
     "caption": "The same person, now carrying a different system."
   },
   "part_ii_accountant": {
-    "file": "assets/illustrations/accountant.png",
-    "placement": "side-right",
+    "file": "assets/illustrations/accountant-portrait.png",
+    "placement": "portrait-right",
     "alt": "An anonymized, overloaded but competent accountant",
     "caption": "One partial screen inside a three-person chain."
   },
   "part_ii_officer": {
-    "file": "assets/illustrations/police-officer.png",
-    "placement": "side-right",
+    "file": "assets/illustrations/police-officer-portrait.png",
+    "placement": "portrait-right",
     "alt": "An anonymized professional police officer",
     "caption": "A role inside the procedure remains a human being."
   },
   "part_ii_expert": {
-    "file": "assets/illustrations/forensic-expert.png",
-    "placement": "side-right",
-    "alt": "An anonymized forensic expert holding a plain folder",
-    "caption": "Observation, interpretation and a whole person are not identical."
+    "file": "assets/illustrations/forensic-expert-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Provisional single-expert study, not approved for the two-expert scene",
+    "caption": "PROVISIONAL — replace with two distinct experts before visual lock."
   },
   "part_ii_judge": {
-    "file": "assets/illustrations/judge.png",
-    "placement": "side-right",
+    "file": "assets/illustrations/judge-portrait.png",
+    "placement": "portrait-right",
     "alt": "An anonymized judge at a plain contemporary hearing desk",
     "caption": "A facial expression remains an impression, not a finding."
   },
   "part_ii_housemate": {
-    "file": "assets/illustrations/london-housemate.png",
-    "placement": "side-right",
+    "file": "assets/illustrations/london-housemate-portrait.png",
+    "placement": "portrait-right",
     "alt": "An anonymized former London housemate",
     "caption": "Different law, another life carrying systemic risk."
   }

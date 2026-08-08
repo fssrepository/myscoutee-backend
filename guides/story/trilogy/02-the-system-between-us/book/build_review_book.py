@@ -89,17 +89,17 @@ def stylesheet() -> str:
   .part-opener.opener-6 { background: linear-gradient(150deg, #485d78, #252d43); }
   .part-opener.opener-7 { background: linear-gradient(150deg, #654d75, #29304a); }
   .part-opener.opener-8 { background: linear-gradient(150deg, #375e6b, #28253c); }
-  main > h2.context-0 { --chapter-divider: linear-gradient(90deg, #2c668f, #c95f50 48%, rgba(201,95,80,.1)); }
-  main > h2.context-1 { --chapter-divider: linear-gradient(90deg, #8a573a, #e6ad52 48%, rgba(230,173,82,.1)); }
-  main > h2.context-2 { --chapter-divider: linear-gradient(90deg, #39727c, #7caeb3 48%, rgba(124,174,179,.1)); }
-  main > h2.context-3 { --chapter-divider: linear-gradient(90deg, #9d4d5c, #d98b78 48%, rgba(217,139,120,.1)); }
-  main > h2.context-4 { --chapter-divider: linear-gradient(90deg, #4a5874, #8d9abb 48%, rgba(141,154,187,.1)); }
-  main > h2.context-5 { --chapter-divider: linear-gradient(90deg, #8a6a42, #d5ae69 48%, rgba(213,174,105,.1)); }
-  main > h2.context-6 { --chapter-divider: linear-gradient(90deg, #476b91, #84a6ce 48%, rgba(132,166,206,.1)); }
-  main > h2.context-7 { --chapter-divider: linear-gradient(90deg, #76528f, #b68bc2 48%, rgba(182,139,194,.1)); }
-  main > h2.context-8 { --chapter-divider: linear-gradient(90deg, #396c77, #d09a61 48%, rgba(208,154,97,.1)); }
-  .review-note { font-size: 10pt; line-height: 1.47; }
-  .review-note p { margin-bottom: .105in; }
+  main h2.context-0 { --chapter-divider: linear-gradient(90deg, #2c668f, #c95f50 48%, rgba(201,95,80,.1)); }
+  main h2.context-1 { --chapter-divider: linear-gradient(90deg, #8a573a, #e6ad52 48%, rgba(230,173,82,.1)); }
+  main h2.context-2 { --chapter-divider: linear-gradient(90deg, #39727c, #7caeb3 48%, rgba(124,174,179,.1)); }
+  main h2.context-3 { --chapter-divider: linear-gradient(90deg, #9d4d5c, #d98b78 48%, rgba(217,139,120,.1)); }
+  main h2.context-4 { --chapter-divider: linear-gradient(90deg, #4a5874, #8d9abb 48%, rgba(141,154,187,.1)); }
+  main h2.context-5 { --chapter-divider: linear-gradient(90deg, #8a6a42, #d5ae69 48%, rgba(213,174,105,.1)); }
+  main h2.context-6 { --chapter-divider: linear-gradient(90deg, #476b91, #84a6ce 48%, rgba(132,166,206,.1)); }
+  main h2.context-7 { --chapter-divider: linear-gradient(90deg, #76528f, #b68bc2 48%, rgba(182,139,194,.1)); }
+  main h2.context-8 { --chapter-divider: linear-gradient(90deg, #396c77, #d09a61 48%, rgba(208,154,97,.1)); }
+  .review-note { font-size: 10pt; line-height: 1.42; }
+  .review-note p { margin-bottom: .08in; }
   .drop-cap { background-position: center 88%; background-size: .5in auto; }
 """
     return inherited + overrides

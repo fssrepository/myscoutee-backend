@@ -55,10 +55,20 @@ Status: **book and prompt review only; generation paused**.
 
 ## 3. Deferred visual and audio work
 
+- [x] Pause image generation while the book, narration, storyboard and prompts
+  are still receiving factual corrections.
+- [ ] Treat existing CP01–CP10 only as provisional composition studies and
+  regenerate where the locked text requires greater location or event fidelity.
+- [ ] Regenerate CP11: the current draft incorrectly centres a generic bandaged
+  leg and omits solitary bed rest, the high-propped leg, special elevation shoe,
+  daily abdominal anti-thrombosis routine, months of stored food and the actual
+  close incision photograph.
 - [ ] Approve the exact Part I Founder continuity reference and lossless CP00.
-- [ ] Design privacy-safe accountant, tax officer, officer, expert, judge and
-  London-housemate references.
-- [ ] Generate only CP01–CP22 after the book and prompts are approved.
+- [ ] Approve privacy-safe accountant, tax officer, police officer, female
+  fingerprinting officer, two distinct forensic experts, judge, court-appointed
+  defence counsel, probation officer and London-housemate references.
+- [ ] Generate or regenerate CP01–CP22 only after the book and prompts are
+  approved.
 - [ ] Build the endpoint-only checkpoint slideshow: four seconds first frame,
   four seconds last frame for every planned eight-second interval.
 - [ ] Review the slideshow against the book before spending video credits.

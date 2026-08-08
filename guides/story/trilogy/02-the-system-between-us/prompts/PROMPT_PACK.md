@@ -27,8 +27,14 @@ Replace each token once in the working copy:
 | `[ACCOUNTANT_REF]` | approved competent, overloaded accountant identity |
 | `[TAX_OFFICER_REF]` | approved ordinary tax-officer identity |
 | `[OFFICER_REF]` | approved police-officer identity |
-| `[EXPERT_REF]` | approved forensic-expert identity |
+| `[FINGERPRINT_OFFICER_REF]` | approved professional fingerprinting officer identity; ordinary human presence, no erotic framing |
+| `[EXPERT_A_REF]` | first approved forensic-expert identity |
+| `[EXPERT_B_REF]` | second, visually distinct approved forensic-expert identity |
 | `[JUDGE_REF]` | anonymized judge identity; never a real-person likeness |
+| `[DEFENCE_COUNSEL_REF]` | anonymized court-appointed defence counsel identity |
+| `[PROBATION_OFFICER_REF]` | anonymized probation officer preparing the clemency social inquiry |
+| `[PROSECUTOR_ROLE]` | anonymous prosecutor role at the Founder's left |
+| `[CLERK_ROLE]` | anonymous clerk role at the far-left corner |
 | `[HOUSEMATE_REF]` | anonymized Part I London HMO resident |
 | `[BUDAPEST_FLAT]` | exact approved Part I apartment/world reference |
 | `[BUDAPEST_WORLD]` | approved Budapest civic-location reference |
@@ -83,6 +89,14 @@ audio generated despite the prompt is discarded.
   separate and legally unequal.
 - Seven judges recused from one matter; they did not leave the Court in June.
 - Part III owns the final outcome.
+- Courtroom geography remains exact from the Founder's viewpoint: a C-shaped
+  desk with prosecutor left, clerk at the far-left corner, judge centre and
+  court-appointed defence counsel right; the Founder sits in front with a table
+  microphone directly before him.
+- The forensic examination always contains two distinct experts. Do not merge
+  their faces, remembered reactions or roles into one composite character.
+- The clemency home visitor is a probation officer preparing a social inquiry,
+  not a clemency commissioner, judge or sentencing authority.
 
 ## Credit-saving test order
 

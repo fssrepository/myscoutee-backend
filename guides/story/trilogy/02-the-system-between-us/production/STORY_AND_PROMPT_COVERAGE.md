@@ -17,18 +17,21 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Repeated filings/corrections around a short return | 6 | S08 | No invented figures; status text added in post. |
 | Help calls and remembered remarks | 6 | S09 | No exact quotation before local transcription. |
 | Charged words followed by correction | 8–9 | S10 | Never reproduce or illustrate the charged language. |
-| Post-operative leg photograph and vulgar sarcasm | 10 | S11 | Non-graphic; joke remains narration, never literal assault. |
+| Solitary bed rest, months of stored food, raised leg, elevation shoe, daily anti-thrombosis injections, actual incision photograph and vulgar sarcasm | 10 | S11 | The curse of solitude returns: planning substitutes for care, not presence. Closed incision may be clinical; no blood, open tissue or needle penetration; joke remains narration, never literal assault. |
 | Pasture metaphor for dismissing institutions | 27 | book/longer-cut candidate | Memoir layer until exact submission is isolated; no literal pasture visual. |
 | Submission volume contains evidence and distress | 10, 14 | S12 | Size proves neither guilt, innocence nor diagnosis. |
 | Police take phone and computer from the apartment | 11 | S13 | Restrained documented inventory, no tactical raid or other asset seizure. |
+| Plain police interview, counsel break, photograph and fingerprints | 11 | S14 | Exact spatial memory; attractive female fingerprinting officer remains professional, with no erotic framing or readable biometric data. |
 | Officers/judge smile at humour; long accounting explanation reduced to sharp phrase | 11, 14, 27 | S14 | Memoir micro-expression and hearing account only; no inference of bias, agreement or accountant criminality. |
-| Forensic report records cooperation and gives contested conclusion | 13 | S15 | Whole face remains visible; no floating diagnosis. |
+| Two forensic experts, different remembered reactions, one signed report | 12–13 | S15 | The severe-punishment remark is attributed memoir, not a sentence. Do not merge the experts. |
+| Forensic report records cooperation, surgery/accounting context and a contested conclusion | 13 | S15 | Whole face remains visible; contest interpretation/weight, not whether the circumstances were mentioned; no floating diagnosis. |
 | AI supports self-defence for roughly three years | 15 | S16 | Organization and speed, never lawyer or autonomous legal authority. |
 | Constitutional Court receives complaint, finds section 27 route premature before first-instance decision, and does not reach merits | 15, 23 / notes | S22 | Primary letter reviewed; portray “too early,” not win, merits loss or final bar. |
 | First judge reportedly leaves; exclusion targets second; separate judge decides motion | 15 / notes | book and longer-cut candidate | Keep three roles distinct; ruling and illness record still require isolation. |
 | Hearing moves from unstable lawmaking to financial position | 12, 14, 28 | S17 | Memoir plus secondary filings; no final confiscation/penalty depicted. |
 | Court asks about work, debt, apartment/belongings and government-bond account | 12, 28 | S17 | Tie debt to Part I without implying every question was improper. |
 | Home came from parents; meaningful reserve came principally from London/foreign work | 12, 28 | S17 | Dignified key/belongings/account plate, not wealth spectacle. |
+| Unannounced clemency social inquiry reads the puritan, unheated, temporarily untidy flat | 12, 14 | S17 | Correct role is probation officer; deliberate thrift, no car and lack of staged preparation are not poverty spectacle or an official merits decision. |
 | London HMO housemate and foreign-currency-loan pattern | 16 | S18 | Anonymized memory; not the same legal problem as KATA. |
 | Budapest remains beautiful while people still leave | 17 | S18–S20 atmosphere | Departure is multicausal; no hatred-of-home claim. |
 | Not everyone would write the same words; universal risk begins earlier | 18 | entire chain | Preserve agency and system context simultaneously. |

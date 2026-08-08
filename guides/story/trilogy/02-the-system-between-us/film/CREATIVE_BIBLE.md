@@ -98,10 +98,20 @@ One ordinary professional inside a call-centre/administrative environment. Do
 not show corruption, conspiracy or malicious delight. The screen is partial;
 the person is not omniscient.
 
-### Police, expert and judge
+### Police, experts, probation officer and judge
 
 Show role, attention and occasional human reaction. A smile means only that a
 moment of humour landed. Never animate sneering, mockery or predetermination.
+
+The police sequence includes an ordinary interview room, a separate counsel
+room and restrained photographic/fingerprint processing. The female officer who
+guides the Founder's hand remains professional; his awareness of attraction is
+one human glance, not flirtation or erotic framing.
+
+The forensic examination contains two visibly distinct experts and one final
+opinion. Their remembered oral reactions must not be collapsed into one person
+or promoted into a judicial sentence. The clemency home visitor is a probation
+officer preparing a social inquiry, not a judge or clemency commissioner.
 
 ### Public figures
 
@@ -125,8 +135,10 @@ Acceptable:
 
 - a police officer trying not to smile at the Founder's dry answer;
 - a judge's expression briefly softening;
-- a non-graphic post-operative photograph carrying an obscene verbal joke that
-  remains unmistakably metaphorical;
+- solitary bed rest and meticulous preparation exposing the curse of solitude;
+- a clinical close photograph of the actual closed incision carrying an obscene
+  verbal joke that remains unmistakably metaphorical;
+- an ordinary moment of attraction during fingerprinting, without romance;
 - a powerless citizen sarcastically firing an institution in prose;
 - seven chairs sliding back from a fifteen-seat constitutional table with
   mathematical precision;
@@ -136,8 +148,12 @@ Acceptable:
 Not acceptable:
 
 - slapstick arrest or surgery;
+- a bedside carer or visitor during the solitary rehabilitation;
 - a literal kick, dismissal, pasture or act of violence created from the
   Founder's written sarcasm;
+- eroticized fingerprinting or an official exploiting attraction;
+- merging two experts into one ominous authority figure;
+- presenting the probation officer's remembered reaction as legal advice;
 - a laughing court audience;
 - caricatured accountant or official;
 - presenting humour as proof that the charge is frivolous;
@@ -185,11 +201,14 @@ Score arc:
 ## 9. Truth boundaries
 
 - The Founder did not attend the KATA protest.
-- The accountant, tax officer, police, experts and judge are not declared
+- The accountant, tax officer, police, two experts, probation officer and judge are not declared
   malicious or criminal.
 - The most charged messages are paraphrased, not reproduced or visualized.
-- The post-operative-leg photograph and vulgar joke establish body, protest and
-  sarcasm; they do not depict physical action or intent.
+- The solitary rehabilitation, actual incision photograph and vulgar joke
+  establish body, absence, protest and sarcasm; they do not depict physical
+  action or intent.
+- The report records surgery and accounting context; the Founder contests the
+  interpretation and weight given to it, not the fact that it was mentioned.
 - Courtroom remarks concerning defamation, the accountant and the defence
   speech remain the Founder's attributed account, not a finding of bias.
 - The forensic opinion is shown as contested document content, not objective

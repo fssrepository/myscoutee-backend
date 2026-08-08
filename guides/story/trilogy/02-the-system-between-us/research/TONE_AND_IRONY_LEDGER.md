@@ -15,9 +15,11 @@ below are sufficient for local rechecking and do not expose private names.
 | `epapir/_200/urlap_256.pdf` | 7 April 2024 | A — later attributed account | The submission records an investigator smiling when the Founder raised the password-sharing problem. | A smile may be shown only as a remembered human reaction. It proves no agreement, innocence or bias. |
 | `epapir/_100/urlap_137.pdf` | 6 February 2024 | D — authored submission | The Founder called an earlier dismissal the best-feeling dismissal of his life and remembered asking, while being escorted out, whether he could now buy Hungarian government bonds. | Book-only background unless the employment chronology needs the Part I echo. Keep the employer anonymous. |
 | `epapir/_300/urlap_329.pdf` | 14 May 2024 | D — authored submission | The closing line sarcastically declares the addressed institution fired. | May be paraphrased. It is a powerless reversal of hierarchy, not a real dismissal. |
-| authored defence strategy | date preserved in private package | D — authored defence material | A photograph of a swollen, post-operative leg is paired with an obscene image of kicking the tax administration in the backside to make it act. | Describe as written physical comedy. Never visualize a literal kick or graphic wound. |
+| authored defence strategy | date preserved in private package | D — authored defence material | A close photograph of the swollen operated area itself—not the bandage—is paired with an obscene image of kicking the tax administration in the backside to make it act. | Describe as written physical comedy. A closed incision may appear clinically; never visualize a literal kick, blood, open tissue or graphic wound. |
 | later court submission; exact file to isolate | after the exclusion decision | M/D-secondary — remembered wording in an authored reply | After the challenged judge was described to the deciding judge as having listened conscientiously, the Founder answered the court in the third person that the judge had “conscientiously defended the system failure.” | The inversion belongs to the Founder. Do not attribute it to either judge or present it as a finding. Use paraphrase until the exact submission is isolated. |
 | hearing-end expression | 1 April 2026 | M — memoir | The Founder read the challenged judge's final expression as less certain and possibly more able to see him as a person reached by a failure rather than simply at fault. | Expression only. No invented dialogue, thought caption, agreement, innocence finding or admission of error. |
+| `vedobeszed` v22 | later authored defence speech | D/M — attributed oral remarks preserved in the Founder's own submission | The speech attributes “You will certainly receive life imprisonment for this,” “Old man,” “Not successful” and related questions to two forensic experts. The Founder separately remembers the other expert responding “certainly not for that” after hearing the causal sequence. | State that there were two experts. The first set is documented as the Founder's later attribution; the second response remains memoir unless another source is isolated. Neither is a sentence or verified sentencing advice. |
+| clemency social inquiry | 2025; exact visit date pending | D/M | A probation officer arrives without a prior appointment, sees an unstaged puritan flat and asks about income, work and the disputed sentence. The Founder remembers an astonished reaction and a reference to a suspended sentence. | Use the correct role. Do not turn the visitor's reaction into an official legal view or the flat into poverty spectacle. |
 | exact source not yet isolated | unresolved | M — memoir | Institutions are sent away to dispense justice in a pasture. | Keep explicitly as memory or omit from documentary quotation until the source is isolated. |
 
 ## Editorial rule
@@ -42,5 +44,9 @@ expressions and impossible administrative geometry rather than readable insults.
 - The leg image does not describe an attempted or desired physical assault.
 - Later political change does not convert the Founder's earlier interpretation
   into a legal or clinical finding.
+- The two forensic experts must not be merged into one voice, and an attributed
+  life-imprisonment remark must not be presented as a sentence or formal advice.
+- The social inquiry records circumstances; an unheated, untidy flat and no car
+  do not prove incapacity, neglect or misery.
 - Repetition across the Founder's own submissions is evidence of recurring
   self-description, not independent corroboration.

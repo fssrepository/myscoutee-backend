@@ -67,7 +67,7 @@ The reviewed package includes:
 
 - a scanned indictment/charge document;
 - a summons/defence-related document;
-- a scanned forensic psychiatric opinion.
+- a scanned forensic psychiatric opinion signed by two experts.
 
 The expert report records an examination on 30 November 2023 and a signed
 opinion in January 2024. It describes the Founder as calm, cooperative,
@@ -75,6 +75,21 @@ oriented and cognitively intact, then gives a contested personality-disorder
 opinion and a conclusion about moderately limited responsibility. The book must
 state both parts and must not convert a forensic opinion into the narrator's
 identity or claim that later political events clinically disprove it.
+
+The report itself recounts substantial parts of the Founder's tax/accounting,
+surgery and restricted-mobility explanation. The publication may therefore say
+that he contests the weight or interpretation given to those circumstances; it
+must not say the experts were wholly unaware of them. A later defence speech
+attributes several oral remarks to “forensic experts,” including “You will
+certainly receive life imprisonment for this.” That speech documents the
+Founder's later written account of the remark, not a court sentence or an
+independently verified transcript. The same source does not allocate every
+remark reliably between the two experts.
+
+The clemency request also records that its social inquiry was made without prior
+notice. Current Hungarian procedure identifies the person preparing such an
+inquiry in an ordinary pre-judgment clemency matter as a probation officer. The
+private visit details remain memoir-layer until the inquiry itself is isolated.
 
 ## Correspondence
 
