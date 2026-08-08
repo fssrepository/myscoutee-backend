@@ -7,9 +7,9 @@
     "activities": {
       "game": 106,
       "chats": 41,
-      "invitations": 17,
-      "events": 1,
-      "hosting": 32,
+      "invitations": 6,
+      "events": 3,
+      "hosting": 14,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -25,12 +25,12 @@
         "appSupport": 0
       },
       "event": {
-        "all": 62,
-        "active": 1,
-        "pending": 12,
-        "invitations": 17,
-        "hosting": 32,
-        "drafts": 2,
+        "all": 29,
+        "active": 3,
+        "pending": 6,
+        "invitations": 6,
+        "hosting": 14,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
@@ -47,7 +47,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 17
+      "notifications": 6
     },
     "affinity": 432507,
     "age": 28,
@@ -185,9 +185,9 @@
     "activities": {
       "game": 154,
       "chats": 30,
-      "invitations": 15,
-      "events": 6,
-      "hosting": 32,
+      "invitations": 8,
+      "events": 5,
+      "hosting": 13,
       "cars": 0,
       "accommodation": 1,
       "supplies": 0,
@@ -203,12 +203,12 @@
         "appSupport": 0
       },
       "event": {
-        "all": 63,
-        "active": 6,
-        "pending": 10,
-        "invitations": 15,
-        "hosting": 32,
-        "drafts": 2,
+        "all": 30,
+        "active": 5,
+        "pending": 4,
+        "invitations": 8,
+        "hosting": 13,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
@@ -225,7 +225,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 15
+      "notifications": 8
     },
     "affinity": 499225,
     "age": 31,
@@ -267,9 +267,9 @@
     "activities": {
       "game": 109,
       "chats": 24,
-      "invitations": 10,
-      "events": 11,
-      "hosting": 31,
+      "invitations": 5,
+      "events": 8,
+      "hosting": 13,
       "cars": 1,
       "accommodation": 0,
       "supplies": 1,
@@ -285,12 +285,12 @@
         "appSupport": 0
       },
       "event": {
-        "all": 58,
-        "active": 11,
-        "pending": 6,
-        "invitations": 10,
-        "hosting": 31,
-        "drafts": 2,
+        "all": 28,
+        "active": 8,
+        "pending": 2,
+        "invitations": 5,
+        "hosting": 13,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
@@ -307,7 +307,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 34
+      "notifications": 29
     },
     "affinity": 581523,
     "age": 30,
@@ -446,9 +446,9 @@
     "activities": {
       "game": 118,
       "chats": 9,
-      "invitations": 3,
-      "events": 12,
-      "hosting": 32,
+      "invitations": 1,
+      "events": 6,
+      "hosting": 14,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -464,11 +464,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 55,
-        "active": 12,
-        "pending": 8,
-        "invitations": 3,
-        "hosting": 32,
+        "all": 26,
+        "active": 6,
+        "pending": 5,
+        "invitations": 1,
+        "hosting": 14,
         "drafts": 0,
         "trash": 0
       },
@@ -486,7 +486,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 3
+      "notifications": 1
     },
     "affinity": 440843,
     "age": 29,
@@ -622,8 +622,8 @@
       "game": 121,
       "chats": 9,
       "invitations": 2,
-      "events": 13,
-      "hosting": 3,
+      "events": 6,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -639,11 +639,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 13,
-        "pending": 3,
+        "all": 10,
+        "active": 6,
+        "pending": 1,
         "invitations": 2,
-        "hosting": 3,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -704,9 +704,9 @@
     "activities": {
       "game": 107,
       "chats": 4,
-      "invitations": 1,
-      "events": 17,
-      "hosting": 3,
+      "invitations": 0,
+      "events": 10,
+      "hosting": 2,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -722,11 +722,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 17,
+        "all": 12,
+        "active": 10,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 3,
+        "invitations": 0,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
@@ -744,7 +744,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 620130,
     "age": 26,
@@ -789,8 +789,8 @@
       "game": 106,
       "chats": 5,
       "invitations": 1,
-      "events": 14,
-      "hosting": 3,
+      "events": 5,
+      "hosting": 1,
       "cars": 1,
       "accommodation": 0,
       "supplies": 1,
@@ -806,11 +806,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 20,
-        "active": 14,
-        "pending": 2,
+        "all": 7,
+        "active": 5,
+        "pending": 0,
         "invitations": 1,
-        "hosting": 3,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -870,8 +870,8 @@
       "game": 104,
       "chats": 0,
       "invitations": 1,
-      "events": 21,
-      "hosting": 2,
+      "events": 13,
+      "hosting": 1,
       "cars": 1,
       "accommodation": 1,
       "supplies": 0,
@@ -887,11 +887,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 24,
-        "active": 21,
+        "all": 15,
+        "active": 13,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -952,9 +952,9 @@
     "activities": {
       "game": 104,
       "chats": 0,
-      "invitations": 1,
-      "events": 23,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 13,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -970,11 +970,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 26,
-        "active": 23,
+        "all": 14,
+        "active": 13,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -992,7 +992,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 227821,
     "age": 25,
@@ -1035,8 +1035,8 @@
       "game": 104,
       "chats": 8,
       "invitations": 1,
-      "events": 18,
-      "hosting": 33,
+      "events": 8,
+      "hosting": 12,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -1052,11 +1052,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 52,
-        "active": 18,
+        "all": 21,
+        "active": 8,
         "pending": 0,
         "invitations": 1,
-        "hosting": 33,
+        "hosting": 12,
         "drafts": 1,
         "trash": 0
       },
@@ -1117,9 +1117,9 @@
     "activities": {
       "game": 120,
       "chats": 15,
-      "invitations": 1,
-      "events": 27,
-      "hosting": 3,
+      "invitations": 0,
+      "events": 13,
+      "hosting": 2,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -1135,12 +1135,12 @@
         "appSupport": 0
       },
       "event": {
-        "all": 31,
-        "active": 27,
+        "all": 15,
+        "active": 13,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 3,
-        "drafts": 1,
+        "invitations": 0,
+        "hosting": 2,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
@@ -1157,7 +1157,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 33,
@@ -1201,8 +1201,8 @@
       "game": 118,
       "chats": 15,
       "invitations": 1,
-      "events": 21,
-      "hosting": 32,
+      "events": 14,
+      "hosting": 9,
       "cars": 1,
       "accommodation": 0,
       "supplies": 1,
@@ -1218,11 +1218,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 55,
-        "active": 21,
+        "all": 25,
+        "active": 14,
         "pending": 1,
         "invitations": 1,
-        "hosting": 32,
+        "hosting": 9,
         "drafts": 0,
         "trash": 0
       },
@@ -1283,8 +1283,8 @@
       "game": 150,
       "chats": 18,
       "invitations": 1,
-      "events": 28,
-      "hosting": 2,
+      "events": 19,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -1300,11 +1300,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 31,
-        "active": 28,
+        "all": 21,
+        "active": 19,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -1365,9 +1365,9 @@
     "activities": {
       "game": 153,
       "chats": 16,
-      "invitations": 1,
-      "events": 25,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 9,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -1383,11 +1383,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 30,
-        "active": 25,
+        "all": 12,
+        "active": 9,
         "pending": 2,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -1405,7 +1405,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -1449,8 +1449,8 @@
       "game": 111,
       "chats": 15,
       "invitations": 1,
-      "events": 26,
-      "hosting": 2,
+      "events": 8,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 1,
       "supplies": 0,
@@ -1466,11 +1466,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 30,
-        "active": 26,
+        "all": 10,
+        "active": 8,
         "pending": 1,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -1531,9 +1531,9 @@
     "activities": {
       "game": 104,
       "chats": 18,
-      "invitations": 1,
-      "events": 24,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 1,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -1549,11 +1549,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 28,
-        "active": 24,
+        "all": 21,
+        "active": 19,
         "pending": 1,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -1571,7 +1571,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -1614,9 +1614,9 @@
     "activities": {
       "game": 139,
       "chats": 11,
-      "invitations": 1,
-      "events": 21,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 30,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 2,
       "supplies": 0,
@@ -1632,11 +1632,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 26,
-        "active": 21,
+        "all": 32,
+        "active": 30,
         "pending": 2,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -1654,7 +1654,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -1696,9 +1696,9 @@
     "activities": {
       "game": 104,
       "chats": 13,
-      "invitations": 1,
-      "events": 20,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -1714,11 +1714,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 23,
-        "active": 20,
+        "all": 7,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -1736,7 +1736,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 620130,
     "age": 29,
@@ -1779,9 +1779,9 @@
     "activities": {
       "game": 149,
       "chats": 13,
-      "invitations": 1,
-      "events": 16,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 7,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -1797,11 +1797,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 16,
+        "all": 7,
+        "active": 7,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -1819,7 +1819,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -1861,9 +1861,9 @@
     "activities": {
       "game": 126,
       "chats": 8,
-      "invitations": 1,
-      "events": 14,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 22,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 1,
       "supplies": 0,
@@ -1879,11 +1879,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 17,
-        "active": 14,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "all": 23,
+        "active": 22,
+        "pending": 1,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -1901,7 +1901,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -1945,8 +1945,8 @@
       "game": 127,
       "chats": 5,
       "invitations": 1,
-      "events": 10,
-      "hosting": 2,
+      "events": 19,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 2,
       "supplies": 0,
@@ -1962,11 +1962,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 13,
-        "active": 10,
+        "all": 20,
+        "active": 19,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2027,9 +2027,9 @@
     "activities": {
       "game": 115,
       "chats": 8,
-      "invitations": 1,
-      "events": 10,
-      "hosting": 3,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 2,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -2045,12 +2045,12 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 10,
+        "all": 7,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 3,
-        "drafts": 1,
+        "invitations": 0,
+        "hosting": 2,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
@@ -2067,7 +2067,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -2109,9 +2109,9 @@
     "activities": {
       "game": 110,
       "chats": 1,
-      "invitations": 1,
-      "events": 7,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 4,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -2127,11 +2127,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 10,
-        "active": 7,
+        "all": 4,
+        "active": 4,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2149,7 +2149,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -2191,9 +2191,9 @@
     "activities": {
       "game": 175,
       "chats": 3,
-      "invitations": 1,
-      "events": 6,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 20,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 1,
       "supplies": 0,
@@ -2209,11 +2209,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 9,
-        "active": 6,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "all": 21,
+        "active": 20,
+        "pending": 1,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2231,7 +2231,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -2274,9 +2274,9 @@
     "activities": {
       "game": 153,
       "chats": 1,
-      "invitations": 1,
-      "events": 4,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 24,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -2292,11 +2292,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 7,
-        "active": 4,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "all": 25,
+        "active": 24,
+        "pending": 1,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2314,7 +2314,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -2357,9 +2357,9 @@
     "activities": {
       "game": 129,
       "chats": 0,
-      "invitations": 1,
-      "events": 5,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 3,
+      "hosting": 1,
       "cars": 2,
       "accommodation": 1,
       "supplies": 0,
@@ -2375,11 +2375,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 8,
-        "active": 5,
+        "all": 4,
+        "active": 3,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -2397,7 +2397,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -2441,9 +2441,9 @@
     "activities": {
       "game": 104,
       "chats": 2,
-      "invitations": 1,
-      "events": 7,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 2,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -2459,11 +2459,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 10,
-        "active": 7,
+        "all": 2,
+        "active": 2,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2481,7 +2481,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 581523,
     "age": 26,
@@ -2523,9 +2523,9 @@
     "activities": {
       "game": 104,
       "chats": 2,
-      "invitations": 1,
-      "events": 8,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 1,
       "supplies": 0,
@@ -2541,11 +2541,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 19,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2563,7 +2563,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -2605,9 +2605,9 @@
     "activities": {
       "game": 122,
       "chats": 4,
-      "invitations": 1,
-      "events": 11,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -2623,11 +2623,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 11,
+        "all": 19,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2645,7 +2645,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -2689,8 +2689,8 @@
       "game": 106,
       "chats": 5,
       "invitations": 1,
-      "events": 12,
-      "hosting": 2,
+      "events": 3,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 2,
       "supplies": 0,
@@ -2706,11 +2706,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
-        "active": 12,
+        "all": 4,
+        "active": 3,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2771,9 +2771,9 @@
     "activities": {
       "game": 115,
       "chats": 3,
-      "invitations": 1,
-      "events": 13,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -2789,11 +2789,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 16,
-        "active": 13,
+        "all": 7,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -2811,7 +2811,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -2854,9 +2854,9 @@
     "activities": {
       "game": 121,
       "chats": 5,
-      "invitations": 1,
-      "events": 15,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -2872,11 +2872,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 18,
-        "active": 15,
+        "all": 19,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2894,7 +2894,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -2936,9 +2936,9 @@
     "activities": {
       "game": 104,
       "chats": 6,
-      "invitations": 1,
-      "events": 16,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -2954,11 +2954,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 16,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -2976,7 +2976,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -3018,9 +3018,9 @@
     "activities": {
       "game": 107,
       "chats": 5,
-      "invitations": 1,
-      "events": 18,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 1,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -3036,11 +3036,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 18,
+        "all": 6,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -3058,7 +3058,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -3101,9 +3101,9 @@
     "activities": {
       "game": 105,
       "chats": 9,
-      "invitations": 1,
-      "events": 18,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 2,
       "supplies": 1,
@@ -3119,11 +3119,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 18,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3141,7 +3141,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -3183,9 +3183,9 @@
     "activities": {
       "game": 149,
       "chats": 8,
-      "invitations": 1,
-      "events": 19,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -3201,11 +3201,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 22,
-        "active": 19,
+        "all": 6,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3223,7 +3223,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -3267,9 +3267,9 @@
     "activities": {
       "game": 106,
       "chats": 5,
-      "invitations": 1,
-      "events": 18,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 4,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -3285,11 +3285,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 18,
+        "all": 4,
+        "active": 4,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3307,7 +3307,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -3349,9 +3349,9 @@
     "activities": {
       "game": 114,
       "chats": 11,
-      "invitations": 1,
-      "events": 19,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -3367,11 +3367,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 22,
-        "active": 19,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3389,7 +3389,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -3433,8 +3433,8 @@
       "game": 118,
       "chats": 6,
       "invitations": 1,
-      "events": 17,
-      "hosting": 2,
+      "events": 5,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 1,
       "supplies": 0,
@@ -3450,11 +3450,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 20,
-        "active": 17,
+        "all": 6,
+        "active": 5,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3515,8 +3515,8 @@
     "activities": {
       "game": 104,
       "chats": 4,
-      "invitations": 1,
-      "events": 16,
+      "invitations": 0,
+      "events": 3,
       "hosting": 2,
       "cars": 0,
       "accommodation": 0,
@@ -3533,10 +3533,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 16,
+        "all": 5,
+        "active": 3,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 0,
         "hosting": 2,
         "drafts": 0,
         "trash": 0
@@ -3555,7 +3555,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -3597,9 +3597,9 @@
     "activities": {
       "game": 104,
       "chats": 3,
-      "invitations": 1,
-      "events": 17,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -3615,11 +3615,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 20,
-        "active": 17,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3637,7 +3637,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -3682,8 +3682,8 @@
       "game": 104,
       "chats": 8,
       "invitations": 1,
-      "events": 27,
-      "hosting": 2,
+      "events": 11,
+      "hosting": 1,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -3699,12 +3699,12 @@
         "appSupport": 0
       },
       "event": {
-        "all": 31,
-        "active": 27,
+        "all": 14,
+        "active": 11,
         "pending": 1,
         "invitations": 1,
-        "hosting": 2,
-        "drafts": 1,
+        "hosting": 1,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
@@ -3763,9 +3763,9 @@
     "activities": {
       "game": 104,
       "chats": 3,
-      "invitations": 1,
-      "events": 10,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 1,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -3781,11 +3781,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 13,
-        "active": 10,
+        "all": 6,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -3803,7 +3803,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -3845,9 +3845,9 @@
     "activities": {
       "game": 124,
       "chats": 4,
-      "invitations": 1,
-      "events": 12,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 0,
       "supplies": 1,
@@ -3863,11 +3863,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
-        "active": 12,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3885,7 +3885,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -3928,9 +3928,9 @@
     "activities": {
       "game": 104,
       "chats": 5,
-      "invitations": 1,
-      "events": 8,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -3946,11 +3946,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -3968,7 +3968,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -4010,9 +4010,9 @@
     "activities": {
       "game": 105,
       "chats": 0,
-      "invitations": 1,
-      "events": 8,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 3,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -4028,11 +4028,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 3,
+        "active": 3,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -4050,7 +4050,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -4094,9 +4094,9 @@
     "activities": {
       "game": 104,
       "chats": 3,
-      "invitations": 1,
-      "events": 11,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 1,
@@ -4112,11 +4112,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 11,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -4134,7 +4134,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -4176,8 +4176,8 @@
       "game": 134,
       "chats": 4,
       "invitations": 1,
-      "events": 8,
-      "hosting": 2,
+      "events": 4,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 2,
@@ -4193,11 +4193,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 5,
+        "active": 4,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -4258,8 +4258,8 @@
     "activities": {
       "game": 127,
       "chats": 0,
-      "invitations": 1,
-      "events": 10,
+      "invitations": 0,
+      "events": 4,
       "hosting": 2,
       "cars": 0,
       "accommodation": 0,
@@ -4276,10 +4276,10 @@
         "appSupport": 0
       },
       "event": {
-        "all": 13,
-        "active": 10,
+        "all": 6,
+        "active": 4,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 0,
         "hosting": 2,
         "drafts": 0,
         "trash": 0
@@ -4298,7 +4298,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -4341,9 +4341,9 @@
     "activities": {
       "game": 114,
       "chats": 0,
-      "invitations": 1,
-      "events": 12,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -4359,11 +4359,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
-        "active": 12,
+        "all": 6,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -4381,7 +4381,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,

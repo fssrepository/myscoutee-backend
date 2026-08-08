@@ -9,7 +9,13 @@ const USERS_PATH = path.join(DEMO_DB, 'users.json');
 const CONTACTS_PATH = path.join(DEMO_DB, 'navigatorContacts.json');
 const ACTIVITY_MEMBERS_PATH = path.join(DEMO_DB, 'activityMembers.json');
 const ACTIVITY_RESOURCES_PATH = path.join(DEMO_DB, 'activityResources.json');
+const ACTIVITY_STAGE_RUNTIME_PATH = path.join(DEMO_DB, 'activitySubEventStageRuntime.json');
 const ASSET_REQUESTS_PATH = path.join(DEMO_DB, 'assetRequests.json');
+const CHATS_PATH = path.join(DEMO_DB, 'chats.json');
+const CHAT_MESSAGES_PATH = path.join(DEMO_DB, 'chatMessages.json');
+const EVENT_FEEDBACK_ANSWERS_PATH = path.join(DEMO_DB, 'eventFeedbackAnswers.json');
+const EVENT_FEEDBACK_STATES_PATH = path.join(DEMO_DB, 'eventFeedbackStates.json');
+const USER_NOTIFICATIONS_PATH = path.join(DEMO_DB, 'userNotifications.json');
 const USER_REPORTS_PATH = path.join(DEMO_DB, 'userReports.json');
 const FRONTEND_HELPER_PATH = path.join(
   ROOT,
@@ -61,6 +67,55 @@ const CANONICAL_ASSET_ID_BY_SLOT = [
   '34071caa96bd00042e32e1c7', '73e996e26e42311c4efbe92f', '55eee2af2e3a84d9355842e2',
   '9ea23c395c80321c0298280f', '6d0dfc06cab190e33bfb4d87'
 ];
+
+// One Mongo event owns each generated event image. Fixture-sensitive records
+// are deliberately retained in this list; only their display data changes.
+const CANONICAL_EVENT_ID_BY_SLOT = [
+  '21746c9aacc985817e31cf9f', 'a11a802ee0714a21db94ed4e', '3efb1b25ad4bd346c9bf0a72',
+  'fc7345ce1a673d775e0f11bd', 'b425a4db77762da8d46a4c27', '8654bafcac1efb4bdc204385',
+  '09d00e5b8349770d4bf4ee40', '50ebe8c0e820dfd6e5cdcf8b', '14f3cb8f61fe8508fa5ffec8',
+  'b020670ad3b6597a393418b4', '5aad13ceadb5e69ed56a65f5', 'b76dab063ba86c2573e222f8',
+  '209aafe2076a041f55597ebd', '0107df8b8686b8b986b6df51', '4f86abc69e14e4f826eeefad',
+  '2be241d997eb2deaf03f7253', '07773bfc84d68a08e66efc1e', '34a70db00fdb17d4f104ee98',
+  'b7a12682d128d8796b37e819', '6f1a1e1dd1d79cf39741bade', '4223aeec3f1b39d3a76ab3eb',
+  'b82aa80d4a6761590762dbfb', 'd098654a2c917954137ec8f3', '1ad90dc8cb1fe3abdef4e409',
+  '68c686d33510afdae064d8f5', 'd4d6e9158de813e31aa2dbcd', '845052d5058691e8e54e1359',
+  '52fe6150386c6e8efa61290d', '04734e210225001d020ca583', 'cb6dd99e6d26cf0df772a5ea',
+  '7321b58bbba5045a3163cdbc', '261512e744c1837cd7ba85f2', '0aba1afccab1d088fb4d517d',
+  '49a97da4f9764ad63c2450d6', '09421edf5287f29df0b6939e', 'c66972829391ece30a38e9be',
+  '9018da9f33929fec90a0df70', '4f115bb6be32bf0838efb3b7', '852539c51c59a0f9b587c51c',
+  '06b17361f07de1f83082b2a4', 'f011bc534644ddacd0c28bcb', 'e511c1b71cdef1a523094105',
+  'af3000000000000000000002', 'f5892afbe74005754a9b27dc', '0f1c8d357ea837c97b714eaf',
+  '5c7627e3b9ff113010d00ad8', 'ceaae76e8afd0975e1087cc8', '99fc3b45fb145f50d4026729',
+  '6b0040b2f8535de24ea3e71e', '23099224f1bc48899659ecd2', '89342ebb90e2dadc8e5b7a20',
+  '161ed933af0d3d822afb6e8e', '048cc01cd2e1257bc0118c2b', '3e00c976ccedc31049214e8c',
+  '663e0915ea551ca165487ee7', 'b647a3d709ad8d80ccaf2c5b', '4da716b41a61824673a3de6b',
+  '644b7500b1c1e6eeb303f45d', '6874712cbfa8cac47084d875', 'c0175dddc71e8d3862fab588',
+  '775d34ce5e1c0e707d43d5ad', '3a4193a4d07c42e734f290ee', 'demo-tournament-results',
+  'demo-tournament-start-review', 'f557e743053605a8177c6fbd', '297c8f62d403c999e6aba00c',
+  'f260f450643e752d226b4253', 'a09e9b9a7cd69a4f2727e08b', 'fa17271c5b6090f31f02aad8',
+  '2a6977798a4b6c3ef708a616', 'c19a9b3baf9e6b7e19fdcbb1', '858bae8114f76bfecea7ea2a',
+  '141f6f9ca589a4fecd5881a4', '14d2afd839a096acce18db7c', '17a704fd94f4a356a154361d',
+  '2fe18816d7152f393b55d973', '311a4988b2f1516db46f96d8', '44627b437c4eb852e5405967',
+  '44db7ec86ba3df4d0dc54fc2', '49a90c78693a3c3b2d7efbad', '1a3e19a819b09e6bd9bd0a2c',
+  '0fe7821a10e273d40bb2e88f', '1f73c75edf8c6246a5ef2eaa', '1fb14e059cd3300d9fbdefc4',
+  '60cd64b444e23989dd8c4692', '9cff773a194eced322ce2f76', 'c2b9bb630a300a1da4d999a2',
+  '58aa9a000b4fe45f868f1cd5', '6c9db589cceea886017ca9c9', '0454c0ca2f6a4663401d76c6',
+  'c19cdabbe2394454a065b137', '503e132b0b5debce2c20e463', 'a094f562922c5d15873bf6f1',
+  'fca394637db8afa4d522a396', '9e5a5b0c84e154e6e71b2d41', '9295b8c477d5d8beaf3db781',
+  '51dd1b1c94a1835ce1060dd0', 'fdff37b9113cc968272678d0', '91cfc506748b20f6e63a7c63',
+  '3c7ea5ad3636d8b00fb878cd'
+];
+
+if (CANONICAL_EVENT_ID_BY_SLOT.length !== 100 || new Set(CANONICAL_EVENT_ID_BY_SLOT).size !== 100) {
+  throw new Error('Canonical event slots must contain exactly 100 unique event IDs.');
+}
+
+const QA_RELATION_USER_IDS = new Set([
+  '650000000000000000000061', // Casey Bridge
+  '650000000000000000000062', // Nova Social
+  '650000000000000000000063'  // Riley Outside
+]);
 
 const ASSET_SLOT_GROUPS = [
   { title: 'Camping Gear Kit', slots: range(1, 8) },
@@ -235,6 +290,12 @@ const LOCAL_EVENT_SEEDS = [
   'demo-event-invitations:u3:i5:urban-photo-sprint'
 ];
 
+const LOCAL_EVENT_CANONICAL_ID_BY_KEY = {
+  'demo-event-events:u1:e1': 'a11a802ee0714a21db94ed4e',
+  'demo-event-events:u1:e7': '99fc3b45fb145f50d4026729',
+  'demo-event-events:u3:e5': 'ceaae76e8afd0975e1087cc8'
+};
+
 const EVENT_CATEGORIES = [
   category('winter-mountain', ['ski', 'alpine', 'snow', 'winter', 'mountain', 'summit']),
   category('court-sports', ['padel', 'tennis', 'volley', 'court', 'league', 'tournament', 'cup', 'competition']),
@@ -271,6 +332,117 @@ const RELATED_EVENT_CATEGORIES = {
   'social-mixer': ['festival-community', 'coffee-brunch', 'creative-culture']
 };
 
+// Stable, intentionally distinct briefs for the 100 generated event covers.
+// These are image concepts, not replacements for the underlying event fixtures:
+// several real demo events can continue to share the matching canonical cover.
+const EVENT_IMAGE_DEFINITIONS = [
+  eventImageDefinition('winter-mountain', 'Snowline Shuttle Briefing', 'A dawn transfer team checks skis, helmets, and warm layers before the road climbs.', 'snowy timber-lodge pickup lane', 'three friends loading skis into an unbranded minibus while a fourth checks boot buckles beside blue snowbanks'),
+  eventImageDefinition('winter-mountain', 'Alpine Cabin Supper', 'A small ski group winds down over soup while wet gloves and boots dry by the stove.', 'stone mountain refuge dining room', 'four tired skiers around a rough wooden table, steaming bowls in front of them and snow visible through one window'),
+  eventImageDefinition('court-sports', 'Glasshouse Padel Ladder', 'Rotating doubles play short ranking rounds on a bright converted conservatory court.', 'sunlit glass-roof padel court', 'four adults mid-rally with the ball above the net and two waiting players beside plain gear bags'),
+  eventImageDefinition('court-sports', 'Sunset Beach Volley Rotation', 'Casual teams rotate through quick games before sharing fruit at the sideline.', 'wide public beach volleyball court', 'two players jumping at the net as teammates reset in the sand with the ocean horizon behind them'),
+  eventImageDefinition('court-sports', 'Rooftop Padel Open', 'Open pairs meet for a friendly evening bracket above the city.', 'fenced urban rooftop padel court', 'a mixed doubles point in progress beneath amber sky with plain wind screens and city buildings beyond'),
+  eventImageDefinition('cycling', 'Riverbridge Cargo-Bike Social', 'A relaxed ride pauses to compare practical cargo setups before following the riverside trail.', 'riverside path below a steel bridge', 'five cyclists standing beside city bikes and one front-loader cargo bike while adjusting helmets and panniers'),
+  eventImageDefinition('running-fitness', 'Sunrise Run and Market Brunch', 'An easy-pace run finishes beside a breakfast table with fruit, rolls, and coffee flasks.', 'tree-lined market square at sunrise', 'runners cooling down beside a folding breakfast table while one person pours coffee into reusable cups'),
+  eventImageDefinition('running-fitness', 'Riverside Relay Handoff', 'Small teams practice clean baton exchanges across a long community relay route.', 'curving river trail beside a pedestrian bridge', 'one runner passing a plain baton to a teammate while the remaining team cheers from a safe trail edge'),
+  eventImageDefinition('running-fitness', 'Stadium Stair Pulse', 'A compact fitness group alternates stair climbs with recovery rounds.', 'open concrete neighborhood stadium', 'five adults moving at different levels on broad stadium steps with water bottles aligned at the bottom'),
+  eventImageDefinition('running-fitness', 'Rain-Window Track Intervals', 'A weatherproof evening session uses short intervals and paired pacing.', 'indoor oval track beside tall rain-streaked windows', 'two runners rounding the bend as a coach times another pair with an unmarked stopwatch'),
+  eventImageDefinition('running-fitness', 'Urban Photo Checkpoint Dash', 'Camera teams move between visual challenges without turning the meetup into a race.', 'geometric downtown pedestrian plaza', 'four participants jogging lightly across paving with compact cameras secured by straps and one framing a shot'),
+  eventImageDefinition('running-fitness', 'Underpass Strength Circuit', 'A coached outdoor circuit combines resistance bands, step boxes, and controlled carries.', 'clean concrete space beneath a broad overpass', 'six adults at separate exercise stations using plain bands, kettlebells, and low wooden boxes'),
+  eventImageDefinition('running-fitness', 'Twilight Pacer Drills', 'Volunteer pacers rehearse starts, regroup points, and steady running formation.', 'community athletics track at blue hour', 'a line of runners following evenly spaced cones while two pacers demonstrate shoulder-to-shoulder rhythm'),
+  eventImageDefinition('walking-outdoors', 'Red Rock Overlook Hike', 'A measured desert climb ends at a broad overlook with time for water and route checks.', 'rust-colored canyon trail', 'five hikers arriving at a rocky viewpoint with trekking poles lowered and hydration packs visible'),
+  eventImageDefinition('walking-outdoors', 'Lakeside Walk Lab', 'Paired conversations alternate with quiet observation stops along the water.', 'wooden boardwalk through lakeside reeds', 'three walking pairs spaced along the boardwalk while the leading pair pauses to watch ripples near the reeds'),
+  eventImageDefinition('walking-outdoors', 'Conservatory Sunset Stroll', 'Friends of friends explore outdoor garden rooms before the glasshouse closes.', 'botanical conservatory garden at sunset', 'a small group walking between tall tropical planters and the glowing glass facade'),
+  eventImageDefinition('walking-outdoors', 'Saguaro Bloom Trail', 'A careful morning walk follows seasonal desert flowers without leaving the marked path.', 'Sonoran desert footpath after spring rain', 'four walkers passing flowering cactus and low wildflowers with a guide pointing from the center of the trail'),
+  eventImageDefinition('walking-outdoors', 'Elevated-Rail Architecture Walk', 'The group studies steelwork, brick facades, and changing street proportions.', 'car-free street beneath an elevated railway', 'five adults looking upward at riveted beams while one sketches shapes in a small blank notebook'),
+  eventImageDefinition('walking-outdoors', 'Cedar Mist Forest Loop', 'A quiet social hike follows a damp cedar path with frequent regroup stops.', 'misty evergreen forest trail', 'four walkers crossing a narrow timber footbridge surrounded by ferns and wet cedar trunks'),
+  eventImageDefinition('walking-outdoors', 'Mosaic Stairway City Walk', 'A hillside route connects colorful public steps, pocket gardens, and neighborhood overlooks.', 'steep urban garden stairway', 'a social group climbing patterned tile steps between dense plants and simple stucco walls'),
+  eventImageDefinition('walking-outdoors', 'Accessible Sunday Park Loop', 'A step-free loop keeps the pace conversational and the path comfortable for everyone.', 'broad level path around a mature city park', 'two walkers beside a wheelchair user and two more friends under large shade trees with generous space around them'),
+  eventImageDefinition('walking-outdoors', 'Lantern Bluff Walk', 'An early-evening coastal walk uses hand lanterns for the return from the overlook.', 'grassy bluff above a rocky coast', 'five adults following a safe inland path with small warm lanterns as the sea darkens behind them'),
+  eventImageDefinition('walking-outdoors', 'Tidal Marsh Bird Walk', 'A patient boardwalk outing practices binocular use and quiet group movement.', 'open salt-marsh observation boardwalk', 'four birdwatchers with binoculars facing different parts of the marsh while a guide points toward distant reeds'),
+  eventImageDefinition('beach-water', 'Paddleboard Balance Clinic', 'Beginners rehearse stable stance and safe falls in calm shallow water.', 'sheltered urban lake beach', 'three adults kneeling on paddleboards near an instructor standing waist-deep beside a line of bright unbranded boards'),
+  eventImageDefinition('beach-water', 'Canyon Reservoir Kayak Pairing', 'Paddlers match pace and practice turning before a short red-cliff route.', 'calm reservoir below red canyon walls', 'two tandem kayaks making a wide synchronized turn while a third waits near a floating marker'),
+  eventImageDefinition('beach-water', 'Lakefront Dinghy Rigging', 'A small sailing group learns to prepare lines and sails before leaving the harbor.', 'grassy lakefront sailing dock', 'four adults rigging a compact white dinghy with one holding the mast and another sorting plain rope'),
+  eventImageDefinition('beach-water', 'Riverside Canoe Picnic Launch', 'Friends pack a dry lunch and check life jackets before a gentle downstream paddle.', 'tree-shaded river launch ramp', 'five participants loading dry bags and a picnic basket into two open canoes beside calm water'),
+  eventImageDefinition('beach-water', 'Low-Tide Shore Survey', 'A waterfront meetup observes tide pools and returns every stone carefully.', 'rocky Pacific shoreline at low tide', 'four adults crouched around separate tide pools with one using a small viewing tray and waves far behind'),
+  eventImageDefinition('coffee-brunch', 'Corner Bakery First Batch', 'Early arrivals share still-warm bread at the working table beside the ovens.', 'small neighborhood bakery after opening', 'five guests around a worn wooden table with torn bread, butter dishes, ceramic mugs, and cooling racks behind them'),
+  eventImageDefinition('coffee-brunch', 'Greenhouse Brunch Table', 'A plant-filled brunch pairs seasonal plates with calm one-to-one introductions.', 'airy greenhouse cafe among hanging plants', 'six adults seated around a round table with colorful breakfast plates under diffuse glass-roof light'),
+  eventImageDefinition('coffee-brunch', 'Brunch Rotation', 'Three compact tables rotate guests every twenty minutes using different cup colors as cues.', 'bright tiled all-day cafe', 'three visible cafe tables mid-rotation as guests stand, smile, and carry differently colored ceramic cups'),
+  eventImageDefinition('coffee-brunch', 'Pour-Over Roastery Lab', 'A hands-on coffee session compares grind, timing, and aroma without brand-led presentation.', 'brick micro-roastery workshop counter', 'four participants pouring through glass brewers while a fifth smells freshly ground coffee from a small bowl'),
+  eventImageDefinition('coffee-brunch', 'Rooftop Tea and Citrus', 'A breezy late breakfast combines iced tea, citrus pastries, and a shaded skyline table.', 'quiet rooftop garden breakfast terrace', 'five friends passing a citrus tart around a linen-covered table with glass tea pitchers and potted herbs'),
+  eventImageDefinition('coffee-brunch', 'Market Hall Breakfast Club', 'The group assembles a shared breakfast from several small independent counters.', 'historic indoor food hall in morning light', 'six adults standing at a tall communal table with oatmeal, fruit, savory buns, and plain takeaway cups'),
+  eventImageDefinition('dining-tasting', 'Night Taco Window Crawl', 'A three-stop route compares fillings and handmade salsas at open street windows.', 'pedestrian food lane after dark', 'five diners standing around a narrow steel counter with small tacos and colorful salsa bowls under warm bulbs'),
+  eventImageDefinition('dining-tasting', 'Handmade Pasta Table', 'Pairs roll dough, shape filled pasta, and share the first cooked batch.', 'community kitchen with long marble worktop', 'six adults flouring pasta sheets with rolling pins while finished shapes rest on wooden trays'),
+  eventImageDefinition('dining-tasting', 'Night Food League', 'Teams sample three market stalls and compare aroma, texture, and presentation.', 'covered night market dining aisle', 'three pairs gathered around a standing table holding different tasting bowls with active open kitchens behind'),
+  eventImageDefinition('dining-tasting', 'Friends Circle Supper', 'Close connections and plus-ones share a slow seasonal meal at one candlelit table.', 'converted farmhouse dining room', 'eight adults passing roasted vegetables along a long timber table lit by mismatched candles'),
+  eventImageDefinition('dining-tasting', 'Cocoa and Spice Flight', 'A guided tasting matches dark cocoa with cinnamon, chile, citrus peel, and toasted nuts.', 'intimate stone-walled tasting room', 'five guests comparing small ceramic cups and spice dishes arranged in a precise arc on a dark table'),
+  eventImageDefinition('music-nightlife', 'Desert Porch Folk Session', 'Acoustic players trade short songs while listeners settle into porch chairs.', 'adobe porch facing a desert dusk', 'three musicians with unbranded acoustic instruments and five listeners seated close under simple string bulbs'),
+  eventImageDefinition('music-nightlife', 'Jazz Rooftop Session', 'A compact trio plays beside low tables as the skyline moves into evening.', 'brick rooftop music terrace', 'saxophone, upright bass, and small drum kit in performance with a relaxed seated audience in the foreground'),
+  eventImageDefinition('music-nightlife', 'Basement Vinyl Listening Circle', 'Each guest shares one record side in a focused, low-light listening room.', 'acoustically treated basement lounge', 'six listeners facing a plain turntable cabinet while one person carefully lowers a record onto the platter'),
+  eventImageDefinition('music-nightlife', 'Harbor Warehouse Percussion Lab', 'A rhythm workshop builds layered patterns with hand drums and found percussion.', 'open brick warehouse beside a harbor', 'seven adults in a wide circle playing hand drums, shakers, and wooden blocks with large doors open to water'),
+  eventImageDefinition('music-nightlife', 'Courtyard String Social', 'A small string quartet performs close to a standing neighborhood audience.', 'leafy old-town courtyard at night', 'four seated string players beneath warm wall lamps with listeners gathered informally around the stone paving'),
+  eventImageDefinition('creative-culture', 'Sunprint Garden Workshop', 'Participants arrange leaves and small objects for blue botanical contact prints.', 'community garden worktable in clear sun', 'five adults placing ferns and flowers onto deep-blue sunprint sheets with water trays at one end'),
+  eventImageDefinition('creative-culture', 'Creative Nights Gesture Circle', 'A clothed gesture model anchors fast charcoal studies and supportive critique.', 'high-ceiling neighborhood art studio', 'six easels forming a semicircle around a fully clothed seated model with charcoal drawings visible but no text'),
+  eventImageDefinition('creative-culture', 'Wheel-Thrown Pottery Lab', 'Beginners center clay and compare forms at a row of working wheels.', 'daylit ceramic workshop', 'four adults at pottery wheels with wet clay on their hands and shelves of unglazed bowls behind them'),
+  eventImageDefinition('creative-culture', 'Coffee and Book Swap', 'Readers trade wrapped recommendations and open them over coffee in a small circle.', 'independent cafe reading alcove', 'six people passing paper-wrapped books around a low table with mugs and an overflowing plain book crate'),
+  eventImageDefinition('creative-culture', 'Risograph Zine Assembly', 'A print group layers two colors, folds pages, and binds a tiny shared edition.', 'compact community print studio', 'five adults handling vivid two-color prints beside an unbranded duplicator, bone folders, and stacks of blank covers'),
+  eventImageDefinition('creative-culture', 'Darkroom Contact Sheet Night', 'Analog photographers inspect fresh contact sheets under safe red light.', 'working photographic darkroom', 'four adults around a wet-process bench with film strips, tongs, trays, and abstract contact sheets without readable text'),
+  eventImageDefinition('creative-culture', 'Studio Friends Critique Wall', 'An invite-only group pins works in progress and discusses composition in short rounds.', 'loft studio with a long white review wall', 'six friends facing varied abstract studies pinned in a grid while one gestures with a pencil'),
+  eventImageDefinition('creative-culture', 'Urban Photo Marathon', 'Camera teams solve composition challenges across arcades, reflections, and pedestrian bridges.', 'downtown passage with mirrored windows', 'five photographers working at visibly different angles around one reflective architectural scene'),
+  eventImageDefinition('wellness', 'Candlelit Sound Bath', 'A quiet evening session layers singing bowls and low resonant tones.', 'warm timber wellness room', 'six adults resting on floor mats while a facilitator sits among metal bowls and soft indirect candles'),
+  eventImageDefinition('wellness', 'Seaside Sunrise Yoga', 'A gentle standing sequence begins as first light reaches the water.', 'flat oceanfront deck at sunrise', 'seven adults in a balanced standing pose on evenly spaced mats facing the horizon'),
+  eventImageDefinition('wellness', 'Community Tai Chi Courtyard', 'Slow coordinated forms create a calm start in a sheltered civic courtyard.', 'pale stone courtyard with one mature tree', 'eight adults moving through the same open-arm tai chi posture with generous spacing'),
+  eventImageDefinition('wellness', 'Desert Breathwork Circle', 'A guided breathing practice uses upright seating and a quiet sandstone setting.', 'shaded desert pavilion', 'six adults seated on round cushions in a broad circle while a facilitator demonstrates hands resting on ribs'),
+  eventImageDefinition('wellness', 'Aromatic Herb Blending Table', 'Participants combine dried herbs for simple calming sachets and steam bowls.', 'bright apothecary-style workshop without labels', 'five adults measuring dried lavender, mint, and citrus peel into small ceramic bowls at a clean table'),
+  eventImageDefinition('wellness', 'Mobility Bands Clinic', 'A practical session explores shoulder, hip, and ankle range with light resistance.', 'sunlit neighborhood exercise room', 'six adults using different plain resistance bands while an instructor demonstrates a controlled shoulder movement'),
+  eventImageDefinition('wellness', 'Floating Dock Meditation', 'A short silent practice follows the movement of water beneath a stable dock.', 'wide wooden dock on a still forest lake', 'five seated participants facing open water with shoes aligned behind their cushions'),
+  eventImageDefinition('wellness', 'Restorative Stretch Hall', 'Long supported stretches use bolsters, blocks, and folded blankets.', 'renovated old gym with tall windows', 'six adults in different floor stretches supported by plain bolsters under soft window light'),
+  eventImageDefinition('wellness', 'Park Hammock Pause', 'A guided rest meetup alternates short journaling with quiet hammock time.', 'shady grove in a spacious public park', 'four fabric hammocks hung safely between trees with participants resting and two friends writing in blank notebooks nearby'),
+  eventImageDefinition('wellness', 'Quiet Tea Mindfulness', 'A small group practices attentive pouring, aroma, and unhurried silence.', 'minimal tatami-style community room', 'five adults kneeling around a low table as one pours tea from a plain clay pot into small cups'),
+  eventImageDefinition('professional-tech', 'Repair Cafe Team Challenge', 'Small volunteer teams diagnose lamps, radios, and household devices in cooperative timed rounds.', 'library makerspace repair bench', 'two teams of three adults using screwdrivers and multimeters on different unbranded appliances as a facilitator starts the round'),
+  eventImageDefinition('professional-tech', 'Civic Mapping Team Qualifier', 'Mapping teams prepare mobility-gap evidence for a friendly multi-round civic challenge.', 'municipal workshop room with large tables', 'two teams leaning over separate map-like sheets with colored dots and tracing paper while a facilitator signals the start, no readable labels'),
+  eventImageDefinition('professional-tech', 'Cardboard Prototype Sprint', 'Small teams turn service ideas into testable tabletop models in one afternoon.', 'bright innovation studio', 'six adults cutting corrugated card, taping movable pieces, and testing a waist-high physical prototype'),
+  eventImageDefinition('professional-tech', 'Library Mentor Office Hours', 'Founders and career changers rotate through focused twenty-minute coaching tables.', 'modern public library mezzanine', 'four mentor pairs in separate quiet conversations with laptops closed and blank sketch pads open'),
+  eventImageDefinition('festival-community', 'Little Havana Courtyard Potluck', 'Neighbors bring family dishes to one shaded courtyard table with open seating.', 'colorful tropical residential courtyard', 'a diverse group setting down casserole dishes and fruit platters around a long table beneath palms'),
+  eventImageDefinition('festival-community', 'Library Mentorship Milestone Map', 'A spring cohort marks completed projects and pairs up for its next shared task.', 'sunlit library project room', 'eight adults arranging colored cards and thread on a large wall map with no readable writing'),
+  eventImageDefinition('festival-community', 'Spring Festival Build Crew', 'Volunteers assemble reusable bunting, route arches, and lightweight decorations.', 'covered civic workshop yard', 'ten adults tying fabric pennants and fitting painted wooden frames on trestle tables'),
+  eventImageDefinition('festival-community', 'Moonlight Beach Cleanup', 'An evening shoreline crew sorts recovered material under safe portable lights.', 'broad urban beach after sunset', 'eight adults carrying buckets and separating collected litter into plain reusable bins beside tripod lights'),
+  eventImageDefinition('festival-community', 'Hillside Community Garden Day', 'Neighbors repair raised beds, turn compost, and plant a shared herb row.', 'terraced neighborhood garden', 'nine adults working across timber beds with wheelbarrows, seedlings, and hand tools'),
+  eventImageDefinition('festival-community', 'Donation Bicycle Repair Bench', 'Volunteer mechanics prepare donated bicycles for new riders.', 'open community cycle workshop', 'seven adults adjusting brakes, patching tubes, and checking wheels on several unbranded bicycles'),
+  eventImageDefinition('festival-community', 'Desert Trail Stewardship', 'A morning crew clears loose branches and refreshes safe route markers.', 'dry desert trailhead beneath low mountains', 'six adults with rakes and work gloves securing blank wooden trail markers beside the path'),
+  eventImageDefinition('festival-community', 'Winter Coat Sorting Hall', 'A neighborhood drive organizes warm clothing by size before collection day.', 'plain school assembly hall', 'ten volunteers folding coats and scarves onto long labeled-by-color tables with no readable text'),
+  eventImageDefinition('festival-community', 'Mangrove Seedling Crew', 'A waterfront team pots young mangroves for a supervised restoration site.', 'shaded coastal nursery platform', 'eight adults filling small pots around rows of bright mangrove seedlings with tidal water behind'),
+  eventImageDefinition('festival-community', 'Riverbank Native Planting', 'Volunteers stabilize a worn river edge with grasses and young shrubs.', 'muddy urban riverbank in daylight', 'nine adults kneeling along a curved planting line with trays of native grasses and buckets of mulch'),
+  eventImageDefinition('festival-community', 'Food Rescue Packing Line', 'A fast volunteer shift turns surplus produce into balanced family boxes.', 'clean warehouse packing room', 'twelve adults passing vegetables, bread, and fruit along tables into plain reusable crates'),
+  eventImageDefinition('festival-community', 'Mobile Library Book Drive', 'Neighbors sort donated books and load rolling shelves for a weekend pop-up.', 'community-center loading courtyard', 'eight volunteers carrying colorful books between open boxes and an unbranded compact library van'),
+  eventImageDefinition('festival-community', 'Porch Concert Setup Crew', 'A block team lays cables, arranges chairs, and tests a tiny neighborhood stage.', 'wide residential porch and closed street', 'nine adults positioning folding chairs and plain speakers around a low wooden performance platform'),
+  eventImageDefinition('festival-community', 'Public Mural Wall Prep', 'The crew cleans, primes, and grids a wall before the artists arrive.', 'sunny pedestrian underpass wall', 'seven adults rolling white primer and snapping pale guide lines across a large blank concrete surface'),
+  eventImageDefinition('festival-community', 'Night Market Stall Build', 'Vendors and volunteers assemble modular counters before the evening crowd.', 'brick market square at late afternoon', 'ten adults unfolding timber stalls, hanging plain warm bulbs, and stacking empty produce crates'),
+  eventImageDefinition('festival-community', 'Community Kitchen Batch Cook', 'A shared kitchen prepares soup, bread, and chopped vegetables for neighborhood delivery.', 'large stainless community kitchen', 'twelve adults working at separate prep stations around oversized pots and sheet pans'),
+  eventImageDefinition('festival-community', 'Harbor Lantern Parade Workshop', 'Families and volunteers build lightweight lantern forms for a waterfront procession.', 'maritime community hall', 'nine adults shaping translucent paper around willow frames with completed blank lanterns hanging overhead'),
+  eventImageDefinition('festival-community', 'Mountain Gear Swap Hall', 'Outdoor neighbors inspect, repair, and exchange clean seasonal equipment.', 'timber recreation hall near foothills', 'eight adults comparing backpacks, snowshoes, trekking poles, and folded jackets on organized tables'),
+  eventImageDefinition('festival-community', 'Ferry Welcome Volunteer Team', 'A local crew prepares maps, water, and luggage help for arriving visitors.', 'covered ferry-terminal plaza', 'seven volunteers arranging plain tote bags and water bottles while a ferry docks in the background'),
+  eventImageDefinition('festival-community', 'Inclusive Beach Access Setup', 'Volunteers install a temporary access mat and prepare adaptive beach equipment.', 'public beach access point in morning light', 'eight adults unrolling a wide blue access mat toward the sand beside an all-terrain beach wheelchair'),
+  eventImageDefinition('festival-community', 'Rooftop Pollinator Garden Day', 'Residents refresh planters with herbs and flowers for urban bees and butterflies.', 'broad apartment rooftop garden', 'nine adults planting lavender and native flowers into large raised boxes with watering cans'),
+  eventImageDefinition('festival-community', 'Community Makerspace Tool Sort', 'Members inventory donated hand tools and rebuild clear shared workstations.', 'industrial neighborhood makerspace', 'eight adults sorting clamps, hammers, saws, and safety glasses onto pegboards and benches'),
+  eventImageDefinition('festival-community', 'Desert Water Refill Crew', 'A trail-support team cleans containers and prepares shaded refill points.', 'sunlit desert service yard', 'seven adults washing large plain water containers and loading them beneath a solid shade roof'),
+  eventImageDefinition('social-mixer', 'Terrace Newcomer Exchange', 'New arrivals use object-based prompts to start natural small-group conversations.', 'layered city terrace with planted dividers', 'three distinct conversation clusters passing small everyday objects between them instead of posing for camera'),
+  eventImageDefinition('social-mixer', 'Neon Bowling Introductions', 'Pairs change lanes between short games and cheer unfamiliar teammates.', 'retro bowling hall with abstract neon light', 'six adults celebrating a rolling ball across two lanes with multicolored rental shoes and no visible scoring text'),
+  eventImageDefinition('social-mixer', 'Gallery Courtyard Mixer', 'A casual opening brings artists, neighbors, and first-time visitors around outdoor sculptures.', 'white-walled gallery courtyard', 'seven adults talking in pairs around large abstract sculptures with drinks on a side table'),
+  eventImageDefinition('social-mixer', 'Desert Patio Language Exchange', 'Conversation partners switch between short rounds over mint tea.', 'shaded adobe patio with woven chairs', 'four pairs in animated conversation around separate small tables beneath patterned shade cloth'),
+  eventImageDefinition('social-mixer', 'Golden Hour Rooftop Meetup', 'Sunset check-in games lead into relaxed skyline conversations.', 'open rooftop garden during golden hour', 'eight adults forming a loose semicircle around a low table of blank prompt cards and sparkling water'),
+  eventImageDefinition('social-mixer', 'Greenhouse Neighbor Tea', 'Residents from nearby blocks meet among citrus trees and shared tea trays.', 'community greenhouse in soft rain', 'six neighbors holding warm cups between dense planters with raindrops visible on the glass roof'),
+  eventImageDefinition('social-mixer', 'Bookshop Speed-Friending', 'Short paired conversations move through reading nooks instead of one crowded line.', 'independent bookshop after closing', 'five visible pairs seated in separate alcoves with bookshelves creating intimate partitions'),
+  eventImageDefinition('social-mixer', 'Telescope Lawn Social', 'A twilight gathering alternates constellation viewing with blanket conversations.', 'open science-center lawn at dusk', 'three small groups around unbranded telescopes while others sit on blankets beneath the first visible stars'),
+  eventImageDefinition('social-mixer', 'Riverside Picnic Pairings', 'Blanket groups reshuffle after each shared snack course.', 'grassy riverbank with mature trees', 'four colorful picnic blankets holding different small groups while two people carry a basket between them'),
+  eventImageDefinition('social-mixer', 'Museum After-Hours Trail', 'Conversation pairs follow light-and-shadow installations through a quiet museum wing.', 'contemporary museum interior at night', 'six adults moving in pairs between large abstract light installations with no signage or readable labels'),
+  eventImageDefinition('social-mixer', 'Community Dessert Social', 'Neighbors decorate small cakes together before sharing a long final table.', 'warm community kitchen dining room', 'eight adults adding fruit and icing to individual cakes around a central worktable, laughing naturally')
+];
+
+if (EVENT_IMAGE_DEFINITIONS.length !== 100) {
+  throw new Error(`Expected 100 event image definitions, got ${EVENT_IMAGE_DEFINITIONS.length}`);
+}
+assertUniqueEventImageDefinitions(EVENT_IMAGE_DEFINITIONS);
+
 const PROFILE_PROMPTS = [
   profilePrompt('650000000000000000000061', 'Casey Bridge', '32-year-old man', 'Austin', 'quiet, reliable small-group connector', 'casual coffee-shop terrace'),
   profilePrompt('650000000000000000000062', 'Nova Social', '27-year-old woman', 'Austin', 'warm, sociable and approachable', 'bright neighborhood art courtyard'),
@@ -278,13 +450,43 @@ const PROFILE_PROMPTS = [
 ];
 
 let assets = JSON.parse(await readFile(ASSETS_PATH, 'utf8'));
-const events = JSON.parse(await readFile(EVENTS_PATH, 'utf8'));
+let events = JSON.parse(await readFile(EVENTS_PATH, 'utf8'));
 const users = JSON.parse(await readFile(USERS_PATH, 'utf8'));
 const contacts = JSON.parse(await readFile(CONTACTS_PATH, 'utf8'));
 let activityMembers = JSON.parse(await readFile(ACTIVITY_MEMBERS_PATH, 'utf8'));
-const activityResources = JSON.parse(await readFile(ACTIVITY_RESOURCES_PATH, 'utf8'));
+let activityResources = JSON.parse(await readFile(ACTIVITY_RESOURCES_PATH, 'utf8'));
+let activityStageRuntime = JSON.parse(await readFile(ACTIVITY_STAGE_RUNTIME_PATH, 'utf8'));
 let assetRequests = JSON.parse(await readFile(ASSET_REQUESTS_PATH, 'utf8'));
+let chats = JSON.parse(await readFile(CHATS_PATH, 'utf8'));
+let chatMessages = JSON.parse(await readFile(CHAT_MESSAGES_PATH, 'utf8'));
+let eventFeedbackAnswers = JSON.parse(await readFile(EVENT_FEEDBACK_ANSWERS_PATH, 'utf8'));
+let eventFeedbackStates = JSON.parse(await readFile(EVENT_FEEDBACK_STATES_PATH, 'utf8'));
+let userNotifications = JSON.parse(await readFile(USER_NOTIFICATIONS_PATH, 'utf8'));
 let userReports = JSON.parse(await readFile(USER_REPORTS_PATH, 'utf8'));
+
+const originalEvents = [...events];
+const oldEventTitleById = new Map(originalEvents.map(event => [eventKey(event), event.title]));
+const qaUserRelatedStaticEventIds = collectQaUserRelatedStaticEventIds({ events, activityMembers });
+const fixtureProtectedEventIds = collectFixtureProtectedEventIds({
+  events,
+  activityMembers,
+  activityStageRuntime,
+  eventFeedbackAnswers,
+  eventFeedbackStates,
+  userReports
+});
+const canonicalEventIds = new Set(CANONICAL_EVENT_ID_BY_SLOT);
+const missingProtectedEventIds = [...fixtureProtectedEventIds].filter(eventId => !canonicalEventIds.has(eventId));
+if (missingProtectedEventIds.length) {
+  throw new Error(`Fixture-protected events are missing from the canonical 100: ${missingProtectedEventIds.join(', ')}`);
+}
+const protectedRelationshipSnapshot = eventRelationshipSnapshot({
+  eventIds: fixtureProtectedEventIds,
+  events,
+  activityMembers,
+  activityResources,
+  chats
+});
 
 const assetById = new Map(assets.map(asset => [asset.assetId, asset]));
 const missingCanonicalAssetIds = CANONICAL_ASSET_ID_BY_SLOT.filter(assetId => !assetById.has(assetId));
@@ -313,6 +515,47 @@ for (const user of users) {
 
 const assetSlots = buildAssetSlots(assets);
 const { slots: eventSlots, slotByEventKey } = buildEventSlots(events);
+const allEventIds = new Set(originalEvents.map(eventKey));
+const removedEventIds = new Set([...allEventIds].filter(eventId => !canonicalEventIds.has(eventId)));
+events = CANONICAL_EVENT_ID_BY_SLOT.map(eventId => {
+  const event = originalEvents.find(item => eventKey(item) === eventId);
+  if (!event) throw new Error(`Missing canonical Mongo event ${eventId}`);
+  return event;
+});
+({
+  activityMembers,
+  activityResources,
+  activityStageRuntime,
+  chats,
+  chatMessages,
+  eventFeedbackAnswers,
+  eventFeedbackStates,
+  userNotifications,
+  userReports
+} = pruneEventGraph({
+  originalEvents,
+  keptEvents: events,
+  removedEventIds,
+  activityMembers,
+  activityResources,
+  activityStageRuntime,
+  chats,
+  chatMessages,
+  eventFeedbackAnswers,
+  eventFeedbackStates,
+  userNotifications,
+  userReports,
+  oldEventTitleById
+}));
+assertRelationshipSnapshotUnchanged(protectedRelationshipSnapshot, eventRelationshipSnapshot({
+  eventIds: fixtureProtectedEventIds,
+  events,
+  activityMembers,
+  activityResources,
+  chats
+}));
+refreshUserEventCounters(users, events, activityMembers);
+refreshUserNotificationCounters(users, userNotifications);
 const localEventSlotBySeed = buildLocalEventSlotMap(eventSlots, slotByEventKey, events);
 const { localAssetSlotBySeed, localAssetTemplateIdsByOwner } = buildLocalAssetSeedMaps(assetSlots, users);
 
@@ -334,7 +577,6 @@ for (const report of userReports) {
   if (title) report.sourceText = `${title} request needs moderation review.`;
 }
 for (const event of events) {
-  if (!`${event.imageUrl ?? ''}`.trim()) continue;
   const slotNumber = slotByEventKey.get(eventKey(event));
   if (!slotNumber) throw new Error(`No image slot for event ${eventKey(event)}`);
   event.imageUrl = mediaUrl(eventMinioKey(slotNumber));
@@ -353,8 +595,8 @@ for (const record of contacts) {
 }
 
 const manifest = {
-  version: 1,
-  purpose: 'Canonical, context-aware demo image pools for the standalone HTTP deployment.',
+  version: 3,
+  purpose: 'One-to-one canonical, context-aware demo image pools for the standalone HTTP deployment.',
   generatedImages: {
     assetCount: assetSlots.length,
     eventCount: eventSlots.length,
@@ -381,6 +623,7 @@ const manifest = {
   })))
 };
 const frontendHelper = buildFrontendHelper(
+  eventSlots,
   localEventSlotBySeed,
   localAssetSlotBySeed,
   localAssetTemplateIdsByOwner
@@ -412,7 +655,13 @@ const expected = new Map([
   [CONTACTS_PATH, `${JSON.stringify(contacts, null, 2)}\n`],
   [ACTIVITY_MEMBERS_PATH, `${JSON.stringify(activityMembers, null, 2)}\n`],
   [ACTIVITY_RESOURCES_PATH, `${JSON.stringify(activityResources, null, 2)}\n`],
+  [ACTIVITY_STAGE_RUNTIME_PATH, `${JSON.stringify(activityStageRuntime, null, 2)}\n`],
   [ASSET_REQUESTS_PATH, `${JSON.stringify(assetRequests, null, 2)}\n`],
+  [CHATS_PATH, `${JSON.stringify(chats, null, 2)}\n`],
+  [CHAT_MESSAGES_PATH, `${JSON.stringify(chatMessages, null, 2)}\n`],
+  [EVENT_FEEDBACK_ANSWERS_PATH, `${JSON.stringify(eventFeedbackAnswers, null, 2)}\n`],
+  [EVENT_FEEDBACK_STATES_PATH, `${JSON.stringify(eventFeedbackStates, null, 2)}\n`],
+  [USER_NOTIFICATIONS_PATH, `${JSON.stringify(userNotifications, null, 2)}\n`],
   [USER_REPORTS_PATH, `${JSON.stringify(userReports, null, 2)}\n`],
   [FRONTEND_HELPER_PATH, frontendHelper],
   [MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`]
@@ -438,6 +687,20 @@ function range(start, end) {
 
 function assetDefinition(title, subtitle, details, category = null) {
   return { title, subtitle, details, category };
+}
+
+function eventImageDefinition(category, title, subtitle, location, visual) {
+  return { category, title, subtitle, location, visual };
+}
+
+function assertUniqueEventImageDefinitions(definitions) {
+  for (const field of ['title', 'subtitle', 'location', 'visual']) {
+    const values = definitions.map(definition => normalize(definition[field]));
+    const duplicates = values.filter((value, index) => values.indexOf(value) !== index);
+    if (duplicates.length) {
+      throw new Error(`Event image definitions must have unique ${field} values: ${[...new Set(duplicates)].join(', ')}`);
+    }
+  }
 }
 
 function category(key, keywords) {
@@ -705,73 +968,29 @@ function assetPrompt(definition, variation, slotNumber, slotVisual) {
 }
 
 function buildEventSlots(records) {
-  const eligible = records.filter(event => `${event.imageUrl ?? ''}`.trim());
-  const byCategory = new Map();
-  for (const event of eligible) {
-    const key = classifyEvent(event);
-    const bucket = byCategory.get(key) ?? [];
-    bucket.push(event);
-    byCategory.set(key, bucket);
-  }
-  const allocations = allocateEventSlots(byCategory, 100);
-  const slots = [];
-  let slotCursor = 1;
-  for (const categoryDefinition of EVENT_CATEGORIES) {
-    const items = byCategory.get(categoryDefinition.key) ?? [];
-    const count = allocations.get(categoryDefinition.key) ?? 0;
-    if (!count) continue;
-    for (const medoid of chooseDiverseEvents(items, count)) {
-      slots.push({
-        slot: slotCursor,
-        key: `event-${pad(slotCursor)}`,
-        category: categoryDefinition.key,
-        minioKey: eventMinioKey(slotCursor),
-        frontendPlaceholderUrl: `https://picsum.photos/id/${EVENT_PICSUM_IDS[slotCursor - 1]}/1200/700`,
-        representative: eventSummary(medoid),
-        prompt: eventPrompt(categoryDefinition.key, medoid, slotCursor),
-        mongoEventIds: [],
-        mongoRecords: []
-      });
-      slotCursor += 1;
-    }
-  }
-  if (slots.length !== 100) throw new Error(`Expected 100 event slots, got ${slots.length}`);
-
-  const slotByEventKey = new Map();
-  const conflicts = buildListWindowConflicts(eligible, 10);
-  const ordered = [...eligible].sort((left, right) =>
-    (conflicts.get(eventKey(right))?.size ?? 0) - (conflicts.get(eventKey(left))?.size ?? 0)
-      || eventKey(left).localeCompare(eventKey(right))
-  );
-  for (const event of ordered) {
-    const categoryKey = classifyEvent(event);
-    const blockedSlots = new Set(
-      [...(conflicts.get(eventKey(event)) ?? [])]
-        .map(key => slotByEventKey.get(key))
-        .filter(Boolean)
-    );
-    const primaryCandidates = slots
-      .filter(slot => slot.category === categoryKey)
-      .sort((left, right) => similarity(event, right.representative) - similarity(event, left.representative) || left.slot - right.slot);
-    const availablePrimary = primaryCandidates.filter(slot => !blockedSlots.has(slot.slot));
-    const relatedCandidates = slots
-      .filter(slot => (RELATED_EVENT_CATEGORIES[categoryKey] ?? []).includes(slot.category) && !blockedSlots.has(slot.slot))
-      .sort((left, right) => similarity(event, right.representative) - similarity(event, left.representative) || left.slot - right.slot);
-    const compatibleCategories = new Set([categoryKey, ...(RELATED_EVENT_CATEGORIES[categoryKey] ?? [])]);
-    const emergencyCandidates = slots.filter(slot => compatibleCategories.has(slot.category) && !blockedSlots.has(slot.slot));
-    const selected = availablePrimary.find(slot => slot.mongoEventIds.length === 0)
-      ?? availablePrimary[0]
-      ?? relatedCandidates.find(slot => slot.mongoEventIds.length === 0)
-      ?? relatedCandidates[0]
-      ?? emergencyCandidates[0]
-      ?? primaryCandidates[0];
-    if (!selected) throw new Error(`No event slot candidate for ${eventKey(event)}`);
-    selected.mongoEventIds.push(eventKey(event));
-    selected.mongoRecords.push(eventSummary(event));
-    slotByEventKey.set(eventKey(event), selected.slot);
-  }
-  const unused = slots.filter(slot => slot.mongoEventIds.length === 0);
-  if (unused.length) throw new Error(`Unused event slots: ${unused.map(slot => slot.key).join(', ')}`);
+  const eventById = new Map(records.map(event => [eventKey(event), event]));
+  const slots = CANONICAL_EVENT_ID_BY_SLOT.map((eventId, index) => {
+    const slotNumber = index + 1;
+    const event = eventById.get(eventId);
+    if (!event) throw new Error(`Missing canonical Mongo event ${eventId} for slot ${pad(slotNumber)}`);
+    const imageConcept = EVENT_IMAGE_DEFINITIONS[index];
+    applyEventImageDefinition(event, imageConcept);
+    const sourceRepresentative = eventSummary(event);
+    return {
+      slot: slotNumber,
+      key: `event-${pad(slotNumber)}`,
+      category: imageConcept.category,
+      minioKey: eventMinioKey(slotNumber),
+      frontendPlaceholderUrl: `https://picsum.photos/id/${EVENT_PICSUM_IDS[index]}/1200/700`,
+      representative: eventSummary(event),
+      sourceRepresentative,
+      imageConcept,
+      prompt: eventPrompt(imageConcept, slotNumber),
+      mongoEventIds: [eventId],
+      mongoRecords: [eventSummary(event)]
+    };
+  });
+  const slotByEventKey = new Map(slots.map(slot => [slot.mongoEventIds[0], slot.slot]));
   return { slots, slotByEventKey };
 }
 
@@ -852,35 +1071,388 @@ function eventSummary(event) {
   };
 }
 
-function eventPrompt(categoryKey, event, slotNumber) {
-  const sceneByCategory = {
-    'winter-mountain': 'a believable small-group winter or mountain activity',
-    'court-sports': 'adults actively participating in a friendly court-sport or tournament meetup',
-    cycling: 'a relaxed small-group bicycle meetup with safe practical gear',
-    'running-fitness': 'a friendly recreational run or fitness meetup in progress',
-    'walking-outdoors': 'a small social group walking or gathering in a natural outdoor setting',
-    'beach-water': 'a casual group activity near a beach, harbor or waterfront',
-    'coffee-brunch': 'a relaxed small-group coffee or brunch gathering around a real table',
-    'dining-tasting': 'a warm small-group food or tasting experience with believable table details',
-    'music-nightlife': 'a friendly live-music, listening-room or evening social atmosphere',
-    'creative-culture': 'a hands-on creative, photography, book or cultural meetup',
-    wellness: 'a calm inclusive wellness, yoga or mindful group activity',
-    'professional-tech': 'an informal workshop, mentorship or ideas exchange among adults',
-    'festival-community': 'a lively but believable community, volunteer or festival gathering',
-    games: 'a friendly tabletop, social game or competition activity',
-    'social-mixer': 'a relaxed small-group social meetup with natural conversation'
+function applyEventImageDefinition(event, definition) {
+  const city = `${event.creatorCity ?? ''}`.trim();
+  event.title = definition.title;
+  event.subtitle = definition.subtitle;
+  event.location = city ? `${city} · ${definition.location}` : definition.location;
+  event.topics = eventTopics(definition.category);
+  const childCollections = [event.subEventDefinitions, event.subEvents].filter(Array.isArray);
+  for (const children of childCollections) {
+    for (const [index, child] of children.entries()) {
+      if (child && typeof child === 'object' && 'description' in child) {
+        child.description = `${definition.subtitle} (${index + 1}/${children.length})`;
+      }
+    }
+  }
+}
+
+function eventTopics(categoryKey) {
+  const values = {
+    'winter-mountain': ['#WinterSports', '#Outdoors', '#Travel'],
+    'court-sports': ['#Sports', '#Tournament', '#HealthyLifestyle'],
+    cycling: ['#Cycling', '#Outdoors', '#Community'],
+    'running-fitness': ['#Running', '#Fitness', '#HealthyLifestyle'],
+    'walking-outdoors': ['#Walking', '#Outdoors', '#Nature'],
+    'beach-water': ['#WaterSports', '#Outdoors', '#Nature'],
+    'coffee-brunch': ['#CoffeeMeetup', '#Brunch', '#Friends'],
+    'dining-tasting': ['#Food', '#Cooking', '#Friends'],
+    'music-nightlife': ['#Music', '#GoingOut', '#Culture'],
+    'creative-culture': ['#Creativity', '#Art', '#Culture'],
+    wellness: ['#Wellness', '#MentalHealth', '#HealthyLifestyle'],
+    'professional-tech': ['#Workshop', '#Networking', '#Technology'],
+    'festival-community': ['#Community', '#Volunteering', '#Festival'],
+    games: ['#Games', '#Friends', '#Competition'],
+    'social-mixer': ['#Social', '#Friends', '#Community']
   };
-  const lighting = ['soft morning light', 'clear daylight', 'warm late-afternoon light', 'golden-hour light', 'natural early-evening light'][slotNumber % 5];
+  return values[categoryKey] ?? ['#Social', '#Community'];
+}
+
+function collectFixtureProtectedEventIds({
+  events,
+  activityMembers,
+  activityStageRuntime,
+  eventFeedbackAnswers,
+  eventFeedbackStates,
+  userReports
+}) {
+  const eventIds = new Set(events.map(eventKey));
+  const protectedIds = new Set(
+    events
+      .filter(event => eventKey(event).startsWith('demo-tournament-'))
+      .map(eventKey)
+  );
+  for (const eventId of collectQaUserRelatedStaticEventIds({ events, activityMembers })) protectedIds.add(eventId);
+  for (const record of [
+    ...activityStageRuntime,
+    ...eventFeedbackAnswers,
+    ...eventFeedbackStates,
+    ...userReports.filter(report => report.sourceType === 'event')
+  ]) {
+    for (const candidate of [record.eventId, record.sourceId, record.ownerId]) {
+      const scopedEventId = parentEventId(candidate, eventIds);
+      if (scopedEventId) protectedIds.add(scopedEventId);
+    }
+  }
+  return protectedIds;
+}
+
+function collectQaUserRelatedStaticEventIds({ events, activityMembers }) {
+  const eventIds = new Set(events.map(eventKey));
+  const relatedEventIds = new Set();
+  for (const event of events) {
+    const relatedUserIds = [
+      event.ownerUserId,
+      event.creatorUserId,
+      ...(event.admins ?? []),
+      ...(event.acceptedMemberUserIds ?? []),
+      ...(event.pendingMemberUserIds ?? []),
+      ...(event.pendingRequestMemberUserIds ?? []),
+      ...(event.invitedMemberUserIds ?? [])
+    ];
+    if (relatedUserIds.some(userId => QA_RELATION_USER_IDS.has(userId))) relatedEventIds.add(eventKey(event));
+  }
+  for (const member of activityMembers) {
+    if (member.ownerType === 'event' && QA_RELATION_USER_IDS.has(member.userId) && eventIds.has(member.ownerId)) {
+      relatedEventIds.add(member.ownerId);
+    }
+  }
+  return relatedEventIds;
+}
+
+function eventRelationshipSnapshot({ eventIds, events, activityMembers, activityResources, chats }) {
+  const protectedEvents = events.filter(event => eventIds.has(eventKey(event)));
+  return JSON.stringify({
+    events: protectedEvents.map(event => ({
+      id: eventKey(event),
+      ownerUserId: event.ownerUserId,
+      creatorUserId: event.creatorUserId,
+      admins: sortedStrings(event.admins),
+      acceptedMemberUserIds: sortedStrings(event.acceptedMemberUserIds),
+      pendingMemberUserIds: sortedStrings(event.pendingMemberUserIds),
+      pendingRequestMemberUserIds: sortedStrings(event.pendingRequestMemberUserIds),
+      invitedMemberUserIds: sortedStrings(event.invitedMemberUserIds),
+      childIds: [...collectEventChildIds([event])].sort()
+    })).sort((left, right) => left.id.localeCompare(right.id)),
+    members: activityMembers
+      .filter(member => parentEventId(member.ownerId, eventIds))
+      .map(member => ({
+        ownerType: member.ownerType,
+        ownerId: member.ownerId,
+        userId: member.userId,
+        role: member.role,
+        status: member.status,
+        requestKind: member.requestKind,
+        pendingSource: member.pendingSource,
+        invitedByUserId: member.invitedByUserId
+      }))
+      .sort(compareJson),
+    resources: activityResources
+      .filter(resource => parentEventId(resource.ownerId, eventIds))
+      .map(resource => ({
+        ownerId: resource.ownerId,
+        subEventId: resource.subEventId,
+        assetOwnerUserId: resource.assetOwnerUserId
+      }))
+      .sort(compareJson),
+    chats: chats
+      .filter(chat => eventIds.has(chat.eventId))
+      .map(chat => ({
+        id: chat.id,
+        eventId: chat.eventId,
+        subEventId: chat.subEventId,
+        groupId: chat.groupId,
+        ownerUserId: chat.ownerUserId,
+        memberIds: sortedStrings(chat.memberIds)
+      }))
+      .sort(compareJson)
+  });
+}
+
+function assertRelationshipSnapshotUnchanged(before, after) {
+  if (before !== after) throw new Error('Fixture-protected event relationship graph changed during synchronization.');
+}
+
+function pruneEventGraph({
+  originalEvents,
+  keptEvents,
+  removedEventIds,
+  activityMembers,
+  activityResources,
+  activityStageRuntime,
+  chats,
+  chatMessages,
+  eventFeedbackAnswers,
+  eventFeedbackStates,
+  userNotifications,
+  userReports,
+  oldEventTitleById
+}) {
+  const keptEventIds = new Set(keptEvents.map(eventKey));
+  const keptChats = chats.filter(chat => !chat.eventId || keptEventIds.has(chat.eventId));
+  const keptChatIds = new Set(keptChats.flatMap(chat => [chat.id, chat._id]).filter(Boolean));
+
+  activityResources = activityResources.filter(resource => {
+    return Boolean(parentEventId(resource.ownerId, keptEventIds));
+  });
+  activityStageRuntime = activityStageRuntime.filter(runtime => {
+    return Boolean(parentEventId(runtime.ownerId, keptEventIds));
+  });
+  activityMembers = activityMembers.filter(member => {
+    if (member.ownerType === 'asset') return true;
+    return Boolean(parentEventId(member.ownerId, keptEventIds));
+  });
+  chatMessages = chatMessages.filter(message => keptChatIds.has(message.chatId));
+  eventFeedbackAnswers = eventFeedbackAnswers.filter(answer => !removedEventIds.has(answer.eventId));
+  eventFeedbackStates = eventFeedbackStates.filter(state => !removedEventIds.has(state.eventId));
+  userNotifications = userNotifications.filter(notification => !referencesAnyId(notification, removedEventIds));
+  userReports = userReports.filter(report => !referencesAnyId(report, removedEventIds));
+
+  const newEventTitleById = new Map(keptEvents.map(event => [eventKey(event), event.title]));
+  for (const member of activityMembers) {
+    if (member.ownerType !== 'event' || !keptEventIds.has(member.ownerId)) continue;
+    replaceEventTitleReferences(member, member.ownerId, oldEventTitleById, newEventTitleById);
+    member.metWhere = newEventTitleById.get(member.ownerId);
+  }
+  for (const chat of keptChats) {
+    if (!keptEventIds.has(chat.eventId)) continue;
+    replaceEventTitleReferences(chat, chat.eventId, oldEventTitleById, newEventTitleById);
+    if (chat.channelType === 'mainEvent') chat.title = newEventTitleById.get(chat.eventId);
+  }
+  for (const collection of [userNotifications, userReports]) {
+    for (const record of collection) {
+      for (const eventId of referencedIds(record, keptEventIds)) {
+        replaceEventTitleReferences(record, eventId, oldEventTitleById, newEventTitleById);
+      }
+    }
+  }
+
+  return {
+    activityMembers,
+    activityResources,
+    activityStageRuntime,
+    chats: keptChats,
+    chatMessages,
+    eventFeedbackAnswers,
+    eventFeedbackStates,
+    userNotifications,
+    userReports
+  };
+}
+
+function collectEventChildIds(events) {
+  const result = new Set();
+  const visit = value => {
+    if (Array.isArray(value)) {
+      for (const item of value) visit(item);
+      return;
+    }
+    if (!value || typeof value !== 'object') return;
+    if (typeof value.id === 'string' && value.id.trim()) result.add(value.id);
+    for (const [key, item] of Object.entries(value)) {
+      if (key !== 'id') visit(item);
+    }
+  };
+  for (const event of events) {
+    visit(event.subEvents ?? []);
+    visit(event.subEventDefinitions ?? []);
+  }
+  return result;
+}
+
+function parentEventId(ownerId, eventIds) {
+  const normalized = `${ownerId ?? ''}`.trim();
+  if (!normalized) return null;
+  if (eventIds.has(normalized)) return normalized;
+  return [...eventIds]
+    .filter(eventId => normalized.startsWith(`${eventId}:`))
+    .sort((left, right) => right.length - left.length)[0] ?? null;
+}
+
+function referencesAnyId(value, ids) {
+  if (typeof value === 'string') return ids.has(value);
+  if (Array.isArray(value)) return value.some(item => referencesAnyId(item, ids));
+  if (!value || typeof value !== 'object') return false;
+  return Object.values(value).some(item => referencesAnyId(item, ids));
+}
+
+function referencedIds(value, ids, result = new Set()) {
+  if (typeof value === 'string') {
+    if (ids.has(value)) result.add(value);
+    return result;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) referencedIds(item, ids, result);
+    return result;
+  }
+  if (value && typeof value === 'object') {
+    for (const item of Object.values(value)) referencedIds(item, ids, result);
+  }
+  return result;
+}
+
+function replaceEventTitleReferences(value, eventId, oldEventTitleById, newEventTitleById) {
+  const oldTitle = `${oldEventTitleById.get(eventId) ?? ''}`.trim();
+  const newTitle = `${newEventTitleById.get(eventId) ?? ''}`.trim();
+  if (!oldTitle || !newTitle || oldTitle === newTitle) return;
+  replaceTextDeep(value, oldTitle, newTitle);
+}
+
+function replaceTextDeep(value, oldText, newText) {
+  if (Array.isArray(value)) {
+    for (const item of value) replaceTextDeep(item, oldText, newText);
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, item] of Object.entries(value)) {
+    if (typeof item === 'string') value[key] = item.split(oldText).join(newText);
+    else replaceTextDeep(item, oldText, newText);
+  }
+}
+
+function refreshUserEventCounters(users, events, activityMembers) {
+  const membershipsByEventAndUser = new Map(
+    activityMembers
+      .filter(member => member.ownerType === 'event')
+      .map(member => [`${member.ownerId}\u0000${member.userId}`, member])
+  );
+  for (const user of users) {
+    const userId = user.userId;
+    const counters = { active: 0, pending: 0, invitations: 0, hosting: 0, drafts: 0, trash: 0 };
+    for (const event of events) {
+      const eventId = eventKey(event);
+      const member = membershipsByEventAndUser.get(`${eventId}\u0000${userId}`);
+      const hosting = event.ownerUserId === userId || event.creatorUserId === userId || (event.admins ?? []).includes(userId);
+      const invited = (event.invitedMemberUserIds ?? []).includes(userId)
+        || (member?.status === 'pending' && member?.requestKind === 'invite');
+      const pendingRequest = (event.pendingRequestMemberUserIds ?? []).includes(userId)
+        || (member?.status === 'pending' && member?.requestKind !== 'invite');
+      const accepted = (event.acceptedMemberUserIds ?? []).includes(userId) || member?.status === 'accepted';
+      const deleted = ['deleted', 'd'].includes(`${member?.status ?? ''}`.trim().toLowerCase());
+      if (!hosting && !invited && !pendingRequest && !accepted && !deleted) continue;
+      const status = `${event.status ?? ''}`.trim().toUpperCase();
+      if (status === 'T' || event.isTrashed === true || deleted) {
+        counters.trash += 1;
+      } else if (invited) {
+        counters.invitations += 1;
+      } else if (hosting) {
+        counters.hosting += 1;
+        if (status === 'D' || event.published === false) counters.drafts += 1;
+        if (status === 'UR' || status === 'B') counters.pending += 1;
+      } else if (pendingRequest || status === 'UR' || status === 'B') {
+        counters.pending += 1;
+      } else if (accepted || status === 'A' || !status) {
+        counters.active += 1;
+      }
+    }
+    const all = counters.active + counters.pending + counters.invitations + counters.hosting;
+    user.activities ??= {};
+    user.activities.event ??= {};
+    user.activities.events = counters.active;
+    user.activities.invitations = counters.invitations;
+    user.activities.hosting = counters.hosting;
+    Object.assign(user.activities.event, { all, ...counters });
+  }
+}
+
+function refreshUserNotificationCounters(users, notifications) {
+  const unreadByUserId = new Map();
+  for (const notification of notifications) {
+    if (notification.readAtIso) continue;
+    unreadByUserId.set(notification.recipientUserId, (unreadByUserId.get(notification.recipientUserId) ?? 0) + 1);
+  }
+  for (const user of users) {
+    user.activities ??= {};
+    user.activities.notifications = unreadByUserId.get(user.userId) ?? 0;
+  }
+}
+
+function sortedStrings(values) {
+  return [...new Set((values ?? []).filter(value => typeof value === 'string'))].sort();
+}
+
+function compareJson(left, right) {
+  return JSON.stringify(left).localeCompare(JSON.stringify(right));
+}
+
+function eventPrompt(definition, slotNumber) {
+  const compositions = [
+    'wide establishing view from slightly above the activity',
+    'eye-level medium-wide view from the edge of the group',
+    'low three-quarter view with the action crossing the frame diagonally',
+    'documentary side view with one foreground object adding depth',
+    'symmetrical frontal view centered on the shared activity',
+    'over-the-shoulder view that reveals the other participants and venue',
+    'long-lens candid view with layered foreground and background participants',
+    'close environmental view where hands, equipment, and faces all support the story',
+    'corner-to-corner composition with generous negative space on one side',
+    'ground-level environmental view emphasizing the venue and group silhouette'
+  ];
+  const lighting = [
+    'cool dawn with soft directional light',
+    'bright overcast daylight with gentle shadows',
+    'clear midday light with crisp natural color',
+    'warm late-afternoon side light',
+    'golden-hour backlight with controlled highlights',
+    'blue-hour ambient light with practical lamps',
+    'soft window light with realistic interior falloff',
+    'warm evening practical light with natural background darkness',
+    'fresh post-rain daylight with subtle reflections',
+    'high open shade with calm, even skin tones'
+  ];
+  const composition = compositions[(slotNumber - 1) % compositions.length];
+  const light = lighting[(Math.floor((slotNumber - 1) / compositions.length) + slotNumber - 1) % lighting.length];
   return [
     'Use case: photorealistic-natural',
     'Asset type: mobile-first event card cover',
-    `Primary request: create a believable candid photograph representing "${event.title}" — ${event.subtitle}`,
-    `Scene/backdrop: ${sceneByCategory[categoryKey]}; use the seeded location only as broad context: ${event.location || 'a plausible local venue'}.`,
-    `Subject: ${sceneByCategory[categoryKey]}; adults should look like fictional everyday participants, not celebrities or models.`,
-    `Composition/framing: landscape 16:9, ${lighting}, documentary eye-level framing; keep the main action centered and readable in a small list-card crop; visual variation ${pad(slotNumber)}.`,
-    'Lighting/mood: natural, welcoming, socially believable and lightly imperfect.',
-    'Constraints: entirely fictional generated people and place; context must match the event description; no logos, captions, signs with readable text, UI, watermark or branded products.',
-    'Avoid: unrelated activities, empty generic landscapes, staged corporate stock-photo poses, duplicate faces, extra limbs, distorted hands, illegible text.'
+    `Primary request: create an entirely fictional candid event photograph for "${definition.title}". ${definition.subtitle}`,
+    `Scene/backdrop: ${definition.location}. Preserve this venue type and its defining environmental features rather than replacing it with a generic park, cafe, office, or conversation circle.`,
+    `Subject/action: ${definition.visual}. Show the described action already in progress; the fictional adult participants should look like everyday local attendees, not celebrities or fashion models.`,
+    `Composition/framing: landscape 16:9, ${composition}; keep the defining action and venue readable in a small list-card crop; visual identity ${pad(slotNumber)}.`,
+    `Lighting/mood: ${light}; natural, welcoming, socially believable, and lightly imperfect.`,
+    `Distinctness: event slot ${pad(slotNumber)} must preserve this exact venue, action, equipment, and group arrangement so it cannot collapse into another pool image.`,
+    'Constraints: photorealistic natural photography; entirely fictional generated people and place; age-appropriate adult social activity; realistic anatomy and equipment; no logos, captions, readable signs, UI, watermark, branded products, famous landmarks, or identifiable real people.',
+    'Avoid: unrelated activities, empty generic landscapes, generic groups merely posing or talking to camera, staged corporate stock-photo aesthetics, duplicate faces, extra limbs, distorted hands, illegible text, collage or split-screen layouts.'
   ].join('\n');
 }
 
@@ -888,7 +1460,13 @@ function buildLocalEventSlotMap(eventSlots, slotByEventKey, mongoEvents) {
   const result = {};
   const usedSlots = new Set();
   for (const seed of LOCAL_EVENT_SEEDS) {
-    const slug = seed.split(':').at(-1).replace(/-/g, ' ');
+    const key = localEventSeedKey(seed);
+    const slug = seed.slice(key.length + 1).replace(/-/g, ' ');
+    const pinnedEventId = LOCAL_EVENT_CANONICAL_ID_BY_KEY[key];
+    const pinnedSlot = pinnedEventId ? slotByEventKey.get(pinnedEventId) : null;
+    if (pinnedEventId && !pinnedSlot) {
+      throw new Error(`Frontend-local event ${key} points to missing canonical event ${pinnedEventId}`);
+    }
     const exact = mongoEvents.find(event => normalize(event.title) === normalize(slug) && slotByEventKey.has(eventKey(event)));
     const pseudo = { title: slug, subtitle: '', topics: [], mode: 'Casual' };
     const categoryKey = classifyEvent(pseudo);
@@ -900,15 +1478,31 @@ function buildLocalEventSlotMap(eventSlots, slotByEventKey, mongoEvents) {
         if (right.slot === exactSlot) return 1;
         return similarity(pseudo, right.representative) - similarity(pseudo, left.representative) || left.slot - right.slot;
       });
-    const selected = candidates.find(slot => !usedSlots.has(slot.slot))
+    const selected = (pinnedSlot ? eventSlots.find(slot => slot.slot === pinnedSlot) : null)
+      ?? candidates.find(slot => !usedSlots.has(slot.slot))
       ?? eventSlots.find(slot => !usedSlots.has(slot.slot));
-    result[seed] = selected?.slot ?? 1;
-    usedSlots.add(result[seed]);
+    if (!selected || usedSlots.has(selected.slot)) {
+      throw new Error(`Cannot assign a unique canonical event slot to frontend-local event ${key}`);
+    }
+    result[key] = selected.slot;
+    usedSlots.add(selected.slot);
   }
   return result;
 }
 
-function buildFrontendHelper(localEventSlotBySeed, localAssetSlotBySeed, localAssetTemplateIdsByOwner) {
+function localEventSeedKey(seed) {
+  const match = seed.match(/^(demo-event-(?:events|hosting|invitations):[^:]+:[^:]+)/);
+  if (!match) throw new Error(`Invalid frontend-local event seed: ${seed}`);
+  return match[1];
+}
+
+function buildFrontendHelper(eventSlots, localEventSlotBySeed, localAssetSlotBySeed, localAssetTemplateIdsByOwner) {
+  const eventDefinitionBySlot = Object.fromEntries(eventSlots.map(slot => [slot.slot, {
+    title: slot.representative.title,
+    subtitle: slot.representative.subtitle,
+    location: slot.representative.location,
+    topics: slot.representative.topics
+  }]));
   return `// Generated by tools/seeds/synchronize-demo-image-pools.mjs.\n` +
     `// Frontend-local keeps remote placeholders; the standalone HTTP demo uses the same logical slots from MinIO.\n` +
     `export interface DemoAssetPlaceholder {\n` +
@@ -921,7 +1515,16 @@ function buildFrontendHelper(localEventSlotBySeed, localAssetSlotBySeed, localAs
     `  visibility: 'Public' | 'Friends only' | 'Invitation only';\n` +
     `  status: string;\n` +
     `}\n\n` +
+    `export interface DemoEventPlaceholder {\n` +
+    `  slot: number;\n` +
+    `  imageUrl: string;\n` +
+    `  title: string;\n` +
+    `  subtitle: string;\n` +
+    `  location: string;\n` +
+    `  topics: readonly string[];\n` +
+    `}\n\n` +
     `type DemoAssetDefinition = Omit<DemoAssetPlaceholder, 'slot' | 'imageUrl' | 'visibility' | 'status'>;\n\n` +
+    `type DemoEventDefinition = Omit<DemoEventPlaceholder, 'slot' | 'imageUrl'>;\n\n` +
     `const ASSET_PICSUM_IDS = ${JSON.stringify(ASSET_PICSUM_IDS)} as const;\n` +
     `const EVENT_PICSUM_IDS = ${JSON.stringify(EVENT_PICSUM_IDS)} as const;\n\n` +
     `const ASSET_SLOTS_BY_TEMPLATE: Readonly<Record<string, readonly number[]>> = ${JSON.stringify(LOCAL_ASSET_SLOTS_BY_TEMPLATE, null, 2)};\n\n` +
@@ -929,6 +1532,7 @@ function buildFrontendHelper(localEventSlotBySeed, localAssetSlotBySeed, localAs
     `const ASSET_SLOT_BY_SEED: Readonly<Record<string, number>> = ${JSON.stringify(localAssetSlotBySeed, null, 2)};\n\n` +
     `const ASSET_TEMPLATE_IDS_BY_OWNER: Readonly<Record<string, readonly string[]>> = ${JSON.stringify(localAssetTemplateIdsByOwner, null, 2)};\n\n` +
     `const ASSET_RECORD_BY_SLOT: Readonly<Record<number, { visibility: DemoAssetPlaceholder['visibility']; status: string }>> = ${JSON.stringify(Object.fromEntries(assetSlots.map(slot => [slot.slot, { visibility: slot.mongoRecords[0].visibility, status: slot.mongoRecords[0].status }])), null, 2)};\n\n` +
+    `const EVENT_DEFINITION_BY_SLOT: Readonly<Record<number, DemoEventDefinition>> = ${JSON.stringify(eventDefinitionBySlot, null, 2)};\n\n` +
     `const EVENT_SLOT_BY_SEED: Readonly<Record<string, number>> = ${JSON.stringify(localEventSlotBySeed, null, 2)};\n\n` +
     `export function demoAssetPlaceholder(seed: string): DemoAssetPlaceholder {\n` +
     `  const slot = demoAssetSlot(seed);\n` +
@@ -956,10 +1560,19 @@ function buildFrontendHelper(localEventSlotBySeed, localAssetSlotBySeed, localAs
     `  const candidateIndex = stableIndex(normalized, candidates.length);\n` +
     `  return candidates[candidateIndex] ?? 1;\n` +
     `}\n\n` +
-    `export function demoEventPlaceholderUrl(seed: string): string {\n` +
+    `export function demoEventPlaceholder(seed: string): DemoEventPlaceholder {\n` +
     `  const normalized = seed.trim().toLowerCase();\n` +
     `  const slot = EVENT_SLOT_BY_SEED[normalized] ?? (stableIndex(normalized, EVENT_PICSUM_IDS.length) + 1);\n` +
-    `  return \`https://picsum.photos/id/\${EVENT_PICSUM_IDS[slot - 1]}/1200/700\`;\n` +
+    `  const definition = EVENT_DEFINITION_BY_SLOT[slot] ?? EVENT_DEFINITION_BY_SLOT[1];\n` +
+    `  return {\n` +
+    `    ...definition,\n` +
+    `    topics: [...definition.topics],\n` +
+    `    slot,\n` +
+    `    imageUrl: \`https://picsum.photos/id/\${EVENT_PICSUM_IDS[slot - 1]}/1200/700\`\n` +
+    `  };\n` +
+    `}\n\n` +
+    `export function demoEventPlaceholderUrl(seed: string): string {\n` +
+    `  return demoEventPlaceholder(seed).imageUrl;\n` +
     `}\n\n` +
     `function stableIndex(seed: string, length: number): number {\n` +
     `  let hash = 2166136261;\n` +
@@ -1002,6 +1615,8 @@ function summary(manifest, localEventSlotBySeed, localAssetTemplateIdsByOwner) {
     ),
     mongoEventsWithImages: events.filter(event => `${event.imageUrl ?? ''}`.trim()).length,
     mongoEventImageSlots: manifest.events.length,
+    staticSeedFixtureProtectedEvents: fixtureProtectedEventIds.size,
+    qaUserRelatedStaticSeedEvents: qaUserRelatedStaticEventIds.size,
     frontendLocalEventSeedKeys: Object.keys(localEventSlotBySeed).length,
     additionalProfiles: manifest.additionalProfiles.length,
     totalNewLargeImages: manifest.generatedImages.totalNewLargeImages
