@@ -8,6 +8,8 @@ frame/model benchmarking remains a separate next phase**.
 - [x] Inventory the bounded `/home/raxim/Downloads/targyalas/` source package.
 - [x] Structurally inventory and content-hash-deduplicate the expanded 4.1 GB
   backup without copying private material into the repository.
+- [x] Publish a source-coverage report that separates discovery, technical
+  access, substantive review, deliberate exclusions and unresolved claims.
 - [x] Extract and review the available written documents locally.
 - [x] Separate document, memoir, attributed and external-context layers.
 - [x] Build a 2019–2026 evidence chronology and an explicit Part III boundary.

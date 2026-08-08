@@ -4,6 +4,9 @@ This directory separates source control from memoir prose.
 
 - [SOURCE_INVENTORY.md](SOURCE_INVENTORY.md) records the reviewed primary
   package and unresolved media.
+- [SOURCE_COVERAGE_REPORT.md](SOURCE_COVERAGE_REPORT.md) distinguishes archive
+  discovery, technical access, substantive use, deliberate exclusions and
+  unresolved claims.
 - [CHRONOLOGY.md](CHRONOLOGY.md) holds the event sequence and confidence gates.
 - [PUBLICATION_BOUNDARY.md](PUBLICATION_BOUNDARY.md) defines what must be
   anonymized, attributed, generalized or withheld.
