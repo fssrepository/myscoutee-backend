@@ -64,7 +64,12 @@ Every generated interval is silent production picture:
 - no narration;
 - no generated music;
 - no per-clip ambience that restarts at each cut;
-- no lip sync.
+- no visible word articulation or lip sync;
+- no scene with several people visibly speaking at once.
+
+Keep mouths naturally relaxed rather than frozen shut. Natural breathing, a
+brief nonverbal smile and minute jaw movement are allowed. Convey interaction
+through listening, eye contact, small nods and restrained hand gestures.
 
 The final edit receives one time-locked English narrator, one continuous
 three-minute score and synchronized post-produced ambience/foley. Any platform

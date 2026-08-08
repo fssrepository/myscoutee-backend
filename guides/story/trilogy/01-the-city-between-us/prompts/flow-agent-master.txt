@@ -18,6 +18,14 @@ micro-acting. 9:16 portrait, 720x1280 target, 24 fps language, one subject actio
 and one camera move per clip. No photoreal uncanny faces, generated text, fake
 UI, generated logo, national stereotypes or named-studio imitation.
 
+VOICE-OVER PERFORMANCE
+Final narration and the continuous soundtrack are post-production layers.
+Unless a shot explicitly assigns one short diegetic cue, nobody visibly speaks,
+forms words or lip-syncs. Keep mouths naturally relaxed, with breathing, brief
+nonverbal smiles and minute jaw movement only. Use eye contact, listening, small
+nods and restrained hand gestures; never make several people visibly speak at
+once. Discard any unavoidable generated clip audio.
+
 NARRATIVE LOCK
 S01 moves from countryside small-producer roots through completed economics,
 programming and mathematics studies into beautiful Budapest. University ends in

@@ -8,6 +8,6 @@ This is a lived memoir in a surreal civic system, not a thriller, legal explaine
 
 All documents and interfaces are abstract anonymized plates with no readable text, numbers, account values, names, addresses, passwords, logos, seals, brands or diagnostic labels. Do not invent public-figure likenesses. Do not generate the MyScoutee logo or any typography; exact text and the repository logo are added in post.
 
-AUDIO: generate no dialogue, no narration, no lip sync, no music and no sound effects. The complete soundtrack is produced after picture lock.
+VOICE-OVER PERFORMANCE AND AUDIO: The complete soundtrack is produced after picture lock. No character visibly speaks, forms words or lip-syncs. Keep mouths naturally relaxed rather than rigidly sealed: allow breathing, a brief nonverbal smile and minute natural jaw movement only. Convey interaction through listening, eye contact, small nods and restrained hand gestures. In group scenes, never make several people visibly speak at once. Generate no dialogue, narration, singing, music or sound effects; discard any unavoidable platform audio.
 
 Generate exactly one result.

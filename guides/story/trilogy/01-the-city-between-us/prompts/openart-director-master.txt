@@ -11,6 +11,14 @@ wool and graphite. Restrained humane acting, one camera move per generated clip.
 No named-studio imitation, photoreal uncanny faces, generated text, fake UI,
 invented logo, glamour casting, national stereotype or tourism-ad montage.
 
+VOICE-OVER PERFORMANCE
+Final narration and the continuous soundtrack are added in post. Unless a shot
+explicitly assigns one short diegetic cue, nobody visibly speaks, forms words or
+lip-syncs. Keep mouths naturally relaxed, with breathing, brief nonverbal smiles
+and minute jaw movement only. Convey interaction through listening, eye contact,
+small nods and restrained hand gestures; never make several people visibly
+speak at once. Discard any unavoidable generated clip audio.
+
 IDENTITY LOCK
 Use `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
 `[GAME_MAN_REF]`, `[ROUTE_MAN_REF]`, the approved Dance Student, Dance Partner,

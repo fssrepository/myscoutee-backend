@@ -432,7 +432,8 @@ Disney imitation, copied TSB character design, anime, influencer glamour,
 beauty-filter face, changing identity, changing age, changing costume, extra
 people, duplicate people, face morphing, asymmetrical eyes caused by artifacts,
 extra fingers, fused hands, impossible joint motion, floating objects, lip
-movement unless dialogue is explicitly requested, constant smiling,
+movement unless one short diegetic cue is explicitly requested, visible word
+articulation during voice-over, several people visibly speaking at once, constant smiling,
 melodramatic crying, anger toward women or men, sexualized framing, public human
 ratings, app logos, transport logos, brand names, readable AI-generated text,
 watermarked fake UI, identifiable employer, police raid, prison imagery,
