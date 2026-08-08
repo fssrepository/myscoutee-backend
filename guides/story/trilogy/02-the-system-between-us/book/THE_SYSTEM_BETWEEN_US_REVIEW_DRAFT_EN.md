@@ -33,6 +33,9 @@ The proceeding has not reached the ending reserved for Part III. The factual
 record, attribution limits and source references appear at the back, where they
 can protect accuracy without interrupting every scene.
 
+All character and scene illustrations in this book are AI-generated visual
+interpretations. They do not depict the actual participants.
+
 That matters because the pattern is not mine alone. Another person might never
 write my sentences and could still enter the same corridor.
 
@@ -221,11 +224,12 @@ The failure was assembled.
 
 The deepest design problem appeared before the final return.
 
-In the established practice around me, some tasks could be completed only by
-passing through the entrepreneur's own government account. Accounting offices
-sometimes asked for the client's credentials. The arrangement could make work
-possible while quietly destroying the distinction between assistance and
-identity.
+The three routes available to me were all compromises. In the two that kept my
+password private, a representative could act, but submissions, processing
+errors and notices did not remain visible to both of us as one continuous
+chain. The only route that appeared to work from beginning to end was the
+unsafe one: give the accountant my password and let her work through my own
+government account. Assistance became indistinguishable from identity.
 
 If I refused to share access, I could be told that I had prevented the
 accountant from doing the work. If I shared it, I could be asked why I had given
@@ -247,6 +251,12 @@ in miniature:
 - How does the responsible person know what the system now believes?
 
 These are ordinary software questions. They are also questions about dignity.
+
+A proper delegated route would have let the accountant act under her own
+identity while showing us both every submission, rejection, correction and
+notice. I cannot claim that such a route would have prevented every later
+event. It could have stopped this particular confusion before it became the
+circle that followed.
 
 ## 6. Three Attempts at a Subtraction
 
@@ -1313,6 +1323,18 @@ contains a general statutory warning about plainly unfounded exclusion motions;
 it is not treated as the separate ruling. That ruling still requires isolation
 before any verbatim quotation.
 
+The signed defence speech explicitly records the password paradox. Its account
+of a tax-administration callback includes both a challenge to the Founder for
+sharing his government-account password and an assurance that another
+accountant could work without it. The same speech later argues that, within the
+system then actually used, the immediate chaos could have been avoided only if
+the accountant had not merely received the password but had consistently used
+that same account for the work, allowing the critical notices to reach the
+Founder. An earlier ombudsman submission describes three theoretical working
+arrangements and the visibility gap that remained when representation and the
+Founder's own inbox were separated. These are the Founder's documented account
+and system argument, not a finding by the court.
+
 The post-operative-leg image and the vulgar physical-comedy description are
 supported by authored defence material. The pasture image is presently a
 memoir-layer recollection and is paraphrased rather than presented as a verified
@@ -1382,6 +1404,44 @@ These instruments explain why identity-sharing, delegated action, accessible
 records, personal data, home, reputation, defence and effective remedies can
 become more than software-design questions. They do not by themselves prove a
 breach in this case.
+
+### The government account and the later two-factor change
+
+The “government account” in the narrative was **Ügyfélkapu**, Hungary's Citizen
+Portal identification service. In 2022, the relevant login was based on a
+username and password. From 16 January 2025, access to the same public-service
+surfaces required either the two-factor Ügyfélkapu+ method or the Digital
+Citizenship application. This later security change does not rewrite the 2022
+scene.
+
+Official guidance for accountants describes using another person's Citizen
+Portal identity instead of acting as an authorized representative as a bad,
+legally problematic practice. It points to registered authorization and NAV's
+representation form as the lawful alternative. That is an identity boundary;
+it does not, by itself, resolve the separate visibility problem in the
+Founder's record: who received each submission result and notice, and whether
+both sides could see the same chain.
+
+Ügyfélkapu+ installs a secret into an authenticator through a setup QR code and
+then generates time-limited login codes from that secret. It follows
+technically that copying the setup QR to another device can duplicate the
+second factor. That inference explains why photographing a setup code may be
+used as a workaround, but it is neither secure delegation nor an officially
+endorsed accounting practice. Two-factor authentication protects a login; it
+does not turn shared identity into granular authorization.
+
+Official sources:
+
+- Hungarian government English-language description of the Citizen Portal and
+  the 16 January 2025 transition:
+  https://baku.mfa.gov.hu/en/citizen-portal-ugyfelkapuugyfelkapu
+- Digital Citizenship Programme guidance for accountants and tax advisers,
+  including the distinction between shared identity and authorized
+  representation:
+  https://platform.dap.gov.hu/tajekoztatok/tajekoztato-konyveloknek-es-adoszakertoknek-az-ugyfelkapu-kivezeteserol.pdf
+- National Cyber Security Institute explanation of the authenticator secret,
+  setup QR and time-based codes:
+  https://nki.gov.hu/it-biztonsag/tanacsok/igy-teheto-biztonsagosabba-az-ugyfelkapus-bejelentkezes/
 
 ## Clemency social inquiry
 

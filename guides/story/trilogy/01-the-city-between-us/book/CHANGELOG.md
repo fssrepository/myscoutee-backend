@@ -197,6 +197,9 @@ The trilogy part and the edition version are separate. This book is Part
 
 ## Publication rule
 
+- Clarified in the reader note that all character and scene illustrations are
+  AI-generated visual interpretations and do not depict the actual participants.
+
 - The Founder approved and published the first public edition as `1.0.0` on
   7 August 2026.
 - Until the Founder explicitly locks the edition, the current versioned export

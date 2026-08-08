@@ -113,18 +113,22 @@ The letters belong in the production manifest, not the public image.
 - **Sound in post:** three distinct room tones connected by one call line.
 - **Hazard:** no gender, age or clutter shorthand for incompetence.
 
-### S07 — Action is not notice · 00:48–00:56 · CP06→CP07
+### S07 — The password trap · 00:48–00:56 · CP06→CP07
 
 - **Layer:** `D/M`.
 - **CP06:** three partial views.
-- **CP07:** an action has travelled through a delegated portal while the direct
-  notice stops at a different screen; the Founder remains named as the
-  responsible person.
-- **Motion:** one authorization token passes from Founder to accountant, becomes
-  an action, then returns as responsibility without passing through a visible
-  notice. Use abstract UI plates only.
-- **Meaning:** identity-sharing and delegated action are system-design problems,
-  not proof of criminal access.
+- **CP07:** an abstract personal-access key opens the accountant's work screen;
+  the submitted action travels onward, but the critical notice stops at a
+  separate screen while the Founder remains named as the responsible person.
+- **Motion:** one anonymized access token passes from Founder to accountant,
+  becomes an action, then returns as responsibility without carrying the notice
+  back to him. The token closes around the Founder like a visual question mark:
+  sharing made the work possible, then became the act held against him. Use
+  abstract UI plates only.
+- **Meaning:** in the Founder's documented account, the only route that appeared
+  to keep work and notice together collapsed into password sharing. This is an
+  identity and delegation design trap, not proof of criminal access and not a
+  recommendation to share credentials.
 - **Sound in post:** login chime, submission click, notification muffled behind
   glass.
 - **Hazard:** never display a real password, identifier or government UI.

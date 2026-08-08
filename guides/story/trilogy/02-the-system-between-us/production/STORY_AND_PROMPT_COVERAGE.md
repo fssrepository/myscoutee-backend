@@ -13,7 +13,7 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Bill proposed Monday, passed Tuesday, effective 1 September | 2 | S04 | Public source context; Founder remains indoors. |
 | Founder protects handover and gives up later opportunity | 3 | S05 | Foregone branch, no invented amount or service failure. |
 | Accountant, tax administration and Founder hold partial views | 4 | S06 | All three competent/human; assembled failure, no single villain. |
-| Delegated action, notice and responsibility diverge | 5 | S07 | Abstract UI only; no credential or real portal. |
+| The only route that appeared end-to-end collapsed into password sharing; work, notice and responsibility still diverged | 5 | S07 | Founder-attributed system trap; abstract UI only; no credential, setup QR or real portal. |
 | Repeated filings/corrections around a short return | 6 | S08 | No invented figures; status text added in post. |
 | Help calls and remembered remarks | 6 | S09 | No exact quotation before local transcription. |
 | Charged words followed by correction | 8–9 | S10 | Never reproduce or illustrate the charged language. |

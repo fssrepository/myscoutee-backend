@@ -16,6 +16,9 @@ my memory. Names have been removed, some sequences have been compressed, and a
 few uncertain locations remain deliberately unnamed. Where memory and public
 geography meet, I prefer an honest question mark to invented precision.
 
+All character and scene illustrations in this book are AI-generated visual
+interpretations. They do not depict the actual participants.
+
 This story compresses decades. Adjacent pages, and especially adjacent seconds
 in the companion film, do not necessarily describe events from the same year or
 events that followed one another immediately. Where a year changes the meaning,

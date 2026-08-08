@@ -18,3 +18,11 @@ first public edition is `1.0.0`.
   procedural and institutional outcome for Part III.
 - Removed slideshow production from the active route; identical endpoint pairs
   now go directly into the cross-model eight-second benchmark.
+- Clarified once in the reader note that the character and scene illustrations
+  are AI-generated visual interpretations, not depictions of the actual
+  participants.
+- Restored the full password paradox from the signed defence speech: the route
+  that appeared to keep work and notices together collapsed into identity
+  sharing, while the same sharing was later held against the Founder. Added the
+  Citizen Portal, representation and later two-factor context to the reference
+  apparatus and synchronized S07 across narration, storyboard and prompts.

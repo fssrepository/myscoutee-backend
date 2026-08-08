@@ -38,10 +38,10 @@ foley and breath.
 > My accountant, the tax officer and I each saw a different screen. None of us
 > held the whole story.
 
-### 00:48–00:56 — S07 · Responsibility without sight
+### 00:48–00:56 — S07 · The password trap
 
-> A representative could act; a notice could miss me; responsibility could
-> still arrive in my name.
+> The only route that seemed to keep work and notice together was password
+> sharing. Then the password itself was held against me.
 
 ### 00:56–01:04 — S08 · Assembled failure
 
