@@ -2,27 +2,28 @@
 
 This map is the visual identity contract for the book illustrations, approved
 checkpoint endpoints and later Flow/OpenArt motion in **The City Between Us**.
-Character generation is still paused. The current rough checkpoints are layout
-placeholders and must not become final identity references by accident.
-
-Once a character is approved, save one clean full-body/portrait reference under
-the token below and reuse that exact identity everywhere. Part II inherits the
-approved `[FOUNDER_REF]`; it does not create a replacement Founder.
+The Founder resumed generation on 8 August 2026. The identities listed here are
+now the locked visual baseline; the old CP images remain layout studies until
+they are regenerated from these assets. Part II inherits the exact
+`[FOUNDER_REF]`; it does not create a replacement Founder.
 
 ## Recurring core cast
 
-| Token | Stable identity and inner life | Recurring use |
-| --- | --- | --- |
-| `[FOUNDER_REF]` | Founder-approved identity; intelligent, observant and persistent; navy field coat, charcoal knit, muted rust scarf, dark trousers, brown shoes, compact dark backpack and worn cognac notebook | Throughout Part I; inherited unchanged by Part II |
-| `[MAYA_REF]` | Autonomous adult community member; curious, careful with attention and safety, warm without being idealized; moss-green coat, cream shirt, silver studs | App-attention contrast and the six-person group |
-| `[DANCE_STUDENT_REF]` | Adult beginner who enjoys learning and laughs naturally at a recovered mistake; teal practice top | S12–S14 only |
-| `[DANCE_PARTNER_REF]` | The student's existing partner; friendly, composed and socially legible; rain coat and folded umbrella | S14 only |
-| `[OPERATOR_REF]` | Technically capable local operator with calm accountability; practical clothing, hardware key and deployment checklist | S22 only |
+| Token | Locked asset | Stable identity and inner life | Recurring use |
+| --- | --- | --- | --- |
+| `[FOUNDER_REF]` | `founder.png` | Intelligent, observant and persistent; navy field coat, charcoal knit, muted rust scarf, dark trousers, brown shoes, compact dark backpack and worn cognac notebook | Throughout Part I; inherited unchanged by Part II |
+| `[MAYA_REF]` | `maya.png` and `myscoutee-g02.png` | Autonomous adult community member; curious, careful with attention and safety, warm without being idealized; moss-green coat, cream shirt, silver studs | App-attention contrast and the six-person group |
+| `[DANCE_STUDENT_REF]` | `dance-student.png` | Adult beginner who enjoys learning and laughs naturally at a recovered mistake; teal practice top | S12–S14 only |
+| `[DANCE_PARTNER_REF]` | `dance-partner.png` | The student's existing partner; friendly, composed and socially legible; rain coat and folded umbrella | S14 only |
+| `[OPERATOR_REF]` | `operator.png` | Technically capable local operator with calm accountability; practical clothing, hardware key and deployment checklist | S22 only |
 
 Maya, the dance student, the dance partner and the operator are separate people.
 No generated face may be reused between those roles.
 
 ## First MyScoutee candidate group
+
+Locked board: `myscoutee-g01-g06-board.png`; crop assets:
+`myscoutee-g01.png` through `myscoutee-g06.png`.
 
 The first group always contains these exact six adults: three women and three
 men. They are cast by plausible reasons to use a group-first local product, not
@@ -45,6 +46,9 @@ equal visual weight and a credible non-romantic reason to value the event.
 
 ## Budapest relationship-memory cast
 
+Locked board: `budapest-memory-women-board.png`; crop assets:
+`budapest-b01-debrecen.png` through `budapest-b05-former-colleague.png`.
+
 These are privacy-safe fictionalized visual identities grounded in separate
 memories. They must never become identifiable portraits of the private people
 involved. The five women remain distinct from Maya and from the first group.
@@ -65,6 +69,9 @@ The separate 2017 financial-adviser date remains available for a later bounded
 illustration only if selected during review. Do not merge her into B01–B05.
 
 ## London Hungarian-house cast
+
+Locked board: `london-hmo-h01-h12-board.png`; crop assets:
+`london-hmo-h01.png` through `london-hmo-h12.png`.
 
 The converted Tottenham HMO contains the Founder plus twelve Hungarian adults.
 H01–H12 are fictionalized composites, not portraits of identifiable former
@@ -119,18 +126,16 @@ background and no coloured side bars added to fake width. Full montages are
 landscape book plates with all faces readable at A4 size. Every output is
 textless: no name, label, logo, watermark or generated interface.
 
-## Platform mapping and approval gate
+## Platform mapping and generation order
 
 In Flow, save each recurring identity as a named Ingredient/Character using the
 token name without brackets. In OpenArt, save the same crop as a Character
 reference. Attach only the identities used in one generation.
 
-Do not generate book portraits, montages, checkpoints or motion until the
-Founder approves this map and the corresponding prompts. After approval:
+The identity-sheet step is complete. Continue in this order:
 
-1. generate and select individual identity sheets;
-2. generate book portraits and montage plates from those locked identities;
-3. regenerate only the CP endpoints that use them;
-4. build the endpoint slideshow from those exact CP files;
+1. generate book portrait and montage plates from the locked identities;
+2. regenerate only the CP endpoints that use them;
+3. build the endpoint slideshow from those exact CP files;
+4. review the slideshow before spending Flow/OpenArt motion credits;
 5. use the same references for Flow/OpenArt motion.
-

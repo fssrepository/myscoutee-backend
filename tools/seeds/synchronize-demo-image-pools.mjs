@@ -67,48 +67,48 @@ const ASSET_SEED_DEFINITION_BY_SLOT = {
   6: assetDefinition('Group Safety Base', 'First aid + radios + hi-vis equipment', 'Central safety point for moving groups, night checks, and incident response.', 'Safety'),
   7: assetDefinition('Trailside Bicycle Repair Kit', 'Pumps + patches + spare tubes + tools', 'Mobile maintenance supplies for punctures and basic repairs during a group ride.', 'Cycling'),
   8: assetDefinition('Outdoor Event Power Hub', 'Power stations + charging leads + cable covers', 'Shared low-voltage charging and equipment-power point for an outdoor gathering.', 'Event Technology'),
-  9: assetDefinition('Apartment Game Library', 'Strategy boards + cards + compact speaker', 'Curated indoor game collection for a relaxed six-person social evening.'),
-  10: assetDefinition('Community Games Chest', 'Chess + dominoes + score tokens', 'Durable classic games prepared for rotating tables in a community hall.'),
-  11: assetDefinition('Rooftop Party Games', 'Quick-play cards + sound + ambient lights', 'Lightweight social games and portable audio for an informal rooftop meetup.'),
-  12: assetDefinition('Park Picnic Games Crate', 'Outdoor chess + ring toss + blankets', 'Weather-tolerant activity crate for a casual afternoon in the park.'),
-  13: assetDefinition('Portable Audio Light Rig', 'LED bars + stands + mixer + cables', 'Compact performance setup for a workshop, rehearsal, or small creative night.'),
-  14: assetDefinition('Community Sound Pair', 'Battery speakers + compact mixer + stands', 'Cable-managed portable sound system for speeches and low-volume music.'),
-  15: assetDefinition('Projector Lounge Pack', 'Projector + lanterns + tabletop games', 'Complete indoor lounge kit for a film, presentation, or collaborative game night.'),
-  16: assetDefinition('Mobile Event Tech Tote', 'Power banks + cables + speaker + cards', 'Color-organized event essentials for check-in, charging, audio, and icebreakers.'),
-  17: assetDefinition('Brick Window Group Loft', 'Sofa bed + dining area + steel windows', 'Quiet converted loft with a generous shared table and one flexible sleep zone.'),
-  18: assetDefinition('Nordic Mezzanine Loft', 'Mezzanine bed + pale wood + morning light', 'Bright compact stay with a raised sleeping area and calm shared living space.'),
-  19: assetDefinition('Botanical Bohemian Loft', 'Plant-filled lounge + prepared sleep area', 'Warm textured apartment for guests who prefer a relaxed, lived-in atmosphere.'),
-  20: assetDefinition('Modular Smart City Loft', 'Fold-out bed + modular storage + kitchenette', 'Efficient short-stay layout with flexible furniture and practical city access.'),
-  21: assetDefinition('Harbor View Studio', 'Double bed + breakfast table + waterfront view', 'Self-check-in studio suited to one or two guests near the harbor district.'),
-  22: assetDefinition('Skyline Convertible Studio', 'Sofa bed + kitchenette + evening skyline', 'High-rise studio with a convertible sleep area and compact cooking facilities.'),
-  23: assetDefinition('Artist Workshop Loft', 'Guest bed + timber beams + studio space', 'Creative live-work room with a separated guest corner and natural daylight.'),
-  24: assetDefinition('Arched Warehouse Loft', 'Two sleep zones + large group living area', 'Spacious converted warehouse stay for a small group sharing one open plan.'),
-  25: assetDefinition('Warm Townhouse Guest Room', 'Double bed + luggage bench + reading light', 'Residential private room with a calm evening routine and easy luggage storage.'),
-  26: assetDefinition('Skylight Attic Room', 'Sloped ceiling + desk + simple linens', 'Compact top-floor guest room best suited to a quiet short stay.'),
-  27: assetDefinition('Garden-Level Guest Suite', 'Private room + seating corner + green outlook', 'Ground-level room with a separate conversation corner and garden-facing light.'),
-  28: assetDefinition('Work-Friendly Spare Room', 'Guest bed + desk + practical storage', 'Simple residential room prepared for a guest who also needs a focused workspace.'),
-  29: assetDefinition('Festival Crew Bunk Room', 'Two bunk beds + personal shelves + durable linens', 'No-frills shared sleeping room for a coordinated event or volunteer crew.'),
-  30: assetDefinition('Coastal Blue Guest Room', 'Washed wood + luggage rack + soft daylight', 'Airy private room for a relaxed overnight stay near the waterfront.'),
-  31: assetDefinition('Library Guest Room', 'Book-lined bedroom + reading chair + warm light', 'Comfortable residential room designed for a quiet evening and early start.'),
-  32: assetDefinition('Accessible Calm Guest Suite', 'Low storage + wide circulation + prepared bed', 'Step-friendly private suite with clear movement space and reachable storage.'),
-  33: assetDefinition('Downtown Lake SUV', '4 seats + compact luggage + city pickup', 'Day-trip vehicle for a downtown departure and lakeside return before midnight.'),
-  34: assetDefinition('Lakeside Gear SUV', '4 seats + hiking packs + recreation pickup', 'Practical group transport with room for day packs and outdoor equipment.'),
-  35: assetDefinition('Open-Road Trip SUV', '4 seats + road-trip bags + rural route', 'Comfortable vehicle for longer regional drives with limited luggage.'),
-  36: assetDefinition('Trailhead Bike SUV', 'Rear bike rack + outdoor gear + trail pickup', 'Trail transfer with a two-bike rack and a fixed return meeting point.'),
-  37: assetDefinition('Dawn Airport Hatchback', '4 seats + 2 cabin cases + terminal pickup', 'Early terminal run with compact luggage space and a confirmed pickup lane.'),
-  38: assetDefinition('Rainy Airport Shuttle', '4 seats + luggage cover + blue-hour pickup', 'Weather-ready airport transfer with protected bags and curbside coordination.'),
-  39: assetDefinition('Hotel Night Hatchback', '4 seats + hotel canopy + late shuttle', 'Late arrival transfer between the terminal and a central hotel.'),
-  40: assetDefinition('Expo Equipment Sedan', '4 seats + compact event cases + daytime run', 'Daytime venue shuttle with boot space reserved for small equipment cases.'),
-  41: assetDefinition('Community Center Sedan', '4 seats + event supplies + neighborhood pickup', 'Short local transfer for organizers and lightweight event materials.'),
-  42: assetDefinition('Festival Support Sedan', '4 seats + crew cases + venue parking', 'Crew-focused city transfer with a fixed backstage meeting point.'),
-  43: assetDefinition('Evening Hotel Transfer', '4 seats + garment bags + downtown hotel', 'Quiet evening shuttle for speakers or guests carrying light formal luggage.'),
-  44: assetDefinition('Dinner Pickup Sedan', '4 seats + restaurant pickup + evening return', 'Reserved curbside transfer for a small dinner group and scheduled return.'),
-  45: assetDefinition('Concert Return Sedan', '4 seats + late venue pickup + compact bags', 'Post-event ride with a clear pickup zone and limited personal luggage.'),
-  46: assetDefinition('Daylight Station Pickup', '4 seats + rolling case + modern station', 'Rail arrival transfer with space for one large and two small cases.'),
-  47: assetDefinition('Historic Station Transfer', '4 seats + rain-ready pickup + brick station', 'Pre-arranged station ride with covered waiting and wet-weather luggage care.'),
-  48: assetDefinition('Mountain Conference Sedan', '4 seats + conference luggage + hotel arrival', 'Regional transfer from the valley to a mountain conference venue.'),
-  49: assetDefinition('Foothill Speaker Transfer', '4 seats + garment bag + scenic route', 'Speaker pickup with a planned foothill route and careful luggage handling.'),
-  50: assetDefinition('Winter Lodge Sedan', '4 seats + winter luggage + lodge arrival', 'Cold-weather transfer to a lodge with cleared access and compact ski bags.')
+  9: assetDefinition('Travel Social Games Case', 'Compact boards + cards + dice + score tokens', 'Portable all-weather social games for four travelers during an evening stop.', 'Games'),
+  10: assetDefinition('Route Navigation Kit', 'Handheld GPS + compass + waterproof map sleeves', 'Offline route-finding equipment for a small group traveling beyond reliable mobile coverage.', 'Navigation'),
+  11: assetDefinition('Field Cooking Kit', 'Twin burner + nesting pots + utensil roll', 'Compact meal-preparation equipment for four people at an approved outdoor cooking point.', 'Cooking'),
+  12: assetDefinition('Picnic Comfort Set', 'Folding chairs + blanket + thermos carriers', 'Packable seating and serving equipment for a relaxed daytime group stop.', 'Picnic'),
+  13: assetDefinition('Portable Audio Rig', 'Battery speakers + microphones + compact mixer', 'Cable-managed sound equipment for announcements, music, or a small workshop.', 'Audio'),
+  14: assetDefinition('Rechargeable Area Lighting Kit', 'Tripod lights + lanterns + safe cable covers', 'Flexible low-voltage lighting for an evening meeting point or work area.', 'Lighting'),
+  15: assetDefinition('Outdoor Projection Pack', 'Projector + folding screen + power station', 'Portable film and presentation setup for a sheltered community gathering.', 'Projection'),
+  16: assetDefinition('Hygiene and Cleanup Station', 'Water containers + wash basins + sorting bins', 'Reusable sanitation and cleanup equipment for a shared trip or outdoor event.', 'Sanitation'),
+  17: assetDefinition('Lakeside Timber Cabin', 'Four beds + wood stove + covered porch', 'Simple group cabin for a quiet overnight stay beside a lake.', 'Cabin'),
+  18: assetDefinition('Urban Hostel Family Room', 'Four bunks + lockers + shared table', 'Private four-person hostel room near public transport and city activities.', 'Hostel'),
+  19: assetDefinition('Riverside Houseboat Berth', 'Two double berths + compact galley + deck', 'Moored floating accommodation for a small group on a calm urban river.', 'Houseboat'),
+  20: assetDefinition('Mountain Refuge Room', 'Four alpine bunks + drying racks + gear shelf', 'Practical shared room inside a staffed mountain refuge.', 'Mountain Refuge'),
+  21: assetDefinition('Compact Campervan Sleep Setup', 'Pop-top berths + convertible bench + kitchenette', 'Four-person mobile sleep setup prepared at a legal overnight stop.', 'Campervan'),
+  22: assetDefinition('Farm Guest Cottage', 'Two bedrooms + kitchen table + rural courtyard', 'Independent small cottage for a group visiting a working farm.', 'Cottage'),
+  23: assetDefinition('Desert Adobe Casita', 'Cool plaster walls + shaded patio + four beds', 'Compact heat-conscious guest house arranged around a shaded courtyard.', 'Casita'),
+  24: assetDefinition('Forest Treehouse Lodge', 'Raised timber room + four beds + woodland deck', 'Weatherproof elevated lodge reached by a safe fixed stairway.', 'Treehouse'),
+  25: assetDefinition('Historic Townhouse Room', 'Double bed + reading nook + tall window', 'Private two-person room in a carefully maintained older city home.', 'Guest Room'),
+  26: assetDefinition('Beach Bungalow Room', 'Double bed + screened shutters + small veranda', 'Simple two-person coastal stay designed for airflow and sandy gear.', 'Bungalow'),
+  27: assetDefinition('Accessible Garden Suite', 'Wide circulation + low storage + roll-in bathroom', 'Step-free private suite for two guests beside a quiet garden.', 'Accessible Suite'),
+  28: assetDefinition('Urban Micro Studio', 'Wall bed + kitchenette + compact workspace', 'Efficient self-contained city stay for one or two travelers.', 'Studio'),
+  29: assetDefinition('Festival Crew Bunk Nook', 'Two bunks + personal shelves + durable linens', 'No-frills two-person sleep space for event or volunteer crew.', 'Bunkhouse'),
+  30: assetDefinition('Night Train Sleeper Cabin', 'Two berths + fold-down table + corridor window', 'Reserved overnight rail compartment for two travelers.', 'Sleeper Cabin'),
+  31: assetDefinition('Canal View Guest Room', 'Double bed + balcony door + waterside outlook', 'Bright private room for two guests beside a quiet canal district.', 'Guest Room'),
+  32: assetDefinition('Remote Work Guest Suite', 'Double bed + proper desk + acoustic door', 'Calm two-person suite with a reliable place for focused work.', 'Guest Suite'),
+  33: assetDefinition('Trail Access 4x4', '4 seats + high clearance + washable cargo area', 'Unbranded four-wheel-drive vehicle for rough access roads and trail equipment.', '4x4'),
+  34: assetDefinition('Kayak Roof-Rack Estate', '4 seats + twin kayak rack + wet-gear liner', 'Long-roof vehicle prepared for a four-person coastal paddling day.', 'Estate Car'),
+  35: assetDefinition('Family Road-Trip Minivan', '4 reserved seats + flexible storage + sliding doors', 'Comfortable unbranded minivan configured for a longer regional journey.', 'Minivan'),
+  36: assetDefinition('Bicycle Shuttle Crossover', '4 seats + rear rack + repair tray', 'Compact crossover carrying two bicycles and group riding equipment.', 'Crossover'),
+  37: assetDefinition('Compact Airport EV', '4 seats + electric hatchback + terminal pickup', 'Small battery-electric car for a coordinated airport transfer.', 'Electric Car'),
+  38: assetDefinition('Accessible Shuttle Van', '4 passenger places + ramp + securement points', 'Step-friendly van configured for an inclusive local transfer.', 'Accessible Van'),
+  39: assetDefinition('Hotel Courtesy Minibus', '4 reserved seats + high roof + hotel loop', 'Small courtesy bus assigned to a four-person late-arrival group.', 'Minibus'),
+  40: assetDefinition('Expo Equipment Cargo Van', '4 crew seats + enclosed load bay + tie-downs', 'Short-wheelbase van for people and protected event equipment.', 'Cargo Van'),
+  41: assetDefinition('Community Equipment Pickup', '4 seats + covered utility bed + loading step', 'Double-cab pickup for bulky community-event supplies.', 'Pickup Truck'),
+  42: assetDefinition('Festival Utility Buggy', '4 seats + open cargo deck + venue route', 'Low-speed electric utility vehicle for an enclosed event site.', 'Utility Vehicle'),
+  43: assetDefinition('Waterfront Passenger Launch', '4 passenger seats + covered cockpit + life jackets', 'Small licensed motor launch for a short sheltered-water transfer.', 'Passenger Boat'),
+  44: assetDefinition('Dinner District Electric Taxi', '4 seats + compact EV + city pickup', 'Quiet unbranded electric taxi reserved for an evening group.', 'Electric Taxi'),
+  45: assetDefinition('Concert Night Shuttle Van', '4 reserved seats + illuminated pickup zone', 'Compact passenger van for a clearly coordinated post-event return.', 'Shuttle Van'),
+  46: assetDefinition('Station Pickup Wagon', '4 seats + long cargo floor + rail connection', 'Unbranded estate wagon for a daytime station pickup.', 'Estate Car'),
+  47: assetDefinition('Historic District Pedicab Pair', '4 total seats + two covered cycle taxis', 'Two coordinated pedal-powered taxis for a short old-town transfer.', 'Pedicab'),
+  48: assetDefinition('Mountain Cable-Car Cabin', '4 reserved places + enclosed gondola + ridge link', 'Small enclosed cable-car cabin representing an uphill group transfer.', 'Cable Car'),
+  49: assetDefinition('Foothill Sidecar Motorcycle Pair', '4 total seats + two touring sidecars', 'Two coordinated unbranded sidecar motorcycles for a scenic paved route.', 'Motorcycle'),
+  50: assetDefinition('Snow Lodge Tracked Shuttle', '4 passenger seats + rubber tracks + heated cab', 'Compact tracked passenger vehicle for a maintained snowy lodge route.', 'Snow Shuttle')
 };
 
 const ASSET_SCENE_BY_SLOT = {
@@ -117,51 +117,51 @@ const ASSET_SCENE_BY_SLOT = {
   3: 'a rocky coastal kayak launch with two sea kayaks, personal flotation vests, paddles, bright dry bags and a coiled tow line',
   4: 'a winter mountain equipment bench outside a small stone refuge, with crampons, ice axes, climbing rope, helmets and avalanche safety tools',
   5: 'a mobile group catering setup beside a public picnic pavilion, with large coolers, stainless preparation tables, insulated food carriers and washable crates',
-  6: 'an organized group safety desk in a community venue entrance, with first-aid cases, handheld radios, high-visibility vests, lanterns and incident supplies',
+  6: 'an organized group safety desk in a community venue entrance, with plain unmarked first-aid cases, handheld radios, high-visibility vests, lanterns and incident supplies',
   7: 'a trailside bicycle repair station with a work stand, floor pump, patch kits, multi-tools, spare tubes and open bikepacking tool rolls',
   8: 'an outdoor event power point built around portable battery stations, color-organized charging leads, weatherproof cable covers and a compact distribution table',
-  9: 'an open board-game collection arranged across a cozy apartment dining table, with chess, cards, dice and small speakers',
-  10: 'a wooden community-hall game setup with classic strategy boards, dominoes, score tokens and neatly stacked card decks',
-  11: 'a colorful rooftop party-game kit with quick-play cards, portable speakers, reusable cups and soft ambient lights',
-  12: 'a weatherproof park-picnic game crate with outdoor chess, ring toss, cards, blankets and a compact Bluetooth speaker',
-  13: 'a portable audio and LED lighting rig unpacked in a small rehearsal studio, including stands, cables and a compact mixer',
-  14: 'a battery-powered speaker pair and small mixing console prepared in an intimate community venue with coiled cables',
-  15: 'a projector, warm lantern lights, tabletop games and a compact sound system prepared in a creative loft',
-  16: 'an organized event-tech tote with power banks, labeled-by-color cables without readable text, compact speakers and card games',
-  17: 'an industrial brick city loft with steel windows, a comfortable sofa bed and an uncluttered group dining area',
-  18: 'a bright Scandinavian-style city loft with pale wood, soft textiles, a mezzanine bed and morning window light',
-  19: 'a warm bohemian loft filled with plants, woven textures, a low lounge area and a neatly prepared sleeping space',
-  20: 'a compact modern smart city loft with modular furniture, a fold-out bed and efficient storage for a short group stay',
-  21: 'a serene harbor-view studio apartment with wide windows, a simple double bed and a compact breakfast table',
-  22: 'a high-rise skyline studio with a clean kitchenette, convertible sofa and evening city lights beyond the windows',
-  23: 'a converted artist studio loft with white walls, timber beams, tasteful canvases without text and a prepared guest bed',
-  24: 'a historic warehouse loft with arched windows, exposed beams, modern furniture and two clearly prepared sleeping areas',
-  25: 'a warm townhouse guest room with a made double bed, reading lamp, luggage bench and subtle everyday character',
-  26: 'a minimalist attic guest room with a sloped ceiling, skylight, simple linens and a small wooden desk',
-  27: 'a garden-level private guest room with soft green views, natural fabrics and a separate seating corner',
-  28: 'a modern spare bedroom with a compact work desk, practical storage and neutral bedding in daylight',
-  29: 'a rustic but tidy festival bunk room with two wooden bunk beds, personal shelves and durable linens',
-  30: 'a bright coastal guest room with washed wood, blue textiles, a luggage rack and soft reflected daylight',
-  31: 'a book-lined private guest room with a comfortable bed, reading chair and warm residential lighting',
-  32: 'a calm accessible guest suite with generous circulation space, low storage and a neatly prepared bed',
-  33: 'a practical unbranded modern SUV at a downtown curb with compact luggage ready for a city-to-lake trip',
-  34: 'a practical unbranded SUV parked at a lakeside recreation area with hiking packs and a folded picnic blanket',
-  35: 'a practical unbranded SUV at a rural road turnout under open skies with road-trip bags visible nearby',
-  36: 'a practical unbranded SUV at a wooded trailhead with two bicycles on a rear rack and outdoor gear',
-  37: 'an unbranded hatchback at a bright airport terminal pickup lane at dawn with two cabin-size suitcases',
-  38: 'an unbranded hatchback in a rain-slick airport parking area at blue hour with safely stowed luggage',
-  39: 'an unbranded hatchback waiting beneath a modern hotel shuttle canopy at night with warm architectural light',
-  40: 'a clean unbranded city sedan in an expo-center loading lane during clear daylight',
-  41: 'a clean unbranded city sedan at a neighborhood community-center curb with event cases ready for transport',
-  42: 'a clean unbranded city sedan in a colorful outdoor festival parking area before attendees arrive',
-  43: 'a comfortable unbranded sedan at a downtown hotel entrance in early-evening city light',
-  44: 'a comfortable unbranded sedan at a warm restaurant curbside pickup point after sunset',
-  45: 'a comfortable unbranded sedan waiting in a concert-venue pickup zone with subtle night lighting',
-  46: 'an unbranded sedan under a contemporary railway-station canopy in daylight with a small rolling suitcase',
-  47: 'an unbranded sedan outside a historic brick rail station after rain with reflections on the pavement',
-  48: 'a reliable unbranded sedan arriving at a modern mountain conference hotel in crisp daylight',
-  49: 'a reliable unbranded sedan at a winding foothill overlook with a conference garment bag and compact luggage',
-  50: 'a reliable unbranded sedan near a snowy lodge entrance with cleared pavement and practical winter luggage'
+  9: 'a compact travel game collection opened on a weathered hostel common-room table, with small boards, cards, dice and score tokens',
+  10: 'a route-navigation set arranged on a rocky overlook, with a handheld GPS, compass, blank waterproof map sleeves and a power bank',
+  11: 'a field-cooking station on a designated gravel pad, with a twin burner, nesting pots, utensil roll and stable preparation board',
+  12: 'a picnic comfort set in a green city park, with four distinct folding chairs, a patterned blanket, thermos carriers and reusable cups',
+  13: 'a portable audio system prepared on a small community stage, with two plain unmarked battery speakers, plain microphones, stands and a compact unmarked mixer',
+  14: 'a rechargeable area-lighting kit tested in an open warehouse, with plain unmarked tripod work lights, plain lanterns and low-profile cable covers',
+  15: 'an outdoor projection setup beneath a solid pavilion roof, with a folding screen, compact projector, power station and four chairs',
+  16: 'a reusable hygiene and cleanup station beside an event service area, with water containers, wash basins, sorting bins and cleaning tools',
+  17: 'a rustic lakeside timber cabin with a covered porch, four prepared beds and a compact wood stove',
+  18: 'a clean urban hostel family room with two sturdy bunk beds, four lockers and a shared central table',
+  19: 'the bright interior and small deck of a moored houseboat, with two double berths, compact galley and calm river outside',
+  20: 'a practical mountain-refuge room with four alpine bunks, boot-drying racks, stone walls and organized gear shelves',
+  21: 'the open pop-top interior of a compact campervan at an official motorhome stop, showing four converted sleeping places and kitchenette',
+  22: 'a small stone farm guest cottage with two simple bedrooms, a wooden kitchen table and a sunny rural courtyard',
+  23: 'a cool desert adobe guest house with rounded plaster walls, four low beds and a deeply shaded patio',
+  24: 'a weatherproof timber treehouse lodge on strong stilts, with safe stairs, four beds and a leafy woodland deck',
+  25: 'a historic townhouse guest room with one double bed, a reading nook, tall sash window and restrained period details',
+  26: 'an airy beach bungalow room with one double bed, screened shutters, natural fiber furniture and a small veranda',
+  27: 'a modern accessible garden suite with one double bed, wide circulation, low storage and a visible step-free bathroom entrance',
+  28: 'a highly efficient urban micro-studio with a folded-down wall bed, tiny kitchenette and compact work surface',
+  29: 'a tidy two-person festival crew bunk nook with one bunk bed, personal shelves, durable linens and equipment hooks',
+  30: 'a realistic night-train sleeper compartment with two berths, fold-down table, corridor door and dark landscape beyond the window',
+  31: 'a bright canal-view guest room with one double bed, balcony doors and water reflected on nearby buildings',
+  32: 'a quiet remote-work guest suite with one double bed, ergonomic desk, acoustic door and soft daylight',
+  33: 'a rugged unbranded four-wheel-drive vehicle on a rocky trail access road, with high clearance and muddy washable cargo area',
+  34: 'an unbranded long-roof estate car at a coastal launch, carrying two sea kayaks securely on its roof rack',
+  35: 'an unbranded modern minivan at an open-road rest area, with sliding doors and a flexible four-passenger layout',
+  36: 'an unbranded crossover at a forest bicycle trailhead, carrying two bicycles on a rear rack and an open repair tray',
+  37: 'a compact unbranded electric hatchback connected to an airport charging bay at dawn',
+  38: 'an unbranded accessible passenger van at a civic-center curb, with side ramp deployed and clear securement space',
+  39: 'a small unbranded high-roof courtesy minibus waiting beneath a hotel entrance canopy at night',
+  40: 'an unbranded short-wheelbase cargo van at an expo loading dock, with side door open to a neatly secured equipment bay',
+  41: 'an unbranded double-cab pickup truck beside a community hall, with a covered utility bed and portable tables being loaded',
+  42: 'a four-seat electric utility buggy on a colorful closed festival service lane with an open rear cargo deck',
+  43: 'a small four-passenger motor launch with covered cockpit, life jackets and calm waterfront terminal behind it',
+  44: 'a compact unbranded electric city taxi outside a lively restaurant district after sunset',
+  45: 'an unbranded passenger shuttle van in a clearly lit concert pickup zone at night',
+  46: 'an unbranded long-roof station wagon beneath a contemporary railway-station canopy in daylight',
+  47: 'two covered cycle pedicabs waiting together on a car-free cobbled old-town square',
+  48: 'a small enclosed four-person cable-car gondola traveling above a green mountain valley toward a ridge station',
+  49: 'two unbranded classic touring motorcycles with sidecars parked at a sunny foothill overlook',
+  50: 'a compact tracked passenger snow shuttle with heated cab arriving at a snowy lodge entrance'
 };
 
 const LOCAL_ASSET_SLOTS_BY_TEMPLATE = {
@@ -566,7 +566,7 @@ function assetPrompt(definition, variation, slotNumber, slotVisual) {
     `Scene/backdrop: follow this slot-specific environment exactly; visual identity ${pad(slotNumber)} must have a clearly different setting, object arrangement and silhouette from neighboring pool images.`,
     `Composition/framing: landscape 16:9, ${variation}; keep the main asset centered and recognizable even as a small thumbnail.`,
     'Lighting/mood: natural, friendly, practical and not luxury-advertising polished.',
-    'Constraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, license plates, labels, captions, UI, text or watermark; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.',
+    'Constraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.',
     'Avoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.'
   ].join('\n');
 }
@@ -778,12 +778,34 @@ function buildLocalEventSlotMap(eventSlots, slotByEventKey, mongoEvents) {
 function buildFrontendHelper(localEventSlotBySeed) {
   return `// Generated by tools/seeds/synchronize-demo-image-pools.mjs.\n` +
     `// Frontend-local keeps remote placeholders; the standalone HTTP demo uses the same logical slots from MinIO.\n` +
+    `export interface DemoAssetPlaceholder {\n` +
+    `  slot: number;\n` +
+    `  imageUrl: string;\n` +
+    `  title: string;\n` +
+    `  subtitle: string;\n` +
+    `  details: string;\n` +
+    `  category: string;\n` +
+    `}\n\n` +
+    `type DemoAssetDefinition = Omit<DemoAssetPlaceholder, 'slot' | 'imageUrl'>;\n\n` +
     `const ASSET_PICSUM_IDS = ${JSON.stringify(ASSET_PICSUM_IDS)} as const;\n` +
     `const EVENT_PICSUM_IDS = ${JSON.stringify(EVENT_PICSUM_IDS)} as const;\n\n` +
     `const PUBLIC_LOCAL_USER_IDS = ${JSON.stringify(PUBLIC_LOCAL_USER_IDS)} as const;\n\n` +
     `const ASSET_SLOTS_BY_TEMPLATE: Readonly<Record<string, readonly number[]>> = ${JSON.stringify(LOCAL_ASSET_SLOTS_BY_TEMPLATE, null, 2)};\n\n` +
+    `const ASSET_DEFINITION_BY_SLOT: Readonly<Record<number, DemoAssetDefinition>> = ${JSON.stringify(ASSET_SEED_DEFINITION_BY_SLOT, null, 2)};\n\n` +
     `const EVENT_SLOT_BY_SEED: Readonly<Record<string, number>> = ${JSON.stringify(localEventSlotBySeed, null, 2)};\n\n` +
+    `export function demoAssetPlaceholder(seed: string): DemoAssetPlaceholder {\n` +
+    `  const slot = demoAssetSlot(seed);\n` +
+    `  const definition = ASSET_DEFINITION_BY_SLOT[slot] ?? ASSET_DEFINITION_BY_SLOT[1];\n` +
+    `  return {\n` +
+    `    ...definition,\n` +
+    `    slot,\n` +
+    `    imageUrl: \`https://picsum.photos/id/\${ASSET_PICSUM_IDS[slot - 1]}/1200/700\`\n` +
+    `  };\n` +
+    `}\n\n` +
     `export function demoAssetPlaceholderUrl(seed: string): string {\n` +
+    `  return demoAssetPlaceholder(seed).imageUrl;\n` +
+    `}\n\n` +
+    `function demoAssetSlot(seed: string): number {\n` +
     `  const normalized = seed.trim().toLowerCase();\n` +
     `  const template = Object.keys(ASSET_SLOTS_BY_TEMPLATE).find(key => normalized.includes(key));\n` +
     `  const candidates = template ? ASSET_SLOTS_BY_TEMPLATE[template] : [1];\n` +
@@ -792,8 +814,7 @@ function buildFrontendHelper(localEventSlotBySeed) {
     `  const candidateIndex = publicOwnerIndex >= 0\n` +
     `    ? publicOwnerIndex % candidates.length\n` +
     `    : stableIndex(normalized, candidates.length);\n` +
-    `  const slot = candidates[candidateIndex] ?? 1;\n` +
-    `  return \`https://picsum.photos/id/\${ASSET_PICSUM_IDS[slot - 1]}/1200/700\`;\n` +
+    `  return candidates[candidateIndex] ?? 1;\n` +
     `}\n\n` +
     `export function demoEventPlaceholderUrl(seed: string): string {\n` +
     `  const normalized = seed.trim().toLowerCase();\n` +
