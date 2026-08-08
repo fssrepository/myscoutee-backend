@@ -12,6 +12,10 @@ Copy-paste generation baselines live in
 
 - Keep original approved character references in `assets/characters/`.
 - Put print-ready crops and montage derivatives here.
+- A book registry may embed an approved locked crop directly from
+  `../assets/characters/` when no additional crop or colour treatment is
+  required; this avoids stale duplicate portraits drifting from the identity
+  contract.
 - Portraits are tight 4:5 crops; do not add brown or other coloured side bars to
   make a narrow subject appear wider.
 - Montages are landscape plates with all required faces readable at A4 size.
@@ -19,4 +23,3 @@ Copy-paste generation baselines live in
   not regenerated substitutes.
 - Missing files are intentionally omitted by the book builder; do not substitute
   the rough storyboard placeholders.
-

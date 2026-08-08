@@ -35,6 +35,10 @@ Status: **book/prompt audit and generation pass in progress**.
   privacy and pacing corrections.
 - [ ] Apply all Founder corrections across book, chronology, film and prompts;
   the current pass is synchronized but review remains open.
+- [ ] After the Founder approves Chapter 25, decide whether the national-unity
+  versus possible citizenship-renunciation image replaces part of the current
+  S22/CP22 endpoint. Keep the chain at twenty-two eight-second intervals; do not
+  create an extra four-second or disposable midpoint frame.
 - [x] Build a clearly marked, editable review PDF in the Part I book style for
   the Founder to read; do not hash, lock or place it in `published/`.
 

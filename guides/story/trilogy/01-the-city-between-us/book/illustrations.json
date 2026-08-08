@@ -49,14 +49,14 @@
   },
   "london_resident_portraits": {
     "files": [
-      "assets/illustrations/london-resident-01.png",
-      "assets/illustrations/london-resident-02.png",
-      "assets/illustrations/london-resident-03.png",
-      "assets/illustrations/london-resident-04.png"
+      "../assets/characters/london-hmo-h01.png",
+      "../assets/characters/london-hmo-h02.png",
+      "../assets/characters/london-hmo-h06.png",
+      "../assets/characters/london-hmo-h11.png"
     ],
     "placement": "portrait-grid",
     "alt": "Individual stylized portraits of four London house residents",
-    "caption": "Each resident needs a distinct inner life, not a generic migrant face."
+    "caption": "Four different routes into the same house: family pressure, language, professional restart and social discovery."
   },
   "global_local_montage": {
     "file": "assets/illustrations/global-local-encounters-montage.png",

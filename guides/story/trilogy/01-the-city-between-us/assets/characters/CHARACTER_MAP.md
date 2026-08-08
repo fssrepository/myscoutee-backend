@@ -93,8 +93,9 @@ flatmates. Their shared origin never makes them visually or socially uniform.
 | H12 | `[HMO12_REF]` | Incoming bedroom resident after the unannounced place swap; bounded sleeping/desk corner, family photograph and a distinct snore |
 
 The full house montage uses H01–H12 plus the Founder. The four book portrait
-crops use H01, H02, H04 and H05 so the visible sample carries four different
-reasons for leaving or struggling to return. H12 remains visible in the shared-
+crops use H01, H02, H06 and H11 so the visible sample carries four clearly
+different faces and routes: family-loan pressure, language learning,
+professional restart and social discovery. H12 remains visible in the shared-
 room sequence. No crowd clone, slum framing, national costume or displayed
 percentage is permitted.
 
@@ -115,7 +116,7 @@ human action, never flags or costume shorthand.
 | `budapest-relationship-memories-montage.png` | `[FOUNDER_REF]`, B01–B05 |
 | `budapest-character-*.png` | the matching B01–B05 reference |
 | `london-house-residents-montage.png` | `[FOUNDER_REF]`, H01–H12 |
-| `london-resident-01.png`–`04.png` | H01, H02, H04 and H05 respectively |
+| four London-resident book portraits | H01, H02, H06 and H11 respectively |
 | `global-local-encounters-montage.png` | `[FOUNDER_REF]` plus scene-specific approved travel references |
 | `myscoutee-six-person-ensemble-montage.png` | G01–G06 |
 | `myscoutee-character-01.png`–`06.png` | G01–G06 in that order |

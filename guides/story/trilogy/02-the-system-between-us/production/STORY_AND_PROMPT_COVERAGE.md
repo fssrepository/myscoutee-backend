@@ -32,6 +32,7 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Court asks about work, debt, apartment/belongings and government-bond account | 12, 28 | S18 | Tie debt to Part I without implying every question was improper. |
 | Home came from parents; meaningful reserve came principally from London/foreign work | 12, 28 | S18 | Dignified key/belongings/account plate, not wealth spectacle. |
 | Unannounced clemency social inquiry reads the puritan, unheated, temporarily untidy flat | 12, 14 | S18 | Correct role is probation officer; deliberate thrift, no car and lack of staged preparation are not poverty spectacle or an official merits decision. |
+| 2024 pardon crisis transforms the clemency institution; 2025 grants 4 of 689 and 2026 H1 refuses all 314 decided cases | 12 / notes | book and longer-cut candidate | Statistics establish institutional rarity, not why the Founder's individual application was refused. |
 | London HMO housemate and foreign-currency-loan pattern | 16 | S19 | Anonymized memory; not the same legal problem as KATA. |
 | Budapest remains beautiful while people still leave | 17 | S19–S20 atmosphere | Departure is multicausal; no hatred-of-home claim. |
 | Not everyone would write the same words; universal risk begins earlier | 18 | entire chain | Preserve agency and system context simultaneously. |
@@ -42,6 +43,7 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Sulyok asks Constitutional Court; 7 of 15 recuse; no quorum | 23 | S22 | Recusal from one case, not departure from office. |
 | Four over-seventy judges scheduled to leave 1 September | 24 / notes | post text only if still current | Separate from seven recusals. |
 | Interim President and no invented successor | 25 | optional S22 post card | Recheck immediately before release. |
+| President is expected to express national unity while the Founder considers permanent departure and possible renunciation of Hungarian citizenship | 25 | possible S22/CP22 endpoint after Founder approves the book | Present thought only: no completed act, destroyed passport, invented destination, legal advice or implication for the pending case. Do not add another four-second or eight-second interval. |
 | MyScoutee returns as design discipline | 26, 28 | E01 | Product cannot repair court/tax authority; exact logo only in post. |
 | Part III owns hearing outcome and long-term consequence | 28 / notes | CP22/E01 | End on open line; no verdict or triumph. |
 

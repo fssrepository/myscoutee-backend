@@ -192,13 +192,14 @@ def render_illustration(key: str, registry: dict[str, dict[str, object]]) -> str
         return ""
 
     placement = html.escape(str(entry.get("placement", "full")), quote=True)
+    count_class = f" count-{len(paths)}" if len(paths) > 1 else ""
     alt = html.escape(str(entry.get("alt", "Book illustration")), quote=True)
     caption = inline_markdown(str(entry.get("caption", "")))
     images = "".join(
         f'<img src="{data_url(path)}" alt="{alt}">' for path in paths
     )
     return (
-        f'<figure class="illustration {placement}"><div class="image-set">'
+        f'<figure class="illustration {placement}{count_class}"><div class="image-set">'
         f"{images}</div><figcaption>{caption}</figcaption></figure>"
     )
 
@@ -776,6 +777,9 @@ def stylesheet() -> str:
   .illustration.portrait-grid { clear: both; }
   .illustration.portrait-grid .image-set {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: .09in;
+  }
+  .illustration.portrait-grid.count-4 .image-set {
+    grid-template-columns: repeat(4, 1fr);
   }
   .illustration.portrait-grid img { aspect-ratio: 4 / 5; object-fit: cover; }
   @media screen {
