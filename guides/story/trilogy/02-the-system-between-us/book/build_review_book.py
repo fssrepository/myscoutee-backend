@@ -144,6 +144,20 @@ def stylesheet() -> str:
   .compact-chapter-15 > p { margin-bottom: .09in; }
   .compact-chapter-15 .illustration.portrait-right { margin-bottom: .08in; }
   .drop-cap { background-position: center 88%; background-size: .5in auto; }
+  @media print {
+    .ending-tail:has(> .closing-invitation) {
+      height: 7.62in;
+      position: relative;
+    }
+    .ending-tail:has(> .closing-invitation) > .closing-invitation {
+      left: 0;
+      margin: 0;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
 """
     return inherited + overrides
 
