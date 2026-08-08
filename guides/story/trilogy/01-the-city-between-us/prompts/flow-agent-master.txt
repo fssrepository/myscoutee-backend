@@ -3,12 +3,13 @@ Between Us.” Do not rewrite the supplied narration, timing, personal facts or
 product claims. Return a table only; do not generate until approved.
 
 REFERENCES
-Use @Founder, @Maya, @DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
+Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
+@DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
 @BudapestWorld,
 @LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook,
-the approved six-person ensemble, twelve-Hungarian-flatmate board and confirmed
-TravelMemory stills. Preserve each identity and costume. Exactly three women and
-three men form the first MyScoutee group.
+the twelve-Hungarian-flatmate board and confirmed TravelMemory stills. Preserve
+each identity and costume. @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan
+and @RouteMan are the exact first MyScoutee group: three women and three men.
 
 LOOK AND FORMAT
 Premium painterly 2.5D hand-drawn adults in tactile dimensional paper/miniature
@@ -97,7 +98,8 @@ nostalgia for a universally better phone-free past. S17 shows one private,
 editable 1–10 priority for an unknown individual or pair. Friends-in-common and
 inside/outside-network cues are context only — never public rating, endorsement,
 character reference, compatibility or safety guarantee. S18 proposes exactly
-the same six distinct strangers, three women and three men cast by plausible
+@Founder, @Maya, @SketchWoman, @CupWoman, @GameMan and @RouteMan as the same six
+distinct strangers, three women and three men cast by plausible
 need rather than an age quota. The working picture may lean toward the thirties,
 forties and fifties but can include an adult in their twenties or sixties. S19 gives each an
 independent accept/decline, then contextual group chat, a public doorway and

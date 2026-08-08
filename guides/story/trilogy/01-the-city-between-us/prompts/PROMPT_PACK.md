@@ -29,6 +29,10 @@ Replace bracketed tokens only once in your working copy:
 | `[DANCE_STUDENT_REF]` | saved dance-student character |
 | `[DANCE_PARTNER_REF]` | saved partner character |
 | `[OPERATOR_REF]` | saved technically capable, accountable local-operator character |
+| `[SKETCH_WOMAN_REF]` | approved G03 first-group character with sketchbook |
+| `[CUP_WOMAN_REF]` | approved G04 first-group character with reusable cup |
+| `[GAME_MAN_REF]` | approved G05 first-group character with tabletop-game piece |
+| `[ROUTE_MAN_REF]` | approved G06 first-group character with folded transit map |
 | `[BUDAPEST_WORLD]` | approved Budapest style/location reference |
 | `[LONDON_WORLD]` | approved lived-London style/location reference |
 | `[SOHO_OFFICE]` | approved modest Soho software-office reference |
@@ -41,6 +45,14 @@ Replace bracketed tokens only once in your working copy:
 When the platform supports `@` references, use the actual saved asset name in
 the text. When it uses media tiles, attach the tile and keep the descriptive
 name in the prompt.
+
+The complete identity contract, including the five Budapest memory characters,
+the twelve Hungarian house residents and the exact G01–G06 ensemble, is
+[`assets/characters/CHARACTER_MAP.md`](../assets/characters/CHARACTER_MAP.md).
+Prepend
+[`prompts/character-continuity-master.txt`](character-continuity-master.txt) to
+every people-image prompt. Book-specific copy-paste baselines are in
+[`prompts/book-character-illustrations.txt`](book-character-illustrations.txt).
 
 ## Character and world still prompts
 
@@ -99,6 +111,11 @@ asymmetry and an individual prop or posture. Nobody is glamorous, grotesque,
 threatening, submissive or comic relief. Front and three-quarter reference views
 on segmented warm-grey background. No text, brands or stereotypes.
 ```
+
+Select and save the four first-group adults separately as
+`[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`, `[GAME_MAN_REF]` and
+`[ROUTE_MAN_REF]`. A combined board alone is not sufficient for book crops or
+first/last-frame video control.
 
 ### Budapest world sheet
 

@@ -1,13 +1,14 @@
 # Part II assets
 
-The Part II character continuity board and seven individual role crops are now
-approved planning references under `characters/`. They are fictionalized
-production assets, not documentary portraits.
+The Part II character continuity board and individual role crops under
+`characters/` are provisional review references. They are fictionalized
+production assets, not documentary portraits. The rough CP22-derived Founder
+must be replaced by the exact approved Part I `[FOUNDER_REF]` before visual lock.
 
 Future structure:
 
-- `characters/` — approved Founder continuity, anonymized supporting roles and
-  the exact role-to-checkpoint map;
+- `characters/` — provisional studies, later replaced by approved Founder
+  continuity, anonymized supporting roles and the exact role-to-checkpoint map;
 - `worlds/` — exact Part I apartment/HMO references and privacy-safe civic rooms;
 - `checkpoints/` — CP00–CP22 only;
 - `animatics/` — endpoint-only review slideshow, never a publication artifact;

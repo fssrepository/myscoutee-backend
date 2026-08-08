@@ -427,6 +427,12 @@ protection, direction and human connection, but are not a safety certification.
   `../../../../shared/benchmarks/prompts/character-model-benchmark-six-person-ensemble.txt` in Codex, Flow
   and OpenArt, one output per model. The Codex control is already saved as
   `../../../../shared/benchmarks/assets/character-benchmark/character-ensemble-control-codex-v01.png`.
+- `../../assets/characters/CHARACTER_MAP.md` is now the Part I identity contract.
+  It covers the Founder, five privacy-safe Budapest memory characters, twelve
+  fictionalized Hungarian house residents and the exact G01–G06 MyScoutee
+  group. `../../prompts/book-character-illustrations.txt` prepares the matching
+  book portraits and montages without generating them. Part II must inherit the
+  approved Part I Founder rather than its rough CP22-derived placeholder.
 - Use the current 18 free OpenArt credits only when the displayed one-image cost
   is no more than 18. Record the results in
   `../../../../shared/benchmarks/tracking/CHARACTER_BENCHMARK_LOG.csv`.

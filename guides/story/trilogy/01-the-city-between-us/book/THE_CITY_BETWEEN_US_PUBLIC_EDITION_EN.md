@@ -205,6 +205,8 @@ own picture of me and at one point described me as poor. Only later, once she wa
 home in Debrecen, did she write in a chat that she should have kissed me instead
 of giving me only that shy kiss on the cheek.
 
+<!-- illustration: budapest_character_debrecen -->
+
 Even a three-hour date required us to coordinate an intercity journey and the
 other commitment that had brought her to Budapest: when she would arrive, where
 we could meet, when we had to reach that programme's venue, and which return
@@ -223,6 +225,8 @@ centre, she approached me, sat down beside me on a bench and began with Chinese
 and Western astrology. It was spontaneous, direct and almost impossible to
 design: a stranger created the opening herself, and conversation existed before
 either of us had prepared a profile.
+
+<!-- illustration: budapest_character_spontaneous -->
 
 The absence of private space still shaped what followed. Even the possibility
 of being together was difficult to plan. One day ended on Margaret Island: one
@@ -256,11 +260,15 @@ time the physical space existed, but a ready-made story about me arrived first.
 I felt immediately stereotyped. The first judgment softened enough for a single
 night, but not into a shared future.
 
+<!-- illustration: budapest_character_online_date -->
+
 There was another online introduction before London in which the other woman
 wanted to continue getting to know me. This time I cannot blame the room, the
 train or an absent shared context. I became frightened by the possibility of
 commitment and stepped back. That memory matters because a system did not break
 every unfinished path. Sometimes I was the person who closed it.
+
+<!-- illustration: budapest_character_commitment -->
 
 I do not present these women as mistakes or myself as the innocent centre of
 unfinished stories. Attraction, hesitation, dignity, money, housing,
@@ -278,8 +286,6 @@ In these memories, judgment often arrived before understanding, while important
 context sometimes arrived too late. Mutual possibility appeared. What we lacked
 was enough shared truth, time and structure to discover whether we could move
 forward together.
-
-<!-- illustration: budapest_relationship_portraits -->
 
 ## 3. The Key My Parents Gave Me
 
@@ -583,6 +589,8 @@ to me, rather than love growing from knowledge of me. That was my interpretation
 not access to her private motive. What I can say safely is that speed without
 shared context frightened me, while my own hidden London life made the context
 less complete from the other direction too.
+
+<!-- illustration: budapest_character_former_colleague -->
 
 I sometimes imagine how different those years might have felt if a fast,
 group-first local path had already existed. It could not have promised me a

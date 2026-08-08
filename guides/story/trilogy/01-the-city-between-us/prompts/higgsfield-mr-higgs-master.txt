@@ -2,13 +2,14 @@ Act as cinematography co-director for the locked 23-shot film “The City Betwee
 Us,” runtime 03:00, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
 setup table only. Do not generate or rewrite the supplied narration and timings.
 
-Use @Founder, @Maya, @DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
+Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
+@DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
 @BudapestWorld,
 @LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook,
-the approved six-person group, twelve-Hungarian-flatmate board and confirmed
-TravelMemory stills. Lock Founder age, face, navy coat, charcoal knit, rust scarf
-and cognac notebook. Lock the first group to exactly the same six adults, three
-women and three men, from proposal through later invitations.
+the twelve-Hungarian-flatmate board and confirmed TravelMemory stills. Lock
+Founder age, face, navy coat, charcoal knit, rust scarf and cognac notebook.
+Lock @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan and @RouteMan as the exact
+same first group, three women and three men, from proposal through later invitations.
 
 Visual system: premium painterly 2.5D hand-drawn adults integrated into tactile
 dimensional paper/miniature sets, motivated light and subtle micro-acting. One
@@ -92,7 +93,8 @@ erasing older adults. A common acquaintance, place,
 event or story opens a less-cold door without vouching. S17 is private editable
 1–10 intent for an unknown individual or pair; Friends in Common and Inside/
 Outside Network provide context only, never public rating, reputation, character
-reference, compatibility or safety guarantee. S18 proposes the same six distinct
+reference, compatibility or safety guarantee. S18 proposes @Founder, @Maya,
+@SketchWoman, @CupWoman, @GameMan and @RouteMan as the same six distinct
 strangers, three women and three men cast by plausible need rather than an age
 quota. The working picture may lean toward the thirties, forties and fifties but
 can include an adult in their twenties or sixties. S19 gives all six independent accept/decline, then chat, public doorway

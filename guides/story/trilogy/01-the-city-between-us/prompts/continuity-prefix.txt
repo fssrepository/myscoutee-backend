@@ -8,7 +8,8 @@ central mobile-safe area, natural 180-degree motion, 12-frame clean
 handles. Use the attached locked references exactly: [FOUNDER_REF] is the same
 Founder with identical face, apparent age, navy mid-length field coat, charcoal
 knit, muted rust scarf when outdoors, dark trousers, brown shoes, compact dark
-backpack and [NOTEBOOK_PROP]; [MAYA_REF], [DANCE_STUDENT_REF],
+backpack and [NOTEBOOK_PROP]; [MAYA_REF], [SKETCH_WOMAN_REF],
+[CUP_WOMAN_REF], [GAME_MAN_REF], [ROUTE_MAN_REF], [DANCE_STUDENT_REF],
 [DANCE_PARTNER_REF], [OPERATOR_REF], [BUDAPEST_WORLD], [LONDON_WORLD],
 [SOHO_OFFICE], [TOTTENHAM_HMO], [DANCE_STUDIO] and [EVENT_VENUE] keep their
 approved identity and geometry. The Founder is observant, persistent and warm,
@@ -30,7 +31,9 @@ relationships and balanced groups of people who have not met; show this through
 people and choices, not an abstract affinity diagram. Every person can accept or
 decline. A high explicit priority may outweigh weaker automated/context signals;
 it does not override another person's consent. The balanced candidate shown here
-contains exactly six distinct adults, three women and three men, who gain shared
+contains the exact approved G01–G06 identities: [FOUNDER_REF], [MAYA_REF],
+[SKETCH_WOMAN_REF], [CUP_WOMAN_REF], [GAME_MAN_REF] and [ROUTE_MAN_REF]. They are
+exactly six distinct adults, three women and three men, who gain shared
 context in chat and then introduce themselves in person. Cast by plausible need,
 not an age quota: the working picture may lean toward the thirties, forties and
 fifties but can naturally include an adult in their twenties or sixties. Later

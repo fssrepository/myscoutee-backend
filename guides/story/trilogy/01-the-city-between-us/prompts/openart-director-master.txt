@@ -12,9 +12,11 @@ No named-studio imitation, photoreal uncanny faces, generated text, fake UI,
 invented logo, glamour casting, national stereotype or tourism-ad montage.
 
 IDENTITY LOCK
-Use the approved Founder, Maya, Dance Student, Dance Partner, Operator, Hungarian
-origin memory board, six-person group and twelve-flatmate board. The first MyScoutee candidate is exactly six
-distinct adults, three women and three men, with the same identities throughout.
+Use `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
+`[GAME_MAN_REF]`, `[ROUTE_MAN_REF]`, the approved Dance Student, Dance Partner,
+Operator, Hungarian-origin memory board and twelve-flatmate board. Those first
+six references are the exact MyScoutee candidate: three women and three men with
+the same identities throughout.
 The Founder wears navy coat, charcoal knit, muted rust scarf and carries a cognac
 notebook. He is capable and observant, never bitter. All adults retain autonomy.
 
@@ -115,8 +117,10 @@ LOCKED STORY AND TIMING
 - S17 02:08–02:16: private editable 1–10 priority for an unknown individual or
   pair. People-in-common and inside/outside-network cues add context only: never
   public rating, vouching, character reference, compatibility or safety guarantee.
-- S18 02:16–02:24: reciprocal choices and restrained context propose exactly the
-  same six strangers, three women and three men cast by plausible need rather
+- S18 02:16–02:24: reciprocal choices and restrained context propose exactly
+  `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
+  `[GAME_MAN_REF]` and `[ROUTE_MAN_REF]` as the same six strangers, three women
+  and three men cast by plausible need rather
   than an age quota. The working picture may lean toward the thirties, forties
   and fifties but can naturally include an adult in their twenties or sixties.
   Give each a different thought motif. No soulmate graph or automatic couple.

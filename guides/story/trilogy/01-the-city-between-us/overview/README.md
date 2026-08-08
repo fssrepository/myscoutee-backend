@@ -67,7 +67,9 @@ as an available, lower-pressure path, not as a guaranteed romantic result.
 The English-first memoir and product-origin companion is **MyScoutee — The
 Story**, Part **I** of the planned trilogy, with **The City Between Us** as its
 literary subtitle. The current artifact is **Public edition v1.0.0**, published
-7 August 2026 and still editable until the Founder explicitly locks it. Its cover uses
+and technically locked on 7 August 2026. Its source manuscript and independent
+draft export remain editable, but the hash-checked published PDF is not
+overwritten. Its cover uses
 the same wordmark contract as the official manuals: the original mark replaces
 the initial `M`, followed only by `yScoutee`. It never displays the mark beside
 the complete word and never duplicates the `M`.
@@ -79,13 +81,15 @@ the complete word and never duplicates the `M`.
 - [book changelog](../book/CHANGELOG.md)
 - [browser edition](../book/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
 - [current editable v1.0.0 PDF](../book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
-- [flat published-artifact contract](../published/README.md) — no sealed PDF
-  exists until the Founder explicitly locks an edition
+- [flat published-artifact contract](../published/README.md) — contains the
+  locked v1.0.0 PDF, SHA-256 checksum and publication manifest
 
-The public edition is complete without generated imagery. Optional side-column
-portraits, portrait grids and wide character montages are already wired into
+The public edition is complete without generated imagery. Optional text-wrapped
+portraits, portrait sets and wide character montages are already wired into
 the build and appear after the character benchmark locks the identities. The
 montage and separate portraits must come from the same character references.
+The exact Part I identity contract is
+[`assets/characters/CHARACTER_MAP.md`](../assets/characters/CHARACTER_MAP.md).
 
 ## Recommended production route
 

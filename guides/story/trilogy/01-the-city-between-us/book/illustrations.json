@@ -11,17 +11,35 @@
     "alt": "Distinct Budapest relationship memories shaped by distance, space, commitment and incomplete context",
     "caption": "Different openings, different constraints: no person can be reduced to the first visible problem."
   },
-  "budapest_relationship_portraits": {
-    "files": [
-      "assets/illustrations/budapest-character-debrecen-woman.png",
-      "assets/illustrations/budapest-character-spontaneous-woman.png",
-      "assets/illustrations/budapest-character-online-date-woman.png",
-      "assets/illustrations/budapest-character-commitment-woman.png",
-      "assets/illustrations/budapest-character-former-colleague.png"
-    ],
-    "placement": "portrait-grid",
-    "alt": "Five individual stylized portraits from the Founder's Budapest relationship memories",
-    "caption": "The montage and portraits preserve individual women, not generic romantic roles."
+  "budapest_character_debrecen": {
+    "file": "assets/illustrations/budapest-character-debrecen-woman.png",
+    "placement": "portrait-right",
+    "alt": "A privacy-safe character portrait for the Debrecen-distance memory",
+    "caption": "Attraction did not remove distance, timing or missing context."
+  },
+  "budapest_character_spontaneous": {
+    "file": "assets/illustrations/budapest-character-spontaneous-woman.png",
+    "placement": "portrait-right",
+    "alt": "A privacy-safe character portrait for the spontaneous Budapest introduction",
+    "caption": "Sometimes a stranger created the opening herself."
+  },
+  "budapest_character_online_date": {
+    "file": "assets/illustrations/budapest-character-online-date-woman.png",
+    "placement": "portrait-right",
+    "alt": "A privacy-safe character portrait for the later online-date memory",
+    "caption": "Space existed; a complete shared future did not automatically follow."
+  },
+  "budapest_character_commitment": {
+    "file": "assets/illustrations/budapest-character-commitment-woman.png",
+    "placement": "portrait-right",
+    "alt": "A privacy-safe character portrait for an unfinished possibility",
+    "caption": "Sometimes the Founder was the person who stepped back."
+  },
+  "budapest_character_former_colleague": {
+    "file": "assets/illustrations/budapest-character-former-colleague.png",
+    "placement": "portrait-right",
+    "alt": "A privacy-safe character portrait for the former-colleague memory",
+    "caption": "Speed and incomplete context moved in both directions."
   },
   "london_house_montage": {
     "file": "assets/illustrations/london-house-residents-montage.png",

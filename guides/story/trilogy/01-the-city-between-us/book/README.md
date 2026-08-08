@@ -131,10 +131,10 @@ the layout closes cleanly without an empty placeholder.
 The future illustrated edition supports both:
 
 - wide character montages for the London house, global/local memories, the
-  three pre-London Budapest memories, balanced six-person candidate group and
+  five privacy-safe Budapest relationship memories, balanced six-person candidate group and
   the first shared event;
-- individual portrait grids for the five Budapest women, selected London
-  residents and the six-person candidate group, plus a narrow Founder portrait.
+- individual text-wrapped portraits for the Founder and five Budapest women,
+  plus selected London-resident and six-person portrait sets.
 
 Generate each montage and its separate portraits from the same locked character
 references. Do not invent a montage first and then ask another model to guess
@@ -149,6 +149,11 @@ forties and fifties without excluding adults in their twenties or sixties.
 The filenames in `illustrations.json` are the asset contract. Keep them stable
 after character approval so the book can be rebuilt without editing the
 manuscript or layout code.
+
+The exact identity-to-file mapping is in
+[`../assets/characters/CHARACTER_MAP.md`](../assets/characters/CHARACTER_MAP.md),
+and the copy-paste book prompts are in
+[`../prompts/book-character-illustrations.txt`](../prompts/book-character-illustrations.txt).
 
 ## Public boundary
 

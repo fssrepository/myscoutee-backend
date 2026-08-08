@@ -1,17 +1,19 @@
 # Part II character map
 
-This map is the visual identity contract for every checkpoint and generated
-motion interval in **The System Between Us**. The canonical visual reference is
-[part-ii-character-continuity-board.png](part-ii-character-continuity-board.png).
-The board was generated from Part I `CP22.png`; the rust-scarf man at its far
-left is the exact Founder identity.
+This map is the role and continuity contract for every checkpoint and generated
+motion interval in **The System Between Us**. The current
+[part-ii-character-continuity-board.png](part-ii-character-continuity-board.png)
+is a provisional review board generated from the rough Part I `CP22.png`. It is
+not the final identity source. Once Part I characters are approved, its
+`[FOUNDER_REF]` replaces the provisional rust-scarf crop here and remains exact
+across both parts.
 
 The board is a production reference, not evidence and not a portrait of any
 private or public person other than the fictionalized Founder continuity.
 
 | Board position | Token | Stable identity and props | Checkpoint use |
 | --- | --- | --- | --- |
-| 1, far left | `[FOUNDER_REF]` | Part I face; navy field coat; charcoal knit; muted rust scarf; cognac notebook; calm dry humour | CP00–CP18 and CP22 where human scale remains visible |
+| 1, far left | `[FOUNDER_REF]` | Exact approved Part I face; navy field coat; charcoal knit; muted rust scarf; cognac notebook; calm dry humour. Current board crop is provisional only. | CP00–CP18 and CP22 where human scale remains visible |
 | 2 | `[ACCOUNTANT_REF]` | overloaded but competent adult; neutral knit and shirt; paper/calculator desk; no business brand | CP04–CP06 only |
 | 3 | `[TAX_OFFICER_REF]` | ordinary administrative professional; pale shirt; partial monitor; no insignia | CP04–CP10 only |
 | 4 | `[OFFICER_REF]` | restrained contemporary police role; dark practical clothing; no weapon emphasis or readable insignia | CP12–CP14 only |
@@ -28,6 +30,8 @@ private or public person other than the fictionalized Founder continuity.
 ## Identity rules
 
 - Never swap a board identity for a more dramatic generated face.
+- Never promote the rough CP22 Founder placeholder into the final Part I/II
+  identity. Replace it with the exact approved Part I `[FOUNDER_REF]` first.
 - Age the Founder only through subtle fatigue from 2021 to 2026; do not change
   facial proportions, hairline, coat, scarf or notebook.
 - A smile or softened expression is a human reaction, never proof of agreement,

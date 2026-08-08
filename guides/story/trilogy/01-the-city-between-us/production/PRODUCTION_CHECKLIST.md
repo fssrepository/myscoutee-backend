@@ -133,6 +133,8 @@ continuity and technical faults before an expensive final render.
 
 ## E. Character and visual continuity
 
+- [ ] `assets/characters/CHARACTER_MAP.md` is approved before any book portrait,
+  checkpoint or motion generation.
 - [ ] The Founder's face, age and proportions remain stable.
 - [ ] Navy coat, charcoal knit, rust scarf and cognac notebook change only when
   story logic requires it.
@@ -140,6 +142,8 @@ continuity and technical faults before an expensive final render.
 - [ ] Dance Student, Dance Partner and the room remain continuous.
 - [ ] The first group contains the same six adults: exactly three women and
   three men.
+- [ ] Part I book montages and individual portraits reuse the same approved
+  Founder, B01–B05, H01–H12 and G01–G06 identities; no book-only substitutes.
 - [ ] Every group member has a distinct face, age, body, clothing, temperament
   and expectation. Cast reflects plausible reasons to use the product rather
   than an age quota: the current working picture may lean toward the thirties,

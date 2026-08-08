@@ -97,13 +97,15 @@ separate editable text in post.
    sufficient for timing.
 3. Place the selected take against a `03:00.000` scene-hold animatic.
 4. Use the real durations in
-   [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv), not a uniform
-   three-second or eight-second slideshow.
-5. Use one still per Sxx scene and at most a restrained 1–2% pan or push.
+   [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv).
+5. For every intended eight-second generator interval, use its exact first CP
+   for four seconds and exact last CP for four seconds. CP23 remains a separate
+   four-second deterministic end plate. Do not create intermediate slideshow
+   images or simulated pseudo-motion.
 6. Revise words or scene duration before buying motion generations.
 
-The existing three-second slideshow remains a caption and checkpoint reference;
-it is not the primary timing master.
+The endpoint-only `03:00.000` animatic is the review master. The superseded
+three-second slideshow and its generated intermediate frames are not retained.
 
 ## 6. Character benchmark before video
 

@@ -2,6 +2,10 @@
 
 These are provisional review assets, not locked character references.
 
+The current Founder study derives from a rough Part I checkpoint. Replace it
+with a print crop of the exact approved Part I `[FOUNDER_REF]` before either book
+is visually locked; do not let Part II establish a competing Founder identity.
+
 The original generated `*.png` files retain their complete canvases. Their
 uniform brown side fields are part of those canvases rather than part of the
 book layout. The matching `*-portrait.png` files are mechanically trimmed print

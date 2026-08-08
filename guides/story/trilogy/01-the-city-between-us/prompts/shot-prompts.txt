@@ -224,8 +224,9 @@ may lean toward the thirties, forties and fifties but can naturally include an
 adult in their twenties or sixties. Show them
 separately because they have not met yet. Give each one a
 different restrained icon-only thought bubble: book, shared meal, tabletop game,
-route, music or sketching. Keep [FOUNDER_REF], [MAYA_REF] and the four supporting
-adults visible as individual strangers rather than nodes. One shared activity
+route, music or sketching. Keep [FOUNDER_REF], [MAYA_REF],
+[SKETCH_WOMAN_REF], [CUP_WOMAN_REF], [GAME_MAN_REF] and [ROUTE_MAN_REF] visible
+as the exact approved individual strangers rather than nodes. One shared activity
 and several possible conversations should visually replace the pressure of one
 all-or-nothing romantic pairing; this is design intent, not a success claim. One
 gentle 40 mm overhead-to-eye-level tilt. Amber

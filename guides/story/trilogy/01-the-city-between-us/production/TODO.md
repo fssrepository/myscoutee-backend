@@ -69,7 +69,13 @@ the Founder explicitly approves generation.
 
 ## 3. Deferred until explicit Founder approval
 
+- [x] Define the Part I character map and book-illustration prompt contract
+  without generating images.
+- [ ] Founder approves `assets/characters/CHARACTER_MAP.md` and
+  `prompts/book-character-illustrations.txt`.
 - [ ] Generate or revise Founder and supporting-character identity sheets.
+- [ ] Generate Part I book portraits and scene montages from the same locked
+  identities used by the checkpoint and motion prompts.
 - [ ] Run identical character/model benchmark prompts in Codex, Flow, OpenArt
   and any selected video platform.
 - [ ] Generate or revise CP00–CP23 reference frames from the approved prompts.
