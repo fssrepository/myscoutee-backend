@@ -43,7 +43,7 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Sulyok asks Constitutional Court; 7 of 15 recuse; no quorum | 23 | S22 | Recusal from one case, not departure from office. |
 | Four over-seventy judges scheduled to leave 1 September | 24 / notes | post text only if still current | Separate from seven recusals. |
 | Interim President and no invented successor | 25 | optional S22 post card | Recheck immediately before release. |
-| President is expected to express national unity while the Founder considers permanent departure and possible renunciation of Hungarian citizenship | 25 | possible S22/CP22 endpoint after Founder approves the book | Present thought only: no completed act, destroyed passport, invented destination, legal advice or implication for the pending case. Do not add another four-second or eight-second interval. |
+| President is expected to express national unity while the Founder considers permanent departure and possible renunciation of Hungarian citizenship | 25 | Book-only late context; deliberately omitted from the locked S22/CP22 film endpoint | Present thought only: no completed act, destroyed passport, invented destination, legal advice or implication for the pending case. S22 already carries the constitutional thresholds and Part III bridge; do not overload it or add another interval. |
 | MyScoutee returns as design discipline | 26, 28 | E01 | Product cannot repair court/tax authority; exact logo only in post. |
 | Part III owns hearing outcome and long-term consequence | 28 / notes | CP22/E01 | End on open line; no verdict or triumph. |
 

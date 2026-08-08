@@ -1,8 +1,8 @@
 # Part II production
 
-Production remains paused. The current package prepares the English book,
-three-minute script, checkpoint storyboard and Flow/OpenArt prompts without
-generating media.
+The English book, three-minute script, checkpoint storyboard and Flow/OpenArt
+prompts are synchronized for the frame-preparation phase. Motion, slideshow and
+audio production remain paused until the exact 9:16 checkpoints are approved.
 
 - [TODO.md](TODO.md) is the ordered work and publication gate.
 - [STORY_AND_PROMPT_COVERAGE.md](STORY_AND_PROMPT_COVERAGE.md) keeps the book,
@@ -14,6 +14,6 @@ generating media.
 The first visual review after Founder approval is an endpoint-only slideshow:
 one complete eight-second block on every exact 9:16 checkpoint, with each next
 checkpoint beginning at 00:08, 00:16 and so on. Adjacent CPs remain the exact
-first and last frames of the later motion interval; the still-only review is
-exact last checkpoint. It creates no intermediate images and therefore previews
-the same endpoints later used by the video model.
+first and last frames of the later motion interval. The still-only review
+creates no intermediate images and therefore previews the same endpoints later
+used by the video model.

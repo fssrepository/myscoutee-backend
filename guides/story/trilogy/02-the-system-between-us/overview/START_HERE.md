@@ -1,8 +1,9 @@
 # Start here — Part II review route
 
-This package is deliberately stopped before image, voice, music or video
-generation. The current objective is to make the book, evidence chronology and
-three-minute film prompt agree before spending credits.
+The book, evidence chronology, three-minute film and generation prompts are now
+synchronized for frame preparation. The next objective is to replace the rough
+checkpoint studies with approved exact 9:16 endpoints before any slideshow,
+voice, music or motion-video generation.
 
 ## Current deliverables
 
@@ -58,11 +59,10 @@ Every scene must identify which layer it belongs to:
 
 The film may compress time but may not merge those layers into one claim.
 
-## Production hold
+## Production boundary
 
-Do not yet:
+The Founder authorized the frame-preparation phase on 8 August 2026. Do not yet:
 
-- generate character sheets or scene images;
 - assemble the slideshow;
 - upload private audio or primary legal documents to a cloud model;
 - generate Flow/OpenArt clips;
@@ -70,5 +70,7 @@ Do not yet:
 - imply an acquittal, conviction, clinical conclusion or final political result
   that has not occurred.
 
-The planned visual continuity is already documented so no disposable images are
-needed while the text is still changing.
+Generate only the final-candidate checkpoint images from the locked role and
+location descriptions. Do not create disposable midpoints or book-only
+substitutes. Publication still requires the separate factual, privacy, legal and
+current-office review recorded in the TODO.

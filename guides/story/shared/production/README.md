@@ -3,7 +3,9 @@
 - [`planning/`](planning/README.md): multi-film cost, subscription, credit and model
   decisions;
 - [`workflows/`](workflows/README.md): platform operating playbooks for Flow, OpenArt
-  and Higgsfield.
+  and Higgsfield;
+- [`handoff/CURRENT.md`](handoff/CURRENT.md): authoritative Parts I–II resume
+  point for the exact 9:16 checkpoint-frame phase.
 
-Shot manifests, part checklists and active handoffs stay inside the owning
-part. The shared playbooks may point to Part I assets as worked examples.
+Shot manifests and detailed checklists stay inside the owning part. The shared
+handoff owns only the cross-part phase boundary and routes back to those files.

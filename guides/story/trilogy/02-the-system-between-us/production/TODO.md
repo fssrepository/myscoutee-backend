@@ -1,6 +1,7 @@
 # Narrative-first TODO
 
-Status: **book/prompt audit and generation pass in progress**.
+Status: **book/prompt synchronization complete for frame preparation; editable
+book review and pre-publication source checks remain open**.
 
 ## 1. Current review pass
 
@@ -31,14 +32,16 @@ Status: **book/prompt audit and generation pass in progress**.
   literary compression in a dedicated source ledger.
 - [x] Add the apartment, belongings and foreign-earned-savings thread without
   claiming that confiscation or a final financial penalty has been ordered.
-- [ ] Founder reads the whole English book and marks factual, emotional,
-  privacy and pacing corrections.
-- [ ] Apply all Founder corrections across book, chronology, film and prompts;
-  the current pass is synchronized but review remains open.
-- [ ] After the Founder approves Chapter 25, decide whether the national-unity
-  versus possible citizenship-renunciation image replaces part of the current
-  S22/CP22 endpoint. Keep the chain at twenty-two eight-second intervals; do not
-  create an extra four-second or disposable midpoint frame.
+- [x] Apply the current Founder corrections across book, chronology, film and
+  prompts and receive authorization to move next to frame preparation on
+  8 August 2026.
+- [ ] Founder performs a final cover-to-cover factual, privacy and pacing read
+  before publication; frame preparation does not turn the review PDF into a
+  released legal or historical edition.
+- [x] Keep the national-unity versus possible citizenship-renunciation thought
+  in Chapter 25 and the coverage ledger rather than overloading S22/CP22. The
+  current film ending retains the two constitutional thresholds and Part III
+  bridge. No extra four-second or disposable midpoint frame is created.
 - [x] Build a clearly marked, editable review PDF in the Part I book style for
   the Founder to read; do not hash, lock or place it in `published/`.
 
@@ -82,9 +85,10 @@ Status: **book/prompt audit and generation pass in progress**.
   daily abdominal anti-thrombosis routine, months of stored food and the actual
   close incision photograph.
 - [ ] Approve the exact Part I Founder continuity reference and lossless CP00.
-- [ ] Approve privacy-safe accountant, tax officer, police officer, female
+- [x] Lock the privacy-safe accountant, tax officer, police officer, female
   fingerprinting officer, two distinct forensic experts, judge, court-appointed
-  defence counsel, probation officer and London-housemate references.
+  defence counsel, probation officer and London-housemate reference board for
+  the frame-preparation pass.
 - [ ] Generate or regenerate CP01–CP22 only after the book and prompts are
   approved.
 - [ ] Build the checkpoint-only slideshow: every exact 9:16 CP remains visible

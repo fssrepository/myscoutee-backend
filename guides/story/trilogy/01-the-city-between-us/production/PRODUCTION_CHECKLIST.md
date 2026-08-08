@@ -5,12 +5,14 @@ continuity and technical faults before an expensive final render.
 
 ## Generation approval gate
 
-- [ ] Follow `TODO.md`; generation is currently paused by the Founder.
-- [ ] Synchronize the English public book, research boundaries and every prompt.
-- [ ] Rebuild the PDF and receive the Founder's complete factual, privacy and
-  pacing review.
-- [ ] Record explicit Founder approval before any character image, checkpoint,
-  slideshow, model test, motion video, narration or music generation.
+- [x] Follow `TODO.md`; the book, illustration registry and prompt baseline are
+  synchronized for frame preparation.
+- [x] Synchronize the English public book, research boundaries and every prompt.
+- [x] Rebuild and visually inspect the editable illustrated PDF without changing
+  the hashed published v1.0.0 artifact.
+- [x] Record Founder authorization on 8 August 2026 to proceed with exact 9:16
+  checkpoint preparation. Slideshow, model-test motion, narration and music
+  remain later gates.
 
 ## A. Story and personal facts
 

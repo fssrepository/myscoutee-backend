@@ -1,7 +1,8 @@
 # Part II checkpoint status
 
-Generation is paused until the English book, narration, storyboard and prompt
-pack have completed factual review.
+The book, narration, storyboard and prompt pack are synchronized for the
+frame-preparation pass. Existing images remain provisional until they are
+replaced or explicitly approved against the current scene contract.
 
 - `CP00.png` is the lossless Part I handoff and remains the canonical starting
   frame.
