@@ -2825,9 +2825,9 @@
         "title": "Hotel Courtesy Minibus",
         "subtitle": "4 reserved seats + high roof + hotel loop",
         "details": "Small courtesy bus assigned to a four-person late-arrival group.",
-        "visual": "a small unbranded high-roof courtesy minibus waiting beneath a hotel entrance canopy at night"
+        "visual": "a small unbranded high-roof courtesy minibus waiting beneath a solid masonry hotel porte-cochere built into the entrance at night"
       },
-      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small unbranded high-roof courtesy minibus waiting beneath a hotel entrance canopy at night.\nSeed asset: \"Hotel Courtesy Minibus\" — 4 reserved seats + high roof + hotel loop. Small courtesy bus assigned to a four-person late-arrival group.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 039 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
+      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small unbranded high-roof courtesy minibus waiting beneath a solid masonry hotel porte-cochere built into the entrance at night.\nSeed asset: \"Hotel Courtesy Minibus\" — 4 reserved seats + high roof + hotel loop. Small courtesy bus assigned to a four-person late-arrival group.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 039 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
         "c136079d46f9e4ee2c8f325c",
         "a3664b5165b094595c115193",
@@ -3003,11 +3003,11 @@
         "type": "Transport",
         "category": "Passenger Boat",
         "title": "Waterfront Passenger Launch",
-        "subtitle": "4 passenger seats + covered cockpit + life jackets",
-        "details": "Small licensed motor launch for a short sheltered-water transfer.",
-        "visual": "a small four-passenger motor launch with covered cockpit, life jackets and calm waterfront terminal behind it"
+        "subtitle": "4 passenger seats + rigid cockpit + life jackets",
+        "details": "Small licensed motor launch with an enclosed helm for a short sheltered-water transfer.",
+        "visual": "a small four-passenger motor launch with a rigid enclosed cockpit, life jackets and a calm waterfront terminal behind it"
       },
-      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small four-passenger motor launch with covered cockpit, life jackets and calm waterfront terminal behind it.\nSeed asset: \"Waterfront Passenger Launch\" — 4 passenger seats + covered cockpit + life jackets. Small licensed motor launch for a short sheltered-water transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 043 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
+      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of a small four-passenger motor launch with a rigid enclosed cockpit, life jackets and a calm waterfront terminal behind it.\nSeed asset: \"Waterfront Passenger Launch\" — 4 passenger seats + rigid cockpit + life jackets. Small licensed motor launch with an enclosed helm for a short sheltered-water transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 043 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, warm late-afternoon light with natural real-world texture; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
         "fc17844f494d81c7796a2c86",
         "7552047f4771468fed3bea96",
@@ -3019,28 +3019,28 @@
           "assetId": "fc17844f494d81c7796a2c86",
           "ownerUserId": "e76d63199eff33a6945cb797",
           "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + covered cockpit + life jackets",
+          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
           "category": "Passenger Boat"
         },
         {
           "assetId": "7552047f4771468fed3bea96",
           "ownerUserId": "4a008502646a200488911f45",
           "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + covered cockpit + life jackets",
+          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
           "category": "Passenger Boat"
         },
         {
           "assetId": "4ecb12ab88646a6de952328a",
           "ownerUserId": "9184901a15076d32ea8b626f",
           "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + covered cockpit + life jackets",
+          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
           "category": "Passenger Boat"
         },
         {
           "assetId": "b25dee76250d78b0057e8c69",
           "ownerUserId": "d04cd419e735549e3f312977",
           "title": "Waterfront Passenger Launch",
-          "subtitle": "4 passenger seats + covered cockpit + life jackets",
+          "subtitle": "4 passenger seats + rigid cockpit + life jackets",
           "category": "Passenger Boat"
         }
       ]
@@ -3142,9 +3142,9 @@
         "title": "Station Pickup Wagon",
         "subtitle": "4 seats + long cargo floor + rail connection",
         "details": "Unbranded estate wagon for a daytime station pickup.",
-        "visual": "an unbranded long-roof station wagon beneath a contemporary railway-station canopy in daylight"
+        "visual": "an unbranded long-roof station wagon beneath a solid steel-and-glass railway-station overhang in daylight"
       },
-      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded long-roof station wagon beneath a contemporary railway-station canopy in daylight.\nSeed asset: \"Station Pickup Wagon\" — 4 seats + long cargo floor + rail connection. Unbranded estate wagon for a daytime station pickup.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 046 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
+      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of an unbranded long-roof station wagon beneath a solid steel-and-glass railway-station overhang in daylight.\nSeed asset: \"Station Pickup Wagon\" — 4 seats + long cargo floor + rail connection. Unbranded estate wagon for a daytime station pickup.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 046 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, bright shade with subtle environmental context and realistic wear; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
         "ca4311d7dd571b2ee4d7fe14",
         "7d3224f9ec5f7cac9c672e03",
@@ -3199,11 +3199,11 @@
         "type": "Transport",
         "category": "Pedicab",
         "title": "Historic District Pedicab Pair",
-        "subtitle": "4 total seats + two covered cycle taxis",
-        "details": "Two coordinated pedal-powered taxis for a short old-town transfer.",
-        "visual": "two covered cycle pedicabs waiting together on a car-free cobbled old-town square"
+        "subtitle": "4 total seats + two open-air cycle taxis",
+        "details": "Two coordinated roofless pedal-powered taxis for a short old-town transfer.",
+        "visual": "two roofless open-air cycle pedicabs with passenger benches waiting together on a car-free cobbled old-town square"
       },
-      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of two covered cycle pedicabs waiting together on a car-free cobbled old-town square.\nSeed asset: \"Historic District Pedicab Pair\" — 4 total seats + two covered cycle taxis. Two coordinated pedal-powered taxis for a short old-town transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 047 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
+      "prompt": "Use case: product-mockup\nAsset type: mobile-first asset card cover for a social event application\nPrimary request: create a believable photorealistic image of two roofless open-air cycle pedicabs with passenger benches waiting together on a car-free cobbled old-town square.\nSeed asset: \"Historic District Pedicab Pair\" — 4 total seats + two open-air cycle taxis. Two coordinated roofless pedal-powered taxis for a short old-town transfer.\nScene/backdrop: follow this slot-specific environment exactly; visual identity 047 must have a clearly different setting, object arrangement and silhouette from neighboring pool images.\nComposition/framing: landscape 16:9, calm early-evening light with a balanced three-quarter composition; keep the main asset centered and recognizable even as a small thumbnail.\nLighting/mood: natural, friendly, practical and not luxury-advertising polished.\nConstraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, badges, license plates, labels, captions, UI, text or watermark; every equipment surface must be blank and unmarked, and every image corner must be clear; no protected medical emblems such as the Red Cross, Red Crescent or Star of Life; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.\nHard exclusion: no tent, fabric canopy, tarp shelter, bivouac, glamping structure or tent-like object anywhere in the foreground or background.\nAvoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.",
       "mongoAssetIds": [
         "ed89c965071340ea7b072e00",
         "73e996e26e42311c4efbe92f",
@@ -3216,35 +3216,35 @@
           "assetId": "ed89c965071340ea7b072e00",
           "ownerUserId": "af70e41dbe826cbd7d8b3500",
           "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two covered cycle taxis",
+          "subtitle": "4 total seats + two open-air cycle taxis",
           "category": "Pedicab"
         },
         {
           "assetId": "73e996e26e42311c4efbe92f",
           "ownerUserId": "25f4744ead36d038064d62c3",
           "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two covered cycle taxis",
+          "subtitle": "4 total seats + two open-air cycle taxis",
           "category": "Pedicab"
         },
         {
           "assetId": "7a83eaef9497d84818928cdb",
           "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
           "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two covered cycle taxis",
+          "subtitle": "4 total seats + two open-air cycle taxis",
           "category": "Pedicab"
         },
         {
           "assetId": "83d78100cf25ca1b3363c705",
           "ownerUserId": "0b8e5df4ec85d858c304a350",
           "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two covered cycle taxis",
+          "subtitle": "4 total seats + two open-air cycle taxis",
           "category": "Pedicab"
         },
         {
           "assetId": "1a0edec4d78c1eea281d6942",
           "ownerUserId": "fcad6954169063f106a7a240",
           "title": "Historic District Pedicab Pair",
-          "subtitle": "4 total seats + two covered cycle taxis",
+          "subtitle": "4 total seats + two open-air cycle taxis",
           "category": "Pedicab"
         }
       ]

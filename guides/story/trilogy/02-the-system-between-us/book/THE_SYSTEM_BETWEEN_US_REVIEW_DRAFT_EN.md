@@ -516,6 +516,27 @@ My reserves were not an unexplained alternative to a normal life. They were the
 protective wall built because normal routes had repeatedly stopped feeling
 safe.
 
+I was asking for mercy from a presidency whose relationship with mercy had
+already broken in public.
+
+In February 2024, the disclosure of a presidential pardon connected to the
+concealment of abuse in a children's home ended Katalin Novák's presidency.
+Judit Varga, the former justice minister whose countersignature had made the
+decision effective, withdrew from public life. Tamás Sulyok inherited an office
+in which clemency had become politically radioactive. He promised greater
+transparency and described mercy as something he could imagine only in
+exceptional circumstances.
+
+The later figures made *exceptional* almost literal. In 2025, four of 689
+decided applications received clemency. In the first half of 2026, all 314
+decisions were refusals. My own refusal was dated 30 April, inside that unbroken
+2026 sequence.
+
+Those numbers do not prove why my application was refused. They do show the
+institutional climate into which it arrived: after one pardon had ended a
+presidency and the public career of a former justice minister, almost every
+later applicant encountered a closed door.
+
 The clemency process later carried the same questions into my home. A probation
 officer rang the bell without an appointment. The flat had not been staged for
 inspection. It was puritan, untidy and unclean that day. I own no car, usually
@@ -957,9 +978,11 @@ Hungary's constitutional order was visibly between states.
 Venice was not Sulyok's only route.
 
 On 11 June, he turned to the Constitutional Court for an interpretation of the
-limits around constitutional amendment and removal. The Court had fifteen
-members. Seven declared that they were personally and directly affected and
-excluded themselves from the matter.
+limits around constitutional amendment and removal. The request returned him
+to the institution he had joined as a judge in 2014 and led from 2016 until he
+became President in 2024. The Court had fifteen members. Seven declared that
+they were personally and directly affected and excluded themselves from the
+matter.
 
 The full sitting needed ten.
 
@@ -993,7 +1016,7 @@ Different cases had reached the same architectural fact: having a
 constitutional question does not guarantee a room in which anyone will answer
 it.
 
-## 24. The List of Offices
+## 24. The Convoy and the List of Offices
 
 After the election, the new Prime Minister publicly called for the departure of
 officials appointed to long terms across the old system. Reporting named the
@@ -1004,6 +1027,36 @@ and Media Authority.
 The list was dramatic because it described how power can survive an election.
 A government may leave while office-holders, boards, rules, foundations and
 institutional habits remain.
+
+One affair gave that transfer of power a physical image.
+
+On 5 March, two armoured cash-in-transit vehicles travelling from Austria
+toward Ukraine were stopped near Budapest. Inside were forty million dollars,
+thirty-five million euros and nine kilograms of gold. Seven Ukrainian citizens
+were taken into custody and later expelled. The numbers made instant political
+cinema, although the tax authority's own first account said that much larger
+total quantities had already travelled through Hungary that year.
+
+After the election, the story turned back toward the institutions that had
+handled it. The shipment was returned and the expulsions were withdrawn. On 8
+June, the head of the Central Investigative Chief Prosecutor's Office submitted
+his resignation, expressly citing professional disagreement with the
+supervising department of the Prosecutor General's Office over the convoy
+investigation. The new Prime Minister ordered reviews across the tax authority,
+the counter-terrorism centre and the services involved.
+
+On 9 July, the tax authority said that its domestic investigation had found no
+indication of a crime, although it was still waiting for an Austrian response
+before formally closing the file. Its separate internal review of whether the
+authorities had acted lawfully and followed their own procedures remained open.
+Two senior tax-investigation managers later lost their leadership appointments;
+the authority confirmed the personnel decisions but did not publicly confirm
+that the convoy was their cause.
+
+On 22 July, the Prosecutor General submitted his resignation with effect from
+25 August. His formal explanation referred to the interests of the prosecution
+service. Public pressure around the convoy formed part of the surrounding
+story, but the resignation did not by itself decide who had acted unlawfully.
 
 It was also dangerous for the opposite reason. If replacing a government means
 that every inconvenient office-holder can be removed through the same speed and
@@ -1032,6 +1085,16 @@ a new President had not yet been elected.
 
 The empty chair was not a verdict in my case. It belonged to a country that had
 decided continuity was no longer enough.
+
+One constitutional task of the President is to express the unity of the
+nation. While Parliament prepared to choose a new person for that chair, I was
+moving in the opposite emotional direction. I had begun to consider whether
+leaving Hungary for good might also mean renouncing my Hungarian citizenship.
+
+I had returned from London because I wanted to live in my own country. The fact
+that I could now imagine giving up the legal bond to it measured the distance
+between national unity as an office and belonging as a lived experience. I had
+not completed that act. The thought itself was the measure.
 
 Whether the replacement deserves trust depends on how it treats the same
 problems when speed, power and inconvenience become its own.
@@ -1301,6 +1364,19 @@ breach in this case.
 
 ## Clemency social inquiry
 
+The Founder's application reached a clemency institution already transformed
+by the 2024 presidential-pardon scandal. Katalin Novák resigned as President
+after the pardon became public. Judit Varga, the former justice minister whose
+countersignature had made the decision effective, withdrew from public life.
+Tamás Sulyok subsequently described clemency as an exceptional power and
+promised greater transparency.
+
+Official presidential statistics record four grants among 689 decided cases in
+2025 and no grants among 314 decided cases in the first half of 2026. The
+Founder's private record dates his refusal to 30 April 2026. The figures
+establish the rarity of clemency in this period; they do not establish the
+unrecorded reasoning behind an individual decision.
+
 Hungarian procedural rules identify the person preparing a social inquiry for
 an ordinary procedural-clemency request as a probation officer. The inquiry may
 describe personal, family, health, housing, employment, income and property
@@ -1309,6 +1385,16 @@ officer does not decide the request or sentence.
 
 Official sources:
 
+- Sándor Palace, presidential interview on the clemency practice and the
+  constitutional role of expressing national unity:
+  https://www.sandorpalota.hu/hu/tarsadalmi-beke-megteremteseert-dolgozom-mandiner-interjuja-dr-sulyok-tamas-koztarsasagi-elnokkel
+- Sándor Palace, clemency statistics for 2025:
+  https://www.sandorpalota.hu/sites/default/files/2026-01/Kegyelmi%20statisztika_2025.pdf
+- Sándor Palace, clemency statistics for the first half of 2026:
+  https://www.sandorpalota.hu/sites/default/files/2026-06/Kegyelmi%20statisztika%202026.01.01-2026.06.30.pdf
+- Euronews, contemporary account of the Novák resignation and Varga
+  countersignature:
+  https://hu.euronews.com/2024/02/10/novak-varga-pedofil-kegyelem-lemond-orban-ellenzek
 - National Legislation Database, explanatory material for Decree 12/2022:
   https://njt.hu/jogszabaly/2022-12-K3-06
 - National Legislation Database, probation-service rules:
@@ -1384,9 +1470,47 @@ separate future departure of four over-seventy judges are distinct events.
 
 Sources:
 
+- https://alkotmanybirosag.hu/a-jelenlegi-tagok/dr-sulyok-tamas/
 - https://telex.hu/belfold/2026/06/19/alkotmanybirosag-sulyok-tamas-kizaras-eltavolitas
+- https://telex.hu/belfold/2026/06/19/alkotmanybirosag-polt-peter-sulyok-tamas
 - https://hvg.hu/itthon/20260619_sulyok-tamas-beadvany-alkotmanybirosag-ules-alkotmanybiro-kizaras
 - https://cms.law/en/hun/legal-updates/hungary-s-parliament-passes-amendment-of-the-constitution
+
+## The Ukrainian cash-in-transit affair and institutional departures
+
+The convoy sequence joins a pre-election enforcement operation to later
+institutional review, but the public record does not support one undifferentiated
+claim that every departure had the same cause.
+
+The tax authority's 6 March statement records the two vehicles, seven Ukrainian
+citizens, forty million dollars, thirty-five million euros and nine kilograms of
+gold. It also records that substantially larger aggregate quantities had already
+crossed Hungary in 2026. On 9 July, the authority said its domestic inquiry had
+found no indication of a crime and was suspended pending an Austrian response;
+an internal legality and procedure review remained in progress.
+
+The head of the Central Investigative Chief Prosecutor's Office submitted his
+resignation on 8 June and expressly cited professional disagreements over the
+convoy case. The Prime Minister later ordered reviews of the authorities and
+services involved. The tax authority confirmed that two senior investigative
+leaders lost their appointments on 14 July, while declining to state that the
+convoy caused those personnel decisions.
+
+The Prosecutor General submitted his resignation on 22 July and requested that
+his mandate end on 25 August. His formal explanation invoked the interests of
+the prosecution service. Reporting and political statements placed the convoy
+inside the pressure surrounding his departure, but that context is not treated
+as a proved exclusive cause.
+
+Sources:
+
+- https://nav.gov.hu/print/sajtoszoba/hirek/A_Nemzeti_Ado-_es_Vamhivatal_penzmosas_buncselekmeny_gyanujaval_folytat_buntetoeljarast
+- https://nav.gov.hu/print/sajtoszoba/hirek/A_NAV_felfuggesztette_a_nyomozast_az_ukran_penzszallito_ugyeben
+- https://telex.hu/english/2026/06/03/it-was-orban-who-ordered-the-raid-on-the-ukrainian-cash-transport
+- https://telex.hu/belfold/2026/06/11/lemondott-a-kozponti-nyomozo-fougyeszseg-vezetoje
+- https://444.hu/2026/06/17/magyar-peter-azonnali-vizsgalatot-rendelt-el-aranykonvojugyben-a-nav-nal-a-tek-nel-es-az-erintett-szolgalatoknal
+- https://telex.hu/belfold/2026/07/16/nav-vezeto-levaltas-aranykonvoj-ukran-penszallito-eljaras
+- https://telex.hu/belfold/2026/07/22/lemondott-a-legfobb-ugyesz
 
 ## The Venice Commission
 

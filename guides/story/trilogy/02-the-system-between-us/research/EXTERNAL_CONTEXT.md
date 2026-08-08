@@ -119,6 +119,101 @@ The constitutional transition is unfinished. Part II may show the old mandate
 ending and an interim office, but it may not invent the identity or programme of
 a President who has not yet been elected.
 
+## The 2024 pardon crisis and the later clemency practice
+
+The Founder's clemency request did not enter a politically neutral institution.
+In February 2024, Katalin Novák resigned as President after the disclosure of a
+pardon connected to the concealment of abuse in a children's home. Judit Varga,
+the former justice minister whose countersignature had made the pardon
+effective, also withdrew from public life. Varga was Péter Magyar's former wife;
+she was not the Prime Minister's wife.
+
+- https://hu.euronews.com/2024/02/10/novak-varga-pedofil-kegyelem-lemond-orban-ellenzek
+
+Tamás Sulyok inherited the presidency after that scandal. In an official
+interview he promised greater transparency, emphasized that the President's
+constitutional role includes expressing the unity of the nation, and said he
+could imagine clemency only in exceptionally rare circumstances:
+
+- https://www.sandorpalota.hu/hu/tarsadalmi-beke-megteremteseert-dolgozom-mandiner-interjuja-dr-sulyok-tamas-koztarsasagi-elnokkel
+
+Official presidential statistics record 311 decided cases and four grants in
+the first half of 2025, followed by 378 decisions and no grants in the second
+half: four grants among 689 decisions for the year. In the first half of 2026,
+all 314 decided cases were refusals:
+
+- https://www.sandorpalota.hu/sites/default/files/2026-01/Kegyelmi%20statisztika_2025.pdf
+- https://www.sandorpalota.hu/sites/default/files/2026-06/Kegyelmi%20statisztika%202026.01.01-2026.06.30.pdf
+
+Safe narrative claim: the Founder's application entered an institution whose
+relationship with clemency had been transformed by scandal and whose later
+practice left the door almost completely closed. The statistics support rarity;
+they do not prove that Sulyok rejected this individual application out of fear,
+political obedience or a failure to read it. Descriptions such as *puppet* are
+political criticism or the Founder's perception, not neutral narrator fact.
+
+The unresolved presidency also creates a personal contrast. While the office is
+constitutionally expected to express national unity, the Founder is considering
+permanent departure and the possible renunciation of Hungarian citizenship.
+That is a present memoir thought, not a completed act, legal advice or proof that
+renunciation would solve any legal or practical problem.
+
+## The Ukrainian cash-in-transit affair
+
+On 5 March 2026, Hungarian authorities stopped two armoured vehicles travelling
+from Austria toward Ukraine. The tax authority's first public account identified
+seven Ukrainian citizens, forty million US dollars, thirty-five million euros
+and nine kilograms of gold. The same statement said that much larger aggregate
+quantities had already crossed Hungary during 2026, so the existence of a large
+shipment was not by itself proof of criminal origin:
+
+- https://nav.gov.hu/print/sajtoszoba/hirek/A_Nemzeti_Ado-_es_Vamhivatal_penzmosas_buncselekmeny_gyanujaval_folytat_buntetoeljarast
+
+Later reporting based on sources involved in the operation attributed the
+decision and its timing to the highest political level and reported that an
+authorized prosecutor found the national-security case insufficiently
+substantiated. Those are attributed reporting claims rather than final judicial
+findings:
+
+- https://telex.hu/english/2026/06/03/it-was-orban-who-ordered-the-raid-on-the-ukrainian-cash-transport
+
+After the election, the property was returned and the expulsion measures were
+withdrawn. On 8 June, the head of the Central Investigative Chief Prosecutor's
+Office submitted his resignation, expressly citing professional disagreement
+with the supervising department over the convoy investigation:
+
+- https://telex.hu/belfold/2026/06/11/lemondott-a-kozponti-nyomozo-fougyeszseg-vezetoje
+
+The new Prime Minister ordered immediate reviews at the tax authority,
+counter-terrorism centre and involved services:
+
+- https://444.hu/2026/06/17/magyar-peter-azonnali-vizsgalatot-rendelt-el-aranykonvojugyben-a-nav-nal-a-tek-nel-es-az-erintett-szolgalatoknal
+
+On 9 July, the tax authority said the domestic investigation had produced no
+indication of a crime and was suspended pending an Austrian response. Its own
+full legality and procedure review remained open:
+
+- https://nav.gov.hu/print/sajtoszoba/hirek/A_NAV_felfuggesztette_a_nyomozast_az_ukran_penzszallito_ugyeben
+
+The tax authority confirmed that two senior investigative leaders lost their
+appointments with effect from 14 July, but it did not publicly confirm that the
+convoy caused those personnel decisions:
+
+- https://telex.hu/belfold/2026/07/16/nav-vezeto-levaltas-aranykonvoj-ukran-penszallito-eljaras
+
+The Prosecutor General submitted his resignation on 22 July and requested an
+effective date of 25 August. His formal explanation referred to the interests of
+the prosecution service. Political pressure and reporting connected the wider
+institutional crisis to the convoy, but the book must not present that context
+as a proved exclusive cause:
+
+- https://telex.hu/belfold/2026/07/22/lemondott-a-legfobb-ugyesz
+
+Narrative use: the affair first appears as a road operation involving money and
+gold, then turns back toward the state itself. That reversal mirrors the book's
+larger question—when does a system investigate the person, and when does it
+become capable of examining how it acted?
+
 ## The Venice Commission crossing
 
 Sulyok asked the Venice Commission to assess the constitutional conflict over
