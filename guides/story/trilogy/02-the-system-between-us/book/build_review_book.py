@@ -101,6 +101,7 @@ def stylesheet() -> str:
   main h2.context-8 { --chapter-divider: linear-gradient(90deg, #396c77, #d09a61 48%, rgba(208,154,97,.1)); }
   .review-note { font-size: 10pt; line-height: 1.42; }
   .review-note p { margin-bottom: .08in; }
+  main { overflow-wrap: anywhere; }
   .drop-cap { background-position: center 88%; background-size: .5in auto; }
 """
     return inherited + overrides
