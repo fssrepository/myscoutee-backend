@@ -144,15 +144,18 @@ The letters belong in the production manifest, not the public image.
 
 ### S09 — The help call becomes a circle · 01:04–01:12 · CP08→CP09
 
-- **Layer:** `D/M/A` pending local audio transcript.
+- **Layer:** `D/M/A`; surrounding calls survive, but the key attributed
+  exchanges are indirect evidence and are absent from the surviving audio.
 - **CP08:** unresolved return stack.
 - **CP09:** Founder on the phone at the same desk after hours; a circular call
   line returns each partial answer to the unresolved portal field.
 - **Motion:** slow 55 mm orbit no more than twenty degrees. The line circles; the
   Founder does not pace, shout or threaten.
-- **Performance:** concentration becomes audible panic, but no lip-synced quote.
-- **Sound in post:** only verified call texture after local transcription; until
-  then use phone room tone and breaths, never invented dialogue.
+- **Performance:** concentration becomes visible panic through breath and
+  micro-expression, but no lip-synced quote.
+- **Sound in post:** use designed phone room tone and breaths, never source-like
+  reconstructed dialogue. A neighbouring recording must not be made to sound
+  like the absent key call.
 - **Hazard:** do not attribute remembered remarks as exact speech.
 
 ### S10 — Words, correction, context · 01:12–01:20 · CP09→CP10
@@ -454,8 +457,8 @@ Before any checkpoint or motion generation:
 3. the Constitutional Court letter remains reconciled with the exact complaint,
    and the new justice reply is added if the Founder wants greater procedural
    precision;
-4. the thirteen private recordings are transcribed locally before any call is
-   quoted;
+4. the thirteen-file root audio set is transcribed locally before any surviving
+   call is quoted; absent key exchanges remain indirect attributed evidence;
 5. current 2026 office-holders, dates and the 16 September hearing are rechecked;
 6. CP00 is exported losslessly from Part I;
 7. only CP00–CP22 are generated—no unnecessary three-second slideshow frames;

@@ -30,12 +30,12 @@ independent verification, `C` external public context.
 | Sep–Nov | D | Returns and corrections are attempted. Evidence indicates multiple versions and rejected or erroneous entries. | Forms multiply while shared understanding falls. |
 | 5 Oct | D | Surviving audio is labelled as the accountant seeking NAV help. Transcript pending. | The accountant also needs institutional assistance. |
 | 23–24 Nov | D/M | The Founder discovers a possible status/return problem, checks records for many hours and asks NAV for help. | Panic begins with a discovered mismatch, not political activism. |
-| 24 Nov | D | Three surviving recordings are labelled as help calls; the first is remembered as the panic call. | Must be transcribed locally before quotation. |
-| 28 Nov | D/A | Further calls occur. In later filings the Founder attributes dismissive or responsibility-shifting remarks to a callback. | Use paraphrase or attributed wording only. |
+| 24 Nov | D/M | Three surviving recordings are labelled as help calls and support the surrounding help-seeking sequence. | They do not contain every decisive exchange; transcription cannot turn an absent call into direct evidence. |
+| 28 Nov | A/D-secondary | Further calls are reconstructed from later filings and surrounding records. The defence speech attributes dismissive or responsibility-shifting remarks to a callback, but the key exchange is not present in the surviving audio. | Indirect support only: paraphrase as the Founder's later account, never as recorded verbatim speech. |
 | 30 Nov | D | A return is submitted through the accountant's route, reportedly without the Founder's contemporaneous awareness and with him named as contact. | Delegated action and personal responsibility diverge. |
 | 1 Dec | D | The Founder sends a constructive system proposal about fragmented systems, credentials, delegated filings and direct notice. | Earliest clear movement from private fix to system design; do not merge it with the later document titled *Public-Interest Action*. |
 | early Sat 3 Dec | D/M | Under acute stress, he sends messages containing language later used in the criminal case. He says he corrected/clarified immediately. The prosecution and defence dispute the legal meaning. | Do not reproduce sensational wording; show cursor, correction and ambiguity. |
-| 5 Dec | D | Calls address the tax-account misunderstanding. Recordings survive; transcript pending. | Correction sequence. |
+| 5 Dec | D | Surviving calls address the tax-account misunderstanding. Transcript pending. | They support the correction sequence, not the exact content of earlier absent exchanges. |
 | 8 Dec | D | The accountant's representation is revoked. | The low-trust triangle formally breaks. |
 | 18–19 Dec | D | A NAV complaint-response document reconstructs filing errors, corrections and processing. The Founder says he first learned of some account items only then. | Essential record; exact notice routing still needs page-level audit. |
 

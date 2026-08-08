@@ -12,8 +12,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f7b9be40d648a5448d018308/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f7b9be40d648a5448d018308/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -87,8 +87,8 @@
     "city": "Portland",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-c2ef66a2e2b9f7ed8867acbe/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-c2ef66a2e2b9f7ed8867acbe/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -162,8 +162,8 @@
     "city": "Portland",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-2821aa70297d9d425044a3c1/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-2821aa70297d9d425044a3c1/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -238,8 +238,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-87794730352c5e479238d730/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-87794730352c5e479238d730/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -314,8 +314,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-2ddc36d7e1cb3673504cbfbc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-2ddc36d7e1cb3673504cbfbc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-048/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -448,8 +448,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-e542a342c4eec6fd6b328b11/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e542a342c4eec6fd6b328b11/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -549,8 +549,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-33b1562aff2a2dde0bf64af1/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-33b1562aff2a2dde0bf64af1/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -623,8 +623,8 @@
     "city": "San Diego",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-88885036aa01a07faf1f0587/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-88885036aa01a07faf1f0587/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -697,8 +697,8 @@
     "city": "San Diego",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-784eba3d7648f4624abc85da/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-784eba3d7648f4624abc85da/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -773,8 +773,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-8d3e6288bcb7c1c990db61c2/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-8d3e6288bcb7c1c990db61c2/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -849,8 +849,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-ca4311d7dd571b2ee4d7fe14/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-ca4311d7dd571b2ee4d7fe14/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-046/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -990,8 +990,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-681598ed460b7c7ddaef278e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-681598ed460b7c7ddaef278e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -1091,8 +1091,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-98ace41a8993907087124578/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-98ace41a8993907087124578/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-011/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -1165,8 +1165,8 @@
     "city": "Nashville",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-df5d7fb9f3a6a22cdd64e5eb/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-df5d7fb9f3a6a22cdd64e5eb/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-003/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -1239,8 +1239,8 @@
     "city": "Nashville",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-2d4f2b02c7e45f503195946c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-2d4f2b02c7e45f503195946c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-027/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -1315,8 +1315,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-e51be59b77bad85978bb96e3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-e51be59b77bad85978bb96e3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-019/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -1391,8 +1391,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-a679af61eda591c309b8007d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-a679af61eda591c309b8007d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-040/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -1538,8 +1538,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-1919af74908ec4a61f95fb40/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-1919af74908ec4a61f95fb40/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -1639,8 +1639,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-705a71b2cb4e12b242bca1bc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-705a71b2cb4e12b242bca1bc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-012/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -1713,8 +1713,8 @@
     "city": "Phoenix",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-11eb582dc0bcc7581ac991e7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-11eb582dc0bcc7581ac991e7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-004/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -1787,8 +1787,8 @@
     "city": "Phoenix",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-914cc7f043623c31befbc2a6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-914cc7f043623c31befbc2a6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-028/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -1863,8 +1863,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-2ea5e07724c69e43a7101510/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-2ea5e07724c69e43a7101510/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-020/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -1939,8 +1939,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-fc17844f494d81c7796a2c86/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-fc17844f494d81c7796a2c86/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-043/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -2073,8 +2073,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-102d5f6d370fa2c4beba8c14/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-102d5f6d370fa2c4beba8c14/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -2174,8 +2174,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-77ac5d0bdec19bfc72c940c4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-77ac5d0bdec19bfc72c940c4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-013/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -2248,8 +2248,8 @@
     "city": "Boston",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-51428532abd90dc1a00fd292/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-51428532abd90dc1a00fd292/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-005/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -2322,8 +2322,8 @@
     "city": "Boston",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-b46ebd3cf7ea7b6c4b18c94b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-b46ebd3cf7ea7b6c4b18c94b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-029/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -2398,8 +2398,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-62084915e1f046a669cec5ed/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-62084915e1f046a669cec5ed/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-021/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -2474,8 +2474,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-9ea23c395c80321c0298280f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-9ea23c395c80321c0298280f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-049/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -2615,8 +2615,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-e14e47d587c7b73b5c914c1c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e14e47d587c7b73b5c914c1c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -2716,8 +2716,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-a39a3cf7fb41f5b6ee4695dc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-a39a3cf7fb41f5b6ee4695dc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-014/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -2790,8 +2790,8 @@
     "city": "Miami",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-0e78d70d6528b1ad3c854ee0/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-0e78d70d6528b1ad3c854ee0/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-006/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -2864,8 +2864,8 @@
     "city": "Miami",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-83d40b410e782e443ccaa18c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-83d40b410e782e443ccaa18c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-030/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -2940,8 +2940,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-f3187504ecd5344723182e39/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-f3187504ecd5344723182e39/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-022/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -3016,8 +3016,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-ed89c965071340ea7b072e00/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-ed89c965071340ea7b072e00/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-047/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -3163,8 +3163,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-a941cf4ffcc409cd52c098ab/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-a941cf4ffcc409cd52c098ab/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -3264,8 +3264,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f26cbd1becbfe2a33ff3035c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f26cbd1becbfe2a33ff3035c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-015/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -3338,8 +3338,8 @@
     "city": "Denver",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-345b718fdf071d851e64a3c3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-345b718fdf071d851e64a3c3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-007/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -3412,8 +3412,8 @@
     "city": "Denver",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-5e623228be55c3c7b560aa65/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-5e623228be55c3c7b560aa65/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-031/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -3488,8 +3488,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-8c104bc3d29cfe82b7e0fbfc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-8c104bc3d29cfe82b7e0fbfc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-023/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -3564,8 +3564,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-72782ab8fc8635ee622b00be/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-72782ab8fc8635ee622b00be/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-041/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -3698,8 +3698,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-d5df7f84faf67d3578056e9c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-d5df7f84faf67d3578056e9c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -3799,8 +3799,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-b39ae18f956b8426aa5cd13e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-b39ae18f956b8426aa5cd13e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-016/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -3873,8 +3873,8 @@
     "city": "Chicago",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-9e0382915323b9adf7460a3a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-9e0382915323b9adf7460a3a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-008/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -3947,8 +3947,8 @@
     "city": "Chicago",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-72888a8f076939c2ea9cdca9/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-72888a8f076939c2ea9cdca9/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-032/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -4023,8 +4023,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-a714b5cffc8b33d8010abddd/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-a714b5cffc8b33d8010abddd/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-024/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -4099,8 +4099,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-d1344cc795e50601c2a3441a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-d1344cc795e50601c2a3441a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-044/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -4240,8 +4240,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-defde0b7174ed792535a362c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-defde0b7174ed792535a362c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -4341,8 +4341,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-75d01d7ede9bf4f5bac1e001/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-75d01d7ede9bf4f5bac1e001/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -4415,8 +4415,8 @@
     "city": "Seattle",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-5b0e5ed8787c7336d02d0cad/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-5b0e5ed8787c7336d02d0cad/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -4489,8 +4489,8 @@
     "city": "Seattle",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-82d86bab439fe39ed296427d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-82d86bab439fe39ed296427d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -4565,8 +4565,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-100458364c6e855a19953edf/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-100458364c6e855a19953edf/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -4641,8 +4641,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-6d0dfc06cab190e33bfb4d87/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-6d0dfc06cab190e33bfb4d87/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-050/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -4788,8 +4788,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-2d9b6cae739b82e55e097dfb/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-2d9b6cae739b82e55e097dfb/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -4889,8 +4889,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-ae4c60c35c92929e2d53d101/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-ae4c60c35c92929e2d53d101/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -4963,8 +4963,8 @@
     "city": "Austin",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f33ff1c5b4ab4886e6c890c6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f33ff1c5b4ab4886e6c890c6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -5037,8 +5037,8 @@
     "city": "Austin",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-c4372fcc9a049afc7937f402/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-c4372fcc9a049afc7937f402/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -5113,8 +5113,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-78b7facddece7e50b3cc7b6e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-78b7facddece7e50b3cc7b6e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -5189,8 +5189,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-7d3224f9ec5f7cac9c672e03/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-7d3224f9ec5f7cac9c672e03/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-046/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -5323,8 +5323,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-5ed51fe854714345c9867053/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-5ed51fe854714345c9867053/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -5424,8 +5424,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-d39c82d471edbcc627bdcb48/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-d39c82d471edbcc627bdcb48/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-011/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -5498,8 +5498,8 @@
     "city": "Portland",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-0c7c6a620d6446dd0988e6e0/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-0c7c6a620d6446dd0988e6e0/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-003/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -5572,8 +5572,8 @@
     "city": "Portland",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-bfc0d886c478d5d29cc729a4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-bfc0d886c478d5d29cc729a4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-027/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -5648,8 +5648,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-115a851fcdd68a01a6fc2649/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-115a851fcdd68a01a6fc2649/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-019/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -5724,8 +5724,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-c555bf9becc4ff47b3caeba8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-c555bf9becc4ff47b3caeba8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-042/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -5865,8 +5865,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-f688d5559328f5fd44c1a2f5/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-f688d5559328f5fd44c1a2f5/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -5966,8 +5966,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-11615a40c2fdc5e1d7424c0c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-11615a40c2fdc5e1d7424c0c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-012/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -6040,8 +6040,8 @@
     "city": "San Diego",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-080119ed623a8e6044dc29e3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-080119ed623a8e6044dc29e3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-004/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -6114,8 +6114,8 @@
     "city": "San Diego",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-a4d71d69ae8b6551004be597/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-a4d71d69ae8b6551004be597/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-028/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -6190,8 +6190,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-17cd70ddc97c5b8ebc49d218/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-17cd70ddc97c5b8ebc49d218/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-020/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -6266,8 +6266,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-91364d2cf1337e36879248a3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-91364d2cf1337e36879248a3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-045/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -6413,8 +6413,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-82e5aefb7d8072b7d5e3943f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-82e5aefb7d8072b7d5e3943f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -6514,8 +6514,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-2d86c6a3285d01ac096bd755/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-2d86c6a3285d01ac096bd755/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-013/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -6588,8 +6588,8 @@
     "city": "Nashville",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-9ef35297d6f4b90d2a540654/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-9ef35297d6f4b90d2a540654/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-005/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -6662,8 +6662,8 @@
     "city": "Nashville",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-bf370477fea1f66bdcdd84f6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-bf370477fea1f66bdcdd84f6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-029/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -6738,8 +6738,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-7678964cf8512b5f48a92411/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-7678964cf8512b5f48a92411/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-021/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -6814,8 +6814,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-471c54ac181b43eaf307dadc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-471c54ac181b43eaf307dadc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-048/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -6948,8 +6948,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-8de7bc4e7e0e7f179d8b50c9/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-8de7bc4e7e0e7f179d8b50c9/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -7049,8 +7049,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-871b167a3d07ab469365d76e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-871b167a3d07ab469365d76e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-014/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -7123,8 +7123,8 @@
     "city": "Phoenix",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-45237ded05692dea7770b422/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-45237ded05692dea7770b422/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-006/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -7197,8 +7197,8 @@
     "city": "Phoenix",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-d9b6e3506e7f35627174389e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-d9b6e3506e7f35627174389e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-030/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -7273,8 +7273,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-287f0108aaf39e4b04027d0e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-287f0108aaf39e4b04027d0e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-022/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -7349,8 +7349,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-73e996e26e42311c4efbe92f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-73e996e26e42311c4efbe92f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-047/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -7490,8 +7490,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-86498259d3b408d4763debbe/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-86498259d3b408d4763debbe/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -7591,8 +7591,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-18be6c78470d17247e2294d9/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-18be6c78470d17247e2294d9/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-015/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -7665,8 +7665,8 @@
     "city": "Boston",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-dbb67ab5cf58c35b6e27e027/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-dbb67ab5cf58c35b6e27e027/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-007/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -7739,8 +7739,8 @@
     "city": "Boston",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-17c3f925300eff67c7e394f6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-17c3f925300eff67c7e394f6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-031/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -7815,8 +7815,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-38758801caa30a672336e9f5/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-38758801caa30a672336e9f5/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-023/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -7891,8 +7891,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-90c9a84640fe9050f850101f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-90c9a84640fe9050f850101f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-040/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -8038,8 +8038,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-63152de8dc166e09ec73c70a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-63152de8dc166e09ec73c70a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -8139,8 +8139,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-4420be96abbbb3a0f755a73b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-4420be96abbbb3a0f755a73b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-016/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -8213,8 +8213,8 @@
     "city": "Miami",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-7a53e50e460c3af316c4c1f1/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-7a53e50e460c3af316c4c1f1/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-008/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -8287,8 +8287,8 @@
     "city": "Miami",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-8f42dd53af3a8653e2e879ea/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-8f42dd53af3a8653e2e879ea/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-032/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -8363,8 +8363,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-6b2ce9e74332b0ce85b81626/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-6b2ce9e74332b0ce85b81626/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-024/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -8439,8 +8439,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-7552047f4771468fed3bea96/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-7552047f4771468fed3bea96/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-043/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -8600,8 +8600,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-0570186ed1729be2658e73d9/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-0570186ed1729be2658e73d9/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -8701,8 +8701,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-95d49c15fb42a208c729a382/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-95d49c15fb42a208c729a382/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -8775,8 +8775,8 @@
     "city": "Denver",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-3ed9e4c96855432d3f981cf4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-3ed9e4c96855432d3f981cf4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -8849,8 +8849,8 @@
     "city": "Denver",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-0a3a02ce62e8c2e998d3ab4f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-0a3a02ce62e8c2e998d3ab4f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -8925,8 +8925,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-1afc95e6414033550eea2c21/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-1afc95e6414033550eea2c21/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -9001,8 +9001,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-40bc009e063c2090b6d1596a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-40bc009e063c2090b6d1596a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-049/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -9142,8 +9142,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-28906184dc2338a64fd7242c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-28906184dc2338a64fd7242c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -9243,8 +9243,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-56b65a1027e9368c848f25f7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-56b65a1027e9368c848f25f7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -9317,8 +9317,8 @@
     "city": "Chicago",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-1e70bb9b1ee15fdf7e7abf33/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-1e70bb9b1ee15fdf7e7abf33/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -9391,8 +9391,8 @@
     "city": "Chicago",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-713897fc4f68e7707b253c95/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-713897fc4f68e7707b253c95/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -9467,8 +9467,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-9d351105e42700867a792800/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-9d351105e42700867a792800/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -9543,8 +9543,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-34071caa96bd00042e32e1c7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-34071caa96bd00042e32e1c7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-046/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -9690,8 +9690,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-d5d1acd3f08fb80be2cfdd4c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-d5d1acd3f08fb80be2cfdd4c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -9791,8 +9791,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-36972b332512eea963e6c7c3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-36972b332512eea963e6c7c3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-011/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -9865,8 +9865,8 @@
     "city": "Seattle",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-798932f6b233b637506ceb46/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-798932f6b233b637506ceb46/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-003/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -9939,8 +9939,8 @@
     "city": "Seattle",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-842e57bdaaed0faa6b27a471/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-842e57bdaaed0faa6b27a471/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-027/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -10015,8 +10015,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-006321aab3401ee33bc6d5be/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-006321aab3401ee33bc6d5be/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-019/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -10091,8 +10091,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-79f1ff8172b3a9164f693e1d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-79f1ff8172b3a9164f693e1d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-041/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -10225,8 +10225,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-53afcaaa7ff9e5587db7c541/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-53afcaaa7ff9e5587db7c541/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -10326,8 +10326,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-6372a78a5bc989a1ecf0b24c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-6372a78a5bc989a1ecf0b24c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-012/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -10400,8 +10400,8 @@
     "city": "Austin",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-40caf34bda73b6ff66fdff39/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-40caf34bda73b6ff66fdff39/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-004/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -10474,8 +10474,8 @@
     "city": "Austin",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-fdae053d3f685a06d4d1ca8d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-fdae053d3f685a06d4d1ca8d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-028/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -10550,8 +10550,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-71e2b1d24ab99e3648179d89/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-71e2b1d24ab99e3648179d89/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-020/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -10626,8 +10626,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-eb86262d442bc7ad1587f521/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-eb86262d442bc7ad1587f521/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-044/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -10767,8 +10767,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-6ce08189886a0283f91840a9/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-6ce08189886a0283f91840a9/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -10868,8 +10868,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-81881be727932c0a61c57ddc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-81881be727932c0a61c57ddc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-013/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -10942,8 +10942,8 @@
     "city": "Portland",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-e599600b9b13aad521e1378b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-e599600b9b13aad521e1378b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-005/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -11016,8 +11016,8 @@
     "city": "Portland",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-d55dff56923730ebf46c8197/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-d55dff56923730ebf46c8197/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-029/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -11092,8 +11092,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-de2a18556c6a34010c44130b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-de2a18556c6a34010c44130b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-021/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -11168,8 +11168,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-4d6942b1040053ce67be0d1f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-4d6942b1040053ce67be0d1f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-050/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -11315,8 +11315,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-432df05bf07d20fc921f5672/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-432df05bf07d20fc921f5672/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -11416,8 +11416,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-30b3000c189953476fd4225a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-30b3000c189953476fd4225a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-014/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -11490,8 +11490,8 @@
     "city": "San Diego",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-81b3dba4098666fb66ab5c6f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-81b3dba4098666fb66ab5c6f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-006/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -11564,8 +11564,8 @@
     "city": "San Diego",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-9fba1fa6e8f6c2de8450030a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-9fba1fa6e8f6c2de8450030a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-030/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -11640,8 +11640,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-82441bc7210b7a3381f8751a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-82441bc7210b7a3381f8751a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-022/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -11716,8 +11716,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-7a83eaef9497d84818928cdb/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-7a83eaef9497d84818928cdb/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-047/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -11850,8 +11850,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-fd14e4a34c52ec23335cf641/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-fd14e4a34c52ec23335cf641/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -11951,8 +11951,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-9b680cab1f5570cb3af6204c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-9b680cab1f5570cb3af6204c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-015/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -12025,8 +12025,8 @@
     "city": "Nashville",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-bd50613a5f0cf6cba3898caa/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-bd50613a5f0cf6cba3898caa/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-007/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -12099,8 +12099,8 @@
     "city": "Nashville",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-a6179186ac4f8848d4ba3126/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-a6179186ac4f8848d4ba3126/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-031/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -12175,8 +12175,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-37b5d81c6c71c50123d6ef98/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-37b5d81c6c71c50123d6ef98/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-023/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -12251,8 +12251,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-a7c430d377cb47da89c8a855/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-a7c430d377cb47da89c8a855/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-042/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -12392,8 +12392,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-8a636ec7bcb0c792ed068403/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-8a636ec7bcb0c792ed068403/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -12493,8 +12493,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-229c3d4e6f3c87b4c9ad5826/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-229c3d4e6f3c87b4c9ad5826/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-016/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -12567,8 +12567,8 @@
     "city": "Phoenix",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-bae8cf8fde18bd87c7ee28c0/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-bae8cf8fde18bd87c7ee28c0/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-008/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -12641,8 +12641,8 @@
     "city": "Phoenix",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-324d150cf3a4438b98915c3f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-324d150cf3a4438b98915c3f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-032/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -12717,8 +12717,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-af5bbed6bddb4e8ec98ade68/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-af5bbed6bddb4e8ec98ade68/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-024/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -12793,8 +12793,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-33d50dc49c586f133f529647/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-33d50dc49c586f133f529647/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-045/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -12940,8 +12940,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-337b6523a738724ccc55e237/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-337b6523a738724ccc55e237/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -13041,8 +13041,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-032f55b15744e4e3957678ec/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-032f55b15744e4e3957678ec/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -13115,8 +13115,8 @@
     "city": "Boston",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-a296d445e8c02f282164b2a4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-a296d445e8c02f282164b2a4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -13189,8 +13189,8 @@
     "city": "Boston",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-927f526e284f30e62786768c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-927f526e284f30e62786768c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -13265,8 +13265,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-b617d0aa224dad2be1676bee/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-b617d0aa224dad2be1676bee/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -13341,8 +13341,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-55eee2af2e3a84d9355842e2/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-55eee2af2e3a84d9355842e2/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-048/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -13475,8 +13475,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-15d3049967690e9c3abcf0df/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-15d3049967690e9c3abcf0df/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -13576,8 +13576,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-0e34ae88cf81e01a304d4b58/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-0e34ae88cf81e01a304d4b58/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -13650,8 +13650,8 @@
     "city": "Miami",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-8c72508410a371b0396b9e60/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-8c72508410a371b0396b9e60/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -13724,8 +13724,8 @@
     "city": "Miami",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-af33264e151ecc74d7a4cf4c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-af33264e151ecc74d7a4cf4c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -13800,8 +13800,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-857cfd018ec254a98deeb3ea/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-857cfd018ec254a98deeb3ea/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -13876,8 +13876,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-4597bf3f35d69e76a51af32b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-4597bf3f35d69e76a51af32b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-046/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -14017,8 +14017,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-b4b9db192aa3959de05fdd6d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-b4b9db192aa3959de05fdd6d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -14118,8 +14118,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-ba470758bb0448474dc48f7c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-ba470758bb0448474dc48f7c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-011/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -14192,8 +14192,8 @@
     "city": "Denver",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f6912201c98c4453c6d9c0ed/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f6912201c98c4453c6d9c0ed/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-003/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -14266,8 +14266,8 @@
     "city": "Denver",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-fee7299faa9f4d8f823a0f0b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-fee7299faa9f4d8f823a0f0b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-027/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -14342,8 +14342,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-0af73c6b08e4f19a8b23a95d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-0af73c6b08e4f19a8b23a95d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-019/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -14418,8 +14418,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-ae8ef636e344ea890020b5df/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-ae8ef636e344ea890020b5df/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-040/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -14565,8 +14565,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-250610743661a18a24c9cfc8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-250610743661a18a24c9cfc8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -14666,8 +14666,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f2230b66d7f4918c25aaf9f7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f2230b66d7f4918c25aaf9f7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-012/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -14740,8 +14740,8 @@
     "city": "Chicago",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-09f940e5be3e93f40406b98f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-09f940e5be3e93f40406b98f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-004/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -14814,8 +14814,8 @@
     "city": "Chicago",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-ad6fe3c6e82a3c34f51a3275/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-ad6fe3c6e82a3c34f51a3275/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-028/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -14890,8 +14890,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-d0b356fa27c83fc33fe2dd10/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-d0b356fa27c83fc33fe2dd10/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-020/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -14966,8 +14966,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-4ecb12ab88646a6de952328a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-4ecb12ab88646a6de952328a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-043/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -15100,8 +15100,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-217ad77fbc06cbf840e38dae/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-217ad77fbc06cbf840e38dae/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -15201,8 +15201,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-ae8e897ff12054e0f1ed53e3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-ae8e897ff12054e0f1ed53e3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-013/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -15275,8 +15275,8 @@
     "city": "Seattle",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-72fc53b36eedeaea93297d74/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-72fc53b36eedeaea93297d74/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-005/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -15349,8 +15349,8 @@
     "city": "Seattle",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-3b62092aec7a572cfcd95a54/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-3b62092aec7a572cfcd95a54/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-029/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -15425,8 +15425,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-de9a7a6e2ff08ef002fb087c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-de9a7a6e2ff08ef002fb087c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-021/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -15501,8 +15501,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-2b7550bc4cd4e172923e360c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-2b7550bc4cd4e172923e360c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-049/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -15642,8 +15642,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-4b3713cf1ce8ded25db41fde/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-4b3713cf1ce8ded25db41fde/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -15743,8 +15743,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-94aeee01b574e3b4f5ea95e6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-94aeee01b574e3b4f5ea95e6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-014/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -15817,8 +15817,8 @@
     "city": "Austin",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-0db30e17dd34d3803c380a2b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-0db30e17dd34d3803c380a2b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-006/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -15891,8 +15891,8 @@
     "city": "Austin",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-c04250512fe3a60ed6b7752d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-c04250512fe3a60ed6b7752d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-030/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -15967,8 +15967,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-eb812a0e245572085510263d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-eb812a0e245572085510263d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-022/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -16043,8 +16043,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-83d78100cf25ca1b3363c705/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-83d78100cf25ca1b3363c705/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-047/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -16190,8 +16190,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-cea6c646307bd1421feb4364/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-cea6c646307bd1421feb4364/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -16291,8 +16291,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-67acc5fdf65e08caa9baadee/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-67acc5fdf65e08caa9baadee/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-015/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -16365,8 +16365,8 @@
     "city": "Portland",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-1a13318f0aa405ea2a711115/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-1a13318f0aa405ea2a711115/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-007/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -16439,8 +16439,8 @@
     "city": "Portland",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-8cb5eb0eda1d2964c0920000/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-8cb5eb0eda1d2964c0920000/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-031/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -16515,8 +16515,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-eb6d71defed35f5bb2290585/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-eb6d71defed35f5bb2290585/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-023/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -16591,8 +16591,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-a0662ee022800f4cc09a1333/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-a0662ee022800f4cc09a1333/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-041/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -16725,8 +16725,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-30af7345645047274999fefb/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-30af7345645047274999fefb/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -16826,8 +16826,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-5969f4b6161c8af7821b332d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-5969f4b6161c8af7821b332d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-016/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -16900,8 +16900,8 @@
     "city": "San Diego",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-eefff5bef41b9d73979af7d2/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-eefff5bef41b9d73979af7d2/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-008/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -16974,8 +16974,8 @@
     "city": "San Diego",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-5ada50e01fb3b89d6b0652ee/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-5ada50e01fb3b89d6b0652ee/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-032/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -17050,8 +17050,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-42dea16c568224696c546999/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-42dea16c568224696c546999/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-024/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -17126,8 +17126,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-92be710e25b7ee0f70bc1a0d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-92be710e25b7ee0f70bc1a0d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-044/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -17273,8 +17273,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-400e8fbb289200aded77ca48/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-400e8fbb289200aded77ca48/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -17374,8 +17374,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-c3cd77b2be9412fcffadee7e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-c3cd77b2be9412fcffadee7e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -17448,8 +17448,8 @@
     "city": "Nashville",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-905728bd86174361fc78a025/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-905728bd86174361fc78a025/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -17522,8 +17522,8 @@
     "city": "Nashville",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-1919debb11da22f86e8a76ca/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-1919debb11da22f86e8a76ca/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -17598,8 +17598,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-b098eae4ae50dc68ddde6a7f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-b098eae4ae50dc68ddde6a7f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -17674,8 +17674,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-607283585a9ce97ebc48e636/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-607283585a9ce97ebc48e636/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-050/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -17821,8 +17821,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-98ee0dcdcb5f09afa055db66/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-98ee0dcdcb5f09afa055db66/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -17922,8 +17922,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-907c96accb1457fa64e41d03/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-907c96accb1457fa64e41d03/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -17996,8 +17996,8 @@
     "city": "Phoenix",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-fb81368c740f6a912907c1d4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-fb81368c740f6a912907c1d4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -18070,8 +18070,8 @@
     "city": "Phoenix",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-bd3ba65d1c046cbf5da9f56e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-bd3ba65d1c046cbf5da9f56e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -18146,8 +18146,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-2f77e1a609f5742bfafd66ed/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-2f77e1a609f5742bfafd66ed/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -18222,8 +18222,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-07bf581060f02dea6a38ddff/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-07bf581060f02dea6a38ddff/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-046/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -18356,8 +18356,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-127cf3c309c4bd841053a4e8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-127cf3c309c4bd841053a4e8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -18457,8 +18457,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-ba5e66466b785c0da0c6f9b6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-ba5e66466b785c0da0c6f9b6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-011/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -18531,8 +18531,8 @@
     "city": "Boston",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-672248746ae60749efa2a9f3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-672248746ae60749efa2a9f3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-003/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -18605,8 +18605,8 @@
     "city": "Boston",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-86f2fdd9ca762be1f5450c3b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-86f2fdd9ca762be1f5450c3b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-027/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -18681,8 +18681,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-10337d11b02831c86dc37dec/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-10337d11b02831c86dc37dec/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-019/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -18757,8 +18757,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-5539911338c3a6a07f594417/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-5539911338c3a6a07f594417/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-042/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -18898,8 +18898,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-657d4b979c995a50032cd59e/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-657d4b979c995a50032cd59e/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -18999,8 +18999,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-5e0e0942fe81303b1b67101d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-5e0e0942fe81303b1b67101d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-012/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -19073,8 +19073,8 @@
     "city": "Miami",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-5e1f90a51e467f8e635b9cb4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-5e1f90a51e467f8e635b9cb4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-004/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -19147,8 +19147,8 @@
     "city": "Miami",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-12d8697105a365dd17acecdf/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-12d8697105a365dd17acecdf/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-028/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -19223,8 +19223,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-0673021d69dd6c6943cae53b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-0673021d69dd6c6943cae53b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-020/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -19299,8 +19299,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-cbed8894bbf2f93276f550eb/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-cbed8894bbf2f93276f550eb/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-045/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -19452,8 +19452,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-43d80c4003f92eb218d562bc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-43d80c4003f92eb218d562bc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -19553,8 +19553,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-258bcba286ed105967e2b80f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-258bcba286ed105967e2b80f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-013/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -19627,8 +19627,8 @@
     "city": "Denver",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-368edf4f148a30c24b738f58/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-368edf4f148a30c24b738f58/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-005/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -19701,8 +19701,8 @@
     "city": "Denver",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-b9a3e452d05a257ec53d0855/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-b9a3e452d05a257ec53d0855/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-029/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -19777,8 +19777,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-ebdc4e76a733b5a11ccf5ff0/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-ebdc4e76a733b5a11ccf5ff0/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-021/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -19853,8 +19853,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-32aabd7dd821b58799a439e6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-32aabd7dd821b58799a439e6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-048/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -19987,8 +19987,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-e5268fca90bf9e8cc9da9629/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e5268fca90bf9e8cc9da9629/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -20088,8 +20088,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-8221722e9744a9eaffa80a5f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-8221722e9744a9eaffa80a5f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-014/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -20162,8 +20162,8 @@
     "city": "Chicago",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-4523b57548e39167bb006aba/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-4523b57548e39167bb006aba/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-006/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -20236,8 +20236,8 @@
     "city": "Chicago",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-35a3c7da4e282906ea167b37/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-35a3c7da4e282906ea167b37/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-030/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -20312,8 +20312,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-ff760fade34e3933e99bb0cd/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-ff760fade34e3933e99bb0cd/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-022/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -20388,8 +20388,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-1a0edec4d78c1eea281d6942/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-1a0edec4d78c1eea281d6942/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-047/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -20529,8 +20529,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-4e11d7a2aae2aef45368cdc0/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-4e11d7a2aae2aef45368cdc0/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -20630,8 +20630,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-566ed860ee2cab75a7bead00/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-566ed860ee2cab75a7bead00/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-015/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -20704,8 +20704,8 @@
     "city": "Phoenix",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-9b5052d214d52a95aac425dd/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-9b5052d214d52a95aac425dd/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-007/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -20778,8 +20778,8 @@
     "city": "Phoenix",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-977b36ef795164bba3832355/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-977b36ef795164bba3832355/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-031/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -20854,8 +20854,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-68ab3c0f310cebca7d345118/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-68ab3c0f310cebca7d345118/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-023/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -20930,8 +20930,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-11d65abc7188bfcd778b546b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-11d65abc7188bfcd778b546b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-040/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -21077,8 +21077,8 @@
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-4b59cbe3980bfb4c1cc7aa36/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-4b59cbe3980bfb4c1cc7aa36/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -21178,8 +21178,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-fe1558a7646fb583db03a30c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-fe1558a7646fb583db03a30c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-016/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -21252,8 +21252,8 @@
     "city": "Nashville",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-9a48e2b549ff4909620096dc/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-9a48e2b549ff4909620096dc/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-008/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -21326,8 +21326,8 @@
     "city": "Nashville",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-623a5f516328f5a20df2a639/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-623a5f516328f5a20df2a639/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-032/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -21402,8 +21402,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-f3f29c490def11af2f848c3a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-f3f29c490def11af2f848c3a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-024/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -21478,8 +21478,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-b25dee76250d78b0057e8c69/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-b25dee76250d78b0057e8c69/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-043/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -21612,8 +21612,8 @@
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-73bb43770868563fdd73788f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-73bb43770868563fdd73788f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -21713,8 +21713,8 @@
     "city": "Los Angeles",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-cefa7e50bd6cc0c6e16b6a57/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-cefa7e50bd6cc0c6e16b6a57/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -21787,8 +21787,8 @@
     "city": "Los Angeles",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-6c8ac25e7a63755e53c46093/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-6c8ac25e7a63755e53c46093/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -21861,8 +21861,8 @@
     "city": "Los Angeles",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-62458512590926b99199d390/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-62458512590926b99199d390/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -21937,8 +21937,8 @@
     "city": "Los Angeles",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-6dadd6bd151f2f485d28c4ca/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-6dadd6bd151f2f485d28c4ca/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -22013,8 +22013,8 @@
     "city": "Los Angeles",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-e070d929e31d76b7badc78a6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e070d929e31d76b7badc78a6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-037/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -22113,8 +22113,8 @@
     "city": "Los Angeles",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-2aa1e961c824fe71f743ed18/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-2aa1e961c824fe71f743ed18/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -22214,8 +22214,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-a2d2bfa7c324eca90f046307/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-a2d2bfa7c324eca90f046307/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -22288,8 +22288,8 @@
     "city": "Portland",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-9de5ed6cc72ab4474e95b84b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-9de5ed6cc72ab4474e95b84b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -22362,8 +22362,8 @@
     "city": "Portland",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-6938a7f810373c6590c98e86/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-6938a7f810373c6590c98e86/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -22438,8 +22438,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-4dbc3305c35f1366b029bf32/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-4dbc3305c35f1366b029bf32/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -22514,8 +22514,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-e363edf51a66e6ccb05c063a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e363edf51a66e6ccb05c063a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-038/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -22614,8 +22614,8 @@
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-d1f43a1dc42d6a0a81449ed8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-d1f43a1dc42d6a0a81449ed8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -22715,8 +22715,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-576aee600b3d3a34473b9a85/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-576aee600b3d3a34473b9a85/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-011/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -22789,8 +22789,8 @@
     "city": "Boston",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-b686e8960d209da426a923ff/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-b686e8960d209da426a923ff/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-003/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -22863,8 +22863,8 @@
     "city": "Boston",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-dcfbb22cacc9455f510a421b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-dcfbb22cacc9455f510a421b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-027/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -22939,8 +22939,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-adb188297f3366a4d091b542/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-adb188297f3366a4d091b542/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-019/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -23015,8 +23015,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-c136079d46f9e4ee2c8f325c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-c136079d46f9e4ee2c8f325c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-039/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -23115,8 +23115,8 @@
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-e03ac53c78048be133e90081/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e03ac53c78048be133e90081/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -23216,8 +23216,8 @@
     "city": "New York",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-16efec65153f9804ef9de2c3/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-16efec65153f9804ef9de2c3/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-012/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -23290,8 +23290,8 @@
     "city": "New York",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f25212b4b7dc77f57fa9160b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f25212b4b7dc77f57fa9160b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-004/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -23364,8 +23364,8 @@
     "city": "New York",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-bcd42dd9f5419bbf10c4a28b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-bcd42dd9f5419bbf10c4a28b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-028/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -23440,8 +23440,8 @@
     "city": "New York",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-3bad18c7d5fdd0da4484d98f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-3bad18c7d5fdd0da4484d98f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-020/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -23516,8 +23516,8 @@
     "city": "New York",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-3d1068c9689a192374ab0f9b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-3d1068c9689a192374ab0f9b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-037/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -23616,8 +23616,8 @@
     "city": "New York",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-b2072afe4b888edf70cee5f4/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-b2072afe4b888edf70cee5f4/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -23717,8 +23717,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-7377ed587a2e871b515ac10b/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-7377ed587a2e871b515ac10b/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-013/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -23791,8 +23791,8 @@
     "city": "Miami",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-d20175905f5ca8bcd645e84d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-d20175905f5ca8bcd645e84d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-005/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -23865,8 +23865,8 @@
     "city": "Miami",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-5794a4073a420b937104ed04/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-5794a4073a420b937104ed04/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-029/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -23941,8 +23941,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-fdc568bd9f72a79ba55caa2f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-fdc568bd9f72a79ba55caa2f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-021/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -24017,8 +24017,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-52f7499337069d7cf075dd12/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-52f7499337069d7cf075dd12/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-038/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -24117,8 +24117,8 @@
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-db92d9b4e4d90bb023425984/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-db92d9b4e4d90bb023425984/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -24218,8 +24218,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-622bb4b03b9429d9a237adc1/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-622bb4b03b9429d9a237adc1/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-014/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -24292,8 +24292,8 @@
     "city": "Denver",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-93530c3d5db41f141f534de8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-93530c3d5db41f141f534de8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-006/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -24366,8 +24366,8 @@
     "city": "Denver",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-3ef6d9d9d65852682ca14a0f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-3ef6d9d9d65852682ca14a0f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-030/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -24442,8 +24442,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-c03cb1a3d8f4a966fb9677f7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-c03cb1a3d8f4a966fb9677f7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-022/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -24518,8 +24518,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-a3664b5165b094595c115193/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-a3664b5165b094595c115193/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-039/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -24618,8 +24618,8 @@
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-fe5a65e961965f31558ec695/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-fe5a65e961965f31558ec695/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -24719,8 +24719,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-8c5fb57390c1974f1568a1b6/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-8c5fb57390c1974f1568a1b6/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-015/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -24793,8 +24793,8 @@
     "city": "San Diego",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-45cca451f6e6fa44c0071014/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-45cca451f6e6fa44c0071014/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-007/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -24867,8 +24867,8 @@
     "city": "San Diego",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-1fc130c0221cac402beda4e8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-1fc130c0221cac402beda4e8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-031/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -24943,8 +24943,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-fc332f445040c16bda0f9927/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-fc332f445040c16bda0f9927/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-023/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -25019,8 +25019,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-6f21bd2ebb9948aca02fad30/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-6f21bd2ebb9948aca02fad30/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-037/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -25119,8 +25119,8 @@
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-2366ebc6a0765906e2434089/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-2366ebc6a0765906e2434089/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-035/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -25220,8 +25220,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-43cfa9ca719b9fb85d3269d0/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-43cfa9ca719b9fb85d3269d0/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-016/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -25294,8 +25294,8 @@
     "city": "Seattle",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-6662c393d5bdcde662c6130f/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-6662c393d5bdcde662c6130f/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-008/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -25368,8 +25368,8 @@
     "city": "Seattle",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-31470c0abc3cc5a24daf812d/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-31470c0abc3cc5a24daf812d/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-032/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -25444,8 +25444,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-40b753008a7c3af659b8ba9a/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-40b753008a7c3af659b8ba9a/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-024/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -25520,8 +25520,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-11fc507bd2a049c3a297da19/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-11fc507bd2a049c3a297da19/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-038/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -25603,8 +25603,8 @@
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-e930f7a058f4ab02edd44ff7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e930f7a058f4ab02edd44ff7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-036/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -25687,8 +25687,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-907e57840f20cad5ab3cd7df/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-907e57840f20cad5ab3cd7df/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-009/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -25761,8 +25761,8 @@
     "city": "Chicago",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-f6626dfb592933fba83db1c7/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-f6626dfb592933fba83db1c7/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-001/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -25835,8 +25835,8 @@
     "city": "Chicago",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-265575ceace6381036e4d4ab/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-265575ceace6381036e4d4ab/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-025/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -25911,8 +25911,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-729fb7c46ed75e57dcc62d33/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-729fb7c46ed75e57dcc62d33/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-017/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -25987,8 +25987,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-9ea8064581cec7a64d788370/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-9ea8064581cec7a64d788370/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-039/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -26087,8 +26087,8 @@
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-514e7764853cc82bf4bb482c/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-514e7764853cc82bf4bb482c/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-033/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",
@@ -26188,8 +26188,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Can deliver to venue before 19:00.",
-    "imageUrl": "https://picsum.photos/seed/supplies-99a661e94878133d6737e5be/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-99a661e94878133d6737e5be/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-010/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -26262,8 +26262,8 @@
     "city": "Austin",
     "capacityTotal": 6,
     "details": "Packed and ready in the garage. Pickup only.",
-    "imageUrl": "https://picsum.photos/seed/supplies-18b8428be616a060f4637bb8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/supplies-18b8428be616a060f4637bb8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-002/v1/large.webp",
+    "sourceLink": "",
     "routes": [],
     "requests": [
       {
@@ -26336,8 +26336,8 @@
     "city": "Austin",
     "capacityTotal": 2,
     "details": "Ideal for early risers. Parking available.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-f677e51258ae858a7eb29376/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-f677e51258ae858a7eb29376/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-026/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "East 6th Street, Austin"
     ],
@@ -26412,8 +26412,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Check-in after 15:00. Quiet building, no smoking.",
-    "imageUrl": "https://picsum.photos/seed/accommodation-39e5a0b0cd34f4bdcb8b4611/1200/700",
-    "sourceLink": "https://picsum.photos/seed/accommodation-39e5a0b0cd34f4bdcb8b4611/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-018/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "101 South Congress Ave, Austin"
     ],
@@ -26488,8 +26488,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
-    "imageUrl": "https://picsum.photos/seed/transport-29be225c3de31815c99540b8/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-29be225c3de31815c99540b8/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-037/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Airport",
       "Domain Northside"
@@ -26588,8 +26588,8 @@
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Pickup from Downtown at 17:30. Luggage: 2 cabin bags.",
-    "imageUrl": "https://picsum.photos/seed/transport-e1f9ca23e3d4b8ce24eb0d86/1200/700",
-    "sourceLink": "https://picsum.photos/seed/transport-e1f9ca23e3d4b8ce24eb0d86/1200/700",
+    "imageUrl": "/media/public?key=images/demo-assets/asset-034/v1/large.webp",
+    "sourceLink": "",
     "routes": [
       "Austin Downtown",
       "Round Rock",

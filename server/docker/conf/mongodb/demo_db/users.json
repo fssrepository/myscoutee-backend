@@ -4477,7 +4477,7 @@
     "horoscope": "Aries",
     "hostTier": "Member",
     "images": [
-      "https://randomuser.me/api/portraits/men/52.jpg"
+      "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp"
     ],
     "initials": "CB",
     "languages": [
@@ -4559,7 +4559,7 @@
     "horoscope": "Leo",
     "hostTier": "Member",
     "images": [
-      "https://randomuser.me/api/portraits/women/35.jpg"
+      "/media/public?key=images/demo-profiles/650000000000000000000062/photo-01/large.webp"
     ],
     "initials": "NS",
     "languages": [
@@ -4642,7 +4642,7 @@
     "horoscope": "Libra",
     "hostTier": "Member",
     "images": [
-      "https://randomuser.me/api/portraits/men/53.jpg"
+      "/media/public?key=images/demo-profiles/650000000000000000000063/photo-01/large.webp"
     ],
     "initials": "RO",
     "languages": [

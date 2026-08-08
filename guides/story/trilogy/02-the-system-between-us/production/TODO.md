@@ -50,9 +50,10 @@ Status: **book and prompt review only; generation paused**.
   it as a documentary quotation.
 - [ ] Add the recent short reply from the new justice administration; it is not
   one of the three reviewed local email PDFs.
-- [ ] Transcribe all thirteen private recordings locally and verify which
-  remembered remarks are exact. Do not use cloud transcription without explicit
-  authorization.
+- [ ] Transcribe the thirteen-file root audio set locally. Use it to verify only
+  the calls that actually survive; the decisive absent exchanges remain
+  indirect evidence preserved through the defence speech and surrounding
+  records. Do not use cloud transcription without explicit authorization.
 - [ ] Reconcile the exact private-surgery date.
 - [ ] Reconcile the exact employment transition dates around 2020–2021 where
   authored accounts differ.

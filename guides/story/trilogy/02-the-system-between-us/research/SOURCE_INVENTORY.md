@@ -178,17 +178,29 @@ submission. It remains memoir-layer paraphrase.
 
 ## Audio
 
-Thirteen WAV files total approximately 94.5 minutes. Most appear to be tax-
-administration calls from July 2022 to May 2023; two later recordings are dated
-November 2024 and April 2025.
+The bounded root review set contains thirteen WAV files totalling approximately
+94.5 minutes. Most appear to be tax-administration calls from July 2022 to May
+2023; two later recordings are dated November 2024 and April 2025. The expanded
+export contains 32 WAV paths, including repeated/exported copies; that path count
+must not be mistaken for 32 distinct conversations.
+
+The defence speech refers to the audio material and records the Founder's later
+account of several important exchanges. The most consequential calls or remarks
+in that account are not present as surviving recordings. The available sound may
+establish that surrounding calls occurred and may preserve tone or fragments of
+the sequence, but it is only indirect support for what happened in the absent
+key exchanges.
 
 Current rule:
 
 - do not upload these recordings to a cloud transcription service without
   explicit authorization;
 - transcribe locally where possible;
-- until transcript and speaker review are complete, any remembered official
-  remark is labelled **attributed account**, not a verified quotation;
+- even after transcription, do not treat an absent key call as directly proved
+  by a neighbouring recording;
+- any remembered official remark from an absent call is labelled **attributed
+  account supported indirectly by later authored material**, not a verified
+  quotation;
 - a call absent from the surviving recordings cannot be reconstructed as
   verbatim dialogue.
 
@@ -210,7 +222,8 @@ Before publication, confirm:
 - exact wording and provenance of every official remark proposed for quotation;
 - which tax notices reached only the representative and when the Founder first
   saw each item;
-- complete local transcripts of all thirteen recordings;
+- complete local transcripts of the thirteen-file root set, while preserving
+  the distinction between recorded surrounding calls and absent key exchanges;
 - current procedural status immediately before publication;
 - the recent justice-administration response once its source file is available;
 - the exact separate decision on the April 2026 exclusion motion and the

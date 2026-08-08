@@ -42,7 +42,8 @@ The ledger controls reading order. File count is not narrative importance.
 
 ## Tier 3 — corroboration and scene texture
 
-- call lists and locally transcribed audio;
+- call lists, surviving surrounding audio and defence-speech references to key
+  exchanges that were not recorded;
 - portal screenshots and status histories;
 - email chains with the accountant;
 - authored jokes, sarcasm and remarks later quoted in submissions;
@@ -81,7 +82,8 @@ question, locally and minimally.
 3. locate the exact pasture submission;
 4. reconcile the exact surgery date;
 5. identify the financial-position hearing record;
-6. transcribe only the recordings necessary for proposed quotations;
+6. transcribe only the recordings necessary for the surviving sequence, while
+   keeping absent key exchanges classified as indirect attributed evidence;
 7. locate the new justice-administration reply;
 8. review the KRX sequence as a dated event ledger without treating receipts as
    substantive decisions.

@@ -263,10 +263,12 @@ I discovered the possible problem through an article and then through a portal
 whose categories and identifiers did not give me one coherent narrative. On 23
 and 24 November, I spent many hours checking. I called for help.
 
-In one surviving recording, panic became audible. Other calls followed. My
-later filings remember remarks that landed as dismissive: accountants usually
-did not cause problems; entrepreneurs did not normally care what accountants
-did in their name; why had I shared my credentials?
+Some calls from the period survive, but not the decisive exchanges behind the
+remarks I later recorded in my defence speech. Their shape can be inferred only
+indirectly—from the later writing, the surrounding calls and the steps that
+followed. In that later account, the remarks landed as dismissive: accountants
+usually did not cause problems; entrepreneurs did not normally care what
+accountants did in their name; why had I shared my credentials?
 
 I had reached the institution because the delegated route had failed. Its
 questions returned me to the fact that I had used the delegated route.
@@ -575,9 +577,10 @@ The investigation and court process created another triangle: defendant,
 appointed defence and institution.
 
 Lawyers changed. Communication opened and closed. Evidence requests were made,
-rejected, repeated or reframed. Recordings and electronic records emerged over
-time rather than arriving as one complete archive. The phone and computer
-remained away from me for a long period.
+rejected, repeated or reframed. Partial recordings and electronic records
+emerged over time rather than arriving as one complete archive. The calls most
+important to my account were not among the surviving audio. The phone and
+computer remained away from me for a long period.
 
 I responded by writing more.
 
@@ -1152,8 +1155,15 @@ record.
 
 The review draft was reconstructed from the private source package described in
 `research/SOURCE_INVENTORY.md`: tax and portal evidence, authored submissions,
-the charge, a forensic report, correspondence, product screenshots and thirteen
-private recordings awaiting local transcription.
+the charge, a forensic report, correspondence, product screenshots and a
+bounded set of private recordings awaiting local transcription.
+
+Those recordings are partial evidence of the wider call sequence. The defence
+speech refers to the audio record and preserves the Founder's later account of
+important remarks, but the decisive exchanges themselves are not present in the
+surviving sound files. The account of those exchanges is therefore indirect:
+supported by later authored material, neighbouring calls and subsequent events,
+not by a verbatim recording of the key moment.
 
 The public-interest material contains two related but distinct source lines. The
 first is the constructive system proposal of 1 December 2022 described in Chapter
