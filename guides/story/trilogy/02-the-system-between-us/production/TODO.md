@@ -1,6 +1,6 @@
 # Narrative-first TODO
 
-Status: **book and prompt review only; generation paused**.
+Status: **book/prompt audit and generation pass in progress**.
 
 ## 1. Current review pass
 
@@ -67,10 +67,10 @@ Status: **book and prompt review only; generation paused**.
 - [ ] Perform legal/privacy review of the public manuscript, especially
   unresolved allegations and forensic/medical-adjacent material.
 
-## 3. Deferred visual and audio work
+## 3. Active visual work; audio remains downstream
 
-- [x] Pause image generation while the book, narration, storyboard and prompts
-  are still receiving factual corrections.
+- [x] Keep all existing checkpoint and character media marked provisional
+  until the cross-part audit is complete.
 - [ ] Treat existing CP01–CP10 only as provisional composition studies and
   regenerate where the locked text requires greater location or event fidelity.
 - [ ] Regenerate CP11: the current draft incorrectly centres a generic bandaged

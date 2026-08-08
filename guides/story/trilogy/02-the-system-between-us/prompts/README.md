@@ -1,6 +1,6 @@
 # Part II prompt package
 
-Status: **synchronized review baseline; generation is paused**.
+Status: **synchronized generation baseline; visual lock in progress**.
 
 The reusable prompt system is split into four files:
 
@@ -12,5 +12,6 @@ The reusable prompt system is split into four files:
 
 For a single clip, paste the continuity prefix, the relevant `SHOT Sxx` block
 and the platform control line. Upload only the exact approved first and last
-checkpoint for that interval. Do not generate motion until the Founder approves
-the book, script, storyboard and prompt baseline.
+checkpoint for that interval. Character and endpoint generation is authorized;
+credit-bearing Flow/OpenArt motion begins only after the endpoint slideshow is
+reviewed.

@@ -11,17 +11,47 @@
     "alt": "An anonymized, overloaded but competent accountant",
     "caption": "One partial screen inside a three-person chain."
   },
+  "part_ii_triangle_scene": {
+    "file": "assets/illustrations/three-partial-screens.png",
+    "placement": "full",
+    "alt": "The Founder, accountant and tax officer each seeing a different part of one return",
+    "caption": "Three competent people, three partial screens, and no shared view."
+  },
   "part_ii_officer": {
     "file": "assets/illustrations/police-officer-portrait.png",
     "placement": "portrait-right",
     "alt": "An anonymized professional police officer",
     "caption": "A role inside the procedure remains a human being."
   },
-  "part_ii_expert": {
-    "file": "assets/illustrations/forensic-expert-portrait.png",
-    "placement": "portrait-right",
-    "alt": "Provisional single-expert study, not approved for the two-expert scene",
-    "caption": "PROVISIONAL — replace with two distinct experts before visual lock."
+  "part_ii_police_scene": {
+    "file": "assets/illustrations/police-rooms-and-fingerprint.png",
+    "placement": "full",
+    "alt": "An ordinary police interview room leading to professional fingerprint processing",
+    "caption": "Advice received one small room; identity became a photograph and a pattern of lines."
+  },
+  "part_ii_experts_scene": {
+    "file": "assets/illustrations/two-experts-one-report.png",
+    "placement": "full",
+    "alt": "Two distinct forensic experts, the Founder and one anonymized report",
+    "caption": "Two remembered voices produced one document; the document was not the whole person."
+  },
+  "part_ii_courtroom_scene": {
+    "file": "assets/illustrations/fo-street-c-shaped-hearing-room.png",
+    "placement": "full",
+    "alt": "The remembered C-shaped hearing-room geometry inside the Fő Street justice building",
+    "caption": "A long human sequence entered a room built around fixed procedural roles."
+  },
+  "part_ii_ai_work_scene": {
+    "file": "assets/illustrations/work-under-the-shadow.png",
+    "placement": "full",
+    "alt": "The Founder checking AI-assisted work across evidence, E-közig, MyScoutee and a finite fluid simulation",
+    "caption": "The proceeding continued. So did the work."
+  },
+  "part_ii_home_inquiry_scene": {
+    "file": "assets/illustrations/what-the-case-can-reach.png",
+    "placement": "full",
+    "alt": "An unannounced clemency social inquiry inside the Founder's austere Budapest flat",
+    "caption": "Security built abroad so he could live at home now felt legible to the file."
   },
   "part_ii_judge": {
     "file": "assets/illustrations/judge-portrait.png",

@@ -7,6 +7,8 @@ const ASSETS_PATH = path.join(DEMO_DB, 'assets.json');
 const EVENTS_PATH = path.join(DEMO_DB, 'events.json');
 const USERS_PATH = path.join(DEMO_DB, 'users.json');
 const CONTACTS_PATH = path.join(DEMO_DB, 'navigatorContacts.json');
+const ACTIVITY_MEMBERS_PATH = path.join(DEMO_DB, 'activityMembers.json');
+const USER_REPORTS_PATH = path.join(DEMO_DB, 'userReports.json');
 const FRONTEND_HELPER_PATH = path.join(
   ROOT,
   'frontend/src/app/shared/core/local/seed/builders/demo-image-pool.ts'
@@ -36,18 +38,131 @@ const EVENT_PICSUM_IDS = [
   151, 152, 153, 154, 155
 ];
 
-const ASSET_SLOT_GROUPS = [
-  { title: 'Camping Gear Kit', slots: range(1, 8), visual: 'organized outdoor camping equipment, tents, sleeping bags and lanterns' },
-  { title: 'Game Night Box', slots: range(9, 16), visual: 'an organized event equipment kit with board games, cards, compact speakers and practical accessories' },
-  { title: 'South Congress Loft', slots: range(17, 24), visual: 'a welcoming modern city loft prepared for a small group stay' },
-  { title: 'Eastside Guest Room', slots: range(25, 32), visual: 'a clean comfortable private guest room in a lived-in city home' },
-  { title: 'City-to-Lake SUV', slots: range(33, 36), visual: 'a practical unbranded modern SUV ready for a small-group road trip' },
-  { title: 'Airport Shuttle Hatchback', slots: range(37, 39), visual: 'a practical unbranded hatchback with luggage at an airport pickup area' },
-  { title: 'City Event Sedan', slots: range(40, 42), visual: 'a clean unbranded city sedan prepared for event transport' },
-  { title: 'Evening Transfer Sedan', slots: range(43, 45), visual: 'a comfortable unbranded sedan waiting for an evening group transfer' },
-  { title: 'Station Pickup Sedan', slots: range(46, 47), visual: 'an unbranded sedan at a railway station pickup point with compact luggage' },
-  { title: 'Summit Transfer Sedan', slots: range(48, 50), visual: 'a reliable unbranded sedan on a scenic route toward a conference or mountain venue' }
+const PUBLIC_LOCAL_USER_IDS = [
+  'u1', 'u2', 'u3', 'u4', 'u6', 'u7', 'u8', 'u10', 'u12', 'u13', 'u14', 'u15',
+  'u16', 'u18', 'u19', 'u20', 'u22', 'u24', 'u25', 'u26', 'u27', 'u28', 'u30',
+  'u31', 'u32', 'u34', 'u36', 'u37', 'u38', 'u39', 'u40', 'u42', 'u43', 'u44',
+  'u46', 'u48'
 ];
+
+const ASSET_SLOT_GROUPS = [
+  { title: 'Camping Gear Kit', slots: range(1, 8) },
+  { title: 'Game Night Box', slots: range(9, 16) },
+  { title: 'South Congress Loft', slots: range(17, 24) },
+  { title: 'Eastside Guest Room', slots: range(25, 32) },
+  { title: 'City-to-Lake SUV', slots: range(33, 36) },
+  { title: 'Airport Shuttle Hatchback', slots: range(37, 39) },
+  { title: 'City Event Sedan', slots: range(40, 42) },
+  { title: 'Evening Transfer Sedan', slots: range(43, 45) },
+  { title: 'Station Pickup Sedan', slots: range(46, 47) },
+  { title: 'Summit Transfer Sedan', slots: range(48, 50) }
+];
+
+const ASSET_SEED_DEFINITION_BY_SLOT = {
+  1: assetDefinition('Lakeside Basecamp Bundle', '4-person dome + sleep systems + lantern', 'Packed for a two-night lakeside stay; cookware and lighting are included.', 'Camping'),
+  2: assetDefinition('Desert Trail Hydration Set', 'Water carriers + sun protection + trekking poles', 'Heat-ready hiking supplies for a dry exposed route and a managed rest checkpoint.', 'Hiking'),
+  3: assetDefinition('Coastal Kayak Safety Set', 'PFDs + paddles + dry bags + tow line', 'Launch-ready water-safety equipment for a small sea-kayak group.', 'Watersports'),
+  4: assetDefinition('Winter Mountaineering Safety Set', 'Crampons + ice axes + rope + helmets', 'Cold-weather technical equipment organized for a supervised alpine route.', 'Mountaineering'),
+  5: assetDefinition('Mobile Group Catering Station', 'Coolers + prep tables + food crates', 'Group meal station packed for hygienic outdoor preparation and cold storage.', 'Catering'),
+  6: assetDefinition('Group Safety Base', 'First aid + radios + hi-vis equipment', 'Central safety point for moving groups, night checks, and incident response.', 'Safety'),
+  7: assetDefinition('Trailside Bicycle Repair Kit', 'Pumps + patches + spare tubes + tools', 'Mobile maintenance supplies for punctures and basic repairs during a group ride.', 'Cycling'),
+  8: assetDefinition('Outdoor Event Power Hub', 'Power stations + charging leads + cable covers', 'Shared low-voltage charging and equipment-power point for an outdoor gathering.', 'Event Technology'),
+  9: assetDefinition('Apartment Game Library', 'Strategy boards + cards + compact speaker', 'Curated indoor game collection for a relaxed six-person social evening.'),
+  10: assetDefinition('Community Games Chest', 'Chess + dominoes + score tokens', 'Durable classic games prepared for rotating tables in a community hall.'),
+  11: assetDefinition('Rooftop Party Games', 'Quick-play cards + sound + ambient lights', 'Lightweight social games and portable audio for an informal rooftop meetup.'),
+  12: assetDefinition('Park Picnic Games Crate', 'Outdoor chess + ring toss + blankets', 'Weather-tolerant activity crate for a casual afternoon in the park.'),
+  13: assetDefinition('Portable Audio Light Rig', 'LED bars + stands + mixer + cables', 'Compact performance setup for a workshop, rehearsal, or small creative night.'),
+  14: assetDefinition('Community Sound Pair', 'Battery speakers + compact mixer + stands', 'Cable-managed portable sound system for speeches and low-volume music.'),
+  15: assetDefinition('Projector Lounge Pack', 'Projector + lanterns + tabletop games', 'Complete indoor lounge kit for a film, presentation, or collaborative game night.'),
+  16: assetDefinition('Mobile Event Tech Tote', 'Power banks + cables + speaker + cards', 'Color-organized event essentials for check-in, charging, audio, and icebreakers.'),
+  17: assetDefinition('Brick Window Group Loft', 'Sofa bed + dining area + steel windows', 'Quiet converted loft with a generous shared table and one flexible sleep zone.'),
+  18: assetDefinition('Nordic Mezzanine Loft', 'Mezzanine bed + pale wood + morning light', 'Bright compact stay with a raised sleeping area and calm shared living space.'),
+  19: assetDefinition('Botanical Bohemian Loft', 'Plant-filled lounge + prepared sleep area', 'Warm textured apartment for guests who prefer a relaxed, lived-in atmosphere.'),
+  20: assetDefinition('Modular Smart City Loft', 'Fold-out bed + modular storage + kitchenette', 'Efficient short-stay layout with flexible furniture and practical city access.'),
+  21: assetDefinition('Harbor View Studio', 'Double bed + breakfast table + waterfront view', 'Self-check-in studio suited to one or two guests near the harbor district.'),
+  22: assetDefinition('Skyline Convertible Studio', 'Sofa bed + kitchenette + evening skyline', 'High-rise studio with a convertible sleep area and compact cooking facilities.'),
+  23: assetDefinition('Artist Workshop Loft', 'Guest bed + timber beams + studio space', 'Creative live-work room with a separated guest corner and natural daylight.'),
+  24: assetDefinition('Arched Warehouse Loft', 'Two sleep zones + large group living area', 'Spacious converted warehouse stay for a small group sharing one open plan.'),
+  25: assetDefinition('Warm Townhouse Guest Room', 'Double bed + luggage bench + reading light', 'Residential private room with a calm evening routine and easy luggage storage.'),
+  26: assetDefinition('Skylight Attic Room', 'Sloped ceiling + desk + simple linens', 'Compact top-floor guest room best suited to a quiet short stay.'),
+  27: assetDefinition('Garden-Level Guest Suite', 'Private room + seating corner + green outlook', 'Ground-level room with a separate conversation corner and garden-facing light.'),
+  28: assetDefinition('Work-Friendly Spare Room', 'Guest bed + desk + practical storage', 'Simple residential room prepared for a guest who also needs a focused workspace.'),
+  29: assetDefinition('Festival Crew Bunk Room', 'Two bunk beds + personal shelves + durable linens', 'No-frills shared sleeping room for a coordinated event or volunteer crew.'),
+  30: assetDefinition('Coastal Blue Guest Room', 'Washed wood + luggage rack + soft daylight', 'Airy private room for a relaxed overnight stay near the waterfront.'),
+  31: assetDefinition('Library Guest Room', 'Book-lined bedroom + reading chair + warm light', 'Comfortable residential room designed for a quiet evening and early start.'),
+  32: assetDefinition('Accessible Calm Guest Suite', 'Low storage + wide circulation + prepared bed', 'Step-friendly private suite with clear movement space and reachable storage.'),
+  33: assetDefinition('Downtown Lake SUV', '4 seats + compact luggage + city pickup', 'Day-trip vehicle for a downtown departure and lakeside return before midnight.'),
+  34: assetDefinition('Lakeside Gear SUV', '4 seats + hiking packs + recreation pickup', 'Practical group transport with room for day packs and outdoor equipment.'),
+  35: assetDefinition('Open-Road Trip SUV', '4 seats + road-trip bags + rural route', 'Comfortable vehicle for longer regional drives with limited luggage.'),
+  36: assetDefinition('Trailhead Bike SUV', 'Rear bike rack + outdoor gear + trail pickup', 'Trail transfer with a two-bike rack and a fixed return meeting point.'),
+  37: assetDefinition('Dawn Airport Hatchback', '4 seats + 2 cabin cases + terminal pickup', 'Early terminal run with compact luggage space and a confirmed pickup lane.'),
+  38: assetDefinition('Rainy Airport Shuttle', '4 seats + luggage cover + blue-hour pickup', 'Weather-ready airport transfer with protected bags and curbside coordination.'),
+  39: assetDefinition('Hotel Night Hatchback', '4 seats + hotel canopy + late shuttle', 'Late arrival transfer between the terminal and a central hotel.'),
+  40: assetDefinition('Expo Equipment Sedan', '4 seats + compact event cases + daytime run', 'Daytime venue shuttle with boot space reserved for small equipment cases.'),
+  41: assetDefinition('Community Center Sedan', '4 seats + event supplies + neighborhood pickup', 'Short local transfer for organizers and lightweight event materials.'),
+  42: assetDefinition('Festival Support Sedan', '4 seats + crew cases + venue parking', 'Crew-focused city transfer with a fixed backstage meeting point.'),
+  43: assetDefinition('Evening Hotel Transfer', '4 seats + garment bags + downtown hotel', 'Quiet evening shuttle for speakers or guests carrying light formal luggage.'),
+  44: assetDefinition('Dinner Pickup Sedan', '4 seats + restaurant pickup + evening return', 'Reserved curbside transfer for a small dinner group and scheduled return.'),
+  45: assetDefinition('Concert Return Sedan', '4 seats + late venue pickup + compact bags', 'Post-event ride with a clear pickup zone and limited personal luggage.'),
+  46: assetDefinition('Daylight Station Pickup', '4 seats + rolling case + modern station', 'Rail arrival transfer with space for one large and two small cases.'),
+  47: assetDefinition('Historic Station Transfer', '4 seats + rain-ready pickup + brick station', 'Pre-arranged station ride with covered waiting and wet-weather luggage care.'),
+  48: assetDefinition('Mountain Conference Sedan', '4 seats + conference luggage + hotel arrival', 'Regional transfer from the valley to a mountain conference venue.'),
+  49: assetDefinition('Foothill Speaker Transfer', '4 seats + garment bag + scenic route', 'Speaker pickup with a planned foothill route and careful luggage handling.'),
+  50: assetDefinition('Winter Lodge Sedan', '4 seats + winter luggage + lodge arrival', 'Cold-weather transfer to a lodge with cleared access and compact ski bags.')
+};
+
+const ASSET_SCENE_BY_SLOT = {
+  1: 'a complete lakeside forest campsite with one dome tent, sleeping bags, backpacks, a lantern and compact cookware',
+  2: 'a desert hiking rest checkpoint with large water carriers, trekking poles, sun hats, neck shades and hydration packs arranged beside a trail marker without readable text',
+  3: 'a rocky coastal kayak launch with two sea kayaks, personal flotation vests, paddles, bright dry bags and a coiled tow line',
+  4: 'a winter mountain equipment bench outside a small stone refuge, with crampons, ice axes, climbing rope, helmets and avalanche safety tools',
+  5: 'a mobile group catering setup beside a public picnic pavilion, with large coolers, stainless preparation tables, insulated food carriers and washable crates',
+  6: 'an organized group safety desk in a community venue entrance, with first-aid cases, handheld radios, high-visibility vests, lanterns and incident supplies',
+  7: 'a trailside bicycle repair station with a work stand, floor pump, patch kits, multi-tools, spare tubes and open bikepacking tool rolls',
+  8: 'an outdoor event power point built around portable battery stations, color-organized charging leads, weatherproof cable covers and a compact distribution table',
+  9: 'an open board-game collection arranged across a cozy apartment dining table, with chess, cards, dice and small speakers',
+  10: 'a wooden community-hall game setup with classic strategy boards, dominoes, score tokens and neatly stacked card decks',
+  11: 'a colorful rooftop party-game kit with quick-play cards, portable speakers, reusable cups and soft ambient lights',
+  12: 'a weatherproof park-picnic game crate with outdoor chess, ring toss, cards, blankets and a compact Bluetooth speaker',
+  13: 'a portable audio and LED lighting rig unpacked in a small rehearsal studio, including stands, cables and a compact mixer',
+  14: 'a battery-powered speaker pair and small mixing console prepared in an intimate community venue with coiled cables',
+  15: 'a projector, warm lantern lights, tabletop games and a compact sound system prepared in a creative loft',
+  16: 'an organized event-tech tote with power banks, labeled-by-color cables without readable text, compact speakers and card games',
+  17: 'an industrial brick city loft with steel windows, a comfortable sofa bed and an uncluttered group dining area',
+  18: 'a bright Scandinavian-style city loft with pale wood, soft textiles, a mezzanine bed and morning window light',
+  19: 'a warm bohemian loft filled with plants, woven textures, a low lounge area and a neatly prepared sleeping space',
+  20: 'a compact modern smart city loft with modular furniture, a fold-out bed and efficient storage for a short group stay',
+  21: 'a serene harbor-view studio apartment with wide windows, a simple double bed and a compact breakfast table',
+  22: 'a high-rise skyline studio with a clean kitchenette, convertible sofa and evening city lights beyond the windows',
+  23: 'a converted artist studio loft with white walls, timber beams, tasteful canvases without text and a prepared guest bed',
+  24: 'a historic warehouse loft with arched windows, exposed beams, modern furniture and two clearly prepared sleeping areas',
+  25: 'a warm townhouse guest room with a made double bed, reading lamp, luggage bench and subtle everyday character',
+  26: 'a minimalist attic guest room with a sloped ceiling, skylight, simple linens and a small wooden desk',
+  27: 'a garden-level private guest room with soft green views, natural fabrics and a separate seating corner',
+  28: 'a modern spare bedroom with a compact work desk, practical storage and neutral bedding in daylight',
+  29: 'a rustic but tidy festival bunk room with two wooden bunk beds, personal shelves and durable linens',
+  30: 'a bright coastal guest room with washed wood, blue textiles, a luggage rack and soft reflected daylight',
+  31: 'a book-lined private guest room with a comfortable bed, reading chair and warm residential lighting',
+  32: 'a calm accessible guest suite with generous circulation space, low storage and a neatly prepared bed',
+  33: 'a practical unbranded modern SUV at a downtown curb with compact luggage ready for a city-to-lake trip',
+  34: 'a practical unbranded SUV parked at a lakeside recreation area with hiking packs and a folded picnic blanket',
+  35: 'a practical unbranded SUV at a rural road turnout under open skies with road-trip bags visible nearby',
+  36: 'a practical unbranded SUV at a wooded trailhead with two bicycles on a rear rack and outdoor gear',
+  37: 'an unbranded hatchback at a bright airport terminal pickup lane at dawn with two cabin-size suitcases',
+  38: 'an unbranded hatchback in a rain-slick airport parking area at blue hour with safely stowed luggage',
+  39: 'an unbranded hatchback waiting beneath a modern hotel shuttle canopy at night with warm architectural light',
+  40: 'a clean unbranded city sedan in an expo-center loading lane during clear daylight',
+  41: 'a clean unbranded city sedan at a neighborhood community-center curb with event cases ready for transport',
+  42: 'a clean unbranded city sedan in a colorful outdoor festival parking area before attendees arrive',
+  43: 'a comfortable unbranded sedan at a downtown hotel entrance in early-evening city light',
+  44: 'a comfortable unbranded sedan at a warm restaurant curbside pickup point after sunset',
+  45: 'a comfortable unbranded sedan waiting in a concert-venue pickup zone with subtle night lighting',
+  46: 'an unbranded sedan under a contemporary railway-station canopy in daylight with a small rolling suitcase',
+  47: 'an unbranded sedan outside a historic brick rail station after rain with reflections on the pavement',
+  48: 'a reliable unbranded sedan arriving at a modern mountain conference hotel in crisp daylight',
+  49: 'a reliable unbranded sedan at a winding foothill overlook with a conference garment bag and compact luggage',
+  50: 'a reliable unbranded sedan near a snowy lodge entrance with cleared pavement and practical winter luggage'
+};
 
 const LOCAL_ASSET_SLOTS_BY_TEMPLATE = {
   'asset-sup-1': range(1, 4),
@@ -149,6 +264,8 @@ const assets = JSON.parse(await readFile(ASSETS_PATH, 'utf8'));
 const events = JSON.parse(await readFile(EVENTS_PATH, 'utf8'));
 const users = JSON.parse(await readFile(USERS_PATH, 'utf8'));
 const contacts = JSON.parse(await readFile(CONTACTS_PATH, 'utf8'));
+const activityMembers = JSON.parse(await readFile(ACTIVITY_MEMBERS_PATH, 'utf8'));
+const userReports = JSON.parse(await readFile(USER_REPORTS_PATH, 'utf8'));
 
 const assetSlots = buildAssetSlots(assets);
 const { slots: eventSlots, slotByEventKey } = buildEventSlots(events);
@@ -159,6 +276,17 @@ for (const asset of assets) {
   if (!slot) throw new Error(`No image slot for asset ${asset.assetId}`);
   asset.imageUrl = mediaUrl(slot.minioKey);
   if (`${asset.sourceLink ?? ''}`.includes('picsum.photos/')) asset.sourceLink = '';
+}
+const assetTitleById = new Map(assets.map(asset => [asset.assetId, asset.title]));
+for (const member of activityMembers) {
+  if (member.ownerType !== 'asset') continue;
+  const title = assetTitleById.get(member.ownerId);
+  if (title) member.metWhere = title;
+}
+for (const report of userReports) {
+  if (report.sourceType !== 'asset') continue;
+  const title = assetTitleById.get(report.assetId);
+  if (title) report.sourceText = `${title} request needs moderation review.`;
 }
 for (const event of events) {
   if (!`${event.imageUrl ?? ''}`.trim()) continue;
@@ -233,6 +361,8 @@ const expected = new Map([
   [EVENTS_PATH, `${JSON.stringify(events, null, 2)}\n`],
   [USERS_PATH, `${JSON.stringify(users, null, 2)}\n`],
   [CONTACTS_PATH, `${JSON.stringify(contacts, null, 2)}\n`],
+  [ACTIVITY_MEMBERS_PATH, `${JSON.stringify(activityMembers, null, 2)}\n`],
+  [USER_REPORTS_PATH, `${JSON.stringify(userReports, null, 2)}\n`],
   [FRONTEND_HELPER_PATH, frontendHelper],
   [MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`]
 ]);
@@ -253,6 +383,10 @@ if (writeMode) {
 
 function range(start, end) {
   return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+}
+
+function assetDefinition(title, subtitle, details, category = null) {
+  return { title, subtitle, details, category };
 }
 
 function category(key, keywords) {
@@ -345,7 +479,6 @@ function classifyEvent(event) {
 }
 
 function buildAssetSlots(records) {
-  const slots = [];
   const variations = [
     'soft morning light and a slightly elevated three-quarter view',
     'clear midday light and a clean eye-level documentary view',
@@ -356,40 +489,84 @@ function buildAssetSlots(records) {
     'calm early-evening light with a balanced three-quarter composition',
     'natural window or ambient light with an uncluttered background'
   ];
+  const slotByAssetId = new Map();
+  const newSlotByTitle = new Map(
+    Object.entries(ASSET_SEED_DEFINITION_BY_SLOT).map(([slot, definition]) => [definition.title, Number(slot)])
+  );
+
+  for (const asset of records) {
+    const imageSlot = parseAssetSlot(asset.imageUrl);
+    const titleSlot = newSlotByTitle.get(asset.title);
+    const slot = imageSlot ?? titleSlot;
+    if (slot) slotByAssetId.set(asset.assetId, slot);
+  }
+
   for (const group of ASSET_SLOT_GROUPS) {
-    const matching = records.filter(asset => asset.title === group.title);
-    if (!matching.length) throw new Error(`Missing asset group ${group.title}`);
-    for (const [index, slotNumber] of group.slots.entries()) {
-      const assigned = matching.filter((_, recordIndex) => recordIndex % group.slots.length === index);
-      slots.push({
-        slot: slotNumber,
-        key: `asset-${pad(slotNumber)}`,
-        minioKey: assetMinioKey(slotNumber),
-        frontendPlaceholderUrl: `https://picsum.photos/id/${ASSET_PICSUM_IDS[slotNumber - 1]}/1200/700`,
-        context: {
-          type: matching[0].type,
-          title: matching[0].title,
-          subtitle: matching[0].subtitle,
-          visual: group.visual
-        },
-        prompt: assetPrompt(group, variations[index % variations.length], slotNumber),
-        mongoAssetIds: assigned.map(asset => asset.assetId),
-        mongoRecords: assigned.map(asset => ({ assetId: asset.assetId, ownerUserId: asset.ownerUserId, title: asset.title, subtitle: asset.subtitle, category: asset.category }))
-      });
+    const unresolved = records.filter(asset => !slotByAssetId.has(asset.assetId) && asset.title === group.title);
+    for (const [index, asset] of unresolved.entries()) {
+      slotByAssetId.set(asset.assetId, group.slots[index % group.slots.length]);
     }
   }
-  return slots.sort((left, right) => left.slot - right.slot);
+
+  const unassigned = records.filter(asset => !slotByAssetId.has(asset.assetId));
+  if (unassigned.length) {
+    throw new Error(`No stable image slot for assets: ${unassigned.map(asset => asset.assetId).join(', ')}`);
+  }
+
+  for (const asset of records) {
+    const slot = slotByAssetId.get(asset.assetId);
+    const definition = ASSET_SEED_DEFINITION_BY_SLOT[slot];
+    if (!definition) throw new Error(`Missing seed definition for asset slot ${slot}`);
+    asset.title = definition.title;
+    asset.subtitle = definition.subtitle;
+    asset.details = definition.details;
+    if (definition.category) asset.category = definition.category;
+  }
+
+  const slots = range(1, 50).map(slotNumber => {
+    const assigned = records.filter(asset => slotByAssetId.get(asset.assetId) === slotNumber);
+    if (!assigned.length) throw new Error(`Asset slot ${slotNumber} has no Mongo records`);
+    const definition = ASSET_SEED_DEFINITION_BY_SLOT[slotNumber];
+    const slotVisual = ASSET_SCENE_BY_SLOT[slotNumber];
+    if (!slotVisual) throw new Error(`Missing unique visual specification for asset slot ${slotNumber}`);
+    return {
+      slot: slotNumber,
+      key: `asset-${pad(slotNumber)}`,
+      minioKey: assetMinioKey(slotNumber),
+      frontendPlaceholderUrl: `https://picsum.photos/id/${ASSET_PICSUM_IDS[slotNumber - 1]}/1200/700`,
+      context: {
+        type: assigned[0].type,
+        category: assigned[0].category,
+        title: definition.title,
+        subtitle: definition.subtitle,
+        details: definition.details,
+        visual: slotVisual
+      },
+      prompt: assetPrompt(definition, variations[(slotNumber - 1) % variations.length], slotNumber, slotVisual),
+      mongoAssetIds: assigned.map(asset => asset.assetId),
+      mongoRecords: assigned.map(asset => ({ assetId: asset.assetId, ownerUserId: asset.ownerUserId, title: asset.title, subtitle: asset.subtitle, category: asset.category }))
+    };
+  });
+  return slots;
 }
 
-function assetPrompt(group, variation, slotNumber) {
+function parseAssetSlot(imageUrl) {
+  const match = `${imageUrl ?? ''}`.match(/images\/demo-assets\/asset-(\d{3})\/v1\/large\.webp/);
+  if (!match) return null;
+  const slot = Number(match[1]);
+  return slot >= 1 && slot <= 50 ? slot : null;
+}
+
+function assetPrompt(definition, variation, slotNumber, slotVisual) {
   return [
     'Use case: product-mockup',
     'Asset type: mobile-first asset card cover for a social event application',
-    `Primary request: create a believable photorealistic image of ${group.visual}.`,
-    `Scene/backdrop: a plausible everyday setting; visual variation ${pad(slotNumber)}.`,
+    `Primary request: create a believable photorealistic image of ${slotVisual}.`,
+    `Seed asset: "${definition.title}" — ${definition.subtitle}. ${definition.details}`,
+    `Scene/backdrop: follow this slot-specific environment exactly; visual identity ${pad(slotNumber)} must have a clearly different setting, object arrangement and silhouette from neighboring pool images.`,
     `Composition/framing: landscape 16:9, ${variation}; keep the main asset centered and recognizable even as a small thumbnail.`,
     'Lighting/mood: natural, friendly, practical and not luxury-advertising polished.',
-    'Constraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, license plates, labels, captions, UI, text or watermark.',
+    'Constraints: entirely fictional generated scene; no identifiable real person; no logos, brand marks, license plates, labels, captions, UI, text or watermark; render the exact slot-specific equipment instead of substituting a generic outdoor or equipment-kit subject.',
     'Avoid: unrelated objects, surreal details, excessive clutter, distorted vehicles, impossible rooms, stock-photo collage aesthetics.'
   ].join('\n');
 }
@@ -428,34 +605,65 @@ function buildEventSlots(records) {
   if (slots.length !== 100) throw new Error(`Expected 100 event slots, got ${slots.length}`);
 
   const slotByEventKey = new Map();
+  const conflicts = buildListWindowConflicts(eligible, 10);
   const ordered = [...eligible].sort((left, right) =>
-    `${right.startAtIso ?? ''}`.localeCompare(`${left.startAtIso ?? ''}`) || eventKey(left).localeCompare(eventKey(right))
+    (conflicts.get(eventKey(right))?.size ?? 0) - (conflicts.get(eventKey(left))?.size ?? 0)
+      || eventKey(left).localeCompare(eventKey(right))
   );
-  const recent = [];
   for (const event of ordered) {
     const categoryKey = classifyEvent(event);
+    const blockedSlots = new Set(
+      [...(conflicts.get(eventKey(event)) ?? [])]
+        .map(key => slotByEventKey.get(key))
+        .filter(Boolean)
+    );
     const primaryCandidates = slots
       .filter(slot => slot.category === categoryKey)
       .sort((left, right) => similarity(event, right.representative) - similarity(event, left.representative) || left.slot - right.slot);
-    const availablePrimary = primaryCandidates.filter(slot => !recent.includes(slot.slot));
+    const availablePrimary = primaryCandidates.filter(slot => !blockedSlots.has(slot.slot));
     const relatedCandidates = slots
-      .filter(slot => (RELATED_EVENT_CATEGORIES[categoryKey] ?? []).includes(slot.category) && !recent.includes(slot.slot))
+      .filter(slot => (RELATED_EVENT_CATEGORIES[categoryKey] ?? []).includes(slot.category) && !blockedSlots.has(slot.slot))
       .sort((left, right) => similarity(event, right.representative) - similarity(event, left.representative) || left.slot - right.slot);
+    const compatibleCategories = new Set([categoryKey, ...(RELATED_EVENT_CATEGORIES[categoryKey] ?? [])]);
+    const emergencyCandidates = slots.filter(slot => compatibleCategories.has(slot.category) && !blockedSlots.has(slot.slot));
     const selected = availablePrimary.find(slot => slot.mongoEventIds.length === 0)
       ?? availablePrimary[0]
       ?? relatedCandidates.find(slot => slot.mongoEventIds.length === 0)
       ?? relatedCandidates[0]
+      ?? emergencyCandidates[0]
       ?? primaryCandidates[0];
     if (!selected) throw new Error(`No event slot candidate for ${eventKey(event)}`);
     selected.mongoEventIds.push(eventKey(event));
     selected.mongoRecords.push(eventSummary(event));
     slotByEventKey.set(eventKey(event), selected.slot);
-    recent.push(selected.slot);
-    if (recent.length > 12) recent.shift();
   }
   const unused = slots.filter(slot => slot.mongoEventIds.length === 0);
   if (unused.length) throw new Error(`Unused event slots: ${unused.map(slot => slot.key).join(', ')}`);
   return { slots, slotByEventKey };
+}
+
+function buildListWindowConflicts(events, windowSize) {
+  const conflicts = new Map(events.map(event => [eventKey(event), new Set()]));
+  const originalIndex = new Map(events.map((event, index) => [eventKey(event), index]));
+  const orders = [
+    [...events].sort((left, right) => `${right.startAtIso ?? ''}`.localeCompare(`${left.startAtIso ?? ''}`) || eventKey(left).localeCompare(eventKey(right))),
+    [...events].sort((left, right) => `${right.updatedDate ?? ''}`.localeCompare(`${left.updatedDate ?? ''}`) || eventKey(left).localeCompare(eventKey(right))),
+    [...events].sort((left, right) => (Number(right.affinity) || 0) - (Number(left.affinity) || 0) || eventKey(left).localeCompare(eventKey(right))),
+    [...events].sort((left, right) => (Number(right.affinity) || 0) - (Number(left.affinity) || 0) || originalIndex.get(eventKey(left)) - originalIndex.get(eventKey(right))),
+    [...events].sort((left, right) => (Number(right.boost) || 0) - (Number(left.boost) || 0) || eventKey(left).localeCompare(eventKey(right))),
+    [...events].sort((left, right) => (Number(right.boost) || 0) - (Number(left.boost) || 0) || originalIndex.get(eventKey(left)) - originalIndex.get(eventKey(right)))
+  ];
+  for (const ordered of orders) {
+    for (let leftIndex = 0; leftIndex < ordered.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < Math.min(ordered.length, leftIndex + windowSize); rightIndex += 1) {
+        const leftKey = eventKey(ordered[leftIndex]);
+        const rightKey = eventKey(ordered[rightIndex]);
+        conflicts.get(leftKey).add(rightKey);
+        conflicts.get(rightKey).add(leftKey);
+      }
+    }
+  }
+  return conflicts;
 }
 
 function allocateEventSlots(byCategory, total) {
@@ -545,18 +753,24 @@ function eventPrompt(categoryKey, event, slotNumber) {
 
 function buildLocalEventSlotMap(eventSlots, slotByEventKey, mongoEvents) {
   const result = {};
+  const usedSlots = new Set();
   for (const seed of LOCAL_EVENT_SEEDS) {
     const slug = seed.split(':').at(-1).replace(/-/g, ' ');
     const exact = mongoEvents.find(event => normalize(event.title) === normalize(slug) && slotByEventKey.has(eventKey(event)));
-    if (exact) {
-      result[seed] = slotByEventKey.get(eventKey(exact));
-      continue;
-    }
     const pseudo = { title: slug, subtitle: '', topics: [], mode: 'Casual' };
     const categoryKey = classifyEvent(pseudo);
-    const candidates = eventSlots.filter(slot => slot.category === categoryKey);
-    const selected = candidates.sort((left, right) => similarity(pseudo, right.representative) - similarity(pseudo, left.representative) || left.slot - right.slot)[0];
+    const exactSlot = exact ? slotByEventKey.get(eventKey(exact)) : null;
+    const candidates = eventSlots
+      .filter(slot => slot.category === categoryKey || (RELATED_EVENT_CATEGORIES[categoryKey] ?? []).includes(slot.category))
+      .sort((left, right) => {
+        if (left.slot === exactSlot) return -1;
+        if (right.slot === exactSlot) return 1;
+        return similarity(pseudo, right.representative) - similarity(pseudo, left.representative) || left.slot - right.slot;
+      });
+    const selected = candidates.find(slot => !usedSlots.has(slot.slot))
+      ?? eventSlots.find(slot => !usedSlots.has(slot.slot));
     result[seed] = selected?.slot ?? 1;
+    usedSlots.add(result[seed]);
   }
   return result;
 }
@@ -566,15 +780,17 @@ function buildFrontendHelper(localEventSlotBySeed) {
     `// Frontend-local keeps remote placeholders; the standalone HTTP demo uses the same logical slots from MinIO.\n` +
     `const ASSET_PICSUM_IDS = ${JSON.stringify(ASSET_PICSUM_IDS)} as const;\n` +
     `const EVENT_PICSUM_IDS = ${JSON.stringify(EVENT_PICSUM_IDS)} as const;\n\n` +
+    `const PUBLIC_LOCAL_USER_IDS = ${JSON.stringify(PUBLIC_LOCAL_USER_IDS)} as const;\n\n` +
     `const ASSET_SLOTS_BY_TEMPLATE: Readonly<Record<string, readonly number[]>> = ${JSON.stringify(LOCAL_ASSET_SLOTS_BY_TEMPLATE, null, 2)};\n\n` +
     `const EVENT_SLOT_BY_SEED: Readonly<Record<string, number>> = ${JSON.stringify(localEventSlotBySeed, null, 2)};\n\n` +
     `export function demoAssetPlaceholderUrl(seed: string): string {\n` +
     `  const normalized = seed.trim().toLowerCase();\n` +
     `  const template = Object.keys(ASSET_SLOTS_BY_TEMPLATE).find(key => normalized.includes(key));\n` +
     `  const candidates = template ? ASSET_SLOTS_BY_TEMPLATE[template] : [1];\n` +
-    `  const ownerOrdinal = Number(normalized.match(/u(\\d+)-asset-/)?.[1]);\n` +
-    `  const candidateIndex = Number.isFinite(ownerOrdinal) && ownerOrdinal > 0\n` +
-    `    ? (ownerOrdinal - 1) % candidates.length\n` +
+    `  const ownerId = normalized.match(/(u\\d+)-asset-/)?.[1] ?? '';\n` +
+    `  const publicOwnerIndex = PUBLIC_LOCAL_USER_IDS.indexOf(ownerId as typeof PUBLIC_LOCAL_USER_IDS[number]);\n` +
+    `  const candidateIndex = publicOwnerIndex >= 0\n` +
+    `    ? publicOwnerIndex % candidates.length\n` +
     `    : stableIndex(normalized, candidates.length);\n` +
     `  const slot = candidates[candidateIndex] ?? 1;\n` +
     `  return \`https://picsum.photos/id/\${ASSET_PICSUM_IDS[slot - 1]}/1200/700\`;\n` +

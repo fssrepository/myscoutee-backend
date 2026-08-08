@@ -1,11 +1,11 @@
 # Narrative-first TODO
 
-Status: **generation paused by Founder, 2026-08-07**.
+Status: **generation authorized by Founder, 2026-08-08; visual lock in progress**.
 
-No character, image, slideshow, motion-video, narration or music generation may
-start until the public book and all generation prompts are synchronized, the
-Founder has read the rebuilt PDF, requested corrections have been applied, and
-the Founder explicitly approves generation.
+The public book and generation prompts have been synchronized and the Founder
+has explicitly resumed character, book-image and checkpoint generation. Motion
+credits, narration and music remain downstream of the endpoint-slideshow
+review.
 
 ## 1. Current work — book and prompt synchronization only
 
@@ -41,8 +41,7 @@ the Founder explicitly approves generation.
 - [x] Apply the Founder review and rebuild the PDF again.
 - [x] Record explicit Founder approval for the public narrative and publish
   Part I on 7 August 2026.
-- [ ] Approve the synchronized generation-prompt baseline separately before
-  character, image, slideshow or motion generation begins.
+- [x] Founder resumed the synchronized generation baseline on 8 August 2026.
 
 ## 2. Facts still requiring confirmation before public generation
 
@@ -67,12 +66,13 @@ the Founder explicitly approves generation.
   never claim that Brexit made his location impossible to verify.
 - [ ] All remaining `CONFIRM` fields in travel memory boards.
 
-## 3. Deferred until explicit Founder approval
+## 3. Active visual lock and generation
 
 - [x] Define the Part I character map and book-illustration prompt contract
   without generating images.
-- [ ] Founder approves `assets/characters/CHARACTER_MAP.md` and
-  `prompts/book-character-illustrations.txt`.
+- [x] Founder authorized the character/book/checkpoint generation pass; use the
+  existing consistent Founder identity sheet as the continuity baseline while
+  making supporting characters warmer and more individual.
 - [ ] Generate or revise Founder and supporting-character identity sheets.
 - [ ] Generate Part I book portraits and scene montages from the same locked
   identities used by the checkpoint and motion prompts.

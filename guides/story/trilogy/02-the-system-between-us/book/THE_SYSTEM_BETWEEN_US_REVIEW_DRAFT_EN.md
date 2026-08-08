@@ -208,6 +208,8 @@ through intensity, length and fear.
 
 The failure was assembled.
 
+<!-- illustration: part_ii_triangle_scene -->
+
 ## 5. The Password That Was Not a Relationship
 
 The deepest design problem appeared before the final return.
@@ -436,6 +438,8 @@ not recognize the whole sequence that made the joke necessary.
 
 The irony kept me from becoming only the file.
 
+<!-- illustration: part_ii_police_scene -->
+
 ## 12. Remarks in the Margin
 
 My later defence submissions remember questions and remarks from police and the
@@ -524,6 +528,8 @@ proposed suspended sentence and his astonishment when he asked about the
 disputed line. A life designed to need very little was being read as a condition
 to be explained.
 
+<!-- illustration: part_ii_home_inquiry_scene -->
+
 Why had I not sought psychological help?
 
 Because at the relevant moment I was trying to repair a tax record and prepare
@@ -565,6 +571,8 @@ I contest that interpretation.
 A forensic opinion is a document built to answer a legal question. It is not a
 complete biography. Yet once attached to a person, its language can travel as
 though it were one.
+
+<!-- illustration: part_ii_experts_scene -->
 
 The word *paranoia* became stranger with time. Institutions that had appeared
 immovable in 2023 were openly being replaced in 2026. That political reversal
@@ -633,6 +641,8 @@ the clerk at the far-left corner, the judge in the centre and my court-appointed
 defence counsel on the right. I sat in front of them with a table microphone
 directly before me. It did not look theatrical. Its shape nevertheless made the
 roles—and my place outside their working curve—immediately visible.
+
+<!-- illustration: part_ii_courtroom_scene -->
 
 In that room, the accounting failure returned in miniature. When I described what
 I believed the accountant had done, the judge warned me not to defame anyone.
@@ -710,6 +720,8 @@ restartable handoff. A professor whose variational work had helped inspire the
 experiment read two notes and the proof plan. He found the ideas intriguing,
 then asked the decisive question: exactly which mathematical statement was
 being tested? The experiment had reached its honest boundary.
+
+<!-- illustration: part_ii_ai_work_scene -->
 
 All of this happened with the possibility of imprisonment in the background.
 Software commits did not answer the charge. They recorded what survival looked
