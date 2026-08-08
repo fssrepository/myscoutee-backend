@@ -2,12 +2,15 @@
 
 Working title: **The System Between Us**.
 
-Status: **English review draft, unpublished, version 0.1.0**.
+Status: **English public edition, version 1.0.0, published and technically
+closed on 8 August 2026**.
 
 The manuscript is [THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md).
 
-The current reading copy is
-[MyScoutee_The_Story_Part_II_The_System_Between_Us_v0.1.0_EN_REVIEW.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v0.1.0_EN_REVIEW.pdf).
+The current editable reading copy is
+[MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf).
+The matching locked PDF, checksum and publication manifest live under
+[`../published/`](../published/).
 
 Build the editable review HTML and PDF from the repository root with:
 
@@ -15,21 +18,16 @@ Build the editable review HTML and PDF from the repository root with:
 python3 guides/story/trilogy/02-the-system-between-us/book/build_review_book.py
 ```
 
-The build writes the browser edition beside the manuscript and the readable
-PDF under `draft/`. It does not write a checksum or publication manifest while
-`locked` is `false`.
+The builder writes the browser edition beside the manuscript. An explicit
+`--pdf` path creates the replaceable editable export; the default locked build
+writes the public PDF, SHA-256 checksum and publication manifest. It refuses to
+overwrite a published version, so any later released correction requires a new
+edition number.
 
-This is not yet a public edition. The next reading artifact will be a clearly
-marked **review PDF** using the Part I page, cover, opener, motif and metadata
-system with a Part II-specific visual language. That review PDF remains
-editable, unhashed and outside `published/`. Publication requires:
-
-1. Founder chronology review;
-2. local transcript review of the private audio;
-3. page-level verification of quoted procedural documents;
-4. privacy/defamation/clinical/legal wording review;
-5. synchronization with the final 03:00 script;
-6. an explicit instruction to publish and assign version `1.0.0`.
+The private-source and transcript tasks remain useful post-publication source
+hardening, not claims that the public memoir is a complete legal record. The
+edition itself clearly separates documents, attributed recollection, memoir
+and later context.
 
 Part II deliberately ends before the final result. Part III will record what the
 proceeding, institutional transition, Founder and product ultimately become.

@@ -12,6 +12,6 @@ The reusable prompt system is split into four files:
 
 For a single clip, paste the continuity prefix, the relevant `SHOT Sxx` block
 and the platform control line. Upload only the exact approved first and last
-checkpoint for that interval. Character and endpoint generation is authorized;
-credit-bearing Flow/OpenArt motion begins only after the endpoint slideshow is
-reviewed.
+checkpoint for that interval. The next phase generates only the two endpoints
+of one selected difficult scene, then compares the identical eight-second test
+in Google Flow and OpenArt. No slideshow or animatic is built.

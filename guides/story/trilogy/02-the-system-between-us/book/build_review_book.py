@@ -58,9 +58,10 @@ book.COMPACT_ENDING_MOTIF_INDEXES = frozenset()
 
 
 def versioned_pdf_name(version: dict[str, object]) -> str:
+    suffix = "EN.pdf" if version["status"] == "public" else "EN_REVIEW.pdf"
     return (
         "MyScoutee_The_Story_Part_II_The_System_Between_Us_"
-        f"v{version['version']}_EN_REVIEW.pdf"
+        f"v{version['version']}_{suffix}"
     )
 
 
@@ -134,22 +135,34 @@ def build_document(source: Path) -> str:
     tagline = html.escape(front["tagline"])
     roman = html.escape(str(version["trilogy_roman"]))
     edition_version = html.escape(str(version["version"]))
-    updated = html.escape(str(version["updated"]))
-    edition = f"Review draft v{edition_version} · Unpublished · Updated {updated}"
-    truth = (
-        "An unpublished first-person review draft about an unresolved legal and "
-        "institutional period. Documentary record, attributed recollection, memoir "
-        "and later public context remain explicitly distinct."
-    )
+    status = html.escape(str(version["status"]))
+    if version["status"] == "public":
+        published = html.escape(book.display_date(version["published"]))
+        edition = f"Public edition v{edition_version} · Published {published}"
+        truth = (
+            "A first-person public memoir of an unresolved legal and institutional "
+            "period. Documentary record, attributed recollection, memoir and later "
+            "public context remain explicitly distinct."
+        )
+        title_suffix = "public edition"
+    else:
+        updated = html.escape(book.display_date(version["updated"]))
+        edition = f"Review draft v{edition_version} · Unpublished · Updated {updated}"
+        truth = (
+            "An unpublished first-person review draft about an unresolved legal and "
+            "institutional period. Documentary record, attributed recollection, memoir "
+            "and later public context remain explicitly distinct."
+        )
+        title_suffix = "review"
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="MyScoutee">
 <meta name="description" content="A first-person MyScoutee systems memoir.">
 <meta name="book-version" content="{edition_version}">
-<meta name="book-status" content="draft">
+<meta name="book-status" content="{status}">
 <meta name="trilogy-part" content="{roman}">
-<title>{title} · Part {roman} · {subtitle} · v{edition_version} review</title>
+<title>{title} · Part {roman} · {subtitle} · v{edition_version} {title_suffix}</title>
 <style>{stylesheet()}</style></head><body>
 <section class="cover" aria-label="{title}">
   <div class="brand-lockup" aria-label="MyScoutee"><img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span></div>

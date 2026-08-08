@@ -2,7 +2,7 @@
 
 ## The System Between Us
 
-Status: **English review draft; unpublished**.
+Status: **English public edition v1.0.0; published 8 August 2026**.
 
 Part II continues from the exact final threshold of Part I. The same founder who
 crossed countries to find work and human connection now crosses a landscape of

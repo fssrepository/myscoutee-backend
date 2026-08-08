@@ -115,8 +115,8 @@ foley and breath.
 
 ### 02:48–02:56 — S22 · A court cannot assemble
 
-> Seven of fifteen judges left his case without a quorum. Mine returned as
-> premature, before any first decision.
+> Seven judges stepped aside, then an eighth. No quorum remained. Mine returned
+> as premature, before any first decision.
 
 ### 02:56–03:00 — E01 · Open line
 
@@ -141,7 +141,7 @@ Add all typography in post.
 | 02:16–02:24 | WORK · DEBT · HOME · SAVINGS BUILT ABROAD |
 | 02:32–02:40 | 12 APRIL 2026 |
 | 02:40–02:48 | TOP OF THE STATE · BOTTOM OF THE FILE |
-| 02:48–02:56 | 15 JUDGES · 7 RECUSALS · NO QUORUM · TOO EARLY |
+| 02:48–02:56 | 15 JUDGES · 8 RECUSALS · NO QUORUM · TOO EARLY |
 | 02:56–03:00 | MyScoutee · TEST THE SYSTEM BETWEEN US. |
 
 ## Clean short synopsis

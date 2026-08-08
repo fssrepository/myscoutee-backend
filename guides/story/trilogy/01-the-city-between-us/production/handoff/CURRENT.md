@@ -8,5 +8,5 @@ Resume from:
 [`../../../../shared/production/handoff/CURRENT.md`](../../../../shared/production/handoff/CURRENT.md)
 
 That handoff is the authoritative book/prompt synchronization record and the
-only current route into 9:16 checkpoint preparation. No slideshow video is
-currently retained.
+only current route into the direct two-frame model benchmark. No slideshow or
+animatic is produced.

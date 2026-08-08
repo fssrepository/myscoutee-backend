@@ -1,13 +1,13 @@
-# Start here — Part II review route
+# Start here — Part II published package
 
-The book, evidence chronology, three-minute film and generation prompts are now
-synchronized for frame preparation. The next objective is to replace the rough
-checkpoint studies with approved exact 9:16 endpoints before any slideshow,
-voice, music or motion-video generation.
+The book, evidence chronology, three-minute film and generation prompts are
+synchronized and closed. The next phase selects one difficult interval,
+generates exactly two 9:16 endpoints and compares the same eight-second request
+in Google Flow and OpenArt.
 
 ## Current deliverables
 
-1. [Review-draft manuscript](../book/THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md)
+1. [Editable public manuscript](../book/THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md)
 2. [Three-minute script](../film/SCRIPT.md)
 3. [Creative bible](../film/CREATIVE_BIBLE.md)
 4. [Storyboard and checkpoint plan](../storyboard/STORYBOARD.md)
@@ -22,7 +22,8 @@ voice, music or motion-video generation.
 13. [Scene candidates](../research/SCENE_CANDIDATES.md)
 14. [Anonymous role glossary](../research/ROLE_GLOSSARY.md)
 15. [Tone and irony ledger](../research/TONE_AND_IRONY_LEDGER.md)
-16. [Part I-style English review PDF](../book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v0.1.0_EN_REVIEW.pdf)
+16. [Part I-style editable public PDF](../book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf)
+17. [Locked public artifacts](../published/README.md)
 
 ## Review order
 
@@ -37,12 +38,12 @@ The next approval gates are:
 | A | written-source chronology accepted | none |
 | B | private audio transcribed locally and checked | none apart from optional local tooling |
 | C | public/private boundary and legal wording reviewed | none |
-| D | book review draft accepted | none |
-| E | Part I-style review PDF built and visually inspected | local CPU only |
+| D | book and prompts accepted | none |
+| E | Part I-style public PDF built and visually inspected | local CPU only |
 | F | 03:00 narration and shot order accepted | none |
-| G | checkpoint stills generated and approved | still-image credits only |
-| H | eight-second scene-hold slideshow assembled | local CPU only |
-| I | Flow/OpenArt motion tests begin | video credits |
+| G | one difficult interval selected | none |
+| H | its two exact endpoint frames approved | two still images only |
+| I | identical Flow/OpenArt motion test | one eight-second result per model |
 | J | narration, one continuous score and sound design | only after picture timing is stable |
 
 ## Truth layers
@@ -61,16 +62,15 @@ The film may compress time but may not merge those layers into one claim.
 
 ## Production boundary
 
-The Founder authorized the frame-preparation phase on 8 August 2026. Do not yet:
+The Founder authorized publication closure on 8 August 2026. In the next phase,
+do not:
 
-- assemble the slideshow;
+- build a slideshow or animatic;
 - upload private audio or primary legal documents to a cloud model;
-- generate Flow/OpenArt clips;
-- lock, hash or publish the book;
+- generate any scene other than the one selected benchmark interval;
 - imply an acquittal, conviction, clinical conclusion or final political result
   that has not occurred.
 
-Generate only the final-candidate checkpoint images from the locked role and
-location descriptions. Do not create disposable midpoints or book-only
-substitutes. Publication still requires the separate factual, privacy, legal and
-current-office review recorded in the TODO.
+Generate only the selected interval's exact first and last frames from the
+locked role and location descriptions. Do not create disposable midpoints or
+book-only substitutes.

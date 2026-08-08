@@ -1,7 +1,7 @@
 # Narrative-first TODO
 
-Status: **book/prompt synchronization complete for frame preparation; editable
-book review and pre-publication source checks remain open**.
+Status: **book/prompt synchronization and public-edition closure complete;
+frame/model benchmarking remains a separate next phase**.
 
 ## 1. Current review pass
 
@@ -35,15 +35,15 @@ book review and pre-publication source checks remain open**.
 - [x] Apply the current Founder corrections across book, chronology, film and
   prompts and receive authorization to move next to frame preparation on
   8 August 2026.
-- [ ] Founder performs a final cover-to-cover factual, privacy and pacing read
-  before publication; frame preparation does not turn the review PDF into a
-  released legal or historical edition.
+- [x] Founder authorizes publication after the cover-to-cover correction pass;
+  unresolved procedural outcomes remain explicitly reserved for Part III.
 - [x] Keep the national-unity versus possible citizenship-renunciation thought
   in Chapter 25 and the coverage ledger rather than overloading S22/CP22. The
   current film ending retains the two constitutional thresholds and Part III
   bridge. No extra four-second or disposable midpoint frame is created.
-- [x] Build a clearly marked, editable review PDF in the Part I book style for
-  the Founder to read; do not hash, lock or place it in `published/`.
+- [x] Build the editable reading PDF in the Part I book style.
+- [x] Publish version `1.0.0` with checksum and publication manifest while
+  keeping the source and draft export editable.
 
 ## 2. Source reconciliation still required
 
@@ -91,13 +91,11 @@ book review and pre-publication source checks remain open**.
   the frame-preparation pass.
 - [ ] Generate or regenerate CP01–CP22 only after the book and prompts are
   approved.
-- [ ] Build the checkpoint-only slideshow: every exact 9:16 CP remains visible
-  for a complete eight seconds at 00:00, 00:08, 00:16 and so on; no four-second
-  split and no generated intermediate image.
-- [ ] Review the slideshow against the book before spending video credits.
-- [ ] Test Flow and OpenArt on the identical CP05→CP06 stress interval.
-- [ ] Test the selected finalists on CP20→CP21 only if the first comparison is
-  inconclusive.
+- [x] Remove the slideshow/animatic stage and its generated-video artifacts.
+- [ ] In a fresh phase, select one difficult eight-second stress interval from
+  the closed story package.
+- [ ] Generate only its exact two 9:16 endpoint frames.
+- [ ] Test Google Flow and OpenArt with the identical pair and prompt.
 - [ ] Select one production model and generate S01–S22 with exact endpoints.
 - [ ] Produce one time-locked English narration after picture timing is stable.
 - [ ] Produce one continuous score for the full film; discard clip-generated
@@ -113,8 +111,8 @@ book review and pre-publication source checks remain open**.
 - [x] Build and visually inspect the English review PDF in the Part I page,
   cover, opener, motif and metadata system, with Part II-specific colours and
   symbols.
-- [ ] Keep editable book drafts under `book/`; do not place them in `published/`.
-- [ ] Publish only an approved versioned PDF, checksum and publication metadata.
+- [x] Keep editable book sources and replaceable reading exports under `book/`.
+- [x] Publish only the approved versioned PDF, checksum and publication metadata.
 - [ ] Place only the final film master beside the published book.
 - [ ] Preserve lossless CP22 and the clean four-second E01 card for Part III.
 - [ ] Part III receives the final procedural outcome; Part II remains a complete

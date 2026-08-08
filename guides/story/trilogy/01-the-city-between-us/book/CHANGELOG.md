@@ -3,9 +3,18 @@
 The trilogy part and the edition version are separate. This book is Part
 `I`; its first public edition is `1.0.0`.
 
-## 1.0.0 — 2026-08-07
+## 1.0.0 — 2026-08-08
 
 - Founder-approved first public edition for release on LinkedIn.
+- Added the approved Founder, Budapest relationship, London household,
+  global/local encounter and balanced six-person MyScoutee character plates.
+- Rebuilt the London resident plate as one four-person row of distinct
+  identities and retained the full household montage above it.
+- Reconfirmed parity across the 03:00 narration, storyboard, checkpoint chain
+  and generation prompts before moving to cross-model frame testing.
+- Removed the slideshow/animatic stage from the active production route;
+  approved endpoint frames will be compared directly in identical eight-second
+  Google Flow and OpenArt tests.
 - Closed the synchronized memoir and product-origin manuscript without changing
   its explicit memory, privacy or product-truth boundaries.
 - Replaced remaining internal editorial language with publication-ready memory

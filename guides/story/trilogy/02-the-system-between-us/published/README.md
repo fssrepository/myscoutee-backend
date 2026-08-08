@@ -7,5 +7,7 @@ This flat directory is reserved for the approved public outputs only:
 - publication metadata;
 - final public film master.
 
-Drafts, source evidence, prompts, checkpoints, slideshow/animatic files and
-platform tests do not belong here. No Part II artifact is published yet.
+Drafts, source evidence, prompts, checkpoints and platform tests do not belong
+here. Public edition `1.0.0` consists of the versioned English PDF, its SHA-256
+checksum and publication manifest. Later corrections require a new version;
+the builder never overwrites this locked edition.

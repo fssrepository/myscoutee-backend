@@ -30,7 +30,7 @@ chronology legend: `D`, `M`, `A`, `C`.
 | SC13 | B | M/D-secondary | First judge leaves reportedly through illness; exclusion targets the second; a third judicial role decides the motion and warns of fine risk. The challenged judge is described as having listened conscientiously; the Founder later writes that he had “conscientiously defended the system failure.” | Even the request for impartiality creates another risk; institutional praise becomes the Founder's bitter inversion. | isolate ruling and later submission; keep three roles distinct; facial interpretation is memoir only |
 | SC14 | A | D | Constitutional Court letter reaches a door marked “too early”: case still pending, no first-instance decision. | Technical threshold made human. | do not portray merits defeat or victory |
 | SC15 | A | D/C | President and ordinary citizen send radically unequal constitutional warnings toward Venice on adjacent days. | Top and bottom of state touch one institution. | no causal-influence claim |
-| SC16 | A | C | Seven of fifteen constitutional judges recuse from one presidential matter; the table cannot reach quorum. | A state body cannot assemble around its own conflict. | judges leave one case, not office |
+| SC16 | A | C | Seven of fifteen constitutional judges initially recuse from one presidential matter and an eighth follows; the table cannot reach quorum. | A state body cannot assemble around its own conflict. | judges leave one case, not office |
 | SC17 | B | M/D | Court asks about debt, work, home, belongings and foreign-earned reserves. | The case reaches backwards into the protection built in Part I. | no account value or completed-forfeiture claim |
 | SC18 | B | M/C | London housemate keeps paying a foreign-currency loan and cannot return; years later the Founder is asked whether he has debt. | Different law, recurring transfer of systemic risk. | anonymize housemate and family |
 | SC19 | B | D/M | Four gigabytes of duplicated files surround one disputed sentence. | Evidence mass becomes a second antagonist. | show abstract file blocks, no raw pages |
@@ -45,6 +45,5 @@ by narration over an adjacent visual rather than receive its own eight-second
 interval. `B` scenes protect the book's richness and a possible longer cut.
 
 No scene is generated until the Founder approves the book chronology and the
-prompt coverage audit. The later slideshow uses only the same first and last
-frames intended for video generation; it does not create disposable midpoint
-images.
+prompt coverage audit. The first benchmark uses only the selected scene's exact
+first and last frames; it creates no slideshow or disposable midpoint image.

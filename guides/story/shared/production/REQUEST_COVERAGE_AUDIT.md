@@ -121,11 +121,10 @@ become independently verified evidence.
   two-expert, AI-work and home-inquiry book plates.
 - [ ] Regenerate CP00–CP22. CP00–CP11 are provisional studies; CP12–CP22 do not
   yet exist.
-- [ ] Build and inspect the exact checkpoint-only 03:04 slideshow: CP00–CP22
-  held for eight seconds each. Keep the separate four-second E01 card out of
-  the checkpoint inspection; the finished moving film remains 03:00.
-- [ ] Complete Founder factual/privacy review, build the editable PDF and then
-  prepare—not silently publish—the first versioned release package.
+- [x] Remove the checkpoint-only slideshow stage; no inspection video or
+  intermediate art is retained.
+- [x] Complete Founder factual/privacy review, build the editable PDF and
+  publish the explicitly authorized first versioned release package.
 
 ## Shared release rules
 
@@ -133,11 +132,9 @@ become independently verified evidence.
 2. Book illustrations, checkpoint endpoints and later Flow/OpenArt motion use
    the same role references; no attractive replacement face is introduced in a
    later stage.
-3. The slideshow contains no invented intermediate art. It holds each exact
-   9:16 checkpoint for one complete eight-second block: `CP00` at 00:00,
-   `CP01` at 00:08, `CP02` at 00:16 and so on. The adjacent checkpoints still
-   define the first and last frames of each later eight-second motion clip; the
-   longer still-only review is not the final film timing.
+3. The first benchmark contains no invented intermediate art. Its two exact
+   9:16 checkpoints define the first and last frames of the same eight-second
+   test in Google Flow and OpenArt.
 4. Narration and one continuous musical bed are post-production assets timed to
    the complete film. Clip-generated music is discarded.
 5. A local `published/` package means a versioned PDF/video, metadata and

@@ -137,6 +137,7 @@ The identity-sheet step is complete. Continue in this order:
 
 1. generate book portrait and montage plates from the locked identities;
 2. regenerate only the CP endpoints that use them;
-3. build the endpoint slideshow from those exact CP files;
-4. review the slideshow before spending Flow/OpenArt motion credits;
-5. use the same references for Flow/OpenArt motion.
+3. select one difficult eight-second interval and generate only its two exact
+   endpoints;
+4. compare those same endpoints and prompt in Flow and OpenArt;
+5. use the same references for the later motion chain.

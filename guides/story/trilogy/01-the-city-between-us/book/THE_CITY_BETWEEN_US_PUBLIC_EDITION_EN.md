@@ -1854,6 +1854,6 @@ product-market fit. The operator network is an intended model to be tested.
 
 <!-- edition-colophon -->
 
-First public edition, version 1.0.0. Published 7 August 2026.
+First illustrated public edition, version 1.0.0. Published 8 August 2026.
 
 © 2026 MyScoutee. All rights reserved.

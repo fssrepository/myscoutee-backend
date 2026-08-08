@@ -1,8 +1,8 @@
 # Part II production
 
 The English book, three-minute script, checkpoint storyboard and Flow/OpenArt
-prompts are synchronized for the frame-preparation phase. Motion, slideshow and
-audio production remain paused until the exact 9:16 checkpoints are approved.
+prompts are synchronized and closed for publication. Frame and motion work
+starts in a separate phase; audio remains downstream.
 
 - [TODO.md](TODO.md) is the ordered work and publication gate.
 - [STORY_AND_PROMPT_COVERAGE.md](STORY_AND_PROMPT_COVERAGE.md) keeps the book,
@@ -11,9 +11,7 @@ audio production remain paused until the exact 9:16 checkpoints are approved.
 - [PROMPT_PACK.md](../prompts/PROMPT_PACK.md) defines the future generator
   workflow.
 
-The first visual review after Founder approval is an endpoint-only slideshow:
-one complete eight-second block on every exact 9:16 checkpoint, with each next
-checkpoint beginning at 00:08, 00:16 and so on. Adjacent CPs remain the exact
-first and last frames of the later motion interval. The still-only review
-creates no intermediate images and therefore previews the same endpoints later
-used by the video model.
+The next visual task is one controlled model benchmark: choose the most
+revealing difficult interval, generate its two exact 9:16 endpoints, then use
+the same pair and prompt for one eight-second result in Google Flow and OpenArt.
+There is no slideshow or animatic stage.

@@ -3,8 +3,8 @@
 This is the recommended path to a playable **03:00 English-language product
 film** without depending on a supported editing GPU:
 
-> **Character benchmark → identity lock → scene-duration animatic → one reusable
-> video-model stress test → selective motion generation → time-coded voice-over
+> **Closed book and prompts → one difficult scene → two exact 9:16 endpoints →
+> identical cross-model stress test → selective motion generation → time-coded voice-over
 > and one continuous score → CPU FFmpeg assembly and mobile QA.**
 
 Do not generate the whole film on every platform. Spend credits only after the
@@ -49,7 +49,7 @@ set needed for the current task.
 
 | Gate | Output | Spend rule | Approval condition |
 | --- | --- | --- | --- |
-| 0 | script, timing and scene-hold animatic | no video credits | the story works with rough voice |
+| 0 | published book, script and prompt closure | no video credits | written package is synchronized |
 | 1 | six-person character benchmark | one image per eligible model | exactly three women and three men; six distinct, appealing identities |
 | 2 | locked character and world sheets | still-image credits only | recurring faces, clothes, props and locations approved |
 | 3 | regenerated CP18 and CP19 | cheapest approved still route | both frames use the same six locked identities |
@@ -89,27 +89,18 @@ The only approved brand source is
 `frontend/src/assets/logo/heart.png`. Keep it unmodified and add `MyScoutee` as
 separate editable text in post.
 
-## 5. Lock the story and rough voice
+## 5. Select the first model benchmark
 
-1. Read the English narration in [SCRIPT.md](../film/SCRIPT.md) in its time
-   windows.
-2. Record two natural rough takes in a quiet, soft room. A phone recording is
-   sufficient for timing.
-3. Place the selected take against a `03:00.000` scene-hold animatic.
-4. Use the real durations in
-   [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv).
-5. In the still-only review slideshow, hold each exact 9:16 checkpoint for a
-   complete eight seconds: CP00 at 00:00, CP01 at 00:08, CP02 at 00:16 and so
-   on. CP23 remains a separate four-second deterministic end plate. Adjacent
-   checkpoints still become the exact first and last frames of each later
-   eight-second motion clip. Do not create intermediate slideshow images or
-   simulated pseudo-motion.
-6. Revise words or scene duration before buying motion generations.
+1. Read the closed English narration, storyboard and prompt pack.
+2. Select one interval whose people, staging, transformation and endpoint
+   continuity will expose meaningful model differences.
+3. Generate exactly its two 9:16 endpoint frames.
+4. Use those same frames, the same prompt and the same eight-second duration in
+   Google Flow and OpenArt.
+5. Record model, settings, credits and visible failure modes before choosing a
+   production route.
 
-The checkpoint-hold slideshow is deliberately longer than the `03:00.000`
-motion edit because every endpoint receives its own eight-second inspection
-window. The superseded three-second slideshow and its generated intermediate
-frames are not retained.
+There is no slideshow or animatic stage and no generated midpoint image.
 
 ## 6. Character benchmark before video
 

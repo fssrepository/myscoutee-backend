@@ -32,5 +32,5 @@ Any existing image with one of those names is provisional and must not override
 this reviewed scene contract.
 
 The final checkpoint set will be reused without intermediate image generation
-as the first/last frames for eight-second clips, the endpoint slideshow and any
-book illustrations selected from the same visual chain.
+as the first/last frames for eight-second clips and any book illustrations
+selected from the same visual chain.

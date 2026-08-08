@@ -4,7 +4,7 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Review draft 0.1.0 — not for publication
+> Public edition 1.0.0 — published 8 August 2026
 
 <!-- pagebreak -->
 
@@ -973,26 +973,27 @@ Parliament acted.
 The same institution had received warnings from the top and the bottom while
 Hungary's constitutional order was visibly between states.
 
-## 23. When Seven Judges Step Aside
+## 23. When an Eighth Judge Steps Aside
 
 Venice was not Sulyok's only route.
 
 On 11 June, he turned to the Constitutional Court for an interpretation of the
 limits around constitutional amendment and removal. The request returned him
 to the institution he had joined as a judge in 2014 and led from 2016 until he
-became President in 2024. The Court had fifteen members. Seven declared that
-they were personally and directly affected and excluded themselves from the
-matter.
+became President in 2024. The Court had fifteen members. Seven initially
+declared that they were personally and directly affected and excluded
+themselves from the matter. After that was communicated, an eighth judge also
+declared exclusion.
 
 The full sitting needed ten.
 
-With only eight available, the Court could not form the quorum required to hear
+With only seven available, the Court could not form the quorum required to hear
 the matter, and it disappeared from the agenda before a substantive decision.
 
-The Court had not literally lost half its membership. Nearly half had stepped
-out of one case. The visual meaning was nevertheless extraordinary: the body
-asked to resolve a constitutional conflict divided over whether it could even
-sit inside the conflict.
+The Court had not lost those judges from office. A majority of its members had
+stepped out of one case. The visual meaning was nevertheless extraordinary:
+the body asked to resolve a constitutional conflict divided over whether it
+could even sit inside the conflict.
 
 This occurred while my own writings were trying to reach constitutional review
 from below.
@@ -1078,10 +1079,10 @@ hearing.
 ## 25. The Empty Presidential Chair
 
 On 18 July 2026, Sulyok signed the constitutional amendment that ended his own
-mandate.
+mandate on 20 July.
 
-The parliamentary Speaker became interim President. At the time of this draft,
-a new President had not yet been elected.
+The parliamentary Speaker became interim President. As this edition closed on
+8 August 2026, a new President had not yet been elected.
 
 The empty chair was not a verdict in my case. It belonged to a country that had
 decided continuity was no longer enough.
@@ -1228,7 +1229,7 @@ record.
 
 ## The primary record
 
-The review draft was reconstructed from the private source package described in
+This edition was reconstructed from the private source package described in
 `research/SOURCE_INVENTORY.md`: tax and portal evidence, authored submissions,
 the charge, a forensic report, correspondence, product screenshots and a
 bounded set of private recordings awaiting local transcription.
@@ -1465,12 +1466,14 @@ Sources:
 - https://telex.hu/english/2026/05/12/incoming-hungarian-justice-minister-promises-to-re-establish-the-rule-of-law-and-crack-down-on-corruption
 - https://www.hrw.org/news/2026/06/25/hungary-rushed-constitutional-changes-undermine-rule-of-law
 
-The Constitutional Court's seven recusals, the resulting lack of quorum and the
-separate future departure of four over-seventy judges are distinct events.
+The Constitutional Court's seven initial recusals followed by an eighth, the
+resulting lack of quorum and the separate future departure of four
+over-seventy judges are distinct events.
 
 Sources:
 
 - https://alkotmanybirosag.hu/a-jelenlegi-tagok/dr-sulyok-tamas/
+- https://alkotmanybirosag.hu/aktualis-hirek-esemenyek/
 - https://telex.hu/belfold/2026/06/19/alkotmanybirosag-sulyok-tamas-kizaras-eltavolitas
 - https://telex.hu/belfold/2026/06/19/alkotmanybirosag-polt-peter-sulyok-tamas
 - https://hvg.hu/itthon/20260619_sulyok-tamas-beadvany-alkotmanybirosag-ules-alkotmanybiro-kizaras
@@ -1542,7 +1545,7 @@ Sources:
 
 ## Part III boundary
 
-This review draft does not invent the ending. Part III will own:
+This edition does not invent the ending. Part III will own:
 
 - the final procedural result and any remedy or consequence;
 - the completed presidential and institutional transition;

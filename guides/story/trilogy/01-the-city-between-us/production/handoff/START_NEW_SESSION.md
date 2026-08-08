@@ -9,8 +9,8 @@ or the whole repository. Load only the additional files routed by that handoff.
 
 Do not modify AGENTS.md, application code, QA handoffs or pitch documents. Work
 only inside guides/story and preserve every existing uncommitted story change.
-Do not regenerate the storyboard in bulk, build a slideshow before checkpoint
-approval or create backup/discarded render files.
+Do not regenerate the storyboard in bulk, build a slideshow/animatic or create
+backup/discarded render files.
 
 In the first response, use at most ten short points to restate the locked book
 and prompt state, exact checkpoint logic and the next CP decision. Then continue

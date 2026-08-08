@@ -66,10 +66,10 @@ as an available, lower-pressure path, not as a guaranteed romantic result.
 
 The English-first memoir and product-origin companion is **MyScoutee — The
 Story**, Part **I** of the planned trilogy, with **The City Between Us** as its
-literary subtitle. The current artifact is **Public edition v1.0.0**, published
-and technically locked on 7 August 2026. Its source manuscript and independent
-draft export remain editable, but the hash-checked published PDF is not
-overwritten. Its cover uses
+literary subtitle. The current artifact is **Illustrated public edition
+v1.0.0**, published and technically locked on 8 August 2026. Its source
+manuscript and independent draft export remain editable, while each
+hash-checked published PDF remains immutable. Its cover uses
 the same wordmark contract as the official manuals: the original mark replaces
 the initial `M`, followed only by `yScoutee`. It never displays the mark beside
 the complete word and never duplicates the `M`.
@@ -82,12 +82,10 @@ the complete word and never duplicates the `M`.
 - [browser edition](../book/MYSCOUTEE_THE_STORY_PUBLIC_EDITION_EN.html)
 - [current editable v1.0.0 PDF](../book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf)
 - [flat published-artifact contract](../published/README.md) — contains the
-  locked v1.0.0 PDF, SHA-256 checksum and publication manifest
+  locked v1.0.0 PDF with SHA-256 checksum and publication manifest
 
-The public edition is complete without generated imagery. Optional text-wrapped
-portraits, portrait sets and wide character montages are already wired into
-the build and appear after the character benchmark locks the identities. The
-montage and separate portraits must come from the same character references.
+The illustrated edition contains text-wrapped portraits, portrait sets and wide
+character montages from the same locked character references.
 The exact Part I identity contract is
 [`assets/characters/CHARACTER_MAP.md`](../assets/characters/CHARACTER_MAP.md).
 
@@ -105,8 +103,8 @@ For the best cost/control balance, use the benchmark-first hybrid route:
    [the model benchmark log](../../../shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv).
 5. Build and approve the founder, supporting cast, locations, props and style frames from
    [the creative bible](../film/CREATIVE_BIBLE.md).
-6. Make one scene-duration animatic, then generate each required moving shot
-   only on its selected model.
+6. Run one identical two-endpoint, eight-second model benchmark, then generate
+   each required moving shot only on its selected model.
 7. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
    foley, brand, title and subtitles. The
    master should not depend on generated on-screen text.
@@ -145,15 +143,9 @@ may keep their platform name until they replace the matching Sxx shot.
 | [SOURCES.md](../research/SOURCES.md) | Project evidence and external research/platform sources |
 | [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings and approved filenames |
 
-Planned static review animatic after narrative approval:
-
-- `storyboard/animatics/myscoutee-storyboard-v01-checkpoint-hold-720x1280.mp4`
-  uses only the
-  24 true CP00–CP23 generation boundaries. Each interior checkpoint combines
-  half of the preceding shot and half of the following shot, so most frames hold
-  for roughly seven to eight seconds while the complete film remains exactly
-  03:00. The build script is ready, but the render remains deliberately deferred
-  until the Founder has reviewed and approved the book and synchronized prompts.
+No slideshow or animatic is part of the active production route. After the book
+and prompt closure, one difficult eight-second interval is tested directly with
+the same two exact 9:16 endpoint frames and prompt in Google Flow and OpenArt.
 
 The `prompts/` directory contains plain-text copy blocks. Do not edit a master
 prompt for an individual shot; add the shot-specific block after the shared
@@ -265,6 +257,6 @@ Open [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FIL
 run the identical reference-free six-person prompt in Codex, Flow and any
 OpenArt image model whose displayed one-image cost fits the remaining free
 credits. Lock the six identities before regenerating CP18/CP19 or spending video
-benchmark credits. After character and model lock, place the 23 actual shot
-durations from `SHOT_MANIFEST.csv` on the scene-hold animatic and fix story
-timing before bulk motion generation.
+benchmark credits. After character and model lock, preserve the 23 actual shot
+durations in `SHOT_MANIFEST.csv` and proceed directly to controlled motion
+generation.

@@ -393,20 +393,21 @@ The letters belong in the production manifest, not the public image.
 
 - **Layer:** `C/D/M`.
 - **CP21:** separate routes to the same institutional frame.
-- **CP22:** a fifteen-seat constitutional table loses seven chairs from one
-  case, leaving eight and no quorum. Below it, the Founder's smaller route meets
+- **CP22:** at a fifteen-seat constitutional table, seven chairs move first and
+  an eighth follows, leaving seven and no quorum. Below it, the Founder's smaller route meets
   a threshold before a first-instance decision and returns toward the still-open
   ordinary proceeding.
-- **Motion:** seven chairs move back with mathematical restraint; do not make
+- **Motion:** seven chairs move back with mathematical restraint, followed by
+  an eighth; do not make
   judges disappear. The lower route reaches the constitutional door too early,
   folds back once and remains open rather than breaking.
 - **Meaning:** the President's route and the Founder's route are not equivalent.
   Both show the distance between a constitutional question and an answer.
-- **Sound in post:** seven quiet chair movements, one procedural stamp, open
+- **Sound in post:** eight quiet chair movements, one procedural stamp, open
   pulse without cadence.
-- **On-screen text in post:** `15 JUDGES · 7 RECUSALS · NO QUORUM` and, only if
+- **On-screen text in post:** `15 JUDGES · 8 RECUSALS · NO QUORUM` and, only if
   still current at release, `NEXT HEARING · 16 SEPTEMBER 2026`.
-- **Hazard:** do not imply the seven judges left the Court, that the Founder won
+- **Hazard:** do not imply the eight judges left the Court, that the Founder won
   constitutional review, that the Court rejected his factual account, or that
   any final legal outcome exists.
 
@@ -461,8 +462,8 @@ Before any checkpoint or motion generation:
    call is quoted; absent key exchanges remain indirect attributed evidence;
 5. current 2026 office-holders, dates and the 16 September hearing are rechecked;
 6. CP00 is exported losslessly from Part I;
-7. only CP00–CP22 are generated—no unnecessary three-second slideshow frames;
-8. the still-only review slideshow holds every 9:16 checkpoint for one complete
-   eight-second block (`CP00` at 00:00, `CP01` at 00:08, and so on); adjacent
-   checkpoints remain the exact endpoints of the later motion clips;
-9. Flow/OpenArt motion testing begins only after explicit Founder approval.
+7. the first model benchmark generates only the two exact 9:16 endpoints of one
+   selected difficult eight-second interval;
+8. Google Flow and OpenArt receive those same endpoints and the same prompt;
+9. no slideshow, animatic or intermediate review image is created;
+10. the remaining checkpoint chain begins only after the benchmark decision.

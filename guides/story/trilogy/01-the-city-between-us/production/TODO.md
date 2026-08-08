@@ -1,12 +1,11 @@
 # Narrative-first TODO
 
-Status: **book, illustration and prompt review in progress; checkpoint and
-motion generation remain paused**.
+Status: **illustrated book and prompt package closed for publication; checkpoint
+and motion work remain a separate next phase**.
 
 The public book and generation prompts have been synchronized and the Founder
-has explicitly resumed character, book-image and checkpoint generation. Motion
-credits, narration and music remain downstream of the endpoint-slideshow
-review.
+has closed the illustrated book and prompt package. Motion credits, narration
+and music remain downstream of the direct cross-model benchmark.
 
 ## 1. Current work — book and prompt synchronization only
 
@@ -82,19 +81,16 @@ review.
 - [ ] Run identical character/model benchmark prompts in Codex, Flow, OpenArt
   and any selected video platform.
 - [ ] Generate or revise CP00–CP23 reference frames from the approved prompts.
-- [ ] Build the checkpoint-hold animatic from those exact CP files only; never
-  generate unnecessary intermediate slideshow images.
 - [ ] Run the selected eight-second model comparison on the hardest approved
   transition.
 - [ ] Generate the full motion chain with exact first/last-frame continuity.
 - [ ] Produce time-locked English narration, one continuous music bed, ambience,
   subtitles and the final CPU/FFmpeg edit.
 
-## 4. Prepared but deliberately not executed
+## 4. Explicitly removed from the route
 
-- `scripts/build_checkpoint_hold_animatic.sh` reproducibly assembles CP00–CP23
-  without creating any new images.
-- The obsolete 03:00 four-second-split endpoint review is removed. After the
-  final 9:16 checkpoints are approved, the script will build a 03:08 still-only
-  inspection: CP00–CP22 held for eight seconds each plus the four-second CP23
-  end plate. The finished moving film remains 03:00.
+- No slideshow or animatic will be built.
+- No intermediate review images are generated.
+- The next phase selects one difficult interval, creates only its two 9:16
+  endpoint frames and compares the identical eight-second prompt in Google Flow
+  and OpenArt.

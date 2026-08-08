@@ -1,5 +1,5 @@
-# Editable review exports
+# Editable book export
 
-This folder contains replaceable Part II reading exports while the manuscript
-is under Founder review. Files here are not published, hashed or technically
-closed.
+This folder contains the replaceable reading export of the current Part II
+edition. The Markdown manuscript remains the editing source. The matching PDF
+under `../../published/` is the locked, hashed public artifact.

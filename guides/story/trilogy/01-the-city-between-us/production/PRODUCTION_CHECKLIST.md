@@ -10,9 +10,9 @@ continuity and technical faults before an expensive final render.
 - [x] Synchronize the English public book, research boundaries and every prompt.
 - [x] Rebuild and visually inspect the editable illustrated PDF without changing
   the hashed published v1.0.0 artifact.
-- [x] Record Founder authorization on 8 August 2026 to proceed with exact 9:16
-  checkpoint preparation. Slideshow, model-test motion, narration and music
-  remain later gates.
+- [x] Record Founder authorization on 8 August 2026 to close the illustrated
+  public edition and synchronized prompts. The direct two-frame model test,
+  narration and music remain later gates.
 
 ## A. Story and personal facts
 
@@ -163,7 +163,8 @@ continuity and technical faults before an expensive final render.
   trained or locked.
 - [ ] CP18 and CP19 were regenerated from the same six approved identities.
 - [ ] One reusable CP18→CP19 stress test selected the model by shot type.
-- [ ] The scene-duration animatic was approved before final motion.
+- [ ] The identical two-endpoint, eight-second benchmark was approved before
+  final motion.
 - [ ] One platform owns a shot's final version; there is no automatic triple
   render.
 - [ ] The first attempt produced one result.

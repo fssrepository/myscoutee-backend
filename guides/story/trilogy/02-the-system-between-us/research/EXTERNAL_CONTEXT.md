@@ -249,16 +249,19 @@ Commission to retreat or determined the President's removal.
 ## The Constitutional Court split and later personnel change
 
 Sulyok also asked the Constitutional Court for constitutional interpretation.
-On 19 June, seven of its fifteen members declared personal/direct involvement
-and recused themselves. The full sitting required at least ten members, so the
-matter was removed from the agenda for lack of quorum:
+On 19 June, seven of its fifteen members initially declared personal/direct
+involvement and recused themselves. After the Court communicated that step, an
+eighth judge also declared exclusion. The full sitting required at least ten
+members; only seven remained available, so the matter was removed from the
+agenda for lack of quorum:
 
+- https://alkotmanybirosag.hu/aktualis-hirek-esemenyek/
 - https://telex.hu/belfold/2026/06/19/alkotmanybirosag-sulyok-tamas-kizaras-eltavolitas
 - https://hvg.hu/itthon/20260619_sulyok-tamas-beadvany-alkotmanybirosag-ules-alkotmanybiro-kizaras
 
-This is the precise meaning behind the visual phrase “the Court almost divided
-in half.” The judges did not leave the Court at that point; they withdrew from
-that case.
+This is the precise meaning behind the visual phrase “the Court divided over
+its own case.” The judges did not leave the Court at that point; they withdrew
+from that case.
 
 A separate part of the seventeenth amendment restored a mandatory retirement
 age of seventy. Four of the fifteen sitting judges, including the Court's

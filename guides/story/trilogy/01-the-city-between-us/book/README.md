@@ -4,7 +4,7 @@ This folder contains the English-first public edition of the MyScoutee origin
 story. It is Part `I` of a planned trilogy, a memoir-led product book, not a
 translation and not a claim of proven product outcomes.
 
-Current state: **Part I · Public edition v1.0.0 · published 7 August 2026 ·
+Current state: **Part I · Illustrated public edition v1.0.0 · published 8 August 2026 ·
 technically closed (`locked: true`)**. Its independent draft export remains
 available for later editorial work.
 
@@ -17,7 +17,8 @@ language and copyright. The builder places these values in the HTML and PDF;
 `CHANGELOG.md` records the edition history.
 
 - Part `I` is a trilogy position, not the book's edition version.
-- The Founder approved the first public edition as `1.0.0` on 7 August 2026.
+- The Founder approved the synchronized first illustrated public edition as
+  `1.0.0` on 8 August 2026.
 - After publication, increment the version for every released change according
   to the patch/minor/major rules in `CHANGELOG.md`.
 - Future Parts `II` and `III` receive their own version histories. Their exact
@@ -122,13 +123,13 @@ Museum's catalogue of [carved gingerbread moulds](https://romer.hu/en/magazine/m
 
 ## Illustration system
 
-The public edition is complete without generated illustrations. The manuscript
-already contains optional illustration anchors, and `illustrations.json` maps
-them to future files under `assets/illustrations/`. When every file for one
-anchor exists, the next build places it automatically. When an asset is absent,
-the layout closes cleanly without an empty placeholder.
+The illustrated public edition uses the completed registered assets under
+`assets/illustrations/`. The manuscript contains stable illustration anchors,
+and `illustrations.json` maps them to montages and text-wrapped portraits. When
+an optional asset is absent, the layout still closes without an empty
+placeholder.
 
-The future illustrated edition supports both:
+The illustrated edition contains both:
 
 - wide character montages for the London house, global/local memories, the
   five privacy-safe Budapest relationship memories, balanced six-person candidate group and

@@ -87,7 +87,8 @@ audio generated despite the prompt is discarded.
   eviction.
 - The President's constitutional route and the Founder's route are visually
   separate and legally unequal.
-- Seven judges recused from one matter; they did not leave the Court in June.
+- Seven judges initially recused from one matter and an eighth followed; they
+  did not leave the Court in June.
 - Part III owns the final outcome.
 - Courtroom geography remains exact from the Founder's viewpoint: a C-shaped
   desk with prosecutor left, clerk at the far-left corner, judge centre and
@@ -102,26 +103,26 @@ audio generated despite the prompt is discarded.
 
 Do not test every model on every shot.
 
-1. Generate character/reference sheets outside the final clip budget only after
-   Founder approval.
-2. Generate CP00–CP22 once with the selected image model.
-3. Build the checkpoint-only review slideshow: hold CP00 for eight seconds,
-   CP01 for eight seconds, CP02 for eight seconds and continue at exact
-   eight-second boundaries. Do not split an interval into four-second halves.
-4. Use the identical `CP05→CP06` low-trust-triangle transition as the principal
-   people/screen stress test.
-5. Use `CP20→CP21` as the secondary abstract/institutional stress test.
-6. Compare Flow and OpenArt models only on those two intervals.
-7. Select the lowest-cost model that preserves identity, endpoint accuracy,
+1. After written-package closure, select one deliberately difficult
+   eight-second interval whose people, staging, transformation and endpoint
+   continuity expose meaningful model differences.
+2. Generate only that interval's exact two 9:16 endpoint frames.
+3. Run the same two frames, prompt, duration and aspect ratio in Google Flow
+   and OpenArt. Record model, settings, seed when exposed, charged credits and
+   outcome.
+4. Select the lowest-cost model that preserves identity, endpoint accuracy,
    readable staging and restrained motion.
-8. Generate the remaining intervals once, reserving credit for failed endpoints
-   and the hardest continuity repairs.
+5. Generate the remaining checkpoint chain only after that decision, reserving
+   credit for failed endpoints and the hardest continuity repairs.
+
+There is no slideshow or animatic stage. The exact endpoints move directly from
+frame approval into the identical cross-model test.
 
 ## Release recheck
 
-Before motion generation or publication, recheck:
+Before motion generation, recheck:
 
-- the English book's factual corrections;
+- whether a post-publication factual correction requires a new book edition;
 - the reviewed Constitutional Court threshold letter and the exact complaint
   route;
 - the new justice-administration reply if supplied;

@@ -40,8 +40,8 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Founder turns complaints into design proposals, then authors the five-part *Public-Interest Action* | 7, 14, 20 | S07, S17, end card | The 2022 proposal and 2025 action are distinct; authored advocacy is not a proven reform or accepted procedural status. |
 | 2026 election changes government and institutions | 21, 24–25 | S20 | Election does not decide criminal case or clinical question. |
 | President and Founder separately contact Venice Commission | 22 | S21 | Unequal routes; no claim the Founder changed Commission conduct. |
-| Sulyok asks Constitutional Court; 7 of 15 recuse; no quorum | 23 | S22 | Recusal from one case, not departure from office. |
-| Four over-seventy judges scheduled to leave 1 September | 24 / notes | post text only if still current | Separate from seven recusals. |
+| Sulyok asks Constitutional Court; seven judges initially recuse, an eighth follows; no quorum | 23 | S22 | Recusal from one case, not departure from office. |
+| Four over-seventy judges scheduled to leave 1 September | 24 / notes | post text only if still current | Separate from the eight case recusals. |
 | Interim President and no invented successor | 25 | optional S22 post card | Recheck immediately before release. |
 | President is expected to express national unity while the Founder considers permanent departure and possible renunciation of Hungarian citizenship | 25 | Book-only late context; deliberately omitted from the locked S22/CP22 film endpoint | Present thought only: no completed act, destroyed passport, invented destination, legal advice or implication for the pending case. S22 already carries the constitutional thresholds and Part III bridge; do not overload it or add another interval. |
 | MyScoutee returns as design discipline | 26, 28 | E01 | Product cannot repair court/tax authority; exact logo only in post. |
@@ -55,5 +55,5 @@ Any later correction must follow this order:
 2. update the book's complete readable form;
 3. decide whether the three-minute spine changes;
 4. update the corresponding storyboard and shot prompt;
-5. rebuild the endpoint slideshow only after the checkpoints change;
+5. invalidate and regenerate only an endpoint affected by the correction;
 6. never repair a factual contradiction only inside a video prompt.

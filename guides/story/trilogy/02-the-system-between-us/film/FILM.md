@@ -2,7 +2,7 @@
 
 Working title: **The System Between Us**.
 
-Status: **03:00 English script and storyboard review draft; no media generated**.
+Status: **closed 03:00 English script and synchronized prompt baseline; no media generated**.
 
 - [creative bible](CREATIVE_BIBLE.md)
 - [time-coded script](SCRIPT.md)
@@ -14,4 +14,3 @@ The film is built from twenty-two exact eight-second scene intervals plus one
 four-second final card. This makes each planned motion interval compatible with
 an eight-second first/last-frame video workflow while keeping the master exactly
 three minutes.
-

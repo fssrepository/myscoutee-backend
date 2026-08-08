@@ -2,9 +2,9 @@
   "trilogy_part": 2,
   "trilogy_roman": "II",
   "title": "The System Between Us",
-  "status": "draft",
-  "version": "0.1.0",
-  "locked": false,
+  "status": "public",
+  "version": "1.0.0",
+  "locked": true,
   "updated": "2026-08-08",
-  "published": null
+  "published": "2026-08-08"
 }

@@ -1,7 +1,7 @@
 # Published artifacts
 
 This is a flat directory for the approved public book and final public film.
-Drafts, animatics, platform tests and rejected exports do not belong here.
+Drafts, platform tests and rejected exports do not belong here.
 
 The current editable book PDF remains under `../book/draft/`. When the Founder
 explicitly locks an edition, the book builder writes directly into this
@@ -18,5 +18,4 @@ and Git history provide the rest of the publication boundary.
 
 The final film will live beside the book artifacts only after picture, voice,
 music, subtitles, brand and delivery QA are approved. Its filename must say
-that it is the public master. Storyboard slideshows remain under
-`../storyboard/animatics/`.
+that it is the public master. No slideshow or animatic is produced.

@@ -149,7 +149,8 @@ Acceptable:
   verbal joke that remains unmistakably metaphorical;
 - an ordinary moment of attraction during fingerprinting, without romance;
 - a powerless citizen sarcastically firing an institution in prose;
-- seven chairs sliding back from a fifteen-seat constitutional table with
+- seven chairs sliding back from a fifteen-seat constitutional table followed
+  by an eighth, with
   mathematical precision;
 - an enormous archive compressing into one tiny input field;
 - an AI cursor proposing a heading while a hearing notice waits beside it.
@@ -170,7 +171,7 @@ Not acceptable:
 
 ## 7. Evidence layers on screen
 
-Use a small editable corner marker during review animatics only:
+Use a small editable corner marker during internal frame review only:
 
 - `D` document;
 - `M` memoir;
@@ -224,8 +225,8 @@ Score arc:
 - The forensic opinion is shown as contested document content, not objective
   character identity.
 - AI assisted self-defence; it did not provide licensed legal representation.
-- Seven of fifteen constitutional judges recused themselves from Sulyok's
-  matter; they did not leave the Court in June.
+- Seven of fifteen constitutional judges initially recused themselves from
+  Sulyok's matter and an eighth followed; they did not leave the Court in June.
 - A separate rule scheduled four over-seventy judges to leave on 1 September.
 - The Venice Commission's caution is not attributed to the Founder's email.
 - The Constitutional Court letter records a premature route before a
