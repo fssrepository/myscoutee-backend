@@ -1,0 +1,43 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP01-v1.png as the exact first frame and CP02-v1.png as the exact last
+frame.
+
+Begin at the anonymous Budapest office doorway shown in the first frame. Use
+one restrained 50 mm left-to-right lateral movement that follows the same dark
+vertical glass frame and wet floor line.
+
+Let that doorway become a clean workers'-hostel corridor after a late return.
+The door handle gives one restrained locked movement and the traveller pauses
+calmly in the maintained corridor. Continue through the same moving door edge
+into an anonymous temporary private room, where a half-unpacked brown suitcase
+briefly shows that the arrangement has become unstable. No confrontation and no
+other identifiable person.
+
+The same door edge then opens naturally into the modest Budapest apartment
+shown in the last frame. The traveller receives a simple flat key from the
+older hands and lifts it into the final position. Warm home light replaces the
+corridor light while rain-softened
+yellow-tram reflections remain continuous in the window. End exactly on
+CP02-v1.png with the vertical window frame, suitcase, key, notebook and blank
+paper unchanged.
+
+Preserve both uploaded endpoint images. Do not add faces or alter the person
+already present in them.
+
+CONTINUITY IS REQUIRED:
+The office glass edge, hostel door, temporary-room doorway and apartment window
+are one continuous visual axis. Keep the same camera direction, measured pace
+and painterly cinematic 2.5D texture. No hard cut, camera jump, freeze, collage,
+split screen, style change or abrupt morph.
+
+Natural preview ambience only: office lift and wet street tone become a quiet
+hostel corridor, one restrained locked-handle sound, one suitcase wheel, then a
+soft key sound and modest apartment room tone. No dialogue, narration or
+generated music. The final film audio will be replaced in post.
+
+No readable text, logos, employer branding, named street, eviction spectacle,
+argument, loan claim, tourist landmark or extra dominant character.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

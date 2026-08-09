@@ -25,7 +25,10 @@ it exists in the repository.
 
 ## Explicitly accepted frames
 
-**None in the new regeneration pass yet.**
+| Part | Frame | Accepted file | SHA-256 | Decision note |
+| --- | --- | --- | --- | --- |
+| I | CP00 | `guides/story/trilogy/01-the-city-between-us/assets/frames/candidates/S01/CP00-v1.png` | `483683caa388459386d5ceec2320c2a4c5d97e681ec95377c1a5f3bc2a863ded` | Accepted for the current production pass; optional improvement deferred |
+| I | CP01 | `guides/story/trilogy/01-the-city-between-us/assets/frames/candidates/S01/CP01-v1.png` | `1dee72adf67e4b13bab7460b1c0cfdb37fe935e91dfa28467a75763d17931932` | Accepted S01 ending and canonical S02 handoff for the current production pass |
 
 ## Historical model-test candidates
 
@@ -43,9 +46,10 @@ Their reproducible still-image generation specification is
 
 | Frame | Current status | Note |
 | --- | --- | --- |
-| CP00 | `candidate-review` | S01 first endpoint: `assets/frames/candidates/S01/CP00-v1.png`; SHA-256 `483683caa388459386d5ceec2320c2a4c5d97e681ec95377c1a5f3bc2a863ded` |
-| CP01 | `candidate-review` | S01 last endpoint and S02 continuity handoff: `assets/frames/candidates/S01/CP01-v1.png`; SHA-256 `1dee72adf67e4b13bab7460b1c0cfdb37fe935e91dfa28467a75763d17931932` |
-| CP02–CP17 | `provisional-old` | Existing `assets/storyboard-rough/` files are composition studies; regenerate and review individually |
+| CP00 | `accepted` | S01 first endpoint: `assets/frames/candidates/S01/CP00-v1.png`; optional improvement deferred |
+| CP01 | `accepted` | S01 last endpoint and canonical S02 continuity handoff: `assets/frames/candidates/S01/CP01-v1.png` |
+| CP02 | `candidate-review` | S02 last endpoint: `assets/frames/candidates/S02/CP02-v1.png`; SHA-256 `8920a5a0b4dc09a35c4419500d58d225ae8dc521b556e283d008d68beb686f67` |
+| CP03–CP17 | `provisional-old` | Existing `assets/storyboard-rough/` files are composition studies; regenerate and review individually |
 | CP18 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP19 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP20–CP22 | `provisional-old` | Existing studies must be regenerated and reviewed individually |
@@ -66,3 +70,5 @@ Their reproducible still-image generation specification is
 | --- | --- | --- | --- | --- |
 | 2026-08-08 | I/CP18 | `CP18-candidate-v01.png` | superseded | Historical model comparison only |
 | 2026-08-08 | I/CP19 | `CP19-candidate-v01.png` | superseded | Historical model comparison only |
+| 2026-08-09 | I/CP00 | `CP00-v1.png` | accepted | Current production pass accepted; optional later improvement does not block the chain |
+| 2026-08-09 | I/CP01 | `CP01-v1.png` | accepted | Current production pass accepted and inherited by S02 |
