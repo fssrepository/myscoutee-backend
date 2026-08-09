@@ -317,7 +317,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Face/body:** brows gently raised in concentration, self-aware half-smile.
 - **Camera/lens:** 32 mm slow 18° clockwise arc at chest height.
 - **Light/color:** broad 4200 K window key, warm timber bounce.
-- **Sound/dialogue:** shoe rhythm, instructor: “Partners, change.”
+- **Sound in post:** shoe rhythm and room reverb; no instructor speech.
 - **Transition/generation:** passing dancer wipes to identical S13 room.
   Higgsfield Kling 3.0 with Founder, Student and Studio Elements.
 
@@ -325,9 +325,10 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 - **Picture/blocking:** Same studio, same camera path, but half the floor is
   empty; a calendar changes without readable text. Founder completes a more
-  difficult step, then speaks casually with the Student near the bench.
+  difficult step, then shares a relaxed, attentive moment with the Student near
+  the bench without visible speech.
 - **Face/body:** notices absence but finishes with satisfaction; relaxed,
-  ordinary conversation.
+  ordinary mutual attention.
 - **Camera/lens:** same 32 mm arc at 60% of S12 speed; preserve window count and
   bench position.
 - **Light/color:** exactly S12's setup; only density changes.
@@ -344,15 +345,16 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   body remains open; no territorial pose.
 - **Camera/lens:** 55 mm static medium three-shot; no melodramatic push.
 - **Light/color:** warm bench practical, cool rainy doorway rim.
-- **Sound/dialogue:** “Hey. Ready to go?” umbrella shake; no sarcastic reply.
+- **Sound in post:** umbrella shake and shoes; the greeting is nonverbal.
 - **Transition/generation:** umbrella crosses lens into café metal. Higgsfield,
   three locked Character Elements; expression outranks motion.
 
 ### S15 — The wrong rooms for a first date · 01:52–02:00 · 8 s
 
 - **Picture/blocking:** Three sympathetic micro-dates in one rhythmic montage:
-  2.3 s café steam masks a sentence; 2.3 s basement bar forces “Sorry — what did
-  you say?”; 2.4 s formal table makes both strangers sit too straight and exhale
+  2.3 s café steam masks an attempted exchange; 2.3 s basement bar makes one
+  person cup an ear and gesture for repetition; 2.4 s formal table makes both
+  strangers sit too straight and exhale
   together. The location is the antagonist.
 - **Face/body:** mutual effort and mild humor; nobody checks a phone or judges
   appearance.
@@ -360,7 +362,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   symmetrical locked frame.
 - **Light/color:** flat café green, noisy bar practicals with neutral face key,
   formal warm narrow keys.
-- **Sound/VO:** steam → bass → cloth/fork; dates line and one diegetic question.
+- **Sound in post:** steam → bass → cloth/fork beneath John's narration; no
+  diegetic speech.
 - **Transition/generation:** white tablecloth becomes notebook paper. Generate
   three clips/stills and cut in post; OpenArt or Higgsfield.
 
@@ -400,12 +403,15 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   static four-card tableau with this one visible decision that causes the next
   step. Time is finite: the visual means a fast filter toward a reciprocal
   invitation, never a fast judgment of human worth.
+- **Meaning:** the product does not assume trust. It gives natural first
+  distrust enough private, reciprocal context to soften before a judgment
+  closes the meeting.
 - **Face/body:** careful choice and curiosity; the people on cards retain dignity.
 - **Camera/lens:** 55 mm focus change from deciding face to beads, then lock.
 - **Light/color:** warm amber = editable priority; background suggestion marks
   remain quieter than the explicit human input.
-- **Sound/VO:** tactile single ticks and one soft contextual connection; private,
-  editable intention/mutual-context line.
+- **Sound/VO:** tactile single ticks and one soft contextual connection;
+  initial-distrust/private-intention/mutual-context line.
 - **Transition/generation:** two independent amber choices approach from opposite
   directions. Generate clean plates; create exact UI and numbers in post.
 
@@ -465,7 +471,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   next step.
 - **Camera/lens:** 50 mm hand inserts with match cuts; final 35 mm pullback.
 - **Light/color:** warm neutral light; coral/aqua UI added in post.
-- **Sound/dialogue:** no overlapping character dialogue. Quiet affirmative
+- **Sound in post:** no character dialogue. Quiet affirmative
   murmurs and tactile acceptance cues stay under one clear narrator; digital
   taps become transport, room, ticket and feedback sounds.
 - **Transition/generation:** ticket fills frame, then becomes a later invitation.

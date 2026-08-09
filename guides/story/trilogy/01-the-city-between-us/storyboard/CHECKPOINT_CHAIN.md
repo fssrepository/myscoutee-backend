@@ -20,14 +20,11 @@ Rules:
 - Preserve identity, notebook, colour, light and camera direction at boundaries.
 - CP00 is the opening frame; CP23 is the deterministic brand end frame.
 - The present Founder and cast are fictional planning placeholders.
-- The checkpoint inspection export holds every exact 9:16 checkpoint for one
-  complete eight-second block: CP00 at 00:00, CP01 at 00:08, CP02 at 00:16 and
-  so on. Do not split an interval into four-second halves and do not invent
-  intermediate stills. Adjacent checkpoints still become the exact first and
-  last frames of each later motion generation. S01–S22 form the 02:56 motion
-  chain; CP23 is the separate deterministic four-second end plate. The
-  still-only inspection therefore runs 03:08.000, while the finished moving
-  film remains exactly 03:00.000.
+- Do not build a checkpoint inspection export, slideshow or animatic. Adjacent
+  checkpoints go directly into eight-second motion generation as exact first
+  and last frames. Do not split an interval into four-second halves or invent
+  intermediate stills. S01–S22 form the 02:56 motion chain; CP23 is the separate
+  deterministic four-second end plate; the finished film is exactly 03:00.000.
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |
@@ -56,7 +53,7 @@ Rules:
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/storyboard-rough/CP22.png` |
 | CP23 | MyScoutee end frame | `assets/storyboard-rough/CP23.png` |
 
-The superseded three-second review, the earlier four-second-split endpoint
-review and their pseudo-motion frames are not production masters. Rebuild the
-checkpoint-hold review only after the approved 9:16 checkpoints replace the
-current composition studies.
+The superseded three-second review, four-second-split endpoint review and their
+pseudo-motion frames are not production masters and must not be rebuilt. Replace
+the current composition studies with approved 9:16 checkpoints only as each
+direct generation pair is prepared.

@@ -25,14 +25,11 @@ settings and a clean reference WAV.
 | 01:12–01:20 | FOUNDER VO | I joined the apps. Some people waited for a reply; others drowned in attention. |
 | 01:20–01:28 | FOUNDER VO | Talks, dinners and social evenings formed friendships. Other beginnings still lost their next step. |
 | 01:28–01:36 | FOUNDER VO | At beginner dance classes, the floor was full. |
-| 01:32–01:34 | DANCE INSTRUCTOR | Partners, change. |
 | 01:36–01:44 | FOUNDER VO | By the advanced classes, the room had thinned; beginnings kept losing their next step. |
 | 01:44–01:52 | FOUNDER VO | Sometimes a conversation opened, then a friendly partner arrived, and the context became clear. |
-| 01:47–01:49 | DANCE PARTNER, friendly | Hey. Ready to go? |
 | 01:52–02:00 | FOUNDER VO | Dates too: deafening café, basement bar, beautiful table — all built for performance. |
-| 01:55–01:57 | DATE, lightly under VO | Sorry — what did you say? |
 | 02:00–02:08 | FOUNDER VO | I tried everything. Screens made us judge age, appearance and history before meeting; shared human context disappeared. |
-| 02:08–02:16 | FOUNDER VO | MyScoutee filters private, editable intention through mutual context — not a public verdict. |
+| 02:08–02:16 | FOUNDER VO | MyScoutee softens initial distrust through private, editable intention and mutual context — not a public verdict. |
 | 02:16–02:24 | FOUNDER VO | Mutual choices can form six strangers into a group with several possible human connections. |
 | 02:24–02:32 | FOUNDER VO | Each decides. Those who accept can talk, meet, introduce themselves and make a first plan. |
 | 02:32–02:40 | FOUNDER VO | The event coordinates people, transport, place and supplies; tickets and feedback stay separate. |
@@ -218,7 +215,9 @@ text in the final editor.
 - Make SRT files after the final edit, not from planning timings.
 - Maximum two lines, approximately 30–34 characters per line in 9:16.
 - Keep most subtitles at least one second and roughly 12–17 characters/second.
-- Break at natural phrases; identify off-screen dialogue and meaningful sounds.
+- Break at natural phrases; identify meaningful nonverbal sounds when needed.
+- There is no character dialogue or lip sync. John carries the complete spoken
+  track; interaction is conveyed through listening, eye contact and gesture.
 - Preserve a textless clean master for future languages.
 
 ## 4. 60-second cut

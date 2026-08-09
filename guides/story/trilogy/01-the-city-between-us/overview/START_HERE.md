@@ -167,8 +167,8 @@ Classify every shot:
   restrained pan/zoom;
 - **B — normal motion:** one or two people, walking, a simple interaction or
   moderate transition;
-- **C — hero/rescue:** identity-critical ensemble, complex endpoint transition
-  or one indispensable visible spoken line.
+- **C — hero/rescue:** identity-critical ensemble or complex endpoint
+  transition.
 
 Use stills and CPU post for stable graphics, travel memories, accurate UI,
 titles and the brand card. Keep hero generations rare. Do not upscale a broken
@@ -176,7 +176,7 @@ face, hand, story or title.
 
 ## 10. Audio after picture lock
 
-The default is narration, not lip sync:
+The audio route is narration without lip sync:
 
 1. generate or record the final English voice in time-coded blocks;
 2. normalize every block to `48 kHz` WAV;
@@ -187,8 +187,8 @@ The default is narration, not lip sync:
 6. place doors, keys, steps, trains, paper and keyboard foley on exact frames;
 7. overlap ambience across visual transitions by roughly `0.3–0.8 s`.
 
-Lip sync is reserved for at most one or two short hero moments. Generate the
-final spoken audio first and supply that exact file to the selected model.
+No character dialogue or lip sync is generated. John carries the only spoken
+voice; interaction remains nonverbal.
 
 ## 11. CPU assembly
 

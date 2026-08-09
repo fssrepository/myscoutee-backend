@@ -12,10 +12,9 @@ mobile MP4**.
 
 ```text
 A1  ENGLISH_NARRATION
-A2  SELECTED_DIEGETIC_DIALOGUE
-A3  AMBIENCE
-A4  FOLEY_AND_EFFECTS
-A5  CONTINUOUS_SCORE
+A2  AMBIENCE
+A3  FOLEY_AND_EFFECTS
+A4  CONTINUOUS_SCORE
 ```
 
 The picture locks before final narration and music are generated. Generated
@@ -23,7 +22,8 @@ clip-level background music, dialogue and singing never enter the master.
 
 ## 2. Narration
 
-The default is intimate first-person voice-over, not mass lip sync. The locked
+The film uses intimate first-person voice-over with no character dialogue or
+lip sync. The locked
 synthetic narrator for Parts I and II is the approved ElevenLabs **John** voice.
 Archive a clean reference WAV plus the exact voice identifier, model version
 and generation settings; the display name alone is not a reproducible lock.
@@ -77,12 +77,12 @@ every phrase ending with a musical accent.
 Default video-generation audio instruction:
 
 ```text
-Synchronized diegetic ambience and physical sounds only.
-No music, dialogue, narration or singing.
+Generate silent production picture only. No ambience, sound effects, music,
+dialogue, narration or singing. Final sound is built after picture assembly.
 ```
 
-If a native audio track contains inseparable unwanted music, mute the whole
-track. Retain only clean, useful ambience or reconstruct the sound locally.
+Discard every native generated clip track. Build synchronized ambience and
+foley locally so sound continuity does not restart at eight-second boundaries.
 
 | Shot | Sound anchors |
 | --- | --- |
@@ -97,7 +97,7 @@ track. Retain only clean, useful ambience or reconstruct the sound locally.
 | S09 | suitcase stop and familiar tram bell |
 | S10 | sparse tick against an abstract notification wash |
 | S11 | applause tail, plate and marker |
-| S12–S14 | shoes, room reverb, instructor cue and umbrella |
+| S12–S14 | shoes, room reverb and umbrella; no speech |
 | S15 | café steam, low bar wash, tablecloth and cutlery |
 | S16 | cursor disappears, pencil click, half-second rhythmic void |
 | S17–S18 | dry slider and reciprocal connection tones; no casino sound |
@@ -164,7 +164,8 @@ TEST IT WITH ME.
 - maximum two lines and approximately `30–34` characters per line in `9:16`;
 - target roughly `12–17` characters per second;
 - break at natural phrases;
-- identify off-screen dialogue and meaningful sound where necessary;
+- identify meaningful nonverbal sound where necessary; there is no character
+  dialogue or lip sync;
 - preserve a clean textless master for later localization.
 
 ## 8. Mix and measurement
@@ -185,7 +186,7 @@ not replace intelligibility.
 TCBU_master_EN_720x1280.mp4
 TCBU_clean_textless_720x1280.mp4
 TCBU_EN.srt
-TCBU_dialogue_EN.wav
+TCBU_narration_EN.wav
 TCBU_music_and_effects.wav
 assembly-manifest.json
 ```

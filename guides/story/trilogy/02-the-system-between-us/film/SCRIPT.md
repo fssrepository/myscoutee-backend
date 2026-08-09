@@ -22,47 +22,47 @@ foley and breath.
 ### 00:08–00:16 — S02 · The open year
 
 > Chance kept me home in 2019. COVID broke that foothold; Brussels remote work
-> opened one narrow route back.
+> opened one route back.
 
 ### 00:16–00:24 — S03 · Legal by necessity
 
-> KATA was not an entrepreneurial dream. It was the lawful bridge between
-> foreign work and the home I had chosen.
+> KATA was no entrepreneurial dream. It was the lawful bridge between foreign
+> work and my chosen home.
 
 ### 00:24–00:32 — S04 · A law in a day
 
-> In July 2022, that bridge changed almost overnight. Others blocked roads. I
-> stayed at my computer and tried to adapt.
+> In July 2022, that bridge changed almost overnight. Others blocked roads; I
+> stayed inside and adapted.
 
 ### 00:32–00:40 — S05 · The handover
 
-> The project outlived the tax deadline. I protected the handover and gave up
-> the contract that could no longer fit.
+> The project outlived the deadline. I protected its handover and surrendered
+> the contract that no longer fit.
 
 ### 00:40–00:48 — S06 · Three partial views
 
 > My accountant, the administration and I each saw another screen.
-> Responsibility stayed with the person denied the whole chain.
+> Responsibility found the person denied the whole chain.
 
 ### 00:48–00:56 — S07 · The password trap
 
-> The practical route demanded my password. The lawful route hid actions and
-> notices. Either choice returned the risk to me.
+> The practical route demanded my password; the lawful one hid actions and
+> notices. Both returned the risk to me.
 
 ### 00:56–01:04 — S08 · Assembled failure
 
-> Until 23 November, I knew nothing. Almost a year of professional failure took
-> me about one week to understand.
+> Until 23 November, I knew nothing. A professional's year of failure took me
+> one week to understand.
 
 ### 01:04–01:12 — S09 · The call
 
 > I corrected the return, paid the tax and dismissed the accountant. The
-> account reached zero. Trust did not.
+> balance reached zero; trust did not.
 
 ### 01:12–01:20 — S10 · The sentence and correction
 
 > Before dawn, under fear and surgical pressure, a violent sentence escaped. I
-> corrected it immediately. The system kept the first version.
+> corrected it; the system kept it.
 
 ### 01:20–01:28 — S11 · The body
 
@@ -71,58 +71,58 @@ foley and breath.
 
 ### 01:28–01:36 — S12 · Volume
 
-> Depression sharpened the anxiety: no lawful path felt safe. A wound, profanity
-> and black humour travelled farther than the repair.
+> Depression sharpened the anxiety. No lawful path felt safe. A wound,
+> profanity and black humour travelled farther than repair.
 
 ### 01:36–01:44 — S13 · The knock
 
-> Police came the day after I had asked police for help—with another case, and
-> for me. My devices became evidence.
+> Police came one day after I asked them for help—elsewhere, and for myself. My
+> devices became evidence.
 
-### 01:44–01:52 — S14 · The rooms and the fingerprint
+### 01:44–01:52 — S14 · Defence runs out of time
 
-> Defence could not find time. Eight days after the search, two experts found
-> time to turn a life into a report.
+> Defence ran out of time. Eight days after the search, two experts turned my
+> life into a report.
 
-### 01:52–02:00 — S15 · The C-shaped room
+### 01:52–02:00 — S15 · The forensic compression
 
-> The report called me calm, clear and cooperative—then compressed fifty
-> countries and human trust into pathological suspicion.
+> The report called me calm and clear, then compressed fifty countries and
+> human trust into pathological suspicion.
 
-### 02:00–02:08 — S16 · The forensic mirror
+### 02:00–02:08 — S16 · Brown stone and the C-shaped room
 
-> In the C-shaped courtroom, smiles recognized the absurdity. The process still
-> moved from a broken system to my finances.
+> Courtroom smiles recognized the absurdity. The process still moved from a
+> repaired failure toward my finances.
 
-### 02:08–02:16 — S17 · Work under the shadow
+### 02:08–02:16 — S17 · The life becomes an asset question
 
 > The intimate life nobody cared about had produced the foreign-earned savings
 > the court now wanted to examine.
 
-### 02:16–02:24 — S18 · What the case can reach
+### 02:16–02:24 — S18 · Work under the shadow
 
-> Beneath prison's shadow, AI helped me organize the file, build MyScoutee and
-> civic software, and test mathematics with a researcher.
+> Under prison's shadow, AI gave my uncaged mind a voice: evidence, MyScoutee,
+> film, civic software and mathematics.
 
-### 02:24–02:32 — S19 · The earlier pattern enters the street
+### 02:24–02:32 — S19 · Black humour becomes a receipt
 
-> Black humour became a receipt: a “terrorist position” CV sent to police while
-> the person inside the case waited for answers.
+> Black humour became a receipt: a “terrorist-position” CV sent to police while
+> I waited for an answer.
 
-### 02:32–02:40 — S20 · Election
+### 02:32–02:40 — S20 · Beautiful home, recurring exit
 
-> Debt had kept another Hungarian in London. A beautiful home can remain home
-> while its systems make departure feel safer.
+> Debt kept another Hungarian in London. Budapest remained beautiful while its
+> systems made departure feel safer.
 
-### 02:40–02:48 — S21 · Top and bottom reach Venice
+### 02:40–02:48 — S21 · The country changes government
 
-> In 2026, voters replaced the government. Offices that looked permanent began
-> moving while my first judgment still did not exist.
+> In 2026, voters changed government. Permanent-looking offices moved while my
+> first judgment still did not exist.
 
-### 02:48–02:56 — S22 · A court cannot assemble
+### 02:48–02:56 — S22 · Mercy changes direction
 
-> President and citizen reached Venice. Eight judges stepped aside; my route
-> returned as too early. The line remained open.
+> He denied me clemency. Eight judges stepped aside; then he signed away his
+> mandate. The line stayed open.
 
 ### 02:56–03:00 — E01 · Open line
 
@@ -141,13 +141,15 @@ Add all typography in post.
 | 01:12–01:20 | WORDS · CORRECTION · CONTEXT |
 | 01:20–01:28 | BODY · IMAGE · SARCASM |
 | 01:36–01:44 | 22 NOVEMBER 2023 |
-| 01:52–02:00 | ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE |
-| 02:00–02:08 | OBSERVATION ≠ WHOLE PERSON |
-| 02:08–02:16 | THE PROCEEDING CONTINUED · SO DID THE WORK |
-| 02:16–02:24 | WORK · DEBT · HOME · SAVINGS BUILT ABROAD |
-| 02:32–02:40 | 12 APRIL 2026 |
-| 02:40–02:48 | TOP OF THE STATE · BOTTOM OF THE FILE |
-| 02:48–02:56 | 15 JUDGES · 8 RECUSALS · NO QUORUM · TOO EARLY |
+| 01:44–01:52 | DEFENCE RAN OUT OF TIME |
+| 01:52–02:00 | OBSERVATION ≠ WHOLE PERSON |
+| 02:00–02:08 | ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE |
+| 02:08–02:16 | LIFE → ASSET QUESTION |
+| 02:16–02:24 | THE HUMAN MIND CANNOT BE CAGED |
+| 02:24–02:32 | BLACK HUMOUR · HUMAN RECEIPT |
+| 02:32–02:40 | BEAUTIFUL HOME · RECURRING EXIT |
+| 02:40–02:48 | 12 APRIL 2026 |
+| 02:48–02:56 | 30 APRIL · REFUSAL / 18 JULY · SIGNATURE |
 | 02:56–03:00 | MyScoutee · TEST THE SYSTEM BETWEEN US. |
 
 ## Clean short synopsis

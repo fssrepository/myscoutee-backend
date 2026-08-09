@@ -25,19 +25,15 @@ the assembled shot prompt. The repetition is intentional: audio constraints
 buried inside a long visual prompt are easier for a video model to ignore.
 
 ```text
-VEO AUDIO HARD LOCK: Generate environmental room tone and physically motivated
-foley only. Absolutely no background music, cinematic score, melody, harmony,
-musical drone, rhythmic pulse, singing, dialogue or narration. Do not reinterpret
-rain, traffic, room tone or urban hum as music. Final narration and one continuous
-score for the complete film are added only after all clips are joined. If native
-music or voice is generated anyway, that entire clip audio will be discarded.
+VEO AUDIO HARD LOCK: Generate silent production picture only. Absolutely no
+dialogue, narration, singing, background music, cinematic score, melody,
+harmony, musical drone, rhythmic pulse, ambience or sound effects. Final sound
+is created only after all clips are joined. Discard any native platform audio.
 ```
 
-This instruction does not promise acoustic continuity between independent Veo
-generations. It prevents per-clip music from repeatedly changing style. Carry
-useful room tone across edits with short crossfades, rebuild missing foley in
-post and run one separately produced score continuously under the assembled
-film.
+This instruction avoids treating independent Veo audio as continuous. Build
+foley and ambience in post and run one separately produced score continuously
+under the assembled film.
 
 ## Prompt tokens
 

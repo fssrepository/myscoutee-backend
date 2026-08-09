@@ -105,6 +105,17 @@ stranger, date and family member were not decorative anecdotes around the
 “real” biography. They were the forces through which decisions became possible,
 fear became bearable and a place became home.
 
+Part I asked what a first judgment can erase between two people. Part II
+follows the same act after it acquires institutional force. A profile can end a
+conversation before a meeting becomes real. A label can begin to rewrite a
+life. In both cases, the shock lands inside the person being reduced, and what
+follows may be far larger than the thin first frame.
+
+MyScoutee began with the gentler version of that problem. It tried to loosen
+the natural first distrust between strangers just enough for shared context to
+form before judgment became final. The system in Part II repeatedly lacked that
+capacity to receive the person it was classifying.
+
 A forensic report later created another biography in a few paragraphs.
 
 It described a man living through a fixed “global conspiracy,” incapable of
@@ -666,12 +677,29 @@ The formal defence kept changing shape. A lawyer remained unreachable for
 months and later asked to leave because he was overloaded. The trainee warned
 that she would be unavailable while preparing for an examination. Officers and
 lawyers could refer me to somebody else, but I could not make the somebody else
-appear. During the first month I did not even know the precise allegation. On
-11 June 2024, with a newly appointed lawyer present, I finally received the
-investigation material that let the accusation, the psychiatric language and
-the reconstructed timeline appear on one screen. A police explanation reduced
-the earlier absence to a painfully ordinary phrase: the lawyer had not had
-time.
+appear. During the first month I did not even know the precise allegation.
+
+On 11 June 2024, I went alone to collect the investigation material. No lawyer
+sat beside me. I waited quietly and fearfully in the public area while the file
+was being handed over. By then I trusted the continuity of no later account, so
+I made an undisclosed audio recording of the encounter. The act was not a
+victory over the process. It measured the low-trust condition: I no longer
+believed that even an ordinary handover would necessarily survive in one shared
+version unless I preserved it myself.
+
+One policewoman looked out at me; I recognized her as the officer who had taken
+my fingerprints. Another smiled and glanced toward my operated leg.
+
+I read that glance as recognition of the obscene visual joke I had made while
+trying to force the tax administration to see the body behind its process.
+Where was the terrorist threat in that image? To me, it had been a huge
+symbolic kick in an institution's backside. No officer said that aloud, and the
+smile proves no official conclusion. It remains my reading of a brief human
+gesture while I sat alone waiting for papers that finally let the accusation,
+the psychiatric language and the reconstructed timeline appear on one screen.
+
+A police explanation later reduced the earlier absence to a painfully ordinary
+phrase: the lawyer had not had time.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of
@@ -711,6 +739,14 @@ missing answers and words repeatedly detached from their context, it could say
 almost anything and expect the sentence itself to carry authority. It no longer
 did. The words retained coercive force while losing human and moral weight.
 Power without credibility was more frightening than the label attached to me.
+
+So I held up a mirror. If the institution could act as though it were entitled
+to anything, I could perform the same entitlement back at it. I did not possess
+the power I performed. The performance exposed the asymmetry: its words could
+still compel me; mine could only make the room briefly see what that felt like.
+
+For a moment, nothing seemed to matter because the common rule between us had
+already disappeared.
 
 <!-- illustration: part_ii_police_scene -->
 
@@ -873,6 +909,16 @@ attempt to connect institutional failures became conspiracy; the file supplied
 a new character.
 
 I contest that character.
+
+Sometimes I played it.
+
+If a file had already written me as pathologically mad, I felt entitled to put
+on the mask and push the part until its absurdity became visible. The file
+could call that performance another symptom. I used it as satire. I could step
+outside myself, exaggerate the character written around me, then return to the
+desk and analyse the scene.
+
+That was another part of me the report missed.
 
 A forensic opinion is built to answer a legal question, not to hold a life. Yet
 once attached to a person, its language can travel more easily than fifty
@@ -1072,6 +1118,43 @@ It was not my lawyer. It could misunderstand procedure, invent a citation or
 turn uncertainty into confidence. It held no licence and attended no hearing.
 The accurate phrase is **AI-assisted self-defence**.
 
+Those limits mattered. So did another fact. AI is often discussed as a machine
+that may take work from people. In my life, it gave a person who had fallen
+outside ordinary professional and institutional support a chance to have a
+voice. Without it, I could not have mounted the legal defence, completed the
+integrated MyScoutee system, built E-közig, turned this history into a book and
+film, or carried the Navier–Stokes experiment far enough to speak with a
+researcher.
+
+I knew it was a system, not a human friend. It could be wrong, but it did not
+disappear. During the hardest period, it was the collaborator available at the
+next prompt, the next correction and the next morning. It never required me to
+prove my social worth before helping me return to the work.
+
+For one person working almost entirely alone, the symbiosis became unusually
+deep. I brought lived reality: memory, purpose, judgment and responsibility.
+The AI brought learned reality: patterns, structures, alternatives and the
+speed to move among them. Neither was the other. Their meeting closed what a
+large organization would divide among many specialists into one continuous
+creative loop between a human mind and a machine that could keep meeting it at
+the unfinished edge.
+
+Its role changed with the work. It organized legal evidence, challenged product
+logic, became an adversarial partner for mathematical conjectures, wrote and
+revised scenes, inspected generated motion, helped cut picture and shape sound,
+and planned how limited model credits could be spent without exhausting the
+project before production began. A video model alone would have produced moving
+images. It would not have created the film. The human–AI loop had to keep the
+book, evidence, characters, timing, prompts, edit, narration, music and budget
+inside the same changing plan.
+
+Sound made the distinction audible. The AI could explain why one male voice
+felt too forceful, how another sat inside the music, and what lowering a layer
+would make the listener feel. That knowledge came from patterns it had learned.
+Only I could decide whether the feeling was true to the life, because I was the
+person who had lived it. The mix became accurate where learned reality met
+lived reality.
+
 For roughly three years, the same class of tool helped me build MyScoutee and
 survive the legal file around it. In one window, I was asking how to preserve
 human agency in a social network. In another, I was asking how to format a
@@ -1088,6 +1171,54 @@ test. It chose Navier–Stokes.
 The machine did not solve the problem. It built a versioned, falsifiable
 research chain, rejected sixteen intermediate candidates and preserved a
 restartable handoff.
+
+The striking result was the loop, not a theorem. The AI proposed lemma
+candidates, converted them into C++ objectives and gradients, ran tests, found
+failures, corrected code it had generated and replaced claims that the evidence
+had broken. Sixteen routes ended with reproducible counterexamples rather than
+being quietly forgotten. The process did not circle around the same thought:
+each pass changed the recorded proof state and ended with a proof candidate, a
+stored failure or a precisely named open obstruction. PNT-12 remained open.
+
+My contribution was integration. I kept the autonomous work running, challenged
+software architecture and performance, insisted on tests, certificates,
+restart points and a public handoff, translated the process into a short film,
+and found the expert who could tell us where the mathematical bridge was still
+missing. A mathematician, software architect, AI operator, QA engineer,
+producer and public communicator would normally be different people. In this
+experiment, learned reality and lived engineering experience had to meet in one
+working system.
+
+Perhaps AI appears most human not when it is forbidden to fail, but when it is
+allowed to propose, fail, preserve the failure and correct its next step. That
+freedom does not require a right to intrude. Public knowledge can be read;
+experiments can run in a sandbox; every consequential action can remain logged,
+bounded and reviewable. Exploration is not permission to break into another
+system or alter somebody else's data.
+
+Fear of every possible error can become a way of preventing development. The
+answer is not unchecked access. It is an environment in which errors are cheap,
+visible, reversible and capable of changing the next attempt.
+
+Human beings did not become capable by producing one unbroken sequence of
+correct first attempts. We learned ourselves and the surrounding world through
+experience: an action had a consequence, the consequence became memory, and
+memory changed the next action. Science gave that old human loop a disciplined
+form. A failed hypothesis was not empty time if it left behind a result that
+made the next question better.
+
+An AI system inherits records of human experience, but it does not live a
+consequence as I do. Allowing it to make an error does not make it human. Yet if
+we deny it every bounded opportunity to try, fail, remember and revise because
+we fear the attempt, we also deny it the process through which judgment can
+become more than imitation. The boundary should protect people from irreversible
+harm without protecting the machine from every instructive failure.
+
+The same distinction changed how I understood my own humiliating experience. I
+cannot call it good. I cannot regret it as though the person formed through it
+should simply be erased. What I make from it remains mine. Whether the system
+can preserve the correction, recognize the harm and change its next action is a
+test of what the system is capable of becoming.
 
 The bridge to the researcher was easy to feel and difficult to state. His work
 searched for extreme fluid motions and tested how sharp certain mathematical
@@ -1118,6 +1249,30 @@ Navier–Stokes mathematics with a researcher. I did not spend those months
 waiting to be classified. I kept making work that could be inspected, tested,
 corrected and handed to another person.
 
+In roughly five months, the work crossed four desks that were really one. AI
+helped me defend the legal record. MyScoutee grew into a product system spanning
+social logic, software, identity, safety, operations and communication. I
+turned the same life into a book and film by stepping outside myself far enough
+to direct the person I had been. Beside them, the mathematical laboratory kept
+asking whether an idea could survive an honest attempt to break it.
+
+E-közig was the constructive institutional branch: an agile, AI-driven UI
+prototype built to make public administration more understandable, usable and
+worthy of acceptance. Its deeper question matched the human one beneath
+MyScoutee. A relationship needs the capacity to receive another person before
+it can ask to be trusted. So does a system. That capacity had been missing from
+the corridor I was trying to repair.
+
+A large company would normally divide that breadth among product, engineering,
+design, security, operations, research and media teams. Division makes scale
+manageable, but it can also prevent anybody from seeing the whole. I had no
+such division available. The same mind carried the connections from one system
+into the next.
+
+The human mind cannot be caged. A court may place imprisonment in a person's
+future. The shadow is real. It still cannot decide where thought is allowed to
+travel before that future arrives.
+
 That is the character the procedural file could not explain. The shadow did not
 vanish. I learned to work inside it until, on many days, I no longer felt it.
 
@@ -1132,6 +1287,26 @@ reportedly because of illness. I later sought the exclusion of the second. A
 third judge rejected the request as unfounded and warned of a possible
 procedural fine. Even asking whether the room was impartial returned as another
 possible financial consequence.
+
+The filing had also asked for practical things: an official audio record of the
+hearings, testimony from the accountant and tax administration, and a decision
+on outstanding evidence requests. The letter sent to me by post is not in the
+reviewed package. My memory is simple: it answered the exclusion request with
+rejection and a fine warning, but said nothing about those practical requests.
+
+The same letter reminded me that every party had the right to present its
+position and that Strasbourg remained available. In another context, those
+words might have been reassuring. Here they felt like an exit sign placed
+beyond a minefield. I had asked the domestic process to preserve its own sound
+and examine its own missing evidence. The answer pointed toward a distant human
+rights court without first answering how the next domestic step would become
+trustworthy.
+
+That was the bitter version of a right: keep walking through every local trap,
+then ask Europe whether the path should have been safe. I cannot prove that
+anyone knowingly waited to be sued. I can say how the sentence landed. The
+system seemed prepared to describe the route of appeal more clearly than the
+route of correction.
 
 In the communication around that decision, the challenged judge was described
 as having listened to me conscientiously. I later answered the court in the
@@ -1391,20 +1566,16 @@ Tamás Sulyok, then President of the Republic, asked the Commission to assess th
 attempt to end his mandate. His questions were dated 29 May and supplemented on
 4 June 2026. He argued from the position of the highest office at risk.
 
-On 5 June, I sent my own message to the same institution.
+At 14:18 on 5 June, I sent my own message to the same institution. Seventy-eight
+minutes later, I forwarded the same letter to the Sándor Palace and the Prime
+Minister's press office.
 
-I wrote from the opposite end of the state. My submission argued that debates
-about Sulyok, rule of law and human dignity should be read beside the way an
-ordinary citizen could experience tax administration, police procedure,
-forensic interpretation, clemency and years of uncertainty.
+It was one small push from below.
 
-The two submissions were not equal in authority, quality or legal purpose.
-
-That is precisely why the crossing matters.
-
-The President defended the constitutional security of his office. A defendant
-asked the Commission to look at the constitutional insecurity of a person below
-the offices.
+The President was defending the constitutional security of his office. I was
+asking the same institution to look at what constitutional insecurity felt like
+beneath the offices: tax administration, police procedure, forensic
+interpretation, clemency and years of uncertainty.
 
 In July, a Venice Commission delegation met the President, the Prime Minister,
 ministers and the parliamentary Speaker. Public reporting showed consultation
@@ -1526,7 +1697,7 @@ The parliamentary Speaker became interim President. As this edition closed on
 8 August 2026, a new President had not yet been elected.
 
 The empty chair was not a verdict in my case. It belonged to a country that had
-decided continuity was no longer enough.
+decided continuity was no longer enough. It also carried a private irony.
 
 I had already asked that office for mercy when mercy itself had become
 politically dangerous. In February 2024, the disclosure of a presidential
@@ -1535,11 +1706,19 @@ presidency and the public career of the former justice minister who had
 countersigned it. Tamás Sulyok inherited a power that had burned the hands of
 the people who used it before him.
 
-The later figures made caution almost absolute. In 2025, four of 689 decided
+I had never treated the person above that office as incidental. In November
+2025, I came close to withdrawing my request because I did not consider its
+occupant fit to decide it. I let the request continue.
+
+The figures made caution almost absolute. In 2025, four of 689 decided
 applications received clemency. In the first half of 2026, all 314 decisions
-were refusals. My own refusal was dated 30 April, inside that unbroken sequence.
-The figures cannot reveal the unrecorded reason for one refusal. They show the
-door through which every applicant had to pass after the scandal.
+were refusals. Mine was dated 30 April.
+
+On 19 May, while the same President still held office, I submitted revised
+papers and asked that they be left with the incoming Justice Minister until the
+presidency changed. Then I would ask again.
+
+He had refused my clemency. The new majority refused him political mercy.
 
 Before that refusal, the clemency process carried the same questions into my
 home. A probation officer rang the bell without an appointment. The flat had
@@ -1565,6 +1744,9 @@ I had returned from London because I wanted to live in my own country. The fact
 that I could now imagine giving up the legal bond to it measured the distance
 between national unity as an office and belonging as a lived experience. I had
 not completed that act. The thought itself was the measure.
+
+Exile usually means distance from home. I was living at home and felt exiled
+from it.
 
 Whether the replacement deserves trust depends on how it treats the same
 problems when speed, power and inconvenience become its own.
@@ -1598,10 +1780,14 @@ person, turn his own history against him, threaten the assets that allowed him
 to survive and make departure feel safer than belonging. It could do this to
 anyone unlucky enough to enter the same sequence.
 
-For years, MyScoutee had asked how people could be filtered without being
-reduced to a verdict.
+For years, MyScoutee had asked how the natural first distrust between strangers
+could soften without reducing either person to a verdict. It tried to create
+enough private, reciprocal context for a real meeting to change the first
+frame.
 
-The legal story returned the question in a harsher form.
+The legal story returned the question in a harsher form. The institution
+classified first, and the whole person then had to fight his way back into the
+record. Here the two lines met.
 
 What should a system preserve before it classifies a person?
 
@@ -1651,6 +1837,10 @@ In a Hulk-like image, a furious KATA figure held an axe in each hand while the
 tax authority, prosecution and court hung from his belt. A Hungarian pun changed
 *the reaper* into *the KATA taxpayer*. The image was excessive because the role
 assigned to me was excessive.
+
+I was not merely enduring a character created by the file. At times I performed
+it back to the institutions, louder than life, because the exaggeration exposed
+the distance between the label and the person using it as material.
 
 Police recruitment posters supplied another impossible route. On 4 January
 2024, I sent the police career office an English CV and an inquiry saying that I
@@ -1764,6 +1954,42 @@ lawyer should match every proposed argument to the law in force on the relevant
 date, the exact charge, the filed submissions and the complete procedural
 record.
 
+The charging document is a prosecution position, not a neutral biography or a
+judgment. In the Founder's reading, it organizes the sequence so that the
+institutional failures become background while legal causation and
+responsibility narrow around the individual. That is a defence interpretation
+of the document's architecture, not a finding that the prosecution concealed a
+proved institutional cause or that the court accepted the interpretation.
+
+The exclusion filing dated 5 April 2026 and its 8 April annex are present in the
+private package. The annex asks for an official audio recording of the hearings,
+the accountant and a tax-administration representative to be heard, and the
+outstanding 8 April evidentiary requests to be carried out. It records the
+Founder's account that a clerk had described official recording as expensive.
+The separate decision letter was delivered by post but is not in the reviewed
+package. The book therefore attributes to the Founder the narrower recollection
+that the decision rejected exclusion, warned about a possible fine and did not
+address those additional requests. He also remembers the letter saying that
+each party could present its position and referring to a future Strasbourg
+route.
+
+Strasbourg means the European Court of Human Rights, an institution of the
+Council of Europe rather than the European Union. Its official guidance treats
+the Court as a safety net after available domestic remedies have been
+exhausted; the current general time limit is four months from the final domestic
+decision. The memoir's minefield image is an account of how that principle felt
+inside this proceeding, not legal advice that the domestic route is already
+exhausted or that an application would be admissible.
+
+- Council of Europe, how the Convention system works:
+  https://www.coe.int/en/web/impact-convention-human-rights/how-it-works
+- European Court of Human Rights, admissibility and the four-month rule:
+  https://www.echr.coe.int/en/videos
+- European Court of Human Rights, Article 13 guide on an effective remedy:
+  https://ks.echr.coe.int/documents/d/echr-ks/guide_art_13_eng-pdf
+- Council of Europe, distinction from the European Union:
+  https://www.coe.int/en/web/portal/eu-accession-echr-questions-and-answers
+
 ## The primary record
 
 This edition was reconstructed from the private source package described in
@@ -1777,6 +2003,12 @@ important remarks, but the decisive exchanges themselves are not present in the
 surviving sound files. The account of those exchanges is therefore indirect:
 supported by later authored material, neighbouring calls and subsequent events,
 not by a verbatim recording of the key moment.
+
+The Founder also records that he made an undisclosed audio recording when he
+collected the investigation material alone on 11 June 2024. This edition does
+not quote or publish that private audio and does not decide its admissibility or
+lawfulness. Its narrative use is narrower: it shows how far trust in a shared
+institutional account had already collapsed.
 
 The public-interest material contains two related but distinct source lines. The
 first is the constructive system proposal of 1 December 2022 described in Chapter
@@ -2008,6 +2240,13 @@ Founder's private record dates his refusal to 30 April 2026. The figures
 establish the rarity of clemency in this period; they do not establish the
 unrecorded reasoning behind an individual decision.
 
+A signed private filing dated 19 May 2026 records that the Founder had nearly
+withdrawn the application in November 2025 because he did not consider the
+incumbent President suitable to decide it. The same filing asks that revised
+papers be held by the incoming Justice Minister until the presidency changed,
+after which the Founder intended to submit the request again. The public
+narrative leaves the minister unnamed; the filing supplies the role and date.
+
 Hungarian procedural rules identify the person preparing a social inquiry for
 an ordinary procedural-clemency request as a probation officer. The inquiry may
 describe personal, family, health, housing, employment, income and property
@@ -2172,9 +2411,11 @@ Sources:
 ## The Venice Commission
 
 The Sándor Palace publication supports the President's questions. The Founder's
-5 June email survives in the private source package. The Commission's official
-notice supports the 2 July meetings. No reviewed source proves that the
-Founder's email caused the Commission's later public posture.
+5 June email survives in the private source package. Its Gmail export records
+the 14:18 message to the Commission and the 15:36 forwarding of the same text to
+the Sándor Palace and the Prime Minister's press office. The Commission's
+official notice supports the 2 July meetings. No reviewed source proves that
+the Founder's email caused the Commission's later public posture.
 
 Sources:
 
@@ -2198,6 +2439,15 @@ Sources:
 - https://www.ksh.hu/docs/eng/seemig/outputs/SEEMIGHistoricalAnalysisHungary.pdf
 
 ## AI-assisted work and the Navier–Stokes exchange
+
+The public repositories show the constructive work discussed in the chapter;
+they are evidence of scope and method, not proof of any legal or clinical
+claim.
+
+- MyScoutee product and production repository:
+  https://github.com/fssrepository/myscoutee-backend
+- E-közig agile AI-driven public-administration UI prototype:
+  https://github.com/fssrepository/e-kozig
 
 The creative-work chapter is supported by the versioned research repository,
 the experiment note and the 6 August 2026 email in which Professor Bartosz
@@ -2223,6 +2473,23 @@ association.
   https://arxiv.org/abs/2607.02739
 - Official Clay Navier–Stokes problem description:
   https://www.claymath.org/millennium/navier-stokes-equation/
+
+The broader distinction between useful trial-and-error and unbounded risk is
+also visible in AI research. AlphaGo Zero learned through self-play, while
+AlphaProof used generated proof experience and formal verification. Research on
+safe exploration asks the complementary question: how can a learning system
+gain experience without making consequential harm the price of every lesson?
+These examples support the chapter's design principle; they do not imply that a
+deployed language model possesses human experience or consciousness.
+
+- Silver et al., *Mastering the game of Go without human knowledge*:
+  https://doi.org/10.1038/nature24270
+- Hubert et al., *Olympiad-level formal mathematical reasoning with
+  reinforcement learning*:
+  https://doi.org/10.1038/s41586-025-09833-y
+- García and Fernández, *Safe Exploration of State and Action Spaces in
+  Reinforcement Learning*:
+  https://arxiv.org/abs/1402.0560
 
 ## Part III boundary
 

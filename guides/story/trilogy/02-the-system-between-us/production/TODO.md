@@ -1,18 +1,20 @@
 # Narrative-first TODO
 
 Status: **Part II English memoir reopened for source-led revision on 9 August
-2026. The previous PDF remains the last released artifact, but the existing
-03:00 script, storyboard and prompts are stale until the Founder approves the
-revised book. Frame/model work is paused.**
+2026. The previous PDF remains the last released artifact. The revised book,
+03:00 script, storyboard and prompts are synchronized but remain unapproved and
+unpublished until the Founder completes the reading pass. Frame/model work is
+paused.**
 
 ## 1. Current review pass
 
-- [ ] Complete the deeper memoir revision around the functioning-system
+- [x] Complete the deeper memoir revision around the functioning-system
   counterfactual, human relationships, defence discontinuity, expert/courtroom
   absurdity, outward migration and the system-error mirror proposition.
 - [ ] Receive Founder approval on the revised English reading PDF.
-- [ ] Resynchronize the exactly three-minute English narration, storyboard and
-  Flow/OpenArt prompt chain only after that approval.
+- [x] Resynchronize the exactly three-minute English narration, storyboard and
+  Flow/OpenArt prompt chain to the 9 August manuscript; repeat this propagation
+  only if the Founder makes reading-pass corrections.
 - [ ] Use the approved ElevenLabs **John** voice for both films and archive the
   exact voice/version/settings plus a clean reference WAV.
 
@@ -38,6 +40,12 @@ revised book. Frame/model work is paused.**
   title.
 - [x] Draft an exactly three-minute English narration.
 - [x] Synchronize a CP00–CP22 storyboard and Flow/OpenArt prompt baseline.
+- [x] Carry the Parts I–II bridge into Part Seven: initial distrust can soften
+  through reciprocal human context; institutional classification can instead
+  force the whole person to fight back into the record.
+- [x] Carry the uncaged-mind sequence through book, script, storyboard and
+  prompts: roughly five months of AI-assisted legal, product, civic UI, film and
+  mathematical work under the unresolved prison shadow.
 - [x] Separate the police rooms/fingerprint, Fő Street/C-shaped courtroom,
   forensic mirror, AI work and social inquiry into legible late-film endpoint
   scenes CP14–CP18.

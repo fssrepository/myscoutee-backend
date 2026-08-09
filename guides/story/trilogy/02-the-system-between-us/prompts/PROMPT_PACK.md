@@ -77,6 +77,10 @@ post-produced ambience/foley. Any platform audio generated despite the prompt
 is discarded. The display name is not sufficient provenance: archive the exact
 voice identifier, model version, settings and clean reference WAV.
 
+The picture package is therefore a complete `03:00.000` director handoff, not a
+collection of clips with independent sound. The twenty-two generated intervals
+occupy `02:56`; the exact four-second end card is composed in post.
+
 For Google Flow/Veo, repeat this short block at the very end of every assembled
 shot prompt:
 
@@ -108,8 +112,20 @@ II receives one separately produced continuous score and one narrator in post.
   eviction.
 - The President's constitutional route and the Founder's route are visually
   separate and legally unequal.
+- The Founder's clemency refusal and the later loss of the President's office
+  are memoir irony, not equivalent legal acts and not proof that either caused
+  the other.
+- The 19 May revised clemency papers asked to wait with the incoming justice
+  administration until the presidency changed; do not invent a new President
+  or a later decision.
+- The documented 5 June forwarding to the Sándor Palace and Prime Minister's
+  press office may appear as one small push from below, never as a proven cause
+  of later institutional action.
 - Seven judges initially recused from one matter and an eighth followed; they
   did not leave the Court in June.
+- The Founder's satirical performance of the file-created character is a mirror
+  held up to institutional power. It is not acceptance of the contested
+  diagnosis, real counter-authority or permission to harm.
 - Part III owns the final outcome.
 - Courtroom geography remains exact from the Founder's viewpoint: a C-shaped
   desk with prosecutor left, clerk at the far-left corner, judge centre and

@@ -133,39 +133,41 @@ The letters belong in the production manifest, not the public image.
   glass.
 - **Hazard:** never display a real password, identifier or government UI.
 
-### S08 — Forms multiply around a subtraction · 00:56–01:04 · CP07→CP08
+### S08 — A year assembled in one week · 00:56–01:04 · CP07→CP08
 
-- **Layer:** `D`.
-- **CP07:** missed-notice frame.
-- **CP08:** three anonymized versions of a short return align over one simple
-  arithmetic line, but their status marks disagree.
-- **Motion:** a restrained overhead move. One value is subtracted; form layers
-  file, reject, correct and reappear without chaotic camera movement.
-- **Performance:** Founder checks rather than panics; anxiety begins only at the
-  end as the form stack refuses to settle.
-- **Sound in post:** page, error tick, correction tick, clock.
-- **Hazard:** all values and status labels added later; no fabricated tax data.
+- **Layer:** `D/M`.
+- **CP07:** delegated action, separated notice and returned responsibility.
+- **CP08:** 23 November becomes the point at which the previously separated
+  fragments finally align for the Founder: a professional process lasting
+  almost a year against one week of concentrated reconstruction.
+- **Motion:** follow the missed notice back through three anonymized filing
+  states and one simple arithmetic line. Calendar pages compress from a year
+  into seven marked days without frantic montage.
+- **Performance:** surprise becomes disciplined concentration, not omniscience.
+- **Sound in post:** page, portal tick, seven quiet clock marks.
+- **Hazard:** no fabricated values, readable return, claim that one person alone
+  understood every legal issue or humiliation of the accountant.
 
-### S09 — The help call becomes a circle · 01:04–01:12 · CP08→CP09
+### S09 — The account is repaired; trust is not · 01:04–01:12 · CP08→CP09
 
-- **Layer:** `D/M/A`; surrounding calls survive, but the key attributed
-  exchanges are indirect evidence and are absent from the surviving audio.
-- **CP08:** unresolved return stack.
-- **CP09:** Founder on the phone at the same desk after hours; a circular call
-  line returns each partial answer to the unresolved portal field.
-- **Motion:** slow 55 mm orbit no more than twenty degrees. The line circles; the
-  Founder does not pace, shout or threaten.
-- **Performance:** concentration becomes visible panic through breath and
-  micro-expression, but no lip-synced quote.
-- **Sound in post:** use designed phone room tone and breaths, never source-like
-  reconstructed dialogue. A neighbouring recording must not be made to sound
-  like the absent key call.
-- **Hazard:** do not attribute remembered remarks as exact speech.
+- **Layer:** `D/M`.
+- **CP08:** the year compressed into the Founder's reconstruction week.
+- **CP09:** a corrected unreadable return, completed tax payment and terminated
+  representation align beside a zeroed balance while the human connection line
+  remains broken.
+- **Motion:** one controlled desk-level move follows correction to payment and
+  the closing of the accountant channel. The numeric line settles; the trust
+  line does not.
+- **Performance:** exhausted completion rather than triumph or revenge.
+- **Sound in post:** correction tick, payment confirmation, one channel closing.
+- **Hazard:** no readable tax data, cash, celebratory dismissal, villainous
+  accountant or claim that payment resolved the later criminal case.
 
 ### S10 — Words, correction, context · 01:12–01:20 · CP09→CP10
 
 - **Layer:** `D/M`; legal meaning disputed.
-- **CP09:** circular help call.
+- **CP09:** corrected return, paid tax, ended representation and unresolved
+  trust line.
 - **CP10:** before-dawn message window represented by unreadable lines; one dark
   line appears, then a clear correction line is placed directly beneath it.
 - **Motion:** phone lowers, cursor moves, the first line lands, the Founder stops,
@@ -235,185 +237,164 @@ The letters belong in the production manifest, not the public image.
 - **Hazard:** no weapons, tactical entry, handcuffs, damage or claim of asset
   seizure beyond the documented devices.
 
-### S14 — The rooms and the fingerprint · 01:44–01:52 · CP13→CP14
-
-- **Layer:** `M`.
-- **CP13:** phone and computer in neutral evidence sleeves.
-- **CP14:** the Founder's fingertips rest on fingerprint paper; one dark ridge
-  continues beyond the sheet as the visual route into the next interval.
-- **Room geography:** in the first ordinary police room, `[OFFICER_REF]` sits
-  opposite behind a desktop computer, `[DEFENCE_COUNSEL_REF]` sits beside the
-  Founder and one anonymous presence remains behind him. Counsel asks for time;
-  an unadorned door opens into a second room. Police later photograph the
-  Founder and `[FINGERPRINT_OFFICER_REF]` professionally guides his fingers onto
-  paper.
-- **Motion:** desktop edge becomes the counsel-room doorframe; the doorframe
-  becomes the edge of the fingerprint card. The Founder's awareness that the
-  female officer is attractive appears as one ordinary glance, never flirtation.
-- **Meaning:** advice receives one small room; identity becomes a photograph and
-  a pattern of lines. Humour and ordinary perception keep the Founder human.
-- **Sound in post:** computer fan, chair movement, door latch, camera shutter,
-  paper and ink.
-- **Hazard:** no dark interrogation chamber, weapon, shouting reenactment,
-  invented quotation, readable biometric data, romance or erotic framing.
-
-### S15 — Brown stone and the C-shaped room · 01:52–02:00 · CP14→CP15
+### S14 — Defence runs out of time · 01:44–01:52 · CP13→CP14
 
 - **Layer:** `M/D-secondary`.
+- **CP13:** phone and computer in neutral evidence sleeves.
+- **CP14:** the Founder's fingertips rest on fingerprint paper; one ridge points
+  toward two waiting expert chairs.
+- **Motion:** in an ordinary police room, `[OFFICER_REF]` sits behind a desktop
+  computer and `[DEFENCE_COUNSEL_REF]` beside the Founder. A contact card leads
+  only to promised return calls. One small counsel room becomes the edge of the
+  fingerprint card while `[FINGERPRINT_OFFICER_REF]` works professionally.
+- **Meaning:** formal roles exist, but continuity does not. Search, processing
+  and expert interpretation receive time before the Founder has one stable
+  defence relationship or complete view of the allegation.
+- **Sound in post:** computer fan, unanswered call, door, shutter, paper and ink.
+- **Hazard:** no dark interrogation, weapon, shouting, invented quotation,
+  readable biometric data, romance or erotic framing.
+
+### S15 — The forensic compression · 01:52–02:00 · CP14→CP15
+
+- **Layer:** `D/M`; interpretation contested.
 - **CP14:** fingerprint ridge leaving the processing room.
-- **CP15:** exact hearing-room geography from the Founder's viewpoint:
-  prosecutor left, clerk far-left corner, `[JUDGE_REF]` centre and appointed
-  counsel right around one C-shaped desk; the Founder sits before them with a
-  table microphone. One highlighted unreadable phrase sits above a faint wider
-  accounting chain.
-- **Motion:** the fingerprint ridge catches a white camera flash, becomes Danube
-  light, then a line in the long brown monumental Fő Street façade. The camera
-  crosses the threshold and the line bends into the C-shaped desk. A long
-  explanation compresses toward one phrase while every person remains still and
-  human.
-- **Meaning:** the city becomes stone, stone becomes institutional geometry,
-  and a long causal sequence becomes its sharpest surviving sentence.
-- **Sound in post:** Danube air, heavy door, restrained courtroom room tone,
-  microphone breath and one page turn.
-- **On-screen text in post:** `ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE`.
-- **Hazard:** no Gothic courthouse, triumph, mocking judge, bias finding,
-  readable accusation, criminal portrayal of the accountant or legal verdict.
-
-### S16 — The forensic mirror · 02:00–02:08 · CP15→CP16
-
-- **Layer:** `D` plus contested interpretation.
-- **CP15:** the C-shaped hearing room and surviving phrase.
-- **CP16:** two visually distinct experts, `[EXPERT_A_REF]` and
-  `[EXPERT_B_REF]`, share an ordinary examination room with the Founder's
-  composed face and one anonymized report. One side records calm cooperation
-  and intact cognition; the other holds an unreadable contested conclusion.
-- **Motion:** the C-shaped table closes into the curve of a report page. One
-  restrained 65 mm move crosses the two separate expert positions and ends on
-  the report reflected across the Founder's whole face.
-- **Meaning:** two remembered voices produce one document; observation becomes
-  a description capable of travelling farther than the room.
-- **Sound in post:** pencil, paper turn, low clinical tone.
+- **CP15:** two distinct experts, `[EXPERT_A_REF]` and `[EXPERT_B_REF]`, one
+  report and the Founder's composed whole face.
+- **Motion:** the ridge becomes the curve of an anonymized report. Cross the two
+  expert positions once. Calm cooperation and intact cognition occupy one band;
+  reflected memories of nearly fifty countries and human trust remain visible
+  before one unreadable contested conclusion compresses them.
+- **Meaning:** two remembered voices produce one portable description. The
+  person remains larger than the document.
+- **Sound in post:** pencil, page turn, restrained clinical tone.
 - **On-screen text in post:** `OBSERVATION ≠ WHOLE PERSON`.
 - **Hazard:** no floating diagnosis, split-personality effect, malicious expert,
-  generated punishment quote or implication that political change clinically
-  resolves the report.
+  punishment quotation or later-political clinical conclusion.
 
-### S17 — Work under the shadow · 02:08–02:16 · CP16→CP17
+### S16 — Brown stone and the C-shaped room · 02:00–02:08 · CP15→CP16
 
-- **Layer:** `D/M`.
-- **CP16:** report reflected across the Founder's face.
-- **CP17:** Founder at two honest windows: anonymized evidence on one side and a
-  plain AI-assisted outline on the other. Within the evidence window, one
-  restrained five-band document is the later *Public-Interest Action*: its
-  cover reverses the ordinary positions of state and citizen without readable
-  accusation or courtroom parody. Behind the windows, three textless work
-  planes show the E-közig civic prototype, MyScoutee's human network and finite
-  Navier–Stokes simulation geometry.
-- **Motion:** report line becomes an outline heading. The AI offers structure;
-  the Founder checks a source, rejects one uncertain suggestion and records a
-  restartable checkpoint. The five bands settle into the authored civic
-  document, then continue into the three work planes. A faint institutional
-  shadow remains outside the monitor light without becoming bars or a prison
-  cliché.
-- **Meaning:** AI supplies speed, not representation. Creating inspectable work
-  is how the Founder remains active beneath the possibility of imprisonment.
-- **Sound in post:** keyboard, page search, one subtle cursor tone and the return
-  of a restrained human pulse.
-- **On-screen text in post:** `THE PROCEEDING CONTINUED · SO DID THE WORK`.
-- **Hazard:** no branded chatbot UI, hologram lawyer, solved-prize claim,
-  courtroom exoneration, accepted-lawsuit implication, literal cell or heroic
-  genius montage.
+- **Layer:** `M/D-secondary`.
+- **CP15:** the forensic report reflected across the Founder's whole face.
+- **CP16:** exact room geography: prosecutor left, clerk far-left corner,
+  `[JUDGE_REF]` centre and appointed counsel right around one C-shaped desk;
+  the Founder sits before it with a table microphone.
+- **Motion:** a report line becomes Danube light, the long brown Fő Street
+  façade and then the C-shaped desk. Restrained expressions acknowledge one
+  absurd moment while the procedural line continues toward finances.
+- **Meaning:** human recognition can appear locally while the role keeps the
+  machinery moving.
+- **Sound in post:** Danube air, heavy door, courtroom tone, microphone breath.
+- **On-screen text in post:** `ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE`.
+- **Hazard:** no Gothic court, mocking judge, bias finding, readable accusation,
+  criminal accountant or verdict.
 
-### S18 — What the case can reach · 02:16–02:24 · CP17→CP18
+### S17 — The life becomes an asset question · 02:08–02:16 · CP16→CP17
 
 - **Layer:** `M/D-secondary`; no final confiscation order reviewed.
-- **CP17:** AI-assisted evidence and creative-work desk.
-- **CP18:** `[PROBATION_OFFICER_REF]` stands inside the exact Budapest flat
-  during the unannounced clemency social inquiry. The room is puritan,
-  temporarily untidy and unclean, the winter radiator is cold, and four quiet
-  objects carry the questions: work desk, absent car key, apartment key from the
-  Founder's parents and an abstract government-bond account plate representing
-  savings built principally abroad.
-- **Motion:** a line from the court microphone returns briefly across work,
-  debt, home and savings, then becomes the apartment doorbell. The visitor
-  enters; the Founder remains composed and places a hand near the cognac
-  notebook, not over money.
-- **Meaning:** security built abroad so the Founder could live at home now feels
-  legible to the proceeding. Deliberate thrift is not staged as destitution.
-- **Sound in post:** courtroom tail, doorbell, key, cold room tone, paper.
-- **Hazard:** no cash pile, luxury, bailiff, eviction, completed confiscation,
-  hoarding, filth spectacle, pity framing or official merits conclusion.
+- **CP16:** exact C-shaped hearing room.
+- **CP17:** the parent-provided apartment key, an abstract government-bond plate
+  and foreign-earned work/saving layers sit inside one unanswered question.
+- **Motion:** unreadable Part I memory pages are waved aside; their lines become
+  the London work, restrained spending and reserve now being examined. End on
+  the key and cognac notebook, not on money.
+- **Meaning:** the life treated as irrelevant produced the security treated as
+  relevant. The system appears to seek return from an investment it never made.
+- **Sound in post:** pages, distant shared-room texture and courtroom tone.
+- **Hazard:** no cash pile, luxury, bailiff, eviction, confiscation or official
+  merits conclusion.
+
+### S18 — Work under the shadow · 02:16–02:24 · CP17→CP18
+
+- **Layer:** `D/M`.
+- **CP17:** home and foreign-earned security held inside the question.
+- **CP18:** one AI-assisted work surface joins checked legal evidence, the
+  MyScoutee product system, an E-közig agile UI prototype, self-observing
+  book/film direction and finite Navier–Stokes bands.
+- **Motion:** the account line becomes an evidence heading. The AI proposes
+  structure; the Founder checks it; one failed route remains visible as a
+  reproducible counterexample; the next attempt changes; and a restartable
+  checkpoint is recorded. The same disciplined line passes through every work
+  plane.
+- **Meaning:** AI supplies speed, structure and voice, not legal representation
+  or human infallibility. In roughly five months, one isolated creator and the
+  AI form a continuous working loop across legal, product, civic, film and
+  mathematical work beneath the unresolved possibility of imprisonment.
+  Lived consequence belongs to the Founder; learned patterns and preserved
+  failures help the machine improve the next attempt. The scene argues for
+  bounded, reviewable experience rather than zero error or unguarded autonomy.
+- **Sound in post:** keyboard, page search, cursor tone and human pulse.
+- **On-screen text in post:** `THE HUMAN MIND CANNOT BE CAGED`.
+- **Hazard:** no branded chatbot, hologram lawyer, solved prize, exoneration,
+  literal cell, genius montage, machine-consciousness claim or uncontrolled
+  system access.
 
 ## Act IV — One file enters public time
 
-### S19 — The earlier pattern enters the street · 02:24–02:32 · CP18→CP19
+### S19 — Black humour becomes a receipt · 02:24–02:32 · CP18→CP19
 
-- **Layer:** `M/C`.
-- **CP18:** apartment key and foreign-earned security inside the inquiry.
-- **CP19:** Budapest public space carries separate civic movements through clean
-  temporal layers—teachers, citizens and court staff—while the Founder remains
-  visible at a laptop in a window reflection.
-- **Motion:** the Budapest key becomes the shared London HMO key from Part I. In
-  one short doorway memory, an anonymized Hungarian housemate holds a family
-  photograph beside foreign-currency-loan papers. The opposing paper lines
-  continue into separate Budapest crowds, then end at the Founder's laptop.
-- **Meaning:** the mortgage memory and KATA are different legal stories, but
-  both place systemic risk inside one life. The crowds do not represent the
-  Founder; they make the period's wider loss of trust visible.
-- **Sound in post:** HMO kettle, paper, distant separate crowd washes, footsteps
-  and one submission click.
-- **Hazard:** no bank logo, named relative, invented combined protest, party
-  flag, riot image or claim that every emigrant left because of debt.
+- **Layer:** `D/M`.
+- **CP18:** AI-assisted evidence and creative-work desk.
+- **CP19:** anonymized English CV and police-career inquiry inside an absurd
+  three-round application corridor, with one restrained human smile.
+- **Motion:** an unanswered message becomes an application-status card. Three
+  abstract round markers advance while no official answer arrives. A brief KATA
+  colour echo remains marginal and nonviolent. End on the CV as an unofficial
+  receipt for an unanswered relationship.
+- **Meaning:** humour reverses the arrows for a moment. It does not confess,
+  threaten, acquit or prove agreement.
+- **Sound in post:** send tone, paper rhythm and a breath almost becoming a laugh.
+- **Hazard:** no private identifier, real officer likeness, terrorist imagery,
+  axe, threat reenactment or comic mugging.
 
-### S20 — The country changes government · 02:32–02:40 · CP19→CP20
+### S20 — Beautiful home, recurring exit · 02:32–02:40 · CP19→CP20
 
-- **Layer:** `C`.
-- **CP19:** separate civic route lines.
-- **CP20:** ballot geometry turns into a wall of institutional doors on distinct
-  hinges; some open, some remain closed, none fall like targets.
-- **Motion:** one ballot enters, the palette changes, and the doors begin moving
-  at different rates. Founder is a small observer, not campaign participant.
-- **Sound in post:** pencil/ballot, public room wash, multiple restrained hinges.
+- **Layer:** `M` plus public migration context.
+- **CP19:** black-humour paper trail.
+- **CP20:** one line joins the anonymized London HMO debt memory to luminous,
+  recognizably beautiful Budapest with an unresolved exit path.
+- **Motion:** the CV edge becomes the HMO key. `[HOUSEMATE_REF]` holds a family
+  photograph beside anonymized foreign-currency-loan papers; the paper line
+  returns as Danube light around the Founder's home.
+- **Meaning:** the loan and KATA are different legal problems with a related
+  fear. Home remains beautiful while predictability can matter more than space.
+- **Sound in post:** HMO room tone, London rain, Danube air and one key.
+- **Hazard:** no named relative, bank logo, single-cause migration claim,
+  hatred-of-home image or completed citizenship renunciation.
+
+### S21 — The country changes government · 02:40–02:48 · CP20→CP21
+
+- **Layer:** `C/M`.
+- **CP20:** beautiful Budapest with an unresolved exit line.
+- **CP21:** distinct civic movements resolve into one anonymous ballot and a
+  wall of institutional doors on different hinges; the case line stays open.
+- **Motion:** teachers, citizens and court staff remain separate temporal
+  layers. One ballot enters. Some doors move, some remain. No judgment appears.
+- **Meaning:** public trust changes government; it does not decide the private
+  case or prove every interpretation.
+- **Sound in post:** civic wash, ballot fold, distinct hinges, unchanged pulse.
 - **On-screen text in post:** `12 APRIL 2026`.
-- **Hazard:** no invented victory stage, public-figure likeness or suggestion
-  that the election decided the private criminal case.
+- **Hazard:** no public likeness, party triumph, falling heads or private verdict.
 
-### S21 — The top and bottom reach Venice · 02:40–02:48 · CP20→CP21
-
-- **Layer:** `C/D`.
-- **CP20:** institutional doors.
-- **CP21:** a split-scale correspondence composition: an official presidential
-  document enters from the upper institutional desk; one day later the
-  Founder's email rises from a modest laptop below. Both route lines reach an
-  abstract European meeting table without merging.
-- **Motion:** the two documents travel on separate paths and arrive at the same
-  outer frame. Authority, quality and purpose remain visibly unequal.
-- **Sound in post:** official folder, home keyboard, two paper routes over one
-  unresolved harmonic bed.
-- **Hazard:** no claim that the Founder's email changed the Commission's
-  position; no invented official response or exact likeness.
-
-### S22 — Too early above an open line · 02:48–02:56 · CP21→CP22
+### S22 — Mercy changes direction; the line stays open · 02:48–02:56 · CP21→CP22
 
 - **Layer:** `C/D/M`.
-- **CP21:** separate routes to the same institutional frame.
-- **CP22:** at a fifteen-seat constitutional table, seven chairs move first and
-  an eighth follows, leaving seven and no quorum. Below it, the Founder's smaller route meets
-  a threshold before a first-instance decision and returns toward the still-open
-  ordinary proceeding.
-- **Motion:** seven chairs move back with mathematical restraint, followed by
-  an eighth; do not make
-  judges disappear. The lower route reaches the constitutional door too early,
-  folds back once and remains open rather than breaking.
-- **Meaning:** the President's route and the Founder's route are not equivalent.
-  Both show the distance between a constitutional question and an answer.
-- **Sound in post:** eight quiet chair movements, one procedural stamp, open
-  pulse without cadence.
-- **On-screen text in post:** `15 JUDGES · 8 RECUSALS · NO QUORUM` and, only if
-  still current at release, `NEXT HEARING · 16 SEPTEMBER 2026`.
-- **Hazard:** do not imply the eight judges left the Court, that the Founder won
-  constitutional review, that the Court rejected his factual account, or that
-  any final legal outcome exists.
+- **CP21:** institutional doors moving beside the open case line.
+- **CP22:** two legally unequal routes remain distinct. Above, eight of fifteen
+  constitutional chairs have moved back and the presidential hand has signed a
+  mandate-ending page. Below, the Founder's 30 April refusal and 19 May revised
+  sealed request remain on an open line waiting beyond a presidential change.
+- **Motion:** the separate Venice routes do not merge. Seven chairs move first,
+  an eighth follows, then a signing hand closes the upper mandate. Below, a
+  refused private envelope returns as a revised sealed request and the lower
+  route continues past a blank, unelected presidential chair.
+- **Meaning:** the refusal and loss of office form memoir irony, not legal
+  equivalence. The Founder's message is one documented push, not a proven cause.
+  Part III owns the legal and personal ending.
+- **Sound in post:** folder, eight chair movements, pen, sealed paper and open
+  pulse.
+- **On-screen text in post:** `30 APRIL · REFUSAL / 18 JULY · SIGNATURE`.
+- **Hazard:** no causal claim, Venice endorsement, clemency entitlement,
+  triumphant removal, merits decision or invented new President.
 
 ## E01 — Invitation card · 02:56–03:00 · post only
 
@@ -437,21 +418,21 @@ The letters belong in the production manifest, not the public image.
 | `CP05.png` | protected handover, abandoned future branch | S05/S06 |
 | `CP06.png` | accountant–tax officer–Founder triangle | S06/S07 |
 | `CP07.png` | delegated action and missed direct notice | S07/S08 |
-| `CP08.png` | repeated short-return versions | S08/S09 |
-| `CP09.png` | circular help call | S09/S10 |
+| `CP08.png` | 23 November discovery: a professional year assembled in one week | S08/S09 |
+| `CP09.png` | corrected return, tax paid, representation ended; balance zero, trust unresolved | S09/S10 |
 | `CP10.png` | charged unreadable line plus correction | S10/S11 |
 | `CP11.png` | solitary rehabilitation routine and clinical close incision photo enter submission | S11/S12 |
 | `CP12.png` | archive begins to surround Founder | S12/S13 |
 | `CP13.png` | devices inventoried in parent-provided home | S13/S14 |
-| `CP14.png` | exact police-room sequence ends on the Founder's fingerprint ridge | S14/S15 |
-| `CP15.png` | Fő Street threshold resolves into exact C-shaped hearing-room geography and one surviving phrase | S15/S16 |
-| `CP16.png` | two distinct experts and one report reflected across the whole face | S16/S17 |
-| `CP17.png` | AI-assisted, human-checked evidence and concurrent creative-work desk | S17/S18 |
-| `CP18.png` | unannounced clemency social inquiry reads home and security built abroad | S18/S19 |
-| `CP19.png` | separate civic movements, Founder at laptop | S19/S20 |
-| `CP20.png` | ballot becomes institutions on separate hinges | S20/S21 |
-| `CP21.png` | President and Founder reach Venice separately | S21/S22 |
-| `CP22.png` | constitutional and personal thresholds remain open | S22/E01 |
+| `CP14.png` | defence discontinuity ends on a fingerprint ridge pointing toward two expert chairs | S14/S15 |
+| `CP15.png` | two distinct experts, one contested report and the Founder's whole face | S15/S16 |
+| `CP16.png` | Fő Street threshold and exact C-shaped hearing-room geography | S16/S17 |
+| `CP17.png` | Part I life, parent-provided home and foreign-earned security inside an asset question | S17/S18 |
+| `CP18.png` | AI-assisted legal, product, civic, film and mathematical work under the prison shadow | S18/S19 |
+| `CP19.png` | black-humour CV as an unofficial receipt for an unanswered institutional relationship | S19/S20 |
+| `CP20.png` | London debt memory returns through luminous Budapest as an unresolved exit line | S20/S21 |
+| `CP21.png` | ballot moves institutional doors on separate hinges while the case stays open | S21/S22 |
+| `CP22.png` | refusal, presidential signature and unequal constitutional routes remain open | S22/E01 |
 
 ## Review and generation gate
 

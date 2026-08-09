@@ -262,8 +262,8 @@ Why this style:
 - character identity and gestures are more stable across generation tools;
 - city transitions can be theatrical and impossible while still feeling true;
 - UI and graph metaphors can enter the world without becoming a screen demo;
-- subtle face acting remains possible without relying on flawless live-action
-  lip sync for every line.
+- subtle face acting remains possible without lip sync; John carries the only
+  spoken track.
 
 ### Texture
 
@@ -351,7 +351,8 @@ attention scarcity.
 ### DANCE STUDENT and PARTNER
 
 - DANCE STUDENT: warm, focused, partnered participant; teal practice top;
-- PARTNER: arrives naturally with an umbrella/coat, gives a friendly greeting;
+- PARTNER: arrives naturally with an umbrella/coat and gives a friendly
+  nonverbal greeting;
 - neither is antagonistic and neither owes the founder romantic availability;
 - the founder's micro-expression is simply “context understood.”
 
@@ -362,7 +363,7 @@ the montage reads as format friction over time, not judgment of a single date.
 
 - all show effort and basic goodwill;
 - the coffee date laughs with the founder when the steam wand interrupts;
-- the bar date cups an ear and says “Sorry — what did you say?”;
+- the bar date cups an ear and gestures gently for repetition;
 - the formal-restaurant date releases a small nervous breath at the same time
   as the founder;
 - no one checks a phone contemptuously, spills a drink, looks grotesque or is
@@ -688,7 +689,8 @@ Avoid:
 - finger-pointing, angry swiping or contemptuous eye rolls;
 - generic continuous smiling;
 - everyone laughing at exactly the same time;
-- lip movement unless the shot has assigned diegetic dialogue.
+- visible word articulation or lip sync; mouths remain naturally relaxed and
+  minute jaw movement is allowed only as ordinary breathing.
 
 ## 12. Sound world
 

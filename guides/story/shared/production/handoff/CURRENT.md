@@ -1,12 +1,12 @@
-# Current handoff — Part II narrative revision active
+# Current handoff — Parts I–II written packages synchronized
 
 Date: **9 August 2026**
 Status: **Part I remains the current published book. Part II has been reopened
-for a deeper source-led narrative revision; its existing public PDF, 03:00
-script, storyboard and prompt pack are therefore not the current content lock.
-No additional frame or video-model run may begin until the Founder reads and
-approves the revised Part II manuscript and the downstream synchronization is
-completed.**
+for a deeper source-led narrative revision. Its editable book, exactly 03:00
+script, storyboard and prompt chain are synchronized to the 9 August manuscript,
+but they are not picture-locked or republished until the Founder finishes the
+reading pass. No additional frame or video-model run begins before that
+approval.**
 
 This is the clean resume point. Do not reconstruct the long editorial review
 from chat history. Do not build a slideshow or animatic.
@@ -21,7 +21,7 @@ from chat history. Do not build a slideshow or animatic.
   `trilogy/01-the-city-between-us/book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
 - Locked publication:
   `trilogy/01-the-city-between-us/published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
-- The 52-page illustrated edition contains the registered Founder, Budapest,
+- The illustrated edition contains the registered Founder, Budapest,
   London, global/local and six-person MyScoutee plates.
 - Film timing remains twenty-two 8-second intervals plus the deterministic
   4-second S23 brand card: exactly 03:00.
@@ -34,11 +34,12 @@ from chat history. Do not build a slideshow or animatic.
   `trilogy/02-the-system-between-us/book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
 - Locked publication:
   `trilogy/02-the-system-between-us/published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- The existing 68-page public export is retained as the last released artifact,
+- The existing public export is retained as the last released artifact,
   but its content is superseded for editing by the revised Markdown source.
 - The active revision strengthens the low-trust system chain, defence gap,
   two-expert contrast, courtroom black humour, migration context, system-error
-  proposition and exact Navier–Stokes research bridge.
+  proposition, the first-judgment bridge from Part I and the exact
+  Navier–Stokes research bridge.
 - The Constitutional Court sequence is locked as seven initial recusals,
   followed by an eighth, leaving seven and no quorum.
 - Film timing remains twenty-two 8-second intervals plus the deterministic
@@ -51,23 +52,25 @@ editable sources remain available.
 
 ## 2. Synchronization state
 
-- Part I: 23 timed narration/storyboard/prompt blocks including its post card.
-- Part II: the existing 22 eight-second blocks plus post card are now a baseline
-  only. They must be rewritten against the approved book before any bulk frame
-  generation.
+- Part I: twenty-two 8-second narration/storyboard/prompt intervals plus its
+  deterministic 4-second post card. John is the only spoken voice; generated
+  clip audio is discarded.
+- Part II: twenty-two synchronized 8-second narration/storyboard/prompt
+  intervals plus its deterministic 4-second post card. John is the only spoken
+  voice; generated clip audio is discarded.
 - Character maps, privacy limits, exact courtroom geometry, two-expert
   separation, silent-picture rule and one-continuous-score rule remain binding.
 - No slideshow/animatic video exists under `guides/story/`; the obsolete build
   scripts were removed.
 
-## 3. Next task — finish the Part II manuscript
+## 3. Next task — Founder reading and editable PDF review
 
-1. Complete the source-led English memoir revision without turning it into a
-   legal brief or a country-comparison essay.
-2. Regenerate the editable reading PDF only after prose, evidence notes and
-   layout have passed review.
-3. After Founder approval, synchronize the Part II 03:00 English script,
-   storyboard, character/scene coverage and Google Flow/OpenArt prompts.
+1. Regenerate and visually inspect the editable Part II reading PDF after the
+   current prose, evidence notes and layout pass.
+2. Founder reads and corrects the revised English memoir without converting it
+   into a legal brief or country-comparison essay.
+3. Propagate any correction once through book, 03:00 script, storyboard,
+   checkpoint ledger and Google Flow/OpenArt prompts.
 4. Keep the narration voice fixed to the approved ElevenLabs **John** voice for
    both parts. Save the exact voice/version/settings and a clean reference WAV;
    do not rely on the display name alone.
@@ -78,10 +81,10 @@ editable sources remain available.
 Start this only in a fresh phase after the Founder confirms the AI subscriptions
 and models to compare.
 
-1. Review the selected Part I CP18→CP19 benchmark candidates recorded in
-   `shared/production/FRAME_APPROVALS.md`.
-2. Accept those exact files or generate a new numbered pair before any paid
-   video-model run.
+1. Select one deliberately difficult eight-second interval from the closed
+   written packages.
+2. Generate a fresh numbered endpoint pair; no existing frame is approved for
+   the new regeneration pass.
 3. Both images must be **9:16 portrait**, composed for `720×1280` mobile
    delivery, with the locked character and location descriptions.
 4. Supply the Founder with the absolute paths and one copy/paste motion prompt.
@@ -102,8 +105,7 @@ Canonical inputs:
   `trilogy/02-the-system-between-us/assets/characters/CHARACTER_MAP.md`
 - Shared model log: `shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv`
 - Frame approval ledger: `shared/production/FRAME_APPROVALS.md`
-- Current endpoint candidates:
-  `shared/benchmarks/assets/video-model-cp18-cp19/`
+- Old CP18→CP19 benchmark studies remain historical comparison material only.
 
 ## 5. Hard boundaries for the next phase
 

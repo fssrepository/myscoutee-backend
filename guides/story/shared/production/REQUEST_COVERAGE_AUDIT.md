@@ -60,9 +60,9 @@ become independently verified evidence.
   published v1.0.0 remains intentionally unchanged.
 - [ ] Regenerate CP00–CP23 from the locked identities and exact location
   descriptions; the existing images are composition studies only.
-- [ ] Build the checkpoint-only 03:08 inspection from those exact CP files:
-  CP00–CP22 held for eight seconds each, followed by the four-second CP23 end
-  plate. The finished moving film remains 03:00.
+- [x] Remove the checkpoint-only inspection/slideshow stage. Approved endpoint
+  pairs move directly into eight-second model generation; the finished moving
+  film remains 03:00.
 - [x] Build and review a new illustrated draft. The hashed v1.0.0 publication
   remains immutable; any later illustrated release receives a new version.
 
@@ -98,6 +98,12 @@ become independently verified evidence.
   to feel that foreign-built security had entered the file.
 - [x] AI-assisted self-defence, E-közig, MyScoutee and the finite Navier–Stokes
   research chain under the unresolved possibility of imprisonment.
+- [x] Part I's first-judgment problem returns with institutional force: natural
+  distrust can soften through reciprocal context, while premature institutional
+  classification can force a whole person to fight back into the record.
+- [x] Roughly five months of connected work join legal self-defence, the
+  integrated MyScoutee product, agile AI-driven E-közig UI prototyping,
+  self-observing book/film direction and falsifiable mathematical research.
 - [x] The London foreign-currency-loan memory as a different legal problem with
   a related human pattern; beautiful Budapest remains home rather than a
   villain.
@@ -111,7 +117,8 @@ become independently verified evidence.
 ### Production coverage
 
 - [x] Exactly three-minute English narration, CP00–CP22 storyboard and one
-  eight-second prompt per interval plus the four-second end card.
+  eight-second prompt per interval plus the four-second end card, synchronized
+  to the 9 August manuscript.
 - [x] Role map includes the Founder, accountant, tax officer, police officer,
   fingerprint officer, two experts, judge, appointed defence counsel,
   probation officer and London housemate.
@@ -135,8 +142,9 @@ become independently verified evidence.
 3. The first benchmark contains no invented intermediate art. Its two exact
    9:16 checkpoints define the first and last frames of the same eight-second
    test in Google Flow and OpenArt.
-4. Narration and one continuous musical bed are post-production assets timed to
-   the complete film. Clip-generated music is discarded.
+4. John narration, one continuous musical bed, ambience and foley are
+   post-production assets timed to the complete film. Every clip-generated
+   audio track is discarded; there is no character dialogue or lip sync.
 5. A local `published/` package means a versioned PDF/video, metadata and
    checksum. Posting to LinkedIn or any other external service remains an
    explicit Founder approval step.

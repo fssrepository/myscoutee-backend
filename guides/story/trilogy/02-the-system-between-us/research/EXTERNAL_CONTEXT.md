@@ -224,9 +224,11 @@ and supplemented on 4 June 2026:
 
 On 5 June, the Founder separately emailed the Venice Commission. The local
 source copy argues that his own KATA/NAV/criminal-procedure history illustrated
-why Sulyok's institutional record should be examined. The message is evidence
-that it was sent; it is not evidence that the Commission accepted its factual or
-legal conclusions.
+why Sulyok's institutional record should be examined. The same Gmail export
+records forwarding the submission to the Sándor Palace and the Prime Minister's
+press office 78 minutes later. The messages are evidence that they were sent;
+they are not evidence that the recipients accepted their factual or legal
+conclusions or changed course because of them.
 
 The Commission's official account says its President and delegation visited
 Budapest on 2 July and met Sulyok, the Prime Minister, several ministers and the

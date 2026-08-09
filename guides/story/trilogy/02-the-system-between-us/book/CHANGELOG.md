@@ -12,15 +12,85 @@ first public edition is `1.0.0`.
 - Made human relationships the explicit bridge from Part I and added the
   Founder's ability to become both subject and analyst without mistaking
   analytical distance for lack of attachment.
+- Made the Parts I–II bridge explicit without turning it into promotion: a
+  first judgment may close a human meeting, while the same compression backed
+  by institutional power may begin to rewrite a life.
+- Made Part Seven the narrative junction: MyScoutee softens natural initial
+  distrust through reciprocal context, while the case shows a system
+  classifying first and forcing the whole person to fight back into the record.
 - Strengthened the functioning-system counterfactual, low-trust delegation
   paradox, repaired-and-paid tax account, defence discontinuity, two-expert
   contrast, remembered courtroom humour and unearned-asset-reach metaphor.
 - Restored the clemency request's central state/system-error proposition and
   expanded the black-humour record without converting memory into findings.
+- Restored the clemency sequence the earlier draft had flattened: the Founder
+  nearly withdrew the request in 2025, later asked that revised papers wait with
+  the incoming Justice Minister until the presidency changed, and the outgoing
+  President's refusal is placed beside the political mercy later withheld from
+  his own office.
+- Added the documented same-day forwarding of the Venice submission to the
+  Sándor Palace and the Prime Minister's press office as one small push from
+  below, without claiming that it caused an institutional response.
 - Restored the post-operative profanity as the point where institutional trust
   had evaporated into anxiety, while keeping its exact scanned source pending.
+- Deepened the Founder as both subject and performer: after a pathological
+  character was written around him, he sometimes wore that character as a
+  satirical mask, stepped outside it and analysed the scene; the text does not
+  confuse performance with acceptance of the contested opinion.
+- Added the central home/exile line: the Founder is not exiled in a foreign
+  country but feels exiled while living inside the country he still calls home.
+- Made the satire's mirror explicit: the Founder performs the institution's
+  apparent entitlement back at it, exposing the asymmetry between real coercive
+  power and a powerless person's theatrical counter-authority.
 - Clarified the exact methodological bridge between the Navier–Stokes
   lemma-falsification laboratory and the researcher's variational work.
+- Added the verified end-of-session research behaviour: generated lemma
+  candidates became executable C++ tests, failed routes ended in reproducible
+  counterexamples, generated code was corrected from test evidence, the proof
+  state changed rather than circling, and PNT-12 remained explicitly open.
+- Framed bounded AI freedom as permission to propose, fail and self-correct
+  inside logged, reviewable, read-only/sandboxed boundaries—never permission to
+  intrude into systems or alter another person's data.
+- Connected that freedom to human and scientific learning: experience turns
+  consequence into memory and improves the next attempt; preventing every safe,
+  reversible error can also prevent development. Distinguished this from
+  consciousness or permission to impose irreversible harm.
+- Gave the same idea its personal resolution: the humiliating experience is not
+  made good by what followed, but erasing it would also erase the person and
+  work formed through it; what the Founder and the system learn next remains
+  the test.
+- Corrected the 11 June 2024 material handover: the Founder collected the file
+  alone, without counsel. Added the remembered waiting-area gestures of the
+  fingerprint officer and another officer's smile and glance toward the
+  operated leg, while preserving the interpretation as memoir rather than an
+  official conclusion.
+- Added the Founder's undisclosed recording of that lone handover as a measure
+  of collapsed trust, without publishing it or making claims about legality or
+  admissibility. Added an endnote that treats the charge as a prosecution
+  position whose individualizing architecture is contested by the defence, not
+  as a neutral biography or judicial finding.
+- Re-read the 5 and 8 April exclusion/evidence filings and restored their
+  practical requests: official hearing audio, hearing the accountant and tax
+  administration, and deciding outstanding evidence requests. Kept the
+  Founder's account that the posted decision omitted those requests separate
+  because the decision letter is not in the reviewed package.
+- Added the remembered Strasbourg line from that unreviewed decision letter as
+  narrative irony: a distant European safety net was named while concrete
+  domestic trust requests remained unanswered. Corrected the institutional
+  boundary—the ECtHR belongs to the Council of Europe, not the EU—and added
+  official exhaustion/effective-remedy references without giving legal advice.
+- Reframed the work under threat as four connected expressions of one uncaged
+  mind: AI-assisted self-defence, the integrated MyScoutee product system,
+  self-observing book/film direction and falsifiable mathematical research.
+- Added the wider AI proposition and lone-creator symbiosis: beyond displacement
+  risk, AI can give an institutionally unsupported person a voice, persistent
+  structure and enough capacity to defend, build, write, film and research.
+- Expanded that symbiosis beyond text generation to the actual production
+  chain: evidence organization, product and research challenge, scripting,
+  motion review, picture/sound assembly and credit-aware model planning.
+- Recorded the roughly five-month creation window and E-közig's constructive
+  purpose as an agile AI-driven UI prototype: an institution needs the capacity
+  to receive human context before it can ask to be trusted.
 - Marked the existing narration, storyboard and prompts stale until the revised
   book is approved; locked English narration to the approved ElevenLabs John
   voice for both films.

@@ -13,6 +13,8 @@
 | Primary emotion | competence → compression → absurdity → vulnerability → agency → unfinished transition |
 | Human thesis | a person's worst response must not become more legible than the path that produced it |
 | Systems thesis | direct notice, granular authority, visible correction and human context are infrastructure |
+| Trilogy bridge | Part I shows a first judgment closing a human meeting; Part II shows the same compression acquiring institutional force |
+| AI thesis | beyond displacement risk, AI can give an unsupported person voice and continuous capacity; bounded, visible and reversible failure can improve the next attempt without turning exploration into permission to harm |
 | Narrative rule | lived scene first; legal precision and source boundaries at the back |
 | Final line | **MyScoutee. Test the system between us.** |
 
@@ -47,6 +49,18 @@ The film alternates two scales:
 The public scale never proves the private case. The private case makes the
 public design problem emotionally legible.
 
+This is not a product advertisement. MyScoutee appears because the gentler
+human version of the same question helped create it: what disappears when a
+first frame becomes a final verdict? Part II follows that question after a
+label gains the power to travel through institutions.
+
+The creative-work passage does not claim machine consciousness. It contrasts
+two forms of continuity: the Founder brings lived consequence and judgment; the
+AI brings learned patterns and preserves failed routes long enough to improve
+the next attempt. The visual argument is for bounded experience—read-only
+knowledge, sandboxed trials, logged review and reversible failure—not unguarded
+autonomy.
+
 ## 4. Visual grammar
 
 Carry forward Part I's painterly cinematic 2.5D world and exact Founder identity.
@@ -58,13 +72,17 @@ network edge
 → invoice row
 → portal progress line
 → hospital monitor trace
-→ police evidence tape
+→ police evidence sleeve
 → fingerprint ridge
+→ forensic report curve
 → Danube light and brown stone
 → C-shaped court line
-→ forensic report curve
-→ protest route
-→ constitutional fracture
+→ asset question
+→ uncaged work line
+→ black-humour receipt
+→ beautiful-home exit line
+→ ballot and institutional hinges
+→ mercy refusal and mandate signature
 → open MyScoutee network
 ```
 
@@ -75,8 +93,8 @@ Palette arc:
   street amber;
 - `01:20–02:08`: clinical cyan, police blue, Danube silver, brown institutional
   stone and forensic paper white;
-- `02:08–02:40`: archive grey, cautious violet AI light, desaturated home warmth
-  and widening civic gold;
+- `02:08–02:40`: foreign-earned amber, cautious violet AI light, black-humour
+  paper white, London rain and luminous Budapest blue-gold;
 - `02:40–03:00`: civic gold, constitutional red, interim empty-chair navy and
   the original MyScoutee star colour.
 
@@ -205,9 +223,9 @@ Score arc:
 | 00:00–00:24 | Part I motif, thinned to piano/glass and low pulse |
 | 00:24–01:12 | restrained mechanical ostinato; pressure increases without action-trailer drums |
 | 01:12–01:36 | rhythm drops; breath, paper and clinical tone carry vulnerability |
-| 01:36–02:08 | pulse returns through seized devices, fingerprint rhythm, heavy door and forensic paper |
-| 02:08–02:24 | sparse cursor pulse and cold-room tone under continuing work and the home inquiry |
-| 02:24–02:40 | wider human strings as the London memory enters Budapest public space |
+| 01:36–02:08 | pulse returns through seized devices, defence discontinuity, fingerprint rhythm, forensic paper and the heavy court door |
+| 02:08–02:24 | sparse cursor pulse grows from the asset question into uncaged legal, product, film and mathematical work |
+| 02:24–02:40 | dry paper humour opens into wider human strings as the London memory returns through beautiful Budapest |
 | 02:40–02:56 | constitutional brass/choral colour, unresolved and morally ambiguous |
 | 02:56–03:00 | single star interval, no triumphant cadence |
 
@@ -231,6 +249,15 @@ Score arc:
   Sulyok's matter and an eighth followed; they did not leave the Court in June.
 - A separate rule scheduled four over-seventy judges to leave on 1 September.
 - The Venice Commission's caution is not attributed to the Founder's email.
+- The 5 June forwarding to the Sándor Palace and Prime Minister's press office
+  is documented; no causal effect on later institutional action is claimed.
+- The Founder nearly withdrew the clemency request in November 2025, received a
+  refusal dated 30 April 2026, and on 19 May asked that revised papers wait with
+  the incoming justice administration until the presidency changed.
+- The clemency refusal and the later ending of Sulyok's mandate are juxtaposed
+  as memoir irony, not treated as legally equivalent acts.
+- The satirical performance of the file-created character is not acceptance of
+  the contested diagnosis, real authority over institutions or licence to harm.
 - The Constitutional Court letter records a premature route before a
   first-instance decision and does not decide the factual merits.
 - The first departed judge, second challenged judge and separate deciding judge
