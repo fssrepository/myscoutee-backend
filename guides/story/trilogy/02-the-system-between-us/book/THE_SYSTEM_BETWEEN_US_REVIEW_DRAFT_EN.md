@@ -296,8 +296,6 @@ That masked room became my last Hungarian workplace. Almost six years later,
 it remains so. I did not know at the exit that I was leaving more than one
 building.
 
-<!-- pagebreak -->
-
 A year and a half separated that background check from the KATA change.
 The screening had been a gate I managed to pass. The later proceeding
 threatened to turn the lawful route back into work into the kind of record that
@@ -360,8 +358,6 @@ same sequence returned a year later as a criminal case.
 
 I had wanted a way to work. The lawful route gave the system a way into
 everything else.
-
-<!-- pagebreak -->
 
 The work was real and demanding. Some days ran thirteen, fourteen or fifteen
 hours. Delivery schedules and production responsibility did not become lighter
@@ -436,8 +432,6 @@ invoices, foreign income, a closing business and an accountant who also had to
 interpret the transition for many clients at once.
 
 The law moved in a day. Understanding did not.
-
-<!-- pagebreak -->
 
 ## 3. Protecting a Handover
 
@@ -693,8 +687,6 @@ obligation nor an overpayment.
 On paper, the account had returned to zero.
 
 The life around it had not.
-
-<!-- pagebreak -->
 
 Yet the dangerous sentence now possessed a different property from the
 correction. It could travel alone.
@@ -1149,8 +1141,6 @@ not been imaginary; the surrounding record already pointed toward them. The
 investigation waited until the person under investigation had done the first
 round of evidence collection for it.
 
-<!-- pagebreak -->
-
 It was a private investigation into the investigation, conducted without a
 private investigator. The local directorate that had received the charged line
 also held part of the context through which that line could be understood. The
@@ -1178,8 +1168,6 @@ The sequence expressed the idea more quietly. An unanswered request became a
 right to complain about the missing answer. A rejected complaint became a right
 to challenge the rejection. A domestic gap became a road toward Strasbourg.
 The future remedy was repeatedly easier to describe than the present repair.
-
-<!-- pagebreak -->
 
 The expanding archive could itself be made to look like the problem. Hundreds
 of submissions from one person can resemble fixation when the reader does not
@@ -1248,8 +1236,6 @@ story becoming mine.
 I contested it. A decision spoken in minutes opened a trial measured in further
 years.
 
-<!-- pagebreak -->
-
 I asked human-rights organizations for help. The replies pointed to limited
 capacity. After the preparatory hearing, I also consulted a private lawyer. I
 remember leaving with two things I had not possessed when I entered: a clearer
@@ -1261,8 +1247,6 @@ the label could explain the person before the life had been read.
 The difference between us was contained in one word. For a lawyer, the label
 could be a familiar category in a file. For me, it entered the part of the
 Constitution that calls human dignity inviolable.
-
-<!-- pagebreak -->
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
 and the life outside the case. Then the long brown institutional façade on Fő
@@ -1553,15 +1537,11 @@ travel before that future arrives.
 That is the character the procedural file could not explain. The shadow did not
 vanish. I learned to work inside it until, on many days, I no longer felt it.
 
-<!-- pagebreak -->
-
 The trial court transmitted my constitutional complaint. The Constitutional
 Court wrote back on 21 October 2025: the criminal case was still pending, so the
 route I had invoked was premature. It did not enter the factual argument.
 
 The door did not say *wrong*. It said *too early*.
-
-<!-- pagebreak -->
 
 The judges became another sequence. The first assigned judge left the case,
 reportedly because of illness. I later sought the exclusion of the second. A
@@ -1625,8 +1605,6 @@ missing step impossible to ignore.
 AI gave me speed.
 
 It did not give me representation.
-
-<!-- pagebreak -->
 
 The institutions retained legal power over me. Moral legitimacy was a different
 question. A system that had excluded me from ordinary work, failed to protect
@@ -2034,8 +2012,6 @@ The parliamentary Speaker became interim President. As this edition closed on
 The empty chair was not a verdict in my case. It belonged to a country that had
 decided continuity was no longer enough. It also carried a private irony.
 
-<!-- pagebreak -->
-
 I had already asked that office for mercy when mercy itself had become
 politically dangerous. In February 2024, the disclosure of a presidential
 pardon connected to the concealment of abuse in a children's home ended one
@@ -2056,8 +2032,6 @@ papers and asked that they be left with the incoming Justice Minister until the
 presidency changed. Then I would ask again.
 
 He had refused my clemency. The new majority refused him political mercy.
-
-<!-- pagebreak -->
 
 Before that refusal, the clemency process carried the same questions into my
 home. A probation officer rang the bell without an appointment. The flat had
@@ -2083,8 +2057,6 @@ I had returned from London because I wanted to live in my own country. The fact
 that I could now imagine giving up the legal bond to it measured the distance
 between national unity as an office and belonging as a lived experience. I had
 not completed that act. The thought itself was the measure.
-
-<!-- pagebreak -->
 
 Exile usually means distance from home. I was living at home and felt exiled
 from it.
