@@ -22,10 +22,6 @@ and the same painterly cinematic 2.5D world. Use seamless match
 transformations, not hard cuts. No camera jump, freeze, collage, split screen,
 style change, face morph, duplicated Founder or abrupt transition.
 
-Generate silent production picture only. No ambience, sound effects, dialogue,
-narration, singing or generated music. Final John narration and the continuous
-score are added in post-production.
-
 No readable text, logos, transport branding, official museum marks, Big Ben,
 red-bus or phone-box shorthand, conquest framing, exotic catalogue, kissing,
 prominent public figure or additional dominant character.
