@@ -40,7 +40,7 @@ This directory specifies a complete 3 minute MyScoutee hero film:
   helped provide has stood empty through the London years, but never in London.
   Normal London housing would erode that position; permanent room-sharing is no
   longer viable, so housing becomes his stop-loss.
-  Nearly forty countries still do not cure
+  Nearly fifty countries still do not cure
   loneliness, so he comes home
   deliberately to look for a partner. After trying online and
   real-world routes, he recognizes the missing bridge between encounter and a

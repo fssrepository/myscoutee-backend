@@ -56,7 +56,7 @@ independent operators. That migration remains later roadmap work.
 
 Safe line:
 
-> Across almost forty countries, I discovered each place — and myself — through
+> Across nearly fifty countries, I discovered each place — and myself — through
 > local people. Then the world closed.
 
 This is personal memory. Do not say that nobody can travel as before or portray

@@ -21,7 +21,7 @@ The reviewed late-film endpoint plan now reserves:
 - `CP14` for the exact police-room sequence ending on the fingerprint ridge;
 - `CP15` for the Danube/Fő Street threshold and exact C-shaped hearing room;
 - `CP16` for the two distinct experts and one contested report;
-- `CP17` for AI-assisted evidence work beside E-közig, MyScoutee and the finite
+- `CP17` for AI-assisted evidence work beside Civic Access, MyScoutee and the finite
   Navier–Stokes experiment;
 - `CP18` for the unannounced social inquiry inside the cold, puritan Budapest
   flat;

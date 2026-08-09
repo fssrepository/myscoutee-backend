@@ -38,7 +38,7 @@ financial independence at Budapest's much lower cost base, where the flat his
 parents helped provide has stood empty throughout the London years. They never
 mean financial independence in London. Normal private London housing would
 erode that position, while permanent room-sharing is no longer a viable life;
-housing becomes his stop-loss. Nearly forty countries still do not make solitude belonging.
+housing becomes his stop-loss. Nearly fifty countries still do not make solitude belonging.
 Local people open each new environment and, through them, he discovers different
 parts of himself. COVID closes the earlier carefree travel chapter. He comes
 home to look for a partner, tries digital and real-world routes, and realizes
@@ -153,7 +153,7 @@ world. Others kept a return plan. The film holds both without calling anyone
 rootless or disloyal: material comfort and belonging do not move together in a
 simple line.
 
-Across the larger journey he reaches nearly forty countries. Six to eight
+Across the larger journey he reaches nearly fifty countries. Six to eight
 illustrated memories flash by in a surprising three-second animated chain; the
 beauty is real, and each place becomes personal through a local human threshold.
 Different environments also reveal different parts of the Founder. A restrained

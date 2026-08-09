@@ -52,14 +52,16 @@ become independently verified evidence.
 
 - [x] Exactly three-minute English film script and 22 eight-second intervals
   plus a deterministic four-second end card.
-- [x] CP00–CP23 endpoint contract and Flow/OpenArt copy-paste prompt baseline.
+- [x] CP00–CP22 motion-endpoint contract, deterministic CP23 post card and
+  Flow/OpenArt copy-paste prompt baseline.
 - [x] Privacy-safe character map for the Founder, five Budapest memories,
   twelve London residents and the six-person MyScoutee group.
 - [x] Lock the current identity/reference set and generate the book portraits
   and scene plates. The editable illustrated draft contains them; the hashed
   published v1.0.0 remains intentionally unchanged.
-- [ ] Regenerate CP00–CP23 from the locked identities and exact location
-  descriptions; the existing images are composition studies only.
+- [ ] Regenerate CP00–CP22 from the locked identities and exact location
+  descriptions; the existing images are composition studies only. Assemble
+  CP23 deterministically in post without generation credit.
 - [x] Remove the checkpoint-only inspection/slideshow stage. Approved endpoint
   pairs move directly into eight-second model generation; the finished moving
   film remains 03:00.
@@ -96,13 +98,13 @@ become independently verified evidence.
 - [x] Roughly nine of eleven years outside conventional employment, survival by
   planning and financial independence, and the contrast of returning home only
   to feel that foreign-built security had entered the file.
-- [x] AI-assisted self-defence, E-közig, MyScoutee and the finite Navier–Stokes
+- [x] AI-assisted self-defence, Civic Access, MyScoutee and the finite Navier–Stokes
   research chain under the unresolved possibility of imprisonment.
 - [x] Part I's first-judgment problem returns with institutional force: natural
   distrust can soften through reciprocal context, while premature institutional
   classification can force a whole person to fight back into the record.
 - [x] Roughly five months of connected work join legal self-defence, the
-  integrated MyScoutee product, agile AI-driven E-közig UI prototyping,
+  integrated MyScoutee product, agile AI-driven Civic Access prototyping,
   self-observing book/film direction and falsifiable mathematical research.
 - [x] The London foreign-currency-loan memory as a different legal problem with
   a related human pattern; beautiful Budapest remains home rather than a

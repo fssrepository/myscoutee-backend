@@ -65,7 +65,7 @@ Output: `fo-street-c-shaped-hearing-room.png`.
 PROMPT 6 — WORK UNDER THE SHADOW
 Create exactly one landscape book plate using `[FOUNDER_REF]` at his modest
 Budapest workstation. One window holds anonymized evidence and a plain
-AI-assisted outline that he checks; three textless planes show the E-közig
+AI-assisted outline that he checks; three textless planes show the Civic Access
 audit/notice concept, MyScoutee's humane local network and finite spectral
 Navier–Stokes geometry. A faint institutional shadow exists outside the monitor
 light but never becomes bars or a prison cliché. Show inspectable work under an

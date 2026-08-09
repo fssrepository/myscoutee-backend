@@ -1,8 +1,10 @@
 # MyScoutee continuous-video checkpoint chain
 
-The 03:00 film is planned as one continuous journey. The 24 checkpoint images
-are not 24 isolated scenes: every checkpoint is the **last reference frame of
-one motion interval** and the **first reference frame of the next**.
+The 03:00 film is planned as one continuous journey. CP00–CP22 are the 23
+motion-endpoint images, not isolated scenes: every interior checkpoint is the
+**last reference frame of one motion interval** and the **first reference frame
+of the next**. CP23 is a deterministic post-production brand plate, never a
+video-model endpoint.
 
 ```text
 CP00 -> CP01 -> CP02 -> ... -> CP22    CP23
@@ -18,7 +20,9 @@ Rules:
 - Keep checkpoint filenames stable when a visual is regenerated.
 - Generate motion between adjacent pairs, for example `CP07 -> CP08`.
 - Preserve identity, notebook, colour, light and camera direction at boundaries.
-- CP00 is the opening frame; CP23 is the deterministic brand end frame.
+- CP00 is the opening frame; CP22 is the final generated-motion endpoint.
+- CP23 is the deterministic brand end frame assembled in post and consumes no
+  image- or video-generation credit.
 - The present Founder and cast are fictional planning placeholders.
 - Do not build a checkpoint inspection export, slideshow or animatic. Adjacent
   checkpoints go directly into eight-second motion generation as exact first
@@ -51,7 +55,7 @@ Rules:
 | CP20 | Four event-resource buckets and a first shared event turn strangers into contacts | `assets/storyboard-rough/CP20.png` |
 | CP21 | Later invitations, an organically wider adult community and editable relationship lifecycle | `assets/storyboard-rough/CP21.png` |
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/storyboard-rough/CP22.png` |
-| CP23 | MyScoutee end frame | `assets/storyboard-rough/CP23.png` |
+| CP23 | Deterministic MyScoutee post-production end frame; not a motion endpoint | `assets/storyboard-rough/CP23.png` |
 
 The superseded three-second review, four-second-split endpoint review and their
 pseudo-motion frames are not production masters and must not be rebuilt. Replace

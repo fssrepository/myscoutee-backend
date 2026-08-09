@@ -36,7 +36,7 @@ continuity and technical faults before an expensive final render.
   standing empty through the London years.
 - [ ] The London job is software development in Soho, never a factory, generic
   worksite or inspection scene.
-- [ ] “Almost forty countries” is the Founder's recollection, not a statistical
+- [ ] “Nearly fifty countries” is the Founder's recollection, not a statistical
   title card.
 - [ ] Every destination shown as personal memory was genuinely visited and
   confirmed by the Founder.

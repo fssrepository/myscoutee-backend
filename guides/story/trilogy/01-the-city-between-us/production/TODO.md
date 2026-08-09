@@ -80,7 +80,8 @@ and music remain downstream of the direct cross-model benchmark.
   identities from the complete H01–H12 board.
 - [ ] Run identical character/model benchmark prompts in Codex, Flow, OpenArt
   and any selected video platform.
-- [ ] Generate or revise CP00–CP23 reference frames from the approved prompts.
+- [ ] Generate or revise CP00–CP22 motion reference frames from the approved
+  prompts; assemble CP23 deterministically in post.
 - [ ] Run the selected eight-second model comparison on the hardest approved
   transition.
 - [ ] Generate the full motion chain with exact first/last-frame continuity.

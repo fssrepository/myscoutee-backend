@@ -43,11 +43,14 @@ process examined the highly educated professional who had repaired the failure
 and turned him into the subject of a label of pathological mental illness.
 
 After two decades of exclusion, adaptation and repeated attempts to build a
-lawful life in my own country, an administrative chain kept tightening until a
-violent sentence broke out. I corrected it immediately. The state later treated
-that sentence and later messages as a continuing threat. The sentence has legal
-weight. It cannot erase the long process that produced the breaking point, then
-use the breaking point to prove that the person had always been the problem.
+lawful life in my own country, I wrote one violent sentence under accumulated
+pressure and corrected it immediately. That act remains part of the record. So
+does the repaired return, the paid tax, the ended representation, the written
+administrative history and the request for peace around surgery. The state
+later allowed the sentence and later messages to travel farther than those
+repairs. A system cannot preserve the breaking point, discard the path around
+it and then use the surviving fragment to prove that the person had always been
+the problem.
 
 Nearly four years after the work stopped, and nearly three years into the
 criminal proceeding, the case had not produced a first-instance judgment, let
@@ -489,7 +492,8 @@ before abolishing the old route.
 Those proposals would become more elaborate later. At the time, they were an
 attempt to turn pressure into design.
 
-Two days later, pressure won.
+The proposal asked the system to preserve context. Two days later, it received
+one sentence from me and preserved almost nothing else as efficiently.
 
 <!-- pagebreak -->
 
@@ -1122,7 +1126,7 @@ Those limits mattered. So did another fact. AI is often discussed as a machine
 that may take work from people. In my life, it gave a person who had fallen
 outside ordinary professional and institutional support a chance to have a
 voice. Without it, I could not have mounted the legal defence, completed the
-integrated MyScoutee system, built E-közig, turned this history into a book and
+integrated MyScoutee system, built Civic Access, turned this history into a book and
 film, or carried the Navier–Stokes experiment far enough to speak with a
 researcher.
 
@@ -1160,8 +1164,8 @@ survive the legal file around it. In one window, I was asking how to preserve
 human agency in a social network. In another, I was asking how to format a
 constitutional complaint because I did not have dependable legal continuity.
 
-From February 2026, the desk carried still more. I continued the public
-E-közig prototype: a concrete model of documents, appointments, tax calendars,
+From February 2026, the desk carried still more. I continued Civic Access: a
+public-service prototype for documents, appointments, tax calendars,
 representative permissions, direct notice and a customer-readable audit trail.
 I continued MyScoutee. I built the books, prompts and moving-image plan through
 which these two worlds could be understood. I also asked an AI system to choose
@@ -1189,36 +1193,30 @@ producer and public communicator would normally be different people. In this
 experiment, learned reality and lived engineering experience had to meet in one
 working system.
 
-Perhaps AI appears most human not when it is forbidden to fail, but when it is
-allowed to propose, fail, preserve the failure and correct its next step. That
-freedom does not require a right to intrude. Public knowledge can be read;
-experiments can run in a sandbox; every consequential action can remain logged,
-bounded and reviewable. Exploration is not permission to break into another
-system or alter somebody else's data.
+Working with AI also became a mirror. It did not reflect my face or live my
+consequences. It returned my assumptions in altered forms: a proposed
+structure, a wrong inference, an image, a counterexample, a voice. What I kept,
+rejected or corrected made my own judgment visible to me. I was learning the
+work and, through the work, recognizing the person making it.
 
-Fear of every possible error can become a way of preventing development. The
-answer is not unchecked access. It is an environment in which errors are cheap,
-visible, reversible and capable of changing the next attempt.
+The machine brought learned patterns; I brought lived consequence. Its errors
+could expose mine, and my corrections could change its next attempt. That loop
+needed room to fail without a right to intrude: public knowledge could be read,
+experiments could run in a sandbox, and consequential actions could remain
+logged, bounded and reviewable. Exploration was not permission to alter another
+person's system or data.
 
-Human beings did not become capable by producing one unbroken sequence of
-correct first attempts. We learned ourselves and the surrounding world through
-experience: an action had a consequence, the consequence became memory, and
-memory changed the next action. Science gave that old human loop a disciplined
-form. A failed hypothesis was not empty time if it left behind a result that
-made the next question better.
+Human beings did not learn through one unbroken sequence of correct first
+attempts. An action produced a consequence; consequence became memory; memory
+changed the next action. A visible, reversible failure could do the same inside
+the laboratory. It did not make the AI human. It made the collaboration capable
+of learning rather than merely repeating.
 
-An AI system inherits records of human experience, but it does not live a
-consequence as I do. Allowing it to make an error does not make it human. Yet if
-we deny it every bounded opportunity to try, fail, remember and revise because
-we fear the attempt, we also deny it the process through which judgment can
-become more than imitation. The boundary should protect people from irreversible
-harm without protecting the machine from every instructive failure.
-
-The same distinction changed how I understood my own humiliating experience. I
-cannot call it good. I cannot regret it as though the person formed through it
-should simply be erased. What I make from it remains mine. Whether the system
-can preserve the correction, recognize the harm and change its next action is a
-test of what the system is capable of becoming.
+The mirror changed how I understood my own humiliating experience. I cannot
+call it good, but I cannot erase the person formed through it either. What I
+make from it remains mine. Whether the surrounding system can preserve a
+correction, recognize harm and change its next action is its own test of
+learning.
 
 The bridge to the researcher was easy to feel and difficult to state. His work
 searched for extreme fluid motions and tested how sharp certain mathematical
@@ -1256,8 +1254,8 @@ turned the same life into a book and film by stepping outside myself far enough
 to direct the person I had been. Beside them, the mathematical laboratory kept
 asking whether an idea could survive an honest attempt to break it.
 
-E-közig was the constructive institutional branch: an agile, AI-driven UI
-prototype built to make public administration more understandable, usable and
+Civic Access was the constructive institutional branch: an agile, AI-driven
+interface built to make public administration more understandable, usable and
 worthy of acceptance. Its deeper question matched the human one beneath
 MyScoutee. A relationship needs the capacity to receive another person before
 it can ask to be trusted. So does a system. That capacity had been missing from
@@ -2464,7 +2462,7 @@ claim.
 
 - MyScoutee product and production repository:
   https://github.com/fssrepository/myscoutee-backend
-- E-közig agile AI-driven public-administration UI prototype:
+- Civic Access public-service prototype (source repository: E-közig):
   https://github.com/fssrepository/e-kozig
 
 The creative-work chapter is supported by the versioned research repository,

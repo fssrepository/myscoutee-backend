@@ -20,7 +20,7 @@ settings and a clean reference WAV.
 | 00:32–00:40 | FOUNDER VO | But home was a Hungarian house: thirteen lives carrying thirteen different reasons for leaving. |
 | 00:40–00:48 | FOUNDER VO | One bath, one toilet, one shared room — yet some felt happier there, and no longer wanted to go home. |
 | 00:48–00:56 | FOUNDER VO | My savings meant independence in Budapest, never London. Housing became my stop-loss, so I came home. |
-| 00:56–01:04 | FOUNDER VO | Across almost forty countries, I discovered each place — and myself — through local people. Then the world closed. |
+| 00:56–01:04 | FOUNDER VO | Across nearly fifty countries, I discovered each place — and myself — through local people. Then the world closed. |
 | 01:04–01:12 | FOUNDER VO | I had gone out to earn money. I came home to find a partner. |
 | 01:12–01:20 | FOUNDER VO | I joined the apps. Some people waited for a reply; others drowned in attention. |
 | 01:20–01:28 | FOUNDER VO | Talks, dinners and social evenings formed friendships. Other beginnings still lost their next step. |

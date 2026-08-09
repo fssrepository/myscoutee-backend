@@ -243,7 +243,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Light/color:** every place has truthful local atmosphere inside one painterly
   grade; no flags or costume shorthand.
 - **Sound/VO:** eight-note percussive flutter drops to wind/rail hush, then one
-  clean public-space cutoff; “Across almost forty countries, I discovered each
+  clean public-space cutoff; “Across nearly fifty countries, I discovered each
   place — and myself — through local people. Then the world closed.”
 - **Transition/generation:** create each memory as a still, animate 8–12 frames
   in post or Flow; do not generate fake archive footage.

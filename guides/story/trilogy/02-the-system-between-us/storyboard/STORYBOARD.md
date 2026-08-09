@@ -308,7 +308,7 @@ The letters belong in the production manifest, not the public image.
 - **Layer:** `D/M`.
 - **CP17:** home and foreign-earned security held inside the question.
 - **CP18:** one AI-assisted work surface joins checked legal evidence, the
-  MyScoutee product system, an E-közig agile UI prototype, self-observing
+  MyScoutee product system, the Civic Access public-service prototype, self-observing
   book/film direction and finite Navier–Stokes bands.
 - **Motion:** the account line becomes an evidence heading. The AI proposes
   structure; the Founder checks it; one failed route remains visible as a
@@ -318,10 +318,13 @@ The letters belong in the production manifest, not the public image.
 - **Meaning:** AI supplies speed, structure and voice, not legal representation
   or human infallibility. In roughly five months, one isolated creator and the
   AI form a continuous working loop across legal, product, civic, film and
-  mathematical work beneath the unresolved possibility of imprisonment.
-  Lived consequence belongs to the Founder; learned patterns and preserved
-  failures help the machine improve the next attempt. The scene argues for
-  bounded, reviewable experience rather than zero error or unguarded autonomy.
+  mathematical work beneath the unresolved possibility of imprisonment. The
+  screen becomes a mirror of decisions rather than a human face: proposed
+  structures, errors and counterexamples return the Founder's assumptions in a
+  form he can accept, reject or correct. Lived consequence belongs to the
+  Founder; learned patterns and preserved failures help the next attempt. The
+  scene argues for bounded, reviewable experience rather than zero error or
+  unguarded autonomy.
 - **Sound in post:** keyboard, page search, cursor tone and human pulse.
 - **On-screen text in post:** `THE HUMAN MIND CANNOT BE CAGED`.
 - **Hazard:** no branded chatbot, hologram lawyer, solved prize, exoneration,

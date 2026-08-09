@@ -872,7 +872,7 @@ These are not externally researched claims. They remain first-person testimony:
   intent; exact shop, price, purchase outcome and city order remain `CONFIRM`;
 - subjective memory of feeling safer in the immediate South Tottenham/Stamford
   Hill area and more exposed in nearby directions; never generalize causation;
-- nearly forty visited countries and the named destination memories;
+- nearly fifty visited countries and the named destination memories;
 - the personal global/local interpretation that different environments became
   meaningful through local people and revealed different parts of the Founder;
 - repeated one-day organized bus journeys from Budapest into the Slovak Tatras,

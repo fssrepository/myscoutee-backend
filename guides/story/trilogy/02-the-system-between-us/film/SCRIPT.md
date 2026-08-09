@@ -8,7 +8,7 @@ version, settings and a clean reference WAV. The Founder may still correct the
 book before picture lock; any such correction must be propagated here before
 voice generation.
 
-Read in a restrained first-person voice at approximately 126–132 words per
+Read in a restrained first-person voice at approximately 122–128 words per
 minute. Do not accelerate the final third. Short gaps inside the windows are for
 foley and breath.
 
@@ -61,8 +61,8 @@ foley and breath.
 
 ### 01:12–01:20 — S10 · The sentence and correction
 
-> Before dawn, under fear and surgical pressure, a violent sentence escaped. I
-> corrected it; the system kept it.
+> One year later, the repaired record remained on paper while one corrected
+> sentence was used to replace the person.
 
 ### 01:20–01:28 — S11 · The body
 
@@ -101,8 +101,8 @@ foley and breath.
 
 ### 02:16–02:24 — S18 · Work under the shadow
 
-> Under prison's shadow, AI gave my uncaged mind a voice: evidence, MyScoutee,
-> film, civic software and mathematics.
+> Under prison's shadow, AI mirrored my uncaged mind through evidence,
+> MyScoutee, film, civic software and mathematics.
 
 ### 02:24–02:32 — S19 · Black humour becomes a receipt
 

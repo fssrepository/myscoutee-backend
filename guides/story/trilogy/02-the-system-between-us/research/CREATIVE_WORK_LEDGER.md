@@ -4,7 +4,11 @@ This ledger supports the short Part II passage about creative and technical work
 continuing under legal uncertainty. It does not treat productivity as proof of
 legal innocence, mental health or mathematical correctness.
 
-## E-közig
+## Civic Access
+
+Source repository and local project name: `E-közig` (`e-kozig`).
+
+Public-facing English name in the book and film: **Civic Access**.
 
 Local source: `/home/raxim/workspace/e-kozig/`.
 
