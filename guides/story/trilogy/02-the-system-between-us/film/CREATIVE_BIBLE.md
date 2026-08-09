@@ -6,7 +6,7 @@
 | --- | --- |
 | Working title | **The System Between Us** |
 | Trilogy position | Part II; open ending reserved for Part III |
-| Runtime | exactly `05:00.000` |
+| Runtime | exactly `05:08.000` |
 | Canvas | 9:16 portrait, 720×1280 mobile master, constant 24 fps |
 | Language | English narration and editable English titles |
 | Form | cinematic animated documentary memoir / civic systems story |
@@ -138,7 +138,7 @@ Palette arc:
   stone and forensic paper white;
 - `03:20–04:24`: foreign-earned amber, cautious violet AI light, black-humour
   paper white, London rain and luminous Budapest blue-gold;
-- `04:24–05:00`: civic gold, constitutional red, interim empty-chair navy and
+- `04:24–05:08`: civic gold, constitutional red, interim empty-chair navy and
   the original MyScoutee star colour.
 
 Do not use horror, riot spectacle, prison clichés, axes, flames, terrorism
@@ -152,7 +152,7 @@ generated scene. Add it in post over the approved endpoint plates:
 
 - `00:00–00:08`: title, part title and `BASED ON A TRUE STORY`, with the first
   narrated sentence acting as the short story threshold;
-- `04:56–05:00`: the MyScoutee invitation, a concise `READ THE BOOK` route and
+- `05:04–05:08`: the MyScoutee invitation, a concise `READ THE BOOK` route and
   `TO BE CONTINUED IN PART III`;
 - never ask a video model to render title lettering, the logo or the continuation
   card.
@@ -261,7 +261,7 @@ Audio is assembled after picture timing is locked.
   Warm & Grounded Storyteller**
   voice as Part I, no lip sync; archive the exact voice identifier, model
   version, settings and clean reference WAV;
-- one continuous instrumental composition from `00:00.000` to `05:00.000`;
+- one continuous instrumental composition from `00:00.000` to `05:08.000`;
 - no Flow/OpenArt clip-level music or generated dialogue;
 - exact foley synchronized in post: keyboard, notification, paper, phone,
   crutch/step, door, evidence bag, crowd, chair movement and pen;
@@ -281,7 +281,8 @@ Score arc:
 | 03:20–04:00 | sparse cursor pulse grows from the evidence search and asset question into uncaged legal, product, film and mathematical work |
 | 04:00–04:24 | dry paper humour opens into wider human strings as the London memory returns through beautiful Budapest |
 | 04:24–04:56 | constitutional brass/choral colour, unresolved and morally ambiguous |
-| 04:56–05:00 | single star interval, no triumphant cadence |
+| 04:56–05:04 | open line and unresolved human cadence |
+| 05:04–05:08 | single star interval, no triumphant cadence |
 
 ## 9. Truth boundaries
 

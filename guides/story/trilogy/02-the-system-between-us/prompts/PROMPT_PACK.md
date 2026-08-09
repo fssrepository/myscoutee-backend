@@ -1,99 +1,80 @@
 # Part II prompt pack
 
-All generation instructions are in English. The public narration and editable
-titles are defined in [SCRIPT.md](../film/SCRIPT.md); video models must not
-invent either.
+Status: **written baseline synchronized to the 05:08 script and CP00–CP38
+storyboard; no frame-generation run is authorized by this document**.
 
-## Assembly order for one eight-second interval
+All generation instructions are English. Public narration and editable titles
+are defined in [SCRIPT.md](../film/SCRIPT.md); video models must invent neither.
 
-1. Paste [continuity-prefix.txt](continuity-prefix.txt).
-2. Paste one `SHOT Sxx` block from [shot-prompts.txt](shot-prompts.txt).
-3. In Flow, append: `Generate exactly one Veo Frames-to-Video result, 8 seconds,
-   9:16, using the uploaded checkpoint images as exact first and last frames.`
-4. In OpenArt, select one model and append: `Generate exactly one silent
+## One eight-second generation
+
+1. Upload the exact approved `CPxx.png` first frame and `CPyy.png` last frame.
+2. Paste [continuity-prefix.txt](continuity-prefix.txt).
+3. Paste only the matching `SHOT Sxx` block from
+   [shot-prompts.txt](shot-prompts.txt).
+4. In Flow append: `Generate exactly one Veo 3.1 Lite Frames-to-Video result,
+   8 seconds, 9:16, using the uploaded checkpoint images as exact first and last
+   frames.`
+5. In OpenArt select the tested model and append: `Generate exactly one silent
    first/last-frame video, 8 seconds, 9:16. Preserve both reference frames.`
 
-Do not paste all twenty-two shot blocks into one ordinary video generator.
-The two master files are planning/director prompts for interfaces that can
-manage a sequence, not requests for one 176-second generation.
+Do not paste all thirty-eight shots into an ordinary generator. Each interval is
+one independent first/last-frame request. Never replace the endpoint contract
+with Extend or a prompt-only result.
 
 ## Reference tokens
 
-Replace each token once in the working copy:
-
 | Token | Meaning |
 | --- | --- |
-| `[FOUNDER_REF]` | exact approved Part I Founder character/reference |
-| `[ACCOUNTANT_REF]` | approved competent, overloaded accountant identity |
-| `[TAX_OFFICER_REF]` | approved ordinary tax-officer identity |
-| `[OFFICER_REF]` | approved police-officer identity |
-| `[FINGERPRINT_OFFICER_REF]` | approved professional fingerprinting officer identity; ordinary human presence, no erotic framing |
-| `[EXPERT_A_REF]` | first approved forensic-expert identity |
-| `[EXPERT_B_REF]` | second, visually distinct approved forensic-expert identity |
-| `[JUDGE_REF]` | anonymized judge identity; never a real-person likeness |
-| `[DEFENCE_COUNSEL_REF]` | anonymized court-appointed defence counsel identity |
-| `[PROBATION_OFFICER_REF]` | anonymized probation officer preparing the clemency social inquiry |
-| `[PROSECUTOR_ROLE]` | anonymous prosecutor role at the Founder's left |
-| `[CLERK_ROLE]` | anonymous clerk role at the far-left corner |
-| `[HOUSEMATE_REF]` | anonymized Part I London HMO resident |
-| `[BUDAPEST_FLAT]` | exact approved Part I apartment/world reference |
+| `[FOUNDER_REF]` | exact approved Part I Founder identity |
+| `[ACCOUNTANT_REF]` | approved competent, overloaded accountant |
+| `[TAX_OFFICER_REF]` | approved ordinary tax officer |
+| `[OFFICER_REF]` | approved ordinary police officer |
+| `[FINGERPRINT_OFFICER_REF]` | professional fingerprint officer; no erotic framing |
+| `[EXPERT_A_REF]` | first forensic expert |
+| `[EXPERT_B_REF]` | visually distinct second forensic expert |
+| `[JUDGE_REF]` | anonymized judge, never a real-person likeness |
+| `[DEFENCE_COUNSEL_REF]` | anonymized court-appointed counsel |
+| `[PROSECUTOR_ROLE]` | anonymous prosecutor on the Founder's left |
+| `[CLERK_ROLE]` | anonymous clerk at the far-left corner |
+| `[HOUSEMATE_REF]` | anonymized Part I London resident |
+| `[BUDAPEST_FLAT]` | exact approved Part I apartment reference |
 | `[BUDAPEST_WORLD]` | approved Budapest civic-location reference |
-| `[LONDON_HMO]` | exact approved Part I HMO reference |
-| `[PART_I_FINAL_FRAME]` | lossless Part I handoff frame used as CP00 |
+| `[LONDON_HMO]` | approved Part I shared-house reference |
+| `[PART_I_FINAL_FRAME]` | lossless Part I handoff used as `CP00.png` |
 
-Public figures are not character tokens. Use silhouettes, hands, room geometry,
-post-produced documents and dates. Accurate editorial imagery, if legally
-cleared later, belongs in post rather than generative video.
+Public figures are not character tokens. Use hands, silhouettes, office
+geometry, empty chairs and post-added dates. Accurate editorial material, if
+licensed later, belongs in post.
 
-## Checkpoint contract
+## Endpoint contract
 
-- `S01` uses `CP00.png` and `CP01.png`.
-- `S02` uses `CP01.png` and `CP02.png`.
-- Continue identically through `S22`, which uses `CP21.png` and `CP22.png`.
-- The generated clip must begin and end on those frames without reinterpretation.
-- `E01` is assembled in post and must use the repository logo, never an
-  AI-generated mark.
-- Over S01, post-production adds `MYSCOUTEE · THE STORY`, `PART II · THE SYSTEM
-  BETWEEN US` and `BASED ON A TRUE STORY`. S01 supplies only the clean,
-  centre-safe moving picture.
-- In E01, hold the CTA until `02:58.5`, then show `TO BE CONTINUED IN PART III`
-  for the final `1.5` seconds. Both lines remain editable post typography.
-- Over S01, post-production adds `MYSCOUTEE · THE STORY`, `PART II · THE SYSTEM
-  BETWEEN US` and `BASED ON A TRUE STORY`. S01 supplies only the clean,
-  centre-safe moving picture.
-- In E01, hold the CTA until `02:58.5`, then show `TO BE CONTINUED IN PART III`
-  for the final `1.5` seconds. Both lines remain editable post typography.
-- If a model cannot accept both endpoints, do not substitute a prompt-only
-  generation into the continuity chain. It may be used only as a labelled test.
+- `S01 = CP00→CP01`; `S02 = CP01→CP02`; continue identically through
+  `S38 = CP37→CP38`.
+- Each clip begins and ends on the supplied frames without redesign, crop,
+  reframing or recolouring.
+- `E01` is a deterministic four-second post card derived from `CP38`; it uses
+  the exact repository logo and no generation credit.
+- Title, `BASED ON A TRUE STORY`, dates, labels, book route and continuation
+  text are editable post typography only.
+- If a model cannot accept both endpoints, label it unsuitable for the chain.
 
 ## Audio contract
 
-Every generated interval is silent production picture:
+Generated clips are production picture only:
 
-- no dialogue;
-- no narration;
-- no generated music;
-- no per-clip ambience that restarts at each cut;
-- no visible word articulation or lip sync;
-- no scene with several people visibly speaking at once.
+- no dialogue, narration, singing, music, pulse, ambience or sound effects;
+- no visible word articulation, lip sync or several people speaking at once;
+- naturally relaxed mouths, breathing, listening, gaze, nods and restrained
+  hand gestures remain allowed;
+- discard all native platform audio even when the model ignores the prompt.
 
-Keep mouths naturally relaxed rather than frozen shut. Natural breathing, a
-brief nonverbal smile and minute jaw movement are allowed. Convey interaction
-through listening, eye contact, small nods and restrained hand gestures.
+The final film receives the approved ElevenLabs **Jon — Warm & Grounded
+Storyteller** narration, one continuous `05:08` score and synchronized
+post-produced ambience/foley. Archive the exact voice identifier, model,
+settings and clean reference WAV.
 
-The final edit receives the same time-locked English ElevenLabs **Jon — Warm &
-Grounded Storyteller** narrator
-used for Part I, one continuous three-minute score and synchronized
-post-produced ambience/foley. Any platform audio generated despite the prompt
-is discarded. The display name is not sufficient provenance: archive the exact
-voice identifier, model version, settings and clean reference WAV.
-
-The picture package is therefore a complete `03:00.000` director handoff, not a
-collection of clips with independent sound. The twenty-two generated intervals
-occupy `02:56`; the exact four-second end card is composed in post.
-
-For Google Flow/Veo, repeat this short block at the very end of every assembled
-shot prompt:
+Append this block to every Flow shot:
 
 ```text
 VEO AUDIO HARD LOCK: Generate silent production picture only. Absolutely no
@@ -102,79 +83,40 @@ harmony, musical drone, rhythmic pulse, ambience or sound effects. Final sound
 is created only after all clips are joined. Discard any native platform audio.
 ```
 
-Repeating the block does not make independent Veo clips share audio memory. It
-reduces the chance of a different generated score beginning at every cut. Part
-II receives one separately produced continuous score and one narrator in post.
+## Privacy and truth contract
 
-## Evidence and privacy contract
+- Never upload raw tax, police, court, medical-adjacent or private email pages.
+- Recreate documents as anonymized unreadable plates; add exact public text in
+  post.
+- No private name, address, account value, password, employer brand, diagnosis,
+  public-figure likeness or official seal appears in generated imagery.
+- Do not reproduce the disputed sentence or visualize threatened harm.
+- The accountant, tax officer, police, two experts and judge remain ordinary
+  people; humour is a human micro-expression, not proof about the case.
+- Always keep two distinct experts and the exact C-shaped courtroom geometry.
+- Financial questions do not become completed confiscation, eviction or fine.
+- Seven judges first recuse and an eighth follows; no June departure from office
+  is invented.
+- Clemency refusal and the later presidential signature are memoir irony, not
+  equivalent acts, cause, revenge or legal judgment.
+- The anonymous professor asks a research question; no proof or prize is shown.
+- The 2026 election does not decide the private case. Part III owns the result.
 
-- Never upload raw tax, police, court, medical-adjacent or private email pages to
-  a generative model.
-- Recreate every necessary page as an anonymized, unreadable plate and add exact
-  public wording later in post.
-- Do not reproduce the charged sentence or illustrate threatened harm.
-- No private name, address, identifier, account value, password, employer brand
-  or diagnosis appears in generated imagery.
-- The accountant, tax officer, police, expert and judge remain ordinary human
-  beings. No sinister expressions, conspiracy tableau or corrupt-official code.
-- Humour is a micro-expression, not proof about the case.
-- The apartment/belongings/government-bond sequence represents questions and
-  perceived risk. It must not depict completed confiscation, forfeiture or
-  eviction.
-- The President's constitutional route and the Founder's route are visually
-  separate and legally unequal.
-- The Founder's clemency refusal and the later loss of the President's office
-  are memoir irony, not equivalent legal acts and not proof that either caused
-  the other.
-- The 19 May revised clemency papers asked to wait with the incoming justice
-  administration until the presidency changed; do not invent a new President
-  or a later decision.
-- The documented 5 June forwarding to the Sándor Palace and Prime Minister's
-  press office may appear as one small push from below, never as a proven cause
-  of later institutional action.
-- Seven judges initially recused from one matter and an eighth followed; they
-  did not leave the Court in June.
-- The Founder's satirical performance of the file-created character is a mirror
-  held up to institutional power. It is not acceptance of the contested
-  diagnosis, real counter-authority or permission to harm.
-- Part III owns the final outcome.
-- Courtroom geography remains exact from the Founder's viewpoint: a C-shaped
-  desk with prosecutor left, clerk at the far-left corner, judge centre and
-  court-appointed defence counsel right; the Founder sits in front with a table
-  microphone directly before him.
-- The forensic examination always contains two distinct experts. Do not merge
-  their faces, remembered reactions or roles into one composite character.
-- The clemency home visitor is a probation officer preparing a social inquiry,
-  not a clemency commissioner, judge or sentencing authority.
+## Credit lock
 
-## Credit-saving test order
-
-Do not test every model on every shot.
-
-1. After written-package closure, select one deliberately difficult
-   eight-second interval whose people, staging, transformation and endpoint
-   continuity expose meaningful model differences.
-2. Generate only that interval's exact two 9:16 endpoint frames.
-3. Run the same two frames, prompt, duration and aspect ratio in Google Flow
-   and OpenArt. Record model, settings, seed when exposed, charged credits and
-   outcome.
-4. Select the lowest-cost model that preserves identity, endpoint accuracy,
-   readable staging and restrained motion.
-5. Generate the remaining checkpoint chain only after that decision, reserving
-   credit for failed endpoints and the hardest continuity repairs.
-
-There is no slideshow or animatic stage. The exact endpoints move directly from
-frame approval into the identical cross-model test.
+- Part I: `22 × 8 s = 220` Flow credits at the observed Veo 3.1 Lite rate.
+- Part II: `38 × 8 s = 380` credits.
+- Base two-film motion: `600` credits.
+- Observed balance: `970`; reserve after base generation: `370` credits.
+- The benchmark spends only on one final-use difficult interval and exactly two
+  endpoint frames. No slideshow, animatic, midpoint or decorative test frame.
+- Generate the remaining chain only after the Founder approves the books,
+  written prompts and production model.
 
 ## Release recheck
 
-Before motion generation, recheck:
+Immediately before generation, verify the live model names, endpoint support,
+eight-second duration, watermark control, audio behaviour and charged credits.
+Immediately before release, recheck the hearing date, public presidency and any
+source correction that changes the film rather than only the notes.
 
-- whether a post-publication factual correction requires a new book edition;
-- the reviewed Constitutional Court threshold letter and the exact complaint
-  route;
-- the new justice-administration reply if supplied;
-- the 16 September 2026 hearing date;
-- the presidency and Constitutional Court composition;
-- platform model names, durations, endpoint support, audio behaviour and credit
-  costs.

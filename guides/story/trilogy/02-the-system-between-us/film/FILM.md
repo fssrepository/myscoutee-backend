@@ -2,7 +2,8 @@
 
 Working title: **The System Between Us**.
 
-Status: **closed 03:00 English script and synchronized prompt baseline; no media generated**.
+Status: **locked-for-review 05:08 English script; the 38-interval storyboard and
+prompt package are being synchronized; no production media generated**.
 
 - [creative bible](CREATIVE_BIBLE.md)
 - [time-coded script](SCRIPT.md)
@@ -10,12 +11,13 @@ Status: **closed 03:00 English script and synchronized prompt baseline; no media
 - [storyboard](../storyboard/STORYBOARD.md)
 - [prompt pack](../prompts/PROMPT_PACK.md)
 
-The film is built from twenty-two exact eight-second scene intervals plus one
-four-second final card. This makes each planned motion interval compatible with
-an eight-second first/last-frame video workflow while keeping the master exactly
-three minutes.
+The film is built from thirty-eight exact eight-second scene intervals plus one
+four-second final card. This makes every motion interval compatible with the
+eight-second first/last-frame workflow while giving the dense human story enough
+time to register. Generated motion is `05:04`; the deterministic end card makes
+the master exactly `05:08`.
 
 Its job is to prove that a feature-length human story exists, not to turn the
-books or legal record into a three-minute explainer. The short establishes the
+books or legal record into a compressed explainer. The film establishes the
 whole person, the institutional compression and the open line; viewers who want
 the complete chain continue into the two books.

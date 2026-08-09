@@ -40,6 +40,7 @@ breaks according to the verified outcome.
 
 ## No false cliffhanger
 
-Do not use a prison door, gavel strike, guilty/not-guilty card or sensational
-“to be continued.” The final condition is uncertainty, not manufactured danger.
-The interim presidential chair and the Founder's scheduled hearing are enough.
+Do not use a prison door, gavel strike or guilty/not-guilty card. The restrained
+`TO BE CONTINUED IN PART III` book card states the trilogy structure without
+manufacturing danger. The open line and the Founder's scheduled hearing are
+enough.

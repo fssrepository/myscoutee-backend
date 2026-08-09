@@ -1,479 +1,365 @@
-# Complete Part II storyboard
+# Part II storyboard — The System Between Us
 
-Status: **narrative and evidence review; no media generated**.
+Status: **synchronized written baseline; no checkpoint in this chain is approved
+for production yet**.
 
-Runtime: exactly **03:00.000** at **24 fps**, portrait **720×1280**. The motion
-chain contains twenty-two eight-second intervals, `CP00→CP22`, followed by one
-four-second post-produced end card. Each generated interval must use its two
-approved checkpoints as exact first and last frames. Do not ask a video model
-to create titles, quotations, legal documents, logos, dialogue, narration or
-music.
+Runtime: exactly **05:08.000** at **24 fps**, portrait **720×1280**. The motion
+chain contains thirty-eight eight-second intervals, `CP00→CP38`, followed by one
+deterministic four-second post-production card. Narration and editable titles
+come from [SCRIPT.md](../film/SCRIPT.md).
 
-The visual world continues Part I's painterly cinematic 2.5D language. The
-Founder is the same person, aged naturally from 2021 to 2026. The cognac
-notebook, modest Budapest flat, workstation and exact unmodified MyScoutee mark
-are continuity assets, not prompts for reinvention.
+## Global picture contract
 
-Evidence layers used below:
+- painterly cinematic 2.5D, natural human proportions, mobile-readable staging;
+- exact Part I Founder identity, aged only by the documented passage of time;
+- every generated clip uses its two named checkpoints as exact first and last
+  frames;
+- video models render no typography, logo, readable evidence, public-figure
+  likeness, narration, dialogue, music or lip sync;
+- mouths remain naturally relaxed; interaction comes through listening, gaze,
+  posture, hands and restrained micro-expression;
+- every legal, tax and medical-adjacent page is an anonymized visual plate;
+- one line changes function across the film without becoming a magical effect;
+- Jon narration, one continuous score, ambience and foley are post-production;
+- no slideshow, animatic, midpoint image or extra review frame is produced.
 
-- `D`: primary document in the reviewed local package;
-- `M`: memoir or current first-person recollection;
-- `A`: attributed account awaiting direct verification;
-- `C`: independently sourced public context.
+## Motion chain
 
-The letters belong in the production manifest, not the public image.
+### S01 — The line changes meaning · 00:00–00:08 · CP00→CP01
 
-## Act I — A legal door closes
+- **CP00:** lossless Part I handoff: six people linked by the open MyScoutee
+  network line in the established navy-and-amber world.
+- **Motion:** the people recede without vanishing; the same line straightens
+  into the ruled line of an ivory form on the Founder's desk.
+- **CP01:** Founder beside the cognac notebook and clean form, large centre-safe
+  negative space for title, part title and `BASED ON A TRUE STORY` in post.
 
-### S01 — The connecting line becomes a ruled line · 00:00–00:08 · CP00→CP01
+### S02 — The life before the file · 00:08–00:16 · CP01→CP02
 
-- **Layer:** Part I continuity / memoir metaphor.
-- **CP00:** exact final usable frame from Part I: the Founder beside an open,
-  humane MyScoutee network line. Import losslessly; do not redraw it.
-- **CP01:** same line has settled into the horizontal rule of an anonymized
-  document on the Founder's desk. His hand and cognac notebook remain visible.
-- **Motion:** one restrained 40 mm push. Network nodes dim into paper marks while
-  the Founder remains physically continuous; no magical body morph.
-- **Composition:** Founder in the central portrait band, ruled line below the
-  eyes, clear upper title-safe zone.
-- **Opening typography in post:** hold `MYSCOUTEE · THE STORY`, `PART II · THE
-  SYSTEM BETWEEN US` and `BASED ON A TRUE STORY` as restrained cinematic
-  punctuation over the opening plate, then fade it before CP01. The narrator's
-  first sentence is the short recap and threshold from Part I; do not generate
-  a separate title shot.
-- **Sound in post:** carry Part I's final harmonic note into paper movement and
-  one low system pulse.
-- **Hazard:** do not show a real case page, readable charge or diagnostic label.
+- **Motion:** the ruled line becomes a restrained route through London rain,
+  travel windows, strangers helping and the Budapest home; no rapid postcard
+  montage or tourist-logo collage.
+- **CP02:** Founder at his Budapest desk, notebook open, the full earlier life
+  present as small warm reflections rather than a file summary.
 
-### S02 — Brussels work from a Budapest home · 00:08–00:16 · CP01→CP02
+### S03 — The salaried foothold · 00:16–00:24 · CP02→CP03
 
-- **Layer:** `D/M`.
-- **CP01:** document-rule desk from S01.
-- **CP02:** modest Budapest workstation during a live cross-border delivery;
-  restrained European route geometry reflected in the window connects
-  Budapest and Brussels without flags, employer branding or a tourist map.
-- **Motion:** the paper rule passes an old, blank employee badge and a closed
-  salaried door before becoming a monitor progress line; one calm lateral move
-  reveals late-hour concentration and anonymous audio-only collaborator tiles.
-  One open microphone lets the soft putter of an Indian tuk-tuk enter the room;
-  no face or tourist insert is invented.
-- **Performance:** capable and tired, never euphoric. This is work, not a digital
-  nomad advertisement.
-- **Sound in post:** keyboard, muted call-room texture, low HVAC and pulse.
-- **Hazard:** no readable code, company logo or invented colleague likeness.
+- **Motion:** the home desk becomes a calm salaried multinational workstation;
+  then COVID-19 empties adjacent desks and cools the room without disaster
+  spectacle.
+- **CP03:** Founder alone at the still-lit workstation, one access badge and a
+  newly closed office door; no employer branding.
 
-### S03 — Legal by necessity · 00:16–00:24 · CP02→CP03
+### S04 — Seven years against three weeks · 00:24–00:32 · CP03→CP04
 
-- **Layer:** `D/M`.
-- **CP02:** cross-border workstation.
-- **CP03:** the same desk now holds a simple sole-proprietor/tax route diagram:
-  one lawful door through which the foreign work can pass. All labels are blank
-  editable plates for post.
-- **Motion:** the Brussels route folds through one clean invoice rectangle and
-  into the legal-door outline. Founder signs deliberately, without celebration.
-- **Meaning:** after he had earlier refused contractor status and kept searching
-  for salaried work, KATA is now the last lawful vehicle that lets him start;
-  it is not his entrepreneurial dream or proof that every user shared his
-  circumstances.
-- **Sound in post:** pen, one restrained portal confirmation, continuous pulse.
-- **Hazard:** do not show cash piles, tax evasion shorthand or official seals.
+- **Motion:** the badge becomes an employee-policy card while seven years of
+  modest government-bond savings remain visible as amber layers behind it.
+- **CP04:** Founder between a three-week employment threshold and the savings
+  that made his return possible, choosing the latter without triumph.
 
-### S04 — Proposed Monday, passed Tuesday · 00:24–00:32 · CP03→CP04
+### S05 — The distant team · 00:32–00:40 · CP04→CP05
 
-- **Layer:** `C/D/M`.
-- **CP03:** calm legal-door diagram.
-- **CP04:** the desk is compressed between a fast-moving calendar edge and a
-  blocked bridge visible only through the window; the Founder remains inside,
-  reading and adapting while a varied public crowd occupies the distant street.
-- **Motion:** Monday and Tuesday page edges turn once; the legal door narrows.
-  Public movement stays background context, never merges into the Founder.
-- **Sound in post:** paper snap, distant crowd wash, no slogan intelligible.
-- **On-screen text in post:** `PROPOSED MONDAY · PASSED TUESDAY · EFFECTIVE 1
-  SEPTEMBER`.
-- **Hazard:** do not imply the Founder attended the protest or every protester
-  supported the same programme.
+- **Motion:** the policy grid opens into an audio-only remote team: several
+  distinct adults represented by active call tiles, hands and work objects, not
+  generic floating heads.
+- **CP05:** Founder accepted inside a cross-border working rhythm; a faint
+  tuk-tuk street texture enters one distant microphone as human context.
 
-### S05 — Protecting the handover · 00:32–00:40 · CP04→CP05
+### S06 — Legal by necessity · 00:40–00:48 · CP05→CP06
 
-- **Layer:** `D/M`.
-- **CP04:** compressed law/calendar frame.
-- **CP05:** the Founder closes one branch of a production workflow only after a
-  remote teammate safely receives it; unused contract months fade from the
-  notebook as foregone opportunity, not literal money burning.
-- **Motion:** one 50 mm desk-level move follows a task card from the Founder to
-  the anonymous teammate; the abandoned future branch softens out of focus.
-- **Relationship:** a client-side tile remains open and a senior-manager tile
-  steadies a briefly disordered middle layer. Their reluctance to lose the
-  Founder is visible as held attention, not generated dialogue or applause.
-- **Performance:** responsibility first, private loss second.
-- **Sound in post:** restrained task confirmation, keyboard, clock seam.
-- **Hazard:** no claim that a foreign state, named employer or critical service
-  failed because of him.
+- **Motion:** the call line becomes the clean boundary of a sole-proprietor tax
+  route while the remote team remains on the far side.
+- **CP06:** one lawful working bridge between Budapest and Brussels, labelled
+  only later in post as `KATA`; no coins, tax-dodge imagery or lifestyle fantasy.
 
-## Act II — Three people, no shared screen
+### S07 — A law in a day · 00:48–00:56 · CP06→CP07
 
-### S06 — The low-trust triangle · 00:40–00:48 · CP05→CP06
+- **Motion:** the stable bridge shortens as a bill moves through institutional
+  geometry; a separate street layer shows varied citizens gathering while the
+  Founder stays at his computer.
+- **CP07:** split but continuous staging: public protest outside, focused
+  handover work inside; do not place the Founder in the crowd.
 
-- **Layer:** `D/M`.
-- **CP05:** safely completed handover line.
-- **CP06:** Founder, accountant and tax officer occupy three honest working
-  spaces around a triangular line, each seeing a different partial screen.
-- **Motion:** follow one form around the triangle; at every corner a different
-  field becomes visible while another disappears.
-- **Characters:** competent but overloaded accountant; ordinary professional tax
-  officer; intense but not aggressive Founder. No villain lighting.
-- **Sound in post:** three distinct room tones connected by one call line.
-- **Hazard:** no gender, age or clutter shorthand for incompetence.
+### S08 — The handover · 00:56–01:04 · CP07→CP08
 
-### S07 — The password trap · 00:48–00:56 · CP06→CP07
+- **Motion:** delivery tasks, a client timeline and a clean advance-invoice row
+  align under severe time pressure.
+- **CP08:** completed client handover on one screen and an unresolved closing
+  tax row on the other; all exact wording added only in post.
 
-- **Layer:** `D/M`.
-- **CP06:** three partial views.
-- **CP07:** an abstract personal-access key opens the accountant's work screen;
-  the submitted action travels onward, but the critical notice stops at a
-  separate screen while the Founder remains named as the responsible person.
-- **Motion:** one anonymized access token passes from Founder to accountant,
-  becomes an action, then returns as responsibility without carrying the notice
-  back to him. The token closes around the Founder like a visual question mark:
-  sharing made the work possible, then became the act held against him. Use
-  abstract UI plates only.
-- **Meaning:** in the Founder's documented account, the only route that appeared
-  to keep work and notice together collapsed into password sharing. This is an
-  identity and delegation design trap, not proof of criminal access and not a
-  recommendation to share credentials.
-- **Sound in post:** login chime, submission click, notification muffled behind
-  glass.
-- **Hazard:** never display a real password, identifier or government UI.
+### S09 — Three partial views · 01:04–01:12 · CP08→CP09
 
-### S08 — A year assembled in one week · 00:56–01:04 · CP07→CP08
+- **Motion:** the closing row separates into three different interfaces held by
+  the Founder, accountant and tax officer.
+- **CP09:** three ordinary adults in a triangular composition, each seeing a
+  truthful fragment and nobody seeing the complete chain.
 
-- **Layer:** `D/M`.
-- **CP07:** delegated action, separated notice and returned responsibility.
-- **CP08:** 23 November becomes the point at which the previously separated
-  fragments finally align for the Founder: a professional process lasting
-  almost a year against one week of concentrated reconstruction.
-- **Motion:** follow the missed notice back through three anonymized filing
-  states and one simple arithmetic line. Calendar pages compress from a year
-  into seven marked days without frantic montage.
-- **Performance:** surprise becomes disciplined concentration, not omniscience.
-- **Sound in post:** page, portal tick, seven quiet clock marks.
-- **Hazard:** no fabricated values, readable return, claim that one person alone
-  understood every legal issue or humiliation of the accountant.
+### S10 — The password trap · 01:12–01:20 · CP09→CP10
 
-### S09 — The account is repaired; trust is not · 01:04–01:12 · CP08→CP09
+- **Motion:** one route asks for a personal password; the alternative route
+  separates delegated action from direct notice but leaves the Founder exposed
+  to missed context.
+- **CP10:** two unequal doors on one screen—identity sharing and incomplete
+  delegation—without a hacker, lock-breaking or sinister official.
 
-- **Layer:** `D/M`.
-- **CP08:** the year compressed into the Founder's reconstruction week.
-- **CP09:** a corrected unreadable return, completed tax payment and terminated
-  representation align beside a zeroed balance while the human connection line
-  remains broken.
-- **Motion:** one controlled desk-level move follows correction to payment and
-  the closing of the accountant channel. A restrained call pulse crosses old
-  calendar marks and two unused places at the edge of the Founder’s life; no
-  baby, nursery or explanatory family icon appears. The numeric line settles;
-  the trust line does not.
-- **Performance:** exhausted completion rather than triumph or revenge.
-- **Sound in post:** correction tick, payment confirmation and one channel
-  closing; Jon carries the recorded sentence without an imitated telephone
-  voice.
-- **Hazard:** no readable tax data, cash, celebratory dismissal, villainous
-  accountant or claim that payment resolved the later criminal case.
+### S11 — Twenty-three November · 01:20–01:28 · CP10→CP11
 
-### S10 — Words, correction, context · 01:12–01:20 · CP09→CP10
+- **Motion:** calendar pages and repeated rejected rows settle on 23 November;
+  the Founder begins reconstructing the problem himself.
+- **CP11:** one week of concentrated calculation reveals the failure that the
+  professional chain had not resolved; the accountant remains human, not comic.
 
-- **Layer:** `D/M`; legal meaning disputed.
-- **CP09:** corrected return, paid tax, ended representation and unresolved
-  trust line.
-- **CP10:** before-dawn message window represented by unreadable lines; one dark
-  line appears, then a clear correction line is placed directly beneath it.
-- **Motion:** phone lowers, cursor moves, the first line lands, the Founder stops,
-  and the correction follows. His face remains visible and horrified by his own
-  escalation.
-- **Meaning:** agency and context coexist. The film neither reproduces nor
-  minimizes the charged words.
-- **Sound in post:** keyboard, one stopped breath, corrective keystrokes; score
-  rhythm drops away.
-- **Hazard:** no violent imagery, targets, weapons, sensational quotation or
-  claim that correction automatically cancels legal consequence.
+### S12 — The call · 01:28–01:36 · CP11→CP12
 
-## Act III — The body and the file
+- **Motion:** numbers drain from the screen while a dry call continues; the
+  empty family space in the apartment becomes visible without literal unborn
+  child imagery.
+- **CP12:** Founder listening in shock, phone lowered slightly, an unused second
+  place at the table behind him; no visible dialogue articulation.
 
-### S11 — The body enters the portal · 01:20–01:28 · CP10→CP11
+### S13 — Repair · 01:36–01:44 · CP12→CP13
 
-- **Layer:** `D/M`.
-- **CP10:** correction line.
-- **CP11:** the line becomes a private-surgery timeline: the Founder lies in bed
-  with the operated leg propped high, a special elevation shoe nearby and one
-  abstract daily anti-thrombosis injection marker at his abdomen. It resolves
-  into a close, clinical, non-graphic photograph of the swollen operated area
-  itself—not the bandage—with the closed incision visible, attached to an
-  anonymized submission.
-- **Isolation:** the Founder is completely alone. No carer, visitor, clinician
-  or family member enters the home. Several months of simply stored food are
-  visible at the edge of the room as preparation, not abundance.
-- **Motion:** message light cools into clinical light, follows the raised leg,
-  shoe and repeated injection routine, then returns to the phone screen as the
-  incision image is sent. One steady camera move, no operating-room spectacle
-  and no literal kick.
-- **Performance:** controlled fear and exhaustion, not diagnostic collapse.
-- **Sound in post:** room ventilation, fabric, restrained monitor tone and pulse.
-- **Meaning:** an obscene physical joke tries to make a real body legible to an
-  institution; it is not an act or instruction of violence. It is also the
-  curse of solitude returning from Part I: preparation substitutes for care but
-  cannot substitute for presence.
-- **Hazard:** no open tissue, blood, needle penetration, surgery reenactment,
-  literal assault or invented diagnosis. The incision may be visible without
-  gore because it is the actual subject of the remembered photograph. Do not
-  invent bedside care or companionship.
+- **Motion:** the Founder corrects the return, pays the tax and ends the failed
+  representation in one restrained sequence.
+- **CP13:** three clean states—corrected, paid, representation ended—balanced on
+  the desk; no celebratory checkmark explosion.
 
-### S12 — The file begins to describe the person · 01:28–01:36 · CP11→CP12
+### S14 — The proposal · 01:44–01:52 · CP13→CP14
 
-- **Layer:** `D/M`.
-- **CP11:** rehabilitation frame.
-- **CP12:** repeated electronic submissions accumulate as anonymous paper/light
-  layers around the Founder until one small truthful item becomes difficult to
-  find.
-- **Motion:** he types from limited mobility; the camera remains still while the
-  archive grows. End before it becomes a comic avalanche.
-- **Meaning:** volume can contain evidence and distress at the same time.
-- **Sound in post:** keyboard, send tones increasingly absorbed by paper texture.
-- **Hazard:** no implication that file size proves innocence, illness or guilt.
+- **Motion:** the repaired row becomes a simple public-interest diagram: direct
+  notice, visible delegated action, correction before escalation.
+- **CP14:** human-scale process map centred on the taxpayer; exact labels remain
+  post typography.
 
-### S13 — The home becomes a procedural location · 01:36–01:44 · CP12→CP13
+### S15 — One surviving line · 01:52–02:00 · CP14→CP15
 
-- **Layer:** `D/M`.
-- **CP12:** Founder surrounded by the growing file.
-- **CP13:** restrained police presence in the modest apartment provided by his
-  parents; phone and computer enter neutral evidence sleeves.
-- **Motion:** knock, door opens, one officer remains human and professional; the
-  camera follows the device rather than staging an armed raid.
-- **Continuity:** preserve the exact Part I apartment and workstation. The home
-  is sparse and deliberately economical, not derelict or designed for pity.
-- **Sound in post:** knock, latch, sleeve, inventory pen.
-- **Hazard:** no weapons, tactical entry, handcuffs, damage or claim of asset
-  seizure beyond the documented devices.
+- **Motion:** accumulated messages compress into one dark handwritten line; a
+  second immediate correction appears beside it but receives less visual weight.
+- **CP15:** the disputed line inside an evidence sleeve with the correction
+  visible yet smaller; no readable threat, weapon or acted violence.
 
-### S14 — Defence runs out of time · 01:44–01:52 · CP13→CP14
+### S16 — The body has a deadline · 02:00–02:08 · CP15→CP16
 
-- **Layer:** `M/D-secondary`.
-- **CP13:** phone and computer in neutral evidence sleeves.
-- **CP14:** the Founder's fingertips rest on fingerprint paper; one ridge points
-  toward two waiting expert chairs.
-- **Motion:** in an ordinary police room, `[OFFICER_REF]` sits behind a desktop
-  computer and `[DEFENCE_COUNSEL_REF]` beside the Founder. A contact card leads
-  only to promised return calls. One small counsel room becomes the edge of the
-  fingerprint card while `[FINGERPRINT_OFFICER_REF]` works professionally.
-- **Meaning:** formal roles exist, but continuity does not. Search, processing
-  and expert interpretation receive time before the Founder has one stable
-  defence relationship or complete view of the allegation.
-- **Sound in post:** computer fan, unanswered call, door, shutter, paper and ink.
-- **Hazard:** no dark interrogation, weapon, shouting, invented quotation,
-  readable biometric data, romance or erotic framing.
+- **Motion:** the evidence line becomes the edge of a bed and raised leg after
+  surgery.
+- **CP16:** Founder alone, leg elevated, special shoe nearby, daily injection
+  supplies and stored food visible, empty chair held in quiet focus.
 
-### S15 — The forensic compression · 01:52–02:00 · CP14→CP15
+### S17 — The wound reaches the portal · 02:08–02:16 · CP16→CP17
 
-- **Layer:** `D/M`; interpretation contested.
-- **CP14:** fingerprint ridge leaving the processing room.
-- **CP15:** two distinct experts, `[EXPERT_A_REF]` and `[EXPERT_B_REF]`, one
-  report and the Founder's composed whole face.
-- **Motion:** the ridge becomes the curve of an anonymized report. Cross the two
-  expert positions once. Calm cooperation and intact cognition occupy one band;
-  reflected memories of nearly fifty countries and human trust remain visible
-  before one unreadable contested conclusion compresses them.
-- **Meaning:** two remembered voices produce one portable description. The
-  person remains larger than the document.
-- **Sound in post:** pencil, page turn, restrained clinical tone.
-- **On-screen text in post:** `OBSERVATION ≠ WHOLE PERSON`.
-- **Hazard:** no floating diagnosis, split-personality effect, malicious expert,
-  punishment quotation or later-political clinical conclusion.
+- **Motion:** a new call enters the silent room; the Founder photographs the
+  closed incision and attaches it to an anonymized portal message.
+- **CP17:** clinical, non-gory wound image on the screen and a dry half-smile at
+  his own obscene metaphor; never visualize a kick or violent act.
 
-### S16 — Brown stone and the C-shaped room · 02:00–02:08 · CP15→CP16
+### S18 — The knock · 02:16–02:24 · CP17→CP18
 
-- **Layer:** `M/D-secondary`.
-- **CP15:** the forensic report reflected across the Founder's whole face.
-- **CP16:** exact room geography: prosecutor left, clerk far-left corner,
-  `[JUDGE_REF]` centre and appointed counsel right around one C-shaped desk;
-  the Founder sits before it with a table microphone.
-- **Motion:** a report line becomes Danube light, the long brown Fő Street
-  façade and then the C-shaped desk. Restrained expressions acknowledge one
-  absurd moment while the procedural line continues toward finances.
-- **Meaning:** human recognition can appear locally while the role keeps the
-  machinery moving.
-- **Sound in post:** Danube air, heavy door, courtroom tone, microphone breath.
-- **On-screen text in post:** `ONE ROOM · MANY ROLES · ONE SURVIVING PHRASE`.
-- **Hazard:** no Gothic court, mocking judge, bias finding, readable accusation,
-  criminal accountant or verdict.
+- **Motion:** the portal notification becomes a door notification almost one
+  year later; police arrive the day after the Founder sought help elsewhere.
+- **CP18:** two professional officers at the modest Budapest flat door, Founder
+  surprised but composed; no raid spectacle, weapons or broken door.
 
-### S17 — The life becomes an asset question · 02:08–02:16 · CP16→CP17
+### S19 — Devices and silence · 02:24–02:32 · CP18→CP19
 
-- **Layer:** `M/D-secondary`; no final confiscation order reviewed.
-- **CP16:** exact C-shaped hearing room.
-- **CP17:** the parent-provided apartment key, an abstract government-bond plate
-  and foreign-earned work/saving layers sit inside one unanswered question.
-- **Motion:** unreadable Part I memory pages are waved aside; their lines become
-  the London work, restrained spending and reserve now being examined. End on
-  the key and cognac notebook, not on money.
-- **Meaning:** the life treated as irrelevant produced the security treated as
-  relevant. The system appears to seek return from an investment it never made.
-- **Sound in post:** pages, distant shared-room texture and courtroom tone.
-- **Hazard:** no cash pile, luxury, bailiff, eviction, confiscation or official
-  merits conclusion.
+- **Motion:** phone and computer enter evidence sleeves; the scene moves to an
+  ordinary police interview room and a short counsel break in a second room.
+- **CP19:** officer at desktop computer, Founder opposite, appointed counsel at
+  his side; no readable charge and no invented shouting face.
 
-### S18 — Work under the shadow · 02:16–02:24 · CP17→CP18
+### S20 — Fingerprints · 02:32–02:40 · CP19→CP20
 
-- **Layer:** `D/M`.
-- **CP17:** home and foreign-earned security held inside the question.
-- **CP18:** one AI-assisted work surface joins checked legal evidence, the
-  MyScoutee product system, the Civic Access public-service prototype, self-observing
-  book/film direction and finite Navier–Stokes bands.
-- **Motion:** the account line becomes an evidence heading. The AI proposes
-  structure; the Founder checks it; one failed route remains visible as a
-  reproducible counterexample; the next attempt changes; and a restartable
-  checkpoint is recorded. The same disciplined line passes through every work
-  plane.
-- **Meaning:** AI supplies speed, structure and voice, not legal representation
-  or human infallibility. In roughly five months, one isolated creator and the
-  AI form a continuous working loop across legal, product, civic, film and
-  mathematical work beneath the unresolved possibility of imprisonment. The
-  screen becomes a mirror of decisions rather than a human face: proposed
-  structures, errors and counterexamples return the Founder's assumptions in a
-  form he can accept, reject or correct. Lived consequence belongs to the
-  Founder; learned patterns and preserved failures help the next attempt. The
-  scene argues for bounded, reviewable experience rather than zero error or
-  unguarded autonomy.
-- **Sound in post:** keyboard, page search, cursor tone and human pulse.
-- **On-screen text in post:** `THE HUMAN MIND CANNOT BE CAGED`.
-- **Hazard:** no branded chatbot, hologram lawyer, solved prize, exoneration,
-  literal cell, genius montage, machine-consciousness claim or uncontrolled
-  system access.
+- **Motion:** restrained booking photograph, then a professional female officer
+  guides the Founder's fingers onto paper.
+- **CP20:** close hand choreography and one ordinary human glance; professional,
+  non-erotic and free of flirtation.
 
-## Act IV — One file enters public time
+### S21 — Investigating the investigation · 02:40–02:48 · CP20→CP21
 
-### S19 — Black humour becomes a receipt · 02:24–02:32 · CP18→CP19
+- **Motion:** fingerprint ridges become call timelines, electronic submissions
+  and requested recordings reconstructed by the Founder.
+- **CP21:** missing records returned to the investigative table by the person
+  being investigated; anonymized dates and waveforms only.
 
-- **Layer:** `D/M`.
-- **CP18:** AI-assisted evidence and creative-work desk.
-- **CP19:** anonymized English CV and police-career inquiry inside an absurd
-  three-round application corridor, with one restrained human smile.
-- **Motion:** an unanswered message becomes an application-status card. Three
-  abstract round markers advance while no official answer arrives. A brief KATA
-  colour echo remains marginal and nonviolent. End on the CV as an unofficial
-  receipt for an unanswered relationship.
-- **Meaning:** humour reverses the arrows for a moment. It does not confess,
-  threaten, acquit or prove agreement.
-- **Sound in post:** send tone, paper rhythm and a breath almost becoming a laugh.
-- **Hazard:** no private identifier, real officer likeness, terrorist imagery,
-  axe, threat reenactment or comic mugging.
+### S22 — Eight days · 02:48–02:56 · CP21→CP22
 
-### S20 — Beautiful home, recurring exit · 02:32–02:40 · CP19→CP20
+- **Motion:** the recovered evidence pauses while eight calendar marks advance
+  to a room with two visibly distinct forensic experts.
+- **CP22:** Founder facing two experts and one future report; no composite
+  expert, diagnostic label, ominous lighting or judicial authority.
 
-- **Layer:** `M` plus public migration context.
-- **CP19:** black-humour paper trail.
-- **CP20:** one line joins the anonymized London HMO debt memory to luminous,
-  recognizably beautiful Budapest with an unresolved exit path.
-- **Motion:** the CV edge becomes the HMO key. `[HOUSEMATE_REF]` holds a family
-  photograph beside anonymized foreign-currency-loan papers; the paper line
-  returns as Danube light around the Founder's home.
-- **Meaning:** the loan and KATA are different legal problems with a related
-  fear. At Europe's heart, home remains beautiful while predictability can
-  matter more than space. Crossing a border can reveal the self without
-  automatically freeing it from what it learned to survive; no explanatory
-  country-comparison graphic.
-- **Sound in post:** HMO room tone, London rain, Danube air and one key.
-- **Hazard:** no named relative, bank logo, single-cause migration claim,
-  hatred-of-home image or completed citizenship renunciation.
+### S23 — The other biography · 02:56–03:04 · CP22→CP23
 
-### S21 — The country changes government · 02:40–02:48 · CP20→CP21
+- **Motion:** calm observation notes condense the Founder's travel, work,
+  relationships and distrust into a much thinner institutional portrait.
+- **CP23:** full human figure behind a translucent narrow report silhouette;
+  the report is contested interpretation, not the person.
 
-- **Layer:** `C/M`.
-- **CP20:** beautiful Budapest with an unresolved exit line.
-- **CP21:** distinct civic movements resolve into one anonymous ballot and a
-  wall of institutional doors on different hinges; the case line stays open.
-- **Motion:** teachers, citizens and court staff remain separate temporal
-  layers. One ballot enters. Some doors move, some remain. No judgment appears.
-- **Meaning:** public trust changes government; it does not decide the private
-  case or prove every interpretation.
-- **Sound in post:** civic wash, ballot fold, distinct hinges, unchanged pulse.
-- **On-screen text in post:** `12 APRIL 2026`.
-- **Hazard:** no public likeness, party triumph, falling heads or private verdict.
+### S24 — Brown stone · 03:04–03:12 · CP23→CP24
 
-### S22 — Mercy changes direction; the line stays open · 02:48–02:56 · CP21→CP22
+- **Motion:** the report edge becomes the Danube embankment and the monumental
+  brown, Roman-influenced façade of the Buda courthouse.
+- **CP24:** small Founder approaching the exact civic scale of the building;
+  Budapest remains beautiful rather than dystopian.
 
-- **Layer:** `C/D/M`.
-- **CP21:** institutional doors moving beside the open case line.
-- **CP22:** two legally unequal routes remain distinct. Above, eight of fifteen
-  constitutional chairs have moved back and the presidential hand has signed a
-  mandate-ending page. Below, the Founder's 30 April refusal and 19 May revised
-  sealed request remain on an open line waiting beyond a presidential change.
-- **Motion:** the separate Venice routes do not merge. Seven chairs move first,
-  an eighth follows, then a signing hand closes the upper mandate. Below, a
-  refused private envelope returns as a revised sealed request and the lower
-  route continues past a blank, unelected presidential chair.
-- **Meaning:** the refusal and loss of office form memoir irony, not legal
-  equivalence. The Founder's message is one documented push, not a proven cause.
-  Part III owns the legal and personal ending.
-- **Sound in post:** folder, eight chair movements, pen, sealed paper and open
-  pulse.
-- **On-screen text in post:** `30 APRIL · REFUSAL / 18 JULY · SIGNATURE`.
-- **Hazard:** no causal claim, Venice endorsement, clemency entitlement,
-  triumphant removal, merits decision or invented new President.
+### S25 — Inside the curve · 03:12–03:20 · CP24→CP25
 
-## E01 — Invitation card · 02:56–03:00 · post only
+- **Motion:** the façade opens into the remembered C-shaped hearing room.
+- **CP25:** prosecutor left, clerk far-left corner, judge centre, court-appointed
+  counsel right; Founder in front with microphone. A restrained expression
+  registers black humour without proving ridicule or bias.
 
-- **Picture:** CP22's open line resolves into the exact repository MyScoutee
-  mark and a restrained open network. Do not generate the logo.
-- **Text:** `MyScoutee. Test the system between us.`
-- **Continuation text:** after the spoken invitation settles, replace the CTA
-  at `02:58.5` with `TO BE CONTINUED IN PART III`. Keep the exact MyScoutee mark
-  visible; typography is added in post and is never generated.
-- **Audio:** one return of the MyScoutee interval, deliberately unresolved.
-- **Part III bridge:** retain a lossless clean CP22 before typography and a
-  lossless E01 master. Part III may inherit the open route, not a fabricated
-  verdict.
+### S26 — Care · 03:20–03:28 · CP25→CP26
 
-## Checkpoint chain
+- **Motion:** a financial question crosses the microphone and becomes the
+  apartment, parental home support and foreign-earned savings behind it.
+- **CP26:** the life that produced the money occupies more space than the asset
+  field asking for it; no confiscation, eviction or final fine.
 
-| File | Locked content | Primary use |
+### S27 — Doors that answer later · 03:28–03:36 · CP26→CP27
+
+- **Motion:** complaint, exclusion request and constitutional route move through
+  several doors; one route is marked too early while judge roles change.
+- **CP27:** Founder below a row of institutional doors, still waiting; evidence
+  requests and possible fine remain unresolved, not rejected forever.
+
+### S28 — The machine beside me · 03:36–03:44 · CP27→CP28
+
+- **Motion:** a blinking AI cursor appears beside the human-authored first
+  defence and begins organizing the later record.
+- **CP28:** Founder and AI workspace in visible collaboration; the machine does
+  not wear counsel robes, speak in court or replace the legally required lawyer.
+
+### S29 — Four windows · 03:44–03:52 · CP28→CP29
+
+- **Motion:** one workstation opens four bounded windows: legal self-defence,
+  MyScoutee, accessible civic-service prototyping and falsifiable mathematics.
+- **CP29:** four distinct works held together by one focused Founder under a
+  hearing notice; no superhuman montage or solved-prize claim.
+
+### S30 — The human question · 03:52–04:00 · CP29→CP30
+
+- **Motion:** equations narrow to one precise highlighted statement while an
+  anonymous professor's reply arrives.
+- **CP30:** the Founder rereads the exact research question; no named professor,
+  public likeness, prize, proof certificate or triumphant discovery.
+
+### S31 — Black humour as receipt · 04:00–04:08 · CP30→CP31
+
+- **Motion:** the research page folds into a satirical police-job curriculum
+  vitae and a restrained Hulk-like sketch kept safely on paper.
+- **CP31:** one officer suppresses a smile while the Founder waits for a real
+  reply; no axes in live action, terrorist iconography or threat enactment.
+
+### S32 — The debt that crossed a border · 04:08–04:16 · CP31→CP32
+
+- **Motion:** the white paper becomes a rain-dark London room where one
+  Hungarian housemate keeps paying a foreign-currency loan at home.
+- **CP32:** housemate between family photograph, payment slip and shared room;
+  legal analogy is not asserted and debt is not made a character joke.
+
+### S33 — Beautiful home, recurring exit · 04:16–04:24 · CP32→CP33
+
+- **Motion:** London rain becomes Danube light, bridges and Budapest streets;
+  one route line nevertheless points outward.
+- **CP33:** Founder between love of the city and the recurring possibility of
+  leaving; no ruined-country cliché or nationalist symbol.
+
+### S34 — The streets and the portals · 04:24–04:32 · CP33→CP34
+
+- **Motion:** varied citizens fill real streets while the Founder moves through
+  petitions, ombudsman routes and public-service portals at his desk.
+- **CP34:** street and screen occupy equal visual weight; neither proves the
+  private case, both show a country asking for another route.
+
+### S35 — Twelve April · 04:32–04:40 · CP34→CP35
+
+- **Motion:** ballots move through a quiet count; government signage changes
+  while the private case line remains stationary.
+- **CP35:** institutional doors begin moving on different hinges above one
+  unchanged hearing timeline; no party logo or victory spectacle.
+
+### S36 — Constitutional empty space · 04:40–04:48 · CP35→CP36
+
+- **Motion:** an anonymous presidential question travels toward Venice and the
+  Constitutional Court; seven chairs move back and an eighth follows.
+- **CP36:** seven chairs remain around a fifteen-seat geometry with no quorum;
+  no public likeness, Venice endorsement or false departure from office.
+
+### S37 — Mercy changes direction · 04:48–04:56 · CP36→CP37
+
+- **Motion:** a clemency refusal dated 30 April and revised papers dated 19 May
+  remain below; above, a later signing hand ends the President's mandate.
+- **CP37:** two legally unequal routes held in memoir irony, never shown as
+  cause, revenge, equivalent judgment or deserved punishment.
+
+### S38 — The open line · 04:56–05:04 · CP37→CP38
+
+- **Motion:** institutional geometry dissolves back into a human network line;
+  the scheduled hearing remains a small open marker rather than a verdict.
+- **CP38:** Founder beside the open MyScoutee line, neither defeated nor
+  triumphant, centre-safe for the final post-produced statement.
+
+## E01 — Book and continuation card · 05:04–05:08 · post only
+
+- deterministic clean plate derived from CP38;
+- exact repository MyScoutee mark, never an AI-generated logo;
+- editable text: `READ THE BOOK · THE SYSTEM BETWEEN US` and
+  `TO BE CONTINUED IN PART III`;
+- Jon: `MyScoutee. Test the system between us.`;
+- score ends on an unresolved star interval, not a triumphant cadence.
+
+## Checkpoint manifest
+
+| File | Locked visual state | Used by |
 | --- | --- | --- |
-| `CP00.png` | exact Part I final usable frame | Part I→II handoff |
-| `CP01.png` | network line becomes document rule | S01/S02 |
-| `CP02.png` | Budapest-to-Brussels remote workstation | S02/S03 |
-| `CP03.png` | KATA as one legal door | S03/S04 |
-| `CP04.png` | fast law/calendar and distant protest | S04/S05 |
-| `CP05.png` | protected handover, abandoned future branch | S05/S06 |
-| `CP06.png` | accountant–tax officer–Founder triangle | S06/S07 |
-| `CP07.png` | delegated action and missed direct notice | S07/S08 |
-| `CP08.png` | 23 November discovery: a professional year assembled in one week | S08/S09 |
-| `CP09.png` | corrected return, tax paid, representation ended; balance zero, trust unresolved | S09/S10 |
-| `CP10.png` | charged unreadable line plus correction | S10/S11 |
-| `CP11.png` | solitary rehabilitation routine and clinical close incision photo enter submission | S11/S12 |
-| `CP12.png` | archive begins to surround Founder | S12/S13 |
-| `CP13.png` | devices inventoried in parent-provided home | S13/S14 |
-| `CP14.png` | defence discontinuity ends on a fingerprint ridge pointing toward two expert chairs | S14/S15 |
-| `CP15.png` | two distinct experts, one contested report and the Founder's whole face | S15/S16 |
-| `CP16.png` | Fő Street threshold and exact C-shaped hearing-room geography | S16/S17 |
-| `CP17.png` | Part I life, parent-provided home and foreign-earned security inside an asset question | S17/S18 |
-| `CP18.png` | AI-assisted legal, product, civic, film and mathematical work under the prison shadow | S18/S19 |
-| `CP19.png` | black-humour CV as an unofficial receipt for an unanswered institutional relationship | S19/S20 |
-| `CP20.png` | London debt memory returns through luminous Budapest as an unresolved exit line | S20/S21 |
-| `CP21.png` | ballot moves institutional doors on separate hinges while the case stays open | S21/S22 |
-| `CP22.png` | refusal, presidential signature and unequal constitutional routes remain open | S22/E01 |
+| `CP00.png` | lossless Part I network handoff | S01 |
+| `CP01.png` | network line becomes form; title-safe Founder desk | S01–S02 |
+| `CP02.png` | whole earlier life reflected around Budapest desk | S02–S03 |
+| `CP03.png` | salaried office emptied by COVID-19 | S03–S04 |
+| `CP04.png` | seven-year savings against three-week policy | S04–S05 |
+| `CP05.png` | accepted inside audio-only remote team | S05–S06 |
+| `CP06.png` | lawful KATA working bridge | S06–S07 |
+| `CP07.png` | protest outside, protected handover inside | S07–S08 |
+| `CP08.png` | handover completed, closing row unresolved | S08–S09 |
+| `CP09.png` | Founder/accountant/tax-officer partial-view triangle | S09–S10 |
+| `CP10.png` | password sharing versus incomplete delegation | S10–S11 |
+| `CP11.png` | 23 November reconstruction | S11–S12 |
+| `CP12.png` | dry call and empty family space | S12–S13 |
+| `CP13.png` | corrected, paid, representation ended | S13–S14 |
+| `CP14.png` | direct-notice and correction process proposal | S14–S15 |
+| `CP15.png` | disputed line and immediate correction in evidence | S15–S16 |
+| `CP16.png` | solitary post-operative room | S16–S17 |
+| `CP17.png` | closed-incision attachment and black humour | S17–S18 |
+| `CP18.png` | restrained police arrival | S18–S19 |
+| `CP19.png` | ordinary interview room, devices and counsel | S19–S20 |
+| `CP20.png` | professional fingerprinting and human glance | S20–S21 |
+| `CP21.png` | Founder recovers missing records | S21–S22 |
+| `CP22.png` | two experts, one future report | S22–S23 |
+| `CP23.png` | whole person behind narrow other biography | S23–S24 |
+| `CP24.png` | brown monumental Buda courthouse by Danube | S24–S25 |
+| `CP25.png` | exact C-shaped hearing-room geometry | S25–S26 |
+| `CP26.png` | life and care behind the asset question | S26–S27 |
+| `CP27.png` | institutional doors answer later | S27–S28 |
+| `CP28.png` | AI-assisted self-defence workspace | S28–S29 |
+| `CP29.png` | four bounded creative-work windows | S29–S30 |
+| `CP30.png` | anonymous professor returns question to exact statement | S30–S31 |
+| `CP31.png` | black-humour paper reaches police desk | S31–S32 |
+| `CP32.png` | London housemate and foreign-currency debt | S32–S33 |
+| `CP33.png` | beautiful Budapest and recurring exit line | S33–S34 |
+| `CP34.png` | civic streets and remedy portals | S34–S35 |
+| `CP35.png` | election moves institutions, case remains | S35–S36 |
+| `CP36.png` | eight recusals leave no constitutional quorum | S36–S37 |
+| `CP37.png` | clemency refusal and later mandate signature stay unequal | S37–S38 |
+| `CP38.png` | open human/system line and unresolved hearing | S38/E01 |
 
-## Review and generation gate
+## Approval gate
 
-Before any checkpoint or motion generation:
+Before generating any checkpoint:
 
-1. the Founder reads the English book and corrects fact, emphasis and privacy;
-2. the book, script, storyboard and prompts pass the coverage audit;
-3. the Constitutional Court letter remains reconciled with the exact complaint,
-   and the new justice reply is added if the Founder wants greater procedural
-   precision;
-4. the thirteen-file root audio set is transcribed locally before any surviving
-   call is quoted; absent key exchanges remain indirect attributed evidence;
-5. current 2026 office-holders, dates and the 16 September hearing are rechecked;
-6. CP00 is exported losslessly from Part I;
-7. the first model benchmark generates only the two exact 9:16 endpoints of one
-   selected difficult eight-second interval;
-8. Google Flow and OpenArt receive those same endpoints and the same prompt;
-9. no slideshow, animatic or intermediate review image is created;
-10. the remaining checkpoint chain begins only after the benchmark decision.
+1. approve the book and this written chain;
+2. select one difficult interval for the identical Flow/OpenArt model test;
+3. generate only its two exact 9:16 endpoints;
+4. record model, cost, seed when exposed and failure modes;
+5. lock the production model and character references;
+6. only then generate the remaining checkpoints in numerical order.
+
