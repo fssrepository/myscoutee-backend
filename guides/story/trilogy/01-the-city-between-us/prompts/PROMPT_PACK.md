@@ -43,9 +43,9 @@ CITY BETWEEN US`, `BASED ON A TRUE STORY` and the short premise. S01 begins the
 lived motion at `00:08` without title text.
 
 E01 is deterministic post-production, not an AI generation. Hold the exact
-repository mark, `READ THE BOOK · THE CITY BETWEEN US` and `THE STORY CONTINUES
-IN PART II · THE SYSTEM BETWEEN US` for the full `03:04–03:12` window. Use
-editable text; never generate the card inside a video model.
+repository mark, `BOOK AVAILABLE` and `TO BE CONTINUED` for the full
+`03:04–03:12` window without repeating the film or book title. Use editable
+text; never generate the card inside a video model.
 
 ## Prompt tokens
 

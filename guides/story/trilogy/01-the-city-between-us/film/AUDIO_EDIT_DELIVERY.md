@@ -68,7 +68,7 @@ internal development follows the whole film:
 - `02:40–02:56`: warm collaborative lift through the first managed event and
   continuing relationship lifecycle;
 - `02:56–03:04`: simplify into a precise, quietly technical texture;
-- `03:04–03:12`: short, confident and restrained resolution under the book route.
+- `03:04–03:12`: short, confident and restrained resolution under the book-availability card.
 
 The score starts at `00:00.000` and ends exactly on the final frame. Under
 narration it should generally sit `6–10 dB` below its open level. Do not fill
@@ -157,8 +157,8 @@ Final E01 text:
 
 ```text
 MyScoutee
-TEST IT WITH ME IN REAL COMMUNITIES.
-CONTINUED IN PART II · THE SYSTEM BETWEEN US
+BOOK AVAILABLE
+TO BE CONTINUED
 ```
 
 ## 7. Subtitles

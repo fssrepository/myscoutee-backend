@@ -11,6 +11,9 @@ first public edition is `1.0.0`.
   surgery on 15 February, three months mainly in bed and a longer recovery.
   S16 now carries the same causal sequence without turning the medical scene
   into spectacle.
+- Simplified the deterministic film end card to the MyScoutee mark, `BOOK
+  AVAILABLE` and `TO BE CONTINUED`; the title is not repeated and the video
+  model is not asked to render text.
 - Removed internal evidence-bundle filenames and the remaining untranslated
   courtroom wording from the public notes while preserving the English memoir
   rendering and source boundary. Rebuilt the 107-page editable draft without

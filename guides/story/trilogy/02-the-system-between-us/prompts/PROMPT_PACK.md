@@ -53,8 +53,8 @@ licensed later, belongs in post.
 - `P00` is a deterministic eight-second true-story title card; `E01` is a
   deterministic eight-second post card derived from `CP38`. Both use exact
   typography and the repository logo in post and consume no generation credit.
-- Title, `BASED ON A TRUE STORY`, dates, labels, book route and continuation
-  text are editable post typography only.
+- Title, `BASED ON A TRUE STORY`, dates, labels, `BOOK AVAILABLE` and `TO BE
+  CONTINUED` are editable post typography only.
 - If a model cannot accept both endpoints, label it unsuitable for the chain.
 
 ## Audio contract

@@ -1,10 +1,11 @@
 # Narrative-first TODO
 
 Status: **Part II English memoir and the 05:20 film-writing package were
-internally synchronized on 9 August 2026. The previous PDF remains the last
-released artifact. The Founder does not plan another separate cover-to-cover
-read; one final external critical-AI pass is the remaining editorial gate.
-Frame production is paused until that feedback is accepted or applied.**
+internally synchronized on 9 August 2026. The Founder explicitly requested
+same-version republication of the two `1.0.0` books after the final correction
+audit. Frame production begins from this synchronized package; any later
+external critical-AI feedback becomes a new editorial decision rather than a
+gate on this publication.**
 
 ## 1. Current review pass
 
@@ -14,8 +15,9 @@ Frame production is paused until that feedback is accepted or applied.**
 - [x] Complete the Founder's long factual, emotional, privacy and pacing review
   through the guided revision process; no further separate cover-to-cover
   Founder pass is planned.
-- [ ] Receive and resolve the final external critical-AI review. This is the
-  only remaining editorial gate before frame production.
+- [x] Close the current editorial gate on the Founder's explicit publication
+  instruction. A later external critical-AI review may inform a future edition
+  but does not block this `1.0.0` handoff.
 - [x] Resynchronize the 05:20 English narration, 38-interval storyboard and
   Veo 3.1 Lite prompt chain to the 9 August manuscript; repeat this propagation
   only if the Founder makes reading-pass corrections.

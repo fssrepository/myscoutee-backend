@@ -154,8 +154,8 @@ generated scene. Add it in post over the approved endpoint plates:
 - `00:00–00:08`: a separate deterministic title card with title, part title,
   `BASED ON A TRUE STORY` and one short premise; use near-still graphic motion
   and a spoken pause rather than placing dense text over S01;
-- `05:12–05:20`: the MyScoutee invitation, a concise `READ THE BOOK` route and
-  `TO BE CONTINUED IN PART III`;
+- `05:12–05:20`: the MyScoutee invitation, `BOOK AVAILABLE` and `TO BE
+  CONTINUED`, without repeating the film or book title;
 - never ask a video model to render title lettering, the logo or the continuation
   card.
 

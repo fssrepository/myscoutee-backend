@@ -5,6 +5,15 @@ The trilogy part and the edition version are separate. This book is Part
 
 ## Unreleased correction of 1.0.0 — 2026-08-09
 
+- Restored the United States assignment as a readable route rather than an
+  unnamed geography: Ocean City in Maryland, Virginia, Philadelphia,
+  Washington, the Baltimore–New York Greyhound journey, Niagara Falls, Amish
+  country, Six Flags east of the Washington–Baltimore corridor and the
+  Founder's mountain-top “Indian Trail” farther inland to the west. The exact
+  trail and park remain unnamed rather than guessed.
+- Simplified the deterministic film end card to the MyScoutee mark, `BOOK
+  AVAILABLE` and `TO BE CONTINUED`; the title is not repeated and the video
+  model is not asked to render text.
 - Consolidated the three remaining sparse endings without deleting prose:
   the London closing reflection now stays with its contextual ornament,
   Chapter 18 closes with its ornament on one page, and the final product-claims

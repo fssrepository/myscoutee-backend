@@ -181,8 +181,8 @@ LOCKED STORY AND TIMING
   profiles, chats, contacts and private-rate history do not automatically move
   between independent operators.
 - E01 03:04–03:12: deterministic clean deep-navy plate. The same original icon,
-  separate editable MyScoutee name, book route and Part II continuation are
-  built in post without generation credit.
+  separate editable MyScoutee name, `BOOK AVAILABLE` and `TO BE CONTINUED` are
+  built in post without generation credit or a repeated title.
 
 CLAIM AND OUTPUT LOCK
 This is a product-story plan, not evidence of traction, revenue, safety,

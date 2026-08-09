@@ -41,6 +41,7 @@ breaks according to the verified outcome.
 ## No false cliffhanger
 
 Do not use a prison door, gavel strike or guilty/not-guilty card. The restrained
-`TO BE CONTINUED IN PART III` book card states the trilogy structure without
-manufacturing danger. The open line and the Founder's scheduled hearing are
+The restrained `BOOK AVAILABLE` and `TO BE CONTINUED` card states that the
+story and its longer form remain open without manufacturing danger or
+repeating a title. The open line and the Founder's scheduled hearing are
 enough.
