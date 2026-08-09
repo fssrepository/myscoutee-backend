@@ -1288,8 +1288,6 @@ Honour. That is where the money came from.* The court
 could treat the life as irrelevant and still examine the savings that life had
 produced.
 
-<!-- pagebreak -->
-
 The room could recognize fear, ingenuity and work as moments of almost comic
 incongruity while the procedure continued treating the same person as a risk to
 be measured. The smile made the institution human for a second. It also made
