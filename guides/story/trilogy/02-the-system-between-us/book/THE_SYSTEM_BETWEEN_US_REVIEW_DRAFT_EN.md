@@ -998,8 +998,9 @@ could survive after ordinary routes repeatedly stopped feeling safe.
 
 Why had I not sought psychological help?
 
-Because at the relevant moment I was trying to repair a tax record and prepare
-for a mobility-limiting operation. The body had a deadline. So did the return.
+*Because I couldn't walk,* I thought.
+
+The body had a deadline. So did the return.
 
 Each question could be reasonable on its own. Their order changed their
 meaning. The work, repair and operation receded; the person who had endured

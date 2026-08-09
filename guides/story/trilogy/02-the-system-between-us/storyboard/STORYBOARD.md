@@ -205,9 +205,14 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 ### S22 — Eight days · 02:56–03:04 · CP21→CP22
 
 - **Motion:** the recovered evidence pauses while eight calendar marks advance
-  to a room with two visibly distinct forensic experts.
+  to a room with two visibly distinct forensic experts. The recalled question
+  passes over one matter-of-fact expression; the Founder answers only with a
+  small, incredulous grimace. A brief reflection recalls CP16's raised leg and
+  empty chair; it is a visual memory, not a third room or another character.
 - **CP22:** Founder facing two experts and one future report; no composite
   expert, diagnostic label, ominous lighting or judicial authority.
+- **Sound in post:** Jon recalls the expert's question, then carries the
+  Founder's answer as a dry inner thought. No mouth forms the words.
 
 ### S23 — The other biography · 03:04–03:12 · CP22→CP23
 

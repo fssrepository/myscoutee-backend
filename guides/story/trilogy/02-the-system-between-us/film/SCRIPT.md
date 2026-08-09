@@ -113,7 +113,12 @@ viewer time to read and consider the premise.
 
 ### 02:56–03:04 — S22 · Eight days
 
-> Eight days after the search, two experts had time to interpret my mind. Defence had already run out of it.
+> Eight days after the search, two experts interpreted my mind. “Why didn't you see a psychologist?” Because I couldn't walk, I thought.
+
+Jon recalls the question, then drops into the Founder's dry inner answer.
+Nobody in the room hears the answer; no character speaks or lip-syncs. The
+expert's matter-of-fact expression and the Founder's small incredulous grimace
+carry what the words do not.
 
 ### 03:04–03:12 — S23 · The other biography
 

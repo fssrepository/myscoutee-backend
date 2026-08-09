@@ -3,7 +3,13 @@
 Part `II` and the edition version are separate. This book is Part `II`; its
 first public edition is `1.0.0`.
 
-## Unreleased revision of 1.0.0 — 2026-08-09
+## Final same-version revision of 1.0.0 — 2026-08-09
+
+- Preserved one last blackly comic inner thought from the forensic interview:
+  when the question turned to why the Founder had not seen a psychologist, the
+  answer inside his head was simply that he could not walk. The book lets the
+  collision stand; S22 carries the recalled question and unheard answer in
+  Jon's voice, supported by restrained facial acting and no lip sync.
 
 - Closed the final editorial pass without defensive over-attribution: aligned
   the late-2018/early-2019 work chronology, tightened the repeated AI-mirror
@@ -29,8 +35,8 @@ first public edition is `1.0.0`.
   model is not asked to render text.
 - Removed internal evidence-bundle filenames and the remaining untranslated
   courtroom wording from the public notes while preserving the English memoir
-  rendering and source boundary. Rebuilt the 107-page editable draft without
-  changing the locked published artifact.
+  rendering and source boundary. Rebuilt and republished the 106-page public
+  artifact under the Founder-authorized 1.0.0 correction pass.
 - Reconstructed the defence-discontinuity chain from the private bundle: a
   trainee and succession of appointed lawyers, missing contact continuity, the
   Founder's request to be notified of changes, self-taught electronic court

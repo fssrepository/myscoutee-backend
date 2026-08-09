@@ -1,6 +1,6 @@
 # Part II production
 
-The editable English book, 107-page reading PDF, 05:20 script, 38-interval
+The editable English book, 106-page reading PDF, 05:20 script, 38-interval
 checkpoint storyboard and Veo 3.1 Lite prompts are internally synchronized.
 One external critical-AI pass remains. The last published PDF remains
 untouched. Frame and motion work starts in a separate phase; audio remains
