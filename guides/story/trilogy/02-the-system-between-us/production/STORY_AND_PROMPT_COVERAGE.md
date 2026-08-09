@@ -48,7 +48,7 @@ visual prompt from turning a claim, memory or allegation into a false fact.
 | Home came from parents; meaningful reserve came principally from London/foreign work | 12, 28 | S26 | Dignified key/belongings/account plate, not wealth spectacle. |
 | Unannounced clemency social inquiry reads the puritan, unheated, temporarily untidy flat | 12, 14 | book / longer cut | Correct role is probation officer; deliberate thrift, no car and lack of staged preparation are not poverty spectacle or an official merits decision. |
 | 2024 pardon crisis transforms the clemency institution; 2025 grants 4 of 689 and 2026 H1 refuses all 314 decided cases | 12 / notes | book and longer-cut candidate | Statistics establish institutional rarity, not why the Founder's individual application was refused. |
-| London HMO housemate and foreign-currency-loan pattern | 16 | S32 | Anonymized memory; not the same legal problem as KATA. |
+| Lee Valley housemate and foreign-currency-loan pattern | 16 | S32 | Anonymized memory; not the same legal problem as KATA. |
 | Budapest remains beautiful while people still leave | 17 | S33 | Departure is multicausal; no hatred-of-home claim. |
 | Not everyone would write the same words; universal risk begins earlier | 18 | entire chain | Preserve agency and system context simultaneously. |
 | Separate civic movements make institutions public experience | 19 | S34 | Do not merge protests or claim they represented this case. |

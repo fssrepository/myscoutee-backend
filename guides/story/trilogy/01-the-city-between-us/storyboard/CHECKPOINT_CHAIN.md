@@ -33,14 +33,14 @@ Rules:
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |
-| CP00 | Rural small-producer roots | `assets/storyboard-rough/CP00.png` |
-| CP01 | Degree, multinational work and beautiful Budapest | `assets/storyboard-rough/CP01.png` |
-| CP02 | Workers' hostel and parent-assisted flat key | `assets/storyboard-rough/CP02.png` |
-| CP03 | Soho programmer hiding the price of lunch | `assets/storyboard-rough/CP03.png` |
-| CP04 | London cultural magic and Victoria line connection | `assets/storyboard-rough/CP04.png` |
-| CP05 | Thirteen Hungarian lives with different reasons for leaving and relationships to home | `assets/storyboard-rough/CP05.png` |
-| CP06 | Shared bedroom: constraint, agency and some residents happier in London | `assets/storyboard-rough/CP06.png` |
-| CP07 | Shared-room savings fund journeys and Budapest-only independence; London housing becomes stop-loss | `assets/storyboard-rough/CP07.png` |
+| CP00 | Rural small-producer roots | `assets/frames/CP00.png` |
+| CP01 | Degree, multinational work and beautiful Budapest | `assets/frames/CP01.png` |
+| CP02 | Workers' hostel and parent-assisted flat key | `assets/frames/CP02.png` |
+| CP03 | Soho programmer hiding the price of lunch | `assets/frames/CP03.png` |
+| CP04 | London cultural magic and Victoria line connection | `assets/frames/CP04.png` |
+| CP05 | Exactly ten adults total, seven men and three women aged about 23–55, with different reasons for leaving and relationships to home | `assets/frames/CP05.png` |
+| CP06 | Shared bedroom: constraint, agency and some residents happier in London | `assets/frames/CP06.png` |
+| CP07 | Shared-room savings fund journeys and Budapest-only independence; London housing becomes stop-loss | `assets/frames/CP07.png` |
 | CP08 | Global routes, local encounters, self-discovery and COVID-19 threshold | `assets/storyboard-rough/CP08.png` |
 | CP09 | Deliberate return to the parent-assisted Budapest flat that stood empty | `assets/storyboard-rough/CP09.png` |
 | CP10 | Unequal attention on apps | `assets/storyboard-rough/CP10.png` |

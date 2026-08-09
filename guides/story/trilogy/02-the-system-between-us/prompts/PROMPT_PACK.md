@@ -37,7 +37,7 @@ with Extend or a prompt-only result.
 | `[HOUSEMATE_REF]` | anonymized Part I London resident |
 | `[BUDAPEST_FLAT]` | exact approved Part I apartment reference |
 | `[BUDAPEST_WORLD]` | approved Budapest civic-location reference |
-| `[LONDON_HMO]` | approved Part I shared-house reference |
+| `[LONDON_SHARED_HOME]` | approved Part I Lee Valley shared-home reference |
 | `[PART_I_FINAL_FRAME]` | lossless Part I handoff used as `CP00.png` |
 
 Public figures are not character tokens. Use hands, silhouettes, office

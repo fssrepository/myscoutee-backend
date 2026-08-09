@@ -1597,8 +1597,8 @@ obligation cross a border and occupy a life in London.
 The shared Hungarian house had contained an earlier version of the same
 national argument.
 
-Thirteen adults lived through one bathroom, one separate toilet and rooms never
-designed for that many independent lives. We had not left Hungary for one
+At its busiest, ten adults lived through one bathroom, one separate toilet and
+rooms never designed for that many independent lives. We had not left Hungary for one
 reason. Some wanted language, some work, some adventure, some escape, some a
 second chance. Some no longer wanted to return even when the material conditions
 looked worse from outside.

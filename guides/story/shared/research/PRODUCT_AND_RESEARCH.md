@@ -419,9 +419,10 @@ After his parents helped him secure a flat, he moved to London in 2011 and found
 programming work within two weeks despite weak English. He reports that he could
 barely converse with colleagues for almost three years. This does not contradict
 the Trivandrum chapter: that assignment made English practically usable but did
-not make him fluent or socially effortless. He worked in Soho and commuted home
-on the Victoria line to Tottenham, where he lived in a converted Victorian HMO
-with twelve other adults.
+not make him fluent or socially effortless. He worked in Soho and travelled
+home by Victoria line and onward toward Mansfield Park, where he lived in a
+low-rise, flat-roofed shared home beside a Lee Valley canal. At its busiest,
+nine other adults lived there with him.
 
 His initial London living conditions felt materially better than the Budapest
 workers' hostel, and ordinary room rental felt more established as a route into
@@ -432,10 +433,10 @@ where the parent-assisted flat had stood empty, never in London.
 The story is not a simple “Hungary bad, London good” reversal; each city offers
 real possibility and a different form of constraint over time.
 
-All twelve flatmates were Hungarian. The house itself was therefore a Hungarian
+The flatmates were Hungarian. The home itself was therefore a Hungarian
 microcosm of different economic, professional and personal departures, while
 the surrounding office, streets, friendships, dates and cultural life were
-visibly international. Do not “diversify” the HMO by changing nationalities; give
+visibly international. Do not “diversify” the household by changing nationalities; give
 its residents individuality through age, body, region, work rhythm, ambition,
 temperament and personal history.
 
@@ -454,7 +455,7 @@ different things.
 Film-safe wording:
 
 > “I went to London for work. By day I wrote software in Soho; at night the
-> Victoria line took me back to Tottenham.”
+> Victoria line carried me toward our crowded home beside the Lee Valley.”
 
 This is first-person testimony. Do not turn it into a generic claim about every
 EU migrant in London or identify an employer. The visual should be specific and
@@ -485,7 +486,8 @@ contact;
 
 The London decision is materially specific. The Founder feared that London's
 costs would force him to return to Hungary before he had really begun. For five
-years he therefore shared a Victorian Tottenham HMO with twelve other adults:
+years he therefore shared a low-rise, flat-roofed Lee Valley home with as many
+as nine other adults:
 one full bathroom, one separate WC (the founder's “one and a half bathrooms”
 shorthand), and a shared bedroom. The rent saved by sharing the bedroom paid for
 much of the travel that made those years expansive and allowed savings to
@@ -573,12 +575,12 @@ acquaintance; the Founder realized someone new was in the room only when a
 different man snored. Present the unannounced turnover as dry housing absurdity,
 never as mockery of loss, debt or the resident.
 
-The former house was in the South Tottenham area adjoining Stamford Hill, where
-official local sources locate a major Charedi Jewish community. The Founder
-personally felt the immediate area was safer while nearby directions felt more
-volatile. That is subjective memory, not evidence that religion caused safety
-or a general claim about local crime. Use ordinary, respectful street life and
-avoid exoticizing visible religious residents.
+The former home was a maintained, flat-roofed, low-rise shared flat beside a
+canal near Mansfield Park and the Lee Valley. At its busiest it held no more
+than ten adults. Roof access opened the crowded private world onto canal water,
+reservoirs, wetland birds and broad green space. Roughly a kilometre away, the
+Lee Valley Athletics Centre trained athletes for London 2012. Do not replace
+this lived geography with a South Tottenham Victorian terrace or Olympic Park.
 
 The first three years retained the city's wonder. By years four and five, the
 same work, rent and shared space made a temporary bargain feel permanent, while
@@ -1195,7 +1197,7 @@ The story needs only eight claims:
    mathematics, the cornfield-to-Trivandrum professional threshold, practical
    English and Budapest's beauty precede London.
 2. “I hid the price of staying” — Soho software work, concealed hunger, milk and
-   muesli, the thirteen-person HMO and shared bedroom kept London possible; some
+   muesli, the up-to-ten-person shared home and shared bedroom kept London possible; some
    residents felt more belonging there than at home and no longer wanted to
    return. The Founder's room savings financed journeys and eventually supported
    independence in lower-cost Budapest, where his flat stood empty, but never in

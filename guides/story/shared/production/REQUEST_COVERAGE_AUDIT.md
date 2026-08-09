@@ -35,9 +35,9 @@ become independently verified evidence.
   once or twice in year four or five. The private milk-and-muesli routine and
   each avoided meal feed the financial-independence chart. Regent's Park, the
   sushi memory and the affectionate sex-shop farewell joke remain distinct.
-- [x] The Tottenham Hungarian HMO as thirteen different lives inside a
-  multicultural city, including the unannounced bedroom swap and the
-  foreign-currency-loan memory.
+- [x] The canal-side Lee Valley shared home as up to ten simultaneous Hungarian
+  lives inside a multicultural city, including the flat roof and open wetland
+  view, the unannounced bedroom swap and the foreign-currency-loan memory.
 - [x] Three years of London magic, the fifth-year housing stop-loss, the empty
   Budapest flat and financial independence that worked at Budapest costs but
   never at private-London-housing costs.
@@ -69,7 +69,7 @@ become independently verified evidence.
 - [x] CP00–CP22 motion-endpoint contract, deterministic P00/E01 post cards and
   Veo 3.1 Lite copy-paste prompt baseline.
 - [x] Privacy-safe character map for the Founder, five Budapest memories,
-  twelve London residents and the six-person MyScoutee group.
+  five-year London resident casting pool and the six-person MyScoutee group.
 - [x] Lock the current identity/reference set and generate the book portraits
   and scene plates. The editable illustrated draft contains them; the hashed
   published v1.0.0 remains intentionally unchanged.

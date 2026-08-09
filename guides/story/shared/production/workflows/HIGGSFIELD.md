@@ -42,7 +42,7 @@ acting, face continuity, camera intention or ensemble blocking.
 | Location | `BudapestWorld` | empty Budapest sheet |
 | Location | `LondonWorld` | empty London sheet |
 | Location | `SohoOffice` | modest Soho software-office sheet |
-| Location | `TottenhamHMO` | Victorian HMO/bathroom/shared-room sheet |
+| Location | `LeeValleyHome` | flat-roofed shared-home/bathroom/shared-room sheet |
 | Location | `DanceStudio` | empty studio plate |
 | Location | `EventVenue` | identical empty venue plates |
 | Prop | `Notebook` | cognac notebook sheet |

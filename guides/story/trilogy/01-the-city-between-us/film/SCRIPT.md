@@ -18,7 +18,7 @@ settings and a clean reference WAV.
 | 00:16–00:24 | FOUNDER VO | A multinational job still meant hostels and unstable rooms. My parents helped me secure a home. |
 | 00:24–00:32 | FOUNDER VO | Within two weeks, I found Soho software work. With weak English, I watched colleagues eat and said, “I'm not hungry.” |
 | 00:32–00:40 | FOUNDER VO | Museums, exhibitions, clubs and dates across cultures made the city feel inexhaustible. |
-| 00:40–00:48 | FOUNDER VO | But home was a Hungarian house: thirteen lives carrying thirteen different reasons for leaving. |
+| 00:40–00:48 | FOUNDER VO | But home was a shared Hungarian flat: up to ten lives, and no single reason for leaving. |
 | 00:48–00:56 | FOUNDER VO | One bath, one toilet, one shared room — yet some felt happier there, and no longer wanted to go home. |
 | 00:56–01:04 | FOUNDER VO | My savings meant independence in Budapest, never London. Housing became my stop-loss, so I came home. |
 | 01:04–01:12 | FOUNDER VO | Across nearly fifty countries, I discovered each place — and myself — through local people. Then the world closed. |
@@ -49,7 +49,7 @@ title. The card does not consume generation credit.
 
 ### English performance and legal notes
 
-- Soho, Tottenham, the Victoria line, thirteen residents, one full bathroom and
+- Soho, the Victoria line, the Lee Valley home, up to ten residents, one full bathroom and
   one separate WC, and the shared bedroom are first-person founder details.
   “One and a half bathrooms” is production shorthand for that exact arrangement.
 - Countryside origin, small-producer agricultural ancestry, completed university
@@ -108,11 +108,11 @@ title. The card does not consume generation credit.
   the line. This is specific testimony, not a dietary
   recommendation, a claim of literal exclusive nutrition or proof that
   colleagues excluded him.
-- The shared Victorian HMO is a deliberate financial strategy in an expensive
+- The shared Lee Valley home is a deliberate financial strategy in an expensive
   city, not a poverty spectacle. Show individual flatmates and their small
   personal worlds. The Founder's agency appears in the journeys made possible by
   the saved shared-bedroom rent.
-- The twelve flatmates were Hungarian. Their varied economic, professional and
+- The flatmates were Hungarian. Their varied economic, professional and
   personal motives are founder memories rendered as fictional composites; the
   surrounding workplace, dating and cultural city supplies London's visible
   international mix.
@@ -241,7 +241,7 @@ text in the final editor.
 > I came from farming roots after studies joining economics, code and
 > mathematics. Professional work still meant hostels and unstable rooms; my
 > parents helped me secure a flat. In London I found software work within two
-> weeks, then hid weak English, hunger and isolation in Soho. Thirteen of us
+> weeks, then hid weak English, hunger and isolation in Soho. At its busiest, ten of us
 > shared one bathroom, one separate toilet and a bedroom. The savings paid for
 > journeys and meant independence only in lower-cost Budapest, where my flat
 > stood empty. London housing became my stop-loss. I came home to find a partner.

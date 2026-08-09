@@ -126,28 +126,30 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   understands the joke. Show familiarity, not humiliation or hostility;
   nationality is context, not the joke. This is reciprocal encounter, not
   conquest or an exotic catalogue. The final half-second reflection in a
-  Victoria line window becomes the HMO front door.
+  Victoria line window becomes the shared flat's inner doorway.
 - **Face/body:** open curiosity, small cultural misunderstandings and shared
   laughter; every date retains autonomy and equal dignity.
 - **Camera/lens:** graphic frame-to-frame match cuts, then one locked 50 mm train
-  reflection lasting only long enough to connect Soho to Tottenham.
+  reflection lasting only long enough to connect Soho to the Lee Valley home.
 - **Light/color:** museum daylight, warm club practicals and deep navy carriage
   glass remain one coherent palette.
 - **Sound/VO:** gallery room tone, one music pulse, café wash, rail seam and key;
   the city-feels-inexhaustible line.
-- **Transition/generation:** train-door edge becomes the narrow HMO hall.
+- **Transition/generation:** transport-window edge becomes the flat's inner doorway.
 
-### S05 — Thirteen Hungarian lives under one roof · 00:40–00:48 · 8 s
+### S05 — Ten Hungarian lives under one roof · 00:40–00:48 · 8 s
 
-- **Picture/blocking:** One continuous move follows the Founder into a converted
-  Victorian HMO that is internally a Hungarian microcosm inside multicultural
-  London. The Founder plus twelve Hungarian adults are revealed across the hall,
-  kitchen and stairs through distinct faces, shoes, coats, meals, photographs
-  and props. Their paths include a foreign-currency mortgage shock, language
+- **Picture/blocking:** One continuous move follows the Founder into a
+  maintained, flat-roofed, roughly four-and-a-half-room Lee Valley shared home
+  beside the canal. It is internally a Hungarian microcosm inside multicultural
+  London. Exactly ten adults total—the Founder plus nine others—are revealed
+  across the compact kitchen, hall and open doorways through distinct faces,
+  shoes, coats, meals, photographs and props. Use seven men and three women,
+  visibly aged about 23–55. Their paths include a foreign-currency mortgage shock, language
   learning, adventure, career restart, family support, a costly poker mistake
   and two years in which rent consumed the hoped-for return money. Use
-  `prompts/london-hmo-residents-character-board.txt`; never stage all thirteen
-  as a lineup or claim legal refugee status.
+  `prompts/london-hmo-residents-character-board.txt`; never stage them as a
+  lineup or claim legal refugee status.
 - **Belonging detail:** One resident keeps a Hungarian family photograph open,
   another maintains a return plan, while another stores the old image and turns
   toward a new local relationship. In the Founder's rough memory, many people
@@ -156,10 +158,11 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   opinion.
 - **Face/body:** familiar greetings and negotiated movement; nobody is anonymous
   set dressing.
-- **Camera/lens:** 28 mm hall track with doorway reveals, no distorted faces.
-- **Light/color:** worn timber, maintained cream paint, warm practical islands.
+- **Camera/lens:** 28 mm inner-hall track with doorway reveals, no distorted faces.
+- **Light/color:** maintained warm surfaces, amber practical islands and one
+  rear-window sliver of canal water and reeds.
 - **Sound/VO:** keys, kettle, Hungarian greeting fragments and footsteps;
-  thirteen-lives/thirteen-reasons line.
+  up-to-ten-lives/no-single-reason line.
 - **Transition/generation:** the bathroom queue clears frame to reveal two doors.
 
 ### S06 — Private hopes under crowded conditions · 00:48–00:56 · 8 s
@@ -602,16 +605,16 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   parent-assisted flat. He avoided rather than repaid a foreign-currency
   mortgage. Do not turn Hungary grey, imply unemployment, identify the private
   room or make the crowd reject him.
-- **London truth:** S03–S07 remain one personal Soho-to-Tottenham account: the
+- **London truth:** S03–S07 remain one personal Soho-to-Lee-Valley account: the
   Founder arrives in 2011, finds work within two
   weeks despite weak English, is a Soho programmer who can barely join colleague
   conversation for almost three years, experiences the Jubilee/Olympic public
   energy in the following year, and
-  uses the Victoria line only as a brief link to a Victorian HMO. The household
-  is the Founder plus twelve Hungarian adults, one full bathroom, one separate
-  WC and a shared bedroom; multicultural variety belongs to the surrounding
+  uses the Victoria line only as a brief link to the low-rise Lee Valley home.
+  At its busiest the household is the Founder plus nine other Hungarian adults,
+  one full bathroom, one separate WC and a shared bedroom; multicultural variety belongs to the surrounding
   city. Do not replace this with factory or generic migrant imagery.
-- **Humanity:** the HMO is crowded but lived-in and personal. Show distinct
+- **Humanity:** the shared home is crowded but lived-in and personal. Show distinct
   flatmates, shared-room savings financing travel and accumulating toward a
   Budapest-only independence threshold, and the hidden Soho lunch constraint,
   not homelessness, starvation or hostility. The parent-assisted Budapest flat

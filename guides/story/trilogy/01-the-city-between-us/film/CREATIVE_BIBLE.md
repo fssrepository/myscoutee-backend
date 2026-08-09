@@ -39,7 +39,7 @@ without an offer. He moves to London in 2011 while still experiencing a
 frightening, non-graphically depicted health symptom, receives care there, and
 finds software work within two weeks
 despite weak English, and hides his hunger and isolation in Soho. For almost
-three years he can barely converse with colleagues. Thirteen adults, one
+three years he can barely converse with colleagues. At its busiest, ten adults, one
 bathroom, one separate WC and a shared bedroom keep London possible; the saved
 rent pays for journeys and builds savings. In December 2015, those savings mean
 financial independence at Budapest's much lower cost base, where the flat his
@@ -154,9 +154,10 @@ financial-independence threshold for which he came to London, his focus narrows
 until every avoided lunch feels like another movement of the line. Museums,
 exhibitions, nightlife, multicultural dates and friendships make the first
 three years feel inexhaustible. The Victoria line is only a brief connective
-beat to Tottenham, not a commute sequence. There he makes a hard, rational
-bargain: the Founder and twelve other Hungarian adults share a converted
-Victorian house, one full bathroom and one separate WC, while he also shares his
+beat toward the Lee Valley home, not a commute sequence. There he makes a hard,
+rational bargain: the Founder and up to nine other Hungarian adults share a
+roughly four-and-a-half-room low-rise, flat-roofed home beside the canal, one
+full bathroom and one separate WC, while he also shares his
 bedroom. The rent saved by sharing pays for low-cost travel and allows savings
 to accumulate. In December 2015, his private diagram shows that those savings
 mean financial independence in lower-cost Budapest, where the parent-assisted
@@ -202,8 +203,8 @@ friendship is never treated as a consolation prize.
 
 From `00:08` to `02:00`, the lived journey should feel like one unbroken
 thought, with hidden edits
-behind the Tottenham front door, the Soho office window, Victoria line glass,
-the HMO bathroom and shared-room doors, travel images, the returning front door,
+behind the Lee Valley shared-home doorway, the Soho office window, Victoria line glass,
+the shared-home bathroom and shared-room doors, travel images, the returning front door,
 shoulders, dance turns, steam and the founder's dark coat.
 This is the formal echo of TSB: The Story's long moving historical shot. Do not
 copy its character design, rural sets, color system, story or compositions.
@@ -303,7 +304,7 @@ Why this style:
 | rural Hungary | soil umber, leaf green, faded workwear blue, harvest gold | inherited practical work without folk nostalgia |
 | Budapest origin | Danube blue, tram yellow, limestone cream, concert burgundy | public beauty and culture without a personal doorway |
 | Soho work / Victoria line | monitor blue, wet brick, carriage white, sodium amber | competence and costly commuting time |
-| Tottenham saving years | slate blue, worn timber, warm practicals, faded room cream | crowded personal life and discipline |
+| Lee Valley saving years | slate blue, worn timber, warm practicals, faded room cream | crowded personal life and discipline |
 | three-second world burst | truthful regional color inside one painterly grade | wonder without automatic belonging |
 | Budapest return/attempts | desaturated terracotta, tobacco, winter teal, cream | familiar warmth, deliberate search |
 | app overload | cold cyan/white notification light; coral only as a scarce signal | fragmented attention |
@@ -496,10 +497,12 @@ branding around the shared core.
   likenesses; it is not the arrival date;
 - use the specific lived world: a modest Soho software office, museums,
   exhibitions, nightlife, multicultural friendships and dates, one brief late
-  Victoria line reflection, then Tottenham street and Victorian terrace;
+  Victoria line reflection, then the flat-roofed Lee Valley shared home beside
+  the canal near Mansfield Park;
 - one distant skyline glimpse is enough;
-- the surrounding city is visibly international, but the converted Victorian
-  HMO is a Hungarian microcosm: the Founder plus twelve other Hungarian adults;
+- the surrounding city is visibly international, but the flat-roofed Lee Valley
+  home is a Hungarian microcosm: exactly ten adults at its busiest, the Founder
+  plus nine others, seven men and three women aged about 23–55;
   make one full bathroom and one separate WC spatially legible, then show the
   Founder's shared bedroom with two personal zones;
 - at an expensive Soho lunch, the Founder sits at the same table, opens the
@@ -518,11 +521,10 @@ branding around the shared core.
   notices the unannounced change only because a different man is snoring in the
   shared room. The absurd housing turnover is the joke; debt and the person are
   not;
-- South Tottenham sits beside the Stamford Hill/South Tottenham Charedi Jewish
-  community. Ordinary street details may locate the house respectfully, but no
-  religious resident becomes exotic background. The Founder may express that
-  his immediate area felt safer while nearby directions felt more volatile;
-  never claim the community caused safety or make a general crime assertion;
+- roof access opens the maintained, crowded home onto canal water, reservoirs,
+  wetland birds and Lee Valley green space. Distant athletics floodlights may
+  recall the nearby London 2012 training summer without relocating the home to
+  Olympic Park or using official marks;
 - the first three years retain wonder: a one-pound overnight coach to Edinburgh,
   Loch Ness, a Glasgow River Clyde powerboat, and an exact but over-compressed
   five-person London–Manchester–Liverpool–Barmouth–Cardiff–London rental-car

@@ -58,7 +58,7 @@ internal development follows the whole film:
 
 - `00:00–00:08`: near-still title breath and one restrained motif;
 - `00:08–00:56`: sparse and personal; rural origin, Budapest, departure,
-  Tottenham, Soho and daily routine;
+  Lee Valley, Soho and daily routine;
 - `00:56–01:36`: a subtle pulse through work, saving, travel and homecoming;
 - `01:36–02:08`: warmer social motion for events, dancing and imperfect dates;
 - `02:08–02:16`: remove most rhythm and leave an unresolved pause;
@@ -110,7 +110,7 @@ foley locally so sound continuity does not restart at eight-second boundaries.
 | E01 | two restrained brand notes; leave the harmonic sentence open under the silent Part II continuation line |
 
 Carry room tone across visual cuts with `0.3–0.8 s` overlaps where continuity
-benefits. Key clicks may transform into keyboard clicks across the Tottenham to
+benefits. Key clicks may transform into keyboard clicks across the Lee Valley to
 Soho transition, but music must not restart at that edit.
 
 ## 5. Picture assembly

@@ -42,7 +42,7 @@ problem. Every face must remain readable at A4 size. No text, app UI, explicit
 sexual scene or merged identity. Output filename:
 `budapest-relationship-memories-montage.png`.
 
-PROMPT 3A — TWELVE HUNGARIAN HOUSE RESIDENTS
+PROMPT 3A — FIVE-YEAR HUNGARIAN HOUSE CASTING POOL
 Use the full approved H01–H12 specification and references from
 `london-hmo-residents-character-board.txt` and the character map. Create exactly
 one four-column by three-row identity board, one distinct adult per panel, equal
@@ -52,10 +52,11 @@ slum/camp framing or displayed percentage. This board becomes the reusable
 source for the house montage and H01, H02, H04 and H05 book portraits.
 
 PROMPT 3B — LONDON HOUSE MONTAGE
-Create exactly one landscape book plate using `[FOUNDER_REF]` and H01–H12 inside
-one coherent maintained converted Victorian HMO. Show individual lives across a
+Create exactly one landscape book plate using `[FOUNDER_REF]` and exactly nine
+selections from H01–H12 inside one coherent maintained, flat-roofed Lee Valley
+shared home. Show individual lives across a
 narrow hall, shared kitchen, one full bathroom, separate WC and shared bedroom
-without staging a thirteen-person lineup. Include quiet signs of studying,
+without staging a lineup. Show exactly ten adults total. Include quiet signs of studying,
 dating, night work, saving, returning and staying. Let the H04-to-H12 bedroom
 swap read through changed silhouette and distinct snore imagery without mocking
 either person. Output filename: `london-house-residents-montage.png`.
@@ -95,4 +96,3 @@ two discover a joke and one listens before speaking. The Founder participates
 but is not the centre. Show a visible entrance, easy exit and humane local venue;
 no romance guarantee, instant friendship, extra/missing person, floating UI or
 resource pictogram. Output filename: `myscoutee-first-event-montage.png`.
-

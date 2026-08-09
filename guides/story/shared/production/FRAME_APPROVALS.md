@@ -20,16 +20,20 @@ it exists in the repository.
 - `not-generated` has no current image.
 - `canonical-inherited` is a lossless handoff from an already accepted adjacent
   sequence, not a newly approved image in this pass.
-- Replacing an accepted file requires a new filename and a new approval entry;
-  never silently overwrite the accepted artifact.
+- Replacing an accepted frame requires a new approval-history entry and hash,
+  but the canonical filename remains `CPxx.png`; the ledger, not filename
+  variants, records the change.
+- Keep only the normalized `720×1280` production frame under its plain
+  checkpoint name (`CP05.png`, not a versioned or `-source` duplicate). Reject
+  unsuitable generations instead of accumulating filename variants.
 
 ## Explicitly accepted frames
 
 | Part | Frame | Accepted file | SHA-256 | Decision note |
 | --- | --- | --- | --- | --- |
-| I | CP00 | `guides/story/trilogy/01-the-city-between-us/assets/frames/candidates/S01/CP00-v1.png` | `483683caa388459386d5ceec2320c2a4c5d97e681ec95377c1a5f3bc2a863ded` | Accepted for the current production pass; optional improvement deferred |
-| I | CP01 | `guides/story/trilogy/01-the-city-between-us/assets/frames/candidates/S01/CP01-v1.png` | `1dee72adf67e4b13bab7460b1c0cfdb37fe935e91dfa28467a75763d17931932` | Accepted S01 ending and canonical S02 handoff for the current production pass |
-| I | CP02 | `guides/story/trilogy/01-the-city-between-us/assets/frames/candidates/S02/CP02-v1.png` | `8920a5a0b4dc09a35c4419500d58d225ae8dc521b556e283d008d68beb686f67` | Accepted S02 ending and canonical S03 handoff for the current production pass |
+| I | CP00 | `guides/story/trilogy/01-the-city-between-us/assets/frames/CP00.png` | `483683caa388459386d5ceec2320c2a4c5d97e681ec95377c1a5f3bc2a863ded` | Accepted for the current production pass; optional improvement deferred |
+| I | CP01 | `guides/story/trilogy/01-the-city-between-us/assets/frames/CP01.png` | `1dee72adf67e4b13bab7460b1c0cfdb37fe935e91dfa28467a75763d17931932` | Accepted S01 ending and canonical S02 handoff for the current production pass |
+| I | CP02 | `guides/story/trilogy/01-the-city-between-us/assets/frames/CP02.png` | `8920a5a0b4dc09a35c4419500d58d225ae8dc521b556e283d008d68beb686f67` | Accepted S02 ending and canonical S03 handoff for the current production pass |
 
 ## Historical model-test candidates
 
@@ -47,14 +51,14 @@ Their reproducible still-image generation specification is
 
 | Frame | Current status | Note |
 | --- | --- | --- |
-| CP00 | `accepted` | S01 first endpoint: `assets/frames/candidates/S01/CP00-v1.png`; optional improvement deferred |
-| CP01 | `accepted` | S01 last endpoint and canonical S02 continuity handoff: `assets/frames/candidates/S01/CP01-v1.png` |
-| CP02 | `accepted` | S02 last endpoint and canonical S03 handoff: `assets/frames/candidates/S02/CP02-v1.png` |
-| CP03 | `candidate-review` | Soho lunch endpoint: `assets/frames/candidates/S03/CP03-v1.png`; SHA-256 `dd035a55e7fc20f7712b1879904ac9188a98ca6c7a93f6bdc3b3a87b9e4e7135` |
-| CP04 | `candidate-review` | London culture and Victoria-line endpoint: `assets/frames/candidates/S04/CP04-v1.png`; SHA-256 `c9f019cc742b943a58a617fb9865b21feae391007975df3ad45e2a50424c6562` |
-| CP05 | `candidate-review` | Founder plus twelve HMO residents: `assets/frames/candidates/S05/CP05-v1.png`; SHA-256 `e94d63c8c28b99c20e6b7dce0ac5c5ad04228112c3115efe7aed412c4e5f2326` |
-| CP06 | `candidate-review` | Two-zone shared bedroom and unannounced replacement: `assets/frames/candidates/S06/CP06-v1.png`; SHA-256 `7b4b6048feaff6600d32af1158561833436291153e85eaee576471ea304d60aa` |
-| CP07 | `candidate-review` | Five-year threshold and London housing stop-loss: `assets/frames/candidates/S07/CP07-v1.png`; SHA-256 `c7ef0001666bc80037e9341ca8710cddf3f54baf46b3c1f932cfcee3e8e514f5` |
+| CP00 | `accepted` | S01 first endpoint: `assets/frames/CP00.png`; optional improvement deferred |
+| CP01 | `accepted` | S01 last endpoint and canonical S02 continuity handoff: `assets/frames/CP01.png` |
+| CP02 | `accepted` | S02 last endpoint and canonical S03 handoff: `assets/frames/CP02.png` |
+| CP03 | `candidate-review` | Soho lunch endpoint: `assets/frames/CP03.png`; SHA-256 `dd035a55e7fc20f7712b1879904ac9188a98ca6c7a93f6bdc3b3a87b9e4e7135` |
+| CP04 | `candidate-review` | London culture and Victoria-line endpoint: `assets/frames/CP04.png`; SHA-256 `c9f019cc742b943a58a617fb9865b21feae391007975df3ad45e2a50424c6562` |
+| CP05 | `candidate-review` | Corrected interior candidate: exactly ten adults total (Founder plus nine), seven men and three women aged about 23–55: `assets/frames/CP05.png`; SHA-256 `741118b6661e7e2b8efd19ded4ec5e448c741214001de6416b3ee3de726616b8` |
+| CP06 | `candidate-review` | Corrected two-zone shared bedroom with Lee Valley canal-and-reeds window view: `assets/frames/CP06.png`; SHA-256 `f903b4a258a60bff075a38f3266142c64c327e5c08dde47cbc6432a5b312114e` |
+| CP07 | `candidate-review` | Corrected five-year threshold and London housing stop-loss with Lee Valley water-and-wetland horizon: `assets/frames/CP07.png`; SHA-256 `a5c7939e4e472075a20ca2d85db5876bd1b37f6194933493a000f87cdd4dc842` |
 | CP08–CP17 | `provisional-old` | Existing `assets/storyboard-rough/` files are composition studies; regenerate and review individually |
 | CP18 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP19 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
@@ -76,6 +80,6 @@ Their reproducible still-image generation specification is
 | --- | --- | --- | --- | --- |
 | 2026-08-08 | I/CP18 | `CP18-candidate-v01.png` | superseded | Historical model comparison only |
 | 2026-08-08 | I/CP19 | `CP19-candidate-v01.png` | superseded | Historical model comparison only |
-| 2026-08-09 | I/CP00 | `CP00-v1.png` | accepted | Current production pass accepted; optional later improvement does not block the chain |
-| 2026-08-09 | I/CP01 | `CP01-v1.png` | accepted | Current production pass accepted and inherited by S02 |
-| 2026-08-09 | I/CP02 | `CP02-v1.png` | accepted | Current production pass accepted and inherited by S03 |
+| 2026-08-09 | I/CP00 | `CP00.png` | accepted | Current production pass accepted; optional later improvement does not block the chain |
+| 2026-08-09 | I/CP01 | `CP01.png` | accepted | Current production pass accepted and inherited by S02 |
+| 2026-08-09 | I/CP02 | `CP02.png` | accepted | Current production pass accepted and inherited by S03 |

@@ -90,7 +90,7 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
    - `BudapestWorld`
    - `LondonWorld`
    - `SohoOffice`
-   - `TottenhamHMO`
+   - `LeeValleyHome`
    - `DanceStudio`
    - `CafeBadDate`
    - `BarBadDate`
@@ -111,7 +111,7 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
 | --- | --- | --- |
 | **Director → New project → Describe your idea** prompt box | entire [prompts/openart-director-master.txt](../../../trilogy/01-the-city-between-us/prompts/openart-director-master.txt) | locks story, runtime, claims, act structure and look |
 | media/asset attachment area beside the Director prompt | rough English VO, optional temp music, approved world sheets | gives Director timing and visual references |
-| inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@SohoOffice`, `@TottenhamHMO`, `@DanceStudio`, `@EventVenue`, `@Notebook`; attach travel plates only to S08 | binds saved assets to names used in the brief |
+| inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@SohoOffice`, `@LeeValleyHome`, `@DanceStudio`, `@EventVenue`, `@Notebook`; attach travel plates only to S08 | binds saved assets to names used in the brief |
 | Ori/Director chat after its first response | `Use the supplied narration verbatim. Return the exact part-specific Sxx cards and timings from the master; P00 and E01 are post-only. Do not generate motion or add claims.` | prevents silent rewrite |
 | Director chat after storyboard appears | paste the relevant correction block below | fixes structure without regenerating the whole story |
 | an individual storyboard scene/shot prompt | [prompts/continuity-prefix.txt](../../../trilogy/01-the-city-between-us/prompts/continuity-prefix.txt) + the matching Sxx block from [prompts/shot-prompts.txt](../../../trilogy/01-the-city-between-us/prompts/shot-prompts.txt) | precise shot regeneration |
@@ -129,8 +129,8 @@ Verify:
 - exactly 22 motion cards for Part I or 38 for Part II, with the IDs and timing
   in the selected master;
 - P00/E01 remain outside Director as deterministic post cards;
-- S03 is software work in Soho and S04 is the Victoria line home to Tottenham;
-- the thirteen-person Victorian HMO is crowded and personal, not destitution;
+- S03 is software work in Soho and S04 is the Victoria line toward the Lee Valley home;
+- the up-to-ten-person, flat-roofed shared home is crowded and personal, not destitution;
 - S08 has exactly a three-second illustrated burst and no fake archive;
 - Budapest return is hopeful and precedes apps/events/dance/dates;
 - Maya is not paired with the founder;

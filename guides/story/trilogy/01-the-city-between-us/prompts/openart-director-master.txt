@@ -24,7 +24,7 @@ speak at once. Discard any unavoidable generated clip audio.
 IDENTITY LOCK
 Use `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
 `[GAME_MAN_REF]`, `[ROUTE_MAN_REF]`, the approved Dance Student, Dance Partner,
-Operator, Hungarian-origin memory board and twelve-flatmate board. Those first
+Operator, Hungarian-origin memory board and five-year flatmate casting board. Those first
 six references are the exact MyScoutee candidate: three women and three men with
 the same identities throughout.
 The Founder wears navy coat, charcoal knit, muted rust scarf and carries a cognac
@@ -68,9 +68,11 @@ LOCKED STORY AND TIMING
   multicultural dates make London feel inexhaustible. The 2012 Olympic/Diamond
   Jubilee public energy belongs here as a following-year layer without official
   marks. The Victoria line appears
-  only as the final half-second connection to Tottenham.
-- S05 00:40–00:48: a Hungarian microcosm inside multicultural London. The Founder
-  plus twelve Hungarian adults inhabit one maintained Victorian HMO. Every adult
+  only as the final half-second connection toward the Lee Valley home.
+- S05 00:40–00:48: a Hungarian microcosm inside multicultural London. Exactly
+  ten adults total—the Founder plus nine others, seven men and three women aged
+  about 23–55—inhabit one maintained, low-rise flat-roofed Lee Valley shared
+  home beside the canal. Every adult
   has a different body, temperament, work rhythm, reason for leaving and relation
   to home. Some feel happier there and no longer want to return; this is personal
   memory, never a displayed percentage or a rootless-person label.

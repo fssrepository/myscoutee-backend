@@ -511,16 +511,24 @@ while the need disappeared.
 
 <!-- pagebreak -->
 
-## 6. Thirteen Hungarian Lives
+## 6. Ten Lives Under One Roof
 
-At night, the Victoria line carried me north to Tottenham.
+At night, the Victoria line carried me north-east to Walthamstow, and the last
+part of the route continued toward Mansfield Park and the Lee Valley.
 
 The journey appears only briefly in my memory: carriage glass, a reflected face,
-the dark tunnel interrupted by stations, then a Victorian front door. Behind
-that door was a converted house containing thirteen Hungarian adults: the
-twelve people I lived with and me.
+the dark tunnel interrupted by stations, then the door of a low-rise,
+flat-roofed shared home beside the canal. At its busiest, as many as ten
+Hungarian adults lived there, including me.
 
 <!-- illustration: london_house_montage -->
+
+The flat had roughly four and a half rooms. Inside, space was negotiated by the
+inch. Outside, the roof opened onto something astonishingly wide: canal water,
+reed beds, reservoirs, birds and the green reach of the Lee Valley. Mansfield
+Park rose nearby. Roughly a kilometre away, the Lee Valley Athletics Centre
+trained athletes for London 2012. A crowded home stood in one of the most
+beautiful places in which I had ever felt confined.
 
 London outside was radically multicultural. The house inside was a compressed
 map of Hungary.

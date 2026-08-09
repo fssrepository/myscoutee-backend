@@ -223,32 +223,28 @@ and legal review.
 - [Migration Observatory — Migrants and housing in the
   UK](https://migrationobservatory.ox.ac.uk/resources/briefings/migrants-and-housing-in-the-uk/):
   research synthesis on recent migrants, private renting and overcrowding.
-- [Haringey Council — 2014 additional HMO licensing in
-  Tottenham](https://www.minutes.haringey.gov.uk/mgAi.aspx?ID=35719):
-  historical local context for houses in multiple occupation in Tottenham.
-- [Haringey Council — HMO licensing](https://haringey.gov.uk/housing/private-sector-renting/property-licensing/house-multiple-occupation-hmo-licensing/do-i-need-an-hmo-licence):
-  current local licensing overview. Do not infer the status of the founder's
-  former house without an address, dates and records.
-- [Haringey HMO standards](https://www.haringey.gov.uk/sites/default/files/2023-11/hmo_standards.pdf):
-  current standards reference; it must not be projected backward as a legal
-  finding about a historical, unidentified household.
+- [Greenspace Information for Greater London — Mansfield
+  Park](https://www.gigl.org.uk/sinc/wfbii01/): the park descends toward the Lea
+  Valley and opens a wide view over the Chingford reservoirs; its grassland,
+  scrub and trees support a varied bird population.
+- [Lee Valley Regional Park Authority —
+  environment](https://www.leevalleypark.org.uk/environment): the valley's
+  reservoir and wetland mosaic includes SSSI, SPA and Ramsar protections and is
+  especially important for breeding and wintering birds.
+- [Waltham Forest — blue
+  infrastructure](https://www.walthamforest.gov.uk/planning-and-building-control/green-and-blue-infrastructure-vision-and-strategy/rivers-waterways-and-flood-risk-mitigation/blue-infrastructure-how-it-helps-people-and-nature):
+  the River Lea, reservoirs and wetlands form the water landscape along the
+  borough's western edge.
+- [David Morley Architects — Lee Valley Athletics
+  Centre](https://davidmorleyarchitects.co.uk/projects/lee-valley-athletics-centre/):
+  the nearby centre was a key London 2012 training facility. It may appear only
+  as distant floodlights or an athletics horizon, never as an Olympic-ring logo
+  or a false claim that the former home stood inside Olympic Park.
 - [UK Government — 2012 Olympic press-conference
   transcript](https://www.gov.uk/government/news/transcript-international-olympic-committee-press-conference):
   official contemporary context for the Diamond Jubilee and Olympic summer as
   an extended national celebration. It belongs to the year after the Founder's
   2011 arrival and does not prove his personal experience.
-- [Hackney Council — history of diverse
-  communities](https://www.hackney.gov.uk/council-and-elections/equality-and-diversity/hackneys-demographics/history-hackneys-diverse-communities):
-  locates the Orthodox Jewish community across northern Hackney and South
-  Tottenham in Haringey.
-- [Haringey Council — Jewish community needs
-  assessment](https://haringey.gov.uk/sites/default/files/2024-04/jsna-jewish_needs.pdf):
-  places main Haringey Jewish communities in South Tottenham and Seven Sisters,
-  adjoining Stamford Hill. This supports geography only, not a safety claim.
-- [Hackney Council — Stamford Hill Area Action Plan
-  PDF](https://consultation.hackney.gov.uk/communications-engagement/shaap-regulation-19/user_uploads/stamford-hill-aap--reg-19---february-2024.pdf):
-  describes Stamford Hill as home to the UK's largest Orthodox/Charedi Jewish
-  community. Religious residents must not be used as exotic visual shorthand.
 - [Migration Advisory Committee — EEA migration in the
   UK](https://www.gov.uk/government/publications/migration-advisory-committee-mac-report-eea-migration):
   official 2018 review found no clear overall employment/unemployment harm to
@@ -547,8 +543,10 @@ The Russian arrival airport, bus operator and historical ticket system remain
   RER-A/Marne-la-Vallée direction. Use only the visited historical park identity;
   do not import 2026 attractions into an older memory.
 
-The exact Soho job, Tottenham location, thirteen residents, one full bathroom,
-one separate WC and shared bedroom remain first-person founder testimony. The
+The exact Soho job, low-rise canal-side home near Mansfield Park, roughly
+four-and-a-half-room layout, maximum of ten residents, one full bathroom, one
+separate WC, flat roof with a Lee Valley view and shared bedroom remain
+first-person founder testimony. The
 film must not imply that all EU migrants lived this way.
 
 ## 5. Creative reference
@@ -720,9 +718,11 @@ These are not externally researched claims. They remain first-person testimony:
 - finding London work within two weeks despite weak English, then being able to
   converse only minimally with colleagues for almost three years;
 - working at the same single London workplace throughout all five London years;
-- home in Tottenham near the Victoria line;
-- five years in a converted Victorian HMO with thirteen adults: the Founder and
-  twelve other Hungarian flatmates;
+- home in north-east London reached by the Victoria line and onward travel,
+  beside a Lee Valley canal near Mansfield Park;
+- five years in a low-rise, flat-roofed, roughly four-and-a-half-room shared
+  home with no more than ten adults at once: the Founder and up to nine other
+  Hungarian flatmates, mostly men aged roughly 23–55;
 - one full bathroom plus one separate WC, described by the founder as 1.5
   bathrooms, and a shared bedroom;
 - a flatmate who had lost his gambling money swapped his bed/place with an
@@ -882,8 +882,8 @@ These are not externally researched claims. They remain first-person testimony:
 - a five-to-six-day Istanbul–Dubai flight circuit and an Istanbul carpet/tea
   invitation that combined hospitality, craft presentation and commercial
   intent; exact shop, price, purchase outcome and city order remain `CONFIRM`;
-- subjective memory of feeling safer in the immediate South Tottenham/Stamford
-  Hill area and more exposed in nearby directions; never generalize causation;
+- the flat-roofed shared home's confirmed Mansfield Park/Lee Valley setting,
+  roof access, canal-side position and view over reservoirs, wetlands and birds;
 - nearly fifty visited countries and the named destination memories;
 - the personal global/local interpretation that different environments became
   meaningful through local people and revealed different parts of the Founder;
