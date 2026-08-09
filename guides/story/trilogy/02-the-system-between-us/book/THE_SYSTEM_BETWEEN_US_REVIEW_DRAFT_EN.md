@@ -4,7 +4,7 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Public edition 1.0.0 — published 8 August 2026
+> Revision draft based on public edition 1.0.0 — not yet republished
 
 <!-- pagebreak -->
 
@@ -23,6 +23,14 @@ petitions and public events. It also survives as rooms: the bedroom where my leg
 was raised above me, the ordinary police office, the smaller room where counsel
 asked for time, the C-shaped court table, and the desk where an AI cursor kept
 blinking beside the possibility of prison.
+
+Public history usually arrives as laws, elections, resignations and dates. A
+person receives it differently. A law becomes a cancelled contract. A digital
+design becomes a password handed across a desk. An institutional failure
+becomes a night without sleep, then a sentence, then a knock at the door. This
+book follows that smaller route through the larger period. The personal story
+does not replace the history. It is where the history becomes measurable in a
+human life.
 
 The central absurdity can be stated without legal vocabulary. A sudden law put
 livelihoods under threat. The accountant, the tax administration and I each
@@ -55,6 +63,27 @@ interpretations. They do not depict the actual participants.
 That matters because the pattern is not mine alone. Another person might never
 write my sentences and could still enter the same corridor.
 
+The corridor was not evidence of a defective nation, and not every Hungarian
+office or official behaved alike. It belonged to a low-trust culture many of us
+learn to navigate before anybody names it. The written rule points one way. The
+workable custom points another. Authority travels upward, responsibility
+travels downward, and the citizen is expected to know both routes without ever
+confusing them in public.
+
+You smell that culture before you can define it. Everybody in the room knows a
+process is broken, yet each person protects the narrow role that lets the
+failure become somebody else's problem. A smile acknowledges the absurdity and
+the procedure continues. A password is personal when responsibility is being
+assigned and shareable when work needs to be done. The correction disappears.
+The outburst remains.
+
+Hundreds of thousands of Hungarians did not leave the country for one reason.
+They left for wages, housing, work, love, language, adventure and dignity in
+different proportions. This book follows one less visible pressure among them:
+the exhaustion of living where informal adaptation is required to make formal
+institutions work, yet the individual alone can be punished when that adaptation
+fails.
+
 <!-- pagebreak -->
 
 ## Prologue — The Other Biography
@@ -69,6 +98,12 @@ a hotel worker, a colleague, a couple sharing a taxi, somebody who noticed that
 the road ahead was unsafe. He saved through a shared bedroom and lunches he
 pretended not to need, then returned to Budapest with enough independence to
 build software intended to help people trust one another long enough to meet.
+
+Part I was built from those meetings because human relationships cannot be
+cancelled out of the equation of a life. The driver, roommate, colleague,
+stranger, date and family member were not decorative anecdotes around the
+“real” biography. They were the forces through which decisions became possible,
+fear became bearable and a place became home.
 
 A forensic report later created another biography in a few paragraphs.
 
@@ -87,6 +122,16 @@ formal disorder of thought.
 
 Both biographies carried my name.
 
+Writing them together required a third position. I had to step outside my own
+fear and treat myself as one participant in the chain: not the innocent centre
+of every event, not the clinical character in the report, but a person whose
+actions could be examined beside everybody else's. That distance did not come
+from having too few attachments. It was necessary because there were too many.
+Every room led back to parents, colleagues, housemates, strangers, clients,
+officials and the country I had tried to make home. From inside all those bonds,
+the story was almost impossible to write. From slightly outside myself, its
+structure became visible.
+
 A passport cannot settle a psychiatric question. It can expose the thinness of
 a caricature. My journeys had worked precisely because I could recognize help,
 trust unfamiliar people provisionally, revise a plan and experience warmth
@@ -100,8 +145,10 @@ actions performed under the wrong identity. The report preserved that argument,
 called my account contradictory and later translated the wider pattern into a
 “global conspiracy.”
 
-This is not the story of an ordinary tax offence. It is the story of how the
-first biography was compressed until the second could fit the file.
+This is not the story of an ordinary tax offence. Nor is it a legal brief with
+illustrations. It is the story of how the first biography was compressed until
+the second could fit the file—and how a period in the history of a country can
+be seen through that act of compression.
 
 The compression began with a line on a screen. At the end of Part I, that line
 was a network connecting strangers. Here it became the ruled line of a form: a
@@ -112,7 +159,15 @@ was signed weeks later, but the transformation had already begun.
 
 I had never been a party activist. When the KATA law changed in July 2022,
 others went to the bridges. I stayed at my computer and tried to protect a
-Belgian handover.
+Belgian handover. I did not set out to confront a state. I tried to finish a
+piece of work, close a tax form and prepare for an operation.
+
+That ordinary sequence matters. Kafka does not begin when a frightened man
+writes an extraordinary sentence. Kafka begins when everybody is performing an
+ordinary duty and the duties no longer meet: a government changes a route, a
+client still needs delivery, an accountant submits, a portal rejects, an
+official redirects, a taxpayer repairs, and a later institution reads only the
+sentence produced when the disconnected pieces fell onto one person.
 
 That is where the irony begins.
 
@@ -211,6 +266,11 @@ arrives before the new rule has even been understood.
 On Monday 11 July 2022, the new KATA bill appeared. On Tuesday, Parliament
 passed it under an exceptional procedure. It was due to take effect on 1
 September.
+
+Hundreds of thousands of people who had organized work around the old route now
+had weeks to decide whether to close, change tax systems, renegotiate contracts
+or stop working through that form. Their accountants had the same weeks to
+translate the change for all of them at once.
 
 People went into the streets. Bridges were blocked. The public argument became
 immediate: fairness, abuse, livelihood, consultation, legal certainty.
@@ -332,6 +392,18 @@ notice. I cannot claim that such a route would have prevented every later
 event. It could have stopped this particular confusion before it became the
 circle that followed.
 
+In a functioning system, the distinction is almost too obvious to explain. The
+accountant acts under the accountant's identity. The client grants a visible
+mandate. Both can see what was filed, what failed and what changed. The person
+who remains legally responsible receives the warning before the warning becomes
+a penalty. Helping another person does not require becoming that person.
+
+The formal representation route before me separated action from visibility.
+The practical custom of password sharing reunited them by collapsing two
+identities into one. I was therefore asked to choose between an incomplete
+lawful relationship and a more workable unsafe one. The system did not carry
+that contradiction. It waited for an individual to absorb it.
+
 ## 6. Three Attempts at a Subtraction
 
 <!-- illustration: part_ii_accountant -->
@@ -349,7 +421,13 @@ know it had been filed.
 The absurdity is difficult to explain without making it sound invented. A
 professional office, repeated official assistance and months of correspondence
 had failed to complete what, from my perspective, was essentially a subtraction
-followed by a tax calculation.
+followed by a tax calculation. The accountant did not merely make one ordinary
+mistake. She appeared not to understand what the administration was telling
+her, entered changing figures, omitted another figure and continued disputing
+the route after I had reconstructed it. An outdated software version had also
+helped turn submission into rejection. The official system, the professional
+tool and the professional user were failing at different layers while the
+client could not see one coherent result.
 
 I discovered the problem through an article and then through a portal whose
 categories and identifiers did not form one coherent story. Until then, I had
@@ -360,10 +438,16 @@ Within roughly a week, I reconstructed the calculation, understood the status
 and reached the corrected result. The accountant had had most of a year, three
 attempts and direct help from the administration. Even afterward, our exchange
 showed that she still did not understand the instruction in the same way I had
-come to understand it. This is not offered as a contest of personalities. It is
-the factual reversal at the centre of the case: the client performed the repair
-for which the professional had been retained, while legal responsibility had
-remained with the client throughout.
+come to understand it. I revoked the representation because the communication
+triangle had to be stopped before it produced another version.
+
+This is not offered as a contest of intelligence or a demand that one exhausted
+worker should carry all blame. The accountant was also inside a transition
+forced through at speed, with clients and rules moving beneath her. The point is
+the reversal: the client performed the repair for which the professional had
+been retained, while the legal responsibility had remained with the client
+throughout. Pressure travelled through every participant. Only one participant
+could not pass the final consequence onward.
 
 Some calls from the period survive, but not the decisive exchanges behind the
 remarks I later recorded in my defence speech. Their shape can be inferred only
@@ -435,7 +519,12 @@ correction and processing history.
 
 The tax problem was corrected. The tax was paid. The representation was over.
 The administrative cause had been repaired by the person who had not known
-about it until 23 November.
+about it until 23 November. A later tax record showed neither an outstanding
+obligation nor an overpayment.
+
+On paper, the account had returned to zero.
+
+The life around it had not.
 
 Yet the dangerous sentence now possessed a different property from the
 correction. It could travel alone.
@@ -516,13 +605,37 @@ made independent product work possible.
 
 Now it became a procedural location.
 
-My phone and computer were taken. Objects that had held work, memory and the
-unfinished MyScoutee system became evidence containers.
+The timing supplied another cruel cut. The previous day, I had submitted
+another police report while trying to obtain help with an interrupted private
+orthodontic treatment. A brace remained in my mouth and required regular
+adjustment, yet the treatment relationship had collapsed and no new provider
+wanted to inherit it. The two matters may simply have crossed inside the
+machinery; their proximity proves no causal connection. But the one time the
+police came to my home the day after I asked them for help, they came in another
+case and came for me.
 
-The later police interview took place in an ordinary room, not a cinematic
-interrogation chamber. An officer sat opposite me behind a desktop computer. My
-court-appointed defence counsel sat beside me. Another person remained behind
-me and sometimes sharply redirected me to answer the question being asked. The
+My phone and computer were taken. Objects that had held work, memory and the
+unfinished MyScoutee system became evidence containers. The devices knew more
+of my recent life than the people entering the flat. Once removed, they also
+took away the easiest route through which I could reconstruct what had
+happened.
+
+At the first questioning, a trainee connected to the appointed defence appeared
+and advised me to remain silent. I believed for a time that she was the lawyer
+assigned to carry the case. She gave me a card with another number written on
+it. Calls to that number produced no conversation, only messages promising a
+return call. I had been searched, questioned and separated from my devices
+without receiving the complete material from which I could understand the
+accusation.
+
+Eight days later, two forensic experts questioned me. The state already had a
+room in which to interpret my mind. I still did not have a stable person helping
+me interpret the case.
+
+The later police interviews took place in ordinary rooms, not cinematic
+interrogation chambers. An officer sat opposite me behind a desktop computer.
+A court-appointed lawyer sat beside me. Another person sometimes remained
+behind me and sharply redirected me to answer the question being asked. The
 voice came from outside my field of view.
 
 At one point my counsel asked for time. We moved into another room to speak.
@@ -535,16 +648,45 @@ paper was attractive to me. It was an inconveniently ordinary perception at the
 exact moment I was being converted into an image, a print and an entry in a
 file. Her work remained professional; my mind remained human.
 
+The formal defence kept changing shape. A lawyer remained unreachable for
+months and later asked to leave because he was overloaded. The trainee warned
+that she would be unavailable while preparing for an examination. Officers and
+lawyers could refer me to somebody else, but I could not make the somebody else
+appear. During the first month I did not even know the precise allegation. On
+11 June 2024, with a newly appointed lawyer present, I finally received the
+investigation material that let the accusation, the psychiatric language and
+the reconstructed timeline appear on one screen. A police explanation reduced
+the earlier absence to a painfully ordinary phrase: the lawyer had not had
+time.
+
+The sentence had time. The search had time. The experts had time eight days
+after the search. Defence was the part of the system that repeatedly ran out of
+it.
+
+During that silence, I even contacted German police. I did not imagine that a
+foreign police service could take over a Hungarian criminal file. I was asking
+outsiders, in effect, to help their Hungarian counterparts establish a human
+route back to a person who could not obtain one at home. The request measured
+the isolation more accurately than any legal theory could.
+
+At other moments, the laughter belonged to the institution. When I explained
+the password-sharing trap, I remember the investigator laughing in my face. A
+submission I wrote soon afterward records the reaction more cautiously as a
+smile and preserves the accompanying judgment: I had done something stupid.
+That was precisely the inversion. A routine workaround had required the unsafe
+sharing of identity; when the workaround failed, its absurdity was returned to
+me as personal foolishness.
+
 I remember using humour.
 
-That may sound inappropriate. For me, humour was how a human being remained
-present when every other available role was defendant, officer, device owner or
-subject. A police officer could ask a hard question, I could answer in a way
-that exposed the absurdity, and for a second somebody smiled.
+Humour was how a human being remained present when every other available role
+was defendant, officer, device owner or subject. A police officer could ask a
+hard question, I could answer in a way that exposed the absurdity, and for a
+second somebody smiled.
 
-Later, a judge could smile too. The smiles decided nothing. They showed that
-the people in the room could still recognize a joke while the procedure could
-not recognize the whole sequence that made the joke necessary.
+Later, a judge could smile too. The smiles decided nothing. They showed only
+that the people in the room could still recognize the absurdity while the
+procedure continued to manufacture it.
 
 The irony kept me from becoming only the file.
 
@@ -635,41 +777,6 @@ My reserves were not an unexplained alternative to a normal life. They were the
 protective wall built because normal routes had repeatedly stopped feeling
 safe.
 
-I was asking for mercy from a presidency whose relationship with mercy had
-already broken in public.
-
-In February 2024, the disclosure of a presidential pardon connected to the
-concealment of abuse in a children's home ended Katalin Novák's presidency.
-Judit Varga, the former justice minister whose countersignature had made the
-decision effective, withdrew from public life. Tamás Sulyok inherited an office
-in which clemency had become politically radioactive. He promised greater
-transparency and described mercy as something he could imagine only in
-exceptional circumstances.
-
-The later figures made *exceptional* almost literal. In 2025, four of 689
-decided applications received clemency. In the first half of 2026, all 314
-decisions were refusals. My own refusal was dated 30 April, inside that unbroken
-2026 sequence.
-
-Those numbers do not prove why my application was refused. They do show the
-institutional climate into which it arrived: after one pardon had ended a
-presidency and the public career of a former justice minister, almost every
-later applicant encountered a closed door.
-
-The clemency process later carried the same questions into my home. A probation
-officer rang the bell without an appointment. The flat had not been staged for
-inspection. It was puritan, untidy and unclean that day. I own no car, usually
-do not heat the flat in winter, and spend little because that is how I preserve
-independence. I can live that way. I was not asking the visitor to pity me.
-
-He asked what I lived on, why I was not working and what the apartment said
-about my life. I remember the phrase *bachelor flat*, a reference to the
-proposed suspended sentence and his astonishment when he asked about the
-disputed line. A life designed to need very little was being read as a condition
-to be explained.
-
-<!-- illustration: part_ii_home_inquiry_scene -->
-
 Why had I not sought psychological help?
 
 Because at the relevant moment I was trying to repair a tax record and prepare
@@ -748,7 +855,9 @@ I contest that character.
 A forensic opinion is built to answer a legal question, not to hold a life. Yet
 once attached to a person, its language can travel more easily than fifty
 countries, five London years, a mathematics degree, a repaired return or every
-stranger whose help made the journeys possible.
+stranger whose help made the journeys possible. The file treated those human
+relationships as noise around a diagnosis. Part I had shown that they were the
+signal.
 
 <!-- illustration: part_ii_experts_scene -->
 
@@ -774,9 +883,26 @@ delegation, the notices I did not see, the repair, the paid tax, the operation
 and the request for peace. Accumulation became the only defence available
 against reduction.
 
+The expanding archive could itself be made to look like the problem. Hundreds
+of submissions from one person can resemble fixation when the reader does not
+ask why the same facts had to be carried from office to office. Each new filing
+was the shadow of a missing relationship: the official who had not called, the
+lawyer who had not answered, the recording that had not been requested, the
+notice that had not reached both sides, the earlier explanation that the next
+summary had removed. Repetition was not proof that every interpretation was
+correct. It was what one person produced when no institution preserved the
+whole chain for him.
+
 Defence strategy became public-interest proposal. Complaint became system map.
 Closing statement became impact study. I divided responsibility into percentages,
 then learned that percentages can create a false precision around a human chain.
+
+I could do this only by making myself both subject and analyst. Stepping outside
+my own account did not remove responsibility for my words. It let me ask the
+harder question: what did each person see, what could each person change, and
+where did the consequence go when that person passed it onward? The same habit
+that had once turned software into systems and journeys into routes now turned
+my own life into a map I could inspect.
 
 By October 2025, I had given the accumulation a deliberately inverted title:
 *Public-Interest Action*.
@@ -822,6 +948,30 @@ roles—and my place outside their working curve—immediately visible.
 
 <!-- illustration: part_ii_courtroom_scene -->
 
+The hearing also had a recurring expression: a smile that never became relief.
+When I said that I had been afraid, I remember the judge answering with almost
+amused disbelief: *You were afraid?* When I explained the precautions and
+defensive routes I had invented while no stable defence carried the chain, I
+remember another smiling reflection: *And you defended yourself.* When I said
+that I had managed to work again for two and a half months, the response moved
+back toward the amount of the financial consequence.
+
+The same collision appeared around the intimate history I had sent to the tax
+administration while awaiting surgery. I had tried to explain what Part I had
+cost: the shared London room, hunger disguised from colleagues, the years of
+saving and the reason I had dared to return. I remember the judge asking, in
+substance, whether I really had to write all that when nobody cared. My answer
+formed later: *Care, Your Honour. That is where the money came from.* The court
+could treat the life as irrelevant and still examine the savings that life had
+produced.
+
+These are my memories of tone and wording, not a transcript and not proof of a
+judge's private view. Their narrative force lies elsewhere. The room could
+recognize fear, ingenuity and work as moments of almost comic incongruity while
+the procedure continued treating the same person as a risk to be measured. The
+smile made the institution human for a second. It also made the situation more
+surreal, because recognition changed nothing.
+
 In that room, the accounting failure returned in miniature. When I described what
 I believed the accountant had done, the judge warned me not to defame anyone.
 She asked why I had not asked the accountant. From the much longer defence
@@ -853,6 +1003,17 @@ position.
 I had lifted the lens toward legislation and institutional design; the room
 lowered it to my work, debt, home, belongings and savings. The system question
 became an asset question before the system question had been answered.
+
+By the end, I read something less fixed in the judge's expression, as though
+the chain might finally have revealed a person reached by failure rather than
+only a person who had failed. That is only my reading of a face. The procedural
+sentence that followed remained unchanged: next came my finances and the amount
+of the financial consequence.
+
+The two truths occupied the same moment. A human being may have begun to
+understand. The role still moved the machinery toward the resources I had built
+abroad and the home my parents had helped provide. It felt as though the system
+were preparing to claim a return from an investment it had never made.
 
 <!-- pagebreak -->
 
@@ -904,11 +1065,27 @@ test. It chose Navier–Stokes.
 
 The machine did not solve the problem. It built a versioned, falsifiable
 research chain, rejected sixteen intermediate candidates and preserved a
-restartable handoff. A researcher whose variational work had helped inspire the
-experiment read two notes and the proof plan. He found the ideas intriguing,
-then asked the decisive question: exactly which mathematical statement was
-being tested? The exchange had reached the place serious research should
-reach—the point where an attractive idea must become a precise claim.
+restartable handoff.
+
+The bridge to the researcher was easy to feel and difficult to state. His work
+searched for extreme fluid motions and tested how sharp certain mathematical
+inequalities could become. My AI laboratory turned the same worst-case instinct
+toward proposed lemmas: try to break a universal statement before spending
+months trying to prove it. A counterexample could kill a route quickly. A
+surviving route would become a precise obligation that a human mathematician
+could inspect.
+
+He read two notes and the proof plan, found the idea intriguing and then asked
+the question that exposed the missing bridge: *Which exact mathematical
+statement are you testing?* Inspiration was not connection until that statement
+was visible. I answered with the proposed cutoff-uniform regularity inequality,
+its lower-level frequency-tail target and the explicit warning that neither had
+proved regularity or blow-up.
+
+The exchange reached the place serious research should reach. A large idea had
+to become a claim another person could understand, challenge and falsify. That
+was also the task of this book. Four gigabytes of experience were not yet a
+story merely because they were true. The connection had to be made visible.
 
 <!-- illustration: part_ii_ai_work_scene -->
 
@@ -936,10 +1113,8 @@ possible financial consequence.
 
 In the communication around that decision, the challenged judge was described
 as having listened to me conscientiously. I later answered the court in the
-third person with a bitter inversion: yes, he had conscientiously defended the
-system failure. At the end of the hearing, his expression seemed less fixed—as
-if he might have begun to see a person reached by the failure rather than only a
-person accused of a wrong. It was a reading of a face, not a spoken conclusion.
+third person with a bitter inversion: yes, she had conscientiously defended the
+system failure.
 
 The next hearing had been expected on 2 July and was moved by roughly two and a
 half months to 16 September. The experts had been invited but did not appear;
@@ -1036,6 +1211,19 @@ belonging overlapped.
 
 The London house was a collector of those overlaps.
 
+Some residents lived more poorly in material terms than they had in Hungary and
+still felt less trapped. That contradiction makes little sense if migration is
+measured only in salaries and square metres. Predictability can feel like
+wealth. Being treated as a person before being treated as a problem can feel
+like comfort. A rule that remains the same long enough to plan around can be
+worth more than a larger room.
+
+The opposite pressure is also difficult to photograph. It is the energy spent
+learning which rule is real, whom not to offend, which professional must be
+protected, which informal shortcut everybody uses and which formal
+responsibility will still return to you if the shortcut fails. One incident
+rarely drives a person across a border. Years of these translations can.
+
 Part I told the wonder of the outside world without hiding the shared room.
 Part II tells the beauty of home without hiding why the system could make a
 returning person ask again whether he should leave.
@@ -1063,6 +1251,19 @@ That reversal is what makes the case public in meaning even while it remains
 mine in fact. The danger is not that everyone would write my sentence. The
 danger is that a low-trust system can first exclude a capable person, then use
 his breaking point to explain away the system that excluded him.
+
+The system was not an independent creature hovering above the country. People
+made it each morning. A legislator accepted speed. A professional protected a
+professional habit. An office defended the edge of its competence. A lawyer
+ran out of time. An expert preferred a total explanation. A judge narrowed the
+next question. Each choice could look ordinary from inside one role. Placed in
+sequence, the ordinary choices became the machine.
+
+That does not make every participant cruel, or every Hungarian participant the
+same. It removes the comforting fiction that a broken system exists without
+human maintenance. No single person designed the entire corridor. Enough
+people kept their own door while responsibility moved toward the person who
+could not pass it on.
 
 <!-- pagebreak -->
 
@@ -1098,6 +1299,18 @@ I had become impossible to keep entirely private.
 
 ## 20. The Programme Hidden Inside the Complaint
 
+The clemency request contained the sentence toward which all the other pages
+had been moving:
+
+> The strength of a state governed by law is revealed in the moments when it
+> can recognize that an individual's failure is, in fact, a reflection of a
+> system failure.
+
+It did not say that the individual disappears into the system. My sentence
+remained mine. It said that responsibility becomes dishonest when the last
+visible error is detached from the machinery that made it likely and then used
+to absolve that machinery from examination.
+
 Over time, my proposals acquired a structure:
 
 - notify the person directly when a representative acts;
@@ -1122,7 +1335,7 @@ That is political in the broad sense, but it did not begin with a party.
 
 ## 21. Four Years Later
 
-In spring 2026, Hungary changed government.
+On 12 April 2026, Hungary voted for a change of government.
 
 The election gave the new Tisza-led majority enough seats to alter institutions
 that had appeared fixed. The new government described its programme through
@@ -1133,6 +1346,11 @@ procedural weakness it claimed to repair.
 Both statements matter.
 
 A system cannot restore trust merely by changing who controls the speed.
+
+The election was not a verdict in my criminal case and did not validate every
+claim I had made. It did say that continuity no longer commanded enough trust.
+The institutions I had been told to experience as fixed were now being judged
+by the public that lived beneath them.
 
 One sentence from my 2022 messages now acquired an uncanny echo. It had combined
 an enormous demand, a period of twenty years and violent language about the rule
@@ -1288,6 +1506,34 @@ The parliamentary Speaker became interim President. As this edition closed on
 The empty chair was not a verdict in my case. It belonged to a country that had
 decided continuity was no longer enough.
 
+I had already asked that office for mercy when mercy itself had become
+politically dangerous. In February 2024, the disclosure of a presidential
+pardon connected to the concealment of abuse in a children's home ended one
+presidency and the public career of the former justice minister who had
+countersigned it. Tamás Sulyok inherited a power that had burned the hands of
+the people who used it before him.
+
+The later figures made caution almost absolute. In 2025, four of 689 decided
+applications received clemency. In the first half of 2026, all 314 decisions
+were refusals. My own refusal was dated 30 April, inside that unbroken sequence.
+The figures cannot reveal the unrecorded reason for one refusal. They show the
+door through which every applicant had to pass after the scandal.
+
+Before that refusal, the clemency process carried the same questions into my
+home. A probation officer rang the bell without an appointment. The flat had
+not been staged for inspection. It was puritan, untidy and unclean that day. I
+own no car, usually do not heat the flat in winter, and spend little because
+that is how I preserve independence. I can live that way. I was not asking the
+visitor to pity me.
+
+He asked what I lived on, why I was not working and what the apartment said
+about my life. I remember the phrase *bachelor flat*, a reference to the
+proposed suspended sentence and his astonishment when he asked about the
+disputed line. A life designed to need very little was once again being read as
+a condition to be explained.
+
+<!-- illustration: part_ii_home_inquiry_scene -->
+
 One constitutional task of the President is to express the unity of the
 nation. While Parliament prepared to choose a new person for that chair, I was
 moving in the opposite emotional direction. I had begun to consider whether
@@ -1306,6 +1552,11 @@ problems when speed, power and inconvenience become its own.
 # Part Seven — The System We Build Instead
 
 ## 26. The Product Returns
+
+The real face of a system is not the front page of its portal or the sentence
+in which it promises service. It appears when a person says: *the record is
+wrong; the professional route failed; my body cannot meet your timetable; I
+need somebody to carry the context from this room into the next one.*
 
 By then, the state had begun to resemble the worst kind of relationship.
 
@@ -1371,14 +1622,50 @@ submission, I wrote that the frightening part was in the absurdity. In another,
 I wrote that if everything had worked lawfully, I believed nothing would have
 happened.
 
-The humour also appeared in writing. In one police submission, I ended by
-declaring the institution fired. Elsewhere, I sent institutions away to
-dispense justice in a pasture. A programmer with no power to dismiss the state
-was dismissing the state in prose.
+The humour also appeared in writing and images. When one policewoman in the
+story was called Kata, the tax acronym and a human name collided. I called
+myself the “KATA terrorist,” turning the accusation into the title of a farce.
+In a Hulk-like image, a furious KATA figure held an axe in each hand while the
+tax authority, prosecution and court hung from his belt. A Hungarian pun changed
+*the reaper* into *the KATA taxpayer*. The image was excessive because the role
+assigned to me was excessive.
 
-Neither line described a real transfer of authority. Their point was the
-impossibility. When every office could redirect me but I could redirect none of
-them, sarcasm briefly reversed the arrows.
+Police recruitment posters supplied another impossible route. On 4 January
+2024, I sent the police career office an English CV and an inquiry saying that I
+had applied for a “terrorist position” being administered at the station, had
+reached the third round and was still waiting for feedback. I asked for the
+earliest possible response. It was not an application to commit violence. It
+was a documented parody of an investigation whose accusation could progress
+through rounds while the person inside it could not obtain an answer.
+
+Later, asking German police to help the unresponsive Hungarian route extended
+the same joke beyond the border. The humour was black because the need beneath
+it was real. In a low-trust process, sarcasm became an unofficial receipt: a way
+to record that a person had asked for contact when the official relationship
+would not reliably acknowledge him.
+
+The joke did not deny that some sentences were dangerous. It denied the solemn
+fiction that the file's language was the only possible description of what had
+happened. When officers struggled not to laugh, the laughter did not acquit me.
+It briefly admitted that the institutional character and the human being were
+not the same person.
+
+In one police submission, I ended by declaring the institution fired. Elsewhere,
+I sent institutions away to dispense justice in a pasture. A programmer with no
+power to dismiss the state was dismissing the state in prose. Years later, an
+election was followed by public demands for long-serving office-holders to
+leave. The old joke acquired timing it could not have planned.
+
+None of these lines transferred authority or predicted a legal result. Their
+point was the impossibility. When every office could redirect me but I could
+redirect none of them, sarcasm briefly reversed the arrows.
+
+Humanity had not vanished from the rooms. It appeared in an embarrassed smile,
+the second expert's different reaction, a lawyer asking for another room, a
+judge's changing expression and even my inconvenient attraction while my
+fingerprints were taken. The cruelty lay partly in the failure to carry those
+moments forward. Every person could remain human locally while the combined
+process behaved as though nobody were.
 
 Normal conditions might have prevented the error chain. A measured transition,
 clear authority, direct notice, one coherent record and a body given time to
@@ -1393,6 +1680,10 @@ Part I ended by asking people to test MyScoutee in real communities.
 Part II ends with a harder invitation.
 
 Test the systems between us before pressure tests them for us.
+
+The test is not whether a system can find an individual error. Every system can
+do that. The test is whether it can still recognize itself in the error after
+the individual has been found.
 
 Do not wait for the frightened taxpayer, isolated worker, exhausted accountant,
 overloaded official, defendant or judge to reveal every missing connection at
@@ -1487,6 +1778,26 @@ GDPR/taxation petition are separate source families again.
 
 The raw package is not published with the book because it contains identifiers,
 private third-party data, medical-adjacent material and unresolved allegations.
+
+Several black-comedy details have a firmer documentary layer than their tone
+might suggest. A 4 January 2024 email to the police career office attaches an
+English CV and describes the investigation as a “terrorist position” whose third
+round has produced no feedback. An authored English submission dated 17 April
+records outreach to German police and German/Belgian press. A clemency
+submission records a further police report about the interrupted orthodontic
+treatment on the day before the home search. These records support the dates
+and the Founder's own language. They do not prove that the dental report caused
+the search, that a foreign authority assumed jurisdiction or that any officer
+accepted the satire's interpretation.
+
+A 7 April 2024 submission records an investigator *smiling* when the Founder
+raised the password-sharing problem and separately preserves the judgment that
+he had done something stupid. The Founder now remembers the reaction more
+sharply as laughter in his face. The memoir keeps that later perception; this
+note keeps the wording of the nearer authored source. The courtroom exchange
+about whether the intimate Part I history mattered, and the later answer that
+this was where the money came from, remains memoir-layer unless a hearing record
+is isolated.
 
 The reviewed submissions document questions about income and financial
 position, refer to the apartment and record the Founder's reliance on London
@@ -1637,6 +1948,22 @@ Official sources:
   setup QR and time-based codes:
   https://nki.gov.hu/it-biztonsag/tanacsok/igy-teheto-biztonsagosabba-az-ugyfelkapus-bejelentkezes/
 
+The functioning-system counterfactual in Chapter 5 is not a ranking of
+countries. It is supported by official examples of delegation that keep the
+agent's identity separate from the taxpayer's login. British guidance expressly
+tells agents not to use a client's credentials and provides client
+authorization routes. Finland offers tax-specific electronic mandates, and
+Estonia provides identifiable access permissions for representatives. The
+details differ, and none guarantees competent service. They demonstrate that
+representation need not require shared identity.
+
+- UK HM Revenue & Customs, authorizing an agent through a business tax account:
+  https://www.gov.uk/guidance/authorise-an-agent-for-certain-taxes-through-your-business-tax-account
+- Finnish Tax Administration, Suomi.fi authorizations for tax matters:
+  https://www.vero.fi/en/About-us/contact-us/efil/authorisations/
+- Estonian Tax and Customs Board, granting and terminating e-MTA access:
+  https://www.emta.ee/en/business-client/e-services-training-courses/how-use-e-services/granting-and-termination-access
+
 ## Clemency social inquiry
 
 The Founder's application reached a clemency institution already transformed
@@ -1690,6 +2017,30 @@ Sources:
 
 - https://telex.hu/english/2022/07/12/major-tax-change-bill-pushed-through-parliament-in-spite-of-protests
 - https://telex.hu/english/2022/07/18/president-novak-signs-new-tax-law
+
+## Formal rules and lived practice
+
+The memoir uses *low trust* to describe the repeated gap between what the rule
+said, what people informally did to make work possible and who carried the risk
+when the two routes separated. It is not offered as a diagnosis of Hungarian
+character. Scholarship on Hungary and other post-socialist societies provides
+the background distinction: formal institutions cannot be understood without
+the practices, narratives and informal rules through which people actually use
+them. Other research cautions against treating informal adaptation as evidence
+of moral inferiority; it can be a response to organizational hierarchy,
+scarcity and weak institutional trust.
+
+These sources inform the narrative architecture. They do not prove the facts of
+the private case or make every Hungarian institution equivalent.
+
+- *Informal Institutional Elements as Both Preconditions and Consequences of
+  Effective Formal Legal Rules: The Failure of Constitutional Institution
+  Building in Hungary*:
+  https://academic.oup.com/ajcl/article/68/4/760/6131768
+- *Trust and the Politics of Postcommunism*:
+  https://doi.org/10.1016/S0967-067X(00)00002-1
+- *Imperatives in Informal Organizational Resource Exchange in Central Europe*:
+  https://doi.org/10.1016/j.euras.2014.10.001
 
 ## Civic and judicial context
 
@@ -1816,6 +2167,33 @@ Sources:
 - https://kuria-birosag.hu/en/uniformity-decisions/operative-part-uniformity-decision-no-102025-jpe
 - https://www.ksh.hu/s/publications/vital-events-2021/index.html
 - https://www.ksh.hu/docs/eng/seemig/outputs/SEEMIGHistoricalAnalysisHungary.pdf
+
+## AI-assisted work and the Navier–Stokes exchange
+
+The creative-work chapter is supported by the versioned research repository,
+the experiment note and the 6 August 2026 email in which Professor Bartosz
+Protas said he had read two supplied documents and the proof plan, found the
+ideas intriguing and asked which exact mathematical statements were being
+tested. The Founder's reply made the bridge explicit: published variational
+searches for extreme-flow states and tests of inequality sharpness inspired an
+AI-maintained laboratory that attacks proposed lemmas with counterexample
+searches before promoting them into human proof obligations.
+
+The proposed cutoff-uniform inequality, PNT-12 target, rejected candidates and
+partial computational result remain unverified working research. The book does
+not claim a proof of regularity, finite-time blow-up or a solution of the Clay
+problem. The episode demonstrates intellectual work, falsification discipline
+and human–AI handoff under legal uncertainty, not mathematical success by
+association.
+
+- Public research repository and proof plan:
+  https://github.com/fssrepository/millennium-math-problems
+- Ayala and Protas, extreme vortex states and enstrophy growth:
+  https://doi.org/10.1017/jfm.2017.136
+- Bleitner and Protas, numerical tests of inequality sharpness:
+  https://arxiv.org/abs/2607.02739
+- Official Clay Navier–Stokes problem description:
+  https://www.claymath.org/millennium/navier-stokes-equation/
 
 ## Part III boundary
 

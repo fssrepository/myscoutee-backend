@@ -186,7 +186,9 @@ plate; never feed raw case pages to a generative video model.
 
 Audio is assembled after picture timing is locked.
 
-- one continuous English narrator, no lip sync;
+- one continuous English narrator using the same approved ElevenLabs **John**
+  voice as Part I, no lip sync; archive the exact voice identifier, model
+  version, settings and clean reference WAV;
 - one continuous instrumental composition from `00:00.000` to `03:00.000`;
 - no Flow/OpenArt clip-level music or generated dialogue;
 - exact foley synchronized in post: keyboard, notification, paper, phone,

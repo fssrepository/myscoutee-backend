@@ -5,6 +5,10 @@ reported chronology. Timing windows include silence and room sound. Aim for
 intimate documentary speech, roughly 105–115 words per minute; the voice does
 not need to occupy every second.
 
+Voice lock: English narration in the approved ElevenLabs **John** voice, shared
+with Part II. Preserve the exact voice identifier, model version, generation
+settings and a clean reference WAV.
+
 ## 1. English master
 
 | Time | Speaker | Spoken text / sound |

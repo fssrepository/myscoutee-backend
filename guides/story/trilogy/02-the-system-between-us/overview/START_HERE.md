@@ -1,9 +1,11 @@
-# Start here — Part II published package
+# Start here — Part II active manuscript revision
 
-The book, evidence chronology, three-minute film and generation prompts are
-synchronized and closed. The next phase selects one difficult interval,
-generates exactly two 9:16 endpoints and compares the same eight-second request
-in Google Flow and OpenArt.
+The 8 August public PDF remains the last released artifact. The editable book
+was reopened on 9 August for a deeper source-led narrative revision. The
+evidence chronology and ledgers are being updated with it; the existing
+three-minute script, storyboard and generation prompts are now a stale baseline
+until the Founder approves the revised manuscript. No frame or motion work is
+active.
 
 ## Current deliverables
 
@@ -62,15 +64,16 @@ The film may compress time but may not merge those layers into one claim.
 
 ## Production boundary
 
-The Founder authorized publication closure on 8 August 2026. In the next phase,
-do not:
+The Founder authorized the first publication on 8 August 2026 and reopened the
+editable manuscript on 9 August. Until the revised book and downstream sync are
+approved, do not:
 
 - build a slideshow or animatic;
 - upload private audio or primary legal documents to a cloud model;
-- generate any scene other than the one selected benchmark interval;
+- generate any scene, including the previously selected benchmark interval;
 - imply an acquittal, conviction, clinical conclusion or final political result
   that has not occurred.
 
-Generate only the selected interval's exact first and last frames from the
-locked role and location descriptions. Do not create disposable midpoints or
-book-only substitutes.
+After approval, the separate benchmark phase may generate only the selected
+interval's exact first and last frames from the locked role and location
+descriptions. Do not create disposable midpoints or book-only substitutes.

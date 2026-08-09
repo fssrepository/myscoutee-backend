@@ -1,14 +1,17 @@
-# Current handoff — written package closed; model benchmark next
+# Current handoff — Part II narrative revision active
 
-Date: **8 August 2026**  
-Status: **Part I and Part II books and synchronized generation prompts are
-published and closed. The first two benchmark frame candidates have been
-generated and are awaiting Founder approval; no video-model run has begun.**
+Date: **9 August 2026**
+Status: **Part I remains the current published book. Part II has been reopened
+for a deeper source-led narrative revision; its existing public PDF, 03:00
+script, storyboard and prompt pack are therefore not the current content lock.
+No additional frame or video-model run may begin until the Founder reads and
+approves the revised Part II manuscript and the downstream synchronization is
+completed.**
 
 This is the clean resume point. Do not reconstruct the long editorial review
 from chat history. Do not build a slideshow or animatic.
 
-## 1. Published books
+## 1. Book state
 
 ### Part I — The City Between Us · v1.0.0
 
@@ -31,8 +34,11 @@ from chat history. Do not build a slideshow or animatic.
   `trilogy/02-the-system-between-us/book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
 - Locked publication:
   `trilogy/02-the-system-between-us/published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- The 68-page public edition contains the registered role, police-room,
-  courtroom, two-expert, AI-work and home-inquiry plates.
+- The existing 68-page public export is retained as the last released artifact,
+  but its content is superseded for editing by the revised Markdown source.
+- The active revision strengthens the low-trust system chain, defence gap,
+  two-expert contrast, courtroom black humour, migration context, system-error
+  proposition and exact Navier–Stokes research bridge.
 - The Constitutional Court sequence is locked as seven initial recusals,
   followed by an eighth, leaving seven and no quorum.
 - Film timing remains twenty-two 8-second intervals plus the deterministic
@@ -43,17 +49,31 @@ Each publication has a matching `.pdf.sha256` file and `.publication.json`
 manifest. Later released corrections require explicit authorization; the
 editable sources remain available.
 
-## 2. Written synchronization
+## 2. Synchronization state
 
 - Part I: 23 timed narration/storyboard/prompt blocks including its post card.
-- Part II: 22 eight-second narration/storyboard/prompt blocks plus its post
-  card.
+- Part II: the existing 22 eight-second blocks plus post card are now a baseline
+  only. They must be rewritten against the approved book before any bulk frame
+  generation.
 - Character maps, privacy limits, exact courtroom geometry, two-expert
   separation, silent-picture rule and one-continuous-score rule remain binding.
 - No slideshow/animatic video exists under `guides/story/`; the obsolete build
   scripts were removed.
 
-## 3. Next task — one controlled model comparison
+## 3. Next task — finish the Part II manuscript
+
+1. Complete the source-led English memoir revision without turning it into a
+   legal brief or a country-comparison essay.
+2. Regenerate the editable reading PDF only after prose, evidence notes and
+   layout have passed review.
+3. After Founder approval, synchronize the Part II 03:00 English script,
+   storyboard, character/scene coverage and Google Flow/OpenArt prompts.
+4. Keep the narration voice fixed to the approved ElevenLabs **John** voice for
+   both parts. Save the exact voice/version/settings and a clean reference WAV;
+   do not rely on the display name alone.
+5. Only then return to the two-frame controlled model comparison.
+
+## 4. Later task — one controlled model comparison
 
 Start this only in a fresh phase after the Founder confirms the AI subscriptions
 and models to compare.
@@ -85,7 +105,7 @@ Canonical inputs:
 - Current endpoint candidates:
   `shared/benchmarks/assets/video-model-cp18-cp19/`
 
-## 4. Hard boundaries for the next phase
+## 5. Hard boundaries for the next phase
 
 - No slideshow, animatic, midpoint image, audio, bulk checkpoint generation or
   full-film motion run.

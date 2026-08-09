@@ -45,9 +45,15 @@ Local source package:
 - a professor whose published variational research had inspired the direction
   read two documents and the GitHub proof plan, called the ideas intriguing and
   asked which mathematical statements were being tested;
-- the Founder's later answer clarified that the AI generated the mathematical
-  route and that he was not ready to defend nonlinear-PDE details in a
-  specialist meeting;
+- the exact bridge is methodological rather than a claim that the professor's
+  work proved the generated route: published searches for extreme-flow states
+  and inequality sharpness inspired an adversarial laboratory that tries to
+  falsify candidate lemmas before promoting them into proof obligations;
+- the Founder's later answer identified the proposed cutoff-uniform regularity
+  inequality and the lower-level PNT-12 frequency-tail estimate, repeated that
+  neither regularity nor blow-up had been proved, clarified that the AI
+  generated the mathematical route and said that he was not ready to defend
+  nonlinear-PDE details in a specialist meeting;
 - the recorded finite campaign ended with a replayable research state. A finite
   campaign does not guarantee a solution to the Clay problem.
 

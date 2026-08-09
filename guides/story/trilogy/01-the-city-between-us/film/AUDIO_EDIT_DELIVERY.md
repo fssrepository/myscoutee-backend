@@ -23,8 +23,10 @@ clip-level background music, dialogue and singing never enter the master.
 
 ## 2. Narration
 
-The default is intimate first-person voice-over, not mass lip sync. The Founder
-may record his own voice or use a consistent approved TTS voice.
+The default is intimate first-person voice-over, not mass lip sync. The locked
+synthetic narrator for Parts I and II is the approved ElevenLabs **John** voice.
+Archive a clean reference WAV plus the exact voice identifier, model version
+and generation settings; the display name alone is not a reproducible lock.
 
 Recording or generation rules:
 

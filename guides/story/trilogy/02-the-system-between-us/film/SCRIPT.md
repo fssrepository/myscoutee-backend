@@ -2,6 +2,11 @@
 
 Status: **narration and timing review; not picture-locked**.
 
+Voice lock: the final narration is English and uses the same approved
+ElevenLabs **John** voice as Part I. Preserve the exact voice identifier, model
+version, settings and a clean reference WAV. The present words and time windows
+remain stale until the revised Part II book is approved and resynchronized.
+
 Read in a restrained first-person voice at approximately 126–132 words per
 minute. Do not accelerate the final third. Short gaps inside the windows are for
 foley and breath.

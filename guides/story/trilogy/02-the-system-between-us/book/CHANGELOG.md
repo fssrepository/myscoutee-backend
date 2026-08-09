@@ -3,6 +3,26 @@
 Part `II` and the edition version are separate. This book is Part `II`; its
 first public edition is `1.0.0`.
 
+## Unreleased revision of 1.0.0 — 2026-08-09
+
+- Reopened the editable manuscript for a deeper source-led narrative pass; the
+  locked 8 August PDF remains the last released artifact until republication.
+- Reframed the book as public history experienced through one human life rather
+  than an ordinary tax/criminal narrative or a country-comparison essay.
+- Made human relationships the explicit bridge from Part I and added the
+  Founder's ability to become both subject and analyst without mistaking
+  analytical distance for lack of attachment.
+- Strengthened the functioning-system counterfactual, low-trust delegation
+  paradox, repaired-and-paid tax account, defence discontinuity, two-expert
+  contrast, remembered courtroom humour and unearned-asset-reach metaphor.
+- Restored the clemency request's central state/system-error proposition and
+  expanded the black-humour record without converting memory into findings.
+- Clarified the exact methodological bridge between the Navier–Stokes
+  lemma-falsification laboratory and the researcher's variational work.
+- Marked the existing narration, storyboard and prompts stale until the revised
+  book is approved; locked English narration to the approved ElevenLabs John
+  voice for both films.
+
 ## 1.0.0 — 2026-08-08
 
 - Published the first English edition as an unresolved first-person memoir,

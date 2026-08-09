@@ -1,9 +1,20 @@
 # Narrative-first TODO
 
-Status: **book/prompt synchronization and public-edition closure complete;
-frame/model benchmarking remains a separate next phase**.
+Status: **Part II English memoir reopened for source-led revision on 9 August
+2026. The previous PDF remains the last released artifact, but the existing
+03:00 script, storyboard and prompts are stale until the Founder approves the
+revised book. Frame/model work is paused.**
 
 ## 1. Current review pass
+
+- [ ] Complete the deeper memoir revision around the functioning-system
+  counterfactual, human relationships, defence discontinuity, expert/courtroom
+  absurdity, outward migration and the system-error mirror proposition.
+- [ ] Receive Founder approval on the revised English reading PDF.
+- [ ] Resynchronize the exactly three-minute English narration, storyboard and
+  Flow/OpenArt prompt chain only after that approval.
+- [ ] Use the approved ElevenLabs **John** voice for both films and archive the
+  exact voice/version/settings plus a clean reference WAV.
 
 - [x] Inventory the bounded `/home/raxim/Downloads/targyalas/` source package.
 - [x] Structurally inventory and content-hash-deduplicate the expanded 4.1 GB

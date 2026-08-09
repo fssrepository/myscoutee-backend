@@ -2,7 +2,10 @@
 
 ## The System Between Us
 
-Status: **English public edition v1.0.0; published 8 August 2026**.
+Status: **English public edition v1.0.0 published 8 August 2026; editable
+manuscript reopened for an unreleased source-led revision on 9 August. The
+existing script, storyboard and prompts are stale until the revision is
+approved and resynchronized.**
 
 Part II continues from the exact final threshold of Part I. The same founder who
 crossed countries to find work and human connection now crosses a landscape of

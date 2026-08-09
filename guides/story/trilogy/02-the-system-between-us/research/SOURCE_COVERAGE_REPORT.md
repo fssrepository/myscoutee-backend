@@ -1,6 +1,6 @@
 # Part II source-coverage report
 
-Audit date: **8 August 2026**  
+Audit date: **9 August 2026**
 Private source root: `/home/raxim/Downloads/targyalas/`  
 Expanded backup: `/home/raxim/Downloads/targyalas/backup/`
 
@@ -117,9 +117,52 @@ copy in each family is independent corroboration:
 18. MyScoutee product screenshots and the separate creative-work ledger;
 19. independent public sources for KATA, protests, constitutional procedure,
     institutional transition, migration and foreign-currency-loan context.
+20. the 4 January 2024 police-career email containing the documented
+    “terrorist position” parody and attached English CV;
+21. the 7 and 17 April 2024 authored police/prosecution submissions used to
+    separate the remembered password reaction and German-police outreach from
+    later literary compression;
+22. the clemency and bounded dental/police records used only to establish the
+    day-before orthodontic complaint/next-day search chronology.
 
 The book uses these sources at different evidential levels. A filed allegation
 proves that the allegation was made; it does not by itself prove the allegation.
+
+## 9 August deepening pass
+
+The later narrative revision did not restart a blind scan of 4.35 GB. It
+re-extracted and searched the bounded causal documents and used the backup to
+test named omissions raised during the manuscript review. The following text
+records received renewed direct attention:
+
+- the signed defence speech and closing speech;
+- the clemency request, including its state-versus-system-error proposition;
+- the public-interest proposal and *Public-Interest Action* family;
+- the consolidated evidence and investigation records containing the November–
+  December 2022 accounting correspondence, tax status and appointed-defence
+  chronology;
+- the GDPR/taxation petition, including its password, notification, medical,
+  expert and defence chronology;
+- exclusion, court-administration and strategy material used to separate
+  documentary fact from remembered courtroom tone.
+- the exact police-career email, the April 2024 password-reaction submission,
+  the authored German-police outreach reference and the bounded clemency/dental
+  chronology raised during the 9 August memoir review.
+
+This pass materially changed the manuscript. The Part II spine now foregrounds
+the difference between formal delegation and the practical identity-sharing
+workaround; the client's repair of the return; the time asymmetry between the
+search, expert examination and usable defence; the difference between two
+expert voices and one signed opinion; the courtroom's remembered humour; the
+relationship between institutional culture and outward migration; and the
+clemency request's own central message. It also records the Navier–Stokes
+research exchange as a precise human bridge rather than a prestige reference.
+
+The incoming researcher email and the Founder's mathematical clarification are
+stored outside the trial archive under
+`/home/raxim/Downloads/bartek/millenium-prize-problems/`. They support only the
+creative-work chapter. They do not support any claim about the criminal case or
+constitute independent verification of the proposed mathematics.
 
 ## Material intentionally not exhausted
 
@@ -129,7 +172,7 @@ proves that the allegation was made; it does not by itself prove the allegation.
 | whole-device mobile and laptop backups | disproportionate privacy exposure; opened only for a named missing record |
 | raw account, identity, address and third-party contact data | unnecessary for the public narrative |
 | raw medical imagery | highly private; only bounded facts and authored visual references are used |
-| unrelated dental and private disputes | outside the Part II causal spine |
+| wider dental and private-dispute merits | outside the Part II causal spine; only the interrupted-treatment condition and day-before police-report chronology were checked for the named scene |
 | generated images already inside the archive | not evidence of the underlying event |
 | bulk audio | local transcription remains pending; decisive missing calls cannot be recreated from neighbouring recordings |
 
@@ -148,6 +191,9 @@ proves that the allegation was made; it does not by itself prove the allegation.
 - the precise employment transition around 2020–2021;
 - exact wording and speaker attribution for remarks preserved only through
   later authored accounts;
+- a hearing record for the remembered exchange about whether the intimate Part
+  I history mattered and the Founder's later answer about the source of the
+  money;
 - the procedural and institutional state immediately before any new public
   edition.
 
