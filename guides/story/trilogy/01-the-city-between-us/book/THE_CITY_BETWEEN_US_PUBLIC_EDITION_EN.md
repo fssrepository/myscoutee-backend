@@ -75,6 +75,17 @@ a romantic countryside that never existed. The soil is not sentimental. It is
 seasonal, physical and exact. Something is planted or it is not. Rain comes or
 does not come. Work leaves a mark that can be seen.
 
+At eight, I decided that I wanted to become a programmer. The machine that
+first held my attention was a Commodore 64, but I was drawn to more than the
+rules beneath its games. I watched their backgrounds: small constructed worlds
+in which code, colour and atmosphere occupied the same limited screen.
+
+That double attention never left me. Programming rewarded precision. On my
+journeys, paintings and historic buildings drew me toward forms that could
+look mathematically exact and still carry the beautiful irregularity of the
+hands that had made them. I wanted to understand both: the structure that held
+a thing together and the human trace that kept it from becoming sterile.
+
 That inheritance stayed with me even when my own tools became mathematics and
 software. I trusted systems that could be understood, work that could be tested,
 and effort that produced a visible result. I was less prepared for the invisible
@@ -97,6 +108,11 @@ pull me back. I still finished first.
 I do not turn that finish into a parable about defeating other people. What I
 remember is the rhythm returning after the interruption: breath finding its
 place again, and the line still waiting ahead.
+
+People usually read me as quiet and restrained. They did not expect the wilder
+part. I was never quick-tempered; I might let anger reach my voice once in three
+or four years. When I finally spoke without softening it, the surprise could
+silence a room. Reserve was not the same as fear.
 
 I studied economics, programming and mathematics together. In Hungarian, the
 degree has a name that sounds almost like three professions trying to occupy one
@@ -488,6 +504,8 @@ works, and because it works, nobody sees the need underneath it.
 By day, I was a competent programmer in Soho. At lunch, I remained visible
 while the need disappeared.
 
+<!-- pagebreak -->
+
 ## 6. Thirteen Hungarian Lives
 
 At night, the Victoria line carried me north to Tottenham.
@@ -832,6 +850,11 @@ At Luxor airport, I passed through two separate security gates, a degree of
 layering I had rarely encountered in Europe. From there, the return became a
 chain of airports: Luxor to Cairo, Cairo to Athens, Athens to Budapest. Two
 connections carried me home.
+
+During those six days, I also spoke with Syrian refugees. I was compressing a
+journey I had chosen into the time I could afford; they were trying to continue
+after events had made movement necessary. We were all away from where we had
+begun, but not with the same freedom. Everybody escapes differently.
 
 The journey was full of such temporary networks. A hotel, a driver, a manager,
 a security officer, a resident, a taxi passenger—each carried me across one

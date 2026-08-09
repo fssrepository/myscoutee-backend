@@ -134,6 +134,11 @@ and had intact comprehension, memory and intellect appropriate to his education.
 It found no earlier psychiatric documentation, no perceptual disturbance and no
 formal disorder of thought.
 
+Quietness had always made people expect compliance from me. I was not quick-
+tempered; years could pass without anger reaching my voice. When it finally did,
+the sudden force could silence a room precisely because nobody had seen it
+coming. The file received the rare voice without the long quiet around it.
+
 Both biographies carried my name.
 
 Writing them together required a third position. I had to step outside my own
@@ -590,6 +595,8 @@ possibility of family with everything else. My voice is panicked and spent. In
 the middle of codes, forms and missing notices, I say, “I can no longer have a
 child.” It is not an argument. It is shock becoming surrender in one sentence.
 
+<!-- pagebreak -->
+
 Within roughly a week, I reconstructed the calculation, understood the status
 and reached the corrected result. The accountant had had most of a year, three
 attempts and direct help from the administration. Even afterward, our exchange
@@ -720,6 +727,8 @@ raised leg, special shoe, injection, stored food, repeat.
 Planning had stocked the food. Savings paid for private treatment. Discipline
 carried me through the injections. The chair beside the bed remained empty.
 
+<!-- pagebreak -->
+
 A call came in March despite my documented request for quiet. The repaired tax
 matter re-entered the room while I was immobilized and alone.
 
@@ -807,6 +816,8 @@ photographed me and took my fingerprints. The woman guiding my fingers onto the
 paper was attractive to me. It was an inconveniently ordinary perception at the
 exact moment I was being converted into an image, a print and an entry in a
 file. Her work remained professional; my mind remained human.
+
+<!-- pagebreak -->
 
 The formal defence kept changing shape. A lawyer remained unreachable for
 months and later asked to leave because he was overloaded. The trainee warned
@@ -1183,6 +1194,8 @@ formed later: *Care, Your Honour. That is where the money came from.* The court
 could treat the life as irrelevant and still examine the savings that life had
 produced.
 
+<!-- pagebreak -->
+
 These are my memories of tone and wording, not a transcript and not proof of a
 judge's private view. Their narrative force lies elsewhere. The room could
 recognize fear, ingenuity and work as moments of almost comic incongruity while
@@ -1296,6 +1309,8 @@ Only I could decide whether the feeling was true to the life, because I was the
 person who had lived it. The mix became accurate where learned reality met
 lived reality.
 
+<!-- pagebreak -->
+
 For roughly three years, the same class of tool helped me build MyScoutee and
 survive the legal file around it. In one window, I was asking how to preserve
 human agency in a social network. In another, I was asking how to format a
@@ -1335,6 +1350,8 @@ consequences. It returned my assumptions in altered forms: a proposed
 structure, a wrong inference, an image, a counterexample, a voice. What I kept,
 rejected or corrected made my own judgment visible to me. I was learning the
 work and, through the work, recognizing the person making it.
+
+<!-- pagebreak -->
 
 The machine brought learned patterns; I brought lived consequence. Its errors
 could expose mine, and my corrections could change its next attempt. That loop
@@ -1410,6 +1427,8 @@ travel before that future arrives.
 
 That is the character the procedural file could not explain. The shadow did not
 vanish. I learned to work inside it until, on many days, I no longer felt it.
+
+<!-- pagebreak -->
 
 The trial court transmitted my constitutional complaint. The Constitutional
 Court wrote back on 21 October 2025: the criminal case was still pending, so the

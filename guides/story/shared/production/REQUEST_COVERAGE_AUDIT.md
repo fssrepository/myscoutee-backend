@@ -55,6 +55,11 @@ become independently verified evidence.
   remain separate workflow layers.
 - [x] DIY-first, not DIY-only: a person may organize everything, share the work
   or rely on a provider.
+- [x] Founder character background: a programming decision at eight through
+  Commodore 64 game worlds; simultaneous attraction to exact code, painting,
+  historic buildings and mathematically ordered but humanly imperfect form;
+  quiet restraint that others can mistake for fear; anger is rare enough that
+  an unsoftened voice can silence a room without making him hot-tempered.
 
 ### Production coverage
 
