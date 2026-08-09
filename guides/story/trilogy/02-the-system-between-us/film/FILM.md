@@ -14,3 +14,8 @@ The film is built from twenty-two exact eight-second scene intervals plus one
 four-second final card. This makes each planned motion interval compatible with
 an eight-second first/last-frame video workflow while keeping the master exactly
 three minutes.
+
+Its job is to prove that a feature-length human story exists, not to turn the
+books or legal record into a three-minute explainer. The short establishes the
+whole person, the institutional compression and the open line; viewers who want
+the complete chain continue into the two books.

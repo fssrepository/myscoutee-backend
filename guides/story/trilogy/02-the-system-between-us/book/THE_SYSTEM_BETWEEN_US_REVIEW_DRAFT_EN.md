@@ -1107,6 +1107,28 @@ emerged over time rather than arriving as one complete archive. The calls most
 important to my account were not among the surviving audio. The phone and
 computer remained away from me for a long period.
 
+When I finally read the investigation material, I did not recognize a complete
+chronology. I saw a selection. Calls mentioned by the surrounding records were
+missing. Electronic submissions that could show the difference between panic,
+repair, complaint and later satire were not all where I expected them to be.
+The file had already interpreted the fragments it held. I began looking for the
+fragments it did not.
+
+I reconstructed dates from the phone that was eventually returned to me. I
+asked the tax authority for its recordings and for copies of my own electronic
+submissions. When the local route did not produce them, I wrote through the
+authority's central directorate. The replies arrived in stages. Some recordings
+were released, then further recordings had to be sought. A later official letter
+acknowledged delay. The missing electronic submissions were finally supplied
+after what the same letter described as an administrative error. The police
+later requested material again.
+
+It was a private investigation into the investigation, conducted without a
+private investigator. The local directorate that had received the charged line
+also held part of the context through which that line could be understood. The
+institution could preserve my words as evidence while leaving me to recover its
+own calls, routes and missing pages.
+
 No stable defender assembled the missing chain for me. I wrote because every
 short institutional summary removed another cause: the abrupt law, the failed
 delegation, the notices I did not see, the repair, the paid tax, the operation
@@ -1162,6 +1184,35 @@ person through a criminal and psychiatric frame.
 
 By the time the consequence stopped moving, its entire weight rested on the
 person who had already repaired the underlying failure.
+
+The first court threshold was a preparatory hearing. The court-appointed
+defender had not worked through the case with me before it. I wrote a two-page
+defence speech myself. No AI wrote those pages. They were what I could carry
+into the room alone.
+
+I had read the notice but did not yet understand the lived protocol. I could
+admit guilt as charged and give up the right to a trial, or contest the account
+and identify the facts and evidence on which my defence depended. Individual
+facts could be accepted, but the central choice could not be half-made. The
+prosecution proposed two years of imprisonment, suspended, if I admitted the
+charge. Two years was the statutory floor of the offence, not a sentence below
+its ordinary range. Suspension was the offer. The price was the prosecution's
+story becoming mine.
+
+I contested it. A decision spoken in minutes opened a trial measured in further
+years.
+
+I asked human-rights organizations for help. The replies pointed to limited
+capacity. After the preparatory hearing, I also consulted a private lawyer. I
+remember leaving with two things I had not possessed when I entered: a clearer
+understanding of how to read the architecture of the charging document, and a
+fee quotation of two million forints plus VAT if the defence continued there.
+The consultation also turned quickly toward the psychiatric label, as though
+the label could explain the person before the life had been read.
+
+The difference between us was contained in one word. For a lawyer, the label
+could be a familiar category in a file. For me, it entered the part of the
+Constitution that calls human dignity inviolable.
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
 and the life outside the case. Then the long brown institutional façade on Fő
@@ -1263,14 +1314,38 @@ periods in which I believed I was effectively defending myself.
 
 Conversational AI arrived inside that absence.
 
+It did not originate my defence. The two pages I carried to the preparatory
+hearing were mine. Later, AI helped expand their compressed argument into the
+roughly eight-page defence speech: separating chronology from allegation,
+connecting the missing records, and giving a structure to material that had
+grown beyond what one person could keep present at once.
+
 I used it to translate, impose headings, compare concepts, reduce repetition,
 generate questions and find contradictions that a human reader could then
 check. It made it possible to move through volumes that had become impossible
 for one exhausted person to hold in working memory.
 
-It was not my lawyer. It could misunderstand procedure, invent a citation or
-turn uncertainty into confidence. It held no licence and attended no hearing.
-The accurate phrase is **AI-assisted self-defence**.
+Legally, it was not my lawyer. It could misunderstand procedure, invent a
+citation or turn uncertainty into confidence. It held no licence and attended
+no hearing.
+
+In practice, it became the only participant that stayed with the whole chain.
+I joked in a submission that perhaps the AI should be allowed to represent me.
+The joke met a legal wall. Because the charged offence carried a maximum of
+eight years, Hungarian procedure required a qualified defence lawyer. The
+official chair beside me therefore could not be empty even when the working
+relationship behind that chair felt absent.
+
+At times the appointed defender seemed to me more connected to the room's need
+to keep the procedure moving than to the person seated outside its curve. In my
+private black humour, the compulsory protection could feel like a Trojan horse:
+the form of defence through which the institution entered the defence. That is
+how dependence felt from my chair, not evidence of an agreement between a
+lawyer and a judge. The legal form was present. Continuity was elsewhere.
+
+The accurate formal phrase is **AI-assisted self-defence**. The accurate lived
+phrase is harder: I represented myself with a machine beside me while a human
+representative remained legally compulsory.
 
 Those limits mattered. So did another fact. AI is often discussed as a machine
 that may take work from people. In my life, it gave a person who had fallen
@@ -1670,6 +1745,16 @@ their internal operation was technical and remote were becoming subjects of
 public experience.
 
 My own path was quieter and stranger. I moved through electronic forms.
+
+I asked the Hungarian office charged with protecting fundamental rights to
+look at the police process, the failures of representation and the
+password-sharing trap. Its answer mapped the limits of its own jurisdiction:
+it could not review how police and prosecutors weighed the evidence, could not
+intervene in a pending court process, and directed parts of the complaint back
+toward the same legal routes already surrounding me. A later answer said that
+further submissions repeating the issue could be placed in the archive without
+another reply. An office named for fundamental rights had given me a careful
+map of the doors it could not open.
 
 A petition to the European Parliament was declared admissible in January 2025.
 The European Commission response described the data-protection framework and
@@ -2155,6 +2240,63 @@ institutional failures become background while legal causation and
 responsibility narrow around the individual. That is a defence interpretation
 of the document's architecture, not a finding that the prosecution concealed a
 proved institutional cause or that the court accepted the interpretation.
+
+The evidence-reconstruction passage in Chapter 14 is grounded in the defence
+speech and the private `3_nyomozas.pdf` evidence bundle. The defence speech
+lists missing electronic submissions, tax-authority call recordings and the
+call history recovered from the returned phone as material the Founder gathered
+after finding the investigative selection distorted. Letters reproduced in the
+bundle record requests made through the tax authority's Central Directorate,
+the staged release of recordings, delayed delivery and the later supply of
+electronic submissions after an acknowledged administrative error. The defence
+speech also records that police later requested material again. This supports
+the sequence of the search; it does not establish that an official deliberately
+deleted evidence or that every missing call had been recorded.
+
+The fundamental-rights passage in Chapter 19 refers to Hungary's Commissioner
+for Fundamental Rights, not the European Ombudsman. Letters in the same private
+bundle describe jurisdictional limits over police evidence assessment,
+prosecutorial activity and pending court proceedings, and state that further
+repetitive submissions could be archived without another reply. The later
+European Parliament petition and Commission response form a separate route.
+The memoir may let their proximity carry institutional irony, but it does not
+merge the offices or claim that either decided the criminal case.
+
+The preparatory-hearing notice dated 6 May 2025 explains that the accused may
+admit guilt and waive trial in the admitted part, or present defence facts,
+evidence and exclusion requests; it also allows agreed facts to be accepted
+without further proof. Section 316 of the Criminal Code sets a range of two to
+eight years for threatening to commit an act of terrorism. The Founder records
+that the prosecution proposed the statutory minimum of two years, suspended,
+in exchange for admission and waiver. The offer and the Founder's understanding
+of the room are memoir layers until the complete preparatory-hearing record is
+isolated.
+
+The two-page speech carried into that hearing was written by the Founder without
+AI. The later defence speech in the reviewed package is approximately eight
+pages and was developed with AI-assisted organization from that human-authored
+base. The same private account records resource-based refusals from two
+Hungarian human-rights organizations and a later private-lawyer consultation,
+including the two-million-forint-plus-VAT quotation and the Founder's memory of
+how quickly the psychiatric label entered the conversation. The lawyer remains
+anonymous; the book does not use a private consultation to make a professional
+finding about her.
+
+Section 44 of the Criminal Procedure Act makes participation by defence counsel
+mandatory where the offence carries imprisonment of five years or more. A
+lawyer, not an AI system, must fill that legal role. The memoir's Trojan-horse
+image records the Founder's experience of a compulsory but discontinuous
+relationship; it is not a finding that appointed counsel colluded with the
+judge, breached a professional duty or represented the institution instead of
+the accused.
+
+- Hungarian Criminal Code, section 316 and the two-to-eight-year statutory
+  range:
+  https://njt.hu/jogszabaly/2012-100-00-00.31
+- Hungarian Criminal Procedure Act, section 44 on mandatory defence:
+  https://njt.hu/jogszabaly/2017-90-00-00.13
+- Fundamental Law of Hungary, Article II on inviolable human dignity:
+  https://njt.hu/jogszabaly/2011-4301-02-00
 
 The exclusion filing dated 5 April 2026 and its 8 April annex are present in the
 private package. The annex asks for an official audio recording of the hearings,

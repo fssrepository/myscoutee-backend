@@ -14,11 +14,13 @@
 | Human thesis | a person's worst response must not become more legible than the path that produced it |
 | Systems thesis | direct notice, granular authority, visible correction and human context are infrastructure |
 | Trilogy bridge | Part I shows a first judgment closing a human meeting; Part II shows the same compression acquiring institutional force |
-| AI thesis | beyond displacement risk, AI can give an unsupported person voice and continuous capacity; bounded, visible and reversible failure can improve the next attempt without turning exploration into permission to harm |
+| AI thesis | beyond displacement risk, AI can give an unsupported person voice and operational continuity even when it cannot hold a human legal role; bounded, visible and reversible failure can improve the next attempt without turning exploration into permission to harm |
 | Narrative rule | lived scene first; legal precision and source boundaries at the back |
 | Knowledge rule | at every moment, the audience knows only what the Founder knew then; later meaning arrives only when he reaches it |
 | Dramatic rule | sensory fact before interpretation: let the room, body, object, pause or expression carry the pressure before naming the thesis |
 | Emotional rule | never instruct the audience to feel outrage, pity or agreement; preserve enough ambiguity for anger, fear, recognition, doubt or another response |
+| Short-film function | open the door to the books and demonstrate that a feature-length human story exists; do not compress the legal record into a three-minute proof brief |
+| Selection rule | keep only beats that make the whole person and the institutional compression emotionally legible; the book and notes carry chronology, evidence and legal detail |
 | Language rule | translate Hungarian force through concrete image, rhythm and black humour; prefer a portable image an ordinary reader can see at once over native slang, a literal calque, legal jargon or one repeated profanity |
 | Final line | **MyScoutee. Test the system between us.** |
 
@@ -31,14 +33,23 @@ route into work. Its contract looks unstable; its distant human team does not. A
 sudden 2022 tax-law change places him, his accountant and the tax administration
 inside a low-trust triangle in which each sees a different screen. Repeated
 filings, missing context, physical vulnerability and a written outburst become
-a criminal case. Without stable effective legal help, he spends three years
-using AI to organize his own defence and transform complaint into institutional
-design. As Hungarian streets, judges and finally an electorate force a wider
+a criminal case. Finding the investigative selection incomplete, he has to
+recover call history, recordings and electronic submissions from the same
+administrative world that preserved his words against him. Without stable
+effective legal help, he spends three years using AI to organize his own defence
+and transform complaint into institutional design. As Hungarian streets, judges and finally an electorate force a wider
 political transition, his file crosses paths with the President, the
 Constitutional Court and the Venice Commission. The country changes systems
 before his case reaches an ending.
 
 ## 3. The contrast that earns three minutes
+
+The short film does not tell the complete story. Its successful final question
+is not whether the viewer has mastered the case, but whether the viewer wants
+to enter the books—and can already see the feature film inside them. The first
+minutes introduce a whole person before a file creates a second biography. The
+remaining scenes make that collision felt through a few bodies, rooms, objects
+and pauses. Evidence belongs behind the door, not piled in its opening.
 
 The film alternates two scales:
 
@@ -50,6 +61,7 @@ The film alternates two scales:
 | one post-operative body made visible in a portal | an administration maintaining ordinary deadlines |
 | one disputed sentence | years of procedure |
 | one seized phone and computer | a national digital state |
+| one person recovering missing records | an investigation that arrived as a selection |
 | one AI-assisted self-defence | courts, petitions and constitutional offices |
 | one open hearing date | a country with an interim President |
 
@@ -67,6 +79,11 @@ AI brings learned patterns and preserves failed routes long enough to improve
 the next attempt. The visual argument is for bounded experience—read-only
 knowledge, sandboxed trials, logged review and reversible failure—not unguarded
 autonomy.
+
+The film may let the legally compulsory defence chair and the operationally
+continuous AI work surface coexist as an unresolved contrast. It must not show
+AI practising law, replace the appointed lawyer with a machine, or visualize
+the Founder's private Trojan-horse metaphor as proof of collusion.
 
 The film does not ask the audience to agree with the Founder before entering
 his experience. It preserves the knowledge horizon of each scene. The raised

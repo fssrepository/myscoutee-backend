@@ -10,10 +10,24 @@ The trilogy part and the edition version are separate. This book is Part
   group and farewell lunches, studied the prices, watched colleagues eat and
   performed “not hungry” as if it were a Hungarian habit. When he finally
   ordered food once or twice in year four or five, colleagues were surprised.
-- Kept muesli and two-litre milk bottles away from the restaurant and connected
-  every avoided meal to the private chart rising toward Budapest-cost financial
-  independence—the reason for the Founder's extreme London focus. No colleague
-  exclusion or diet claim is implied.
+- Kept muesli and two-litre milk bottles away from the restaurant. The extreme
+  focus now begins when the private chart first looks capable of reaching the
+  Budapest-cost financial-independence threshold for which the Founder came to
+  London; only then does each avoided lunch feel like movement of the line. No
+  colleague exclusion or diet claim is implied.
+- Added the childhood character key: at eight, Commodore 64 game worlds prompt
+  the decision to become a programmer, while their backgrounds begin the
+  lifelong double attention to exact code and to painting, historic buildings
+  and mathematically ordered but humanly imperfect form.
+- Added the complementary temperament key: the Founder is usually read as
+  quiet and restrained, is not quick-tempered, and may let anger reach his
+  voice only once in several years—making the rare unsoftened response silence
+  a room without turning him into an aggressive character.
+- Added the remembered conversation with Syrian refugees during the Egypt
+  journey as a quiet distinction between chosen travel and necessary flight:
+  everybody escapes differently.
+- Added a stable page break after the Soho lunch scene so its final visible-
+  need line can breathe before the thirteen-person house begins.
 
 ## 1.0.0 — 2026-08-08
 

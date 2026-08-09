@@ -31,9 +31,13 @@ to the reader. The canonical detailed rule is
   London, global/local and six-person MyScoutee plates.
 - The Soho lunch memory has been corrected across book, storyboard and prompts:
   he remained at group/farewell lunches and watched colleagues eat while hiding
-  the cost constraint; the private savings chart, milk and muesli carry the
-  financial-independence focus. Old “colleagues leave while he stays behind”
-  staging is invalid.
+  the cost constraint. The extreme focus begins only when the private savings
+  chart looks capable of reaching Budapest-cost independence; milk and muesli
+  remain private. Old “colleagues leave while he stays behind” staging is invalid.
+- Character background now includes the age-eight Commodore 64 programming
+  decision, the parallel visual-art/historic-form attention, quiet reserve,
+  rare anger and a controlled unsoftened voice. Egypt now also holds the
+  remembered Syrian-refugee encounter as book background, not an extra film beat.
 - Film timing remains twenty-two 8-second intervals plus the deterministic
   4-second S23 brand card: exactly 03:00.
 
@@ -51,6 +55,10 @@ to the reader. The canonical detailed rule is
   two-expert contrast, courtroom black humour, migration context, system-error
   proposition, the first-judgment bridge from Part I and the exact
   Navier–Stokes research bridge.
+- The Other Biography now carries the same quiet/rare-force character contrast.
+  Selected scene endings have deliberate breathing pages; the editable PDF may
+  grow without new story or duplicated pull quotes. The three-minute film is a
+  doorway/feature proof of concept, never a compressed legal brief.
 - Public offices remain unnamed in narrative prose. The KATA-software-team
   remark stays memoir-layer until its underlying recording is isolated; public
   names may remain only in source metadata. Emergency, Pride, judicial and

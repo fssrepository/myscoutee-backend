@@ -5,6 +5,17 @@ first public edition is `1.0.0`.
 
 ## Unreleased revision of 1.0.0 — 2026-08-09
 
+- Added the Founder's longstanding temperament contrast to the other-biography
+  frame: quiet reserve was often mistaken for compliance, anger was rare, and
+  the report received the exceptional force of his voice without the years of
+  quiet around it.
+- Added deliberate page-end breathing after the child sentence, empty chair,
+  fingerprint room, courtroom money line, learned/lived sound insight, AI
+  mirror and uncaged-mind sequence. No prose was duplicated as a pull quote or
+  removed to manufacture extra pages.
+- Locked the short-film purpose as a doorway to the books and proof that a
+  feature-length human story exists, not a three-minute evidentiary or legal
+  explainer.
 - Reopened the editable manuscript for a deeper source-led narrative pass; the
   locked 8 August PDF remains the last released artifact until republication.
 - Reframed the book as public history experienced through one human life rather

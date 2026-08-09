@@ -17,6 +17,10 @@ The ending is therefore meaningful without a verdict:
 
 > Test the systems between us before pressure tests them for us.
 
+This completeness is emotional, not evidentiary. The short film is a doorway
+and a feature-film proof of concept. It must leave room for the viewer to want
+the books and the longer film rather than pretending to exhaust either.
+
 ## Part III owns the outcome
 
 Part II must not state or imply the final result of:
@@ -39,4 +43,3 @@ breaks according to the verified outcome.
 Do not use a prison door, gavel strike, guilty/not-guilty card or sensational
 “to be continued.” The final condition is uncertainty, not manufactured danger.
 The interim presidential chair and the Founder's scheduled hearing are enough.
-

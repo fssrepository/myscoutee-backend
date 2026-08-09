@@ -11,7 +11,15 @@
 | Audience | independent operators, community builders, venue/activity partners, product collaborators, early pilot communities |
 | Primary emotion | recognition → ache → clarity → agency → invitation |
 | Promise | not “we find your perfect person”; “we are designed to carry mutual intent toward a real shared meeting” |
+| Short-film function | open the door to the memoir and product while demonstrating that the Founder story can sustain a longer film; do not compress every journey or relationship into proof |
+| Selection rule | one lived human image must carry each thesis; the book keeps the full biography and route detail, while the short preserves the product path and emotional invitation |
 | CTA | **Test locally. Learn together. Keep the opt-out.** |
+
+The three-minute film is a doorway, not a substitute for the book. It must make
+the viewer want to understand the complete life behind the product while still
+making MyScoutee's distinct path legible. A scene earns its place by carrying a
+human feeling and a product consequence at once; unselected memories remain in
+the book rather than becoming a faster montage.
 
 ## 2. Logline
 
