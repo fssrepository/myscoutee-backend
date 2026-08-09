@@ -23,10 +23,6 @@ vertical axis. Keep one direction of travel, a measured pace and the same
 painterly cinematic 2.5D texture. No hard cut, camera jump, freeze, collage,
 split screen, style change, face morph, duplicated person or abrupt transition.
 
-Generate silent production picture only. No ambience, sound effects, dialogue,
-narration, singing or generated music. Final narration and score are added in
-post-production.
-
 No Victorian home, staircase house, hostel, slum framing, flags, folk costume,
 readable text, logos, tourist landmarks, faceless extras or additional people.
 
