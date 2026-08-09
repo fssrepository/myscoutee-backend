@@ -1,6 +1,7 @@
-# Locked-for-review 05:20 script
+# Written-locked 05:20 script
 
-Status: **synchronized to the 9 August book revision; not picture-locked**.
+Status: **synchronized to the 9 August book revision and prompt package; written
+lock complete. Picture lock follows approval of the exact endpoint frames.**
 
 The film uses a deterministic eight-second opening card, **38 generated
 eight-second intervals** (`05:04`) and a deterministic eight-second closing

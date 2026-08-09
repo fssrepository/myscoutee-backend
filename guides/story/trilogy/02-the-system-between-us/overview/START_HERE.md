@@ -1,11 +1,10 @@
 # Start here — Part II final written-package review
 
-The 8 August public PDF remains the last released artifact. The editable book
-was reopened on 9 August for a deeper source-led narrative revision. The
-evidence chronology and ledgers have been updated with it. The 107-page reading
-PDF, 05:20 script, 38-interval storyboard and generation prompts are internally
-synchronized. One external critical-AI pass remains; no separate Founder
-cover-to-cover pass is planned. No frame or motion work is active.
+The public edition was republished on 9 August after the deeper source-led
+narrative revision and final critical-AI pass. The evidence chronology and
+ledgers have been updated with it. The 106-page reading PDF, 05:20 script,
+38-interval storyboard and generation prompts are internally synchronized. The
+written package is closed; no frame or motion work is active yet.
 
 ## Current deliverables
 
@@ -29,17 +28,17 @@ cover-to-cover pass is planned. No frame or motion work is active.
 
 ## Review order
 
-Apply any accepted final critical-AI correction to the chronology and manuscript
-first, then propagate it to the film script, storyboard and prompt pack. Do not
-repair a factual problem only inside a visual prompt.
+Any later factual correction must enter the chronology and manuscript first,
+then propagate to the film script, storyboard and prompt pack. Do not repair a
+factual problem only inside a visual prompt.
 
 The next approval gates are:
 
 | Gate | Decision | Credit use |
 | --- | --- | --- |
 | A | internal source, privacy and cross-package audit | complete |
-| B | final external critical-AI response accepted/applied | none |
-| C | book, 05:20 script, storyboard and prompts closed | none |
+| B | final external critical-AI response accepted/applied | complete |
+| C | book, 05:20 script, storyboard and prompts closed | complete |
 | D | next production interval selected | none |
 | E | its two exact endpoint frames approved | two still images only |
 | F | Veo 3.1 Lite motion generation | one eight-second result |
@@ -66,17 +65,15 @@ The film may compress time but may not merge those layers into one claim.
 
 ## Production boundary
 
-The Founder authorized the first publication on 8 August 2026 and reopened the
-editable manuscript on 9 August. Until the revised book and downstream sync are
-approved, do not:
+The Founder authorized the first publication on 8 August 2026 and the final
+written-package revision on 9 August. During picture production, do not:
 
 - build a slideshow or animatic;
 - upload private audio or primary legal documents to a cloud model;
-- generate any scene before the written package is accepted;
+- generate unplanned midpoint images or unsynchronized scenes;
 - imply an acquittal, conviction, clinical conclusion or final political result
   that has not occurred.
 
-After the final critical-AI response is resolved, direct Veo 3.1 Lite production
-may generate the next interval's exact first and last frames from the locked
-role and location descriptions. Do not create disposable midpoints or book-only
-substitutes.
+Direct Veo 3.1 Lite production may now generate the next interval's exact first
+and last frames from the locked role and location descriptions. Do not create
+disposable midpoints or book-only substitutes.

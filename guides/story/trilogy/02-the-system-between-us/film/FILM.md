@@ -2,8 +2,8 @@
 
 Working title: **The System Between Us**.
 
-Status: **locked-for-review 05:20 English script; the 38-interval storyboard and
-prompt package are being synchronized; no production media generated**.
+Status: **written-locked 05:20 English script; the 38-interval storyboard and
+prompt package are synchronized; no production media generated yet**.
 
 - [creative bible](CREATIVE_BIBLE.md)
 - [time-coded script](SCRIPT.md)
