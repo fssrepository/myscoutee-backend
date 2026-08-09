@@ -4,9 +4,9 @@
 
 Status: **English public edition v1.0.0 published 8 August 2026; editable
 manuscript reopened for an unreleased source-led revision on 9 August. The
-05:20 script, 38-interval storyboard, Veo 3.1 Lite prompts and shot tracker are
-synchronized to the current editable manuscript. The Founder reading pass may
-still produce corrections before the revised publication is locked.**
+107-page reading PDF, 05:20 script, 38-interval storyboard, Veo 3.1 Lite prompts
+and shot tracker are internally synchronized. One external critical-AI pass may
+still produce corrections before frame production begins.**
 
 Part II continues from the exact final threshold of Part I. The same founder who
 crossed countries to find work and human connection now crosses a landscape of

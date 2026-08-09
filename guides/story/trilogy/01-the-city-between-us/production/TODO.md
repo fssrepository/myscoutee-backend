@@ -43,7 +43,12 @@ and music remain downstream of the direct Veo 3.1 Lite picture pass.
   Part I on 7 August 2026.
 - [x] Founder resumed the synchronized generation baseline on 8 August 2026.
 
-## 2. Facts still requiring confirmation before public generation
+## 2. Optional fact enrichment; not blockers for the bounded edition
+
+- [x] Audit the current manuscript and film package so the unresolved details
+  below are omitted, anonymous, generalized or explicitly marked as memories.
+  They require confirmation only if a later edition wants to state them more
+  precisely; they do not block the current book or Veo Lite frame route.
 
 - [x] University completion year (2004), earliest possible diploma year after
   dissertation delay (2005), Indian-company start (October 2005) and London

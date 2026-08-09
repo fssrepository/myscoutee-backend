@@ -2209,7 +2209,8 @@ of the document's architecture, not a finding that the prosecution concealed a
 proved institutional cause or that the court accepted the interpretation.
 
 The evidence-reconstruction passage in Chapter 14 is grounded in the defence
-speech and the private `3_nyomozas.pdf` evidence bundle. The defence speech
+speech and the private investigation evidence bundle listed in the internal
+source inventory. The defence speech
 lists missing electronic submissions, tax-authority call recordings and the
 call history recovered from the returned phone as material the Founder gathered
 after finding the investigative selection distorted. Letters reproduced in the
@@ -2281,9 +2282,10 @@ The Chapter 14 complaint route combines the Founder's filed account and the
 reviewed correspondence: he called police, prosecution and court contacts,
 used electronic judicial submission routes, complained to court administration
 and the prosecution hierarchy, and sought help from the fundamental-rights
-office. The separate `obh_panasz.pdf` is addressed to Hungary's National Office
-for the Judiciary; it is not relabelled as a decision of the National Judicial
-Council. The recurring image of a future complaint, appeal, lawsuit or
+office. The separate judiciary-administration complaint in the private bundle
+is addressed to Hungary's National Office for the Judiciary; it is not
+relabelled as a decision of the National Judicial Council. The recurring image
+of a future complaint, appeal, lawsuit or
 Strasbourg application replacing present correction is the memoir's synthesis
 of those routes. It is not a finding that any named official consciously chose
 to violate a rule because later litigation was available.
@@ -2301,11 +2303,11 @@ private package. The annex asks for an official audio recording of the hearings,
 the accountant and a tax-administration representative to be heard, and the
 outstanding 8 April evidentiary requests to be carried out. It records the
 Founder's account that a clerk had described official recording as expensive.
-The 5 April filing itself quotes the judge's Hungarian sentence, “Mi az,
-letöltendőt akar kapni?” The chapter renders its spoken force as “What—are you
-asking to be sent to prison?” rather than using the legalistic “custodial
-sentence.” The clerk's startled reaction when the apartment was mentioned is
-memoir; it is not presented as a quotation from those filings.
+The 5 April filing itself quotes the judge's question in Hungarian. The chapter
+renders its spoken force in English as “What—are you asking to be sent to
+prison?” rather than using the legalistic “custodial sentence.” The clerk's
+startled reaction when the apartment was mentioned is memoir; it is not
+presented as a quotation from those filings.
 
 The separate decision letter was delivered by post but is not in the reviewed
 package. The Founder confirms that it rejected exclusion, warned about a
@@ -2335,10 +2337,10 @@ exhausted or that an application would be admissible.
 
 ## The primary record
 
-This edition was reconstructed from the private source package described in
-`research/SOURCE_INVENTORY.md`: tax and portal evidence, authored submissions,
-the charge, a forensic report, correspondence, product screenshots and a
-bounded set of private recordings awaiting local transcription.
+This edition was reconstructed from a private source inventory containing tax
+and portal evidence, authored submissions, the charge, a forensic report,
+correspondence, product screenshots and a bounded set of private recordings
+awaiting local transcription.
 
 Those recordings are partial evidence of the wider call sequence. The defence
 speech refers to the audio record and preserves the Founder's later account of
@@ -2488,11 +2490,11 @@ criminal-record outcome. His indifference to the bank dismissal describes his
 burned-out internal state, not the objective seriousness of the employment
 decision.
 
-The official issuance terms for the retail government bond then known as MÁP
-Plusz described domestic and foreign natural persons as eligible subscribers
-and the public as its target market. This explains the Founder's household-
-savings perspective; it does not decide whether the bank's employee-trading
-policy was lawful, proportionate or required. In January 2021, Hungary's public
+The official issuance terms for the retail Hungarian government bond described
+domestic and foreign natural persons as eligible subscribers and the public as
+its target market. This explains the Founder's household-savings perspective;
+it does not decide whether the bank's employee-trading policy was lawful,
+proportionate or required. In January 2021, Hungary's public
 rules included a 20:00–05:00 curfew, a ban on gatherings, early shop closure
 and broad mask requirements. The particular masked dismissal room remains
 memoir.

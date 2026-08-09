@@ -5,6 +5,11 @@ The trilogy part and the edition version are separate. This book is Part
 
 ## Unreleased correction of 1.0.0 — 2026-08-09
 
+- Consolidated the three remaining sparse endings without deleting prose:
+  the London closing reflection now stays with its contextual ornament,
+  Chapter 18 closes with its ornament on one page, and the final product-claims
+  page now also carries the edition colophon and closing emblem. The editable
+  draft consequently contracts from 55 to 52 pages.
 - Corrected the Soho lunch memory across the editable book and production
   package. The Founder did not remain behind when colleagues ate: he joined
   group and farewell lunches, studied the prices, watched colleagues eat and

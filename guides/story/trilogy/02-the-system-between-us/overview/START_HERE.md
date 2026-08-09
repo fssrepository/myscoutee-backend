@@ -1,11 +1,11 @@
-# Start here — Part II active manuscript revision
+# Start here — Part II final written-package review
 
 The 8 August public PDF remains the last released artifact. The editable book
 was reopened on 9 August for a deeper source-led narrative revision. The
-evidence chronology and ledgers have been updated with it. The 05:20 script,
-38-interval storyboard and generation prompts form the synchronized review
-baseline until the Founder approves the revised manuscript. No frame or motion
-work is active.
+evidence chronology and ledgers have been updated with it. The 107-page reading
+PDF, 05:20 script, 38-interval storyboard and generation prompts are internally
+synchronized. One external critical-AI pass remains; no separate Founder
+cover-to-cover pass is planned. No frame or motion work is active.
 
 ## Current deliverables
 
@@ -29,24 +29,26 @@ work is active.
 
 ## Review order
 
-Review the manuscript first. Every requested correction should be made in the
-chronology and manuscript before it reaches the film script, storyboard and
-prompt pack. Do not repair a factual problem only inside a visual prompt.
+Apply any accepted final critical-AI correction to the chronology and manuscript
+first, then propagate it to the film script, storyboard and prompt pack. Do not
+repair a factual problem only inside a visual prompt.
 
 The next approval gates are:
 
 | Gate | Decision | Credit use |
 | --- | --- | --- |
-| A | written-source chronology accepted | none |
-| B | private audio transcribed locally and checked | none apart from optional local tooling |
-| C | public/private boundary and legal wording reviewed | none |
-| D | book and prompts accepted | none |
-| E | Part I-style public PDF built and visually inspected | local CPU only |
-| F | 05:20 narration and shot order accepted | none |
-| G | next production interval selected | none |
-| H | its two exact endpoint frames approved | two still images only |
-| I | Veo 3.1 Lite motion generation | one eight-second result |
-| J | narration, one continuous score and sound design | only after picture timing is stable |
+| A | internal source, privacy and cross-package audit | complete |
+| B | final external critical-AI response accepted/applied | none |
+| C | book, 05:20 script, storyboard and prompts closed | none |
+| D | next production interval selected | none |
+| E | its two exact endpoint frames approved | two still images only |
+| F | Veo 3.1 Lite motion generation | one eight-second result |
+| G | exact Jon voice settings recorded | none |
+| H | narration, one continuous score and sound design | only after picture timing is stable |
+
+Private-audio transcription and deeper document reconciliation remain optional
+source hardening for a later edition or Part III. The current bounded text does
+not claim that unreviewed audio or absent records were independently verified.
 
 ## Truth layers
 
@@ -74,6 +76,7 @@ approved, do not:
 - imply an acquittal, conviction, clinical conclusion or final political result
   that has not occurred.
 
-After approval, direct Veo 3.1 Lite production may generate the next interval's
-exact first and last frames from the locked role and location descriptions. Do
-not create disposable midpoints or book-only substitutes.
+After the final critical-AI response is resolved, direct Veo 3.1 Lite production
+may generate the next interval's exact first and last frames from the locked
+role and location descriptions. Do not create disposable midpoints or book-only
+substitutes.

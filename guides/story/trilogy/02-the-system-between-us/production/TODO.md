@@ -1,17 +1,21 @@
 # Narrative-first TODO
 
-Status: **Part II English memoir reopened for source-led revision on 9 August
-2026. The previous PDF remains the last released artifact. The revised book,
-05:20 script, storyboard and prompts are synchronized but remain unapproved and
-unpublished until the Founder completes the reading pass. Frame production is
-paused.**
+Status: **Part II English memoir and the 05:20 film-writing package were
+internally synchronized on 9 August 2026. The previous PDF remains the last
+released artifact. The Founder does not plan another separate cover-to-cover
+read; one final external critical-AI pass is the remaining editorial gate.
+Frame production is paused until that feedback is accepted or applied.**
 
 ## 1. Current review pass
 
 - [x] Complete the deeper memoir revision around the functioning-system
   counterfactual, human relationships, defence discontinuity, expert/courtroom
   absurdity, outward migration and the system-error mirror proposition.
-- [ ] Receive Founder approval on the revised English reading PDF.
+- [x] Complete the Founder's long factual, emotional, privacy and pacing review
+  through the guided revision process; no further separate cover-to-cover
+  Founder pass is planned.
+- [ ] Receive and resolve the final external critical-AI review. This is the
+  only remaining editorial gate before frame production.
 - [x] Resynchronize the 05:20 English narration, 38-interval storyboard and
   Veo 3.1 Lite prompt chain to the 9 August manuscript; repeat this propagation
   only if the Founder makes reading-pass corrections.
@@ -66,34 +70,42 @@ paused.**
 - [x] Publish version `1.0.0` with checksum and publication manifest while
   keeping the source and draft export editable.
 
-## 2. Source reconciliation still required
+## 2. Source reconciliation boundary for this edition
+
+- [x] Audit the current manuscript so every still-unreconciled source below is
+  omitted, generalized or explicitly attributed as memoir rather than presented
+  as independently verified documentary fact. These items may strengthen a
+  later edition or Part III, but they do not block the bounded current text.
 
 - [x] Add and review the Constitutional Court's 21 October 2025 threshold
   letter documenting transmission, prematurity and absence of merits review.
-- [ ] Reconcile that letter with the exact submitted complaint and any later
-  request for a formal single-judge disposition.
-- [ ] Isolate the separate ruling on the April 2026 exclusion motion and the
-  official record for the first assigned judge's reported illness/departure.
-- [ ] Locate the exact submission containing the pasture metaphor before using
-  it as a documentary quotation.
-- [ ] Add the recent short reply from the new justice administration; it is not
-  one of the three reviewed local email PDFs.
-- [ ] Transcribe the thirteen-file root audio set locally. Use it to verify only
-  the calls that actually survive; the decisive absent exchanges remain
-  indirect evidence preserved through the defence speech and surrounding
-  records. Do not use cloud transcription without explicit authorization.
-- [ ] Reconcile the exact private-surgery date.
-- [ ] Reconcile the exact employment transition dates around 2020–2021 where
-  authored accounts differ.
-- [ ] Locate a hearing record for the court's questions about the apartment,
-  belongings, work, debt and government-bond account, plus the remembered
-  courtroom remarks about defamation, the accountant and random figures, if
-  exact wording will be public.
-- [ ] Recheck the 16 September 2026 hearing date before any release.
-- [ ] Recheck the serving President, Constitutional Court composition and any
-  later Venice Commission opinion before release.
-- [ ] Perform legal/privacy review of the public manuscript, especially
-  unresolved allegations and forensic/medical-adjacent material.
+- [x] Keep the exact submitted constitutional complaint and any later request
+  for a formal single-judge disposition outside the factual claim set until
+  reconciled; the book states only what the reviewed threshold letter supports.
+- [x] Treat the April 2026 exclusion ruling and the first assigned judge's
+  reported illness/departure as Founder account. No absent decision is quoted
+  as if independently reviewed.
+- [x] Keep the pasture image as literary memoir rather than a documentary
+  quotation until its exact submission is isolated.
+- [x] Mention only that a short reply arrived from the new justice
+  administration; do not quote or characterize its substance until added to the
+  source inventory.
+- [x] Keep the thirteen-file root audio set local and untranscribed. No decisive
+  published quotation claims support from audio that has not been heard.
+- [x] Omit the exact private-surgery date and retain only the verified sequence.
+- [x] Use only bounded employment dates where the 2020–2021 authored accounts
+  differ; the notes preserve the remaining chronology limit.
+- [x] Keep the apartment, belongings, work, debt, government-bond and courtroom
+  remarks at memoir layer unless a hearing record is later isolated; do not
+  present them as verbatim transcript.
+- [x] Record 16 September 2026 as the Founder-confirmed scheduled next hearing,
+  not a completed event; recheck it immediately before public release.
+- [x] Recheck the 2026 election, interim presidency and constitutional sequence
+  on 9 August 2026 against current official/public sources. Recheck again only
+  if release happens after a later institutional change.
+- [x] Complete an internal anonymity, attribution and privacy-boundary audit.
+  An independent lawyer has not reviewed the edition; obtain one if the Founder
+  wants legal advice rather than editorial risk-bounding.
 
 ## 3. Active visual work; audio remains downstream
 

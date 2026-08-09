@@ -1,6 +1,7 @@
 # Parts I–II request coverage audit
 
-Status: **written packages audited and synchronized; ready for direct Veo Lite production**
+Status: **written packages internally audited and synchronized; one external
+critical-AI pass remains before direct Veo Lite production**
 Audit date: **9 August 2026**
 
 This ledger converts the long Founder review into one production contract. A
@@ -210,3 +211,29 @@ become independently verified evidence.
 5. A local `published/` package means a versioned PDF/video, metadata and
    checksum. Posting to LinkedIn or any other external service remains an
    explicit Founder approval step.
+
+## Final internal audit — 9 August 2026
+
+- [x] Part I timeline is continuous: P00 + S01–S22 + E01, `24 × 8 s = 03:12`.
+- [x] Part II timeline is continuous: P00 + S01–S38 + E01, `40 × 8 s = 05:20`.
+- [x] Every S identifier appears exactly once in the matching shot manifest,
+  storyboard and copy-paste prompt chain; Part II CP endpoints run without a
+  gap from CP00 through CP38.
+- [x] Both packages lock `9:16`, `720×1280`, Veo 3.1 Lite, Jon narration,
+  silent generated picture, one continuous post score and separate captions.
+- [x] No slideshow/animatic or generated-video artifact remains under
+  `guides/story`; the historical benchmark pair is explicitly superseded.
+- [x] Active books, scripts, storyboards and prompts contain no private-person
+  name, employer name, sensitive offence label, mojibake or undecoded
+  replacement character. Contemporary public names are confined to source
+  identification in the reference apparatus, not the lived narrative.
+- [x] Both draft PDFs use the intended `432×648 pt` page size and embedded book
+  metadata. Part I is 52 pages after consolidating three sparse endings; Part
+  II is 107 pages. All manuscript headings except the deliberately graphical
+  `MyScoutee — The Story` title are recoverable from PDF text extraction.
+- [x] Locked published checksums verify. They remain unchanged; the active
+  illustrated drafts and editable sources are the current review lineage.
+- [ ] Resolve the Founder's final external critical-AI response. No further
+  independent Founder cover-to-cover pass is planned.
+- [ ] Before paid narration, record Jon's exact ElevenLabs voice ID, model and
+  visible settings; the local reference filename alone is not reproducible.

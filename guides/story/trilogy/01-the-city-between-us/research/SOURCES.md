@@ -8,12 +8,12 @@ research supports the story framing, not MyScoutee performance claims.
 
 - [Repository README](../../../../../README.md): product north star — “platform behind
   meetings, not swipes,” completed mutually welcomed real-world meeting.
-- [Project context](../../../../../plans/roadmap/PROJECT_CONTEXT.md): scope, current state and
+- [Project context](../../../../plans/roadmap/PROJECT_CONTEXT.md): scope, current state and
   product boundaries.
-- [Product deck notes](../../../../../pitches/PRODUCT_DECK_NOTES.md): priority, affinity,
+- [Product deck notes](../../../../pitches/PRODUCT_DECK_NOTES.md): priority, affinity,
   group/event workflow and claim discipline.
-- [Network deck notes](../../../../../pitches/DECK_NOTES.md): operator/network framing.
-- [Operator roadmap](../../../../../plans/roadmap/OPERATOR_NETWORK_ROADMAP.md): independent local
+- [Network deck notes](../../../../pitches/DECK_NOTES.md): operator/network framing.
+- [Operator roadmap](../../../../plans/roadmap/OPERATOR_NETWORK_ROADMAP.md): independent local
   operation and phased qualification.
 - [StableGroupPlanner.java](../../../../../server/projects/profile/src/main/java/com/raxim/myscoutee/algo/StableGroupPlanner.java):
   graph group-candidate construction and local improvement.

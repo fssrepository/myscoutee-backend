@@ -1,8 +1,9 @@
 # Current handoff — Parts I–II written packages synchronized
 
 Date: **9 August 2026**  
-Status: **written-package audit complete; ready for direct Veo 3.1 Lite frame
-production. Frame and motion generation have not begun.**
+Status: **written-package internal audit complete. One external critical-AI
+pass remains before direct Veo 3.1 Lite frame production. Frame and motion
+generation have not begun.**
 
 This is the clean resume point. Do not reconstruct the editorial state from
 conversation fragments. Do not build a slideshow or animatic.
@@ -36,6 +37,9 @@ Canonical tone rules:
   `trilogy/01-the-city-between-us/published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
 - The illustrated draft contains the Founder, Budapest, London, travel,
   Hungarian-house and six-person MyScoutee plates.
+- The current editable reading PDF is **52 pages**. Three sparse endings were
+  consolidated without deleting prose: the London return, the COVID-19 chapter
+  and Product Claims/colophon now each close on one page with their motif.
 - The Soho lunch memory is locked: he joined the lunches, watched colleagues
   eat and presented himself as not hungry; the savings focus tightened only
   when Budapest-cost independence appeared attainable.
@@ -49,6 +53,7 @@ Canonical tone rules:
 - Locked earlier publication, unchanged by this revision:
   `trilogy/02-the-system-between-us/published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
 - The active manuscript supersedes the earlier publication for editing only.
+- The current editable reading PDF is **107 pages**.
 - It preserves the lawful-work path, abrupt tax transition, accountant and
   administration chain, direct-password/delegation trap, correction and tax
   payment, surgery isolation, later search and interviews, two-expert contrast,
@@ -66,7 +71,9 @@ Canonical tone rules:
 
 The editable sources remain revisable. The version number does not change in
 this pass. No locked publication is overwritten or re-hashed without explicit
-Founder approval.
+Founder approval. The Founder does not plan another separate cover-to-cover
+read. Apply or reject the one final external critical-AI response, then close
+the editorial gate.
 
 ## 3. Film locks
 
@@ -91,10 +98,11 @@ Founder approval.
 
 Audio lock: [`../audio/NARRATION_AND_SCORE_LOCK.md`](../audio/NARRATION_AND_SCORE_LOCK.md).
 
-## 4. Next phase — direct Veo Lite production
+## 4. Next phase — final critic pass, then direct Veo Lite production
 
-Start after the Founder accepts the written package. The model and narrator are
-already locked: **Veo 3.1 Lite** and **Jon — Warm & Grounded Storyteller**.
+Start frame production after the Founder accepts the final critical-AI response.
+The model and narrator are already locked: **Veo 3.1 Lite** and **Jon — Warm &
+Grounded Storyteller**.
 
 1. Generate each scene's exact two numbered 9:16 endpoints from the locked role
    and location descriptions, beginning with Part I S01.
@@ -104,6 +112,11 @@ already locked: **Veo 3.1 Lite** and **Jon — Warm & Grounded Storyteller**.
 4. Record settings, charged credits, endpoint fidelity, identity consistency,
    motion quality and any concrete failure.
 5. Approve or repair that interval, then continue in small sequential batches.
+
+Before paid narration, record Jon's exact ElevenLabs voice ID, active model and
+visible settings in `../audio/NARRATION_AND_SCORE_LOCK.md`. The approved local
+reference audio and filename-derived working settings are not by themselves a
+reproducible voice lock.
 
 Canonical inputs:
 

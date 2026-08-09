@@ -1,9 +1,10 @@
 # Part II production
 
-The editable English book, 05:20 script, 38-interval checkpoint storyboard and
-Veo 3.1 Lite prompts are synchronized for the Founder's reading pass. The last
-published PDF remains untouched. Frame and motion work starts in a separate
-phase; audio remains downstream.
+The editable English book, 107-page reading PDF, 05:20 script, 38-interval
+checkpoint storyboard and Veo 3.1 Lite prompts are internally synchronized.
+One external critical-AI pass remains. The last published PDF remains
+untouched. Frame and motion work starts in a separate phase; audio remains
+downstream.
 
 - [TODO.md](TODO.md) is the ordered work and publication gate.
 - [STORY_AND_PROMPT_COVERAGE.md](STORY_AND_PROMPT_COVERAGE.md) keeps the book,
@@ -14,7 +15,8 @@ phase; audio remains downstream.
 - [SHOT_MANIFEST.csv](tracking/SHOT_MANIFEST.csv) tracks the locked P00,
   S01–S38 and E01 production units.
 
-The next visual task is direct Veo 3.1 Lite production: choose the next
-interval, generate its two exact 9:16 endpoints, then use the same pair and
-prompt for one eight-second result in Google Flow.
+After the critical-AI response is resolved, the next visual task is direct Veo
+3.1 Lite production: choose the next interval, generate its two exact 9:16
+endpoints, then use the same pair and prompt for one eight-second result in
+Google Flow.
 There is no slideshow or animatic stage.

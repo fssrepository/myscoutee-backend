@@ -753,6 +753,13 @@ def stylesheet() -> str:
   .compact-ending-tail-tight { line-height: 1.43; }
   .compact-ending-tail-tight > p,
   .compact-ending-tail-tight .ending-tail > p { margin-bottom: .07in; }
+  .compact-chapter-8,
+  .compact-chapter-18 { line-height: 1.38; }
+  .compact-chapter-8 > p,
+  .compact-chapter-8 .ending-tail > p,
+  .compact-chapter-18 > p,
+  .compact-chapter-18 .ending-tail > p { margin-bottom: .08in; }
+  .compact-chapter-8 .illustration.portrait-right img { height: 1.95in; }
   .pagebreak { page-break-before: always; height: 0; }
   .illustration { margin: .26in 0 .3in; break-inside: avoid; }
   .illustration img { display: block; width: 100%; border-radius: 12px; }
@@ -801,6 +808,20 @@ def stylesheet() -> str:
     .ending-tail {
       break-inside: avoid; page-break-inside: avoid;
     }
+    .compact-chapter-8 .folk-divider,
+    .compact-chapter-18 .folk-divider { height: .88in; }
+    .part-one-final-tail {
+      height: 5.72in; min-height: 5.72in; position: relative;
+    }
+    .part-one-final-tail > .edition-colophon {
+      break-before: auto; min-height: 0; padding: 0 .25in;
+      position: absolute; left: 0; right: 0; top: 48%;
+      transform: translateY(-50%);
+    }
+    .part-one-final-tail > .folk-divider {
+      bottom: 0; height: .9in; left: .25in; margin: 0;
+      position: absolute; width: 4.25in;
+    }
   }
 """
     context_rules = "\n".join(
@@ -824,6 +845,46 @@ def build_document(source: Path) -> str:
         for level, title, anchor in toc_items
     )
     body = markdown_to_html(body_lines, registry)
+
+    # Three short Part I endings should use the available page instead of
+    # spilling a few closing lines, the ornament or the colophon onto a nearly
+    # empty sheet. The prose is unchanged; these wrappers only tighten the two
+    # proven chapter tails and keep the final colophon with Product Claims.
+    compact_ranges = (
+        (
+            'id="8-the-first-three-years-and-the-fifth"',
+            '<section class="part-opener opener-3">',
+            "compact-chapter-8",
+        ),
+        (
+            'id="18-when-the-world-closed"',
+            '<section class="part-opener opener-4">',
+            "compact-chapter-18",
+        ),
+    )
+    for heading_marker, next_opener, class_name in compact_ranges:
+        heading_index = body.find(heading_marker)
+        range_start = body.rfind('<div class="chapter-lead">', 0, heading_index)
+        range_end = body.find(next_opener, heading_index)
+        if min(heading_index, range_start, range_end) < 0:
+            raise ValueError(f"Could not isolate {class_name} for print layout")
+        body = (
+            body[:range_start]
+            + f'<section class="{class_name}">'
+            + body[range_start:range_end]
+            + "</section>"
+            + body[range_end:]
+        )
+
+    final_tail = '<div class="ending-tail"><div class="edition-colophon">'
+    if final_tail not in body:
+        raise ValueError("Could not isolate the Part I colophon tail")
+    body = body.replace(
+        final_tail,
+        '<div class="ending-tail part-one-final-tail">'
+        '<div class="edition-colophon">',
+        1,
+    )
     title = html.escape(metadata["title"])
     subtitle = html.escape(metadata["subtitle"])
     tagline = html.escape(metadata["tagline"])

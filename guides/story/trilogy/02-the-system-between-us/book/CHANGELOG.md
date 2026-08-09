@@ -5,6 +5,10 @@ first public edition is `1.0.0`.
 
 ## Unreleased revision of 1.0.0 — 2026-08-09
 
+- Removed internal evidence-bundle filenames and the remaining untranslated
+  courtroom wording from the public notes while preserving the English memoir
+  rendering and source boundary. Rebuilt the 107-page editable draft without
+  changing the locked published artifact.
 - Reconstructed the defence-discontinuity chain from the private bundle: a
   trainee and succession of appointed lawyers, missing contact continuity, the
   Founder's request to be notified of changes, self-taught electronic court
