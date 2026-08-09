@@ -2,7 +2,7 @@
 
 Status: **Part II English memoir reopened for source-led revision on 9 August
 2026. The previous PDF remains the last released artifact. The revised book,
-03:00 script, storyboard and prompts are synchronized but remain unapproved and
+05:20 script, storyboard and prompts are synchronized but remain unapproved and
 unpublished until the Founder completes the reading pass. Frame/model work is
 paused.**
 
@@ -12,7 +12,7 @@ paused.**
   counterfactual, human relationships, defence discontinuity, expert/courtroom
   absurdity, outward migration and the system-error mirror proposition.
 - [ ] Receive Founder approval on the revised English reading PDF.
-- [x] Resynchronize the exactly three-minute English narration, storyboard and
+- [x] Resynchronize the 05:20 English narration, 38-interval storyboard and
   Flow/OpenArt prompt chain to the 9 August manuscript; repeat this propagation
   only if the Founder makes reading-pass corrections.
 - [ ] Use the approved ElevenLabs **Jon — Warm & Grounded Storyteller** voice for both films and archive the
@@ -38,8 +38,8 @@ paused.**
   five-page *Public-Interest Action* dated 30 October 2025; record the root v8
   and signed v5 variants without inferring procedural acceptance from the
   title.
-- [x] Draft an exactly three-minute English narration.
-- [x] Synchronize a CP00–CP22 storyboard and Flow/OpenArt prompt baseline.
+- [x] Draft the 05:20 English narration with deterministic opening and closing cards.
+- [x] Synchronize a CP00–CP38 storyboard and Flow/OpenArt prompt baseline.
 - [x] Carry the Parts I–II bridge into Part Seven: initial distrust can soften
   through reciprocal human context; institutional classification can instead
   force the whole person to fight back into the record.
@@ -59,9 +59,9 @@ paused.**
 - [x] Founder authorizes publication after the cover-to-cover correction pass;
   unresolved procedural outcomes remain explicitly reserved for Part III.
 - [x] Keep the national-unity versus possible citizenship-renunciation thought
-  in Chapter 25 and the coverage ledger rather than overloading S22/CP22. The
-  current film ending retains the two constitutional thresholds and Part III
-  bridge. No extra four-second or disposable midpoint frame is created.
+  in Chapter 25 and the coverage ledger rather than turning it into a literal
+  passport scene. The late film spine retains the constitutional thresholds and
+  Part III bridge. No disposable midpoint frame is created.
 - [x] Build the editable reading PDF in the Part I book style.
 - [x] Publish version `1.0.0` with checksum and publication manifest while
   keeping the source and draft export editable.
@@ -110,14 +110,14 @@ paused.**
   fingerprinting officer, two distinct forensic experts, judge, court-appointed
   defence counsel, probation officer and London-housemate reference board for
   the frame-preparation pass.
-- [ ] Generate or regenerate CP01–CP22 only after the book and prompts are
+- [ ] Generate or regenerate CP01–CP38 only after the book and prompts are
   approved.
 - [x] Remove the slideshow/animatic stage and its generated-video artifacts.
 - [ ] In a fresh phase, select one difficult eight-second stress interval from
   the closed story package.
 - [ ] Generate only its exact two 9:16 endpoint frames.
 - [ ] Test Google Flow and OpenArt with the identical pair and prompt.
-- [ ] Select one production model and generate S01–S22 with exact endpoints.
+- [ ] Select one production model and generate S01–S38 with exact endpoints.
 - [ ] Produce one time-locked English narration after picture timing is stable.
 - [ ] Produce one continuous score for the full film; discard clip-generated
   music and ambience.
@@ -135,6 +135,6 @@ paused.**
 - [x] Keep editable book sources and replaceable reading exports under `book/`.
 - [x] Publish only the approved versioned PDF, checksum and publication metadata.
 - [ ] Place only the final film master beside the published book.
-- [ ] Preserve lossless CP22 and the clean four-second E01 card for Part III.
+- [ ] Preserve lossless CP38 and the clean eight-second E01 card for Part III.
 - [ ] Part III receives the final procedural outcome; Part II remains a complete
   open-ended systems story and never invents that result.

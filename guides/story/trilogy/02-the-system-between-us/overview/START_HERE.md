@@ -2,15 +2,15 @@
 
 The 8 August public PDF remains the last released artifact. The editable book
 was reopened on 9 August for a deeper source-led narrative revision. The
-evidence chronology and ledgers are being updated with it; the existing
-three-minute script, storyboard and generation prompts are now a stale baseline
-until the Founder approves the revised manuscript. No frame or motion work is
-active.
+evidence chronology and ledgers have been updated with it. The 05:20 script,
+38-interval storyboard and generation prompts form the synchronized review
+baseline until the Founder approves the revised manuscript. No frame or motion
+work is active.
 
 ## Current deliverables
 
 1. [Editable public manuscript](../book/THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md)
-2. [Three-minute script](../film/SCRIPT.md)
+2. [05:20 script](../film/SCRIPT.md)
 3. [Creative bible](../film/CREATIVE_BIBLE.md)
 4. [Storyboard and checkpoint plan](../storyboard/STORYBOARD.md)
 5. [Synchronized prompt pack](../prompts/PROMPT_PACK.md)
@@ -42,7 +42,7 @@ The next approval gates are:
 | C | public/private boundary and legal wording reviewed | none |
 | D | book and prompts accepted | none |
 | E | Part I-style public PDF built and visually inspected | local CPU only |
-| F | 03:00 narration and shot order accepted | none |
+| F | 05:20 narration and shot order accepted | none |
 | G | one difficult interval selected | none |
 | H | its two exact endpoint frames approved | two still images only |
 | I | identical Flow/OpenArt motion test | one eight-second result per model |

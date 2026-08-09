@@ -1,13 +1,14 @@
 # Part II production
 
-The English book, three-minute script, checkpoint storyboard and Flow/OpenArt
-prompts are synchronized and closed for publication. Frame and motion work
-starts in a separate phase; audio remains downstream.
+The editable English book, 05:20 script, 38-interval checkpoint storyboard and
+Flow/OpenArt prompts are synchronized for the Founder's reading pass. The last
+published PDF remains untouched. Frame and motion work starts in a separate
+phase; audio remains downstream.
 
 - [TODO.md](TODO.md) is the ordered work and publication gate.
 - [STORY_AND_PROMPT_COVERAGE.md](STORY_AND_PROMPT_COVERAGE.md) keeps the book,
   narration, images and truth boundaries synchronized.
-- [STORYBOARD.md](../storyboard/STORYBOARD.md) defines CP00–CP22.
+- [STORYBOARD.md](../storyboard/STORYBOARD.md) defines CP00–CP38.
 - [PROMPT_PACK.md](../prompts/PROMPT_PACK.md) defines the future generator
   workflow.
 

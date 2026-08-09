@@ -34,7 +34,7 @@ Part II must not state or imply the final result of:
 - later work, property, citizenship or health consequences;
 - the product's real-community validation.
 
-Part III may begin with the exact last four seconds of Part II held longer. The
+Part III may begin with the exact eight-second closing plate of Part II held longer. The
 open MyScoutee line becomes a court timeline, then either closes, branches or
 breaks according to the verified outcome.
 

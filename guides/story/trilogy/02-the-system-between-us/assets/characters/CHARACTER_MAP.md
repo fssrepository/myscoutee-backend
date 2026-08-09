@@ -11,24 +11,24 @@ private or public person other than the fictionalized Founder continuity.
 
 | Token | Locked crop | Stable identity and props | Checkpoint use |
 | --- | --- | --- | --- |
-| `[FOUNDER_REF]` | `founder.png` | Exact Part I face; navy field coat; charcoal knit; muted rust scarf; cognac notebook; calm dry humour | CP00–CP18 and CP22 where human scale remains visible |
-| `[ACCOUNTANT_REF]` | `accountant.png` | overloaded but competent adult; neutral knit and shirt; paper/calculator desk; no business brand | CP04–CP06 only |
-| `[TAX_OFFICER_REF]` | `tax-officer.png` | ordinary administrative professional; pale shirt; partial monitor; no insignia | CP04–CP10 only |
-| `[OFFICER_REF]` | `police-officer.png` | restrained contemporary police role; dark practical clothing; no weapon emphasis or readable insignia | CP12–CP14 only |
+| `[FOUNDER_REF]` | `founder.png` | Exact Part I face; navy field coat; charcoal knit; muted rust scarf; cognac notebook; calm dry humour | all assigned CP00–CP38 scenes |
+| `[ACCOUNTANT_REF]` | `accountant.png` | overloaded but competent adult; neutral knit and shirt; paper/calculator desk; no business brand | partial-view and filing scenes only |
+| `[TAX_OFFICER_REF]` | `tax-officer.png` | ordinary administrative professional; pale shirt; partial monitor; no insignia | tax-call and filing scenes only |
+| `[OFFICER_REF]` | `police-officer.png` | restrained contemporary police role; dark practical clothing; no weapon emphasis or readable insignia | police-entry and interview scenes only |
 | `[FINGERPRINT_OFFICER_REF]` | `fingerprint-officer.png` | professional female officer who photographs and fingerprints the Founder; attractive to him without erotic, flirtatious or romantic framing | police-processing beat only |
-| `[EXPERT_A_REF]` | `forensic-expert-a.png` | older analytical professional with grey hair, glasses and plain folder; no real-person likeness | CP14–CP16 only |
-| `[EXPERT_B_REF]` | `forensic-expert-b.png` | visibly distinct analytical professional with plain notes; no real-person likeness | CP14–CP16 only |
-| `[JUDGE_REF]` | `judge.png` | anonymous contemporary judge at a plain desk; glasses and dark jacket; no wig, gavel or real-person likeness | CP15 and later hearing references; constitutional chairs are abstract |
+| `[EXPERT_A_REF]` | `forensic-expert-a.png` | older analytical professional with grey hair, glasses and plain folder; no real-person likeness | two-expert and report scenes only |
+| `[EXPERT_B_REF]` | `forensic-expert-b.png` | visibly distinct analytical professional with plain notes; no real-person likeness | two-expert and report scenes only |
+| `[JUDGE_REF]` | `judge.png` | anonymous contemporary judge at a plain desk; glasses and dark jacket; no wig, gavel or real-person likeness | hearing scenes only; constitutional chairs are abstract |
 | `[DEFENCE_COUNSEL_REF]` | `defence-counsel.png` | anonymous court-appointed defence counsel; restrained professional clothing; no heroic framing | interview and hearing-room checkpoints |
-| `[PROBATION_OFFICER_REF]` | `probation-officer.png` | ordinary probation officer preparing a clemency social inquiry; notebook or plain form, no judicial symbols | CP18 only |
-| `[HOUSEMATE_REF]` | `london-housemate.png` | dignified former London housemate; curly hair; practical olive jacket; private family memory and anonymized loan papers | CP19 only |
-| `[PROSECUTOR_ROLE]` | `prosecutor.png` | anonymous prosecutor seated on the Founder's left; ordinary professional, no villain coding | CP15 only |
+| `[PROBATION_OFFICER_REF]` | `probation-officer.png` | ordinary probation officer preparing a clemency social inquiry; notebook or plain form, no judicial symbols | clemency-inquiry scene only |
+| `[HOUSEMATE_REF]` | `london-housemate.png` | dignified former London housemate; curly hair; practical olive jacket; private family memory and anonymized loan papers | foreign-currency-loan scene only |
+| `[PROSECUTOR_ROLE]` | `prosecutor.png` | anonymous prosecutor seated on the Founder's left; ordinary professional, no villain coding | hearing-room scenes only |
 | `[CLERK_ROLE]` | role geometry only | anonymous clerk at the far-left corner of the C-shaped desk | hearing-room checkpoints only |
 
 ## Identity rules
 
 - Never swap a board identity for a more dramatic generated face.
-- Never reintroduce the rough CP22 Founder placeholder; use the locked Part I
+- Never reintroduce an old rough-checkpoint Founder placeholder; use the locked Part I
   `[FOUNDER_REF]` now stored in this directory.
 - Age the Founder only through subtle fatigue from 2021 to 2026; do not change
   facial proportions, hairline, coat, scarf or notebook.
