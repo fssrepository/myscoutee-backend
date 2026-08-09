@@ -1,6 +1,6 @@
 # Frame approval ledger
 
-Last updated: **8 August 2026**
+Last updated: **9 August 2026**
 
 This is the single approval record for the mobile-only `9:16` checkpoint frames
 used by Parts I and II. The films are expected to regenerate most or all old
@@ -43,7 +43,9 @@ Their reproducible still-image generation specification is
 
 | Frame | Current status | Note |
 | --- | --- | --- |
-| CP00–CP17 | `provisional-old` | Existing `assets/storyboard-rough/` files are composition studies; regenerate and review individually |
+| CP00 | `candidate-review` | S01 first endpoint: `assets/frames/candidates/S01/CP00-v1.png`; SHA-256 `483683caa388459386d5ceec2320c2a4c5d97e681ec95377c1a5f3bc2a863ded` |
+| CP01 | `candidate-review` | S01 last endpoint and S02 continuity handoff: `assets/frames/candidates/S01/CP01-v1.png`; SHA-256 `1dee72adf67e4b13bab7460b1c0cfdb37fe935e91dfa28467a75763d17931932` |
+| CP02–CP17 | `provisional-old` | Existing `assets/storyboard-rough/` files are composition studies; regenerate and review individually |
 | CP18 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP19 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP20–CP22 | `provisional-old` | Existing studies must be regenerated and reviewed individually |
