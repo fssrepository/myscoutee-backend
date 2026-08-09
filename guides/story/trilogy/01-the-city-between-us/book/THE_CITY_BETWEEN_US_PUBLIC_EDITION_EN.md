@@ -676,9 +676,9 @@ was to admit that willingness and availability are different facts. A plan can
 fail even when everybody likes the idea. A humane system should preserve the
 relationship and still allow the event to live.
 
-## 11. Forty Countries, No Collection
+## 11. Nearly Fifty Countries, No Collection
 
-Over the years I reached almost forty countries across Europe, Africa, Asia and
+Over the years I reached nearly fifty countries across Europe, Africa, Asia and
 the Americas.
 
 I made most of those journeys alone, and I organized them myself. That did not

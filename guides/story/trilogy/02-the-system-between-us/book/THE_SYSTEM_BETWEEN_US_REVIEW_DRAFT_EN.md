@@ -24,10 +24,26 @@ was raised above me, the ordinary police office, the smaller room where counsel
 asked for time, the C-shaped court table, and the desk where an AI cursor kept
 blinking beside the possibility of prison.
 
-I wrote words I should not have written. I corrected and clarified them. The
-state later read parts of the sequence as a continuing threat. I remain
-responsible for my words; the system remains part of the path that produced
-them.
+The central absurdity can be stated without legal vocabulary. A sudden law put
+livelihoods under threat. The accountant, the tax administration and I each
+passed responsibility toward the next point in a chain whose legal burden never
+left me. When I finally saw the whole failure, I understood in about a week what
+the professional process had not resolved in almost a year. I corrected the
+return, paid the tax and ended the failed representation. The tax problem was
+over. Roughly a year later, eight days after the police search, the forensic
+process examined the highly educated professional who had repaired the failure
+and turned him into the subject of a label of pathological mental illness.
+
+After two decades of exclusion, adaptation and repeated attempts to build a
+lawful life in my own country, an administrative chain kept tightening until a
+violent sentence broke out. I corrected it immediately. The state later treated
+that sentence and later messages as a continuing threat. The sentence has legal
+weight. It cannot erase the long process that produced the breaking point, then
+use the breaking point to prove that the person had always been the problem.
+
+Nearly four years after the work stopped, and nearly three years into the
+criminal proceeding, the case had not produced a first-instance judgment, let
+alone reached an appeal. Minutes of language had expanded across years of life.
 
 The proceeding has not reached the ending reserved for Part III. The factual
 record, attribution limits and source references appear at the back, where they
@@ -41,34 +57,62 @@ write my sentences and could still enter the same corridor.
 
 <!-- pagebreak -->
 
-## Prologue — The Line Changes Meaning
+## Prologue — The Other Biography
 
-At the end of Part I, the line on the screen was a network.
+Part I required a book to describe one person.
 
-It connected people. Six strangers had become a group, a group had reached an
-event, and an event had left behind people who could invite one another again.
-The line was the path I had spent years trying to draw between intention and a
-real meeting.
+He came from agricultural ground and studied economics, programming and
+mathematics. He learned English through work in southern India, worked across
+continents, lived for five years in London and organized journeys through nearly
+fifty countries. Those journeys depended on strangers: a driver, a passenger,
+a hotel worker, a colleague, a couple sharing a taxi, somebody who noticed that
+the road ahead was unsafe. He saved through a shared bedroom and lunches he
+pretended not to need, then returned to Budapest with enough independence to
+build software intended to help people trust one another long enough to meet.
 
-Then the same line became the ruled line of a document.
+A forensic report later created another biography in a few paragraphs.
 
-On one side sat the person. On the other sat a field waiting for a number, a
-date, a legal category or a signature. The line no longer asked who might meet.
-It asked what had been submitted in my name, who had received the notice, which
-version was valid, and whether I knew what a system assumed I knew.
+It described a man living through a fixed “global conspiracy,” incapable of
+positive feeling in human relationships, inclined to treat helpfulness as proof
+of bad intent, and driven by inferiority, projection and severe paranoid
+personality disorder. The report said this condition reached the level of
+pathological mental illness and moderately limited his capacity to recognize
+the consequences of his actions.
 
-In Part I, I moved through countries. In Part II, countries collapsed into
-portals, and portals opened into rooms.
+The same report recorded that he was calm and cooperative, understood the
+examination, observed ordinary forms of courtesy, was oriented in every respect
+and had intact comprehension, memory and intellect appropriate to his education.
+It found no earlier psychiatric documentation, no perceptual disturbance and no
+formal disorder of thought.
 
-A home became an office. The office became a tax desk. The desk became a police
-scene. The police scene became an expert interview. The interview became a case
-file. The case file became a petition. The petition eventually reached the same
-European institutions that were being asked what had happened to the rule of
-law in Hungary.
+Both biographies carried my name.
 
-I had never been a party activist. I did not begin with a political programme.
-When the KATA law changed in July 2022, other people went to the bridges. I
-stayed at my computer and tried to adapt.
+A passport cannot settle a psychiatric question. It can expose the thinness of
+a caricature. My journeys had worked precisely because I could recognize help,
+trust unfamiliar people provisionally, revise a plan and experience warmth
+across languages. My software existed because I still believed human connection
+could be designed for without being controlled.
+
+The security concern recorded by the experts was equally concrete. I objected
+to a system in which a personal government-account password could become the
+practical substitute for safe delegation, exposing taxpayers and accountants to
+actions performed under the wrong identity. The report preserved that argument,
+called my account contradictory and later translated the wider pattern into a
+“global conspiracy.”
+
+This is not the story of an ordinary tax offence. It is the story of how the
+first biography was compressed until the second could fit the file.
+
+The compression began with a line on a screen. At the end of Part I, that line
+was a network connecting strangers. Here it became the ruled line of a form: a
+number, a date, a legal category, a signature. A home became an office. The
+office became a tax desk. The desk became a police scene. Eight days after the
+search, the police scene became a forensic examination. The resulting report
+was signed weeks later, but the transformation had already begun.
+
+I had never been a party activist. When the KATA law changed in July 2022,
+others went to the bridges. I stayed at my computer and tried to protect a
+Belgian handover.
 
 That is where the irony begins.
 
@@ -80,34 +124,63 @@ That is where the irony begins.
 
 <!-- illustration: part_ii_founder -->
 
-In August 2019, after years in which I had repeatedly wondered whether I should
-return to London, I found a multinational role in Hungary. It seemed like the
-kind of answer adults are expected to recognize: a known employer, a professional
-position, a route back into ordinary life.
+The man who returned from London did not return because London had defeated
+him. He returned because the arithmetic had finally changed.
 
-COVID made the apparently stable unstable.
+Five years of shared rooms, restrained spending and foreign work had produced
+financial independence at Budapest prices. It was not wealth in London. In the
+flat my parents had helped provide, it was time: time to recover, travel, search
+for a partner and attempt the product that employment had never left enough
+space to build. Living with little had become a discipline. I believed that if
+I could remain independent of the next salary, I could endure almost anything.
 
-Around the turn of 2020 and 2021, that path ended. A later position lasted only
-briefly. The pandemic rearranged organizations, offices, risks and expectations
-faster than many people could name what was happening.
+In August 2019, after years of applications and repeated thoughts of returning
+to London, a multinational company hired me in Hungary. Chance mattered. One
+successful process kept me in the country when many earlier attempts had not.
+It seemed like the kind of answer adults are expected to recognize: a known
+employer, a professional position, a route back into ordinary life.
 
-It also opened one unusual year.
+COVID broke the foothold that had only just begun to feel stable. The Hungarian
+role ended in the pandemic restructuring. Another domestic attempt lasted only
+briefly. I returned to the search that had already consumed years of my life.
 
-Remote work made geography temporarily negotiable. I could live in Budapest
-while contributing to work connected to a multinational telecom programme in
-Brussels. The contractual route passed through companies in more than one
-country. It looked less secure than the Hungarian job, but in practice it gave
-me a more durable professional opportunity.
+The opportunity that finally held came from Brussels. In ordinary times, it
+would probably have required me to leave Hungary again. During COVID, I did not
+dare fly into another relocation. Remote work made the geography temporarily
+negotiable: I could remain in my Budapest flat while working on a multinational
+telecom programme abroad. The contractual route passed through companies in
+more than one country. It looked less secure than the Hungarian job, but in
+practice it became the one workable professional path I had found.
+
+I accepted it because independence was not meant to become permanent retreat.
+After years outside ordinary employment, I still wanted to work, contribute and
+belong to the country in which I lived. That decision matters later. The system
+did not reach me because I had avoided lawful work. It reached me immediately
+after I dared to enter it again through the only route that had opened.
 
 It also required a legal form through which the work could be invoiced. In
 September 2021, I became a sole proprietor using KATA.
 
 I had no entrepreneurial revelation. I was not opening a café, selling
-paintings or building a personal brand. I was using the legal route available
-for cross-border remote work during an exceptional labour-market moment.
+paintings or building a personal brand. KATA was the legal bridge between a
+foreign job and the country in which I was still trying to live. The bridge
+existed because the pandemic had made another departure feel impossible.
 
 That distinction matters. A tax form can look like a free choice after the fact
-while functioning as the price of entry at the time.
+while functioning as the price of entry at the time. Years of exclusion and
+unsuccessful job searches came first. Then one Hungarian employer happened to
+give me a foothold in 2019. COVID broke it. Another attempt failed. The work I
+could finally secure was in Belgium and, without the pandemic, would have pulled
+me abroad again. I did not dare fly into another relocation during COVID, so I
+worked remotely from Budapest and used KATA as the legal bridge.
+
+Every piece of that sequence had to fall in exactly that order. Remove the long
+exclusion, the chance Hungarian job, its pandemic collapse, the fear of flying,
+the Brussels contract or the temporary acceptance of cross-border remote work,
+and I do not enter KATA in 2021. The route did not arise from tax optimization.
+It was the narrow way back into work without abandoning my country again. When
+the state changed KATA at speed, it immediately closed that rare opening and
+used the obligations attached to it as the entrance into the rest of my life.
 
 The work was real and demanding. Some days ran thirteen, fourteen or fifteen
 hours. Delivery schedules and production responsibility did not become lighter
@@ -197,26 +270,27 @@ administration could process, reject, reclassify and call back. I remained
 legally responsible, but I could not automatically see every delegated action
 or every notice in the same form and at the same time as my representative.
 
-The triangle should have been held together by trust.
+The triangle should have been held together by shared information. Instead,
+each side saw a different record at a different time. The accountant submitted
+and received technical messages. The tax administration processed, rejected
+and later altered account entries. I carried the legal responsibility without
+seeing the same continuous chain.
 
-Instead, the sudden law tightened every side of it.
+Until 23 November, I did not know that the closing return had still not been
+successfully resolved. When I discovered the repeated error notices, the
+problem was already months old. From that point, information bounced among
+three people: the accountant, the administration and the person whose name and
+liability remained on every result.
 
-I wrote too much because I was trying to preserve every condition. The
-accountant experienced my messages as a scattered litany and signalled that the
-relationship should end. Tax staff encountered a caller asking questions that
-should perhaps have been settled before the call. I heard explanations as
-responsibility being pushed back toward me. Every answer increased the need for
-another answer.
+The later flood of communication did not create that structure. It was what
+happened after the structure failed.
 
-Nobody had enough spare attention to rebuild the whole picture.
-
-It is tempting to make one participant the villain because a story moves faster
-when blame has one face. The evidence resists that convenience. The accountant
-also sought help from the tax administration. Tax staff also worked inside
-changing procedures and imperfect screens. I also made the conversation harder
-through intensity, length and fear.
-
-The failure was assembled.
+The defining movement was not ordinary human error. It was referral. The
+accountant relied on the administration, the administration referred me back to
+the accountant and both could point to duties legally assigned to me. Even
+after the corrected result was becoming clear, the accountant continued to
+dispute the route and did not appear to understand what officials had told her.
+The only person who could not pass the consequence onward was the taxpayer.
 
 <!-- illustration: part_ii_triangle_scene -->
 
@@ -224,12 +298,12 @@ The failure was assembled.
 
 The deepest design problem appeared before the final return.
 
-The three routes available to me were all compromises. In the two that kept my
-password private, a representative could act, but submissions, processing
-errors and notices did not remain visible to both of us as one continuous
-chain. The only route that appeared to work from beginning to end was the
-unsafe one: give the accountant my password and let her work through my own
-government account. Assistance became indistinguishable from identity.
+The formal route let a representative act without my password, but submissions,
+processing errors and notices did not remain visible to both of us as one
+continuous chain. In practice, the only route that appeared to keep action and
+notice together was the unsafe one: give the accountant my password and let her
+work through my own government account. Assistance became indistinguishable
+from identity.
 
 If I refused to share access, I could be told that I had prevented the
 accountant from doing the work. If I shared it, I could be asked why I had given
@@ -265,22 +339,31 @@ circle that followed.
 The closing return should not have been a philosophical problem. At its centre
 was arithmetic.
 
-Yet the documentary package shows repeated versions, corrections and rejected
-or mistaken entries across several months. A return submitted on 30 November
-became central. In my account, I did not know at that moment that it had been
-submitted, and the form named me as a contact.
+By 23 November, it became clear to me that the accountant did not know how to
+complete the short return she had been hired to handle. The documentary package
+shows three failed attempts, months of delay, help from tax-office staff,
+unresolved processing errors and versions submitted without my knowledge. A
+return submitted on 30 November named me as the contact even though I did not
+know it had been filed.
 
 The absurdity is difficult to explain without making it sound invented. A
-professional office, calls with tax staff, months of correspondence and a short
-return produced several attempts at what, from my perspective, was essentially
-a subtraction followed by a tax calculation.
+professional office, repeated official assistance and months of correspondence
+had failed to complete what, from my perspective, was essentially a subtraction
+followed by a tax calculation.
 
-The more elementary the operation looked, the more frightening the failure
-became. If a simple form could not settle, what exactly was I expected to know?
+I discovered the problem through an article and then through a portal whose
+categories and identifiers did not form one coherent story. Until then, I had
+not known what had failed. On 23 and 24 November, I spent many hours checking
+the accountant's work and called the administration for help.
 
-I discovered the possible problem through an article and then through a portal
-whose categories and identifiers did not give me one coherent narrative. On 23
-and 24 November, I spent many hours checking. I called for help.
+Within roughly a week, I reconstructed the calculation, understood the status
+and reached the corrected result. The accountant had had most of a year, three
+attempts and direct help from the administration. Even afterward, our exchange
+showed that she still did not understand the instruction in the same way I had
+come to understand it. This is not offered as a contest of personalities. It is
+the factual reversal at the centre of the case: the client performed the repair
+for which the professional had been retained, while legal responsibility had
+remained with the client throughout.
 
 Some calls from the period survive, but not the decisive exchanges behind the
 remarks I later recorded in my defence speech. Their shape can be inferred only
@@ -289,8 +372,9 @@ followed. In that later account, the remarks landed as dismissive: accountants
 usually did not cause problems; entrepreneurs did not normally care what
 accountants did in their name; why had I shared my credentials?
 
-I had reached the institution because the delegated route had failed. Its
-questions returned me to the fact that I had used the delegated route.
+I had reached the institution because the delegated route had failed without
+my knowledge. Its questions returned responsibility to the person whom that
+route had kept outside the decisive information.
 
 The circle was complete.
 
@@ -320,39 +404,38 @@ Two days later, pressure won.
 
 It was early on a Saturday, just after my birthday.
 
-The tax position still did not feel legible. A payment or account item appeared
-larger than the reality I believed I had reported. Notices, representation and
-portal states did not line up in my mind. I was also preparing for serious leg
-and foot surgery.
+The tax position still did not feel legible. Entries had appeared on the
+account after a return I had not known was submitted. The notice went through
+the representative channel while the liability remained mine. I had already
+spent days reconstructing a failure that had developed for months without my
+knowledge, and I was preparing for serious leg and foot surgery.
 
-I wrote messages containing language I should not have written.
-
-I corrected and clarified. I continued communicating. Later documents from the
-tax administration reconstructed errors and corrective steps. None of that
-makes the words disappear. It changes the question from a simple screenshot to
-a sequence.
+Under that accumulated pressure, I wrote a violent sentence. I corrected it
+immediately and continued communicating. The sentence remains serious. But it
+did not arrive from an empty room, and it cannot honestly carry the explanatory
+weight of the twenty years, the failed return and the broken information chain
+that preceded it.
 
 The prosecution would eventually extract legal meaning from parts of that
 sequence. My defence would insist that the outburst, its correction, the lack of
 an operational plan and the administrative cause could not be separated.
 
-I am asking the reader to notice the asymmetry. A system can be fragmented for
-months, but a person's worst sentence appears at once. The fragmented system
-must be reconstructed. The sentence can be printed in bold.
+The asymmetry is the Kafka mechanism. The system's failure was distributed
+across months, screens, representatives and offices. Its reconstruction
+requires a file. One person's breaking point fits in a single quoted line.
 
 ## 9. The Correction Does Not Trend
 
-On 5 December, calls continued around the misunderstanding. On 8 December, I
-ended the accountant's representation. Around 18 and 19 December, an official
-response described errors, attempted corrections and processing details.
+On 5 December, I clarified the account by phone. I corrected the return myself
+and paid the tax required by the corrected position. On 8 December, I dismissed
+the accountant and terminated the representation so the three-way
+communication chaos would finally end and future notices would reach me
+directly. An official response later recorded the failed submissions,
+correction and processing history.
 
-From my perspective, the account had finally begun to tell the story I had been
-trying to tell.
-
-I corrected the return myself and paid the tax required by the corrected
-position. A tax officer then confirmed in writing that we had settled the
-matter. The delegated work had failed, but the underlying tax problem had not
-been left for somebody else to repair.
+The tax problem was corrected. The tax was paid. The representation was over.
+The administrative cause had been repaired by the person who had not known
+about it until 23 November.
 
 Yet the dangerous sentence now possessed a different property from the
 correction. It could travel alone.
@@ -367,13 +450,20 @@ everything.
 
 ## 10. A Body With a Deadline
 
-In January 2023, I withdrew a large monetary demand. I also gave advance notice
-of where and when the leg operation would take place and asked to be left in
-peace before surgery and rehabilitation.
+The prosecution later gave the monetary demands a central role. For me, money
+was secondary. The real demand was dignity: I should not have to surrender a
+personal password to make delegated work safe, and nobody else should be drawn
+into the same vortex.
 
-The operation took place privately in mid-February. Mobility became difficult,
-rehabilitation required attention, and my body could not be separated from
-every call and deadline arriving through the same phone.
+In January 2023, I withdrew the concrete monetary demand. I gave advance notice
+of the coming leg operation, asked for peace during surgery and rehabilitation,
+and wrote that I intended to leave the country afterward. I had already paid
+the tax. There was no unresolved tax debt for my body to solve.
+
+My parents lent me the money for private surgery after the public route had not
+provided a workable timetable. The operation took place in mid-February.
+Mobility became difficult, rehabilitation required attention, and my body could
+not be separated from every call arriving through the same phone.
 
 For much of that period I had to remain in bed with the operated leg propped
 high above me. A special elevation shoe protected its position when I had to
@@ -386,9 +476,8 @@ This was another curse of solitude. Planning could stock food. Savings could
 pay for private treatment. Discipline could carry me through the injections.
 None of them could place another person beside the bed.
 
-A call came in March despite my request for quiet. More messages followed over
-the next months—too many, sometimes angry, sometimes grandiose, sometimes
-trying to turn private harm into a public programme.
+A call came in March despite my documented request for quiet. The repaired tax
+matter re-entered the room while I was immobilized and alone.
 
 At one point I sent the tax administration a close photograph of the swollen,
 operated area itself. It was not a photograph of a bandage. The incision was
@@ -406,11 +495,9 @@ absurdity visible to a system that had reduced both to fields. The photograph
 could show what my explanations could not: the medical pressure was not a
 metaphor.
 
-Hundreds of submissions can contain real evidence and still make the evidence
-harder to find. My intensity became another layer of the system.
-
-The larger my file grew, the easier it became to describe me through the size of
-the file.
+The photograph and the joke later travelled without the bed, the stored food,
+the advance notice or the corrected tax return. Again, the sharpest fragment
+was easier to carry than the chain around it.
 
 <!-- pagebreak -->
 
@@ -499,17 +586,26 @@ securely inside work.
 
 What made endurance possible was planning. I saved, reduced my needs and kept
 creating. Financial independence did not make exclusion easy. It stopped
-exclusion from becoming immediate collapse.
+exclusion from becoming immediate collapse. It was the reason I could survive
+years in which the labour market did not want me, months when my operated body
+could not move normally and a proceeding that kept expanding without reaching
+judgment. The habit learned in London—endure now so that the future remains
+yours—became my armour.
 
 The court later asked about my apartment and belongings. My government-bond
 account entered the discussion of my financial position. The apartment came
 from my parents. The reserve came principally from life and work abroad, not
-from the short Hungarian work sequence at the centre of this story.
+from the short Hungarian work sequence at the centre of this story. It was
+compressed biography: the shared London bedroom, the lunches I did not buy, the
+journeys organized around low-cost routes and the salary earned while living
+more narrowly than colleagues could see.
 
 That reversal carries the deepest contrast. I had built security abroad so that
 I could come home and live in my own country. When I finally dared to work
 again, the case seemed to reach backwards toward the home, belongings and
-foreign-earned reserve that had made returning possible.
+foreign-earned reserve that had made returning possible. The shield built to
+survive exclusion was becoming the asset list of the institution that had
+excluded me.
 
 That answer could sound suspicious if the listener saw only present
 unemployment. From inside my life, it was the answer to why I had survived at
@@ -581,7 +677,7 @@ for a mobility-limiting operation. The question made the sequence run
 backwards: the pressure became proof that the pressured person had been the
 problem all along.
 
-## 13. The Forensic Mirror
+## 13. The Man the Report Invented
 
 The forensic examination took place on 30 November 2023. Two experts were
 present and the resulting opinion bears two expert signatures. I remember the
@@ -599,29 +695,60 @@ need for an accountant, the absence of psychological treatment. My later
 defence speech does not reliably assign each one to a particular expert. In my
 memory they hang between the two chairs.
 
-The report contains an important tension. It records that I was calm,
-cooperative, oriented and cognitively intact. It also concludes that I had a
-paranoid personality disorder and that my responsibility was moderately
-limited.
+The report contains the book's central contradiction. Its observations describe
+a person who arrived neatly, recognized the examination, remained calm and
+cooperative, observed ordinary courtesy, answered questions and was oriented to
+self, others, place and time. Comprehension and memory were intact. It recorded
+no perceptual disturbance, no formal disorder of thought and no earlier
+psychiatric documentation. It described my intellect as appropriate to my age
+and education.
 
-That was the absurd line in its shortest form. I had repaired the accountant's
-failed return myself, paid the resulting tax, received written confirmation
-that the matter had been settled, disclosed the place and date of my operation
-in advance and asked for quiet while I recovered. Roughly a year after the
-original dispute, that sequence had become a forensic psychiatric description
-of me.
+Then the same document crossed an invisible line.
 
-The report records substantial parts of my account: the tax and accounting
-chain, the operation and the restricted mobility. Then it transforms that
-sequence into an interpretation of personality. I do not believe the final
-interpretation gave the documented pressure its proper weight or distinguished
-clearly enough between a person under exceptional strain and a whole person.
+It said that my thinking was governed not by delusions detached from reality,
+but by false conclusions drawn from observed events and an unshakeable “global
+conspiracy.” It said I was incapable of experiencing positive emotions in human
+relationships. It described heightened suspicious readiness, hypervigilance,
+the assumption of hidden hostility in harmless remarks, easy offence and the
+possibility of an angry attack. In its final opinion, every offer of help could
+become evidence of bad intent; rigid beliefs, inferiority and depressive feeling
+were compensated through projection onto others. The diagnosis was severe
+paranoid personality disorder, reaching the level of pathological mental
+illness and moderately limiting responsibility.
 
-I contest that interpretation.
+Part I is not a clinical counter-report. It is, however, the missing human
+record. The man said to be incapable of positive feeling had spent years
+remembering moments of kindness across nearly fifty countries. He had trusted a
+WhatsApp driver in India, a stranger at a Russian bus, a local ride in Thailand,
+colleagues from several cultures and people who shared rooms, roads and jokes.
+He had designed a product around the belief that reciprocal trust could turn
+strangers into a group. The report reduced that history to social roles being
+destroyed by suspicion.
 
-A forensic opinion is a document built to answer a legal question. It is not a
-complete biography. Yet once attached to a person, its language can travel as
-though it were one.
+The phrase “global conspiracy” performed a similar compression. The account
+before the experts concerned a specific design failure: personal government
+credentials used as the practical substitute for delegated authority; notices
+routed away from the legally responsible person; a professional able to act
+under a client's identity; security exposure if stored credentials were stolen.
+Those were system claims capable of being tested. The report placed them inside
+a psychiatric narrative.
+
+That was the Kafka transformation in its purest form. A highly educated
+programmer-mathematician had understood in about a week what the retained
+professional had not resolved in almost a year. He had corrected the return,
+paid the tax, ended the representation and received a written administrative
+record of the repair. Eight days after the police search, he entered the
+forensic examination. The competence that solved the underlying problem became
+background; resistance to unsafe identity sharing became suspiciousness; the
+attempt to connect institutional failures became conspiracy; the file supplied
+a new character.
+
+I contest that character.
+
+A forensic opinion is built to answer a legal question, not to hold a life. Yet
+once attached to a person, its language can travel more easily than fifty
+countries, five London years, a mathematics degree, a repaired return or every
+stranger whose help made the journeys possible.
 
 <!-- illustration: part_ii_experts_scene -->
 
@@ -641,7 +768,11 @@ emerged over time rather than arriving as one complete archive. The calls most
 important to my account were not among the surviving audio. The phone and
 computer remained away from me for a long period.
 
-I responded by writing more.
+No stable defender assembled the missing chain for me. I wrote because every
+short institutional summary removed another cause: the abrupt law, the failed
+delegation, the notices I did not see, the repair, the paid tax, the operation
+and the request for peace. Accumulation became the only defence available
+against reduction.
 
 Defence strategy became public-interest proposal. Complaint became system map.
 Closing statement became impact study. I divided responsibility into percentages,
@@ -663,23 +794,19 @@ system's failure.
 
 The case was already trying to become the film I am now preparing.
 
-The better formulation is not that government, accountant, tax office and
-official each owned a mathematically exact share. It is that no participant's
-choice explains the result alone.
+The better formulation is not a mathematical division of fault. It is a chain
+of responsibility constantly passed onward. The legislature moved at
+extraordinary speed. The accountant did not complete the work and continued to
+contest the route after I had reconstructed it. The administration routed
+notices and corrections through structures I could not read as one story, then
+sent the taxpayer back toward the representative. I remained legally
+responsible, corrected the return and paid the tax. The investigation later
+lifted the sharpest fragments out of that chain and interpreted the surviving
+person through a criminal and psychiatric frame.
 
-I wrote the sentences.
-
-The accountant acted and failed to act in ways documented by the record.
-
-The tax system routed notices and corrections through structures I could not
-read as one story.
-
-The law changed with an extraordinarily short transition.
-
-The investigation later interpreted the surviving sequence through a criminal
-frame.
-
-All of those statements can be true at once.
+The result was not that nobody had responsibility. The result was that everyone
+who could pass it onward did so, until the entire weight rested on the one
+person who had already repaired the underlying failure.
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
 and the life outside the case. Then the long brown institutional façade on Fő
@@ -729,9 +856,19 @@ became an asset question before the system question had been answered.
 
 <!-- pagebreak -->
 
-# Part Five — The Earlier Pattern
+# Part Five — Work Under the Shadow
 
-## 15. Three Years With an Unlicensed Assistant
+## 15. The Work the File Could Not Explain
+
+Prison remained in the room even when nobody said the word.
+
+At first the possibility had weight. Over time it became another shadow I
+refused to organize my days around. I had already lived through decades of
+exclusion, five years of London austerity, long periods without employment, a
+solitary operation and the disappearance of ordinary institutional trust. The
+financial independence built from those years meant that another threat could
+not command my next morning. I did not stop understanding what prison could
+mean. I stopped giving the possibility ownership of my mind.
 
 For much of the proceeding, I did not experience appointed defence as a stable
 person carrying the case with me.
@@ -767,18 +904,23 @@ test. It chose Navier–Stokes.
 
 The machine did not solve the problem. It built a versioned, falsifiable
 research chain, rejected sixteen intermediate candidates and preserved a
-restartable handoff. A professor whose variational work had helped inspire the
+restartable handoff. A researcher whose variational work had helped inspire the
 experiment read two notes and the proof plan. He found the ideas intriguing,
 then asked the decisive question: exactly which mathematical statement was
-being tested? The experiment had reached its honest boundary.
+being tested? The exchange had reached the place serious research should
+reach—the point where an attractive idea must become a precise claim.
 
 <!-- illustration: part_ii_ai_work_scene -->
 
 All of this happened with the possibility of imprisonment in the background.
-Software commits did not answer the charge. They recorded what survival looked
-like. I did not spend those months only waiting to be classified. I kept making
-systems that could be inspected, tested, corrected and handed to another
-person.
+While a report described damaged judgment and a court waited for an expert who
+was unavailable, I completed systems, preserved testable research and discussed
+Navier–Stokes mathematics with a researcher. I did not spend those months
+waiting to be classified. I kept making work that could be inspected, tested,
+corrected and handed to another person.
+
+That is the character the procedural file could not explain. The shadow did not
+vanish. I learned to work inside it until, on many days, I no longer felt it.
 
 The trial court transmitted my constitutional complaint. The Constitutional
 Court wrote back on 21 October 2025: the criminal case was still pending, so the
@@ -821,12 +963,22 @@ AI gave me speed.
 
 It did not give me representation.
 
+The institutions retained legal power over me. Moral legitimacy was a different
+question. A system that had excluded me from ordinary work, failed to protect
+the rare route through which I returned, transformed the repair into a diagnosis
+and then allowed the case to remain unresolved for years could still compel my
+attendance. It could no longer expect its judgment to arrive with automatic
+moral authority.
+
 ## 16. The House as a Human Archive
 
 <!-- illustration: part_ii_housemate -->
 
-The shared Hungarian house in London had contained an earlier version of the
-same national argument.
+Before the state appeared at my Budapest door, I had already seen a Hungarian
+obligation cross a border and occupy a life in London.
+
+The shared Hungarian house had contained an earlier version of the same
+national argument.
 
 Thirteen adults lived through one bathroom, one separate toilet and rooms never
 designed for that many independent lives. We had not left Hungary for one
@@ -837,22 +989,34 @@ looked worse from outside.
 One housemate carried a foreign-currency mortgage behind him.
 
 He tried to service the loan and public debts from London. Returning did not
-feel possible. Separation stretched. His spouse and young child remained in
-Hungary, and the family broke apart.
+feel possible. Separation stretched. His spouse, who worked for the tax
+administration, and their young child remained in Hungary, and the family broke
+apart. He had crossed a border, but the old signature crossed with him.
 
 His name remains private. What remains public is the shape: a financial product
 outlived the moment in which it was sold. He carried the signature while
 exchange rates, collection systems, legal doctrine and court decisions moved
 around him.
 
+For many emigrants, that is the hidden nightmare of departure. You leave to
+escape a system that has made ordinary life impossible, then discover that the
+loan, debt, family duty or administrative claim can follow you into the room
+abroad. Geography changes. The institution remains inside the envelope.
+
 The foreign-currency-loan cases and KATA are not the same legal problem.
 
 They rhyme.
 
 A route is normalized. Many people enter it. The conditions change or the risk
-becomes visible. Institutions argue over doctrine. The individual is told that
-the signature was personal. Years later, courts are still deciding how the
-systemic defect and the personal contract fit together.
+becomes visible. Institutions divide responsibility among themselves. The
+individual is told that the signature was personal. Years later, courts are
+still deciding how the systemic defect and the personal contract fit together.
+
+I had believed financial independence protected me from that inheritance. I had
+no foreign-currency loan, no domestic debt and no employer able to remove my
+home with one decision. Yet the proceeding found another route toward the same
+fear: could the country that had contributed almost nothing to the reserve now
+reach the savings earned abroad and the home provided by my parents?
 
 ## 17. Beautiful Cities Can Still Produce Exits
 
@@ -876,13 +1040,12 @@ Part I told the wonder of the outside world without hiding the shared room.
 Part II tells the beauty of home without hiding why the system could make a
 returning person ask again whether he should leave.
 
-## 18. Not Everyone Would Write My Sentence
+## 18. The Breaking Point Is Not the Beginning
 
-Not everyone facing an accounting error would react as I did. Not everyone
-undergoing surgery would send hundreds of messages. Not everyone in a police
-room would make a joke. The system did not type for me.
+The case can be made to begin with its most violent line because that line is
+short. It is also the version that makes the system disappear.
 
-The universal part begins earlier.
+The public meaning begins earlier.
 
 Anyone can delegate a task and remain responsible for it. Anyone can miss a
 notice routed to a representative. Anyone can encounter a law that changes
@@ -890,8 +1053,16 @@ faster than their professional support can adapt. Anyone can be physically
 vulnerable when an institution expects ordinary performance. Anyone can have
 their worst response become more legible than the path that produced it.
 
-That is enough to make the case public in meaning even while it remains mine in
-fact.
+Anyone can be pushed until one terrible response is easier to print than years
+of exclusion, lawful effort, repair and endurance. Once that happens, cause and
+effect can be reversed. Pressure becomes personality. The attempt to recover
+missing context becomes evidence of obsession. Survival outside ordinary work
+becomes another condition to explain.
+
+That reversal is what makes the case public in meaning even while it remains
+mine in fact. The danger is not that everyone would write my sentence. The
+danger is that a low-trust system can first exclude a capable person, then use
+his breaking point to explain away the system that excluded him.
 
 <!-- pagebreak -->
 
@@ -1136,6 +1307,24 @@ problems when speed, power and inconvenience become its own.
 
 ## 26. The Product Returns
 
+By then, the state had begun to resemble the worst kind of relationship.
+
+It had not been beside me while I searched for work, built independence abroad,
+returned home, developed the product, secured the Belgian contract, repaired the
+tax return or recovered alone from surgery. It appeared at the fracture. It
+took the sentence, the devices, the fingerprints, the expert label and the
+financial inventory. It claimed authority over the bad while contributing
+almost nothing to the good. The relationship did not support. It extracted.
+
+The danger did not require a secret conspiracy. It was already present in the
+architecture: responsibility without shared information, delegated action
+without safe identity, accusation without complete context, expertise without a
+whole biography, delay without an ending and financial scrutiny before the
+systemic cause had been answered. Built that way, a system could humiliate a
+person, turn his own history against him, threaten the assets that allowed him
+to survive and make departure feel safer than belonging. It could do this to
+anyone unlucky enough to enter the same sequence.
+
 For years, MyScoutee had asked how people could be filtered without being
 reduced to a verdict.
 
@@ -1147,6 +1336,11 @@ Direct notice. Visible actions. Consent that can be withdrawn. A record of who
 did what. A route to correction. Private context rather than public humiliation.
 Reciprocal evidence rather than one unanswerable score. Enough human space for
 the next meeting to change the meaning of the previous one.
+
+A healthy relationship is present in the good as well as the bad. A legitimate
+system should meet the same minimum test. It cannot abandon the person during
+work, illness and repair, then arrive only to punish the breaking point and
+claim the life built without it.
 
 MyScoutee cannot repair a tax authority, court or constitution. A social product
 also has its own capacity for harm. Ratings can become gossip. Automation can
