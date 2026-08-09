@@ -20,10 +20,14 @@ first public edition is `1.0.0`.
   frame: quiet reserve was often mistaken for compliance, anger was rare, and
   the report received the exceptional force of his voice without the years of
   quiet around it.
-- Added deliberate page-end breathing after the child sentence, empty chair,
-  fingerprint room, courtroom money line, learned/lived sound insight, AI
-  mirror and uncaged-mind sequence. No prose was duplicated as a pull quote or
-  removed to manufacture extra pages.
+- Replaced the artificial page-end expansion with narrative breathing: dense
+  question, evidence, hearing and AI-work sequences are divided by human scene
+  changes rather than half-empty pages. Only established dramatic page breaks
+  remain; no prose is duplicated to manufacture length.
+- Applied the external editorial critiques as direction rather than copy:
+  scene before argument, the Founder's knowledge horizon before hindsight,
+  fewer repeated thesis statements, and public chronology tied back to the
+  room in which one person is still waiting.
 - Locked the short-film purpose as a doorway to the books and proof that a
   feature-length human story exists, not a three-minute evidentiary or legal
   explainer.

@@ -16,8 +16,9 @@ my memory. Names have been removed, some sequences have been compressed, and a
 few uncertain locations remain deliberately unnamed. Where memory and public
 geography meet, I prefer an honest question mark to invented precision.
 
-All character and scene illustrations in this book are AI-generated visual
-interpretations. They do not depict the actual participants.
+All character and scene illustrations in this book are artificial intelligence
+(AI) generated visual interpretations. They do not depict the actual
+participants.
 
 This story compresses decades. Adjacent pages, and especially adjacent seconds
 in the companion film, do not necessarily describe events from the same year or
@@ -1081,7 +1082,7 @@ society.
 
 Then the world closed.
 
-COVID did not make travel impossible forever, and I will not claim that nobody
+COVID-19 did not make travel impossible forever, and I will not claim that nobody
 can travel as before. For me, it ended the earlier feeling of carelessness. The
 open route was no longer innocent. Borders, health, cancellation and uncertainty
 became visible inside every plan.
@@ -1429,35 +1430,28 @@ interest. Strong interest is not the same as present capacity. A person may care
 and still lack time. A person may become more or less interested as context
 changes.
 
-The priority can change because people change.
-
-Personal intuition remains part of the system after the screen becomes a real
-meeting. A first encounter may confirm an earlier impression, weaken it or make
-somebody newly important. Each participant can privately raise or lower the
-relevant rates as experience develops. The system therefore does not preserve
-one frozen match; future affinity and group opportunities can be recalculated
-from evolving human input and context.
+The priority can change because people change. A first encounter may confirm an
+earlier impression, weaken it or make somebody newly important. Private input
+can change with experience; the system need not preserve one frozen match.
 
 No single person's rating determines the next meeting. Other people's private
 inputs, reciprocity, availability, distance and a fresh accept-or-decline choice
 still matter. The algorithm proposes a changing path through shared intention;
 it does not issue a social verdict.
 
-Automated or contextual signals may contribute, but they do not override
-consent. A strong preference from one person cannot pull another person into a
-group. Nobody is owed a meeting. Every invitation still requires an independent
-decision.
+Automated or contextual signals may contribute, but nobody is owed a meeting.
+A strong preference from one person cannot pull another into a group. Every
+invitation still requires an independent decision.
 
 This matters because software is tempted to make its own calculation look more
 important than the humans inside it. The interface should not display a giant graph
 declaring compatibility. The mechanism belongs in the background. Faces,
 choices and real meetings belong in front.
 
-The system is meant to be a rapid filter, but not a rapid verdict on human worth.
-Private priority, reciprocity, distance and context can narrow the field quickly
-enough to ask whether a small candidate group is worth offering. Independent
-acceptance then moves willing people toward chat and a real meeting instead of
-keeping them inside infinite browsing.
+The system is meant to be a rapid filter, not a rapid verdict on human worth.
+Private priority, reciprocity, distance and context can narrow the field enough
+to offer a small candidate group. Independent acceptance moves willing people
+toward conversation and a real meeting instead of infinite browsing.
 
 The machine accelerates the path to human context. It does not replace the human
 decision that becomes possible there. Whether this produces better outcomes
@@ -1510,20 +1504,14 @@ is a stranger becoming somebody who has actually been met.
 
 ## 28. The First Managed Event
 
-A real event needs more than a title.
+A real event needs more than a title. People, transport, place, accommodation
+and supplies must become one plan. The distinction sounds technical until one
+missing key, ticket or ride ends the evening before it begins.
 
-The current core can organize the people, transport, place or
-accommodation, and supplies required for a plan. Tickets, check-in and feedback
-remain separate actions. The distinction sounds technical until something is
-missing.
-
-The principle is DIY-first, not DIY-only. A host should be able to assemble the
-whole event directly, organize only selected parts while local providers handle
-the rest, or choose a more completely managed plan from an event or travel
-organizer. Participants retain the same right to accept or decline in every
-case. The present core contains the event and resource building blocks for this
-direction; it does not yet prove a finished one-click travel-agency delegation
-workflow.
+The principle is do-it-yourself (DIY) first, not DIY only. A host may assemble
+the whole event,
+share parts with local providers or choose a managed plan from an organizer.
+Participants retain the same right to accept or decline in every case.
 
 Who is coming? How will they travel? Is the venue appropriate? Who has the key?
 What must be brought? Does somebody need a ticket? Did the person actually
@@ -1564,16 +1552,10 @@ time in common. They can be invited directly to later events. A person in common
 or a previous event can make the next invitation less cold without becoming a
 public character reference or guarantee of safety.
 
-If one person lacks time and declines, an available place may be offered through
-the priority plan. The next person still chooses independently. People are not
-replacement parts; capacity is allowed to change without destroying the social
-path.
-
-The planner and Auto Inviter are designed to move an accepted plan back toward
-its intended capacity. They can offer an open place to another suitable person
-instead of making one absence collapse the whole event. The design target is a
-complete group, not a guarantee that every place will always be filled. No
-algorithm can manufacture availability or consent.
+If one person lacks time and declines, the planner may offer the open place to
+somebody else who still chooses independently. People are not replacement
+parts; changing availability need not destroy the whole social path, and no
+algorithm can manufacture consent.
 
 Repeated meetings may become community. Community is the result, not the input.
 
@@ -1616,18 +1598,15 @@ the same group-first path can be available again under a new city's language,
 places, culture and operator, so relocation does not require inventing the route
 to human context from nothing.
 
-The present architecture does not yet provide a seamless passport carrying a
-person's profile, chats, contacts and private rate history between independent
-operators. Those records remain local, and identity migration is later work.
-The honest current promise is continuity of method, not automatic movement of
-private history. A local network can be built faster; it still has to be built
-with new consent.
+The present architecture does not yet carry a person's private history
+seamlessly between independent operators. Its honest promise is continuity of
+method, not automatic movement of intimate records. A local network may be
+built faster; it still requires new consent.
 
-A technically capable local operator can run the shared core on an independently
-hosted server, under a local brand, with local communities, venues, activities,
-language, cultural knowledge and responsibility. Operators may cooperate
-through a voluntary network and shared infrastructure. They must also retain a
-credible opt-out that leaves the local deployment operable.
+A local operator can run the shared core under a local brand, with local
+communities, language, venues, knowledge and responsibility. Operators may
+cooperate through a voluntary network, but leaving it must not destroy the
+local community.
 
 The common core should reduce duplicated technical effort. It should not erase
 local authorship.
@@ -1707,7 +1686,7 @@ to become mutual, informed and real.
 
 After many interviews, I found a multinational position in Hungary in August
 2019. I had come close to retreating to London again; by chance, I no longer had
-to. The position looked stable. COVID quickly destroyed that expectation.
+to. The position looked stable. COVID-19 quickly destroyed that expectation.
 
 The same pandemic opened a different door: cross-border remote work. I secured
 a contract role connected to another multinational in Brussels. It had looked
@@ -1845,7 +1824,7 @@ Sources:
   health-insurance re-registration and was one nudge toward institutional
   re-entry, not its sole cause.
 - The August 2019 Hungarian multinational role after many interviews, the near
-  return to London, its rapid COVID-era end, the apparently less secure but more
+  return to London, its rapid COVID-19-era end, the apparently less secure but more
   durable Brussels contract and the narrow pandemic-enabled remote-work window
   are first-person chronology. Both employers remain anonymous. The statement
   that 2021 was the only open year and that unknown new applicants no longer

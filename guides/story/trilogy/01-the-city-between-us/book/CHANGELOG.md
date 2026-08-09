@@ -28,6 +28,10 @@ The trilogy part and the edition version are separate. This book is Part
   everybody escapes differently.
 - Added a stable page break after the Soho lunch scene so its final visible-
   need line can breathe before the thirteen-person house begins.
+- Applied the external memoir edit to Part Five: retained the product's
+  distinctive group, event, consent and global/local logic while removing
+  repeated mechanism explanations that made the origin story read like product
+  documentation.
 
 ## 1.0.0 — 2026-08-08
 

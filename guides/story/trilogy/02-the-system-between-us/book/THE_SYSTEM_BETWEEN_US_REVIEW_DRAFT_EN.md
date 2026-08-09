@@ -15,14 +15,15 @@ This is a memoir of an unresolved period.
 Part I ended with an invitation. I had returned from London, travelled, looked
 for a partner, and spent the independence I had built on a product that might
 help people reach one another more humanely. The last pages moved through a
-Hungarian multinational role, COVID, and a cross-border remote opportunity. The
+Hungarian multinational role, COVID-19, and a cross-border remote opportunity. The
 sentence at the threshold was simple: *what followed belongs to Part II.*
 
 What followed survives as contracts, portal records, calls, police papers,
 petitions and public events. It also survives as rooms: the bedroom where my leg
 was raised above me, the ordinary police office, the smaller room where counsel
-asked for time, the C-shaped court table, and the desk where an AI cursor kept
-blinking beside the possibility of prison.
+asked for time, the C-shaped court table, and the desk where a cursor in an
+artificial intelligence (AI) assistant kept blinking beside the possibility of
+prison.
 
 Public history usually arrives as laws, elections, resignations and dates. A
 person receives it differently. A law becomes a cancelled contract. A digital
@@ -176,7 +177,8 @@ office became a tax desk. The desk became a police scene. Eight days after the
 search, the police scene became a forensic examination. The resulting report
 was signed weeks later, but the transformation had already begun.
 
-I had never been a party activist. When the KATA law changed in July 2022,
+I had never been a party activist. When KATA (itemised tax for small businesses)
+changed in July 2022,
 others went to the bridges. I stayed at my computer and tried to protect a
 Belgian handover. I did not set out to confront a state. I tried to finish a
 piece of work, close a tax form and prepare for an operation.
@@ -238,7 +240,7 @@ After almost a year, I finally said aloud that I had scarcely been given work.
 The sentence travelled—up toward German leadership, back toward Hungarian
 management, or both; I could not see the complete route. I entered the offices
 of several senior executives. Their questions made clear that the empty year
-was new to them. Then COVID restructuring arrived, and my name was selected.
+was new to them. Then COVID-19 restructuring arrived, and my name was selected.
 I could not see whether one event had pushed the other. After months spent
 representing work that had nowhere to land, I was the part declared surplus.
 
@@ -249,7 +251,7 @@ feel like an achievement. It did not make the closed door smaller. I had spent
 years trying to enter stable employment; when I finally reached it, I lost the
 job before the job had properly found me.
 
-COVID made the next door difficult to find. One process at another multinational
+COVID-19 made the next door difficult to find. One process at another multinational
 reached a fourth round. A former supervisor entered the conversation because he
 knew one of the leaders. He had not known the smaller-company prehistory and
 had not seen what the almost empty year looked like from my desk. I believed
@@ -308,7 +310,7 @@ interviews later, that belief had run out before my wish to work did.
 
 The opportunity that finally held was a multinational telecom programme
 connected to Brussels. In ordinary times, it would probably have required me to
-leave Hungary again. During COVID, I did not dare fly into another relocation.
+leave Hungary again. During COVID-19, I did not dare fly into another relocation.
 Remote work made the geography temporarily negotiable: I could remain in my
 Budapest flat while working abroad. The contractual route passed through
 companies in more than one country. It looked less secure than the Hungarian
@@ -340,9 +342,9 @@ impossible.
 That distinction matters. A tax form can look like a free choice after the fact
 while functioning as the price of entry at the time. Years of exclusion and
 unsuccessful job searches came first. Then one Hungarian employer happened to
-give me a foothold in 2019. COVID broke it. Another attempt failed. The work I
+give me a foothold in 2019. COVID-19 broke it. Another attempt failed. The work I
 could finally secure was in Belgium and, without the pandemic, would have pulled
-me abroad again. I did not dare fly into another relocation during COVID, so I
+me abroad again. I did not dare fly into another relocation during COVID-19, so I
 worked remotely from Budapest and used KATA as the legal bridge.
 
 Every piece of that sequence had to fall in exactly that order. Remove the long
@@ -595,8 +597,6 @@ possibility of family with everything else. My voice is panicked and spent. In
 the middle of codes, forms and missing notices, I say, “I can no longer have a
 child.” It is not an argument. It is shock becoming surrender in one sentence.
 
-<!-- pagebreak -->
-
 Within roughly a week, I reconstructed the calculation, understood the status
 and reached the corrected result. The accountant had had most of a year, three
 attempts and direct help from the administration. Even afterward, our exchange
@@ -726,8 +726,6 @@ raised leg, special shoe, injection, stored food, repeat.
 
 Planning had stocked the food. Savings paid for private treatment. Discipline
 carried me through the injections. The chair beside the bed remained empty.
-
-<!-- pagebreak -->
 
 A call came in March despite my documented request for quiet. The repaired tax
 matter re-entered the room while I was immobilized and alone.
@@ -898,7 +896,8 @@ already disappeared.
 ## 12. Remarks in the Margin
 
 My later defence submissions preserve the institutional voices as short
-fragments:
+fragments. On the page, they look like remarks written in the margin of a
+life:
 
 “He can use the library for the internet.”
 
@@ -920,7 +919,8 @@ The two expert chairs added their own fragments:
 
 “Why didn't you see a psychologist?”
 
-The questions turned biography into an examination.
+Each sentence had belonged to a particular room and a practical purpose. Read
+together, they turned biography into an examination.
 
 Why had I returned?
 
@@ -928,64 +928,38 @@ Part I required a whole book to answer that.
 
 What did I live on?
 
-Years of shared-room saving in London, later cross-border remote work, an empty
-Budapest flat and extreme restraint had made independence possible at Budapest
-costs. I had never built a comparable reserve from Hungarian earnings. What I
-had searched for in London, and briefly found again through foreign remote
-work, was not luxury. It was room to breathe long enough to build something of
-my own.
+The government-bond account did not begin in a courtroom. It began in a shared
+London bedroom and at Soho lunch tables where I went with my colleagues,
+watched them eat and pretended I was not hungry. It continued through years of
+foreign work, low-cost journeys and a Budapest flat that stood empty while I
+was away. My parents had helped provide the flat. The reserve came principally
+from the life I had lived abroad.
 
-The timing made the later questions difficult to absorb. I had spent years
-outside ordinary work, then finally found a lawful route back—especially a
-route to work across a border—and almost immediately entered the chain that
-became this case.
+At Budapest prices, those savings bought time. Across the eleven years after I
+left London, I spent roughly nine outside conventional employment: searching,
+travelling, surviving on reserves and building work no employer had
+commissioned. Planning did not make exclusion painless. It stopped exclusion
+from becoming immediate collapse.
 
-Across the eleven years after I left London, I spent roughly nine outside
-conventional employment. Some were spent searching, some surviving on reserves,
-some travelling, and some building work no employer had commissioned. There is
-no neat official category for a life that keeps working without feeling
-securely inside work.
-
-What made endurance possible was planning. I saved, reduced my needs and kept
-creating. Financial independence did not make exclusion easy. It stopped
-exclusion from becoming immediate collapse. It was the reason I could survive
-years in which the labour market did not want me, months when my operated body
-could not move normally and a proceeding that kept expanding without reaching
-judgment. The habit learned in London—endure now so that the future remains
-yours—became my armour.
-
-The court later asked about my apartment and belongings. My government-bond
-account entered the discussion of my financial position. The apartment came
-from my parents. The reserve came principally from life and work abroad, not
-from the short Hungarian work sequence at the centre of this story. It was
-compressed biography: the shared London bedroom, the lunches I did not buy, the
-journeys organized around low-cost routes and the salary earned while living
-more narrowly than colleagues could see.
-
-That reversal carries the deepest contrast. I had built security abroad so that
-I could come home and live in my own country. When I finally dared to work
-again, the case seemed to reach backwards toward the home, belongings and
-foreign-earned reserve that had made returning possible. The shield built to
-survive exclusion was becoming the asset list of the institution that had
-excluded me.
-
-That answer could sound suspicious if the listener saw only present
-unemployment. From inside my life, it was the answer to why I had survived at
-all.
+The court later asked about the apartment, my belongings and the bond account.
+The objects in the questions were also compressed scenes: the empty flat, the
+shared room, the uneaten lunches, the work performed far from home. I had built
+security abroad so that I could return and live in my own country. Now the case
+was moving backwards through that security as a list of assets.
 
 Why had I needed an accountant?
 
-Because the tax system and the contract route had made professional help
-rational. The question appeared simple only after the help had failed.
+Because I was working days that sometimes ran thirteen, fourteen or fifteen
+hours while a tax system changed beneath a live foreign contract. Delegating
+the return to a professional had looked like the responsible act. The question
+became simple only after the delegation failed.
 
 Did I have a loan? Was I working? What did I live on?
 
 The questions kept returning as though ordinary debt and another Hungarian job
-were the obvious signs of a healthy life. Part I had already shown me the human
-price of debt. In the London house, a foreign-currency mortgage had helped keep
-another Hungarian abroad while his family and obligations remained at home. I
-had spent years avoiding that trap, living below my means and preserving the
-debt-free home my parents had helped provide.
+were the obvious signs of a healthy life. In the London house, I had watched a
+foreign-currency mortgage help keep another Hungarian abroad while his family
+and obligations remained at home. I had spent years avoiding that trap.
 
 After this sequence, taking out a domestic loan would have been one of the last
 risks I would choose. Returning to Hungarian work felt almost as difficult. The
@@ -993,16 +967,17 @@ last time I had resumed work—especially cross-border work through a Hungarian
 legal route—the attempt had grown into the proceeding now asking why I was not
 working.
 
-My reserves were not an unexplained alternative to a normal life. They were the
-protective wall built because normal routes had repeatedly stopped feeling
-safe.
+The reserve was not an unexplained alternative to ordinary life. It was why I
+could survive after ordinary routes repeatedly stopped feeling safe.
 
 Why had I not sought psychological help?
 
 Because at the relevant moment I was trying to repair a tax record and prepare
-for a mobility-limiting operation. The question made the sequence run
-backwards: the pressure became proof that the pressured person had been the
-problem all along.
+for a mobility-limiting operation. The body had a deadline. So did the return.
+
+Each question could be reasonable on its own. Their order changed their
+meaning. The work, repair and operation receded; the person who had endured
+them became the object requiring explanation.
 
 ## 13. The Man the Report Invented
 
@@ -1101,17 +1076,18 @@ and a changing country impossible to ignore.
 The investigation and court process created another triangle: defendant,
 appointed defence and institution.
 
-The triangle would not keep the same people in its corners. A trainee appeared
-at the first questioning in place of the appointed lawyer. One lawyer remained
-unreachable for months and asked to leave when his office became overloaded.
-Another was the only person I remember as active, yet decisions still did not
-reach me through one continuous channel. Others delayed, withdrew or did not
-speak to me before a hearing. At times I learned that the name beside my case
-had changed only after the change had already become part of the paper record.
-I eventually asked to be told when my appointed defence changed and to be given
+The triangle would not keep the same people in its corners. At the first
+questioning, a trainee sat beside me in place of the appointed lawyer. Later,
+one lawyer remained unreachable for months and asked to leave when his office
+became overloaded. Another was the only person I remember as active. Others
+delayed, withdrew or did not speak to me before a hearing. Sometimes the name
+beside my case changed on paper before the new person existed in my life. I
+eventually asked to be told when my appointed defence changed and to be given
 the new person's contact details.
 
 The law required a defence chair. Continuity did not arrive with the chair.
+
+### The file I had to reconstruct
 
 Evidence requests were made, rejected, repeated or reframed. Partial recordings
 and electronic records emerged over time rather than arriving as one complete
@@ -1119,21 +1095,19 @@ archive. The calls most important to my account were not among the surviving
 audio. The phone and computer remained away from me for a long period.
 
 When I finally read the investigation material, I did not recognize a complete
-chronology. I saw a selection. Calls mentioned by the surrounding records were
-missing. Electronic submissions that could show the difference between panic,
-repair, complaint and later satire were not all where I expected them to be.
-The file had already interpreted the fragments it held. I began looking for the
-fragments it did not.
+chronology. I saw a selection. Calls mentioned by surrounding records were
+missing. Electronic submissions that separated panic from repair, complaint
+from later satire, were not all where I expected them to be. The file had
+already interpreted the fragments it held. I began looking for the fragments
+it did not.
 
-I reconstructed dates from the phone that was eventually returned to me. The
-call history and surrounding correspondence showed that relevant contacts had
-existed even where the corresponding audio had not reached the file I saw. I
-asked the tax authority for its recordings and for copies of my own electronic
-submissions. When the local route did not produce them, I wrote through the
-authority's central directorate. The replies arrived in stages. Some recordings
-were released, then further recordings had to be sought. A later official letter
-acknowledged delay. The missing electronic submissions were finally supplied
-after what the same letter described as an administrative error.
+When the phone was returned, I sat with its call history and rebuilt dates one
+by one. The history and correspondence showed contacts for which no audio had
+reached the file I saw. I requested the tax authority's recordings and copies
+of my own electronic submissions. When the local route did not produce them, I
+wrote through the central directorate. Recordings arrived in stages. A later
+official letter acknowledged delay. Electronic submissions followed after
+what the letter described as an administrative error.
 
 I sent the recovered material to the police. Only then did the police request
 material from the tax authority again through its own route. The recordings had
@@ -1152,6 +1126,8 @@ short institutional summary removed another cause: the abrupt law, the failed
 delegation, the notices I did not see, the repair, the paid tax, the operation
 and the request for peace. Accumulation became the only defence available
 against reduction.
+
+### Learning the doors
 
 I also had to learn the machinery through which the accumulation could enter.
 I learned the court's electronic filing route, called police officers,
@@ -1219,6 +1195,8 @@ person through a criminal and psychiatric frame.
 By the time the consequence stopped moving, its entire weight rested on the
 person who had already repaired the underlying failure.
 
+### The hearing I entered alone
+
 The first court threshold was a preparatory hearing. The court-appointed
 defender had not worked through the case with me before it. I wrote a two-page
 defence speech myself. No AI wrote those pages. They were what I could carry
@@ -1240,13 +1218,16 @@ I asked human-rights organizations for help. The replies pointed to limited
 capacity. After the preparatory hearing, I also consulted a private lawyer. I
 remember leaving with two things I had not possessed when I entered: a clearer
 understanding of how to read the architecture of the charging document, and a
-fee quotation of two million forints plus VAT if the defence continued there.
+fee quotation of two million forints plus value-added tax (VAT) if the defence
+continued there.
 The consultation also turned quickly toward the psychiatric label, as though
 the label could explain the person before the life had been read.
 
 The difference between us was contained in one word. For a lawyer, the label
 could be a familiar category in a file. For me, it entered the part of the
 Constitution that calls human dignity inviolable.
+
+### Inside the curve
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
 and the life outside the case. Then the long brown institutional façade on Fő
@@ -1418,88 +1399,46 @@ Only I could decide whether the feeling was true to the life, because I was the
 person who had lived it. The mix became accurate where learned reality met
 lived reality.
 
-<!-- pagebreak -->
+### Four windows on one desk
 
 For roughly three years, the same class of tool helped me build MyScoutee and
-survive the legal file around it. In one window, I was asking how to preserve
-human agency in a social network. In another, I was asking how to format a
-constitutional complaint because I did not have dependable legal continuity.
+survive the legal file around it. By February 2026, four windows could share the
+same screen. In one, I was reconstructing evidence and formatting a
+constitutional complaint because dependable legal continuity had not arrived.
+In another, MyScoutee asked how strangers could meet without being reduced to a
+first verdict. A third held Civic Access, a public-service prototype for direct
+notice, representative permissions and a customer-readable audit trail. In the
+fourth, an AI system had chosen Navier–Stokes as an autonomous research test.
 
-From February 2026, the desk carried still more. I continued Civic Access: a
-public-service prototype for documents, appointments, tax calendars,
-representative permissions, direct notice and a customer-readable audit trail.
-I continued MyScoutee. I built the books, prompts and moving-image plan through
-which these two worlds could be understood. I also asked an AI system to choose
-one of the six unsolved Millennium Prize Problems as an autonomous research
-test. It chose Navier–Stokes.
+The machine did not solve the Millennium problem. It built a versioned,
+falsifiable research chain, broke sixteen intermediate candidates and left a
+restartable handoff instead of hiding the failures. I kept the work running,
+challenged the software, insisted on tests and found the researcher who could
+identify the missing mathematical bridge.
 
-The machine did not solve the problem. It built a versioned, falsifiable
-research chain, rejected sixteen intermediate candidates and preserved a
-restartable handoff.
+He read two notes and the proof plan, found the direction intriguing and asked
+the question that brought the experiment back to earth: *Which exact
+mathematical statement are you testing?* A large idea had to become a claim
+another person could understand, challenge and falsify. The same was true of
+this book. Four gigabytes of material were not yet a story merely because they
+were real.
 
-The striking result was the loop, not a theorem. The AI proposed lemma
-candidates, converted them into C++ objectives and gradients, ran tests, found
-failures, corrected code it had generated and replaced claims that the evidence
-had broken. Sixteen routes ended with reproducible counterexamples rather than
-being quietly forgotten. The process did not circle around the same thought:
-each pass changed the recorded proof state and ended with a proof candidate, a
-stored failure or a precisely named open obstruction. PNT-12 remained open.
+### The mirror
 
-My contribution was integration. I kept the autonomous work running, challenged
-software architecture and performance, insisted on tests, certificates,
-restart points and a public handoff, translated the process into a short film,
-and found the expert who could tell us where the mathematical bridge was still
-missing. A mathematician, software architect, AI operator, QA engineer,
-producer and public communicator would normally be different people. In this
-experiment, learned reality and lived engineering experience had to meet in one
-working system.
-
-Working with AI also became a mirror. It did not reflect my face or live my
+Working with AI became a mirror. It did not reflect my face or live my
 consequences. It returned my assumptions in altered forms: a proposed
 structure, a wrong inference, an image, a counterexample, a voice. What I kept,
-rejected or corrected made my own judgment visible to me. I was learning the
-work and, through the work, recognizing the person making it.
-
-<!-- pagebreak -->
+rejected or corrected made my own judgment visible to me.
 
 The machine brought learned patterns; I brought lived consequence. Its errors
 could expose mine, and my corrections could change its next attempt. That loop
 needed room to fail without a right to intrude: public knowledge could be read,
 experiments could run in a sandbox, and consequential actions could remain
-logged, bounded and reviewable. Exploration was not permission to alter another
-person's system or data.
+bounded and reviewable. Failure did not make the machine human. It made the
+collaboration capable of learning.
 
-Human beings did not learn through one unbroken sequence of correct first
-attempts. An action produced a consequence; consequence became memory; memory
-changed the next action. A visible, reversible failure could do the same inside
-the laboratory. It did not make the AI human. It made the collaboration capable
-of learning rather than merely repeating.
-
-The mirror changed how I understood my own humiliating experience. I cannot
-call it good, but I cannot erase the person formed through it either. What I
-make from it remains mine. Whether the surrounding system can preserve a
-correction, recognize harm and change its next action is its own test of
-learning.
-
-The bridge to the researcher was easy to feel and difficult to state. His work
-searched for extreme fluid motions and tested how sharp certain mathematical
-inequalities could become. My AI laboratory turned the same worst-case instinct
-toward proposed lemmas: try to break a universal statement before spending
-months trying to prove it. A counterexample could kill a route quickly. A
-surviving route would become a precise obligation that a human mathematician
-could inspect.
-
-He read two notes and the proof plan, found the idea intriguing and then asked
-the question that exposed the missing bridge: *Which exact mathematical
-statement are you testing?* Inspiration was not connection until that statement
-was visible. I answered with the proposed cutoff-uniform regularity inequality,
-its lower-level frequency-tail target and the explicit warning that neither had
-proved regularity or blow-up.
-
-The exchange reached the place serious research should reach. A large idea had
-to become a claim another person could understand, challenge and falsify. That
-was also the task of this book. Four gigabytes of experience were not yet a
-story merely because they were true. The connection had to be made visible.
+I cannot call the experience that produced this work good. I also cannot erase
+the person formed through it. What I make from it remains mine.
 
 <!-- illustration: part_ii_ai_work_scene -->
 
@@ -1507,28 +1446,14 @@ All of this happened with the possibility of imprisonment in the background.
 While a report described damaged judgment and a court waited for an expert who
 was unavailable, I completed systems, preserved testable research and discussed
 Navier–Stokes mathematics with a researcher. I did not spend those months
-waiting to be classified. I kept making work that could be inspected, tested,
-corrected and handed to another person.
+waiting to be classified.
 
 In roughly five months, the work crossed four desks that were really one. AI
-helped me defend the legal record. MyScoutee grew into a product system spanning
-social logic, software, identity, safety, operations and communication. I
-turned the same life into a book and film by stepping outside myself far enough
-to direct the person I had been. Beside them, the mathematical laboratory kept
+helped me defend the legal record. MyScoutee became an integrated product.
+Civic Access tried to make public administration more understandable and
+worthy of acceptance. The books and film required me to step outside myself
+far enough to direct the person I had been. The mathematical laboratory kept
 asking whether an idea could survive an honest attempt to break it.
-
-Civic Access was the constructive institutional branch: an agile, AI-driven
-interface built to make public administration more understandable, usable and
-worthy of acceptance. Its deeper question matched the human one beneath
-MyScoutee. A relationship needs the capacity to receive another person before
-it can ask to be trusted. So does a system. That capacity had been missing from
-the corridor I was trying to repair.
-
-A large company would normally divide that breadth among product, engineering,
-design, security, operations, research and media teams. Division makes scale
-manageable, but it can also prevent anybody from seeing the whole. I had no
-such division available. The same mind carried the connections from one system
-into the next.
 
 The human mind cannot be caged. A court may place imprisonment in a person's
 future. The shadow is real. It still cannot decide where thought is allowed to
@@ -1762,7 +1687,7 @@ Judges and court employees rallied in 2025 for judicial independence and the
 freedom to speak. Other demonstrations defended civil liberties and the right to
 assemble.
 
-By then emergency had become an ordinary political grammar. During COVID, a
+By then emergency had become an ordinary political grammar. During COVID-19, a
 curfew decided when a person could cross his own street. As the pandemic order
 receded, the war next door supplied another state of danger. In 2025, the
 capital's mayor announced Pride as a city event after the police had prohibited
@@ -1959,47 +1884,32 @@ One affair gave that transfer of power a physical image.
 On 5 March, two armoured cash-in-transit vehicles travelling from Austria
 toward Ukraine were stopped near Budapest. Inside were forty million dollars,
 thirty-five million euros and nine kilograms of gold. Seven Ukrainian citizens
-were taken into custody and later expelled. The numbers made instant political
-cinema, although the tax authority's own first account said that much larger
-total quantities had already travelled through Hungary that year.
+taken into custody and later expelled. The numbers made instant political
+cinema.
 
-After the election, the story turned back toward the institutions that had
-handled it. The shipment was returned and the expulsions were withdrawn. On 8
-June, the head of the Central Investigative Chief Prosecutor's Office submitted
-his resignation, expressly citing professional disagreement with the
-supervising department of the Prosecutor General's Office over the convoy
-investigation. The new Prime Minister ordered reviews across the tax authority,
-the counter-terrorism centre and the services involved.
+After the election, the picture reversed. The shipment was returned, the
+expulsions were withdrawn and reviews began. One senior prosecutor resigned
+while expressly citing disagreement over the investigation. Tax-investigation
+leaders lost their appointments. The Prosecutor General later resigned too,
+although the public record did not make every departure one proved link in a
+single chain. The detailed chronology belongs in the notes; what reached the
+room where I was working was the speed of the reversal.
 
-On 9 July, the tax authority said that its domestic investigation had found no
-indication of a crime, although it was still waiting for an Austrian response
-before formally closing the file. Its separate internal review of whether the
-authorities had acted lawfully and followed their own procedures remained open.
-Two senior tax-investigation managers later lost their leadership appointments;
-the authority confirmed the personnel decisions but did not publicly confirm
-that the convoy was their cause.
+The country could reopen a major enforcement operation, review agencies and
+move senior offices in weeks. My own proceeding, built around one line and a
+repaired tax return, had not reached a first judgment in years.
 
-On 22 July, the Prosecutor General submitted his resignation with effect from
-25 August. His formal explanation referred to the interests of the prosecution
-service. Public pressure around the convoy formed part of the surrounding
-story, but the resignation did not by itself decide who had acted unlawfully.
-
-It was also dangerous for the opposite reason. If replacing a government means
-that every inconvenient office-holder can be removed through the same speed and
-constitutional creativity once criticized in the old system, personnel change
-can arrive before rule-of-law repair.
-
-Events did not follow one identical route. The public-media structure and its
-leaders changed. The President's mandate ended. New age and term rules meant that four
-of the fifteen constitutional judges then sitting—including the Court's
-President—were due to leave on 1 September. Other offices faced different legal
-procedures, political pressure or unfinished negotiations.
+That contrast did not make every replacement just. If a new majority used the
+same speed and constitutional creativity it had criticized, personnel change
+could arrive before rule-of-law repair. Public-media structures, the
+presidency, constitutional judges and prosecution offices each moved through
+different legal hinges.
 
 The correct image is not a row of heads falling in one cut.
 
 It is a wall of institutional portraits, each moving on a different hinge while
-one person below them is still trying to learn what will happen at his next
-hearing.
+one person below them refreshes a screen and still does not know what will
+happen at his next hearing.
 
 ## 25. The Empty Presidential Chair
 
@@ -2150,7 +2060,8 @@ tax authority, prosecution and court hung from his belt. A Hungarian pun changed
 *the reaper* into *the KATA taxpayer*.
 
 Police recruitment posters supplied another impossible route. On 4 January
-2024, I sent the police career office an English CV and an inquiry saying that I
+2024, I sent the police career office an English curriculum vitae (CV) and an
+inquiry saying that I
 had applied for a “terrorist position” being administered at the station, had
 reached the third round and was still waiting for feedback. I asked for the
 earliest possible response. The accusation could progress through rounds while
@@ -2513,7 +2424,7 @@ individual official or any relative.
 The long idle periods, suspected circulation of the smaller company's negative
 assessment, work repeatedly routed elsewhere, “One Shop” role, ten subsidiaries,
 different marketing incentives, later senior-office conversations and the
-Founder's interpretation of the COVID dismissal are memoir. The book does not
+Founder's interpretation of the COVID-19 dismissal are memoir. The book does not
 claim that office gossip existed as fact, that the programme had no legitimate
 purpose, or that a particular manager or business interest caused the
 dismissal. Those details explain how an apparently stable salaried role felt
@@ -2526,7 +2437,7 @@ The later fourth-round multinational interview, former supervisor's personal
 connection with one leader and his intervention are also memoir. The Founder
 believes that intervention contributed to the rejection, but has no decision
 record proving motive or causation. The company remains unnamed. This passage
-therefore shows another gate closing in a COVID-constricted search; it does not
+therefore shows another gate closing in a COVID-19-constricted search; it does not
 make an employment-discrimination or improper-influence finding.
 
 Private recruitment correspondence records an intended January 2021 start and
@@ -2636,13 +2547,15 @@ scene.
 
 Official guidance for accountants describes using another person's Citizen
 Portal identity instead of acting as an authorized representative as a bad,
-legally problematic practice. It points to registered authorization and NAV's
+legally problematic practice. It points to registered authorization and the
+Hungarian tax administration's (NAV's)
 representation form as the lawful alternative. That is an identity boundary;
 it does not, by itself, resolve the separate visibility problem in the
 Founder's record: who received each submission result and notice, and whether
 both sides could see the same chain.
 
-Ügyfélkapu+ installs a secret into an authenticator through a setup QR code and
+Ügyfélkapu+ installs a secret into an authenticator through a setup
+quick-response (QR) code and
 then generates time-limited login codes from that secret. It follows
 technically that copying the setup QR to another device can duplicate the
 second factor. That inference explains why photographing a setup code may be
@@ -2672,11 +2585,13 @@ Estonia provides identifiable access permissions for representatives. The
 details differ, and none guarantees competent service. They demonstrate that
 representation need not require shared identity.
 
-- UK HM Revenue & Customs, authorizing an agent through a business tax account:
+- The United Kingdom's tax authority, HM Revenue & Customs, authorizing an
+  agent through a business tax account:
   https://www.gov.uk/guidance/authorise-an-agent-for-certain-taxes-through-your-business-tax-account
 - Finnish Tax Administration, Suomi.fi authorizations for tax matters:
   https://www.vero.fi/en/About-us/contact-us/efil/authorisations/
-- Estonian Tax and Customs Board, granting and terminating e-MTA access:
+- Estonian Tax and Customs Board, granting and terminating access through its
+  e-MTA online tax service:
   https://www.emta.ee/en/business-client/e-services-training-courses/how-use-e-services/granting-and-termination-access
 
 ## Clemency social inquiry
@@ -2815,7 +2730,7 @@ Sources:
 ## Emergency powers and public reversals
 
 The book joins several public moments to show a political atmosphere, not one
-continuous legal regime. A COVID-era decree imposed a night curfew and broad
+continuous legal regime. A COVID-19-era decree imposed a night curfew and broad
 limits on assembly. A later state of danger was justified through the war in
 neighbouring Ukraine. These were distinct legal phases; the narrative does not
 claim that one automatically caused the other.
@@ -2989,15 +2904,16 @@ claim.
   https://github.com/fssrepository/e-kozig
 
 The creative-work chapter is supported by the versioned research repository,
-the experiment note and the 6 August 2026 email in which Professor Bartosz
-Protas said he had read two supplied documents and the proof plan, found the
-ideas intriguing and asked which exact mathematical statements were being
+the experiment note and the 6 August 2026 email in which a professor working
+in this field said he had read two supplied documents and the proof plan, found
+the ideas intriguing and asked which exact mathematical statements were being
 tested. The Founder's reply made the bridge explicit: published variational
 searches for extreme-flow states and tests of inequality sharpness inspired an
 AI-maintained laboratory that attacks proposed lemmas with counterexample
 searches before promoting them into human proof obligations.
 
-The proposed cutoff-uniform inequality, PNT-12 target, rejected candidates and
+The proposed cutoff-uniform inequality, the internally labelled PNT-12 target,
+rejected candidates and
 partial computational result remain unverified working research. The book does
 not claim a proof of regularity, finite-time blow-up or a solution of the Clay
 problem. The episode demonstrates intellectual work, falsification discipline
@@ -3006,9 +2922,9 @@ association.
 
 - Public research repository and proof plan:
   https://github.com/fssrepository/millennium-math-problems
-- Ayala and Protas, extreme vortex states and enstrophy growth:
+- Research on extreme vortex states and enstrophy growth:
   https://doi.org/10.1017/jfm.2017.136
-- Bleitner and Protas, numerical tests of inequality sharpness:
+- Research on numerical tests of inequality sharpness:
   https://arxiv.org/abs/2607.02739
 - Official Clay Navier–Stokes problem description:
   https://www.claymath.org/millennium/navier-stokes-equation/
