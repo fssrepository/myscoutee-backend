@@ -5,7 +5,7 @@ this computer because its GPU is unsupported. The production master therefore
 uses CPU-based FFmpeg assembly. Kdenlive is optional for visual review with
 720p proxies; it is not a delivery dependency.
 
-Primary target: **03:04.000, 720×1280, 9:16, constant 24 fps, English-language
+Primary target: **03:12.000, 720×1280, 9:16, constant 24 fps, English-language
 mobile MP4**.
 
 ## 1. Audio architecture
@@ -56,18 +56,19 @@ de-essing only for audible sibilance, gentle `2:1–3:1` compression and a
 Generate music only after picture lock. Use a single instrumental score whose
 internal development follows the whole film:
 
-- `00:00–00:48`: sparse and personal; rural origin, Budapest, departure,
+- `00:00–00:08`: near-still title breath and one restrained motif;
+- `00:08–00:56`: sparse and personal; rural origin, Budapest, departure,
   Tottenham, Soho and daily routine;
-- `00:48–01:28`: a subtle pulse through work, saving, travel and homecoming;
-- `01:28–02:00`: warmer social motion for events, dancing and imperfect dates;
-- `02:00–02:08`: remove most rhythm and leave an unresolved pause;
-- `02:08–02:16`: introduce one clear musical idea with the product insight;
-- `02:16–02:32`: separate musical voices gradually connect as six strangers
+- `00:56–01:36`: a subtle pulse through work, saving, travel and homecoming;
+- `01:36–02:08`: warmer social motion for events, dancing and imperfect dates;
+- `02:08–02:16`: remove most rhythm and leave an unresolved pause;
+- `02:16–02:24`: introduce one clear musical idea with the product insight;
+- `02:24–02:40`: separate musical voices gradually connect as six strangers
   form a group and introduce themselves;
-- `02:32–02:48`: warm collaborative lift through the first managed event and
+- `02:40–02:56`: warm collaborative lift through the first managed event and
   continuing relationship lifecycle;
-- `02:48–02:56`: simplify into a precise, quietly technical texture;
-- `02:56–03:04`: short, confident and restrained resolution.
+- `02:56–03:04`: simplify into a precise, quietly technical texture;
+- `03:04–03:12`: short, confident and restrained resolution under the book route.
 
 The score starts at `00:00.000` and ends exactly on the final frame. Under
 narration it should generally sit `6–10 dB` below its open level. Do not fill
@@ -105,7 +106,8 @@ foley locally so sound continuity does not restart at eight-second boundaries.
 | S19–S20 | steps, restrained decline, message becoming paper or ticket |
 | S21 | entrance, chair, map, introductions and natural laughter |
 | S22 | notebook close as several local room tones converge |
-| S23 | two restrained brand notes; leave the harmonic sentence open under the silent Part II continuation line |
+| P00 | restrained title motif and a deliberate breath after `A true story` |
+| E01 | two restrained brand notes; leave the harmonic sentence open under the silent Part II continuation line |
 
 Carry room tone across visual cuts with `0.3–0.8 s` overlaps where continuity
 benefits. Key clicks may transform into keyboard clicks across the Tottenham to
@@ -148,10 +150,10 @@ The brand source of truth is:
 
 Use the original file without recoloring, redraw, crop, glow, tint or AI
 enhancement. Add `MyScoutee` as separate editable text. Show a brief cue in S01,
-the common network core in S22 and the complete brand card in S23; do not place
+the common network core in S22 and the complete brand card in E01; do not place
 a permanent corner watermark through the emotional middle.
 
-Final S23 text:
+Final E01 text:
 
 ```text
 MyScoutee

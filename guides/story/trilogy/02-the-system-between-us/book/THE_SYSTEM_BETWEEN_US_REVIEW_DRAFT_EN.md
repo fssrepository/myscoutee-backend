@@ -840,7 +840,7 @@ my fingerprints. Another smiled and glanced toward my operated leg.
 
 I read that glance as recognition of the obscene visual joke I had made while
 trying to force the tax administration to see the body behind its process.
-Where was the terrorist threat in that image? To me, it had been a huge
+Where was the grave threat in that image? To me, it had been a huge
 symbolic kick in an institution's backside. I cannot know what the officer
 meant. I only remember the smile, the glance, my operated leg and the papers I
 was still waiting to receive.
@@ -2078,8 +2078,8 @@ submission, I wrote that the frightening part was in the absurdity. In another,
 I wrote that if everything had worked lawfully, I believed nothing would have
 happened.
 
-The humour also appeared in writing and images. I called myself the “KATA
-terrorist,” turning the tax acronym and the accusation into the title of a farce.
+The humour also appeared in writing and images. I called myself “KATA's most
+wanted,” turning the tax acronym and the accusation into the title of a farce.
 In a Hulk-like image, a furious KATA figure held an axe in each hand while the
 tax authority, prosecution and court hung from his belt. A Hungarian pun changed
 *the reaper* into *the KATA taxpayer*.
@@ -2087,7 +2087,7 @@ tax authority, prosecution and court hung from his belt. A Hungarian pun changed
 Police recruitment posters supplied another impossible route. On 4 January
 2024, I sent the police career office an English curriculum vitae (CV) and an
 inquiry saying that I
-had applied for a “terrorist position” being administered at the station, had
+had applied for the impossible position being administered at the station, had
 reached the third round and was still waiting for feedback. I asked for the
 earliest possible response. The accusation could progress through rounds while
 the person inside it could not obtain an answer.
@@ -2236,7 +2236,7 @@ The preparatory-hearing notice dated 6 May 2025 explains that the accused may
 admit guilt and waive trial in the admitted part, or present defence facts,
 evidence and exclusion requests; it also allows agreed facts to be accepted
 without further proof. Section 316 of the Criminal Code sets a range of two to
-eight years for threatening to commit an act of terrorism. The Founder records
+eight years for the charged offence. The Founder records
 that the prosecution proposed the statutory minimum of two years, suspended,
 in exchange for admission and waiver. The offer and the Founder's understanding
 of the room are memoir layers until the complete preparatory-hearing record is
@@ -2378,7 +2378,7 @@ private third-party data, medical-adjacent material and unresolved allegations.
 
 Several black-comedy details have a firmer documentary layer than their tone
 might suggest. A 4 January 2024 email to the police career office attaches an
-English CV and describes the investigation as a “terrorist position” whose third
+English CV and describes the investigation as an impossible position whose third
 round has produced no feedback. An authored English submission dated 17 April
 records outreach to German police and German/Belgian press. A clemency
 submission records a further police report about the interrupted orthodontic

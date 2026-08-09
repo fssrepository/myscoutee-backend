@@ -4,10 +4,10 @@ Status: **Film 1 story boundary and future continuity note**.
 
 ## Film 1 remains a product film
 
-The 03:00 film contains no mention, hint, symbol, sound or title relating to the
-Founder's legal proceeding, NAV contact, accusation, investigation, hearing or
-possible asset consequences. Those belong only to a later documentary film,
-reconstructed from the exact surviving documents.
+The 03:12 film contains no legal imagery, accusation or procedural narration
+relating to the Founder's later proceeding. The closing card names Part II only
+as the next volume of the trilogy. Its events belong to that later documentary
+film, reconstructed from the surviving record.
 
 Film 1 closes its own story:
 
@@ -15,7 +15,7 @@ Film 1 closes its own story:
 2. London begins a love of travel that continues after the return;
 3. global routes become local encounters: local people help the Founder discover
    each place and different parts of himself;
-4. COVID ends the earlier feeling of carefree movement, in the Founder's own
+4. COVID-19 ends the earlier feeling of carefree movement, in the Founder's own
    experience;
 5. returning foreign experience and increasing age become additional contexts
    in work and partner-seeking, without condemning one country or age group;
@@ -52,7 +52,7 @@ restart the same method of building local context, but it does not currently
 move profiles, chats, contacts or private rate history automatically between
 independent operators. That migration remains later roadmap work.
 
-## COVID wording
+## COVID-19 wording
 
 Safe line:
 
@@ -60,7 +60,7 @@ Safe line:
 > local people. Then the world closed.
 
 This is personal memory. Do not say that nobody can travel as before or portray
-travel before COVID as morally irresponsible.
+travel before COVID-19 as morally irresponsible.
 
 ## Belonging without a return statistic
 
@@ -113,8 +113,8 @@ the product-development history:
 
 | Time | English VO |
 | --- | --- |
-| 02:48–02:56 | A 2016 idea, accelerated by AI: one shared core, shaped and tested by local communities. |
-| 02:56–03:00 | MyScoutee. Test it with me in real communities. |
+| 02:56–03:04 | Financial independence gave my 2016 idea time. AI accelerated one shared core, shaped and tested by local communities. |
+| 03:04–03:12 | MyScoutee. Test it with me in real communities. |
 
 Final editable text:
 
@@ -123,8 +123,8 @@ MyScoutee
 TEST IT WITH ME.
 ```
 
-Partner-category chips may appear one at a time during S22/S23, but never as an
-unreadable four-second body-copy block.
+Partner-category chips may appear one at a time during S22 or the deterministic
+E01 plate, but never as an unreadable body-copy block.
 
 The partner categories follow the product pitch. They are not a generic rescue
 appeal:

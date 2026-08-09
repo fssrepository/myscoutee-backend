@@ -131,7 +131,7 @@ viewer time to read and consider the premise.
 
 ### 03:36–03:44 — S27 · Doors that answer later
 
-> My constitutional route was too early. Judges changed; evidence requests returned as another possible fine.
+> Complaints moved only when hearings collided. A new defender cost months; an unavailable expert cost more.
 
 ### 03:44–03:52 — S28 · The machine beside me
 
@@ -147,7 +147,7 @@ viewer time to read and consider the premise.
 
 ### 04:08–04:16 — S31 · Black humour as receipt
 
-> I sent police a “terrorist-position” curriculum vitae while awaiting their reply. Sarcasm reversed the arrows for seconds.
+> I sent police a curriculum vitae for the impossible position in their own case. Sarcasm reversed the arrows for seconds.
 
 ### 04:16–04:24 — S32 · The debt that crossed a border
 
@@ -175,14 +175,15 @@ viewer time to read and consider the premise.
 
 ### 05:04–05:12 — S38 · The open line
 
-> The next hearing still waited. Strive, and trust—not blindly, but in our right to build better. The line remains open.
+> Three years after one sentence, first instance still waited. The case had moved into my life.
 
 ### 05:12–05:20 — E01 · Book and continuation card
 
 > MyScoutee. Test the system between us.
 
 Hold after the spoken invitation. Let the viewer read the book route and the
-Part III continuation without a rushed final cut.
+Part III continuation without a rushed final cut. The final visual line may
+carry `STRIVE, AND TRUST—NOT BLINDLY, BUT IN OUR RIGHT TO BUILD BETTER.`
 
 ## Editable on-screen text
 

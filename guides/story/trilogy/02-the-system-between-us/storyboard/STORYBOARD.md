@@ -227,10 +227,12 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S27 — Doors that answer later · 03:36–03:44 · CP26→CP27
 
-- **Motion:** complaint, exclusion request and constitutional route move through
-  several doors; one route is marked too early while judge roles change.
-- **CP27:** Founder below a row of institutional doors, still waiting; evidence
-  requests and possible fine remain unresolved, not rejected forever.
+- **Motion:** a complaint reaches one door only after it collides with the next
+  hearing; the defence chair changes, the date moves by months, then expert
+  unavailability moves it again. A separate constitutional route is marked too
+  early through geometry only.
+- **CP27:** Founder below a row of institutional doors and receding calendar
+  dates; the requests remain unresolved, not rejected forever.
 
 ### S28 — The machine beside me · 03:44–03:52 · CP27→CP28
 
@@ -258,7 +260,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **Motion:** the research page folds into a satirical police-job curriculum
   vitae and a restrained Hulk-like sketch kept safely on paper.
 - **CP31:** one officer suppresses a smile while the Founder waits for a real
-  reply; no axes in live action, terrorist iconography or threat enactment.
+  reply; no axes in live action, charge iconography or threat enactment.
 
 ### S32 — The debt that crossed a border · 04:16–04:24 · CP31→CP32
 
@@ -304,8 +306,9 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S38 — The open line · 05:04–05:12 · CP37→CP38
 
-- **Motion:** institutional geometry dissolves back into a human network line;
-  the scheduled hearing remains a small open marker rather than a verdict.
+- **Motion:** three years of calendar pages gather around one short line, then
+  dissolve back into a human network; the scheduled hearing remains a small
+  open marker rather than a verdict.
 - **CP38:** Founder beside the open MyScoutee line, neither defeated nor
   triumphant, centre-safe for the final post-produced statement.
 
@@ -313,8 +316,9 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 - deterministic clean plate derived from CP38, held for a full eight seconds;
 - exact repository MyScoutee mark, never an AI-generated logo;
-- editable text: `READ THE BOOK · THE SYSTEM BETWEEN US` and
-  `TO BE CONTINUED IN PART III`;
+- editable text: `STRIVE, AND TRUST—NOT BLINDLY, BUT IN OUR RIGHT TO BUILD
+  BETTER.`, `READ THE BOOK · THE SYSTEM BETWEEN US` and `TO BE CONTINUED IN
+  PART III`;
 - Jon: `MyScoutee. Test the system between us.`;
 - score ends on an unresolved star interval, not a triumphant cadence.
 

@@ -1,6 +1,6 @@
 # MyScoutee continuous-video checkpoint chain
 
-The 03:00 film is planned as one continuous journey. CP00–CP22 are the 23
+The 03:12 film is planned as one continuous journey. CP00–CP22 are the 23
 motion-endpoint images, not isolated scenes: every interior checkpoint is the
 **last reference frame of one motion interval** and the **first reference frame
 of the next**. CP23 is a deterministic post-production brand plate, never a
@@ -27,8 +27,9 @@ Rules:
 - Do not build a checkpoint inspection export, slideshow or animatic. Adjacent
   checkpoints go directly into eight-second motion generation as exact first
   and last frames. Do not split an interval into four-second halves or invent
-  intermediate stills. S01–S22 form the 02:56 motion chain; CP23 is the separate
-  deterministic eight-second end plate; the finished film is exactly 03:04.000.
+  intermediate stills. P00 is a separate deterministic eight-second opening
+  card; S01–S22 form the 02:56 motion chain; CP23 is the separate deterministic
+  eight-second end plate. The finished film is exactly 03:12.000.
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |
@@ -40,7 +41,7 @@ Rules:
 | CP05 | Thirteen Hungarian lives with different reasons for leaving and relationships to home | `assets/storyboard-rough/CP05.png` |
 | CP06 | Shared bedroom: constraint, agency and some residents happier in London | `assets/storyboard-rough/CP06.png` |
 | CP07 | Shared-room savings fund journeys and Budapest-only independence; London housing becomes stop-loss | `assets/storyboard-rough/CP07.png` |
-| CP08 | Global routes, local encounters, self-discovery and COVID threshold | `assets/storyboard-rough/CP08.png` |
+| CP08 | Global routes, local encounters, self-discovery and COVID-19 threshold | `assets/storyboard-rough/CP08.png` |
 | CP09 | Deliberate return to the parent-assisted Budapest flat that stood empty | `assets/storyboard-rough/CP09.png` |
 | CP10 | Unequal attention on apps | `assets/storyboard-rough/CP10.png` |
 | CP11 | Rooms full of beginnings | `assets/storyboard-rough/CP11.png` |

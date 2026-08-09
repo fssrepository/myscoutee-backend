@@ -118,7 +118,7 @@ copy in each family is independent corroboration:
 19. independent public sources for KATA, protests, constitutional procedure,
     institutional transition, migration and foreign-currency-loan context.
 20. the 4 January 2024 police-career email containing the documented
-    “terrorist position” parody and attached English CV;
+    impossible-position parody and attached English CV;
 21. the 7 and 17 April 2024 authored police/prosecution submissions used to
     separate the remembered password reaction and German-police outreach from
     later literary compression;

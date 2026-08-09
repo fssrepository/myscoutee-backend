@@ -142,7 +142,7 @@ Palette arc:
 - `04:32–05:20`: civic gold, constitutional red, interim empty-chair navy and
   the original MyScoutee star colour.
 
-Do not use horror, riot spectacle, prison clichés, axes, flames, terrorism
+Do not use horror, riot spectacle, prison clichés, axes, flames, charge
 iconography, diagnostic labels floating over a face or a comic-book villain.
 Do not turn the film into a legal explainer. Statutes, citations and the
 reference apparatus belong to the book's end matter. The picture carries rooms,

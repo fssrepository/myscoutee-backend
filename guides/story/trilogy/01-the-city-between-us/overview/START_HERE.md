@@ -1,6 +1,6 @@
 # Start here — complete production route
 
-This is the recommended path to a playable **03:00 English-language product
+This is the recommended path to a playable **03:12 English-language product
 film** without depending on a supported editing GPU:
 
 > **Closed book and prompts → one difficult scene → two exact 9:16 endpoints →
@@ -24,7 +24,7 @@ DELIVERY/
 
 Required technical properties:
 
-- exact duration: `03:00.000`;
+- exact duration: `03:12.000`;
 - raster and aspect ratio: `720×1280`, `9:16`;
 - constant `24 fps`;
 - H.264 video, AAC audio at `48 kHz`;

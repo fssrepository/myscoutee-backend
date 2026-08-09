@@ -252,7 +252,7 @@ with the supervising department over the convoy investigation:
 - https://telex.hu/belfold/2026/06/11/lemondott-a-kozponti-nyomozo-fougyeszseg-vezetoje
 
 The new Prime Minister ordered immediate reviews at the tax authority,
-counter-terrorism centre and involved services:
+national security centre and involved services:
 
 - https://444.hu/2026/06/17/magyar-peter-azonnali-vizsgalatot-rendelt-el-aranykonvojugyben-a-nav-nal-a-tek-nel-es-az-erintett-szolgalatoknal
 
