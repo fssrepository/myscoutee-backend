@@ -101,8 +101,10 @@ exact runtime.
   his “not hungry” performance sound like a Hungarian habit. In year four or
   five, colleagues were surprised when he finally ordered food once or twice.
   Away from the restaurant, he relied heavily on two-litre milk bottles and
-  muesli. Every avoided meal served the private financial-independence chart
-  that had brought him to London. This is specific testimony, not a dietary
+  muesli. Once the private chart begins to look capable of reaching the
+  Budapest-cost financial-independence threshold for which he came to London,
+  his focus narrows until every avoided meal feels like another movement of
+  the line. This is specific testimony, not a dietary
   recommendation, a claim of literal exclusive nutrition or proof that
   colleagues excluded him.
 - The shared Victorian HMO is a deliberate financial strategy in an expensive

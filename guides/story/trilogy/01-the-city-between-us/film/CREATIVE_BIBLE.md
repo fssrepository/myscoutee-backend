@@ -134,7 +134,10 @@ others eat; when noticed, he makes the refusal sound like a Hungarian habit.
 Only in the fourth or fifth year does he order food once or twice, startling
 colleagues who had accepted the performance. Away from the table he relies
 heavily on muesli and two-litre bottles of milk, hiding how afraid he is that
-London will become unaffordable before he has really begun. Museums,
+London will become unaffordable before he has really begun. Once his private
+savings chart starts to look as though it may actually reach the Budapest-cost
+financial-independence threshold for which he came to London, his focus narrows
+until every avoided lunch feels like another movement of the line. Museums,
 exhibitions, nightlife, multicultural dates and friendships make the first
 three years feel inexhaustible. The Victoria line is only a brief connective
 beat to Tottenham, not a commute sequence. There he makes a hard, rational
@@ -486,8 +489,10 @@ branding around the shared core.
   menu and performs “not hungry” while colleagues eat. A restrained later echo
   may show their surprise when he finally orders food once or twice in year four
   or five. Muesli and a two-litre milk bottle belong away from the restaurant.
-  A thin private chart rises with every avoided meal: savings were the reason
-  he came to London. The hidden constraint, not the diet, is the story;
+  Once the thin private chart begins to look capable of reaching the
+  Budapest-cost financial-independence threshold for which he came to London,
+  his focus narrows and every avoided meal seems to move the line closer. The
+  hidden constraint, not the diet, is the story;
 - every flatmate has a trace of individual life — food, photograph, coat,
   greeting, routine and a different reason for leaving Hungary — rather than
   becoming anonymous crowd texture;

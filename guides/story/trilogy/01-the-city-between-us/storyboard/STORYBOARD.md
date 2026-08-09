@@ -80,8 +80,10 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   menu and gives a practiced “not hungry” explanation while colleagues eat.
   Include the warmth of a shared or farewell meal; nobody excludes him. Match
   the menu's price column to a later private muesli bowl and two-litre milk
-  bottle away from the restaurant, while a thin private chart rises toward
-  Budapest-cost financial independence. A one-beat year-four-or-five echo may
+  bottle away from the restaurant. Only when the thin private chart begins to
+  look capable of reaching the Budapest-cost financial-independence threshold
+  for which he came to London does his focus visibly narrow: an avoided meal
+  seems to move the line closer. A one-beat year-four-or-five echo may
   show colleagues' restrained surprise when he finally orders food once or
   twice.
 - **Face/body:** precise software competence; convincing casual refusal while

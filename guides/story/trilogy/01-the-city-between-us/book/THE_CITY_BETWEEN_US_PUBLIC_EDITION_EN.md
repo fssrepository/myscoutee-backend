@@ -473,10 +473,11 @@ Away from the table, much of my food came down to muesli and two-litre bottles
 of milk. In the fourth or fifth year, I finally ate with the group once or
 twice. Their surprise showed how completely the performance had worked.
 
-Every avoided lunch kept a little more of the line on my private chart rising
-toward the financial independence for which I had come to London. I was that
-focused. The graph could record the saving. It could not record what I watched
-from the other side of the table.
+When the line on my private chart began to look as if it might actually reach
+the financial independence for which I had come to London, my focus narrowed
+this far. Every avoided lunch seemed to move it a little closer. The graph
+could record the saving. It could not record what I watched from the other side
+of the table.
 
 I do not blame my colleagues. I did not tell them the truth, and they had no
 reason to know it. That is precisely why the memory matters. Social exclusion

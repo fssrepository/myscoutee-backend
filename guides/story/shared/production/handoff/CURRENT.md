@@ -29,6 +29,11 @@ to the reader. The canonical detailed rule is
   `trilogy/01-the-city-between-us/published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
 - The illustrated edition contains the registered Founder, Budapest,
   London, global/local and six-person MyScoutee plates.
+- The Soho lunch memory has been corrected across book, storyboard and prompts:
+  he remained at group/farewell lunches and watched colleagues eat while hiding
+  the cost constraint; the private savings chart, milk and muesli carry the
+  financial-independence focus. Old “colleagues leave while he stays behind”
+  staging is invalid.
 - Film timing remains twenty-two 8-second intervals plus the deterministic
   4-second S23 brand card: exactly 03:00.
 
@@ -46,6 +51,11 @@ to the reader. The canonical detailed rule is
   two-expert contrast, courtroom black humour, migration context, system-error
   proposition, the first-judgment bridge from Part I and the exact
   Navier–Stokes research bridge.
+- Public offices remain unnamed in narrative prose. The KATA-software-team
+  remark stays memoir-layer until its underlying recording is isolated; public
+  names may remain only in source metadata. Emergency, Pride, judicial and
+  *Stop Autocracy* reversals are book/reference or longer-cut context and do not
+  create extra film intervals.
 - The Constitutional Court sequence is locked as seven initial recusals,
   followed by an eighth, leaving seven and no quorum.
 - Film timing remains twenty-two 8-second intervals plus the deterministic

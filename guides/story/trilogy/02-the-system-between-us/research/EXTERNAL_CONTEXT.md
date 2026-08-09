@@ -39,6 +39,38 @@ Reuters Connect preserves contemporary protest imagery:
 Narrative boundary: the Founder says he did not attend the KATA protest. He
 tried to adapt, protect a critical work handover and close his activity.
 
+An 8 August 2026 email in the private archive records the Founder's recollection
+of a public remark by a then minister about KATA-contracted software teams,
+including teams inside the tax authority. The exact public recording has not
+yet been isolated. It must therefore remain a memoir-layer public recollection,
+not a verified quotation or proof of any specific staffing arrangement. Its
+safe narrative use is the institutional paradox: the state could itself obtain
+software labour through the same distorted route whose abrupt closure placed
+the adaptation burden on users.
+
+The broader accountability interpretation belongs to the memoir, not to the
+public source: responsibility repeatedly moved away from each institutional
+desk while the person at the end of the chain remained available to be held to
+account.
+
+## Emergency governance, 2020–2022
+
+Government Decree 484/2020 imposed a night curfew, prohibited gatherings and
+restricted public life during COVID. The original explanatory text describes
+an 8 p.m.–5 a.m. curfew; later amendments changed the hours. This supports the
+memoir's COVID atmosphere and the masked January 2021 employment scenes.
+
+- https://njt.jog.gov.hu/jogszabaly/2020-484-20-22.24
+
+On 25 May 2022, a distinct state of danger entered into force with reference to
+the armed conflict and humanitarian catastrophe in Ukraine. It was later
+redeclared under changed constitutional rules. These are separate legal phases;
+the book may describe emergency as a recurring political grammar but must not
+claim that COVID law simply continued unchanged as war law.
+
+- https://njt.hu/jogszabaly/2022-180-20-22
+- https://kormany.hu/hirek/a-kormanyzati-tajekoztatasi-kozpont-kozlemenye20221028
+
 ## Public protest arc, 2022–2025
 
 The personal story unfolded beside a broader period of civic mobilization,
@@ -56,6 +88,15 @@ liberties:
 These events are context, not evidence that every participant shared one cause
 or that the Founder's proceeding formed part of those movements.
 
+After police prohibited the 2025 Budapest Pride march, the capital's mayor
+announced it as a municipal event. He was questioned and later charged.
+Reporting in June 2026 records that prosecutors dropped the charge after a
+Court of Justice of the European Union judgment. The sequence is usable as a
+public reversal, not evidence about the Founder's case.
+
+- https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
+- https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
+
 ## Judiciary and rule-of-law debate
 
 The European Commission's 2025 Rule of Law Report provides the EU monitoring
@@ -68,6 +109,25 @@ justice system as “not a Western movie,” illustrating how institutional deba
 was already becoming unusually public:
 
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
+
+In a separate interview that month, the justice minister said judicial
+independence was not in danger. Judges and court employees then rallied for
+judicial independence and freedom of expression. The public narrative uses the
+office title only; source metadata may identify the office-holder.
+
+- https://telex.hu/belfold/2025/02/05/tuzson-bence-interju-bombariado-till-tamas-obt-beremeles-reform
+- https://enbudapestem.hu/2025/02/22/az-igazsagszolgaltatas-fuggetlensegeert-tuntetnek
+
+A separate 2025 children's-home controversy supplies a narrow reference-layer
+example of definitive institutional language preceding completed fact-finding.
+In September the justice minister presented a report saying no minor victim had
+emerged; in November he said it still had to be clarified whether a minor had
+been involved, and later proceedings continued to develop the record. This is
+not connected to the Founder's case, does not establish a deliberate lie and
+belongs only in the reference apparatus.
+
+- https://hvg.hu/itthon/20250924_Tuzson-Bence-a-Szolo-utcai-javitointezet-ugyerol-kiskoru-sertett-nem-volt-es-politikusok-neve-sem-kerult-elo
+- https://444.hu/2025/11/04/tuzson-bence-tisztazni-kell-volt-e-kiskoru-erintett-a-szolo-utcai-igazgato-ugyeben
 
 ## 2026 change of government and legal-system reform
 
@@ -114,6 +174,13 @@ changes, supplying an important counterpoint to the government's own account:
 Narrative boundary: a later political reversal may echo the Founder's earlier
 language. It does not retroactively adjudicate his messages, mental state or
 criminal case.
+
+In July 2026, the former governing party marched under *Stop Autocracy* and
+accused the new majority of dismantling constitutional democracy. The
+allegation is not a finding about the new government. Its narrative relevance
+is the reversal of institutional language after power changed hands.
+
+- https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
 
 The constitutional transition is unfinished. Part II may show the old mandate
 ending and an interim office, but it may not invent the identity or programme of

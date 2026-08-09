@@ -27,9 +27,13 @@ become independently verified evidence.
 - [x] The pre-London overtime-hearing corridor memory, including the exchange
   about possible work for the Founder's lawyer's son and its effect on trust,
   remains attributed memoir without a bribery or misconduct finding.
-- [x] London employment within two weeks, weak conversational English, Soho
-  work, hidden hunger, Regent's Park, the sushi memory and the affectionate
-  sex-shop farewell joke.
+- [x] London employment within two weeks, weak conversational English and Soho
+  work. Hidden hunger is now exact: the Founder still joined group and farewell
+  lunches, studied prices and watched colleagues eat, presented “not hungry” as
+  if it were a Hungarian habit, and surprised them by finally ordering only
+  once or twice in year four or five. The private milk-and-muesli routine and
+  each avoided meal feed the financial-independence chart. Regent's Park, the
+  sushi memory and the affectionate sex-shop farewell joke remain distinct.
 - [x] The Tottenham Hungarian HMO as thirteen different lives inside a
   multicultural city, including the unannounced bedroom swap and the
   foreign-currency-loan memory.
@@ -111,6 +115,11 @@ become independently verified evidence.
   three-minute film.
 - [x] The abrupt July 2022 transition, protected handover and the low-trust
   Founder–accountant–tax-administration triangle.
+- [x] The remembered public remark about KATA-contracted software teams,
+  including inside the tax authority, remains a memoir-layer sentence because
+  its original public recording has not been isolated. The book preserves the
+  unstated irony: the state could use the distorted route, close it abruptly,
+  then leave its users holding the transition.
 - [x] Delegated identity, missing direct notice, repeated corrections, the
   first constructive public-interest proposal and the later five-part action.
 - [x] The recorded 13:08 help call preserves panic and resignation in “I can no
@@ -150,6 +159,14 @@ become independently verified evidence.
 - [x] Civic movements, 2026 government and institutional change, two unequal
   routes to Venice, Constitutional Court thresholds and the open presidential
   and hearing outcome.
+- [x] COVID curfew, the later war state of danger, the Pride prosecution
+  reversal, the justice-minister/judges' public contradiction and the former
+  governing party's *Stop Autocracy* reversal are bounded public context. They
+  remain book/reference or longer-cut material, not extra three-minute film
+  intervals and not evidence in the Founder's case.
+- [x] Finished narrative uses public offices rather than names; private people
+  and employers remain anonymous. Names may occur only in source metadata or
+  internal research needed to identify public records.
 - [x] Humour and sarcasm as a human audit trail without converting a smile into
   evidence, a finding or an invented quotation.
 - [x] Part III owns the final procedural and material outcome.

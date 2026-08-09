@@ -132,10 +132,19 @@ first public edition is `1.0.0`.
   constructive
   purpose as an agile AI-driven UI prototype: an institution needs the capacity
   to receive human context before it can ask to be trusted.
-- Marked the existing narration, storyboard and prompts stale until the revised
-  book is approved; locked English narration to the approved ElevenLabs Jon —
-  Warm & Grounded Storyteller
-  voice for both films.
+- Added the remembered KATA-software-team paradox at evidence-safe memoir level:
+  the state could use the same distorted labour route whose abrupt closure left
+  users holding the transition. The underlying public recording remains to be
+  isolated, so the book does not present a verified quotation or staffing fact.
+- Added bounded public atmosphere around COVID curfew, the later war state of
+  danger, the Pride prosecution reversal, the justice-minister/judges' public
+  contradiction and the former governing party's *Stop Autocracy* reversal.
+  These events remain distinct and do not become evidence in the private case.
+- Re-audited the 03:00 narration, storyboard and prompt spine against the
+  revision. New employment and public-context details remain book/reference or
+  longer-cut material; the three-minute compression remains synchronized but
+  unapproved. Locked English narration to the approved ElevenLabs **Jon — Warm
+  & Grounded Storyteller** voice for both films.
 
 ## 1.0.0 — 2026-08-08
 

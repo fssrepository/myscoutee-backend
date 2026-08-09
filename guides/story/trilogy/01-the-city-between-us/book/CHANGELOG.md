@@ -3,6 +3,18 @@
 The trilogy part and the edition version are separate. This book is Part
 `I`; its first public edition is `1.0.0`.
 
+## Unreleased correction of 1.0.0 — 2026-08-09
+
+- Corrected the Soho lunch memory across the editable book and production
+  package. The Founder did not remain behind when colleagues ate: he joined
+  group and farewell lunches, studied the prices, watched colleagues eat and
+  performed “not hungry” as if it were a Hungarian habit. When he finally
+  ordered food once or twice in year four or five, colleagues were surprised.
+- Kept muesli and two-litre milk bottles away from the restaurant and connected
+  every avoided meal to the private chart rising toward Budapest-cost financial
+  independence—the reason for the Founder's extreme London focus. No colleague
+  exclusion or diet claim is implied.
+
 ## 1.0.0 — 2026-08-08
 
 - Founder-approved first public edition for release on LinkedIn.
