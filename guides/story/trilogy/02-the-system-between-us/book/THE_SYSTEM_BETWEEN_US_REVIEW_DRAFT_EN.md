@@ -78,8 +78,8 @@ workable custom points another. Authority travels upward, responsibility
 travels downward, and the citizen is expected to know both routes without ever
 confusing them in public.
 
-You smell that culture before you can define it. It can feel as though everybody
-in the room knows a process is broken, yet each person protects the narrow role
+You smell that culture before you can define it. Everybody in the room knows a
+process is broken, yet each person protects the narrow role
 that lets the failure become somebody else's problem. A smile acknowledges the
 absurdity and the procedure continues. A password is personal when
 responsibility is being assigned and shareable when work needs to be done. The
@@ -214,7 +214,7 @@ for a partner and attempt the product that employment had never left enough
 space to build. Living with little had become a discipline. I believed that if
 I could remain independent of the next salary, I could endure almost anything.
 
-In early 2019, I began searching for work again. Roughly fifty interviews failed.
+By early 2019, I was searching for work again. Roughly fifty interviews failed.
 By August, I was close to returning to London when a multinational company hired
 me in Hungary almost by accident. Getting there contained its own small comedy.
 A local outsourcing company had first offered to place me at the multinational
@@ -860,11 +860,11 @@ version unless I preserved it myself.
 One policewoman looked out at me; I recognized her as the officer who had taken
 my fingerprints. Another smiled and glanced toward my operated leg.
 
-I read the glance as returning the obscene visual joke I had made while trying
-to force the tax administration to see the body behind its process. Where was
-the grave threat in that image? To me, it had been a huge symbolic kick in an
-institution's backside. The association arrived as she handed over the papers I
-was still waiting to receive.
+The glance returned the obscene visual joke I had made while trying to force
+the tax administration to see the body behind its process. Where was the grave
+threat in that image? It had been a huge symbolic kick in an institution's
+backside. The association arrived as she handed over the papers I was still
+waiting to receive.
 
 A police explanation later reduced the earlier absence to a painfully ordinary
 phrase: the lawyer had not had time.
@@ -879,9 +879,9 @@ outsiders, in effect, to help their Hungarian counterparts establish a human
 route back to a person who could not obtain one at home. The request measured
 the isolation more accurately than any legal theory could.
 
-At other moments, the laughter belonged to the institution. I remember the
-investigator laughing in my face when I explained the password-sharing trap and
-saying I had done something stupid.
+At other moments, the laughter belonged to the institution. The investigator
+laughed in my face when I explained the password-sharing trap and said I had
+done something stupid.
 That was precisely the inversion. A routine workaround had required the unsafe
 sharing of identity; when the workaround failed, its absurdity was returned to
 me as personal foolishness.
@@ -893,7 +893,7 @@ was defendant, officer, device owner or subject. A police officer could ask a
 hard question, I could answer in a way that exposed the absurdity, and for a
 second somebody smiled.
 
-Later, a judge could smile too. The smiles decided nothing. To me, they suggested
+Later, a judge could smile too. The smiles decided nothing. They showed only
 that the people in the room could still recognize the absurdity while the
 procedure continued to manufacture it.
 
@@ -1289,8 +1289,8 @@ roles—and my place outside their working curve—immediately visible.
 
 <!-- illustration: part_ii_courtroom_scene -->
 
-In my memory, the hearing also had a recurring expression: a smile that never
-became relief. When I said that I had been afraid, the judge answered with almost
+The hearing also had a recurring expression: a smile that never became relief.
+When I said that I had been afraid, the judge answered with almost
 amused disbelief: *You were afraid?* When I explained the precautions and
 defensive routes I had invented while no stable defence carried the chain, she
 smiled: *And you defended yourself.* When I said that I had managed to work
@@ -1334,8 +1334,8 @@ I had lifted the lens toward legislation and institutional design; the room
 lowered it to my work, debt, home, belongings and savings. The system question
 became an asset question before the system question had been answered.
 
-By the end, I read something in the judge's expression as having loosened. The
-chain seemed finally to reveal a person reached by failure rather than only a
+By the end, something in the judge's expression had loosened. The chain had
+finally revealed a person reached by failure rather than only a
 person who had failed. The procedural sentence that followed remained unchanged:
 next came my finances and the amount of the financial consequence.
 
@@ -1466,17 +1466,16 @@ were real.
 
 ### The mirror
 
-Working with AI became a mirror. It did not reflect my face or live my
-consequences. It returned my assumptions in altered forms: a proposed
-structure, a wrong inference, an image, a counterexample, a voice. What I kept,
-rejected or corrected made my own judgment visible to me.
+Working with AI became a mirror. It returned my assumptions in altered forms:
+a structure, a wrong inference, an image, a counterexample, a voice. What I
+kept, rejected or corrected made my own judgment visible.
 
 The machine brought learned patterns; I brought lived consequence. Its errors
 could expose mine, and my corrections could change its next attempt. That loop
-needed room to fail without a right to intrude: public knowledge could be read,
-experiments could run in a sandbox, and consequential actions could remain
-bounded and reviewable. Failure did not make the machine human. It made the
-collaboration capable of learning.
+needed room to fail without a right to intrude: public knowledge could
+be read, experiments could run in a sandbox, and consequential actions could
+remain bounded and reviewable. Failure did not make the machine human. It made
+the collaboration capable of learning.
 
 I cannot call the experience that produced this work good. I also cannot erase
 the person formed through it. What I make from it remains mine.
@@ -1606,9 +1605,10 @@ looked worse from outside.
 One housemate carried a foreign-currency mortgage behind him.
 
 He tried to service the loan and public debts from London. Returning did not
-feel possible. Separation stretched. His spouse and their young child remained
-in Hungary, and the family broke
-apart. He had crossed a border, but the old signature crossed with him.
+feel possible. Separation stretched. His spouse worked inside the tax
+administration while she and their young child remained in Hungary, and the
+family broke apart. He had crossed a border, but the old signature crossed with
+him.
 
 His name remains private. What remains public is the shape: a financial product
 outlived the moment in which it was sold. He carried the signature while
@@ -1841,7 +1841,7 @@ The President of the Republic asked the Commission to assess the
 attempt to end his mandate. His questions were dated 29 May and supplemented on
 4 June 2026. He argued from the position of the highest office at risk.
 
-At 14:18 on 5 June, I sent my own message to the same institution. Seventy-eight
+At 14:18 on 5 June, I sent my own submission to the same institution. Seventy-eight
 minutes later, I forwarded the same letter to the Sándor Palace and the Prime
 Minister's press office.
 
@@ -1966,11 +1966,11 @@ own no car, usually do not heat the flat in winter, and spend little because
 that is how I preserve independence. I can live that way. I was not asking the
 visitor to pity me.
 
-He asked what I lived on, why I was not working and what the apartment said
-about my life. He called it a *bachelor flat*, referred to the proposed
-suspended sentence and reacted with astonishment when he asked about the
-disputed line. A life designed to need very little was once again being read as
-a condition to be explained.
+The officer asked what I lived on, why I was not working and what the apartment
+said about my life, called it a *bachelor flat*, referred to the proposed
+suspended sentence and reacted with astonishment at the disputed line. A life
+designed to need very little was once again being read as a condition to be
+explained.
 
 <!-- illustration: part_ii_home_inquiry_scene -->
 
@@ -2061,8 +2061,8 @@ defendant. Nothing procedural changed.
 Yet the smile recorded that the roles were not the whole people.
 
 Humour was not disrespect for the seriousness of the case. It was an informal
-audit trail of humanity. To me, a shared smile briefly suggested that several
-people could see the absurdity together.
+audit trail of humanity: proof only that, for one second, several people could
+see the absurdity together.
 
 The word was not added years later to make the story more literary. In one 2024
 submission, I wrote that the frightening part was in the absurdity. In another,
@@ -2092,8 +2092,8 @@ would not reliably acknowledge him.
 The joke did not deny that some sentences were dangerous. It denied the solemn
 fiction that the file's language was the only possible description of what had
 happened. When officers struggled not to laugh, the laughter did not acquit me.
-I experienced it as a brief admission that the institutional character and the
-human being were not the same person.
+It briefly admitted that the institutional character and the human being were
+not the same person.
 
 In one police submission, I ended by declaring the institution fired. Elsewhere,
 I sent institutions away to dispense justice in a pasture. A programmer with no

@@ -124,7 +124,7 @@ viewer time to read and consider the premise.
 
 ### 03:20–03:28 — S25 · Inside the curve
 
-> I remember the judge smiling at fear and self-defence. The repaired failure still moved toward my home and savings.
+> The judge smiled at fear and self-defence. The repaired failure still moved toward my home and savings.
 
 ### 03:28–03:36 — S26 · Care
 

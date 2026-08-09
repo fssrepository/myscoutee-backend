@@ -5,6 +5,19 @@ first public edition is `1.0.0`.
 
 ## Unreleased revision of 1.0.0 — 2026-08-09
 
+- Closed the final editorial pass without defensive over-attribution: aligned
+  the late-2018/early-2019 work chronology, tightened the repeated AI-mirror
+  passage, made the home-inquiry prose gender-neutral to match the existing
+  illustration, and retained the original smile metaphors as literary beats
+  rather than surrounding them with repeated evidentiary disclaimers. Restored
+  the direct memoir voice in the police handover, password exchange, hearing
+  and humour passages, and retained the learned-patterns/lived-consequence line
+  at the centre of the AI mirror.
+  Recognizable memoir detail remains intact; the public edition promises name
+  anonymity, not de-identification.
+- Restored the London housemate's spouse working inside the tax administration;
+  the detail is narrative irony in the system story, not a privacy defect to be
+  explained away.
 - Restored the complete 2023 treatment chain: months of pain, an orthopaedic
   shoe and public review one year away, private-clinic disbelief, the tax
   already paid, money borrowed from the Founder's parents, major private foot
