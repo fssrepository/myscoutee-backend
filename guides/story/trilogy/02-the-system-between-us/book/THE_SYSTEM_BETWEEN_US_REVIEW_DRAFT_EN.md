@@ -296,6 +296,8 @@ That masked room became my last Hungarian workplace. Almost six years later,
 it remains so. I did not know at the exit that I was leaving more than one
 building.
 
+<!-- pagebreak -->
+
 A year and a half separated that background check from the KATA change.
 The screening had been a gate I managed to pass. The later proceeding
 threatened to turn the lawful route back into work into the kind of record that
@@ -358,6 +360,8 @@ same sequence returned a year later as a criminal case.
 
 I had wanted a way to work. The lawful route gave the system a way into
 everything else.
+
+<!-- pagebreak -->
 
 The work was real and demanding. Some days ran thirteen, fourteen or fifteen
 hours. Delivery schedules and production responsibility did not become lighter
@@ -432,6 +436,8 @@ invoices, foreign income, a closing business and an accountant who also had to
 interpret the transition for many clients at once.
 
 The law moved in a day. Understanding did not.
+
+<!-- pagebreak -->
 
 ## 3. Protecting a Handover
 
@@ -687,6 +693,8 @@ obligation nor an overpayment.
 On paper, the account had returned to zero.
 
 The life around it had not.
+
+<!-- pagebreak -->
 
 Yet the dangerous sentence now possessed a different property from the
 correction. It could travel alone.
@@ -1101,11 +1109,22 @@ and a changing country impossible to ignore.
 The investigation and court process created another triangle: defendant,
 appointed defence and institution.
 
-Lawyers changed. Communication opened and closed. Evidence requests were made,
-rejected, repeated or reframed. Partial recordings and electronic records
-emerged over time rather than arriving as one complete archive. The calls most
-important to my account were not among the surviving audio. The phone and
-computer remained away from me for a long period.
+The triangle would not keep the same people in its corners. A trainee appeared
+at the first questioning in place of the appointed lawyer. One lawyer remained
+unreachable for months and asked to leave when his office became overloaded.
+Another was the only person I remember as active, yet decisions still did not
+reach me through one continuous channel. Others delayed, withdrew or did not
+speak to me before a hearing. At times I learned that the name beside my case
+had changed only after the change had already become part of the paper record.
+I eventually asked to be told when my appointed defence changed and to be given
+the new person's contact details.
+
+The law required a defence chair. Continuity did not arrive with the chair.
+
+Evidence requests were made, rejected, repeated or reframed. Partial recordings
+and electronic records emerged over time rather than arriving as one complete
+archive. The calls most important to my account were not among the surviving
+audio. The phone and computer remained away from me for a long period.
 
 When I finally read the investigation material, I did not recognize a complete
 chronology. I saw a selection. Calls mentioned by the surrounding records were
@@ -1114,14 +1133,23 @@ repair, complaint and later satire were not all where I expected them to be.
 The file had already interpreted the fragments it held. I began looking for the
 fragments it did not.
 
-I reconstructed dates from the phone that was eventually returned to me. I
+I reconstructed dates from the phone that was eventually returned to me. The
+call history and surrounding correspondence showed that relevant contacts had
+existed even where the corresponding audio had not reached the file I saw. I
 asked the tax authority for its recordings and for copies of my own electronic
 submissions. When the local route did not produce them, I wrote through the
 authority's central directorate. The replies arrived in stages. Some recordings
 were released, then further recordings had to be sought. A later official letter
 acknowledged delay. The missing electronic submissions were finally supplied
-after what the same letter described as an administrative error. The police
-later requested material again.
+after what the same letter described as an administrative error.
+
+I sent the recovered material to the police. Only then did the police request
+material from the tax authority again through its own route. The recordings had
+not been imaginary; the surrounding record already pointed toward them. The
+investigation waited until the person under investigation had done the first
+round of evidence collection for it.
+
+<!-- pagebreak -->
 
 It was a private investigation into the investigation, conducted without a
 private investigator. The local directorate that had received the charged line
@@ -1134,6 +1162,24 @@ short institutional summary removed another cause: the abrupt law, the failed
 delegation, the notices I did not see, the repair, the paid tax, the operation
 and the request for peace. Accumulation became the only defence available
 against reduction.
+
+I also had to learn the machinery through which the accumulation could enter.
+I learned the court's electronic filing route, called police officers,
+prosecutors and the court clerk, and sometimes had to identify the person or
+office currently carrying the case before I could ask what had happened. I
+complained through court administration, the prosecution hierarchy,
+investigative-prosecution routes and the fundamental-rights office. The papers
+moved more reliably than responsibility did. One office explained why another
+office had competence; the next explained the complaint, appeal or court route
+that remained available after the present door closed.
+
+No one needed to say that a rule could be broken now because I could sue later.
+The sequence expressed the idea more quietly. An unanswered request became a
+right to complain about the missing answer. A rejected complaint became a right
+to challenge the rejection. A domestic gap became a road toward Strasbourg.
+The future remedy was repeatedly easier to describe than the present repair.
+
+<!-- pagebreak -->
 
 The expanding archive could itself be made to look like the problem. Hundreds
 of submissions from one person can resemble fixation when the reader does not
@@ -1202,6 +1248,8 @@ story becoming mine.
 I contested it. A decision spoken in minutes opened a trial measured in further
 years.
 
+<!-- pagebreak -->
+
 I asked human-rights organizations for help. The replies pointed to limited
 capacity. After the preparatory hearing, I also consulted a private lawyer. I
 remember leaving with two things I had not possessed when I entered: a clearer
@@ -1213,6 +1261,8 @@ the label could explain the person before the life had been read.
 The difference between us was contained in one word. For a lawyer, the label
 could be a familiar category in a file. For me, it entered the part of the
 Constitution that calls human dignity inviolable.
+
+<!-- pagebreak -->
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
 and the life outside the case. Then the long brown institutional façade on Fő
@@ -1511,6 +1561,8 @@ route I had invoked was premature. It did not enter the factual argument.
 
 The door did not say *wrong*. It said *too early*.
 
+<!-- pagebreak -->
+
 The judges became another sequence. The first assigned judge left the case,
 reportedly because of illness. I later sought the exclusion of the second. A
 third judge rejected the request as unfounded and warned of a possible
@@ -1541,10 +1593,9 @@ rights court without first answering how the next domestic step would become
 trustworthy.
 
 That was the bitter version of a right: keep walking through every local trap,
-then ask Europe whether the path should have been safe. I cannot prove that
-anyone knowingly waited to be sued. I can say how the sentence landed. The
-system seemed prepared to describe the route of appeal more clearly than the
-route of correction.
+then ask Europe whether the path should have been safe. The sentence did not
+reveal anyone's private intention. It revealed the architecture I had already
+learned: the route of appeal remained clearer than the route of correction.
 
 The decision relayed the challenged judge's claim that she had listened to me
 conscientiously. It did not resemble the hearing I had experienced: the prison
@@ -1574,6 +1625,8 @@ missing step impossible to ignore.
 AI gave me speed.
 
 It did not give me representation.
+
+<!-- pagebreak -->
 
 The institutions retained legal power over me. Moral legitimacy was a different
 question. A system that had excluded me from ordinary work, failed to protect
@@ -1981,6 +2034,8 @@ The parliamentary Speaker became interim President. As this edition closed on
 The empty chair was not a verdict in my case. It belonged to a country that had
 decided continuity was no longer enough. It also carried a private irony.
 
+<!-- pagebreak -->
+
 I had already asked that office for mercy when mercy itself had become
 politically dangerous. In February 2024, the disclosure of a presidential
 pardon connected to the concealment of abuse in a children's home ended one
@@ -2001,6 +2056,8 @@ papers and asked that they be left with the incoming Justice Minister until the
 presidency changed. Then I would ask again.
 
 He had refused my clemency. The new majority refused him political mercy.
+
+<!-- pagebreak -->
 
 Before that refusal, the clemency process carried the same questions into my
 home. A probation officer rang the bell without an appointment. The flat had
@@ -2026,6 +2083,8 @@ I had returned from London because I wanted to live in my own country. The fact
 that I could now imagine giving up the legal bond to it measured the distance
 between national unity as an office and belonging as a lived experience. I had
 not completed that act. The thought itself was the measure.
+
+<!-- pagebreak -->
 
 Exile usually means distance from home. I was living at home and felt exiled
 from it.
@@ -2249,9 +2308,12 @@ after finding the investigative selection distorted. Letters reproduced in the
 bundle record requests made through the tax authority's Central Directorate,
 the staged release of recordings, delayed delivery and the later supply of
 electronic submissions after an acknowledged administrative error. The defence
-speech also records that police later requested material again. This supports
-the sequence of the search; it does not establish that an official deliberately
-deleted evidence or that every missing call had been recorded.
+speech records that the Founder forwarded the recovered material and that police
+later requested material again. The narrative therefore describes the Founder
+performing the first reconstruction before the authority repeated the request
+through its own channel. This supports the sequence of the search; it does not
+establish that an official deliberately deleted evidence, deliberately waited
+for the Founder or that every missing call had been recorded.
 
 The fundamental-rights passage in Chapter 19 refers to Hungary's Commissioner
 for Fundamental Rights, not the European Ombudsman. Letters in the same private
@@ -2289,6 +2351,28 @@ image records the Founder's experience of a compulsory but discontinuous
 relationship; it is not a finding that appointed counsel colluded with the
 judge, breached a professional duty or represented the institution instead of
 the accused.
+
+The discontinuity is not based only on a later impression. The defence speech
+and private investigation bundle record a trainee appearing at the first
+questioning, a succession of appointed lawyers, periods without accessible
+contact, withdrawal or release requests, and the Founder's complaint that later
+defenders' contact details had not been supplied. The Commissioner for
+Fundamental Rights summarized the same complaint as involving several appointed
+defenders, an initial defender who did not speak to him and missing contact
+information for later appointments. Private names are omitted from the memoir.
+The records do not by themselves establish professional misconduct by every
+lawyer or a coordinated institutional purpose.
+
+The Chapter 14 complaint route combines the Founder's filed account and the
+reviewed correspondence: he called police, prosecution and court contacts,
+used electronic judicial submission routes, complained to court administration
+and the prosecution hierarchy, and sought help from the fundamental-rights
+office. The separate `obh_panasz.pdf` is addressed to Hungary's National Office
+for the Judiciary; it is not relabelled as a decision of the National Judicial
+Council. The recurring image of a future complaint, appeal, lawsuit or
+Strasbourg application replacing present correction is the memoir's synthesis
+of those routes. It is not a finding that any named official consciously chose
+to violate a rule because later litigation was available.
 
 - Hungarian Criminal Code, section 316 and the two-to-eight-year statutory
   range:

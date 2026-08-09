@@ -5,6 +5,17 @@ first public edition is `1.0.0`.
 
 ## Unreleased revision of 1.0.0 — 2026-08-09
 
+- Reconstructed the defence-discontinuity chain from the private bundle: a
+  trainee and succession of appointed lawyers, missing contact continuity, the
+  Founder's request to be notified of changes, self-taught electronic court
+  filing and complaint routes that repeatedly redirected responsibility.
+- Strengthened the private-investigation sequence: the Founder reconstructs
+  call history and obtains tax-authority recordings/electronic submissions
+  before police request the material again through their own channel. The book
+  preserves the documented order without alleging deliberate deletion or delay.
+- Recast the later-remedy pattern as lived institutional architecture: present
+  correction repeatedly gives way to another complaint, appeal, lawsuit or
+  Strasbourg route, without claiming knowledge of any official's private intent.
 - Added the Founder's longstanding temperament contrast to the other-biography
   frame: quiet reserve was often mistaken for compliance, anger was rare, and
   the report received the exceptional force of his voice without the years of
