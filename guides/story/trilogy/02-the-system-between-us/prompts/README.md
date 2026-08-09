@@ -7,11 +7,13 @@ The reusable prompt system is split into four files:
 - [PROMPT_PACK.md](PROMPT_PACK.md) — workflow, tokens and truth controls;
 - [continuity-prefix.txt](continuity-prefix.txt) — paste before every shot;
 - [shot-prompts.txt](shot-prompts.txt) — one eight-second prompt per scene;
-- [flow-agent-master.txt](flow-agent-master.txt) and
-  [openart-director-master.txt](openart-director-master.txt) — platform handoffs.
+- [flow-agent-master.txt](flow-agent-master.txt) — active Veo 3.1 Lite handoff.
+
+`openart-director-master.txt` is retained only as inactive remaster history. It
+is not part of the present production route.
 
 For a single clip, paste the continuity prefix, the relevant `SHOT Sxx` block
-and the platform control line. Upload only the exact approved first and last
-checkpoint for that interval. The next phase generates only the two endpoints
-of one selected difficult scene, then compares the identical eight-second test
-in Google Flow and OpenArt. No slideshow or animatic is built.
+and the Flow control line. Upload only the exact approved first and last
+checkpoint for that interval. The next phase starts directly with the next
+numbered endpoint pair and one eight-second Veo 3.1 Lite result. No model
+comparison, slideshow or animatic is built.

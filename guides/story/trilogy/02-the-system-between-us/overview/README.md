@@ -4,8 +4,9 @@
 
 Status: **English public edition v1.0.0 published 8 August 2026; editable
 manuscript reopened for an unreleased source-led revision on 9 August. The
-05:20 script, 38-interval storyboard and prompts are synchronized to the current
-editable manuscript but remain unapproved until the reading pass is complete.**
+05:20 script, 38-interval storyboard, Veo 3.1 Lite prompts and shot tracker are
+synchronized to the current editable manuscript. The Founder reading pass may
+still produce corrections before the revised publication is locked.**
 
 Part II continues from the exact final threshold of Part I. The same founder who
 crossed countries to find work and human connection now crosses a landscape of
@@ -55,5 +56,5 @@ Package map:
 - [assets](../assets/README.md)
 - [published artifacts](../published/README.md)
 
-Trilogy-wide product truth, benchmarks and platform workflows remain in the
+Trilogy-wide product truth, historical benchmarks and platform workflows remain in the
 [shared system](../../../shared/README.md).

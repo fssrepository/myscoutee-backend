@@ -50,10 +50,9 @@ private or public person other than the fictionalized Founder continuity.
 
 ## Platform mapping
 
-In Flow, save the recurring crops as named Ingredients or Characters using the token
-names without brackets. In OpenArt, save each crop as a Character reference and
-keep the same token name. Attach only the characters used in one interval; extra
-references can weaken identity control.
+In Flow, save the recurring crops as named Ingredients or Characters using the
+token names without brackets. Attach only the characters used in one interval;
+extra references can weaken identity control.
 
 The complete board is useful for review and book layout. Video generation uses
 the individual crops in this directory, not the whole board.

@@ -11,8 +11,9 @@ Voice lock: English narration in the same approved ElevenLabs **Jon — Warm &
 Grounded Storyteller** voice as Part I. Preserve the exact voice identifier,
 model version, settings and a clean reference WAV.
 
-Read in a restrained first-person voice at approximately 105–115 words per
-minute. Do not fill every second. Generated clips provide picture only; their
+Read in a restrained first-person voice at approximately 124–128 words per
+minute. The complete 678-word read occupies the 05:20 structure while the short
+closing line preserves the final visual breath. Generated clips provide picture only; their
 audio is discarded. Jon, one continuous score, selected ambience and foley are
 added in post. No character dialogue or lip sync is required.
 

@@ -3,7 +3,7 @@
 Status: **Part II English memoir reopened for source-led revision on 9 August
 2026. The previous PDF remains the last released artifact. The revised book,
 05:20 script, storyboard and prompts are synchronized but remain unapproved and
-unpublished until the Founder completes the reading pass. Frame/model work is
+unpublished until the Founder completes the reading pass. Frame production is
 paused.**
 
 ## 1. Current review pass
@@ -13,7 +13,7 @@ paused.**
   absurdity, outward migration and the system-error mirror proposition.
 - [ ] Receive Founder approval on the revised English reading PDF.
 - [x] Resynchronize the 05:20 English narration, 38-interval storyboard and
-  Flow/OpenArt prompt chain to the 9 August manuscript; repeat this propagation
+  Veo 3.1 Lite prompt chain to the 9 August manuscript; repeat this propagation
   only if the Founder makes reading-pass corrections.
 - [ ] Use the approved ElevenLabs **Jon — Warm & Grounded Storyteller** voice for both films and archive the
   exact voice/version/settings plus a clean reference WAV.
@@ -39,7 +39,7 @@ paused.**
   and signed v5 variants without inferring procedural acceptance from the
   title.
 - [x] Draft the 05:20 English narration with deterministic opening and closing cards.
-- [x] Synchronize a CP00–CP38 storyboard and Flow/OpenArt prompt baseline.
+- [x] Synchronize a CP00–CP38 storyboard and Veo 3.1 Lite prompt baseline.
 - [x] Carry the Parts I–II bridge into Part Seven: initial distrust can soften
   through reciprocal human context; institutional classification can instead
   force the whole person to fight back into the record.

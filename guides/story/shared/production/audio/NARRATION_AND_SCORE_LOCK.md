@@ -91,4 +91,4 @@ Its underlying score source is:
 - create English SRT and WebVTT sidecars from final narration timing;
 - do not burn subtitles into the clean master;
 - preserve textless and music-free masters for later localization;
-- discard every generated Flow/OpenArt clip-audio track before assembly.
+- discard every generated Veo clip-audio track before assembly.

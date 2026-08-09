@@ -5,13 +5,13 @@ the independent book, video, storyboard, prompt, asset and render package for
 the trilogy's first part. The [series hub](../../../README.md) is at the story
 package root.
 
-Status: **production concept and generation guide**, not a statement of user
-traction, product-market fit, or production readiness.
+Status: **book, script, storyboard and prompts synchronized for direct Veo 3.1
+Lite production**, not a statement of user traction or product-market fit.
 
-Research and interface check: **2026-08-07**. OpenArt, Higgsfield, and Google
-Flow change quickly. Before spending a large credit batch, generate one low-cost
-test shot and confirm that the model/feature combination shown by the current UI
-still matches this guide.
+Production lock: **2026-08-09**. Generate every motion interval in Google Flow
+with **Veo 3.1 Lite**, exact first and last frames, eight seconds and 9:16. Do
+not spend credits on another model or character comparison in this production
+pass.
 
 ## Outcome
 
@@ -107,10 +107,9 @@ For the locked cost/control balance, use the direct Veo 3.1 Lite route:
 7. Keep the 370-credit reserve for controlled repairs; do not switch models in
    this production pass.
 
-OpenArt-only, Higgsfield-only, and Flow-only variants are also documented. The
-same approved assets and shot IDs work in every route. `SHOT_MANIFEST.csv`
-contains the cost-recommended source filenames; optional rescue files
-may keep their platform name until they replace the matching Sxx shot.
+Older OpenArt and Higgsfield notes remain only as inactive research history.
+They are not alternative routes for the current films. `SHOT_MANIFEST.csv`
+contains the locked Veo Lite production filenames.
 
 ## Files
 
@@ -122,8 +121,6 @@ may keep their platform name until they replace the matching Sxx shot.
 | [SCRIPT.md](../film/SCRIPT.md) | Time-coded English narration, dialogue, titles and subtitle rules |
 | [STORYBOARD.md](../storyboard/STORYBOARD.md) | Shot-by-shot blocking, camera, light, expression, sound and transition |
 | [PROMPT_PACK.md](../prompts/PROMPT_PACK.md) | Character/world prompts, continuity lock, negative constraints and shot prompts |
-| [OPENART.md](../../../shared/production/workflows/OPENART.md) | Shared OpenArt Director/Storyboard workflow and Part I paste map |
-| [HIGGSFIELD.md](../../../shared/production/workflows/HIGGSFIELD.md) | Shared Cinema Studio, Elements, Mr. Higgs, model and camera workflow |
 | [GOOGLE_FLOW.md](../../../shared/production/workflows/GOOGLE_FLOW.md) | Shared Flow asset, Ingredients, Frames, Veo and Scenebuilder workflow |
 | [AUDIO_EDIT_DELIVERY.md](../film/AUDIO_EDIT_DELIVERY.md) | Current CPU audio, edit, brand, subtitle and delivery specification |
 | [PRODUCTION_CHECKLIST.md](../production/PRODUCTION_CHECKLIST.md) | Asset, continuity, claim, release and mobile-QA checks |
@@ -137,9 +134,9 @@ may keep their platform name until they replace the matching Sxx shot.
 | [SOURCES.md](../research/SOURCES.md) | Project evidence and external research/platform sources |
 | [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings and approved filenames |
 
-No slideshow or animatic is part of the active production route. After the book
-and prompt closure, one difficult eight-second interval is tested directly with
-the same two exact 9:16 endpoint frames and prompt in Google Flow and OpenArt.
+No slideshow, animatic or cross-model test is part of the active production
+route. After written closure, production begins directly with the two exact
+9:16 endpoints and matching Veo 3.1 Lite prompt for Part I S01.
 
 The `prompts/` directory contains plain-text copy blocks. Do not edit a master
 prompt for an individual shot; add the shot-specific block after the shared

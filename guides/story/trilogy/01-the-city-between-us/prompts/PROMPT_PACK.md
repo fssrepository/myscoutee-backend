@@ -53,7 +53,7 @@ Replace bracketed tokens only once in your working copy:
 
 | Token | Replace with |
 | --- | --- |
-| `[FOUNDER_REF]` | saved OpenArt Character, Higgsfield Character Element/Soul ID, or Flow `@Founder` asset |
+| `[FOUNDER_REF]` | approved Founder reference saved in Flow |
 | `[MAYA_REF]` | saved Maya character/reference |
 | `[DANCE_STUDENT_REF]` | saved dance-student character |
 | `[DANCE_PARTNER_REF]` | saved partner character |
@@ -491,13 +491,12 @@ He is lonely, sad, hopeful, frustrated, brave and inspired while the camera
 orbits, zooms, cranes, rack-focuses and flies through London.
 ```
 
-## Full-film prompts
+## Full-film prompt
 
-- OpenArt Director: [prompts/openart-director-master.txt](openart-director-master.txt)
-- Higgsfield Mr. Higgs: [prompts/higgsfield-mr-higgs-master.txt](higgsfield-mr-higgs-master.txt)
-- Google Flow Agent: [prompts/flow-agent-master.txt](flow-agent-master.txt)
+- Active Google Flow/Veo 3.1 Lite handoff:
+  [prompts/flow-agent-master.txt](flow-agent-master.txt)
 
-These prompts create a storyboard/plan. The locked source of truth remains this
-directory; reject any AI rewrite that adds product claims, romanticizes the
-founder's isolation, blames a gender or turns the operator invitation into a
-rescue appeal.
+Older OpenArt and Higgsfield masters remain inactive research artifacts. The
+locked source of truth remains this directory; reject any AI rewrite that adds
+product claims, romanticizes the Founder's isolation, blames a gender or turns
+the operator invitation into a rescue appeal.

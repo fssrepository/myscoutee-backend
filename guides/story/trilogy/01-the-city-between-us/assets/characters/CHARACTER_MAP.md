@@ -1,7 +1,7 @@
 # Part I character map
 
 This map is the visual identity contract for the book illustrations, approved
-checkpoint endpoints and later Flow/OpenArt motion in **The City Between Us**.
+checkpoint endpoints and later Veo 3.1 Lite motion in **The City Between Us**.
 The Founder resumed generation on 8 August 2026. The identities listed here are
 now the locked visual baseline; the old CP images remain layout studies until
 they are regenerated from these assets. Part II inherits the exact

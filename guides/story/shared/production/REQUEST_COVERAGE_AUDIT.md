@@ -1,7 +1,7 @@
 # Parts I–II request coverage audit
 
-Status: **generation and release-preparation pass in progress**  
-Audit date: **8 August 2026**
+Status: **written packages audited and synchronized; ready for direct Veo Lite production**
+Audit date: **9 August 2026**
 
 This ledger converts the long Founder review into one production contract. A
 checked narrative item means that it is present in the English book and, where
@@ -66,7 +66,7 @@ become independently verified evidence.
 - [x] Exactly `03:12` English film: deterministic eight-second P00 title,
   22 eight-second S01–S22 motion intervals and deterministic eight-second E01.
 - [x] CP00–CP22 motion-endpoint contract, deterministic P00/E01 post cards and
-  Flow/OpenArt copy-paste prompt baseline.
+  Veo 3.1 Lite copy-paste prompt baseline.
 - [x] Privacy-safe character map for the Founder, five Budapest memories,
   twelve London residents and the six-person MyScoutee group.
 - [x] Lock the current identity/reference set and generate the book portraits
@@ -199,7 +199,7 @@ become independently verified evidence.
 ## Shared release rules
 
 1. The same locked Founder identity crosses Parts I and II.
-2. Book illustrations, checkpoint endpoints and later Flow/OpenArt motion use
+2. Book illustrations, checkpoint endpoints and later Veo 3.1 Lite motion use
    the same role references; no attractive replacement face is introduced in a
    later stage.
 3. Every Veo 3.1 Lite production interval uses its two exact approved 9:16

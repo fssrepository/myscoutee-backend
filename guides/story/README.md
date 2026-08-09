@@ -31,7 +31,7 @@ version history and production handoff.
 
 [`shared/`](shared/README.md) owns only cross-part material:
 
-- benchmark prompts, control assets and comparable score logs;
+- inactive historical benchmark prompts, control assets and score logs;
 - series metadata;
 - platform workflows and multi-film cost/credit planning;
 - product truth, research and claim boundaries that apply across the trilogy.

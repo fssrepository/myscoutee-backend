@@ -15,9 +15,6 @@ are defined in [SCRIPT.md](../film/SCRIPT.md); video models must invent neither.
 4. In Flow append: `Generate exactly one Veo 3.1 Lite Frames-to-Video result,
    8 seconds, 9:16, using the uploaded checkpoint images as exact first and last
    frames.`
-5. In OpenArt select the tested model and append: `Generate exactly one silent
-   first/last-frame video, 8 seconds, 9:16. Preserve both reference frames.`
-
 Do not paste all thirty-eight shots into an ordinary generator. Each interval is
 one independent first/last-frame request. Never replace the endpoint contract
 with Extend or a prompt-only result.
@@ -68,7 +65,7 @@ Generated clips are production picture only:
 - no visible word articulation, lip sync or several people speaking at once;
 - naturally relaxed mouths, breathing, listening, gaze, nods and restrained
   hand gestures remain allowed;
-- discard all native platform audio even when the model ignores the prompt.
+- discard all native Veo audio even when the model ignores the prompt.
 
 The final film receives the approved ElevenLabs **Jon — Warm & Grounded
 Storyteller** narration, one continuous `05:20` score and synchronized

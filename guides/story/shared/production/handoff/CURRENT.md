@@ -1,7 +1,8 @@
 # Current handoff — Parts I–II written packages synchronized
 
 Date: **9 August 2026**  
-Status: **final written-package audit in progress; frame and motion generation have not begun.**
+Status: **written-package audit complete; ready for direct Veo 3.1 Lite frame
+production. Frame and motion generation have not begun.**
 
 This is the clean resume point. Do not reconstruct the editorial state from
 conversation fragments. Do not build a slideshow or animatic.
@@ -83,7 +84,7 @@ Founder approval.
   units, midpoint frames or disposable art.
 - Jon — Warm & Grounded Storyteller is the only spoken voice in both films.
 - Generate one clean continuous narration master and one continuous score per
-  film. Discard all Flow/OpenArt clip audio. No lip sync or visible speech.
+  film. Discard all Veo clip audio. No lip sync or visible speech.
 - Captions are separate SRT/WebVTT files; do not burn them into the clean master.
 - Opening true-story language, film title, book route and continuation language
   are post typography, never AI-rendered text.
@@ -110,6 +111,8 @@ Canonical inputs:
   `trilogy/01-the-city-between-us/{film,storyboard,prompts}/`
 - Part II script/storyboard/prompts:
   `trilogy/02-the-system-between-us/{film,storyboard,prompts}/`
+- Part II shot tracker:
+  `trilogy/02-the-system-between-us/production/tracking/SHOT_MANIFEST.csv`
 - Part I character map:
   `trilogy/01-the-city-between-us/assets/characters/CHARACTER_MAP.md`
 - Part II character map:

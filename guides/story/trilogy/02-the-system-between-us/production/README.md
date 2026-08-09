@@ -1,7 +1,7 @@
 # Part II production
 
 The editable English book, 05:20 script, 38-interval checkpoint storyboard and
-Flow/OpenArt prompts are synchronized for the Founder's reading pass. The last
+Veo 3.1 Lite prompts are synchronized for the Founder's reading pass. The last
 published PDF remains untouched. Frame and motion work starts in a separate
 phase; audio remains downstream.
 
@@ -11,6 +11,8 @@ phase; audio remains downstream.
 - [STORYBOARD.md](../storyboard/STORYBOARD.md) defines CP00–CP38.
 - [PROMPT_PACK.md](../prompts/PROMPT_PACK.md) defines the future generator
   workflow.
+- [SHOT_MANIFEST.csv](tracking/SHOT_MANIFEST.csv) tracks the locked P00,
+  S01–S38 and E01 production units.
 
 The next visual task is direct Veo 3.1 Lite production: choose the next
 interval, generate its two exact 9:16 endpoints, then use the same pair and

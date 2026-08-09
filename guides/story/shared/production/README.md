@@ -2,8 +2,8 @@
 
 - [`planning/`](planning/README.md): multi-film cost, subscription, credit and model
   decisions;
-- [`workflows/`](workflows/README.md): platform operating playbooks for Flow, OpenArt
-  and Higgsfield;
+- [`workflows/`](workflows/README.md): the active Flow playbook plus inactive
+  historical OpenArt and Higgsfield notes;
 - [`handoff/CURRENT.md`](handoff/CURRENT.md): authoritative Parts I–II resume
   point for the exact 9:16 checkpoint-frame phase.
 - [`audio/NARRATION_AND_SCORE_LOCK.md`](audio/NARRATION_AND_SCORE_LOCK.md):

@@ -264,7 +264,7 @@ Audio is assembled after picture timing is locked.
   voice as Part I, no lip sync; archive the exact voice identifier, model
   version, settings and clean reference WAV;
 - one continuous instrumental composition from `00:00.000` to `05:20.000`;
-- no Flow/OpenArt clip-level music or generated dialogue;
+- no Veo clip-level music or generated dialogue;
 - exact foley synchronized in post: keyboard, notification, paper, phone,
   crutch/step, door, evidence bag, crowd, chair movement and pen;
 - carry a low 60–80 Hz urban/system pulse across every cut;

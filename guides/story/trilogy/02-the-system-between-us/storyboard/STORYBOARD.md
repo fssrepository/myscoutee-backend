@@ -371,8 +371,8 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 Before generating any checkpoint:
 
 1. approve the book and this written chain;
-2. select one difficult interval for the identical Flow/OpenArt model test;
-3. generate only its two exact 9:16 endpoints;
-4. record model, cost, seed when exposed and failure modes;
-5. lock the production model and character references;
-6. only then generate the remaining checkpoints in numerical order.
+2. use the already locked Veo 3.1 Lite model and Jon narration plan;
+3. generate only the next interval's two exact 9:16 endpoints;
+4. record cost, seed when exposed and concrete failure modes;
+5. generate exactly one eight-second first/last-frame result;
+6. approve or repair it, then continue in numerical order.

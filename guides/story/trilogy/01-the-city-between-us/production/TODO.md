@@ -92,6 +92,5 @@ and music remain downstream of the direct Veo 3.1 Lite picture pass.
 
 - No slideshow or animatic will be built.
 - No intermediate review images are generated.
-- The next phase selects one difficult interval, creates only its two 9:16
-  endpoint frames and compares the identical eight-second prompt in Google Flow
-  and OpenArt.
+- The next phase creates only the two exact 9:16 endpoints for Part I S01 and
+  generates the matching eight-second Veo 3.1 Lite interval in Google Flow.

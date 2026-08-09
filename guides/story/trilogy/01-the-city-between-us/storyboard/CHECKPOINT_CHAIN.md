@@ -3,16 +3,16 @@
 The 03:12 film is planned as one continuous journey. CP00–CP22 are the 23
 motion-endpoint images, not isolated scenes: every interior checkpoint is the
 **last reference frame of one motion interval** and the **first reference frame
-of the next**. CP23 is a deterministic post-production brand plate, never a
+of the next**. E01 is a deterministic post-production brand plate, never a
 video-model endpoint.
 
 ```text
-CP00 -> CP01 -> CP02 -> ... -> CP22    CP23
+CP00 -> CP01 -> CP02 -> ... -> CP22    E01
   interval 01    interval 02          end plate
 ```
 
 This makes later revision local. If one interior checkpoint changes, normally
-only the two adjacent Flow/OpenArt intervals need rebuilding; the entire film
+only the two adjacent Veo Lite intervals need rebuilding; the entire film
 does not.
 
 Rules:
@@ -21,14 +21,14 @@ Rules:
 - Generate motion between adjacent pairs, for example `CP07 -> CP08`.
 - Preserve identity, notebook, colour, light and camera direction at boundaries.
 - CP00 is the opening frame; CP22 is the final generated-motion endpoint.
-- CP23 is the deterministic brand end frame assembled in post and consumes no
+- E01 is the deterministic brand end frame assembled in post and consumes no
   image- or video-generation credit.
 - The present Founder and cast are fictional planning placeholders.
 - Do not build a checkpoint inspection export, slideshow or animatic. Adjacent
   checkpoints go directly into eight-second motion generation as exact first
   and last frames. Do not split an interval into four-second halves or invent
   intermediate stills. P00 is a separate deterministic eight-second opening
-  card; S01–S22 form the 02:56 motion chain; CP23 is the separate deterministic
+  card; S01–S22 form the 02:56 motion chain; E01 is the separate deterministic
   eight-second end plate. The finished film is exactly 03:12.000.
 
 | ID | Story boundary | Current asset |
@@ -56,7 +56,7 @@ Rules:
 | CP20 | Four event-resource buckets and a first shared event turn strangers into contacts | `assets/storyboard-rough/CP20.png` |
 | CP21 | Later invitations, an organically wider adult community and editable relationship lifecycle | `assets/storyboard-rough/CP21.png` |
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/storyboard-rough/CP22.png` |
-| CP23 | Deterministic MyScoutee post-production end frame; not a motion endpoint | `assets/storyboard-rough/CP23.png` |
+| E01 | Deterministic MyScoutee post-production end frame; not a motion endpoint | assembled from the repository logo and editable type |
 
 The superseded three-second review, four-second-split endpoint review and their
 pseudo-motion frames are not production masters and must not be rebuilt. Replace

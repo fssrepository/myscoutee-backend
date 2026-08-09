@@ -284,8 +284,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Light/color:** warm 4200 K home light with winter teal outside.
 - **Sound/VO:** suitcase wheel stops, familiar tram bell; “I had gone out to earn
   money. I came home to find a partner.”
-- **Transition/generation:** tram glass becomes two phone screens. Flow Frames or
-  Higgsfield.
+- **Transition/generation:** tram glass becomes two phone screens in one Veo
+  3.1 Lite first/last-frame interval.
 
 ### S10 — Two kinds of app attention · 01:20–01:28 · 8 s
 
@@ -298,8 +298,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Camera/lens:** 50 mm static; phone below eye line, reflections move.
 - **Light/color:** soft ambient face key, cold phone fill no more than 20%.
 - **Sound/VO:** sparse tick on one side, muffled flutter on the other; app line.
-- **Transition/generation:** one message card becomes a blank name tag. Higgsfield
-  Elements; notification graphics only in post.
+- **Transition/generation:** one message card becomes a blank name tag in Veo
+  3.1 Lite; notification graphics only in post.
 
 ### S11 — Rooms full of beginnings · 01:28–01:36 · 8 s
 
@@ -324,8 +324,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Light/color:** Budapest cream/terracotta; rooms warmer than corridor.
 - **Sound/VO:** applause tail → plate clink → familiar greeting → name-tag
   marker; friendship/continuation line.
-- **Transition/generation:** marker stroke becomes dance-floor tape. OpenArt
-  Director or three short plates in post.
+- **Transition/generation:** marker stroke becomes dance-floor tape in the
+  locked Veo 3.1 Lite interval; restrained post plates may clarify the doorway
+  rhythm without changing the eight-second unit.
 
 ### S12 — Beginner floor · 01:36–01:44 · 8 s
 
@@ -336,8 +337,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Camera/lens:** 32 mm slow 18° clockwise arc at chest height.
 - **Light/color:** broad 4200 K window key, warm timber bounce.
 - **Sound in post:** shoe rhythm and room reverb; no instructor speech.
-- **Transition/generation:** passing dancer wipes to identical S13 room.
-  Higgsfield Kling 3.0 with Founder, Student and Studio Elements.
+- **Transition/generation:** passing dancer wipes to identical S13 room. Use
+  Veo 3.1 Lite with the exact Founder, Student and studio references.
 
 ### S13 — The advanced room · 01:44–01:52 · 8 s
 
@@ -364,8 +365,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Camera/lens:** 55 mm static medium three-shot; no melodramatic push.
 - **Light/color:** warm bench practical, cool rainy doorway rim.
 - **Sound in post:** umbrella shake and shoes; the greeting is nonverbal.
-- **Transition/generation:** umbrella crosses lens into café metal. Higgsfield,
-  three locked Character Elements; expression outranks motion.
+- **Transition/generation:** umbrella crosses lens into café metal in Veo 3.1
+  Lite with the three locked character references; expression outranks motion.
 
 ### S15 — The wrong rooms for a first date · 02:00–02:08 · 8 s
 
@@ -382,8 +383,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   formal warm narrow keys.
 - **Sound in post:** steam → bass → cloth/fork beneath Jon's narration; no
   diegetic speech.
-- **Transition/generation:** white tablecloth becomes notebook paper. Generate
-  three clips/stills and cut in post; OpenArt or Higgsfield.
+- **Transition/generation:** white tablecloth becomes notebook paper. Veo 3.1
+  Lite supplies the eight-second motion base; the three internal beats may be
+  tightened in post without generating extra clips.
 
 ### S16 — The missing bridge · 02:08–02:16 · 8 s
 
@@ -521,8 +523,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Light/color:** warm 3200–3500 K practical/daylight mix; exit remains visible.
 - **Sound/VO:** invitation, remembered room tone, one contextual connection and
   one lower tactile tick; known-contacts/people-in-common line.
-- **Transition/generation:** Operator closes a preparation list. Higgsfield for
-  ensemble consistency.
+- **Transition/generation:** Operator closes a preparation list. Use Veo 3.1
+  Lite with the locked ensemble references.
 
 ### S22 — Independence gives the 2016 idea time · 02:56–03:04 · 8 s
 

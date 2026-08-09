@@ -20,19 +20,17 @@ controlled body rather than aggressive staging. Supporting adults have autonomy 
 clear subject action and one camera move only. No generated words, captions,
 interface labels, logos or final brand mark; deliver clean plates for post.
 
-VOICE-OVER PERFORMANCE AND VEO AUDIO HARD LOCK: Final narration and one
-continuous part-level score are added only after every clip has been joined and
-picture timing is locked. Unless the matching SHOT explicitly assigns one short
-diegetic cue, no character visibly speaks, forms words or lip-syncs. Keep mouths
+VOICE-OVER PERFORMANCE AND VEO AUDIO HARD LOCK: Final narration, ambience,
+foley and one continuous part-level score are added only after every clip has
+been joined and picture timing is locked. No character visibly speaks, forms
+words or lip-syncs. Keep mouths
 naturally relaxed rather than rigidly sealed: allow breathing, a brief nonverbal
 smile and minute natural jaw movement only. Convey interaction through
 listening, eye contact, small nods and restrained hand gestures. In group scenes,
-never make several people visibly speak at once. Generate environmental room
-tone and physically motivated foley only. Absolutely no background music,
-cinematic score, melody, harmony, musical drone, rhythmic pulse, singing,
-dialogue or narration. Do not reinterpret rain, traffic, room tone or urban hum
-as music. Begin and end on neutral ambience that can accept a short audio
-crossfade. If the platform generates music or voice anyway, discard the entire
+never make several people visibly speak at once. Generate silent production
+picture only: absolutely no dialogue, narration, singing, background music,
+cinematic score, melody, harmony, musical drone, rhythmic pulse, ambience or
+sound effects. If the platform generates any audio anyway, discard the entire
 native clip audio rather than carrying it into the master.
 
 Story continuity uses **global route, local encounter**: different environments

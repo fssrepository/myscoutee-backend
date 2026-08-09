@@ -1,4 +1,8 @@
-# OpenArt workflow
+# OpenArt workflow — inactive historical note
+
+The current Parts I–II production is locked to Google Flow with Veo 3.1 Lite
+and Jon narration. Do not use this workflow or spend OpenArt credits unless the
+Founder explicitly opens a later remaster phase.
 
 Scope: shared platform playbook for every part. The named Sxx shots, prompts
 and assets below are Part I's worked example; later parts substitute their
