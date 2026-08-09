@@ -724,8 +724,13 @@ These are not externally researched claims. They remain first-person testimony:
   household — perhaps roughly one in three — no longer wanted to return home,
   and that some felt happier in London despite crowded material conditions;
   this is not a measured percentage and must not be published as one;
-- Soho group lunches being too expensive, the Founder pretending not to be
-  hungry, then eating muesli with milk and fearing an early return;
+- Soho group and farewell lunches being too expensive; the Founder still
+  attending, studying the prices and watching colleagues eat while presenting
+  “not hungry” as if it were a Hungarian habit; colleagues' surprise when he
+  finally ordered food once or twice in the fourth or fifth year; reliance away
+  from the table on muesli and two-litre milk bottles; and the direct connection
+  between each avoided meal, his rising financial-independence chart and his
+  fear of an early return;
 - shared-bedroom rent savings paying for travel and accumulating until the
   Founder's December 2015 diagram showed financial independence at Budapest's
   much lower cost base; the parent-assisted Budapest flat stood empty throughout

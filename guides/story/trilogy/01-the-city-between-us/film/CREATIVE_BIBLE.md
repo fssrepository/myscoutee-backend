@@ -128,9 +128,13 @@ this non-graphic and non-diagnostic. He finds software work in London within two
 weeks despite weak English. The Diamond Jubilee and Olympic summer enter the
 already established London story in 2012, the following year. In Soho he works among colleagues
 from across the world, but for almost three years can barely converse with them.
-The cost of their shared lunches makes him pretend not to be hungry. After they
-leave he eats muesli with milk, hiding how afraid he is that London will become
-unaffordable before he has really begun. Museums,
+The cost of their shared lunches makes him pretend not to be hungry. He still
+joins the table, including farewell lunches, opens the menu and watches the
+others eat; when noticed, he makes the refusal sound like a Hungarian habit.
+Only in the fourth or fifth year does he order food once or twice, startling
+colleagues who had accepted the performance. Away from the table he relies
+heavily on muesli and two-litre bottles of milk, hiding how afraid he is that
+London will become unaffordable before he has really begun. Museums,
 exhibitions, nightlife, multicultural dates and friendships make the first
 three years feel inexhaustible. The Victoria line is only a brief connective
 beat to Tottenham, not a commute sequence. There he makes a hard, rational
@@ -459,7 +463,7 @@ branding around the shared core.
 
 - the Founder finds professional work within two weeks despite weak English;
   competence is visible in the software work while conversational isolation is
-  visible in missed lunch rhythm and restrained silence, never comic accent or
+  visible in the untouched meal and restrained silence, never comic accent or
   incompetence;
 - for almost three years he can barely converse with colleagues. Trivandrum is
   the beginning of practical English, not instant fluency;
@@ -478,9 +482,12 @@ branding around the shared core.
   HMO is a Hungarian microcosm: the Founder plus twelve other Hungarian adults;
   make one full bathroom and one separate WC spatially legible, then show the
   Founder's shared bedroom with two personal zones;
-- at lunch, colleagues leave into expensive Soho together while the Founder
-  performs “not hungry.” Only after they leave does he use a two-litre milk
-  bottle and muesli. The hidden constraint, not the diet, is the story;
+- at an expensive Soho lunch, the Founder sits at the same table, opens the
+  menu and performs “not hungry” while colleagues eat. A restrained later echo
+  may show their surprise when he finally orders food once or twice in year four
+  or five. Muesli and a two-litre milk bottle belong away from the restaurant.
+  A thin private chart rises with every avoided meal: savings were the reason
+  he came to London. The hidden constraint, not the diet, is the story;
 - every flatmate has a trace of individual life — food, photograph, coat,
   greeting, routine and a different reason for leaving Hungary — rather than
   becoming anonymous crowd texture;
@@ -697,7 +704,7 @@ Avoid:
 The sonic line mirrors the visual line:
 
 - rural wind/wood/soil → train seam → Danube/tram bell → office ventilation →
-  lunch chairs/quiet milk pour → room key → eight travel hits
+  restaurant plates/menu page/quiet milk pour → room key → eight travel hits
   → tram bell → app tick → dance count → espresso steam → pencil stroke → chat
   send → ticket scan → room tone → final two-note motif.
 

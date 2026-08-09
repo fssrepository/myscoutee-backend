@@ -76,19 +76,22 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   its non-graphic form belongs to the expanded memory board. A restrained
   two-week calendar fold shows how quickly he found work despite weak English.
   He is technically capable but cannot yet join easy colleague conversation.
-  At lunch, colleagues gather coats and leave together. The Founder gives a practiced
-  “not hungry” expression. When the room is empty, he takes out a two-litre milk
-  bottle and muesli. His monitor reflection briefly holds the competent public
-  self and the privately afraid budget self. No employer brand or claim that
-  colleagues knowingly excluded him.
-- **Face/body:** precise software competence; convincing casual refusal at
-  lunch; after the door closes, relief mixed with fear of having to return home
-  before London has really begun.
+  At an expensive group lunch, the Founder sits at the same table, opens the
+  menu and gives a practiced “not hungry” explanation while colleagues eat.
+  Include the warmth of a shared or farewell meal; nobody excludes him. Match
+  the menu's price column to a later private muesli bowl and two-litre milk
+  bottle away from the restaurant, while a thin private chart rises toward
+  Budapest-cost financial independence. A one-beat year-four-or-five echo may
+  show colleagues' restrained surprise when he finally orders food once or
+  twice.
+- **Face/body:** precise software competence; convincing casual refusal while
+  remaining socially present at lunch; a held look at the prices, then quiet
+  concentration as the others eat. Never stage accusation or pity.
 - **Camera/lens:** restrained 40 mm desk-height drift toward the window.
 - **Light/color:** cool monitor fill below eye line, warm practicals, brick and
   rain-softened Soho architecture outside.
-- **Sound/VO:** keyboard, partially understood colleague murmur, lunch
-  chairs/coats, door, quiet milk pour and spoon; “Within two weeks, I found Soho
+- **Sound/VO:** keyboard, partially understood colleague murmur, restaurant
+  plates and conversation, menu page, quiet milk pour and spoon; “Within two weeks, I found Soho
   software work; with weak English, I hid hunger and isolation.”
 - **Transition/generation:** bowl rim becomes an exhibition frame in S04. Keep
   the Soho sex-shop farewell-gift memory as one warm S04 insert; do not overload

@@ -96,9 +96,13 @@ exact runtime.
   while continued room-sharing was no longer a viable life. Housing therefore
   became his stop-loss and a material reason to return. Do not imply that the
   savings bought another home or made him financially independent in London.
-- Soho lunch was socially important but too expensive for his budget. He
-  presented a different self by pretending not to be hungry, then relied on a
-  two-litre milk bottle and muesli. This is specific testimony, not a dietary
+- Soho lunch was socially important but too expensive for his budget. He still
+  joined the table, including farewell meals, watched colleagues eat and made
+  his “not hungry” performance sound like a Hungarian habit. In year four or
+  five, colleagues were surprised when he finally ordered food once or twice.
+  Away from the restaurant, he relied heavily on two-litre milk bottles and
+  muesli. Every avoided meal served the private financial-independence chart
+  that had brought him to London. This is specific testimony, not a dietary
   recommendation, a claim of literal exclusive nutrition or proof that
   colleagues excluded him.
 - The shared Victorian HMO is a deliberate financial strategy in an expensive

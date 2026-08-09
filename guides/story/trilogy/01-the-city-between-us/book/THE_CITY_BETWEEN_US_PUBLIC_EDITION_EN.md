@@ -456,19 +456,27 @@ For the first three years, the city felt inexhaustible.
 
 ## 5. The Performance of Not Being Hungry
 
-My colleagues went out for lunch together. In Soho, lunch was not only food; it
-was where the workday became human. People loosened, told stories, complained,
-laughed and returned to their desks knowing a little more about one another.
+My colleagues went out for lunch together, and I went with them. In Soho, lunch
+was not only food; it was where the workday became human. People loosened, told
+stories, complained and laughed. Farewell lunches gave the table another
+purpose: somebody was leaving, so everybody made time to sit together.
 
 It was also expensive.
 
 I was afraid that London would consume my money before I had built any future
-there. So I performed another version of myself. When coats came off chairs and
-somebody asked whether I was coming, I behaved as if hunger had simply failed to
-arrive that day.
+there. I opened the menu, looked at the prices and performed another version of
+myself. I sat at the same table and watched my colleagues eat. If somebody
+noticed, I behaved as if hunger had simply failed to arrive and made it sound
+like a Hungarian habit rather than a private calculation.
 
-After the door closed, I ate muesli with milk. The two-litre bottle became a
-private object in a public life.
+Away from the table, much of my food came down to muesli and two-litre bottles
+of milk. In the fourth or fifth year, I finally ate with the group once or
+twice. Their surprise showed how completely the performance had worked.
+
+Every avoided lunch kept a little more of the line on my private chart rising
+toward the financial independence for which I had come to London. I was that
+focused. The graph could record the saving. It could not record what I watched
+from the other side of the table.
 
 I do not blame my colleagues. I did not tell them the truth, and they had no
 reason to know it. That is precisely why the memory matters. Social exclusion
@@ -476,8 +484,8 @@ does not always look like a door being slammed. Sometimes a person protects
 himself by presenting the version that costs least to explain. The performance
 works, and because it works, nobody sees the need underneath it.
 
-By day, I was a competent programmer in Soho. At lunch, I disappeared while
-remaining in the same room.
+By day, I was a competent programmer in Soho. At lunch, I remained visible
+while the need disappeared.
 
 ## 6. Thirteen Hungarian Lives
 

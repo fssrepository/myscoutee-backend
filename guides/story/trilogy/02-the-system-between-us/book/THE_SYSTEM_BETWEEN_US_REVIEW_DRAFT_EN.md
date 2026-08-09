@@ -1618,9 +1618,9 @@ sequence, the ordinary choices became the machine.
 
 That does not make every participant cruel, or every Hungarian participant the
 same. It removes the comforting fiction that a broken system exists without
-human maintenance. No single person designed the entire corridor. Enough
-people kept their own door while responsibility moved toward the person who
-could not pass it on.
+human maintenance. No single person designed the entire corridor.
+Responsibility moved away from every desk; accountability moved toward the
+person with nowhere further to send it.
 
 <!-- pagebreak -->
 
@@ -1636,6 +1636,14 @@ Citizens filled public spaces during the presidential-pardon scandal in 2024.
 Judges and court employees rallied in 2025 for judicial independence and the
 freedom to speak. Other demonstrations defended civil liberties and the right to
 assemble.
+
+By then emergency had become an ordinary political grammar. During COVID, a
+curfew decided when a person could cross his own street. As the pandemic order
+receded, the war next door supplied another state of danger. In 2025, the
+capital's mayor announced Pride as a city event after the police had prohibited
+the march. He was questioned, then charged. After the election and a European
+court judgment, the charge was dropped. The paving stones had not moved. The
+law around the people on them had.
 
 These movements did not share one programme, and they did not know my case.
 Their significance was cumulative. Institutions that had often spoken as if
@@ -1684,6 +1692,12 @@ Over time, my proposals acquired a structure:
 - use AI to categorize and explain, not to hide responsibility behind another
   opaque decision.
 
+Later, I remembered a public sentence about KATA-contracted software teams,
+even inside the tax authority. For a moment, the state and the people it had
+placed under suspicion appeared to have been buying labour through the same
+door. Then the door was closed from inside, and the people outside were asked
+to account for having used it.
+
 The important change was personal. I had moved from demanding that somebody
 repair my account to asking how the next person could avoid entering the account
 in the first place.
@@ -1703,6 +1717,10 @@ procedural weakness it claimed to repair.
 Both statements matter.
 
 A system cannot restore trust merely by changing who controls the speed.
+
+In July, the former governing party marched under the words *Stop Autocracy*
+and accused the new majority of dismantling constitutional democracy. The
+warning might still be right. The same words had crossed the chamber.
 
 The election was not a verdict in my criminal case and did not validate every
 claim I had made. It did say that continuity no longer commanded enough trust.
@@ -2500,6 +2518,14 @@ Public reporting supports the exceptional speed of the July 2022 legislative
 change, the 1 September transition and the protests. The Founder did not attend
 the protest and does not claim that all KATA use was identical.
 
+A private email dated 8 August 2026 records the Founder's recollection of a
+public remark about KATA-contracted software teams, including teams inside the
+tax authority. The underlying public recording has not yet been isolated. The
+book therefore uses it as a remembered public sentence, not as a verified
+quotation or independent proof of the authority's staffing arrangements. Its
+narrative function is narrower: the state could use the same distorted labour
+route whose users later carried the burden of its abrupt closure.
+
 Sources:
 
 - https://telex.hu/english/2022/07/12/major-tax-change-bill-pushed-through-parliament-in-spite-of-protests
@@ -2569,6 +2595,53 @@ Sources:
 - https://www.investing.com/news/world-news/hungarian-judges-court-staff-rally-for-judicial-independence-3884986
 - https://commission.europa.eu/strategy-and-policy/policies/justice-and-fundamental-rights/upholding-rule-law/rule-law/annual-rule-law-cycle/2025-rule-law-report_en
 
+## Emergency powers and public reversals
+
+The book joins several public moments to show a political atmosphere, not one
+continuous legal regime. A COVID-era decree imposed a night curfew and broad
+limits on assembly. A later state of danger was justified through the war in
+neighbouring Ukraine. These were distinct legal phases; the narrative does not
+claim that one automatically caused the other.
+
+In 2025, after police prohibited Budapest Pride, the capital's mayor announced
+it as a municipal event and was later questioned and charged. Reporting in June
+2026 records that the prosecution dropped the charge after a Court of Justice
+of the European Union judgment. The book uses the sequence as a public reversal,
+not as evidence about the Founder's criminal case.
+
+In July 2026, the former governing party organized a *Stop Autocracy* protest
+and accused the new majority of dismantling constitutional democracy. That was
+a political allegation, not a finding that the new government was or was not
+authoritarian. The narrative retains the image because language once used
+against the old order had moved to the other side of Parliament.
+
+A February 2025 interview records the justice minister saying that judicial
+independence was not in danger. Later that month, judges and court employees
+rallied for judicial independence and the freedom to speak. The minister is
+identified only by office in the narrative; the linked public source supplies
+the name.
+
+A separate 2025 controversy provides another reference-layer example of
+institutional certainty preceding completed fact-finding. In September, the
+justice minister presented a report saying that no minor victim had emerged in
+a children's-home case. In November, he said it still had to be clarified
+whether a minor had been involved; later proceedings continued to develop the
+record. This sequence is not part of the Founder's case and is not used to
+allege a deliberate lie. It is retained only as context for the period's
+conflict between definitive official language and unfinished facts.
+
+Sources:
+
+- https://njt.jog.gov.hu/jogszabaly/2020-484-20-22.24
+- https://kormany.hu/hirek/a-kormanyzati-tajekoztatasi-kozpont-kozlemenye20221028
+- https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
+- https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
+- https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
+- https://telex.hu/belfold/2025/02/05/tuzson-bence-interju-bombariado-till-tamas-obt-beremeles-reform
+- https://enbudapestem.hu/2025/02/22/az-igazsagszolgaltatas-fuggetlensegeert-tuntetnek
+- https://hvg.hu/itthon/20250924_Tuzson-Bence-a-Szolo-utcai-javitointezet-ugyerol-kiskoru-sertett-nem-volt-es-politikusok-neve-sem-kerult-elo
+- https://444.hu/2025/11/04/tuzson-bence-tisztazni-kell-volt-e-kiskoru-erintett-a-szolo-utcai-igazgato-ugyeben
+
 ## Long-term work exclusion
 
 Eurostat defines long-term unemployment at twelve months and very long-term
@@ -2590,7 +2663,7 @@ Sources:
 ## The 2026 transition
 
 Independent and official reporting supports the election result, government
-change, constitutional amendments, end of Sulyok's mandate and interim
+change, constitutional amendments, end of the President's mandate and interim
 presidency. The government's restoration account and civil-society criticism
 are both retained because institutional replacement is not self-validating.
 
