@@ -536,8 +536,8 @@ from identity.
 At one point, the accountant called me unexpectedly for a reason I no longer
 remember and asked whether she should file a further return for the 1 September
 transition. I had wanted to avoid exactly that. The return was simple enough for me to file at home
-through the personal online tax interface without handing over my government-
-account password again. The question reopened the same unsafe choice and put me
+through the personal online tax interface without handing over my
+government-account password again. The question reopened the same unsafe choice and put me
 back on edge for no useful reason.
 
 If I refused to share access, I could be told that I had prevented the
@@ -2449,8 +2449,8 @@ Private recruitment correspondence records an intended January 2021 start and
 an exit email dated 28 January. Later correspondence with the Hungarian central
 bank records the short employment, the government-bond trading restriction and
 the Founder's data-handling and background-screening complaints. The long
-assessment and requirement that screening clear before the start are first-
-person employment chronology. The exact
+assessment and requirement that screening clear before the start are
+first-person employment chronology. The exact
 first-day warning, masked-room expressions, seating of two colleagues, exit
 question and roughly three-hour ethics conversation with the bank's local
 lawyers remain first-person memory. The Founder also records that he answered

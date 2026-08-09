@@ -103,8 +103,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Light/color:** cool monitor fill below eye line, warm practicals, brick and
   rain-softened Soho architecture outside.
 - **Sound/VO:** keyboard, partially understood colleague murmur, restaurant
-  plates and conversation, menu page, quiet milk pour and spoon; “Within two weeks, I found Soho
-  software work; with weak English, I hid hunger and isolation.”
+  plates and conversation, menu page, quiet milk pour and spoon; Jon recalls
+  the Founder's practiced line, “I'm not hungry.” It is voice-over, not lip
+  sync.
 - **Transition/generation:** bowl rim becomes an exhibition frame in S04. Keep
   the Soho sex-shop farewell-gift memory as one warm S04 insert; do not overload
   S03.
@@ -381,8 +382,8 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   symmetrical locked frame.
 - **Light/color:** flat café green, noisy bar practicals with neutral face key,
   formal warm narrow keys.
-- **Sound in post:** steam → bass → cloth/fork beneath Jon's narration; no
-  diegetic speech.
+- **Sound in post:** steam → bass → cloth/fork beneath Jon recalling
+  “Sorry—what did you say?”; no diegetic speech or lip sync.
 - **Transition/generation:** white tablecloth becomes notebook paper. Veo 3.1
   Lite supplies the eight-second motion base; the three internal beats may be
   tightened in post without generating extra clips.

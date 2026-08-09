@@ -10,6 +10,13 @@ first public edition is `1.0.0`.
   answer inside his head was simply that he could not walk. The book lets the
   collision stand; S22 carries the recalled question and unheard answer in
   Jon's voice, supported by restrained facial acting and no lip sync.
+- Fixed the two final compound-word line breaks (`government-account` and
+  `first-person`). The film narration now lets a few remembered sentences carry
+  their own scenes: the bond question at the bank exit, the public one-year
+  medical answer, the human thought during fingerprinting, the judge's two
+  short questions and the returning line, “The procedure continued.” These are
+  narrated recollections or inner thought, never generated dialogue or lip
+  sync.
 
 - Closed the final editorial pass without defensive over-attribution: aligned
   the late-2018/early-2019 work chronology, tightened the repeated AI-mirror

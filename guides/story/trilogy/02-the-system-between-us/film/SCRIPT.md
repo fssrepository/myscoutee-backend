@@ -41,7 +41,7 @@ viewer time to read and consider the premise.
 
 ### 00:32–00:40 — S04 · Seven years against three weeks
 
-> At the next job, three weeks of policy collided with seven years of savings. I chose the savings.
+> Three weeks of policy collided with seven years of savings. On the way out, I asked, “Can I finally buy government bonds?”
 
 ### 00:40–00:48 — S05 · The distant team
 
@@ -89,7 +89,7 @@ viewer time to read and consider the premise.
 
 ### 02:08–02:16 — S16 · The body has a deadline
 
-> After months of pain, the public route offered a shoe and a review in a year. I borrowed for private surgery, then spent three months alone in bed.
+> The public answer was a shoe: come back in a year. The private clinic laughed. I borrowed for surgery and spent three months in bed.
 
 ### 02:16–02:24 — S17 · The wound reaches the portal
 
@@ -105,7 +105,7 @@ viewer time to read and consider the premise.
 
 ### 02:40–02:48 — S20 · Fingerprints
 
-> A policewoman guided my fingers onto paper. Even while becoming data, my mind remained inconveniently human.
+> A policewoman guided my fingers onto paper. I found her attractive. Even while becoming data, my mind remained inconveniently human.
 
 ### 02:48–02:56 — S21 · Investigating the investigation
 
@@ -130,7 +130,7 @@ carry what the words do not.
 
 ### 03:20–03:28 — S25 · Inside the curve
 
-> The judge smiled at fear and self-defence. The repaired failure still moved toward my home and savings.
+> “You were afraid?” the judge smiled. “And you defended yourself.” Then the room moved toward my home and savings.
 
 ### 03:28–03:36 — S26 · Care
 
@@ -182,7 +182,7 @@ carry what the words do not.
 
 ### 05:04–05:12 — S38 · The open line
 
-> Three years after one sentence, first instance still waited. The case had moved into my life.
+> Three years after one sentence, first instance still waited. The procedure continued. It had moved into my life.
 
 ### 05:12–05:20 — E01 · Book and continuation card
 

@@ -65,6 +65,8 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 - **Motion:** the badge becomes an employee-policy card while seven years of
   modest government-bond savings remain visible as amber layers behind it.
+  At the exit, the Founder turns back with one dry question; the restrained
+  masked reactions carry its humour without lip sync.
 - **CP04:** Founder between a three-week employment threshold and the savings
   that made his return possible, choosing the latter without triumph.
 
@@ -194,6 +196,8 @@ come from [SCRIPT.md](../film/SCRIPT.md).
   guides the Founder's fingers onto paper.
 - **CP20:** close hand choreography and one ordinary human glance; professional,
   non-erotic and free of flirtation.
+- **Sound in post:** Jon states the Founder's inconveniently human observation;
+  it remains inner narration and nobody in the room reacts to it.
 
 ### S21 — Investigating the investigation · 02:48–02:56 · CP20→CP21
 
@@ -230,7 +234,9 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S25 — Inside the curve · 03:20–03:28 · CP24→CP25
 
-- **Motion:** the façade opens into the remembered C-shaped hearing room.
+- **Motion:** the façade opens into the remembered C-shaped hearing room. Jon
+  recalls the judge's two short questions while her restrained smile and the
+  Founder's response carry the exchange without lip sync.
 - **CP25:** prosecutor left, clerk far-left corner, judge centre, court-appointed
   counsel right; Founder in front with microphone. A restrained expression
   registers black humour without proving ridicule or bias.

@@ -1,9 +1,9 @@
 # Current handoff — Parts I–II written packages synchronized
 
 Date: **9 August 2026**  
-Status: **written-package internal audit complete. One external critical-AI
-pass remains before direct Veo 3.1 Lite frame production. Frame and motion
-generation have not begun.**
+Status: **both written packages are closed after the final critical-AI pass and
+republished as public edition `1.0.0`. Direct Veo 3.1 Lite frame production is
+the next phase. Frame and motion generation have not begun.**
 
 This is the clean resume point. Do not reconstruct the editorial state from
 conversation fragments. Do not build a slideshow or animatic.
@@ -33,7 +33,7 @@ Canonical tone rules:
   `trilogy/01-the-city-between-us/book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md`
 - Editable reading PDF:
   `trilogy/01-the-city-between-us/book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
-- Locked publication, unchanged by this revision:
+- Locked publication, republished under the already approved `1.0.0` version:
   `trilogy/01-the-city-between-us/published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
 - The illustrated draft contains the Founder, Budapest, London, travel,
   Hungarian-house and six-person MyScoutee plates.
@@ -44,16 +44,16 @@ Canonical tone rules:
   eat and presented himself as not hungry; the savings focus tightened only
   when Budapest-cost independence appeared attainable.
 
-### Part II — The System Between Us · v1.0.0 draft lineage
+### Part II — The System Between Us · v1.0.0
 
 - Editable source:
   `trilogy/02-the-system-between-us/book/THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md`
 - Editable reading PDF:
   `trilogy/02-the-system-between-us/book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- Locked earlier publication, unchanged by this revision:
+- Locked publication, republished under the already approved `1.0.0` version:
   `trilogy/02-the-system-between-us/published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- The active manuscript supersedes the earlier publication for editing only.
-- The current editable reading PDF is **107 pages**.
+- The editable reading PDF is byte-identical to the locked publication.
+- The current reading PDF is **106 pages**.
 - It preserves the lawful-work path, abrupt tax transition, accountant and
   administration chain, direct-password/delegation trap, correction and tax
   payment, surgery isolation, later search and interviews, two-expert contrast,
@@ -69,11 +69,10 @@ Canonical tone rules:
   first-instance judgment. The book shows this as time entering the Founder's
   life, not as a procedural lecture.
 
-The editable sources remain revisable. The version number does not change in
-this pass. No locked publication is overwritten or re-hashed without explicit
-Founder approval. The Founder does not plan another separate cover-to-cover
-read. Apply or reject the one final external critical-AI response, then close
-the editorial gate.
+The editable sources remain the source of any later revision. The Founder
+explicitly approved this same-version correction and republication; both
+published PDFs now have matching regenerated checksums and manifests. The
+editorial gate is closed.
 
 ## 3. Film locks
 
@@ -98,11 +97,11 @@ the editorial gate.
 
 Audio lock: [`../audio/NARRATION_AND_SCORE_LOCK.md`](../audio/NARRATION_AND_SCORE_LOCK.md).
 
-## 4. Next phase — final critic pass, then direct Veo Lite production
+## 4. Next phase — direct Veo Lite production
 
-Start frame production after the Founder accepts the final critical-AI response.
-The model and narrator are already locked: **Veo 3.1 Lite** and **Jon — Warm &
-Grounded Storyteller**.
+The final critical-AI response has been accepted and applied. Start frame
+production from the locked packages. The model and narrator are already locked:
+**Veo 3.1 Lite** and **Jon — Warm & Grounded Storyteller**.
 
 1. Generate each scene's exact two numbered 9:16 endpoints from the locked role
    and location descriptions, beginning with Part I S01.

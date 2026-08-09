@@ -3,7 +3,13 @@
 The trilogy part and the edition version are separate. This book is Part
 `I`; its first public edition is `1.0.0`.
 
-## Unreleased correction of 1.0.0 — 2026-08-09
+## Final same-version correction of 1.0.0 — 2026-08-09
+
+- Completed the last copyedit by hyphenating `AI-generated`, and sharpened two
+  film narration beats with recalled human speech: the Founder's practiced
+  “I'm not hungry” at the Soho lunch table and “Sorry—what did you say?” inside
+  first-date rooms that defeated conversation. Both remain Jon voice-over with
+  no character lip sync.
 
 - Restored the United States assignment as a readable route rather than an
   unnamed geography: Ocean City in Maryland, Virginia, Philadelphia,

@@ -17,7 +17,7 @@ few uncertain locations remain deliberately unnamed. Where memory and public
 geography meet, I prefer an honest question mark to invented precision.
 
 All character and scene illustrations in this book are artificial intelligence
-(AI) generated visual interpretations. They do not depict the actual
+(AI)-generated visual interpretations. They do not depict the actual
 participants.
 
 This story compresses decades. Adjacent pages, and especially adjacent seconds

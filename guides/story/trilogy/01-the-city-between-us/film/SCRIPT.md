@@ -16,7 +16,7 @@ settings and a clean reference WAV.
 | 00:00–00:08 | FOUNDER VO | A true story: leaving home, meeting the world, and returning to connect people more humanly. |
 | 00:08–00:16 | FOUNDER VO | From small-farmer roots through Budapest and London, I searched for a more human way to meet. |
 | 00:16–00:24 | FOUNDER VO | A multinational job still meant hostels and unstable rooms. My parents helped me secure a home. |
-| 00:24–00:32 | FOUNDER VO | Within two weeks, I found Soho software work; with weak English, I hid hunger and isolation. |
+| 00:24–00:32 | FOUNDER VO | Within two weeks, I found Soho software work. With weak English, I watched colleagues eat and said, “I'm not hungry.” |
 | 00:32–00:40 | FOUNDER VO | Museums, exhibitions, clubs and dates across cultures made the city feel inexhaustible. |
 | 00:40–00:48 | FOUNDER VO | But home was a Hungarian house: thirteen lives carrying thirteen different reasons for leaving. |
 | 00:48–00:56 | FOUNDER VO | One bath, one toilet, one shared room — yet some felt happier there, and no longer wanted to go home. |
@@ -28,7 +28,7 @@ settings and a clean reference WAV.
 | 01:36–01:44 | FOUNDER VO | At beginner dance classes, the floor was full. |
 | 01:44–01:52 | FOUNDER VO | By the advanced classes, the room had thinned; beginnings kept losing their next step. |
 | 01:52–02:00 | FOUNDER VO | Sometimes a conversation opened, then a friendly partner arrived, and the context became clear. |
-| 02:00–02:08 | FOUNDER VO | Dates too: deafening café, basement bar, beautiful table — all built for performance. |
+| 02:00–02:08 | FOUNDER VO | “Sorry—what did you say?” Café steam, basement music and a beautiful table kept turning first dates into performances. |
 | 02:08–02:16 | FOUNDER VO | I tried everything. Screens made us judge age, appearance and history before meeting; shared human context disappeared. |
 | 02:16–02:24 | FOUNDER VO | MyScoutee softens initial distrust through private, editable intention and mutual context — not a public verdict. |
 | 02:24–02:32 | FOUNDER VO | Mutual choices can form six strangers into a group with several possible human connections. |
