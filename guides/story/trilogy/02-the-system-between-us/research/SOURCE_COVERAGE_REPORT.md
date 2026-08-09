@@ -145,7 +145,7 @@ records received renewed direct attention:
   expert and defence chronology;
 - exclusion, court-administration and strategy material used to separate
   documentary fact from remembered courtroom tone, including the filed
-  “immediate custodial sentence” quotation and the annex's “expensive” official
+  “are you asking to be sent to prison?” quotation and the annex's “expensive” official
   recording response. The separate posted decision remains unavailable in the
   local package; its conscientious-listening, fine-warning, position and
   Strasbourg terms are therefore recorded as the Founder's confirmed account.

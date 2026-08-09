@@ -428,6 +428,14 @@ Another Indian woman colleague—not the colleague from the farewell-gift
 memory—once told me that I should write a novel. I worked in that one London
 workplace through all five years. I did not write the novel then.
 
+A Black colleague also invited me to a wedding. The invitation itself felt
+like acceptance, but I did not go. I was still an Eastern European immigrant,
+not the culturally effortless international person I sometimes hoped to appear
+to be. I feared entering a celebration whose codes I did not know and revealing
+the culture shock I was trying not to show. Years later, the sharper shock would
+come not from somebody else's ceremony but from returning to my own country and
+discovering that home had become the room I could no longer read.
+
 For the first three years, the city felt inexhaustible.
 
 ## 5. The Performance of Not Being Hungry
@@ -1763,6 +1771,10 @@ Sources:
   Founder to write a novel. The Founder worked at that one London workplace
   throughout his five years there. She is not the colleague from the
   farewell-gift memory.
+- The wedding invitation from a Black London colleague and the Founder's
+  decision not to attend are first-person memory. The passage records his own
+  uncertainty and fear of exposing culture shock; it makes no claim about the
+  ceremony, the colleague's expectations or a uniform Black British culture.
 - The impression that perhaps one person in three around the household no
   longer wanted to return is explicitly not a population statistic.
 - The roughly eight-year “disappeared” arc runs from the September 2010 employer

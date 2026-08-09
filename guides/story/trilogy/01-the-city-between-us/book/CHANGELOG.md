@@ -67,6 +67,11 @@ The trilogy part and the edition version are separate. This book is Part
   another move abroad. The memoir bounds 2021 as the Founder's one open remote-
   hiring year and the 2022 closure as his own applicant experience, not a
   universal labour-market claim.
+- Added the London wedding invitation the Founder did not accept: a Black
+  colleague's gesture felt like inclusion, while the Founder's fear of exposing
+  his own culture shock kept him away. The memory now foreshadows the sharper
+  reverse-culture shock he later experienced in Budapest without defining the
+  colleague or ceremony through ethnicity.
 
 ## 0.1-draft — 2026-08-07
 

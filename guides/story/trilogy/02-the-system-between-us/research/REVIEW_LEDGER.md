@@ -103,4 +103,5 @@ question, locally and minimally.
     intimate Part I history mattered and the later answer about the source of
     the money.
 12. isolate the exact March–May 2023 filing containing the remembered Hungarian
-    profanity about the administration fining its own mother.
+    profanity demanding that the institution fine him, rendered in literary
+    English as “Go on, then. Fine me.”

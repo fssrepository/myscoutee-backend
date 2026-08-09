@@ -8,7 +8,7 @@ version, settings and a clean reference WAV. The Founder may still correct the
 book before picture lock; any such correction must be propagated here before
 voice generation.
 
-Read in a restrained first-person voice at approximately 122–128 words per
+Read in a restrained first-person voice at approximately 116–122 words per
 minute. Do not accelerate the final third. Short gaps inside the windows are for
 foley and breath.
 
@@ -16,18 +16,17 @@ foley and breath.
 
 ### 00:00–00:08 — S01 · The line
 
-> Part I ended with a line connecting people. Then that line became the ruled
-> line of a document.
+> Part I ended with a line connecting people. Here, it became a document rule.
 
 ### 00:08–00:16 — S02 · The open year
 
-> Chance kept me home in 2019. COVID broke that foothold; Brussels remote work
-> opened one route back.
+> First I refused contractor status and won a salaried foothold. COVID broke
+> it; Brussels opened the last door.
 
 ### 00:16–00:24 — S03 · Legal by necessity
 
-> KATA was no entrepreneurial dream. It was the lawful bridge between foreign
-> work and my chosen home.
+> After years and dozens of interviews, KATA became the lawful price of
+> starting—not a tax dream.
 
 ### 00:24–00:32 — S04 · A law in a day
 
@@ -36,18 +35,18 @@ foley and breath.
 
 ### 00:32–00:40 — S05 · The handover
 
-> The project outlived the deadline. I protected its handover and surrendered
-> the contract that no longer fit.
+> The contract looked unstable; the team did not. Law cut the route; the client
+> asked me to stay.
 
 ### 00:40–00:48 — S06 · Three partial views
 
-> My accountant, the administration and I each saw another screen.
+> My accountant, the administration and I saw different screens.
 > Responsibility found the person denied the whole chain.
 
 ### 00:48–00:56 — S07 · The password trap
 
 > The practical route demanded my password; the lawful one hid actions and
-> notices. Both returned the risk to me.
+> notices. Both returned risk to me.
 
 ### 00:56–01:04 — S08 · Assembled failure
 
@@ -56,33 +55,33 @@ foley and breath.
 
 ### 01:04–01:12 — S09 · The call
 
-> I corrected the return, paid the tax and dismissed the accountant. The
-> balance reached zero; trust did not.
+> I paid the corrected tax. Then time broke through: “I can no longer have a
+> child.”
 
 ### 01:12–01:20 — S10 · The sentence and correction
 
-> One year later, the repaired record remained on paper while one corrected
-> sentence was used to replace the person.
+> A year later, the repair remained on paper while one corrected sentence
+> replaced the person.
 
 ### 01:20–01:28 — S11 · The body
 
 > After surgery I lay alone, leg raised, injecting my abdomen and living from
-> months of stored food.
+> stored food.
 
 ### 01:28–01:36 — S12 · Volume
 
-> Depression sharpened the anxiety. No lawful path felt safe. A wound,
-> profanity and black humour travelled farther than repair.
+> From bed, I sent the wound itself. One obscene line travelled past the desk,
+> towards the machine.
 
 ### 01:36–01:44 — S13 · The knock
 
-> Police came one day after I asked them for help—elsewhere, and for myself. My
+> Police came one day after I asked for help—elsewhere, and for me. My
 > devices became evidence.
 
 ### 01:44–01:52 — S14 · Defence runs out of time
 
-> Defence ran out of time. Eight days after the search, two experts turned my
-> life into a report.
+> Defence ran out of time. Within eight days, two experts compressed my life
+> into a report.
 
 ### 01:52–02:00 — S15 · The forensic compression
 
@@ -96,8 +95,8 @@ foley and breath.
 
 ### 02:08–02:16 — S17 · The life becomes an asset question
 
-> The intimate life nobody cared about had produced the foreign-earned savings
-> the court now wanted to examine.
+> The intimate life nobody cared about produced the savings the court now
+> wanted to examine.
 
 ### 02:16–02:24 — S18 · Work under the shadow
 
@@ -106,22 +105,22 @@ foley and breath.
 
 ### 02:24–02:32 — S19 · Black humour becomes a receipt
 
-> Black humour became a receipt: a “terrorist-position” CV sent to police while
-> I waited for an answer.
+> Black humour became a receipt: a “terrorist-position” CV sent to police as I
+> awaited an answer.
 
 ### 02:32–02:40 — S20 · Beautiful home, recurring exit
 
-> Debt kept another Hungarian in London. At Europe's heart, Budapest remained
-> beautiful while its systems made departure feel safer than belonging.
+> At Europe's heart, debt kept one Hungarian abroad while beautiful Budapest
+> made departure feel safer than belonging.
 
 ### 02:40–02:48 — S21 · The country changes government
 
-> In 2026, voters changed government. Permanent-looking offices moved while my
-> first judgment still did not exist.
+> In 2026, voters changed government. Offices moved while my first judgment
+> still did not exist.
 
 ### 02:48–02:56 — S22 · Mercy changes direction
 
-> He denied me clemency. Eight judges stepped aside; then he signed away his
+> He denied clemency. Eight judges stepped aside; then he signed away his
 > mandate. The line stayed open.
 
 ### 02:56–03:00 — E01 · Open line

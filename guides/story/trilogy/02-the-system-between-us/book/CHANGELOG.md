@@ -9,6 +9,13 @@ first public edition is `1.0.0`.
   locked 8 August PDF remains the last released artifact until republication.
 - Reframed the book as public history experienced through one human life rather
   than an ordinary tax/criminal narrative or a country-comparison essay.
+- Preserved the Founder's knowledge horizon inside lived scenes and removed
+  several explanatory repetitions so that rooms, objects, pauses and adjacent
+  documents can carry meaning without prescribing the reader's response.
+- Extended the migration thread into a universal question: another world may
+  reveal the self, but crossing a border does not automatically remove the
+  fear and adaptation carried from home. Added the closing Madách-derived
+  *strive, and trust* line as continued effort rather than institutional faith.
 - Made human relationships the explicit bridge from Part I and added the
   Founder's ability to become both subject and analyst without mistaking
   analytical distance for lack of attachment.
@@ -39,6 +46,12 @@ first public edition is `1.0.0`.
   confuse performance with acceptance of the contested opinion.
 - Added the central home/exile line: the Founder is not exiled in a foreign
   country but feels exiled while living inside the country he still calls home.
+- Made the formally unstable remote role the Founder's stable human place:
+  audio-only colleagues, an Indian tuk-tuk entering through an open microphone,
+  respect offered before proof, caste and hierarchy named by a colleague,
+  senior-manager support, the client's request that he stay and a funeral
+  invitation that made ten thousand kilometres physical again. Comparative
+  research remains in the notes and the narrative avoids national idealization.
 - Made the satire's mirror explicit: the Founder performs the institution's
   apparent entitlement back at it, exposing the asymmetry between real coercive
   power and a powerless person's theatrical counter-authority.
@@ -78,7 +91,7 @@ first public edition is `1.0.0`.
   Strasbourg and each party's right to state a position, carried the
   challenged judge's claim of conscientious listening, but left the concrete
   official-audio, witness and evidence requests unanswered. Restored the filed
-  judge's “immediate custodial sentence” remark, the documented clerk response
+  judge's “are you asking to be sent to prison?” remark, the documented clerk response
   that official audio was expensive, and kept the apartment reaction at memoir
   level rather than inventing a quotation. Corrected the institutional
   boundary—the ECtHR belongs to the Council of Europe, not the EU—and added
@@ -92,11 +105,13 @@ first public edition is `1.0.0`.
 - Expanded that symbiosis beyond text generation to the actual production
   chain: evidence organization, product and research challenge, scripting,
   motion review, picture/sound assembly and credit-aware model planning.
-- Recorded the roughly five-month creation window and E-közig's constructive
+- Recorded the roughly five-month creation window and Civic Access's
+  constructive
   purpose as an agile AI-driven UI prototype: an institution needs the capacity
   to receive human context before it can ask to be trusted.
 - Marked the existing narration, storyboard and prompts stale until the revised
-  book is approved; locked English narration to the approved ElevenLabs John
+  book is approved; locked English narration to the approved ElevenLabs Jon —
+  Warm & Grounded Storyteller
   voice for both films.
 
 ## 1.0.0 — 2026-08-08

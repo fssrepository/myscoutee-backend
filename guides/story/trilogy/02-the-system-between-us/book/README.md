@@ -2,8 +2,9 @@
 
 Working title: **The System Between Us**.
 
-Status: **English public edition, version 1.0.0, published and technically
-closed on 8 August 2026**.
+Status: **English public edition 1.0.0 remains published and technically closed
+on 8 August 2026. The editable manuscript and reading PDF are open for the 9
+August Founder review; the locked publication is not overwritten.**
 
 The manuscript is [THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md).
 

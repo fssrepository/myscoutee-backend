@@ -18,12 +18,16 @@
 | Narrative rule | lived scene first; legal precision and source boundaries at the back |
 | Knowledge rule | at every moment, the audience knows only what the Founder knew then; later meaning arrives only when he reaches it |
 | Dramatic rule | sensory fact before interpretation: let the room, body, object, pause or expression carry the pressure before naming the thesis |
+| Emotional rule | never instruct the audience to feel outrage, pity or agreement; preserve enough ambiguity for anger, fear, recognition, doubt or another response |
+| Language rule | translate Hungarian force through concrete image, rhythm and black humour; prefer a portable image an ordinary reader can see at once over native slang, a literal calque, legal jargon or one repeated profanity |
 | Final line | **MyScoutee. Test the system between us.** |
 
 ## 2. Logline
 
-The Founder leaves Part I as a builder connecting strangers and enters a rare
-COVID-era remote role serving a Brussels telecom programme from Budapest. A
+The Founder leaves Part I as a builder connecting strangers, refuses contractor
+status when it substitutes for employment, then enters a rare COVID-era remote
+role serving a Brussels telecom programme from Budapest as his final lawful
+route into work. Its contract looks unstable; its distant human team does not. A
 sudden 2022 tax-law change places him, his accountant and the tax administration
 inside a low-trust triangle in which each sees a different screen. Repeated
 filings, missing context, physical vulnerability and a written outburst become
@@ -41,6 +45,7 @@ The film alternates two scales:
 | Personal scale | Public scale |
 | --- | --- |
 | one laptop | a law passed in a day |
+| an audio-only team that feels stable across 10,000 kilometres | a contractual route that can close in weeks |
 | one delegated tax return | hundreds of thousands adapting |
 | one post-operative body made visible in a portal | an administration maintaining ordinary deadlines |
 | one disputed sentence | years of procedure |
@@ -66,9 +71,9 @@ autonomy.
 The film does not ask the audience to agree with the Founder before entering
 his experience. It preserves the knowledge horizon of each scene. The raised
 leg, stocked food, fingerprint paper, two expert chairs, court microphone and
-financial questions arrive before the later interpretation. The desired
-reaction is not pity or a lecture about Hungary, but recognition: another
-person placed in the same sequence must be able to imagine himself there.
+financial questions arrive before the later interpretation. The aim is not pity
+or a lecture about Hungary. Another person placed in the same sequence must be
+able to imagine himself there and remain free to respond differently.
 
 Hungary is felt from inside rather than explained from above. Budapest remains
 beautiful; rural memory, ingenuity, endurance, black humour and the wish to

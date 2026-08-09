@@ -11,6 +11,8 @@ level language certificate is still missing. A yellow tram opens onto two restra
 moving toward work, not a defeated migrant. Use 40–50 mm lateral parallax and
 CPU match cuts. No puszta cliché, poverty spectacle, tourism checklist, claim
 that everyone leaves the countryside, readable diploma or generated text.
+Keep a calm centre-safe field for post-only opening typography. Do not generate
+the film title, part title, true-story marker, logo or any readable wording.
 
 SHOT S02 — WORK, UNSTABLE ROOMS AND A SECURE KEY — 8 SECONDS
 Create four identity-locked still plates for CPU assembly, not one overloaded
@@ -317,3 +319,6 @@ Deep navy clean field, subtle tactile paper texture, one faint original coral
 network line settling to still, no camera move and center-safe negative space.
 No generated text, logo, heart, icon or object. The original unmodified
 repository `heart.png`, separate MyScoutee text, tagline and CTA are added in post.
+Hold the CTA until 02:58.5, then show the editable post-only line `CONTINUED IN
+PART II · THE SYSTEM BETWEEN US` for the final 1.5 seconds. This plate is built
+deterministically; do not spend video-model credit on it.

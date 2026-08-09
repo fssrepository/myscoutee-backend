@@ -204,22 +204,46 @@ space to build. Living with little had become a discipline. I believed that if
 I could remain independent of the next salary, I could endure almost anything.
 
 In August 2019, after years of applications and repeated thoughts of returning
-to London, a multinational company hired me in Hungary. Chance mattered. One
-successful process kept me in the country when many earlier attempts had not.
-It seemed like the kind of answer adults are expected to recognize: a known
-employer, a professional position, a route back into ordinary life.
+to London, a multinational company hired me in Hungary. Getting there contained
+its own small comedy. A local outsourcing company had first offered to place me
+at a multinational only if I invoiced through KATA. I refused. I wanted a job,
+not to be turned into a business for somebody else's convenience, and I came
+close to retreating to London again. The smaller company judged my interview
+unsuccessful and wrote me off professionally.
 
-COVID broke the foothold that had only just begun to feel stable. The Hungarian
+Two weeks later, the multinational invited me into its own salaried process.
+The interviewers had not compared notes. When the earlier rejection surfaced in
+the second round, the room hesitated; then the company hired me directly, as an
+employee, for roughly twice the money. One accidental gap between institutions
+opened the stable door I had been trying to find.
+
+KATA contractors at the same workplace still cost less than employees. COVID
+then broke the foothold that had only just begun to feel stable. The Hungarian
 role ended in the pandemic restructuring. Another domestic attempt lasted only
-briefly. I returned to the search that had already consumed years of my life.
+three weeks for a different reason: its compliance rules treated my retail
+Hungarian government bonds as incompatible with the job. Those bonds were part
+of the savings that had carried me for years. A three-week employer stood on
+one side; seven years of security stood on the other. I chose the seven. As a
+manager escorted me out, I asked whether I could finally buy government bonds
+again. It was the best dismissal I had ever felt.
 
-The opportunity that finally held came from Brussels. In ordinary times, it
-would probably have required me to leave Hungary again. During COVID, I did not
-dare fly into another relocation. Remote work made the geography temporarily
-negotiable: I could remain in my Budapest flat while working on a multinational
-telecom programme abroad. The contractual route passed through companies in
-more than one country. It looked less secure than the Hungarian job, but in
-practice it became the one workable professional path I had found.
+During the next search, I first refused a Brussels project connected to a
+European institution. The contract placed too much risk on me, and I still
+believed I could find another salaried door. Eight months and dozens of
+interviews later, that belief had run out before my wish to work did.
+
+The opportunity that finally held was a multinational telecom programme
+connected to Brussels. In ordinary times, it would probably have required me to
+leave Hungary again. During COVID, I did not dare fly into another relocation.
+Remote work made the geography temporarily negotiable: I could remain in my
+Budapest flat while working abroad. The contractual route passed through
+companies in more than one country. It looked less secure than the Hungarian
+job, but in practice it became the one workable professional path I had found.
+
+Stable work was never only income. Without it, partnership, a child and family
+life remained plans postponed until the ground stopped moving. By then, the
+years no longer felt renewable. The Brussels role arrived as the last opening
+through which work and the rest of life might still begin together.
 
 I accepted it because independence was not meant to become permanent retreat.
 After years outside ordinary employment, I still wanted to work, contribute and
@@ -227,13 +251,17 @@ belong to the country in which I lived. That decision matters later. The system
 did not reach me because I had avoided lawful work. It reached me immediately
 after I dared to enter it again through the only route that had opened.
 
-It also required a legal form through which the work could be invoiced. In
-September 2021, I became a sole proprietor using KATA.
+It also required a legal form through which the work could be invoiced. About a
+year and a half after I had refused contractor status as the price of a domestic
+placement, I accepted it as the last available route into work. In September
+2021, I became a sole proprietor using KATA.
 
 I had no entrepreneurial revelation. I was not opening a café, selling
-paintings or building a personal brand. KATA was the legal bridge between a
-foreign job and the country in which I was still trying to live. The bridge
-existed because the pandemic had made another departure feel impossible.
+paintings or building a personal brand. Informal foreign work might have left
+me outside the system's view. I chose the legal door instead. KATA was the
+bridge between a foreign job and the country in which I was still trying to
+live. The bridge existed because the pandemic had made another departure feel
+impossible.
 
 That distinction matters. A tax form can look like a free choice after the fact
 while functioning as the price of entry at the time. Years of exclusion and
@@ -250,11 +278,45 @@ and I do not enter KATA in 2021. The route did not arise from tax optimization.
 It was the narrow way back into work without abandoning my country again. When
 the state changed KATA at speed, it immediately closed that rare opening and
 used the obligations attached to it as the entrance into the rest of my life.
+Without the rushed transition, I could have moved into another tax form and
+continued working. Instead, after I corrected the return and paid the tax, the
+same sequence returned a year later as a criminal case.
+
+I had wanted a way to work. The lawful route gave the system a way into
+everything else.
 
 The work was real and demanding. Some days ran thirteen, fourteen or fifteen
 hours. Delivery schedules and production responsibility did not become lighter
 because I sat at home. A system elsewhere in Europe depended on tasks moving
 from one person to the next without an empty space between them.
+
+The least stable-looking job gave me the most stable human place I had found in
+years. Many conference calls carried voices without faces. Through an open
+microphone in India came the putter of a tuk-tuk, returning me for a moment to
+my first stay in the south. At nearly ten thousand kilometres, colleagues made
+room for me inside the team. We shared thoughts I did not share with my closest
+friend. We worked so long beside one another that distance began to feel less
+important than presence.
+
+In that team, respect often arrived before proof. I had grown used to caution
+arriving first and trust, if it came at all, appearing later. Here the order
+sometimes reversed. Courtesy was offered on credit. It did not remove hierarchy.
+When I wrote to one colleague that the middle layer seemed determined to keep
+me down while the senior manager kept protecting my work, an Indian voice at
+the other end answered without surprise. India had a caste system, he said; he
+believed the same pressure reached him too. Warmth and hierarchy occupied the
+same call.
+
+Distance also failed in darker ways. A colleague died after what we understood
+at the time as a bite or sting near an Indian Ocean shore. The invitation that
+crossed the network next was to his funeral. We had entered one another's lives
+as voices. Grief made the ten thousand kilometres physical again.
+
+The intermediary company also carried another familiar face of India:
+organizational chaos. Yet the senior manager who had invited me onto the
+project continued to believe in me and repeatedly brought the middle layer back
+into line. The client could see how far I had moved the work. When departure
+became unavoidable, they asked me directly, almost pleadingly, to stay.
 
 I had spent Part I trying to solve empty spaces between people. Now my job was
 to prevent an empty space inside infrastructure.
@@ -307,6 +369,10 @@ By 3 August, I was treating the change as a force-majeure exit. I arranged the
 handover and invoicing around the work that still had to move. I gave up the
 remaining value of later months rather than continue inside a route I no longer
 understood as safe.
+
+The team did not release me lightly. The client asked me to remain; the senior
+manager who had brought me in still backed me. The relationship had become
+more durable than the legal route carrying it.
 
 Nobody could move cleanly forward or back. The client still needed a proper
 handover, the accountant was interpreting the same sudden transition for many
@@ -448,6 +514,13 @@ categories and identifiers did not form one coherent story. Until then, I had
 not known what had failed. On 23 and 24 November, I spent many hours checking
 the accountant's work and called the administration for help.
 
+The surviving 13:08 call holds the sound of that hour. The filing problem had
+not created all the years behind it. But the official's clipped replies, which
+I heard as dry and cynical, landed as if the system were taking the remaining
+possibility of family with everything else. My voice is panicked and spent. In
+the middle of codes, forms and missing notices, I say, “I can no longer have a
+child.” It is not an argument. It is shock becoming surrender in one sentence.
+
 Within roughly a week, I reconstructed the calculation, understood the status
 and reached the corrected result. The accountant had had most of a year, three
 attempts and direct help from the administration. Even afterward, our exchange
@@ -455,13 +528,11 @@ showed that she still did not understand the instruction in the same way I had
 come to understand it. I revoked the representation because the communication
 triangle had to be stopped before it produced another version.
 
-This is not offered as a contest of intelligence or a demand that one exhausted
-worker should carry all blame. The accountant was also inside a transition
-forced through at speed, with clients and rules moving beneath her. The point is
-the reversal: the client performed the repair for which the professional had
-been retained, while the legal responsibility had remained with the client
-throughout. Pressure travelled through every participant. Only one participant
-could not pass the final consequence onward.
+The accountant was also inside a transition forced through at speed, with
+clients and rules moving beneath her. The reversal remained: I performed the
+repair for which I had retained a professional, while the legal responsibility
+had never left me. Pressure travelled through every participant. The final
+consequence did not.
 
 Some calls from the period survive, but not the decisive exchanges behind the
 remarks I later recorded in my defence speech. Their shape can be inferred only
@@ -554,15 +625,16 @@ everything.
 
 ## 10. A Body With a Deadline
 
-The prosecution later gave the monetary demands a central role. For me, money
-was secondary. The real demand was dignity: I should not have to surrender a
-personal password to make delegated work safe, and nobody else should be drawn
-into the same vortex.
+The prosecution later gave the monetary demands a central role. By January
+2023, however, I had withdrawn the concrete demand. The tax had been paid. What
+remained was the fact that the only route that seemed to work in ordinary
+practice required a person to hand over the password to his government account.
+I had refused to make that bargain, repaired the consequences and still could
+not close the door behind me.
 
-In January 2023, I withdrew the concrete monetary demand. I gave advance notice
-of the coming leg operation, asked for peace during surgery and rehabilitation,
-and wrote that I intended to leave the country afterward. I had already paid
-the tax. There was no unresolved tax debt for my body to solve.
+I gave advance notice of the coming leg operation, asked for peace during
+surgery and rehabilitation, and wrote that I intended to leave the country
+afterward. There was no unresolved tax debt for my body to solve.
 
 My parents lent me the money for private surgery after the public route had not
 provided a workable timetable. The operation took place in mid-February.
@@ -576,9 +648,8 @@ alone. Nobody came to look after me; food had simply been stocked in advance for
 several months. The routine was not an abstract reference to poor health: bed,
 raised leg, special shoe, injection, stored food, repeat.
 
-This was another curse of solitude. Planning could stock food. Savings could
-pay for private treatment. Discipline could carry me through the injections.
-None of them could place another person beside the bed.
+Planning had stocked the food. Savings paid for private treatment. Discipline
+carried me through the injections. The chair beside the bed remained empty.
 
 A call came in March despite my documented request for quiet. The repaired tax
 matter re-entered the room while I was immobilized and alone.
@@ -590,28 +661,19 @@ while the administrative sequence kept moving. I wrapped it in an obscene joke
 about using that half-cut, swollen leg to kick an institution in the backside
 because it was not doing its job.
 
-It was physical comedy written from a chair, not a physical act or an
-instruction to harm anyone. The joke was deliberately disproportionate because
-the situation felt disproportionate.
+The photograph placed a body cut open beside a portal field.
 
-The words were crude. They were also a visual attempt to make the body and the
-absurdity visible to a system that had reduced both to fields. The photograph
-could show what my explanations could not: the medical pressure was not a
-metaphor.
+The same period produced an even barer line. In Hungarian, and much less
+politely, I wrote to the institution: “Go on, then. Fine me.” By then punishment
+seemed to be the one service the system might still deliver on time. No official
+was named. The sentence travelled past the person at the desk and into the same
+unnamed machinery that had kept returning after correction, payment and advance
+notice. Immobilized in bed, I no longer believed that another careful
+explanation would close it.
 
-The same period produced an even barer line. In Hungarian, I told the tax
-administration, with profanity, to fine its own mother instead. It was not a
-legal argument and it asked for no physical act. It marked the point at which
-trust had evaporated and only anxiety remained. The depression of immobility
-after surgery amplified the fear underneath it: however carefully I tried, I
-could not find a way to live lawfully in my own country without another rule,
-professional failure or invisible notice pulling me back into danger.
-
-That was the deeper obscenity. I had corrected the return, paid the tax,
-withdrawn the monetary demand, announced the operation in advance and asked for
-peace. Yet lawful repair did not feel like an exit. A sentence directed at an
-institution's imaginary mother was the language of somebody who no longer
-believed the institution could hear ordinary language.
+I had corrected the return, paid the tax, withdrawn the monetary demand,
+announced the operation in advance and asked for peace. Lawful repair still did
+not feel like an exit.
 
 The photograph and the joke later travelled without the bed, the stored food,
 the advance notice or the corrected tax return. Again, the sharpest fragment
@@ -697,10 +759,9 @@ my fingerprints. Another smiled and glanced toward my operated leg.
 I read that glance as recognition of the obscene visual joke I had made while
 trying to force the tax administration to see the body behind its process.
 Where was the terrorist threat in that image? To me, it had been a huge
-symbolic kick in an institution's backside. No officer said that aloud, and the
-smile proves no official conclusion. It remains my reading of a brief human
-gesture while I sat alone waiting for papers that finally let the accusation,
-the psychiatric language and the reconstructed timeline appear on one screen.
+symbolic kick in an institution's backside. I cannot know what the officer
+meant. I only remember the smile, the glance, my operated leg and the papers I
+was still waiting to receive.
 
 A police explanation later reduced the earlier absence to a painfully ordinary
 phrase: the lawyer had not had time.
@@ -756,11 +817,28 @@ already disappeared.
 
 ## 12. Remarks in the Margin
 
-My later defence submissions remember questions and remarks from police and the
-two forensic experts. Why had I returned home? What did I live on? Why had I
-needed an accountant? Why had I not sought psychological help? What had I
-achieved at my age? One defence speech preserves the sentence that struck
-hardest: “You will certainly receive life imprisonment for this.”
+My later defence submissions preserve the institutional voices as short
+fragments:
+
+“He can use the library for the internet.”
+
+“Why did he come home?”
+
+“Then what does he live on?”
+
+“The appointed lawyer didn't have time.”
+
+The two expert chairs added their own fragments:
+
+“Why did you need an accountant?”
+
+“That will get you life, for sure.”
+
+“An old man.”
+
+“You weren't successful.”
+
+“Why didn't you see a psychologist?”
 
 The questions turned biography into an examination.
 
@@ -992,8 +1070,8 @@ system's failure.
 
 The case was already trying to become the film I am now preparing.
 
-The better formulation is not a mathematical division of fault. It is a chain
-of responsibility constantly passed onward. The legislature moved at
+The mathematical division of fault had failed me. The chain was simpler. The
+legislature moved at
 extraordinary speed. The accountant did not complete the work and continued to
 contest the route after I had reconstructed it. The administration routed
 notices and corrections through structures I could not read as one story, then
@@ -1002,8 +1080,7 @@ responsible, corrected the return and paid the tax. The investigation later
 lifted the sharpest fragments out of that chain and interpreted the surviving
 person through a criminal and psychiatric frame.
 
-The result was not that nobody had responsibility. The result was that everyone
-who could pass it onward did so, until the entire weight rested on the one
+By the time the consequence stopped moving, its entire weight rested on the
 person who had already repaired the underlying failure.
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
@@ -1050,21 +1127,12 @@ She asked why I had not asked the accountant. From the much longer defence
 speech, she selected my assertion that the accountant had entered what I called
 random figures in my return—figures I later tried to correct.
 
-The warning landed with particular force because the same proceeding carried a
-forensic description of my personality that I contested and that could follow
-me far beyond the tax return. I was being told to protect another person's
-reputation while trying to defend myself from that description. Humanly, the
-contrast was brutal.
-
-I experienced those questions as the system protecting its own version before
-reconstructing the system around the person. The sharp phrase was easy to
-examine. The two-page return, the repeated attempts, the outside help, the
-missed messages and the fact that I said I had not known about the decisive
-filing were easier to push into the background.
-
-That was the moment I understood that even an attempt to explain a failed
-process could be reduced to the most accusatory sentence inside the
-explanation.
+The same proceeding carried a forensic description of my personality that I
+contested and that could follow me far beyond the tax return. I was being told
+to protect another person's reputation while defending myself from that
+description. The sharp phrase was easy to examine. The two-page return, the
+repeated attempts, the outside help, the missed messages and the filing I said
+I had not known about receded behind it.
 
 The hearing ended on two different scales. I said that European institutions
 had already warned the government about unstable, rapidly changing lawmaking,
@@ -1287,10 +1355,10 @@ procedural fine. Even asking whether the room was impartial returned as another
 possible financial consequence.
 
 The exclusion filing preserved a sentence from the hearing word for word:
-“What—do you want an immediate custodial sentence?” It came during a debate
-over legal classification after years without continuous effective
-representation. I heard not a neutral question but punishment used to close
-the distance between confusion and obedience.
+“What—are you asking to be sent to prison?” It came during a debate over legal
+classification after years without continuous effective representation. I
+heard not a neutral question but punishment used to close the distance between
+confusion and obedience.
 
 The filing also asked for an official audio record, testimony from the
 accountant and tax administration, and a decision on outstanding evidence.
@@ -1441,16 +1509,17 @@ that version of us, but it cannot automatically remove it. In another world we
 may recognize ourselves more clearly. Looking back, we can ask whether home—and
 we ourselves—can do better.
 
-That question is not uniquely Hungarian. The irony here is that it unfolded in
-the centre of Europe, inside a country described as democratic, through acts
-ordinary enough for each participant to continue. The human threshold is
-simpler: when does staying inside a beloved home cost more dignity than
-crossing its border?
+From the Danube embankment, none of this looked like the edge of Europe. Trams
+crossed the river; Parliament held its familiar place in the light; elections,
+courts and offices carried the vocabulary of democracy. The acts inside my
+story remained ordinary enough for each participant to continue. The question
+was left between the beauty and the open route out: how long can a beloved home
+ask a person to trade dignity for staying?
 
 ## 18. The Breaking Point Is Not the Beginning
 
-The case can be made to begin with its most violent line because that line is
-short. It is also the version that makes the system disappear.
+The file can be made to begin with one charged line because that line is short.
+It is also the version that makes everything before it disappear.
 
 The public meaning begins earlier.
 
@@ -1460,11 +1529,11 @@ faster than their professional support can adapt. Anyone can be physically
 vulnerable when an institution expects ordinary performance. Anyone can have
 their worst response become more legible than the path that produced it.
 
-Anyone can be pushed until one terrible response is easier to print than years
-of exclusion, lawful effort, repair and endurance. Once that happens, cause and
-effect can be reversed. Pressure becomes personality. The attempt to recover
-missing context becomes evidence of obsession. Survival outside ordinary work
-becomes another condition to explain.
+One line is easier to print than years of exclusion, lawful effort, repair and
+endurance. Once that happens, cause and effect can change places. Pressure
+becomes personality. The attempt to recover missing context becomes evidence
+of obsession. Survival outside ordinary work becomes another condition to
+explain.
 
 That reversal is what makes the case public in meaning even while it remains
 mine in fact. The danger is not that everyone would write my sentence. The
@@ -1852,25 +1921,18 @@ submission, I wrote that the frightening part was in the absurdity. In another,
 I wrote that if everything had worked lawfully, I believed nothing would have
 happened.
 
-The humour also appeared in writing and images. When one policewoman in the
-story was called Kata, the tax acronym and a human name collided. I called
-myself the “KATA terrorist,” turning the accusation into the title of a farce.
+The humour also appeared in writing and images. I called myself the “KATA
+terrorist,” turning the tax acronym and the accusation into the title of a farce.
 In a Hulk-like image, a furious KATA figure held an axe in each hand while the
 tax authority, prosecution and court hung from his belt. A Hungarian pun changed
-*the reaper* into *the KATA taxpayer*. The image was excessive because the role
-assigned to me was excessive.
-
-I was not merely enduring a character created by the file. At times I performed
-it back to the institutions, louder than life, because the exaggeration exposed
-the distance between the label and the person using it as material.
+*the reaper* into *the KATA taxpayer*.
 
 Police recruitment posters supplied another impossible route. On 4 January
 2024, I sent the police career office an English CV and an inquiry saying that I
 had applied for a “terrorist position” being administered at the station, had
 reached the third round and was still waiting for feedback. I asked for the
-earliest possible response. It was not an application to commit violence. It
-was a documented parody of an investigation whose accusation could progress
-through rounds while the person inside it could not obtain an answer.
+earliest possible response. The accusation could progress through rounds while
+the person inside it could not obtain an answer.
 
 Later, asking German police to help the unresponsive Hungarian route extended
 the same joke beyond the border. The humour was black because the need beneath
@@ -1994,8 +2056,9 @@ the accountant and a tax-administration representative to be heard, and the
 outstanding 8 April evidentiary requests to be carried out. It records the
 Founder's account that a clerk had described official recording as expensive.
 The 5 April filing itself quotes the judge's Hungarian sentence, “Mi az,
-letöltendőt akar kapni?” The English dialogue in the chapter is a close
-translation. The clerk's startled reaction when the apartment was mentioned is
+letöltendőt akar kapni?” The chapter renders its spoken force as “What—are you
+asking to be sent to prison?” rather than using the legalistic “custodial
+sentence.” The clerk's startled reaction when the apartment was mentioned is
 memoir; it is not presented as a quotation from those filings.
 
 The separate decision letter was delivered by post but is not in the reviewed
@@ -2343,6 +2406,31 @@ the private case or make every Hungarian institution equivalent.
   https://doi.org/10.1016/S0967-067X(00)00002-1
 - *Imperatives in Informal Organizational Resource Exchange in Central Europe*:
   https://doi.org/10.1016/j.euras.2014.10.001
+
+## Interpersonal trust, hierarchy and the remote team
+
+The audio-only team, tuk-tuk, private conversations, senior-manager support,
+colleague's caste remark, death and funeral invitation are first-person
+memories. They describe one working relationship, not Indian or Hungarian
+people as fixed national characters.
+
+A 2022 Ipsos online survey supplies limited comparative context: 56 percent of
+its Indian sample and 19 percent of its Hungarian sample answered that most
+people could be trusted. Ipsos cautions that its Indian sample was more urban,
+educated and affluent than the general population. The figures do not prove why
+this particular team behaved as it did.
+
+Peer-reviewed correspondence research has separately found caste-based
+discrimination in Indian private-sector callbacks. That evidence makes the
+colleague's remembered answer socially legible; it does not identify his caste,
+prove the motive of any manager in this project or turn the team into a case
+study of India.
+
+- Ipsos, *Interpersonal Trust Across the World* (March 2022):
+  https://www.ipsos.com/sites/default/files/ct/news/documents/2022-03/Global%20Advisor%20-%20Interpersonal%20Trust%202022%20-%20Graphic%20Report_0.pdf
+- Zahra Siddique, *Evidence on Caste Based Discrimination*, *Labour
+  Economics* 18 (2011):
+  https://doi.org/10.1016/j.labeco.2011.07.002
 
 ## Civic and judicial context
 

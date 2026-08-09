@@ -52,9 +52,11 @@ The letters belong in the production manifest, not the public image.
 - **CP02:** modest Budapest workstation during a live cross-border delivery;
   restrained European route geometry reflected in the window connects
   Budapest and Brussels without flags, employer branding or a tourist map.
-- **Motion:** the paper rule becomes a monitor progress line; one calm lateral
-  move reveals late-hour concentration and a second remote collaborator only as
-  an anonymous screen presence.
+- **Motion:** the paper rule passes an old, blank employee badge and a closed
+  salaried door before becoming a monitor progress line; one calm lateral move
+  reveals late-hour concentration and anonymous audio-only collaborator tiles.
+  One open microphone lets the soft putter of an Indian tuk-tuk enter the room;
+  no face or tourist insert is invented.
 - **Performance:** capable and tired, never euphoric. This is work, not a digital
   nomad advertisement.
 - **Sound in post:** keyboard, muted call-room texture, low HVAC and pulse.
@@ -69,8 +71,10 @@ The letters belong in the production manifest, not the public image.
   editable plates for post.
 - **Motion:** the Brussels route folds through one clean invoice rectangle and
   into the legal-door outline. Founder signs deliberately, without celebration.
-- **Meaning:** KATA is the available vehicle, not his entrepreneurial dream and
-  not proof that every user shared his circumstances.
+- **Meaning:** after he had earlier refused contractor status and kept searching
+  for salaried work, KATA is now the last lawful vehicle that lets him start;
+  it is not his entrepreneurial dream or proof that every user shared his
+  circumstances.
 - **Sound in post:** pen, one restrained portal confirmation, continuous pulse.
 - **Hazard:** do not show cash piles, tax evasion shorthand or official seals.
 
@@ -98,6 +102,9 @@ The letters belong in the production manifest, not the public image.
   notebook as foregone opportunity, not literal money burning.
 - **Motion:** one 50 mm desk-level move follows a task card from the Founder to
   the anonymous teammate; the abandoned future branch softens out of focus.
+- **Relationship:** a client-side tile remains open and a senior-manager tile
+  steadies a briefly disordered middle layer. Their reluctance to lose the
+  Founder is visible as held attention, not generated dialogue or applause.
 - **Performance:** responsibility first, private loss second.
 - **Sound in post:** restrained task confirmation, keyboard, clock seam.
 - **Hazard:** no claim that a foreign state, named employer or critical service
@@ -161,10 +168,14 @@ The letters belong in the production manifest, not the public image.
   representation align beside a zeroed balance while the human connection line
   remains broken.
 - **Motion:** one controlled desk-level move follows correction to payment and
-  the closing of the accountant channel. The numeric line settles; the trust
-  line does not.
+  the closing of the accountant channel. A restrained call pulse crosses old
+  calendar marks and two unused places at the edge of the Founder’s life; no
+  baby, nursery or explanatory family icon appears. The numeric line settles;
+  the trust line does not.
 - **Performance:** exhausted completion rather than triumph or revenge.
-- **Sound in post:** correction tick, payment confirmation, one channel closing.
+- **Sound in post:** correction tick, payment confirmation and one channel
+  closing; Jon carries the recorded sentence without an imitated telephone
+  voice.
 - **Hazard:** no readable tax data, cash, celebratory dismissal, villainous
   accountant or claim that payment resolved the later criminal case.
 

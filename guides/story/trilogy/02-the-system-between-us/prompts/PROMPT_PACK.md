@@ -53,6 +53,16 @@ cleared later, belongs in post rather than generative video.
 - The generated clip must begin and end on those frames without reinterpretation.
 - `E01` is assembled in post and must use the repository logo, never an
   AI-generated mark.
+- Over S01, post-production adds `MYSCOUTEE · THE STORY`, `PART II · THE SYSTEM
+  BETWEEN US` and `BASED ON A TRUE STORY`. S01 supplies only the clean,
+  centre-safe moving picture.
+- In E01, hold the CTA until `02:58.5`, then show `TO BE CONTINUED IN PART III`
+  for the final `1.5` seconds. Both lines remain editable post typography.
+- Over S01, post-production adds `MYSCOUTEE · THE STORY`, `PART II · THE SYSTEM
+  BETWEEN US` and `BASED ON A TRUE STORY`. S01 supplies only the clean,
+  centre-safe moving picture.
+- In E01, hold the CTA until `02:58.5`, then show `TO BE CONTINUED IN PART III`
+  for the final `1.5` seconds. Both lines remain editable post typography.
 - If a model cannot accept both endpoints, do not substitute a prompt-only
   generation into the continuity chain. It may be used only as a labelled test.
 

@@ -74,10 +74,26 @@ become independently verified evidence.
 
 - [x] The 2021 foreign remote-work opening and KATA as the lawful available
   vehicle rather than a lifestyle fantasy.
+- [x] The Founder first rejected KATA as the price of domestic placement,
+  obtained a salaried multinational foothold through an accidentally
+  uncoordinated direct process, and accepted KATA only later as the last lawful
+  route back into work.
+- [x] The formally unstable Brussels contract became a stable human team across
+  nearly 10,000 kilometres: audio-only calls, an Indian tuk-tuk entering through
+  an open microphone, a senior manager who continued to back him and a client
+  asking him to stay.
+- [x] The remote-team counterpoint preserves both sides: respect could be
+  offered before proof, while hierarchy and a colleague's caste comparison
+  remained real; a later funeral invitation made the distant team a lived
+  human community. These memories stay in the book rather than overloading the
+  three-minute film.
 - [x] The abrupt July 2022 transition, protected handover and the low-trust
   Founder–accountant–tax-administration triangle.
 - [x] Delegated identity, missing direct notice, repeated corrections, the
   first constructive public-interest proposal and the later five-part action.
+- [x] The recorded 13:08 help call preserves panic and resignation in “I can no
+  longer have a child”; the narrative separates the elapsed years from the
+  immediate filing failure and attributes the official tone to the Founder.
 - [x] The charged line and immediate correction, surgery deadline, solitary
   bed rest, elevated leg, special shoe, daily anti-thrombosis routine, stored
   food and the actual closed-incision photograph.
@@ -132,8 +148,9 @@ become independently verified evidence.
   yet exist.
 - [x] Remove the checkpoint-only slideshow stage; no inspection video or
   intermediate art is retained.
-- [x] Complete Founder factual/privacy review, build the editable PDF and
-  publish the explicitly authorized first versioned release package.
+- [x] Complete the current Founder factual/privacy review and build the editable
+  PDF draft. Keep the hashed published v1.0.0 artifact untouched until the
+  Founder explicitly approves republication.
 
 ## Shared release rules
 
