@@ -72,32 +72,34 @@ Frame production is paused until that feedback is accepted or applied.**
 
 ## 2. Source reconciliation boundary for this edition
 
-- [x] Audit the current manuscript so every still-unreconciled source below is
-  omitted, generalized or explicitly attributed as memoir rather than presented
-  as independently verified documentary fact. These items may strengthen a
-  later edition or Part III, but they do not block the bounded current text.
+- [x] Keep the main manuscript fluent: the opening memoir frame covers the
+  Founder's lived account once. Source reconciliation belongs in research and
+  end references, not as repeated qualifications inside scenes.
 
 - [x] Add and review the Constitutional Court's 21 October 2025 threshold
   letter documenting transmission, prematurity and absence of merits review.
-- [x] Keep the exact submitted constitutional complaint and any later request
-  for a formal single-judge disposition outside the factual claim set until
-  reconciled; the book states only what the reviewed threshold letter supports.
-- [x] Treat the April 2026 exclusion ruling and the first assigned judge's
-  reported illness/departure as Founder account. No absent decision is quoted
-  as if independently reviewed.
+- [x] Record the constitutional complaint's two core arguments—European data
+  protection around routine password sharing and inadequate preparation time
+  after the rapid KATA transition—alongside the Court's too-early/too-late
+  procedural answer.
+- [x] Record that the April 2026 paper ruling remains with the Founder but has
+  not yet been scanned into the reviewed package. Keep the first assigned
+  judge's reported illness/departure at Founder-account level.
 - [x] Keep the pasture image as literary memoir rather than a documentary
   quotation until its exact submission is isolated.
-- [x] Mention only that a short reply arrived from the new justice
-  administration; do not quote or characterize its substance until added to the
-  source inventory.
-- [x] Keep the thirteen-file root audio set local and untranscribed. No decisive
-  published quotation claims support from audio that has not been heard.
-- [x] Omit the exact private-surgery date and retain only the verified sequence.
+- [x] Record the new justice administration's short response only as stated:
+  the submission was forwarded for handling; infer no outcome.
+- [x] Keep the thirteen-file root audio set local. Its Founder-confirmed value
+  is the ordinary, non-threatening atmosphere of the surviving calls; it does
+  not contain the decisive exchanges.
+- [x] Record 15 February 2023 as the surgery date: major foot surgery involving
+  cutting the bone, roughly three months mainly in bed, then further months of
+  recovery.
 - [x] Use only bounded employment dates where the 2020–2021 authored accounts
   differ; the notes preserve the remaining chronology limit.
-- [x] Keep the apartment, belongings, work, debt, government-bond and courtroom
-  remarks at memoir layer unless a hearing record is later isolated; do not
-  present them as verbatim transcript.
+- [x] Present the apartment, belongings, work, debt, government-bond and
+  courtroom scenes directly within the already-established memoir voice. Keep
+  only the unresolved legal outcome in the reference boundary.
 - [x] Record 16 September 2026 as the Founder-confirmed scheduled next hearing,
   not a completed event; recheck it immediately before public release.
 - [x] Recheck the 2026 election, interim presidency and constitutional sequence

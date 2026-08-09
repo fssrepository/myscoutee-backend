@@ -456,11 +456,13 @@ branding around the shared core.
   merge this employer with the earlier Indian company;
 - preserve the assignment's non-binary human truth in the wider memory pool:
   roughly four or five months based at an employer-arranged hotel outside
-  Baltimore, a company-rented car, Ocean City, Washington/Adams Morgan,
-  Baltimore–New York Greyhound travel, Niagara Falls, Amish country, an
-  amusement park and Appalachian/park landscapes. The New York-to-Baltimore
-  return becomes the moment the temporary base first feels like home. Exact
-  Ocean City and amusement-park identification remains `CONFIRM`;
+  Baltimore, a company-rented car, Ocean City in Maryland, Virginia,
+  Philadelphia, Washington/Adams Morgan, Baltimore–New York Greyhound travel,
+  Niagara Falls, Amish country, Six Flags east of the Washington–Baltimore
+  corridor and an Indian Trail along a wooded mountain-top ridge farther inland
+  to the west. The New York-to-Baltimore
+  return becomes the moment the temporary base first feels like home. Keep the
+  precise park, Amish settlement and hotel unnamed;
 - Adams Morgan carries a first-person memory of women smiling and sometimes
   initiating contact. Show reciprocal social openness, never conquest or a
   claim about American women. Do not show visa/work-authorization status;

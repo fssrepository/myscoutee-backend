@@ -151,7 +151,8 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 ### S16 — The body has a deadline · 02:08–02:16 · CP15→CP16
 
 - **Motion:** the evidence line becomes the edge of a bed and raised leg after
-  surgery.
+  major foot surgery; a restrained calendar compression establishes three
+  months mainly in bed and further rehabilitation without readable AI text.
 - **CP16:** Founder alone, leg elevated, special shoe nearby, daily injection
   supplies and stored food visible, empty chair held in quiet focus.
 
@@ -221,18 +222,20 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 ### S26 — Care · 03:28–03:36 · CP25→CP26
 
 - **Motion:** a financial question crosses the microphone and becomes the
-  apartment, parental home support and foreign-earned savings behind it.
+  apartment; when the apartment does not end the inquiry, the question moves
+  through the belongings inside it and into foreign-earned savings.
 - **CP26:** the life that produced the money occupies more space than the asset
   field asking for it; no confiscation, eviction or final fine.
 
 ### S27 — Doors that answer later · 03:36–03:44 · CP26→CP27
 
-- **Motion:** a complaint reaches one door only after it collides with the next
-  hearing; the defence chair changes, the date moves by months, then expert
-  unavailability moves it again. A separate constitutional route is marked too
-  early through geometry only.
-- **CP27:** Founder below a row of institutional doors and receding calendar
-  dates; the requests remain unresolved, not rejected forever.
+- **Motion:** the complaint divides between two constitutional doors: one
+  closes before the criminal case has ended, the other after a 180-day path has
+  expired. Below them, the defence chair changes, the hearing moves by months,
+  then expert unavailability moves it again. Express *too early* and *too late*
+  through geometry only.
+- **CP27:** Founder below the two closed constitutional routes and a receding
+  hearing calendar; the underlying questions remain unanswered.
 
 ### S28 — The machine beside me · 03:44–03:52 · CP27→CP28
 

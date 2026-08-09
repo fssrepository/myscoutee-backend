@@ -125,12 +125,10 @@ These establish that the Founder's writing moved from individual defence toward
 institutional proposals. They do not establish acceptance or implementation of
 those proposals.
 
-The Founder reports receiving a recent short response indicating that the new
-justice administration has begun to engage with the matter. That response is
-not present in the three PDF files currently visible in the `emails` source
-directory. Its sender, date, exact wording, routing and legal significance must
-therefore remain **pending source-file review**. Do not paraphrase its substance
-in the public manuscript until the message has been added to the source package.
+The Founder reports receiving a recent short response from the new justice
+administration saying that the submission is being forwarded for handling.
+This establishes the latest routing step only; no substantive outcome is
+inferred from it.
 
 ## Constitutional Court record
 
@@ -186,10 +184,9 @@ must not be mistaken for 32 distinct conversations.
 
 The defence speech refers to the audio material and records the Founder's later
 account of several important exchanges. The most consequential calls or remarks
-in that account are not present as surviving recordings. The available sound may
-establish that surrounding calls occurred and may preserve tone or fragments of
-the sequence, but it is only indirect support for what happened in the absent
-key exchanges.
+are not present as surviving recordings. The Founder confirms that the surviving
+calls are ordinary and non-threatening; their primary value is the atmosphere
+around the wider sequence, not a decisive quotation.
 
 Current rule:
 
@@ -218,14 +215,16 @@ Before publication, confirm:
 
 - exact end date of the 2019 Hungarian employment and beginning of the next
   roles around the turn of 2020–21;
-- exact private surgery date in mid-February 2023;
+- documentary reconciliation of the Founder-confirmed 15 February 2023 surgery
+  date, if needed for a later legal edition;
 - exact wording and provenance of every official remark proposed for quotation;
 - which tax notices reached only the representative and when the Founder first
   saw each item;
 - complete local transcripts of the thirteen-file root set, while preserving
   the distinction between recorded surrounding calls and absent key exchanges;
 - current procedural status immediately before publication;
-- the recent justice-administration response once its source file is available;
+- the exact metadata of the justice-administration forwarding response, if
+  needed for a later legal edition;
 - the exact separate decision on the April 2026 exclusion motion and the
   official source for the first judge's reported illness/departure;
 - page-level review of the expanded backup according to the review ledger;

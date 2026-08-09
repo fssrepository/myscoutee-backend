@@ -33,7 +33,7 @@ totalling 158,675,492 bytes:
 | --- | ---: | --- |
 | PDF | 27 | extracted/reviewed at narrative and source-family level; selected records reconciled more closely |
 | ODT | 11 | extracted/reviewed; duplicate or rendered variants treated as versions, not corroboration |
-| WAV | 13 | inventoried, approximately 94.5 minutes in total; complete local transcription pending |
+| WAV | 13 | inventoried, approximately 94.5 minutes in total; Founder-confirmed as ordinary, non-threatening surrounding calls; complete local transcription pending |
 
 Accordingly, 38 written paths in the bounded package received content review.
 That does not mean every page received a legal line-by-line audit. The thirteen
@@ -188,10 +188,12 @@ constitute independent verification of the proposed mathematics.
 - an official record for the first assigned judge's reported illness and
   departure;
 - the exact submission containing the remembered pasture metaphor;
-- the recent short response attributed to the new justice administration;
+- exact metadata for the justice-administration response forwarding the
+  submission for handling;
 - a hearing record for financial-position questions and remembered courtroom
   remarks;
-- the precise private surgery date;
+- documentary reconciliation of the Founder-confirmed 15 February 2023 surgery
+  date, if a later legal edition requires it;
 - the precise employment transition around 2020–2021;
 - exact wording and speaker attribution for remarks preserved only through
   later authored accounts;

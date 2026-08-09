@@ -189,20 +189,27 @@ women, venues or national character.
   Founder visited.
 - [Visit Maryland — amusement
   parks](https://www.visitmaryland.org/list/roller-coasters): confirms Ocean
-  City amusement settings and Six Flags America as Maryland recognition
-  candidates. The Founder's exact amusement park remains `CONFIRM`.
+  City amusement settings and Six Flags America as Maryland locations. The
+  Founder confirms the Six Flags visit.
 - [National Park Service — Appalachian Trail corridor
   map](https://www.nps.gov/appa/planyourvisit/upload/APPA_Map.pdf): shows the
   Appalachian corridor relative to New York, Pennsylvania, Maryland and
   Washington. It supports geography only, not a reconstructed itinerary.
+- [National Park Service — Catoctin National Recreation
+  Trail](https://home.nps.gov/cato/planyourvisit/catoctin-national-recreation-trail.htm):
+  documents the mountain-ridge landscape west of Washington and Baltimore. It
+  supplies geographic context only; the memoir does not assign the Indian
+  Trail to a specific park.
 
 The roughly four-to-five-month assignment, Baltimore-area hotel base,
-company-rented car, Greyhound travel, Ocean City, Washington, New York, Niagara
-Falls, Amish-country visit and the New York-to-Baltimore “going home” feeling
-are Founder testimony. Ocean City's state, the exact Amish area, amusement park,
-hotel and specific protected landscapes remain unconfirmed. Public materials do
-not state visa or work-authorization details without documentary and legal
-review.
+company-rented car, Greyhound travel, Ocean City in Maryland, Virginia,
+Philadelphia, Washington, New York, Niagara Falls, Amish country, Six Flags to
+the east of the Washington–Baltimore corridor, a mountain-top Indian Trail
+farther inland to the west and the New York-to-Baltimore “going home” feeling
+are Founder testimony. The precise park, Amish settlement and hotel are not
+needed by the story. Public
+materials do not state visa or work-authorization details without documentary
+and legal review.
 
 ### London migration and shared-housing context
 

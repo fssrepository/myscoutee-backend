@@ -88,7 +88,7 @@ viewer time to read and consider the premise.
 
 ### 02:08–02:16 — S16 · The body has a deadline
 
-> Surgery left me alone in bed: leg raised, daily injections, stored food and an empty chair.
+> Major foot surgery left me alone in bed for three months: leg raised, daily injections, stored food, empty chair.
 
 ### 02:16–02:24 — S17 · The wound reaches the portal
 
@@ -128,11 +128,11 @@ viewer time to read and consider the premise.
 
 ### 03:28–03:36 — S26 · Care
 
-> The intimate life nobody cared about had produced the money the court now wanted to examine.
+> The apartment was not enough. The questions moved through my belongings and into savings earned abroad.
 
 ### 03:36–03:44 — S27 · Doors that answer later
 
-> Complaints moved only when hearings collided. A new defender cost months; an unavailable expert cost more.
+> One constitutional door said too early; the other said too late. The hearing kept receding by months.
 
 ### 03:44–03:52 — S28 · The machine beside me
 

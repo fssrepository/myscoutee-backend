@@ -138,8 +138,9 @@ first public edition is `1.0.0`.
 - Re-read the 5 and 8 April exclusion/evidence filings and restored their
   practical requests: official hearing audio, hearing the accountant and tax
   administration, and deciding outstanding evidence requests. Kept the
-  Founder's account that the posted decision omitted those requests separate
-  because the decision letter is not in the reviewed package.
+  Founder's account that the posted decision omitted those requests separate;
+  the paper letter remains with him but has not yet been scanned into the
+  reviewed package.
 - Clarified the Founder's confirmed account of the posted decision: it named
   Strasbourg and each party's right to state a position, carried the
   challenged judge's claim of conscientious listening, but left the concrete

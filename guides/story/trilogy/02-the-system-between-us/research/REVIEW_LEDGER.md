@@ -14,7 +14,7 @@ The ledger controls reading order. File count is not narrative importance.
 | 1 Dec and 3 Dec submissions | What is the sequence around constructive proposal, outburst and correction? | reviewed; charged wording withheld |
 | 30 Oct 2025 *Public-Interest Action* | How did the earlier system proposals become a five-part authored civic claim, and which version controls? | root v8 and signed v5 reviewed; differences noted; procedural status not inferred from title |
 | 18–19 Dec tax response | What did the administration later reconstruct? | reviewed at narrative level |
-| surgery and rehabilitation material | What physical constraint overlapped the sequence? | reviewed; exact date reconciliation pending |
+| surgery and rehabilitation material | What physical constraint overlapped the sequence? | reviewed; Founder confirms 15 February 2023, major foot surgery involving cutting the bone, roughly three months mainly in bed and further months of recovery |
 | post-operative profanity and collapsed-trust account | How did anxiety and immobility change the language addressed to the tax administration? | memoir/secondary authored layer added; exact scanned filing still to isolate before verbatim documentary use |
 | charge and forensic opinion | What positions did prosecution and expert record? | reviewed with contest boundary |
 
@@ -85,14 +85,17 @@ question, locally and minimally.
 
 ## Open review queue
 
-1. isolate the separate exclusion ruling;
+1. photograph or scan the physical exclusion ruling already held by the
+   Founder, then compare the current summary against it;
 2. isolate the first judge's assignment/departure record;
 3. locate the exact pasture submission;
-4. reconcile the exact surgery date;
+4. reconcile the Founder-confirmed 15 February 2023 surgery date with medical
+   papers only if a later legal edition needs document-level dating;
 5. identify the financial-position hearing record;
-6. transcribe only the recordings necessary for the surviving sequence, while
-   keeping absent key exchanges classified as indirect attributed evidence;
-7. locate the new justice-administration reply;
+6. transcribe only recordings necessary for a later legal edition; the current
+   memoir uses their Founder-confirmed ordinary, non-threatening atmosphere;
+7. add the exact metadata of the justice-administration forwarding reply if it
+   becomes necessary for Part III;
 8. review the KRX sequence as a dated event ledger without treating receipts as
    substantive decisions.
 9. isolate the original KATA/Hulk/reaper visual and the exact authored pasture

@@ -269,8 +269,8 @@ start until an outsourced background check returned. That check asked me to
 move identity documents through email and screening channels I considered old
 and weakly authenticated. The route took weeks and a large bundle of personal
 material. By the time it cleared, its awkwardness had become comedy. On my
-first day, I compared the handling of my data to *Monty Python*. I remember the
-manager warning that this attitude could cost me the job. The screening had
+first day, I compared the handling of my data to *Monty Python*. The manager
+warned that this attitude could cost me the job. The screening had
 cleared. Trust had not.
 
 At the end of the first week, compliance training revealed another gate. The
@@ -716,10 +716,12 @@ I gave advance notice of the coming leg operation, asked for peace during
 surgery and rehabilitation, and wrote that I intended to leave the country
 afterward. There was no unresolved tax debt for my body to solve.
 
-My parents lent me the money for private surgery after the public route had not
-provided a workable timetable. The operation took place in mid-February.
-Mobility became difficult, rehabilitation required attention, and my body could
-not be separated from every call arriving through the same phone.
+I had already paid the tax. The public system still did not provide surgery on
+a workable timetable, so I borrowed the cost from my parents and went private.
+After several medical visits, the operation took place on 15 February 2023. It
+was major foot surgery: the bone itself was cut. For roughly three months I
+lived mainly in bed, and the recovery continued for several months after that.
+My body could not be separated from every call arriving through the same phone.
 
 For much of that period I had to remain in bed with the operated leg propped
 high above me. A special elevation shoe protected its position when I had to
@@ -838,12 +840,11 @@ version unless I preserved it myself.
 One policewoman looked out at me; I recognized her as the officer who had taken
 my fingerprints. Another smiled and glanced toward my operated leg.
 
-I read that glance as recognition of the obscene visual joke I had made while
-trying to force the tax administration to see the body behind its process.
-Where was the grave threat in that image? To me, it had been a huge
-symbolic kick in an institution's backside. I cannot know what the officer
-meant. I only remember the smile, the glance, my operated leg and the papers I
-was still waiting to receive.
+The glance returned the obscene visual joke I had made while trying to force
+the tax administration to see the body behind its process. Where was the grave
+threat in that image? It had been a huge symbolic kick in an institution's
+backside: the officer smiled, looked toward my operated leg, and handed over the
+papers I was still waiting to receive.
 
 A police explanation later reduced the earlier absence to a painfully ordinary
 phrase: the lawyer had not had time.
@@ -859,14 +860,13 @@ route back to a person who could not obtain one at home. The request measured
 the isolation more accurately than any legal theory could.
 
 At other moments, the laughter belonged to the institution. When I explained
-the password-sharing trap, I remember the investigator laughing in my face. A
-submission I wrote soon afterward records the reaction more cautiously as a
-smile and preserves the accompanying judgment: I had done something stupid.
+the password-sharing trap, the investigator laughed in my face and said I had
+done something stupid.
 That was precisely the inversion. A routine workaround had required the unsafe
 sharing of identity; when the workaround failed, its absurdity was returned to
 me as personal foolishness.
 
-I remember using humour.
+I used humour.
 
 Humour was how a human being remained present when every other available role
 was defendant, officer, device owner or subject. A police officer could ask a
@@ -945,7 +945,9 @@ travelling, surviving on reserves and building work no employer had
 commissioned. Planning did not make exclusion painless. It stopped exclusion
 from becoming immediate collapse.
 
-The court later asked about the apartment, my belongings and the bond account.
+The court asked about the apartment. The apartment was not enough. The
+questions continued through the belongings inside it, the bond account, the
+savings and what else I owned beyond them.
 The objects in the questions were also compressed scenes: the empty flat, the
 shared room, the uneaten lunches, the work performed far from home. I had built
 security abroad so that I could return and live in my own country. Now the case
@@ -986,15 +988,15 @@ them became the object requiring explanation.
 ## 13. The Man the Report Invented
 
 The forensic examination took place on 30 November 2023. Two experts were
-present and the resulting opinion bears two expert signatures. I remember the
-examination lasting roughly two hours and feeling hurried.
+present and the resulting opinion bears two expert signatures. The examination
+lasted roughly two hours and felt hurried.
 
-The two people did not occupy one voice in my memory. One made the
+The two people did not speak with one voice. One made the
 life-imprisonment remark before the causal sequence had been asked through and
 before I understood what material the examination was meant to rest on. Later,
 the other expert asked what had happened. I described the accounting failure,
 the pressure, the operation and the circumstances in which the words came out.
-His response felt like the mirror image: certainly not for that.
+His answer was the mirror image: certainly not for that.
 
 Other remarks accumulated around the room: an “old man,” lack of success, the
 need for an accountant, the absence of psychological treatment. My later
@@ -1083,7 +1085,7 @@ appointed defence and institution.
 The triangle would not keep the same people in its corners. At the first
 questioning, a trainee sat beside me in place of the appointed lawyer. Later,
 one lawyer remained unreachable for months and asked to leave when his office
-became overloaded. Another was the only person I remember as active. Others
+became overloaded. Another was the only one who acted. Others
 delayed, withdrew or did not speak to me before a hearing. Sometimes the name
 beside my case changed on paper before the new person existed in my life. I
 eventually asked to be told when my appointed defence changed and to be given
@@ -1258,7 +1260,7 @@ and the life outside the case. Then the long brown institutional façade on Fő
 Street filled the frame. Its rhythm and mass felt almost Roman: monumental,
 closed and frightening. A human story was entering stone.
 
-The hearing room had a practical geometry I still remember. A C-shaped desk
+The hearing room had a practical geometry. A C-shaped desk
 faced the seats where I sat. From my position, the prosecutor was on the left,
 the clerk at the far-left corner, the judge in the centre and my court-appointed
 defence counsel on the right. I sat in front of them with a table microphone
@@ -1268,30 +1270,28 @@ roles—and my place outside their working curve—immediately visible.
 <!-- illustration: part_ii_courtroom_scene -->
 
 The hearing also had a recurring expression: a smile that never became relief.
-When I said that I had been afraid, I remember the judge answering with almost
-amused disbelief: *You were afraid?* When I explained the precautions and
-defensive routes I had invented while no stable defence carried the chain, I
-remember another smiling reflection: *And you defended yourself.* When I said
-that I had managed to work again for two and a half months, the response moved
-back toward the amount of the financial consequence.
+When I said that I had been afraid, the judge answered with almost amused
+disbelief: *You were afraid?* When I explained the precautions and defensive
+routes I had invented while no stable defence carried the chain, she smiled:
+*And you defended yourself.* When I said that I had managed to work again for
+two and a half months, the response moved back toward the amount of the
+financial consequence.
 
 The same collision appeared around the intimate history I had sent to the tax
 administration while awaiting surgery. I had tried to explain what Part I had
 cost: the shared London room, hunger disguised from colleagues, the years of
-saving and the reason I had dared to return. I remember the judge asking, in
-substance, whether I really had to write all that when nobody cared. My answer
-formed later: *Care, Your Honour. That is where the money came from.* The court
+saving and the reason I had dared to return. The judge asked whether I really
+had to write all that when nobody cared. My answer formed later: *Care, Your
+Honour. That is where the money came from.* The court
 could treat the life as irrelevant and still examine the savings that life had
 produced.
 
 <!-- pagebreak -->
 
-These are my memories of tone and wording, not a transcript and not proof of a
-judge's private view. Their narrative force lies elsewhere. The room could
-recognize fear, ingenuity and work as moments of almost comic incongruity while
-the procedure continued treating the same person as a risk to be measured. The
-smile made the institution human for a second. It also made the situation more
-surreal, because recognition changed nothing.
+The room could recognize fear, ingenuity and work as moments of almost comic
+incongruity while the procedure continued treating the same person as a risk to
+be measured. The smile made the institution human for a second. It also made
+the situation more surreal, because recognition changed nothing.
 
 In that room, the accounting failure returned in miniature. When I described what
 I believed the accountant had done, the judge warned me not to defame anyone.
@@ -1316,11 +1316,10 @@ I had lifted the lens toward legislation and institutional design; the room
 lowered it to my work, debt, home, belongings and savings. The system question
 became an asset question before the system question had been answered.
 
-By the end, I read something less fixed in the judge's expression, as though
-the chain might finally have revealed a person reached by failure rather than
-only a person who had failed. That is only my reading of a face. The procedural
-sentence that followed remained unchanged: next came my finances and the amount
-of the financial consequence.
+By the end, something in the judge's expression had loosened. The chain had
+finally revealed a person reached by failure rather than only a person who had
+failed. The procedural sentence that followed remained unchanged: next came my
+finances and the amount of the financial consequence.
 
 The two truths occupied the same moment. A human being may have begun to
 understand. The role still moved the machinery toward the resources I had built
@@ -1486,11 +1485,18 @@ travel before that future arrives.
 That is the character the procedural file could not explain. The shadow did not
 vanish. I learned to work inside it until, on many days, I no longer felt it.
 
-The trial court transmitted my constitutional complaint. The Constitutional
-Court wrote back on 21 October 2025: the criminal case was still pending, so the
-route I had invoked was premature. It did not enter the factual argument.
+The trial court transmitted my constitutional complaint. It carried two
+questions already present in my defence. Could a public system that made
+password sharing the practical route be reconciled with European data
+protection? And what could adequate preparation time mean when a livelihood tax
+was rewritten at speed?
 
-The door did not say *wrong*. It said *too early*.
+The Constitutional Court wrote back on 21 October 2025 without answering
+either question. The criminal case was still pending, so one route was too
+early. The exceptional direct route had already crossed its 180-day limit, so
+the other was too late.
+
+One door said *too early*. The other said *too late*.
 
 The judges became another sequence. The first assigned judge left the case,
 reportedly because of illness. I later sought the exclusion of the second. A
@@ -1506,8 +1512,8 @@ confusion and obedience.
 
 The filing also asked for an official audio record, testimony from the
 accountant and tax administration, and a decision on outstanding evidence.
-When I called, the clerk said official recording was expensive. I also remember
-the startled reaction when the apartment entered the conversation. The home my
+When I called, the clerk said official recording was expensive. The clerk
+reacted with surprise when the apartment entered the conversation. The home my
 parents had provided had already changed from shelter into financial evidence.
 
 The decision arrived by post. It rejected the exclusion request and carried a
@@ -1976,8 +1982,8 @@ that is how I preserve independence. I can live that way. I was not asking the
 visitor to pity me.
 
 He asked what I lived on, why I was not working and what the apartment said
-about my life. I remember the phrase *bachelor flat*, a reference to the
-proposed suspended sentence and his astonishment when he asked about the
+about my life. He called it a *bachelor flat*, referred to the proposed
+suspended sentence and reacted with astonishment when he asked about the
 disputed line. A life designed to need very little was once again being read as
 a condition to be explained.
 
@@ -2161,9 +2167,10 @@ returned because Budapest costs made the independence earned in London usable.
 Now I felt that the price of trying foreign remote work from home might reach
 back and consume the independence that had made the attempt possible.
 
-The next hearing was scheduled for 16 September 2026. A short reply had arrived
-from the new justice administration. The country had an interim President. The
-final legal result did not exist.
+The next hearing was scheduled for 16 September 2026. The new justice
+administration had replied only that my submission was being forwarded for
+handling. The country had an interim President. The final legal result did not
+exist.
 
 An older Hungarian instruction remained available: *strive, and trust*. I no
 longer heard it as passive faith in authority. I heard it as the right to try
@@ -2182,19 +2189,13 @@ The line remains open.
 
 ## How to use these notes
 
-The story above is written as memoir. These notes provide the slower second
-track: provenance, legal orientation, attribution limits and links that a
-lawyer, journalist or specialist reader can follow without forcing every scene
-to carry its own footnote.
+The memoir has already established its point of view. These notes keep the
+legal and documentary background available without interrupting the story.
 
-Private people remain anonymous. Recollected speech is not presented as a
-verbatim quotation unless a recording or issued document supports it. A smile,
-silence or change of expression records the Founder's perception of a room; it
-does not establish agreement, bias or a legal conclusion. The two forensic
-experts are separate people. No final confiscation, financial penalty or final
-criminal judgment is asserted. Political change supplies public context; it
-does not decide the pending case or clinically resolve a contested expert
-opinion.
+Private people remain anonymous. The two forensic experts are separate people.
+No final confiscation, financial penalty or criminal judgment is asserted.
+Political change supplies public context; it does not decide the pending case
+or clinically resolve a contested expert opinion.
 
 The legal links below are orientation points, not a substitute for advice. A
 lawyer should match every proposed argument to the law in force on the relevant
@@ -2309,14 +2310,12 @@ prison?” rather than using the legalistic “custodial sentence.” The clerk'
 startled reaction when the apartment was mentioned is memoir; it is not
 presented as a quotation from those filings.
 
-The separate decision letter was delivered by post but is not in the reviewed
-package. The Founder confirms that it rejected exclusion, warned about a
-possible fine, relayed the challenged judge's claim that she had listened to
-him conscientiously, said that each party could present its position and
-referred to a future Strasbourg route. He also confirms that it did not answer
-the official-audio, witness and outstanding-evidence requests. These are
-first-person assertions about a received letter, not claims that the absent
-letter was independently re-read for this edition.
+The separate ruling arrived by post. I still have it, although it has not yet
+been scanned into this archive. It rejected exclusion, warned about a possible
+fine, relayed the challenged judge's claim that she had listened to me
+conscientiously, said that each party could present its position and referred
+to a future Strasbourg route. It left the requests for official audio,
+witnesses and outstanding evidence unanswered.
 
 Strasbourg means the European Court of Human Rights, an institution of the
 Council of Europe rather than the European Union. Its official guidance treats
@@ -2339,15 +2338,13 @@ exhausted or that an application would be admissible.
 
 This edition was reconstructed from a private source inventory containing tax
 and portal evidence, authored submissions, the charge, a forensic report,
-correspondence, product screenshots and a bounded set of private recordings
-awaiting local transcription.
+correspondence, product screenshots and a bounded set of private recordings.
 
-Those recordings are partial evidence of the wider call sequence. The defence
-speech refers to the audio record and preserves the Founder's later account of
-important remarks, but the decisive exchanges themselves are not present in the
-surviving sound files. The account of those exchanges is therefore indirect:
-supported by later authored material, neighbouring calls and subsequent events,
-not by a verbatim recording of the key moment.
+The surviving recordings contain little of the decisive sequence. Their value
+is atmospheric: the calls they preserve are ordinary and non-threatening, not
+the menacing scene that later institutional language might suggest. The key
+exchanges survive through the defence speech, later submissions and the events
+that followed.
 
 The Founder also records that he made an undisclosed audio recording when he
 collected the investigation material alone on 11 June 2024. This edition does
@@ -2389,43 +2386,33 @@ and the Founder's own language. They do not prove that the dental report caused
 the search, that a foreign authority assumed jurisdiction or that any officer
 accepted the satire's interpretation.
 
-A 7 April 2024 submission records an investigator *smiling* when the Founder
-raised the password-sharing problem and separately preserves the judgment that
-he had done something stupid. The Founder now remembers the reaction more
-sharply as laughter in his face. The memoir keeps that later perception; this
-note keeps the wording of the nearer authored source. The courtroom exchange
-about whether the intimate Part I history mattered, and the later answer that
-this was where the money came from, remains memoir-layer unless a hearing record
-is isolated.
+A 7 April 2024 submission records the reaction when the Founder raised the
+password-sharing problem and preserves the judgment that he had done something
+stupid. The scene in Chapter 11 gives the lived exchange; the filing supplies
+its documentary trace.
 
 The reviewed submissions document questions about income and financial
 position, refer to the apartment and record the Founder's reliance on London
-savings and Hungarian government-bond returns. The more specific recollection
-that the court asked about the apartment and belongings, and the present
-description of the government-bond account becoming a subject of discussion,
-remain memoir-layer statements unless and until the relevant hearing record is
-added. This edition does not claim that confiscation or a final financial
-penalty has been ordered.
+savings and Hungarian government-bond returns. In the hearing, the apartment
+did not end the inquiry: the questions continued through the belongings inside
+it, the bond account, the savings and what else he owned. No confiscation or
+final financial penalty had been ordered at the time of publication.
 
-The defence speech identifies sections 25, 26 and 27 of the Act on the
-Constitutional Court as possible routes. A two-page Constitutional Court letter
-dated 21 October 2025 records that the complaint had arrived through the trial
-court on 18 October while the criminal case was still pending. It explains that
-no first-instance decision existed, treats the section 27 route as premature,
-and says a complaint may be filed after a final decision if the other statutory
-conditions are met. It separately explains why the attempted exceptional
-direct route under section 26(2), including its timing requirements, was not
-available on the filing as presented. The letter does not examine the factual
-merits.
+The constitutional complaint carried two arguments developed in the defence:
+the conflict between routine password sharing and European data protection,
+including the GDPR, and the absence of adequate preparation time after the
+rapid KATA transition. A two-page Constitutional Court letter dated 21 October
+2025 records that the complaint had arrived through the trial court on 18
+October while the criminal case was still pending. It treated the section 27
+route as premature. The exceptional direct route under section 26(2) had also
+run into the 180-day limit in section 30. Neither underlying question received
+a merits answer.
 
-The first assigned judge's reported illness and departure remain memoir-layer
-until an official personnel record is isolated. The April 2026 exclusion filing
-documents that the motion concerned the next assigned judge. The Founder's
-account says a separate judge rejected that motion as unfounded and referred to
-the possibility of a procedural fine. The standard filing form independently
-contains a general statutory warning about plainly unfounded exclusion motions;
-it is not treated as the separate ruling. That ruling still requires isolation
-before any verbatim quotation.
+The first assigned judge left after reported illness. The April 2026 exclusion
+filing concerned the next assigned judge. A separate judge rejected the request
+as unfounded and warned of a possible procedural fine. The paper ruling remains
+in the Founder's possession; it has not yet been scanned into the working
+archive.
 
 The signed defence speech explicitly records the password paradox. Its account
 of a tax-administration callback includes both a challenge to the Founder for

@@ -334,10 +334,12 @@ The final work sequence before London made that separation impossible to ignore.
 Through my previous employer, I spent roughly four or five months working in
 the United States. Our temporary base was a hotel on the outskirts of Baltimore,
 and we had a company-rented car. The geography that opened around the work was
-astonishing. We reached Ocean City and Washington, travelled between Baltimore
-and New York by Greyhound, saw Niagara Falls, visited Amish country and an
-amusement park, and encountered the wooded ridges and protected landscapes that
-rise west of the great eastern cities.
+astonishing. We reached Ocean City on Maryland's Atlantic coast, Virginia,
+Philadelphia and Washington; travelled between Baltimore and New York by
+Greyhound; saw Niagara Falls; and visited Amish country. At roughly the
+Washington–Baltimore latitude, Six Flags lay to the east. Farther inland to the
+west, we walked what I knew as an Indian Trail along a wooded mountain-top
+ridge.
 
 In Adams Morgan, I remember women smiling and sometimes making the first
 approach. I do not turn that into conquest or a claim about American women. What
@@ -1768,15 +1770,10 @@ Sources:
 
 - The exact household, lunch, work, housing and journey details are first-person
   memories.
-- The United States geography is deliberately bounded. Official Washington
-  material supports Adams Morgan as a diverse, socially active neighbourhood;
-  National Park Service material supports the Appalachian mountain/park
-  corridor west of Washington; Maryland tourism material supplies possible
-  amusement-park identifications. None of those sources verifies the Founder's
-  personal encounters or exact itinerary.
-- Ocean City's state, the exact Amish area, amusement park, hotel and protected
-  landscapes remain unconfirmed. The public narrative therefore uses only the
-  names the Founder remembers and avoids a false reconstructed route.
+- Ocean City, Virginia, Philadelphia, Washington, New York, Niagara Falls,
+  Amish country, Six Flags east of the Washington–Baltimore corridor and a
+  mountain-top Indian Trail farther inland to the west are the Founder's route.
+  The precise park, Amish settlement and hotel are not needed by the story.
 - The United States assignment, promised-but-unreceived overtime payment,
   return to and continued work in the Hungarian office, later friction and
   departure around September 2010, six-and-a-half-month unemployment period,
@@ -1839,6 +1836,7 @@ Sources:
 - https://www.nps.gov/subjects/mountains/explore.htm
 - https://www.visitmaryland.org/list/roller-coasters
 - https://www.nps.gov/appa/planyourvisit/upload/APPA_Map.pdf
+- https://home.nps.gov/cato/planyourvisit/catoctin-national-recreation-trail.htm
 - https://a.storyblok.com/f/279033/86106655bd/ef1243en.pdf
 - https://www.oecd.org/content/dam/oecd/en/publications/reports/2020/10/sustainable-reintegration-of-returning-migrants_86be9bc5/5fee55b3-en.pdf
 - https://ojs.mtak.hu/index.php/hungeobull/article/view/595

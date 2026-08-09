@@ -58,9 +58,11 @@ and music remain downstream of the direct Veo 3.1 Lite picture pass.
 - [ ] Exact Trivandrum employer/campus and beach only if the Founder wants them
   public; otherwise keep them anonymous.
 - [ ] Exact dates of the United States assignment.
-- [ ] Whether the remembered Ocean City was in Maryland.
-- [ ] Exact Amish region, amusement park and protected mountain/park locations;
-  Six Flags America is only a current candidate.
+- [x] Record the Founder-confirmed Ocean City, Maryland; Virginia;
+  Philadelphia; Washington; New York; Niagara Falls; Amish-country and Six
+  Flags east of the Washington–Baltimore corridor, together with the Indian
+  Trail along a wooded mountain-top ridge farther inland to the west.
+- [ ] Exact Amish settlement or park name only if it later matters to the story.
 - [ ] Exact Baltimore-area hotel/suburb only if useful and safe to publish.
 - [ ] Documentary/legal release review for any employment, compensation,
   immigration or work-authorization detail beyond the current bounded wording.
