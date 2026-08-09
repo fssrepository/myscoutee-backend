@@ -86,8 +86,11 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 ### S07 — A law in a day · 00:56–01:04 · CP06→CP07
 
 - **Motion:** the stable bridge shortens as a bill moves through institutional
-  geometry; a separate street layer shows varied citizens gathering while the
-  Founder stays at his computer.
+  geometry; a broad field of distinct work lights fractures into simultaneous
+  contracts, invoices, deadlines, client desks and overloaded accounting
+  offices, making the scale of roughly 450,000 compressed transitions legible
+  without displaying a number. A separate street layer shows varied citizens
+  gathering while the Founder stays at his computer.
 - **CP07:** split but continuous staging: public protest outside, focused
   handover work inside; do not place the Founder in the crowd.
 

@@ -760,6 +760,12 @@ def stylesheet() -> str:
   .compact-chapter-18 > p,
   .compact-chapter-18 .ending-tail > p { margin-bottom: .08in; }
   .compact-chapter-8 .illustration.portrait-right img { height: 1.95in; }
+  .epilogue-compact { font-size: 10pt; line-height: 1.32; }
+  .epilogue-compact > p,
+  .epilogue-compact .ending-tail > p { margin-bottom: .07in; }
+  .epilogue-compact .closing-invitation {
+    margin: .22in 0 .04in; padding: .05in .16in; font-size: 14.5pt;
+  }
   .pagebreak { page-break-before: always; height: 0; }
   .illustration { margin: .26in 0 .3in; break-inside: avoid; }
   .illustration img { display: block; width: 100%; border-radius: 12px; }
@@ -810,6 +816,7 @@ def stylesheet() -> str:
     }
     .compact-chapter-8 .folk-divider,
     .compact-chapter-18 .folk-divider { height: .88in; }
+    .epilogue-compact .folk-divider { height: .72in; }
     .part-one-final-tail {
       height: 5.72in; min-height: 5.72in; position: relative;
     }
@@ -875,6 +882,23 @@ def build_document(source: Path) -> str:
             + "</section>"
             + body[range_end:]
         )
+
+    # Keep the short Epilogue, its invitation and its closing ornament on one
+    # page. The prose is unchanged; only this final chapter uses the tighter
+    # rhythm needed to avoid an invitation-only spill page.
+    epilogue_marker = 'id="epilogue-the-star-above-the-open-space"'
+    epilogue_heading = body.find(epilogue_marker)
+    epilogue_start = body.rfind("<h2", 0, epilogue_heading)
+    epilogue_end = body.find('<section class="part-opener opener-6">', epilogue_heading)
+    if min(epilogue_heading, epilogue_start, epilogue_end) < 0:
+        raise ValueError("Could not isolate the Part I Epilogue for print layout")
+    body = (
+        body[:epilogue_start]
+        + '<section class="epilogue-compact">'
+        + body[epilogue_start:epilogue_end]
+        + "</section>"
+        + body[epilogue_end:]
+    )
 
     final_tail = '<div class="ending-tail"><div class="edition-colophon">'
     if final_tail not in body:

@@ -52,7 +52,7 @@ viewer time to read and consider the premise.
 
 ### 00:56–01:04 — S07 · A law in a day
 
-> In July 2022, that bridge changed almost overnight. Others blocked roads; I stayed inside and adapted.
+> The law moved in a day. Almost half a million taxpayers had weeks to rebuild how they worked. I stayed home and adapted.
 
 ### 01:04–01:12 — S08 · The handover
 
@@ -124,7 +124,7 @@ viewer time to read and consider the premise.
 
 ### 03:20–03:28 — S25 · Inside the curve
 
-> The judge smiled at fear and self-defence. The repaired failure still moved toward my home and savings.
+> I remember the judge smiling at fear and self-defence. The repaired failure still moved toward my home and savings.
 
 ### 03:28–03:36 — S26 · Care
 

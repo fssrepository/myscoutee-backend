@@ -4,7 +4,7 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Revision draft based on public edition 1.0.0 — not yet republished
+> Public edition 1.0.0
 
 <!-- pagebreak -->
 
@@ -430,6 +430,11 @@ Hundreds of thousands of people who had organized work around the old route now
 had weeks to decide whether to close, change tax systems, renegotiate contracts
 or stop working through that form. Their accountants had the same weeks to
 translate the change for all of them at once.
+
+For a few weeks, roughly 450,000 taxpayers entered the same narrow corridor:
+contracts, invoices, family plans, accountants and closing dates all moving at
+once. Most found another door. In a few lives, the pressure kept travelling long
+after the tax account should have closed. Mine was one of them.
 
 People went into the streets. Bridges were blocked. The public argument became
 immediate: fairness, abuse, livelihood, consultation, legal certainty.
@@ -888,7 +893,7 @@ was defendant, officer, device owner or subject. A police officer could ask a
 hard question, I could answer in a way that exposed the absurdity, and for a
 second somebody smiled.
 
-Later, a judge could smile too. The smiles decided nothing. They showed only
+Later, a judge could smile too. The smiles decided nothing. To me, they suggested
 that the people in the room could still recognize the absurdity while the
 procedure continued to manufacture it.
 
@@ -2649,6 +2654,10 @@ Public reporting supports the exceptional speed of the July 2022 legislative
 change, the 1 September transition and the protests. The Founder did not attend
 the protest and does not claim that all KATA use was identical.
 
+The Hungarian National Bank's October 2022 public-finance report described
+roughly 450,000 KATA taxpayers before the change, with only 100,000–150,000
+expected to remain eligible.
+
 A private email dated 8 August 2026 records the Founder's recollection of a
 public remark about KATA-contracted software teams, including teams inside the
 tax authority. The underlying public recording has not yet been isolated. The
@@ -2661,6 +2670,7 @@ Sources:
 
 - https://telex.hu/english/2022/07/12/major-tax-change-bill-pushed-through-parliament-in-spite-of-protests
 - https://telex.hu/english/2022/07/18/president-novak-signs-new-tax-law
+- https://www.mnb.hu/letoltes/mnb-public-finance-report-2022-october.pdf
 
 ## Formal rules and lived practice
 
