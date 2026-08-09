@@ -88,7 +88,7 @@ viewer time to read and consider the premise.
 
 ### 02:08–02:16 — S16 · The body has a deadline
 
-> Major foot surgery left me alone in bed for three months: leg raised, daily injections, stored food, empty chair.
+> After months of pain, the public route offered a shoe and a review in a year. I borrowed for private surgery, then spent three months alone in bed.
 
 ### 02:16–02:24 — S17 · The wound reaches the portal
 
@@ -182,9 +182,9 @@ viewer time to read and consider the premise.
 
 > MyScoutee. Test the system between us.
 
-Hold after the spoken invitation. Let the viewer read the book route and the
-Part III continuation without a rushed final cut. The final visual line may
-carry `STRIVE, AND TRUST—NOT BLINDLY, BUT IN OUR RIGHT TO BUILD BETTER.`
+Hold after the spoken invitation. Show only `BOOK AVAILABLE`, then `TO BE
+CONTINUED`, without repeating the film or book title and without a rushed final
+cut.
 
 ## Editable on-screen text
 
@@ -216,7 +216,7 @@ All typography is post-production text; never ask a video model to render it.
 | 04:48–04:56 | SEVEN · THEN EIGHT · NO QUORUM |
 | 04:56–05:04 | 30 APRIL · REFUSAL / 18 JULY · SIGNATURE |
 | 05:04–05:12 | THE LINE REMAINS OPEN |
-| 05:12–05:20 | READ THE BOOK · THE SYSTEM BETWEEN US / TO BE CONTINUED IN PART III |
+| 05:12–05:20 | BOOK AVAILABLE / TO BE CONTINUED |
 
 ## Clean synopsis
 

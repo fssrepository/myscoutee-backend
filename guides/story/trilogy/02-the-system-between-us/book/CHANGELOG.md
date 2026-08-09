@@ -5,6 +5,12 @@ first public edition is `1.0.0`.
 
 ## Unreleased revision of 1.0.0 — 2026-08-09
 
+- Restored the complete 2023 treatment chain: months of pain, an orthopaedic
+  shoe and public review one year away, private-clinic disbelief, the tax
+  already paid, money borrowed from the Founder's parents, major private foot
+  surgery on 15 February, three months mainly in bed and a longer recovery.
+  S16 now carries the same causal sequence without turning the medical scene
+  into spectacle.
 - Removed internal evidence-bundle filenames and the remaining untranslated
   courtroom wording from the public notes while preserving the English memoir
   rendering and source boundary. Rebuilt the 107-page editable draft without

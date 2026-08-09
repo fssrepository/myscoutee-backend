@@ -658,7 +658,7 @@ The tax position still did not feel legible. Entries had appeared on the
 account after a return I had not known was submitted. The notice went through
 the representative channel while the liability remained mine. I had already
 spent days reconstructing a failure that had developed for months without my
-knowledge, and I was preparing for serious leg and foot surgery.
+knowledge, and I was preparing for major foot surgery.
 
 Under that accumulated pressure, I wrote a violent sentence. I corrected it
 immediately and continued communicating. The sentence remains serious. But it
@@ -712,16 +712,18 @@ practice required a person to hand over the password to his government account.
 I had refused to make that bargain, repaired the consequences and still could
 not close the door behind me.
 
-I gave advance notice of the coming leg operation, asked for peace during
+I gave advance notice of the coming foot operation, asked for peace during
 surgery and rehabilitation, and wrote that I intended to leave the country
 afterward. There was no unresolved tax debt for my body to solve.
 
-I had already paid the tax. The public system still did not provide surgery on
-a workable timetable, so I borrowed the cost from my parents and went private.
-After several medical visits, the operation took place on 15 February 2023. It
-was major foot surgery: the bone itself was cut. For roughly three months I
-lived mainly in bed, and the recovery continued for several months after that.
-My body could not be separated from every call arriving through the same phone.
+I had already paid the tax. My foot had been painful for months. The public
+system gave me an orthopaedic shoe and told me to return in a year. At the
+private clinic, they laughed at that timetable. I borrowed the cost from my
+parents and went private. After several medical visits, the operation took
+place on 15 February 2023. It was major foot surgery: the bone itself was cut.
+For roughly three months I lived mainly in bed, and the recovery continued for
+several months after that. My body could not be separated from every call
+arriving through the same phone.
 
 For much of that period I had to remain in bed with the operated leg propped
 high above me. A special elevation shoe protected its position when I had to
@@ -2310,9 +2312,9 @@ prison?” rather than using the legalistic “custodial sentence.” The clerk'
 startled reaction when the apartment was mentioned is memoir; it is not
 presented as a quotation from those filings.
 
-The separate ruling arrived by post. I still have it, although it has not yet
-been scanned into this archive. It rejected exclusion, warned about a possible
-fine, relayed the challenged judge's claim that she had listened to me
+The separate ruling arrived by post and remains in my possession. It rejected
+exclusion, warned about a possible fine, relayed the challenged judge's claim
+that she had listened to me
 conscientiously, said that each party could present its position and referred
 to a future Strasbourg route. It left the requests for official audio,
 witnesses and outstanding evidence unanswered.
@@ -2411,8 +2413,7 @@ a merits answer.
 The first assigned judge left after reported illness. The April 2026 exclusion
 filing concerned the next assigned judge. A separate judge rejected the request
 as unfounded and warned of a possible procedural fine. The paper ruling remains
-in the Founder's possession; it has not yet been scanned into the working
-archive.
+in the Founder's possession.
 
 The signed defence speech explicitly records the password paradox. Its account
 of a tax-administration callback includes both a challenge to the Founder for

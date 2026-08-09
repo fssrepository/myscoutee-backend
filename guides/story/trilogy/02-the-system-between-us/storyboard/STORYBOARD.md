@@ -150,9 +150,12 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S16 — The body has a deadline · 02:08–02:16 · CP15→CP16
 
-- **Motion:** the evidence line becomes the edge of a bed and raised leg after
-  major foot surgery; a restrained calendar compression establishes three
-  months mainly in bed and further rehabilitation without readable AI text.
+- **Motion:** the evidence line becomes an orthopaedic shoe beside a public
+  appointment card; a calendar turns toward a distant one-year review, then a
+  private-clinic reaction carries the scene into the edge of a bed and raised
+  leg after major foot surgery. A restrained time compression establishes
+  three months mainly in bed and further rehabilitation without readable AI
+  text.
 - **CP16:** Founder alone, leg elevated, special shoe nearby, daily injection
   supplies and stored food visible, empty chair held in quiet focus.
 
@@ -319,9 +322,8 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 - deterministic clean plate derived from CP38, held for a full eight seconds;
 - exact repository MyScoutee mark, never an AI-generated logo;
-- editable text: `STRIVE, AND TRUST—NOT BLINDLY, BUT IN OUR RIGHT TO BUILD
-  BETTER.`, `READ THE BOOK · THE SYSTEM BETWEEN US` and `TO BE CONTINUED IN
-  PART III`;
+- editable text: `BOOK AVAILABLE`, then `TO BE CONTINUED`; do not repeat the
+  film or book title;
 - Jon: `MyScoutee. Test the system between us.`;
 - score ends on an unresolved star interval, not a triumphant cadence.
 

@@ -14,7 +14,7 @@ The ledger controls reading order. File count is not narrative importance.
 | 1 Dec and 3 Dec submissions | What is the sequence around constructive proposal, outburst and correction? | reviewed; charged wording withheld |
 | 30 Oct 2025 *Public-Interest Action* | How did the earlier system proposals become a five-part authored civic claim, and which version controls? | root v8 and signed v5 reviewed; differences noted; procedural status not inferred from title |
 | 18–19 Dec tax response | What did the administration later reconstruct? | reviewed at narrative level |
-| surgery and rehabilitation material | What physical constraint overlapped the sequence? | reviewed; Founder confirms 15 February 2023, major foot surgery involving cutting the bone, roughly three months mainly in bed and further months of recovery |
+| surgery and rehabilitation material | What physical constraint overlapped the sequence? | reviewed; months of pain led through a public orthopaedic shoe and a one-year review date to private treatment funded with money borrowed from the Founder's parents after the tax had been paid; Founder confirms 15 February 2023, major foot surgery involving cutting the bone, roughly three months mainly in bed and further months of recovery |
 | post-operative profanity and collapsed-trust account | How did anxiety and immobility change the language addressed to the tax administration? | memoir/secondary authored layer added; exact scanned filing still to isolate before verbatim documentary use |
 | charge and forensic opinion | What positions did prosecution and expert record? | reviewed with contest boundary |
 
@@ -29,10 +29,10 @@ The ledger controls reading order. File count is not narrative importance.
 | Constitutional Court letter | Why was review not reached? | primary letter reviewed |
 | first-judge departure | When and why did assignment change? | source not isolated |
 | exclusion motion against second judge | What was requested and why? | filing and annex reviewed; judge's “letöltendőt” wording and clerk's “expensive” official-audio wording isolated alongside the evidence requests |
-| separate deciding judge's response | What exact finding and fine warning were issued? | source not isolated; conscientious-listening, fine-warning, position and Strasbourg terms recorded as the Founder's confirmed account of the posted letter |
-| April hearing | What exactly was said about defamation, accountant, figures and finance? | memoir/secondary authored account; transcript pending |
-| remembered courtroom smile and phrases | How did fear, self-defence and short-lived work become part of the hearing atmosphere? | memoir layer recorded; no transcript isolated; never promote facial interpretation to a finding |
-| intimate-history / source-of-money exchange | How did the court move from dismissing the Part I history to examining the savings it produced? | memoir layer recorded; hearing source not isolated |
+| separate deciding judge's response | What exact finding and fine warning were issued? | paper ruling held by the Founder; conscientious-listening, fine-warning, position and Strasbourg terms are represented directly in the memoir; line-level comparison is optional for a later legal edition |
+| April hearing | What exactly was said about defamation, accountant, figures and finance? | Founder-confirmed courtroom account drives the memoir; a later legal edition may add transcript comparison |
+| courtroom smile and phrases | How did fear, self-defence and short-lived work become part of the hearing atmosphere? | Founder-confirmed courtroom account drives the memoir; no private intention is assigned to an expression |
+| intimate-history / source-of-money exchange | How did the court move from dismissing the Part I history to examining the savings it produced? | Founder-confirmed courtroom account drives the memoir; no account value or completed confiscation is claimed |
 | next hearing and financial position | What is procedurally at issue now? | open; recheck before release |
 
 ## Tier 2 — civic and constitutional expansion
@@ -85,8 +85,8 @@ question, locally and minimally.
 
 ## Open review queue
 
-1. photograph or scan the physical exclusion ruling already held by the
-   Founder, then compare the current summary against it;
+1. photograph or scan the physical exclusion ruling only if a later legal
+   edition needs line-level comparison; the memoir account is complete;
 2. isolate the first judge's assignment/departure record;
 3. locate the exact pasture submission;
 4. reconcile the Founder-confirmed 15 February 2023 surgery date with medical
@@ -100,11 +100,10 @@ question, locally and minimally.
    substantive decisions.
 9. isolate the original KATA/Hulk/reaper visual and the exact authored pasture
    phrase before any documentary quotation or visual reuse;
-10. isolate any hearing transcript or recording capable of promoting the
-    remembered judge phrases beyond memoir.
-11. isolate any hearing record for the remembered exchange about whether the
-    intimate Part I history mattered and the later answer about the source of
-    the money.
+10. compare any later-found hearing transcript or recording with the memoir
+    before using it in a legal edition.
+11. compare any later-found hearing record with the intimate-history and
+    source-of-money scene before using it as documentary quotation.
 12. isolate the exact March–May 2023 filing containing the remembered Hungarian
     profanity demanding that the institution fine him, rendered in literary
     English as “Go on, then. Fine me.”

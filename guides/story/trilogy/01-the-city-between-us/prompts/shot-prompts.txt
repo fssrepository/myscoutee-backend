@@ -356,7 +356,7 @@ Deep navy clean field, subtle tactile paper texture, one faint original coral
 network line settling to still, no camera move and center-safe negative space.
 No generated text, logo, heart, icon or object. The original unmodified
 repository `heart.png`, separate MyScoutee text, tagline and CTA are added in post.
-Hold the exact repository mark and editable post-only lines `READ THE BOOK · THE
-CITY BETWEEN US` and `THE STORY CONTINUES IN PART II · THE SYSTEM BETWEEN US`
-for the full eight seconds. This plate is built deterministically; do not spend
-image- or video-model credit on it.
+Hold the exact repository mark and editable post-only lines `BOOK AVAILABLE`
+and `TO BE CONTINUED` for the full eight seconds. Do not repeat the film or book
+title. This plate is built deterministically; do not spend image- or
+video-model credit on it.

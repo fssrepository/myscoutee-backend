@@ -82,9 +82,9 @@ Frame production is paused until that feedback is accepted or applied.**
   protection around routine password sharing and inadequate preparation time
   after the rapid KATA transition—alongside the Court's too-early/too-late
   procedural answer.
-- [x] Record that the April 2026 paper ruling remains with the Founder but has
-  not yet been scanned into the reviewed package. Keep the first assigned
-  judge's reported illness/departure at Founder-account level.
+- [x] Record the April 2026 paper ruling held by the Founder directly in the
+  memoir. Keep the first assigned judge's reported illness/departure at
+  Founder-account level.
 - [x] Keep the pasture image as literary memoir rather than a documentary
   quotation until its exact submission is isolated.
 - [x] Record the new justice administration's short response only as stated:
@@ -92,9 +92,11 @@ Frame production is paused until that feedback is accepted or applied.**
 - [x] Keep the thirteen-file root audio set local. Its Founder-confirmed value
   is the ordinary, non-threatening atmosphere of the surviving calls; it does
   not contain the decisive exchanges.
-- [x] Record 15 February 2023 as the surgery date: major foot surgery involving
-  cutting the bone, roughly three months mainly in bed, then further months of
-  recovery.
+- [x] Record the full surgery chain: months of pain; a public orthopaedic shoe
+  and one-year review date; private-clinic disbelief; tax already paid; private
+  treatment funded with money borrowed from the Founder's parents; major foot
+  surgery involving cutting the bone on 15 February 2023; roughly three months
+  mainly in bed, then further months of recovery.
 - [x] Use only bounded employment dates where the 2020–2021 authored accounts
   differ; the notes preserve the remaining chronology limit.
 - [x] Present the apartment, belongings, work, debt, government-bond and

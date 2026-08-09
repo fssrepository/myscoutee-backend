@@ -574,9 +574,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 - **Picture:** Deep navy clean field. The original unmodified repository
   `heart.png` appears centered, with **MyScoutee** as separate editable text
-  below it, followed by **READ THE BOOK · THE CITY BETWEEN US** and **THE STORY
-  CONTINUES IN PART II · THE SYSTEM BETWEEN US.** Keep the full eight-second
-  card calm and mobile-readable.
+  below it, followed only by **BOOK AVAILABLE** and **TO BE CONTINUED.** Do not
+  repeat the film or book title. Keep the full eight-second card calm and
+  mobile-readable.
 - **Camera/motion:** no generated camera; the same network paths settle behind
   the original icon, briefly allowing the helmet/shelter, star/direction and
   heart/connection reading, then the logo scales 2% without distortion.
@@ -584,9 +584,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   no recolored mark or fake interface.
 - **Sound/VO:** resolved two-note motif; “MyScoutee. Test it with me in real
   communities.”
-- **Continuation:** keep the invitation through `02:58.5`, then replace only
-  the CTA line with `CONTINUED IN PART II · THE SYSTEM BETWEEN US` for the final
-  1.5 seconds. The logo remains fixed and the continuation line is silent.
+- **Continuation:** keep the invitation through `03:10.5`, then replace only
+  `BOOK AVAILABLE` with `TO BE CONTINUED` for the final 1.5 seconds. The logo
+  remains fixed and the continuation line is silent.
 - **Build:** entirely in the final editor from repository brand assets; never
   accept AI-generated spelling or a different logo.
 
