@@ -12,11 +12,7 @@ mistaken for the current plan.
 
 - Baseline motion model: **Google Flow Veo 3.1 Lite**, exact first + last frame,
   `8 s`, `9:16`, one result.
-- Benchmark: one difficult final-usable interval, identical endpoint PNGs and
-  prompt across Lite, one stronger Flow model if justified, and comparable
-  Seedance/Kling modes in OpenArt.
-- Use a stronger model only when the controlled result shows a material visible
-  gain worth its live credit cost.
+- No further model benchmark. Veo 3.1 Lite is the production model.
 - Part I: 22 generated intervals = 220 Lite credits.
 - Part II: 38 generated intervals = 380 Lite credits.
 - Total base pass: 60 intervals = 600 credits.
@@ -29,9 +25,8 @@ mistaken for the current plan.
 
 ## Purchase boundary
 
-Do not buy or upgrade OpenArt for bulk production until the same endpoint test
-clearly beats the Flow baseline and its complete 60-clip cost plus retries has
-been calculated from the live interface.
+Do not buy or upgrade OpenArt for this production pass. Revisit it only for a
+future remaster explicitly requested after these two films are complete.
 
 Plan names, prices, credits, rights and watermark rules can change. Capture the
 checkout and generation screens before spending.

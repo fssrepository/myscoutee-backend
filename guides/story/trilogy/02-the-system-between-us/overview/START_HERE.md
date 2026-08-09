@@ -43,9 +43,9 @@ The next approval gates are:
 | D | book and prompts accepted | none |
 | E | Part I-style public PDF built and visually inspected | local CPU only |
 | F | 05:20 narration and shot order accepted | none |
-| G | one difficult interval selected | none |
+| G | next production interval selected | none |
 | H | its two exact endpoint frames approved | two still images only |
-| I | identical Flow/OpenArt motion test | one eight-second result per model |
+| I | Veo 3.1 Lite motion generation | one eight-second result |
 | J | narration, one continuous score and sound design | only after picture timing is stable |
 
 ## Truth layers
@@ -70,10 +70,10 @@ approved, do not:
 
 - build a slideshow or animatic;
 - upload private audio or primary legal documents to a cloud model;
-- generate any scene, including the previously selected benchmark interval;
+- generate any scene before the written package is accepted;
 - imply an acquittal, conviction, clinical conclusion or final political result
   that has not occurred.
 
-After approval, the separate benchmark phase may generate only the selected
-interval's exact first and last frames from the locked role and location
-descriptions. Do not create disposable midpoints or book-only substitutes.
+After approval, direct Veo 3.1 Lite production may generate the next interval's
+exact first and last frames from the locked role and location descriptions. Do
+not create disposable midpoints or book-only substitutes.

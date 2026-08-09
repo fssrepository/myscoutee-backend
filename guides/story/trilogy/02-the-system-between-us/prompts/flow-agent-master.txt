@@ -11,4 +11,4 @@ violence.
 
 Generate silent picture only. No character visibly speaks, forms words or lip-syncs. Keep mouths naturally relaxed, with breathing, brief nonverbal smiles and minute jaw movement only. Convey interaction through listening, eye contact, small nods and restrained hand gestures; never make several people visibly speak at once. Generate no dialogue, narration, singing, music, ambience or sound effects, and discard any unavoidable platform audio. A single continuous score, synchronized narration and foley are added after picture lock.
 
-Test model quality first on one deliberately difficult interval selected from the closed books and prompts. Keep all test settings and seed information in the production log. Use the same exact two 9:16 endpoint frames and prompt in Google Flow and OpenArt. Do not spend credits on the other intervals until the Founder approves the benchmark result.
+Veo 3.1 Lite is the locked production model. Work in small sequential batches. For every interval use the approved exact two 9:16 endpoint frames, the matching shot prompt, eight seconds and one result. Record charged credits and concrete defects before any retry.

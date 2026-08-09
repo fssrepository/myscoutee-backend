@@ -76,8 +76,8 @@ Founder approval.
 | Total |  | **60 clips** |  | **08:32** | **600 credits** |
 
 - P00 and E01 are deterministic post graphics and cost no generation credits.
-- Observed Flow balance: `970`; a first Lite pass leaves `370` credits for the
-  controlled benchmark and selected retries.
+- Observed Flow balance: `970`; a first Lite pass leaves `370` credits for
+  selected retries.
 - Delivery: 9:16, 720×1280, constant 24 fps.
 - Every motion unit is eight seconds. Do not invent four-second generation
   units, midpoint frames or disposable art.
@@ -90,20 +90,19 @@ Founder approval.
 
 Audio lock: [`../audio/NARRATION_AND_SCORE_LOCK.md`](../audio/NARRATION_AND_SCORE_LOCK.md).
 
-## 4. Next phase — one controlled model comparison
+## 4. Next phase — direct Veo Lite production
 
-Start only after the Founder accepts the written package.
+Start after the Founder accepts the written package. The model and narrator are
+already locked: **Veo 3.1 Lite** and **Jon — Warm & Grounded Storyteller**.
 
-1. Select one deliberately difficult eight-second interval that can remain in
-   the final film.
-2. Generate only its exact two numbered 9:16 endpoints from the locked role and
-   location descriptions.
-3. Give the Founder both absolute paths and one copy/paste motion prompt.
-4. Test the same frames, prompt, duration, aspect ratio and result count in
-   Google Flow and OpenArt.
-5. Record model, settings, exposed seed, charged credits, endpoint fidelity,
-   identity consistency, motion quality and failure modes.
-6. Lock the winning route before bulk endpoint or motion production.
+1. Generate each scene's exact two numbered 9:16 endpoints from the locked role
+   and location descriptions, beginning with Part I S01.
+2. Give the Founder both absolute paths and the matching copy/paste motion
+   prompt before spending motion credits.
+3. Generate exactly one eight-second Veo 3.1 Lite first/last-frame result.
+4. Record settings, charged credits, endpoint fidelity, identity consistency,
+   motion quality and any concrete failure.
+5. Approve or repair that interval, then continue in small sequential batches.
 
 Canonical inputs:
 
@@ -115,13 +114,11 @@ Canonical inputs:
   `trilogy/01-the-city-between-us/assets/characters/CHARACTER_MAP.md`
 - Part II character map:
   `trilogy/02-the-system-between-us/assets/characters/CHARACTER_MAP.md`
-- Shared model log: `shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv`
 - Frame approvals: `shared/production/FRAME_APPROVALS.md`
 
 ## 5. Hard boundaries
 
-- No slideshow, animatic, midpoint image, bulk frame run or full-film generation
-  before the benchmark decision.
+- No slideshow, animatic, midpoint image or uncontrolled bulk frame run.
 - No raw legal, tax, police, health-related or private email document enters a
   cloud generator.
 - No public-figure likeness, private identifier, official logo, clinical

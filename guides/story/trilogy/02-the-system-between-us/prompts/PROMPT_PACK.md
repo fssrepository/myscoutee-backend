@@ -109,8 +109,8 @@ is created only after all clips are joined. Discard any native platform audio.
 - Part II: `38 × 8 s = 380` credits.
 - Base two-film motion: `600` credits.
 - Observed balance: `970`; reserve after base generation: `370` credits.
-- The benchmark spends only on one final-use difficult interval and exactly two
-  endpoint frames. No slideshow, animatic, midpoint or decorative test frame.
+- Veo 3.1 Lite is locked. Generate only exact production endpoints and final-use
+  eight-second intervals. No slideshow, animatic, midpoint or decorative test frame.
 - Generate the remaining chain only after the Founder approves the books,
   written prompts and production model.
 

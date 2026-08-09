@@ -243,4 +243,4 @@ ending.
 - Part I uses `22 × 8 s` plus two deterministic eight-second cards: `03:12`,
   costing `220 credits` before retries.
 - Two-film base generation: `600 credits`; from the observed `970` balance,
-  `370` remain for the benchmark and controlled retakes.
+  `370` remain for controlled retakes.

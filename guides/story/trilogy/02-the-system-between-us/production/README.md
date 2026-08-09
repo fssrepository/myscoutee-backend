@@ -12,7 +12,7 @@ phase; audio remains downstream.
 - [PROMPT_PACK.md](../prompts/PROMPT_PACK.md) defines the future generator
   workflow.
 
-The next visual task is one controlled model benchmark: choose the most
+The next visual task is direct Veo 3.1 Lite production: choose the next
 revealing difficult interval, generate its two exact 9:16 endpoints, then use
 the same pair and prompt for one eight-second result in Google Flow and OpenArt.
 There is no slideshow or animatic stage.
