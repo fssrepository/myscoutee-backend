@@ -246,7 +246,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   threshold: a driver indicates the route, a fellow passenger makes space, a
   resident helps at a wall, or a host points beyond the postcard view. Each
   gesture also changes the Founder's reflected expression. 01:03–01:04: the
-  flowing route and bright public space stop at a restrained COVID threshold —
+  flowing route and bright public space stop at a restrained COVID-19 threshold —
   quiet terminal geometry, an
   empty route and closed light — without medical spectacle or readable decree.
 - **Travel authorship:** Most journeys are solo and self-organized. Briefly show
@@ -639,7 +639,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   reducing anyone to an age category.
 - **Film boundary:** Film 1 ends as a complete MyScoutee product invitation and
   contains no hint of the Founder's later legal, tax or court matter. Film 2 may
-  inherit the exact S23 final frame only and is written separately from documents.
+  inherit the exact E01 final frame only and is written separately from documents.
 
 ## Editorial fallback order
 

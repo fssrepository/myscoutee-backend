@@ -1,6 +1,6 @@
 # Rough storyboard frames
 
-These 9:16 checkpoint frames support the 03:00 continuous-video storyboard
+These 9:16 checkpoint frames support the `03:12` continuous-video storyboard
 preview. They are planning images, not approved production plates.
 
 - `CP00`–`CP22` use a fictional Founder identity placeholder generated for this

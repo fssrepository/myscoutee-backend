@@ -1,6 +1,8 @@
-Plan the locked 23-shot, 3 minute cinematic animated film “The City
-Between Us.” Do not rewrite the supplied narration, timing, personal facts or
-product claims. Return a table only; do not generate until approved.
+Plan the locked `03:12` cinematic animated film “The City Between Us” as one
+deterministic eight-second opening card, twenty-two silent eight-second motion
+clips and one deterministic eight-second closing card. Do not rewrite the
+supplied narration, timing, personal facts or product claims. Return a table
+only; do not generate until approved.
 
 REFERENCES
 Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
@@ -88,7 +90,7 @@ thresholds, but most journeys are made alone and self-organized: the Founder
 joins flights, rooms, local transport and human handoffs into his own route.
 No package-tour leader owns the complete sequence. Every environment reveals
 another part of the Founder. Use the global-route/local-encounter motif and end
-on a restrained COVID threshold. S09 returns physically and purposefully to the
+on a restrained COVID-19 threshold. S09 returns physically and purposefully to the
 Budapest flat that stood empty during the London years, but he has not decided
 whether the return is permanent. London remains a possible destination after a
 break. Keep both keys beside the notebook; do not stage a final rejection of
@@ -158,8 +160,8 @@ certified safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,
 transport, resources, language and boundaries. A country change may restart the
 same method, but never show profiles, chats, contacts or private-rate history
-automatically moving between independent operators. S23 is a clean deep-navy brand plate assembled in
-post.
+automatically moving between independent operators. E01 is a clean deep-navy
+brand plate assembled in post. P00 and E01 consume no generation credit.
 
 MODEL AND CREDIT DISCIPLINE
 Recommend the currently visible Flow image/video model and mode per shot. Use

@@ -56,9 +56,9 @@ account.
 ## Emergency governance, 2020–2022
 
 Government Decree 484/2020 imposed a night curfew, prohibited gatherings and
-restricted public life during COVID. The original explanatory text describes
+restricted public life during COVID-19. The original explanatory text describes
 an 8 p.m.–5 a.m. curfew; later amendments changed the hours. This supports the
-memoir's COVID atmosphere and the masked January 2021 employment scenes.
+memoir's COVID-19 atmosphere and the masked January 2021 employment scenes.
 
 - https://njt.jog.gov.hu/jogszabaly/2020-484-20-22.24
 
@@ -66,7 +66,7 @@ On 25 May 2022, a distinct state of danger entered into force with reference to
 the armed conflict and humanitarian catastrophe in Ukraine. It was later
 redeclared under changed constitutional rules. These are separate legal phases;
 the book may describe emergency as a recurring political grammar but must not
-claim that COVID law simply continued unchanged as war law.
+claim that COVID-19 law simply continued unchanged as war law.
 
 - https://njt.hu/jogszabaly/2022-180-20-22
 - https://kormany.hu/hirek/a-kormanyzati-tajekoztatasi-kozpont-kozlemenye20221028

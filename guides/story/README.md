@@ -14,8 +14,8 @@ exists.
 
 | Part | Working identity | Status | Package |
 | --- | --- | --- | --- |
-| **I** | **The City Between Us** | public, editable book edition `v1.0.0`; 02:48 product-film package in development | [01-the-city-between-us](trilogy/01-the-city-between-us/overview/README.md) |
-| **II** | **The System Between Us** | English book, 03:00 film and evidence package in review; no media generated | [02-the-system-between-us](trilogy/02-the-system-between-us/overview/README.md) |
+| **I** | **The City Between Us** | public book lineage `v1.0.0`; synchronized `03:12` film package, no new media generated | [01-the-city-between-us](trilogy/01-the-city-between-us/overview/README.md) |
+| **II** | **The System Between Us** | revised English book and synchronized `05:20` film/evidence package in review; no new media generated | [02-the-system-between-us](trilogy/02-the-system-between-us/overview/README.md) |
 | **III** | title unassigned | planned final part; no ending is invented in advance | [03-unassigned](trilogy/03-unassigned/overview/README.md) |
 
 The Roman numeral is the trilogy position, not an edition version. Part `I`

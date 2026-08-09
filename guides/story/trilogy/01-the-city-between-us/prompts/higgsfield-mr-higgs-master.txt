@@ -1,5 +1,6 @@
-Act as cinematography co-director for the locked 23-shot film “The City Between
-Us,” runtime 03:00, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
+Act as cinematography co-director for the locked film “The City Between Us,”
+runtime 03:12 with 22 generated motion intervals between two deterministic
+eight-second post cards, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
 setup table only. Do not generate or rewrite the supplied narration and timings.
 
 Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
@@ -77,7 +78,7 @@ human threshold, but most journeys are made alone and self-organized: the
 Founder joins flights, rooms, local transport and human handoffs into his own
 route. No package-tour leader owns the complete sequence. The different
 environments reveal parts of the Founder. Use the global-route/local-encounter
-motif and a restrained COVID endpoint. S10–S15 show two forms of app attention,
+motif and a restrained COVID-19 endpoint. S10–S15 show two forms of app attention,
 social attempts, dance and dates. One unbranded friendship-centred community,
 learned about through a former date, receives occasional visits from the Founder
 after he returns alone from London, though never regular attendance. It eases
@@ -135,7 +136,7 @@ safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,
 transport, resources, language and boundaries. A country change may restart the
 same method, but never show profiles, chats, contacts or private-rate history
-automatically moving between independent operators. S23 is built entirely in CPU post from the real
+automatically moving between independent operators. E01 is built entirely in CPU post from the real
 brand asset and editable text.
 
 CINEMATOGRAPHY AND MODEL DISCIPLINE

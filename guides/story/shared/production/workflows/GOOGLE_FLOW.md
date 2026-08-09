@@ -75,7 +75,7 @@ reference.
 | --- | --- |
 | new project prompt box with **Agent** enabled | entire [prompts/flow-agent-master.txt](../../../trilogy/01-the-city-between-us/prompts/flow-agent-master.txt) |
 | ingredient/media area in the same prompt | attach all approved character/world sheets plus rough VO |
-| follow-up | `Return the 23-shot plan only. Keep S01–S23 timings and narration unchanged. Do not generate yet.` |
+| follow-up | `Return only the exact shot plan contained in the supplied master. Preserve every ID, timing and narration line. Treat P00 and E01 as post-only cards. Do not generate yet.` |
 
 Do not click a large generation batch until the returned plan matches the locked
 storyboard.
@@ -209,13 +209,15 @@ route.
 
 ## 9. Scenebuilder
 
-1. Add draft clips in S01–S23 order.
+1. Add generated clips in the locked part-specific order: Part I S01–S22 or
+   Part II S01–S38, between post-built P00 and E01.
 2. Trim them to `SHOT_MANIFEST.csv` timing.
-3. Add the rough voice track if the current Scenebuilder audio workflow permits;
-   otherwise review against an external animatic.
+3. Review against the current continuous Jon narration reference when available;
+   do not create a separate slideshow or animatic.
 4. Save useful final frames from clips back into the project for subsequent
    Ingredients/Frames generations.
-5. Use Extend only for eligible Veo clips whose last frame is stable.
+5. Do not use Extend for the locked endpoint chain; each interval already has
+   exact first and last frames.
 6. Download individual approved shots and, if available, the sequence for review.
    The dedicated editor remains the final source of truth.
 

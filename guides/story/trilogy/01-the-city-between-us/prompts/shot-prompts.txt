@@ -1,3 +1,10 @@
+POST P00 — TRUE-STORY TITLE CARD — 8 SECONDS
+Do not generate this card with a video model. Use a restrained deep-navy and
+cognac-amber plate with editable typography: `MYSCOUTEE · THE STORY`, `PART I ·
+THE CITY BETWEEN US`, `BASED ON A TRUE STORY` and `LEAVING HOME · MEETING THE
+WORLD · RETURNING TO CONNECT PEOPLE`. Jon reads the one-sentence premise with a
+deliberate pause. No generated logo or text.
+
 SHOT S01 — RURAL ROOTS, COMPLETED STUDIES AND BEAUTIFUL BUDAPEST — 8 SECONDS
 Use separate still plates from the approved Hungarian-origin board. Working
 hands, soil, an ordinary produce crate and seasonal rows establish
@@ -11,8 +18,8 @@ level language certificate is still missing. A yellow tram opens onto two restra
 moving toward work, not a defeated migrant. Use 40–50 mm lateral parallax and
 CPU match cuts. No puszta cliché, poverty spectacle, tourism checklist, claim
 that everyone leaves the countryside, readable diploma or generated text.
-Keep a calm centre-safe field for post-only opening typography. Do not generate
-the film title, part title, true-story marker, logo or any readable wording.
+Do not generate the film title, part title, true-story marker, logo or any
+readable wording.
 
 SHOT S02 — WORK, UNSTABLE ROOMS AND A SECURE KEY — 8 SECONDS
 Create four identity-locked still plates for CPU assembly, not one overloaded
@@ -121,7 +128,7 @@ Luxor balloon resting in a vegetable plot while people cooperate across a wall,
 not a Cairo–Luxor–Aswan–Abu Simbel collage. The Cairo taxi-roof luggage mishap is
 an alternate, not a ninth frame. Final three seconds: water reflection becomes
 [FOUNDER_REF] beside an empty train or bench seat, looking back to share the view
-before quiet recognition, then a restrained COVID threshold stops the route.
+before quiet recognition, then a restrained COVID-19 threshold stops the route.
 Across several plates a local driver, passenger, host or resident opens one human
 threshold; the Founder's expression changes as each environment reveals a
 different part of him. Global route, local encounter — no tourism conquest. No
@@ -322,11 +329,12 @@ and a proposed virtual enterprise, not anonymous package distribution. No claim
 of current deployment, proven efficiency, revenue, automatic trust or central
 merchant; no readable terminal, generated logo or generated text.
 
-SHOT S23 — CLEAN END PLATE — 8 SECONDS
+POST E01 — CLEAN END PLATE — 8 SECONDS
 Deep navy clean field, subtle tactile paper texture, one faint original coral
 network line settling to still, no camera move and center-safe negative space.
 No generated text, logo, heart, icon or object. The original unmodified
 repository `heart.png`, separate MyScoutee text, tagline and CTA are added in post.
-Hold the CTA until 02:58.5, then show the editable post-only line `CONTINUED IN
-PART II · THE SYSTEM BETWEEN US` for the final 1.5 seconds. This plate is built
-deterministically; do not spend video-model credit on it.
+Hold the exact repository mark and editable post-only lines `READ THE BOOK · THE
+CITY BETWEEN US` and `THE STORY CONTINUES IN PART II · THE SYSTEM BETWEEN US`
+for the full eight seconds. This plate is built deterministically; do not spend
+image- or video-model credit on it.

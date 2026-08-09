@@ -1033,7 +1033,7 @@ directed to technically capable local operators, pilot communities, product
 collaborators and venue/activity/travel/experience partners. This is a request to
 test and shape the core locally, not a claim of existing traction.
 
-**Film boundary:** the standalone 02:48 product film contains no reference,
+**Film boundary:** the standalone `03:12` Part I film contains no reference,
 symbol or foreshadowing related to the Founder's later legal, tax or court matter.
 That documentary story belongs only to Film 2, reconstructed from documents and
 legal review. Film 2 may begin from Film 1's exact final frame; Film 1 must remain

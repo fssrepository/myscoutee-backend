@@ -27,7 +27,7 @@
 ## 2. Logline
 
 The Founder leaves Part I as a builder connecting strangers, refuses contractor
-status when it substitutes for employment, then enters a rare COVID-era remote
+status when it substitutes for employment, then enters a rare COVID-19-era remote
 role serving a Brussels telecom programme from Budapest as his final lawful
 route into work. Its contract looks unstable; its distant human team does not. A
 sudden 2022 tax-law change places him, his accountant and the tax administration

@@ -138,7 +138,7 @@ full eight-second E01 card. The card does not consume generation credit.
   days and needs a fourth to avoid the rush. Use these as quiet visual or sound
   beats under existing narration, not additional VO. The Founder confirms every
   specific landmark before it is presented as visited.
-- The COVID line is the Founder's personal break between the earlier carefree
+- The COVID-19 line is the Founder's personal break between the earlier carefree
   travel feeling and later movement. It does not claim that nobody can travel as
   before or judge the earlier journeys as irresponsible.
 - Most journeys were made alone and self-organized; a driver, host, hotel,

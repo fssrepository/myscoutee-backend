@@ -17,7 +17,7 @@ This directory separates source control from memoir prose.
 - [REVIEW_LEDGER.md](REVIEW_LEDGER.md) prioritizes source families and prevents
   duplicate volume from masquerading as corroboration.
 - [SCENE_CANDIDATES.md](SCENE_CANDIDATES.md) records cinematic material without
-  forcing every striking detail into the three-minute film.
+  forcing every striking detail into the short film.
 - [ROLE_GLOSSARY.md](ROLE_GLOSSARY.md) keeps private actors anonymous and the
   three-judge sequence distinct.
 - [TONE_AND_IRONY_LEDGER.md](TONE_AND_IRONY_LEDGER.md) separates documented

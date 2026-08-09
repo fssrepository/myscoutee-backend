@@ -120,7 +120,7 @@ Higgsfield exposes many named Camera Controls. Use restraint.
 | S20 | Static/macro inserts | 50→35 mm | build with match cuts |
 | S21 | Dolly In | 32→45 mm | split doorway/table if needed |
 | S22 | Dolly/Crane | 40–50 mm | handoff, then slow reveal |
-| S23 | Static | n/a | better built in post |
+| E01 | Static | n/a | deterministic post card |
 
 Do not substitute Crash Zoom, FPV Drone, Bullet Time, Snorricam, Dolly Zoom or
 360 Orbit. They are available but contradict the emotional grammar.
@@ -221,9 +221,9 @@ Export:
 If making the whole film in Higgsfield:
 
 1. build all Elements and style frames;
-2. let Mr. Higgs populate the approved 23-shot setup table;
+2. let Mr. Higgs populate the approved Part I S01–S22 setup table;
 3. generate a still/low-cost draft for every shot;
-4. create a voice-led animatic outside Higgsfield;
+4. review approved clips directly against the continuous Jon narration reference;
 5. final only the locked shots;
 6. assemble clips on Canvas for review, then export individually;
 7. title, subtitle, mix and master externally.

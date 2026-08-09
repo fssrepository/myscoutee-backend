@@ -1,23 +1,29 @@
 # Current handoff — Parts I–II written packages synchronized
 
-Date: **9 August 2026**
-Status: **Part I remains the current published book. Part II has been reopened
-for a deeper source-led narrative revision. Its editable book, exactly 03:00
-script, storyboard and prompt chain are synchronized to the 9 August manuscript,
-but they are not picture-locked or republished until the Founder finishes the
-reading pass. No additional frame or video-model run begins before that
-approval.**
+Date: **9 August 2026**  
+Status: **final written-package audit in progress; frame and motion generation have not begun.**
 
-This is the clean resume point. Do not reconstruct the long editorial review
-from chat history. Do not build a slideshow or animatic.
+This is the clean resume point. Do not reconstruct the editorial state from
+conversation fragments. Do not build a slideshow or animatic.
 
-Editorial lock: external AI critiques are direction rather than quotable book
-copy. Put the reader in the room, preserve the Founder's knowledge horizon,
-show concrete contradiction before thesis, and leave emotional/legal judgment
-to the reader. The canonical detailed rule is
+## 1. Editorial contract
+
+- Both books are English memoirs, not legal briefs or country-comparison essays.
+- Put the reader in the room, preserve the Founder's knowledge horizon and show
+  concrete contradiction before thesis. Judgment belongs to the reader.
+- External AI critiques are editorial direction, never quotable book copy.
+- Public offices may be identified where the office matters. Private people,
+  police officers, experts, judges, lawyers, employers and internal programme
+  names remain anonymous.
+- Part II keeps the charged sentence indirect. The public book and film avoid
+  the sensitive offence label itself; the human dignity, fear, pressure,
+  correction and institutional aftermath carry the story.
+- Part III owns the final procedural and material outcome.
+
+Canonical tone rules:
 `trilogy/02-the-system-between-us/research/TONE_AND_IRONY_LEDGER.md`.
 
-## 1. Book state
+## 2. Book state
 
 ### Part I — The City Between Us · v1.0.0
 
@@ -25,125 +31,101 @@ to the reader. The canonical detailed rule is
   `trilogy/01-the-city-between-us/book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md`
 - Editable reading PDF:
   `trilogy/01-the-city-between-us/book/draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
-- Locked publication:
+- Locked publication, unchanged by this revision:
   `trilogy/01-the-city-between-us/published/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_EN.pdf`
-- The illustrated edition contains the registered Founder, Budapest,
-  London, global/local and six-person MyScoutee plates.
-- The Soho lunch memory has been corrected across book, storyboard and prompts:
-  he remained at group/farewell lunches and watched colleagues eat while hiding
-  the cost constraint. The extreme focus begins only when the private savings
-  chart looks capable of reaching Budapest-cost independence; milk and muesli
-  remain private. Old “colleagues leave while he stays behind” staging is invalid.
-- Character background now includes the age-eight Commodore 64 programming
-  decision, the parallel visual-art/historic-form attention, quiet reserve,
-  rare anger and a controlled unsoftened voice. Egypt now also holds the
-  remembered Syrian-refugee encounter as book background, not an extra film beat.
-- Film timing remains twenty-two 8-second intervals plus the deterministic
-  4-second S23 brand card: exactly 03:00.
+- The illustrated draft contains the Founder, Budapest, London, travel,
+  Hungarian-house and six-person MyScoutee plates.
+- The Soho lunch memory is locked: he joined the lunches, watched colleagues
+  eat and presented himself as not hungry; the savings focus tightened only
+  when Budapest-cost independence appeared attainable.
 
-### Part II — The System Between Us · v1.0.0
+### Part II — The System Between Us · v1.0.0 draft lineage
 
 - Editable source:
   `trilogy/02-the-system-between-us/book/THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md`
 - Editable reading PDF:
   `trilogy/02-the-system-between-us/book/draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- Locked publication:
+- Locked earlier publication, unchanged by this revision:
   `trilogy/02-the-system-between-us/published/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf`
-- The existing public export is retained as the last released artifact,
-  but its content is superseded for editing by the revised Markdown source.
-- The active revision strengthens the low-trust system chain, defence gap,
-  two-expert contrast, courtroom black humour, migration context, system-error
-  proposition, the first-judgment bridge from Part I and the exact
-  Navier–Stokes research bridge.
-- The Other Biography now carries the same quiet/rare-force character contrast.
-  Selected scene endings have deliberate breathing pages; the editable PDF may
-  grow without new story or duplicated pull quotes. The three-minute film is a
-  doorway/feature proof of concept, never a compressed legal brief.
-- Public offices remain unnamed in narrative prose. The KATA-software-team
-  remark stays memoir-layer until its underlying recording is isolated; public
-  names may remain only in source metadata. Emergency, Pride, judicial and
-  *Stop Autocracy* reversals are book/reference or longer-cut context and do not
-  create extra film intervals.
-- The Constitutional Court sequence is locked as seven initial recusals,
-  followed by an eighth, leaving seven and no quorum.
-- Film timing remains twenty-two 8-second intervals plus the deterministic
-  4-second E01 brand card: exactly 03:00.
-- Part III owns every final procedural and institutional outcome.
+- The active manuscript supersedes the earlier publication for editing only.
+- It preserves the lawful-work path, abrupt tax transition, accountant and
+  administration chain, direct-password/delegation trap, correction and tax
+  payment, surgery isolation, later search and interviews, two-expert contrast,
+  defence discontinuity, court geometry, black humour, self-directed evidence
+  reconstruction, human–AI work and unresolved institutional ending.
+- The first two defence pages were already a human–AI collaboration: the
+  Founder supplied the facts, lived position and decisions; AI helped shape
+  them. Appointed counsel's practical contribution was the requested pen drive
+  and an invitation whose visible clerk address enabled last-minute filing.
+- Complaints were addressed only when they collided with later hearings. A
+  defender replacement and a later expert-availability delay each cost roughly
+  another three months. In the third year, the one-sentence case still lacks a
+  first-instance judgment. The book shows this as time entering the Founder's
+  life, not as a procedural lecture.
 
-Each publication has a matching `.pdf.sha256` file and `.publication.json`
-manifest. Later released corrections require explicit authorization; the
-editable sources remain available.
+The editable sources remain revisable. The version number does not change in
+this pass. No locked publication is overwritten or re-hashed without explicit
+Founder approval.
 
-## 2. Synchronization state
+## 3. Film locks
 
-- Part I: twenty-two 8-second narration/storyboard/prompt intervals plus its
-  deterministic 4-second post card. Jon is the only spoken voice; generated
-  clip audio is discarded.
-- Part II: twenty-two synchronized 8-second narration/storyboard/prompt
-  intervals plus its deterministic 4-second post card. Jon is the only spoken
-  voice; generated clip audio is discarded.
-- Character maps, privacy limits, exact courtroom geometry, two-expert
-  separation, silent-picture rule and one-continuous-score rule remain binding.
-- Opening title/true-story typography and both continuation cards are post-only
-  cinematic punctuation; they consume no image/video generation credit.
-- Narration and score lock:
-  [`../audio/NARRATION_AND_SCORE_LOCK.md`](../audio/NARRATION_AND_SCORE_LOCK.md).
-- No slideshow/animatic video exists under `guides/story/`; the obsolete build
-  scripts were removed.
+| Part | Post title | Generated motion | Post ending | Runtime | Flow Lite base |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| I | P00, 8 s | S01–S22, 22 × 8 s | E01, 8 s | **03:12** | **220 credits** |
+| II | P00, 8 s | S01–S38, 38 × 8 s | E01, 8 s | **05:20** | **380 credits** |
+| Total |  | **60 clips** |  | **08:32** | **600 credits** |
 
-## 3. Next task — Founder reading and editable PDF review
+- P00 and E01 are deterministic post graphics and cost no generation credits.
+- Observed Flow balance: `970`; a first Lite pass leaves `370` credits for the
+  controlled benchmark and selected retries.
+- Delivery: 9:16, 720×1280, constant 24 fps.
+- Every motion unit is eight seconds. Do not invent four-second generation
+  units, midpoint frames or disposable art.
+- Jon — Warm & Grounded Storyteller is the only spoken voice in both films.
+- Generate one clean continuous narration master and one continuous score per
+  film. Discard all Flow/OpenArt clip audio. No lip sync or visible speech.
+- Captions are separate SRT/WebVTT files; do not burn them into the clean master.
+- Opening true-story language, film title, book route and continuation language
+  are post typography, never AI-rendered text.
 
-1. Regenerate and visually inspect the editable Part II reading PDF after the
-   current prose, evidence notes and layout pass.
-2. Founder reads and corrects the revised English memoir without converting it
-   into a legal brief or country-comparison essay.
-3. Propagate any correction once through book, 03:00 script, storyboard,
-   checkpoint ledger and Google Flow/OpenArt prompts.
-4. Keep the narration voice fixed to the approved ElevenLabs **Jon — Warm &
-   Grounded Storyteller** voice for
-   both parts. Save the exact voice/version/settings and a clean reference WAV;
-   do not rely on the display name alone.
-5. Only then return to the two-frame controlled model comparison.
+Audio lock: [`../audio/NARRATION_AND_SCORE_LOCK.md`](../audio/NARRATION_AND_SCORE_LOCK.md).
 
-## 4. Later task — one controlled model comparison
+## 4. Next phase — one controlled model comparison
 
-Start this only in a fresh phase after the Founder confirms the AI subscriptions
-and models to compare.
+Start only after the Founder accepts the written package.
 
-1. Select one deliberately difficult eight-second interval from the closed
-   written packages.
-2. Generate a fresh numbered endpoint pair; no existing frame is approved for
-   the new regeneration pass.
-3. Both images must be **9:16 portrait**, composed for `720×1280` mobile
-   delivery, with the locked character and location descriptions.
-4. Supply the Founder with the absolute paths and one copy/paste motion prompt.
-5. Test those same frames, prompt, duration and aspect ratio in Google Flow and
-   OpenArt, one model at a time.
-6. Record model, settings, exposed seed, charged credits, endpoint fidelity,
+1. Select one deliberately difficult eight-second interval that can remain in
+   the final film.
+2. Generate only its exact two numbered 9:16 endpoints from the locked role and
+   location descriptions.
+3. Give the Founder both absolute paths and one copy/paste motion prompt.
+4. Test the same frames, prompt, duration, aspect ratio and result count in
+   Google Flow and OpenArt.
+5. Record model, settings, exposed seed, charged credits, endpoint fidelity,
    identity consistency, motion quality and failure modes.
-7. Do not generate the rest of either checkpoint chain until the comparison
-   identifies the production route.
+6. Lock the winning route before bulk endpoint or motion production.
 
 Canonical inputs:
 
-- Part I prompts: `trilogy/01-the-city-between-us/prompts/`
-- Part II prompts: `trilogy/02-the-system-between-us/prompts/`
+- Part I script/storyboard/prompts:
+  `trilogy/01-the-city-between-us/{film,storyboard,prompts}/`
+- Part II script/storyboard/prompts:
+  `trilogy/02-the-system-between-us/{film,storyboard,prompts}/`
 - Part I character map:
   `trilogy/01-the-city-between-us/assets/characters/CHARACTER_MAP.md`
 - Part II character map:
   `trilogy/02-the-system-between-us/assets/characters/CHARACTER_MAP.md`
 - Shared model log: `shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv`
-- Frame approval ledger: `shared/production/FRAME_APPROVALS.md`
-- Old CP18→CP19 benchmark studies remain historical comparison material only.
+- Frame approvals: `shared/production/FRAME_APPROVALS.md`
 
-## 5. Hard boundaries for the next phase
+## 5. Hard boundaries
 
-- No slideshow, animatic, midpoint image, audio, bulk checkpoint generation or
-  full-film motion run.
-- No raw legal, tax, police, medical-adjacent or private email document enters a
+- No slideshow, animatic, midpoint image, bulk frame run or full-film generation
+  before the benchmark decision.
+- No raw legal, tax, police, health-related or private email document enters a
   cloud generator.
 - No public-figure likeness, private identifier, official logo, clinical
   verdict, final criminal outcome, completed confiscation or completed
   citizenship renunciation is invented.
-- Generated clip audio is discarded. Narration, one continuous score and foley
-  remain later post-production layers.
+- No external upload or social publication occurs without the Founder's direct
+  action or explicit authorization.

@@ -1,3 +1,10 @@
+POST P00 — TRUE-STORY TITLE CARD
+Do not generate this card with a video model. Build one clean deterministic
+eight-second deep-blue/ivory plate in post using the exact repository MyScoutee
+mark and editable typography: `MYSCOUTEE · THE STORY`, `PART II · THE SYSTEM
+BETWEEN US`, `BASED ON A TRUE STORY`, and the short premise from SCRIPT.md.
+Leave centre-safe breathing space and no AI-rendered words.
+
 SHOT S01 — CP00.png TO CP01.png — THE LINE CHANGES MEANING
 Begin exactly on CP00.png, the lossless Part I handoff with six people connected by the open MyScoutee network line. In one restrained movement, let the people recede without disappearing and straighten the same line into the ruled line of an ivory form on the Founder's Budapest desk. End exactly on CP01.png with [FOUNDER_REF], cognac notebook, clean form and large centre-safe negative space. Do not render title text or logo.
 

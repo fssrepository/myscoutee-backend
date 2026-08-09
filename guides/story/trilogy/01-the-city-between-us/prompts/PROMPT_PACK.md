@@ -37,15 +37,15 @@ under the assembled film.
 
 ## Opening and continuation typography
 
-Do not ask a video model to draw any public title. Over the clean opening
-picture, post-production adds `MYSCOUTEE · THE STORY`, `PART I · THE CITY
-BETWEEN US` and `BASED ON A TRUE STORY` during `00:00–00:08`. Preserve a calm,
-centre-safe title field in S01 without weakening its rural-to-Budapest movement.
+Do not ask a video model to draw any public title. P00 is a separate
+deterministic eight-second card carrying `MYSCOUTEE · THE STORY`, `PART I · THE
+CITY BETWEEN US`, `BASED ON A TRUE STORY` and the short premise. S01 begins the
+lived motion at `00:08` without title text.
 
-S23 is deterministic post-production, not an AI generation. Hold the
-CTA through `02:58.5`, then replace it for the final `1.5` seconds with
-`CONTINUED IN PART II · THE SYSTEM BETWEEN US`. Use editable text and the exact
-repository mark; never generate either inside a video model.
+E01 is deterministic post-production, not an AI generation. Hold the exact
+repository mark, `READ THE BOOK · THE CITY BETWEEN US` and `THE STORY CONTINUES
+IN PART II · THE SYSTEM BETWEEN US` for the full `03:04–03:12` window. Use
+editable text; never generate the card inside a video model.
 
 ## Prompt tokens
 
@@ -278,7 +278,7 @@ second date or conversation, and one modest nudge toward Hungarian institutional
 re-entry. Do not invent her reason for declining or turn the memory into an
 employment advertisement.
 This board supports the public book and character development; it is not a
-request to add six scenes to the 03:00 hero film.
+request to add six scenes to the 03:12 hero film.
 
 ### Budapest return, nightlife and re-entry memory board
 

@@ -2,7 +2,7 @@
 
 Status: **story inventory, not a generation order**.
 
-`A` belongs to the three-minute spine. `B` is book or longer-film material.
+`A` belongs to the `05:20` short-film spine. `B` is book or longer-film material.
 `C` remains archive context unless a later need justifies it. Layers follow the
 chronology legend: `D`, `M`, `A`, `C`.
 

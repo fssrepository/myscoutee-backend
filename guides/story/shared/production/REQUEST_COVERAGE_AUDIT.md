@@ -5,7 +5,7 @@ Audit date: **8 August 2026**
 
 This ledger converts the long Founder review into one production contract. A
 checked narrative item means that it is present in the English book and, where
-the three-minute film can carry it, represented in the script, storyboard or a
+the short film can carry it, represented in the script, storyboard or a
 bounded generation prompt. It does not mean that a private recollection has
 become independently verified evidence.
 
@@ -44,7 +44,7 @@ become independently verified evidence.
   including all Founder corrections on Barmouth, Egypt, India, Thailand,
   Cambodia, Russia and the confirmed Central-European route boundaries.
 - [x] The unresolved 2015–2018 return, health-insurance re-registration,
-  Budapest cultural shock, relationship/community memories and the 2019/COVID
+  Budapest cultural shock, relationship/community memories and the 2019/COVID-19
   bridge into Part II.
 - [x] The product difference: exactly three women and three men in the first
   candidate group; private evolving intuition rather than public scoring;
@@ -63,9 +63,9 @@ become independently verified evidence.
 
 ### Production coverage
 
-- [x] Exactly three-minute English film script and 22 eight-second intervals
-  plus a deterministic four-second end card.
-- [x] CP00–CP22 motion-endpoint contract, deterministic CP23 post card and
+- [x] Exactly `03:12` English film: deterministic eight-second P00 title,
+  22 eight-second S01–S22 motion intervals and deterministic eight-second E01.
+- [x] CP00–CP22 motion-endpoint contract, deterministic P00/E01 post cards and
   Flow/OpenArt copy-paste prompt baseline.
 - [x] Privacy-safe character map for the Founder, five Budapest memories,
   twelve London residents and the six-person MyScoutee group.
@@ -74,10 +74,10 @@ become independently verified evidence.
   published v1.0.0 remains intentionally unchanged.
 - [ ] Regenerate CP00–CP22 from the locked identities and exact location
   descriptions; the existing images are composition studies only. Assemble
-  CP23 deterministically in post without generation credit.
+  P00/E01 deterministically in post without generation credit.
 - [x] Remove the checkpoint-only inspection/slideshow stage. Approved endpoint
   pairs move directly into eight-second model generation; the finished moving
-  film remains 03:00.
+  film remains `03:12`.
 - [x] Build and review a new illustrated draft. The hashed v1.0.0 publication
   remains immutable; any later illustrated release receives a new version.
 
@@ -95,10 +95,10 @@ become independently verified evidence.
   without substantive work, an unproved suspicion that the earlier negative
   assessment travelled as gossip, a product manager routing work elsewhere,
   the ten-subsidiary shared-storefront contradiction, the Founder's eventual protest
-  and the later COVID restructuring. The loss feels tragic despite a more
+  and the later COVID-19 restructuring. The loss feels tragic despite a more
   humane exit and unexpectedly stronger negotiated severance. Motive, reaction
   and severance remain memoir, not finding or public amount.
-- [x] The later COVID-era fourth-round multinational process and a former
+- [x] The later COVID-19-era fourth-round multinational process and a former
   supervisor's intervention through a personal connection with one leader are
   preserved as memoir. The Founder suspects an effect on the rejection but the
   book makes no causation, discrimination or improper-influence finding.
@@ -117,7 +117,7 @@ become independently verified evidence.
   offered before proof, while hierarchy and a colleague's caste comparison
   remained real; a later funeral invitation made the distant team a lived
   human community. These memories stay in the book rather than overloading the
-  three-minute film.
+  short film.
 - [x] The abrupt July 2022 transition, protected handover and the low-trust
   Founder–accountant–tax-administration triangle.
 - [x] The remembered public remark about KATA-contracted software teams,
@@ -164,10 +164,10 @@ become independently verified evidence.
 - [x] Civic movements, 2026 government and institutional change, two unequal
   routes to Venice, Constitutional Court thresholds and the open presidential
   and hearing outcome.
-- [x] COVID curfew, the later war state of danger, the Pride prosecution
+- [x] COVID-19 curfew, the later war state of danger, the Pride prosecution
   reversal, the justice-minister/judges' public contradiction and the former
   governing party's *Stop Autocracy* reversal are bounded public context. They
-  remain book/reference or longer-cut material, not extra three-minute film
+  remain book/reference or longer-cut material, not extra short-film
   intervals and not evidence in the Founder's case.
 - [x] Finished narrative uses public offices rather than names; private people
   and employers remain anonymous. Names may occur only in source metadata or
@@ -178,9 +178,9 @@ become independently verified evidence.
 
 ### Production coverage
 
-- [x] Exactly three-minute English narration, CP00–CP22 storyboard and one
-  eight-second prompt per interval plus the four-second end card, synchronized
-  to the 9 August manuscript.
+- [x] Exactly `05:20` English film: deterministic eight-second P00 title,
+  CP00–CP38 storyboard, 38 eight-second S01–S38 prompts and deterministic
+  eight-second E01, synchronized to the 9 August manuscript.
 - [x] Role map includes the Founder, accountant, tax officer, police officer,
   fingerprint officer, two experts, judge, appointed defence counsel,
   probation officer and London housemate.
@@ -188,8 +188,8 @@ become independently verified evidence.
   board while preserving the Founder inherited from Part I.
 - [x] Replace narrow brown-padded portraits and add the police, courtroom,
   two-expert, AI-work and home-inquiry book plates.
-- [ ] Regenerate CP00–CP22. CP00–CP11 are provisional studies; CP12–CP22 do not
-  yet exist.
+- [ ] Regenerate CP00–CP38. Existing checkpoints are provisional composition
+  studies and do not satisfy the locked 38-interval endpoint contract.
 - [x] Remove the checkpoint-only slideshow stage; no inspection video or
   intermediate art is retained.
 - [x] Complete the current Founder factual/privacy review and build the editable

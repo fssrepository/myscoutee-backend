@@ -13,7 +13,8 @@ follow the capability name rather than guessing a different workflow.
 OpenArt is the fastest route to a complete story-level rough cut. Its current
 Director workflow accepts an idea, saved characters/worlds and media, develops a
 story with the Ori assistant, exposes a scene-by-scene storyboard and can create
-coherent work up to five minutes. That makes it suitable for the 02:48 structure.
+coherent work up to five minutes. Use it only for individual eight-second
+intervals in the current Part I and Part II endpoint chains.
 
 Use OpenArt for:
 
@@ -107,7 +108,7 @@ Do not create all supporting roles from one prompt if OpenArt merges identities.
 | **Director → New project → Describe your idea** prompt box | entire [prompts/openart-director-master.txt](../../../trilogy/01-the-city-between-us/prompts/openart-director-master.txt) | locks story, runtime, claims, act structure and look |
 | media/asset attachment area beside the Director prompt | rough English VO, optional temp music, approved world sheets | gives Director timing and visual references |
 | inside the prompt or asset picker using saved tags | tag `@Founder`, `@Maya`, `@DanceStudent`, `@DancePartner`, `@LocalOperator`, `@BudapestWorld`, `@LondonWorld`, `@SohoOffice`, `@TottenhamHMO`, `@DanceStudio`, `@EventVenue`, `@Notebook`; attach travel plates only to S08 | binds saved assets to names used in the brief |
-| Ori/Director chat after its first response | `Use the supplied narration verbatim. Show me the 23 scene cards with exact S01–S23 IDs and timings before generating motion. Do not add product claims.` | prevents silent rewrite |
+| Ori/Director chat after its first response | `Use the supplied narration verbatim. Return the exact part-specific Sxx cards and timings from the master; P00 and E01 are post-only. Do not generate motion or add claims.` | prevents silent rewrite |
 | Director chat after storyboard appears | paste the relevant correction block below | fixes structure without regenerating the whole story |
 | an individual storyboard scene/shot prompt | [prompts/continuity-prefix.txt](../../../trilogy/01-the-city-between-us/prompts/continuity-prefix.txt) + the matching Sxx block from [prompts/shot-prompts.txt](../../../trilogy/01-the-city-between-us/prompts/shot-prompts.txt) | precise shot regeneration |
 
@@ -121,8 +122,9 @@ Do not click a large all-scenes generation immediately.
 
 Verify:
 
-- exactly 23 cards, S01–S23;
-- total 02:48;
+- exactly 22 motion cards for Part I or 38 for Part II, with the IDs and timing
+  in the selected master;
+- P00/E01 remain outside Director as deterministic post cards;
 - S03 is software work in Soho and S04 is the Victoria line home to Tottenham;
 - the thirteen-person Victorian HMO is crowded and personal, not destitution;
 - S08 has exactly a three-second illustrated burst and no fake archive;
@@ -145,7 +147,7 @@ operator invitation. Rebuild only the storyboard text; do not spend video
 credits yet.
 ```
 
-## 5. Generate an animatic
+## 5. Review the locked plan without an animatic
 
 1. Generate one still frame per scene at draft quality.
 2. Export or screen-review the 23-frame storyboard.
@@ -282,9 +284,9 @@ mix and delivery in a dedicated editor regardless of what the current UI can do.
 If Director is unavailable on the account:
 
 1. Open **Story → Build Storyboard → Create from scratch**.
-2. Create 23 cards named S01–S23.
+2. Create the exact part-specific motion cards: Part I S01–S22 or Part II
+   S01–S38. Do not create P00/E01 in a video model.
 3. Paste the continuity prefix plus one matching shot prompt into each card.
-4. Attach the saved characters/worlds to every relevant card.
-5. Generate 5–10 second clips; trim to `SHOT_MANIFEST.csv` timing externally.
-6. Use Extend Video only for a shot whose identity remains stable; do not use it
-   merely to reach the overall runtime.
+4. Attach only the saved characters/worlds relevant to that card.
+5. Generate exactly one eight-second first/last-frame result per approved card.
+6. Do not use Extend for this endpoint-locked chain.

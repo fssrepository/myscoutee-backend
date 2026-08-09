@@ -1,5 +1,7 @@
-Create the planning storyboard for a 3 minute, 23-shot cinematic
-animated founder film titled “The City Between Us” for MyScoutee. Return scene
+Create the planning storyboard for a `03:12` cinematic animated founder film
+titled “The City Between Us” for MyScoutee: one deterministic eight-second
+opening card, twenty-two silent eight-second motion clips and one deterministic
+eight-second closing card. Return scene
 cards and low-resolution still plans only. Do not generate motion or spend video
 credits until every character, place and checkpoint is approved.
 
@@ -33,20 +35,21 @@ without anger reaching his voice. When a later scene requires an unsoftened
 response, its force comes from rarity and self-possession, not aggression.
 
 LOCKED STORY AND TIMING
-- S01 00:00–00:08: countryside small-producer roots become a route to beautiful
+- P00 00:00–00:08: deterministic true-story title and premise card; no model generation.
+- S01 00:08–00:16: countryside small-producer roots become a route to beautiful
   Budapest after economics, programming and mathematics studies completed in
   2004. A delayed dissertation makes 2005 the earliest possible diploma year,
   but actual receipt comes considerably later because one required intermediate-
   level language certificate is missing. No folklore cliché,
   issued diploma or readable certificate.
-- S02 00:08–00:16: four CPU-assembled still plates begin with a neutral
+- S02 00:16–00:24: four CPU-assembled still plates begin with a neutral
   multinational-office exit, then show a workers' hostel, a late locked-room/
   corridor beat, an anonymous undisclosed summer-substitute room, return to
   predictable impersonal rules, and the parents' hands passing a flat key beside
   an unsigned, unused foreign-currency-loan form. No unemployment, named
   employer, identifiable location/person, legal accusation or claim that the
   loan was certain.
-- S03 00:16–00:24: competent software work in a multicultural Soho office. At
+- S03 00:24–00:32: competent software work in a multicultural Soho office. At
   the opening threshold, briefly establish the 2011 London arrival without
   official marks. He finds this
   work within two weeks despite weak English. Professional competence coexists
@@ -61,21 +64,21 @@ LOCKED STORY AND TIMING
   echo may show surprise when he finally orders once or twice. No employer or
   colleague blame. The warm
   Soho sex-shop farewell-gift colleague memory moves to S04.
-- S04 00:24–00:32: museums, exhibitions, nightlife, cafés and mutually curious
+- S04 00:32–00:40: museums, exhibitions, nightlife, cafés and mutually curious
   multicultural dates make London feel inexhaustible. The 2012 Olympic/Diamond
   Jubilee public energy belongs here as a following-year layer without official
   marks. The Victoria line appears
   only as the final half-second connection to Tottenham.
-- S05 00:32–00:40: a Hungarian microcosm inside multicultural London. The Founder
+- S05 00:40–00:48: a Hungarian microcosm inside multicultural London. The Founder
   plus twelve Hungarian adults inhabit one maintained Victorian HMO. Every adult
   has a different body, temperament, work rhythm, reason for leaving and relation
   to home. Some feel happier there and no longer want to return; this is personal
   memory, never a displayed percentage or a rootless-person label.
-- S06 00:40–00:48: one full bathroom, one separate WC and a shared bedroom. A
+- S06 00:48–00:56: one full bathroom, one separate WC and a shared bedroom. A
   flatmate who lost money gambling quietly swaps his place with an acquaintance;
   a different snore reveals the resident change. Housing absurdity is the joke,
   never debt or the person.
-- S07 00:48–00:56: three magical years compressed through the same shared-room
+- S07 00:56–01:04: three magical years compressed through the same shared-room
   lamp to low-cost adventure: one-pound overnight coach to Edinburgh, Loch Ness,
   Glasgow/Clyde powerboat, and an exact but exhausting three-day London–
   Manchester–Liverpool–Barmouth–Cardiff–London road circuit. Five people
@@ -92,7 +95,7 @@ LOCKED STORY AND TIMING
   position, while permanent room-sharing is no longer viable. Housing becomes
   his stop-loss. No second-home claim, invented figure or migrant job-displacement
   claim.
-- S08 00:56–01:04: eight illustrated memories occupy exactly 72 frames inside
+- S08 01:04–01:12: eight illustrated memories occupy exactly 72 frames inside
   the shot. Fold time through the notebook because the six-day Egypt trip happened
   after the London homecoming. Use a restrained Founder/tuk-tuk handoff at Angkor
   and a reciprocal Taj Mahal bus conversation rather than generic postcards.
@@ -104,13 +107,13 @@ LOCKED STORY AND TIMING
   Founder joins flights, rooms, local transport and human handoffs into his own
   route. No package-tour leader owns the complete sequence. Each environment
   reveals another part of the Founder: global route, local encounter. Resolve to
-  the Founder beside an empty seat, then a restrained COVID threshold.
-- S09 01:04–01:12: warm, purposeful but unresolved homecoming to the
+  the Founder beside an empty seat, then a restrained COVID-19 threshold.
+- S09 01:12–01:20: warm, purposeful but unresolved homecoming to the
   parent-assisted Budapest flat that stood empty throughout the London years.
   He makes the lower-cost independence livable and comes home to find a partner,
   while London remains a possible destination after a break. Keep the Budapest
   and London keys beside the notebook; do not stage a final rejection of London.
-- S10–S15 01:12–02:00: scarce versus overwhelming app attention; talks, dinners,
+- S10–S15 01:20–02:08: scarce versus overwhelming app attention; talks, dinners,
   dance and humane bad-location dates. Settings and continuity fail; people are
   not mocked and dance never implies romantic consent. One unbranded
   friendship-centred community, learned about through a former date, receives
@@ -123,7 +126,7 @@ LOCKED STORY AND TIMING
   measured causes or a claim that nobody else formed a relationship there.
   Preserve friendship and relief from aloneness as equally valuable outcomes
   rather than failed dating.
-- S16 02:00–02:08: screens encourage age, appearance and biography verdicts
+- S16 02:08–02:16: screens encourage age, appearance and biography verdicts
   before meeting without erasing older adults. Recall one common
   acquaintance who once opened a door through a shared person/place/story, then
   stepped back. The missing bridge is shared human context plus compatible
@@ -133,19 +136,19 @@ LOCKED STORY AND TIMING
   group lowers one-pair, all-or-nothing pressure through several conversations,
   shared activity, friendship or later invitations; this is design intent, not
   measured success.
-- S17 02:08–02:16: private editable 1–10 priority for an unknown individual or
+- S17 02:16–02:24: private editable 1–10 priority for an unknown individual or
   pair. People-in-common and inside/outside-network cues add context only: never
   public rating, vouching, character reference, compatibility or safety guarantee.
-- S18 02:16–02:24: reciprocal choices and restrained context propose exactly
+- S18 02:24–02:32: reciprocal choices and restrained context propose exactly
   `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
   `[GAME_MAN_REF]` and `[ROUTE_MAN_REF]` as the same six strangers, three women
   and three men cast by plausible need rather
   than an age quota. The working picture may lean toward the thirties, forties
   and fifties but can naturally include an adult in their twenties or sixties.
   Give each a different thought motif. No soulmate graph or automatic couple.
-- S19 02:24–02:32: each of the same six may accept or decline. After six accepts,
+- S19 02:32–02:40: each of the same six may accept or decline. After six accepts,
   contextual chat becomes one public doorway and visible first introductions.
-- S20 02:32–02:40: first event with four exact resource buckets — members,
+- S20 02:40–02:48: first event with four exact resource buckets — members,
   transport, accommodation/venue and supplies. Tickets, check-in and feedback
   remain separate. Show the collaborative middle of a DIY-first authorship
   ladder: the host assembles some parts, participants contribute others and one
@@ -153,14 +156,14 @@ LOCKED STORY AND TIMING
   a fully self-built event or a plan managed more completely by an event or
   travel organizer. Do not claim a finished one-click agency-delegation
   workflow. One clear narrator; no overlapping generated dialogue.
-- S21 02:40–02:48: after meeting, they are known contacts. A person in common adds
+- S21 02:48–02:56: after meeting, they are known contacts. A person in common adds
   context without guaranteeing anyone. When one invitee lacks time and declines,
   another invited adult may independently accept the open place. Repeated events
   may grow community; Auto Inviter targets intended accepted capacity but cannot
   guarantee a full group. A later private priority reduction quiets one future path
   without public punishment or reputation damage. Later community frames widen
   the mix of adult ages and life stages organically while keeping every person distinct.
-- S22 02:48–02:56: post-added 2016 notebook origin. Budapest-cost financial
+- S22 02:56–03:04: post-added 2016 notebook origin. Budapest-cost financial
   independence opens bounded periods of sustained work that an ordinary full-
   time job would not leave; do not imply ten continuous development years or
   weekend spare-time construction. Three private-work seasonal tabs lead into
@@ -177,14 +180,15 @@ LOCKED STORY AND TIMING
   language and boundaries. A country change may restart the same method, but
   profiles, chats, contacts and private-rate history do not automatically move
   between independent operators.
-- S23 02:56–03:00: clean deep-navy plate. The same original icon, separate
-  editable MyScoutee name, tagline and CTA are built in post.
+- E01 03:04–03:12: deterministic clean deep-navy plate. The same original icon,
+  separate editable MyScoutee name, book route and Part II continuation are
+  built in post without generation credit.
 
 CLAIM AND OUTPUT LOCK
 This is a product-story plan, not evidence of traction, revenue, safety,
 successful matching, deployed operators or solved loneliness. Preserve the
-supplied English/Hungarian narration without rewriting it. Create exactly 23
-cards named S01–S23 with timing, cast references, first/last-frame intent,
+supplied English narration without rewriting it. Create P00, exactly 22 motion
+cards named S01–S22 and E01 with timing, cast references, first/last-frame intent,
 camera, light, sound role and split risk. Keep all generated plates textless.
 Film 1 is complete and contains no hint of the Founder's later legal, tax or
 court matter; Film 2 is outside this generation plan.

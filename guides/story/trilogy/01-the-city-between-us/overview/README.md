@@ -15,7 +15,7 @@ still matches this guide.
 
 ## Outcome
 
-This directory specifies a complete 3 minute MyScoutee hero film:
+This directory specifies a complete 03:12 MyScoutee hero film:
 
 - working title: **The City Between Us**;
 - master language: English, for an international operator/community audience;
@@ -227,7 +227,7 @@ safe or successful meeting.
   AI-regenerate it. Keep **MyScoutee** as separate editable text in post rather
   than creating a new combined bitmap.
 - Show the original logo briefly in S01, at the common MyScoutee Network core in
-  S22 and fully in S23. Do not keep a permanent corner watermark through the
+  S22 and fully in E01. Do not keep a permanent corner watermark through the
   emotional middle of the film. The helmet–star–heart reading is visual intent,
   not a safety certification.
 
@@ -235,7 +235,7 @@ safe or successful meeting.
 
 | Setting | Master |
 | --- | --- |
-| Runtime | 03:00.000 |
+| Runtime | 03:12.000 |
 | Frame rate | 24 fps constant |
 | Raster | **720×1280 primary mobile master**; optional 1080×1920 only after a phone QA failure |
 | Aspect | **9:16 portrait**; important faces/text stay clear of the top/bottom platform UI zones |

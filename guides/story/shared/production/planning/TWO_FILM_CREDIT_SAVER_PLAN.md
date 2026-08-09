@@ -1,442 +1,147 @@
-# Two-film credit-saver stress-test and production plan
+# Two-film credit-saver benchmark and production plan
 
-Status: **current operating plan, 2026-08-07**.
+Status: **current operating plan, 9 August 2026**.
 
-Scope: this is a trilogy-wide production plan. Part I's CP18→CP19 sequence is
-the canonical worked stress test because it already combines the hardest
-ensemble, identity and endpoint-continuity requirements. Each later part keeps
-its own story assets and shot manifest.
+The goal is two mobile-first English films from one locked written package. Do
+not spend credits on every model or on disposable storyboard media. Compare one
+difficult final-usable interval, choose a route, then generate the films.
 
-This plan covers two separate `9:16` films of roughly `2:30–3:00` each:
+## 1. Locked delivery
 
-1. the MyScoutee origin and product film;
-2. a later personal documentary film with its own evidence package.
-
-The purpose is not to generate every scene on every platform. First, compare
-models with one difficult scene that can also become a final shot. Then spend
-production credits only on the winning model or the best model for a documented
-shot type.
-
-Mandatory order:
-
-> character-model benchmark → lock six identities → regenerate CP18 and CP19 →
-> video-model stress test → selective motion production
-
-Do not run a video benchmark with faces that will immediately be replaced.
-
-## 1. Locked technical target
+| Part | Structure | Runtime | Generated clips |
+| --- | --- | ---: | ---: |
+| I — The City Between Us | P00 + S01–S22 + E01 | `03:12` | 22 |
+| II — The System Between Us | P00 + S01–S38 + E01 | `05:20` | 38 |
+| **Total** |  | **`08:32`** | **60** |
 
 - aspect ratio: `9:16`;
-- working raster: `720×1280`;
+- working and delivery raster: `720×1280`;
 - constant `24 fps`;
-- runtime per film: `150–180 s`;
-- total two-film runtime: `300–360 s`;
-- default generated motion unit: no more than `8 s`;
-- narration: separately generated or recorded time-coded voice-over;
-- music: one continuous master score per film;
-- trim, subtitles, ducking, mix and export: CPU FFmpeg;
-- DaVinci Resolve is excluded because this machine has no supported GPU.
+- every generated unit: exactly `8 s`;
+- P00/E01: deterministic post graphics, not generated motion;
+- narration: separately generated, continuous and time-aligned;
+- music: one continuous score per film;
+- ambience, foley, captions, typography, trim, ducking and export: CPU post;
+- no lip sync, visible generated speech or retained clip audio;
+- no slideshow, animatic, midpoint frame or four-second generation unit.
 
-If every second were AI video, the package would need roughly `38–45`
-eight-second units. The actual target is lower: stable stills, travel memories,
-logos, typography, accurate UI and simple graphics belong in post.
+## 2. Current Flow budget
 
-## 2. Subscription boundaries
+Observed working balance: **970 credits**.
 
-Prices, model names, credits and usage rights change. The account checkout and
-generation screen are authoritative at the moment of purchase. Capture the
-price, credit balance, renewal date and displayed generation cost before any
-paid batch.
-
-### Google Flow
-
-The selected Google AI Pro monthly plan showed a three-month promotional price
-of about `HUF 2,190/month` and `1,000` monthly Flow credits. Create a reminder
-before the higher fourth-month price begins.
-
-The account screen observed these non-Ultra costs:
-
-| Model | One 4/6/8-second generation |
-| --- | ---: |
-| Veo 3.1 Lite | 10 credits |
-| Veo 3.1 Fast | 20 credits |
-| Veo 3.1 Quality | 100 credits for 8 s |
-
-Monthly credits do not roll over. The earlier daily free allocation is replaced
-when the paid plan activates. Reference:
-[Google Flow credit management](https://support.google.com/flow/answer/16526234).
-
-Account-specific watermark observation: the visible watermark control was off
-by default in the Founder's Hungary-based Flow interface, and the downloaded
-control clip contained no visible watermark. Check the control before every
-final generation and visually inspect every complete download. Invisible
-SynthID may remain. Reopen this decision only if the interface, setting or an
-actual new download changes. General reference:
-[Google Flow access and watermark](https://support.google.com/flow/answer/16353333).
-
-### OpenArt
-
-The first purchase gate is the **4,000-credit monthly entry plan**, not an annual
-plan. Different interfaces may call it Starter or Essential; identify it by the
-monthly checkout total and the `4,000` credits.
-
-Observed planning assumptions:
-
-- listed price around `USD 14/month`;
-- `4,000` credits per month;
-- roughly `50` videos and `13` consistent characters according to the displayed
-  plan description;
-- access to premium image, video and audio models.
-
-Treat this as a test and character-development package, not automatically as the
-full budget for two finished films. If an OpenArt model clearly wins, the
-`12,000`-credit Plus/Advanced monthly tier provides a safer retry and production
-allowance. Confirm commercial-use wording at checkout before publishing.
-
-OpenArt describes in-place upgrades as immediate and prorated. Capture balance
-and billing date immediately before and after a `4k→12k` upgrade because the
-displayed treatment of unused base credits may change. Monthly credits do not
-roll over; add-on credits have separate conditions. References:
-[OpenArt pricing](https://openart.ai/pricing) and
-[OpenArt help](https://openart.ai/help).
-
-## 3. One reusable video stress test
-
-Run this only after the character test and approval of CP18 and CP19 rebuilt from
-the locked six identities.
-
-### Scene contract
-
-**CP18 → CP19**, exactly `8 s`, `9:16`, first and last frame.
-
-- first image:
-  [`CP18.png`](../../../trilogy/01-the-city-between-us/assets/storyboard-rough/CP18.png);
-- last image:
-  [`CP19.png`](../../../trilogy/01-the-city-between-us/assets/storyboard-rough/CP19.png);
-- prompt:
-  [`model-benchmark-cp18-cp19.txt`](../../benchmarks/prompts/model-benchmark-cp18-cp19.txt);
-- exactly one result per model in the discovery round;
-- no music, dialogue or narration;
-- prompt rewrite, automatic polish, Extend and extra references disabled;
-- identical PNGs, prompt, runtime, aspect ratio and output count.
-
-The scene exposes:
-
-- retention of exactly three women and three men;
-- continuity of six distinct faces, clothes and body proportions;
-- transformation from a portrait grid to a real meeting space;
-- natural disappearance of thought bubbles;
-- hands, eye contact and restrained ensemble acting;
-- first- and last-frame fidelity;
-- continuous spatial transition without a camera jump;
-- painterly cinematic 2.5D style stability.
-
-A successful test can become the final production shot.
-
-### Flow order and hard cap
-
-| Order | Model | Maximum |
-| --- | --- | ---: |
-| 1 | Veo 3.1 Lite | 10 credits |
-| 2 | Veo 3.1 Fast | 20 credits |
-| 3 | Veo 3.1 Quality | 100 credits |
-| **Total** |  | **130 credits** |
-
-After this comparison, at least `870` of the `1,000` credits must remain. Do not
-add a fourth model, audio edition or automatic second variant. If the top two
-are nearly tied, only those models may receive one controlled retry from the
-separate retry allowance.
-
-Do not include a model that cannot use the same first-plus-last-frame mode;
-different input contracts do not make a clean model comparison.
-
-### OpenArt order and hard cap
-
-Only compare models that expose the same `start + end frame`, `8 s`, `9:16`,
-`720p`, one-output contract in the live interface. Initial candidates:
-
-1. the available Seedance 2.x model that supports the identical mode;
-2. Kling 3.0;
-3. Wan 2.7 only when the same mode is available.
-
-Record the live credit price before pressing Generate. Reference:
-[OpenArt video models](https://openart.ai/ai-model/?category=video).
-
-Discovery cap:
-
-- target no more than `600` credits from the `4k` entry plan;
-- one output per model;
-- if three comparable runs exceed the cap, run only Seedance and Kling;
-- the third model runs only when the total still fits or an earlier result is
-  technically unusable;
-- no retry in the discovery round.
-
-### Blind scoring
-
-Score every result from `0–5` on:
-
-1. endpoint fidelity;
-2. retention of all six identities;
-3. no added, missing, duplicated or merged person;
-4. face, hand and body anatomy;
-5. transition continuity;
-6. natural micro-movement and acting;
-7. camera stability;
-8. 2.5D style stability;
-9. mobile-readable composition;
-10. usability without rescue post-production.
-
-Hide model names for the first visual score and record the result in
-[MODEL_BENCHMARK_LOG.csv](../../benchmarks/tracking/MODEL_BENCHMARK_LOG.csv).
-
-## 4. Character test and identity lock
-
-A platform Character feature preserves identity; it does not substitute for an
-appealing character design. Character-model testing is separate from video-model
-testing.
-
-### Clean first comparison
-
-- prompt:
-  [`character-model-benchmark-six-person-ensemble.txt`](../../benchmarks/prompts/character-model-benchmark-six-person-ensemble.txt);
-- one `9:16`, `2×3` portrait sheet;
-- exactly three women and three men;
-- prompt enhancement, automatic polish and style preset disabled;
-- exactly one output per model;
-- score sheet:
-  [CHARACTER_BENCHMARK_LOG.csv](../../benchmarks/tracking/CHARACTER_BENCHMARK_LOG.csv);
-- control image:
-  [`character-ensemble-control-codex-v01.png`](../../benchmarks/assets/character-benchmark/character-ensemble-control-codex-v01.png).
-
-The existing `18` free OpenArt credits are usable only if the live one-image
-price beside Generate is `≤18`. Prioritize the strongest currently available
-character-design model that fits the real budget. Run the identical prompt on
-Flow's least expensive suitable image mode.
-
-The first pass is one ensemble sheet. Do not train a model or generate every
-view before a design wins.
-
-### Final reference package
-
-After choosing the winning design:
-
-1. front, three-quarter, profile and full-body sheet;
-2. seated and expression sheet;
-3. locked face, hair, body proportions, clothing, personal prop and color code;
-4. stable textless PNG exports;
-5. consistent-character setup only for people returning in at least three
-   shots;
-6. regenerate CP18 and CP19 from those same six references;
-7. begin the video benchmark only after both endpoints pass identity review.
-
-Keep the total recurring trained cast for both films near `10–12`; one-scene
-background figures use image references. Character-development cap before the
-first approval gate: `250` credits from the entry plan.
-
-## 5. Storyboard and animatic
-
-The obsolete `56 × 3 s` review and the four-second-split endpoint review are
-not production masters. No intermediate image is generated for the slideshow.
-
-The checkpoint inspection uses:
-
-- the exact 9:16 CP images that later become video endpoints;
-- one complete eight-second hold for every CP at 00:00, 00:08, 00:16 and so on;
-- no optical flow, pan, push or invented midpoint;
-- Part I inspection runtime `03:08.000`: CP00–CP22 at eight seconds plus the
-  four-second CP23 end plate;
-- Part II inspection runtime `03:04.000`: CP00–CP22 at eight seconds, with the
-  separate four-second E01 card reviewed outside this checkpoint chain.
-
-These still-only inspection exports are deliberately longer than the finished
-03:00 moving films. In motion, adjacent checkpoints bound one eight-second clip
-rather than appearing sequentially for eight seconds each.
-
-## 6. Motion budget for both films
-
-Classify each shot before generation.
-
-### A — post or inexpensive
-
-- environment, object, slow camera, still, graphic or travel montage;
-- Flow Lite, inexpensive winning OpenArt model, or FFmpeg pan/zoom;
-- target approximately `80%` of motion units.
-
-### B — normal motion
-
-- one or two people, walking, simple interaction or moderate transition;
-- Flow Fast or the winning mid-range OpenArt model;
-- target approximately `15%`.
-
-### C — hero/rescue
-
-- six-person ensemble, identity-critical face, complex endpoint transition or
-  indispensable short lip sync;
-- Flow Quality or the winning premium OpenArt model;
-- target no more than `5%`, typically two hero shots across both films.
-
-If all `45` possible units used Flow, the upper planning split would be:
-
-| Type | Units | Credits each | Total |
+| Use | Units | Lite price | Credits |
 | --- | ---: | ---: | ---: |
-| Lite | 36 | 10 | 360 |
-| Fast | 7 | 20 | 140 |
-| Quality | 2 | 100 | 200 |
-| **Production** | **45** |  | **700** |
+| Part I first pass | 22 | 10 | 220 |
+| Part II first pass | 38 | 10 | 380 |
+| **Base production** | **60** |  | **600** |
+| **Reserve after base** |  |  | **370** |
 
-Flow allowance:
+The reserve pays for the controlled benchmark and selected failures, not a
+second complete pass. Record the live price beside Generate because model names,
+prices and subscription terms can change.
 
-- model comparison: `130`;
-- controlled first production pass: no more than `700`;
-- reserve: at least `170`;
-- reserve increases when the successful stress-test shot enters the final edit.
+Account-specific watermark observation: the Hungary-based Flow control was off
+by default and the inspected download had no visible watermark. Recheck the
+control and every final download. Invisible provenance marking may remain.
 
-The real generated-unit count must stay below `45`. Quality is not a bulk model:
-an all-Quality pass would require roughly `3,800–4,500` credits.
+## 3. Benchmark before bulk generation
 
-The OpenArt `4k` tier can cover comparison, character development and a limited
-rough pass but does not provide safe retry space for two finished films. If
-OpenArt wins, bulk production begins only after an approved in-place upgrade.
+The first benchmark must be a deliberately difficult eight-second interval that
+can remain in the final film. Select it only after the written audit closes.
 
-## 7. Retry and stop rules
+### Fixed comparison contract
 
-- one output on the first attempt;
-- change only one of model, prompt, endpoint or camera at a time;
-- write one concrete fault before retrying;
-- no more than two attempts at the same fault on the same model;
-- after that, switch model, simplify the shot or solve it in post;
-- never use `1080p` or `4K` to repair a broken face, hand or story;
-- upscale only an approved final clip;
-- no lip sync, music, dialogue or automatic BGM during the visual benchmark;
-- assign stable shot/model filenames immediately;
-- preserve a test until its score and hash are recorded.
+- generate the interval's exact two numbered `9:16` endpoints once;
+- use the identical lossless PNG pair in every tested model;
+- use the identical prompt, `8 s`, `9:16`, `720p` and one-result setting;
+- disable prompt rewrite, automatic polish, Extend and additional references;
+- no dialogue, narration, music or requested clip audio;
+- do not compare a model that cannot use both exact endpoints;
+- do not regenerate characters merely to make one model look better.
 
-## 8. Narration, music and synchronization without Resolve
+### Flow discovery order
 
-### Narration
+The live interface is authoritative. The previously observed prices were:
 
-Default: voice-over rather than lip sync.
+| Model | One 8-second result | Role |
+| --- | ---: | --- |
+| Veo 3.1 Lite | 10 | production baseline |
+| Veo 3.1 Fast | 20 | optional middle comparison if exposed |
+| Veo 3.1 Quality | 100 | one difficult-scene comparison only |
 
-- one consistent approved voice and performance direction per film;
-- `10–25 s` time-coded blocks;
-- `48 kHz` WAV;
-- IN, visual HIT and OUT markers for every block;
-- align with pauses and block position, not aggressive speech acceleration.
+The earlier Lite/Quality test showed only a modest improvement for the current
+painterly material. Default bulk production therefore remains Lite unless the
+new controlled benchmark produces a clear, final-visible advantage.
 
-Confirm the live model, language support, terms and pricing before generation.
-Do not treat a preview model name as permanently available.
+### OpenArt comparison
 
-### Lip sync
+Only test Seedance or Kling variants that expose the same start+end-frame,
+eight-second, 9:16 contract. Record the live credit price before generating.
+Do not subscribe or upgrade merely to add a non-comparable model. If OpenArt
+wins clearly, calculate its complete 60-clip cost and retry allowance before
+bulk production.
 
-Use only when one visible short line is indispensable. Maximum one or two hero
-shots across the package. Produce the final audio first and supply that exact
-file as the selected model's audio reference. All other speech stays off-camera,
-under reaction shots or in narration.
+## 4. Evaluation sheet
 
-### Music
+Score blind where practical:
 
-- one continuous instrumental score per film;
-- generated only after picture lock;
-- prompted with the complete time-coded emotional map;
-- all clip-level generated music muted;
-- no more than three score candidates per film;
-- winning file normalized and trimmed to the exact film length by FFmpeg.
+1. first-frame fidelity;
+2. last-frame fidelity;
+3. exact person count;
+4. identity, clothing and prop continuity;
+5. face, hand and body anatomy;
+6. transition continuity;
+7. natural micro-movement and acting;
+8. camera stability;
+9. style and mobile composition;
+10. usability without rescue work.
 
-Confirm the current music model, rights and price before production rather than
-hard-coding a temporary preview offering into the release decision.
+Record results in
+[`MODEL_BENCHMARK_LOG.csv`](../../benchmarks/tracking/MODEL_BENCHMARK_LOG.csv).
 
-### Diegetic sound
+## 5. Character and world policy
 
-Default video prompt:
+- Character tools preserve an approved design; they do not automatically make
+  characters more appealing.
+- Use the existing book/character maps as the design source. A recurring role
+  needs a stable reference; one-scene background adults may use an image
+  reference only.
+- Do not spend credits training every minor role.
+- Flow has no required separate World object for this package. Location and
+  style continuity live in the endpoint frames and prompt contract.
+- Keep the same Founder identity across both parts.
+- The six-person product group remains exactly three women and three men, each
+  visually distinct and treated with equal agency.
 
-```text
-Synchronized diegetic ambience and physical sounds only.
-No music, dialogue, narration or singing.
-```
+## 6. Production sequence
 
-Mute a native track when unwanted music cannot be isolated. Keep clean doors,
-keys, steps, trains, paper or keyboard sound when useful; otherwise place
-separate foley on the exact frame. Overlap ambience across scene boundaries by
-roughly `0.3–0.8 s`.
+1. close the books, scripts, storyboards and prompt audit;
+2. select the hardest final-usable interval;
+3. generate and approve its exact two endpoint frames;
+4. run one result per comparable model;
+5. choose the production route and write the decision to the log;
+6. generate S01–S22 and S01–S38 in small reviewable batches;
+7. download and verify every source file before the next batch;
+8. discard all generated audio;
+9. assemble P00, generated clips and E01;
+10. generate Jon's clean reads, align narration, then compose/mix one continuous
+    score per part;
+11. deliver clean master, narration/score/foley stems, SRT and WebVTT.
 
-### CPU assembly
+## 7. Stop rules
 
-FFmpeg owns:
+- Stop if the charged credit price differs from the recorded assumption.
+- Stop after two failures with the same apparent cause; fix the endpoint or
+  prompt before another generation.
+- Stop if a model changes a locked identity, person count or endpoint.
+- Do not use Quality as a bulk model unless the remaining-balance calculation
+  is rewritten and explicitly accepted.
+- Do not publish externally from this workflow. The Founder performs or
+  explicitly authorizes the upload.
 
-1. clip order, trim and frame-accurate repair;
-2. constant `24 fps`, `720×1280` normalization;
-3. original logo, exact UI plates, titles and subtitles;
-4. narration, ambience, foley and score stems;
-5. music ducking under narration;
-6. approximately `-14 LUFS` integrated and no more than `-1 dBTP`;
-7. branded English, English SRT and clean textless export;
-8. H.264/AAC `48 kHz` final MP4;
-9. full decode and phone QA.
+## 8. Subscription notes
 
-Kdenlive is optional for visual review. Production does not depend on Resolve or
-a supported GPU.
-
-## 9. Purchase and production gates
-
-### Gate 0 — character-model test
-
-- confirm the Google AI Pro monthly checkout, `1,000` credits and refill date;
-- set a renewal reminder before the promotion ends;
-- run the identical one-image character prompt on the eligible control, Flow
-  and OpenArt models;
-- use an OpenArt free generation only when the displayed cost is `≤18`;
-- blind-score the character sheets and shortlist the six identities;
-- generate no video before this decision.
-
-### Gate 1 — OpenArt 4k monthly entry plan
-
-- monthly, not annual; identify by `4,000` credits;
-- capture price, credit balance and renewal date;
-- identical CP18→CP19 comparison, no more than `600` credits;
-- character test and first shortlist, no more than `250` credits;
-- no full-film generation.
-
-### Gate 2 — model and character lock
-
-- blind score complete;
-- recurring characters and world/style references approved;
-- CP18 and CP19 rebuilt from the same six characters;
-- Flow Lite, Fast and Quality CP18→CP19 runs complete within `130` credits;
-- winning model recorded by shot type;
-- scene-hold animatic and narration locked for each film;
-- every shot assigned to A, B or C.
-
-### Gate 3 — production purchase
-
-- if Flow wins, use the existing Pro allowance for hybrid production;
-- verify the visible-watermark control and every complete Flow download;
-- if OpenArt wins, approve the in-place `4k→12k` upgrade before bulk production;
-- if results are mixed, use Flow for the inexpensive base and OpenArt only for
-  documented hero or rescue shots;
-- neither platform receives an automatic second pass for every shot.
-
-### Gate 4 — picture lock and audio
-
-- picture duration and edit locked;
-- final narration blocks generated or recorded;
-- no more than three continuous-score candidates per film;
-- FFmpeg mix, subtitle, brand and export complete;
-- only shot-level corrections after phone QA.
-
-## 10. Decision summary
-
-- Google AI Pro is a cost-effective `1,000`-credit Flow test and hybrid base,
-  but Quality cannot be used for bulk production.
-- OpenArt's `4k` monthly entry level is the low-risk comparison and character
-  tier. Upgrade only if its comparable video model produces a material visual
-  advantage.
-- The observed Hungary-based Flow account allowed the visible watermark to stay
-  disabled, and the downloaded control clip showed none; verify both facts on
-  every future final output.
-- Approve characters before videos. Expensive models refine a shortlist rather
-  than inventing production identities repeatedly.
-- Use a real scene-duration animatic instead of treating the three-second review
-  slideshow as the timing master.
-- Default audio is voice-over, one continuous score and separate foley, not
-  per-clip music or widespread lip sync.
-- FFmpeg provides the precise GPU-independent assembly and delivery route.
+Prices, credits, commercial rights, watermark controls and rollover policies
+are temporally unstable. The account screen and checkout at purchase time are
+authoritative. Capture plan name, price, renewal date, credit balance,
+commercial-use wording and per-generation charge before any paid batch.
