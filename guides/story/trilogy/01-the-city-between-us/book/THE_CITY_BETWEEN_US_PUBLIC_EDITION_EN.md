@@ -338,12 +338,11 @@ movement and possibility, but it contained very little private life. Work
 consumed most of it. In my account, I was driven extremely hard after overtime
 had been promised. When the assignment ended, I returned to the Hungarian
 office and continued working there for a time. The promised overtime payment
-did not follow me home. Friction grew because I could not digest the idea that
-work already given might become free simply because the promise had no shared
-place to stand. It was a dispute about money, but underneath it was a dispute
-about trust. I eventually left the employer. I keep the company anonymous
-because this is my memory of what happened, not an adjudicated claim in this
-book.
+did not follow me home. The hours had already been worked. As the promise grew
+older, they seemed to be turning into free labour after the fact. I could not
+make that transformation feel ordinary. Friction grew. I eventually left the
+employer. I keep the company anonymous because this is my memory of what
+happened, not an adjudicated claim in this book.
 
 Before London, I tried to recover the overtime I believed had been promised.
 At a hearing, my lawyer sat beside me. Afterwards, in the corridor and within

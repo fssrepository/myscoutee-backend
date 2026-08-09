@@ -283,7 +283,7 @@ Score arc:
   character identity.
 - AI assisted self-defence; it did not provide licensed legal representation.
 - Seven of fifteen constitutional judges initially recused themselves from
-  Sulyok's matter and an eighth followed; they did not leave the Court in June.
+  the President's matter and an eighth followed; they did not leave the Court in June.
 - A separate rule scheduled four over-seventy judges to leave on 1 September.
 - The Venice Commission's caution is not attributed to the Founder's email.
 - The 5 June forwarding to the Sándor Palace and Prime Minister's press office
@@ -291,7 +291,7 @@ Score arc:
 - The Founder nearly withdrew the clemency request in November 2025, received a
   refusal dated 30 April 2026, and on 19 May asked that revised papers wait with
   the incoming justice administration until the presidency changed.
-- The clemency refusal and the later ending of Sulyok's mandate are juxtaposed
+- The clemency refusal and the later ending of the President's mandate are juxtaposed
   as memoir irony, not treated as legally equivalent acts.
 - The satirical performance of the file-created character is not acceptance of
   the contested diagnosis, real authority over institutions or licence to harm.

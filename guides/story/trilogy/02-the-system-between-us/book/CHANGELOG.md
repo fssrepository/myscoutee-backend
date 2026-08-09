@@ -65,6 +65,16 @@ first public edition is `1.0.0`.
   senior rooms reached only after the Founder finally spoke, and the later
   COVID restructuring. The text leaves motive and management interest at
   attributed memoir level.
+- Added the emotional contrast between the two dismissals: the first remains a
+  tragedy despite a humane exit and unexpectedly strong negotiated severance;
+  at the bank the already burned-out Founder feels the papers pass through him
+  without mattering. The contrast describes the changed person, not an employer
+  ranking or legal conclusion.
+- Added the intervening COVID-era fourth-round interview: a former supervisor
+  enters through a personal connection with one leader while lacking the full
+  earlier work context. The Founder's belief that this affected the rejection
+  remains expressly unproved memoir. Expanded the next bank threshold with its
+  long assessment and outsourced screening gate before the first working day.
 - Made the satire's mirror explicit: the Founder performs the institution's
   apparent entitlement back at it, exposing the asymmetry between real coercive
   power and a powerless person's theatrical counter-authority.

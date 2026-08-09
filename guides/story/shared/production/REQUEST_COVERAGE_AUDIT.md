@@ -86,13 +86,20 @@ become independently verified evidence.
   without substantive work, an unproved suspicion that the earlier negative
   assessment travelled as gossip, a product manager routing work elsewhere,
   the ten-subsidiary “One Shop” contradiction, the Founder's eventual protest
-  and the later COVID restructuring. Motive remains memoir, not finding.
+  and the later COVID restructuring. The loss feels tragic despite a more
+  humane exit and unexpectedly stronger negotiated severance. Motive, reaction
+  and severance remain memoir, not finding or public amount.
+- [x] The later COVID-era fourth-round multinational process and a former
+  supervisor's intervention through a personal connection with one leader are
+  preserved as memoir. The Founder suspects an effect on the rejection but the
+  book makes no causation, discrimination or improper-influence finding.
 - [x] The January 2021 investment-bank threshold: outsourced identity screen,
   remembered first-day warning, household government-bond savings colliding
   with employee-trading controls, masked third-week dismissal, the exit joke,
   the later three-hour ethics discussion and an answer the Founder now regards
-  as incomplete. It remains book/longer-cut material and makes no institutional
-  motive or misconduct finding.
+  as incomplete. The dismissal passes through his already burned-out state
+  without mattering. It remains book/longer-cut material and makes no
+  institutional motive or misconduct finding.
 - [x] The formally unstable Brussels contract became a stable human team across
   nearly 10,000 kilometres: audio-only calls, an Indian tuk-tuk entering through
   an open microphone, a senior manager who continued to back him and a client

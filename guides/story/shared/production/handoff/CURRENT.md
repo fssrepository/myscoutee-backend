@@ -11,6 +11,12 @@ approval.**
 This is the clean resume point. Do not reconstruct the long editorial review
 from chat history. Do not build a slideshow or animatic.
 
+Editorial lock: external AI critiques are direction rather than quotable book
+copy. Put the reader in the room, preserve the Founder's knowledge horizon,
+show concrete contradiction before thesis, and leave emotional/legal judgment
+to the reader. The canonical detailed rule is
+`trilogy/02-the-system-between-us/research/TONE_AND_IRONY_LEDGER.md`.
+
 ## 1. Book state
 
 ### Part I — The City Between Us · v1.0.0

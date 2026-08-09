@@ -1,5 +1,41 @@
 # Tone and irony ledger
 
+## Governing editorial contract
+
+The external AI critiques and the Founder's later corrections are direction,
+not prose to quote or conclusions to insert. Apply them through these rules:
+
+1. Put the reader in the room before naming the pattern. Show the masked eyes,
+   silent desk, unanswered card, elevated leg, one-word answer, smile or empty
+   chair. Do not replace the scene with a thesis.
+2. Preserve the knowledge horizon. At each moment, the reader knows only what
+   the Founder knew then; later documents may reframe the room but may not make
+   the earlier self clairvoyant.
+3. Do not prescribe emotion or judgment. The work may produce anger, doubt,
+   recognition, discomfort or another response. Its task is to make the lived
+   sequence available, not to tell the reader what it proves.
+4. Let ordinary choices accumulate into the system. A person may remain human
+   inside one role while the joined process behaves inhumanly. Avoid a single
+   invented villain and avoid using that restraint to erase responsibility.
+5. Distinguish event, memory, document and interpretation without stopping the
+   story to explain each boundary. Put the slower legal and provenance limits
+   in the notes.
+6. Preserve contradiction. Beauty and exclusion, courtesy and hierarchy,
+   competence and panic, humour and fear, home and exile may occupy the same
+   image. Do not resolve one by deleting the other.
+7. Translate Hungarian force through rhythm, image and black humour. A portable
+   metaphor should let a non-Hungarian reader feel the direction of the line
+   without literal profanity, local jargon or a lecture on national character.
+8. Compress the film more aggressively than the book, but never change causal
+   order, merge distinct people or turn an attributed perception into fact.
+9. The Founder supplies lived reality: memory, consequence, purpose and moral
+   responsibility. AI supplies learned reality: patterns, structures,
+   alternatives, continuity and speed. The final meaning emerges through their
+   correction of one another, not through AI replacing the witness.
+
+The practical test for every passage is simple: can a reader imagine being in
+that room without being instructed what to think about it?
+
 ## Translation rule
 
 Hungarian anger is not flattened into a repeated English obscenity. Preserve

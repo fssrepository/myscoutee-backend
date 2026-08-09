@@ -226,28 +226,41 @@ work to other teams. I spent long days in the office performing availability.
 When I finally tired of waiting, I was placed alone between a German programme
 and a Hungarian organization. “One Shop” promised one interface across ten
 national subsidiaries. The name was singular; the marketing strategies were
-not. The Hungarian office earned through its own local marketing logic and had
-little reason to dissolve it into a central surface. I was expected to sell
-progress upward while the work itself had nowhere stable to land.
+not. The Hungarian office's money came through its own marketing. On German
+calls, I presented a common shop whose countries had not agreed on one counter.
 
 After almost a year, I finally said aloud that I had scarcely been given work.
 The sentence travelled—up toward German leadership, back toward Hungarian
 management, or both; I could not see the complete route. I entered the offices
-of several senior executives who appeared not to know how empty the role had
-been. Then COVID restructuring arrived, and my name was selected. I experienced
-the dismissal as a middle-management decision shaped by interests above my
-view. That is memory and interpretation, not a proved motive. What I knew was
-simpler: after months of silence, I had spoken; the apparently stable foothold
-ended during the pandemic.
+of several senior executives. Their questions made clear that the empty year
+was new to them. Then COVID restructuring arrived, and my name was selected.
+I could not see whether one event had pushed the other. After months spent
+representing work that had nowhere to land, I was the part declared surplus.
+
+That dismissal felt like a tragedy. The ending itself was more humane than the
+year before it. I argued about the terms and negotiated a stronger severance
+payment than people around me expected. Their surprise briefly made the bargain
+feel like an achievement. It did not make the closed door smaller. I had spent
+years trying to enter stable employment; when I finally reached it, I lost the
+job before the job had properly found me.
+
+COVID made the next door difficult to find. One process at another multinational
+reached a fourth round. A former supervisor entered the conversation because he
+knew one of the leaders. He had not known the smaller-company prehistory and
+had not seen what the almost empty year looked like from my desk. I believed
+his intervention helped close the door, but I never saw the decision being
+made. No offer arrived.
 
 The next salaried door opened at an investment bank in January 2021, while
 Hungary was under an evening curfew. In the office, faces had been reduced to
-eyes above masks. Before the first working day, an outsourced background check
-had already asked me to move identity documents through email and screening
-channels I considered old and weakly authenticated. The route had taken weeks
-and a large bundle of personal material. On my first day, I compared the
-handling of my data to *Monty Python*. I remember the manager warning that this
-attitude could cost me the job. The screening had cleared. Trust had not.
+eyes above masks. The bank required a long assessment and would not let me
+start until an outsourced background check returned. That check asked me to
+move identity documents through email and screening channels I considered old
+and weakly authenticated. The route took weeks and a large bundle of personal
+material. By the time it cleared, its awkwardness had become comedy. On my
+first day, I compared the handling of my data to *Monty Python*. I remember the
+manager warning that this attitude could cost me the job. The screening had
+cleared. Trust had not.
 
 At the end of the first week, compliance training revealed another gate. The
 bank's many employee-trading rules required approval around transactions in the
@@ -260,8 +273,12 @@ The third week ended in a small masked theatre. The manager's anger was visible
 above the mask. Two solidly built colleagues sat smiling on either side of me
 while the termination papers landed on the table. A three-week employer stood
 on one side of the decision; seven years of security stood on the other. I
-chose the seven. On the way to the exit, I asked whether I could finally buy
-government bonds again. It was the best dismissal I had ever felt.
+chose the seven.
+
+The previous dismissal had felt like a future being taken away. By the time I
+reached this room, I was already burned out. Nothing in the papers caught. On
+the way to the exit, I asked whether I could finally buy government bonds
+again. The dismissal passed through me. It did not matter.
 
 An internal ethics review followed. For roughly three hours, I spoke with the
 bank's local lawyers. One question kept returning: had the manager threatened
@@ -1677,7 +1694,7 @@ That is political in the broad sense, but it did not begin with a party.
 
 On 12 April 2026, Hungary voted for a change of government.
 
-The election gave the new Tisza-led majority enough seats to alter institutions
+The election gave the new majority enough seats to alter institutions
 that had appeared fixed. The new government described its programme through
 rule of law, judicial independence, anti-corruption and restored public trust.
 Critics warned that rapid constitutional change could reproduce the same
@@ -1705,7 +1722,7 @@ edited.
 
 The constitutional conflict eventually reached the Venice Commission.
 
-Tamás Sulyok, then President of the Republic, asked the Commission to assess the
+The President of the Republic asked the Commission to assess the
 attempt to end his mandate. His questions were dated 29 May and supplemented on
 4 June 2026. He argued from the position of the highest office at risk.
 
@@ -1730,7 +1747,7 @@ Hungary's constitutional order was visibly between states.
 
 ## 23. When an Eighth Judge Steps Aside
 
-Venice was not Sulyok's only route.
+Venice was not the President's only route.
 
 On 11 June, he turned to the Constitutional Court for an interpretation of the
 limits around constitutional amendment and removal. The request returned him
@@ -1820,7 +1837,7 @@ constitutional creativity once criticized in the old system, personnel change
 can arrive before rule-of-law repair.
 
 Events did not follow one identical route. The public-media structure and its
-leaders changed. Sulyok's mandate ended. New age and term rules meant that four
+leaders changed. The President's mandate ended. New age and term rules meant that four
 of the fifteen constitutional judges then sitting—including the Court's
 President—were due to leave on 1 September. Other offices faced different legal
 procedures, political pressure or unfinished negotiations.
@@ -1833,7 +1850,7 @@ hearing.
 
 ## 25. The Empty Presidential Chair
 
-On 18 July 2026, Sulyok signed the constitutional amendment that ended his own
+On 18 July 2026, the President signed the constitutional amendment that ended his own
 mandate on 20 July.
 
 The parliamentary Speaker became interim President. As this edition closed on
@@ -1846,7 +1863,7 @@ I had already asked that office for mercy when mercy itself had become
 politically dangerous. In February 2024, the disclosure of a presidential
 pardon connected to the concealment of abuse in a children's home ended one
 presidency and the public career of the former justice minister who had
-countersigned it. Tamás Sulyok inherited a power that had burned the hands of
+countersigned it. The next President inherited a power that had burned the hands of
 the people who used it before him.
 
 I had never treated the person above that office as incidental. In November
@@ -2248,19 +2265,41 @@ supported by authored defence material. The pasture image is presently a
 memoir-layer recollection and is paraphrased rather than presented as a verified
 quotation.
 
-The further post-operative profanity about the administration fining its own
-mother is also kept at memoir layer. The wider March–May submission period is
-documented, but the exact page containing that remembered wording has not yet
-been isolated from the scanned monthly bundles. The narrative therefore
-paraphrases the line and uses it to mark collapsed trust; it does not present it
-as a verified quotation or a literal request concerning any real person.
+The further post-operative profanity—rendered in literary English as “Go on,
+then. Fine me.”—is also kept at memoir layer. The wider March–May submission
+period is documented, but the exact page containing that remembered wording
+has not yet been isolated from the scanned monthly bundles. The narrative
+therefore uses the line to mark collapsed trust rather than presenting it as a
+verified quotation. It was addressed to the institution as a whole, not to an
+individual official or any relative.
 
-## The January 2021 employment threshold
+## The 2019–2021 employment thresholds
+
+The long idle periods, suspected circulation of the smaller company's negative
+assessment, work repeatedly routed elsewhere, “One Shop” role, ten subsidiaries,
+different marketing incentives, later senior-office conversations and the
+Founder's interpretation of the COVID dismissal are memoir. The book does not
+claim that office gossip existed as fact, that the programme had no legitimate
+purpose, or that a particular manager or business interest caused the
+dismissal. Those details explain how an apparently stable salaried role felt
+from the desk before it ended. The stronger severance payment, colleagues'
+surprise, relatively humane separation and the Founder's experience of the loss
+as tragedy are also memoir; no confidential amount or contractual entitlement
+is asserted.
+
+The later fourth-round multinational interview, former supervisor's personal
+connection with one leader and his intervention are also memoir. The Founder
+believes that intervention contributed to the rejection, but has no decision
+record proving motive or causation. The company remains unnamed. This passage
+therefore shows another gate closing in a COVID-constricted search; it does not
+make an employment-discrimination or improper-influence finding.
 
 Private recruitment correspondence records an intended January 2021 start and
 an exit email dated 28 January. Later correspondence with the Hungarian central
 bank records the short employment, the government-bond trading restriction and
-the Founder's data-handling and background-screening complaints. The exact
+the Founder's data-handling and background-screening complaints. The long
+assessment and requirement that screening clear before the start are first-
+person employment chronology. The exact
 first-day warning, masked-room expressions, seating of two colleagues, exit
 question and roughly three-hour ethics conversation with the bank's local
 lawyers remain first-person memory. The Founder also records that he answered
@@ -2268,7 +2307,9 @@ lawyers remain first-person memory. The Founder also records that he answered
 regards that answer as incomplete. The book does not determine the purpose or
 independence of the internal review, make a legal finding about the manager or
 bank, or claim that a later unresolved proceeding has already produced a
-criminal-record outcome.
+criminal-record outcome. His indifference to the bank dismissal describes his
+burned-out internal state, not the objective seriousness of the employment
+decision.
 
 The official issuance terms for the retail government bond then known as MÁP
 Plusz described domestic and foreign natural persons as eligible subscribers
@@ -2406,11 +2447,11 @@ representation need not require shared identity.
 ## Clemency social inquiry
 
 The Founder's application reached a clemency institution already transformed
-by the 2024 presidential-pardon scandal. Katalin Novák resigned as President
-after the pardon became public. Judit Varga, the former justice minister whose
-countersignature had made the decision effective, withdrew from public life.
-Tamás Sulyok subsequently described clemency as an exceptional power and
-promised greater transparency.
+by the 2024 presidential-pardon scandal. The President resigned after the
+pardon became public. The former justice minister whose countersignature had
+made the decision effective withdrew from public life. The next President
+subsequently described clemency as an exceptional power and promised greater
+transparency.
 
 Official presidential statistics record four grants among 689 decided cases in
 2025 and no grants among 314 decided cases in the first half of 2026. The
