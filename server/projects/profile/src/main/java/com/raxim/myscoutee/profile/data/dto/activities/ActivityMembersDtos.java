@@ -13,6 +13,12 @@ public final class ActivityMembersDtos {
             List<ActivityMemberOwnerRefDto> owners) {
     }
 
+    /** Lightweight Mongo projection for one user's membership state per owner. */
+    public record ActivityMemberStatusDto(
+            String ownerId,
+            String status) {
+    }
+
     public record ActivityMembersReplaceRequestDto(
             ActivityMemberOwnerRefDto owner,
             List<ActivityMemberEntryDto> members,

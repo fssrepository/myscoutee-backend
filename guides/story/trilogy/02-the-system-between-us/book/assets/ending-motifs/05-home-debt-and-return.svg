@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">Home, debt, and return</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 113C94 62 172 132 264 95M700 113C626 62 548 132 456 95" stroke="#8a6a42" stroke-width="5"/>
+    <path d="M69 105c3-30 20-46 49-48 4 28-12 47-41 54M651 105c-3-30-20-46-49-48-4 28 12 47 41 54" fill="#c95f50" stroke="#8a6a42" stroke-width="3"/>
+    <path d="M302 70l58-43 58 43v49H302z" fill="#fbf7ef" stroke="#27374b" stroke-width="6"/>
+    <path d="M337 119V82h46v37M350 93h20" stroke="#d5ae69" stroke-width="5"/>
+    <path d="M254 124c35-18 69-18 103 0M363 124c34-18 68-18 103 0" stroke="#476b91" stroke-width="4"/>
+  </g>
+</svg>

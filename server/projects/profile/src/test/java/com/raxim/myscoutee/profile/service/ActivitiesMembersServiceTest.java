@@ -44,6 +44,7 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.mapper.ActivityMemberMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesMembersServiceTest {
@@ -79,6 +80,7 @@ class ActivitiesMembersServiceTest {
     private UserActivityCountersService userActivityCountersService;
     @Mock
     private ActivityTournamentGroupCounterService tournamentGroupCounterService;
+    private final ActivityMemberMapper activityMemberMapper = new ActivityMemberMapper();
 
     private ActivitiesMembersService service;
 
@@ -100,7 +102,8 @@ class ActivitiesMembersServiceTest {
                 eventSlotReadModelService,
                 accessControlService,
                 userActivityCountersService,
-                tournamentGroupCounterService);
+                tournamentGroupCounterService,
+                activityMemberMapper);
         lenient().when(accessControlService.canCurrentActorViewEventMembers(anyString())).thenReturn(true);
         lenient().when(accessControlService.canInviteEventMembers(anyString(), anyString())).thenReturn(true);
     }

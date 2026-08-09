@@ -91,7 +91,9 @@ class ActivityEventMapperTest {
                         null,
                         Map.of(),
                         Map.of(),
-                        Map.of()));
+                        Map.of(),
+                        Map.of(),
+                        null));
 
         assertThat(dto.creatorUserId()).isNull();
         assertThat(dto.creatorName()).isEqualTo("MyScoutee System");
@@ -145,10 +147,13 @@ class ActivityEventMapperTest {
                         null,
                         Map.of("event-1", snapshot),
                         Map.of(),
-                        Map.of()));
+                        Map.of(),
+                        Map.of("event-1", "accepted"),
+                        "host"));
 
         assertThat(dto.acceptedMembers()).isEqualTo(1);
         assertThat(dto.acceptedMemberUserIds()).containsExactly("host");
         assertThat(dto.adminIds()).containsExactly("host");
+        assertThat(dto.currentUserMembershipStatus()).isEqualTo("accepted");
     }
 }

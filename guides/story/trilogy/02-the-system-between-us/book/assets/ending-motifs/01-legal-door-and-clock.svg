@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">A legal door under a fast clock</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 111C93 65 154 123 231 94C275 77 304 78 333 90M698 111C627 65 566 123 489 94C445 77 416 78 387 90" stroke="#8a573a" stroke-width="5"/>
+    <path d="M70 99c8-28 25-42 51-41-1 25-18 42-45 49M650 99c-8-28-25-42-51-41 1 25 18 42 45 49" fill="#e6ad52" stroke="#8a573a" stroke-width="3"/>
+    <path d="M322 122V58c0-25 17-39 38-39s38 14 38 39v64z" fill="#fbf7ef" stroke="#27374b" stroke-width="6"/>
+    <circle cx="360" cy="51" r="22" fill="#fbf7ef" stroke="#c95f50" stroke-width="4"/>
+    <path d="M360 51V34M360 51l14 8M347 122V75h26v47" stroke="#c95f50" stroke-width="4"/>
+    <circle cx="366" cy="98" r="3" fill="#e6ad52" stroke="none"/>
+  </g>
+</svg>

@@ -1,0 +1,132 @@
+FRAME GENERATION SPEC — CP18/CP19 V01
+
+These prompts produced the current candidate endpoints with the built-in
+image-generation tool. The locked six-person identity board is authoritative;
+the old CP images are composition/style references only.
+
+============================================================
+CP18 — FIRST ENDPOINT
+============================================================
+
+Use case: illustration-story
+Asset type: exact FIRST endpoint frame for an 8-second cross-model
+Frames-to-Video benchmark, mobile-only 9:16 portrait.
+
+Input images:
+- Image 1: authoritative `myscoutee-g01-g06-board.png` identity and clothing
+  reference, G01 through G06 from left to right.
+- Image 2: old `CP18.png`, used only as a rough composition and painterly-style
+  reference. Do not copy its incorrect icons, lower diagram, empty black area
+  or framing.
+
+Create CP18, the instant before six strangers become a candidate group. Show
+exactly the same six distinct adults from Image 1, exactly three women and three
+men, each physically separated in one of six equal paper-edged portrait panels
+arranged as a clean 3-column by 2-row grid. Fill the complete 9:16 frame with
+the six panels. No empty black lower region, interface, diagram, title, caption,
+label or readable text.
+
+Locked placement:
+- top left: G01 Founder;
+- top centre: G02 Maya;
+- top right: G05 curly-haired game man;
+- bottom left: G03 Black sketch woman;
+- bottom centre: G04 East Asian cup woman;
+- bottom right: G06 South Asian route man.
+
+Preserve every exact face, apparent age, skin tone, hairstyle, body proportion
+and item of clothing from Image 1. Show chest-to-mid-torso portraits and natural
+hands without cropping heads.
+
+Give each stranger one different small tactile-paper icon-only thought bubble:
+- G01: simple route line with two location dots;
+- G02: open book;
+- G03: pencil making one curved sketch line;
+- G04: cup beside one small shared plate;
+- G05: one neutral tabletop-game pawn;
+- G06: folded transit map with one route line.
+
+They have not met. Their gaze and posture stay inward or slightly off-frame:
+thoughtful, cautious, curious, ordinary and adult. No one looks directly paired
+with another. No glamour lineup, romantic winner or sadness tableau.
+
+Use the exact painterly cinematic 2.5D storybook realism of the references:
+warm autumn London/Budapest palette, tactile paper grain, natural facial
+proportions, restrained humane expressions, realistic hands and lived-in fabric
+texture. Use soft overcast window light with warm interior bounce.
+
+Exact 9:16 portrait intended for 720×1280 delivery. Keep all six faces, visible
+hands, panel borders and thought bubbles inside the safe area. Uniform visual
+weight and panel size. Exactly six adults, three women and three men; one person
+per panel; six panels and six correct distinct icons only. No meeting room or
+shared table yet.
+
+Avoid extra, missing, duplicated, merged or replaced people; swapped identities;
+face morphing; gender or clothing changes; malformed hands; fused bodies;
+repeated icons; readable text; generated labels; logos; phone UI; network
+diagram; soulmate beam; flags; tourist landmarks; caricature; watermark; blank
+or black lower area.
+
+============================================================
+CP19 — LAST ENDPOINT
+============================================================
+
+Use case: illustration-story
+Asset type: exact LAST endpoint frame for the same 8-second cross-model
+Frames-to-Video benchmark, mobile-only 9:16 portrait.
+
+Input images:
+- Image 1: authoritative `myscoutee-g01-g06-board.png` identity and clothing
+  reference, G01 through G06 from left to right.
+- Image 2: the generated CP18 v01 first endpoint; preserve those same six
+  identities, faces, ages, skin tones, hairstyles, body proportions, clothes,
+  painterly treatment and palette.
+- Image 3: old `CP19.png`, used only as a rough meeting-room composition
+  reference. Do not copy its thought bubbles, black lower area, malformed
+  anatomy or cramped framing.
+
+Create CP19, the first real in-person introduction after all six strangers
+independently accepted one balanced group proposal. Show exactly the same six
+adults from Image 2, exactly three women and three men, gathered around one
+round wooden table in a warm ordinary public community room or quiet café-event
+room. Fill the complete 9:16 frame. No empty black lower region, interface,
+caption, label, logo or readable text.
+
+Locked placement for continuous trackability:
+- upper left: G01 Founder, navy field coat and muted rust scarf;
+- upper centre-left: G02 Maya, moss-green coat and cream shirt;
+- upper right: G05 curly-haired game man, navy jacket and cream shirt;
+- lower left: G03 Black sketch woman, rust cardigan;
+- lower centre-right: G04 East Asian cup woman, teal overshirt;
+- lower right: G06 South Asian route man, olive jacket over navy knit.
+
+Preserve every face and outfit exactly. This is their first introduction, not
+an established friendship. The Founder offers one restrained open-hand gesture
+to the whole table. Maya listens with a small cautious smile. The game man
+begins a modest open-hand response. The sketch woman and cup woman make
+tentative eye contact. The route man listens with one hand near a plain cup.
+Use breathing-space between bodies and natural anatomically correct hands.
+Everyone has equal visual importance; no romantic pair is emphasized.
+
+All six individual thought bubbles have completely faded by this exact last
+frame. Show no thought bubbles, icons, arrows, diagrams or floating graphics.
+
+The paper-panel borders from CP18 resolve into believable vertical window
+frames, door frames, chair backs and table edges. The architecture must make a
+continuous panel-to-room transformation plausible.
+
+Use the exact painterly cinematic 2.5D storybook realism of the first frame:
+warm autumn palette, tactile paper grain, natural facial proportions, humane
+understated acting, realistic hands, lived-in timber and fabric textures. Use
+soft overcast window light and warm practical interior bounce.
+
+Exact 9:16 portrait intended for 720×1280 delivery. Use an eye-level restrained
+35 mm view with a very mild inward perspective. Keep all six faces and bodies
+readable on a mobile screen; no head cropped and nobody hidden. Exactly six
+adults, three women and three men, one table and one room.
+
+Avoid extra, missing, duplicated, merged or replaced people; swapped identities;
+face morphing; gender or clothing changes; fused bodies; malformed hands;
+floating limbs; thought bubbles; repeated faces; romantic spotlight; instant
+friendship; cheering; phone UI; generated labels; readable cards; logos; flags;
+tourist landmarks; watermark; blank or black lower area.

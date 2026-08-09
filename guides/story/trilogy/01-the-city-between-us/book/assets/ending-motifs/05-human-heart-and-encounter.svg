@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Human heart and encounter</title>
+  <desc id="desc">An original gingerbread-carving-inspired ornament of paired birds, an open heart, and paths that meet without erasing difference.</desc>
+  <defs>
+    <g id="bird">
+      <path d="M302 78C279 58 247 60 231 79C253 80 268 90 277 107C292 101 303 91 309 79Z" fill="#b52d3b"/>
+      <circle cx="301" cy="71" r="11" fill="#b52d3b"/>
+      <path d="M311 70l16 7-16 6" fill="#f1b544"/>
+      <circle cx="304" cy="68" r="2.5" fill="#fbf7ef"/>
+      <path d="M271 80c12 0 20 5 26 15M252 77c12 6 18 14 22 25" fill="none" stroke="#fbf7ef" stroke-width="3" stroke-linecap="round"/>
+      <path d="M275 106l-4 14M288 103l3 17" stroke="#7b4f34" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g id="half" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M360 126C325 121 301 116 277 107C242 94 216 99 186 114C151 132 114 128 82 110C54 94 30 94 8 105" stroke="#b52d3b" stroke-width="5"/>
+      <path d="M186 114C170 99 163 82 167 64C185 68 198 80 201 97" fill="#e36c57" stroke="#b52d3b" stroke-width="3"/>
+      <path d="M116 121C101 105 96 89 100 72C117 76 130 88 133 105" fill="#f1b544" stroke="#b52d3b" stroke-width="3"/>
+      <circle cx="46" cy="101" r="7" fill="#245bc9" stroke="#245bc9"/>
+      <circle cx="18" cy="104" r="4" fill="#2e7650" stroke="#2e7650"/>
+    </g>
+  </defs>
+  <use href="#half"/>
+  <use href="#half" transform="translate(720 0) scale(-1 1)"/>
+  <use href="#bird"/>
+  <use href="#bird" transform="translate(720 0) scale(-1 1)"/>
+  <path d="M360 126C346 108 326 93 326 69C326 51 339 41 353 41C363 41 368 47 360 58C352 47 357 41 367 41C381 41 394 51 394 69C394 93 374 108 360 126Z" fill="none" stroke="#b52d3b" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M345 68c8 4 13 10 15 20 2-10 7-16 15-20" fill="none" stroke="#f1b544" stroke-width="4" stroke-linecap="round"/>
+</svg>

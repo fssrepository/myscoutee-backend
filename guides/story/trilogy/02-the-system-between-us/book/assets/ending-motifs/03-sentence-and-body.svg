@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title">
+  <title id="title">The sentence and the body</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 111C101 56 174 131 267 91M702 111C619 56 546 131 453 91" stroke="#9d4d5c" stroke-width="5"/>
+    <path d="M72 102c0-27 15-44 42-50 10 26-2 47-31 59M648 102c0-27-15-44-42-50-10 26 2 47 31 59" fill="#e6ad52" stroke="#9d4d5c" stroke-width="3"/>
+    <path d="M302 95c0-38 22-65 58-65s58 27 58 65c-20 11-39 17-58 17s-38-6-58-17z" fill="#fbf7ef" stroke="#29394e" stroke-width="5"/>
+    <path d="M320 68h80M320 84h80M337 52h46" stroke="#c95f50" stroke-width="5"/>
+    <path d="M349 31l11-16 11 16" stroke="#e6ad52" stroke-width="4"/>
+  </g>
+</svg>

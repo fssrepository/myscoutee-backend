@@ -1,0 +1,71 @@
+PURPOSE
+Create a planning storyboard board, not a final video, for two autobiographical
+UK journeys made while the Founder was living very frugally in a crowded London
+shared house. The emotional contrast is essential: a constricted private life
+beside a vast public world. He accepts discomfort for discovery, but companions
+have different limits around time, money and comfort. Nobody is judged for those
+limits. Premium painterly cinematic 2.5D style, 9:16 portrait compositions.
+
+IDENTITY AND TONE
+Use the approved Founder identity and stable clothes. Curious, self-aware and
+resourceful, never a heroic explorer or luxury tourist. Ordinary companions are
+autonomous adults, not interchangeable travel props. Humor is dry and humane.
+No tourism-ad gloss, national stereotypes, flags, fake archive footage, readable
+tickets, brand marks or invented claims.
+
+BOARD A — THE EXACT BUT OVER-COMPRESSED CIRCUIT
+Show five vertically connected panels for a journey planned as:
+London → Manchester → Liverpool → Barmouth → Cardiff → London.
+The Founder plans the complete route for five people: two couples and himself.
+He cannot drive, so they rent a car and one acquaintance travelling as a member
+of the group drives it; never show a hired or uniformed chauffeur. Unbranded
+budget hotels provide the overnight accommodation. Everything works on time,
+yet the three-day pace is exhausting because nobody can make a fourth day
+available. Show a
+precise folded road route, five people and luggage entering the rental car, the
+companion at the wheel, a restrained budget-hotel check-in beat, a very short shared laugh,
+then tired faces arriving exactly on schedule. The problem is compatible
+availability, not bad planning and not bad friends. Show no readable hotel brand.
+
+Possible city anchors — all require Founder confirmation before final use:
+- MANCHESTER CONFIRM: John Rylands Library Gothic reading room or exterior;
+  Manchester Cathedral; Manchester Art Gallery; National Football Museum.
+- LIVERPOOL CONFIRM: Pier Head and the Three Graces; Royal Albert Dock; the
+  Mersey waterfront or ferry; Cavern/Beatles context only if actually visited.
+- NORTH WALES LOCKED — BARMOUTH: very wide low-tide sand at the mouth of the
+  Mawddach Estuary, with sea ahead and the town held between the surrounding
+  mountains and coast. From far out on wet sand, look back toward Barmouth on
+  the slope. Do not substitute another North Wales village.
+- CARDIFF CONFIRM: Cardiff Castle; Victorian arcades; Cardiff Bay, Wales
+  Millennium Centre or waterfront only if actually visited.
+- LONDON is the departure and return frame, not another landmark checklist.
+
+BOARD B — THE ONE-POUND SCOTTISH ADVENTURE
+Show five vertically connected panels:
+1. A one-pound overnight coach leaves London for Edinburgh. Inside, another
+   passenger removes shoes; the Founder quietly turns toward the cold window.
+   The joke is his willingness to tolerate the shared-coach smell for adventure,
+   never the passenger's body or poverty.
+2. Edinburgh dawn. Candidate anchors requiring confirmation: Old Town stone,
+   Royal Mile, Edinburgh Castle silhouette or Arthur's Seat.
+3. The Highlands and Loch Ness, treated as a real immense landscape, not a
+   monster gag. Add Urquhart Castle only if confirmed.
+4. Glasgow, western Scotland: a small powerboat on the River Clyde passes bridges
+   and industrial waterfront. The Clyde is strongly supported by the memory but
+   still requires visual recognition before final lock.
+5. At an ordinary ticket counter, a German tourist hesitates at the price of a
+   child's ticket. The Founder almost offers to pay so the child can join. The
+   moment is generosity meeting different budgets; nationality is context, not
+   the punchline. No readable price and no claim that payment occurred.
+
+CONNECTION TO THE PRODUCT STORY
+End the board with two unresolved motifs, not product UI: one empty day in the
+compressed circuit and one empty seat beside the Founder. Later MyScoutee scenes
+may answer this with private priorities, an independently declined invitation,
+an open event place and another adult choosing to accept. Never imply forced or
+automatic substitution, guaranteed companionship or that people are equivalent.
+
+OUTPUT
+One clean reference board with clearly separated panels and no generated text.
+The editor adds city names, CONFIRM status and route arrows in post. Generate no
+motion and no additional people beyond what each panel needs.

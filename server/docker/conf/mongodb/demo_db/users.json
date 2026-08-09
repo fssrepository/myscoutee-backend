@@ -7,12 +7,12 @@
     "activities": {
       "game": 106,
       "chats": 41,
-      "invitations": 17,
-      "events": 1,
-      "hosting": 32,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 6,
+      "events": 3,
+      "hosting": 14,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 3,
       "feedback": 0,
@@ -25,18 +25,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 62,
-        "active": 1,
-        "pending": 12,
-        "invitations": 17,
-        "hosting": 32,
-        "drafts": 2,
+        "all": 29,
+        "active": 3,
+        "pending": 6,
+        "invitations": 6,
+        "hosting": 14,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -47,7 +47,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 17
+      "notifications": 6
     },
     "affinity": 432507,
     "age": 28,
@@ -60,9 +60,9 @@
     "horoscope": "Taurus",
     "hostTier": "Platinum Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/74.jpg",
-      "https://randomuser.me/api/portraits/women/91.jpg",
-      "https://randomuser.me/api/portraits/women/8.jpg"
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/bf057de7c586eede7e84bdc7/photo-03/large.webp"
     ],
     "impressions": {
       "host": {
@@ -185,12 +185,12 @@
     "activities": {
       "game": 154,
       "chats": 30,
-      "invitations": 15,
-      "events": 6,
-      "hosting": 32,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 8,
+      "events": 5,
+      "hosting": 13,
+      "cars": 0,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -203,18 +203,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 63,
-        "active": 6,
-        "pending": 10,
-        "invitations": 15,
-        "hosting": 32,
-        "drafts": 2,
+        "all": 30,
+        "active": 5,
+        "pending": 4,
+        "invitations": 8,
+        "hosting": 13,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -225,7 +225,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 15
+      "notifications": 8
     },
     "affinity": 499225,
     "age": 31,
@@ -238,9 +238,7 @@
     "horoscope": "Libra",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/75.jpg",
-      "https://randomuser.me/api/portraits/men/92.jpg",
-      "https://randomuser.me/api/portraits/men/9.jpg"
+      "/media/public?key=images/demo-profiles/b29df68956f3fe15e04558de/photo-01/large.webp"
     ],
     "initials": "KB",
     "languages": [
@@ -269,12 +267,12 @@
     "activities": {
       "game": 109,
       "chats": 24,
-      "invitations": 10,
-      "events": 11,
-      "hosting": 31,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 5,
+      "events": 8,
+      "hosting": 13,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 8,
       "contacts": 0,
       "feedback": 1,
@@ -287,18 +285,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 58,
-        "active": 11,
-        "pending": 6,
-        "invitations": 10,
-        "hosting": 31,
-        "drafts": 2,
+        "all": 28,
+        "active": 8,
+        "pending": 2,
+        "invitations": 5,
+        "hosting": 13,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 8
       },
       "eventFeedback": {
@@ -309,7 +307,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 34
+      "notifications": 29
     },
     "affinity": 581523,
     "age": 30,
@@ -322,9 +320,8 @@
     "horoscope": "Cancer",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/76.jpg",
-      "https://randomuser.me/api/portraits/women/93.jpg",
-      "https://randomuser.me/api/portraits/women/10.jpg"
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
     ],
     "impressions": {
       "host": {
@@ -449,12 +446,12 @@
     "activities": {
       "game": 118,
       "chats": 9,
-      "invitations": 3,
-      "events": 12,
-      "hosting": 32,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 1,
+      "events": 6,
+      "hosting": 14,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -467,18 +464,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 55,
-        "active": 12,
-        "pending": 8,
-        "invitations": 3,
-        "hosting": 32,
+        "all": 26,
+        "active": 6,
+        "pending": 5,
+        "invitations": 1,
+        "hosting": 14,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -489,7 +486,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 3
+      "notifications": 1
     },
     "affinity": 440843,
     "age": 29,
@@ -502,9 +499,8 @@
     "horoscope": "Scorpio",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/77.jpg",
-      "https://randomuser.me/api/portraits/women/94.jpg",
-      "https://randomuser.me/api/portraits/women/11.jpg"
+      "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/1b1c70be2349b3359a8f6f94/photo-02/large.webp"
     ],
     "impressions": {
       "host": {
@@ -626,11 +622,11 @@
       "game": 121,
       "chats": 9,
       "invitations": 2,
-      "events": 13,
-      "hosting": 3,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 6,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -643,18 +639,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 13,
-        "pending": 3,
+        "all": 10,
+        "active": 6,
+        "pending": 1,
         "invitations": 2,
-        "hosting": 3,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -678,9 +674,8 @@
     "horoscope": "Pisces",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/78.jpg",
-      "https://randomuser.me/api/portraits/women/95.jpg",
-      "https://randomuser.me/api/portraits/women/12.jpg"
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/178e8d0cbe164fa3fede5884/photo-02/large.webp"
     ],
     "initials": "LP",
     "languages": [
@@ -709,12 +704,12 @@
     "activities": {
       "game": 107,
       "chats": 4,
-      "invitations": 1,
-      "events": 17,
-      "hosting": 3,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 10,
+      "hosting": 2,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -727,18 +722,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 17,
+        "all": 12,
+        "active": 10,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 3,
+        "invitations": 0,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -749,7 +744,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 620130,
     "age": 26,
@@ -762,9 +757,9 @@
     "horoscope": "Leo",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/79.jpg",
-      "https://randomuser.me/api/portraits/women/96.jpg",
-      "https://randomuser.me/api/portraits/women/13.jpg"
+      "/media/public?key=images/demo-profiles/f4b2ebd8f56628ab7df58221/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/f4b2ebd8f56628ab7df58221/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/f4b2ebd8f56628ab7df58221/photo-03/large.webp"
     ],
     "initials": "IB",
     "languages": [
@@ -794,11 +789,11 @@
       "game": 106,
       "chats": 5,
       "invitations": 1,
-      "events": 14,
-      "hosting": 3,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 5,
+      "hosting": 1,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -811,18 +806,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 20,
-        "active": 14,
-        "pending": 2,
+        "all": 7,
+        "active": 5,
+        "pending": 0,
         "invitations": 1,
-        "hosting": 3,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -846,9 +841,7 @@
     "horoscope": "Pisces",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/80.jpg",
-      "https://randomuser.me/api/portraits/men/97.jpg",
-      "https://randomuser.me/api/portraits/men/14.jpg"
+      "/media/public?key=images/demo-profiles/cdd937e0adcbd1a5e38f3ceb/photo-01/large.webp"
     ],
     "initials": "NH",
     "languages": [
@@ -877,11 +870,11 @@
       "game": 104,
       "chats": 0,
       "invitations": 1,
-      "events": 21,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 13,
+      "hosting": 1,
+      "cars": 1,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -894,18 +887,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 24,
-        "active": 21,
+        "all": 15,
+        "active": 13,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -929,9 +922,8 @@
     "horoscope": "Capricorn",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/81.jpg",
-      "https://randomuser.me/api/portraits/men/98.jpg",
-      "https://randomuser.me/api/portraits/men/15.jpg"
+      "/media/public?key=images/demo-profiles/1d7d3545ba5e0f1d63918589/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/1d7d3545ba5e0f1d63918589/photo-02/large.webp"
     ],
     "initials": "ER",
     "languages": [
@@ -960,12 +952,12 @@
     "activities": {
       "game": 104,
       "chats": 0,
-      "invitations": 1,
-      "events": 23,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 13,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -978,18 +970,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 26,
-        "active": 23,
+        "all": 14,
+        "active": 13,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1000,7 +992,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 227821,
     "age": 25,
@@ -1013,9 +1005,8 @@
     "horoscope": "Aries",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/82.jpg",
-      "https://randomuser.me/api/portraits/men/99.jpg",
-      "https://randomuser.me/api/portraits/men/16.jpg"
+      "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/7822c5f99eff99d63abe8933/photo-02/large.webp"
     ],
     "initials": "KM",
     "languages": [
@@ -1044,11 +1035,11 @@
       "game": 104,
       "chats": 8,
       "invitations": 1,
-      "events": 18,
-      "hosting": 33,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 8,
+      "hosting": 12,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1061,18 +1052,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 52,
-        "active": 18,
+        "all": 21,
+        "active": 8,
         "pending": 0,
         "invitations": 1,
-        "hosting": 33,
+        "hosting": 12,
         "drafts": 1,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1096,9 +1087,8 @@
     "horoscope": "Capricorn",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/10.jpg",
-      "https://randomuser.me/api/portraits/men/27.jpg",
-      "https://randomuser.me/api/portraits/men/44.jpg"
+      "/media/public?key=images/demo-profiles/d182041b8a54132d5168034f/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/d182041b8a54132d5168034f/photo-02/large.webp"
     ],
     "initials": "LH",
     "languages": [
@@ -1127,12 +1117,12 @@
     "activities": {
       "game": 120,
       "chats": 15,
-      "invitations": 1,
-      "events": 27,
-      "hosting": 3,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 13,
+      "hosting": 2,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1145,18 +1135,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 31,
-        "active": 27,
+        "all": 15,
+        "active": 13,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 3,
-        "drafts": 1,
+        "invitations": 0,
+        "hosting": 2,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1167,7 +1157,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 33,
@@ -1180,9 +1170,9 @@
     "horoscope": "Libra",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/11.jpg",
-      "https://randomuser.me/api/portraits/men/28.jpg",
-      "https://randomuser.me/api/portraits/men/45.jpg"
+      "/media/public?key=images/demo-profiles/d04cd419e735549e3f312977/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/d04cd419e735549e3f312977/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/d04cd419e735549e3f312977/photo-03/large.webp"
     ],
     "initials": "TL",
     "languages": [
@@ -1211,11 +1201,11 @@
       "game": 118,
       "chats": 15,
       "invitations": 1,
-      "events": 21,
-      "hosting": 32,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 14,
+      "hosting": 9,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1228,18 +1218,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 55,
-        "active": 21,
+        "all": 25,
+        "active": 14,
         "pending": 1,
         "invitations": 1,
-        "hosting": 32,
+        "hosting": 9,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1263,9 +1253,7 @@
     "horoscope": "Cancer",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/12.jpg",
-      "https://randomuser.me/api/portraits/men/29.jpg",
-      "https://randomuser.me/api/portraits/men/46.jpg"
+      "/media/public?key=images/demo-profiles/eb1ca0b761885bb0763e2929/photo-01/large.webp"
     ],
     "initials": "MG",
     "languages": [
@@ -1295,11 +1283,11 @@
       "game": 150,
       "chats": 18,
       "invitations": 1,
-      "events": 28,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 19,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1312,18 +1300,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 31,
-        "active": 28,
+        "all": 21,
+        "active": 19,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1347,9 +1335,8 @@
     "horoscope": "Taurus",
     "hostTier": "Platinum Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/84.jpg",
-      "https://randomuser.me/api/portraits/women/1.jpg",
-      "https://randomuser.me/api/portraits/women/18.jpg"
+      "/media/public?key=images/demo-profiles/fcad6954169063f106a7a240/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/fcad6954169063f106a7a240/photo-02/large.webp"
     ],
     "initials": "EP",
     "languages": [
@@ -1378,12 +1365,12 @@
     "activities": {
       "game": 153,
       "chats": 16,
-      "invitations": 1,
-      "events": 25,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 9,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1396,18 +1383,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 30,
-        "active": 25,
+        "all": 12,
+        "active": 9,
         "pending": 2,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1418,7 +1405,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -1431,9 +1418,8 @@
     "horoscope": "Libra",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/91.jpg",
-      "https://randomuser.me/api/portraits/men/8.jpg",
-      "https://randomuser.me/api/portraits/men/25.jpg"
+      "/media/public?key=images/demo-profiles/2d520f3c98b0440c1556f4af/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/2d520f3c98b0440c1556f4af/photo-02/large.webp"
     ],
     "initials": "LP",
     "languages": [
@@ -1463,11 +1449,11 @@
       "game": 111,
       "chats": 15,
       "invitations": 1,
-      "events": 26,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 8,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1480,18 +1466,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 30,
-        "active": 26,
+        "all": 10,
+        "active": 8,
         "pending": 1,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1515,9 +1501,8 @@
     "horoscope": "Cancer",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/98.jpg",
-      "https://randomuser.me/api/portraits/women/15.jpg",
-      "https://randomuser.me/api/portraits/women/32.jpg"
+      "/media/public?key=images/demo-profiles/0216b1ceb256d6f2c89073b8/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/0216b1ceb256d6f2c89073b8/photo-02/large.webp"
     ],
     "initials": "SL",
     "languages": [
@@ -1546,12 +1531,12 @@
     "activities": {
       "game": 104,
       "chats": 18,
-      "invitations": 1,
-      "events": 24,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 1,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1564,18 +1549,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 28,
-        "active": 24,
+        "all": 21,
+        "active": 19,
         "pending": 1,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1586,7 +1571,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -1599,9 +1584,9 @@
     "horoscope": "Scorpio",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/5.jpg",
-      "https://randomuser.me/api/portraits/men/22.jpg",
-      "https://randomuser.me/api/portraits/men/39.jpg"
+      "/media/public?key=images/demo-profiles/eac11b0685f9799953a40dd4/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/eac11b0685f9799953a40dd4/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/eac11b0685f9799953a40dd4/photo-03/large.webp"
     ],
     "initials": "NL",
     "languages": [
@@ -1629,12 +1614,12 @@
     "activities": {
       "game": 139,
       "chats": 11,
-      "invitations": 1,
-      "events": 21,
-      "hosting": 2,
-      "cars": 2,
+      "invitations": 0,
+      "events": 30,
+      "hosting": 0,
+      "cars": 1,
       "accommodation": 2,
-      "supplies": 2,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1647,18 +1632,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 26,
-        "active": 21,
+        "all": 32,
+        "active": 30,
         "pending": 2,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
+        "cars": 1,
         "accommodation": 2,
-        "supplies": 2,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1669,7 +1654,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -1682,9 +1667,7 @@
     "horoscope": "Pisces",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/21.jpg",
-      "https://randomuser.me/api/portraits/women/29.jpg",
-      "https://randomuser.me/api/portraits/women/46.jpg"
+      "/media/public?key=images/demo-profiles/7313a9379f60200cba7b9f71/photo-01/large.webp"
     ],
     "initials": "OR",
     "languages": [
@@ -1713,12 +1696,12 @@
     "activities": {
       "game": 104,
       "chats": 13,
-      "invitations": 1,
-      "events": 20,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1731,18 +1714,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 23,
-        "active": 20,
+        "all": 7,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1753,7 +1736,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 620130,
     "age": 29,
@@ -1766,9 +1749,8 @@
     "horoscope": "Leo",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/19.jpg",
-      "https://randomuser.me/api/portraits/men/36.jpg",
-      "https://randomuser.me/api/portraits/men/53.jpg"
+      "/media/public?key=images/demo-profiles/f6f22ba0a6f14cfcf4585d47/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/f6f22ba0a6f14cfcf4585d47/photo-02/large.webp"
     ],
     "initials": "ER",
     "languages": [
@@ -1797,12 +1779,12 @@
     "activities": {
       "game": 149,
       "chats": 13,
-      "invitations": 1,
-      "events": 16,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 7,
+      "hosting": 0,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1815,18 +1797,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 16,
+        "all": 7,
+        "active": 7,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1837,7 +1819,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -1850,9 +1832,8 @@
     "horoscope": "Pisces",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/26.jpg",
-      "https://randomuser.me/api/portraits/women/43.jpg",
-      "https://randomuser.me/api/portraits/women/60.jpg"
+      "/media/public?key=images/demo-profiles/0c3ab5da9af33d4e688e809c/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/0c3ab5da9af33d4e688e809c/photo-02/large.webp"
     ],
     "initials": "MG",
     "languages": [
@@ -1880,12 +1861,12 @@
     "activities": {
       "game": 126,
       "chats": 8,
-      "invitations": 1,
-      "events": 14,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 22,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1898,18 +1879,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 17,
-        "active": 14,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "all": 23,
+        "active": 22,
+        "pending": 1,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -1920,7 +1901,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -1933,9 +1914,8 @@
     "horoscope": "Capricorn",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/33.jpg",
-      "https://randomuser.me/api/portraits/men/50.jpg",
-      "https://randomuser.me/api/portraits/men/67.jpg"
+      "/media/public?key=images/demo-profiles/76da95a9109da485555c0d25/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/76da95a9109da485555c0d25/photo-02/large.webp"
     ],
     "initials": "MG",
     "languages": [
@@ -1965,11 +1945,11 @@
       "game": 127,
       "chats": 5,
       "invitations": 1,
-      "events": 10,
-      "hosting": 2,
-      "cars": 2,
+      "events": 19,
+      "hosting": 0,
+      "cars": 0,
       "accommodation": 2,
-      "supplies": 2,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -1982,18 +1962,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 13,
-        "active": 10,
+        "all": 20,
+        "active": 19,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
+        "cars": 0,
         "accommodation": 2,
-        "supplies": 2,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2017,9 +1997,9 @@
     "horoscope": "Aries",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/40.jpg",
-      "https://randomuser.me/api/portraits/women/57.jpg",
-      "https://randomuser.me/api/portraits/women/92.jpg"
+      "/media/public?key=images/demo-profiles/0b8e5df4ec85d858c304a350/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/0b8e5df4ec85d858c304a350/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/0b8e5df4ec85d858c304a350/photo-03/large.webp"
     ],
     "initials": "LS",
     "languages": [
@@ -2047,12 +2027,12 @@
     "activities": {
       "game": 115,
       "chats": 8,
-      "invitations": 1,
-      "events": 10,
-      "hosting": 3,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 2,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2065,18 +2045,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 10,
+        "all": 7,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 3,
-        "drafts": 1,
+        "invitations": 0,
+        "hosting": 2,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2087,7 +2067,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -2100,9 +2080,7 @@
     "horoscope": "Capricorn",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/47.jpg",
-      "https://randomuser.me/api/portraits/men/64.jpg",
-      "https://randomuser.me/api/portraits/men/26.jpg"
+      "/media/public?key=images/demo-profiles/4da20eb049179e73d4757808/photo-01/large.webp"
     ],
     "initials": "LS",
     "languages": [
@@ -2131,12 +2109,12 @@
     "activities": {
       "game": 110,
       "chats": 1,
-      "invitations": 1,
-      "events": 7,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 4,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2149,18 +2127,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 10,
-        "active": 7,
+        "all": 4,
+        "active": 4,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2171,7 +2149,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -2184,9 +2162,8 @@
     "horoscope": "Libra",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/54.jpg",
-      "https://randomuser.me/api/portraits/women/71.jpg",
-      "https://randomuser.me/api/portraits/women/88.jpg"
+      "/media/public?key=images/demo-profiles/9184901a15076d32ea8b626f/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9184901a15076d32ea8b626f/photo-02/large.webp"
     ],
     "initials": "NH",
     "languages": [
@@ -2214,12 +2191,12 @@
     "activities": {
       "game": 175,
       "chats": 3,
-      "invitations": 1,
-      "events": 6,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 20,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2232,18 +2209,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 9,
-        "active": 6,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "all": 21,
+        "active": 20,
+        "pending": 1,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2254,7 +2231,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -2267,9 +2244,8 @@
     "horoscope": "Cancer",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/61.jpg",
-      "https://randomuser.me/api/portraits/men/78.jpg",
-      "https://randomuser.me/api/portraits/men/95.jpg"
+      "/media/public?key=images/demo-profiles/e1dccfc3443239865c6ac69a/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/e1dccfc3443239865c6ac69a/photo-02/large.webp"
     ],
     "initials": "OH",
     "languages": [
@@ -2298,12 +2274,12 @@
     "activities": {
       "game": 153,
       "chats": 1,
-      "invitations": 1,
-      "events": 4,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 24,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2316,18 +2292,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 7,
-        "active": 4,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "all": 25,
+        "active": 24,
+        "pending": 1,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2338,7 +2314,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -2351,9 +2327,8 @@
     "horoscope": "Taurus",
     "hostTier": "Platinum Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/68.jpg",
-      "https://randomuser.me/api/portraits/women/85.jpg",
-      "https://randomuser.me/api/portraits/women/2.jpg"
+      "/media/public?key=images/demo-profiles/4b5bad1292fb6db05dc0e455/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/4b5bad1292fb6db05dc0e455/photo-02/large.webp"
     ],
     "initials": "CB",
     "languages": [
@@ -2382,12 +2357,12 @@
     "activities": {
       "game": 129,
       "chats": 0,
-      "invitations": 1,
-      "events": 5,
-      "hosting": 2,
+      "invitations": 0,
+      "events": 3,
+      "hosting": 1,
       "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2400,18 +2375,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 8,
-        "active": 5,
+        "all": 4,
+        "active": 3,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
         "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2422,7 +2397,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -2435,9 +2410,9 @@
     "horoscope": "Libra",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/76.jpg",
-      "https://randomuser.me/api/portraits/men/93.jpg",
-      "https://randomuser.me/api/portraits/men/55.jpg"
+      "/media/public?key=images/demo-profiles/ed4924c22a5240a54e48c0b5/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/ed4924c22a5240a54e48c0b5/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/ed4924c22a5240a54e48c0b5/photo-03/large.webp"
     ],
     "initials": "EB",
     "languages": [
@@ -2466,12 +2441,12 @@
     "activities": {
       "game": 104,
       "chats": 2,
-      "invitations": 1,
-      "events": 7,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 2,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2484,18 +2459,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 10,
-        "active": 7,
+        "all": 2,
+        "active": 2,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2506,7 +2481,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 581523,
     "age": 26,
@@ -2519,9 +2494,7 @@
     "horoscope": "Cancer",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/82.jpg",
-      "https://randomuser.me/api/portraits/women/99.jpg",
-      "https://randomuser.me/api/portraits/women/16.jpg"
+      "/media/public?key=images/demo-profiles/a0fb804ad6f347d6a9dab526/photo-01/large.webp"
     ],
     "initials": "IR",
     "languages": [
@@ -2550,12 +2523,12 @@
     "activities": {
       "game": 104,
       "chats": 2,
-      "invitations": 1,
-      "events": 8,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2568,18 +2541,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 19,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2590,7 +2563,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -2603,9 +2576,8 @@
     "horoscope": "Scorpio",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/89.jpg",
-      "https://randomuser.me/api/portraits/men/6.jpg",
-      "https://randomuser.me/api/portraits/men/23.jpg"
+      "/media/public?key=images/demo-profiles/0f9350e50f1ffc3cf002b7ed/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/0f9350e50f1ffc3cf002b7ed/photo-02/large.webp"
     ],
     "initials": "LR",
     "languages": [
@@ -2633,12 +2605,12 @@
     "activities": {
       "game": 122,
       "chats": 4,
-      "invitations": 1,
-      "events": 11,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2651,18 +2623,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 11,
+        "all": 19,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2673,7 +2645,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -2686,9 +2658,8 @@
     "horoscope": "Pisces",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/5.jpg",
-      "https://randomuser.me/api/portraits/women/31.jpg",
-      "https://randomuser.me/api/portraits/women/30.jpg"
+      "/media/public?key=images/demo-profiles/9d3ba3d74edabe4695e6d3f9/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/9d3ba3d74edabe4695e6d3f9/photo-02/large.webp"
     ],
     "initials": "AB",
     "languages": [
@@ -2718,11 +2689,11 @@
       "game": 106,
       "chats": 5,
       "invitations": 1,
-      "events": 12,
-      "hosting": 2,
-      "cars": 2,
+      "events": 3,
+      "hosting": 0,
+      "cars": 0,
       "accommodation": 2,
-      "supplies": 2,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2735,18 +2706,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
-        "active": 12,
+        "all": 4,
+        "active": 3,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
+        "cars": 0,
         "accommodation": 2,
-        "supplies": 2,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2770,9 +2741,8 @@
     "horoscope": "Leo",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/3.jpg",
-      "https://randomuser.me/api/portraits/men/20.jpg",
-      "https://randomuser.me/api/portraits/men/37.jpg"
+      "/media/public?key=images/demo-profiles/8f6ff3752a1f0912cd63e912/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/8f6ff3752a1f0912cd63e912/photo-02/large.webp"
     ],
     "initials": "RB",
     "languages": [
@@ -2801,12 +2771,12 @@
     "activities": {
       "game": 115,
       "chats": 3,
-      "invitations": 1,
-      "events": 13,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2819,18 +2789,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 16,
-        "active": 13,
+        "all": 7,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2841,7 +2811,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -2854,9 +2824,9 @@
     "horoscope": "Pisces",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/19.jpg",
-      "https://randomuser.me/api/portraits/women/27.jpg",
-      "https://randomuser.me/api/portraits/women/44.jpg"
+      "/media/public?key=images/demo-profiles/b0971e779dbdb71f9327eabb/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/b0971e779dbdb71f9327eabb/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/b0971e779dbdb71f9327eabb/photo-03/large.webp"
     ],
     "initials": "ZT",
     "languages": [
@@ -2884,12 +2854,12 @@
     "activities": {
       "game": 121,
       "chats": 5,
-      "invitations": 1,
-      "events": 15,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 19,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 1,
@@ -2902,18 +2872,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 18,
-        "active": 15,
+        "all": 19,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -2924,7 +2894,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -2937,9 +2907,7 @@
     "horoscope": "Capricorn",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/17.jpg",
-      "https://randomuser.me/api/portraits/men/34.jpg",
-      "https://randomuser.me/api/portraits/men/51.jpg"
+      "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
     ],
     "initials": "AT",
     "languages": [
@@ -2968,12 +2936,12 @@
     "activities": {
       "game": 104,
       "chats": 6,
-      "invitations": 1,
-      "events": 16,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -2986,18 +2954,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 16,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3008,7 +2976,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -3021,9 +2989,8 @@
     "horoscope": "Aries",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/24.jpg",
-      "https://randomuser.me/api/portraits/women/41.jpg",
-      "https://randomuser.me/api/portraits/women/58.jpg"
+      "/media/public?key=images/demo-profiles/d94ebcdf7bf9c8f33bb3f32c/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/d94ebcdf7bf9c8f33bb3f32c/photo-02/large.webp"
     ],
     "initials": "ER",
     "languages": [
@@ -3051,12 +3018,12 @@
     "activities": {
       "game": 107,
       "chats": 5,
-      "invitations": 1,
-      "events": 18,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 1,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3069,18 +3036,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 18,
+        "all": 6,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3091,7 +3058,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -3104,9 +3071,8 @@
     "horoscope": "Capricorn",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/31.jpg",
-      "https://randomuser.me/api/portraits/men/48.jpg",
-      "https://randomuser.me/api/portraits/men/65.jpg"
+      "/media/public?key=images/demo-profiles/904ee3c526298f6921cde3f3/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/904ee3c526298f6921cde3f3/photo-02/large.webp"
     ],
     "initials": "LR",
     "languages": [
@@ -3135,12 +3101,12 @@
     "activities": {
       "game": 105,
       "chats": 9,
-      "invitations": 1,
-      "events": 18,
-      "hosting": 2,
-      "cars": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 0,
       "accommodation": 2,
-      "supplies": 2,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3153,18 +3119,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 18,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
+        "cars": 0,
         "accommodation": 2,
-        "supplies": 2,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3175,7 +3141,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -3188,9 +3154,8 @@
     "horoscope": "Libra",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/38.jpg",
-      "https://randomuser.me/api/portraits/women/55.jpg",
-      "https://randomuser.me/api/portraits/women/72.jpg"
+      "/media/public?key=images/demo-profiles/4a008502646a200488911f45/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/4a008502646a200488911f45/photo-02/large.webp"
     ],
     "initials": "SB",
     "languages": [
@@ -3218,12 +3183,12 @@
     "activities": {
       "game": 149,
       "chats": 8,
-      "invitations": 1,
-      "events": 19,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3236,18 +3201,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 22,
-        "active": 19,
+        "all": 6,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3258,7 +3223,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -3271,9 +3236,9 @@
     "horoscope": "Cancer",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/54.jpg",
-      "https://randomuser.me/api/portraits/men/62.jpg",
-      "https://randomuser.me/api/portraits/men/79.jpg"
+      "/media/public?key=images/demo-profiles/e904dad402b47dd2cdaa8bec/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/e904dad402b47dd2cdaa8bec/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/e904dad402b47dd2cdaa8bec/photo-03/large.webp"
     ],
     "initials": "NB",
     "languages": [
@@ -3302,12 +3267,12 @@
     "activities": {
       "game": 106,
       "chats": 5,
-      "invitations": 1,
-      "events": 18,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 4,
+      "hosting": 0,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3320,18 +3285,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 18,
+        "all": 4,
+        "active": 4,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3342,7 +3307,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -3355,9 +3320,7 @@
     "horoscope": "Taurus",
     "hostTier": "Platinum Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/52.jpg",
-      "https://randomuser.me/api/portraits/women/69.jpg",
-      "https://randomuser.me/api/portraits/women/86.jpg"
+      "/media/public?key=images/demo-profiles/25f4744ead36d038064d62c3/photo-01/large.webp"
     ],
     "initials": "OT",
     "languages": [
@@ -3386,12 +3349,12 @@
     "activities": {
       "game": 114,
       "chats": 11,
-      "invitations": 1,
-      "events": 19,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3404,18 +3367,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 22,
-        "active": 19,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3426,7 +3389,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -3439,9 +3402,8 @@
     "horoscope": "Libra",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/59.jpg",
-      "https://randomuser.me/api/portraits/men/85.jpg",
-      "https://randomuser.me/api/portraits/men/2.jpg"
+      "/media/public?key=images/demo-profiles/c100132b3ae88b47890def59/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/c100132b3ae88b47890def59/photo-02/large.webp"
     ],
     "initials": "ET",
     "languages": [
@@ -3471,11 +3433,11 @@
       "game": 118,
       "chats": 6,
       "invitations": 1,
-      "events": 17,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 5,
+      "hosting": 0,
+      "cars": 1,
+      "accommodation": 1,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3488,18 +3450,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 20,
-        "active": 17,
+        "all": 6,
+        "active": 5,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 1,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3523,9 +3485,8 @@
     "horoscope": "Cancer",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/66.jpg",
-      "https://randomuser.me/api/portraits/women/83.jpg",
-      "https://randomuser.me/api/portraits/women/0.jpg"
+      "/media/public?key=images/demo-profiles/c033e546ef7c928fb8cf073b/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/c033e546ef7c928fb8cf073b/photo-02/large.webp"
     ],
     "initials": "MP",
     "languages": [
@@ -3554,12 +3515,12 @@
     "activities": {
       "game": 104,
       "chats": 4,
-      "invitations": 1,
-      "events": 16,
+      "invitations": 0,
+      "events": 3,
       "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3572,18 +3533,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 16,
+        "all": 5,
+        "active": 3,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 0,
         "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3594,7 +3555,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -3607,9 +3568,8 @@
     "horoscope": "Scorpio",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/73.jpg",
-      "https://randomuser.me/api/portraits/men/90.jpg",
-      "https://randomuser.me/api/portraits/men/7.jpg"
+      "/media/public?key=images/demo-profiles/ec342d9af3f2cfd6adfd4ee5/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/ec342d9af3f2cfd6adfd4ee5/photo-02/large.webp"
     ],
     "initials": "MP",
     "languages": [
@@ -3637,12 +3597,12 @@
     "activities": {
       "game": 104,
       "chats": 3,
-      "invitations": 1,
-      "events": 17,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3655,18 +3615,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 20,
-        "active": 17,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3677,7 +3637,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -3690,9 +3650,9 @@
     "horoscope": "Pisces",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/80.jpg",
-      "https://randomuser.me/api/portraits/women/97.jpg",
-      "https://randomuser.me/api/portraits/women/14.jpg"
+      "/media/public?key=images/demo-profiles/931a01221376d8e28a068fe8/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/931a01221376d8e28a068fe8/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/931a01221376d8e28a068fe8/photo-03/large.webp"
     ],
     "initials": "LL",
     "languages": [
@@ -3722,11 +3682,11 @@
       "game": 104,
       "chats": 8,
       "invitations": 1,
-      "events": 27,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "events": 11,
+      "hosting": 1,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 1,
@@ -3739,18 +3699,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 31,
-        "active": 27,
+        "all": 14,
+        "active": 11,
         "pending": 1,
         "invitations": 1,
-        "hosting": 2,
-        "drafts": 1,
+        "hosting": 1,
+        "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3774,9 +3734,7 @@
     "horoscope": "Leo",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/87.jpg",
-      "https://randomuser.me/api/portraits/men/4.jpg",
-      "https://randomuser.me/api/portraits/men/21.jpg"
+      "/media/public?key=images/demo-profiles/23820c1e76d3bd843f61c799/photo-01/large.webp"
     ],
     "initials": "LL",
     "languages": [
@@ -3805,12 +3763,12 @@
     "activities": {
       "game": 104,
       "chats": 3,
-      "invitations": 1,
-      "events": 10,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 1,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3823,18 +3781,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 13,
-        "active": 10,
+        "all": 6,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3845,7 +3803,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -3858,9 +3816,8 @@
     "horoscope": "Pisces",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/3.jpg",
-      "https://randomuser.me/api/portraits/women/20.jpg",
-      "https://randomuser.me/api/portraits/women/28.jpg"
+      "/media/public?key=images/demo-profiles/63bae8417bd352e5013c2e93/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/63bae8417bd352e5013c2e93/photo-02/large.webp"
     ],
     "initials": "NR",
     "languages": [
@@ -3888,12 +3845,12 @@
     "activities": {
       "game": 124,
       "chats": 4,
-      "invitations": 1,
-      "events": 12,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3906,18 +3863,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
-        "active": 12,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -3928,7 +3885,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -3941,9 +3898,8 @@
     "horoscope": "Capricorn",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/1.jpg",
-      "https://randomuser.me/api/portraits/men/18.jpg",
-      "https://randomuser.me/api/portraits/men/35.jpg"
+      "/media/public?key=images/demo-profiles/41f4659dbd75a03abc20cd6d/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/41f4659dbd75a03abc20cd6d/photo-02/large.webp"
     ],
     "initials": "OR",
     "languages": [
@@ -3972,12 +3928,12 @@
     "activities": {
       "game": 104,
       "chats": 5,
-      "invitations": 1,
-      "events": 8,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -3990,18 +3946,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -4012,7 +3968,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -4025,9 +3981,8 @@
     "horoscope": "Aries",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/17.jpg",
-      "https://randomuser.me/api/portraits/women/25.jpg",
-      "https://randomuser.me/api/portraits/women/42.jpg"
+      "/media/public?key=images/demo-profiles/af70e41dbe826cbd7d8b3500/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/af70e41dbe826cbd7d8b3500/photo-02/large.webp"
     ],
     "initials": "CG",
     "languages": [
@@ -4055,12 +4010,12 @@
     "activities": {
       "game": 105,
       "chats": 0,
-      "invitations": 1,
-      "events": 8,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 3,
+      "hosting": 0,
+      "cars": 1,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -4073,18 +4028,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 3,
+        "active": 3,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 1,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -4095,7 +4050,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -4108,9 +4063,9 @@
     "horoscope": "Capricorn",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/24.jpg",
-      "https://randomuser.me/api/portraits/men/32.jpg",
-      "https://randomuser.me/api/portraits/men/49.jpg"
+      "/media/public?key=images/demo-profiles/0cc9990d08304ab26ee67784/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/0cc9990d08304ab26ee67784/photo-02/large.webp",
+      "/media/public?key=images/demo-profiles/0cc9990d08304ab26ee67784/photo-03/large.webp"
     ],
     "initials": "EG",
     "languages": [
@@ -4139,12 +4094,12 @@
     "activities": {
       "game": 104,
       "chats": 3,
-      "invitations": 1,
-      "events": 11,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "invitations": 0,
+      "events": 5,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 1,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -4157,18 +4112,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 11,
+        "all": 5,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 1,
         "tickets": 0
       },
       "eventFeedback": {
@@ -4179,7 +4134,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -4192,9 +4147,7 @@
     "horoscope": "Libra",
     "hostTier": "Silver Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/22.jpg",
-      "https://randomuser.me/api/portraits/women/39.jpg",
-      "https://randomuser.me/api/portraits/women/56.jpg"
+      "/media/public?key=images/demo-profiles/e76d63199eff33a6945cb797/photo-01/large.webp"
     ],
     "initials": "IS",
     "languages": [
@@ -4223,10 +4176,10 @@
       "game": 134,
       "chats": 4,
       "invitations": 1,
-      "events": 8,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
+      "events": 4,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
       "supplies": 2,
       "tickets": 0,
       "contacts": 0,
@@ -4240,17 +4193,17 @@
         "appSupport": 0
       },
       "event": {
-        "all": 11,
-        "active": 8,
+        "all": 5,
+        "active": 4,
         "pending": 0,
         "invitations": 1,
-        "hosting": 2,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
+        "cars": 0,
+        "accommodation": 0,
         "supplies": 2,
         "tickets": 0
       },
@@ -4275,9 +4228,8 @@
     "horoscope": "Cancer",
     "hostTier": "Bronze Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/38.jpg",
-      "https://randomuser.me/api/portraits/men/0.jpg",
-      "https://randomuser.me/api/portraits/men/63.jpg"
+      "/media/public?key=images/demo-profiles/f01086c19a00a6f46b6d41a7/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/f01086c19a00a6f46b6d41a7/photo-02/large.webp"
     ],
     "initials": "LS",
     "languages": [
@@ -4306,12 +4258,12 @@
     "activities": {
       "game": 127,
       "chats": 0,
-      "invitations": 1,
-      "events": 10,
+      "invitations": 0,
+      "events": 4,
       "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 2,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -4324,18 +4276,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 13,
-        "active": 10,
+        "all": 6,
+        "active": 4,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 0,
         "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 2,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -4346,7 +4298,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -4359,9 +4311,8 @@
     "horoscope": "Taurus",
     "hostTier": "Platinum Host",
     "images": [
-      "https://randomuser.me/api/portraits/women/36.jpg",
-      "https://randomuser.me/api/portraits/women/53.jpg",
-      "https://randomuser.me/api/portraits/women/70.jpg"
+      "/media/public?key=images/demo-profiles/f7bcd28c65ea349b4ee7aed2/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/f7bcd28c65ea349b4ee7aed2/photo-02/large.webp"
     ],
     "initials": "AH",
     "languages": [
@@ -4390,12 +4341,12 @@
     "activities": {
       "game": 114,
       "chats": 0,
-      "invitations": 1,
-      "events": 12,
-      "hosting": 2,
-      "cars": 2,
-      "accommodation": 2,
-      "supplies": 1,
+      "invitations": 0,
+      "events": 6,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
@@ -4408,18 +4359,18 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
-        "active": 12,
+        "all": 6,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 2,
+        "invitations": 0,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
       "asset": {
-        "cars": 2,
-        "accommodation": 2,
-        "supplies": 1,
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
         "tickets": 0
       },
       "eventFeedback": {
@@ -4430,7 +4381,7 @@
       },
       "adminJobs": 0,
       "adminMetrics": 0,
-      "notifications": 1
+      "notifications": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -4443,9 +4394,8 @@
     "horoscope": "Libra",
     "hostTier": "Gold Host",
     "images": [
-      "https://randomuser.me/api/portraits/men/43.jpg",
-      "https://randomuser.me/api/portraits/men/60.jpg",
-      "https://randomuser.me/api/portraits/men/77.jpg"
+      "/media/public?key=images/demo-profiles/b5e2db6882d989d8532af12c/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/b5e2db6882d989d8532af12c/photo-02/large.webp"
     ],
     "initials": "RH",
     "languages": [
@@ -4527,7 +4477,7 @@
     "horoscope": "Aries",
     "hostTier": "Member",
     "images": [
-      "https://randomuser.me/api/portraits/men/52.jpg"
+      "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp"
     ],
     "initials": "CB",
     "languages": [
@@ -4609,7 +4559,7 @@
     "horoscope": "Leo",
     "hostTier": "Member",
     "images": [
-      "https://randomuser.me/api/portraits/women/35.jpg"
+      "/media/public?key=images/demo-profiles/650000000000000000000062/photo-01/large.webp"
     ],
     "initials": "NS",
     "languages": [
@@ -4692,7 +4642,7 @@
     "horoscope": "Libra",
     "hostTier": "Member",
     "images": [
-      "https://randomuser.me/api/portraits/men/53.jpg"
+      "/media/public?key=images/demo-profiles/650000000000000000000063/photo-01/large.webp"
     ],
     "initials": "RO",
     "languages": [

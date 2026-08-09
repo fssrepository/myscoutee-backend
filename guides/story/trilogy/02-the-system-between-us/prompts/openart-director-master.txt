@@ -1,0 +1,13 @@
+Direct “MyScoutee — The Story, Part II: The System Between Us” as a checkpoint-controlled 05:20 portrait animated-documentary film. The motion chain is 38 separate silent 8-second clips, CP00→CP01 through CP37→CP38, framed by deterministic eight-second opening and closing cards assembled outside the generator.
+
+This is a retained OpenArt remaster brief, not the active production route. The current films use Veo 3.1 Lite. Do not spend OpenArt credits unless the Founder explicitly opens a later remaster phase.
+
+For each production clip, use the shared continuity prefix followed by only the matching SHOT Sxx block. Require exact first and last frames. If the model offers only image-to-video from one endpoint, treat the output as a labelled experiment, not part of the master continuity chain.
+
+Carry forward the exact Part I Founder and world references. This is a restrained civic memoir, not a legal thriller. All officials are ordinary human beings. Documents are anonymized unreadable plates. No raw evidence, private identifiers, charged quotation, diagnosis label, public-figure likeness, generated logo or completed-confiscation imagery.
+
+The Founder is quiet, restrained and precise by default. Never stage him as
+hot-tempered. His rare unsoftened voice must read through a controlled body and
+the room's sudden stillness; reserve is not fear, and force is not violence.
+
+Generate picture without visible speech: no character forms words or lip-syncs. Keep mouths naturally relaxed, with breathing, brief nonverbal smiles and minute jaw movement only. Convey interaction through listening, eye contact, small nods and restrained hand gestures; never make several people visibly speak at once. Generate no dialogue, narration, singing, music, ambience or sound effects, and discard any unavoidable platform audio. Final voice-over, one continuous score, foley, subtitles, dates, evidence-safe document text and the exact repository MyScoutee logo are post-production layers.

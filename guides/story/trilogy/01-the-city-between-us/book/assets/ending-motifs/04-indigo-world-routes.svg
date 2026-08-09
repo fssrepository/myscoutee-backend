@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Indigo world routes</title>
+  <desc id="desc">An original kékfestő-inspired indigo ornament joining block-print rosettes to a compass globe and returning routes.</desc>
+  <rect x="6" y="20" width="708" height="116" rx="58" fill="#173f78"/>
+  <defs>
+    <g id="rosette" fill="none" stroke="#fbf7ef" stroke-width="3">
+      <circle r="7"/>
+      <path d="M0-19C8-16 10-10 7-5C2-7-1-12 0-19ZM0 19C8 16 10 10 7 5C2 7-1 12 0 19ZM-19 0C-16-8-10-10-5-7C-7-2-12 1-19 0ZM19 0C16-8 10-10 5-7C7-2 12 1 19 0Z"/>
+    </g>
+    <g id="half" fill="none" stroke="#fbf7ef" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M331 77C292 45 260 43 223 68C184 95 149 96 108 74C74 56 46 58 18 76" stroke-width="4"/>
+      <path d="M330 92C289 119 252 119 218 96C179 70 148 70 110 93C75 114 45 113 17 98" stroke="#8fc6e8" stroke-width="3"/>
+      <circle cx="223" cy="68" r="5" fill="#f1b544" stroke="#f1b544"/>
+      <circle cx="108" cy="74" r="5" fill="#f1b544" stroke="#f1b544"/>
+    </g>
+  </defs>
+  <use href="#half"/>
+  <use href="#half" transform="translate(720 0) scale(-1 1)"/>
+  <use href="#rosette" transform="translate(74 76)"/>
+  <use href="#rosette" transform="translate(155 77)"/>
+  <use href="#rosette" transform="translate(646 76)"/>
+  <use href="#rosette" transform="translate(565 77)"/>
+  <circle cx="360" cy="78" r="45" fill="#fbf7ef" stroke="#8fc6e8" stroke-width="4"/>
+  <circle cx="360" cy="78" r="31" fill="none" stroke="#173f78" stroke-width="3"/>
+  <path d="M360 36l10 32 32 10-32 10-10 32-10-32-32-10 32-10Z" fill="#173f78"/>
+  <circle cx="360" cy="78" r="7" fill="#f1b544"/>
+</svg>

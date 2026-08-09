@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">The house between cities</title>
+  <desc id="desc">An original painted-furniture-style ornament combining a shared house, tulip vines, rain, and distant city windows.</desc>
+  <defs>
+    <g id="half" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M360 128C323 124 303 107 279 91C253 73 230 73 204 91C174 112 144 111 114 91C85 71 56 72 20 95" stroke="#b33b3f" stroke-width="5"/>
+      <path d="M288 98C270 89 260 73 261 55C279 59 291 70 294 87" fill="#efb544" stroke="#b33b3f" stroke-width="3"/>
+      <path d="M212 94C195 86 185 71 186 53C204 57 216 68 219 85" fill="#df7058" stroke="#b33b3f" stroke-width="3"/>
+      <path d="M135 100C118 91 109 77 110 59C128 63 140 74 143 91" fill="#2e7650" stroke="#2e7650" stroke-width="3"/>
+      <path d="M279 91C267 79 252 73 234 74M204 91C191 78 174 72 156 74" stroke="#2e7650" stroke-width="4"/>
+      <path d="M84 72l-5 11M57 61l-5 11M31 74l-5 11" stroke="#245bc9" stroke-width="4"/>
+      <path d="M18 110h51v17H18zM33 110v17M52 110v17" stroke="#245bc9" stroke-width="3"/>
+    </g>
+  </defs>
+  <use href="#half"/>
+  <use href="#half" transform="translate(720 0) scale(-1 1)"/>
+  <path d="M315 128V54L360 26L405 54V128Z" fill="#173862" stroke="#172336" stroke-width="5"/>
+  <path d="M331 128V65H389V128" fill="#fbf7ef" stroke="#f1b544" stroke-width="4"/>
+  <path d="M345 81h30v27h-30zM360 81v27M345 94h30" fill="#84a7da" stroke="#245bc9" stroke-width="3"/>
+  <path d="M350 128v-13h20v13" fill="#b33b3f" stroke="#b33b3f" stroke-width="3"/>
+  <path d="M312 54h96" stroke="#b33b3f" stroke-width="5"/>
+  <circle cx="360" cy="43" r="6" fill="#f1b544"/>
+</svg>

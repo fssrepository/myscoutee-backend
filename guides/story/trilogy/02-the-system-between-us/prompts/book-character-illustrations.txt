@@ -1,0 +1,93 @@
+PART II BOOK CHARACTER AND SCENE ILLUSTRATIONS — COPY-PASTE BASELINES
+
+STATUS
+Authorized generation baseline. Every image inherits
+`character-continuity-master.txt`, the exact locked Part I `[FOUNDER_REF]` and
+the role references in `assets/characters/CHARACTER_MAP.md`.
+
+COMMON STYLE
+Premium painterly cinematic 2.5D illustration, expressive hand-drawn adult
+facial linework over dimensional figures, tactile ordinary clothing and paper,
+motivated natural light, humane documentary observation, subtle asymmetry,
+believable hands and restrained emotion. No readable private text, logo, UI,
+watermark, glamour, named-studio imitation or photoreal uncanny skin. Portraits
+are true 4:5 crops without coloured side bars or a padded rectangle. Landscape
+plates are crop-safe for an A4 book and keep every relevant face readable.
+
+PROMPT 1 — FOUNDER CONTINUES
+Create exactly one clean 4:5 book portrait from the exact approved Part I
+`[FOUNDER_REF]`. Preserve face, age, hairline, body proportions, navy field
+coat, charcoal knit, muted rust scarf and worn cognac notebook. His expression
+is observant, resilient and tired without defeat. Use a restrained neutral
+Budapest interior with one faint institutional line, not a courtroom. No border
+or artificial empty padding. Output: `founder-portrait.png`.
+
+PROMPT 2 — THREE PARTIAL SCREENS
+Create exactly one landscape book plate from `[FOUNDER_REF]`,
+`[ACCOUNTANT_REF]` and `[TAX_OFFICER_REF]`. Put the three ordinary adults in
+three workspaces linked by one anonymized short return. Show the accountant's
+repeated rejected forms and missed instructions without changing the approved
+portrait or turning the face into a caricature. Each person sees
+a different field while another field remains outside that person's screen.
+The triangle is the problem; no face is villainous, stupid or dishonest. No
+readable figures, government brand, password or accusation. Output:
+`three-partial-screens.png`.
+
+PROMPT 3 — POLICE ROOMS AND FINGERPRINT
+Create exactly one landscape book plate using `[FOUNDER_REF]`, `[OFFICER_REF]`,
+`[DEFENCE_COUNSEL_REF]` and `[FINGERPRINT_OFFICER_REF]`. On the left, show the
+ordinary interview room: officer opposite behind a desktop computer, appointed
+counsel beside the Founder and one indistinct presence behind him. A plain
+doorframe leads to the right-hand processing beat where the professional female
+officer guides his fingertips onto paper after a photograph. His ordinary
+awareness that she is attractive is a single restrained glance, never
+flirtation or erotic framing. No weapon, darkness, shouting, readable biometric
+data or cinematic raid. Output: `police-rooms-and-fingerprint.png`.
+
+PROMPT 4 — TWO EXPERTS, ONE REPORT
+Create exactly one landscape book plate using `[FOUNDER_REF]`,
+`[EXPERT_A_REF]` and `[EXPERT_B_REF]`. Two visibly distinct analytical adults
+occupy separate chairs in one ordinary examination room; one anonymized report
+connects their positions and reflects across the Founder's complete composed
+face. Preserve a tension between observed cooperation and a contested
+interpretation without visualizing a diagnosis, punishment or malicious
+intent. No generated quotation. Output: `two-experts-one-report.png`.
+
+PROMPT 5 — THE C-SHAPED HEARING ROOM
+Create exactly one landscape book plate with the exact remembered geometry from
+the Founder's viewpoint. Around one C-shaped desk place the prosecutor on the
+left, clerk in the far-left corner, `[JUDGE_REF]` in the centre and
+`[DEFENCE_COUNSEL_REF]` on the right. `[FOUNDER_REF]` sits separately before the
+C with a table microphone directly in front of him. Let a restrained fragment
+of the long brown Roman-scale Fő Street justice façade and Danube light remain
+visible through the threshold. Keep every person ordinary and human. No gavel,
+wig, Gothic redesign, mockery, verdict, bias signal or readable allegation.
+Output: `fo-street-c-shaped-hearing-room.png`.
+
+PROMPT 6 — WORK UNDER THE SHADOW
+Create exactly one landscape book plate using `[FOUNDER_REF]` at his modest
+Budapest workstation. One window holds anonymized evidence and a plain
+AI-assisted outline that he checks; three textless planes show the Civic Access
+audit/notice concept, MyScoutee's humane local network and finite spectral
+Navier–Stokes geometry. A faint institutional shadow exists outside the monitor
+light but never becomes bars or a prison cliché. Show inspectable work under an
+unresolved possibility of imprisonment, not a solved prize, autonomous lawyer
+or genius spectacle. Output: `work-under-the-shadow.png`.
+
+PROMPT 7 — WHAT THE CASE CAN REACH
+Create exactly one landscape book plate using `[FOUNDER_REF]` and
+`[PROBATION_OFFICER_REF]` inside the exact parent-provided Budapest flat during
+an unannounced clemency social inquiry. The room is puritan, temporarily untidy
+and unclean, the radiator cold in winter, with no car key and no consumer
+display. Quiet objects carry the questions: work desk, apartment key, ordinary
+belongings and an abstract government-bond account plate representing savings
+built principally abroad. The Founder stays composed with a hand near the
+cognac notebook. No cash pile, luxury, bailiff, eviction, hoarding, filth
+spectacle or official conclusion. Output: `what-the-case-can-reach.png`.
+
+PROMPT 8 — ROLE PORTRAITS
+From the locked complete Part II identity board, export clean crop-safe 4:5
+portraits for the accountant, ordinary police officer, judge and anonymized
+London housemate. Use neutral role-appropriate backgrounds only; never preserve
+adjacent limbs, desks or brown board padding in a crop. Output the matching
+portrait filenames defined by `book/illustrations.json`.

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" role="img" aria-labelledby="title desc">
+  <title id="title">The system between us</title>
+  <desc id="desc">Two human paths, three partial windows, and a central open door joined by symmetric Hungarian-inspired vines.</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 168C108 107 173 206 246 148C292 111 319 117 360 125C401 117 428 111 474 148C547 206 612 107 686 168" stroke="#e6ad52" stroke-width="5"/>
+    <path d="M52 185C127 145 191 215 267 165M668 185C593 145 529 215 453 165" stroke="#8660aa" stroke-width="4"/>
+    <path d="M91 157c-18-35-13-65 18-83 27 24 26 53 5 78M629 157c18-35 13-65-18-83-27 24-26 53-5 78" fill="#c95f50" stroke="#f4c86d" stroke-width="3"/>
+    <path d="M166 174c-17-32-6-55 23-66 21 27 16 51-8 67M554 174c17-32 6-55-23-66-21 27-16 51 8 67" fill="#2d7786" stroke="#8fc4ca" stroke-width="3"/>
+    <rect x="245" y="71" width="66" height="62" rx="8" stroke="#7db0bf" stroke-width="4" opacity=".9"/>
+    <rect x="327" y="54" width="66" height="79" rx="8" stroke="#e6ad52" stroke-width="5"/>
+    <rect x="409" y="71" width="66" height="62" rx="8" stroke="#7db0bf" stroke-width="4" opacity=".9"/>
+    <path d="M348 133V80h24v53M360 24l8 18 20 2-15 13 5 20-18-10-18 10 5-20-15-13 20-2z" fill="#f2ba45" stroke="#fff1bb" stroke-width="3"/>
+    <circle cx="74" cy="183" r="6" fill="#fff" stroke="none"/><circle cx="646" cy="183" r="6" fill="#fff" stroke="none"/>
+  </g>
+</svg>

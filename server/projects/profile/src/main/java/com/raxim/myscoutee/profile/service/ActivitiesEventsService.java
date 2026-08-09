@@ -469,12 +469,16 @@ public class ActivitiesEventsService {
                     .filter(StringUtils::hasText)
                     .forEach(trackedSourceIds::add);
         }
+        Map<String, String> checkoutResultStatesBySourceId = viewer == null
+                ? Map.of()
+                : checkoutResultStatesBySourceId(viewer.userId(), scopedEvents);
         return new EventQueryContext(
                 scopedEvents,
                 scopedEvents,
                 new LinkedHashMap<>(),
                 trackedSourceIds,
                 trackedStatusesBySourceId,
+                checkoutResultStatesBySourceId,
                 Set.of(),
                 includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of());
     }
@@ -1831,7 +1835,8 @@ public class ActivitiesEventsService {
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .map(record -> toSortProjection(record, viewer))
                     .filter(Objects::nonNull)
-                    .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
+                    .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId())
+                            || hasVisibleCheckoutBasket(projection.record()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
                     .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
                     .filter(projection -> !StringUtils.hasText(topic) || hasTopic(projection.record(), topic))
@@ -4652,18 +4657,23 @@ public class ActivitiesEventsService {
             return List.of();
         }
         EventQueryContext current = ACTIVE_CONTEXT.get();
+        Map<String, String> checkoutResultStatesBySourceId = current != null
+                && current.checkoutResultStatesBySourceId() != null
+                && !current.checkoutResultStatesBySourceId().isEmpty()
+                        ? current.checkoutResultStatesBySourceId()
+                        : checkoutResultStatesBySourceId(
+                                viewer == null ? null : viewer.userId(),
+                                hydratedRecords);
         EventQueryContext pageContext = new EventQueryContext(
                 hydratedRecords,
                 hydratedRecords,
                 resolveHydratedPageSnapshots(current, hydratedRecords),
                 current == null ? Set.of() : current.trackedEventSourceIds(),
                 current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
+                checkoutResultStatesBySourceId,
                 current == null ? Set.of() : current.pendingPaymentEventSourceIds(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey(),
                 creatorAvatarUrlsByUserId(hydratedRecords));
-        Map<String, String> checkoutResultStatesBySourceId = checkoutResultStatesBySourceId(
-                viewer == null ? null : viewer.userId(),
-                hydratedRecords);
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
                 .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
@@ -5141,7 +5151,7 @@ public class ActivitiesEventsService {
         if (activeUserId.equals(normalizeId(record.getCreatorUserId()))) {
             return false;
         }
-        if (hasTrackedUserParticipation(record, activeUserId)) {
+        if (hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
             return false;
         }
         String visibility = safeText(record.getVisibility());
@@ -5288,11 +5298,17 @@ public class ActivitiesEventsService {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
                 ctx == null ? singleRecordSnapshot(record) : ctx.snapshotsBySourceId();
+        Map<String, String> effectiveCheckoutResultStatesBySourceId =
+                (checkoutResultStatesBySourceId == null || checkoutResultStatesBySourceId.isEmpty()) && ctx != null
+                        ? ctx.checkoutResultStatesBySourceId()
+                        : checkoutResultStatesBySourceId;
         return new ActivityEventMapper.MappingContext(
                 viewer == null ? null : viewer.locationCoordinates(),
                 snapshotsBySourceId,
-                checkoutResultStatesBySourceId,
-                ctx == null ? Map.of() : ctx.creatorAvatarUrlsByUserId());
+                effectiveCheckoutResultStatesBySourceId,
+                ctx == null ? Map.of() : ctx.creatorAvatarUrlsByUserId(),
+                ctx == null ? Map.of() : ctx.trackedEventStatusesBySourceId(),
+                viewer == null ? null : viewer.userId());
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> singleRecordSnapshot(ActivityEvent record) {
@@ -6106,6 +6122,14 @@ public class ActivitiesEventsService {
             return ctx.pendingPaymentEventSourceIds().contains(sourceId);
         }
         return paymentService.hasPendingEventJoin(userId, sourceId);
+    }
+
+    private boolean hasVisibleCheckoutBasket(ActivityEvent record) {
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        return StringUtils.hasText(sourceId)
+                && ctx != null
+                && ctx.checkoutResultStatesBySourceId().containsKey(sourceId);
     }
 
     private boolean hasTopic(ActivityEvent record, String topic) {
@@ -7354,6 +7378,7 @@ public class ActivitiesEventsService {
             Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
             Set<String> trackedEventSourceIds,
             Map<String, String> trackedEventStatusesBySourceId,
+            Map<String, String> checkoutResultStatesBySourceId,
             Set<String> pendingPaymentEventSourceIds,
             Map<String, Double> edgeWeightsByPairKey,
             Map<String, String> creatorAvatarUrlsByUserId) {
@@ -7371,6 +7396,28 @@ public class ActivitiesEventsService {
                     snapshotsBySourceId,
                     trackedEventSourceIds,
                     trackedEventStatusesBySourceId,
+                    Map.of(),
+                    pendingPaymentEventSourceIds,
+                    edgeWeightsByPairKey,
+                    Map.of());
+        }
+
+        private EventQueryContext(
+                List<ActivityEvent> allEvents,
+                List<ActivityEvent> mergedEvents,
+                Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+                Set<String> trackedEventSourceIds,
+                Map<String, String> trackedEventStatusesBySourceId,
+                Map<String, String> checkoutResultStatesBySourceId,
+                Set<String> pendingPaymentEventSourceIds,
+                Map<String, Double> edgeWeightsByPairKey) {
+            this(
+                    allEvents,
+                    mergedEvents,
+                    snapshotsBySourceId,
+                    trackedEventSourceIds,
+                    trackedEventStatusesBySourceId,
+                    checkoutResultStatesBySourceId,
                     pendingPaymentEventSourceIds,
                     edgeWeightsByPairKey,
                     Map.of());

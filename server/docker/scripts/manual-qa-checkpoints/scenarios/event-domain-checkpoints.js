@@ -672,8 +672,8 @@
     "EVENT-TICKET-005": {
       stage: "ticket-join",
       why: "Prove the complete Public Explore Join, Cancel request, re-Join and Admin approval flow with action-owned notifications and ticket creation only at terminal acceptance.",
-      action: "Keep Casey Notifications open. As Nova Join and wait for Casey's Pending row; Cancel request and wait for a separate Cancelled row; Join again and wait for a new Pending row. Stop at every boundary for a zero-ticket oracle. Then approve Nova once as Casey and open Nova Ticket twice.",
-      expected: "Join creates one pending member-origin approval request, no EventTicket and a Casey Pending notification. Cancel removes the visible pending projection while retaining suppressed membership/T-overlay audit, keeps ticket counters zero and adds a separate Casey Cancelled row. Re-Join reopens only as fresh pending, adds another Pending row and still creates no ticket. Casey approval directly accepts Nova and creates one A ticket; Casey receives none and repeated Ticket reads reuse it.",
+      action: "Keep Casey Notifications and Nova Explore open. Run Join -> Cancel -> Join -> Cancel -> Join. At every Join stop for an oracle proving one physical approval-pending basket, pending membership and zero tickets; at every Cancel require one ID-scoped removal of only the matching pending Activity row while adjacent cards remain unchanged. On the last pending Join reload Explore once: the Public event card and its orange Continue booking plus other contextual actions must remain. Then approve Nova once as Casey and open Nova Ticket twice.",
+      expected: "Join creates one pending member-origin approval request, one visible approval-pending checkout basket, no EventTicket and a Casey Pending notification. Basket visibility, not member pending status, retains the Explore card across reload and drives the orange warning-tone Continue booking action without hiding the card's other actions. Cancel changes the physical membership to suppressed, removes the visible pending projection, returns currentUserMembershipStatus=none, clears the prior basket/session/result state, keeps ticket counters zero and adds a separate Casey Cancelled row. The visible card changes from Continue booking to fresh Join/Book immediately and stays fresh after reload. Re-Join creates a new pending attempt without reusing the old basket/session/policy, adds another Pending row and still creates no ticket. Casey approval directly accepts Nova and creates one A ticket; Casey receives none and repeated Ticket reads reuse it.",
       worker: "Join, Cancel and re-Join own their membership, counter and separate notification writes but are ticket non-producers. Only terminal Admin approval owns ticket creation. Explore, Notification and Ticket reads MUST NOT create a ticket or scheduler job."
     },
     "EVENT-TICKET-006": {
@@ -1222,6 +1222,7 @@
       ] } },
       { collection: "eventFeedbackStates", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventFeedbackAnswers", selector: { eventId: { $in: EVENT_IDS } } },
+      { collection: "eventCheckoutBasketItems", selector: { sourceId: { $in: EVENT_IDS } } },
       { collection: "eventTickets", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventTicketAudit", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
@@ -1269,6 +1270,7 @@
     ] });
     Q.collection("eventFeedbackStates").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventFeedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
+    Q.collection("eventCheckoutBasketItems").deleteMany({ sourceId: { $in: eventIds } });
     Q.collection("eventTickets").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventTicketAudit").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("notificationOutbox").deleteMany({ $or: [
@@ -1777,6 +1779,10 @@
     ] }).toArray();
     const feedbackStates = Q.collection("eventFeedbackStates").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const feedbackAnswers = Q.collection("eventFeedbackAnswers").find({ eventId: { $in: dynamicEventIds } }).toArray();
+    const checkoutBasketItems = Q.collection("eventCheckoutBasketItems")
+      .find({ sourceId: { $in: dynamicEventIds } })
+      .sort({ createdAtIso: 1, _id: 1 })
+      .toArray();
     const tickets = Q.collection("eventTickets").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const ticketReplayAudits = Q.collection("eventTicketAudit").find({
       eventId: { $in: dynamicEventIds },
@@ -1831,6 +1837,10 @@
       recipientUserId: { $in: [hostUserId, participantUserId, thirdUserId] },
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).toArray();
+    const eventJoinRequestNotifications = Q.collection("userNotifications").find({
+      kind: { $in: ["event-admin-join-request", "event-admin-join-request-cancelled"] },
+      $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).sort({ createdDate: 1, _id: 1 }).toArray();
     const feedbackNotificationOutbox = Q.collection("notificationOutbox").find({
       notificationType: "event-feedback-submitted",
       $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
@@ -1887,6 +1897,17 @@
         pendingSource: Q.text(member.pendingSource),
         invitedByUserId: Q.text(member.invitedByUserId),
         updatedDate: member.updatedDate
+      })),
+      checkoutBasketItems: checkoutBasketItems.map(item => ({
+        id: Q.text(item._id),
+        itemId: Q.text(item.itemId),
+        userId: Q.text(item.userId),
+        eventId: Q.text(item.sourceId),
+        status: Q.text(item.status),
+        resultState: Q.text(item.resultState),
+        checkoutSessionId: Q.text(item.checkoutSessionId),
+        createdAtIso: Q.text(item.createdAtIso),
+        updatedAtIso: Q.text(item.updatedAtIso)
       })),
       eventChats: eventChats.map(chat => ({
         chatId: Q.text(chat.id || chat.chatId || chat._id),
@@ -2031,6 +2052,16 @@
         eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
         readAtIso: Q.text(item.readAtIso),
         read: Boolean(Q.text(item.readAtIso))
+      })),
+      eventJoinRequestNotifications: eventJoinRequestNotifications.map(item => ({
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        memberUserId: Q.text(item.payload && item.payload.memberUserId),
+        membershipAction: Q.text(item.payload && item.payload.membershipAction),
+        badge: Q.text(item.payload && item.payload.notification_status_badge_fallback),
+        readAtIso: Q.text(item.readAtIso),
+        createdDate: Q.text(item.createdDate)
       })),
       feedbackNotificationOutbox: feedbackNotificationOutbox.map(item => ({
         notificationType: Q.text(item.notificationType),

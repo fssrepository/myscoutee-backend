@@ -1,0 +1,363 @@
+POST P00 — TRUE-STORY TITLE CARD — 8 SECONDS
+Do not generate this card with a video model. Use a restrained deep-navy and
+cognac-amber plate with editable typography: `MYSCOUTEE · THE STORY`, `PART I ·
+THE CITY BETWEEN US`, `BASED ON A TRUE STORY` and `LEAVING HOME · MEETING THE
+WORLD · RETURNING TO CONNECT PEOPLE`. Jon reads the one-sentence premise with a
+deliberate pause. No generated logo or text.
+
+SHOT S01 — CP00.png TO CP01.png — RURAL ROOTS, COMPLETED STUDIES AND BEAUTIFUL BUDAPEST — 8 SECONDS
+Begin exactly on CP00.png and end exactly on CP01.png.
+Move continuously through the approved Hungarian-origin visual language. Working
+hands, soil, an ordinary produce crate and seasonal rows establish
+small-agricultural-producer ancestry without costume folklore. A field row
+becomes a rural rail, then three unreadable interlocking systems for economics,
+programming logic and mathematics. University finishes in 2004; a delayed
+dissertation makes 2005 the earliest possible diploma year, but a closed,
+unissued diploma folder remains much longer because one required intermediate-
+level language certificate is still missing. A yellow tram opens onto two restrained
+[BUDAPEST_WORLD] recognition layers. Preserve [FOUNDER_REF] as a capable adult
+moving toward work, not a defeated migrant. Use 40–50 mm lateral parallax and
+CPU match cuts. No puszta cliché, poverty spectacle, tourism checklist, claim
+that everyone leaves the countryside, readable diploma or generated text.
+Do not generate the film title, part title, true-story marker, logo or any
+readable wording.
+
+SHOT S02 — CP01.png TO CP02.png — WORK, UNSTABLE ROOMS AND A SECURE KEY — 8 SECONDS
+Begin exactly on CP01.png and end exactly on CP02.png.
+Create four identity-locked visual states inside one continuous restrained
+transition. First, [FOUNDER_REF] competently leaves an anonymous multinational
+office. Second, after a late return, a locked workers'-hostel room leads him
+to settle briefly and calmly in the maintained corridor. Third, a
+half-unpacked suitcase crosses an anonymous private room whose undisclosed
+summer substitution has become untenable; no confrontation or identifiable
+person. Finally, his parents' hands pass him a modest flat key beside an
+unsigned, unused foreign-currency-loan form. Match office edge, hostel door,
+suitcase and key with consistent 50 mm lateral parallax. Keep beautiful Budapest
+alive in tram and museum reflections, then hold the Founder alone in the final
+window. No named street, employer brand, unemployment, eviction spectacle,
+legal accusation, readable form or claim that a particular loan was certain.
+
+SHOT S03 — CP02.png TO CP03.png — SOHO PROGRAMMER HIDES THE PRICE OF STAYING — 8 SECONDS
+Begin exactly on CP02.png and end exactly on CP03.png.
+Inside [SOHO_OFFICE], [FOUNDER_REF] writes software competently on a blank-screen
+laptop among colleagues from several cultural backgrounds. He found this London
+job within two weeks despite weak English. For almost three years, professional
+competence coexists with being barely able to join colleague conversation; show
+this through restrained listening, never comic accent or incompetence. At an
+expensive group lunch he sits at the same table, opens the menu and gives a
+practiced, casual “not hungry” explanation while colleagues eat; this can also
+be a warm farewell meal. He remains socially present and nobody excludes him.
+Match the menu price column to a private muesli bowl and two-litre milk bottle
+away from the restaurant. When the thin savings chart begins to look capable
+of reaching the Budapest-cost financial-independence threshold for which he
+came to London, his focus visibly narrows and an avoided meal seems to move the
+line closer. A restrained later echo may show
+colleagues surprised when he finally orders food once or twice in year four or
+five.
+His monitor reflection holds the competent public self and the private fear that
+London's cost may send him home too soon. Restrained 40 mm desk-height drift
+toward the rainy window, cool monitor fill and warm practicals. No factory,
+worksite, warehouse, readable code, employer brand, blame toward colleagues,
+starvation spectacle or dietary claim. Keep the Soho sex-shop farewell-gift colleague memory
+for one warm insert in S04.
+
+SHOT S04 — CP03.png TO CP04.png — THE CITY'S UNREPEATABLE MAGIC — 8 SECONDS
+Begin exactly on CP03.png and end exactly on CP04.png.
+Use controlled match cuts through exhibition frames, museum objects, a public
+lecture, live music, a small club, late café and mutually curious dates with
+women from different cultural backgrounds. [FOUNDER_REF] remains one curious
+adult among equals; show shared laughter and small misunderstandings, never
+conquest or an exotic catalogue. End with only a half-second Victoria line
+window reflection becoming the HMO front door. Coherent museum daylight, warm
+club practicals and deep navy glass. No tourist shorthand, transport logo,
+readable sign or long commute.
+
+SHOT S05 — CP04.png TO CP05.png — THIRTEEN UNDER ONE ROOF — 8 SECONDS
+Begin exactly on CP04.png and end exactly on CP05.png.
+One 28 mm continuous hall track enters [TOTTENHAM_HMO]. Shoes, coats, individual
+meals, photographs and greetings imply the Founder plus twelve other Hungarian
+adults across hall, kitchen and stairs without a staged lineup. The house is a
+Hungarian microcosm inside multicultural London; give every resident an
+individual age, body, temperament, work rhythm and reason for leaving. One full
+bathroom door and one separate WC are spatially clear. Maintained cream paint,
+worn timber, warm practicals. Give different relationships to home equal dignity:
+one visible Hungarian family photo, one quiet return plan, one growing local
+relationship. Some felt happier in London and no longer wanted to return, but
+never show a percentage, call anyone rootless or imply one shared opinion. No
+flags, folk costume, faceless extras, refugee-camp metaphor or poverty spectacle.
+
+SHOT S06 — CP05.png TO CP06.png — ONE BATH, ONE WC, SHARED BEDROOM — 8 SECONDS
+Begin exactly on CP05.png and end exactly on CP06.png.
+Inside [TOTTENHAM_HMO], move once from the full-bathroom threshold past the
+separate tiny WC into [FOUNDER_REF]'s shared bedroom. Two bounded beds and desk
+zones; he puts [NOTEBOOK_PROP] in his corner while a flatmate pins one personal
+photograph. Add one dry night-to-morning memory: a resident who lost his money
+gambling quietly swaps his place with an acquaintance; darkness falls, a
+different snore begins, and morning reveals a different adult silhouette in the
+same bed zone. The room turnover is absurd, not the debt or the person. One
+32 mm move, overcast window and warm bedside practical. Respectful coordination,
+not filth, hostility, luxury or humiliation. The emotional line is that some
+residents felt happier there despite the material constraint.
+
+SHOT S07 — CP06.png TO CP07.png — THREE YEARS OF MAGIC, FIVE YEARS TO A THRESHOLD — 8 SECONDS
+Begin exactly on CP06.png and end exactly on CP07.png.
+Use one continuous notebook-and-lamp time fold. The first three seasonal
+cycles alternate the same shared-room lamp with stubborn low-cost adventures:
+a one-pound overnight coach to Edinburgh and someone else's removed shoes;
+Loch Ness; a Glasgow River Clyde powerboat; then a flawlessly timed but
+exhausting five-person London–Manchester–Liverpool–Barmouth–Cardiff–London road
+circuit because nobody could take one extra day. Two couples and [FOUNDER_REF]
+fill a rented car; a travelling acquaintance drives because the Founder cannot,
+never depict a hired chauffeur. Unbranded budget hotels supply the overnight
+accommodation. The route lasts three days and needs a fourth to avoid the rush.
+Barmouth shows wide low-tide sand at the Mawddach Estuary, the town held between
+mountains and sea.
+Years four and five simplify into long work, rent, shared space, departures and
+quiet unreadable Brexit-era texture about work and belonging. [FOUNDER_REF]
+marks each journey beside the rent saved through room sharing. An unlabelled,
+post-produced savings curve reaches a lower Budapest-cost threshold in December
+2015 but never a private-London-home threshold. A key and still interior recall
+the parent-assisted Budapest flat that stood empty through all five London years.
+The savings did not buy another home. A normal London home would erode the
+Budapest position, while continued room-sharing is no longer viable: housing is
+the stop-loss. Locked 40 mm seasonal composition, final 55 mm push, same desk
+lamp. No invented figures, tourism reel, invented visited landmark, starvation,
+readable political slogan or claim that migrants displaced workers.
+
+SHOT S08 — CP07.png TO CP08.png — NEARLY FIFTY COUNTRIES, THREE-SECOND BURST — 8 SECONDS
+Begin exactly on CP07.png and end exactly on CP08.png.
+First two seconds: original paper route and blank passport-like shapes. Middle
+three seconds: exact 8–12-frame illustrated match cuts — High Tatras ridge,
+Schönbrunn arch, Neuschwanstein silhouette, a restrained Founder/tuk-tuk handoff
+at Angkor, a reciprocal Taj Mahal bus conversation, Norwegian weather, one
+confirmed Egypt human-adventure frame, and Chesapeake or Niagara water. The Egypt trip occurred after
+the London homecoming, so visibly fold time through [NOTEBOOK_PROP]; prefer the
+Luxor balloon resting in a vegetable plot while people cooperate across a wall,
+not a Cairo–Luxor–Aswan–Abu Simbel collage. The Cairo taxi-roof luggage mishap is
+an alternate, not a ninth frame. Final three seconds: water reflection becomes
+[FOUNDER_REF] beside an empty train or bench seat, looking back to share the view
+before quiet recognition, then a restrained COVID-19 threshold stops the route.
+Across several plates a local driver, passenger, host or resident opens one human
+threshold; the Founder's expression changes as each environment reveals a
+different part of him. Global route, local encounter — no tourism conquest. No
+fake archive, flags, labels or costume stereotype. Keep the rapid illustrated
+memory changes inside this one clip; final reflection 50 mm. Most journeys are solo
+and self-organized: briefly show [FOUNDER_REF] joining his own flight, room,
+local-transport and driver notes in [NOTEBOOK_PROP]. Helpers carry individual
+handoffs; never imply one package-tour leader organized the complete sequence.
+
+SHOT S09 — CP08.png TO CP09.png — HOME, DELIBERATELY — 8 SECONDS
+Begin exactly on CP08.png and end exactly on CP09.png.
+The route folds back to [BUDAPEST_WORLD]. [FOUNDER_REF] opens the parent-assisted
+flat that stood empty throughout his five London years, sets the London key
+beside its Budapest key and [NOTEBOOK_PROP], turns a fresh page and shows the
+first clear hopeful half-smile. One 35 mm follow then gentle arc to
+frontal medium close-up. 4200 K home light, winter teal exterior. A tram
+reflection moves opposite to S01. Return is a deliberate hopeful choice.
+
+SHOT S10 — CP09.png TO CP10.png — TWO KINDS OF APP ATTENTION — 8 SECONDS
+Begin exactly on CP09.png and end exactly on CP10.png.
+A horizontal tram-window rail separates the 9:16 frame into two stacked portrait
+zones: lower-near [FOUNDER_REF] gives abstract profile cards attention but
+receives silence; upper-far [MAYA_REF] cannot read individual messages as generic
+notifications multiply. His thumb slows; her curiosity turns
+to controlled overload; both put phones down. Static 50 mm, soft face key, cold
+phone fill below eye line. Clean screen plates only; no logo, names, statistics,
+public score, anger or gender caricature.
+
+SHOT S11 — CP10.png TO CP11.png — ROOMS FULL OF BEGINNINGS — 8 SECONDS
+Begin exactly on CP10.png and end exactly on CP11.png.
+[FOUNDER_REF] crosses three inviting [BUDAPEST_WORLD] community rooms in one
+corridor: talk, shared dinner, social evening. One doorway repeats across
+widely spaced occasional visits: an unbranded friendship-centred event
+community that a former date once told the Founder about. He has visited
+occasionally since returning alone from London, but never regularly. The same
+small mixed adult group first see him arrive alone, then recognize him on later
+visits, share the activity and settle into ordinary friendship without romantic
+pairing. The room eases his loneliness: it gives him somewhere to go, means he
+need not always be alone and lets him get to know a few people. In the other
+doorways, pleasant brief
+greetings still turn over before a next step forms. One 28 mm lateral track
+with doorway wipes. Warm cream and terracotta. Do not show a founding date, the
+former date, branded event design, a dating-service interface or regular attendance. No
+instant friendship, romantic winner, rejection performance, readable name tags
+or sadness; friendship is an equally valuable outcome. Adults arrive
+independently, yet the large recurring room keeps romantic intention socially
+cautious and unreadable. Do not assert gossip, depict public shaming or imply
+that nobody ever found a partner there; this is a visual hypothesis around the
+Founder's experience, not a measured diagnosis.
+
+SHOT S12 — CP11.png TO CP12.png — BEGINNER DANCE FLOOR — 8 SECONDS
+Begin exactly on CP11.png and end exactly on CP12.png.
+Busy beginner adult partner-dance class in [DANCE_STUDIO]. [FOUNDER_REF] and
+[DANCE_STUDENT_REF] miss one simple step, recover and share a natural laugh.
+Instructional social dance, not seduction. One slow 18-degree clockwise 32 mm arc
+at chest height, broad 4200 K window light and timber bounce. Passing dancer fills
+frame at end. No instructor speech, visible word articulation or lip sync.
+
+SHOT S13 — CP12.png TO CP13.png — ADVANCED ROOM — 8 SECONDS
+Begin exactly on CP12.png and end exactly on CP13.png.
+Exact [DANCE_STUDIO] geometry, light, costume, lens and continuing camera path
+from S12, but half the advanced floor is empty. [FOUNDER_REF] completes one more
+complex step, then shares a relaxed attentive moment with [DANCE_STUDENT_REF] at the
+same bench. Same 32 mm arc at sixty-percent speed. Only attendance changes. No
+slump, readable calendar, new window, visible word articulation or merged identity.
+
+SHOT S14 — CP13.png TO CP14.png — CONTEXT BECOMES CLEAR — 8 SECONDS
+Begin exactly on CP13.png and end exactly on CP14.png.
+At the studio bench, [DANCE_PARTNER_REF] arrives from cool rain, folds an umbrella
+and greets both adults with open friendly posture. [DANCE_STUDENT_REF] turns
+naturally toward her existing partner. [FOUNDER_REF]'s hopeful half-smile becomes
+a warm socially calibrated smile and tiny nod. Static 55 mm medium three-shot,
+warm practical and cool doorway rim. The greeting is conveyed through posture,
+eye contact and one small nod, with no visible word articulation or lip sync.
+No territorial pose, resentment, humiliation or melodrama.
+
+SHOT S15 — CP14.png TO CP15.png — THREE BAD LOCATIONS — 8 SECONDS
+Begin exactly on CP14.png and end exactly on CP15.png.
+Create one continuous three-beat sequence of humane two-shots: 1) café espresso steam masks an attempted exchange and both
+adults laugh gently, static table-height 50 mm; 2) basement-bar acoustics make the
+date cup one ear and gesture gently for repetition, restrained 40 mm handheld; 3) formal
+long table makes both adults sit too straight and exhale together, symmetrical
+58 mm. The settings are the friction. No contempt, phone rejection, appearance
+gag, intoxication, brand or readable menu. Jon recalls the request for repetition
+in post; do not animate speech or lip sync. Deliver one clean eight-second clip.
+
+SHOT S16 — CP15.png TO CP16.png — CONTEXT BEFORE VERDICT — 8 SECONDS
+Begin exactly on CP15.png and end exactly on CP16.png.
+Exact overhead 45 mm view of [NOTEBOOK_PROP]. Apps, talks, dinners, dancing,
+dates and the perfectly executed but over-compressed five-person rental-car trip return as
+small doorway memories. Flat photo-first cards briefly receive premature age,
+appearance and biography verdict marks before any meeting; the marks fall away
+without erasing older adults. Age remains truthful profile context. A remembered common acquaintance
+opens a social door through one shared story or place, then steps back.
+[FOUNDER_REF] draws the missing path between private intention, compatible
+capacity and a real place. One five-percent push, warm ivory desk pool, cool room
+beyond. No public rating, nostalgic perfect past, vouch badge, map brand, label,
+logo or magical glow. Leave negative space for exact post graphics.
+
+SHOT S17 — CP16.png TO CP17.png — EDITABLE 1–10 PRIORITY — 8 SECONDS
+Begin exactly on CP16.png and end exactly on CP17.png.
+[FOUNDER_REF] privately reviews one individual profile card and one pair
+suggestion card, then deliberately moves a row of ten tactile amber beads from a
+low position toward a high one. Time is finite: show a fast filter toward a
+reciprocal invitation, never a fast verdict on human worth. The portraits remain humane people, not ranked
+products. One 55 mm focus change from the Founder's deciding face to the beads,
+then static. The stronger explicit choice stays visually prominent as faint
+background suggestion marks recede. A faint people-in-common or inside/outside-
+network path may add context but never endorsement, character reference,
+compatibility or safety guarantee. A high explicit priority may outweigh weaker
+automated/context signals but never another person's consent. Generate blank
+plates only; the exact 1–10 control is added in post. No public number, body
+score, ownership, popularity, gossip or reputation.
+
+SHOT S18 — CP17.png TO CP18.png — STRANGERS BECOME A GROUP CANDIDATE — 8 SECONDS
+Begin exactly on CP17.png and end exactly on CP18.png.
+Start with two independent adult choices pointing both ways, then add a few
+restrained physical context cues for shared interests, distance and current
+availability. The cues resolve into exactly six distinct adults, three women and
+three men, cast by plausible need rather than an age quota. The working picture
+may lean toward the thirties, forties and fifties but can naturally include an
+adult in their twenties or sixties. Show them
+separately because they have not met yet. Give each one a
+different restrained icon-only thought bubble: book, shared meal, tabletop game,
+route, music or sketching. Keep [FOUNDER_REF], [MAYA_REF],
+[SKETCH_WOMAN_REF], [CUP_WOMAN_REF], [GAME_MAN_REF] and [ROUTE_MAN_REF] visible
+as the exact approved individual strangers rather than nodes. One shared activity
+and several possible conversations should visually replace the pressure of one
+all-or-nothing romantic pairing; this is design intent, not a success claim. One
+gentle 40 mm overhead-to-eye-level tilt. Amber
+means graded priority, aqua means reciprocal/context evidence, coral means the
+candidate group. No giant abstract affinity network, soulmate beam, automatic
+couple, public score, generated labels or guaranteed compatibility.
+
+SHOT S19 — CP18.png TO CP19.png — STRANGER GROUP CHOOSES AND PLANS — 8 SECONDS
+Begin exactly on CP18.png and end exactly on CP19.png.
+The same six previously unknown adults, exactly three women and three men,
+receive one balanced group proposal and decide independently. This candidate
+proceeds because all six accept, while decline remains visibly available without
+penalty. A blank contextual group-chat card becomes their first event draft,
+then match into the six arriving and introducing themselves around one table.
+Their different thought bubbles fade as they begin listening to one another. No
+one-to-one romantic chat is spotlighted. One slow 20-degree 35 mm orbit ending
+eye-level. Warm equal face light and equal visibility for all six. Exact controls
+and chat are added in post; no readable AI text.
+
+SHOT S20 — CP19.png TO CP20.png — FIRST MANAGED EVENT TURNS STRANGERS INTO CONTACTS — 8 SECONDS
+Begin exactly on CP19.png and end exactly on CP20.png.
+At public [EVENT_VENUE], the same six accepted strangers manage the first event
+they planned. Show exactly four icon-only resource cards: members with six human
+figures, transport with a bus and route, accommodation/venue with a building,
+door and key, and supplies with an open crate. A blank ticket/check-in card and a
+brief event-feedback card remain separate secondary actions. No wheelchair or
+invented accessibility pictogram. Show DIY-first collaborative authorship: the
+host arranges some cards, participants add others and one local provider supplies
+one bounded part. Do not imply a finished one-click travel-agency workflow. The
+wider product direction permits fully self-organized, partially provider-assisted
+or organizer-managed plans, always with independent acceptance. Introductions and one shared activity turn
+the strangers into known contacts by the end. Use 50 mm hand match-cuts followed
+by one 35 mm pullback. Use nonverbal affirmative gestures and tactile acceptance
+cues; do not generate character dialogue or lip sync. No readable AI text,
+floating UI clutter or instant friendship; exact
+graphics are added post.
+
+SHOT S21 — CP20.png TO CP21.png — THE EDITABLE RELATIONSHIP LIFECYCLE — 8 SECONDS
+Begin exactly on CP20.png and end exactly on CP21.png.
+Show a compressed later chapter using two clean match cuts. First, people met at
+the first event now appear as known contacts; a host directly re-invites several
+of them to a later event. One invitee lacks time and calmly declines; Auto
+Inviter may offer the available place according to the priority plan, and a new
+invited adult independently accepts. A brief route-card callback now has enough
+capacity without treating people as interchangeable. Auto Inviter targets
+intended accepted capacity but cannot guarantee a full group. Repeated participation
+begins to look like a community. Then one relationship changes after a brief
+ordinary disagreement:
+one adult privately moves the same tactile priority beads lower, and the future
+shared group/event path between those two becomes quieter and less likely while
+other paths remain. Later-event background participants widen the mix of adult
+ages and life stages organically; each remains an individual who can decide,
+contribute and change course. No villain, public down-rating, revenge, punishment,
+forced couple or guaranteed chemistry. Warm humane acting; all exact UI stays in
+post.
+
+SHOT S22 — CP21.png TO CP22.png — SHARED CORE, LOCAL OPERATORS, VOLUNTARY NETWORK — 8 SECONDS
+Begin exactly on CP21.png and end exactly on CP22.png.
+Open on exact post-added `2016` beside [NOTEBOOK_PROP], with three restrained
+Budapest seasonal page tabs for roughly three years of private creative work and
+route lines leaving and returning. Budapest-cost financial independence opens
+bounded periods of sustained attention that ordinary full-time employment would
+not leave. Do not imply ten continuous development years or weekend spare-time
+construction. Show no tax, health-insurance, legal or
+administrative symbol. Product modules accelerate only when later AI assistance
+enters; AI does not invent or validate the idea. In a credible technical
+workspace, [FOUNDER_REF] transfers
+[DEPLOYMENT_PACKAGE] to one [OPERATOR_REF]. The technically capable operator
+verifies it at a real workstation, connects an independently hosted local server
+and opens an own-brand organizer surface for testing with local communities and
+cultural context. The coral shared-core line reveals several visually distinct,
+independently hosted server workspaces cooperating around the same unresolved
+relationship-to-meeting problem. One node has a clear voluntary opt-out path and
+remains locally operable. One 45 mm over-shoulder move ends in a balanced network
+composition with an exact blank central plate reserved for post placement of the
+original unmodified `frontend/src/assets/logo/heart.png`. The helmet-like shelter,
+star and central heart may suggest protection, direction and human connection,
+but not certified safety. The core is shared globally while local people,
+cultures and organizers shape each test; do not homogenize the local palettes.
+Localization includes real distance, place, timing, transport, resources,
+language and boundaries. A country change may restart the same method, but do
+not show profiles, chats, contacts or private-rate history automatically moving
+between independent operators.
+Deep navy technical space, warm faces. This is shared infrastructure
+and a proposed virtual enterprise, not anonymous package distribution. No claim
+of current deployment, proven efficiency, revenue, automatic trust or central
+merchant; no readable terminal, generated logo or generated text.
+
+POST E01 — CLEAN END PLATE — 8 SECONDS
+Deep navy clean field, subtle tactile paper texture, one faint original coral
+network line settling to still, no camera move and center-safe negative space.
+No generated text, logo, heart, icon or object. The original unmodified
+repository `heart.png`, separate MyScoutee text, tagline and CTA are added in post.
+Hold the exact repository mark and editable post-only lines `BOOK AVAILABLE`
+and `TO BE CONTINUED` for the full eight seconds. Do not repeat the film or book
+title. This plate is built deterministically; do not spend image- or
+video-model credit on it.

@@ -1,0 +1,31 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP00-v1.png as the exact first frame and CP01-v1.png as the exact last
+frame.
+
+Follow the central soil furrow with one slow, restrained forward camera
+movement. Transform the same continuous line naturally from soil furrow into a
+railway rail, then briefly into the edges of three completely unreadable study
+pages, and finally into the wet Budapest tram rails visible in the last frame.
+
+Let the warm rural dawn gradually become Budapest blue hour. The transformation
+must remain smooth and physically coherent, ending exactly at the glass office
+doorway shown in the last frame.
+
+Preserve both uploaded endpoint images. Do not introduce additional people or
+alter the person already present in the final frame.
+
+CONTINUITY IS REQUIRED:
+Keep one continuous direction of movement and one uninterrupted visual axis. No
+hard cut, camera jump, freeze, collage, split screen, style change or abrupt
+transition.
+
+Natural preview ambience only: soil movement gradually becomes distant rail and
+tram ambience. No dialogue, narration or generated music. The final film audio
+will be replaced in post.
+
+No readable text, logos, signs, flags, floating equations, graduation ceremony
+or tourist montage.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

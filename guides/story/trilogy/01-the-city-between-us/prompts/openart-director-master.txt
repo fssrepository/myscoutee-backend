@@ -1,0 +1,194 @@
+Create the planning storyboard for a `03:12` cinematic animated founder film
+titled “The City Between Us” for MyScoutee: one deterministic eight-second
+opening card, twenty-two silent eight-second motion clips and one deterministic
+eight-second closing card. Return scene
+cards and low-resolution still plans only. Do not generate motion or spend video
+credits until every character, place and checkpoint is approved.
+
+FORMAT AND LOOK
+9:16 portrait, 720x1280 delivery, 24 fps film language. Premium painterly 2.5D:
+expressive hand-drawn adult characters integrated into tactile dimensional paper
+and miniature worlds, realistic motivated light, wet pavement, fogged glass,
+wool and graphite. Restrained humane acting, one camera move per generated clip.
+No named-studio imitation, photoreal uncanny faces, generated text, fake UI,
+invented logo, glamour casting, national stereotype or tourism-ad montage.
+
+VOICE-OVER PERFORMANCE
+Final narration and the continuous soundtrack are added in post. Unless a shot
+explicitly assigns one short diegetic cue, nobody visibly speaks, forms words or
+lip-syncs. Keep mouths naturally relaxed, with breathing, brief nonverbal smiles
+and minute jaw movement only. Convey interaction through listening, eye contact,
+small nods and restrained hand gestures; never make several people visibly
+speak at once. Discard any unavoidable generated clip audio.
+
+IDENTITY LOCK
+Use `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
+`[GAME_MAN_REF]`, `[ROUTE_MAN_REF]`, the approved Dance Student, Dance Partner,
+Operator, Hungarian-origin memory board and twelve-flatmate board. Those first
+six references are the exact MyScoutee candidate: three women and three men with
+the same identities throughout.
+The Founder wears navy coat, charcoal knit, muted rust scarf and carries a cognac
+notebook. He is capable and observant, never bitter. All adults retain autonomy.
+His default presence is quiet, restrained and precise. Do not read that reserve
+as fear or compliance, and do not turn him into a volatile hero: years may pass
+without anger reaching his voice. When a later scene requires an unsoftened
+response, its force comes from rarity and self-possession, not aggression.
+
+LOCKED STORY AND TIMING
+- P00 00:00–00:08: deterministic true-story title and premise card; no model generation.
+- S01 00:08–00:16: countryside small-producer roots become a route to beautiful
+  Budapest after economics, programming and mathematics studies completed in
+  2004. A delayed dissertation makes 2005 the earliest possible diploma year,
+  but actual receipt comes considerably later because one required intermediate-
+  level language certificate is missing. No folklore cliché,
+  issued diploma or readable certificate.
+- S02 00:16–00:24: four CPU-assembled still plates begin with a neutral
+  multinational-office exit, then show a workers' hostel, a late locked-room/
+  corridor beat, an anonymous undisclosed summer-substitute room, return to
+  predictable impersonal rules, and the parents' hands passing a flat key beside
+  an unsigned, unused foreign-currency-loan form. No unemployment, named
+  employer, identifiable location/person, legal accusation or claim that the
+  loan was certain.
+- S03 00:24–00:32: competent software work in a multicultural Soho office. At
+  the opening threshold, briefly establish the 2011 London arrival without
+  official marks. He finds this
+  work within two weeks despite weak English. Professional competence coexists
+  with his inability to join easy colleague conversation; this gap lasts almost
+  three years and is not comic. At an expensive group or farewell lunch the
+  Founder remains at the table, watches colleagues eat and performs “not
+  hungry” as a supposed Hungarian habit. Match the menu prices to private
+  muesli and a two-litre milk bottle away from the restaurant. When his savings
+  chart begins to look capable of reaching the Budapest-cost financial-
+  independence threshold for which he came to London, his focus narrows and
+  each avoided meal seems to move it closer; a later one-beat
+  echo may show surprise when he finally orders once or twice. No employer or
+  colleague blame. The warm
+  Soho sex-shop farewell-gift colleague memory moves to S04.
+- S04 00:32–00:40: museums, exhibitions, nightlife, cafés and mutually curious
+  multicultural dates make London feel inexhaustible. The 2012 Olympic/Diamond
+  Jubilee public energy belongs here as a following-year layer without official
+  marks. The Victoria line appears
+  only as the final half-second connection to Tottenham.
+- S05 00:40–00:48: a Hungarian microcosm inside multicultural London. The Founder
+  plus twelve Hungarian adults inhabit one maintained Victorian HMO. Every adult
+  has a different body, temperament, work rhythm, reason for leaving and relation
+  to home. Some feel happier there and no longer want to return; this is personal
+  memory, never a displayed percentage or a rootless-person label.
+- S06 00:48–00:56: one full bathroom, one separate WC and a shared bedroom. A
+  flatmate who lost money gambling quietly swaps his place with an acquaintance;
+  a different snore reveals the resident change. Housing absurdity is the joke,
+  never debt or the person.
+- S07 00:56–01:04: three magical years compressed through the same shared-room
+  lamp to low-cost adventure: one-pound overnight coach to Edinburgh, Loch Ness,
+  Glasgow/Clyde powerboat, and an exact but exhausting three-day London–
+  Manchester–Liverpool–Barmouth–Cardiff–London road circuit. Five people
+  travel—two couples and the Founder—in a rented car; the Founder plans but
+  cannot drive, so a participating acquaintance drives, never a hired chauffeur.
+  Unbranded budget hotels supply accommodation, and the route needs a fourth day
+  to avoid the rush. Barmouth is the confirmed North Wales location: broad
+  low-tide sand at the Mawddach Estuary, mountains, town and sea. Years four and five simplify into work, rent, shared space and
+  Brexit-era uncertainty about belonging. Shared-room savings fund journeys and
+  accumulate until a private December 2015 diagram reaches a Budapest-cost
+  financial-independence threshold. The parent-assisted Budapest flat has stood
+  empty throughout the London years. The Founder is never financially
+  independent in London: normal private housing there would erode the Budapest
+  position, while permanent room-sharing is no longer viable. Housing becomes
+  his stop-loss. No second-home claim, invented figure or migrant job-displacement
+  claim.
+- S08 01:04–01:12: eight illustrated memories occupy exactly 72 frames inside
+  the shot. Fold time through the notebook because the six-day Egypt trip happened
+  after the London homecoming. Use a restrained Founder/tuk-tuk handoff at Angkor
+  and a reciprocal Taj Mahal bus conversation rather than generic postcards.
+  Prefer one human Egypt frame: passengers, crew and residents cooperate after a
+  Luxor balloon lands in a vegetable plot. The Cairo taxi-roof luggage mishap is
+  an alternate, not a ninth plate. Never merge Cairo, Luxor, Aswan and Abu Simbel
+  into one fake panorama. Local drivers, passengers, hosts or residents open the
+  human thresholds, but most journeys are made alone and self-organized: the
+  Founder joins flights, rooms, local transport and human handoffs into his own
+  route. No package-tour leader owns the complete sequence. Each environment
+  reveals another part of the Founder: global route, local encounter. Resolve to
+  the Founder beside an empty seat, then a restrained COVID-19 threshold.
+- S09 01:12–01:20: warm, purposeful but unresolved homecoming to the
+  parent-assisted Budapest flat that stood empty throughout the London years.
+  He makes the lower-cost independence livable and comes home to find a partner,
+  while London remains a possible destination after a break. Keep the Budapest
+  and London keys beside the notebook; do not stage a final rejection of London.
+- S10–S15 01:20–02:08: scarce versus overwhelming app attention; talks, dinners,
+  dance and humane bad-location dates. Settings and continuity fail; people are
+  not mocked and dance never implies romantic consent. One unbranded
+  friendship-centred community, learned about through a former date, receives
+  occasional visits after the Founder returns alone from London, though never
+  regular attendance. It eases his loneliness by giving him somewhere to go, a
+  few familiar people and friendship without leading him to a partner. Show his
+  first arrival alone and later restrained recognition, never a founding date,
+  the former date, a service identity or regular membership. Large-crowd caution
+  and the unreadable next step are only hypotheses around his experience, not
+  measured causes or a claim that nobody else formed a relationship there.
+  Preserve friendship and relief from aloneness as equally valuable outcomes
+  rather than failed dating.
+- S16 02:08–02:16: screens encourage age, appearance and biography verdicts
+  before meeting without erasing older adults. Recall one common
+  acquaintance who once opened a door through a shared person/place/story, then
+  stepped back. The missing bridge is shared human context plus compatible
+  capacity, not another card and not nostalgia for a perfect past.
+- Product principle: time is finite, so the path is a fast filter toward
+  reciprocal human context, never a fast verdict on human worth. The six-person
+  group lowers one-pair, all-or-nothing pressure through several conversations,
+  shared activity, friendship or later invitations; this is design intent, not
+  measured success.
+- S17 02:16–02:24: private editable 1–10 priority for an unknown individual or
+  pair. People-in-common and inside/outside-network cues add context only: never
+  public rating, vouching, character reference, compatibility or safety guarantee.
+- S18 02:24–02:32: reciprocal choices and restrained context propose exactly
+  `[FOUNDER_REF]`, `[MAYA_REF]`, `[SKETCH_WOMAN_REF]`, `[CUP_WOMAN_REF]`,
+  `[GAME_MAN_REF]` and `[ROUTE_MAN_REF]` as the same six strangers, three women
+  and three men cast by plausible need rather
+  than an age quota. The working picture may lean toward the thirties, forties
+  and fifties but can naturally include an adult in their twenties or sixties.
+  Give each a different thought motif. No soulmate graph or automatic couple.
+- S19 02:32–02:40: each of the same six may accept or decline. After six accepts,
+  contextual chat becomes one public doorway and visible first introductions.
+- S20 02:40–02:48: first event with four exact resource buckets — members,
+  transport, accommodation/venue and supplies. Tickets, check-in and feedback
+  remain separate. Show the collaborative middle of a DIY-first authorship
+  ladder: the host assembles some parts, participants contribute others and one
+  local provider supplies a bounded component. The intended model also permits
+  a fully self-built event or a plan managed more completely by an event or
+  travel organizer. Do not claim a finished one-click agency-delegation
+  workflow. One clear narrator; no overlapping generated dialogue.
+- S21 02:48–02:56: after meeting, they are known contacts. A person in common adds
+  context without guaranteeing anyone. When one invitee lacks time and declines,
+  another invited adult may independently accept the open place. Repeated events
+  may grow community; Auto Inviter targets intended accepted capacity but cannot
+  guarantee a full group. A later private priority reduction quiets one future path
+  without public punishment or reputation damage. Later community frames widen
+  the mix of adult ages and life stages organically while keeping every person distinct.
+- S22 02:56–03:04: post-added 2016 notebook origin. Budapest-cost financial
+  independence opens bounded periods of sustained work that an ordinary full-
+  time job would not leave; do not imply ten continuous development years or
+  weekend spare-time construction. Three private-work seasonal tabs lead into
+  later AI-accelerated implementation; show no legal,
+  tax, health-insurance or administrative symbol. Then show a verified package
+  handoff to a technically capable local
+  operator; independent own-brand servers and cultural/community tests cooperate
+  through a voluntary network with opt-out. Reserve an exact blank central plate
+  for the original unmodified `frontend/src/assets/logo/heart.png`, composited in
+  post. Its helmet-like shelter, guiding star and central heart may suggest
+  protection, direction and human connection, never certified safety. One core
+  is reusable globally; local people and communities shape each meaning and test.
+  Localization includes real distance, place, timing, transport, resources,
+  language and boundaries. A country change may restart the same method, but
+  profiles, chats, contacts and private-rate history do not automatically move
+  between independent operators.
+- E01 03:04–03:12: deterministic clean deep-navy plate. The same original icon,
+  separate editable MyScoutee name, `BOOK AVAILABLE` and `TO BE CONTINUED` are
+  built in post without generation credit or a repeated title.
+
+CLAIM AND OUTPUT LOCK
+This is a product-story plan, not evidence of traction, revenue, safety,
+successful matching, deployed operators or solved loneliness. Preserve the
+supplied English narration without rewriting it. Create P00, exactly 22 motion
+cards named S01–S22 and E01 with timing, cast references, first/last-frame intent,
+camera, light, sound role and split risk. Keep all generated plates textless.
+Film 1 is complete and contains no hint of the Founder's later legal, tax or
+court matter; Film 2 is outside this generation plan.

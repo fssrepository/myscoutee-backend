@@ -495,6 +495,7 @@ public final class EventsDtos {
             List<String> invitedMemberUserIds,
             List<String> pendingRequestMemberUserIds,
             String pendingReason,
+            String currentUserMembershipStatus,
             Boolean approvalRequired,
             String checkoutResultState,
             Double boost) {

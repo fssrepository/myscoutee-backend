@@ -22,11 +22,16 @@ public class ActivityEventMapper {
             LocationCoordinatesDto viewerCoordinates,
             Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
             Map<String, String> checkoutResultStatesBySourceId,
-            Map<String, String> creatorAvatarUrlsByUserId) {
+            Map<String, String> creatorAvatarUrlsByUserId,
+            Map<String, String> currentUserMembershipStatusesBySourceId,
+            String viewerUserId) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
             checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
             creatorAvatarUrlsByUserId = creatorAvatarUrlsByUserId == null ? Map.of() : creatorAvatarUrlsByUserId;
+            currentUserMembershipStatusesBySourceId = currentUserMembershipStatusesBySourceId == null
+                    ? Map.of()
+                    : currentUserMembershipStatusesBySourceId;
         }
     }
 
@@ -86,9 +91,39 @@ public class ActivityEventMapper {
                 invitedMemberUserIds,
                 pendingRequestMemberUserIds,
                 null,
+                resolveCurrentUserMembershipStatus(record, context, membersSnapshot),
                 Boolean.TRUE.equals(record.getApprovalRequired()),
                 resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()));
+    }
+
+    private String resolveCurrentUserMembershipStatus(
+            ActivityEvent record,
+            MappingContext context,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        String contextualStatus = safeText(context == null || !StringUtils.hasText(sourceId)
+                ? null
+                : context.currentUserMembershipStatusesBySourceId().get(sourceId));
+        if ("accepted".equals(contextualStatus)
+                || "pending".equals(contextualStatus)
+                || "invited".equals(contextualStatus)) {
+            return contextualStatus;
+        }
+        String viewerUserId = normalizeId(context == null ? null : context.viewerUserId());
+        if (!StringUtils.hasText(viewerUserId) || snapshot == null) {
+            return "none";
+        }
+        if (normalizeIds(snapshot.acceptedMemberUserIds()).contains(viewerUserId)) {
+            return "accepted";
+        }
+        if (normalizeIds(snapshot.pendingMemberUserIds()).contains(viewerUserId)) {
+            return "pending";
+        }
+        if (normalizeIds(snapshot.invitedMemberUserIds()).contains(viewerUserId)) {
+            return "invited";
+        }
+        return "none";
     }
 
     private String resolveCreatorAvatarUrl(ActivityEvent record, MappingContext context) {
