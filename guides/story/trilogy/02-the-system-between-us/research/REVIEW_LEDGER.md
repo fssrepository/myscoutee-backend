@@ -15,6 +15,7 @@ The ledger controls reading order. File count is not narrative importance.
 | 30 Oct 2025 *Public-Interest Action* | How did the earlier system proposals become a five-part authored civic claim, and which version controls? | root v8 and signed v5 reviewed; differences noted; procedural status not inferred from title |
 | 18–19 Dec tax response | What did the administration later reconstruct? | reviewed at narrative level |
 | surgery and rehabilitation material | What physical constraint overlapped the sequence? | reviewed; exact date reconciliation pending |
+| post-operative profanity and collapsed-trust account | How did anxiety and immobility change the language addressed to the tax administration? | memoir/secondary authored layer added; exact scanned filing still to isolate before verbatim documentary use |
 | charge and forensic opinion | What positions did prosecution and expert record? | reviewed with contest boundary |
 
 ## Tier 1 — procedural route
@@ -101,3 +102,5 @@ question, locally and minimally.
 11. isolate any hearing record for the remembered exchange about whether the
     intimate Part I history mattered and the later answer about the source of
     the money.
+12. isolate the exact March–May 2023 filing containing the remembered Hungarian
+    profanity about the administration fining its own mother.

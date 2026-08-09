@@ -584,6 +584,20 @@ absurdity visible to a system that had reduced both to fields. The photograph
 could show what my explanations could not: the medical pressure was not a
 metaphor.
 
+The same period produced an even barer line. In Hungarian, I told the tax
+administration, with profanity, to fine its own mother instead. It was not a
+legal argument and it asked for no physical act. It marked the point at which
+trust had evaporated and only anxiety remained. The depression of immobility
+after surgery amplified the fear underneath it: however carefully I tried, I
+could not find a way to live lawfully in my own country without another rule,
+professional failure or invisible notice pulling me back into danger.
+
+That was the deeper obscenity. I had corrected the return, paid the tax,
+withdrawn the monetary demand, announced the operation in advance and asked for
+peace. Yet lawful repair did not feel like an exit. A sentence directed at an
+institution's imaginary mother was the language of somebody who no longer
+believed the institution could hear ordinary language.
+
 The photograph and the joke later travelled without the bed, the stored food,
 the advance notice or the corrected tax return. Again, the sharpest fragment
 was easier to carry than the chain around it.
@@ -689,6 +703,14 @@ that the people in the room could still recognize the absurdity while the
 procedure continued to manufacture it.
 
 The irony kept me from becoming only the file.
+
+At first, the frightening thing was the name of the accusation. Later, the more
+frightening discovery was how little trust remained. An institution could still
+issue an order, seize a device or compel my attendance. But after referrals,
+missing answers and words repeatedly detached from their context, it could say
+almost anything and expect the sentence itself to carry authority. It no longer
+did. The words retained coercive force while losing human and moral weight.
+Power without credibility was more frightening than the label attached to me.
 
 <!-- illustration: part_ii_police_scene -->
 
@@ -1844,6 +1866,13 @@ The post-operative-leg image and the vulgar physical-comedy description are
 supported by authored defence material. The pasture image is presently a
 memoir-layer recollection and is paraphrased rather than presented as a verified
 quotation.
+
+The further post-operative profanity about the administration fining its own
+mother is also kept at memoir layer. The wider March–May submission period is
+documented, but the exact page containing that remembered wording has not yet
+been isolated from the scanned monthly bundles. The narrative therefore
+paraphrases the line and uses it to mark collapsed trust; it does not present it
+as a verified quotation or a literal request concerning any real person.
 
 ## Legal reference map
 

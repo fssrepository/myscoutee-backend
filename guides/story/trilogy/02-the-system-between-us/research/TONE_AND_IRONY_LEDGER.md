@@ -19,6 +19,7 @@ below are sufficient for local rechecking and do not expose private names.
 | `epapir/_100/urlap_137.pdf` | 6 February 2024 | D — authored submission | The Founder called an earlier dismissal the best-feeling dismissal of his life and remembered asking, while being escorted out, whether he could now buy Hungarian government bonds. | Book-only background unless the employment chronology needs the Part I echo. Keep the employer anonymous. |
 | `epapir/_300/urlap_329.pdf` | 14 May 2024 | D — authored submission | The closing line sarcastically declares the addressed institution fired. | May be paraphrased. It is a powerless reversal of hierarchy, not a real dismissal. |
 | authored defence strategy | date preserved in private package | D — authored defence material | A close photograph of the swollen operated area itself—not the bandage—is paired with an obscene image of kicking the tax administration in the backside to make it act. | Describe as written physical comedy. A closed incision may appear clinically; never visualize a literal kick, blood, open tissue or graphic wound. |
+| exact filing not yet isolated from the scanned March–May package | surgical recovery period | M/D-secondary — memoir supported by the documented distressed-submission period | The Founder remembers telling the tax administration, in Hungarian profanity, to fine its own mother. He connects the line to trust having evaporated while post-operative immobility and anxiety intensified the belief that lawful life in Hungary had become unreachable. | Paraphrase in the memoir rather than typographically foregrounding the raw Hungarian insult. Treat it as loss of trust and language under pressure, not a literal instruction, legal argument or physical threat. Promote it to a documentary quotation only after the exact filing is isolated. |
 | later court submission; exact file to isolate | after the exclusion decision | M/D-secondary — remembered wording in an authored reply | After the challenged judge was described to the deciding judge as having listened conscientiously, the Founder answered the court in the third person that the judge had “conscientiously defended the system failure.” | The inversion belongs to the Founder. Do not attribute it to either judge or present it as a finding. Use paraphrase until the exact submission is isolated. |
 | hearing-end expression | 1 April 2026 | M — memoir | The Founder read the challenged judge's final expression as less certain and possibly more able to see him as a person reached by a failure rather than simply at fault. | Expression only. No invented dialogue, thought caption, agreement, innocence finding or admission of error. |
 | hearing tone and recurring smile | 1 April 2026; exact transcript/recording not isolated | M — memoir | The Founder remembers the judge smiling through much of the hearing and responding in substance, “You were afraid?”, “And you defended yourself,” and returning from his short period of work to the amount of a possible financial consequence. | Keep explicitly as memory of tone and wording. A smile proves neither mockery nor bias; do not turn any line into a verbatim court finding without a transcript. |
@@ -35,6 +36,11 @@ The recurring tone can be summarized as follows:
 
 > The frightening part was the absurdity; the humour was how the person stayed
 > visible inside it.
+
+The narrative turn underneath that tone is equally important: the accusation
+is frightening first, but the deeper fear arrives when institutional language
+keeps coercive force after losing credibility. This is the low-trust thesis of
+the memoir, not a claim that official acts have no legal effect.
 
 This is an editorial synthesis, not a quotation. The public book may use the
 two short contemporaneous formulations above with attribution to the Founder's
@@ -58,6 +64,9 @@ expressions and impossible administrative geometry rather than readable insults.
   answer, not judicial language.
 - Sarcastically firing an institution does not transfer authority.
 - The leg image does not describe an attempted or desired physical assault.
+- The obscene direction to “fine its own mother” remains memoir-layer until the
+  exact scanned filing is isolated. It records collapsed trust, not a request
+  to punish a real relative or an excuse to diagnose the speaker.
 - The KATA/Hulk/reaper material is self-directed political black comedy, not an
   instruction, plan or depiction of violence against a real person.
 - Later political change does not convert the Founder's earlier interpretation

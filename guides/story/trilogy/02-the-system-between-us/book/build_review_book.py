@@ -181,7 +181,7 @@ def build_document(source: Path) -> str:
     )
     body = book.markdown_to_html(body_lines, registry)
     prologue_start = body.find(
-        '<h2 class="context-0" id="prologue-the-line-changes-meaning">'
+        '<h2 class="context-0" id="prologue-the-other-biography">'
     )
     part_one_start = body.find(
         '<section class="part-opener opener-1">', prologue_start
@@ -196,16 +196,15 @@ def build_document(source: Path) -> str:
         + body[part_one_start:]
     )
     chapter_15_heading = body.find(
-        'id="15-three-years-with-an-unlicensed-assistant"'
+        'id="15-the-work-the-file-could-not-explain"'
     )
     chapter_15_start = body.rfind(
         '<div class="chapter-lead">', 0, chapter_15_heading
     )
-    chapter_16_start = body.find(
-        '<div class="ending-tail"><section class="short-chapter"><h2 '
-        'class="context-5" id="16-the-house-as-a-human-archive">',
-        chapter_15_heading,
+    chapter_16_heading = body.find(
+        'id="16-the-house-as-a-human-archive"', chapter_15_heading
     )
+    chapter_16_start = body.rfind("<h2 ", chapter_15_heading, chapter_16_heading)
     if min(chapter_15_heading, chapter_15_start, chapter_16_start) < 0:
         raise ValueError("Could not isolate Chapter 15 for compact review layout")
     body = (

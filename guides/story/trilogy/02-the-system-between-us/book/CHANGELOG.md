@@ -17,6 +17,8 @@ first public edition is `1.0.0`.
   contrast, remembered courtroom humour and unearned-asset-reach metaphor.
 - Restored the clemency request's central state/system-error proposition and
   expanded the black-humour record without converting memory into findings.
+- Restored the post-operative profanity as the point where institutional trust
+  had evaporated into anxiety, while keeping its exact scanned source pending.
 - Clarified the exact methodological bridge between the Navier–Stokes
   lemma-falsification laboratory and the researcher's variational work.
 - Marked the existing narration, storyboard and prompts stale until the revised

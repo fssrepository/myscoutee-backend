@@ -1,11 +1,12 @@
 # Locked-for-review 03:00 script
 
-Status: **narration and timing review; not picture-locked**.
+Status: **synchronized to the 9 August book revision; not picture-locked**.
 
 Voice lock: the final narration is English and uses the same approved
 ElevenLabs **John** voice as Part I. Preserve the exact voice identifier, model
-version, settings and a clean reference WAV. The present words and time windows
-remain stale until the revised Part II book is approved and resynchronized.
+version, settings and a clean reference WAV. The Founder may still correct the
+book before picture lock; any such correction must be propagated here before
+voice generation.
 
 Read in a restrained first-person voice at approximately 126–132 words per
 minute. Do not accelerate the final third. Short gaps inside the windows are for
@@ -20,108 +21,108 @@ foley and breath.
 
 ### 00:08–00:16 — S02 · The open year
 
-> COVID closed one Hungarian job and opened one rare path: Brussels work from
-> my Budapest home.
+> Chance kept me home in 2019. COVID broke that foothold; Brussels remote work
+> opened one narrow route back.
 
 ### 00:16–00:24 — S03 · Legal by necessity
 
-> KATA was not my entrepreneurial dream. It was the legal door through which
-> cross-border work could pass.
+> KATA was not an entrepreneurial dream. It was the lawful bridge between
+> foreign work and the home I had chosen.
 
 ### 00:24–00:32 — S04 · A law in a day
 
-> In July 2022, the rules changed almost overnight. Others blocked bridges. I
-> stayed inside and tried to adapt.
+> In July 2022, that bridge changed almost overnight. Others blocked roads. I
+> stayed at my computer and tried to adapt.
 
 ### 00:32–00:40 — S05 · The handover
 
-> I surrendered later contract value to hand over critical work without leaving
-> another country with my empty chair.
+> The project outlived the tax deadline. I protected the handover and gave up
+> the contract that could no longer fit.
 
 ### 00:40–00:48 — S06 · Three partial views
 
-> My accountant, the tax officer and I each saw a different screen. None of us
-> held the whole story.
+> My accountant, the administration and I each saw another screen.
+> Responsibility stayed with the person denied the whole chain.
 
 ### 00:48–00:56 — S07 · The password trap
 
-> The only route that seemed to keep work and notice together was password
-> sharing. Then the password itself was held against me.
+> The practical route demanded my password. The lawful route hid actions and
+> notices. Either choice returned the risk to me.
 
 ### 00:56–01:04 — S08 · Assembled failure
 
-> Forms were filed, rejected and corrected. Months of professional help failed
-> to settle what looked like a subtraction.
+> Until 23 November, I knew nothing. Almost a year of professional failure took
+> me about one week to understand.
 
 ### 01:04–01:12 — S09 · The call
 
-> I found the mismatch, checked for hours and called for help. Every answer
-> returned me to another missing answer.
+> I corrected the return, paid the tax and dismissed the accountant. The
+> account reached zero. Trust did not.
 
 ### 01:12–01:20 — S10 · The sentence and correction
 
-> Before dawn, under fear and surgical pressure, I wrote words I should not
-> have written—and corrected them.
+> Before dawn, under fear and surgical pressure, a violent sentence escaped. I
+> corrected it immediately. The system kept the first version.
 
 ### 01:20–01:28 — S11 · The body
 
-> Alone, I lived from stored food, raised my leg, injected daily—then sent the
-> swollen incision as an obscene joke.
+> After surgery I lay alone, leg raised, injecting my abdomen and living from
+> months of stored food.
 
 ### 01:28–01:36 — S12 · Volume
 
-> The joke travelled with the wound. Evidence and distress grew until the size
-> of my file described me.
+> Depression sharpened the anxiety: no lawful path felt safe. A wound, profanity
+> and black humour travelled farther than the repair.
 
 ### 01:36–01:44 — S13 · The knock
 
-> A year later, police entered the home my parents had provided. My phone and
-> computer became evidence.
+> Police came the day after I had asked police for help—with another case, and
+> for me. My devices became evidence.
 
 ### 01:44–01:52 — S14 · The rooms and the fingerprint
 
-> An officer faced me at a computer. Counsel found us another room. Then my
-> fingerprints became the next page.
+> Defence could not find time. Eight days after the search, two experts found
+> time to turn a life into a report.
 
 ### 01:52–02:00 — S15 · The C-shaped room
 
-> Danube light became brown stone. Inside, a C-shaped table placed the roles; my
-> longest explanation collapsed into one phrase.
+> The report called me calm, clear and cooperative—then compressed fifty
+> countries and human trust into pathological suspicion.
 
 ### 02:00–02:08 — S16 · The forensic mirror
 
-> Two experts differed. Their report called me calm and clear—then turned the
-> conflict into my personality.
+> In the C-shaped courtroom, smiles recognized the absurdity. The process still
+> moved from a broken system to my finances.
 
 ### 02:08–02:16 — S17 · Work under the shadow
 
-> AI organized the file as defence became public-interest design. I kept
-> building MyScoutee, civic software and mathematics beneath prison's shadow.
+> The intimate life nobody cared about had produced the foreign-earned savings
+> the court now wanted to examine.
 
 ### 02:16–02:24 — S18 · What the case can reach
 
-> A social inquiry entered my cold flat. Security built abroad so I could live
-> at home became another question.
+> Beneath prison's shadow, AI helped me organize the file, build MyScoutee and
+> civic software, and test mathematics with a researcher.
 
 ### 02:24–02:32 — S19 · The earlier pattern enters the street
 
-> Debt had kept another Hungarian in London. Now broken trust filled Budapest's
-> streets; my route remained a laptop.
+> Black humour became a receipt: a “terrorist position” CV sent to police while
+> the person inside the case waited for answers.
 
 ### 02:32–02:40 — S20 · Election
 
-> In 2026, voters replaced the government. Offices that had seemed permanent
-> began moving on different legal hinges.
+> Debt had kept another Hungarian in London. A beautiful home can remain home
+> while its systems make departure feel safer.
 
 ### 02:40–02:48 — S21 · Top and bottom reach Venice
 
-> President and citizen reached Venice one day apart: he defended his office; I
-> asked it to look down.
+> In 2026, voters replaced the government. Offices that looked permanent began
+> moving while my first judgment still did not exist.
 
 ### 02:48–02:56 — S22 · A court cannot assemble
 
-> Seven judges stepped aside, then an eighth. No quorum remained. Mine returned
-> as premature, before any first decision.
+> President and citizen reached Venice. Eight judges stepped aside; my route
+> returned as too early. The line remained open.
 
 ### 02:56–03:00 — E01 · Open line
 
