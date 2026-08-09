@@ -1,0 +1,39 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP02.png as the exact first frame and CP03.png as the exact last frame.
+
+Begin exactly in the modest Budapest apartment shown in CP02.png. The Founder
+holds the flat key, notebook and suitcase as rain and a yellow tram move beyond
+the tall window. Use one restrained 40 mm left-to-right camera movement toward
+the dark vertical window frame.
+
+Without a cut, transform that same vertical frame into the rain-darkened window
+of a compact multicultural Soho software office. The key movement becomes one
+quiet keyboard movement. The Founder is technically confident at a blank-screen
+laptop and notebook, but mostly listens while colleagues converse naturally
+around him. Show language isolation through his attentive restraint, never
+through incompetence, mockery or rejection.
+
+Continue the same camera movement through the office window reflection into a
+warm Soho group lunch. The Founder sits socially present among friendly
+colleagues, glances once at the menu prices, keeps his own plate empty and gives
+one small, practiced open-palm gesture meaning that he is not hungry. Nobody
+excludes him and nobody pities him. End exactly on CP03.png.
+
+VISUAL CONTINUITY IS REQUIRED:
+Preserve the Founder's exact face, age, navy coat, rust scarf, backpack and
+cognac notebook. The Budapest window, Soho office window and restaurant window
+must remain one continuous visual axis with the same rain, measured camera
+direction and painterly cinematic 2.5D texture. Keep the surrounding colleagues
+warm, restrained and naturally multicultural. No hard cut, camera jump, freeze,
+collage, split screen, face morph, extra dominant character or style change.
+
+Keep every person naturally attentive without visible speaking or pronounced
+lip movement.
+
+No readable text, readable menu prices, readable code, logos, employer branding,
+tourist landmarks, comic accent, starvation spectacle, accusation or blame
+toward the colleagues.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
