@@ -1,6 +1,6 @@
 # Complete storyboard and shot list
 
-Runtime: **03:00.000**. Frame rate: **24 fps**. Deliver every generated shot
+Runtime: **03:04.000**. Frame rate: **24 fps**. Deliver every generated shot
 with at least 12-frame handles. The timings below are editorial targets; generate
 separate 5–10 second clips and trim them in the final editor.
 
@@ -558,14 +558,13 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   deployments, proven efficiency, revenue or automatic trust; all readable
   status text is added in post.
 
-### S23 — Wordmark and invitation · 02:56–03:00 · 4 s
+### S23 — Book, wordmark and continuation · 02:56–03:04 · 8 s
 
 - **Picture:** Deep navy clean field. The original unmodified repository
   `heart.png` appears centered, with **MyScoutee** as separate editable text
-  below it, followed by warm-ivory tagline and the concise CTA **TEST IT WITH
-  ME IN REAL COMMUNITIES.** Small sequential editable chips may name operators,
-  pilot communities and product/venue/experience partners; never place all
-  categories in unreadable four-second body copy.
+  below it, followed by **READ THE BOOK · THE CITY BETWEEN US** and **THE STORY
+  CONTINUES IN PART II · THE SYSTEM BETWEEN US.** Keep the full eight-second
+  card calm and mobile-readable.
 - **Camera/motion:** no generated camera; the same network paths settle behind
   the original icon, briefly allowing the helmet/shelter, star/direction and
   heart/connection reading, then the logo scales 2% without distortion.

@@ -28,7 +28,7 @@ Rules:
   checkpoints go directly into eight-second motion generation as exact first
   and last frames. Do not split an interval into four-second halves or invent
   intermediate stills. S01–S22 form the 02:56 motion chain; CP23 is the separate
-  deterministic four-second end plate; the finished film is exactly 03:00.000.
+  deterministic eight-second end plate; the finished film is exactly 03:04.000.
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |

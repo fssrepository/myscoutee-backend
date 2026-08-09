@@ -6,7 +6,7 @@
 | --- | --- |
 | Working title | **The System Between Us** |
 | Trilogy position | Part II; open ending reserved for Part III |
-| Runtime | exactly `05:08.000` |
+| Runtime | exactly `05:20.000` |
 | Canvas | 9:16 portrait, 720×1280 mobile master, constant 24 fps |
 | Language | English narration and editable English titles |
 | Form | cinematic animated documentary memoir / civic systems story |
@@ -131,14 +131,15 @@ network edge
 
 Palette arc:
 
-- `00:00–00:32`: Part I navy, cognac amber and calm screen light;
-- `00:32–01:36`: compressed graphite, tax-form ivory, warning red and sodium
+- `00:00–00:08`: restrained title graphic in Part I navy and cognac amber;
+- `00:08–00:40`: Part I navy, cognac amber and calm screen light;
+- `00:40–01:44`: compressed graphite, tax-form ivory, warning red and sodium
   street amber;
-- `01:36–03:20`: clinical cyan, police blue, Danube silver, brown institutional
+- `01:44–03:28`: clinical cyan, police blue, Danube silver, brown institutional
   stone and forensic paper white;
-- `03:20–04:24`: foreign-earned amber, cautious violet AI light, black-humour
+- `03:28–04:32`: foreign-earned amber, cautious violet AI light, black-humour
   paper white, London rain and luminous Budapest blue-gold;
-- `04:24–05:08`: civic gold, constitutional red, interim empty-chair navy and
+- `04:32–05:20`: civic gold, constitutional red, interim empty-chair navy and
   the original MyScoutee star colour.
 
 Do not use horror, riot spectacle, prison clichés, axes, flames, terrorism
@@ -150,9 +151,10 @@ bodies, objects, lines, thresholds, expressions and consequences.
 Opening and closing typography is deliberate cinematic punctuation, not a
 generated scene. Add it in post over the approved endpoint plates:
 
-- `00:00–00:08`: title, part title and `BASED ON A TRUE STORY`, with the first
-  narrated sentence acting as the short story threshold;
-- `05:04–05:08`: the MyScoutee invitation, a concise `READ THE BOOK` route and
+- `00:00–00:08`: a separate deterministic title card with title, part title,
+  `BASED ON A TRUE STORY` and one short premise; use near-still graphic motion
+  and a spoken pause rather than placing dense text over S01;
+- `05:12–05:20`: the MyScoutee invitation, a concise `READ THE BOOK` route and
   `TO BE CONTINUED IN PART III`;
 - never ask a video model to render title lettering, the logo or the continuation
   card.
@@ -261,7 +263,7 @@ Audio is assembled after picture timing is locked.
   Warm & Grounded Storyteller**
   voice as Part I, no lip sync; archive the exact voice identifier, model
   version, settings and clean reference WAV;
-- one continuous instrumental composition from `00:00.000` to `05:08.000`;
+- one continuous instrumental composition from `00:00.000` to `05:20.000`;
 - no Flow/OpenArt clip-level music or generated dialogue;
 - exact foley synchronized in post: keyboard, notification, paper, phone,
   crutch/step, door, evidence bag, crowd, chair movement and pen;
@@ -274,15 +276,16 @@ Score arc:
 
 | Time | Musical direction |
 | --- | --- |
-| 00:00–00:32 | Part I motif, thinned to piano/glass and low pulse |
-| 00:32–01:36 | restrained mechanical ostinato; pressure increases without action-trailer drums |
-| 01:36–02:24 | rhythm drops; breath, paper and clinical tone carry vulnerability |
-| 02:24–03:20 | pulse returns through seized devices, defence discontinuity, fingerprint rhythm, forensic paper and the heavy court door |
-| 03:20–04:00 | sparse cursor pulse grows from the evidence search and asset question into uncaged legal, product, film and mathematical work |
-| 04:00–04:24 | dry paper humour opens into wider human strings as the London memory returns through beautiful Budapest |
-| 04:24–04:56 | constitutional brass/choral colour, unresolved and morally ambiguous |
-| 04:56–05:04 | open line and unresolved human cadence |
-| 05:04–05:08 | single star interval, no triumphant cadence |
+| 00:00–00:08 | single line and breath under the true-story card |
+| 00:08–00:40 | Part I motif, thinned to piano/glass and low pulse |
+| 00:40–01:44 | restrained mechanical ostinato; pressure increases without action-trailer drums |
+| 01:44–02:32 | rhythm drops; breath, paper and clinical tone carry vulnerability |
+| 02:32–03:28 | pulse returns through seized devices, defence discontinuity, fingerprint rhythm, forensic paper and the heavy court door |
+| 03:28–04:08 | sparse cursor pulse grows from the evidence search and asset question into uncaged legal, product, film and mathematical work |
+| 04:08–04:32 | dry paper humour opens into wider human strings as the London memory returns through beautiful Budapest |
+| 04:32–05:04 | constitutional brass/choral colour, unresolved and morally ambiguous |
+| 05:04–05:12 | open line and unresolved human cadence |
+| 05:12–05:20 | single star interval with room to read; no triumphant cadence |
 
 ## 9. Truth boundaries
 

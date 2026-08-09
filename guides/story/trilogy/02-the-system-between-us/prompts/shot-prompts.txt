@@ -80,7 +80,7 @@ SHOT S27 — CP26.png TO CP27.png — DOORS THAT ANSWER LATER
 Begin exactly on CP26.png. Move complaint, exclusion request and constitutional route through several institutional doors. Mark one route as too early through geometry only while separate judge roles change. End exactly on CP27.png with the Founder still waiting below the doors. No final rejection or verdict.
 
 SHOT S28 — CP27.png TO CP28.png — THE MACHINE BESIDE ME
-Begin exactly on CP27.png. Introduce a blinking AI cursor beside the human-authored first defence and let it organize the later record. End exactly on CP28.png with Founder and AI workspace in visible collaboration. Do not give the machine a body, counsel robes, court speech or legal authority.
+Begin exactly on CP27.png. Introduce a blinking AI cursor beside the Founder's facts and first two-page defence, then let it organize the later record. End exactly on CP28.png with Founder and AI workspace in visible collaboration. Do not imply that AI supplied his lived facts or judgment, and do not give the machine a body, counsel robes, court speech or legal authority.
 
 SHOT S29 — CP28.png TO CP29.png — FOUR WINDOWS
 Begin exactly on CP28.png. Open four bounded workstation windows: legal self-defence, MyScoutee, accessible civic-service prototyping and falsifiable mathematics. End exactly on CP29.png with one focused Founder, four distinct works and a hearing notice. No superhuman speed effect or solved-prize claim.
@@ -113,5 +113,4 @@ SHOT S38 — CP37.png TO CP38.png — THE OPEN LINE
 Begin exactly on CP37.png. Dissolve institutional geometry back into a human network line while the scheduled hearing remains a small open marker rather than a verdict. End exactly on CP38.png with the Founder beside the open MyScoutee line, neither defeated nor triumphant, centre-safe for final post text.
 
 POST E01 — CP38 CLEAN PLATE — BOOK AND CONTINUATION CARD
-Do not generate this card with a video model. Hold a clean deterministic plate derived from CP38 for four seconds. Add the exact repository MyScoutee mark and editable text in post: `READ THE BOOK · THE SYSTEM BETWEEN US` and `TO BE CONTINUED IN PART III`.
-
+Do not generate this card with a video model. Hold a clean deterministic plate derived from CP38 for eight seconds. Add the exact repository MyScoutee mark and editable text in post: `READ THE BOOK · THE SYSTEM BETWEEN US` and `TO BE CONTINUED IN PART III`.

@@ -1,6 +1,6 @@
 # Part II prompt pack
 
-Status: **written baseline synchronized to the 05:08 script and CP00–CP38
+Status: **written baseline synchronized to the 05:20 script and CP00–CP38
 storyboard; no frame-generation run is authorized by this document**.
 
 All generation instructions are English. Public narration and editable titles
@@ -53,8 +53,9 @@ licensed later, belongs in post.
   `S38 = CP37→CP38`.
 - Each clip begins and ends on the supplied frames without redesign, crop,
   reframing or recolouring.
-- `E01` is a deterministic four-second post card derived from `CP38`; it uses
-  the exact repository logo and no generation credit.
+- `P00` is a deterministic eight-second true-story title card; `E01` is a
+  deterministic eight-second post card derived from `CP38`. Both use exact
+  typography and the repository logo in post and consume no generation credit.
 - Title, `BASED ON A TRUE STORY`, dates, labels, book route and continuation
   text are editable post typography only.
 - If a model cannot accept both endpoints, label it unsuitable for the chain.
@@ -70,7 +71,7 @@ Generated clips are production picture only:
 - discard all native platform audio even when the model ignores the prompt.
 
 The final film receives the approved ElevenLabs **Jon — Warm & Grounded
-Storyteller** narration, one continuous `05:08` score and synchronized
+Storyteller** narration, one continuous `05:20` score and synchronized
 post-produced ambience/foley. Archive the exact voice identifier, model,
 settings and clean reference WAV.
 
@@ -119,4 +120,3 @@ Immediately before generation, verify the live model names, endpoint support,
 eight-second duration, watermark control, audio behaviour and charged credits.
 Immediately before release, recheck the hearing date, public presidency and any
 source correction that changes the film rather than only the notes.
-

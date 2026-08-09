@@ -5,7 +5,7 @@ this computer because its GPU is unsupported. The production master therefore
 uses CPU-based FFmpeg assembly. Kdenlive is optional for visual review with
 720p proxies; it is not a delivery dependency.
 
-Primary target: **03:00.000, 720×1280, 9:16, constant 24 fps, English-language
+Primary target: **03:04.000, 720×1280, 9:16, constant 24 fps, English-language
 mobile MP4**.
 
 ## 1. Audio architecture
@@ -67,7 +67,7 @@ internal development follows the whole film:
 - `02:32–02:48`: warm collaborative lift through the first managed event and
   continuing relationship lifecycle;
 - `02:48–02:56`: simplify into a precise, quietly technical texture;
-- `02:56–03:00`: short, confident and restrained resolution.
+- `02:56–03:04`: short, confident and restrained resolution.
 
 The score starts at `00:00.000` and ends exactly on the final frame. Under
 narration it should generally sit `6–10 dB` below its open level. Do not fill

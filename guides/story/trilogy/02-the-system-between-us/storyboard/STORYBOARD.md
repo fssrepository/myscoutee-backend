@@ -3,9 +3,9 @@
 Status: **synchronized written baseline; no checkpoint in this chain is approved
 for production yet**.
 
-Runtime: exactly **05:08.000** at **24 fps**, portrait **720×1280**. The motion
-chain contains thirty-eight eight-second intervals, `CP00→CP38`, followed by one
-deterministic four-second post-production card. Narration and editable titles
+Runtime: exactly **05:20.000** at **24 fps**, portrait **720×1280**. The motion
+chain contains thirty-eight eight-second intervals, `CP00→CP38`, framed by two
+deterministic eight-second post-production cards. Narration and editable titles
 come from [SCRIPT.md](../film/SCRIPT.md).
 
 ## Global picture contract
@@ -25,7 +25,17 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ## Motion chain
 
-### S01 — The line changes meaning · 00:00–00:08 · CP00→CP01
+### P00 — True-story title card · 00:00–00:08 · post only
+
+- **Picture:** deep navy-to-cognac field, one restrained ruled line and one
+  small human-network constellation; exact repository mark and typography are
+  added in post.
+- **Text:** title, part title, `BASED ON A TRUE STORY` and the one-sentence
+  premise from the script.
+- **Motion:** near-still parallax and one slow line movement only. Pause after
+  the true-story statement so the viewer can think before the narrative begins.
+
+### S01 — The line changes meaning · 00:08–00:16 · CP00→CP01
 
 - **CP00:** lossless Part I handoff: six people linked by the open MyScoutee
   network line in the established navy-and-amber world.
@@ -34,7 +44,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP01:** Founder beside the cognac notebook and clean form, large centre-safe
   negative space for title, part title and `BASED ON A TRUE STORY` in post.
 
-### S02 — The life before the file · 00:08–00:16 · CP01→CP02
+### S02 — The life before the file · 00:16–00:24 · CP01→CP02
 
 - **Motion:** the ruled line becomes a restrained route through London rain,
   travel windows, strangers helping and the Budapest home; no rapid postcard
@@ -42,7 +52,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP02:** Founder at his Budapest desk, notebook open, the full earlier life
   present as small warm reflections rather than a file summary.
 
-### S03 — The salaried foothold · 00:16–00:24 · CP02→CP03
+### S03 — The salaried foothold · 00:24–00:32 · CP02→CP03
 
 - **Motion:** the home desk becomes a calm salaried multinational workstation;
   then COVID-19 empties adjacent desks and cools the room without disaster
@@ -50,14 +60,14 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP03:** Founder alone at the still-lit workstation, one access badge and a
   newly closed office door; no employer branding.
 
-### S04 — Seven years against three weeks · 00:24–00:32 · CP03→CP04
+### S04 — Seven years against three weeks · 00:32–00:40 · CP03→CP04
 
 - **Motion:** the badge becomes an employee-policy card while seven years of
   modest government-bond savings remain visible as amber layers behind it.
 - **CP04:** Founder between a three-week employment threshold and the savings
   that made his return possible, choosing the latter without triumph.
 
-### S05 — The distant team · 00:32–00:40 · CP04→CP05
+### S05 — The distant team · 00:40–00:48 · CP04→CP05
 
 - **Motion:** the policy grid opens into an audio-only remote team: several
   distinct adults represented by active call tiles, hands and work objects, not
@@ -65,14 +75,14 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP05:** Founder accepted inside a cross-border working rhythm; a faint
   tuk-tuk street texture enters one distant microphone as human context.
 
-### S06 — Legal by necessity · 00:40–00:48 · CP05→CP06
+### S06 — Legal by necessity · 00:48–00:56 · CP05→CP06
 
 - **Motion:** the call line becomes the clean boundary of a sole-proprietor tax
   route while the remote team remains on the far side.
 - **CP06:** one lawful working bridge between Budapest and Brussels, labelled
   only later in post as `KATA`; no coins, tax-dodge imagery or lifestyle fantasy.
 
-### S07 — A law in a day · 00:48–00:56 · CP06→CP07
+### S07 — A law in a day · 00:56–01:04 · CP06→CP07
 
 - **Motion:** the stable bridge shortens as a bill moves through institutional
   geometry; a separate street layer shows varied citizens gathering while the
@@ -80,21 +90,21 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP07:** split but continuous staging: public protest outside, focused
   handover work inside; do not place the Founder in the crowd.
 
-### S08 — The handover · 00:56–01:04 · CP07→CP08
+### S08 — The handover · 01:04–01:12 · CP07→CP08
 
 - **Motion:** delivery tasks, a client timeline and a clean advance-invoice row
   align under severe time pressure.
 - **CP08:** completed client handover on one screen and an unresolved closing
   tax row on the other; all exact wording added only in post.
 
-### S09 — Three partial views · 01:04–01:12 · CP08→CP09
+### S09 — Three partial views · 01:12–01:20 · CP08→CP09
 
 - **Motion:** the closing row separates into three different interfaces held by
   the Founder, accountant and tax officer.
 - **CP09:** three ordinary adults in a triangular composition, each seeing a
   truthful fragment and nobody seeing the complete chain.
 
-### S10 — The password trap · 01:12–01:20 · CP09→CP10
+### S10 — The password trap · 01:20–01:28 · CP09→CP10
 
 - **Motion:** one route asks for a personal password; the alternative route
   separates delegated action from direct notice but leaves the Founder exposed
@@ -102,14 +112,14 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP10:** two unequal doors on one screen—identity sharing and incomplete
   delegation—without a hacker, lock-breaking or sinister official.
 
-### S11 — Twenty-three November · 01:20–01:28 · CP10→CP11
+### S11 — Twenty-three November · 01:28–01:36 · CP10→CP11
 
 - **Motion:** calendar pages and repeated rejected rows settle on 23 November;
   the Founder begins reconstructing the problem himself.
 - **CP11:** one week of concentrated calculation reveals the failure that the
   professional chain had not resolved; the accountant remains human, not comic.
 
-### S12 — The call · 01:28–01:36 · CP11→CP12
+### S12 — The call · 01:36–01:44 · CP11→CP12
 
 - **Motion:** numbers drain from the screen while a dry call continues; the
   empty family space in the apartment becomes visible without literal unborn
@@ -117,191 +127,191 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP12:** Founder listening in shock, phone lowered slightly, an unused second
   place at the table behind him; no visible dialogue articulation.
 
-### S13 — Repair · 01:36–01:44 · CP12→CP13
+### S13 — Repair · 01:44–01:52 · CP12→CP13
 
 - **Motion:** the Founder corrects the return, pays the tax and ends the failed
   representation in one restrained sequence.
 - **CP13:** three clean states—corrected, paid, representation ended—balanced on
   the desk; no celebratory checkmark explosion.
 
-### S14 — The proposal · 01:44–01:52 · CP13→CP14
+### S14 — The proposal · 01:52–02:00 · CP13→CP14
 
 - **Motion:** the repaired row becomes a simple public-interest diagram: direct
   notice, visible delegated action, correction before escalation.
 - **CP14:** human-scale process map centred on the taxpayer; exact labels remain
   post typography.
 
-### S15 — One surviving line · 01:52–02:00 · CP14→CP15
+### S15 — One surviving line · 02:00–02:08 · CP14→CP15
 
 - **Motion:** accumulated messages compress into one dark handwritten line; a
   second immediate correction appears beside it but receives less visual weight.
 - **CP15:** the disputed line inside an evidence sleeve with the correction
   visible yet smaller; no readable threat, weapon or acted violence.
 
-### S16 — The body has a deadline · 02:00–02:08 · CP15→CP16
+### S16 — The body has a deadline · 02:08–02:16 · CP15→CP16
 
 - **Motion:** the evidence line becomes the edge of a bed and raised leg after
   surgery.
 - **CP16:** Founder alone, leg elevated, special shoe nearby, daily injection
   supplies and stored food visible, empty chair held in quiet focus.
 
-### S17 — The wound reaches the portal · 02:08–02:16 · CP16→CP17
+### S17 — The wound reaches the portal · 02:16–02:24 · CP16→CP17
 
 - **Motion:** a new call enters the silent room; the Founder photographs the
   closed incision and attaches it to an anonymized portal message.
 - **CP17:** clinical, non-gory wound image on the screen and a dry half-smile at
   his own obscene metaphor; never visualize a kick or violent act.
 
-### S18 — The knock · 02:16–02:24 · CP17→CP18
+### S18 — The knock · 02:24–02:32 · CP17→CP18
 
 - **Motion:** the portal notification becomes a door notification almost one
   year later; police arrive the day after the Founder sought help elsewhere.
 - **CP18:** two professional officers at the modest Budapest flat door, Founder
   surprised but composed; no raid spectacle, weapons or broken door.
 
-### S19 — Devices and silence · 02:24–02:32 · CP18→CP19
+### S19 — Devices and silence · 02:32–02:40 · CP18→CP19
 
 - **Motion:** phone and computer enter evidence sleeves; the scene moves to an
   ordinary police interview room and a short counsel break in a second room.
 - **CP19:** officer at desktop computer, Founder opposite, appointed counsel at
   his side; no readable charge and no invented shouting face.
 
-### S20 — Fingerprints · 02:32–02:40 · CP19→CP20
+### S20 — Fingerprints · 02:40–02:48 · CP19→CP20
 
 - **Motion:** restrained booking photograph, then a professional female officer
   guides the Founder's fingers onto paper.
 - **CP20:** close hand choreography and one ordinary human glance; professional,
   non-erotic and free of flirtation.
 
-### S21 — Investigating the investigation · 02:40–02:48 · CP20→CP21
+### S21 — Investigating the investigation · 02:48–02:56 · CP20→CP21
 
 - **Motion:** fingerprint ridges become call timelines, electronic submissions
   and requested recordings reconstructed by the Founder.
 - **CP21:** missing records returned to the investigative table by the person
   being investigated; anonymized dates and waveforms only.
 
-### S22 — Eight days · 02:48–02:56 · CP21→CP22
+### S22 — Eight days · 02:56–03:04 · CP21→CP22
 
 - **Motion:** the recovered evidence pauses while eight calendar marks advance
   to a room with two visibly distinct forensic experts.
 - **CP22:** Founder facing two experts and one future report; no composite
   expert, diagnostic label, ominous lighting or judicial authority.
 
-### S23 — The other biography · 02:56–03:04 · CP22→CP23
+### S23 — The other biography · 03:04–03:12 · CP22→CP23
 
 - **Motion:** calm observation notes condense the Founder's travel, work,
   relationships and distrust into a much thinner institutional portrait.
 - **CP23:** full human figure behind a translucent narrow report silhouette;
   the report is contested interpretation, not the person.
 
-### S24 — Brown stone · 03:04–03:12 · CP23→CP24
+### S24 — Brown stone · 03:12–03:20 · CP23→CP24
 
 - **Motion:** the report edge becomes the Danube embankment and the monumental
   brown, Roman-influenced façade of the Buda courthouse.
 - **CP24:** small Founder approaching the exact civic scale of the building;
   Budapest remains beautiful rather than dystopian.
 
-### S25 — Inside the curve · 03:12–03:20 · CP24→CP25
+### S25 — Inside the curve · 03:20–03:28 · CP24→CP25
 
 - **Motion:** the façade opens into the remembered C-shaped hearing room.
 - **CP25:** prosecutor left, clerk far-left corner, judge centre, court-appointed
   counsel right; Founder in front with microphone. A restrained expression
   registers black humour without proving ridicule or bias.
 
-### S26 — Care · 03:20–03:28 · CP25→CP26
+### S26 — Care · 03:28–03:36 · CP25→CP26
 
 - **Motion:** a financial question crosses the microphone and becomes the
   apartment, parental home support and foreign-earned savings behind it.
 - **CP26:** the life that produced the money occupies more space than the asset
   field asking for it; no confiscation, eviction or final fine.
 
-### S27 — Doors that answer later · 03:28–03:36 · CP26→CP27
+### S27 — Doors that answer later · 03:36–03:44 · CP26→CP27
 
 - **Motion:** complaint, exclusion request and constitutional route move through
   several doors; one route is marked too early while judge roles change.
 - **CP27:** Founder below a row of institutional doors, still waiting; evidence
   requests and possible fine remain unresolved, not rejected forever.
 
-### S28 — The machine beside me · 03:36–03:44 · CP27→CP28
+### S28 — The machine beside me · 03:44–03:52 · CP27→CP28
 
-- **Motion:** a blinking AI cursor appears beside the human-authored first
-  defence and begins organizing the later record.
+- **Motion:** a blinking AI cursor appears beside the Founder's facts and first
+  two-page defence, then begins organizing the later record.
 - **CP28:** Founder and AI workspace in visible collaboration; the machine does
   not wear counsel robes, speak in court or replace the legally required lawyer.
 
-### S29 — Four windows · 03:44–03:52 · CP28→CP29
+### S29 — Four windows · 03:52–04:00 · CP28→CP29
 
 - **Motion:** one workstation opens four bounded windows: legal self-defence,
   MyScoutee, accessible civic-service prototyping and falsifiable mathematics.
 - **CP29:** four distinct works held together by one focused Founder under a
   hearing notice; no superhuman montage or solved-prize claim.
 
-### S30 — The human question · 03:52–04:00 · CP29→CP30
+### S30 — The human question · 04:00–04:08 · CP29→CP30
 
 - **Motion:** equations narrow to one precise highlighted statement while an
   anonymous professor's reply arrives.
 - **CP30:** the Founder rereads the exact research question; no named professor,
   public likeness, prize, proof certificate or triumphant discovery.
 
-### S31 — Black humour as receipt · 04:00–04:08 · CP30→CP31
+### S31 — Black humour as receipt · 04:08–04:16 · CP30→CP31
 
 - **Motion:** the research page folds into a satirical police-job curriculum
   vitae and a restrained Hulk-like sketch kept safely on paper.
 - **CP31:** one officer suppresses a smile while the Founder waits for a real
   reply; no axes in live action, terrorist iconography or threat enactment.
 
-### S32 — The debt that crossed a border · 04:08–04:16 · CP31→CP32
+### S32 — The debt that crossed a border · 04:16–04:24 · CP31→CP32
 
 - **Motion:** the white paper becomes a rain-dark London room where one
   Hungarian housemate keeps paying a foreign-currency loan at home.
 - **CP32:** housemate between family photograph, payment slip and shared room;
   legal analogy is not asserted and debt is not made a character joke.
 
-### S33 — Beautiful home, recurring exit · 04:16–04:24 · CP32→CP33
+### S33 — Beautiful home, recurring exit · 04:24–04:32 · CP32→CP33
 
 - **Motion:** London rain becomes Danube light, bridges and Budapest streets;
   one route line nevertheless points outward.
 - **CP33:** Founder between love of the city and the recurring possibility of
   leaving; no ruined-country cliché or nationalist symbol.
 
-### S34 — The streets and the portals · 04:24–04:32 · CP33→CP34
+### S34 — The streets and the portals · 04:32–04:40 · CP33→CP34
 
 - **Motion:** varied citizens fill real streets while the Founder moves through
   petitions, ombudsman routes and public-service portals at his desk.
 - **CP34:** street and screen occupy equal visual weight; neither proves the
   private case, both show a country asking for another route.
 
-### S35 — Twelve April · 04:32–04:40 · CP34→CP35
+### S35 — Twelve April · 04:40–04:48 · CP34→CP35
 
 - **Motion:** ballots move through a quiet count; government signage changes
   while the private case line remains stationary.
 - **CP35:** institutional doors begin moving on different hinges above one
   unchanged hearing timeline; no party logo or victory spectacle.
 
-### S36 — Constitutional empty space · 04:40–04:48 · CP35→CP36
+### S36 — Constitutional empty space · 04:48–04:56 · CP35→CP36
 
 - **Motion:** an anonymous presidential question travels toward Venice and the
   Constitutional Court; seven chairs move back and an eighth follows.
 - **CP36:** seven chairs remain around a fifteen-seat geometry with no quorum;
   no public likeness, Venice endorsement or false departure from office.
 
-### S37 — Mercy changes direction · 04:48–04:56 · CP36→CP37
+### S37 — Mercy changes direction · 04:56–05:04 · CP36→CP37
 
 - **Motion:** a clemency refusal dated 30 April and revised papers dated 19 May
   remain below; above, a later signing hand ends the President's mandate.
 - **CP37:** two legally unequal routes held in memoir irony, never shown as
   cause, revenge, equivalent judgment or deserved punishment.
 
-### S38 — The open line · 04:56–05:04 · CP37→CP38
+### S38 — The open line · 05:04–05:12 · CP37→CP38
 
 - **Motion:** institutional geometry dissolves back into a human network line;
   the scheduled hearing remains a small open marker rather than a verdict.
 - **CP38:** Founder beside the open MyScoutee line, neither defeated nor
   triumphant, centre-safe for the final post-produced statement.
 
-## E01 — Book and continuation card · 05:04–05:08 · post only
+## E01 — Book and continuation card · 05:12–05:20 · post only
 
-- deterministic clean plate derived from CP38;
+- deterministic clean plate derived from CP38, held for a full eight seconds;
 - exact repository MyScoutee mark, never an AI-generated logo;
 - editable text: `READ THE BOOK · THE SYSTEM BETWEEN US` and
   `TO BE CONTINUED IN PART III`;
@@ -362,4 +372,3 @@ Before generating any checkpoint:
 4. record model, cost, seed when exposed and failure modes;
 5. lock the production model and character references;
 6. only then generate the remaining checkpoints in numerical order.
-

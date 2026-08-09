@@ -194,7 +194,7 @@ continuity and technical faults before an expensive final render.
 
 - [ ] Timeline and export are `720×1280`, `9:16`, square pixel and constant
   `24 fps`.
-- [ ] Exact duration is `03:00.000`.
+- [ ] Exact duration is `03:04.000`.
 - [ ] H.264 MP4 and AAC `48 kHz` audio decode completely.
 - [ ] The first frame is not accidentally black and the final audio tail is not
   clipped.

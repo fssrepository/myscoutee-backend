@@ -1,6 +1,6 @@
 # Locked script — English master
 
-Target runtime: **03:00.000** at 24 fps. This version follows the founder's
+Target runtime: **03:12.000** at 24 fps. This version follows the founder's
 reported chronology. Timing windows include silence and room sound. Aim for
 intimate documentary speech, roughly 105–115 words per minute; the voice does
 not need to occupy every second.
@@ -13,38 +13,39 @@ settings and a clean reference WAV.
 
 | Time | Speaker | Spoken text / sound |
 | --- | --- | --- |
-| 00:00–00:08 | FOUNDER VO | From small-farmer roots through Budapest and London, I searched for a more human way to meet. |
-| 00:08–00:16 | FOUNDER VO | A multinational job still meant hostels and unstable rooms. My parents helped me secure a home. |
-| 00:16–00:24 | FOUNDER VO | Within two weeks, I found Soho software work; with weak English, I hid hunger and isolation. |
-| 00:24–00:32 | FOUNDER VO | Museums, exhibitions, clubs and dates across cultures made the city feel inexhaustible. |
-| 00:32–00:40 | FOUNDER VO | But home was a Hungarian house: thirteen lives carrying thirteen different reasons for leaving. |
-| 00:40–00:48 | FOUNDER VO | One bath, one toilet, one shared room — yet some felt happier there, and no longer wanted to go home. |
-| 00:48–00:56 | FOUNDER VO | My savings meant independence in Budapest, never London. Housing became my stop-loss, so I came home. |
-| 00:56–01:04 | FOUNDER VO | Across nearly fifty countries, I discovered each place — and myself — through local people. Then the world closed. |
-| 01:04–01:12 | FOUNDER VO | I had gone out to earn money. I came home to find a partner. |
-| 01:12–01:20 | FOUNDER VO | I joined the apps. Some people waited for a reply; others drowned in attention. |
-| 01:20–01:28 | FOUNDER VO | Talks, dinners and social evenings formed friendships. Other beginnings still lost their next step. |
-| 01:28–01:36 | FOUNDER VO | At beginner dance classes, the floor was full. |
-| 01:36–01:44 | FOUNDER VO | By the advanced classes, the room had thinned; beginnings kept losing their next step. |
-| 01:44–01:52 | FOUNDER VO | Sometimes a conversation opened, then a friendly partner arrived, and the context became clear. |
-| 01:52–02:00 | FOUNDER VO | Dates too: deafening café, basement bar, beautiful table — all built for performance. |
-| 02:00–02:08 | FOUNDER VO | I tried everything. Screens made us judge age, appearance and history before meeting; shared human context disappeared. |
-| 02:08–02:16 | FOUNDER VO | MyScoutee softens initial distrust through private, editable intention and mutual context — not a public verdict. |
-| 02:16–02:24 | FOUNDER VO | Mutual choices can form six strangers into a group with several possible human connections. |
-| 02:24–02:32 | FOUNDER VO | Each decides. Those who accept can talk, meet, introduce themselves and make a first plan. |
-| 02:32–02:40 | FOUNDER VO | The event coordinates people, transport, place and supplies; tickets and feedback stay separate. |
-| 02:40–02:48 | FOUNDER VO | After meeting, private experience reshapes later invitations; open places can be offered again. |
-| 02:48–02:56 | FOUNDER VO | Financial independence gave my 2016 idea time. AI accelerated one shared core, shaped and tested by local communities. |
-| 02:56–03:00 | FOUNDER VO | MyScoutee. Test it with me in real communities. |
+| 00:00–00:08 | FOUNDER VO | A true story: leaving home, meeting the world, and returning to connect people more humanly. |
+| 00:08–00:16 | FOUNDER VO | From small-farmer roots through Budapest and London, I searched for a more human way to meet. |
+| 00:16–00:24 | FOUNDER VO | A multinational job still meant hostels and unstable rooms. My parents helped me secure a home. |
+| 00:24–00:32 | FOUNDER VO | Within two weeks, I found Soho software work; with weak English, I hid hunger and isolation. |
+| 00:32–00:40 | FOUNDER VO | Museums, exhibitions, clubs and dates across cultures made the city feel inexhaustible. |
+| 00:40–00:48 | FOUNDER VO | But home was a Hungarian house: thirteen lives carrying thirteen different reasons for leaving. |
+| 00:48–00:56 | FOUNDER VO | One bath, one toilet, one shared room — yet some felt happier there, and no longer wanted to go home. |
+| 00:56–01:04 | FOUNDER VO | My savings meant independence in Budapest, never London. Housing became my stop-loss, so I came home. |
+| 01:04–01:12 | FOUNDER VO | Across nearly fifty countries, I discovered each place — and myself — through local people. Then the world closed. |
+| 01:12–01:20 | FOUNDER VO | I had gone out to earn money. I came home to find a partner. |
+| 01:20–01:28 | FOUNDER VO | I joined the apps. Some people waited for a reply; others drowned in attention. |
+| 01:28–01:36 | FOUNDER VO | Talks, dinners and social evenings formed friendships. Other beginnings still lost their next step. |
+| 01:36–01:44 | FOUNDER VO | At beginner dance classes, the floor was full. |
+| 01:44–01:52 | FOUNDER VO | By the advanced classes, the room had thinned; beginnings kept losing their next step. |
+| 01:52–02:00 | FOUNDER VO | Sometimes a conversation opened, then a friendly partner arrived, and the context became clear. |
+| 02:00–02:08 | FOUNDER VO | Dates too: deafening café, basement bar, beautiful table — all built for performance. |
+| 02:08–02:16 | FOUNDER VO | I tried everything. Screens made us judge age, appearance and history before meeting; shared human context disappeared. |
+| 02:16–02:24 | FOUNDER VO | MyScoutee softens initial distrust through private, editable intention and mutual context — not a public verdict. |
+| 02:24–02:32 | FOUNDER VO | Mutual choices can form six strangers into a group with several possible human connections. |
+| 02:32–02:40 | FOUNDER VO | Each decides. Those who accept can talk, meet, introduce themselves and make a first plan. |
+| 02:40–02:48 | FOUNDER VO | The event coordinates people, transport, place and supplies; tickets and feedback stay separate. |
+| 02:48–02:56 | FOUNDER VO | After meeting, private experience reshapes later invitations; open places can be offered again. |
+| 02:56–03:04 | FOUNDER VO | Financial independence gave my 2016 idea time. AI accelerated one shared core, shaped and tested by local communities. |
+| 03:04–03:12 | FOUNDER VO | MyScoutee. Test it with me in real communities. |
 
-Opening typography in post, held only over S01: `MYSCOUTEE · THE STORY` / `PART
-I · THE CITY BETWEEN US` / `BASED ON A TRUE STORY`. The first narrated sentence
-is the short story threshold; no extra title shot is generated.
+Opening typography is a separate deterministic P00 card: `MYSCOUTEE · THE
+STORY` / `PART I · THE CITY BETWEEN US` / `BASED ON A TRUE STORY` / `LEAVING
+HOME · MEETING THE WORLD · RETURNING TO CONNECT PEOPLE`. Use restrained graphic
+motion and a spoken pause; no title shot is generated by a video model.
 
-End typography in post: keep the spoken CTA and exact brand mark through
-`02:58.5`, then show `CONTINUED IN PART II · THE SYSTEM BETWEEN US` for the
-final 1.5 seconds. The continuation line is silent and does not change the
-exact runtime.
+End typography in post: hold the exact brand mark, `READ THE BOOK · THE CITY
+BETWEEN US` and `THE STORY CONTINUES IN PART II · THE SYSTEM BETWEEN US` for the
+full eight-second E01 card. The card does not consume generation credit.
 
 ### English performance and legal notes
 
@@ -209,18 +210,18 @@ exact runtime.
 
 | Time | English master text |
 | --- | --- |
-| 00:00–00:01.2 | original `heart.png` + separate `MyScoutee` |
-| 00:00–00:08 | ROOTS. STUDY. BUDAPEST. |
-| 00:48–00:56 | INDEPENDENT IN BUDAPEST. / NEVER IN LONDON. |
-| 00:56–01:04 | GLOBAL ROUTES. LOCAL ENCOUNTERS. |
-| 01:04–01:12 | I LEFT TO MAKE A LIVING. / I CAME HOME TO FIND A PARTNER. |
-| 02:08–02:16 | FAST FILTER. PRIVATE INTENT. NO PUBLIC VERDICT. |
-| 02:16–02:24 | SIX STRANGERS. MORE THAN ONE POSSIBLE CONNECTION. |
-| 02:24–02:32 | INDEPENDENT CHOICE → CHAT → REAL MEETING |
-| 02:32–02:40 | FOUR RESOURCES → FIRST MANAGED EVENT |
-| 02:40–02:48 | KNOWN CONTACTS. EVOLVING PRIORITIES. OPEN PLACES. |
-| 02:48–02:56 | INDEPENDENCE → FOCUSED TIME → AI-ASSISTED BUILD |
-| 02:56–03:00 | MyScoutee / TEST IT WITH ME. |
+| 00:00–00:08 | MYSCOUTEE · THE STORY / PART I · THE CITY BETWEEN US / BASED ON A TRUE STORY / LEAVING HOME · MEETING THE WORLD · RETURNING TO CONNECT PEOPLE |
+| 00:08–00:16 | ROOTS. STUDY. BUDAPEST. |
+| 00:56–01:04 | INDEPENDENT IN BUDAPEST. / NEVER IN LONDON. |
+| 01:04–01:12 | GLOBAL ROUTES. LOCAL ENCOUNTERS. |
+| 01:12–01:20 | I LEFT TO MAKE A LIVING. / I CAME HOME TO FIND A PARTNER. |
+| 02:16–02:24 | FAST FILTER. PRIVATE INTENT. NO PUBLIC VERDICT. |
+| 02:24–02:32 | SIX STRANGERS. MORE THAN ONE POSSIBLE CONNECTION. |
+| 02:32–02:40 | INDEPENDENT CHOICE → CHAT → REAL MEETING |
+| 02:40–02:48 | FOUR RESOURCES → FIRST MANAGED EVENT |
+| 02:48–02:56 | KNOWN CONTACTS. EVOLVING PRIORITIES. OPEN PLACES. |
+| 02:56–03:04 | INDEPENDENCE → FOCUSED TIME → AI-ASSISTED BUILD |
+| 03:04–03:12 | READ THE BOOK · THE CITY BETWEEN US / THE STORY CONTINUES IN PART II · THE SYSTEM BETWEEN US |
 
 Do not generate typography inside a video model. Use the real logo and editable
 text in the final editor.
@@ -244,7 +245,7 @@ text in the final editor.
 > shared one bathroom, one separate toilet and a bedroom. The savings paid for
 > journeys and meant independence only in lower-cost Budapest, where my flat
 > stood empty. London housing became my stop-loss. I came home to find a partner.
-> Then COVID ended carefree travel.
+> Then COVID-19 ended carefree travel.
 > Apps, events, dance
 > and dates offered beginnings; age and appearance became early filters, and the
 > bridge to something real kept disappearing. So I designed MyScoutee to follow

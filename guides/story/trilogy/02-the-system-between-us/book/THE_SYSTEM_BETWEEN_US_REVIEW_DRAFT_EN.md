@@ -1198,9 +1198,16 @@ person who had already repaired the underlying failure.
 ### The hearing I entered alone
 
 The first court threshold was a preparatory hearing. The court-appointed
-defender had not worked through the case with me before it. I wrote a two-page
-defence speech myself. No AI wrote those pages. They were what I could carry
-into the room alone.
+defender had not worked through the case with me before it. He asked me to bring
+my defence material on a pen drive and hand it over at the hearing. That request
+was the extent of our practical preparation.
+
+At the last moment, he forwarded his own hearing invitation as it was. The
+clerk's email address remained visible on it. I did not yet know the court's
+electronic filing system; that accidental address gave me a route to send my
+two-page defence before the hearing. The facts, position and decisions in those
+pages were mine, while an AI assistant helped me shape them. I still entered the
+room without a human defender who had worked through the chain with me.
 
 I had read the notice but did not yet understand the lived protocol. I could
 admit guilt as charged and give up the right to a trial, or contest the account
@@ -1329,9 +1336,9 @@ periods in which I believed I was effectively defending myself.
 
 Conversational AI arrived inside that absence.
 
-It did not originate my defence. The two pages I carried to the preparatory
-hearing were mine. Later, AI helped expand their compressed argument into the
-roughly eight-page defence speech: separating chronology from allegation,
+It did not originate my facts, position or judgment, but it was present from the
+first two-page defence. Later, AI helped expand that compressed argument into
+the roughly eight-page defence speech: separating chronology from allegation,
 connecting the missing records, and giving a structure to material that had
 grown beyond what one person could keep present at once.
 
@@ -2217,10 +2224,16 @@ in exchange for admission and waiver. The offer and the Founder's understanding
 of the room are memoir layers until the complete preparatory-hearing record is
 isolated.
 
-The two-page speech carried into that hearing was written by the Founder without
-AI. The later defence speech in the reviewed package is approximately eight
-pages and was developed with AI-assisted organization from that human-authored
-base. The same private account records resource-based refusals from two
+The facts, position and decisions in the two-page speech were the Founder's; an
+AI assistant already helped shape that first filing. The later defence speech
+in the reviewed package is approximately eight pages and was developed through
+the same human–AI process. The Founder recalls that appointed counsel asked him
+to bring defence material on a pen drive and forwarded a hearing invitation on
+which the clerk's email address remained visible. Before he knew the court's
+electronic filing system, that address enabled the last-minute email filing.
+These details describe the practical route and the limited assistance he
+experienced; they do not establish counsel's private intention. The same
+private account records resource-based refusals from two
 Hungarian human-rights organizations and a later private-lawyer consultation,
 including the two-million-forint-plus-VAT quotation and the Founder's memory of
 how quickly the psychiatric label entered the conversation. The lawyer remains

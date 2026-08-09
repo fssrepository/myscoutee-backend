@@ -42,7 +42,7 @@ picture, post-production adds `MYSCOUTEE · THE STORY`, `PART I · THE CITY
 BETWEEN US` and `BASED ON A TRUE STORY` during `00:00–00:08`. Preserve a calm,
 centre-safe title field in S01 without weakening its rural-to-Budapest movement.
 
-S23 is deterministic post-production, not a four-second AI generation. Hold the
+S23 is deterministic post-production, not an AI generation. Hold the
 CTA through `02:58.5`, then replace it for the final `1.5` seconds with
 `CONTINUED IN PART II · THE SYSTEM BETWEEN US`. Use editable text and the exact
 repository mark; never generate either inside a video model.
