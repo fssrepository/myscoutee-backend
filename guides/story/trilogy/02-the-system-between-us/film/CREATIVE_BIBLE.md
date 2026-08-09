@@ -170,8 +170,9 @@ other person's brief smile, never exaggerated clowning.
 
 ### Accountant
 
-One competent-looking, overworked adult, visually distinct from the Founder and
-tax officer. Show competing messages and client load. Do not code gender, age,
+One ordinary-looking adult, visually distinct from the Founder and tax officer.
+Show repeated rejected forms, changing figures and missed instructions: she did
+not understand or complete the short return she had been hired to handle. Do not code gender, age,
 clothing or office clutter as incompetence. No readable business name.
 
 ### Tax officer

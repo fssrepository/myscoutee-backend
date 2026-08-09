@@ -363,6 +363,8 @@ make that transformation feel ordinary. Friction grew. I eventually left the
 employer. I keep the company anonymous because this is my memory of what
 happened, not an adjudicated claim in this book.
 
+<!-- pagebreak -->
+
 Before London, I tried to recover the overtime I believed had been promised.
 At a hearing, my lawyer sat beside me. Afterwards, in the corridor and within
 my hearing, the office manager raised the possibility of work for the lawyer's
@@ -937,8 +939,7 @@ temples offered scale and silence; the people made the day possible.
 ## 15. Moscow, Saint Petersburg, and an Open Gate
 
 Russia required a different kind of preparation. From Budapest, I needed an
-invitation for the visa. A travel agency on Andrássy Avenue, roughly twenty
-metres from an Oktogon corner, helped arrange it. One office redirected me to
+invitation for the visa. A travel agency near Oktogon helped arrange it. One office redirected me to
 another, and another toward the embassy.
 The absence of an ordinary appointment route made the visa cost several times
 what I had expected.
@@ -1082,7 +1083,8 @@ began looking for work. Until that threshold, I had been searching for a partner
 and travelling through the world while remaining emotionally outside Hungarian
 society.
 
-Then the world closed.
+After roughly fifty unsuccessful interviews, a job reopened the domestic route
+almost by accident in August 2019. Then the world closed.
 
 COVID-19 did not make travel impossible forever, and I will not claim that nobody
 can travel as before. For me, it ended the earlier feeling of carelessness. The
@@ -1459,6 +1461,8 @@ The machine accelerates the path to human context. It does not replace the human
 decision that becomes possible there. Whether this produces better outcomes
 still has to be tested with real communities.
 
+<!-- pagebreak -->
+
 ## 27. Six Strangers
 
 In the clearest form of the story, the system proposes a balanced candidate
@@ -1660,6 +1664,8 @@ That requires partners:
 I am not looking for somebody to admire the notebook.
 
 I am looking for people willing to test the path.
+
+<!-- pagebreak -->
 
 ## Epilogue — The Star Above the Open Space
 

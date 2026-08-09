@@ -8,14 +8,14 @@
   "part_ii_accountant": {
     "file": "assets/illustrations/accountant-portrait.png",
     "placement": "portrait-right",
-    "alt": "An anonymized, overloaded but competent accountant",
-    "caption": "One partial screen inside a three-person chain."
+    "alt": "An anonymized accountant at a desk with incomplete work",
+    "caption": "The professional at one desk did not understand the short return she had been hired to complete."
   },
   "part_ii_triangle_scene": {
     "file": "assets/illustrations/three-partial-screens.png",
     "placement": "full",
     "alt": "The Founder, accountant and tax officer each seeing a different part of one return",
-    "caption": "Three competent people, three partial screens, and no shared view."
+    "caption": "Three people, three partial screens, and no shared view."
   },
   "part_ii_officer": {
     "file": "assets/illustrations/police-officer-portrait.png",

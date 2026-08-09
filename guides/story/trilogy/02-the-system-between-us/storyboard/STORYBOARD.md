@@ -54,9 +54,10 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S03 — The salaried foothold · 00:24–00:32 · CP02→CP03
 
-- **Motion:** the home desk becomes a calm salaried multinational workstation;
-  then COVID-19 empties adjacent desks and cools the room without disaster
-  spectacle.
+- **Motion:** a restrained stack of closed interview folders implies roughly
+  fifty failed attempts before the home desk becomes a calm salaried
+  multinational workstation opened almost by accident; then COVID-19 empties
+  adjacent desks and cools the room without disaster spectacle.
 - **CP03:** Founder alone at the still-lit workstation, one access badge and a
   newly closed office door; no employer branding.
 
@@ -101,8 +102,10 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 - **Motion:** the closing row separates into three different interfaces held by
   the Founder, accountant and tax officer.
-- **CP09:** three ordinary adults in a triangular composition, each seeing a
-  truthful fragment and nobody seeing the complete chain.
+- **CP09:** three adults in a triangular composition. Rejected forms, changing
+  abstract figures and missed instructions around the accountant show that she
+  failed to understand and complete the short return; nobody sees the complete
+  chain. Preserve the portrait without comic caricature.
 
 ### S10 — The password trap · 01:20–01:28 · CP09→CP10
 
@@ -114,10 +117,12 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S11 — Twenty-three November · 01:28–01:36 · CP10→CP11
 
-- **Motion:** calendar pages and repeated rejected rows settle on 23 November;
-  the Founder begins reconstructing the problem himself.
-- **CP11:** one week of concentrated calculation reveals the failure that the
-  professional chain had not resolved; the accountant remains human, not comic.
+- **Motion:** calendar pages cross the 30 September deadline while one filing
+  error repeats across abstract 2021 and 2022 return rows, then settle on 23
+  November; the Founder begins reconstructing the problem himself.
+- **CP11:** one week of concentrated calculation reveals what the accountant
+  had failed to understand over months; preserve her approved portrait without
+  comic caricature.
 
 ### S12 — The call · 01:36–01:44 · CP11→CP12
 

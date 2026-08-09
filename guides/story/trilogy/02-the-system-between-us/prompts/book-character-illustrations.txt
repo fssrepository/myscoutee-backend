@@ -24,8 +24,10 @@ or artificial empty padding. Output: `founder-portrait.png`.
 
 PROMPT 2 — THREE PARTIAL SCREENS
 Create exactly one landscape book plate from `[FOUNDER_REF]`,
-`[ACCOUNTANT_REF]` and `[TAX_OFFICER_REF]`. Put the three competent adults in
-three honest workspaces linked by one anonymized short return. Each person sees
+`[ACCOUNTANT_REF]` and `[TAX_OFFICER_REF]`. Put the three ordinary adults in
+three workspaces linked by one anonymized short return. Show the accountant's
+repeated rejected forms and missed instructions without changing the approved
+portrait or turning the face into a caricature. Each person sees
 a different field while another field remains outside that person's screen.
 The triangle is the problem; no face is villainous, stupid or dishonest. No
 readable figures, government brand, password or accusation. Output:

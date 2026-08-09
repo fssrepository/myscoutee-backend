@@ -24,7 +24,7 @@ with Extend or a prompt-only result.
 | Token | Meaning |
 | --- | --- |
 | `[FOUNDER_REF]` | exact approved Part I Founder identity |
-| `[ACCOUNTANT_REF]` | approved competent, overloaded accountant |
+| `[ACCOUNTANT_REF]` | approved accountant whose repeated task failure is shown through the work, not facial caricature |
 | `[TAX_OFFICER_REF]` | approved ordinary tax officer |
 | `[OFFICER_REF]` | approved ordinary police officer |
 | `[FINGERPRINT_OFFICER_REF]` | professional fingerprint officer; no erotic framing |

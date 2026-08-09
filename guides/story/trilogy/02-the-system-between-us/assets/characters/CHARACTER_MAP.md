@@ -12,7 +12,7 @@ private or public person other than the fictionalized Founder continuity.
 | Token | Locked crop | Stable identity and props | Checkpoint use |
 | --- | --- | --- | --- |
 | `[FOUNDER_REF]` | `founder.png` | Exact Part I face; navy field coat; charcoal knit; muted rust scarf; cognac notebook; calm dry humour | all assigned CP00–CP38 scenes |
-| `[ACCOUNTANT_REF]` | `accountant.png` | overloaded but competent adult; neutral knit and shirt; paper/calculator desk; no business brand | partial-view and filing scenes only |
+| `[ACCOUNTANT_REF]` | `accountant.png` | adult accountant who repeatedly failed to understand and complete the short return; neutral knit and shirt; paper/calculator desk; no business brand or facial caricature | partial-view and filing scenes only |
 | `[TAX_OFFICER_REF]` | `tax-officer.png` | ordinary administrative professional; pale shirt; partial monitor; no insignia | tax-call and filing scenes only |
 | `[OFFICER_REF]` | `police-officer.png` | restrained contemporary police role; dark practical clothing; no weapon emphasis or readable insignia | police-entry and interview scenes only |
 | `[FINGERPRINT_OFFICER_REF]` | `fingerprint-officer.png` | professional female officer who photographs and fingerprints the Founder; attractive to him without erotic, flirtatious or romantic framing | police-processing beat only |

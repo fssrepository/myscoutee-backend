@@ -36,7 +36,7 @@ viewer time to read and consider the premise.
 
 ### 00:24–00:32 — S03 · The salaried foothold
 
-> After years of closed doors, one Hungarian company hired me almost by accident. COVID-19 broke the foothold.
+> After fifty closed doors, one Hungarian company hired me almost by accident. COVID-19 broke the foothold.
 
 ### 00:32–00:40 — S04 · Seven years against three weeks
 

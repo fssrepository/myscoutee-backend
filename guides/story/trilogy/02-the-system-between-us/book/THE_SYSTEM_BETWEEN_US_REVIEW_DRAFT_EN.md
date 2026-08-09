@@ -37,9 +37,10 @@ The central absurdity can be stated without legal vocabulary. A sudden law put
 livelihoods under threat. The accountant, the tax administration and I each
 passed responsibility toward the next point in a chain whose legal burden never
 left me. When I finally saw the whole failure, I understood in about a week what
-the professional process had not resolved in almost a year. I corrected the
-return, paid the tax and ended the failed representation. The tax problem was
-over. Roughly a year later, eight days after the police search, the forensic
+the professional process had not resolved over several months. I corrected the
+return, paid the tax and ended the failed representation. The return had been
+corrected and the tax liability resolved. Roughly a year later, eight days after
+the police search, the forensic
 process examined the highly educated professional who had repaired the failure
 and turned him into the subject of a label of pathological mental illness.
 
@@ -77,12 +78,12 @@ workable custom points another. Authority travels upward, responsibility
 travels downward, and the citizen is expected to know both routes without ever
 confusing them in public.
 
-You smell that culture before you can define it. Everybody in the room knows a
-process is broken, yet each person protects the narrow role that lets the
-failure become somebody else's problem. A smile acknowledges the absurdity and
-the procedure continues. A password is personal when responsibility is being
-assigned and shareable when work needs to be done. The correction disappears.
-The outburst remains.
+You smell that culture before you can define it. It can feel as though everybody
+in the room knows a process is broken, yet each person protects the narrow role
+that lets the failure become somebody else's problem. A smile acknowledges the
+absurdity and the procedure continues. A password is personal when
+responsibility is being assigned and shareable when work needs to be done. The
+correction disappears. The outburst remains.
 
 Hundreds of thousands of Hungarians did not leave the country for one reason.
 They left for wages, housing, work, love, language, adventure and dignity in
@@ -213,13 +214,15 @@ for a partner and attempt the product that employment had never left enough
 space to build. Living with little had become a discipline. I believed that if
 I could remain independent of the next salary, I could endure almost anything.
 
-In August 2019, after years of applications and repeated thoughts of returning
-to London, a multinational company hired me in Hungary. Getting there contained
-its own small comedy. A local outsourcing company had first offered to place me
-at a multinational only if I invoiced through KATA. I refused. I wanted a job,
-not to be turned into a business for somebody else's convenience, and I came
-close to retreating to London again. The smaller company judged my interview
-unsuccessful and wrote me off professionally.
+In early 2019, I began searching for work again. Roughly fifty interviews failed.
+By August, I was close to returning to London when a multinational company hired
+me in Hungary almost by accident. Getting there contained its own small comedy.
+A local outsourcing company had first offered to place me at the multinational
+only if I became a sole proprietor and invoiced through KATA. I rejected the
+whole entrepreneurial arrangement, not merely that tax category. I wanted a
+salaried job, not to be turned into a business for somebody else's convenience.
+The smaller company judged my interview unsuccessful and wrote me off
+professionally.
 
 Two weeks later, the multinational invited me into its own salaried process.
 The interviewers had not compared notes. When the earlier rejection surfaced in
@@ -331,10 +334,10 @@ belong to the country in which I lived. That decision matters later. The system
 did not reach me because I had avoided lawful work. It reached me immediately
 after I dared to enter it again through the only route that had opened.
 
-It also required a legal form through which the work could be invoiced. About a
-year and a half after I had refused contractor status as the price of a domestic
-placement, I accepted it as the last available route into work. In September
-2021, I became a sole proprietor using KATA.
+It also required a legal form through which the work could be invoiced. Just over
+two years after I had rejected becoming an entrepreneur as the price of a
+domestic placement, I accepted it as the last available route into work. In
+September 2021, I became a sole proprietor using KATA.
 
 I had no entrepreneurial revelation. I was not opening a café, selling
 paintings or building a personal brand. Informal foreign work might have left
@@ -392,7 +395,7 @@ at the time as a bite or sting near an Indian Ocean shore. The invitation that
 crossed the network next was to his funeral. We had entered one another's lives
 as voices. Grief made the ten thousand kilometres physical again.
 
-The intermediary company also carried another familiar face of India:
+The intermediary company also carried another familiar feature of that project:
 organizational chaos. Yet the senior manager who had invited me onto the
 project continued to believe in me and repeatedly brought the middle layer back
 into line. The client could see how far I had moved the work. When departure
@@ -525,6 +528,13 @@ notice together was the unsafe one: give the accountant my password and let her
 work through my own government account. Assistance became indistinguishable
 from identity.
 
+At one point, the accountant called me unexpectedly for a reason I no longer
+remember and asked whether she should file a further return for the 1 September
+transition. I had wanted to avoid exactly that. The return was simple enough for me to file at home
+through the personal online tax interface without handing over my government-
+account password again. The question reopened the same unsafe choice and put me
+back on edge for no useful reason.
+
 If I refused to share access, I could be told that I had prevented the
 accountant from doing the work. If I shared it, I could be asked why I had given
 away a personal password. If a representative acted, I remained responsible.
@@ -571,12 +581,15 @@ that contradiction. It waited for an individual to absorb it.
 The closing return should not have been a philosophical problem. At its centre
 was arithmetic.
 
-By 23 November, it became clear to me that the accountant did not know how to
-complete the short return she had been hired to handle. The documentary package
-shows three failed attempts, months of delay, help from tax-office staff,
-unresolved processing errors and versions submitted without my knowledge. A
-return submitted on 30 November named me as the contact even though I did not
-know it had been filed.
+The closing return was due by 30 September. The accountant therefore had months,
+not days, after the July change. By 23 November, it became clear to me that she
+did not know how to complete the short return she had been hired to handle. The
+same filing error had appeared in both my 2021 and 2022 KATA returns. She had
+criticized my reading of it; the correction eventually showed that my reading
+had been right. The documentary package shows three failed attempts, help from
+tax-office staff, unresolved processing errors and versions submitted without
+my knowledge. A return submitted on 30 November named me as the contact even
+though I did not know it had been filed.
 
 The absurdity is difficult to explain without making it sound invented. A
 professional office, repeated official assistance and months of correspondence
@@ -602,8 +615,8 @@ the middle of codes, forms and missing notices, I say, “I can no longer have a
 child.” It is not an argument. It is shock becoming surrender in one sentence.
 
 Within roughly a week, I reconstructed the calculation, understood the status
-and reached the corrected result. The accountant had had most of a year, three
-attempts and direct help from the administration. Even afterward, our exchange
+and reached the corrected result. The accountant had had months, three attempts
+and direct help from the administration. Even afterward, our exchange
 showed that she still did not understand the instruction in the same way I had
 come to understand it. I revoked the representation because the communication
 triangle had to be stopped before it produced another version.
@@ -842,11 +855,11 @@ version unless I preserved it myself.
 One policewoman looked out at me; I recognized her as the officer who had taken
 my fingerprints. Another smiled and glanced toward my operated leg.
 
-The glance returned the obscene visual joke I had made while trying to force
-the tax administration to see the body behind its process. Where was the grave
-threat in that image? It had been a huge symbolic kick in an institution's
-backside: the officer smiled, looked toward my operated leg, and handed over the
-papers I was still waiting to receive.
+I read the glance as returning the obscene visual joke I had made while trying
+to force the tax administration to see the body behind its process. Where was
+the grave threat in that image? To me, it had been a huge symbolic kick in an
+institution's backside. The association arrived as she handed over the papers I
+was still waiting to receive.
 
 A police explanation later reduced the earlier absence to a painfully ordinary
 phrase: the lawyer had not had time.
@@ -861,9 +874,9 @@ outsiders, in effect, to help their Hungarian counterparts establish a human
 route back to a person who could not obtain one at home. The request measured
 the isolation more accurately than any legal theory could.
 
-At other moments, the laughter belonged to the institution. When I explained
-the password-sharing trap, the investigator laughed in my face and said I had
-done something stupid.
+At other moments, the laughter belonged to the institution. I remember the
+investigator laughing in my face when I explained the password-sharing trap and
+saying I had done something stupid.
 That was precisely the inversion. A routine workaround had required the unsafe
 sharing of identity; when the workaround failed, its absurdity was returned to
 me as personal foolishness.
@@ -1045,7 +1058,7 @@ a psychiatric narrative.
 
 That was the Kafka transformation in its purest form. A highly educated
 programmer-mathematician had understood in about a week what the retained
-professional had not resolved in almost a year. He had corrected the return,
+professional had not resolved over several months. He had corrected the return,
 paid the tax, ended the representation and received a written administrative
 record of the repair. Eight days after the police search, he entered the
 forensic examination. The competence that solved the underlying problem became
@@ -1271,13 +1284,13 @@ roles—and my place outside their working curve—immediately visible.
 
 <!-- illustration: part_ii_courtroom_scene -->
 
-The hearing also had a recurring expression: a smile that never became relief.
-When I said that I had been afraid, the judge answered with almost amused
-disbelief: *You were afraid?* When I explained the precautions and defensive
-routes I had invented while no stable defence carried the chain, she smiled:
-*And you defended yourself.* When I said that I had managed to work again for
-two and a half months, the response moved back toward the amount of the
-financial consequence.
+In my memory, the hearing also had a recurring expression: a smile that never
+became relief. When I said that I had been afraid, the judge answered with almost
+amused disbelief: *You were afraid?* When I explained the precautions and
+defensive routes I had invented while no stable defence carried the chain, she
+smiled: *And you defended yourself.* When I said that I had managed to work
+again for two and a half months, the response moved back toward the amount of
+the financial consequence.
 
 The same collision appeared around the intimate history I had sent to the tax
 administration while awaiting surgery. I had tried to explain what Part I had
@@ -1316,10 +1329,10 @@ I had lifted the lens toward legislation and institutional design; the room
 lowered it to my work, debt, home, belongings and savings. The system question
 became an asset question before the system question had been answered.
 
-By the end, something in the judge's expression had loosened. The chain had
-finally revealed a person reached by failure rather than only a person who had
-failed. The procedural sentence that followed remained unchanged: next came my
-finances and the amount of the financial consequence.
+By the end, I read something in the judge's expression as having loosened. The
+chain seemed finally to reveal a person reached by failure rather than only a
+person who had failed. The procedural sentence that followed remained unchanged:
+next came my finances and the amount of the financial consequence.
 
 The two truths occupied the same moment. A human being may have begun to
 understand. The role still moved the machinery toward the resources I had built
@@ -1588,8 +1601,8 @@ looked worse from outside.
 One housemate carried a foreign-currency mortgage behind him.
 
 He tried to service the loan and public debts from London. Returning did not
-feel possible. Separation stretched. His spouse, who worked for the tax
-administration, and their young child remained in Hungary, and the family broke
+feel possible. Separation stretched. His spouse and their young child remained
+in Hungary, and the family broke
 apart. He had crossed a border, but the old signature crossed with him.
 
 His name remains private. What remains public is the shape: a financial product
@@ -1710,13 +1723,9 @@ person with nowhere further to send it.
 ## 19. The Streets Begin to Speak
 
 I did not join the KATA protest in 2022. Other citizens were already teaching
-the city a different language.
-
-Teachers, students and parents formed chains and marches around education.
-Citizens filled public spaces during the presidential-pardon scandal in 2024.
-Judges and court employees rallied in 2025 for judicial independence and the
-freedom to speak. Other demonstrations defended civil liberties and the right to
-assemble.
+the city a different language: teachers, students and parents formed chains;
+the presidential-pardon scandal filled public spaces; judges and court
+employees later rallied for judicial independence and the freedom to speak.
 
 By then emergency had become an ordinary political grammar. During COVID-19, a
 curfew decided when a person could cross his own street. As the pandemic order
@@ -1726,10 +1735,8 @@ the march. He was questioned, then charged. After the election and a European
 court judgment, the charge was dropped. The paving stones had not moved. The
 law around the people on them had.
 
-These movements did not share one programme, and they did not know my case.
-Their significance was cumulative. Institutions that had often spoken as if
-their internal operation was technical and remote were becoming subjects of
-public experience.
+These movements did not share one programme or know my case. Their cumulative
+effect was to make institutional operation a public experience.
 
 My own path was quieter and stranger. I moved through electronic forms.
 
@@ -1799,30 +1806,24 @@ That is political in the broad sense, but it did not begin with a party.
 
 On 12 April 2026, Hungary voted for a change of government.
 
-The election gave the new majority enough seats to alter institutions
-that had appeared fixed. The new government described its programme through
-rule of law, judicial independence, anti-corruption and restored public trust.
-Critics warned that rapid constitutional change could reproduce the same
-procedural weakness it claimed to repair.
-
-Both statements matter.
-
-A system cannot restore trust merely by changing who controls the speed.
+The new majority could alter institutions that had appeared fixed. It promised
+rule of law, judicial independence, anti-corruption and restored public trust;
+critics warned that rapid constitutional change could reproduce the weakness it
+claimed to repair. Trust cannot be restored merely by changing who controls the
+speed.
 
 In July, the former governing party marched under the words *Stop Autocracy*
 and accused the new majority of dismantling constitutional democracy. The
 warning might still be right. The same words had crossed the chamber.
 
-The election was not a verdict in my criminal case and did not validate every
-claim I had made. It did say that continuity no longer commanded enough trust.
-The institutions I had been told to experience as fixed were now being judged
-by the public that lived beneath them.
+The election was not a verdict in my case. It did show that continuity no
+longer commanded enough trust. Institutions presented as fixed were now being
+judged by the public beneath them.
 
-One sentence from my 2022 messages now acquired an uncanny echo. It had combined
-an enormous demand, a period of twenty years and violent language about the rule
-of law. In 2022 it looked detached from ordinary political possibility. Four
-years later, public actors were openly describing a change of regime and a
-restoration of the rule of law.
+One sentence from my 2022 messages acquired an uncanny echo. Its violent
+language about twenty years and the rule of law had looked detached from
+ordinary political possibility. Four years later, public actors were openly
+describing a change of regime and restoration of the rule of law.
 
 It was not prophecy. It was irony powerful enough to make time feel badly
 edited.
@@ -1841,18 +1842,14 @@ Minister's press office.
 
 It was one small push from below.
 
-The President was defending the constitutional security of his office. I was
-asking the same institution to look at what constitutional insecurity felt like
-beneath the offices: tax administration, police procedure, forensic
-interpretation, clemency and years of uncertainty.
+The President defended the constitutional security of his office. I asked what
+constitutional insecurity felt like beneath such offices: tax administration,
+police procedure, forensic interpretation, clemency and years of uncertainty.
 
-In July, a Venice Commission delegation met the President, the Prime Minister,
-ministers and the parliamentary Speaker. Public reporting showed consultation
-and caution rather than a final opinion that resolved every issue before
-Parliament acted.
-
-The same institution had received warnings from the top and the bottom while
-Hungary's constitutional order was visibly between states.
+In July, a Venice Commission delegation met the country's senior leadership.
+Public reporting showed consultation and caution, not a final opinion before
+Parliament acted. The institution had received warnings from above and below
+while Hungary's constitutional order stood visibly between states.
 
 ## 23. When an Eighth Judge Steps Aside
 
@@ -1871,27 +1868,20 @@ The full sitting needed ten.
 With only seven available, the Court could not form the quorum required to hear
 the matter, and it disappeared from the agenda before a substantive decision.
 
-The Court had not lost those judges from office. A majority of its members had
-stepped out of one case. The visual meaning was nevertheless extraordinary:
-the body asked to resolve a constitutional conflict divided over whether it
-could even sit inside the conflict.
+The judges had not left office; a majority had stepped out of one case. Yet the
+body asked to resolve a constitutional conflict could not assemble inside it.
 
 This occurred while my own writings were trying to reach constitutional review
 from below.
 
-At one scale stood a President, an urgent request and a Court unable to assemble
-itself around the question. At the other stood one citizen, a laptop and an AI
-assistant trying to translate lived chaos into an admissible legal route.
+At one scale stood a President and a Court unable to assemble. At the other
+stood one citizen, a laptop and an AI assistant translating lived chaos into a
+legal route. Their authority was radically different; both images contained the
+distance between a constitutional question and an answer.
 
-Their authority was radically different. Their shared image was the distance
-between having a constitutional question and obtaining a constitutional
-answer.
-
-My own route had already met that distance. The Constitutional Court received
-my complaint through the trial court, then stopped before the factual substance
-because the criminal case had not yet produced a first-instance, let alone a
-final, decision. The President's case was blocked because too many judges
-stepped aside. Mine, as I experienced it, was stopped because I had arrived at
+The Constitutional Court had received my complaint through the trial court,
+then stopped before the substance because the criminal case had not produced a
+first-instance decision. The President's case lacked judges. Mine had reached
 the constitutional door before ordinary procedure had finished with me.
 
 Different cases had reached the same architectural fact: having a
@@ -1901,40 +1891,30 @@ it.
 ## 24. The Convoy and the List of Offices
 
 After the election, the new Prime Minister publicly called for the departure of
-officials appointed to long terms across the old system. Reporting named the
-President, Prosecutor General, heads of the Constitutional Court, Curia and
-National Office for the Judiciary, State Audit Office, Competition Authority
-and Media Authority.
+officials appointed to long terms across the judiciary, prosecution and
+oversight bodies. The detailed list belongs in the notes.
 
-The list was dramatic because it described how power can survive an election.
-A government may leave while office-holders, boards, rules, foundations and
-institutional habits remain.
+The list showed how power can survive an election through long appointments,
+boards, rules, foundations and institutional habits.
 
 One affair gave that transfer of power a physical image.
 
-On 5 March, two armoured cash-in-transit vehicles travelling from Austria
-toward Ukraine were stopped near Budapest. Inside were forty million dollars,
-thirty-five million euros and nine kilograms of gold. Seven Ukrainian citizens
-taken into custody and later expelled. The numbers made instant political
-cinema.
+On 5 March, two armoured cash-in-transit vehicles travelling from Austria toward
+Ukraine were stopped near Budapest carrying foreign currency and gold. The
+scene made instant political cinema.
 
-After the election, the picture reversed. The shipment was returned, the
-expulsions were withdrawn and reviews began. One senior prosecutor resigned
-while expressly citing disagreement over the investigation. Tax-investigation
-leaders lost their appointments. The Prosecutor General later resigned too,
-although the public record did not make every departure one proved link in a
-single chain. The detailed chronology belongs in the notes; what reached the
-room where I was working was the speed of the reversal.
+After the election, the shipment was returned, expulsions were withdrawn and
+reviews began. A senior prosecutor resigned citing disagreement over the
+investigation; tax-investigation leaders lost their appointments; the
+Prosecutor General later resigned. The notes preserve the distinctions. What
+reached my room was the speed of reversal.
 
 The country could reopen a major enforcement operation, review agencies and
 move senior offices in weeks. My own proceeding, built around one line and a
 repaired tax return, had not reached a first judgment in years.
 
-That contrast did not make every replacement just. If a new majority used the
-same speed and constitutional creativity it had criticized, personnel change
-could arrive before rule-of-law repair. Public-media structures, the
-presidency, constitutional judges and prosecution offices each moved through
-different legal hinges.
+Speed did not make every replacement just. The institutions moved through
+different legal hinges, and personnel change could still outrun repair.
 
 The correct image is not a row of heads falling in one cut.
 
@@ -2076,8 +2056,8 @@ defendant. Nothing procedural changed.
 Yet the smile recorded that the roles were not the whole people.
 
 Humour was not disrespect for the seriousness of the case. It was an informal
-audit trail of humanity: proof only that, for one second, several people could
-see the absurdity together.
+audit trail of humanity. To me, a shared smile briefly suggested that several
+people could see the absurdity together.
 
 The word was not added years later to make the story more literary. In one 2024
 submission, I wrote that the frightening part was in the absurdity. In another,
@@ -2107,8 +2087,8 @@ would not reliably acknowledge him.
 The joke did not deny that some sentences were dangerous. It denied the solemn
 fiction that the file's language was the only possible description of what had
 happened. When officers struggled not to laugh, the laughter did not acquit me.
-It briefly admitted that the institutional character and the human being were
-not the same person.
+I experienced it as a brief admission that the institutional character and the
+human being were not the same person.
 
 In one police submission, I ended by declaring the institution fired. Elsewhere,
 I sent institutions away to dispense justice in a pasture. A programmer with no
@@ -2817,6 +2797,9 @@ Independent and official reporting supports the election result, government
 change, constitutional amendments, end of the President's mandate and interim
 presidency. The government's restoration account and civil-society criticism
 are both retained because institutional replacement is not self-validating.
+The public call for departures named the President, Prosecutor General and the
+heads of the Constitutional Court, Curia, National Office for the Judiciary,
+State Audit Office, Competition Authority and Media Authority.
 
 Sources:
 
