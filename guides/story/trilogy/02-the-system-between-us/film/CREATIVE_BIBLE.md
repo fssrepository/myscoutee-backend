@@ -16,6 +16,8 @@
 | Trilogy bridge | Part I shows a first judgment closing a human meeting; Part II shows the same compression acquiring institutional force |
 | AI thesis | beyond displacement risk, AI can give an unsupported person voice and continuous capacity; bounded, visible and reversible failure can improve the next attempt without turning exploration into permission to harm |
 | Narrative rule | lived scene first; legal precision and source boundaries at the back |
+| Knowledge rule | at every moment, the audience knows only what the Founder knew then; later meaning arrives only when he reaches it |
+| Dramatic rule | sensory fact before interpretation: let the room, body, object, pause or expression carry the pressure before naming the thesis |
 | Final line | **MyScoutee. Test the system between us.** |
 
 ## 2. Logline
@@ -61,6 +63,25 @@ the next attempt. The visual argument is for bounded experience—read-only
 knowledge, sandboxed trials, logged review and reversible failure—not unguarded
 autonomy.
 
+The film does not ask the audience to agree with the Founder before entering
+his experience. It preserves the knowledge horizon of each scene. The raised
+leg, stocked food, fingerprint paper, two expert chairs, court microphone and
+financial questions arrive before the later interpretation. The desired
+reaction is not pity or a lecture about Hungary, but recognition: another
+person placed in the same sequence must be able to imagine himself there.
+
+Hungary is felt from inside rather than explained from above. Budapest remains
+beautiful; rural memory, ingenuity, endurance, black humour and the wish to
+belong remain visible beside role-protection, responsibility passed onward,
+informal workarounds and low trust. The film may let the audience smell that
+culture before defining it, but it must never turn one chain of events into a
+national caricature or render the country as a grey dystopia.
+
+The Founder can later direct the person he had been because AI helps him step
+far enough outside himself to see structure. That retrospective distance must
+not leak future knowledge into an earlier room. The image remains present
+tense; the narrator may connect meanings only after the scene has earned them.
+
 ## 4. Visual grammar
 
 Carry forward Part I's painterly cinematic 2.5D world and exact Founder identity.
@@ -103,6 +124,16 @@ iconography, diagnostic labels floating over a face or a comic-book villain.
 Do not turn the film into a legal explainer. Statutes, citations and the
 reference apparatus belong to the book's end matter. The picture carries rooms,
 bodies, objects, lines, thresholds, expressions and consequences.
+
+Opening and closing typography is deliberate cinematic punctuation, not a
+generated scene. Add it in post over the approved endpoint plates:
+
+- `00:00–00:08`: title, part title and `BASED ON A TRUE STORY`, with the first
+  narrated sentence acting as the short story threshold;
+- `02:56–03:00`: the MyScoutee invitation followed by `TO BE CONTINUED IN PART
+  III`;
+- never ask a video model to render title lettering, the logo or the continuation
+  card.
 
 ## 5. Character rules
 
@@ -204,7 +235,8 @@ plate; never feed raw case pages to a generative video model.
 
 Audio is assembled after picture timing is locked.
 
-- one continuous English narrator using the same approved ElevenLabs **John**
+- one continuous English narrator using the same approved ElevenLabs **Jon —
+  Warm & Grounded Storyteller**
   voice as Part I, no lip sync; archive the exact voice identifier, model
   version, settings and clean reference WAV;
 - one continuous instrumental composition from `00:00.000` to `03:00.000`;

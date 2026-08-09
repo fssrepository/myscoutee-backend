@@ -5,7 +5,7 @@ reported chronology. Timing windows include silence and room sound. Aim for
 intimate documentary speech, roughly 105–115 words per minute; the voice does
 not need to occupy every second.
 
-Voice lock: English narration in the approved ElevenLabs **John** voice, shared
+Voice lock: English narration in the approved ElevenLabs **Jon — Warm & Grounded Storyteller** voice, shared
 with Part II. Preserve the exact voice identifier, model version, generation
 settings and a clean reference WAV.
 
@@ -13,7 +13,7 @@ settings and a clean reference WAV.
 
 | Time | Speaker | Spoken text / sound |
 | --- | --- | --- |
-| 00:00–00:08 | FOUNDER VO | With small-farmer roots, I finished studies joining economics, programming and mathematics, and reached beautiful Budapest. |
+| 00:00–00:08 | FOUNDER VO | From small-farmer roots through Budapest and London, I searched for a more human way to meet. |
 | 00:08–00:16 | FOUNDER VO | A multinational job still meant hostels and unstable rooms. My parents helped me secure a home. |
 | 00:16–00:24 | FOUNDER VO | Within two weeks, I found Soho software work; with weak English, I hid hunger and isolation. |
 | 00:24–00:32 | FOUNDER VO | Museums, exhibitions, clubs and dates across cultures made the city feel inexhaustible. |
@@ -36,6 +36,15 @@ settings and a clean reference WAV.
 | 02:40–02:48 | FOUNDER VO | After meeting, private experience reshapes later invitations; open places can be offered again. |
 | 02:48–02:56 | FOUNDER VO | Financial independence gave my 2016 idea time. AI accelerated one shared core, shaped and tested by local communities. |
 | 02:56–03:00 | FOUNDER VO | MyScoutee. Test it with me in real communities. |
+
+Opening typography in post, held only over S01: `MYSCOUTEE · THE STORY` / `PART
+I · THE CITY BETWEEN US` / `BASED ON A TRUE STORY`. The first narrated sentence
+is the short story threshold; no extra title shot is generated.
+
+End typography in post: keep the spoken CTA and exact brand mark through
+`02:58.5`, then show `CONTINUED IN PART II · THE SYSTEM BETWEEN US` for the
+final 1.5 seconds. The continuation line is silent and does not change the
+exact runtime.
 
 ### English performance and legal notes
 
@@ -216,7 +225,7 @@ text in the final editor.
 - Maximum two lines, approximately 30–34 characters per line in 9:16.
 - Keep most subtitles at least one second and roughly 12–17 characters/second.
 - Break at natural phrases; identify meaningful nonverbal sounds when needed.
-- There is no character dialogue or lip sync. John carries the complete spoken
+- There is no character dialogue or lip sync. Jon carries the complete spoken
   track; interaction is conveyed through listening, eye contact and gesture.
 - Preserve a textless clean master for future languages.
 

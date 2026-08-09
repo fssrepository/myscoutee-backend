@@ -138,7 +138,7 @@ social two/three-shots. S16–S20 slow into notebook, human decisions and a real
 event. S21 prioritizes ensemble identity and autonomous response. S22 uses one
 controlled operator-verification move. Prefer the best current reference-capable
 model visible in the account; test cheaply and change only one variable per run.
-Do not use lip sync for any shot. John supplies the only spoken voice in post;
+Do not use lip sync for any shot. Jon supplies the only spoken voice in post;
 all on-screen interaction is nonverbal.
 
 OUTPUT

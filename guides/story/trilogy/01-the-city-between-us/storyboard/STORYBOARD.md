@@ -30,12 +30,15 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   the field row remains a continuous line.
 - **Light/color:** soil umber, leaf green, workwear blue and restrained harvest
   gold become cool rail steel.
-- **Sound/VO:** soil, wooden crate, distant farm tool and train seam; “With
-  small-farmer roots, I finished studies joining economics, programming and
-  mathematics, and reached beautiful Budapest.”
-- **Brand in post:** 00:00–00:01.2, unmodified repository `heart.png` in the
-  upper-left mobile-safe area with small separate `MyScoutee` text; opacity fade
-  only, no recolor, redraw, crop, glow or AI animation.
+- **Sound/VO:** soil, wooden crate, distant farm tool and train seam; “From
+  small-farmer roots through Budapest and London, I searched for a more human
+  way to meet.”
+- **Opening typography in post:** over the approved S01 plate, hold
+  `MYSCOUTEE · THE STORY`, `PART I · THE CITY BETWEEN US` and `BASED ON A TRUE
+  STORY`, then fade them before S02. Use the unmodified repository `heart.png`
+  with separate editable `MyScoutee` text; opacity fade only, no recolor,
+  redraw, crop, glow or AI animation. The VO is the short opening synopsis; do
+  not generate a separate title scene.
 - **Transition/generation:** field row becomes rail, then the Danube tram line in
   S02. Use separate still plates and CPU match movement if one clip cannot hold
   the transformation cleanly.
@@ -210,7 +213,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Transition/generation:** the final rent line sweeps into a world-map arc.
   Generate four plates, composite seasons in post; do not ask one clip to do all.
 
-### S08 — Forty countries across folded time · 00:56–01:04 · 8 s
+### S08 — Nearly fifty countries across folded time · 00:56–01:04 · 8 s
 
 - **Picture/blocking:** 00:56–00:58: paper route and passport-like shapes without
   readable stamps. The notebook visibly folds chronology so one post-London
@@ -362,7 +365,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   symmetrical locked frame.
 - **Light/color:** flat café green, noisy bar practicals with neutral face key,
   formal warm narrow keys.
-- **Sound in post:** steam → bass → cloth/fork beneath John's narration; no
+- **Sound in post:** steam → bass → cloth/fork beneath Jon's narration; no
   diegetic speech.
 - **Transition/generation:** white tablecloth becomes notebook paper. Generate
   three clips/stills and cut in post; OpenArt or Higgsfield.
@@ -565,6 +568,9 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   no recolored mark or fake interface.
 - **Sound/VO:** resolved two-note motif; “MyScoutee. Test it with me in real
   communities.”
+- **Continuation:** keep the invitation through `02:58.5`, then replace only
+  the CTA line with `CONTINUED IN PART II · THE SYSTEM BETWEEN US` for the final
+  1.5 seconds. The logo remains fixed and the continuation line is silent.
 - **Build:** entirely in the final editor from repository brand assets; never
   accept AI-generated spelling or a different logo.
 

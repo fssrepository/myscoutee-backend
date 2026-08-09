@@ -187,7 +187,7 @@ The audio route is narration without lip sync:
 6. place doors, keys, steps, trains, paper and keyboard foley on exact frames;
 7. overlap ambience across visual transitions by roughly `0.3–0.8 s`.
 
-No character dialogue or lip sync is generated. John carries the only spoken
+No character dialogue or lip sync is generated. Jon carries the only spoken
 voice; interaction remains nonverbal.
 
 ## 11. CPU assembly

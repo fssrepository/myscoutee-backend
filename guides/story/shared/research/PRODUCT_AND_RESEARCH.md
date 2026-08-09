@@ -608,15 +608,15 @@ The tram wire changes into a London rail line on departure, then the same line
 returns as a pencil stroke when he comes home. Migration, work, travel and the
 founding decision are therefore one continuous visual thought.
 
-### Nearly forty countries — beauty and global context
+### Nearly fifty countries — beauty and global context
 
-The founder reports visiting nearly forty countries across Europe, Africa, Asia
+The founder reports visiting nearly fifty countries across Europe, Africa, Asia
 and the Americas. Confirmed memories named for development include Italy, Thailand,
 Egypt, India's Golden Triangle, Portugal, Norway, Spain, Russia, Angkor Wat in
 Cambodia, Neuschwanstein Castle in Bavaria, the Netherlands, Belgium, Baltimore,
 Washington, Niagara, Virginia/Chesapeake, Ocean City, Slovakia's High Tatras and
 Schönbrunn in Austria. This list is for
-reference; the voice-over names only the four regions and “almost forty
+reference; the voice-over names only the four regions and “nearly fifty
 countries.”
 
 Most of these journeys were self-organized and made alone. The Founder often
@@ -1201,7 +1201,7 @@ The story needs only eight claims:
    independence in lower-cost Budapest, where his flat stood empty, but never in
    London. Normal London housing would erode that position, so housing became
    his stop-loss.
-3. “Global routes become local encounters” — across almost forty countries,
+3. “Global routes become local encounters” — across nearly fifty countries,
    local people opened places and helped the Founder recognize different parts
    of himself; beauty alone still did not automatically create shared life.
 4. “I came home to make the freedom livable and find someone to share it with”

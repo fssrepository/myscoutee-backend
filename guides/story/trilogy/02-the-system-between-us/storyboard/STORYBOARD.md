@@ -36,6 +36,11 @@ The letters belong in the production manifest, not the public image.
   the Founder remains physically continuous; no magical body morph.
 - **Composition:** Founder in the central portrait band, ruled line below the
   eyes, clear upper title-safe zone.
+- **Opening typography in post:** hold `MYSCOUTEE · THE STORY`, `PART II · THE
+  SYSTEM BETWEEN US` and `BASED ON A TRUE STORY` as restrained cinematic
+  punctuation over the opening plate, then fade it before CP01. The narrator's
+  first sentence is the short recap and threshold from Part I; do not generate
+  a separate title shot.
 - **Sound in post:** carry Part I's final harmonic note into paper movement and
   one low system pulse.
 - **Hazard:** do not show a real case page, readable charge or diagnostic label.
@@ -359,7 +364,10 @@ The letters belong in the production manifest, not the public image.
   photograph beside anonymized foreign-currency-loan papers; the paper line
   returns as Danube light around the Founder's home.
 - **Meaning:** the loan and KATA are different legal problems with a related
-  fear. Home remains beautiful while predictability can matter more than space.
+  fear. At Europe's heart, home remains beautiful while predictability can
+  matter more than space. Crossing a border can reveal the self without
+  automatically freeing it from what it learned to survive; no explanatory
+  country-comparison graphic.
 - **Sound in post:** HMO room tone, London rain, Danube air and one key.
 - **Hazard:** no named relative, bank logo, single-cause migration claim,
   hatred-of-home image or completed citizenship renunciation.
@@ -404,6 +412,9 @@ The letters belong in the production manifest, not the public image.
 - **Picture:** CP22's open line resolves into the exact repository MyScoutee
   mark and a restrained open network. Do not generate the logo.
 - **Text:** `MyScoutee. Test the system between us.`
+- **Continuation text:** after the spoken invitation settles, replace the CTA
+  at `02:58.5` with `TO BE CONTINUED IN PART III`. Keep the exact MyScoutee mark
+  visible; typography is added in post and is never generated.
 - **Audio:** one return of the MyScoutee interval, deliberately unresolved.
 - **Part III bridge:** retain a lossless clean CP22 before typography and a
   lossless E01 master. Part III may inherit the open route, not a fabricated

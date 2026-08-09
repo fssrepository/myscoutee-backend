@@ -15,7 +15,7 @@ paused.**
 - [x] Resynchronize the exactly three-minute English narration, storyboard and
   Flow/OpenArt prompt chain to the 9 August manuscript; repeat this propagation
   only if the Founder makes reading-pass corrections.
-- [ ] Use the approved ElevenLabs **John** voice for both films and archive the
+- [ ] Use the approved ElevenLabs **Jon — Warm & Grounded Storyteller** voice for both films and archive the
   exact voice/version/settings plus a clean reference WAV.
 
 - [x] Inventory the bounded `/home/raxim/Downloads/targyalas/` source package.

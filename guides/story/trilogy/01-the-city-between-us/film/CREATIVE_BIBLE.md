@@ -262,7 +262,7 @@ Why this style:
 - character identity and gestures are more stable across generation tools;
 - city transitions can be theatrical and impossible while still feeling true;
 - UI and graph metaphors can enter the world without becoming a screen demo;
-- subtle face acting remains possible without lip sync; John carries the only
+- subtle face acting remains possible without lip sync; Jon carries the only
   spoken track.
 
 ### Texture

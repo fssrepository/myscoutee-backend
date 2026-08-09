@@ -3,7 +3,7 @@
 Status: **synchronized to the 9 August book revision; not picture-locked**.
 
 Voice lock: the final narration is English and uses the same approved
-ElevenLabs **John** voice as Part I. Preserve the exact voice identifier, model
+ElevenLabs **Jon — Warm & Grounded Storyteller** voice as Part I. Preserve the exact voice identifier, model
 version, settings and a clean reference WAV. The Founder may still correct the
 book before picture lock; any such correction must be propagated here before
 voice generation.
@@ -111,8 +111,8 @@ foley and breath.
 
 ### 02:32–02:40 — S20 · Beautiful home, recurring exit
 
-> Debt kept another Hungarian in London. Budapest remained beautiful while its
-> systems made departure feel safer.
+> Debt kept another Hungarian in London. At Europe's heart, Budapest remained
+> beautiful while its systems made departure feel safer than belonging.
 
 ### 02:40–02:48 — S21 · The country changes government
 
@@ -134,7 +134,7 @@ Add all typography in post.
 
 | Time | Text |
 | --- | --- |
-| 00:00–00:08 | PART II · THE SYSTEM BETWEEN US |
+| 00:00–00:08 | MYSCOUTEE · THE STORY / PART II · THE SYSTEM BETWEEN US / BASED ON A TRUE STORY |
 | 00:24–00:32 | PROPOSED MONDAY · PASSED TUESDAY · EFFECTIVE 1 SEPTEMBER |
 | 00:40–00:48 | TAXPAYER · ACCOUNTANT · ADMINISTRATION |
 | 00:48–00:56 | ACTION ≠ NOTICE ≠ UNDERSTANDING |
@@ -150,7 +150,8 @@ Add all typography in post.
 | 02:32–02:40 | BEAUTIFUL HOME · RECURRING EXIT |
 | 02:40–02:48 | 12 APRIL 2026 |
 | 02:48–02:56 | 30 APRIL · REFUSAL / 18 JULY · SIGNATURE |
-| 02:56–03:00 | MyScoutee · TEST THE SYSTEM BETWEEN US. |
+| 02:56–02:58.5 | MyScoutee · TEST THE SYSTEM BETWEEN US. |
+| 02:58.5–03:00 | TO BE CONTINUED IN PART III |
 
 ## Clean short synopsis
 

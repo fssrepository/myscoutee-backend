@@ -53,13 +53,17 @@ editable sources remain available.
 ## 2. Synchronization state
 
 - Part I: twenty-two 8-second narration/storyboard/prompt intervals plus its
-  deterministic 4-second post card. John is the only spoken voice; generated
+  deterministic 4-second post card. Jon is the only spoken voice; generated
   clip audio is discarded.
 - Part II: twenty-two synchronized 8-second narration/storyboard/prompt
-  intervals plus its deterministic 4-second post card. John is the only spoken
+  intervals plus its deterministic 4-second post card. Jon is the only spoken
   voice; generated clip audio is discarded.
 - Character maps, privacy limits, exact courtroom geometry, two-expert
   separation, silent-picture rule and one-continuous-score rule remain binding.
+- Opening title/true-story typography and both continuation cards are post-only
+  cinematic punctuation; they consume no image/video generation credit.
+- Narration and score lock:
+  [`../audio/NARRATION_AND_SCORE_LOCK.md`](../audio/NARRATION_AND_SCORE_LOCK.md).
 - No slideshow/animatic video exists under `guides/story/`; the obsolete build
   scripts were removed.
 
@@ -71,7 +75,8 @@ editable sources remain available.
    into a legal brief or country-comparison essay.
 3. Propagate any correction once through book, 03:00 script, storyboard,
    checkpoint ledger and Google Flow/OpenArt prompts.
-4. Keep the narration voice fixed to the approved ElevenLabs **John** voice for
+4. Keep the narration voice fixed to the approved ElevenLabs **Jon — Warm &
+   Grounded Storyteller** voice for
    both parts. Save the exact voice/version/settings and a clean reference WAV;
    do not rely on the display name alone.
 5. Only then return to the two-frame controlled model comparison.

@@ -71,7 +71,8 @@ Keep mouths naturally relaxed rather than frozen shut. Natural breathing, a
 brief nonverbal smile and minute jaw movement are allowed. Convey interaction
 through listening, eye contact, small nods and restrained hand gestures.
 
-The final edit receives the same time-locked English ElevenLabs **John** narrator
+The final edit receives the same time-locked English ElevenLabs **Jon — Warm &
+Grounded Storyteller** narrator
 used for Part I, one continuous three-minute score and synchronized
 post-produced ambience/foley. Any platform audio generated despite the prompt
 is discarded. The display name is not sufficient provenance: archive the exact

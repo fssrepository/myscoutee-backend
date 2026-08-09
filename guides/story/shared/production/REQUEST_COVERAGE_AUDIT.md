@@ -144,7 +144,7 @@ become independently verified evidence.
 3. The first benchmark contains no invented intermediate art. Its two exact
    9:16 checkpoints define the first and last frames of the same eight-second
    test in Google Flow and OpenArt.
-4. John narration, one continuous musical bed, ambience and foley are
+4. Jon narration, one continuous musical bed, ambience and foley are
    post-production assets timed to the complete film. Every clip-generated
    audio track is discarded; there is no character dialogue or lip sync.
 5. A local `published/` package means a versioned PDF/video, metadata and

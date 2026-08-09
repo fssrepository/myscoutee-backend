@@ -1434,6 +1434,19 @@ Part I told the wonder of the outside world without hiding the shared room.
 Part II tells the beauty of home without hiding why the system could make a
 returning person ask again whether he should leave.
 
+Sometimes the border is only the visible part of an escape. We also run from
+the person we became while adapting to a place: the hunger we hid, the fear we
+normalized, the silence that kept a room workable. A new country can interrupt
+that version of us, but it cannot automatically remove it. In another world we
+may recognize ourselves more clearly. Looking back, we can ask whether home—and
+we ourselves—can do better.
+
+That question is not uniquely Hungarian. The irony here is that it unfolded in
+the centre of Europe, inside a country described as democratic, through acts
+ordinary enough for each participant to continue. The human threshold is
+simpler: when does staying inside a beloved home cost more dignity than
+crossing its border?
+
 ## 18. The Breaking Point Is Not the Beginning
 
 The case can be made to begin with its most violent line because that line is
@@ -1931,6 +1944,11 @@ back and consume the independence that had made the attempt possible.
 The next hearing was scheduled for 16 September 2026. A short reply had arrived
 from the new justice administration. The country had an interim President. The
 final legal result did not exist.
+
+An older Hungarian instruction remained available: *strive, and trust*. I no
+longer heard it as passive faith in authority. I heard it as the right to try
+again, to look back from another world, and to ask whether home—and I—could do
+better.
 
 The line remains open.
 
@@ -2455,6 +2473,11 @@ Sources:
 - https://www.ksh.hu/docs/eng/seemig/outputs/SEEMIGHistoricalAnalysisHungary.pdf
 
 ## AI-assisted work and the Navier–Stokes exchange
+
+The closing phrase *strive, and trust* is a concise English rendering of the
+final imperative in Imre Madách's nineteenth-century dramatic poem *The
+Tragedy of Man*. The narrative applies it to continued effort and the right to
+try again, not to unquestioning trust in an institution.
 
 The public repositories show the constructive work discussed in the chapter;
 they are evidence of scope and method, not proof of any legal or clinical

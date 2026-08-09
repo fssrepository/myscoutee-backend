@@ -24,7 +24,8 @@ clip-level background music, dialogue and singing never enter the master.
 
 The film uses intimate first-person voice-over with no character dialogue or
 lip sync. The locked
-synthetic narrator for Parts I and II is the approved ElevenLabs **John** voice.
+synthetic narrator for Parts I and II is the approved ElevenLabs **Jon — Warm &
+Grounded Storyteller** voice.
 Archive a clean reference WAV plus the exact voice identifier, model version
 and generation settings; the display name alone is not a reproducible lock.
 
@@ -104,7 +105,7 @@ foley locally so sound continuity does not restart at eight-second boundaries.
 | S19–S20 | steps, restrained decline, message becoming paper or ticket |
 | S21 | entrance, chair, map, introductions and natural laughter |
 | S22 | notebook close as several local room tones converge |
-| S23 | two restrained brand notes and a natural half-second tail |
+| S23 | two restrained brand notes; leave the harmonic sentence open under the silent Part II continuation line |
 
 Carry room tone across visual cuts with `0.3–0.8 s` overlaps where continuity
 benefits. Key clicks may transform into keyboard clicks across the Tottenham to
@@ -154,7 +155,8 @@ Final S23 text:
 
 ```text
 MyScoutee
-TEST IT WITH ME.
+TEST IT WITH ME IN REAL COMMUNITIES.
+CONTINUED IN PART II · THE SYSTEM BETWEEN US
 ```
 
 ## 7. Subtitles
