@@ -3,8 +3,7 @@
 This is the recommended path to a playable **03:12 English-language product
 film** without depending on a supported editing GPU:
 
-> **Closed book and prompts → one difficult scene → two exact 9:16 endpoints →
-> identical cross-model stress test → selective motion generation → time-coded voice-over
+> **Closed book and prompts → exact 9:16 endpoint pairs → Veo 3.1 Lite motion generation → time-coded voice-over
 > and one continuous score → CPU FFmpeg assembly and mobile QA.**
 
 Do not generate the whole film on every platform. Spend credits only after the
@@ -50,10 +49,9 @@ set needed for the current task.
 | Gate | Output | Spend rule | Approval condition |
 | --- | --- | --- | --- |
 | 0 | published book, script and prompt closure | no video credits | written package is synchronized |
-| 1 | six-person character benchmark | one image per eligible model | exactly three women and three men; six distinct, appealing identities |
-| 2 | locked character and world sheets | still-image credits only | recurring faces, clothes, props and locations approved |
-| 3 | selected benchmark's exact two endpoints | cheapest approved still route | both frames obey the locked cast and location contract |
-| 4 | identical eight-second video benchmark | one result per comparable model | blind score recorded; winning model chosen by shot type |
+| 1 | locked character and world sheets | still-image credits only | recurring faces, clothes, props and locations approved |
+| 2 | next scene's exact two endpoints | approved still route | both frames obey the locked cast and location contract |
+| 3 | Veo 3.1 Lite production clip | one eight-second result | endpoints, identity, motion and continuity approved |
 | 5 | selective motion production | one result on first attempt | only motion-critical scenes are generated |
 | 6 | picture lock and audio | no speculative video retries | timing, narration and score approved |
 | 7 | final CPU assembly | local processing | desktop and phone QA pass |
@@ -89,77 +87,27 @@ The only approved brand source is
 `frontend/src/assets/logo/heart.png`. Keep it unmodified and add `MyScoutee` as
 separate editable text in post.
 
-## 5. Select the first model benchmark
+## 5. Produce exact endpoint pairs
 
-1. Read the closed English narration, storyboard and prompt pack.
-2. Select one interval whose people, staging, transformation and endpoint
-   continuity will expose meaningful model differences.
-3. Generate exactly its two 9:16 endpoint frames.
-4. Use those same frames, the same prompt and the same eight-second duration in
-   Google Flow and OpenArt.
-5. Record model, settings, credits and visible failure modes before choosing a
-   production route.
+For each interval, read its narration, storyboard and shot prompt. Generate or
+approve exactly two 9:16 endpoint images. Preserve every recurring face, age,
+body proportion, costume and prop; the product group remains exactly three
+women and three men. Never generate typography, UI or a substitute logo.
 
-There is no slideshow or animatic stage and no generated midpoint image.
+There is no slideshow, animatic, model comparison or generated midpoint image.
 
-## 6. Character benchmark before video
+## 6. Generate with Veo 3.1 Lite
 
-Use exactly the same prompt and one output per eligible image model:
+For each approved pair:
 
-- prompt:
-  [character-model-benchmark-six-person-ensemble.txt](../../../shared/benchmarks/prompts/character-model-benchmark-six-person-ensemble.txt);
-- format: one `9:16` image in a `2×3` portrait layout;
-- cast: exactly three women and three men;
-- no prompt enhancement, automatic polish or added style preset;
-- score sheet:
-  [CHARACTER_BENCHMARK_LOG.csv](../../../shared/benchmarks/tracking/CHARACTER_BENCHMARK_LOG.csv).
+1. upload the exact first and last PNG in Google Flow;
+2. select Veo 3.1 Lite, Frames to Video, 8 seconds, 9:16, one result;
+3. paste the continuity prefix, matching Sxx prompt and silent-picture lock;
+4. download and inspect the clip before continuing;
+5. record the ten-credit charge and any concrete defect;
+6. approve or make one controlled repair, then move to the next interval.
 
-Score distinct identity, warmth, agency, age and cultural variety, facial and
-hand anatomy, clothing individuality, balanced visual weight and compatibility
-with the painterly cinematic 2.5D world. Hide model names during the first visual
-score.
-
-Only after the winning design is chosen should recurring characters receive
-front, three-quarter, profile, full-body, seated and expression references. Do
-not consume trained-character slots on one-scene background figures.
-
-## 7. Generate the benchmark endpoints
-
-After the written package closes, select one difficult interval that can remain
-in the final film and create only its exact two endpoints. The frames must preserve:
-
-- the same six faces, ages, body proportions, clothing and personal props;
-- exactly three women and three men;
-- the painterly cinematic 2.5D treatment;
-- a readable transition from separate inner expectations to a real shared
-  meeting;
-- no logo, generated UI text or disability pictogram used as generic diversity.
-
-Do not begin the video-model comparison with identities that will later be
-replaced.
-
-## 8. Run one reusable video stress test
-
-Test the selected endpoint pair for exactly eight seconds, `9:16`, one output
-per model, using the corresponding locked shot prompt.
-
-Keep these conditions identical:
-
-- exact first and last PNG;
-- duration, aspect ratio and resolution;
-- prompt and output count;
-- no prompt rewriting, Extend, extra reference or automatic background music;
-- audio excluded from the visual score.
-
-The test must expose identity retention, six-person counting, face and hand
-anatomy, natural eye contact, micro-acting, spatial continuity, endpoint fidelity
-and style stability. Record results in
-[MODEL_BENCHMARK_LOG.csv](../../../shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv).
-
-A successful benchmark result is a candidate final shot, not disposable test
-material.
-
-## 9. Produce only the motion the story needs
+## 7. Produce only the motion the story needs
 
 Classify every shot:
 
@@ -174,7 +122,7 @@ Use stills and CPU post for stable graphics, travel memories, accurate UI,
 titles and the brand card. Keep hero generations rare. Do not upscale a broken
 face, hand, story or title.
 
-## 10. Audio after picture lock
+## 8. Audio after picture lock
 
 The audio route is narration without lip sync:
 
@@ -190,7 +138,7 @@ The audio route is narration without lip sync:
 No character dialogue or lip sync is generated. Jon carries the only spoken
 voice; interaction remains nonverbal.
 
-## 11. CPU assembly
+## 9. CPU assembly
 
 The FFmpeg assembly owns:
 
@@ -206,7 +154,7 @@ The FFmpeg assembly owns:
 Kdenlive may be used as an optional visual interface with 720p proxies, but the
 pipeline must not depend on DaVinci Resolve or a supported GPU.
 
-## 12. Stop-ship check
+## 10. Stop-ship check
 
 Do not publish if any of these remain:
 

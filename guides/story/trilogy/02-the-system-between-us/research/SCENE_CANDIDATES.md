@@ -49,12 +49,12 @@ chronology legend: `D`, `M`, `A`, `C`.
 | SC21 | B | M/C | An empty presidential chair waits beneath the constitutional idea of national unity. Below it, the Founder holds a closed Hungarian passport beside an outward route and considers whether permanent departure could include renouncing citizenship. | The state seeks a new symbol of unity while one citizen measures how completely belonging has failed. | final-spine candidate after book approval; a present thought only; no destroyed passport, completed renunciation, legal advice, invented destination or implication that citizenship changes the pending case |
 | SC22 | B | M/V/D-secondary | Black-comedy desk montage: the name Kata collides with the KATA acronym; a self-caricature becomes “KATA's most wanted”; a Hulk-like KATA taxpayer and the Hungarian reaper/KATA-s wordplay briefly reverse the power of the institutional labels. | Preserves the human voice and the period's absurdity without pretending the file's language is the only description. | isolate the original visual before documentary reuse; no real officer likeness, gore, enacted violence, lip-sync or readable accusation |
 
-## Three-minute rule
+## Short-film rule
 
 The short film cannot carry every scene. An `A` scene may still be represented
 by narration over an adjacent visual rather than receive its own eight-second
 interval. `B` scenes protect the book's richness and a possible longer cut.
 
 No scene is generated until the Founder approves the book chronology and the
-prompt coverage audit. The first benchmark uses only the selected scene's exact
+prompt coverage audit. Direct Veo 3.1 Lite production uses each scene's exact
 first and last frames; it creates no slideshow or disposable midpoint image.

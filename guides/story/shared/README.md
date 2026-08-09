@@ -6,7 +6,7 @@ manifest, final render or production handoff.
 
 ## Packages
 
-- [`benchmarks/`](benchmarks/README.md): stable image/video comparison prompts,
+- [`benchmarks/`](benchmarks/README.md): inactive historical image/video comparison prompts,
   control assets and score logs;
 - [`metadata/`](metadata/README.md): trilogy-level machine-readable metadata;
 - [`production/`](production/README.md): cross-part planning and platform

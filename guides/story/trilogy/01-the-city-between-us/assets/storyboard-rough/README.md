@@ -13,4 +13,4 @@ preview. They are planning images, not approved production plates.
 See [`../../storyboard/CHECKPOINT_CHAIN.md`](../../storyboard/CHECKPOINT_CHAIN.md).
 Do not build a slideshow from these rough studies. The obsolete endpoint-hold
 builder was removed; one approved endpoint pair moves directly into the
-identical Google Flow/OpenArt benchmark.
+direct Veo 3.1 Lite production chain.

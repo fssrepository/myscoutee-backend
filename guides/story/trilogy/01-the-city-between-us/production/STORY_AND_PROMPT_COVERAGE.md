@@ -93,7 +93,7 @@ uncertainty and public boundaries.
 | Time is finite; a dating path needs a rapid filter | Book 24 and 26 | S17 VO, captions, storyboard and master prompts | Fast toward reciprocal context, never fast judgment of human worth; outcome speed remains unproven. |
 | Private editable 1–10 priority for an unknown person or pair | Book 26 | S17 | Not attractiveness, morality, reputation or a public score. |
 | People/place/event in common and inside/outside-network context | Book 24, 26 and 29 | S16–S17 and S21 | Context is not vouching, endorsement, compatibility or safety guarantee. |
-| Exactly six strangers, three women and three men, with distinct identities and expectations | Book 27 | S18–S20; character benchmark and lifecycle prompt | No majority-women cast, romantic winner, faceless montage or automatic friendship. |
+| Exactly six strangers, three women and three men, with distinct identities and expectations | Book 27 | S18–S20; locked character map and lifecycle prompt | No majority-women cast, romantic winner, faceless montage or automatic friendship. |
 | Why group-first: less one-pair all-or-nothing pressure; several conversations, activity, friendship or later invitation | Book 27 | S18 VO/visual, creative bible and all platform master prompts | Design rationale, not measured improvement. |
 | Independent accept/decline, chat, public doorway and real introductions | Book 27 | S19 | Consent is never overridden by another person's priority. |
 | Four event resources: members, transport, accommodation/venue and supplies; ticket/check-in/feedback separate | Book 28 | S20 | No invented wheelchair resource card; accessibility belongs in the real route and venue. |
@@ -110,18 +110,18 @@ uncertainty and public boundaries.
 
 ## 4. Production decisions already synchronized
 
-- Character design is locked before video testing. The control group is exactly
+- Character design is locked before video generation. The control group is exactly
   three women and three men with varied age, ethnicity, body, clothing,
   temperament and inner expectation. London crowds and flatmates also receive
   individual motives rather than becoming scenery.
-- The identical CP18→CP19 eight-second stress shot is used to compare Flow and
-  OpenArt video models. Test generations are intended to remain usable, and
-  credit gates prevent testing every shot on every model.
+- Veo 3.1 Lite is the locked motion model. Every interval uses its exact two
+  endpoints and one eight-second result; the reserve is spent only on a written
+  defect and controlled retry.
 - There is no storyboard slideshow or checkpoint-only inspection export.
   Adjacent exact 9:16 checkpoints go directly into the later eight-second motion
   clips as first and last frames. No interval is split into four-second halves
   and no intermediate image is invented. The 22 motion intervals run 02:56;
-  P00 supplies the deterministic eight-second opening card and CP23 supplies
+  P00 supplies the deterministic eight-second opening card and E01 supplies
   the deterministic eight-second end plate; the film is exactly 03:12.
 - Final audio is separately timed voice-over, one continuous score for the whole
   film and separate synchronized ambience/foley. Clip-generated background music

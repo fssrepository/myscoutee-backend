@@ -91,25 +91,21 @@ The exact Part I identity contract is
 
 ## Recommended production route
 
-For the best cost/control balance, use the benchmark-first hybrid route:
+For the locked cost/control balance, use the direct Veo 3.1 Lite route:
 
 1. Lock the story, voice and timing with [SCRIPT.md](../film/SCRIPT.md).
 2. Follow the purchase gates and credit limits in
    [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md).
-3. Run the identical six-person character benchmark first and record every
-   result in [the character benchmark log](../../../shared/benchmarks/tracking/CHARACTER_BENCHMARK_LOG.csv).
-4. Lock the recurring identities, then compare Flow and OpenArt on the selected
-   difficult final-usable interval and record every result in
-   [the model benchmark log](../../../shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv).
-5. Build and approve the founder, supporting cast, locations, props and style frames from
+3. Preserve the locked recurring identities and approved book-character designs.
+4. Build and approve the founder, supporting cast, locations, props and style frames from
    [the creative bible](../film/CREATIVE_BIBLE.md).
-6. Run one identical two-endpoint, eight-second model benchmark, then generate
-   each required moving shot only on its selected model.
-7. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
+5. Generate each exact endpoint pair, then exactly one eight-second Veo 3.1 Lite
+   motion result per interval.
+6. Assemble at 720×1280 with CPU FFmpeg: picture, voice, one continuous score,
    foley, brand, title and subtitles. The
    master should not depend on generated on-screen text.
-8. Buy/use Higgsfield only if an identity- or ensemble-critical winning-platform shot
-   still fails after three controlled attempts.
+7. Keep the 370-credit reserve for controlled repairs; do not switch models in
+   this production pass.
 
 OpenArt-only, Higgsfield-only, and Flow-only variants are also documented. The
 same approved assets and shot IDs work in every route. `SHOT_MANIFEST.csv`
@@ -132,14 +128,12 @@ may keep their platform name until they replace the matching Sxx shot.
 | [AUDIO_EDIT_DELIVERY.md](../film/AUDIO_EDIT_DELIVERY.md) | Current CPU audio, edit, brand, subtitle and delivery specification |
 | [PRODUCTION_CHECKLIST.md](../production/PRODUCTION_CHECKLIST.md) | Asset, continuity, claim, release and mobile-QA checks |
 | [COST_AND_MODEL_DECISION.md](../../../shared/production/planning/COST_AND_MODEL_DECISION.md) | Current shared model choice and purchase boundary |
-| [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md) | Shared two-film benchmark, credit, character, audio and CPU-post plan |
+| [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md) | Shared Veo Lite credit, character, audio and CPU-post plan |
 | [STANDALONE_FILM_AND_SEQUEL_BRIDGE.md](../film/STANDALONE_FILM_AND_SEQUEL_BRIDGE.md) | Film 1 boundary and future Film 2 handoff |
 | [STORY_AND_PROMPT_COVERAGE.md](../production/STORY_AND_PROMPT_COVERAGE.md) | Canonical coverage map across book, film, prompts, evidence and future work |
 | [TODO.md](../production/TODO.md) | Narrative-first approval gate and all deferred generation work |
 | [THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md](../book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md) | English first-person public book |
 | [book build contract](../book/README.md) | Reproducible PDF build, wordmark and optional illustration contract |
-| [character benchmark log](../../../shared/benchmarks/tracking/CHARACTER_BENCHMARK_LOG.csv) | Comparable character-model cost and visual scoring |
-| [model benchmark log](../../../shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv) | Comparable model settings, charged credits and blind scores |
 | [SOURCES.md](../research/SOURCES.md) | Project evidence and external research/platform sources |
 | [SHOT_MANIFEST.csv](../production/tracking/SHOT_MANIFEST.csv) | Importable shot tracker with IDs, timings and approved filenames |
 
@@ -153,7 +147,6 @@ continuity prefix so that global visual rules remain stable.
 
 Current standalone planning prompts:
 
-- [six-person character model benchmark](../../../shared/benchmarks/prompts/character-model-benchmark-six-person-ensemble.txt);
 - [Hungarian origin, workers'-hostel and Budapest housing memory board](../prompts/hungarian-origin-rural-budapest-memory-board.txt);
 - [first Budapest attempt and reimbursed interview journeys memory board](../prompts/budapest-first-attempt-and-interview-journeys-memory-board.txt);
 - [cornfield-to-Trivandrum first assignment and practical-English memory board](../prompts/cornfield-to-trivandrum-first-assignment-memory-board.txt);
@@ -253,10 +246,6 @@ is the acceptance target.
 
 ## First action
 
-Open [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md), then
-run the identical reference-free six-person prompt in Codex, Flow and any
-OpenArt image model whose displayed one-image cost fits the remaining free
-credits. Lock the six identities before regenerating CP18/CP19 or spending video
-benchmark credits. After character and model lock, preserve the 23 actual shot
-durations in `SHOT_MANIFEST.csv` and proceed directly to controlled motion
-generation.
+Open [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md),
+then prepare the exact Part I S01 endpoint pair. Provide both absolute paths and
+the copy/paste Veo 3.1 Lite prompt before spending the first ten motion credits.

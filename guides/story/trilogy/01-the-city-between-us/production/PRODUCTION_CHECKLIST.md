@@ -159,19 +159,15 @@ continuity and technical faults before an expensive final render.
 
 ## F. Credit and model discipline
 
-- [ ] The character benchmark was scored before recurring identities were
-  trained or locked.
-- [ ] CP18 and CP19 were regenerated from the same six approved identities.
-- [ ] One reusable CP18→CP19 stress test selected the model by shot type.
-- [ ] The identical two-endpoint, eight-second benchmark was approved before
-  final motion.
-- [ ] One platform owns a shot's final version; there is no automatic triple
-  render.
+- [ ] Recurring identities match the approved book and character references.
+- [ ] Every generated interval uses its exact approved first and last frame.
+- [ ] Veo 3.1 Lite is used for every motion interval unless the Founder opens a
+  separate remaster decision.
 - [ ] The first attempt produced one result.
 - [ ] Every retry has one written reason and changes one controlled variable.
 - [ ] Stable UI, logo, travel and graphic scenes are assembled in post.
 - [ ] `720×1280` phone QA happened before any upscale decision.
-- [ ] Every approved prompt, model, version, cost and source filename is recorded
+- [ ] Every approved prompt, Veo version, cost and source filename is recorded
   in the manifest.
 
 ## G. Audio and language

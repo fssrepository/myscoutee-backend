@@ -5,7 +5,7 @@ and motion work remain a separate next phase**.
 
 The public book and generation prompts have been synchronized and the Founder
 has closed the illustrated book and prompt package. Motion credits, narration
-and music remain downstream of the direct cross-model benchmark.
+and music remain downstream of the direct Veo 3.1 Lite picture pass.
 
 ## 1. Current work — book and prompt synchronization only
 
@@ -78,12 +78,12 @@ and music remain downstream of the direct cross-model benchmark.
 - [x] Generate and register Part I book portraits and scene montages from that
   same character set; the London resident row now uses four visibly distinct
   identities from the complete H01–H12 board.
-- [ ] Run identical character/model benchmark prompts in Codex, Flow, OpenArt
-  and any selected video platform.
+- [x] Lock Veo 3.1 Lite as the motion model and Jon as the narrator; no further
+  model or character benchmark is required.
 - [ ] Generate or revise CP00–CP22 motion reference frames from the approved
   prompts; assemble P00/E01 deterministically in post.
-- [ ] Run the selected eight-second model comparison on the hardest approved
-  transition.
+- [ ] Generate each approved endpoint pair and one matching eight-second Veo
+  3.1 Lite result in sequential reviewable batches.
 - [ ] Generate the full motion chain with exact first/last-frame continuity.
 - [ ] Produce time-locked English narration, one continuous music bed, ambience,
   subtitles and the final CPU/FFmpeg edit.

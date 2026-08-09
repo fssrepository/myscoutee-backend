@@ -137,7 +137,6 @@ The identity-sheet step is complete. Continue in this order:
 
 1. generate book portrait and montage plates from the locked identities;
 2. regenerate only the CP endpoints that use them;
-3. select one difficult eight-second interval and generate only its two exact
-   endpoints;
-4. compare those same endpoints and prompt in Flow and OpenArt;
-5. use the same references for the later motion chain.
+3. generate each production interval's exact two endpoints in sequence;
+4. use the same references for its Veo 3.1 Lite motion clip;
+5. record approvals before continuing to the next batch.

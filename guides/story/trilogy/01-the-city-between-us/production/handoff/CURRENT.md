@@ -8,5 +8,5 @@ Resume from:
 [`../../../../shared/production/handoff/CURRENT.md`](../../../../shared/production/handoff/CURRENT.md)
 
 That handoff is the authoritative book/prompt synchronization record and the
-only current route into the direct two-frame model benchmark. No slideshow or
-animatic is produced.
+only current route into direct Veo 3.1 Lite frame-to-video production. No
+slideshow or animatic is produced.

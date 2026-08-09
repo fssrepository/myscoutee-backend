@@ -47,7 +47,7 @@ Their reproducible still-image generation specification is
 | CP18 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP19 | `superseded-test` | Historical benchmark endpoint; regenerate and review |
 | CP20–CP22 | `provisional-old` | Existing studies must be regenerated and reviewed individually |
-| CP23 | `deterministic-post` | Final brand card belongs to deterministic post-production, not the video-model frame benchmark |
+| E01 | `deterministic-post` | Final brand card belongs to deterministic post-production, not the video model |
 
 ## Part II — The System Between Us
 
@@ -56,7 +56,7 @@ Their reproducible still-image generation specification is
 | CP00 | `canonical-inherited` | Lossless Part I handoff; verify again when the Part I final chain is locked |
 | CP01–CP10 | `provisional-old` | Existing checkpoint files are composition studies only |
 | CP11 | `rejected` | Does not yet show the reviewed solitary rehabilitation scene accurately |
-| CP12–CP22 | `not-generated` | Generate only after the benchmark model and visual route are selected |
+| CP12–CP38 | `not-generated` | Generate sequentially for the locked Veo 3.1 Lite route |
 
 ## Approval history
 

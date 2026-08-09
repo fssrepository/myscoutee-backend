@@ -202,9 +202,8 @@ become independently verified evidence.
 2. Book illustrations, checkpoint endpoints and later Flow/OpenArt motion use
    the same role references; no attractive replacement face is introduced in a
    later stage.
-3. The first benchmark contains no invented intermediate art. Its two exact
-   9:16 checkpoints define the first and last frames of the same eight-second
-   test in Google Flow and OpenArt.
+3. Every Veo 3.1 Lite production interval uses its two exact approved 9:16
+   checkpoints as first and last frame; there is no invented intermediate art.
 4. Jon narration, one continuous musical bed, ambience and foley are
    post-production assets timed to the complete film. Every clip-generated
    audio track is discarded; there is no character dialogue or lip sync.

@@ -113,11 +113,11 @@ paused.**
 - [ ] Generate or regenerate CP01–CP38 only after the book and prompts are
   approved.
 - [x] Remove the slideshow/animatic stage and its generated-video artifacts.
-- [ ] In a fresh phase, select one difficult eight-second stress interval from
-  the closed story package.
-- [ ] Generate only its exact two 9:16 endpoint frames.
-- [ ] Test Google Flow and OpenArt with the identical pair and prompt.
-- [ ] Select one production model and generate S01–S38 with exact endpoints.
+- [x] Lock Veo 3.1 Lite as the production model and Jon as the narrator.
+- [ ] Generate each scene's exact two 9:16 endpoint frames in sequential
+  reviewable batches.
+- [ ] Generate S01–S38 in Veo 3.1 Lite with exact endpoints, eight seconds and
+  one result per approved first attempt.
 - [ ] Produce one time-locked English narration after picture timing is stable.
 - [ ] Produce one continuous score for the full film; discard clip-generated
   music and ambience.
