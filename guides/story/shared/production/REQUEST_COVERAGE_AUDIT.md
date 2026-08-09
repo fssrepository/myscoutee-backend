@@ -20,9 +20,13 @@ become independently verified evidence.
   South India.
 - [x] Workers' hostel, corridor sleep, unstable private rooms, later adequate
   three-room flat, relationship memories and the parent-assisted home.
-- [x] The non-binary United States assignment, promised-overtime dispute,
-  health pressure, six-and-a-half-month unemployment and the final Hungarian
-  interview sequence before London.
+- [x] The non-binary United States assignment, return to and continued work in
+  the Hungarian office, promised-overtime trust dispute, health pressure,
+  six-and-a-half-month unemployment and the final Hungarian interview sequence
+  before London.
+- [x] The pre-London overtime-hearing corridor memory, including the exchange
+  about possible work for the Founder's lawyer's son and its effect on trust,
+  remains attributed memoir without a bribery or misconduct finding.
 - [x] London employment within two weeks, weak conversational English, Soho
   work, hidden hunger, Regent's Park, the sushi memory and the affectionate
   sex-shop farewell joke.
@@ -78,6 +82,17 @@ become independently verified evidence.
   obtained a salaried multinational foothold through an accidentally
   uncoordinated direct process, and accepted KATA only later as the last lawful
   route back into work.
+- [x] The Hungarian multinational foothold's quieter failure: long periods
+  without substantive work, an unproved suspicion that the earlier negative
+  assessment travelled as gossip, a product manager routing work elsewhere,
+  the ten-subsidiary “One Shop” contradiction, the Founder's eventual protest
+  and the later COVID restructuring. Motive remains memoir, not finding.
+- [x] The January 2021 investment-bank threshold: outsourced identity screen,
+  remembered first-day warning, household government-bond savings colliding
+  with employee-trading controls, masked third-week dismissal, the exit joke,
+  the later three-hour ethics discussion and an answer the Founder now regards
+  as incomplete. It remains book/longer-cut material and makes no institutional
+  motive or misconduct finding.
 - [x] The formally unstable Brussels contract became a stable human team across
   nearly 10,000 kilometres: audio-only calls, an Indian tuk-tuk entering through
   an open microphone, a senior manager who continued to back him and a client

@@ -217,15 +217,67 @@ the second round, the room hesitated; then the company hired me directly, as an
 employee, for roughly twice the money. One accidental gap between institutions
 opened the stable door I had been trying to find.
 
-KATA contractors at the same workplace still cost less than employees. COVID
-then broke the foothold that had only just begun to feel stable. The Hungarian
-role ended in the pandemic restructuring. Another domestic attempt lasted only
-three weeks for a different reason: its compliance rules treated my retail
-Hungarian government bonds as incompatible with the job. Those bonds were part
-of the savings that had carried me for years. A three-week employer stood on
-one side; seven years of security stood on the other. I chose the seven. As a
-manager escorted me out, I asked whether I could finally buy government bonds
-again. It was the best dismissal I had ever felt.
+KATA contractors at the same workplace still cost less than employees. Once I
+was inside, the apparently stable foothold became strangely hollow. I had very
+little work. I suspected that the smaller company's bad assessment had followed
+me as office gossip, but I never saw proof. A product manager repeatedly routed
+work to other teams. I spent long days in the office performing availability.
+
+When I finally tired of waiting, I was placed alone between a German programme
+and a Hungarian organization. “One Shop” promised one interface across ten
+national subsidiaries. The name was singular; the marketing strategies were
+not. The Hungarian office earned through its own local marketing logic and had
+little reason to dissolve it into a central surface. I was expected to sell
+progress upward while the work itself had nowhere stable to land.
+
+After almost a year, I finally said aloud that I had scarcely been given work.
+The sentence travelled—up toward German leadership, back toward Hungarian
+management, or both; I could not see the complete route. I entered the offices
+of several senior executives who appeared not to know how empty the role had
+been. Then COVID restructuring arrived, and my name was selected. I experienced
+the dismissal as a middle-management decision shaped by interests above my
+view. That is memory and interpretation, not a proved motive. What I knew was
+simpler: after months of silence, I had spoken; the apparently stable foothold
+ended during the pandemic.
+
+The next salaried door opened at an investment bank in January 2021, while
+Hungary was under an evening curfew. In the office, faces had been reduced to
+eyes above masks. Before the first working day, an outsourced background check
+had already asked me to move identity documents through email and screening
+channels I considered old and weakly authenticated. The route had taken weeks
+and a large bundle of personal material. On my first day, I compared the
+handling of my data to *Monty Python*. I remember the manager warning that this
+attitude could cost me the job. The screening had cleared. Trust had not.
+
+At the end of the first week, compliance training revealed another gate. The
+bank's many employee-trading rules required approval around transactions in the
+retail Hungarian government bonds that held most of my savings. On one screen,
+the bond was household saving. On another, it was a controlled trade. These
+bonds were not an experiment for me. They were the seven-year floor beneath my
+independence.
+
+The third week ended in a small masked theatre. The manager's anger was visible
+above the mask. Two solidly built colleagues sat smiling on either side of me
+while the termination papers landed on the table. A three-week employer stood
+on one side of the decision; seven years of security stood on the other. I
+chose the seven. On the way to the exit, I asked whether I could finally buy
+government bonds again. It was the best dismissal I had ever felt.
+
+An internal ethics review followed. For roughly three hours, I spoke with the
+bank's local lawyers. One question kept returning: had the manager threatened
+me? I said no. It was a cleaner answer than the memory. I had heard the warning
+on the first day and had chosen not to give it that name. I would not describe
+my answer as complete now. The institution received one word; I carried the
+rest of the scene out with me.
+
+That masked room became my last Hungarian workplace. Almost six years later,
+it remains so. I did not know at the exit that I was leaving more than one
+building.
+
+A year and a half separated that background check from the KATA change.
+The screening had been a gate I managed to pass. The later proceeding
+threatened to turn the lawful route back into work into the kind of record that
+could close such gates in the future.
 
 During the next search, I first refused a Brussels project connected to a
 European institution. The contract placed too much risk on me, and I still
@@ -2202,6 +2254,35 @@ documented, but the exact page containing that remembered wording has not yet
 been isolated from the scanned monthly bundles. The narrative therefore
 paraphrases the line and uses it to mark collapsed trust; it does not present it
 as a verified quotation or a literal request concerning any real person.
+
+## The January 2021 employment threshold
+
+Private recruitment correspondence records an intended January 2021 start and
+an exit email dated 28 January. Later correspondence with the Hungarian central
+bank records the short employment, the government-bond trading restriction and
+the Founder's data-handling and background-screening complaints. The exact
+first-day warning, masked-room expressions, seating of two colleagues, exit
+question and roughly three-hour ethics conversation with the bank's local
+lawyers remain first-person memory. The Founder also records that he answered
+“no” when repeatedly asked whether the manager had threatened him, and now
+regards that answer as incomplete. The book does not determine the purpose or
+independence of the internal review, make a legal finding about the manager or
+bank, or claim that a later unresolved proceeding has already produced a
+criminal-record outcome.
+
+The official issuance terms for the retail government bond then known as MÁP
+Plusz described domestic and foreign natural persons as eligible subscribers
+and the public as its target market. This explains the Founder's household-
+savings perspective; it does not decide whether the bank's employee-trading
+policy was lawful, proportionate or required. In January 2021, Hungary's public
+rules included a 20:00–05:00 curfew, a ban on gatherings, early shop closure
+and broad mask requirements. The particular masked dismissal room remains
+memoir.
+
+- Hungarian retail government-bond issuance terms:
+  https://www.allampapir.hu/ismerteto/M%C3%81P%20Plusz%20Ismertet%C5%91%202019.11.04-t%C5%91l%20hat%C3%A1lyos.pdf
+- Government Decree 484/2020 on the protective rules then in force:
+  https://njt.jog.gov.hu/jogszabaly/2020-484-20-22.24
 
 ## Legal reference map
 

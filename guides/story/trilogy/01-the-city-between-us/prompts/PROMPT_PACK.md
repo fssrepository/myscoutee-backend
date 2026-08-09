@@ -243,9 +243,11 @@ journey.
 Use
 [prompts/pre-london-work-breakdown-and-exit-memory-board.txt](pre-london-work-breakdown-and-exit-memory-board.txt)
 for the anonymized United States assignment, promised-but-unreceived overtime
-payment, six-and-a-half-month unemployment period, four-round interview and
-London job within two weeks despite weak English. This is first-person memory,
-not an adjudicated claim against any employer or psychological-test method.
+payment, return to and continued work in the Hungarian office, later trust
+friction and hearing corridor, six-and-a-half-month unemployment period,
+four-round interview and London job within two weeks despite weak English. This
+is first-person memory, not an adjudicated claim against any employer, lawyer
+or psychological-test method.
 
 Use the companion
 [United States assignment dream-and-pressure board](united-states-assignment-dream-and-pressure-memory-board.txt)

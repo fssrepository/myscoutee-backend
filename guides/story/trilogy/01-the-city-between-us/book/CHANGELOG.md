@@ -72,6 +72,14 @@ The trilogy part and the edition version are separate. This book is Part
   his own culture shock kept him away. The memory now foreshadows the sharper
   reverse-culture shock he later experienced in Budapest without defining the
   colleague or ceremony through ethnicity.
+- Restored the pre-London overtime-hearing corridor memory: an exchange about
+  possible work for the Founder's lawyer's son damaged trust and helped make
+  departure feel rational. It remains attributed memoir and makes no bribery,
+  misconduct or case-outcome finding.
+- Corrected that chronology across the book and memory-board prompts: the
+  American assignment ended before the employment did. The Founder returned to
+  the Hungarian office, continued working there for a time and experienced the
+  missing promised overtime as a trust conflict before the later departure.
 
 ## 0.1-draft — 2026-08-07
 

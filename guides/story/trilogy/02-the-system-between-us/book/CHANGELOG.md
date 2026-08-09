@@ -52,6 +52,19 @@ first public edition is `1.0.0`.
   senior-manager support, the client's request that he stay and a funeral
   invitation that made ten thousand kilometres physical again. Comparative
   research remains in the notes and the narrative avoids national idealization.
+- Reconstructed the January 2021 investment-bank threshold from dated private
+  correspondence and memoir: outsourced identity screening, a remembered
+  first-day warning, the household-saving/employee-trading paradox, masked
+  third-week dismissal, exit joke and later three-hour ethics discussion. The
+  bank and people remain anonymous, the review receives no invented motive or
+  legal conclusion, and the room is identified as the Founder's last Hungarian
+  workplace for almost six years.
+- Restored the hollow side of the 2019–2020 salaried foothold: an idle desk,
+  suspected but unproved office gossip, work routed elsewhere, a “One Shop”
+  programme spanning ten subsidiaries with different marketing incentives,
+  senior rooms reached only after the Founder finally spoke, and the later
+  COVID restructuring. The text leaves motive and management interest at
+  attributed memoir level.
 - Made the satire's mirror explicit: the Founder performs the institution's
   apparent entitlement back at it, exposing the asymmetry between real coercive
   power and a powerless person's theatrical counter-authority.

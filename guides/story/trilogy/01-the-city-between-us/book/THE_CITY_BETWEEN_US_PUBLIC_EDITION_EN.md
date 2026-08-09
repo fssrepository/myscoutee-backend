@@ -336,9 +336,26 @@ people can give borrowed geography an emotional centre.
 That American period was therefore not black and white. It was a dream of scale,
 movement and possibility, but it contained very little private life. Work
 consumed most of it. In my account, I was driven extremely hard after overtime
-had been promised, but the promised overtime payment never arrived. I left the
-employer. I keep the company anonymous because this is my memory of what
-happened, not an adjudicated claim in this book.
+had been promised. When the assignment ended, I returned to the Hungarian
+office and continued working there for a time. The promised overtime payment
+did not follow me home. Friction grew because I could not digest the idea that
+work already given might become free simply because the promise had no shared
+place to stand. It was a dispute about money, but underneath it was a dispute
+about trust. I eventually left the employer. I keep the company anonymous
+because this is my memory of what happened, not an adjudicated claim in this
+book.
+
+Before London, I tried to recover the overtime I believed had been promised.
+At a hearing, my lawyer sat beside me. Afterwards, in the corridor and within
+my hearing, the office manager raised the possibility of work for the lawyer's
+son. “We will see. Let us not discuss it here.” I could not know what the
+exchange meant. I knew what it did to my trust.
+
+At the end, I told my lawyer that I would leave for a country where I hoped the
+rules would be followed more reliably. He did not seem to understand what I
+could mean. I did not yet know England either. I knew only that the corridor
+had made departure feel more rational than one more attempt to be heard at
+home.
 
 I left around September 2010.
 
@@ -1751,10 +1768,16 @@ Sources:
   landscapes remain unconfirmed. The public narrative therefore uses only the
   names the Founder remembers and avoids a false reconstructed route.
 - The United States assignment, promised-but-unreceived overtime payment,
+  return to and continued work in the Hungarian office, later friction and
   departure around September 2010, six-and-a-half-month unemployment period,
   final four-round Hungarian interview and London job within two weeks are also
   first-person memories. Employers remain anonymous, and the account makes no
   legal finding.
+- The hearing and corridor exchange after the overtime dispute are first-person
+  memories. The passage records the Founder's loss of trust after hearing a
+  possible job for his lawyer's son discussed with the office manager; it does
+  not allege bribery, professional misconduct or a proved connection with the
+  merits or outcome of the overtime dispute.
 - The health chronology is first-person testimony: blood in the Founder's stool
   appeared during the American period's extreme work pressure; he associated
   it with that pressure; he moved to London in 2011 while still experiencing it;
