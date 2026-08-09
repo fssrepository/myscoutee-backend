@@ -94,7 +94,7 @@ become independently verified evidence.
 - [x] The Hungarian multinational foothold's quieter failure: long periods
   without substantive work, an unproved suspicion that the earlier negative
   assessment travelled as gossip, a product manager routing work elsewhere,
-  the ten-subsidiary “One Shop” contradiction, the Founder's eventual protest
+  the ten-subsidiary shared-storefront contradiction, the Founder's eventual protest
   and the later COVID restructuring. The loss feels tragic despite a more
   humane exit and unexpectedly stronger negotiated severance. Motive, reaction
   and severance remain memoir, not finding or public amount.

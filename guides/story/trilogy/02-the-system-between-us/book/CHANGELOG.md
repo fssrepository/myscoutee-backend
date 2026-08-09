@@ -86,7 +86,7 @@ first public edition is `1.0.0`.
   legal conclusion, and the room is identified as the Founder's last Hungarian
   workplace for almost six years.
 - Restored the hollow side of the 2019–2020 salaried foothold: an idle desk,
-  suspected but unproved office gossip, work routed elsewhere, a “One Shop”
+  suspected but unproved office gossip, work routed elsewhere, a shared-storefront
   programme spanning ten subsidiaries with different marketing incentives,
   senior rooms reached only after the Founder finally spoke, and the later
   COVID restructuring. The text leaves motive and management interest at

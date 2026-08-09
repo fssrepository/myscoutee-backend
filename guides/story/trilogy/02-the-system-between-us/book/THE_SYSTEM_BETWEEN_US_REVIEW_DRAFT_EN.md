@@ -56,6 +56,9 @@ the problem.
 Nearly four years after the work stopped, and nearly three years into the
 criminal proceeding, the case had not produced a first-instance judgment, let
 alone reached an appeal. Minutes of language had expanded across years of life.
+A sentence born inside one badly assembled sequence was already consuming
+years; if every remaining stage moved at the same pace, the process itself
+could take a decade before anyone reached its end.
 
 The proceeding has not reached the ending reserved for Part III. The factual
 record, attribution limits and source references appear at the back, where they
@@ -231,10 +234,11 @@ me as office gossip, but I never saw proof. A product manager repeatedly routed
 work to other teams. I spent long days in the office performing availability.
 
 When I finally tired of waiting, I was placed alone between a German programme
-and a Hungarian organization. “One Shop” promised one interface across ten
-national subsidiaries. The name was singular; the marketing strategies were
-not. The Hungarian office's money came through its own marketing. On German
-calls, I presented a common shop whose countries had not agreed on one counter.
+and a Hungarian organization. A single shared storefront was supposed to join
+ten national subsidiaries. The interface was singular; the marketing
+strategies were not. The Hungarian office's money came through its own
+marketing. On German calls, I presented a common shop whose countries had not
+agreed on one counter.
 
 After almost a year, I finally said aloud that I had scarcely been given work.
 The sentence travelled—up toward German leadership, back toward Hungarian
@@ -1087,6 +1091,19 @@ the new person's contact details.
 
 The law required a defence chair. Continuity did not arrive with the chair.
 
+The process often corrected a failure only after the next hearing had already
+collided with it. My complaint that an appointed defender would not speak to me
+was not resolved in time to preserve the date. By the time the defender was
+replaced, the hearing moved by roughly three months. Later, the forensic expert
+was said to be unavailable, and the calendar lost roughly another three. Each
+response arrived late enough to create the next delay.
+
+The pattern felt like a wager that time would make me swallow the biography
+written around me. I would not trade dignity for speed. A case built around one
+sentence therefore entered its third year without a first-instance judgment.
+It did not remain inside the courtroom. Every plan began to live under its next
+date, and the proceeding spread across the life it claimed merely to examine.
+
 ### The file I had to reconstruct
 
 Evidence requests were made, rejected, repeated or reframed. Partial recordings
@@ -1522,7 +1539,8 @@ the court referred to expert availability. The exclusion request was moving at
 the same time. The timing became black comedy. The system had needed only eight
 days after the search to turn an examination into a sweeping description of me.
 Years later, the expert was unavailable while that description helped keep the
-proceeding open.
+proceeding open. What had been fast enough to label me became too slow to test
+the label.
 
 <!-- illustration: part_ii_judge -->
 
@@ -2435,8 +2453,8 @@ individual official or any relative.
 ## The 2019–2021 employment thresholds
 
 The long idle periods, suspected circulation of the smaller company's negative
-assessment, work repeatedly routed elsewhere, “One Shop” role, ten subsidiaries,
-different marketing incentives, later senior-office conversations and the
+assessment, work repeatedly routed elsewhere, shared-storefront role, ten
+subsidiaries, different marketing incentives, later senior-office conversations and the
 Founder's interpretation of the COVID-19 dismissal are memoir. The book does not
 claim that office gossip existed as fact, that the programme had no legitimate
 purpose, or that a particular manager or business interest caused the
