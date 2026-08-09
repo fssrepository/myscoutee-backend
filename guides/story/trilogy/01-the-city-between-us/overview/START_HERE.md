@@ -52,8 +52,8 @@ set needed for the current task.
 | 0 | published book, script and prompt closure | no video credits | written package is synchronized |
 | 1 | six-person character benchmark | one image per eligible model | exactly three women and three men; six distinct, appealing identities |
 | 2 | locked character and world sheets | still-image credits only | recurring faces, clothes, props and locations approved |
-| 3 | regenerated CP18 and CP19 | cheapest approved still route | both frames use the same six locked identities |
-| 4 | CP18→CP19 video benchmark | one result per comparable model | blind score recorded; winning model chosen by shot type |
+| 3 | selected benchmark's exact two endpoints | cheapest approved still route | both frames obey the locked cast and location contract |
+| 4 | identical eight-second video benchmark | one result per comparable model | blind score recorded; winning model chosen by shot type |
 | 5 | selective motion production | one result on first attempt | only motion-critical scenes are generated |
 | 6 | picture lock and audio | no speculative video retries | timing, narration and score approved |
 | 7 | final CPU assembly | local processing | desktop and phone QA pass |
@@ -123,10 +123,10 @@ Only after the winning design is chosen should recurring characters receive
 front, three-quarter, profile, full-body, seated and expression references. Do
 not consume trained-character slots on one-scene background figures.
 
-## 7. Regenerate the benchmark endpoints
+## 7. Generate the benchmark endpoints
 
-Rebuild `CP18.png` and `CP19.png` from the same six locked character references.
-The two frames must preserve:
+After the written package closes, select one difficult interval that can remain
+in the final film and create only its exact two endpoints. The frames must preserve:
 
 - the same six faces, ages, body proportions, clothing and personal props;
 - exactly three women and three men;
@@ -140,8 +140,8 @@ replaced.
 
 ## 8. Run one reusable video stress test
 
-Test `CP18 → CP19`, exactly eight seconds, `9:16`, one output per model. Use
-[the locked benchmark prompt](../../../shared/benchmarks/prompts/model-benchmark-cp18-cp19.txt).
+Test the selected endpoint pair for exactly eight seconds, `9:16`, one output
+per model, using the corresponding locked shot prompt.
 
 Keep these conditions identical:
 

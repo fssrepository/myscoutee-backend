@@ -98,8 +98,8 @@ For the best cost/control balance, use the benchmark-first hybrid route:
    [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md).
 3. Run the identical six-person character benchmark first and record every
    result in [the character benchmark log](../../../shared/benchmarks/tracking/CHARACTER_BENCHMARK_LOG.csv).
-4. Lock the six identities, then compare Flow and OpenArt on the regenerated
-   CP18→CP19 stress shot and record every result in
+4. Lock the recurring identities, then compare Flow and OpenArt on the selected
+   difficult final-usable interval and record every result in
    [the model benchmark log](../../../shared/benchmarks/tracking/MODEL_BENCHMARK_LOG.csv).
 5. Build and approve the founder, supporting cast, locations, props and style frames from
    [the creative bible](../film/CREATIVE_BIBLE.md).
@@ -131,7 +131,7 @@ may keep their platform name until they replace the matching Sxx shot.
 | [GOOGLE_FLOW.md](../../../shared/production/workflows/GOOGLE_FLOW.md) | Shared Flow asset, Ingredients, Frames, Veo and Scenebuilder workflow |
 | [AUDIO_EDIT_DELIVERY.md](../film/AUDIO_EDIT_DELIVERY.md) | Current CPU audio, edit, brand, subtitle and delivery specification |
 | [PRODUCTION_CHECKLIST.md](../production/PRODUCTION_CHECKLIST.md) | Asset, continuity, claim, release and mobile-QA checks |
-| [COST_AND_MODEL_DECISION.md](../../../shared/production/planning/COST_AND_MODEL_DECISION.md) | Shared historical cost scenarios, model choices and purchase gates |
+| [COST_AND_MODEL_DECISION.md](../../../shared/production/planning/COST_AND_MODEL_DECISION.md) | Current shared model choice and purchase boundary |
 | [TWO_FILM_CREDIT_SAVER_PLAN.md](../../../shared/production/planning/TWO_FILM_CREDIT_SAVER_PLAN.md) | Shared two-film benchmark, credit, character, audio and CPU-post plan |
 | [STANDALONE_FILM_AND_SEQUEL_BRIDGE.md](../film/STANDALONE_FILM_AND_SEQUEL_BRIDGE.md) | Film 1 boundary and future Film 2 handoff |
 | [STORY_AND_PROMPT_COVERAGE.md](../production/STORY_AND_PROMPT_COVERAGE.md) | Canonical coverage map across book, film, prompts, evidence and future work |
