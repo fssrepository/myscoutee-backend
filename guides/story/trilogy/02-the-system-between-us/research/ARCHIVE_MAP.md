@@ -61,7 +61,10 @@ Before a statement is promoted from memoir to documentary layer:
 - The Constitutional Court's 21 October 2025 letter documents receipt through
   the trial court and the premature-procedure threshold.
 - The April 2026 exclusion filing documents that the challenged judge was the
-  second assigned judge in the Founder's chronology.
+  second assigned judge in the Founder's chronology and preserves the
+  “Mi az, letöltendőt akar kapni?” courtroom wording. Its 8 April annex records
+  the official-audio, accountant, tax-administration and outstanding-evidence
+  requests and the clerk's “expensive” recording response.
 - An authored defence record preserves the swollen-leg image and vulgar
   physical-comedy description.
 - A 14 May 2024 police e-submission preserves the sarcastic written dismissal
@@ -72,8 +75,9 @@ Before a statement is promoted from memoir to documentary layer:
 
 ## Still not isolated
 
-- the separate judge's ruling that the exclusion request was unfounded and the
-  accompanying procedural-fine warning;
+- the separate posted ruling itself, including the exclusion result,
+  procedural-fine warning, conscientious-listening response, position language
+  and Strasbourg reference that the Founder confirms it contained;
 - an official record that the first assigned judge left because of illness;
 - a hearing record or local transcript for the remembered courtroom remarks;
 - the exact submission containing the pasture metaphor;

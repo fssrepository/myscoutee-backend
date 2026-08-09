@@ -1288,14 +1288,23 @@ third judge rejected the request as unfounded and warned of a possible
 procedural fine. Even asking whether the room was impartial returned as another
 possible financial consequence.
 
-The filing had also asked for practical things: an official audio record of the
-hearings, testimony from the accountant and tax administration, and a decision
-on outstanding evidence requests. The letter sent to me by post is not in the
-reviewed package. My memory is simple: it answered the exclusion request with
-rejection and a fine warning, but said nothing about those practical requests.
+The exclusion filing preserved a sentence from the hearing word for word:
+“What—do you want an immediate custodial sentence?” It came during a debate
+over legal classification after years without continuous effective
+representation. I heard not a neutral question but punishment used to close
+the distance between confusion and obedience.
 
-The same letter reminded me that every party had the right to present its
-position and that Strasbourg remained available. In another context, those
+The filing also asked for an official audio record, testimony from the
+accountant and tax administration, and a decision on outstanding evidence.
+When I called, the clerk said official recording was expensive. I also remember
+the startled reaction when the apartment entered the conversation. The home my
+parents had provided had already changed from shelter into financial evidence.
+
+The decision arrived by post. It rejected the exclusion request and carried a
+fine warning, but did not answer those practical requests.
+
+The letter also said that every party had the right to present its position and
+that Strasbourg remained available. In another context, those
 words might have been reassuring. Here they felt like an exit sign placed
 beyond a minefield. I had asked the domestic process to preserve its own sound
 and examine its own missing evidence. The answer pointed toward a distant human
@@ -1308,10 +1317,12 @@ anyone knowingly waited to be sued. I can say how the sentence landed. The
 system seemed prepared to describe the route of appeal more clearly than the
 route of correction.
 
-In the communication around that decision, the challenged judge was described
-as having listened to me conscientiously. I later answered the court in the
-third person with a bitter inversion: yes, she had conscientiously defended the
-system failure.
+The decision relayed the challenged judge's claim that she had listened to me
+conscientiously. It did not resemble the hearing I had experienced: the prison
+remark, the smiles, the fragments lifted from a long defence, the return to my
+apartment, belongings and money while the causal chain remained unheard. I
+later answered the court in the third person with a bitter inversion: yes, she
+had conscientiously defended the system failure.
 
 The next hearing had been expected on 2 July and was moved by roughly two and a
 half months to 16 September. The experts had been invited but did not appear;
@@ -1966,12 +1977,19 @@ private package. The annex asks for an official audio recording of the hearings,
 the accountant and a tax-administration representative to be heard, and the
 outstanding 8 April evidentiary requests to be carried out. It records the
 Founder's account that a clerk had described official recording as expensive.
+The 5 April filing itself quotes the judge's Hungarian sentence, “Mi az,
+letöltendőt akar kapni?” The English dialogue in the chapter is a close
+translation. The clerk's startled reaction when the apartment was mentioned is
+memoir; it is not presented as a quotation from those filings.
+
 The separate decision letter was delivered by post but is not in the reviewed
-package. The book therefore attributes to the Founder the narrower recollection
-that the decision rejected exclusion, warned about a possible fine and did not
-address those additional requests. He also remembers the letter saying that
-each party could present its position and referring to a future Strasbourg
-route.
+package. The Founder confirms that it rejected exclusion, warned about a
+possible fine, relayed the challenged judge's claim that she had listened to
+him conscientiously, said that each party could present its position and
+referred to a future Strasbourg route. He also confirms that it did not answer
+the official-audio, witness and outstanding-evidence requests. These are
+first-person assertions about a received letter, not claims that the absent
+letter was independently re-read for this edition.
 
 Strasbourg means the European Court of Human Rights, an institution of the
 Council of Europe rather than the European Union. Its official guidance treats

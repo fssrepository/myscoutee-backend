@@ -74,9 +74,13 @@ first public edition is `1.0.0`.
   administration, and deciding outstanding evidence requests. Kept the
   Founder's account that the posted decision omitted those requests separate
   because the decision letter is not in the reviewed package.
-- Added the remembered Strasbourg line from that unreviewed decision letter as
-  narrative irony: a distant European safety net was named while concrete
-  domestic trust requests remained unanswered. Corrected the institutional
+- Clarified the Founder's confirmed account of the posted decision: it named
+  Strasbourg and each party's right to state a position, carried the
+  challenged judge's claim of conscientious listening, but left the concrete
+  official-audio, witness and evidence requests unanswered. Restored the filed
+  judge's “immediate custodial sentence” remark, the documented clerk response
+  that official audio was expensive, and kept the apartment reaction at memoir
+  level rather than inventing a quotation. Corrected the institutional
   boundary—the ECtHR belongs to the Council of Europe, not the EU—and added
   official exhaustion/effective-remedy references without giving legal advice.
 - Reframed the work under threat as four connected expressions of one uncaged

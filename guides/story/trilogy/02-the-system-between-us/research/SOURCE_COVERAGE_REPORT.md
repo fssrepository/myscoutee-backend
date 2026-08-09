@@ -144,7 +144,11 @@ records received renewed direct attention:
 - the GDPR/taxation petition, including its password, notification, medical,
   expert and defence chronology;
 - exclusion, court-administration and strategy material used to separate
-  documentary fact from remembered courtroom tone.
+  documentary fact from remembered courtroom tone, including the filed
+  “immediate custodial sentence” quotation and the annex's “expensive” official
+  recording response. The separate posted decision remains unavailable in the
+  local package; its conscientious-listening, fine-warning, position and
+  Strasbourg terms are therefore recorded as the Founder's confirmed account.
 - the exact police-career email, the April 2024 password-reaction submission,
   the authored German-police outreach reference and the bounded clemency/dental
   chronology raised during the 9 August memoir review.

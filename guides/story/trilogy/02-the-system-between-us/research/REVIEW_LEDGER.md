@@ -28,8 +28,8 @@ The ledger controls reading order. File count is not narrative importance.
 | police-career parody and German-police outreach | Was the black humour contemporaneous or retrospective literary invention? | 4 January career email and 17 April authored English submission isolated; exact parody and outreach documented, jurisdiction/endorsement not inferred |
 | Constitutional Court letter | Why was review not reached? | primary letter reviewed |
 | first-judge departure | When and why did assignment change? | source not isolated |
-| exclusion motion against second judge | What was requested and why? | filing reviewed |
-| separate deciding judge's response | What exact finding and fine warning were issued? | source not isolated |
+| exclusion motion against second judge | What was requested and why? | filing and annex reviewed; judge's “letöltendőt” wording and clerk's “expensive” official-audio wording isolated alongside the evidence requests |
+| separate deciding judge's response | What exact finding and fine warning were issued? | source not isolated; conscientious-listening, fine-warning, position and Strasbourg terms recorded as the Founder's confirmed account of the posted letter |
 | April hearing | What exactly was said about defamation, accountant, figures and finance? | memoir/secondary authored account; transcript pending |
 | remembered courtroom smile and phrases | How did fear, self-defence and short-lived work become part of the hearing atmosphere? | memoir layer recorded; no transcript isolated; never promote facial interpretation to a finding |
 | intimate-history / source-of-money exchange | How did the court move from dismissing the Part I history to examining the savings it produced? | memoir layer recorded; hearing source not isolated |
