@@ -3,10 +3,10 @@
 Status: **synchronized to the 9 August book revision and prompt package; written
 lock complete. Picture lock follows approval of the exact endpoint frames.**
 
-The film uses a deterministic eight-second opening card, **38 generated
-eight-second intervals** (`05:04`) and a deterministic eight-second closing
-card. Final runtime is exactly `05:20`. The cards create real breathing space
-without consuming image- or video-generation credit.
+The film uses a generated eight-second opening transition, **38 generated
+eight-second story intervals** (`05:04`) and a generated eight-second closing
+transition. Final runtime is exactly `05:20`. The opening and closing create
+real breathing space; exact logo and editable type are stabilized in post.
 
 Voice lock: English narration in the same approved ElevenLabs **Jon — Warm &
 Grounded Storyteller** voice as Part I. Preserve the exact voice identifier,
@@ -188,9 +188,9 @@ carry what the words do not.
 
 > MyScoutee. Test the system between us.
 
-Hold after the spoken invitation. Show only `BOOK AVAILABLE`, then `TO BE
-CONTINUED`, without repeating the film or book title and without a rushed final
-cut.
+Hold after the spoken invitation. Show `TEST THE SYSTEM BETWEEN US`, then `TO
+BE CONTINUED`, without repeating the film/book title or `BOOK AVAILABLE`, and
+without a rushed final cut.
 
 ## Editable on-screen text
 
@@ -222,7 +222,7 @@ All typography is post-production text; never ask a video model to render it.
 | 04:48–04:56 | SEVEN · THEN EIGHT · NO QUORUM |
 | 04:56–05:04 | 30 APRIL · REFUSAL / 18 JULY · SIGNATURE |
 | 05:04–05:12 | THE LINE REMAINS OPEN |
-| 05:12–05:20 | BOOK AVAILABLE / TO BE CONTINUED |
+| 05:12–05:20 | TEST THE SYSTEM BETWEEN US / TO BE CONTINUED |
 
 ## Clean synopsis
 
@@ -241,13 +241,12 @@ ending.
 
 ## Runtime and credit contract
 
-- Deterministic opening card: `8 s`.
-- Generated motion: `38 × 8 s = 304 s`.
-- Deterministic end card: `8 s`.
+- Generated opening transition: `8 s`.
+- Generated story motion: `38 × 8 s = 304 s`.
+- Generated closing transition: `8 s`.
 - Final runtime: `320 s = 05:20`.
-- Flow production cost at the observed Veo 3.1 Lite rate: `380 credits` before
+- Flow production cost at the observed Veo 3.1 Lite rate: `400 credits` before
   retries.
-- Part I uses `22 × 8 s` plus two deterministic eight-second cards: `03:12`,
-  costing `220 credits` before retries.
-- Two-film base generation: `600 credits`; from the observed `970` balance,
-  `370` remain for controlled retakes.
+- Part I uses `24 × 8 s`: `03:12`, costing `240 credits` before retries.
+- Two-film base generation: `640 credits`; from the observed `970` balance,
+  `330` remain for controlled retakes.

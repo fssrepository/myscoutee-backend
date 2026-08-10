@@ -1,9 +1,13 @@
-POST P00 — TRUE-STORY TITLE CARD — 8 SECONDS
-Do not generate this card with a video model. Use a restrained deep-navy and
-cognac-amber plate with editable typography: `MYSCOUTEE · THE STORY`, `PART I ·
-THE CITY BETWEEN US`, `BASED ON A TRUE STORY` and `LEAVING HOME · MEETING THE
-WORLD · RETURNING TO CONNECT PEOPLE`. Jon reads the one-sentence premise with a
-deliberate pause. No generated logo or text.
+OPENING P00 — P00.png TO CP00.png — TRUE-STORY THRESHOLD — 8 SECONDS
+Begin exactly on P00.png and end exactly on CP00.png. With no black title panel,
+the exact M/heart facets light softly and its heart gives one restrained breath;
+the star awakens routes across the recognizable globe. The editable title and
+`BOOK AVAILABLE` fade; the exact mark holds for one beat; its star becomes the
+centre of the route globe; the routes contract into CP00's real soil furrow.
+Use one slow forward movement and a continuous
+deep-blue-to-dawn transition. Jon reads the one-sentence premise with a
+deliberate pause. Generate no new logo or text. Composite the exact repository
+mark and editable English typography over the motion plate in post.
 
 SHOT S01 — CP00.png TO CP01.png — RURAL ROOTS, COMPLETED STUDIES AND BEAUTIFUL BUDAPEST — 8 SECONDS
 Begin exactly on CP00.png and end exactly on CP01.png.
@@ -358,12 +362,12 @@ and a proposed virtual enterprise, not anonymous package distribution. No claim
 of current deployment, proven efficiency, revenue, automatic trust or central
 merchant; no readable terminal, generated logo or generated text.
 
-POST E01 — CLEAN END PLATE — 8 SECONDS
-Deep navy clean field, subtle tactile paper texture, one faint original coral
-network line settling to still, no camera move and center-safe negative space.
-No generated text, logo, heart, icon or object. The original unmodified
-repository `heart.png`, separate MyScoutee text, tagline and CTA are added in post.
-Hold the exact repository mark and editable post-only lines `BOOK AVAILABLE`
-and `TO BE CONTINUED` for the full eight seconds. Do not repeat the film or book
-title. This plate is built deterministically; do not spend image- or
-video-model credit on it.
+FLOW E01 — CP22.png TO E01.png — CLOSING BREATH — 8 SECONDS
+Begin exactly on CP22.png. Give the operator one equal-agency closing action,
+then pull back as the human rooms settle into deep navy and their network paths
+converge into the exact supplied M/heart mark. Fade in the exact `yScoutee` name
+after the mark settles. Use E01.png as the exact last frame.
+Hold the exact repository mark, editable invitation `TEST IT WITH ME IN REAL
+COMMUNITIES` and `TO BE CONTINUED` for the full eight seconds. Do not repeat the
+film or book title or `BOOK AVAILABLE`. Stabilize the exact repository logo and
+editable lettering over the generated motion in post.

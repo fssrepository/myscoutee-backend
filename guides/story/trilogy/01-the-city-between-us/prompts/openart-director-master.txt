@@ -1,6 +1,6 @@
 Create the planning storyboard for a `03:12` cinematic animated founder film
-titled “The City Between Us” for MyScoutee: one deterministic eight-second
-opening card, twenty-two silent eight-second motion clips and one deterministic
+titled “The City Between Us” for MyScoutee: one silent generated eight-second
+P00-to-CP00 opening transition, twenty-two silent eight-second motion clips and one deterministic
 eight-second closing card. Return scene
 cards and low-resolution still plans only. Do not generate motion or spend video
 credits until every character, place and checkpoint is approved.
@@ -35,7 +35,8 @@ without anger reaching his voice. When a later scene requires an unsoftened
 response, its force comes from rarity and self-possession, not aggression.
 
 LOCKED STORY AND TIMING
-- P00 00:00–00:08: deterministic true-story title and premise card; no model generation.
+- P00 00:00–00:08: route-globe-to-soil background transition using exact P00
+  and CP00 endpoints; composite the exact mark and editable title in post.
 - S01 00:08–00:16: countryside small-producer roots become a route to beautiful
   Budapest after economics, programming and mathematics studies completed in
   2004. A delayed dissertation makes 2005 the earliest possible diploma year,
@@ -182,15 +183,16 @@ LOCKED STORY AND TIMING
   language and boundaries. A country change may restart the same method, but
   profiles, chats, contacts and private-rate history do not automatically move
   between independent operators.
-- E01 03:04–03:12: deterministic clean deep-navy plate. The same original icon,
-  separate editable MyScoutee name, `BOOK AVAILABLE` and `TO BE CONTINUED` are
-  built in post without generation credit or a repeated title.
+- E01 03:04–03:12: generated CP22-to-E01 closing breath. The same original icon,
+  separate editable MyScoutee name, invitation and `TO BE CONTINUED` are
+  stabilized in post without a repeated title or `BOOK AVAILABLE`.
 
 CLAIM AND OUTPUT LOCK
 This is a product-story plan, not evidence of traction, revenue, safety,
 successful matching, deployed operators or solved loneliness. Preserve the
 supplied English narration without rewriting it. Create P00, exactly 22 motion
 cards named S01–S22 and E01 with timing, cast references, first/last-frame intent,
-camera, light, sound role and split risk. Keep all generated plates textless.
+camera, light, sound role and split risk. Apart from the supplied P00 reference,
+keep all generated plates textless and never invent replacement typography.
 Film 1 is complete and contains no hint of the Founder's later legal, tax or
 court matter; Film 2 is outside this generation plan.

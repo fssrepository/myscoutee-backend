@@ -1,6 +1,6 @@
 Plan the locked `03:12` cinematic animated film “The City Between Us” as one
-deterministic eight-second opening card, twenty-two silent eight-second motion
-clips and one deterministic eight-second closing card. Do not rewrite the
+silent generated eight-second P00-to-CP00 opening transition, twenty-two silent
+eight-second story clips and one silent generated CP22-to-E01 closing transition. Do not rewrite the
 supplied narration, timing, personal facts or product claims. Return a table
 only; do not generate until approved.
 
@@ -162,8 +162,10 @@ certified safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,
 transport, resources, language and boundaries. A country change may restart the
 same method, but never show profiles, chats, contacts or private-rate history
-automatically moving between independent operators. E01 is a clean deep-navy
-brand plate assembled in post. P00 and E01 consume no generation credit.
+automatically moving between independent operators. E01 is the exact deep-navy
+brand endpoint. P00-to-CP00 and CP22-to-E01 each consume one Veo Lite
+generation. Stabilize the exact repository mark and editable typography over
+both motion plates in post.
 
 MODEL AND CREDIT DISCIPLINE
 Recommend the currently visible Flow image/video model and mode per shot. Use

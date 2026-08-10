@@ -1,13 +1,12 @@
 # Part II continuous-video checkpoint chain
 
-The 05:20 film uses one continuous production chain. `CP00–CP38` are the 39
-motion endpoints for thirty-eight eight-second Veo 3.1 Lite intervals. `P00`
-and `E01` are deterministic post-production plates and consume no video-model
-credit.
+The 05:20 film uses one continuous production chain. `P00`, `CP00–CP38` and
+`E01` are the 41 motion endpoints for forty eight-second Veo 3.1 Lite
+intervals. Exact logo and editable typography are stabilized in post.
 
 ```text
-P00    CP00 -> CP01 -> CP02 -> ... -> CP38    E01
-post          thirty-eight intervals          post
+P00 -> CP00 -> CP01 -> CP02 -> ... -> CP38 -> E01
+opening       thirty-eight story intervals      closing breath
 ```
 
 Rules:
@@ -19,7 +18,8 @@ Rules:
 - Generate no midpoint stills, slideshow or four-second split frames.
 - All checkpoints are 720×1280 PNG files.
 - `CP00` is a lossless copy of Part I `CP22`.
-- `CP38` is the last generated-motion endpoint; `E01` is assembled in post.
+- `P00→CP00` is the generated title transition and `CP38→E01` is the generated
+  reflective closing transition.
 
 Current generation progress:
 

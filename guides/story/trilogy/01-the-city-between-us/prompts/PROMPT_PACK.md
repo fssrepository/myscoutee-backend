@@ -37,15 +37,18 @@ under the assembled film.
 
 ## Opening and continuation typography
 
-Do not ask a video model to draw any public title. P00 is a separate
-deterministic eight-second card carrying `MYSCOUTEE · THE STORY`, `PART I · THE
-CITY BETWEEN US`, `BASED ON A TRUE STORY` and the short premise. S01 begins the
-lived motion at `00:08` without title text.
+P00-to-CP00 is an eight-second generated background transition: the route globe
+contracts into the first soil furrow. Do not ask the video model to redraw any
+public title. Composite the exact repository mark and editable `MYSCOUTEE · THE
+STORY`, `PART I · THE CITY BETWEEN US`, `BASED ON A TRUE STORY` and `BOOK
+AVAILABLE` typography over that plate in post, then fade it before CP00. S01
+begins at `00:08` without title text.
 
-E01 is deterministic post-production, not an AI generation. Hold the exact
-repository mark, `BOOK AVAILABLE` and `TO BE CONTINUED` for the full
-`03:04–03:12` window without repeating the film or book title. Use editable
-text; never generate the card inside a video model.
+CP22-to-E01 is an eight-second generated closing transition. The operator first
+completes her own local connection with equal agency; the living network then
+resolves into the exact repository mark, the invitation `TEST IT WITH ME IN
+REAL COMMUNITIES` and `TO BE CONTINUED`. Stabilize the exact mark and editable
+type in post. Do not repeat the film or book title or `BOOK AVAILABLE`.
 
 ## Prompt tokens
 

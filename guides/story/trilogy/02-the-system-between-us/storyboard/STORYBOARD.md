@@ -4,9 +4,8 @@ Status: **synchronized written baseline; no checkpoint in this chain is approved
 for production yet**.
 
 Runtime: exactly **05:20.000** at **24 fps**, portrait **720×1280**. The motion
-chain contains thirty-eight eight-second intervals, `CP00→CP38`, framed by two
-deterministic eight-second post-production cards. Narration and editable titles
-come from [SCRIPT.md](../film/SCRIPT.md).
+chain contains forty eight-second intervals, `P00→CP00→…→CP38→E01`.
+Narration and stabilized editable titles come from [SCRIPT.md](../film/SCRIPT.md).
 
 ## Global picture contract
 
@@ -25,7 +24,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ## Motion chain
 
-### P00 — True-story title card · 00:00–00:08 · post only
+### P00 — True-story title transition · 00:00–00:08 · P00→CP00
 
 - **Picture:** deep navy-to-cognac field, one restrained ruled line and one
   small human-network constellation; exact repository mark and typography are
@@ -339,12 +338,13 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP38:** Founder beside the open MyScoutee line, neither defeated nor
   triumphant, centre-safe for the final post-produced statement.
 
-## E01 — Book and continuation card · 05:12–05:20 · post only
+## E01 — Invitation and continuation · 05:12–05:20 · CP38→E01
 
-- deterministic clean plate derived from CP38, held for a full eight seconds;
-- exact repository MyScoutee mark, never an AI-generated logo;
-- editable text: `BOOK AVAILABLE`, then `TO BE CONTINUED`; do not repeat the
-  film or book title;
+- generated transition from CP38 into the exact E01 endpoint, with the final
+  seconds held as a reflective breath;
+- exact repository MyScoutee mark and editable type stabilized in post;
+- editable text: `TEST THE SYSTEM BETWEEN US`, then `TO BE CONTINUED`; do not
+  repeat the film or book title or `BOOK AVAILABLE`;
 - Jon: `MyScoutee. Test the system between us.`;
 - score ends on an unresolved star interval, not a triumphant cadence.
 

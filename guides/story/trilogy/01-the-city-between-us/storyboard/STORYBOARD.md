@@ -11,15 +11,17 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 
 ## Act I — From the land to the city, seeking a life
 
-### P00 — True-story title card · 00:00–00:08 · post only
+### P00 — True-story threshold · 00:00–00:08 · generated background plus exact post typography
 
-- **Picture:** deep navy graphic field derived from the book cover, a quiet
-  rural line becoming a city route and a small guiding star. Use the exact
-  repository mark and editable typography in post.
+- **Picture:** the deep-navy route globe converges through one guiding star into
+  the real soil furrow of CP00. Use `P00.png` and `CP00.png` as the exact Veo
+  endpoints. The exact repository mark and editable typography are composited
+  over the generated background in post.
 - **Text:** title, part title, `BASED ON A TRUE STORY` and the one-sentence
   premise from the script.
-- **Motion:** near-still parallax and one slow route movement. Leave time after
-  the true-story statement before the first scene begins.
+- **Motion:** route lights wake behind the title, the typography fades, the
+  mark's star holds for one beat, and the globe contracts continuously into the
+  CP00 furrow. Leave time after the true-story statement before the lived image.
 
 ### S01 — Countryside roots, completed studies and Budapest · 00:08–00:16 · 8 s
 
@@ -43,12 +45,12 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 - **Sound/VO:** soil, wooden crate, distant farm tool and train seam; “From
   small-farmer roots through Budapest and London, I searched for a more human
   way to meet.”
-- **Opening typography in post:** over the approved S01 plate, hold
+- **Opening typography in post:** over the approved P00 motion plate, hold
   `MYSCOUTEE · THE STORY`, `PART I · THE CITY BETWEEN US` and `BASED ON A TRUE
-  STORY`, then fade them before S02. Use the unmodified repository `heart.png`
+  STORY`, with `BOOK AVAILABLE` on the lower soil band, then fade them before
+  S02. Use the unmodified repository `heart.png`
   with separate editable `MyScoutee` text; opacity fade only, no recolor,
-  redraw, crop, glow or AI animation. The VO is the short opening synopsis; do
-  not generate a separate title scene.
+  redraw, crop, glow or AI animation. The VO is the short opening synopsis.
 - **Transition/generation:** field row becomes rail, then the Danube tram line in
   S02. Use separate still plates and CPU match movement if one clip cannot hold
   the transformation cleanly.
@@ -574,25 +576,29 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
   deployments, proven efficiency, revenue or automatic trust; all readable
   status text is added in post.
 
-### E01 — Book, wordmark and continuation · 03:04–03:12 · post only
+### E01 — Wordmark, invitation and continuation · 03:04–03:12 · CP22→E01
 
 - **Picture:** Deep navy clean field. The original unmodified repository
   `heart.png` appears centered, with **MyScoutee** as separate editable text
-  below it, followed only by **BOOK AVAILABLE** and **TO BE CONTINUED.** Do not
-  repeat the film or book title. Keep the full eight-second card calm and
-  mobile-readable.
-- **Camera/motion:** no generated camera; the same network paths settle behind
-  the original icon, briefly allowing the helmet/shelter, star/direction and
-  heart/connection reading, then the logo scales 2% without distortion.
+  beside it, followed only by **TEST IT WITH ME IN REAL COMMUNITIES** and **TO
+  BE CONTINUED.** Do not repeat the film or book title or **BOOK AVAILABLE**.
+  Keep the full eight-second card calm and mobile-readable.
+- **Camera/motion:** during the generated lead-in, the local operator completes
+  the connection to her own local system while the Founder releases the device;
+  one restrained mutual look gives her equal agency. The rooms then recede as
+  the same network paths settle behind the original icon, briefly allowing the
+  helmet/shelter, star/direction and heart/connection reading. The exact logo is
+  stabilized in post and scales by no more than 2% without distortion.
 - **Light/color:** deep navy and warm ivory around the logo's original colors;
   no recolored mark or fake interface.
 - **Sound/VO:** resolved two-note motif; “MyScoutee. Test it with me in real
   communities.”
-- **Continuation:** keep the invitation through `03:10.5`, then replace only
-  `BOOK AVAILABLE` with `TO BE CONTINUED` for the final 1.5 seconds. The logo
-  remains fixed and the continuation line is silent.
-- **Build:** entirely in the final editor from repository brand assets; never
-  accept AI-generated spelling or a different logo.
+- **Continuation:** keep the invitation visible while `TO BE CONTINUED` settles
+  beneath it for the final 1.5 seconds. The logo remains fixed and the
+  continuation line is silent.
+- **Build:** generate the CP22-to-E01 transition in Flow, then stabilize the
+  exact repository mark and editable type in the final editor; never accept
+  AI-generated spelling or a different logo.
 
 ## Continuity checkpoints
 

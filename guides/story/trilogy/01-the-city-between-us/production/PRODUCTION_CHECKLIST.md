@@ -132,8 +132,10 @@ continuity and technical faults before an expensive final render.
 - [ ] S22 uses the unmodified mark at the shared MyScoutee Network core; the
   helmet–star–heart reading is not presented as certification.
 - [ ] There is no permanent watermark through the emotional middle.
-- [ ] E01 contains the original mark, separate `MyScoutee`, `BOOK AVAILABLE`
-  and `TO BE CONTINUED`, with no repeated title.
+- [ ] P00 contains the original mark, separate `MyScoutee`, readable title and
+  `BOOK AVAILABLE`, with no opaque black title panel.
+- [ ] E01 contains the original mark, separate `MyScoutee`, the invitation and
+  `TO BE CONTINUED`, with no repeated title or `BOOK AVAILABLE`.
 - [ ] Generators supplied a clean background plate for the final brand card.
 
 ## E. Character and visual continuity

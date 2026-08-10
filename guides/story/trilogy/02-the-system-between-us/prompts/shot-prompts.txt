@@ -1,9 +1,9 @@
-POST P00 — TRUE-STORY TITLE CARD
-Do not generate this card with a video model. Build one clean deterministic
-eight-second deep-blue/ivory plate in post using the exact repository MyScoutee
-mark and editable typography: `MYSCOUTEE · THE STORY`, `PART II · THE SYSTEM
-BETWEEN US`, `BASED ON A TRUE STORY`, and the short premise from SCRIPT.md.
-Leave centre-safe breathing space and no AI-rendered words.
+FLOW P00 — P00.png TO CP00.png — TRUE-STORY TITLE TRANSITION
+Use P00.png and CP00.png as exact endpoints for one eight-second Veo 3.1 Lite
+transition. Keep the exact repository MyScoutee mark and editable typography:
+`THE STORY`, `PART II · THE SYSTEM BETWEEN US`, `BASED ON A TRUE STORY` and
+`BOOK AVAILABLE`. Fade them cleanly as the title world opens into CP00.
+Stabilize exact words and logo in post.
 
 SHOT S01 — CP00.png TO CP01.png — THE LINE CHANGES MEANING
 Begin exactly on CP00.png, the lossless Part I handoff with the Founder, local
@@ -126,5 +126,9 @@ Begin exactly on CP36.png. Keep a clemency refusal and revised papers on the low
 SHOT S38 — CP37.png TO CP38.png — THE OPEN LINE
 Begin exactly on CP37.png. Gather three years of calendar pages around one short disputed line, showing the proceeding occupying daily life before the geometry dissolves back into a human network. Keep the next hearing as a small open marker rather than a verdict. End exactly on CP38.png with the Founder beside the open MyScoutee line, neither defeated nor triumphant, centre-safe for final post text.
 
-POST E01 — CP38 CLEAN PLATE — BOOK AND CONTINUATION CARD
-Do not generate this card with a video model. Hold a clean deterministic plate derived from CP38 for eight seconds. Add the exact repository MyScoutee mark and only the editable post text `BOOK AVAILABLE`, then `TO BE CONTINUED`. Do not repeat the film or book title.
+FLOW E01 — CP38.png TO E01.png — REFLECTIVE CONTINUATION
+Use CP38.png and E01.png as exact endpoints for one eight-second Veo 3.1 Lite
+transition. Let the open line resolve into the exact mark, then fade in
+`yScoutee`, `TEST THE SYSTEM BETWEEN US` and `TO BE CONTINUED`. Keep the last
+seconds nearly still. Do not repeat the film/book title or `BOOK AVAILABLE`.
+Stabilize exact words and logo in post.

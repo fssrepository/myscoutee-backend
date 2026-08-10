@@ -50,11 +50,10 @@ licensed later, belongs in post.
   `S38 = CP37→CP38`.
 - Each clip begins and ends on the supplied frames without redesign, crop,
   reframing or recolouring.
-- `P00` is a deterministic eight-second true-story title card; `E01` is a
-  deterministic eight-second post card derived from `CP38`. Both use exact
-  typography and the repository logo in post and consume no generation credit.
-- Title, `BASED ON A TRUE STORY`, dates, labels, `BOOK AVAILABLE` and `TO BE
-  CONTINUED` are editable post typography only.
+- `P00→CP00` is the generated eight-second true-story opening transition;
+  `CP38→E01` is the generated eight-second reflective closing transition.
+- Exact title, mark and lettering are stabilized in post. `BOOK AVAILABLE`
+  appears only on P00; E01 carries the invitation and `TO BE CONTINUED`.
 - If a model cannot accept both endpoints, label it unsuitable for the chain.
 
 ## Audio contract

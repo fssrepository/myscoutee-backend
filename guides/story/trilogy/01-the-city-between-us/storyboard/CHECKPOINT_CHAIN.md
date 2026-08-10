@@ -1,14 +1,13 @@
 # MyScoutee continuous-video checkpoint chain
 
-The 03:12 film is planned as one continuous journey. CP00–CP22 are the 23
-motion-endpoint images, not isolated scenes: every interior checkpoint is the
-**last reference frame of one motion interval** and the **first reference frame
-of the next**. E01 is a deterministic post-production brand plate, never a
-video-model endpoint.
+The 03:12 film is planned as one continuous journey. P00, CP00–CP22 and E01 are
+the 25 motion-endpoint images for 24 eight-second intervals, not isolated
+scenes: every interior checkpoint is the **last reference frame of one motion
+interval** and the **first reference frame of the next**.
 
 ```text
-CP00 -> CP01 -> CP02 -> ... -> CP22    E01
-  interval 01    interval 02          end plate
+P00 -> CP00 -> CP01 -> CP02 -> ... -> CP22 -> E01
+ opening     interval 01    interval 02         closing breath
 ```
 
 This makes later revision local. If one interior checkpoint changes, normally
@@ -20,19 +19,21 @@ Rules:
 - Keep checkpoint filenames stable when a visual is regenerated.
 - Generate motion between adjacent pairs, for example `CP07 -> CP08`.
 - Preserve identity, notebook, colour, light and camera direction at boundaries.
-- CP00 is the opening frame; CP22 is the final generated-motion endpoint.
-- E01 is the deterministic brand end frame assembled in post and consumes no
-  image- or video-generation credit.
+- P00 is the opening frame, CP00 closes the title-to-soil transition, CP22 is
+  the final story endpoint and E01 closes the generated reflective transition.
+- Stabilize the exact repository logo and editable English type over the P00
+  and E01 motion where necessary; do not accept model-distorted lettering.
 - The present Founder and cast are fictional planning placeholders.
 - Do not build a checkpoint inspection export, slideshow or animatic. Adjacent
   checkpoints go directly into eight-second motion generation as exact first
   and last frames. Do not split an interval into four-second halves or invent
-  intermediate stills. P00 is a separate deterministic eight-second opening
-  card; S01–S22 form the 02:56 motion chain; E01 is the separate deterministic
-  eight-second end plate. The finished film is exactly 03:12.000.
+  intermediate stills. P00-to-CP00 is the generated eight-second opening
+  transition; S01–S22 form the 02:56 story chain; CP22-to-E01 supplies the
+  generated eight-second closing breath. The finished film is exactly 03:12.000.
 
 | ID | Story boundary | Current asset |
 | --- | --- | --- |
+| P00 | MyScoutee true-story route globe and exact opening identity | `assets/frames/P00.png` |
 | CP00 | Rural small-producer roots | `assets/frames/CP00.png` |
 | CP01 | Degree, multinational work and beautiful Budapest | `assets/frames/CP01.png` |
 | CP02 | Workers' hostel and parent-assisted flat key | `assets/frames/CP02.png` |
@@ -56,7 +57,7 @@ Rules:
 | CP20 | Four event-resource buckets and a first shared event turn strangers into contacts | `assets/frames/CP20.png` |
 | CP21 | Later invitations, an organically wider adult community and editable relationship lifecycle | `assets/frames/CP21.png` |
 | CP22 | 2016 idea, AI-assisted build, shared core, locally shaped pilots and opt-out | `assets/frames/CP22.png` |
-| E01 | Deterministic MyScoutee post-production end frame; not a motion endpoint | assembled from the repository logo and editable type |
+| E01 | Exact MyScoutee invitation and continuation endpoint | `assets/frames/E01.png` |
 
 The superseded three-second review, four-second-split endpoint review and their
 pseudo-motion frames are not production masters and must not be rebuilt. Replace

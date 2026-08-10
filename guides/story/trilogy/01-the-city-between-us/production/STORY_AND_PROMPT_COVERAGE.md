@@ -121,8 +121,9 @@ uncertainty and public boundaries.
   Adjacent exact 9:16 checkpoints go directly into the later eight-second motion
   clips as first and last frames. No interval is split into four-second halves
   and no intermediate image is invented. The 22 motion intervals run 02:56;
-  P00 supplies the deterministic eight-second opening card and E01 supplies
-  the deterministic eight-second end plate; the film is exactly 03:12.
+  P00-to-CP00 supplies the generated eight-second opening transition and
+  CP22-to-E01 supplies the generated eight-second closing breath. Exact
+  typography is stabilized in post; the film is exactly 03:12.
 - Final audio is separately timed voice-over, one continuous score for the whole
   film and separate synchronized ambience/foley. Clip-generated background music
   is discarded so music style does not restart at every cut. CPU FFmpeg handles

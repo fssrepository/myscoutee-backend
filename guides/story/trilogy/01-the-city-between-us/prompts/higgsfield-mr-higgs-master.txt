@@ -1,6 +1,7 @@
 Act as cinematography co-director for the locked film “The City Between Us,”
-runtime 03:12 with 22 generated motion intervals between two deterministic
-eight-second post cards, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
+runtime 03:12 with one generated P00-to-CP00 opening transition, 22 generated
+story intervals and one generated CP22-to-E01 closing transition, 9:16 portrait,
+720x1280 delivery, 24 fps language. Return a
 setup table only. Do not generate or rewrite the supplied narration and timings.
 
 Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
@@ -137,8 +138,8 @@ safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,
 transport, resources, language and boundaries. A country change may restart the
 same method, but never show profiles, chats, contacts or private-rate history
-automatically moving between independent operators. E01 is built entirely in CPU post from the real
-brand asset and editable text.
+automatically moving between independent operators. Stabilize the exact real
+brand asset and editable text over the generated E01 motion in post.
 
 CINEMATOGRAPHY AND MODEL DISCIPLINE
 S01–S09 use restrained 28–65 mm movement and foreground/shape transitions. S07
