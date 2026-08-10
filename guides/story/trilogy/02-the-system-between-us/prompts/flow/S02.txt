@@ -1,0 +1,20 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP01.png as the exact first frame and CP02.png as the exact last frame.
+
+Begin exactly in the modest Budapest flat shown in CP01.png. The mature Founder sits quietly at the dark wooden desk, holding his cognac notebook beside the completely blank ivory form. Start with one restrained 50 mm camera push toward the single coral ruled line crossing the paper.
+
+The ruled line extends naturally from the blank form into the open cognac notebook and becomes one continuous lived route. As the notebook opens beneath the Founder's hands, warm memory reflections emerge only through existing physical surfaces: rain-streaked window glass, polished dark wood and the notebook pages. Do not use floating screens or a rapid postcard montage.
+
+Reveal four connected fragments of the Founder's earlier life: a rainy London shared-home window; his own reflection travelling alone through the night; a mature unfamiliar stranger offering practical help with a ticket or route; and the quiet Budapest home with its key and familiar lamp. These are reflections of the same life at different times, not simultaneous duplicate people and not institutional categories.
+
+Keep the present-day Founder physically stable at the desk while the reflections move gently around him. The memories retain warmth and human texture: travel, work, help from strangers, London rain and returning home. They never become tourist landmarks, evidence labels or a judgement about the person.
+
+End exactly on CP02.png: the present-day Founder sits in the foreground with both hands on the open cognac notebook; the blank ivory form remains partly visible below it; warm reflections of London rain, night travel, practical human help and the Budapest home surround him without covering his face.
+
+CONTINUITY IS REQUIRED:
+Preserve the Founder's exact mature face, facial structure, hairline, navy field coat, charcoal knit clothing, muted rust scarf and cognac notebook. Any younger memory reflection must remain recognisably the same person without changing his facial proportions. Preserve the exact flat, desk, lamp, window, painterly cinematic 2.5D style, tactile brush texture, deep navy shadows and warm amber highlights.
+
+No hard cut, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, readable text, date, number, logo, seal, floating interface, magical glow, unrelated character, face morphing or malformed hands. Nobody speaks or visibly articulates words.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

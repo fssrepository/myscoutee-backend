@@ -28,7 +28,12 @@ Current generation progress:
 | CP00 | Lossless Part I handoff | `assets/frames/CP00.png` | canonical |
 | CP01 | The network line becomes the ruled line of a blank form | `assets/frames/CP01.png` | generated |
 | CP02 | The whole life before the institutional file | `assets/frames/CP02.png` | generated |
-| CP03–CP38 | Remaining chronological Part II boundaries | `assets/frames/` | pending |
+| CP03–CP15 | Work, forced contracting, tax chaos and the surviving line | `assets/frames/CP03.png`–`CP15.png` | generated |
+| CP16–CP27 | Surgery, investigation, expert report, hearing and delay | `assets/frames/CP16.png`–`CP27.png` | generated |
+| CP28–CP38 | AI-assisted defence, continued work, public context and open ending | `assets/frames/CP28.png`–`CP38.png` | generated |
+
+Generation verification completed on 10 August 2026: all 39 canonical files
+exist, all are distinct, and every frame is a 720×1280 PNG.
 
 The older files under `assets/checkpoints/` are superseded composition studies,
 not inputs to the new production chain.
