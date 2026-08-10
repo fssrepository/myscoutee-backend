@@ -37,10 +37,12 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S01 — The line changes meaning · 00:08–00:16 · CP00→CP01
 
-- **CP00:** lossless Part I handoff: six people linked by the open MyScoutee
-  network line in the established navy-and-amber world.
-- **Motion:** the people recede without vanishing; the same line straightens
-  into the ruled line of an ivory form on the Founder's desk.
+- **CP00:** lossless Part I handoff: the Founder, local operator and distinct
+  independently hosted community workspaces linked by the open coral MyScoutee
+  line in the established navy-and-amber world.
+- **Motion:** the operator and community workspaces recede into dim reflections
+  without violent disappearance; the same line straightens into the ruled line
+  of an ivory form on the Founder's desk.
 - **CP01:** Founder beside the cognac notebook and clean form, large centre-safe
   negative space for title, part title and `BASED ON A TRUE STORY` in post.
 
