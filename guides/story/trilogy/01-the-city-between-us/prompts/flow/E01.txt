@@ -1,30 +1,24 @@
-Create one continuous silent 8-second, 9:16 Frames-to-Video ending clip using Veo 3.1 Lite.
+Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M1_CP22.png as the exact first frame and M1_E01.png as the exact last frame.
 
-Reproduce the visual sequence and restrained cinematic rhythm of the existing ending animation.
+Preserve the complete first-frame composition throughout the clip: the exact mature silver-haired woman with the rust scarf, the exact male system administrator, their desk, laptop and local server, the three existing background scene windows, the one empty central circle and exactly three existing coral branches connecting the circle to the three scene windows.
 
-Preserve the exact mature silver-haired woman with the rust scarf and the exact male system administrator from M1_CP22.png. Preserve their faces, ages, clothing, body proportions and positions until the scene darkens. They remain the same two people throughout and nobody visibly speaks.
+The same two foreground people must remain visible in the same positions and with the same identities until the final title card appears. Their faces, ages, hair, clothing and body proportions never change. They make only restrained natural hand and head movements and never visibly speak.
 
-Preserve the existing composition: the people at the workstation, the laptop and server, the empty central outlined circle, the existing connecting lines and the existing illuminated scene panels in the background.
+Seconds 0–2: begin exactly on M1_CP22.png. The central circle remains empty. The two people continue their restrained work. The three background scenes remain stable with only subtle natural movement.
 
-Seconds 0–1: begin exactly on M1_CP22.png. The central circle is completely empty. The woman and system administrator make only restrained natural working movements. All background scene panels remain in their existing positions.
+Seconds 2–3: one clean warm-gold heart outline draws itself inside the existing central circle. The heart remains completely inside the circle. Nothing else changes.
 
-Seconds 1–2: a thin warm-gold line begins tracing the outline of one heart inside the existing central circle. The line draws the heart progressively and remains completely inside the circle.
+Seconds 3–4: the heart performs exactly one strong, simple heartbeat by contracting once and returning to its original size. At that exact beat, one restrained warm-gold pulse leaves the circle and travels only along the three existing coral branches toward the three existing scene windows. The three scene windows brighten gently when the pulse reaches them.
 
-Seconds 2–3: complete the warm-gold heart outline inside the circle. The completed heart briefly holds while the people and background remain stable.
+Seconds 4–5: the pulse settles. The heart fades away, leaving the central circle empty again. The three branches, three scene windows and two foreground people remain exactly where they were.
 
-Seconds 3–4: the heart performs one strong, clearly visible heartbeat. A sharp but elegant warm-gold pulse crosses through the heart, briefly expanding its light. This is a single heartbeat, not a medical interface and not a new symbol.
+Seconds 5–7: the complete living scene darkens uniformly while preserving the same people, same three scenes, same circle and same three branches. Bring in the complete supplied M1_E01.png as one flat, perfectly registered image. Do not construct or regenerate its individual logo or text elements.
 
-Seconds 4–5: the same pulse leaves the heart and travels only along the connecting lines already present in the composition. It illuminates the existing background scene panels and passes behind the people without covering or transforming them. The heart dissolves from the central circle after releasing the pulse, leaving the circle empty again.
+Seconds 7–8: hold the exact M1_E01.png frame completely still and fully readable.
 
-Seconds 5–6: the warm light settles through the existing network. The people remain the same and continue restrained natural movements. No new character appears.
-
-Seconds 6–7: the live scene darkens smoothly. The existing illuminated scene panels separate into many small connected memory frames and arrange themselves into two clear human network silhouettes, one on each side of the central vertical connection. Use only scene imagery and connecting lines, not generic icons or circuit symbols.
-
-Seconds 7–8: transition directly into the exact supplied M1_E01.png title card. Preserve its MyScoutee logo, emblem, typography, spelling, colors, layout and background exactly. Do not redraw, duplicate, translate or alter any text or logo. Hold the exact final frame completely still and fully readable until the clip ends.
-
-Do not introduce a circuit tree, branching electronic diagram, medical ECG display, interface icons, pictograms, lightning covering the people, newspaper, paper wipe, additional character, identity swap, face morph, gender change, duplicate person, duplicate logo, added text or altered text.
+No silhouettes, no wire people, no robotic people, no circuit-board figures, no rearrangement of the scene windows, no additional branches, no additional icons, no ECG line, no lightning, no medical display, no new person, no disappearing or returning person, no identity swap, no face morph, no gender change, no duplicated logo, no generated text and no altered text.
 
 SILENT VIDEO IS REQUIRED:
 Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
