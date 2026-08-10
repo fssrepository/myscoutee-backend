@@ -1,0 +1,43 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP09.png as the exact first frame and CP10.png as the exact last frame.
+
+Begin exactly in the quiet Budapest apartment shown in CP09. Preserve the
+Founder's exact identity, navy coat, rust scarf, cognac notebook and the two keys
+on the table. Hold briefly on his hopeful half-smile as the yellow tram
+reflection crosses the apartment window. Nobody speaks or visibly moves their
+lips.
+
+Use one seamless reflection transition: the moving yellow tram fills the window,
+and the apartment's horizontal window rail becomes the real horizontal rail of
+the tram carriage. Move through the reflection without a cut and settle into one
+static 50 mm composition inside the same rainy evening tram.
+
+The real carriage rail separates the 9:16 image into two stacked portrait zones,
+not an artificial split screen. In the lower-near zone, the Founder gives calm,
+careful attention to a few abstract profile cards on his phone but receives only
+silence. His thumb gradually slows. In the upper-far window/reflection zone,
+preserve Maya's exact face, pinned dark hair, moss-green coat and cream shirt.
+She begins with genuine curiosity, but restrained generic notification shapes
+multiply faster than she can consider individual people. Her attention becomes
+controlled overload, never panic or vanity.
+
+Their experiences remain different but equally human. Neither person notices the
+other. Both phone gestures slow and begin to lower, but the devices remain in
+their hands to match the exact final frame. Use soft face light and a cold phone
+fill kept below eye level. End exactly on CP10.png.
+
+CONTINUITY IS REQUIRED:
+The CP09 apartment window, yellow tram reflection and CP10 carriage rail must
+form one continuous spatial transition. Preserve the Founder's identity and the
+same painterly cinematic 2.5D texture. Maya must remain a separate exact person,
+never a transformed version of the Founder or a generic replacement.
+
+Use clean abstract screen plates only. No readable text, names, photographs,
+logos, statistics, matches, public scores, hearts, popularity counters, anger,
+gender caricature, flirtation, eye contact between them, extra passenger, hard
+cut, camera jump, freeze, collage, artificial split screen, face morph,
+duplicated person, dialogue or lip sync.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
