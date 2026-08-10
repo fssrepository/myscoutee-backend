@@ -22,9 +22,7 @@ cinematic 2.5D style, central geometry and blue-to-earth colour transition. End
 exactly on M1_CP00.png with no remaining title or logo.
 
 No cut, camera jump, reverse motion, new text, misspelled text, Cyrillic or
-Russian lettering, logo mutation, extra emblem, face, dialogue, narration,
-music or audio fade. Return silent video; final narration, score and ambience
-will be added continuously in post.
+Russian lettering, logo mutation, extra emblem or face.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
 8 seconds, 9:16.

@@ -1,24 +1,20 @@
-Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+Create exactly one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M1_CP19.png as the exact first frame and M1_CP20.png as the exact last frame.
 
-Continue with the exact same six mature adults around the same round wooden table in the same welcoming public venue. They have independently accepted the group proposal and now collaboratively turn their blank event draft into the first event they will manage together.
+Use the attached M1_LOCAL_PROVIDER.png as the exact identity reference for the only local provider who appears in this clip. Preserve his exact face, short dark beard, black knitted cap, charcoal hooded shirt, dark work apron, age and body throughout. No alternate provider may appear.
 
-Use close hand-led foreground passes as soft match transitions while preserving one continuous spatial flow. The Founder arranges the first blank cards. The other participants independently add practical contributions through small tactile placement gestures. Their actions produce exactly four large handmade icon-only resource cards on the table:
-1) MEMBERS — exactly six simple adult human figures;
-2) TRANSPORT — one bus with a restrained route line;
-3) VENUE OR ACCOMMODATION — one building, open door and key;
-4) SUPPLIES — one open crate containing ordinary event materials.
+Begin exactly on M1_CP19.png with the same six adults around the same round wooden table. During seconds 0–2, make one gentle 35 mm forward movement toward the tabletop so that the open doorway naturally moves outside the visible composition. Keep all six adults recognizable and spatially continuous.
 
-Keep one small blank ticket or check-in card and one separate blank feedback card below the four main cards as secondary actions. Do not combine them with the four resources. A mature local provider arrives through the open doorway carrying one bounded crate of supplies, while the group retains authorship and control of the event. This is DIY-first collaboration with optional limited provider help, not a one-click travel-agency service.
+During seconds 2–6, remain close to the table. The six adults use small, continuous hand movements to turn the blank cards into exactly four large handmade pictogram cards arranged in a two-by-two grid: six adult figures, one bus with a route, one building with an open door and key, and one open crate of ordinary supplies. Keep one small blank check-in card and one separate blank feedback card below them. Use only pictograms already present in the final frame; do not generate readable words. Nobody reverses or repeats a gesture.
 
-The participants exchange nonverbal affirmative gestures, pass materials and begin one simple shared planning activity. Their earlier introductions now become practical familiarity, but do not imply instant friendship or romantic success.
+The doorway and provider remain outside the camera view during this tabletop action. Do not show anybody entering while the camera is close. During seconds 6–8, make one smooth restrained pullback. Reveal the single exact provider from M1_LOCAL_PROVIDER.png already crossing the doorway with the wooden crate. He appears only once, follows one continuous forward path and bends naturally into the exact final pose without changing face, clothing, age or body.
 
-After the close hand details, perform one restrained 35 mm pullback and settle into the exact composition of M1_CP20.png. End with the same six adults equally visible around the table, the four large resource cards precisely arranged in a two-by-two grid, the two smaller secondary cards below, and the local provider placing the supply crate in the background doorway.
+End exactly on M1_CP20.png with the same six adults, the four large resource pictograms, the two smaller secondary cards and the exact referenced provider placing the crate in the doorway.
 
-CONTINUITY IS REQUIRED:
-Preserve all six approved identities, ages, hairstyles, clothing and personal objects from M1_CP19.png. Keep exactly three women and three men as participants; the local provider is an additional mature adult helper, not a seventh group member. Preserve the same room, windows, noticeboard, plants, pendant lamp, autumn exterior and painterly cinematic 2.5D style. Give all six participants equal visual agency.
+STRICT CONTINUITY:
+Lock the faces, ages, hairstyles, skin tones, clothing and positions of all six seated adults. Lock the provider to M1_LOCAL_PROVIDER.png from his first visible frame through the exact final frame. No second entering man, replacement man, identity swap, face morph, clothing change, hat change, duplicated person, disappearing person, backward movement, temporal reset, repeated action, hidden cut, wipe or camera jump. Preserve the same room, windows, noticeboard, plants, pendant lamp, autumn exterior and painterly cinematic 2.5D style.
 
-No hard cut, missing participant, replacement participant, invented accessibility or wheelchair pictogram, fifth resource card, readable AI text, floating interface clutter, brand, logo, instant friendship, forced acceptance, automatic couple, public score, duplicate person, merged identity, face morphing, child, teenager or minor. Nobody speaks or visibly articulates words.
+No fifth resource card, invented accessibility pictogram, floating interface, logo, caption, child, teenager, forced couple or exaggerated celebration. Keep every mouth relaxed and closed throughout.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

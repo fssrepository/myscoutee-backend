@@ -21,9 +21,8 @@ one warm guiding light. After the mark has settled, fade in the exact supplied
 and preserve the final seconds as a deliberate reflective breath.
 
 No black title panel, cut, camera jump, logo mutation, replacement emblem, new
-text, misspelled text, Cyrillic or Russian lettering, extra people, dialogue,
-narration, music or audio fade. Return silent video. Exact lettering will be
-stabilized in post over the generated motion.
+text, misspelled text, Cyrillic or Russian lettering or extra people. Exact
+lettering will be stabilized in post over the generated motion.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
 8 seconds, 9:16.
