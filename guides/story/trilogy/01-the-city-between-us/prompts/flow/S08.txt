@@ -1,0 +1,47 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP07.png as the exact first frame and CP08.png as the exact last frame.
+
+Begin exactly in the Lee Valley shared bedroom shown in CP07. Preserve the
+Founder's exact face, navy coat, rust scarf, suitcase, cognac notebook, desk,
+lamp and canal-facing window. Use one restrained 40 mm push toward the open
+notebook as a hand-drawn route line begins to travel across its blank pages.
+Nobody speaks or visibly moves their lips.
+
+Keep the route continuous. During the middle of the clip, let the moving ink
+line and the rain-dark window create a rapid sequence of brief illustrated
+memory reflections that flow into one another without becoming separate
+full-screen scenes: a High Tatras ridge; a Schönbrunn arch; Neuschwanstein's
+silhouette; the Founder accepting a tuk-tuk handoff near Angkor; a warm,
+reciprocal conversation on a Taj Mahal-bound bus; severe Norwegian fjord
+weather; a Luxor balloon resting in a vegetable plot while local people and
+travellers cooperate across a low wall; and finally Chesapeake or Niagara water.
+Each memory lasts only a fraction of a second and remains connected by the same
+route line, paper texture and direction of movement.
+
+Show the journeys as mostly solo and self-organized. The notebook briefly joins
+simple icon-only shapes for the Founder's own flight, room, local transport and
+driver arrangements. Different local drivers, passengers, hosts or residents
+open one human threshold in several memories; never create one recurring tour
+leader and never imply that a package tour organized the whole sequence. The
+Founder is curious and changed by each place, not conquering a list of countries.
+
+Let the final water reflection expand into the glass wall of an almost empty
+international terminal. The Founder is now seated with his suitcase and open
+notebook beside one conspicuously empty seat. The last route line loses momentum
+and stops quietly at the restrained COVID-19 threshold. The remaining travel
+memories settle only as faint reflections in the glass. End exactly on CP08.png.
+
+CONTINUITY IS REQUIRED:
+Use one unbroken forward visual direction. The CP07 window reflection becomes
+the memory surface, water becomes terminal glass, and the notebook remains the
+physical anchor throughout. Preserve the same painterly cinematic 2.5D style,
+Founder identity, suitcase and notebook.
+
+No hard cut, camera jump, freeze, collage, split screen, face morph, duplicated
+Founder, fake archive, flags, labels, readable passport text, stamps, national
+costume, stereotype, tourism-conquest montage, package-tour leader, invented
+landmark, generated logo or dialogue.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
