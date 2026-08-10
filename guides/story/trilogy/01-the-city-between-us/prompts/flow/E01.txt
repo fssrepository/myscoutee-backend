@@ -2,33 +2,14 @@ Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 L
 
 Use M1_CP22.png as the exact first frame and M1_E01.png as the exact last frame.
 
-Keep the exact mature silver-haired woman, the exact male system administrator, the three existing lived-scene panels, the central circle, the three existing coral connector lines and the complete background stable throughout.
+Preserve the exact two foreground people, their identities, the three background scene panels, the central circle, the three connector lines, the room, camera and exposure.
 
-Seconds 0–1.5: begin exactly on M1_CP22.png. The central circle is empty. The two people make only restrained natural hand movements.
+The only designed animation is one heartbeat inside the central circle. A solid, filled, rounded 3D heart appears exactly in the centre of the circle and remains completely inside it. The heart is warm metallic gold, matching the gold colour of the connector electricity. It performs one restrained two-part heartbeat, TU–TU, by growing slightly, contracting and returning to its normal size.
 
-Seconds 1.5–2.5: one solid, filled, rounded 3D heart grows into view inside the central circle. It is a stylized volumetric heart with a softly rounded convex surface and restrained warm coral-gold illumination. It is not hollow and it is not made from an outline.
+Keep the three connector lines and all background panels static. Allow only minimal natural hand movement from the two people.
 
-Seconds 2.5–4: the complete solid 3D heart performs exactly one natural two-phase heartbeat: TU–TU. It gently grows larger, compresses smaller and rebounds to normal size, followed immediately by one smaller secondary pulse. The heart remains the same intact solid 3D object throughout.
+During the final second, end exactly on M1_E01.png and briefly hold that supplied frame. Do not animate or rewrite its logo or text.
 
-At the peak of the heartbeat, one thin band of light starts moving outward inside exactly the three existing coral connector lines. The light remains confined inside those lines. It does not leave the lines and does not create any particles.
+No heart outline, ECG line, waveform, silhouette, sparks, particles, glitter, fireworks, extra people, identity changes, fade, scene restart or generated audio.
 
-Seconds 4–6: the thin light travels smoothly along the three existing connector lines toward the three lived-scene panels. The scene panels remain unchanged and retain their original exposure. The moving line-light briefly activates the existing composition without creating any new object.
-
-Seconds 6–7: the line-light completes its route and the connector lines return to their original appearance. The solid heart settles after the heartbeat without changing into any other symbol.
-
-Seconds 7–8: keep the complete scene continuously visible at the same exposure, contrast and composition. Do not darken, blur, dissolve, fade out or restart the scene. Reveal only the supplied final logo and typography with one restrained golden-ink writing-mask motion that uncovers the already existing exact lettering. No pen, hand, writing instrument or new object may appear. Do not draw new letters and do not animate individual characters independently. Preserve the exact MyScoutee logo, spelling, line breaks, placement and typography from M1_E01.png. Converge exactly on M1_E01.png and hold that exact final frame briefly so every line remains readable.
-
-The heart must be a SOLID FILLED 3D HEART. NO outline-only heart. NO hollow heart. NO flat heart silhouette. NO anatomical heart. NO ECG symbol.
-
-NO NETWORK EXPANSION. NO ADDITIONAL NODES. NO HUMAN SILHOUETTES. NO WIRE PEOPLE. NO ROBOTS. NO CIRCUIT BODIES. NO NEW SCENE CARDS. NO EXTRA TITLE CARD. NO EXTRA LOGO. NO EXTRA TEXT. NO FADE.
-
-NO FULL-FRAME FADE. NO FADE TO BLACK. NO SCENE DIMMING. NO CROSS-DISSOLVE. NO SECOND START. The heartbeat scene must remain continuously visible while only the supplied final graphic overlay is revealed.
-
-ZERO sparks. ZERO particles. ZERO glitter. ZERO fireworks. ZERO starburst. ZERO lens flare. ZERO glowing clouds. ZERO exploding light. ZERO bright windows. ZERO roots or trees.
-
-Do not replace, duplicate, hide or restart either foreground person. No additional person, no identity swap, no face morph and no gender change.
-
-SILENT VIDEO IS REQUIRED:
-Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
-
-Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.
+Generate exactly one result.
