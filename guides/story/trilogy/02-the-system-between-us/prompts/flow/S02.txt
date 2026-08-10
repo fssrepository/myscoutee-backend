@@ -1,4 +1,4 @@
-Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M2_CP01.png as the exact first frame and M2_CP02.png as the exact last frame.
 
@@ -19,9 +19,9 @@ Never invent, redraw, duplicate or enlarge a hand, arm, finger, face or body. No
 STRICT TYPOGRAPHY LOCK:
 Generate no subtitles, captions, intertitles, lower thirds, interface text, handwriting, letters, words, numbers or typographic marks anywhere in the video. Every paper, notebook page, window, wall and empty area remains free of generated writing. Do not generate a title, route label, place name, date, logo, seal, brand mark or MyScoutee mark. Do not interpret the coral line or any reflection as writing. Any exact non-typographic detail already contained in a supplied endpoint frame may appear only as part of that locked full-frame endpoint.
 
-No hard cut, scene restart, independent object reveal, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, floating interface, magical glow, sparks, particles, unrelated character, face morphing, malformed anatomy or generated audio. Nobody speaks, mouths words or visibly articulates language.
+No hard cut, scene restart, independent object reveal, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, floating interface, magical glow, sparks, particles, unrelated character, face morphing or malformed anatomy. Nobody speaks, mouths words or visibly articulates language.
 
-SILENT VIDEO IS REQUIRED:
-Generate visuals only. Do not generate speech, voices, dialogue, narration, singing, music, ambience or sound effects. The output must contain no generated audio.
+FLOW AUDIO:
+Let Veo freely choose and generate the instrumental musical underscore, ambience and sound effects that best fit the scene. No person may speak. Generate no spoken words, dialogue, narration, singing, lyrics, chanting or intelligible human vocalization. Nobody visibly speaks, forms words or lip-syncs.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

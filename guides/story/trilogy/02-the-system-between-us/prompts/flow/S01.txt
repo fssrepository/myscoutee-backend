@@ -19,4 +19,7 @@ STRICT TEXT LOCK: generate no subtitles, captions, intertitles, lower thirds, in
 
 No hard cut, camera jump, new foreground person, duplicate Founder, face morphing, magical network effect, floating interface, readable form, generated title, number, logo, seal, tax symbol, legal symbol, government emblem, villain lighting or dystopian spectacle. Nobody speaks, mouths words or visibly articulates language. Do not infer or generate dialogue from facial movement.
 
+FLOW AUDIO:
+Let Veo freely choose and generate the instrumental musical underscore, ambience and sound effects that best fit the scene. No person may speak. Generate no spoken words, dialogue, narration, singing, lyrics, chanting or intelligible human vocalization. Nobody visibly speaks, forms words or lip-syncs.
+
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

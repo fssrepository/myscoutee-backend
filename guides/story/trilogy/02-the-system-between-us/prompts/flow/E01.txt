@@ -16,8 +16,15 @@ seconds as a deliberate reflective breath.
 
 No cut, camera jump, triumphal ending, prison image, legal insignia, logo
 mutation, replacement emblem, new text, misspelled text, Cyrillic or Russian
-lettering, dialogue, narration, music or audio fade. Return silent video. Exact
-lettering will be stabilized in post over the generated motion.
+lettering. Exact lettering will be stabilized in post over the generated
+motion.
+
+FLOW AUDIO:
+Let Veo freely choose and generate the instrumental musical underscore,
+ambience and sound effects that best fit the scene. No person may speak.
+Generate no spoken words, dialogue, narration, singing, lyrics, chanting or
+intelligible human vocalization. Nobody visibly speaks, forms words or
+lip-syncs.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
 8 seconds, 9:16.

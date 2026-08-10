@@ -56,28 +56,29 @@ licensed later, belongs in post.
   appears only on P00; E01 carries the invitation and `TO BE CONTINUED`.
 - If a model cannot accept both endpoints, label it unsuitable for the chain.
 
-## Audio contract
+## Flow audio contract
 
-Generated clips are production picture only:
+Flow generates and retains the musical bed for each clip:
 
-- no dialogue, narration, singing, music, pulse, ambience or sound effects;
+- let Veo freely choose the instrumental musical underscore, ambience and sound
+  effects that best fit the scene;
+- no spoken words, dialogue, narration, singing, lyrics, chanting or
+  intelligible human vocalization;
 - no visible word articulation, lip sync or several people speaking at once;
 - naturally relaxed mouths, breathing, listening, gaze, nods and restrained
-  hand gestures remain allowed;
-- discard all native Veo audio even when the model ignores the prompt.
+  hand gestures remain allowed.
 
-The final film receives the approved ElevenLabs **Jon — Warm & Grounded
-Storyteller** narration, one continuous `05:20` score and synchronized
-post-produced ambience/foley. Archive the exact voice identifier, model,
-settings and clean reference WAV.
+Do not instruct Flow to return a silent video, and do not state that its native
+audio will be discarded or replaced.
 
 Append this block to every Flow shot:
 
 ```text
-VEO AUDIO HARD LOCK: Generate silent production picture only. Absolutely no
-dialogue, narration, singing, background music, cinematic score, melody,
-harmony, musical drone, rhythmic pulse, ambience or sound effects. Final sound
-is created only after all clips are joined. Discard any native platform audio.
+FLOW AUDIO: Let Veo freely choose and generate the instrumental musical
+underscore, ambience and sound effects that best fit the scene. No person may
+speak. Generate no spoken words, dialogue, narration, singing, lyrics, chanting
+or intelligible human vocalization. Nobody visibly speaks, forms words or
+lip-syncs.
 ```
 
 ## Privacy and truth contract
