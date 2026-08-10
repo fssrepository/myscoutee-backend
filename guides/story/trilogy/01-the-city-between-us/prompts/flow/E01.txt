@@ -1,15 +1,15 @@
 Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use M1_CP22.png as the exact first frame and M1_E01.png as the exact last frame.
+Use M1_E01.png as the exact first frame and M1_E02.png as the exact last frame.
 
-Preserve the exact two foreground people, their identities, the three background scene panels, the central circle, the three connector lines, the room, camera and exposure.
+Preserve the complete scene, both people, all three background panels, the MyScoutee logo and every line of text exactly as supplied. Keep the camera and all people completely still.
 
-The only designed animation is one heartbeat inside the central circle. A solid, filled, rounded 3D heart appears exactly in the centre of the circle and remains completely inside it. The heart is warm metallic gold, matching the gold colour of the connector electricity. It performs one restrained two-part heartbeat, TU–TU, by growing slightly, contracting and returning to its normal size.
+The solid golden 2.5D heart in the centre of the circle performs exactly one subtle natural beat: it gently expands once, contracts once and settles.
 
-Keep the three connector lines and all background panels static. Allow only minimal natural hand movement from the two people.
+At the beat, a fine yellow-gold electrical current moves only inside the four existing connector paths — top, left, right and bottom — like current travelling inside insulated wires. It has subtle living variations in brightness rather than becoming a thick solid band. It stays narrow, follows each original path exactly and never leaves or reshapes the lines. The circle and all four connectors then settle into the steady illuminated final state shown in M1_E02.png.
 
-During the final second, end exactly on M1_E01.png and briefly hold that supplied frame. Do not animate or rewrite its logo or text.
+End exactly on M1_E02.png and hold it briefly.
 
-No heart outline, ECG line, waveform, silhouette, sparks, particles, glitter, fireworks, extra people, identity changes, fade, scene restart or generated audio.
+Do not create an ECG shape, travelling wave outside the connectors, sparks, particles, branching, or any additional movement, graphic, object, line, text, person or transition. Generate no audio.
 
 Generate exactly one result.
