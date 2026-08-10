@@ -16,11 +16,13 @@ Seconds 4–6: the thin light travels smoothly along the three existing connecto
 
 Seconds 6–7: the line-light completes its route and the connector lines return to their original appearance. The solid heart settles after the heartbeat without changing into any other symbol.
 
-Seconds 7–8: resolve directly and cleanly into the supplied M1_E01.png end frame. Preserve its exact MyScoutee logo and exact final typography. Do not invent, duplicate, rewrite or misspell any text. Hold the exact final frame briefly at the end so every line remains readable. No scene fade and no restart of the animation.
+Seconds 7–8: keep the complete scene continuously visible at the same exposure, contrast and composition. Do not darken, blur, dissolve, fade out or restart the scene. Reveal only the supplied final logo and typography with one restrained golden-ink writing-mask motion that uncovers the already existing exact lettering. No pen, hand, writing instrument or new object may appear. Do not draw new letters and do not animate individual characters independently. Preserve the exact MyScoutee logo, spelling, line breaks, placement and typography from M1_E01.png. Converge exactly on M1_E01.png and hold that exact final frame briefly so every line remains readable.
 
 The heart must be a SOLID FILLED 3D HEART. NO outline-only heart. NO hollow heart. NO flat heart silhouette. NO anatomical heart. NO ECG symbol.
 
 NO NETWORK EXPANSION. NO ADDITIONAL NODES. NO HUMAN SILHOUETTES. NO WIRE PEOPLE. NO ROBOTS. NO CIRCUIT BODIES. NO NEW SCENE CARDS. NO EXTRA TITLE CARD. NO EXTRA LOGO. NO EXTRA TEXT. NO FADE.
+
+NO FULL-FRAME FADE. NO FADE TO BLACK. NO SCENE DIMMING. NO CROSS-DISSOLVE. NO SECOND START. The heartbeat scene must remain continuously visible while only the supplied final graphic overlay is revealed.
 
 ZERO sparks. ZERO particles. ZERO glitter. ZERO fireworks. ZERO starburst. ZERO lens flare. ZERO glowing clouds. ZERO exploding light. ZERO bright windows. ZERO roots or trees.
 
