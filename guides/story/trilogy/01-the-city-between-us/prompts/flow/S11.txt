@@ -1,0 +1,46 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP10.png as the exact first frame and CP11.png as the exact last frame.
+
+Begin exactly inside the rainy Budapest tram shown in CP10. Preserve the
+Founder's exact face, navy coat, rust scarf and backpack. His phone gesture slows
+and lowers while remaining in his hand. Maya stays a separate person in the far
+upper carriage reflection and quietly recedes as the tram reaches a stop.
+Nobody speaks or visibly moves their lips.
+
+Use one continuous 28 mm left-to-right lateral track. The tram's dark vertical
+doorframe becomes the first wooden doorway of an unbranded Budapest community
+venue without a hard cut. The Founder enters alone and pockets the phone.
+
+Continue along one warm corridor containing three real, inviting rooms: a small
+conversation circle, a shared dinner and a relaxed social evening. Let the same
+wooden doorway repeat as a natural wipe between widely spaced occasional visits.
+Use restrained changes in coats, table settings and evening light to suggest
+time passing; do not duplicate the Founder and do not imply regular attendance.
+
+On the first visual pass, a small mixed adult group simply notices the Founder
+arriving alone. On later doorway passes, the same people begin to recognize him,
+make room at the activity and greet him with ordinary warmth. Some conversations
+remain pleasant but brief; others settle into familiar friendship. The room
+eases his loneliness by giving him somewhere real to go, without promising a
+partner or instant belonging.
+
+End in the connected three-doorway composition of CP11. The Founder walks along
+the central rug and returns one restrained friendly wave to people who now
+recognize him. Friendship has become a valuable outcome in its own right. End
+exactly on CP11.png.
+
+CONTINUITY IS REQUIRED:
+The CP10 tram door and the CP11 first wooden doorway remain one continuous
+vertical axis. Maintain one left-to-right camera direction, the Founder's exact
+identity and the same painterly cinematic 2.5D texture. Use warm cream and
+terracotta light after leaving the cold tram.
+
+No hard cut, camera jump, freeze, collage, split screen, face morph, duplicated
+Founder, branded event design, founding date, former date, dating-service UI,
+regular-attendance claim, instant friendship, romantic winner, rejection
+performance, public shaming, gossip, readable name tags, sadness spectacle,
+generated logo, dialogue or lip sync.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
