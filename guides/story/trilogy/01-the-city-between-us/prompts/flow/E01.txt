@@ -7,26 +7,27 @@ network paths locked in place for the entire clip. Use no camera movement and
 do not reconstruct the scene. The first second begins exactly as the bright,
 living CP22 frame, with only restrained natural human stillness.
 
-From seconds 1–5, gradually darken that same unchanged image with one smooth,
-continuous deep-navy fade. This is a progressive closing overlay on the
-identical shot, not a scene transformation: the people, rooms, table, device,
-central hub and coral network must not shift, reset, resize or disappear. Let
-the warm room lights and coral paths remain faintly visible beneath the navy
-veil exactly as in M1_E01.png. There must be no sudden shadow step.
+Treat the complete M1_E01.png as one immutable, flattened final image. Do not
+identify, read, rewrite, redraw, animate, separate or recreate any logo,
+lettering, icon or graphic inside it. From seconds 1–6, perform one perfectly
+smooth full-frame cross-dissolve from the unchanged M1_CP22.png into the
+unchanged M1_E01.png. The final frame must fade in only as a complete flat
+layer; none of its individual elements may appear early, move independently or
+be generated again.
 
-While the background darkens, reveal the supplied closing graphics gently in
-their exact final positions. First fade in the exact M/heart mark and
-`yScoutee` name at the top without moving the central hub. Then fade in the
-two-line invitation, its fine divider, and finally `TO BE CONTINUED`. Do not
-animate, transform or relocate the hub into the logo. By second 6, reach the
-exact supplied M1_E01.png and hold it nearly motionless for the final two
-seconds as a deliberate reflective breath.
+The people, rooms, table, device, central hub and coral network shared by both
+frames must remain registered in exactly the same positions throughout the
+dissolve. There must be no sudden shadow step, reset, resize, re-composition or
+intermediate title design. By second 6, reach the exact supplied M1_E01.png and
+hold that exact image nearly motionless for the final two seconds as a
+deliberate reflective breath.
 
 No black title panel, cut, camera movement, camera jump, reverse motion,
 composition change, character movement between positions, logo mutation,
-replacement emblem, new text, misspelled text, Cyrillic or Russian lettering
-or extra people. Exact lettering will be stabilized in post over the generated
-motion.
+replacement emblem, duplicated branding, new text, explanatory label,
+misspelled text, Cyrillic or Russian lettering or extra people. Do not generate
+any typography, word, logo, icon or symbol beyond the pixels already present in
+the supplied endpoint images.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
 8 seconds, 9:16.
