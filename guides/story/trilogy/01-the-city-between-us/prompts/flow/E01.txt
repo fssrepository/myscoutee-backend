@@ -2,14 +2,18 @@ Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 L
 
 Use M1_CP22.png as the exact first frame and M1_E01.png as the exact last frame.
 
-Keep the two people, their identities, the room, the three background panels, the camera and the composition unchanged. Allow only restrained natural hand movement.
+Seconds 0–6.5: begin exactly on M1_CP22.png. Keep the two people, their identities, faces, clothing, hands, the room, the three background panels, the camera and the composition unchanged. Let both people remain naturally alive through restrained breathing, small continuous hand adjustments and one brief natural glance. Keep the existing central circle dark and empty. Keep all four connector paths completely steady, smooth and unchanged. Do not animate the circle or the connector paths.
 
-Inside the existing central circle, the solid golden 2.5D heart from the final frame performs one short two-beat TU-TU heartbeat: one quick expansion and return, immediately followed by a smaller second expansion and return. It then remains still. Keep it completely filled, three-dimensional and identical to the heart in M1_E01.png throughout.
+Seconds 6.5–8: use one simple uniform full-frame cross-dissolve from the unchanged M1_CP22.png composition into the exact supplied M1_E01.png final frame. Throughout the dissolve, the same woman and man continue restrained natural breathing and small hand movement; neither person pauses or becomes a frozen still. The complete final image must arrive together as one photographic layer. Do not draw, build, type, spell, animate or reveal the heart, logo, letters or individual lines separately.
 
-Immediately after the heartbeat, one fine warm-gold electrical current flows once from the circle along the four existing connector paths. It stays strictly inside those paths. Its trailing glow gradually disappears behind it, leaving the four connectors in the steady final state shown in M1_E01.png.
+Converge precisely on M1_E01.png only at the final instant. Keep natural human motion alive until that final frame. Do not create a visible freeze or still-image hold at the end.
 
-End exactly on M1_E01.png and hold that supplied final frame for the last half-second. Preserve its MyScoutee logo and all supplied text exactly; do not rewrite or duplicate them.
+STRICT TYPOGRAPHY LOCK:
+Before the full-frame cross-dissolve, show no text, letters, words, logo, brand mark, monogram, caption or typographic shape anywhere. During the cross-dissolve, use only the exact supplied final-frame appearance. Do not invent, rewrite, duplicate or add any word or mark. Do not generate an additional MyScoutee label anywhere in the frame.
 
-No sparks, lightning, flashes, particles, ECG graphics, new lines, new objects, scene fade, scene restart, identity change or generated audio.
+No heartbeat, heart expansion, pulsing heart, moving heart, electrical current, lightning, sparks, flashes, particles, ECG graphics, branching glow, travelling glow, new line, new object, scene restart, identity change, malformed hand, duplicate person, visible freeze, still-image hold or generated audio.
+
+SILENT VIDEO IS REQUIRED:
+Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
 
 Generate exactly one result.
