@@ -1,8 +1,8 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP02.png as the exact first frame and CP03.png as the exact last frame.
+Use M1_CP02.png as the exact first frame and M1_CP03.png as the exact last frame.
 
-Begin exactly in the modest Budapest apartment shown in CP02.png. The Founder
+Begin exactly in the modest Budapest apartment shown in M1_CP02.png. The Founder
 holds the flat key, notebook and suitcase as rain and a yellow tram move beyond
 the tall window. Use one restrained 40 mm left-to-right camera movement toward
 the dark vertical window frame.
@@ -18,7 +18,7 @@ Continue the same camera movement through the office window reflection into a
 warm Soho group lunch. The Founder sits socially present among friendly
 colleagues, glances once at the menu prices, keeps his own plate empty and gives
 one small, practiced open-palm gesture meaning that he is not hungry. Nobody
-excludes him and nobody pities him. End exactly on CP03.png.
+excludes him and nobody pities him. End exactly on M1_CP03.png.
 
 VISUAL CONTINUITY IS REQUIRED:
 Preserve the Founder's exact face, age, navy coat, rust scarf, backpack and

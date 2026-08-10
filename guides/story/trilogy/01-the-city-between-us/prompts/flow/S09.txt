@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP08.png as the exact first frame and CP09.png as the exact last frame.
+Use M1_CP08.png as the exact first frame and M1_CP09.png as the exact last frame.
 
 Begin exactly in the almost empty international terminal shown in CP08. Preserve
 the Founder's exact face, navy coat, rust scarf, suitcase and open cognac
@@ -25,7 +25,7 @@ Use one gentle arc from behind the Founder to a frontal medium close-up. Through
 the apartment window, a yellow Budapest tram reflection moves in the opposite
 direction to the departure motif. His expression settles into the first clear,
 quietly hopeful half-smile: the return is a deliberate second attempt to build a
-life at home. End exactly on CP09.png.
+life at home. End exactly on M1_CP09.png.
 
 CONTINUITY IS REQUIRED:
 The terminal mullion and apartment doorframe remain one continuous vertical

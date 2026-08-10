@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP01.png as the exact first frame and CP02.png as the exact last
+Use M1_CP01.png as the exact first frame and M1_CP02.png as the exact last
 frame.
 
 Begin at the anonymous Budapest office doorway shown in the first frame. Use
@@ -19,7 +19,7 @@ shown in the last frame. The traveller receives a simple flat key from the
 older hands and lifts it into the final position. Warm home light replaces the
 corridor light while rain-softened
 yellow-tram reflections remain continuous in the window. End exactly on
-CP02.png with the vertical window frame, suitcase, key, notebook and blank
+M1_CP02.png with the vertical window frame, suitcase, key, notebook and blank
 paper unchanged.
 
 Preserve both uploaded endpoint images. Do not add faces or alter the person

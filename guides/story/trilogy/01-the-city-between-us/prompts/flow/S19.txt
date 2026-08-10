@@ -1,19 +1,19 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP18.png as the exact first frame and CP19.png as the exact last frame.
+Use M1_CP18.png as the exact first frame and M1_CP19.png as the exact last frame.
 
-Begin exactly on the six separate adult portrait panels in CP18.png. Preserve the same six exact identities: three women and three men who have not met yet. A single balanced six-person activity proposal appears as one blank tactile card beside each portrait. Each adult considers it independently and makes a separate restrained acceptance gesture. A neutral decline path remains visibly available beside every card without penalty or pressure. The candidate group proceeds only after the sixth independent acceptance.
+Begin exactly on the six separate adult portrait panels in M1_CP18.png. Preserve the same six exact identities: three women and three men who have not met yet. A single balanced six-person activity proposal appears as one blank tactile card beside each portrait. Each adult considers it independently and makes a separate restrained acceptance gesture. A neutral decline path remains visibly available beside every card without penalty or pressure. The candidate group proceeds only after the sixth independent acceptance.
 
 The six small personal thought bubbles gradually fade while a blank contextual group-planning card appears beneath the portraits. Simple icon-only contributions form the first event draft: one person suggests a shared activity, another indicates a suitable place, and others contribute timing or practical availability. Do not show readable interface text or spotlight a private romantic conversation.
 
-Make one continuous visual transition: the camera slowly pushes toward the illustrated empty round table at the bottom of CP18.png. Its paper texture becomes real wood grain as the camera performs a restrained 20-degree, 35 mm orbit and lowers to eye level. The six portrait panels resolve into the same six adults arriving separately, taking equal places around one real table and introducing themselves through eye contact, open posture and small nonverbal greetings.
+Make one continuous visual transition: the camera slowly pushes toward the illustrated empty round table at the bottom of M1_CP18.png. Its paper texture becomes real wood grain as the camera performs a restrained 20-degree, 35 mm orbit and lowers to eye level. The six portrait panels resolve into the same six adults arriving separately, taking equal places around one real table and introducing themselves through eye contact, open posture and small nonverbal greetings.
 
 Their attention moves naturally around the whole group. One person listens while another gestures lightly; no pair dominates. Give all six equal warm facial light, equal visibility and equal social agency.
 
-End exactly on CP19.png: the same six adults sit around the round wooden table in the welcoming public room, with blank folded cards, the Founder's cognac notebook, cups and the sketchbook visible. They have just begun listening to one another.
+End exactly on M1_CP19.png: the same six adults sit around the round wooden table in the welcoming public room, with blank folded cards, the Founder's cognac notebook, cups and the sketchbook visible. They have just begun listening to one another.
 
 CONTINUITY IS REQUIRED:
-Preserve every approved face, age, hairstyle, clothing and personal object from CP18.png into CP19.png. Keep exactly three women and three men, all unmistakably mature adults. Preserve the painterly cinematic 2.5D style, warm autumn palette and tactile handmade visual language.
+Preserve every approved face, age, hairstyle, clothing and personal object from M1_CP18.png into M1_CP19.png. Keep exactly three women and three men, all unmistakably mature adults. Preserve the painterly cinematic 2.5D style, warm autumn palette and tactile handmade visual language.
 
 No hard cut, seventh participant, missing participant, automatic couple, one-to-one romantic spotlight, forced acceptance, public score, generated label, readable AI text, logo, guarantee, duplicate person, merged identity, face morphing, child, teenager or minor. Nobody speaks or visibly articulates words.
 

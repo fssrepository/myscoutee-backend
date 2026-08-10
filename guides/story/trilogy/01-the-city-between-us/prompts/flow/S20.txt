@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP19.png as the exact first frame and CP20.png as the exact last frame.
+Use M1_CP19.png as the exact first frame and M1_CP20.png as the exact last frame.
 
 Continue with the exact same six mature adults around the same round wooden table in the same welcoming public venue. They have independently accepted the group proposal and now collaboratively turn their blank event draft into the first event they will manage together.
 
@@ -14,10 +14,10 @@ Keep one small blank ticket or check-in card and one separate blank feedback car
 
 The participants exchange nonverbal affirmative gestures, pass materials and begin one simple shared planning activity. Their earlier introductions now become practical familiarity, but do not imply instant friendship or romantic success.
 
-After the close hand details, perform one restrained 35 mm pullback and settle into the exact composition of CP20.png. End with the same six adults equally visible around the table, the four large resource cards precisely arranged in a two-by-two grid, the two smaller secondary cards below, and the local provider placing the supply crate in the background doorway.
+After the close hand details, perform one restrained 35 mm pullback and settle into the exact composition of M1_CP20.png. End with the same six adults equally visible around the table, the four large resource cards precisely arranged in a two-by-two grid, the two smaller secondary cards below, and the local provider placing the supply crate in the background doorway.
 
 CONTINUITY IS REQUIRED:
-Preserve all six approved identities, ages, hairstyles, clothing and personal objects from CP19.png. Keep exactly three women and three men as participants; the local provider is an additional mature adult helper, not a seventh group member. Preserve the same room, windows, noticeboard, plants, pendant lamp, autumn exterior and painterly cinematic 2.5D style. Give all six participants equal visual agency.
+Preserve all six approved identities, ages, hairstyles, clothing and personal objects from M1_CP19.png. Keep exactly three women and three men as participants; the local provider is an additional mature adult helper, not a seventh group member. Preserve the same room, windows, noticeboard, plants, pendant lamp, autumn exterior and painterly cinematic 2.5D style. Give all six participants equal visual agency.
 
 No hard cut, missing participant, replacement participant, invented accessibility or wheelchair pictogram, fifth resource card, readable AI text, floating interface clutter, brand, logo, instant friendship, forced acceptance, automatic couple, public score, duplicate person, merged identity, face morphing, child, teenager or minor. Nobody speaks or visibly articulates words.
 

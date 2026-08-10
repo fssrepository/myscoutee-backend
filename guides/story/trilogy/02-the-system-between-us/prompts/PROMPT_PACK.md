@@ -38,7 +38,7 @@ with Extend or a prompt-only result.
 | `[BUDAPEST_FLAT]` | exact approved Part I apartment reference |
 | `[BUDAPEST_WORLD]` | approved Budapest civic-location reference |
 | `[LONDON_SHARED_HOME]` | approved Part I Lee Valley shared-home reference |
-| `[PART_I_FINAL_FRAME]` | lossless Part I handoff used as `CP00.png` |
+| `[PART_I_FINAL_FRAME]` | lossless Part I handoff used as `M2_CP00.png` |
 
 Public figures are not character tokens. Use hands, silhouettes, office
 geometry, empty chairs and post-added dates. Accurate editorial material, if

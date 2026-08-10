@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP06.png as the exact first frame and CP07.png as the exact last frame.
+Use M1_CP06.png as the exact first frame and M1_CP07.png as the exact last frame.
 
 Begin exactly in the shared Lee Valley bedroom shown in CP06. Preserve the
 Founder's exact identity, navy coat, rust scarf, cognac notebook and the sleeping
@@ -31,7 +31,7 @@ continued room sharing is no longer viable.
 Finish with one restrained 55 mm push toward the Founder as he closes the
 notebook, takes the suitcase and rises beside the same window. The travel
 reflections disappear, leaving only the real Lee Valley canal, reeds, rain and
-late-2015 light. End exactly on CP07.png.
+late-2015 light. End exactly on M1_CP07.png.
 
 CONTINUITY IS REQUIRED:
 Keep the same room, desk, lamp, window, canal axis and camera direction throughout.

@@ -25,12 +25,12 @@ Current generation progress:
 
 | ID | Boundary | Asset | Status |
 | --- | --- | --- | --- |
-| CP00 | Lossless Part I handoff | `assets/frames/CP00.png` | canonical |
-| CP01 | The network line becomes the ruled line of a blank form | `assets/frames/CP01.png` | generated |
-| CP02 | The whole life before the institutional file | `assets/frames/CP02.png` | generated |
-| CP03–CP15 | Work, forced contracting, tax chaos and the surviving line | `assets/frames/CP03.png`–`CP15.png` | generated |
-| CP16–CP27 | Surgery, investigation, expert report, hearing and delay | `assets/frames/CP16.png`–`CP27.png` | generated |
-| CP28–CP38 | AI-assisted defence, continued work, public context and open ending | `assets/frames/CP28.png`–`CP38.png` | generated |
+| CP00 | Lossless Part I handoff | `assets/frames/M2_CP00.png` | canonical |
+| CP01 | The network line becomes the ruled line of a blank form | `assets/frames/M2_CP01.png` | generated |
+| CP02 | The whole life before the institutional file | `assets/frames/M2_CP02.png` | generated |
+| CP03–CP15 | Work, forced contracting, tax chaos and the surviving line | `assets/frames/M2_CP03.png`–`M2_CP15.png` | generated |
+| CP16–CP27 | Surgery, investigation, expert report, hearing and delay | `assets/frames/M2_CP16.png`–`M2_CP27.png` | generated |
+| CP28–CP38 | AI-assisted defence, continued work, public context and open ending | `assets/frames/M2_CP28.png`–`M2_CP38.png` | generated |
 
 Generation verification completed on 10 August 2026: all 39 canonical files
 exist, all are distinct, and every frame is a 720×1280 PNG.

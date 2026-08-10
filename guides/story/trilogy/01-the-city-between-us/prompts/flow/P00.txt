@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use P00.png as the exact first frame and CP00.png as the exact last frame.
+Use M1_P00.png as the exact first frame and M1_CP00.png as the exact last frame.
 
 Begin on the finished MyScoutee Part I opening composition with no black title
 panel. For the first two seconds, keep the exact M/heart mark, `yScoutee`, every
@@ -19,7 +19,7 @@ exact final composition.
 
 Use one continuous, slow forward camera movement. Preserve the painterly
 cinematic 2.5D style, central geometry and blue-to-earth colour transition. End
-exactly on CP00.png with no remaining title or logo.
+exactly on M1_CP00.png with no remaining title or logo.
 
 No cut, camera jump, reverse motion, new text, misspelled text, Cyrillic or
 Russian lettering, logo mutation, extra emblem, face, dialogue, narration,

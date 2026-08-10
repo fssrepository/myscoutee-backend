@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP13.png as the exact first frame and CP14.png as the exact last frame.
+Use M1_CP13.png as the exact first frame and M1_CP14.png as the exact last frame.
 
 Continue without a cut inside the exact same adult dance studio. Begin with the Founder and the auburn-haired Dance Student seated on the same long wooden bench, sharing relaxed attentive regard while two mature adult pairs continue practising quietly in the background.
 
@@ -8,7 +8,7 @@ The slow camera arc settles naturally into a static 55 mm medium three-shot. At 
 
 The Dance Student turns naturally and happily toward her existing partner. The Founder's hopeful half-smile changes into a warm, socially calibrated smile of understanding, followed by a tiny accepting nod. Keep the moment humane, subtle and free of embarrassment or melodrama.
 
-End exactly on CP14.png: the partner stands at frame left holding the folded umbrella; the Founder remains seated at centre; the Dance Student remains seated at right; all three exchange friendly, relaxed attention. Preserve the warm studio practical light with a cool rainy doorway rim.
+End exactly on M1_CP14.png: the partner stands at frame left holding the folded umbrella; the Founder remains seated at centre; the Dance Student remains seated at right; all three exchange friendly, relaxed attention. Preserve the warm studio practical light with a cool rainy doorway rim.
 
 CONTINUITY IS REQUIRED:
 Preserve the Founder's exact face, age, dark knit clothing and rust scarf. Preserve the Dance Student's exact face, short auburn bob, teal wrap top, black trousers and dance shoes. Preserve the partner's exact mature identity, shaved head, short greying beard, dark raincoat and brown umbrella. Preserve the established painterly cinematic 2.5D style, studio geometry, mirror, pendant lamp, windows, bench and timber floor.

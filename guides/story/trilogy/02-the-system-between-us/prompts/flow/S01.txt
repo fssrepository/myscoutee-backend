@@ -1,8 +1,8 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP00.png as the exact first frame and CP01.png as the exact last frame.
+Use M2_CP00.png as the exact first frame and M2_CP01.png as the exact last frame.
 
-Begin exactly on the inherited Part I endpoint in CP00.png: the same mature Founder and local operator work together in the foreground while distinct independently hosted community workspaces remain visible above them, connected by the restrained coral human-network line around the blank central circle.
+Begin exactly on the inherited Part I endpoint in M2_CP00.png: the same mature Founder and local operator work together in the foreground while distinct independently hosted community workspaces remain visible above them, connected by the restrained coral human-network line around the blank central circle.
 
 Follow the existing coral line with one slow, physically continuous 45 mm camera movement toward the Founder's cognac notebook. As the camera advances, the local operator and community workspaces recede naturally into dim reflections in the Budapest window and polished wood. They remain memories of real people and places; nobody vanishes, dissolves violently or changes identity.
 
@@ -10,12 +10,12 @@ The coral network line gradually loses its branching structure and straightens i
 
 The Founder remains quiet and controlled. He sits at the desk holding the same cognac notebook and looks toward the blank form with restrained concentration. Keep the upper area visually empty and completely free of writing.
 
-End exactly on CP01.png: the Founder sits alone in the lower central band of the modest flat, the cognac notebook held beside him, the blank ivory form and its single coral ruled line clearly visible on the desk, with faint community reflections outside the window.
+End exactly on M2_CP01.png: the Founder sits alone in the lower central band of the modest flat, the cognac notebook held beside him, the blank ivory form and its single coral ruled line clearly visible on the desk, with faint community reflections outside the window.
 
 CONTINUITY IS REQUIRED:
 Preserve the Founder's exact mature face, facial structure, hairline, navy field coat, charcoal knit clothing, muted rust scarf and cognac notebook. Preserve the established painterly cinematic 2.5D style, tactile brush texture, deep navy shadows, warm amber desk light and natural anatomy.
 
-STRICT TEXT LOCK: generate no subtitles, captions, intertitles, lower thirds, interface text, writing, letters, words, numbers or typographic marks anywhere in the video. No Cyrillic or Russian text and no text in any other language. Every paper, screen, wall and empty area must remain blank except for the single abstract coral ruled line already present in CP01.png.
+STRICT TEXT LOCK: generate no subtitles, captions, intertitles, lower thirds, interface text, writing, letters, words, numbers or typographic marks anywhere in the video. No Cyrillic or Russian text and no text in any other language. Every paper, screen, wall and empty area must remain blank except for the single abstract coral ruled line already present in M2_CP01.png.
 
 No hard cut, camera jump, new foreground person, duplicate Founder, face morphing, magical network effect, floating interface, readable form, generated title, number, logo, seal, tax symbol, legal symbol, government emblem, villain lighting or dystopian spectacle. Nobody speaks, mouths words or visibly articulates language. Do not infer or generate dialogue from facial movement.
 

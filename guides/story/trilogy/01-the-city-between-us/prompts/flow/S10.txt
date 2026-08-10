@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP09.png as the exact first frame and CP10.png as the exact last frame.
+Use M1_CP09.png as the exact first frame and M1_CP10.png as the exact last frame.
 
 Begin exactly in the quiet Budapest apartment shown in CP09. Preserve the
 Founder's exact identity, navy coat, rust scarf, cognac notebook and the two keys
@@ -25,7 +25,7 @@ controlled overload, never panic or vanity.
 Their experiences remain different but equally human. Neither person notices the
 other. Both phone gestures slow and begin to lower, but the devices remain in
 their hands to match the exact final frame. Use soft face light and a cold phone
-fill kept below eye level. End exactly on CP10.png.
+fill kept below eye level. End exactly on M1_CP10.png.
 
 CONTINUITY IS REQUIRED:
 The CP09 apartment window, yellow tram reflection and CP10 carriage rail must

@@ -352,45 +352,45 @@ Narration and stabilized editable titles come from [SCRIPT.md](../film/SCRIPT.md
 
 | File | Locked visual state | Used by |
 | --- | --- | --- |
-| `CP00.png` | lossless Part I network handoff | S01 |
-| `CP01.png` | network line becomes form; title-safe Founder desk | S01–S02 |
-| `CP02.png` | whole earlier life reflected around Budapest desk | S02–S03 |
-| `CP03.png` | salaried office emptied by COVID-19 | S03–S04 |
-| `CP04.png` | seven-year savings against three-week policy | S04–S05 |
-| `CP05.png` | accepted inside audio-only remote team | S05–S06 |
-| `CP06.png` | lawful KATA working bridge | S06–S07 |
-| `CP07.png` | protest outside, protected handover inside | S07–S08 |
-| `CP08.png` | handover completed, closing row unresolved | S08–S09 |
-| `CP09.png` | Founder/accountant/tax-officer partial-view triangle | S09–S10 |
-| `CP10.png` | password sharing versus incomplete delegation | S10–S11 |
-| `CP11.png` | 23 November reconstruction | S11–S12 |
-| `CP12.png` | dry call and empty family space | S12–S13 |
-| `CP13.png` | corrected, paid, representation ended | S13–S14 |
-| `CP14.png` | direct-notice and correction process proposal | S14–S15 |
-| `CP15.png` | disputed line and immediate correction in evidence | S15–S16 |
-| `CP16.png` | solitary post-operative room | S16–S17 |
-| `CP17.png` | closed-incision attachment and black humour | S17–S18 |
-| `CP18.png` | restrained police arrival | S18–S19 |
-| `CP19.png` | ordinary interview room, devices and counsel | S19–S20 |
-| `CP20.png` | professional fingerprinting and human glance | S20–S21 |
-| `CP21.png` | Founder recovers missing records | S21–S22 |
-| `CP22.png` | two experts, one future report | S22–S23 |
-| `CP23.png` | whole person behind narrow other biography | S23–S24 |
-| `CP24.png` | brown monumental Buda courthouse by Danube | S24–S25 |
-| `CP25.png` | exact C-shaped hearing-room geometry | S25–S26 |
-| `CP26.png` | life and care behind the asset question | S26–S27 |
-| `CP27.png` | institutional doors answer later | S27–S28 |
-| `CP28.png` | AI-assisted self-defence workspace | S28–S29 |
-| `CP29.png` | four bounded creative-work windows | S29–S30 |
-| `CP30.png` | anonymous professor returns question to exact statement | S30–S31 |
-| `CP31.png` | black-humour paper reaches police desk | S31–S32 |
-| `CP32.png` | London housemate and foreign-currency debt | S32–S33 |
-| `CP33.png` | beautiful Budapest and recurring exit line | S33–S34 |
-| `CP34.png` | civic streets and remedy portals | S34–S35 |
-| `CP35.png` | election moves institutions, case remains | S35–S36 |
-| `CP36.png` | eight recusals leave no constitutional quorum | S36–S37 |
-| `CP37.png` | clemency refusal and later mandate signature stay unequal | S37–S38 |
-| `CP38.png` | open human/system line and unresolved hearing | S38/E01 |
+| `M2_CP00.png` | lossless Part I network handoff | S01 |
+| `M2_CP01.png` | network line becomes form; title-safe Founder desk | S01–S02 |
+| `M2_CP02.png` | whole earlier life reflected around Budapest desk | S02–S03 |
+| `M2_CP03.png` | salaried office emptied by COVID-19 | S03–S04 |
+| `M2_CP04.png` | seven-year savings against three-week policy | S04–S05 |
+| `M2_CP05.png` | accepted inside audio-only remote team | S05–S06 |
+| `M2_CP06.png` | lawful KATA working bridge | S06–S07 |
+| `M2_CP07.png` | protest outside, protected handover inside | S07–S08 |
+| `M2_CP08.png` | handover completed, closing row unresolved | S08–S09 |
+| `M2_CP09.png` | Founder/accountant/tax-officer partial-view triangle | S09–S10 |
+| `M2_CP10.png` | password sharing versus incomplete delegation | S10–S11 |
+| `M2_CP11.png` | 23 November reconstruction | S11–S12 |
+| `M2_CP12.png` | dry call and empty family space | S12–S13 |
+| `M2_CP13.png` | corrected, paid, representation ended | S13–S14 |
+| `M2_CP14.png` | direct-notice and correction process proposal | S14–S15 |
+| `M2_CP15.png` | disputed line and immediate correction in evidence | S15–S16 |
+| `M2_CP16.png` | solitary post-operative room | S16–S17 |
+| `M2_CP17.png` | closed-incision attachment and black humour | S17–S18 |
+| `M2_CP18.png` | restrained police arrival | S18–S19 |
+| `M2_CP19.png` | ordinary interview room, devices and counsel | S19–S20 |
+| `M2_CP20.png` | professional fingerprinting and human glance | S20–S21 |
+| `M2_CP21.png` | Founder recovers missing records | S21–S22 |
+| `M2_CP22.png` | two experts, one future report | S22–S23 |
+| `M2_CP23.png` | whole person behind narrow other biography | S23–S24 |
+| `M2_CP24.png` | brown monumental Buda courthouse by Danube | S24–S25 |
+| `M2_CP25.png` | exact C-shaped hearing-room geometry | S25–S26 |
+| `M2_CP26.png` | life and care behind the asset question | S26–S27 |
+| `M2_CP27.png` | institutional doors answer later | S27–S28 |
+| `M2_CP28.png` | AI-assisted self-defence workspace | S28–S29 |
+| `M2_CP29.png` | four bounded creative-work windows | S29–S30 |
+| `M2_CP30.png` | anonymous professor returns question to exact statement | S30–S31 |
+| `M2_CP31.png` | black-humour paper reaches police desk | S31–S32 |
+| `M2_CP32.png` | London housemate and foreign-currency debt | S32–S33 |
+| `M2_CP33.png` | beautiful Budapest and recurring exit line | S33–S34 |
+| `M2_CP34.png` | civic streets and remedy portals | S34–S35 |
+| `M2_CP35.png` | election moves institutions, case remains | S35–S36 |
+| `M2_CP36.png` | eight recusals leave no constitutional quorum | S36–S37 |
+| `M2_CP37.png` | clemency refusal and later mandate signature stay unequal | S37–S38 |
+| `M2_CP38.png` | open human/system line and unresolved hearing | S38/E01 |
 
 ## Approval gate
 

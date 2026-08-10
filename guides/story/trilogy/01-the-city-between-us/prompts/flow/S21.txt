@@ -1,18 +1,18 @@
-Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+Create exactly one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP20.png as the exact first frame and CP21.png as the exact last frame.
+Use M1_CP20.png as the exact first frame and M1_CP21.png as the exact last frame.
 
-Create one compressed but fluid later chapter in the same public venue. Begin exactly with the first event's six adults and four resource cards in CP20.png. A participant's hand passes one card across the foreground, creating an organic match transition into a later evening at the same table. The people first met as strangers now return as known contacts around a shared tabletop route activity.
+Begin exactly on M1_CP20.png in the same warm London public venue. Keep the round table, windows, plants, lamps, evening street, four large icon-only resource cards, two smaller secondary cards and every visible adult spatially continuous.
 
-The host directly re-invites several known contacts using blank tactile invitation cards. One previously invited adult lacks time and calmly declines through a small open-hand gesture, without embarrassment or penalty. The available place then passes along the established private priority path to a new invited adult: a visibly mature silver-haired woman. She independently accepts and arrives through the doorway. The host welcomes her with open posture while the others turn toward her naturally. The route activity now has workable capacity, but do not imply that anybody is interchangeable or that a full group is guaranteed.
+Play the scene as one unbroken real-time action. The six adults already seated at the table continue their restrained interaction through eye contact and small natural hand gestures, with relaxed closed mouths. Nobody reverses a gesture, repeats an action or returns to an earlier pose. The local male provider visible behind the table remains exactly the same man—same face, age, hair, body, clothing and crate—while he completes one continuous forward action, places the crate, then calmly moves toward the edge of the scene without changing identity.
 
-During a brief ordinary interaction, two existing contacts encounter a small difference of opinion. There is no argument and no villain. In the foreground, one private relationship priority is quietly revised: a hand moves one amber bead lower in the open notebook. The future shared path between those two adults becomes fainter and less likely while every other social path remains available. This is private adaptation, not public punishment.
+The camera makes one very slow, stable 35 mm clockwise arc around the same table. It never cuts and no hand, card, paper, person or object covers the whole frame. During this uninterrupted movement, the silver-haired mature woman shown in M1_CP21.png enters naturally from the visible doorway. The host rises once and welcomes her with an open-hand gesture. The seated adults turn toward her only once, in sequence, without snapping, resetting or moving backward. Their positions evolve continuously into the exact final arrangement.
 
-End exactly on CP21.png: the same known adults gather around the tabletop route activity; the host stands at frame right welcoming the silver-haired new adult; a wider mix of mature participants is visible naturally in the background; the open cognac notebook in the foreground shows one amber bead moved lower beneath the remaining row.
+End exactly on M1_CP21.png: the same returning adults remain recognizable around the same table; the host stands at frame right welcoming the exact silver-haired woman; the tabletop route activity and open cognac notebook are in their exact final positions.
 
-CONTINUITY IS REQUIRED:
-Preserve all returning approved faces, ages, hairstyles and clothing. Preserve the exact mature silver-haired new invitee shown in CP21.png. Preserve the same venue geometry, round table, windows, plants, warm lamps, dark evening street and painterly cinematic 2.5D style. Every adult retains independent choice, contribution and agency.
+STRICT TEMPORAL AND IDENTITY CONTINUITY:
+Every person visible in the first frame must retain the same identity for the entire clip. Lock every face, age, hairstyle, skin tone, body and clothing, and preserve each person's continuous path from the starting position to the final position. The background male provider must never be replaced by another man while visible. Do not duplicate, remove by morphing, merge, age, rejuvenate or redesign anybody. Motion proceeds only forward in time. No temporal reset, backward movement, replayed gesture, repeated entrance, pose reset, camera jump, hidden cut, match cut, wipe or morph. Keep the same venue geometry, table geometry, painterly cinematic 2.5D style and warm evening light throughout.
 
-No abrupt hard cut, revenge, villain, public down-rating, humiliation, forced invitation, automatic replacement, guaranteed full group, interchangeable people, forced couple, guaranteed chemistry, readable interface text, public number, logo, duplicate person, merged identity, face morphing, child, teenager or minor. Nobody speaks or visibly articulates words.
+Preserve the existing card artwork exactly; do not invent, replace or rewrite labels or symbols. No new interface, logo or caption. No argument, forced invitation, automatic couple or exaggerated celebration. Keep every mouth relaxed and closed throughout.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

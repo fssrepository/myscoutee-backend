@@ -1,6 +1,6 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP07.png as the exact first frame and CP08.png as the exact last frame.
+Use M1_CP07.png as the exact first frame and M1_CP08.png as the exact last frame.
 
 Begin exactly in the Lee Valley shared bedroom shown in CP07. Preserve the
 Founder's exact face, navy coat, rust scarf, suitcase, cognac notebook, desk,
@@ -30,7 +30,7 @@ Let the final water reflection expand into the glass wall of an almost empty
 international terminal. The Founder is now seated with his suitcase and open
 notebook beside one conspicuously empty seat. The last route line loses momentum
 and stops quietly at the restrained COVID-19 threshold. The remaining travel
-memories settle only as faint reflections in the glass. End exactly on CP08.png.
+memories settle only as faint reflections in the glass. End exactly on M1_CP08.png.
 
 CONTINUITY IS REQUIRED:
 Use one unbroken forward visual direction. The CP07 window reflection becomes

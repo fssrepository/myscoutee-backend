@@ -1,9 +1,9 @@
 Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
-Use CP05.png as the exact first frame and CP06.png as the exact last frame.
+Use M1_CP05.png as the exact first frame and M1_CP06.png as the exact last frame.
 
 Begin exactly in the crowded but maintained Lee Valley kitchen and hall shown
-in CP05.png. Preserve all ten adults in the first frame and do not create any
+in M1_CP05.png. Preserve all ten adults in the first frame and do not create any
 additional resident. Use one restrained 32 mm forward camera movement through
 the open inner doorway. Familiar residents quietly make room for one another
 through small glances and practical gestures; nobody visibly speaks.
@@ -20,7 +20,7 @@ darkness, the adult silhouette in the second sleeping zone changes quietly;
 morning light reveals that an acquaintance has replaced the resident who lost
 his money through gambling. Treat the unannounced room turnover as dry human
 absurdity, never the debt or either person as a joke. Return to the Founder at
-the notebook and end exactly on CP06.png.
+the notebook and end exactly on M1_CP06.png.
 
 CONTINUITY IS REQUIRED:
 Preserve the Founder's exact face, navy coat, rust scarf, backpack and cognac

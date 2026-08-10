@@ -14,7 +14,7 @@ two/three-shots. Keep title/caption zones free as defined in the edit guide.
 ### P00 — True-story threshold · 00:00–00:08 · generated background plus exact post typography
 
 - **Picture:** the deep-navy route globe converges through one guiding star into
-  the real soil furrow of CP00. Use `P00.png` and `CP00.png` as the exact Veo
+  the real soil furrow of CP00. Use `M1_P00.png` and `M1_CP00.png` as the exact Veo
   endpoints. The exact repository mark and editable typography are composited
   over the generated background in post.
 - **Text:** title, part title, `BASED ON A TRUE STORY` and the one-sentence
