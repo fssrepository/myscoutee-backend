@@ -1,65 +1,32 @@
-Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+Create one continuous silent 8-second, 9:16 Frames-to-Video ending clip using Veo 3.1 Lite.
 
 Use M1_CP22.png as the exact first frame and M1_E01.png as the exact last frame.
 
-Keep the exact first-frame composition, crop, identities, rooms, central hub
-and network geometry. Use a stable camera with one almost imperceptible slow
-pull-back. Do not reconstruct or rearrange the scene.
+Reproduce the visual sequence and restrained cinematic rhythm of the existing ending animation.
 
-During seconds 0–2, continue the living action already present in the first
-frame. Preserve the exact mature grey-haired woman and exact male system
-administrator from M1_CP22.png without changing either identity. They complete
-the physical connection together beside the same laptop, compact device and
-local server. Their hands move naturally and they exchange one restrained look
-of recognition. People in
-the three connected rooms continue small independent human actions: listening,
-turning slightly toward one another, passing an object and leaning into their
-conversations. Preserve every identity and keep all mouths relaxed, without
-performing dialogue.
+Preserve the exact mature silver-haired woman with the rust scarf and the exact male system administrator from M1_CP22.png. Preserve their faces, ages, clothing, body proportions and positions until the scene darkens. They remain the same two people throughout and nobody visibly speaks.
 
-During seconds 2–4, form one clean warm-gold heart-shaped light inside the
-existing central circle. It is a simple light, not a logo or a separate emblem.
-Before it beats, every server and device indicator remains quiet. The heart
-then gives one visible, restrained contraction: the first returning heartbeat
-after resuscitation. The heartbeat itself must clearly cause the activation.
-At the exact moment of contraction, one warm golden current leaves the circle
-and runs outward along the existing coral network paths. Only after the current
-reaches each room do the server indicators wake in sequence, laptop and device
-lights respond, and the rooms brighten with renewed human activity. Show the
-idea of human connection being brought back to life and online matching being
-rebuilt around people rather than a catalogue. Keep this entirely visual: no
-medical equipment, shock paddles, interface, labels or explanatory text. The
-effect is intimate and hopeful, not an explosion or a science-fiction power
-surge.
+Preserve the existing composition: the people at the workstation, the laptop and server, the empty central outlined circle, the existing connecting lines and the existing illuminated scene panels in the background.
 
-During seconds 4–5, let the golden current settle into the existing coral
-paths. The heart-shaped light dims gently and disappears inside the circle.
-The woman and system administrator complete their hand movement and settle
-naturally. Their faces and bodies remain unchanged. All other motion slows
-without freezing or jumping.
+Seconds 0–1: begin exactly on M1_CP22.png. The central circle is completely empty. The woman and system administrator make only restrained natural working movements. All background scene panels remain in their existing positions.
 
-Before the supplied title image appears, let a uniform deep-navy veil fully
-cover the living scene so no underlying face remains visible. Treat the
-complete M1_E01.png as one immutable, flattened final image. Do not
-identify, read, rewrite, redraw, animate, separate or recreate any logo,
-lettering, icon or graphic inside it. During seconds 5–7, smoothly darken the
-living scene while the complete supplied last frame fades in as one flat,
-perfectly registered layer. None of its individual graphic elements may appear
-early, move independently or be generated again. Once the navy veil is fully
-opaque, fade in the supplied last frame as a single flat layer. Reach the exact
-supplied last frame by second 7 and hold it unchanged for the final second as a
-reflective breath.
+Seconds 1–2: a thin warm-gold line begins tracing the outline of one heart inside the existing central circle. The line draws the heart progressively and remains completely inside the circle.
 
-There must be no sudden shadow step, pose reset, resize, re-composition,
-character replacement or intermediate title design. The shared people, rooms,
-table, device, central circle and network paths must remain spatially
-registered throughout the transition.
+Seconds 2–3: complete the warm-gold heart outline inside the circle. The completed heart briefly holds while the people and background remain stable.
 
-No black title panel, cut, camera jump, reverse motion, abrupt re-composition,
-logo mutation, replacement emblem, duplicated branding,
-new text, explanatory label, misspelled text, Cyrillic or Russian lettering or
-extra people. Do not generate any typography, word, logo, icon or symbol beyond
-the pixels already present in the supplied endpoint images.
+Seconds 3–4: the heart performs one strong, clearly visible heartbeat. A sharp but elegant warm-gold pulse crosses through the heart, briefly expanding its light. This is a single heartbeat, not a medical interface and not a new symbol.
 
-Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
-8 seconds, 9:16.
+Seconds 4–5: the same pulse leaves the heart and travels only along the connecting lines already present in the composition. It illuminates the existing background scene panels and passes behind the people without covering or transforming them. The heart dissolves from the central circle after releasing the pulse, leaving the circle empty again.
+
+Seconds 5–6: the warm light settles through the existing network. The people remain the same and continue restrained natural movements. No new character appears.
+
+Seconds 6–7: the live scene darkens smoothly. The existing illuminated scene panels separate into many small connected memory frames and arrange themselves into two clear human network silhouettes, one on each side of the central vertical connection. Use only scene imagery and connecting lines, not generic icons or circuit symbols.
+
+Seconds 7–8: transition directly into the exact supplied M1_E01.png title card. Preserve its MyScoutee logo, emblem, typography, spelling, colors, layout and background exactly. Do not redraw, duplicate, translate or alter any text or logo. Hold the exact final frame completely still and fully readable until the clip ends.
+
+Do not introduce a circuit tree, branching electronic diagram, medical ECG display, interface icons, pictograms, lightning covering the people, newspaper, paper wipe, additional character, identity swap, face morph, gender change, duplicate person, duplicate logo, added text or altered text.
+
+SILENT VIDEO IS REQUIRED:
+Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

@@ -1,4 +1,4 @@
-Create exactly one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+Create exactly one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M1_CP20.png as the exact first frame and M1_CP21.png as the exact last frame.
 
@@ -15,5 +15,8 @@ Seconds 5–8: the provider and the silver-haired woman settle side by side in t
 Use one slow stable 35 mm camera movement. Preserve every person's identity, the table geometry, cognac notebook, route activity and painterly cinematic 2.5D style. Motion proceeds only forward.
 
 No cut, hidden reset, morph, face blending, duplicate person, gender change, replacement character, repeated entrance, backward motion, readable text, generated logo or new interface. Nobody visibly speaks.
+
+SILENT VIDEO IS REQUIRED:
+Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.
