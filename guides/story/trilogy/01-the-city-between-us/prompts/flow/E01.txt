@@ -2,23 +2,29 @@ Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 L
 
 Use M1_CP22.png as the exact first frame and M1_E01.png as the exact last frame.
 
-Preserve the complete first-frame composition throughout the clip: the exact mature silver-haired woman with the rust scarf, the exact male system administrator, their desk, laptop and local server, the three existing background scene windows, the one empty central circle and exactly three existing coral branches connecting the circle to the three scene windows.
+Keep the exact mature silver-haired woman, the exact male system administrator, the three existing lived-scene panels, the central circle, the three existing coral connector lines and the complete background stable throughout.
 
-The same two foreground people must remain visible in the same positions and with the same identities until the final title card appears. Their faces, ages, hair, clothing and body proportions never change. They make only restrained natural hand and head movements and never visibly speak.
+Seconds 0–1.5: begin exactly on M1_CP22.png. The central circle is empty. The two people make only restrained natural hand movements.
 
-Seconds 0–2: begin exactly on M1_CP22.png. The central circle remains empty. The two people continue their restrained work. The three background scenes remain stable with only subtle natural movement.
+Seconds 1.5–2.5: one solid, filled, rounded 3D heart grows into view inside the central circle. It is a stylized volumetric heart with a softly rounded convex surface and restrained warm coral-gold illumination. It is not hollow and it is not made from an outline.
 
-Seconds 2–3: one clean warm-gold heart outline draws itself inside the existing central circle. The heart remains completely inside the circle. Nothing else changes.
+Seconds 2.5–4: the complete solid 3D heart performs exactly one natural two-phase heartbeat: TU–TU. It gently grows larger, compresses smaller and rebounds to normal size, followed immediately by one smaller secondary pulse. The heart remains the same intact solid 3D object throughout.
 
-Seconds 3–4: the heart performs exactly one strong, simple heartbeat by contracting once and returning to its original size. At that exact beat, one restrained warm-gold pulse leaves the circle and travels only along the three existing coral branches toward the three existing scene windows. The three scene windows brighten gently when the pulse reaches them.
+At the peak of the heartbeat, one thin band of light starts moving outward inside exactly the three existing coral connector lines. The light remains confined inside those lines. It does not leave the lines and does not create any particles.
 
-Seconds 4–5: the pulse settles. The heart fades away, leaving the central circle empty again. The three branches, three scene windows and two foreground people remain exactly where they were.
+Seconds 4–6: the thin light travels smoothly along the three existing connector lines toward the three lived-scene panels. The scene panels remain unchanged and retain their original exposure. The moving line-light briefly activates the existing composition without creating any new object.
 
-Seconds 5–7: the complete living scene darkens uniformly while preserving the same people, same three scenes, same circle and same three branches. Bring in the complete supplied M1_E01.png as one flat, perfectly registered image. Do not construct or regenerate its individual logo or text elements.
+Seconds 6–7: the line-light completes its route and the connector lines return to their original appearance. The solid heart settles after the heartbeat without changing into any other symbol.
 
-Seconds 7–8: hold the exact M1_E01.png frame completely still and fully readable.
+Seconds 7–8: resolve directly and cleanly into the supplied M1_E01.png end frame. Preserve its exact MyScoutee logo and exact final typography. Do not invent, duplicate, rewrite or misspell any text. Hold the exact final frame briefly at the end so every line remains readable. No scene fade and no restart of the animation.
 
-No silhouettes, no wire people, no robotic people, no circuit-board figures, no rearrangement of the scene windows, no additional branches, no additional icons, no ECG line, no lightning, no medical display, no new person, no disappearing or returning person, no identity swap, no face morph, no gender change, no duplicated logo, no generated text and no altered text.
+The heart must be a SOLID FILLED 3D HEART. NO outline-only heart. NO hollow heart. NO flat heart silhouette. NO anatomical heart. NO ECG symbol.
+
+NO NETWORK EXPANSION. NO ADDITIONAL NODES. NO HUMAN SILHOUETTES. NO WIRE PEOPLE. NO ROBOTS. NO CIRCUIT BODIES. NO NEW SCENE CARDS. NO EXTRA TITLE CARD. NO EXTRA LOGO. NO EXTRA TEXT. NO FADE.
+
+ZERO sparks. ZERO particles. ZERO glitter. ZERO fireworks. ZERO starburst. ZERO lens flare. ZERO glowing clouds. ZERO exploding light. ZERO bright windows. ZERO roots or trees.
+
+Do not replace, duplicate, hide or restart either foreground person. No additional person, no identity swap, no face morph and no gender change.
 
 SILENT VIDEO IS REQUIRED:
 Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
