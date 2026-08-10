@@ -2,21 +2,20 @@ Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M1_CP21.png as the exact first frame and M1_CP22.png as the exact last frame.
 
-Begin exactly on the later community event in M1_CP21.png. The camera moves over the open cognac notebook in the foreground, leaving a clean blank area beside it for the date 2016 to be added later in post. Three restrained seasonal page tabs turn in sequence, suggesting roughly three years of private creative work in Budapest. Simple route lines repeatedly leave and return to the notebook. This represents bounded periods of sustained attention made possible by Budapest-level financial independence, not ten continuous development years and not casual weekend construction.
+This is a fully occluded notebook transition between two different moments. Never transform one person into another and never invent an intermediate pair. The mature grey-haired woman with the rust scarf in M1_CP21.png is the same exact woman shown beside the male system administrator in M1_CP22.png.
 
-The route lines on the event map become one restrained coral technical line. Follow it in a continuous 45 mm over-shoulder move into a credible later workspace. Later AI assistance accelerates the development of individual modules, but it neither invents nor validates the original idea.
+Seconds 0–2: begin exactly on M1_CP21.png. Make one restrained push toward the open cognac notebook in the foreground. The people around the table remain stable and nobody visibly speaks.
 
-At the real workstation, the Founder transfers one compact deployment device to a technically capable mature local operator with short salt-and-pepper hair. She inspects the physical package, connects it to her own independently hosted local server and verifies an unbranded organizer surface on the laptop. Their attention is practical and collaborative.
+Seconds 2–4: move so close to one blank notebook page that its warm paper texture completely fills the entire 9:16 frame. No face, person, room or silhouette remains visible. Hold this complete paper occlusion long enough to separate the two moments cleanly.
 
-The coral shared-core line reveals three visually distinct local workspaces above them. Each has its own mature local organizers, cultural atmosphere, palette and independently hosted server while cooperating around the same unresolved path from human intention to a real meeting. One local node retains a clear dashed voluntary opt-out route and remains operable on its own. Do not move profiles, chats, contacts or private priority history automatically between operators.
+Seconds 4–5.5: the full-frame paper texture gradually darkens into the deep navy tone of the later workspace. Restrained coral route lines travel across the otherwise abstract surface. Do not show any person during this transformation.
 
-End exactly on M1_CP22.png: the Founder and operator work together in the foreground beside the laptop and local server; three different locally operated community workspaces remain visible above; restrained coral lines connect them around one large blank central circle reserved for later placement of the original unmodified MyScoutee heart emblem.
+Seconds 5.5–8: pull back from the technical desk already shown in M1_CP22.png. Reveal the exact supplied endpoint scene directly, without constructing it person by person. The same mature grey-haired woman and the male system administrator become visible only as the camera pulls back. From their first visible frame they must already have the exact faces, hair, clothing, age and body proportions shown in M1_CP22.png. No earlier or substitute pair may appear.
 
-CONTINUITY IS REQUIRED:
-Preserve the Founder's exact mature face, dark coat and rust scarf. Preserve the operator's exact mature face, short salt-and-pepper hair and dark work shirt. Preserve the cognac notebook, compact deployment device, laptop, local server stack and deep navy technical space. Keep faces warm while every local workspace remains culturally and visually distinct. Preserve the painterly cinematic 2.5D style.
+Keep the outlined central junction uniformly dark and completely empty. Nothing appears, forms, glows, pulses or moves inside it. Do not add any icon, light, mark, letter or decorative object there.
 
-Show shared infrastructure and a proposed voluntary virtual enterprise, not anonymous package distribution. Localization may suggest real distance, place, timing, transport, resources, language and boundaries without readable labels.
+Reach the exact M1_CP22.png composition by second 7. Hold restrained natural micro-movement while converging precisely on the supplied last frame. The woman and administrator work beside the same laptop, compact device and local server; their identities never reset.
 
-No hard cut, tax symbol, health-insurance symbol, legal symbol, administrative symbol, generated logo, readable terminal, readable text, central merchant, automatic trust, certified safety, claim of current deployment, proven efficiency, revenue, homogenized local cultures, private-data transfer, duplicate person, merged identity, face morphing, child, teenager or minor. Nobody speaks or visibly articulates words.
+No cut, camera jump, face morph, duplicate person, temporary character, identity replacement, pose reset, readable interface text, generated branding, explanatory label, Cyrillic lettering or extra people. Do not animate mouths as dialogue.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.
