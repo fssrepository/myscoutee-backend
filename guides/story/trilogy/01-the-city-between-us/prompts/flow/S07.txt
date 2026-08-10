@@ -1,0 +1,49 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP06.png as the exact first frame and CP07.png as the exact last frame.
+
+Begin exactly in the shared Lee Valley bedroom shown in CP06. Preserve the
+Founder's exact identity, navy coat, rust scarf, cognac notebook and the sleeping
+flatmate. Use one locked 40 mm composition around the notebook, desk lamp and
+canal-facing window. Nobody speaks or visibly moves their lips.
+
+Create one continuous five-year time fold without leaving the room and without
+hard cuts. As the Founder writes, notebook pages turn naturally and the same
+window passes through restrained seasonal light. During the first three cycles,
+brief truthful travel memories appear only as soft reflections in the window and
+faint sketches across the notebook: a one-pound overnight coach toward
+Edinburgh, Loch Ness, a River Clyde powerboat, then a rented car carrying exactly
+five travellers—two couples and the Founder—on the rushed
+London–Manchester–Liverpool–Barmouth–Cardiff–London circuit. An acquaintance
+drives because the Founder cannot drive; never show a hired chauffeur. Let one
+reflection briefly suggest Barmouth's wide low-tide sand at the Mawddach Estuary,
+with the town held between mountains and sea. Do not turn this into a tourism
+montage or create separate full-screen locations.
+
+Years four and five become visually quieter: longer work, rent, shared space,
+departures and repeated notebook calculations. Let the saved-rent route lines
+settle toward a lower Budapest-cost threshold while never reaching the cost of a
+private London home. A plain key beside the notebook recalls the parent-assisted
+Budapest flat that stood empty during the London years. Housing becomes the
+stop-loss: ordinary London housing would consume the Budapest position, while
+continued room sharing is no longer viable.
+
+Finish with one restrained 55 mm push toward the Founder as he closes the
+notebook, takes the suitcase and rises beside the same window. The travel
+reflections disappear, leaving only the real Lee Valley canal, reeds, rain and
+late-2015 light. End exactly on CP07.png.
+
+CONTINUITY IS REQUIRED:
+Keep the same room, desk, lamp, window, canal axis and camera direction throughout.
+Preserve the painterly cinematic 2.5D texture. The passage of time must happen
+through light, notebook pages, restrained reflections and the Founder's movement,
+not through cuts or morphing.
+
+No hard cut, camera jump, freeze, collage, split screen, face morph, duplicate
+Founder, extra resident, readable text, generated dates, political slogan,
+tourist postcard sequence, hired driver, invented landmark, luxury home,
+starvation imagery, financial numbers, logos or claim that migrants displaced
+workers.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
