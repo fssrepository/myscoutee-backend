@@ -1,0 +1,23 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use CP14.png as the exact first frame and CP15.png as the exact last frame.
+
+Create one fluid three-beat memory sequence showing how unsuitable locations obstruct otherwise humane adult meetings. Begin exactly in the dance studio from CP14.png. The arriving partner lifts the folded wet umbrella naturally across the foreground; its dark shape creates an organic full-frame wipe into the first memory. Do not use a hard cut.
+
+BEAT 1 — CAFÉ:
+At a small café table, the Founder meets the exact same mature East Asian woman seen in CP15. Espresso steam briefly drifts between their faces and masks an attempted exchange. Both recognize the harmless interruption and share one restrained, natural smile. Static table-height 50 mm composition. Nobody visibly articulates words.
+
+BEAT 2 — BASEMENT BAR:
+Let the espresso steam darken seamlessly into the soft haze of a crowded basement bar. With restrained 40 mm handheld movement, surrounding noise and movement make the woman cup one ear and gesture gently for repetition. The Founder leans forward attentively. Neither person shows contempt, rejection or embarrassment. A passing adult fills the foreground and creates the next natural wipe.
+
+BEAT 3 — FORMAL LONG TABLE:
+Reveal the Founder and the same woman seated far apart at an excessively long formal table. Settle into a symmetrical static 58 mm composition. The setting makes both adults sit slightly too straight; they release one small shared exhale and meet each other's eyes with humane restraint. The location is the problem, not either person.
+
+End exactly on CP15.png with the Founder seated at frame left and the mature East Asian woman at frame right across the long white table, maintaining calm eye contact in the dark elegant room.
+
+CONTINUITY IS REQUIRED:
+Preserve the Founder's exact mature face, dark coat and rust scarf across every beat. Preserve the woman's exact mature face, shoulder-length black hair and light beige knit top. Preserve the painterly cinematic 2.5D style and warm restrained colour grade. Use only organic foreground wipes and environmental transitions between the three locations.
+
+No hard cut, abrupt jump, face change, duplicate person, merged identity, contempt, phone rejection, appearance joke, intoxication, seduction, argument, readable menu, brand, logo, child, teenager or minor. Nobody speaks or visibly articulates words.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.
