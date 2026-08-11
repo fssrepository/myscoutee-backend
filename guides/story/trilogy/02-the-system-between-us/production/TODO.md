@@ -7,6 +7,24 @@ audit. Frame production begins from this synchronized package; any later
 external critical-AI feedback becomes a new editorial decision rather than a
 gate on this publication.**
 
+## Immediate production exceptions — S16, S17 and S18A
+
+- [ ] **Generate S16 outside Google Flow.** Flow repeatedly rejected the motion
+  prompt even after a neutral 57-word test, while accepting both endpoint
+  images. Submit the original full [S16 prompt](../prompts/flow/S16.txt) with
+  `M2_CP15.png` and `M2_CP16.png` to another frames-to-video generator. Do not
+  replace or simplify the saved story prompt.
+- [ ] **Generate S17 outside Google Flow.** Its required closed-incision image
+  is likely to trigger the same policy gate. Use the corrected `M2_CP17.png`,
+  which keeps both legs visible and preserves the operated left leg, with the
+  full [S17 prompt](../prompts/flow/S17.txt). Do not spend Flow attempts on a
+  medically neutral rewrite that removes the scene's meaning.
+- [ ] **Generate S18A outside Google Flow.** The required home entry,
+  restraint, handcuffs and pressure on the operated foot are the scene itself,
+  so a neutral rewrite would falsify the event. Use the existing full
+  [S18A prompt](../prompts/flow/S18A.txt) with `M2_CP18.png` and
+  `M2_CP18A.png` in another frames-to-video generator.
+
 ## 1. Current review pass
 
 - [x] Complete the deeper memoir revision around the functioning-system
@@ -134,8 +152,9 @@ gate on this publication.**
 - [x] Lock Veo 3.1 Lite as the production model and Jon as the narrator.
 - [ ] Generate each scene's exact two 9:16 endpoint frames in sequential
   reviewable batches.
-- [ ] Generate S01–S38 in Veo 3.1 Lite with exact endpoints, eight seconds and
-  one result per approved first attempt.
+- [ ] Generate S01–S38 with exact endpoints and eight-second results; use Veo
+  3.1 Lite for the chain except the visibly tracked S16, S17 and S18A
+  external-generator fallbacks.
 - [ ] Produce one time-locked English narration after picture timing is stable.
 - [ ] Produce one continuous score for the full film; discard clip-generated
   music and ambience.

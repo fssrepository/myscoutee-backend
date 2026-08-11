@@ -1,0 +1,30 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP24.png as the exact first frame and M2_CP25.png as the exact last
+frame.
+
+Begin exactly on M2_CP24.png. The Founder climbs the wet courthouse steps and
+passes through the heavy entrance while the camera follows close behind. The
+brown façade opens continuously into the remembered C-shaped hearing room as
+the prosecutor, clerk, judge and court-appointed counsel enter their places and
+continue arranging papers.
+
+The Founder walks to the table outside the curve and settles before the
+microphone. The judge looks toward him with a restrained smile and makes two
+short questioning gestures. He first registers fear, then answers with a small
+dry movement of his hands that shows the absurdity of having defended himself.
+The people around the curve remain attentive and naturally active; nobody
+performs dialogue for the camera.
+
+End exactly on M2_CP25.png with prosecutor on the left, clerk in the far-left
+corner, judge centred, appointed counsel on the right and the Founder in front
+of them with the microphone. Preserve every approved identity, the remembered
+room geometry, natural anatomy, daylight and painterly cinematic 2.5D style.
+Keep all files blank and unreadable; generate no lip-sync or animated words.
+
+Audio: restrained courtroom instrumental music with exterior rain fading into
+doors, footsteps, chairs, paper and quiet room ambience. Do not generate spoken
+words, dialogue, narration, singing, lyrics or intelligible human speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
