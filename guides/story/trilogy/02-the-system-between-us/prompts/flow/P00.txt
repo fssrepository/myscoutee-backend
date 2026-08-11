@@ -14,10 +14,9 @@ light through the four connected local spaces. Fade the title typography and
 resolve into the empty central hub of CP00. Reveal the Founder and operator with
 one slow continuous move and end exactly on M2_CP00.png.
 
-No opaque title panel, cut, camera jump, face morph, logo mutation, replacement
-emblem, new text, misspelled text, Cyrillic or Russian lettering, dialogue,
-narration, music or audio fade. Return silent video. Exact lettering will be
-stabilized in post over the generated motion.
+Keep the supplied logo and title lettering unchanged and add no new text.
+Generate restrained cinematic music and natural room ambience, with no human
+voice or speech.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
 8 seconds, 9:16.

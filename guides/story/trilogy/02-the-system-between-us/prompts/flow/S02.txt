@@ -17,6 +17,8 @@ Preserve the Founder's exact mature face, facial structure, hairline, navy field
 
 Keep both of the Founder's hands at natural human scale and within the desk plane throughout the notebook action. Neither hand may move toward the lens or become a foreground close-up.
 
-No hard cut, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, readable text, date, number, logo, seal, floating interface, magical glow, unrelated character, face morphing or malformed hands. Nobody speaks or visibly articulates words.
+Keep the transition continuous and grounded in the described room, notebook and
+memory reflections. Generate restrained cinematic music and natural room
+ambience, with no human voice or speech.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

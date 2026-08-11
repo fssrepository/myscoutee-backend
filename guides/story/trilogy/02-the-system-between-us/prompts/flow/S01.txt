@@ -15,8 +15,12 @@ End exactly on M2_CP01.png: the Founder sits alone in the lower central band of 
 CONTINUITY IS REQUIRED:
 Preserve the Founder's exact mature face, facial structure, hairline, navy field coat, charcoal knit clothing, muted rust scarf and cognac notebook. Preserve the established painterly cinematic 2.5D style, tactile brush texture, deep navy shadows, warm amber desk light and natural anatomy.
 
-STRICT TEXT LOCK: generate no subtitles, captions, intertitles, lower thirds, interface text, writing, letters, words, numbers or typographic marks anywhere in the video. No Cyrillic or Russian text and no text in any other language. Every paper, screen, wall and empty area must remain blank except for the single abstract coral ruled line already present in M2_CP01.png.
+Keep every paper, screen, wall and empty area blank except for the single coral
+ruled line already present in M2_CP01.png. Add no writing, numbers, captions or
+interface text.
 
-No hard cut, camera jump, new foreground person, duplicate Founder, face morphing, magical network effect, floating interface, readable form, generated title, number, logo, seal, tax symbol, legal symbol, government emblem, villain lighting or dystopian spectacle. Nobody speaks, mouths words or visibly articulates language. Do not infer or generate dialogue from facial movement.
+Keep the transformation continuous and grounded in the existing room and
+people. Generate restrained cinematic music and natural room ambience, with no
+human voice or speech.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.
