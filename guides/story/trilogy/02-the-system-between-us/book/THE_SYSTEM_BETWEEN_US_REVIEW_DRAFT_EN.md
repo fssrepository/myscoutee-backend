@@ -602,21 +602,38 @@ tax-office staff, unresolved processing errors and versions submitted without
 my knowledge. A return submitted on 30 November named me as the contact even
 though I did not know it had been filed.
 
-The absurdity is difficult to explain without making it sound invented. A
-professional office, repeated official assistance and months of correspondence
-had failed to complete what, from my perspective, was essentially a subtraction
-followed by a tax calculation. The accountant did not merely make one ordinary
-mistake. She appeared not to understand what the administration was telling
-her, entered changing figures, omitted another figure and continued disputing
-the route after I had reconstructed it. An outdated software version had also
-helped turn submission into rejection. The official system, the professional
-tool and the professional user were failing at different layers while the
-client could not see one coherent result.
+The files did not arrive as one failure. They arrived as versions. One changed
+a figure. Another omitted one. A returned error remained in the accountant's
+channel without changing the next attempt. Tax-office staff helped from their
+screen, the accountant answered from hers, and I still did not know that the
+sequence existed.
 
-I discovered the problem through an article and then through a portal whose
-categories and identifiers did not form one coherent story. Until then, I had
-not known what had failed. On 23 and 24 November, I spent many hours checking
-the accountant's work and called the administration for help.
+On 23 November, an ordinary newspaper article about a fresh update to the NAV
+system happened to cross my screen. It was not a notice and it was not about
+me. One detail caught against what I believed had already been closed. I opened
+the tax portal for a closer look.
+
+What should have been a quick check spread across the desk. I opened my own
+account history and placed the accountant's submissions beside it. Actions
+performed through my login appeared in one trail. Her submissions and returned
+error messages continued in another. One trail stopped where the other began.
+The critical warning sat on the side I could not see.
+
+Then the version numbers surfaced. NAV had updated the filing system while the
+accountant's software was still preparing the older format. A newer return
+existed among her files but had not crossed that technical boundary into the
+system. When I opened it, its calculation was wrong as well. A failure of
+transmission had been hiding a failure inside the form.
+
+On 23 and 24 November, I moved between the two histories and the telephone. The
+administration's screen began where the accountant's trail stopped. Her files
+continued where my inbox ended. The same return was absent in one place,
+rejected in another, replaced in a third and still wrong when I calculated it.
+Everyone had a document that made the next sentence seem reasonable. No two
+documents belonged to the same moment.
+
+She had entered my account for selected tasks, then left it again. The password
+had crossed the desk. The warning had not.
 
 The surviving 13:08 call holds the sound of that hour. The filing problem had
 not created all the years behind it. But the official's clipped replies, which
@@ -1334,10 +1351,11 @@ The same collision appeared around the intimate history I had sent to the tax
 administration while awaiting surgery. I had tried to explain what Part I had
 cost: the shared London room, hunger disguised from colleagues, the years of
 saving and the reason I had dared to return. The judge asked whether I really
-had to write all that when nobody cared. My answer formed later: *Care, Your
-Honour. That is where the money came from.* The court
-could treat the life as irrelevant and still examine the savings that life had
-produced.
+had to write all that when nobody cared. Later in the hearing, when the money
+returned to the centre of the room, I answered before I could soften it: then
+it should interest them, because that was where the money had come from. The
+court wanted the origin of the savings with the life that had produced them
+removed.
 
 The room could recognize fear, ingenuity and work as moments of almost comic
 incongruity while the procedure continued treating the same person as a risk to

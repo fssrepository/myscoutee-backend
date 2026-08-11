@@ -3,7 +3,7 @@
 Working title: **The System Between Us**.
 
 Status: **English public edition 1.0.0 is synchronized with the 11 August 2026
-manuscript and 107-page reading PDF. The Founder explicitly authorized the
+manuscript and 108-page reading PDF. The Founder explicitly authorized the
 same-version public artifact to be replaced before the film-production
 handoff.**
 
