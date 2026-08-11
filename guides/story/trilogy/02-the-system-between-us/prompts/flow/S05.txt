@@ -1,0 +1,33 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP04.png as the exact first frame and M2_CP05.png as the exact last
+frame.
+
+Begin exactly on M2_CP04.png. The Founder and the two masked colleagues remain
+alive and moving naturally at the bank exit. He releases the blank badge, turns
+away and walks through the doorway. Follow him in one continuous camera move.
+The corridor glass carries a restrained passage of closed, blank interview
+windows and changing daylight, then becomes the window of his Budapest
+workroom. One warm remote-work connection remains open.
+
+The Founder sits into the same forward motion and joins an audio-only Brussels
+team. Distinct active call tiles contain hands, notebooks, keyboards, mugs and
+working objects rather than floating or talking heads. Work moves visibly from
+one tile to the next. Every distant colleague remains naturally active through
+typing, writing, passing papers and listening gestures. One open microphone
+carries a faint Indian street and tuk-tuk texture as human context.
+
+End exactly on M2_CP05.png with the Founder accepted inside the cross-border
+working rhythm. Preserve his exact mature identity, navy field coat, charcoal
+knit clothing, muted rust scarf and cognac notebook. Preserve the painterly
+cinematic 2.5D style, tactile brush texture, deep navy shadows and warm amber
+highlights. Keep all screens, folders, badges and papers blank and unbranded.
+
+Generate restrained cinematic music with the soft badge movement, footsteps,
+door and room transitions, connection tones, typing, paper movement, Budapest
+room ambience and faint distant tuk-tuk traffic. Do not generate spoken words,
+dialogue, narration, singing, lyrics or intelligible human speech. Nobody
+visibly speaks or lip-syncs.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
