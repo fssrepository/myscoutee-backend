@@ -1,11 +1,11 @@
-# Written-locked 05:20 script
+# Written-locked 05:28 script
 
 Status: **synchronized to the 9 August book revision and prompt package; written
 lock complete. Picture lock follows approval of the exact endpoint frames.**
 
-The film uses a generated eight-second opening transition, **38 generated
-eight-second story intervals** (`05:04`) and a generated eight-second closing
-transition. Final runtime is exactly `05:20`. The opening and closing create
+The film uses a generated eight-second opening transition, **39 generated
+eight-second story intervals** (`05:12`) and a generated eight-second closing
+transition. Final runtime is exactly `05:28`. The opening and closing create
 real breathing space; exact logo and editable type are stabilized in post.
 
 Voice lock: English narration in the same approved ElevenLabs **Jon — Warm &
@@ -13,10 +13,11 @@ Grounded Storyteller** voice as Part I. Preserve the exact voice identifier,
 model version, settings and a clean reference WAV.
 
 Read in a restrained first-person voice at approximately 124–128 words per
-minute. The complete read fits the 05:20 structure while the short closing line
-preserves the final visual breath. Generated clips provide picture only; their
-audio is discarded. Jon, one continuous score, selected ambience and foley are
-added in post. No character dialogue or lip sync is required.
+minute. The complete read fits the 05:28 structure while the short closing line
+preserves the final visual breath. Generated clips may provide cinematic music,
+ambience and foley for the final sound edit. Jon remains the only intelligible
+voice; no generated character dialogue, narration, voice-over or lip sync is
+used.
 
 ## Time-coded narration
 
@@ -97,21 +98,25 @@ viewer time to read and consider the premise.
 
 ### 02:24–02:32 — S18 · The knock
 
-> A year later, police came the day after I had asked them for help in another matter.
+> The bell kept ringing. They said they were from the post. I opened the door to let ordinary life in.
 
-### 02:32–02:40 — S19 · Devices and silence
+### 02:32–02:40 — S18A · The rush
+
+> The door came back at me. Bulletproof vests filled the hall. Metal closed behind my back. A boot found the foot the surgeon had rebuilt.
+
+### 02:40–02:48 — S19 · Devices and silence
 
 > My phone and computer became evidence. A trainee advised silence; stable defence still had no face.
 
-### 02:40–02:48 — S20 · Fingerprints
+### 02:48–02:56 — S20 · Fingerprints
 
 > A policewoman guided my fingers onto paper. I found her attractive. Even while becoming data, my mind remained inconveniently human.
 
-### 02:48–02:56 — S21 · Investigating the investigation
+### 02:56–03:04 — S21 · Investigating the investigation
 
 > I rebuilt call dates, requested missing recordings and sent them back. Only then did the investigation ask again.
 
-### 02:56–03:04 — S22 · Eight days
+### 03:04–03:12 — S22 · Eight days
 
 > Eight days after the search, two experts interpreted my mind. “Why didn't you see a psychologist?” Because I couldn't walk, I thought.
 
@@ -120,71 +125,71 @@ Nobody in the room hears the answer; no character speaks or lip-syncs. The
 expert's matter-of-fact expression and the Founder's small incredulous grimace
 carry what the words do not.
 
-### 03:04–03:12 — S23 · The other biography
+### 03:12–03:20 — S23 · The other biography
 
 > Their report called me calm and clear, then compressed fifty countries and human trust into pathological suspicion.
 
-### 03:12–03:20 — S24 · Brown stone
+### 03:20–03:28 — S24 · Brown stone
 
 > Beside the Danube, a monumental brown courthouse turned Budapest from home into a room of assigned roles.
 
-### 03:20–03:28 — S25 · Inside the curve
+### 03:28–03:36 — S25 · Inside the curve
 
 > “You were afraid?” the judge smiled. “And you defended yourself.” Then the room moved toward my home and savings.
 
-### 03:28–03:36 — S26 · Care
+### 03:36–03:44 — S26 · Care
 
 > The apartment was not enough. The questions moved through my belongings and into savings earned abroad.
 
-### 03:36–03:44 — S27 · Doors that answer later
+### 03:44–03:52 — S27 · Doors that answer later
 
 > One constitutional door said too early; the other said too late. The hearing kept receding by months.
 
-### 03:44–03:52 — S28 · The machine beside me
+### 03:52–04:00 — S28 · The machine beside me
 
 > AI helped me shape even the first pages. Later, it became the one collaborator that stayed with the whole chain.
 
-### 03:52–04:00 — S29 · Four windows
+### 04:00–04:08 — S29 · Four windows
 
 > Under prison's shadow, one desk held legal defence, MyScoutee, civic software and falsifiable mathematics.
 
-### 04:00–04:08 — S30 · The human question
+### 04:08–04:16 — S30 · The human question
 
 > A professor returned the research to earth with one question: which exact mathematical statement are you testing?
 
-### 04:08–04:16 — S31 · Black humour as receipt
+### 04:16–04:24 — S31 · Black humour as receipt
 
 > I sent police a curriculum vitae for the impossible position in their own case. Sarcasm reversed the arrows for seconds.
 
-### 04:16–04:24 — S32 · The debt that crossed a border
+### 04:24–04:32 — S32 · The debt that crossed a border
 
 > In London, one Hungarian kept paying a foreign-currency loan while his family and roots remained at home.
 
-### 04:24–04:32 — S33 · Beautiful home, recurring exit
+### 04:32–04:40 — S33 · Beautiful home, recurring exit
 
 > Budapest remained beautiful. At Europe's heart, leaving could still feel safer than belonging.
 
-### 04:32–04:40 — S34 · The streets and the portals
+### 04:40–04:48 — S34 · The streets and the portals
 
 > Citizens filled streets. I crossed portals, petitions and offices that described remedies more clearly than repair.
 
-### 04:40–04:48 — S35 · Twelve April
+### 04:48–04:56 — S35 · Twelve April
 
 > In 2026, voters changed government. Institutions moved while my first judgment still did not exist.
 
-### 04:48–04:56 — S36 · Constitutional empty space
+### 04:56–05:04 — S36 · Constitutional empty space
 
 > A President asked Venice and his former court for protection. Eight judges stepped aside; the room could not form.
 
-### 04:56–05:04 — S37 · Mercy changes direction
+### 05:04–05:12 — S37 · Mercy changes direction
 
 > He denied clemency. Weeks later he signed away his own mandate. The country changed faster than my case.
 
-### 05:04–05:12 — S38 · The open line
+### 05:12–05:20 — S38 · The open line
 
 > Three years after one sentence, first instance still waited. The procedure continued. It had moved into my life.
 
-### 05:12–05:20 — E01 · Book and continuation card
+### 05:20–05:28 — E01 · Book and continuation card
 
 > MyScoutee. Test the system between us.
 
@@ -209,20 +214,20 @@ All typography is post-production text; never ask a video model to render it.
 | 01:44–01:52 | CORRECTED · PAID · REPRESENTATION ENDED |
 | 02:00–02:08 | ONE LINE TRAVELS FASTER THAN ITS CONTEXT |
 | 02:24–02:32 | 22 NOVEMBER 2023 |
-| 02:48–02:56 | THE PERSON RECOVERS THE MISSING RECORD |
-| 02:56–03:04 | EIGHT DAYS |
-| 03:04–03:12 | OBSERVATION ≠ WHOLE PERSON |
-| 03:20–03:28 | ONE ROOM · MANY ROLES |
-| 03:28–03:36 | LIFE → ASSET QUESTION |
-| 03:44–03:52 | AI-ASSISTED SELF-DEFENCE |
-| 03:52–04:00 | THE HUMAN MIND CANNOT BE CAGED |
-| 04:08–04:16 | BLACK HUMOUR · HUMAN RECEIPT |
-| 04:24–04:32 | BEAUTIFUL HOME · RECURRING EXIT |
-| 04:40–04:48 | 12 APRIL 2026 |
-| 04:48–04:56 | SEVEN · THEN EIGHT · NO QUORUM |
-| 04:56–05:04 | 30 APRIL · REFUSAL / 18 JULY · SIGNATURE |
-| 05:04–05:12 | THE LINE REMAINS OPEN |
-| 05:12–05:20 | TEST THE SYSTEM BETWEEN US / TO BE CONTINUED |
+| 02:56–03:04 | THE PERSON RECOVERS THE MISSING RECORD |
+| 03:04–03:12 | EIGHT DAYS |
+| 03:12–03:20 | OBSERVATION ≠ WHOLE PERSON |
+| 03:28–03:36 | ONE ROOM · MANY ROLES |
+| 03:36–03:44 | LIFE → ASSET QUESTION |
+| 03:52–04:00 | AI-ASSISTED SELF-DEFENCE |
+| 04:00–04:08 | THE HUMAN MIND CANNOT BE CAGED |
+| 04:16–04:24 | BLACK HUMOUR · HUMAN RECEIPT |
+| 04:32–04:40 | BEAUTIFUL HOME · RECURRING EXIT |
+| 04:48–04:56 | 12 APRIL 2026 |
+| 04:56–05:04 | SEVEN · THEN EIGHT · NO QUORUM |
+| 05:04–05:12 | 30 APRIL · REFUSAL / 18 JULY · SIGNATURE |
+| 05:12–05:20 | THE LINE REMAINS OPEN |
+| 05:20–05:28 | TEST THE SYSTEM BETWEEN US / TO BE CONTINUED |
 
 ## Clean synopsis
 
@@ -242,11 +247,11 @@ ending.
 ## Runtime and credit contract
 
 - Generated opening transition: `8 s`.
-- Generated story motion: `38 × 8 s = 304 s`.
+- Generated story motion: `39 × 8 s = 312 s`.
 - Generated closing transition: `8 s`.
-- Final runtime: `320 s = 05:20`.
-- Flow production cost at the observed Veo 3.1 Lite rate: `400 credits` before
+- Final runtime: `328 s = 05:28`.
+- Flow production cost at the observed Veo 3.1 Lite rate: `410 credits` before
   retries.
 - Part I uses `24 × 8 s`: `03:12`, costing `240 credits` before retries.
-- Two-film base generation: `640 credits`; from the observed `970` balance,
-  `330` remain for controlled retakes.
+- Two-film base generation: `650 credits`; from the observed `970` balance,
+  `320` remain for controlled retakes.

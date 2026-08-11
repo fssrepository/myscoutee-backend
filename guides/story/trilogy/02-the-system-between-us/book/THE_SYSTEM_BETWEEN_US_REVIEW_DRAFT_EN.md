@@ -792,26 +792,44 @@ was easier to carry than the chain around it.
 On 22 November 2023, roughly a year after the first disputed sentence, police
 came to my home.
 
+The bell kept ringing. Whoever stood outside did not tire. They said they were
+from the post. A delivery belonged to ordinary life, and in the end I opened
+the door to let ordinary life in.
+
+The door came back at me.
+
+There was no interval in which the visitors became guests. More bodies
+followed, women and men in bulletproof vests, until a hallway built for one
+visitor held the force assembled around a single sentence. Hands took my arms,
+the wall caught my weight, and metal closed behind my back. Then a boot found
+the foot that had already been cut open and put back together. Pain ran white
+through the narrow hall.
+
+The handcuffs would come off that day. The injury kept repeating the moment.
+The nail came away three times, as if even the body had been pulled into the
+system's habit of beginning again.
+
 The home in Part I had been the place my parents helped me secure, the place
 that stood empty while I lived in a shared London room, the lower-cost base that
 made independent product work possible.
 
-Now it became a procedural location.
+Now the state had entered it disguised as the post and turned me against my own
+wall while it searched the rooms.
 
-The timing supplied another cruel cut. The previous day, I had submitted
-another police report while trying to obtain help with an interrupted private
-orthodontic treatment. A brace remained in my mouth and required regular
-adjustment, yet the treatment relationship had collapsed and no new provider
-wanted to inherit it. The two matters may simply have crossed inside the
-machinery; their proximity proves no causal connection. But the one time the
-police came to my home the day after I asked them for help, they came in another
-case and came for me.
+The previous day, I had submitted another police report while trying to obtain
+help with an interrupted private orthodontic treatment. A brace remained in my
+mouth and required regular adjustment, yet the treatment relationship had
+collapsed and no new provider wanted to inherit it. I had asked the police for
+help. The next morning they stood inside my home for something else.
 
 My phone and computer were taken. Objects that had held work, memory and the
 unfinished MyScoutee system became evidence containers. The devices knew more
 of my recent life than the people entering the flat. Once removed, they also
 took away the easiest route through which I could reconstruct what had
 happened.
+
+I had not escaped the system by hiding from lawful work. I had walked back into
+it by daring to work at all. Now it stood in my rooms and carried the work away.
 
 At the first questioning, a trainee connected to the appointed defence appeared
 and advised me to remain silent. I believed for a time that she was the lawyer
@@ -821,7 +839,15 @@ return call. I had been searched, questioned and separated from my devices
 without receiving the complete material from which I could understand the
 accusation.
 
-Eight days later, two forensic experts questioned me. The state already had a
+Eight days later, I walked through the city to the police station. The loose
+nail travelled inside my shoe, shifting under the toe at every step. Saint
+Nicholas Day was approaching; shop windows were beginning to show the little
+bundles of twigs reserved for children who had misbehaved. Halfway there, I
+almost laughed. I should have brought the police a *virgács*.
+
+Then the next step put the nail under me again.
+
+Two forensic experts questioned me. The state already had a
 room in which to interpret my mind. I still did not have a stable person helping
 me interpret the case.
 

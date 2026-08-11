@@ -1,6 +1,6 @@
 # Part II prompt pack
 
-Status: **written baseline synchronized to the 05:20 script and CP00–CP38
+Status: **written baseline synchronized to the 05:28 script and CP00–CP38
 storyboard; no frame-generation run is authorized by this document**.
 
 All generation instructions are English. Public narration and editable titles
@@ -15,7 +15,7 @@ are defined in [SCRIPT.md](../film/SCRIPT.md); video models must invent neither.
 4. In Flow append: `Generate exactly one Veo 3.1 Lite Frames-to-Video result,
    8 seconds, 9:16, using the uploaded checkpoint images as exact first and last
    frames.`
-Do not paste all thirty-eight shots into an ordinary generator. Each interval is
+Do not paste all thirty-nine shots into an ordinary generator. Each interval is
 one independent first/last-frame request. Never replace the endpoint contract
 with Extend or a prompt-only result.
 
@@ -47,7 +47,8 @@ licensed later, belongs in post.
 ## Endpoint contract
 
 - `S01 = CP00→CP01`; `S02 = CP01→CP02`; continue identically through
-  `S38 = CP37→CP38`.
+  `S18 = CP17→CP18`; insert `S18A = CP18→CP18A`; then
+  `S19 = CP18A→CP19` and continue identically through `S38 = CP37→CP38`.
 - Each clip begins and ends on the supplied frames without redesign, crop,
   reframing or recolouring.
 - `P00→CP00` is the generated eight-second true-story opening transition;
@@ -103,9 +104,9 @@ lip-syncs.
 ## Credit lock
 
 - Part I: `22 × 8 s = 220` Flow credits at the observed Veo 3.1 Lite rate.
-- Part II: `38 × 8 s = 380` credits.
-- Base two-film motion: `600` credits.
-- Observed balance: `970`; reserve after base generation: `370` credits.
+- Part II: `39 × 8 s = 390` credits.
+- Base two-film motion: `610` credits.
+- Observed balance: `970`; reserve after base generation: `360` credits.
 - Veo 3.1 Lite is locked. Generate only exact production endpoints and final-use
   eight-second intervals. No slideshow, animatic, midpoint or decorative test frame.
 - Generate the remaining chain only after the Founder approves the books,

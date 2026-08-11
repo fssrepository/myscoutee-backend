@@ -1,13 +1,13 @@
-Build “MyScoutee — The Story, Part II: The System Between Us” as forty Veo first/last-frame clips: P00→CP00, thirty-eight story intervals through CP38, then CP38→E01. The final edited runtime is exactly 05:20 in 9:16 portrait at 720×1280 and 24 fps. P00 contains the true-story title and `BOOK AVAILABLE`; E01 contains the invitation and `TO BE CONTINUED` without repeating the title. Stabilize exact logo and lettering in post.
+Build “MyScoutee — The Story, Part II: The System Between Us” as forty-one Veo first/last-frame clips: P00→CP00, thirty-nine story intervals including CP18→CP18A→CP19 and continuing through CP38, then CP38→E01. The final edited runtime is exactly 05:28 in 9:16 portrait at 720×1280 and 24 fps. P00 contains the true-story title and `BOOK AVAILABLE`; E01 contains the invitation and `TO BE CONTINUED` without repeating the title. Stabilize exact logo and lettering in post.
 
-Do not generate the whole film in one request. Work in scene order S01–S38. For S01 upload M2_CP00.png and M2_CP01.png; for S02 upload M2_CP01.png and M2_CP02.png; continue through S38 with M2_CP37.png and M2_CP38.png. For every clip paste the shared continuity prefix and only the matching SHOT block. Generate exactly one 8-second result. Never use Extend as a substitute for the exact final checkpoint. If the selected mode cannot use both endpoints, stop and label it unsuitable for the continuity chain.
+Do not generate the whole film in one request. Work in scene order S01–S18, S18A, then S19–S38. For S18A upload M2_CP18.png and M2_CP18A.png; for S19 upload M2_CP18A.png and M2_CP19.png. All other scene boundaries retain their named checkpoints. For every clip paste the shared continuity prefix and only the matching SHOT block. Generate exactly one 8-second result. Never use Extend as a substitute for the exact final checkpoint. If the selected mode cannot use both endpoints, stop and label it unsuitable for the continuity chain.
 
 Preserve the exact Part I Founder, apartment, Lee Valley shared home, cognac notebook and painterly cinematic 2.5D visual grammar. Keep the accountant, tax officer, police officer, expert and judge humane and anonymized. Use abstract unreadable document plates. Do not reproduce the charged sentence, private data, account values, diagnoses, official logos or public-figure likenesses. Do not portray confiscation as completed. Seven constitutional judges step aside from one matter, followed by an eighth; they do not vanish from office.
 
 The Founder is quiet, restrained and precise by default, never hot-tempered.
-When the rare unsoftened response appears, keep his body controlled and let the
-room's sudden stillness carry the surprise. Reserve is not fear; force is not
-violence.
+When physical force is used against him, show its real bodily effect without
+turning his involuntary pain into anger or spectacle. Reserve is not fear, and
+restraint is not consent.
 
 No character visibly speaks, forms words or lip-syncs. Keep mouths naturally relaxed, with breathing, brief nonverbal smiles and minute jaw movement only. Convey interaction through listening, eye contact, small nods and restrained hand gestures; never make several people visibly speak at once. Let Veo freely choose and generate the instrumental musical underscore, ambience and sound effects that best fit each scene. No person may speak: generate no spoken words, dialogue, narration, singing, lyrics, chanting or intelligible human vocalization.
 
