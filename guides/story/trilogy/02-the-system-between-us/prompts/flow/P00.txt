@@ -2,21 +2,24 @@ Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M2_P00.png as the exact first frame and M2_CP00.png as the exact last frame.
 
-Begin on the finished MyScoutee Part II title composition. For the first two
-seconds, keep the exact M/heart mark, `yScoutee`, English title, true-story line
-and `BOOK AVAILABLE` stable, correctly shaped and readable. Do not redraw,
-translate, blur or invent any lettering.
+Treat every logo, title and letter already baked into M2_P00.png as immutable
+pixels. Do not read, rewrite, redraw, duplicate, translate, animate or recreate
+any of them. Hold the exact complete first frame for the first second. After
+that, fade the complete baked branding and title area away once as one flat
+layer. It must never reappear elsewhere in the image.
 
-Behind the title, let the human rooms and coral network wake in a restrained
-sequence. The mark's heart gives one subtle breath and its star sends a warm
-light through the four connected local spaces. Fade the title typography and
-`BOOK AVAILABLE` cleanly; keep the exact mark for one beat longer, then let it
-resolve into the empty central hub of CP00. Reveal the Founder and operator with
-one slow continuous move and end exactly on M2_CP00.png.
+Animate only the human rooms, coral network and people already present behind
+the title. Let one restrained pulse travel through the existing coral line
+toward the blank central circle while the four connected local spaces remain
+human, warm and distinct. Use one slow continuous 45 mm move into the central
+circle. Let that circle and the surrounding room resolve naturally into the
+exact M2_CP00.png composition with the Founder and operator in the foreground.
+End exactly on M2_CP00.png with no remaining opening graphics.
 
 No opaque title panel, cut, camera jump, face morph, logo mutation, replacement
-emblem, new text, misspelled text, Cyrillic or Russian lettering. Exact
-lettering will be stabilized in post over the generated motion.
+emblem, new text, misspelled text, Cyrillic or Russian lettering, duplicated
+branding or returning title element. Exact lettering will be stabilized in
+post over the generated motion.
 
 FLOW AUDIO:
 Let Veo freely choose and generate the instrumental musical underscore,

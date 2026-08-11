@@ -1,8 +1,12 @@
 FLOW P00 — M2_P00.png TO M2_CP00.png — TRUE-STORY TITLE TRANSITION
 Use M2_P00.png and M2_CP00.png as exact endpoints for one eight-second Veo 3.1 Lite
-transition. Keep the exact repository MyScoutee mark and editable typography:
-`THE STORY`, `PART II · THE SYSTEM BETWEEN US`, `BASED ON A TRUE STORY` and
-`BOOK AVAILABLE`. Fade them cleanly as the title world opens into CP00.
+transition. Treat the repository MyScoutee mark and every title letter already
+baked into M2_P00.png as immutable pixels. Hold the exact complete first frame
+for the first second, then fade the complete baked branding and title area away
+once as one flat layer; never redraw, animate, duplicate or reintroduce it.
+Animate only the existing human rooms and coral network behind the title. Follow
+one restrained coral pulse into the blank central circle with one slow 45 mm
+move and resolve naturally into exact M2_CP00.png. End with no opening graphics.
 Stabilize exact words and logo in post.
 
 SHOT S01 — M2_CP00.png TO M2_CP01.png — THE LINE CHANGES MEANING
@@ -16,7 +20,7 @@ notebook, clean form and large centre-safe negative space. Do not render title
 text or logo.
 
 SHOT S02 — M2_CP01.png TO M2_CP02.png — THE LIFE BEFORE THE FILE
-Begin exactly on M2_CP01.png. Let the form line become one continuous route through London rain, travel windows, strangers helping and the Budapest home. Keep the memories as warm reflections rather than a tourist montage. End exactly on M2_CP02.png with the Founder at his desk and the full earlier life present around him without becoming file categories.
+Begin exactly on M2_CP01.png. Through seconds 0–5.5, keep the Founder, his two natural hands, closed cognac notebook, blank form, single unchanged coral ruled line and complete Budapest-desk composition stable under one very slow 50 mm push. Through seconds 5.5–8, use one uniform full-frame photographic cross-dissolve into the complete M2_CP02.png composition as a single coherent layer. Do not construct or animate its memories separately; the book-derived London rain, night travel, practical help and Budapest-home reflections may appear only in their supplied final-frame positions. Do not open the notebook, invent intermediate hand poses, enlarge a hand, bring a hand toward the lens, or generate a map, ticket, route diagram, route card, directional graphic, route label or any text. End exactly on M2_CP02.png with the Founder and the full earlier life present around him without becoming file categories.
 
 SHOT S03 — M2_CP02.png TO M2_CP03.png — THE SALARIED FOOTHOLD
 Begin exactly on M2_CP02.png. Let a restrained stack of closed interview folders imply roughly fifty failed attempts, then transform the home desk naturally into a calm salaried multinational workstation opened almost by accident. Let COVID-19 empty adjacent desks and cool the room without disaster spectacle. End exactly on M2_CP03.png with the Founder alone at the still-lit workstation, one generic access badge and a newly closed office door. No readable counts, employer branding or rapid rejection montage.

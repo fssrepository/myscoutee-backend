@@ -19,7 +19,7 @@ Never invent, redraw, duplicate or enlarge a hand, arm, finger, face or body. No
 STRICT TYPOGRAPHY LOCK:
 Generate no subtitles, captions, intertitles, lower thirds, interface text, handwriting, letters, words, numbers or typographic marks anywhere in the video. Every paper, notebook page, window, wall and empty area remains free of generated writing. Do not generate a title, route label, place name, date, logo, seal, brand mark or MyScoutee mark. Do not interpret the coral line or any reflection as writing. Any exact non-typographic detail already contained in a supplied endpoint frame may appear only as part of that locked full-frame endpoint.
 
-No hard cut, scene restart, independent object reveal, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, floating interface, magical glow, sparks, particles, unrelated character, face morphing or malformed anatomy. Nobody speaks, mouths words or visibly articulates language.
+No map, route diagram, route card, ticket, directional graphic, labelled travel object, foreground helper, hand entering toward the lens or close-up hand insert. No hard cut, scene restart, independent object reveal, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, floating interface, magical glow, sparks, particles, unrelated character, face morphing or malformed anatomy. Nobody speaks, mouths words or visibly articulates language.
 
 FLOW AUDIO:
 Let Veo freely choose and generate the instrumental musical underscore, ambience and sound effects that best fit the scene. No person may speak. Generate no spoken words, dialogue, narration, singing, lyrics, chanting or intelligible human vocalization. Nobody visibly speaks, forms words or lip-syncs.
