@@ -1,0 +1,28 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP09.png as the exact first frame and M2_CP10.png as the exact last
+frame.
+
+Begin exactly on M2_CP09.png with all three people still working naturally in
+their separated spaces. Follow the Founder as the three glass partitions slide
+past him and become a narrow corridor with two unequal doors.
+
+Through one door, the accountant works under her own identity, but submissions
+and returning notices separate: the papers reach her while the Founder remains
+outside their continuous chain. At the other door, her open hand asks for his
+personal access. He draws out the small key already present in the final frame,
+but pauses before giving it away as the shared route collapses their two
+identities into one.
+
+End exactly on M2_CP10.png with the Founder holding the key between them, the
+accountant carrying the files and waiting with an open hand, one warm open door
+and one opaque closed door behind them. Keep both people breathing and moving
+naturally throughout. Preserve their exact faces, clothing, proportions and the
+painterly cinematic 2.5D style. Keep every document unbranded and unreadable.
+
+Generate restrained tense cinematic music with footsteps, moving paper, a soft
+key sound and subdued office ambience, without intelligible human speech or
+lip-sync.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

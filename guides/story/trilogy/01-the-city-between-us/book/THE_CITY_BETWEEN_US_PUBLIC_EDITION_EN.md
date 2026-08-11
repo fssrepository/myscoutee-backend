@@ -1202,10 +1202,23 @@ listens, adapts, jokes, helps or respects a boundary. We form an opinion because
 the interface asks for one. The opinion can feel complete because no shared
 context exists to contradict it.
 
-One encounter in 2017 made that suspended state visible. After almost two years
-without a match, I used an unusually flattering profile photograph and finally
-met a woman whose own picture caught me immediately. That response was entirely
-subjective; the photograph had told me almost nothing about her.
+When I returned from London in December 2015, I had just turned thirty-five. For
+almost two years, I swiped and the phone gave me no match at all. Men crowded
+one side of the screen; women were fewer on the other. They could look down the
+age scale toward younger men and still have another face waiting.
+
+At thirty-seven, I changed one field on Tinder. I entered thirty instead of
+thirty-seven and left the photograph exactly as it was. The silence broke. I
+met women around thirty and some who had not yet reached it. Women older than
+the age displayed began matching one after another too.
+
+Thirty-three and thirty-seven were four ordinary years once two people sat
+across a table. On the screen, the number had decided whether the table existed.
+The face had not changed.
+
+One of those encounters in 2017 made that change tangible. I met a woman whose
+own picture caught me immediately. That response was entirely subjective; the
+photograph had told me almost nothing about her.
 
 She worked in financial advisory for a multinational investment bank. During
 our conversation, she asked why I did not try applying there. I answered

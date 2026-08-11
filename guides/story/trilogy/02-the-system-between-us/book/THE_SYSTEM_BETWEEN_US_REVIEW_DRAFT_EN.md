@@ -323,6 +323,12 @@ Budapest flat while working abroad. The contractual route passed through
 companies in more than one country. It looked less secure than the Hungarian
 job, but in practice it became the one workable professional path I had found.
 
+The work gathered speed before I had arranged the life around it. I was already
+inside long Brussels calls, moving tasks from one person to the next, before I
+had an accountant. Between deliveries, I was still looking for the professional
+who would later handle the returns. The opening had arrived, and I stepped into
+it.
+
 Stable work was never only income. Without it, partnership, a child and family
 life remained plans postponed until the ground stopped moving. By then, the
 years no longer felt renewable. The Brussels role arrived as the last opening
