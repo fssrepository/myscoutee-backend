@@ -1,0 +1,40 @@
+Create one continuous 8-second, 9:16 Frames-to-Video alternative closing clip
+using the supplied first and last frames.
+
+Use M2_CP17A.png as the exact first frame and M2_CP18_ALT_CLOSING.png as the
+exact last frame.
+
+Seconds 0–3: begin exactly on M2_CP17A.png. The Founder is still pressing the
+entry-phone door-release button. The remote electric lock buzz and metal latch
+release echo up from downstairs. He releases the button, keeps the handset near
+his ear and listens. His fingers, breathing, eyes and posture remain in natural
+motion; never freeze him into a still pose.
+
+Seconds 3–6: the intercom line falls quiet. He lowers the handset slightly and
+looks toward the closed apartment door. The camera continues a restrained,
+tense push-in. The coiled cable, hallway light and his clothing retain subtle
+physical movement. The room then darkens smoothly as its lines resolve into the
+supplied full-screen branded closing composition. Do not reveal a visitor and
+do not open the apartment door.
+
+Seconds 6–8: the exact supplied full-screen branded card is completely formed.
+Hold every element and every letter stable and fully readable for the final two
+seconds. No further story event or human action occurs during these final two
+seconds. Freeze the composition; only an extremely subtle controlled logo glow,
+line shimmer and film grain may continue. End exactly on
+M2_CP18_ALT_CLOSING.png. Do not abbreviate, translate, replace, redraw or invent
+any logo, title or caption text from the supplied last frame.
+
+Preserve the exact Founder and painterly cinematic 2.5D visual continuity during
+the transition. Keep him naturally moving until the card fully replaces the
+scene. Do not create an opaque card early, do not freeze the human motion before
+second 6, and do not introduce medical imagery.
+
+Audio: continue the restrained suspenseful instrumental music and apartment
+ambience. Retain the electric lock-release buzz and latch echo at the beginning,
+then let the intercom fall quiet. A low unresolved cinematic tone carries into
+the final branded card. Generate no spoken words, conversation, narration,
+voice-over, singing, lyrics or intelligible human speech in this interval.
+
+Generate exactly one 8-second, 9:16 result using the supplied first and last
+frames.

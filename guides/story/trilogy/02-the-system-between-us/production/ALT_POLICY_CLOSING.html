@@ -3,13 +3,206 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=720, initial-scale=1">
-  <title>MyScoutee Part II — alternative policy closing frame</title>
+  <title>MyScoutee Part II — CP18 alternative closing</title>
   <style>
-    html, body { width: 720px; height: 1280px; margin: 0; overflow: hidden; background: #071522; }
-    img { display: block; width: 720px; height: 1280px; }
+    * { box-sizing: border-box; }
+    html, body {
+      width: 720px;
+      height: 1280px;
+      margin: 0;
+      overflow: hidden;
+      background: #061421;
+      color: #f7f8fb;
+      font-family: Inter, "DejaVu Sans", Arial, sans-serif;
+    }
+    .card {
+      position: relative;
+      width: 720px;
+      height: 1280px;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 50% 43%, rgba(25, 62, 79, .40), rgba(5, 18, 30, .93) 58%, #030b13 100%);
+    }
+    .memory {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-image: url("../assets/frames/M2_CP15.png");
+      background-size: cover;
+      background-position: center;
+      opacity: .10;
+      filter: grayscale(.35) saturate(.55) contrast(1.05);
+    }
+    .veil {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(3, 12, 21, .24), rgba(3, 11, 19, .88));
+    }
+    .brand {
+      position: absolute;
+      top: 74px;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .brand img {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 9px rgba(0, 0, 0, .72));
+    }
+    .brand-name {
+      font-size: 54px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: -2px;
+      text-shadow: 0 5px 9px rgba(0, 0, 0, .82);
+    }
+    .hook {
+      position: absolute;
+      top: 310px;
+      left: 48px;
+      right: 48px;
+      text-align: center;
+      text-shadow: 0 5px 13px rgba(0, 0, 0, .92);
+    }
+    .hook-small {
+      color: #c8edf2;
+      font-size: 25px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 7px;
+    }
+    .hook-main {
+      margin-top: 23px;
+      color: #f4bd53;
+      font-size: 54px;
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: .5px;
+    }
+    .hook-main span { display: block; }
+    .continuation {
+      position: absolute;
+      top: 530px;
+      left: 42px;
+      right: 42px;
+      text-align: center;
+      font-size: 28px;
+      line-height: 1.38;
+      font-weight: 850;
+      letter-spacing: .25px;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, .94);
+    }
+    .continuation span { display: block; }
+    .continuation span:first-child { color: #f7f8fb; }
+    .continuation span:last-child { color: #f4bd53; }
+    .line {
+      position: absolute;
+      left: 92px;
+      right: 92px;
+      top: 720px;
+      height: 2px;
+      background: linear-gradient(90deg, #8c5cff 0%, #dc6674 47%, #f1b94d 100%);
+      box-shadow: 0 0 15px rgba(220, 102, 116, .66);
+    }
+    .line::before, .line::after {
+      content: "";
+      position: absolute;
+      top: -6px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #9a68ff;
+      box-shadow: 0 0 18px rgba(154, 104, 255, .90);
+    }
+    .line::before { left: -2px; }
+    .line::after {
+      right: -2px;
+      background: #f3bd52;
+      box-shadow: 0 0 18px rgba(243, 189, 82, .90);
+    }
+    .star {
+      position: absolute;
+      left: 50%;
+      top: 701px;
+      transform: translateX(-50%);
+      color: #ffd45f;
+      font-size: 38px;
+      line-height: 38px;
+      text-shadow: 0 0 18px rgba(255, 205, 83, .90);
+    }
+    .policy {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 240px;
+      padding: 24px 16px 22px;
+      border: 2.5px solid rgba(220, 55, 76, .88);
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(91, 18, 36, .90), rgba(58, 23, 39, .88));
+      box-shadow: 0 0 26px rgba(177, 25, 49, .28);
+      text-align: center;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, .98);
+    }
+    .policy span {
+      display: block;
+      white-space: nowrap;
+      font-size: 31px;
+      line-height: 1.40;
+      font-weight: 850;
+      letter-spacing: -.25px;
+      color: #f7f8fb;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, .98);
+    }
+    .policy span:last-child {
+      font-size: 30px;
+    }
+    .book-available {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 135px;
+      color: #b98cff;
+      text-align: center;
+      font-size: 39px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .4px;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, .96), 0 0 12px rgba(122, 73, 214, .40);
+    }
+    .policy strong { color: #f4bd53; }
   </style>
 </head>
 <body>
-  <img src="../assets/frames/M2_CP17_CLOSING.png" alt="Alternative policy closing frame">
+  <main class="card">
+    <div class="memory"></div>
+    <div class="veil"></div>
+    <header class="brand">
+      <img src="../../../../../frontend/src/assets/icon/myscoutee-meta-app-icon-1024.png" alt="">
+      <div class="brand-name">yScoutee</div>
+    </header>
+    <section class="hook">
+      <div class="hook-small">AND THEN</div>
+      <div class="hook-main"><span>THE DOORBELL</span><span>RANG.</span></div>
+    </section>
+    <div class="continuation">
+      <span>THE BOOK CONTINUES.</span>
+      <span>THE TRILOGY MAY, TOO.</span>
+    </div>
+    <div class="line"></div>
+    <div class="star">★</div>
+    <footer class="policy">
+      <span>WHAT CAME NEXT TRIGGERED</span>
+      <span>A VIDEO AI POLICY RESTRICTION.</span>
+      <span>THE BOOK TELLS THE REST...</span>
+    </footer>
+    <div class="book-available">BOOK AVAILABLE</div>
+  </main>
 </body>
 </html>
