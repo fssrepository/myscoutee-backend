@@ -1,8 +1,16 @@
 # Parts I–II narration and score lock
 
-Date: **9 August 2026**  
-Delivery: English Part I `03:12.000` and Part II `05:20.000`, 9:16,
-720×1280, constant 24 fps.
+Updated: **12 August 2026**
+
+Current picture-locked delivery:
+
+- Part I production cut: `03:04.667`, 9:16, 720×1280, constant 24 fps;
+- Part II policy-shortened alternative cut: `02:17.209`, 9:16, 720×1280,
+  constant 24 fps.
+
+The written `05:28` canonical Part II package remains preserved separately. The
+short Part II narration is explicitly an alternative-cut script and does not
+replace the canonical full-film narration.
 
 ## Narrator
 
@@ -14,17 +22,21 @@ Use the same narrator for both parts:
 - preserve one clean, effects-free narration master for each film;
 - no character dialogue, generated crowd speech, singing or lip sync.
 
-The filename appears to encode the following settings, but this is an
-**inference**, not a reproducible voice lock:
+Use the same Jon voice in two deliberately different performances. These values
+were recovered from the approved 8 August voice-test session:
 
-| Setting | Working value |
-| --- | --- |
-| speed | `0.97` |
-| stability | `62` |
-| similarity boost | `55` |
-| style exaggeration | `20` |
-| model | `Multilingual v2` (`m2`) |
-| voice type | professional voice clone (`pvc`) |
+| Setting | Part I production | Part II alternative |
+| --- | ---: | ---: |
+| model | `Multilingual v2` | `Multilingual v2` |
+| speed | `0.97` | `0.94` |
+| stability | `62` | `58` |
+| similarity boost | `55` | `55` |
+| style exaggeration | `20` | `32` |
+| speaker boost | `Off` | `Off` |
+
+Part I is warm, direct and curious. Part II is the same person speaking more
+slowly, tiredly and with restrained tension. Do not change settings between
+chunks within one film.
 
 Before the paid full reads, copy the exact ElevenLabs voice ID, current model
 name/version and visible settings into this file. The display name and inferred
@@ -32,25 +44,26 @@ filename values alone do not create a reproducible lock.
 
 ## Credit-safe narration workflow
 
-1. Generate one continuous clean read of the locked script for each part. Do
-   not request music or effects with speech.
-2. Part I has P00 + 22 eight-second story windows + E01. Part II has P00 + 38
-   eight-second story windows + E01. Edit pauses and breaths before changing
-   words; preserve natural phrasing across visual cuts.
-3. If one sentence cannot fit naturally, regenerate only that sentence with the
-   same voice and settings. Do not regenerate the full film.
-4. Avoid audible time-stretch. A transparent final adjustment stays within
-   approximately `±2%`; a larger mismatch requires a line retake.
-5. Jon reads the opening threshold and spoken invitation. Continuation language
-   may remain silent typography where the locked script specifies it.
+1. Use the blocks in the picture-locked narration documents. Generate each
+   approximately 20–31 second block separately, with no music or effects.
+2. Prefer 48 kHz WAV. A high-quality MP3 is acceptable when WAV export is not
+   available; it is decoded once to PCM and encoded only once in the final mix.
+3. Preserve the exact export filenames specified in the narration documents.
+   If a generation fails, repeat only that block.
+4. Join blocks at breaths or silence with very short transparent fades. This
+   does not change Jon's timbre and avoids an audible hard edit.
+5. Edit pauses and breaths before changing words. Avoid audible time-stretch;
+   a transparent final adjustment stays within approximately `±2%`.
+6. The Part II policy card remains silent long enough to read. Jon does not
+   speak the policy text aloud.
 
 ## One continuous score per film
 
 The score is mixed after narration timing is known. It is not a collection of
 clip soundtracks.
 
-- Part I starts at `00:00.000` and ends at `03:12.000`.
-- Part II starts at `00:00.000` and ends at `05:20.000`.
+- Part I starts at `00:00.000` and ends at `03:04.667`.
+- Part II alternative starts at `00:00.000` and ends at `02:17.209`.
 - Follow phrases, pauses and withheld breaths as dramatic punctuation.
 - Duck beneath Jon rather than competing with him.
 - Carry harmonic and ambient material across every eight-second picture cut.
@@ -72,10 +85,13 @@ Part I arc: earth and Budapest warmth → London wonder → hidden austerity →
 global movement → loneliness and failed beginnings → human/product lift → open
 continuation into Part II.
 
-Part II arc: inherit Part I's last harmonic note → low system pulse → compressed
-administrative rhythm → near-silence around the operated body → fingerprint and
-paper pulse → brown-stone court weight → wider uncaged creative movement →
-ambiguous constitutional colour → open continuation into Part III.
+Part II alternative arc: inherit Part I's last harmonic note → low system pulse
+→ compressed administrative rhythm → the operated body → persistent doorbell →
+policy interruption and book handoff.
+
+For these current cuts, keep the existing film music, ambience and effects.
+Duck them under Jon and preserve the doorbell and the alternative closing's
+suspense. Do not replace the source soundtracks during the narration pass.
 
 The approved 40-second experiment is a tonal and ducking reference, not a full
 score master:
