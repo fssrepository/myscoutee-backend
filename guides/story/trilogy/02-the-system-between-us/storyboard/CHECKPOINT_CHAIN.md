@@ -9,6 +9,18 @@ P00 -> CP00 -> ... -> CP18 -> CP18A -> CP19 -> ... -> CP38 -> E01
 opening              thirty-nine story intervals             closing breath
 ```
 
+Temporary public alternative:
+
+```text
+P00 -> CP00 -> ... -> CP16 -> CP17 -> CP17_CLOSING
+                              intercom   policy/book handoff
+```
+
+CP17 is the canonical intercom endpoint after CP16, not an alternative frame.
+The alternative branches after CP17 into the separate CP17_CLOSING endpoint. It
+does not replace the preserved full chain or its CP38→E01 `TO BE CONTINUED`
+ending.
+
 Rules:
 
 - Canonical generated endpoints live only in `assets/frames/`.

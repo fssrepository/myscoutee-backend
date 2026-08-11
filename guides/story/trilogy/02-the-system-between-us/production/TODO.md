@@ -7,6 +7,20 @@ audit. Frame production begins from this synchronized package; any later
 external critical-AI feedback becomes a new editorial decision rather than a
 gate on this publication.**
 
+## Active alternative public cut
+
+- [ ] Generate the canonical S17 interval from `M2_CP16.png` to
+  `M2_CP17.png`: persistent doorbell, difficult walk to the intercom, “Postás”
+  and the remote door release.
+- [ ] Generate the [alternative closing](../prompts/flow/ALT_CLOSING.txt) from
+  `M2_CP17.png` to the separate `M2_CP17_CLOSING.png` endpoint and append it
+  instead of S18 onward. The small policy/book overlay appears only during the
+  final two seconds; there is no brand copy. The temporary cut ends at `02:32`.
+- [x] Preserve the complete S16–S38 package and the real CP38→E01
+  `TO BE CONTINUED` closing for the later full Part II cut and Part III bridge.
+- [x] Keep the early card free of `TO BE CONTINUED`; that phrase belongs only
+  to the actual complete ending after S38.
+
 ## Immediate production exceptions — S16, S17 and S18A
 
 - [ ] **Generate S16 outside Google Flow.** Flow repeatedly rejected the motion
@@ -14,11 +28,11 @@ gate on this publication.**
   images. Submit the original full [S16 prompt](../prompts/flow/S16.txt) with
   `M2_CP15.png` and `M2_CP16.png` to another frames-to-video generator. Do not
   replace or simplify the saved story prompt.
-- [ ] **Generate S17 outside Google Flow.** Its required closed-incision image
-  is likely to trigger the same policy gate. Use the corrected `M2_CP17.png`,
-  which keeps both legs visible and preserves the operated left leg, with the
-  full [S17 prompt](../prompts/flow/S17.txt). Do not spend Flow attempts on a
-  medically neutral rewrite that removes the scene's meaning.
+- [ ] **Generate S17 outside Google Flow.** Its first endpoint is the rejected
+  post-operative `M2_CP16.png`. Use it with the canonical intercom
+  `M2_CP17.png` and the full [S17 prompt](../prompts/flow/S17.txt). The film
+  retains the wound and black humour in narration rather than another medical
+  close-up.
 - [ ] **Generate S18A outside Google Flow.** The required home entry,
   restraint, handcuffs and pressure on the operated foot are the scene itself,
   so a neutral rewrite would falsify the event. Use the existing full

@@ -172,18 +172,21 @@ Narration and stabilized editable titles come from [SCRIPT.md](../film/SCRIPT.md
 - **CP16:** Founder alone, leg elevated, special shoe nearby, daily injection
   supplies and stored food visible, empty chair held in quiet focus.
 
-### S17 — The wound reaches the portal · 02:16–02:24 · CP16→CP17
+### S17 — The bell will not stop · 02:16–02:24 · CP16→CP17
 
-- **Motion:** a new call enters the silent room; the Founder photographs the
-  closed incision and attaches it to an anonymized portal message.
-- **CP17:** clinical, non-gory wound image on the screen and a dry half-smile at
-  his own obscene metaphor; never visualize a kick or violent act.
+- **Motion:** an insistent doorbell reaches the post-operative room. The Founder
+  lowers the operated left foot, gets upright and hobbles to the entrance. At
+  the wall-mounted handset beside the door, the caller says only “Postás.” He
+  presses the release button and hears the ground-floor electric lock open.
+- **CP17:** chest-up intercom moment at the closed apartment door, handset at
+  the ear and finger on the release button; no leg or wound appears.
 
 ### S18 — The knock · 02:24–02:32 · CP17→CP18
 
-- **Motion:** the portal notification becomes a doorbell almost one year later.
-  It rings for a long time. The visitors present themselves as postal workers;
-  when the Founder opens the door, they reveal themselves as police.
+- **Motion:** the ground-floor release echoes away and footsteps climb through
+  the building. The Founder moves from the intercom to his apartment door. The
+  visitors maintain the postal-worker presentation; when he opens the door,
+  they reveal themselves as police.
 - **CP18:** the existing doorstep moment immediately before the entry, held
   only long enough for the deception to register.
 
@@ -386,7 +389,7 @@ Narration and stabilized editable titles come from [SCRIPT.md](../film/SCRIPT.md
 | `M2_CP14.png` | direct-notice and correction process proposal | S14–S15 |
 | `M2_CP15.png` | disputed line and immediate correction in evidence | S15–S16 |
 | `M2_CP16.png` | solitary post-operative room | S16–S17 |
-| `M2_CP17.png` | closed-incision attachment and black humour | S17–S18 |
+| `M2_CP17.png` | intercom handset and ground-floor door release | S17–S18 |
 | `M2_CP18.png` | doorstep immediately before the police entry | S18–S18A |
 | `M2_CP18A.png` | rushed, cuffed and injured inside his own doorway | S18A–S19 |
 | `M2_CP19.png` | ordinary interview room, devices and counsel | S19–S20 |

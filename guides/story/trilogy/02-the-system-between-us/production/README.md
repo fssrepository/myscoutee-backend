@@ -15,8 +15,8 @@ in a separate phase; audio remains downstream.
 - [SHOT_MANIFEST.csv](tracking/SHOT_MANIFEST.csv) tracks the locked P00,
   S01–S38 and E01 production units.
 
-The next visual task is direct Veo 3.1 Lite production: choose the next
-interval, generate its two exact 9:16
-endpoints, then use the same pair and prompt for one eight-second result in
-Google Flow.
+The active short-cut branches from the canonical intercom endpoint through
+`M2_CP17.png→M2_CP17_CLOSING.png`. Only the second frame is alternative, and it
+contains no brand copy. The full S16–S38 motion package and the final
+`M2_CP38.png→M2_E01.png` Part III bridge remain preserved for later production.
 There is no slideshow or animatic stage.

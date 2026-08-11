@@ -92,13 +92,13 @@ viewer time to read and consider the premise.
 
 > The public answer was a shoe: come back in a year. The private clinic laughed. I borrowed for surgery and spent three months in bed.
 
-### 02:16–02:24 — S17 · The wound reaches the portal
+### 02:16–02:24 — S17 · The bell will not stop
 
-> A new call reached the room. I sent the wound itself and wrapped helplessness in an obscene joke.
+> I sent the wound itself and wrapped helplessness in an obscene joke. Almost a year later, the bell would not stop.
 
 ### 02:24–02:32 — S18 · The knock
 
-> The bell kept ringing. They said they were from the post. I opened the door to let ordinary life in.
+> I hobbled to the intercom. “Postás.” I released the downstairs door, then opened my own to let ordinary life in.
 
 ### 02:32–02:40 — S18A · The rush
 

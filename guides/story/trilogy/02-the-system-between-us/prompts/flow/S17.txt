@@ -3,31 +3,34 @@ Create one continuous 8-second, 9:16 Frames-to-Video clip.
 Use M2_CP16.png as the exact first frame and M2_CP17.png as the exact last
 frame.
 
-Begin exactly on M2_CP16.png. A new call makes the phone vibrate beside the
-bed. The Founder wakes, shifts his body, reaches for it and listens while the
-raised left leg remains supported on the pillows and the separate uninjured
-right leg stays naturally visible. The empty chair remains untouched.
+Begin exactly on M2_CP16.png. The Founder is recovering alone at home with the
+operated left foot elevated. A forceful apartment doorbell starts ringing in a
+rapid, insistent pattern and does not stop. He looks toward the entrance,
+carefully lowers the injured left foot, puts on the prescribed elevation shoe
+and gets upright with visible difficulty.
 
-He ends the call, draws the tablet toward him and opens a photograph he already
-took of the same left foot. The image shows the closed healing incision itself,
-not a bandage. He places the photograph into a blank portal-message field and
-writes one short unreadable line with the stylus. A dry, tired half-smile passes
-across his face at the black humour, then he steadies the tablet as the camera
-moves into the final composition. The metaphor remains only in his expression
-and the abstract line; it never becomes physical action.
+He hobbles through the apartment while the camera follows in one continuous,
+human-scale moving shot. Do not cut, freeze or turn the movement into a
+slideshow. As he reaches the closed front door, move into a chest-up view so
+neither leg remains visible. A simple wall-mounted entry-phone handset is fixed
+at head height, only 10–20 centimetres from the doorframe.
 
-End exactly on M2_CP17.png with both complete legs clearly present: the operated
-left foot raised in a short foot-and-ankle dressing with the calf and knee
-uncovered, the normally proportioned uninjured right leg resting separately,
-and the tablet displaying the clinical closed-incision photograph. Preserve the exact
-Founder identity, natural hand and body proportions, bedroom, empty chair,
-crutches, elevation shoe, supplies and painterly cinematic 2.5D style. Keep the
-portal field and handwritten line unreadable. Generate no leg duplication,
-merging or disappearance.
+He lifts the handset; only then does the ringing stop. A brief filtered male
+Hungarian voice from downstairs says exactly one word: “Postás.” The Founder
+does not reply. He presses the entry unit’s physical door-release button. A
+distinct electric lock-release buzz and metal latch sound echo back from the
+building’s ground-floor entrance. End exactly on M2_CP17.png.
 
-Audio: restrained tense instrumental music with phone vibration, connection
-tones, bedding, tablet and stylus sounds, quiet city ambience and natural
-breathing. Do not generate spoken words, dialogue, narration, singing, lyrics
-or intelligible human speech.
+Preserve the exact Founder, face, age, dark quilted jacket, dark sweater, red
+scarf, natural hand and body proportions, apartment continuity and painterly
+cinematic 2.5D style. The operated foot is the left foot. Do not show a wound,
+blood or medical close-up. Do not generate text, lettering, logos or captions.
 
-Generate one 8-second, 9:16 result using the supplied first and last frames.
+Audio: restrained suspenseful instrumental music, bedding, careful movement,
+footsteps, room ambience, the loud persistent doorbell, the single filtered
+Hungarian word “Postás,” and the remote electric door-release buzz. Generate no
+other spoken words, conversation, narration, voice-over, singing, lyrics or
+intelligible human speech.
+
+Generate exactly one 8-second, 9:16 result using the supplied first and last
+frames.
