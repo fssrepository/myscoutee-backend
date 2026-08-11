@@ -86,7 +86,7 @@ viewer time to read and consider the premise.
 
 ### 02:00–02:08 — S15 · One surviving line
 
-> Under accumulated pressure, I wrote one violent line, corrected it immediately and kept trying to close the matter.
+> Under accumulated pressure, one line broke loose. I corrected it immediately. The words became the case; what I had been trying to defend was human dignity.
 
 ### 02:08–02:16 — S16 · The body has a deadline
 

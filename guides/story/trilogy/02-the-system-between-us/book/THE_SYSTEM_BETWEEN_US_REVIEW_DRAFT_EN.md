@@ -45,8 +45,9 @@ process examined the highly educated professional who had repaired the failure
 and turned him into the subject of a label of pathological mental illness.
 
 After two decades of exclusion, adaptation and repeated attempts to build a
-lawful life in my own country, I wrote one violent sentence under accumulated
-pressure and corrected it immediately. That act remains part of the record. So
+lawful life in my own country, one sentence broke loose under accumulated
+pressure. I corrected it immediately and kept writing. Its wording remains part
+of the record. So
 does the repaired return, the paid tax, the ended representation, the written
 administrative history and the request for peace around surgery. The state
 later allowed the sentence and later messages to travel farther than those
@@ -658,9 +659,23 @@ consequence did not.
 Some calls from the period survive, but not the decisive exchanges behind the
 remarks I later recorded in my defence speech. Their shape can be inferred only
 indirectly—from the later writing, the surrounding calls and the steps that
-followed. In that later account, the remarks landed as dismissive: accountants
-usually did not cause problems; entrepreneurs did not normally care what
-accountants did in their name; why had I shared my credentials?
+followed. In that later account, the remarks return one by one.
+
+*Accountants do not usually cause problems.*
+
+*Why did you give her your government-portal password? Surely you can find an
+accountant who can keep the books without being given it.*
+
+*Entrepreneurs are not usually interested in what their accountant does in
+their name.*
+
+*You do not know even this? Do the figures match? Was there an advance
+invoice?*
+
+By the fourth sentence, each role had been stripped of a little dignity. The
+accountant could not be the problem. Entrepreneurs did not care. The client who
+cared should have been the accountant. The password was both the expected
+shortcut and my fault for surrendering it.
 
 I had reached the institution because the delegated route had failed without
 my knowledge. Its questions returned responsibility to the person whom that
@@ -701,11 +716,12 @@ the representative channel while the liability remained mine. I had already
 spent days reconstructing a failure that had developed for months without my
 knowledge, and I was preparing for major foot surgery.
 
-Under that accumulated pressure, I wrote a violent sentence. I corrected it
-immediately and continued communicating. The sentence remains serious. But it
-did not arrive from an empty room, and it cannot honestly carry the explanatory
-weight of the twenty years, the failed return and the broken information chain
-that preceded it.
+Under that accumulated pressure, one sentence broke loose. I corrected it
+immediately and continued communicating. The words were raw. The impulse beneath
+them was not: do not erase a person's dignity because the screens around him
+failed to agree. The sentence did not arrive from an empty room, and it cannot
+honestly carry the explanatory weight of the twenty years, the failed return and
+the broken information chain that preceded it.
 
 The prosecution would eventually extract legal meaning from parts of that
 sequence. My defence would insist that the outburst, its correction, the lack of
@@ -733,7 +749,7 @@ On paper, the account had returned to zero.
 
 The life around it had not.
 
-Yet the dangerous sentence now possessed a different property from the
+Yet the broken sentence now possessed a different property from the
 correction. It could travel alone.
 
 This is not only a problem in criminal procedure. It is a problem in every
@@ -1876,8 +1892,8 @@ The election was not a verdict in my case. It did show that continuity no
 longer commanded enough trust. Institutions presented as fixed were now being
 judged by the public beneath them.
 
-One sentence from my 2022 messages acquired an uncanny echo. Its violent
-language about twenty years and the rule of law had looked detached from
+One sentence from my 2022 messages acquired an uncanny echo. Its language about
+twenty years and the rule of law had looked detached from
 ordinary political possibility. Four years later, public actors were openly
 describing a change of regime and restoration of the rule of law.
 
@@ -2381,6 +2397,12 @@ is atmospheric: the calls they preserve are ordinary and non-threatening, not
 the menacing scene that later institutional language might suggest. The key
 exchanges survive through the defence speech, later submissions and the events
 that followed.
+
+The four direct remarks in Chapter 6 are close English translations of the
+Hungarian wording preserved in the signed defence speech. The decisive calls do
+not survive in the reviewed recording set, so the book attributes the words to
+that later written record rather than presenting them as an independently
+verified transcript.
 
 The Founder also records that he made an undisclosed audio recording when he
 collected the investigation material alone on 11 June 2024. This edition does
