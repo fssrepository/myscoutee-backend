@@ -1,0 +1,28 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP08.png as the exact first frame and M2_CP09.png as the exact last
+frame.
+
+Begin exactly on M2_CP08.png. The Founder releases the cognac folder and the
+unresolved closing row on the right screen divides into three moving paths.
+The camera rises and eases around the desk as those paths open separate working
+spaces for the Founder, the accountant and the tax officer.
+
+Each person works naturally within a different fragment of the same process.
+The accountant compares forms, retries a submission and receives it back while
+rows and abstract figures change around her. The tax officer processes a
+different record and sends a response through a separate interface. The Founder
+searches the fragments reaching him, but never receives the complete chain.
+The three paths fail to align, then responsibility converges visibly on him.
+
+End exactly on M2_CP09.png in the triangular composition, with all three people
+still working behind separated interfaces and nobody seeing the whole chain.
+Preserve the exact Founder, room, clothing, cognac folder and painterly
+cinematic 2.5D style. Keep screens and documents abstract, blank and unbranded.
+
+Generate restrained tense cinematic music with paper handling, typing, soft
+interface responses and office ambience, without intelligible human speech or
+lip-sync.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

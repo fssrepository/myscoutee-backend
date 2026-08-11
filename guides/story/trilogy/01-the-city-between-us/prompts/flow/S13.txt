@@ -1,0 +1,16 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_CP12.png as the exact first frame and M1_CP13.png as the exact last frame.
+
+Continue inside the exact same adult dance studio, with identical window, mirror, pendant lamp, timber floor, warm afternoon light, costumes and character identities. Begin with the Founder and the auburn-haired Dance Student completing one more genuinely coordinated, slightly more complex partner-dance step. Preserve their natural recovered smiles without romance or visible speech.
+
+Maintain the slow clockwise 32 mm camera arc from the preceding clip, now at sixty-percent speed. As the camera arc reveals the long wooden bench, the other mature adult dancers naturally finish their practice and leave through the edges of frame; do not make anybody vanish or morph. The room becomes quieter and half empty while remaining visibly the same continuous place and moment. The Founder and Dance Student release the dance hold, walk naturally to the same bench and sit beside one another.
+
+End exactly on M1_CP13.png: the Founder and Dance Student share relaxed, attentive mutual regard on the bench while only two mature adult pairs continue practising in the background. Their connection remains open and undefined, not a romantic resolution.
+
+CONTINUITY IS REQUIRED:
+Preserve the Founder's exact face, age, dark knit clothing and rust scarf. Preserve the Dance Student's exact face, short auburn bob, teal wrap top, black trousers and dance shoes. Preserve the established painterly cinematic 2.5D style, warm colour grade and studio geometry. Every visible dancer is an unmistakably mature adult, approximately 30–60 years old.
+
+No hard cut, montage, sudden time jump, new window, changed room, new costume, duplicate person, merged identity, face morphing, romantic embrace, kiss, instructor, readable text, logo, child, teenager or minor. Nobody speaks or visibly articulates words.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

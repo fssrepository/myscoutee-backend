@@ -5,8 +5,8 @@ preview. They are planning images, not approved production plates.
 
 - `CP00`–`CP22` use a fictional Founder identity placeholder generated for this
   rough; they do not depict or replace the real founder reference.
-- `E01` is assembled deterministically from the repository brand asset and
-  editable text; it is not AI-generated.
+- `E01` is the exact generated closing endpoint. Stabilize the repository brand
+  asset and editable type over the Flow transition in post.
 - Keep only the selected rough frame for each shot. Do not commit discarded
   variants or rejected render exports.
 

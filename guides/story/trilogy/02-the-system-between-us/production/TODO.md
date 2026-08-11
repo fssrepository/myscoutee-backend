@@ -7,6 +7,38 @@ audit. Frame production begins from this synchronized package; any later
 external critical-AI feedback becomes a new editorial decision rather than a
 gate on this publication.**
 
+## Active alternative public cut
+
+- [ ] Generate the canonical S17 interval from `M2_CP16.png` to
+  `M2_CP17.png`: persistent doorbell, difficult walk to the intercom, “Postás”
+  and the remote door release.
+- [ ] Generate the [alternative closing](../prompts/flow/ALT_CLOSING.txt) from
+  `M2_CP17.png` to the separate `M2_CP17_CLOSING.png` endpoint and append it
+  instead of S18 onward. The small policy/book overlay appears only during the
+  final two seconds; there is no brand copy. The temporary cut ends at `02:32`.
+- [x] Preserve the complete S16–S38 package and the real CP38→E01
+  `TO BE CONTINUED` closing for the later full Part II cut and Part III bridge.
+- [x] Keep the early card free of `TO BE CONTINUED`; that phrase belongs only
+  to the actual complete ending after S38.
+
+## Immediate production exceptions — S16, S17 and S18A
+
+- [ ] **Generate S16 outside Google Flow.** Flow repeatedly rejected the motion
+  prompt even after a neutral 57-word test, while accepting both endpoint
+  images. Submit the original full [S16 prompt](../prompts/flow/S16.txt) with
+  `M2_CP15.png` and `M2_CP16.png` to another frames-to-video generator. Do not
+  replace or simplify the saved story prompt.
+- [ ] **Generate S17 outside Google Flow.** Its first endpoint is the rejected
+  post-operative `M2_CP16.png`. Use it with the canonical intercom
+  `M2_CP17.png` and the full [S17 prompt](../prompts/flow/S17.txt). The film
+  retains the wound and black humour in narration rather than another medical
+  close-up.
+- [ ] **Generate S18A outside Google Flow.** The required home entry,
+  restraint, handcuffs and pressure on the operated foot are the scene itself,
+  so a neutral rewrite would falsify the event. Use the existing full
+  [S18A prompt](../prompts/flow/S18A.txt) with `M2_CP18.png` and
+  `M2_CP18A.png` in another frames-to-video generator.
+
 ## 1. Current review pass
 
 - [x] Complete the deeper memoir revision around the functioning-system
@@ -134,8 +166,9 @@ gate on this publication.**
 - [x] Lock Veo 3.1 Lite as the production model and Jon as the narrator.
 - [ ] Generate each scene's exact two 9:16 endpoint frames in sequential
   reviewable batches.
-- [ ] Generate S01–S38 in Veo 3.1 Lite with exact endpoints, eight seconds and
-  one result per approved first attempt.
+- [ ] Generate S01–S38 with exact endpoints and eight-second results; use Veo
+  3.1 Lite for the chain except the visibly tracked S16, S17 and S18A
+  external-generator fallbacks.
 - [ ] Produce one time-locked English narration after picture timing is stable.
 - [ ] Produce one continuous score for the full film; discard clip-generated
   music and ambience.

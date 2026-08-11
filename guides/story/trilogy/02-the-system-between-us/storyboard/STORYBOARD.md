@@ -3,10 +3,10 @@
 Status: **synchronized written baseline; no checkpoint in this chain is approved
 for production yet**.
 
-Runtime: exactly **05:20.000** at **24 fps**, portrait **720×1280**. The motion
-chain contains thirty-eight eight-second intervals, `CP00→CP38`, framed by two
-deterministic eight-second post-production cards. Narration and editable titles
-come from [SCRIPT.md](../film/SCRIPT.md).
+Runtime: exactly **05:28.000** at **24 fps**, portrait **720×1280**. The motion
+chain contains forty-one eight-second intervals, including the inserted
+`CP18→CP18A` rush, `P00→CP00→…→CP18→CP18A→CP19→…→CP38→E01`.
+Narration and stabilized editable titles come from [SCRIPT.md](../film/SCRIPT.md).
 
 ## Global picture contract
 
@@ -15,7 +15,8 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - every generated clip uses its two named checkpoints as exact first and last
   frames;
 - video models render no typography, logo, readable evidence, public-figure
-  likeness, narration, dialogue, music or lip sync;
+  likeness, spoken dialogue, narration, voice-over or intelligible human
+  speech; cinematic music, room ambience and environmental sound are allowed;
 - mouths remain naturally relaxed; interaction comes through listening, gaze,
   posture, hands and restrained micro-expression;
 - every legal, tax and medical-adjacent page is an anonymized visual plate;
@@ -25,7 +26,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ## Motion chain
 
-### P00 — True-story title card · 00:00–00:08 · post only
+### P00 — True-story title transition · 00:00–00:08 · P00→CP00
 
 - **Picture:** deep navy-to-cognac field, one restrained ruled line and one
   small human-network constellation; exact repository mark and typography are
@@ -37,10 +38,12 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 ### S01 — The line changes meaning · 00:08–00:16 · CP00→CP01
 
-- **CP00:** lossless Part I handoff: six people linked by the open MyScoutee
-  network line in the established navy-and-amber world.
-- **Motion:** the people recede without vanishing; the same line straightens
-  into the ruled line of an ivory form on the Founder's desk.
+- **CP00:** lossless Part I handoff: the Founder, local operator and distinct
+  independently hosted community workspaces linked by the open coral MyScoutee
+  line in the established navy-and-amber world.
+- **Motion:** the operator and community workspaces recede into dim reflections
+  without violent disappearance; the same line straightens into the ruled line
+  of an ivory form on the Founder's desk.
 - **CP01:** Founder beside the cognac notebook and clean form, large centre-safe
   negative space for title, part title and `BASED ON A TRUE STORY` in post.
 
@@ -169,28 +172,46 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP16:** Founder alone, leg elevated, special shoe nearby, daily injection
   supplies and stored food visible, empty chair held in quiet focus.
 
-### S17 — The wound reaches the portal · 02:16–02:24 · CP16→CP17
+### S17 — The bell will not stop · 02:16–02:24 · CP16→CP17
 
-- **Motion:** a new call enters the silent room; the Founder photographs the
-  closed incision and attaches it to an anonymized portal message.
-- **CP17:** clinical, non-gory wound image on the screen and a dry half-smile at
-  his own obscene metaphor; never visualize a kick or violent act.
+- **Motion:** an insistent doorbell reaches the post-operative room. The Founder
+  lowers the operated left foot, gets upright and hobbles to the entrance. At
+  the wall-mounted handset beside the door, the caller says only “Postás.” He
+  presses the release button and hears the ground-floor electric lock open.
+- **CP17:** chest-up intercom moment at the closed apartment door, handset at
+  the ear and finger on the release button; no leg or wound appears.
 
 ### S18 — The knock · 02:24–02:32 · CP17→CP18
 
-- **Motion:** the portal notification becomes a door notification almost one
-  year later; police arrive the day after the Founder sought help elsewhere.
-- **CP18:** two professional officers at the modest Budapest flat door, Founder
-  surprised but composed; no raid spectacle, weapons or broken door.
+- **Motion:** the ground-floor release echoes away and footsteps climb through
+  the building. The Founder moves from the intercom to his apartment door. The
+  visitors maintain the postal-worker presentation; when he opens the door,
+  they reveal themselves as police.
+- **CP18:** the existing doorstep moment immediately before the entry, held
+  only long enough for the deception to register.
 
-### S19 — Devices and silence · 02:32–02:40 · CP18→CP19
+### S18A — The rush · 02:32–02:40 · CP18→CP18A
+
+- **Motion:** the officers drive the opening door back against the Founder,
+  rush through it, seize both arms, turn him against the wall and cuff his hands
+  behind him. Their civilian outer layers open to reveal the bulletproof vests
+  underneath as four more officers fill the doorway: two women and four men in
+  total. During the struggle an officer steps on the operated foot; the Founder
+  reacts with immediate, involuntary pain. The action remains continuous and
+  human, never frozen into a symbolic tableau.
+- **CP18A:** the Founder restrained against his own hallway wall, handcuffs
+  visible behind him and the pressure on the operated foot readable in the same
+  vertical composition. Six visibly distinct officers crowd the opened doorway,
+  all wearing dark bulletproof vests; no cloned face or weapon.
+
+### S19 — Devices and silence · 02:40–02:48 · CP18A→CP19
 
 - **Motion:** phone and computer enter evidence sleeves; the scene moves to an
   ordinary police interview room and a short counsel break in a second room.
 - **CP19:** officer at desktop computer, Founder opposite, appointed counsel at
   his side; no readable charge and no invented shouting face.
 
-### S20 — Fingerprints · 02:40–02:48 · CP19→CP20
+### S20 — Fingerprints · 02:48–02:56 · CP19→CP20
 
 - **Motion:** restrained booking photograph, then a professional female officer
   guides the Founder's fingers onto paper.
@@ -199,14 +220,14 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **Sound in post:** Jon states the Founder's inconveniently human observation;
   it remains inner narration and nobody in the room reacts to it.
 
-### S21 — Investigating the investigation · 02:48–02:56 · CP20→CP21
+### S21 — Investigating the investigation · 02:56–03:04 · CP20→CP21
 
 - **Motion:** fingerprint ridges become call timelines, electronic submissions
   and requested recordings reconstructed by the Founder.
 - **CP21:** missing records returned to the investigative table by the person
   being investigated; anonymized dates and waveforms only.
 
-### S22 — Eight days · 02:56–03:04 · CP21→CP22
+### S22 — Eight days · 03:04–03:12 · CP21→CP22
 
 - **Motion:** the recovered evidence pauses while eight calendar marks advance
   to a room with two visibly distinct forensic experts. The recalled question
@@ -218,21 +239,21 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **Sound in post:** Jon recalls the expert's question, then carries the
   Founder's answer as a dry inner thought. No mouth forms the words.
 
-### S23 — The other biography · 03:04–03:12 · CP22→CP23
+### S23 — The other biography · 03:12–03:20 · CP22→CP23
 
 - **Motion:** calm observation notes condense the Founder's travel, work,
   relationships and distrust into a much thinner institutional portrait.
 - **CP23:** full human figure behind a translucent narrow report silhouette;
   the report is contested interpretation, not the person.
 
-### S24 — Brown stone · 03:12–03:20 · CP23→CP24
+### S24 — Brown stone · 03:20–03:28 · CP23→CP24
 
 - **Motion:** the report edge becomes the Danube embankment and the monumental
   brown, Roman-influenced façade of the Buda courthouse.
 - **CP24:** small Founder approaching the exact civic scale of the building;
   Budapest remains beautiful rather than dystopian.
 
-### S25 — Inside the curve · 03:20–03:28 · CP24→CP25
+### S25 — Inside the curve · 03:28–03:36 · CP24→CP25
 
 - **Motion:** the façade opens into the remembered C-shaped hearing room. Jon
   recalls the judge's two short questions while her restrained smile and the
@@ -241,7 +262,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
   counsel right; Founder in front with microphone. A restrained expression
   registers black humour without proving ridicule or bias.
 
-### S26 — Care · 03:28–03:36 · CP25→CP26
+### S26 — Care · 03:36–03:44 · CP25→CP26
 
 - **Motion:** a financial question crosses the microphone and becomes the
   apartment; when the apartment does not end the inquiry, the question moves
@@ -249,7 +270,7 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP26:** the life that produced the money occupies more space than the asset
   field asking for it; no confiscation, eviction or final fine.
 
-### S27 — Doors that answer later · 03:36–03:44 · CP26→CP27
+### S27 — Doors that answer later · 03:44–03:52 · CP26→CP27
 
 - **Motion:** the complaint divides between two constitutional doors: one
   closes before the criminal case has ended, the other after a 180-day path has
@@ -259,77 +280,77 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP27:** Founder below the two closed constitutional routes and a receding
   hearing calendar; the underlying questions remain unanswered.
 
-### S28 — The machine beside me · 03:44–03:52 · CP27→CP28
+### S28 — The machine beside me · 03:52–04:00 · CP27→CP28
 
 - **Motion:** a blinking AI cursor appears beside the Founder's facts and first
   two-page defence, then begins organizing the later record.
 - **CP28:** Founder and AI workspace in visible collaboration; the machine does
   not wear counsel robes, speak in court or replace the legally required lawyer.
 
-### S29 — Four windows · 03:52–04:00 · CP28→CP29
+### S29 — Four windows · 04:00–04:08 · CP28→CP29
 
 - **Motion:** one workstation opens four bounded windows: legal self-defence,
   MyScoutee, accessible civic-service prototyping and falsifiable mathematics.
 - **CP29:** four distinct works held together by one focused Founder under a
   hearing notice; no superhuman montage or solved-prize claim.
 
-### S30 — The human question · 04:00–04:08 · CP29→CP30
+### S30 — The human question · 04:08–04:16 · CP29→CP30
 
 - **Motion:** equations narrow to one precise highlighted statement while an
   anonymous professor's reply arrives.
 - **CP30:** the Founder rereads the exact research question; no named professor,
   public likeness, prize, proof certificate or triumphant discovery.
 
-### S31 — Black humour as receipt · 04:08–04:16 · CP30→CP31
+### S31 — Black humour as receipt · 04:16–04:24 · CP30→CP31
 
 - **Motion:** the research page folds into a satirical police-job curriculum
   vitae and a restrained Hulk-like sketch kept safely on paper.
 - **CP31:** one officer suppresses a smile while the Founder waits for a real
   reply; no axes in live action, charge iconography or threat enactment.
 
-### S32 — The debt that crossed a border · 04:16–04:24 · CP31→CP32
+### S32 — The debt that crossed a border · 04:24–04:32 · CP31→CP32
 
 - **Motion:** the white paper becomes a rain-dark London room where one
   Hungarian housemate keeps paying a foreign-currency loan at home.
 - **CP32:** housemate between family photograph, payment slip and shared room;
   legal analogy is not asserted and debt is not made a character joke.
 
-### S33 — Beautiful home, recurring exit · 04:24–04:32 · CP32→CP33
+### S33 — Beautiful home, recurring exit · 04:32–04:40 · CP32→CP33
 
 - **Motion:** London rain becomes Danube light, bridges and Budapest streets;
   one route line nevertheless points outward.
 - **CP33:** Founder between love of the city and the recurring possibility of
   leaving; no ruined-country cliché or nationalist symbol.
 
-### S34 — The streets and the portals · 04:32–04:40 · CP33→CP34
+### S34 — The streets and the portals · 04:40–04:48 · CP33→CP34
 
 - **Motion:** varied citizens fill real streets while the Founder moves through
   petitions, ombudsman routes and public-service portals at his desk.
 - **CP34:** street and screen occupy equal visual weight; neither proves the
   private case, both show a country asking for another route.
 
-### S35 — Twelve April · 04:40–04:48 · CP34→CP35
+### S35 — Twelve April · 04:48–04:56 · CP34→CP35
 
 - **Motion:** ballots move through a quiet count; government signage changes
   while the private case line remains stationary.
 - **CP35:** institutional doors begin moving on different hinges above one
   unchanged hearing timeline; no party logo or victory spectacle.
 
-### S36 — Constitutional empty space · 04:48–04:56 · CP35→CP36
+### S36 — Constitutional empty space · 04:56–05:04 · CP35→CP36
 
 - **Motion:** an anonymous presidential question travels toward Venice and the
   Constitutional Court; seven chairs move back and an eighth follows.
 - **CP36:** seven chairs remain around a fifteen-seat geometry with no quorum;
   no public likeness, Venice endorsement or false departure from office.
 
-### S37 — Mercy changes direction · 04:56–05:04 · CP36→CP37
+### S37 — Mercy changes direction · 05:04–05:12 · CP36→CP37
 
 - **Motion:** a clemency refusal dated 30 April and revised papers dated 19 May
   remain below; above, a later signing hand ends the President's mandate.
 - **CP37:** two legally unequal routes held in memoir irony, never shown as
   cause, revenge, equivalent judgment or deserved punishment.
 
-### S38 — The open line · 05:04–05:12 · CP37→CP38
+### S38 — The open line · 05:12–05:20 · CP37→CP38
 
 - **Motion:** three years of calendar pages gather around one short line, then
   dissolve back into a human network; the scheduled hearing remains a small
@@ -337,12 +358,13 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 - **CP38:** Founder beside the open MyScoutee line, neither defeated nor
   triumphant, centre-safe for the final post-produced statement.
 
-## E01 — Book and continuation card · 05:12–05:20 · post only
+## E01 — Invitation and continuation · 05:20–05:28 · CP38→E01
 
-- deterministic clean plate derived from CP38, held for a full eight seconds;
-- exact repository MyScoutee mark, never an AI-generated logo;
-- editable text: `BOOK AVAILABLE`, then `TO BE CONTINUED`; do not repeat the
-  film or book title;
+- generated transition from CP38 into the exact E01 endpoint, with the final
+  seconds held as a reflective breath;
+- exact repository MyScoutee mark and editable type stabilized in post;
+- editable text: `TEST THE SYSTEM BETWEEN US`, then `TO BE CONTINUED`; do not
+  repeat the film or book title or `BOOK AVAILABLE`;
 - Jon: `MyScoutee. Test the system between us.`;
 - score ends on an unresolved star interval, not a triumphant cadence.
 
@@ -350,45 +372,46 @@ come from [SCRIPT.md](../film/SCRIPT.md).
 
 | File | Locked visual state | Used by |
 | --- | --- | --- |
-| `CP00.png` | lossless Part I network handoff | S01 |
-| `CP01.png` | network line becomes form; title-safe Founder desk | S01–S02 |
-| `CP02.png` | whole earlier life reflected around Budapest desk | S02–S03 |
-| `CP03.png` | salaried office emptied by COVID-19 | S03–S04 |
-| `CP04.png` | seven-year savings against three-week policy | S04–S05 |
-| `CP05.png` | accepted inside audio-only remote team | S05–S06 |
-| `CP06.png` | lawful KATA working bridge | S06–S07 |
-| `CP07.png` | protest outside, protected handover inside | S07–S08 |
-| `CP08.png` | handover completed, closing row unresolved | S08–S09 |
-| `CP09.png` | Founder/accountant/tax-officer partial-view triangle | S09–S10 |
-| `CP10.png` | password sharing versus incomplete delegation | S10–S11 |
-| `CP11.png` | 23 November reconstruction | S11–S12 |
-| `CP12.png` | dry call and empty family space | S12–S13 |
-| `CP13.png` | corrected, paid, representation ended | S13–S14 |
-| `CP14.png` | direct-notice and correction process proposal | S14–S15 |
-| `CP15.png` | disputed line and immediate correction in evidence | S15–S16 |
-| `CP16.png` | solitary post-operative room | S16–S17 |
-| `CP17.png` | closed-incision attachment and black humour | S17–S18 |
-| `CP18.png` | restrained police arrival | S18–S19 |
-| `CP19.png` | ordinary interview room, devices and counsel | S19–S20 |
-| `CP20.png` | professional fingerprinting and human glance | S20–S21 |
-| `CP21.png` | Founder recovers missing records | S21–S22 |
-| `CP22.png` | two experts, one future report | S22–S23 |
-| `CP23.png` | whole person behind narrow other biography | S23–S24 |
-| `CP24.png` | brown monumental Buda courthouse by Danube | S24–S25 |
-| `CP25.png` | exact C-shaped hearing-room geometry | S25–S26 |
-| `CP26.png` | life and care behind the asset question | S26–S27 |
-| `CP27.png` | institutional doors answer later | S27–S28 |
-| `CP28.png` | AI-assisted self-defence workspace | S28–S29 |
-| `CP29.png` | four bounded creative-work windows | S29–S30 |
-| `CP30.png` | anonymous professor returns question to exact statement | S30–S31 |
-| `CP31.png` | black-humour paper reaches police desk | S31–S32 |
-| `CP32.png` | London housemate and foreign-currency debt | S32–S33 |
-| `CP33.png` | beautiful Budapest and recurring exit line | S33–S34 |
-| `CP34.png` | civic streets and remedy portals | S34–S35 |
-| `CP35.png` | election moves institutions, case remains | S35–S36 |
-| `CP36.png` | eight recusals leave no constitutional quorum | S36–S37 |
-| `CP37.png` | clemency refusal and later mandate signature stay unequal | S37–S38 |
-| `CP38.png` | open human/system line and unresolved hearing | S38/E01 |
+| `M2_CP00.png` | lossless Part I network handoff | S01 |
+| `M2_CP01.png` | network line becomes form; title-safe Founder desk | S01–S02 |
+| `M2_CP02.png` | whole earlier life reflected around Budapest desk | S02–S03 |
+| `M2_CP03.png` | salaried office emptied by COVID-19 | S03–S04 |
+| `M2_CP04.png` | seven-year savings against three-week policy | S04–S05 |
+| `M2_CP05.png` | accepted inside audio-only remote team | S05–S06 |
+| `M2_CP06.png` | lawful KATA working bridge | S06–S07 |
+| `M2_CP07.png` | protest outside, protected handover inside | S07–S08 |
+| `M2_CP08.png` | handover completed, closing row unresolved | S08–S09 |
+| `M2_CP09.png` | Founder/accountant/tax-officer partial-view triangle | S09–S10 |
+| `M2_CP10.png` | password sharing versus incomplete delegation | S10–S11 |
+| `M2_CP11.png` | 23 November reconstruction | S11–S12 |
+| `M2_CP12.png` | dry call and empty family space | S12–S13 |
+| `M2_CP13.png` | corrected, paid, representation ended | S13–S14 |
+| `M2_CP14.png` | direct-notice and correction process proposal | S14–S15 |
+| `M2_CP15.png` | disputed line and immediate correction in evidence | S15–S16 |
+| `M2_CP16.png` | solitary post-operative room | S16–S17 |
+| `M2_CP17.png` | intercom handset and ground-floor door release | S17–S18 |
+| `M2_CP18.png` | doorstep immediately before the police entry | S18–S18A |
+| `M2_CP18A.png` | rushed, cuffed and injured inside his own doorway | S18A–S19 |
+| `M2_CP19.png` | ordinary interview room, devices and counsel | S19–S20 |
+| `M2_CP20.png` | professional fingerprinting and human glance | S20–S21 |
+| `M2_CP21.png` | Founder recovers missing records | S21–S22 |
+| `M2_CP22.png` | two experts, one future report | S22–S23 |
+| `M2_CP23.png` | whole person behind narrow other biography | S23–S24 |
+| `M2_CP24.png` | brown monumental Buda courthouse by Danube | S24–S25 |
+| `M2_CP25.png` | exact C-shaped hearing-room geometry | S25–S26 |
+| `M2_CP26.png` | life and care behind the asset question | S26–S27 |
+| `M2_CP27.png` | institutional doors answer later | S27–S28 |
+| `M2_CP28.png` | AI-assisted self-defence workspace | S28–S29 |
+| `M2_CP29.png` | four bounded creative-work windows | S29–S30 |
+| `M2_CP30.png` | anonymous professor returns question to exact statement | S30–S31 |
+| `M2_CP31.png` | black-humour paper reaches police desk | S31–S32 |
+| `M2_CP32.png` | London housemate and foreign-currency debt | S32–S33 |
+| `M2_CP33.png` | beautiful Budapest and recurring exit line | S33–S34 |
+| `M2_CP34.png` | civic streets and remedy portals | S34–S35 |
+| `M2_CP35.png` | election moves institutions, case remains | S35–S36 |
+| `M2_CP36.png` | eight recusals leave no constitutional quorum | S36–S37 |
+| `M2_CP37.png` | clemency refusal and later mandate signature stay unequal | S37–S38 |
+| `M2_CP38.png` | open human/system line and unresolved hearing | S38/E01 |
 
 ## Approval gate
 

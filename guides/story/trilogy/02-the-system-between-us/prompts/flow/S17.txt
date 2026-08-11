@@ -1,0 +1,36 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip.
+
+Use M2_CP16.png as the exact first frame and M2_CP17.png as the exact last
+frame.
+
+Begin exactly on M2_CP16.png. The Founder is recovering alone at home with the
+operated left foot elevated. A forceful apartment doorbell starts ringing in a
+rapid, insistent pattern and does not stop. He looks toward the entrance,
+carefully lowers the injured left foot, puts on the prescribed elevation shoe
+and gets upright with visible difficulty.
+
+He hobbles through the apartment while the camera follows in one continuous,
+human-scale moving shot. Do not cut, freeze or turn the movement into a
+slideshow. As he reaches the closed front door, move into a chest-up view so
+neither leg remains visible. A simple wall-mounted entry-phone handset is fixed
+at head height, only 10–20 centimetres from the doorframe.
+
+He lifts the handset; only then does the ringing stop. A brief filtered male
+voice from downstairs says exactly one English word: “Delivery.” The Founder
+does not reply. He presses the entry unit’s physical door-release button. A
+distinct electric lock-release buzz and metal latch sound echo back from the
+building’s ground-floor entrance. End exactly on M2_CP17.png.
+
+Preserve the exact Founder, face, age, dark quilted jacket, dark sweater, red
+scarf, natural hand and body proportions, apartment continuity and painterly
+cinematic 2.5D style. The operated foot is the left foot. Do not show a wound,
+blood or medical close-up. Do not generate text, lettering, logos or captions.
+
+Audio: restrained suspenseful instrumental music, bedding, careful movement,
+footsteps, room ambience, the loud persistent doorbell, the single filtered
+English word “Delivery,” and the remote electric door-release buzz. Generate no
+other spoken words, conversation, narration, voice-over, singing, lyrics or
+intelligible human speech.
+
+Generate exactly one 8-second, 9:16 result using the supplied first and last
+frames.

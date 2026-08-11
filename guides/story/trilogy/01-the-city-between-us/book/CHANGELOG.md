@@ -47,7 +47,7 @@ The trilogy part and the edition version are separate. This book is Part
   journey as a quiet distinction between chosen travel and necessary flight:
   everybody escapes differently.
 - Added a stable page break after the Soho lunch scene so its final visible-
-  need line can breathe before the thirteen-person house begins.
+  need line can breathe before the up-to-ten-person shared home begins.
 - Applied the external memoir edit to Part Five: retained the product's
   distinctive group, event, consent and global/local logic while removing
   repeated mechanism explanations that made the origin story read like product

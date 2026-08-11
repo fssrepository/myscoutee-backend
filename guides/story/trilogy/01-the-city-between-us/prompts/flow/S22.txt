@@ -1,0 +1,24 @@
+Create one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_CP21.png as the exact first frame and M1_CP22.png as the exact last frame.
+
+The mature silver-haired woman with the rust scarf is the same exact person in both frames. Preserve her face, hair, age, coat, scarf and body proportions throughout. The male system administrator in M1_CP22.png is a different person from the male provider in M1_CP21.png.
+
+Seconds 0–2: begin exactly on M1_CP21.png. The silver-haired woman exchanges one restrained look with the group, then turns naturally toward the real glass doorway directly behind her. Everyone else remains stable. Nobody visibly speaks and no mouth forms words.
+
+Seconds 2–4: the camera follows closely behind the woman as she walks through that doorway. Her dark coat, rust scarf and the dark wooden doorframe briefly fill the whole frame and create one natural foreground occlusion. Do not introduce paper, graphics, circuitry or an abstract transition.
+
+Seconds 4–5: while the lens remains completely hidden behind the same dark coat and doorframe, change only the environment. The woman herself does not transform.
+
+Seconds 5–8: emerge directly into the technical workspace already shown in M1_CP22.png. The same silver-haired woman steps toward the exact male system administrator beside the laptop and local server. Both people are fully formed from their first visible frame. Use restrained natural hand movement and converge precisely on M1_CP22.png.
+
+Keep the outlined central circle dark and empty throughout. Nothing appears inside it.
+
+Preserve the exact painterly cinematic 2.5D style, lighting, identities, clothing and body proportions of both supplied frames.
+
+No paper wipe, newspaper, unfolded paper, circuit-board interlude, abstract graphic, hybrid image, static heart, glowing heart, face morph, gender change, identity replacement, duplicate person, extra person, generated text, logo, visible dialogue or lip movement.
+
+SILENT VIDEO IS REQUIRED:
+Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

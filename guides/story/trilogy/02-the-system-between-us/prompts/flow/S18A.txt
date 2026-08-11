@@ -1,0 +1,33 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP18.png as the exact first frame and M2_CP18A.png as the exact last
+frame.
+
+Begin exactly on M2_CP18.png. The officers drive the opening door back against
+the Founder and rush through it. As they move, the dark ballistic bulletproof
+vests under their outer clothing become visible. Four additional
+officers in matching protective vests crowd continuously through the doorway.
+Keep the six officers individually consistent and visibly different throughout:
+exactly two women and four men, with no cloned face, repeated hairline or
+duplicated body. In one continuous physical action they seize both arms, turn
+the Founder against his own hallway wall and lock his hands behind him in
+handcuffs. During the struggle the greying male officer steps down on the foot
+that was operated on. The Founder gives an immediate, involuntary reaction of
+pain while the officers' grip and forward momentum continue. Nobody freezes or
+poses; all bodies keep moving naturally through the action.
+
+End exactly on M2_CP18A.png with the Founder restrained against the wall, the
+handcuffs visible behind him and the pressure on the operated foot readable in
+the same vertical composition. Preserve anatomically natural proportions,
+especially hands and feet. Preserve the exact Founder identity, clothing,
+apartment, officers, painterly cinematic 2.5D style, tactile brush texture,
+deep navy shadows and warm amber highlights established by both endpoint
+frames. Do not add weapons, readable text or logos.
+
+Generate tense restrained cinematic music with the long doorbell dying away,
+the door striking inward, hurried footsteps, clothing movement, the handcuff
+mechanism and natural room ambience. Do not generate spoken words or
+intelligible human speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

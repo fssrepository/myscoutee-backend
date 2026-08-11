@@ -1,0 +1,29 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP27.png as the exact first frame and M2_CP28.png as the exact last
+frame.
+
+Begin exactly on M2_CP27.png. The Founder looks down the receding corridor,
+gathers his papers and walks back toward the pool of light around his own desk.
+The two-page defence opens in front of him. He writes the lived facts by hand,
+then a small blinking cursor appears beside the page and begins helping him
+reorder the material.
+
+The Founder remains the active author: he moves paragraphs, checks a source,
+rejects one arrangement, restores the sequence and adds another page. The
+cursor responds by grouping dates, linking related documents and holding the
+expanding chain in view. Later submissions spread across the desk while both
+hands continue working and the camera moves slowly through the collaboration.
+
+End exactly on M2_CP28.png with the Founder and the bounded AI workspace beside
+one another at the document-covered desk. Preserve his exact identity, natural
+hands, room continuity and painterly cinematic 2.5D style. The AI remains a
+cursor and organized workspace, never a person, lawyer, judge or speaking
+character. Keep all case text and interface content abstract and unreadable.
+
+Audio: focused restrained instrumental music with footsteps fading into paper,
+pen, keyboard, cursor tones and night-room ambience. Do not generate spoken
+words, dialogue, narration, singing, lyrics or intelligible human speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

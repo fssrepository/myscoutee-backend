@@ -151,13 +151,14 @@ bodies, objects, lines, thresholds, expressions and consequences.
 Opening and closing typography is deliberate cinematic punctuation, not a
 generated scene. Add it in post over the approved endpoint plates:
 
-- `00:00–00:08`: a separate deterministic title card with title, part title,
-  `BASED ON A TRUE STORY` and one short premise; use near-still graphic motion
-  and a spoken pause rather than placing dense text over S01;
-- `05:12–05:20`: the MyScoutee invitation, `BOOK AVAILABLE` and `TO BE
-  CONTINUED`, without repeating the film or book title;
-- never ask a video model to render title lettering, the logo or the continuation
-  card.
+- `00:00–00:08`: generated P00-to-CP00 title transition with title, part title,
+  `BASED ON A TRUE STORY` and `BOOK AVAILABLE`; use restrained motion and a
+  spoken pause rather than placing dense text over S01;
+- `05:12–05:20`: generated CP38-to-E01 reflective transition with the MyScoutee
+  invitation and `TO BE CONTINUED`, without repeating the film/book title or
+  `BOOK AVAILABLE`;
+- stabilize the exact repository logo and editable lettering in post rather
+  than accepting a model-redrawn mark or misspelling.
 
 ## 5. Character rules
 

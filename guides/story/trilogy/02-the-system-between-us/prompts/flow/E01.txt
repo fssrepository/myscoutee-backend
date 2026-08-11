@@ -1,0 +1,22 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP38.png as the exact first frame and M2_E01.png as the exact last frame.
+
+During seconds 0–3, begin exactly on the open line, Founder and human network of CP38. Use one
+restrained slow pull-back. Let the Budapest room and connected people remain
+present as lived memory while the image settles into deep teal and navy. The
+open line stays unbroken and converges toward its compass-star centre.
+
+During seconds 3–5, transform that centre into the exact supplied M/heart mark without changing
+its geometry or colours. Let the heart give one subtle breath. After the mark
+has settled, fade in the exact supplied `yScoutee` name cleanly beside it.
+During seconds 5–8, allow `TEST THE SYSTEM BETWEEN US` and `TO BE CONTINUED` to
+settle, then become nearly still. End exactly on M2_E01.png and preserve the final
+seconds as a deliberate reflective breath.
+
+Keep the supplied logo and title lettering unchanged and add no new text.
+Generate restrained cinematic music and natural room ambience, with no human
+voice or speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

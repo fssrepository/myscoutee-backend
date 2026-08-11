@@ -1,0 +1,28 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_P00.png as the exact first frame and M1_CP00.png as the exact last frame.
+
+Treat every logo, title and letter already baked into M1_P00.png as immutable
+pixels. Do not read, rewrite, redraw, duplicate, translate, animate or recreate
+any of them. Hold the exact complete first frame for the first second. After
+that, fade the entire baked title area away once as a single flat layer. It
+must never reappear elsewhere in the image.
+
+Animate only the existing globe, its light routes and the landscape beneath
+it. Let one restrained route light travel downward through the recognizable
+Europe–Africa globe. The luminous routes then contract smoothly toward the
+lower centre and become the single real soil furrow of M1_CP00.png. Night-blue
+light develops into restrained Hungarian dawn. Working hands and the produce
+crate appear only as the image settles into the exact final composition.
+
+Use one continuous, slow forward camera movement confined to the globe and
+landscape. Preserve the painterly cinematic 2.5D style, central geometry and
+blue-to-earth colour transition. End exactly on M1_CP00.png with no remaining
+opening graphics.
+
+Do not generate any new typography, word, label, logo, icon or symbol at any
+time. No cut, camera jump, reverse motion, duplicated branding, misspelled
+text, Cyrillic or Russian lettering, logo mutation, extra emblem or face.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

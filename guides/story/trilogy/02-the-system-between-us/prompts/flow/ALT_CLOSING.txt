@@ -1,0 +1,39 @@
+Create one continuous 8-second, 9:16 Frames-to-Video alternative clip using
+the supplied first and last frames.
+
+Use M2_CP15.png as the exact first frame and M2_CP17A.png as the exact last
+frame.
+
+Seconds 0–2: begin exactly on M2_CP15.png. The Founder keeps writing, breathing,
+blinking and shifting naturally at his desk. A forceful apartment doorbell
+starts ringing in a rapid, insistent pattern and does not stop. His pen halts
+mid-line and he looks sharply toward the entrance hall.
+
+Seconds 2–5: in one continuous moving shot, he pulls one headphone cup from his
+ear, rises and moves quickly through his own apartment toward the front door.
+The ringing remains loud and uninterrupted. The camera follows his natural body
+movement; do not cut, freeze or turn the transition into a slideshow.
+
+Seconds 5–8: at the closed apartment door, move into the exact chest-up final
+composition. The wall-mounted entry-phone handset is at head height, only
+10–20 centimetres from the doorframe. He lifts the handset; only then does the
+ringing stop. A brief filtered male voice from downstairs says exactly one
+English word: “Delivery.” The Founder does not reply. He presses the physical
+door-release button. A distinct electric lock-release buzz and metal latch
+sound echo back from the building’s ground-floor entrance. End exactly on
+M2_CP17A.png.
+
+Preserve the exact Founder, face, age, dark quilted jacket, dark sweater, red
+scarf, headphones, natural hand and body proportions, apartment continuity and
+painterly cinematic 2.5D style. Do not reveal either leg in the final view and
+do not introduce medical imagery. Do not generate text, lettering, logos or
+captions.
+
+Audio: restrained suspenseful instrumental music, pen, paper, headphone and
+footstep sounds, room ambience, the loud persistent doorbell, the single
+filtered English word “Delivery,” and the remote electric door-release buzz.
+Generate no other spoken words, conversation, narration, voice-over, singing,
+lyrics or intelligible human speech.
+
+Generate exactly one 8-second, 9:16 result using the supplied first and last
+frames.

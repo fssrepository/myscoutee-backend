@@ -11,7 +11,7 @@ knit, muted rust scarf when outdoors, dark trousers, brown shoes, compact dark
 backpack and [NOTEBOOK_PROP]; [MAYA_REF], [SKETCH_WOMAN_REF],
 [CUP_WOMAN_REF], [GAME_MAN_REF], [ROUTE_MAN_REF], [DANCE_STUDENT_REF],
 [DANCE_PARTNER_REF], [OPERATOR_REF], [BUDAPEST_WORLD], [LONDON_WORLD],
-[SOHO_OFFICE], [TOTTENHAM_HMO], [DANCE_STUDIO] and [EVENT_VENUE] keep their
+[SOHO_OFFICE], [LEE_VALLEY_HOME], [DANCE_STUDIO] and [EVENT_VENUE] keep their
 approved identity and geometry. The Founder is observant, persistent and warm,
 never defeated or resentful. His baseline is quiet, restrained and precise;
 reserve is not fear or compliance. Never play him as hot-tempered. Any rare

@@ -1,0 +1,22 @@
+Create exactly one continuous silent 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_CP20.png as the exact first frame and M1_CP21.png as the exact last frame.
+
+Begin exactly on M1_CP20.png in the same warm London public venue. Keep the round table, windows, plants, lamps, evening street, resource cards and all visible adults spatially continuous.
+
+The male provider entering through the doorway in M1_CP20.png and the man standing beside the silver-haired woman in M1_CP21.png are the same exact man. Preserve his face, age, skin tone, body proportions, dark knit cap and blue work clothing throughout the clip. He must never become, merge with or be replaced by a woman.
+
+Seconds 0–3: the provider carries the crate into the room, places it down outside the main tabletop activity and continues forward naturally. The seated adults maintain small restrained gestures and relaxed closed mouths.
+
+Seconds 3–5: the mature silver-haired woman with the rust scarf enters independently behind him. She is a separate person from her first visible frame. The provider turns toward her and welcomes her with one open-hand gesture. Keep both complete bodies simultaneously visible whenever possible so their identities cannot merge.
+
+Seconds 5–8: the provider and the silver-haired woman settle side by side in the exact positions shown in M1_CP21.png. The seated adults turn toward them once without snapping or resetting. Reach the exact supplied last frame by second 7 and hold restrained natural micro-movement while converging precisely on M1_CP21.png.
+
+Use one slow stable 35 mm camera movement. Preserve every person's identity, the table geometry, cognac notebook, route activity and painterly cinematic 2.5D style. Motion proceeds only forward.
+
+No cut, hidden reset, morph, face blending, duplicate person, gender change, replacement character, repeated entrance, backward motion, readable text, generated logo or new interface. Nobody visibly speaks.
+
+SILENT VIDEO IS REQUIRED:
+Generate visuals only. Do not generate speech, voices, dialogue, narration, ambience, music or sound effects. The output must contain no generated audio.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.

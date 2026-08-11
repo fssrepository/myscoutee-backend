@@ -1,0 +1,30 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_CP03.png as the exact first frame and M1_CP04.png as the exact last frame.
+
+Begin at the expensive Soho lunch shown in CP03. Preserve the Founder's exact
+identity, navy coat, charcoal knit and rust scarf. He calmly keeps his own plate
+empty, closes the menu and stays socially present while the others eat. No one
+speaks or visibly moves their lips; use glances, smiles and restrained gestures.
+
+Use one smooth forward camera movement toward the dark vertical window frame
+behind him. Transform that same vertical line through a rapid but coherent
+series of lived London impressions: an exhibition frame, a museum object, warm
+live music, a small multicultural social evening, and one mutually curious date
+between equal adults. Keep the Founder as the same observant participant rather
+than a tourist or conqueror. Let the final vertical edge become the Victoria-line
+carriage window in CP04. The menu has naturally become his cognac notebook and
+his backpack is present. End exactly on M1_CP04.png.
+
+CONTINUITY IS REQUIRED:
+Every impression grows from the same vertical frame, the same forward direction
+and the same painterly cinematic 2.5D world. Use seamless match
+transformations, not hard cuts. No camera jump, freeze, collage, split screen,
+style change, face morph, duplicated Founder or abrupt transition.
+
+No readable text, logos, transport branding, official museum marks, Big Ben,
+red-bus or phone-box shorthand, conquest framing, exotic catalogue, kissing,
+prominent public figure or additional dominant character.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

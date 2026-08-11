@@ -1,13 +1,14 @@
 Act as cinematography co-director for the locked film “The City Between Us,”
-runtime 03:12 with 22 generated motion intervals between two deterministic
-eight-second post cards, 9:16 portrait, 720x1280 delivery, 24 fps language. Return a
+runtime 03:12 with one generated P00-to-CP00 opening transition, 22 generated
+story intervals and one generated CP22-to-E01 closing transition, 9:16 portrait,
+720x1280 delivery, 24 fps language. Return a
 setup table only. Do not generate or rewrite the supplied narration and timings.
 
 Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
 @DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
 @BudapestWorld,
-@LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook,
-the twelve-Hungarian-flatmate board and confirmed TravelMemory stills. Lock
+@LondonWorld, @SohoOffice, @LeeValleyHome, @DanceStudio, @EventVenue, @Notebook,
+the five-year Hungarian-flatmate casting board and confirmed TravelMemory stills. Lock
 Founder age, face, navy coat, charcoal knit, rust scarf and cognac notebook.
 Lock @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan and @RouteMan as the exact
 same first group, three women and three men, from proposal through later invitations.
@@ -42,8 +43,9 @@ avoided meal seems to move it closer. S04 places the 2012
 Olympic/Diamond Jubilee public energy in the following year without official
 marks and holds the humane Soho sex-shop farewell-gift
 colleague memory, London culture, nightlife and reciprocal cross-cultural dates; Victoria line
-only as a half-second link. S05 the Founder plus twelve Hungarian adults in one
-maintained Tottenham HMO inside multicultural London. Give residents different
+only as a half-second link. S05 exactly ten adults total—the Founder plus nine
+Hungarian flatmates, seven men and three women aged about 23–55—in one
+maintained, flat-roofed Lee Valley shared home inside multicultural London. Give residents different
 relations to home: some felt happier there and no longer wanted to return, but
 show no percentage or rootless label. S06 one bathroom, separate
 WC, shared bedroom and a dry resident-swap reveal through a different snore. S07
@@ -136,8 +138,8 @@ safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,
 transport, resources, language and boundaries. A country change may restart the
 same method, but never show profiles, chats, contacts or private-rate history
-automatically moving between independent operators. E01 is built entirely in CPU post from the real
-brand asset and editable text.
+automatically moving between independent operators. Stabilize the exact real
+brand asset and editable text over the generated E01 motion in post.
 
 CINEMATOGRAPHY AND MODEL DISCIPLINE
 S01–S09 use restrained 28–65 mm movement and foreground/shape transitions. S07

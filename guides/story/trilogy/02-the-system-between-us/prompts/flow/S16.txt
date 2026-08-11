@@ -1,0 +1,36 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP15.png as the exact first frame and M2_CP16.png as the exact last
+frame.
+
+Begin exactly on M2_CP15.png. The Founder finishes the line he is writing,
+closes the notebook and rises from the desk with visible pain in his foot while
+the camera moves with him. The clear document plates lift and turn into a plain
+public-clinic appointment card as an orthopaedic shoe is placed beside it.
+Calendar light races through the seasons across the wall: the promised review
+is a year away. In the moving reflection of the clinic glass, a private
+clinician studies the same card and gives one short incredulous laugh at the
+timetable, then immediately turns back toward the Founder.
+
+The Founder steps forward. As the orthopaedic shoe passes close across the
+lens, match it fluidly into his freshly bandaged foot being raised onto stacked
+pillows after surgery. The clinic surfaces flow into the modest bedroom around
+him. Daylight changes repeatedly through the window to compress roughly three
+months: he adjusts the heavy leg, reaches for water and medication, shifts
+against the pillow and settles again while the empty chair remains untouched.
+Keep him breathing and moving naturally throughout the transition.
+
+End exactly on M2_CP16.png with the Founder alone in bed, the operated leg high
+on the pillows, the black elevation shoe and crutches beside the bed, daily
+supplies and stored food within reach, and the empty chair in the foreground.
+Preserve the exact Founder identity, natural body and hand proportions, room
+details and painterly cinematic 2.5D style of the endpoint frames. Keep the
+appointment card unreadable and generate no letters, numbers, labels or logos.
+
+Audio: restrained emotional instrumental music with pen and notebook movement,
+clinic ambience, one brief nonverbal incredulous laugh, soft footsteps, bedding,
+changing city ambience and the Founder's natural breathing. Do not generate
+spoken words, dialogue, narration, singing, lyrics or intelligible human speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

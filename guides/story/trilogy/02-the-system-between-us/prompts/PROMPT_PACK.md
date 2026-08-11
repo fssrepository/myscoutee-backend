@@ -1,6 +1,6 @@
 # Part II prompt pack
 
-Status: **written baseline synchronized to the 05:20 script and CP00–CP38
+Status: **written baseline synchronized to the 05:28 script and CP00–CP38
 storyboard; no frame-generation run is authorized by this document**.
 
 All generation instructions are English. Public narration and editable titles
@@ -15,7 +15,7 @@ are defined in [SCRIPT.md](../film/SCRIPT.md); video models must invent neither.
 4. In Flow append: `Generate exactly one Veo 3.1 Lite Frames-to-Video result,
    8 seconds, 9:16, using the uploaded checkpoint images as exact first and last
    frames.`
-Do not paste all thirty-eight shots into an ordinary generator. Each interval is
+Do not paste all thirty-nine shots into an ordinary generator. Each interval is
 one independent first/last-frame request. Never replace the endpoint contract
 with Extend or a prompt-only result.
 
@@ -37,8 +37,8 @@ with Extend or a prompt-only result.
 | `[HOUSEMATE_REF]` | anonymized Part I London resident |
 | `[BUDAPEST_FLAT]` | exact approved Part I apartment reference |
 | `[BUDAPEST_WORLD]` | approved Budapest civic-location reference |
-| `[LONDON_HMO]` | approved Part I shared-house reference |
-| `[PART_I_FINAL_FRAME]` | lossless Part I handoff used as `CP00.png` |
+| `[LONDON_SHARED_HOME]` | approved Part I Lee Valley shared-home reference |
+| `[PART_I_FINAL_FRAME]` | lossless Part I handoff used as `M2_CP00.png` |
 
 Public figures are not character tokens. Use hands, silhouettes, office
 geometry, empty chairs and post-added dates. Accurate editorial material, if
@@ -47,38 +47,39 @@ licensed later, belongs in post.
 ## Endpoint contract
 
 - `S01 = CP00→CP01`; `S02 = CP01→CP02`; continue identically through
-  `S38 = CP37→CP38`.
+  `S18 = CP17→CP18`; insert `S18A = CP18→CP18A`; then
+  `S19 = CP18A→CP19` and continue identically through `S38 = CP37→CP38`.
 - Each clip begins and ends on the supplied frames without redesign, crop,
   reframing or recolouring.
-- `P00` is a deterministic eight-second true-story title card; `E01` is a
-  deterministic eight-second post card derived from `CP38`. Both use exact
-  typography and the repository logo in post and consume no generation credit.
-- Title, `BASED ON A TRUE STORY`, dates, labels, `BOOK AVAILABLE` and `TO BE
-  CONTINUED` are editable post typography only.
+- `P00→CP00` is the generated eight-second true-story opening transition;
+  `CP38→E01` is the generated eight-second reflective closing transition.
+- Exact title, mark and lettering are stabilized in post. `BOOK AVAILABLE`
+  appears only on P00; E01 carries the invitation and `TO BE CONTINUED`.
 - If a model cannot accept both endpoints, label it unsuitable for the chain.
 
-## Audio contract
+## Flow audio contract
 
-Generated clips are production picture only:
+Flow generates and retains the musical bed for each clip:
 
-- no dialogue, narration, singing, music, pulse, ambience or sound effects;
+- let Veo freely choose the instrumental musical underscore, ambience and sound
+  effects that best fit the scene;
+- no spoken words, dialogue, narration, singing, lyrics, chanting or
+  intelligible human vocalization;
 - no visible word articulation, lip sync or several people speaking at once;
 - naturally relaxed mouths, breathing, listening, gaze, nods and restrained
-  hand gestures remain allowed;
-- discard all native Veo audio even when the model ignores the prompt.
+  hand gestures remain allowed.
 
-The final film receives the approved ElevenLabs **Jon — Warm & Grounded
-Storyteller** narration, one continuous `05:20` score and synchronized
-post-produced ambience/foley. Archive the exact voice identifier, model,
-settings and clean reference WAV.
+Do not instruct Flow to return a silent video, and do not state that its native
+audio will be discarded or replaced.
 
 Append this block to every Flow shot:
 
 ```text
-VEO AUDIO HARD LOCK: Generate silent production picture only. Absolutely no
-dialogue, narration, singing, background music, cinematic score, melody,
-harmony, musical drone, rhythmic pulse, ambience or sound effects. Final sound
-is created only after all clips are joined. Discard any native platform audio.
+FLOW AUDIO: Let Veo freely choose and generate the instrumental musical
+underscore, ambience and sound effects that best fit the scene. No person may
+speak. Generate no spoken words, dialogue, narration, singing, lyrics, chanting
+or intelligible human vocalization. Nobody visibly speaks, forms words or
+lip-syncs.
 ```
 
 ## Privacy and truth contract
@@ -103,9 +104,9 @@ is created only after all clips are joined. Discard any native platform audio.
 ## Credit lock
 
 - Part I: `22 × 8 s = 220` Flow credits at the observed Veo 3.1 Lite rate.
-- Part II: `38 × 8 s = 380` credits.
-- Base two-film motion: `600` credits.
-- Observed balance: `970`; reserve after base generation: `370` credits.
+- Part II: `39 × 8 s = 390` credits.
+- Base two-film motion: `610` credits.
+- Observed balance: `970`; reserve after base generation: `360` credits.
 - Veo 3.1 Lite is locked. Generate only exact production endpoints and final-use
   eight-second intervals. No slideshow, animatic, midpoint or decorative test frame.
 - Generate the remaining chain only after the Founder approves the books,

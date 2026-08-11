@@ -70,12 +70,15 @@ illustration only if selected during review. Do not merge her into B01–B05.
 
 ## London Hungarian-house cast
 
-Locked board: `london-hmo-h01-h12-board.png`; crop assets:
+Locked five-year casting board: `london-hmo-h01-h12-board.png`; crop assets:
 `london-hmo-h01.png` through `london-hmo-h12.png`.
 
-The converted Tottenham HMO contains the Founder plus twelve Hungarian adults.
-H01–H12 are fictionalized composites, not portraits of identifiable former
-flatmates. Their shared origin never makes them visually or socially uniform.
+The flat-roofed Lee Valley home contains at most ten adults at once: the Founder
+plus up to nine Hungarian flatmates. H01–H12 form a five-year casting pool that
+allows residents to arrive and leave; they must never appear simultaneously in
+one household scene. They are fictionalized composites, not portraits of
+identifiable former flatmates. Their shared origin never makes them visually or
+socially uniform.
 
 | House ID | Token | Individual route |
 | --- | --- | --- |
@@ -92,7 +95,8 @@ flatmates. Their shared origin never makes them visually or socially uniform.
 | H11 | `[HMO11_REF]` | Resident drawn to language exchanges, museums and social evenings; exhibition leaflet and sketch |
 | H12 | `[HMO12_REF]` | Incoming bedroom resident after the unannounced place swap; bounded sleeping/desk corner, family photograph and a distinct snore |
 
-The full house montage uses H01–H12 plus the Founder. The four book portrait
+Any single household frame uses the Founder plus no more than nine selections
+from H01–H12. The four book portrait
 crops use H01, H02, H06 and H11 so the visible sample carries four clearly
 different faces and routes: family-loan pressure, language learning,
 professional restart and social discovery. H12 remains visible in the shared-
@@ -115,7 +119,7 @@ human action, never flags or costume shorthand.
 | `founder-budapest-portrait.png` | `[FOUNDER_REF]` |
 | `budapest-relationship-memories-montage.png` | `[FOUNDER_REF]`, B01–B05 |
 | `budapest-character-*.png` | the matching B01–B05 reference |
-| `london-house-residents-montage.png` | `[FOUNDER_REF]`, H01–H12 |
+| `london-house-residents-montage.png` | `[FOUNDER_REF]` plus nine selections from H01–H12; ten adults total |
 | four London-resident book portraits | H01, H02, H06 and H11 respectively |
 | `global-local-encounters-montage.png` | `[FOUNDER_REF]` plus scene-specific approved travel references |
 | `myscoutee-six-person-ensemble-montage.png` | G01–G06 |

@@ -1,0 +1,42 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_CP08.png as the exact first frame and M1_CP09.png as the exact last frame.
+
+Begin exactly in the almost empty international terminal shown in CP08. Preserve
+the Founder's exact face, navy coat, rust scarf, suitcase and open cognac
+notebook. Hold briefly on the conspicuously empty adjacent seat and the faint
+travel memories reflected in the glass. Nobody speaks or visibly moves their
+lips.
+
+The Founder closes the notebook, rises and takes the suitcase. Use one restrained
+35 mm follow as he walks toward the terminal glass and doorway. Let the last
+hand-drawn route line fold back toward Budapest. Without a cut, transform one
+dark vertical terminal-window mullion into the vertical front-door frame of the
+parent-assisted Budapest flat that stood empty throughout his five London years.
+
+The Founder enters the quiet winter apartment deliberately, not as a defeated
+escape. Preserve the same direction of movement. He unlocks the door with the
+Budapest key, then places exactly two distinct keys beside the cognac notebook:
+one London key and one Budapest key. No additional keys. He turns to a fresh
+blank notebook page as the room gradually warms from winter teal to restrained
+4200 K home light.
+
+Use one gentle arc from behind the Founder to a frontal medium close-up. Through
+the apartment window, a yellow Budapest tram reflection moves in the opposite
+direction to the departure motif. His expression settles into the first clear,
+quietly hopeful half-smile: the return is a deliberate second attempt to build a
+life at home. End exactly on M1_CP09.png.
+
+CONTINUITY IS REQUIRED:
+The terminal mullion and apartment doorframe remain one continuous vertical
+axis. Preserve the Founder, suitcase, notebook, keys, camera direction and
+painterly cinematic 2.5D texture. The route reflection must recede naturally as
+the real Budapest apartment takes over.
+
+No hard cut, camera jump, freeze, collage, split screen, face morph, duplicated
+Founder, extra person, extra key, luxury apartment, family waiting inside,
+readable notebook text, passport, flags, tourist landmark, generated logo,
+dialogue or lip sync.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

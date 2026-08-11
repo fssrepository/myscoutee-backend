@@ -23,7 +23,7 @@ continuity and technical faults before an expensive final render.
   unemployment and final interview → 2011 London arrival and medical care →
   Soho work → following-year 2012 Jubilee/Olympic public energy and the wider
   city's fascination → Victoria line
-  → Hungarian Tottenham HMO → five years of shared-room saving and travel →
+  → Hungarian Lee Valley shared home → five years of shared-room saving and travel →
   December 2015 Budapest-cost financial-independence threshold, never London
   independence → empty parent-assisted Budapest flat → London housing stop-loss
   → purposeful physical return with permanence and a London return unresolved
@@ -52,9 +52,11 @@ continuity and technical faults before an expensive final render.
   remain personal memories, not national or safety generalizations.
 - [ ] High Tatras, Schönbrunn, Neuschwanstein, Angkor Wat, the Golden Triangle,
   Norway and other memories remain geographically distinct.
-- [ ] Tottenham, the Victoria line and the Victorian house are recognizable,
+- [ ] The Victoria line, Mansfield Park, canal-side Lee Valley landscape and
+  low-rise flat-roofed shared home are recognizable,
   but no private address or employer is identifiable.
-- [ ] The house contains the Founder and twelve other Hungarian adults, one full
+- [ ] The home contains no more than ten adults total—the Founder and up to nine
+  other Hungarian adults, majority men aged about 23–55—one full
   bathroom, one separate WC and a shared bedroom. The surrounding London remains
   visibly multicultural.
 - [ ] The resident swap discovered through snoring is gentle absurdity, not
@@ -65,8 +67,8 @@ continuity and technical faults before an expensive final render.
   Mawddach Estuary, mountains, town and sea without substituting another place.
 - [ ] Crowded private life and expansive public adventure coexist with dignity,
   humour and emotional stakes.
-- [ ] South Tottenham/Stamford Hill Charedi context is respectful and never used
-  as exoticism, a causal safety claim or a general crime statement.
+- [ ] The home remains the maintained, flat-roofed Lee Valley shared flat near
+  Mansfield Park; never substitute a South Tottenham Victorian terrace.
 - [ ] Brexit remains background to changing work and belonging; the film makes
   no unsupported displacement or wage-causation claim.
 - [ ] Saving on food is shown as hidden constraint and social absence, not
@@ -130,8 +132,10 @@ continuity and technical faults before an expensive final render.
 - [ ] S22 uses the unmodified mark at the shared MyScoutee Network core; the
   helmet–star–heart reading is not presented as certification.
 - [ ] There is no permanent watermark through the emotional middle.
-- [ ] E01 contains the original mark, separate `MyScoutee`, `BOOK AVAILABLE`
-  and `TO BE CONTINUED`, with no repeated title.
+- [ ] P00 contains the original mark, separate `MyScoutee`, readable title and
+  `BOOK AVAILABLE`, with no opaque black title panel.
+- [ ] E01 contains the original mark, separate `MyScoutee`, the invitation and
+  `TO BE CONTINUED`, with no repeated title or `BOOK AVAILABLE`.
 - [ ] Generators supplied a clean background plate for the final brand card.
 
 ## E. Character and visual continuity

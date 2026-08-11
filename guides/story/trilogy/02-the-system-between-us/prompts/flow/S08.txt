@@ -1,0 +1,26 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP07.png as the exact first frame and M2_CP08.png as the exact last
+frame.
+
+Begin exactly on M2_CP07.png. The protest continues moving outside while the
+Founder works at the desk. Follow his hands as he sorts live delivery tasks,
+moves completed work into the client system and assembles the handover in the
+cognac folder. Daylight falls toward evening as the task flow keeps moving.
+
+The client team becomes active on the left screen. The Founder passes the
+completed handover toward them while placing one blank advance-invoice row into
+the closing sequence on the right screen. The work reaches the client, but the
+administrative row remains open.
+
+End exactly on M2_CP08.png with the completed handover moving toward the client
+screen and the unresolved closing sequence on the other. Preserve the exact
+Founder, room, clothing, notebook and painterly cinematic 2.5D style. Keep all
+screens, tasks, invoices and documents blank and unbranded.
+
+Generate restrained urgent cinematic music with typing, paper and folder
+movement, soft interface sounds and distant city ambience, without intelligible
+human speech or lip-sync.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

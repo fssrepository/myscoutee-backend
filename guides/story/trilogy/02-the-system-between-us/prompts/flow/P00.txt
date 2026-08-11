@@ -1,0 +1,22 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_P00.png as the exact first frame and M2_CP00.png as the exact last frame.
+
+Begin on the finished MyScoutee Part II title composition. For the first two
+seconds, keep the exact M/heart mark, `yScoutee`, English title, true-story line
+and `BOOK AVAILABLE` stable, correctly shaped and readable. Do not redraw,
+translate, blur or invent any lettering.
+
+Behind the title, let the human rooms and coral network wake in a restrained
+sequence. The mark's heart gives one subtle breath and its star sends a warm
+light through the four connected local spaces. Fade the title typography and
+`BOOK AVAILABLE` cleanly; keep the exact mark for one beat longer, then let it
+resolve into the empty central hub of CP00. Reveal the Founder and operator with
+one slow continuous move and end exactly on M2_CP00.png.
+
+Keep the supplied logo and title lettering unchanged and add no new text.
+Generate restrained cinematic music and natural room ambience, with no human
+voice or speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

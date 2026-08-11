@@ -1,0 +1,30 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M1_CP04.png as the exact first frame and M1_CP05.png as the exact last frame.
+
+Begin inside the Victoria-line carriage shown in the first frame. Use one
+restrained 28 mm forward movement. Keep the Founder, his navy coat, rust scarf,
+backpack and cognac notebook unchanged. Let the dark vertical carriage-window
+edge become the inner doorway of the maintained, flat-roofed Lee Valley shared
+home. Do not treat the terraced buildings seen through the train window as the
+home.
+
+Move naturally into the compact kitchen and hall shown in the final frame.
+Reveal exactly ten Hungarian adults total, including the Founder: seven men and
+three women, visibly aged about 23–55. Preserve every face and body from the
+last frame. Let them share the narrow space through familiar glances, small
+gestures, meals, coats, photographs and ordinary household movement. Nobody
+speaks or visibly moves their lips. Through the rear windows, retain only the
+quiet sliver of canal water and reeds already present. End exactly on M1_CP05.png.
+
+CONTINUITY IS REQUIRED:
+The carriage-window edge and the home's inner doorway remain one continuous
+vertical axis. Keep one direction of travel, a measured pace and the same
+painterly cinematic 2.5D texture. No hard cut, camera jump, freeze, collage,
+split screen, style change, face morph, duplicated person or abrupt transition.
+
+No Victorian home, staircase house, hostel, slum framing, flags, folk costume,
+readable text, logos, tourist landmarks, faceless extras or additional people.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.

@@ -45,8 +45,9 @@ process examined the highly educated professional who had repaired the failure
 and turned him into the subject of a label of pathological mental illness.
 
 After two decades of exclusion, adaptation and repeated attempts to build a
-lawful life in my own country, I wrote one violent sentence under accumulated
-pressure and corrected it immediately. That act remains part of the record. So
+lawful life in my own country, one sentence broke loose under accumulated
+pressure. I corrected it immediately and kept writing. Its wording remains part
+of the record. So
 does the repaired return, the paid tax, the ended representation, the written
 administrative history and the request for peace around surgery. The state
 later allowed the sentence and later messages to travel farther than those
@@ -323,6 +324,12 @@ Budapest flat while working abroad. The contractual route passed through
 companies in more than one country. It looked less secure than the Hungarian
 job, but in practice it became the one workable professional path I had found.
 
+The work gathered speed before I had arranged the life around it. I was already
+inside long Brussels calls, moving tasks from one person to the next, before I
+had an accountant. Between deliveries, I was still looking for the professional
+who would later handle the returns. The opening had arrived, and I stepped into
+it.
+
 Stable work was never only income. Without it, partnership, a child and family
 life remained plans postponed until the ground stopped moving. By then, the
 years no longer felt renewable. The Brussels role arrived as the last opening
@@ -596,21 +603,38 @@ tax-office staff, unresolved processing errors and versions submitted without
 my knowledge. A return submitted on 30 November named me as the contact even
 though I did not know it had been filed.
 
-The absurdity is difficult to explain without making it sound invented. A
-professional office, repeated official assistance and months of correspondence
-had failed to complete what, from my perspective, was essentially a subtraction
-followed by a tax calculation. The accountant did not merely make one ordinary
-mistake. She appeared not to understand what the administration was telling
-her, entered changing figures, omitted another figure and continued disputing
-the route after I had reconstructed it. An outdated software version had also
-helped turn submission into rejection. The official system, the professional
-tool and the professional user were failing at different layers while the
-client could not see one coherent result.
+The files did not arrive as one failure. They arrived as versions. One changed
+a figure. Another omitted one. A returned error remained in the accountant's
+channel without changing the next attempt. Tax-office staff helped from their
+screen, the accountant answered from hers, and I still did not know that the
+sequence existed.
 
-I discovered the problem through an article and then through a portal whose
-categories and identifiers did not form one coherent story. Until then, I had
-not known what had failed. On 23 and 24 November, I spent many hours checking
-the accountant's work and called the administration for help.
+On 23 November, an ordinary newspaper article about a fresh update to the NAV
+system happened to cross my screen. It was not a notice and it was not about
+me. One detail caught against what I believed had already been closed. I opened
+the tax portal for a closer look.
+
+What should have been a quick check spread across the desk. I opened my own
+account history and placed the accountant's submissions beside it. Actions
+performed through my login appeared in one trail. Her submissions and returned
+error messages continued in another. One trail stopped where the other began.
+The critical warning sat on the side I could not see.
+
+Then the version numbers surfaced. NAV had updated the filing system while the
+accountant's software was still preparing the older format. A newer return
+existed among her files but had not crossed that technical boundary into the
+system. When I opened it, its calculation was wrong as well. A failure of
+transmission had been hiding a failure inside the form.
+
+On 23 and 24 November, I moved between the two histories and the telephone. The
+administration's screen began where the accountant's trail stopped. Her files
+continued where my inbox ended. The same return was absent in one place,
+rejected in another, replaced in a third and still wrong when I calculated it.
+Everyone had a document that made the next sentence seem reasonable. No two
+documents belonged to the same moment.
+
+She had entered my account for selected tasks, then left it again. The password
+had crossed the desk. The warning had not.
 
 The surviving 13:08 call holds the sound of that hour. The filing problem had
 not created all the years behind it. But the official's clipped replies, which
@@ -635,9 +659,23 @@ consequence did not.
 Some calls from the period survive, but not the decisive exchanges behind the
 remarks I later recorded in my defence speech. Their shape can be inferred only
 indirectly—from the later writing, the surrounding calls and the steps that
-followed. In that later account, the remarks landed as dismissive: accountants
-usually did not cause problems; entrepreneurs did not normally care what
-accountants did in their name; why had I shared my credentials?
+followed. In that later account, the remarks return one by one.
+
+*Accountants do not usually cause problems.*
+
+*Why did you give her your government-portal password? Surely you can find an
+accountant who can keep the books without being given it.*
+
+*Entrepreneurs are not usually interested in what their accountant does in
+their name.*
+
+*You do not know even this? Do the figures match? Was there an advance
+invoice?*
+
+By the fourth sentence, each role had been stripped of a little dignity. The
+accountant could not be the problem. Entrepreneurs did not care. The client who
+cared should have been the accountant. The password was both the expected
+shortcut and my fault for surrendering it.
 
 I had reached the institution because the delegated route had failed without
 my knowledge. Its questions returned responsibility to the person whom that
@@ -678,11 +716,12 @@ the representative channel while the liability remained mine. I had already
 spent days reconstructing a failure that had developed for months without my
 knowledge, and I was preparing for major foot surgery.
 
-Under that accumulated pressure, I wrote a violent sentence. I corrected it
-immediately and continued communicating. The sentence remains serious. But it
-did not arrive from an empty room, and it cannot honestly carry the explanatory
-weight of the twenty years, the failed return and the broken information chain
-that preceded it.
+Under that accumulated pressure, one sentence broke loose. I corrected it
+immediately and continued communicating. The words were raw. The impulse beneath
+them was not: do not erase a person's dignity because the screens around him
+failed to agree. The sentence did not arrive from an empty room, and it cannot
+honestly carry the explanatory weight of the twenty years, the failed return and
+the broken information chain that preceded it.
 
 The prosecution would eventually extract legal meaning from parts of that
 sequence. My defence would insist that the outburst, its correction, the lack of
@@ -710,7 +749,7 @@ On paper, the account had returned to zero.
 
 The life around it had not.
 
-Yet the dangerous sentence now possessed a different property from the
+Yet the broken sentence now possessed a different property from the
 correction. It could travel alone.
 
 This is not only a problem in criminal procedure. It is a problem in every
@@ -792,26 +831,44 @@ was easier to carry than the chain around it.
 On 22 November 2023, roughly a year after the first disputed sentence, police
 came to my home.
 
+The bell kept ringing. Whoever stood outside did not tire. They said they were
+from the post. A delivery belonged to ordinary life, and in the end I opened
+the door to let ordinary life in.
+
+The door came back at me.
+
+There was no interval in which the visitors became guests. More bodies
+followed, women and men in bulletproof vests, until a hallway built for one
+visitor held the force assembled around a single sentence. Hands took my arms,
+the wall caught my weight, and metal closed behind my back. Then a boot found
+the foot that had already been cut open and put back together. Pain ran white
+through the narrow hall.
+
+The handcuffs would come off that day. The injury kept repeating the moment.
+The nail came away three times, as if even the body had been pulled into the
+system's habit of beginning again.
+
 The home in Part I had been the place my parents helped me secure, the place
 that stood empty while I lived in a shared London room, the lower-cost base that
 made independent product work possible.
 
-Now it became a procedural location.
+Now the state had entered it disguised as the post and turned me against my own
+wall while it searched the rooms.
 
-The timing supplied another cruel cut. The previous day, I had submitted
-another police report while trying to obtain help with an interrupted private
-orthodontic treatment. A brace remained in my mouth and required regular
-adjustment, yet the treatment relationship had collapsed and no new provider
-wanted to inherit it. The two matters may simply have crossed inside the
-machinery; their proximity proves no causal connection. But the one time the
-police came to my home the day after I asked them for help, they came in another
-case and came for me.
+The previous day, I had submitted another police report while trying to obtain
+help with an interrupted private orthodontic treatment. A brace remained in my
+mouth and required regular adjustment, yet the treatment relationship had
+collapsed and no new provider wanted to inherit it. I had asked the police for
+help. The next morning they stood inside my home for something else.
 
 My phone and computer were taken. Objects that had held work, memory and the
 unfinished MyScoutee system became evidence containers. The devices knew more
 of my recent life than the people entering the flat. Once removed, they also
 took away the easiest route through which I could reconstruct what had
 happened.
+
+I had not escaped the system by hiding from lawful work. I had walked back into
+it by daring to work at all. Now it stood in my rooms and carried the work away.
 
 At the first questioning, a trainee connected to the appointed defence appeared
 and advised me to remain silent. I believed for a time that she was the lawyer
@@ -821,7 +878,15 @@ return call. I had been searched, questioned and separated from my devices
 without receiving the complete material from which I could understand the
 accusation.
 
-Eight days later, two forensic experts questioned me. The state already had a
+Eight days later, I walked through the city to the police station. The loose
+nail travelled inside my shoe, shifting under the toe at every step. Saint
+Nicholas Day was approaching; shop windows were beginning to show the little
+bundles of twigs reserved for children who had misbehaved. Halfway there, I
+almost laughed. I should have brought the police a *virgács*.
+
+Then the next step put the nail under me again.
+
+Two forensic experts questioned me. The state already had a
 room in which to interpret my mind. I still did not have a stable person helping
 me interpret the case.
 
@@ -1302,10 +1367,11 @@ The same collision appeared around the intimate history I had sent to the tax
 administration while awaiting surgery. I had tried to explain what Part I had
 cost: the shared London room, hunger disguised from colleagues, the years of
 saving and the reason I had dared to return. The judge asked whether I really
-had to write all that when nobody cared. My answer formed later: *Care, Your
-Honour. That is where the money came from.* The court
-could treat the life as irrelevant and still examine the savings that life had
-produced.
+had to write all that when nobody cared. Later in the hearing, when the money
+returned to the centre of the room, I answered before I could soften it: then
+it should interest them, because that was where the money had come from. The
+court wanted the origin of the savings with the life that had produced them
+removed.
 
 The room could recognize fear, ingenuity and work as moments of almost comic
 incongruity while the procedure continued treating the same person as a risk to
@@ -1597,8 +1663,8 @@ obligation cross a border and occupy a life in London.
 The shared Hungarian house had contained an earlier version of the same
 national argument.
 
-Thirteen adults lived through one bathroom, one separate toilet and rooms never
-designed for that many independent lives. We had not left Hungary for one
+At its busiest, ten adults lived through one bathroom, one separate toilet and
+rooms never designed for that many independent lives. We had not left Hungary for one
 reason. Some wanted language, some work, some adventure, some escape, some a
 second chance. Some no longer wanted to return even when the material conditions
 looked worse from outside.
@@ -1826,8 +1892,8 @@ The election was not a verdict in my case. It did show that continuity no
 longer commanded enough trust. Institutions presented as fixed were now being
 judged by the public beneath them.
 
-One sentence from my 2022 messages acquired an uncanny echo. Its violent
-language about twenty years and the rule of law had looked detached from
+One sentence from my 2022 messages acquired an uncanny echo. Its language about
+twenty years and the rule of law had looked detached from
 ordinary political possibility. Four years later, public actors were openly
 describing a change of regime and restoration of the rule of law.
 
@@ -2331,6 +2397,12 @@ is atmospheric: the calls they preserve are ordinary and non-threatening, not
 the menacing scene that later institutional language might suggest. The key
 exchanges survive through the defence speech, later submissions and the events
 that followed.
+
+The four direct remarks in Chapter 6 are close English translations of the
+Hungarian wording preserved in the signed defence speech. The decisive calls do
+not survive in the reviewed recording set, so the book attributes the words to
+that later written record rather than presenting them as an independently
+verified transcript.
 
 The Founder also records that he made an undisclosed audio recording when he
 collected the investigation material alone on 11 June 2024. This edition does

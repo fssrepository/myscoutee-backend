@@ -31,8 +31,9 @@ This directory specifies a complete 03:12 MyScoutee hero film:
   route. After the American work-pressure and health threshold, he goes to
   London in 2011, receives medical care, and finds work within two weeks despite weak English,
   works as a programmer in a multicultural Soho office and hides hunger and
-  isolation behind a competent public self. He briefly takes the Victoria line home to a converted
-  Victorian HMO in Tottenham. The Founder and twelve other Hungarian adults
+  isolation behind a competent public self. He briefly takes the Victoria line
+  toward a low-rise, flat-roofed shared home beside the canal and Lee Valley
+  wetlands near Mansfield Park. At its busiest, the Founder and nine other Hungarian adults
   share one full bathroom and a separate WC; he also shares his bedroom. London
   outside the house remains culturally expansive. The rent saved by sharing
   pays for low-cost journeys and builds savings. By December 2015, the savings
@@ -151,7 +152,7 @@ Current standalone planning prompts:
 - [United States assignment, borrowed-home and work-pressure memory board](../prompts/united-states-assignment-dream-and-pressure-memory-board.txt);
 - [Budapest relationships before and during London, plus acceptance memory board](../prompts/budapest-before-london-relationship-memory-board.txt);
 - [2017 photograph, date and unfinished-return memory board](../prompts/budapest-2017-photo-match-and-unfinished-return-memory-board.txt);
-- [twelve-flatmate Hungarian HMO character board](../prompts/london-hmo-residents-character-board.txt);
+- [five-year Hungarian household character board](../prompts/london-hmo-residents-character-board.txt);
 - [dense five-year London sequence](../prompts/london-five-year-dense-sequence.txt);
 - [UK adventure and availability memory board](../prompts/uk-adventure-availability-memory-board.txt);
 - [six-day Egypt human-network memory board](../prompts/egypt-six-day-human-network-memory-board.txt);

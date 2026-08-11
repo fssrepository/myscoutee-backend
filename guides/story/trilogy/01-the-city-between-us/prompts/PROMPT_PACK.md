@@ -37,15 +37,18 @@ under the assembled film.
 
 ## Opening and continuation typography
 
-Do not ask a video model to draw any public title. P00 is a separate
-deterministic eight-second card carrying `MYSCOUTEE · THE STORY`, `PART I · THE
-CITY BETWEEN US`, `BASED ON A TRUE STORY` and the short premise. S01 begins the
-lived motion at `00:08` without title text.
+P00-to-CP00 is an eight-second generated background transition: the route globe
+contracts into the first soil furrow. Do not ask the video model to redraw any
+public title. Composite the exact repository mark and editable `MYSCOUTEE · THE
+STORY`, `PART I · THE CITY BETWEEN US`, `BASED ON A TRUE STORY` and `BOOK
+AVAILABLE` typography over that plate in post, then fade it before CP00. S01
+begins at `00:08` without title text.
 
-E01 is deterministic post-production, not an AI generation. Hold the exact
-repository mark, `BOOK AVAILABLE` and `TO BE CONTINUED` for the full
-`03:04–03:12` window without repeating the film or book title. Use editable
-text; never generate the card inside a video model.
+CP22-to-E01 is an eight-second generated closing transition. The operator first
+completes her own local connection with equal agency; the living network then
+resolves into the exact repository mark, the invitation `TEST IT WITH ME IN
+REAL COMMUNITIES` and `TO BE CONTINUED`. Stabilize the exact mark and editable
+type in post. Do not repeat the film or book title or `BOOK AVAILABLE`.
 
 ## Prompt tokens
 
@@ -65,7 +68,7 @@ Replace bracketed tokens only once in your working copy:
 | `[BUDAPEST_WORLD]` | approved Budapest style/location reference |
 | `[LONDON_WORLD]` | approved lived-London style/location reference |
 | `[SOHO_OFFICE]` | approved modest Soho software-office reference |
-| `[TOTTENHAM_HMO]` | approved Victorian HMO, bathroom and shared-room reference |
+| `[LEE_VALLEY_HOME]` | approved low-rise, flat-roofed shared-home, bathroom and shared-room reference |
 | `[DANCE_STUDIO]` | approved empty studio reference |
 | `[EVENT_VENUE]` | approved venue reference |
 | `[DEPLOYMENT_PACKAGE]` | approved install-package prop and operator-workspace reference |
@@ -76,7 +79,7 @@ the text. When it uses media tiles, attach the tile and keep the descriptive
 name in the prompt.
 
 The complete identity contract, including the five Budapest memory characters,
-the twelve Hungarian house residents and the exact G01–G06 ensemble, is
+the five-year Hungarian house casting pool and the exact G01–G06 ensemble, is
 [`assets/characters/CHARACTER_MAP.md`](../assets/characters/CHARACTER_MAP.md).
 Prepend
 [`prompts/character-continuity-master.txt`](character-continuity-master.txt) to
@@ -166,14 +169,14 @@ film style. Begin with a restrained 2011 arrival layer, then include the public
 energy of the 2012 Diamond Jubilee and Olympic summer as the following year
 without official marks; a modest multicultural Soho software office;
 museums, exhibitions, nightlife and mutually curious dates; one brief late
-Victoria line reflection without TfL branding; wet South Tottenham street,
-Victorian terrace, corner-shop glow and a warm independent community venue.
-Respectfully imply the ordinary South Tottenham/Stamford Hill Charedi Jewish
-neighbourhood without turning religious residents into spectacle or claiming a
-safety effect. Slate blue, rain green, sodium amber, tactile brick, timber and
-fogged glass. Diverse everyday city, not Big Ben, red-bus or phone-box tourism
-shorthand. Empty clean plates, wide/medium/detail views, no readable text or
-logos.
+Victoria line reflection without TfL branding; then a maintained, flat-roofed,
+low-rise shared flat beside a Lee Valley canal near Mansfield Park. Roof access
+reveals canal water, reservoirs, wetland birds and green parkland; distant
+athletics floodlights may suggest the London 2012 training summer without
+official marks. Slate blue, rain green, sodium amber, tactile painted walls,
+timber and fogged glass. Diverse everyday city, not Big Ben, red-bus or
+phone-box tourism shorthand. Empty clean plates, wide/medium/detail views, no
+readable text or logos.
 ```
 
 ### Soho software-office sheet
@@ -188,15 +191,17 @@ worksite, warehouse or inspection imagery. Empty wide, desk-height and window
 reflection plates with identical geometry.
 ```
 
-### Tottenham Victorian HMO sheet
+### Lee Valley shared-home sheet
 
 ```text
-Create [TOTTENHAM_HMO], one coherent converted Victorian house in Tottenham in
-the same premium 2.5D animated style. Show a narrow hall, lived-in shared kitchen,
+Create [LEE_VALLEY_HOME], one coherent maintained, roughly four-and-a-half-room,
+low-rise flat-roofed shared home beside a Lee Valley canal near Mansfield Park
+in the same premium 2.5D animated style. Show a narrow inner hall, lived-in shared kitchen,
 one full bathroom, one separate tiny WC, and a compact shared bedroom with two
 clearly bounded sleeping/storage and desk zones. Shoes, coats, meals and personal
-photographs imply the Founder plus twelve other Hungarian adults without lining
-them up. They are a varied Hungarian microcosm inside multicultural London: each
+photographs imply exactly ten adults total—the Founder plus nine Hungarian
+flatmates—without lining them up. They are a varied Hungarian microcosm inside
+multicultural London: each
 has an individual age, build, temperament, work rhythm and reason for leaving,
 and a different relationship to Hungary: return plan, uncertainty, new local
 bond or a life they no longer want to leave. Some felt happier in London despite

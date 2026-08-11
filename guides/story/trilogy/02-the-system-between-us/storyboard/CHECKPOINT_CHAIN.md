@@ -1,0 +1,54 @@
+# Part II continuous-video checkpoint chain
+
+The 05:28 film uses one continuous production chain. `P00`, `CP00–CP18`,
+`CP18A`, `CP19–CP38` and `E01` are the 42 motion endpoints for forty-one eight-second Veo 3.1 Lite
+intervals. Exact logo and editable typography are stabilized in post.
+
+```text
+P00 -> CP00 -> ... -> CP18 -> CP18A -> CP19 -> ... -> CP38 -> E01
+opening              thirty-nine story intervals             closing breath
+```
+
+Temporary public alternative:
+
+```text
+P00 -> CP00 -> ... -> CP16 -> CP17 -> CP17_CLOSING
+                              intercom   policy/book handoff
+```
+
+CP17 is the canonical intercom endpoint after CP16, not an alternative frame.
+The alternative branches after CP17 into the separate CP17_CLOSING endpoint. It
+does not replace the preserved full chain or its CP38→E01 `TO BE CONTINUED`
+ending.
+
+Rules:
+
+- Canonical generated endpoints live only in `assets/frames/`.
+- Keep `CP00–CP38` and the inserted `CP18A` filenames stable; do not create
+  numbered variants.
+- Every interior checkpoint is the exact last frame of one interval and exact
+  first frame of the next.
+- Generate no midpoint stills, slideshow or four-second split frames.
+- All checkpoints are 720×1280 PNG files.
+- `CP00` is a lossless copy of Part I `CP22`.
+- `P00→CP00` is the generated title transition and `CP38→E01` is the generated
+  reflective closing transition.
+
+Current generation progress:
+
+| ID | Boundary | Asset | Status |
+| --- | --- | --- | --- |
+| CP00 | Lossless Part I handoff | `assets/frames/M2_CP00.png` | canonical |
+| CP01 | The network line becomes the ruled line of a blank form | `assets/frames/M2_CP01.png` | generated |
+| CP02 | The whole life before the institutional file | `assets/frames/M2_CP02.png` | generated |
+| CP03–CP15 | Work, forced contracting, tax chaos and the surviving line | `assets/frames/M2_CP03.png`–`M2_CP15.png` | generated |
+| CP16–CP18 | Surgery and the deceptive doorstep | `assets/frames/M2_CP16.png`–`M2_CP18.png` | generated |
+| CP18A | Six officers rush and handcuff the Founder; the operated foot is stepped on | `assets/frames/M2_CP18A.png` | generated |
+| CP19–CP27 | Investigation, expert report, hearing and delay | `assets/frames/M2_CP19.png`–`M2_CP27.png` | generated |
+| CP28–CP38 | AI-assisted defence, continued work, public context and open ending | `assets/frames/M2_CP28.png`–`M2_CP38.png` | generated |
+
+Generation verification extended on 11 August 2026: all 40 canonical story
+frames exist, all are distinct, and every frame is a 720×1280 PNG.
+
+The older files under `assets/checkpoints/` are superseded composition studies,
+not inputs to the new production chain.

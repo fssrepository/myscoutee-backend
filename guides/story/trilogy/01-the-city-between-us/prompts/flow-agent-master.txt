@@ -1,6 +1,6 @@
 Plan the locked `03:12` cinematic animated film “The City Between Us” as one
-deterministic eight-second opening card, twenty-two silent eight-second motion
-clips and one deterministic eight-second closing card. Do not rewrite the
+silent generated eight-second P00-to-CP00 opening transition, twenty-two silent
+eight-second story clips and one silent generated CP22-to-E01 closing transition. Do not rewrite the
 supplied narration, timing, personal facts or product claims. Return a table
 only; do not generate until approved.
 
@@ -8,8 +8,8 @@ REFERENCES
 Use @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan, @RouteMan,
 @DanceStudent, @DancePartner, @Operator, @HungarianOrigin,
 @BudapestWorld,
-@LondonWorld, @SohoOffice, @TottenhamHMO, @DanceStudio, @EventVenue, @Notebook,
-the twelve-Hungarian-flatmate board and confirmed TravelMemory stills. Preserve
+@LondonWorld, @SohoOffice, @LeeValleyHome, @DanceStudio, @EventVenue, @Notebook,
+the five-year Hungarian-flatmate casting board and confirmed TravelMemory stills. Preserve
 each identity and costume. @Founder, @Maya, @SketchWoman, @CupWoman, @GameMan
 and @RouteMan are the exact first MyScoutee group: three women and three men.
 @Founder is usually quiet, restrained and precise. Reserve is not fear or
@@ -57,7 +57,9 @@ places the 2012 Olympic/Diamond Jubilee public energy in the following year with
 no official marks and holds the warm Soho sex-shop farewell-gift colleague
 memory, museums, exhibitions, nightlife and reciprocal
 multicultural dates; the Victoria line is only a brief final transition. S05 is
-the Founder plus twelve Hungarian flatmates inside one maintained Tottenham HMO,
+exactly ten adults total—the Founder plus nine Hungarian flatmates, seven men
+and three women aged about 23–55—inside one maintained, low-rise flat-roofed
+Lee Valley shared home beside the canal,
 while London outside remains multicultural. Give residents different relations
 to home: some felt happier there and no longer wanted to return, but show no
 percentage or rootless label. S06 makes one bathroom, separate WC
@@ -160,8 +162,10 @@ certified safety. The core is globally reusable while local people, cultures and
 communities shape each test. Localization includes real distance, place, timing,
 transport, resources, language and boundaries. A country change may restart the
 same method, but never show profiles, chats, contacts or private-rate history
-automatically moving between independent operators. E01 is a clean deep-navy
-brand plate assembled in post. P00 and E01 consume no generation credit.
+automatically moving between independent operators. E01 is the exact deep-navy
+brand endpoint. P00-to-CP00 and CP22-to-E01 each consume one Veo Lite
+generation. Stabilize the exact repository mark and editable typography over
+both motion plates in post.
 
 MODEL AND CREDIT DISCIPLINE
 Recommend the currently visible Flow image/video model and mode per shot. Use

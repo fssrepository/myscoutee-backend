@@ -1,0 +1,7 @@
+Create one continuous 8-second, 9:16 video using the two uploaded frames as the exact start and end.
+
+Keep the camera still and let the two people move naturally. Keep the existing circle and connector lines continuously visible while the supplied last frame appears smoothly near the end.
+
+Add fitting instrumental music and ambience. No human speech or singing.
+
+Generate one result with Veo 3.1 Lite.

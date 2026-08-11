@@ -511,16 +511,24 @@ while the need disappeared.
 
 <!-- pagebreak -->
 
-## 6. Thirteen Hungarian Lives
+## 6. Ten Lives Under One Roof
 
-At night, the Victoria line carried me north to Tottenham.
+At night, the Victoria line carried me north-east to Walthamstow, and the last
+part of the route continued toward Mansfield Park and the Lee Valley.
 
 The journey appears only briefly in my memory: carriage glass, a reflected face,
-the dark tunnel interrupted by stations, then a Victorian front door. Behind
-that door was a converted house containing thirteen Hungarian adults: the
-twelve people I lived with and me.
+the dark tunnel interrupted by stations, then the door of a low-rise,
+flat-roofed shared home beside the canal. At its busiest, as many as ten
+Hungarian adults lived there, including me.
 
 <!-- illustration: london_house_montage -->
+
+The flat had roughly four and a half rooms. Inside, space was negotiated by the
+inch. Outside, the roof opened onto something astonishingly wide: canal water,
+reed beds, reservoirs, birds and the green reach of the Lee Valley. Mansfield
+Park rose nearby. Roughly a kilometre away, the Lee Valley Athletics Centre
+trained athletes for London 2012. A crowded home stood in one of the most
+beautiful places in which I had ever felt confined.
 
 London outside was radically multicultural. The house inside was a compressed
 map of Hungary.
@@ -1194,10 +1202,23 @@ listens, adapts, jokes, helps or respects a boundary. We form an opinion because
 the interface asks for one. The opinion can feel complete because no shared
 context exists to contradict it.
 
-One encounter in 2017 made that suspended state visible. After almost two years
-without a match, I used an unusually flattering profile photograph and finally
-met a woman whose own picture caught me immediately. That response was entirely
-subjective; the photograph had told me almost nothing about her.
+When I returned from London in December 2015, I had just turned thirty-five. For
+almost two years, I swiped and the phone gave me no match at all. Men crowded
+one side of the screen; women were fewer on the other. They could look down the
+age scale toward younger men and still have another face waiting.
+
+At thirty-seven, I changed one field on Tinder. I entered thirty instead of
+thirty-seven and left the photograph exactly as it was. The silence broke. I
+met women around thirty and some who had not yet reached it. Women older than
+the age displayed began matching one after another too.
+
+Thirty-three and thirty-seven were four ordinary years once two people sat
+across a table. On the screen, the number had decided whether the table existed.
+The face had not changed.
+
+One of those encounters in 2017 made that change tangible. I met a woman whose
+own picture caught me immediately. That response was entirely subjective; the
+photograph had told me almost nothing about her.
 
 She worked in financial advisory for a multinational investment bank. During
 our conversation, she asked why I did not try applying there. I answered

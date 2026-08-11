@@ -1,0 +1,45 @@
+Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
+
+Use M2_CP02.png as the exact first frame and M2_CP03.png as the exact last frame.
+
+Begin exactly in M2_CP02.png with the mature Founder at his Budapest desk, both
+hands resting naturally on the open cognac notebook while the warm reflections
+of London rain, night travel, strangers helping and home continue to move gently
+around him. Keep him alive through natural breathing, blinking and small hand
+movements.
+
+Follow the desk with one slow continuous camera move. Let the memory reflections
+fold into a modest stack of closed, unmarked interview folders, suggesting many
+failed attempts without counting them or becoming a rapid montage. A blank
+contractor folder reaches the Founder from one side; he calmly closes it and
+moves it aside. From a different direction, a separate unmarked employee folder
+opens independently. Its warm line becomes a generic blank access badge and the
+light of a salaried workstation, showing the accidental gap between two
+processes that did not compare notes. The same wooden desk expands naturally
+into the office, the notebook closes into its final position, and the Founder
+turns toward the monitor and begins to work.
+
+Keep the office alive around him: coworkers cross the background, type and pass
+work onward while the flow of tasks repeatedly travels toward other desks. The
+Founder remains available and active at the strangely idle workstation, making
+notes, using the mouse and following the work with restrained concentration.
+As the light cools into the COVID-19 period, the adjacent desks become empty
+through the ordinary passage of time; monitors and desk lamps dim one after
+another, and the office door closes last. The Founder continues moving naturally
+at the one still-lit workstation.
+
+End exactly on M2_CP03.png: the same Founder sits alone at the workstation, the
+cognac notebook is closed beside him, one generic blank access badge rests on
+the desk, the adjacent desks are empty and the newly closed office door remains
+behind him.
+
+Preserve the Founder's exact mature face, hair, navy field coat, charcoal knit
+clothing, muted rust scarf and cognac notebook. Preserve the painterly cinematic
+2.5D style, tactile brush texture, deep navy shadows and warm amber highlights.
+Keep the folders, badge and screens blank and unbranded.
+
+Generate restrained cinematic music with natural office ambience, folder and
+keyboard sounds, and the soft closing door, with no human voice or speech.
+
+Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
+8 seconds, 9:16.
