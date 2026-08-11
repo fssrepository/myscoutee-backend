@@ -13,17 +13,31 @@ motion; never freeze him into a still pose.
 Seconds 3–6: the intercom line falls quiet. He lowers the handset slightly and
 looks toward the closed apartment door. The camera continues a restrained,
 tense push-in. The coiled cable, hallway light and his clothing retain subtle
-physical movement. The room then darkens smoothly as its lines resolve into the
-supplied full-screen branded closing composition. Do not reveal a visitor and
-do not open the apartment door.
+physical movement. The hallway then darkens smoothly into the faint memory of
+the CP15 writing desk already embedded in the supplied last frame. The thin
+violet-to-coral-to-gold line draws across the screen, its centre becoming the
+small gold star, while the exact supplied full-screen closing composition forms
+around it. Do not reveal a visitor and do not open the apartment door.
 
 Seconds 6–8: the exact supplied full-screen branded card is completely formed.
 Hold every element and every letter stable and fully readable for the final two
-seconds. No further story event or human action occurs during these final two
-seconds. Freeze the composition; only an extremely subtle controlled logo glow,
+seconds. It contains, in this exact visual order:
+
+- the supplied MyScoutee emblem and `yScoutee` wordmark at the top;
+- `AND THEN` and the large gold `THE DOORBELL RANG.`;
+- `THE BOOK CONTINUES.` and the gold `THE TRILOGY MAY, TOO.`;
+- the violet-to-coral-to-gold line with the centred gold star;
+- the dark-red policy panel with three white lines: `WHAT CAME NEXT TRIGGERED`,
+  `A VIDEO AI POLICY RESTRICTION!`, and `THE BOOK TELLS THE REST...`;
+- the large purple `BOOK AVAILABLE` below the policy panel.
+
+No further story event or human action occurs during these final two seconds.
+Freeze the entire composition; only an extremely subtle controlled logo glow,
 line shimmer and film grain may continue. End exactly on
-M2_CP18_ALT_CLOSING.png. Do not abbreviate, translate, replace, redraw or invent
-any logo, title or caption text from the supplied last frame.
+M2_CP18_ALT_CLOSING.png. Preserve the exclamation mark after `RESTRICTION!` and
+the three dots only after `REST...`. Do not abbreviate, translate, replace,
+redraw or invent any logo, title, colour or caption text from the supplied last
+frame.
 
 Preserve the exact Founder and painterly cinematic 2.5D visual continuity during
 the transition. Keep him naturally moving until the card fully replaces the
