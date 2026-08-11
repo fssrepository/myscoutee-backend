@@ -2,26 +2,21 @@ Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 
 Use M2_CP01.png as the exact first frame and M2_CP02.png as the exact last frame.
 
-Seconds 0–5.5: begin exactly in the modest Budapest flat shown in M2_CP01.png. Keep the mature Founder, his face, clothing, two hands, closed cognac notebook, blank ivory form, desk, lamp, window and camera composition stable. Let him remain naturally alive through restrained breathing, one natural blink and a minute head adjustment. His left hand continues to hold the closed notebook and his right hand remains naturally supported by the desk. Do not open the notebook and do not change either hand pose during this section.
+Begin exactly in the modest Budapest flat shown in M2_CP01.png. The mature Founder sits quietly at the dark wooden desk, holding his cognac notebook beside the completely blank ivory form. Start with one restrained 50 mm camera push toward the single coral ruled line crossing the paper.
 
-Use one very slow restrained 50 mm camera push. Let rain move subtly on the window and let warm reflections deepen gently in the existing glass and polished wood. The single coral ruled line on the form remains purely abstract, smooth and unchanged. It never grows, writes, draws, branches or becomes a letter, word, symbol, route label or interface element.
+The ruled line extends naturally from the blank form into the open cognac notebook and becomes one continuous lived route. As the notebook opens beneath the Founder's hands, warm memory reflections emerge only through existing physical surfaces: rain-streaked window glass, polished dark wood and the notebook pages. Do not use floating screens or a rapid postcard montage.
 
-Seconds 5.5–8: use one simple uniform full-frame photographic cross-dissolve from the living M2_CP01.png composition into the exact supplied M2_CP02.png final frame. Bring in the complete final composition as one coherent image layer. Do not construct the memories separately. Do not animate the notebook opening, morph the hands, move individual fingers or generate intermediate hand poses. During the dissolve, preserve one anatomically coherent foreground Founder with exactly two natural hands. The London rain, night travel, practical help and Budapest-home memories arrive only in their exact supplied final-frame positions as soft reflections, never as extra foreground bodies.
+Reveal four connected fragments of the Founder's earlier life: a rainy London shared-home window; his own reflection travelling alone through the night; a mature unfamiliar stranger offering practical help with a ticket or route; and the quiet Budapest home with its key and familiar lamp. These are reflections of the same life at different times, not simultaneous duplicate people and not institutional categories.
 
-Converge precisely on M2_CP02.png only at the final instant: the present-day Founder sits in the foreground with both hands naturally placed on the open cognac notebook; the blank ivory form remains partly visible below it; the supplied warm memory reflections surround him without covering his face. Keep restrained breathing, rain movement and subtle reflected light alive through the transition. Do not create a visible freeze or still-image hold at the end.
+Keep the present-day Founder physically stable at the desk while the reflections move gently around him. The memories retain warmth and human texture: travel, work, help from strangers, London rain and returning home. They never become tourist landmarks, evidence labels or a judgement about the person.
+
+End exactly on M2_CP02.png: the present-day Founder sits in the foreground with both hands on the open cognac notebook; the blank ivory form remains partly visible below it; warm reflections of London rain, night travel, practical human help and the Budapest home surround him without covering his face.
 
 CONTINUITY IS REQUIRED:
-Preserve the Founder's exact mature face, facial structure, hairline, navy field coat, charcoal knit clothing, muted rust scarf and cognac notebook. Preserve the exact flat, desk, lamp, window, painterly cinematic 2.5D style, tactile brush texture, deep navy shadows and warm amber highlights. The single full-size foreground Founder must remain visually dominant. Any smaller versions already present in M2_CP02.png are soft memories of the same life, not new foreground people.
+Preserve the Founder's exact mature face, facial structure, hairline, navy field coat, charcoal knit clothing, muted rust scarf and cognac notebook. Any younger memory reflection must remain recognisably the same person without changing his facial proportions. Preserve the exact flat, desk, lamp, window, painterly cinematic 2.5D style, tactile brush texture, deep navy shadows and warm amber highlights.
 
-STRICT ANATOMY LOCK:
-Never invent, redraw, duplicate or enlarge a hand, arm, finger, face or body. No extra fingers, fused fingers, crossed fingers, detached hands, oversized hands, duplicated hands, additional limbs or changing hand count. Keep the two foreground hands anatomically natural and treat the supplied final-frame hands and notebook as one locked photographic unit during the full-frame dissolve.
+Keep both of the Founder's hands at natural human scale and within the desk plane throughout the notebook action. Neither hand may move toward the lens or become a foreground close-up.
 
-STRICT TYPOGRAPHY LOCK:
-Generate no subtitles, captions, intertitles, lower thirds, interface text, handwriting, letters, words, numbers or typographic marks anywhere in the video. Every paper, notebook page, window, wall and empty area remains free of generated writing. Do not generate a title, route label, place name, date, logo, seal, brand mark or MyScoutee mark. Do not interpret the coral line or any reflection as writing. Any exact non-typographic detail already contained in a supplied endpoint frame may appear only as part of that locked full-frame endpoint.
-
-No map, route diagram, route card, ticket, directional graphic, labelled travel object, foreground helper, hand entering toward the lens or close-up hand insert. No hard cut, scene restart, independent object reveal, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, floating interface, magical glow, sparks, particles, unrelated character, face morphing or malformed anatomy. Nobody speaks, mouths words or visibly articulates language.
-
-FLOW AUDIO:
-Let Veo freely choose and generate the instrumental musical underscore, ambience and sound effects that best fit the scene. No person may speak. Generate no spoken words, dialogue, narration, singing, lyrics, chanting or intelligible human vocalization. Nobody visibly speaks, forms words or lip-syncs.
+No hard cut, tourist montage, famous-landmark collage, airport glamour, file folders, evidence categories, readable text, date, number, logo, seal, floating interface, magical glow, unrelated character, face morphing or malformed hands. Nobody speaks or visibly articulates words.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame, 8 seconds, 9:16.
