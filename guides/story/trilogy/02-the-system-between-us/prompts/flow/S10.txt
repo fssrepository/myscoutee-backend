@@ -10,19 +10,19 @@ past him and become a narrow corridor with two unequal doors.
 Through one door, the accountant works under her own identity, but submissions
 and returning notices separate: the papers reach her while the Founder remains
 outside their continuous chain. At the other door, her open hand asks for his
-personal access. He draws out the small key already present in the final frame,
-but pauses before giving it away as the shared route collapses their two
-identities into one.
+personal government-portal password. He opens the portal on his phone and
+pauses above the masked password field as the shared route begins to collapse
+their two identities into one.
 
-End exactly on M2_CP10.png with the Founder holding the key between them, the
-accountant carrying the files and waiting with an open hand, one warm open door
-and one opaque closed door behind them. Keep both people breathing and moving
-naturally throughout. Preserve their exact faces, clothing, proportions and the
-painterly cinematic 2.5D style. Keep every document unbranded and unreadable.
+End exactly on M2_CP10.png with the Founder holding the portal screen between
+them, its password masked, while the accountant carries the files and waits
+with an open hand. Keep both people breathing and moving naturally throughout.
+Preserve their exact faces, clothing, proportions, the two unequal doors and
+the painterly cinematic 2.5D style. Keep every document unbranded and unreadable.
 
-Generate restrained tense cinematic music with footsteps, moving paper, a soft
-key sound and subdued office ambience, without intelligible human speech or
-lip-sync.
+Audio: restrained tense instrumental music with footsteps, paper, quiet
+interface sounds and subdued office ambience. Do not generate intelligible
+human speech.
 
 Generate exactly one result: Veo 3.1 Lite, Frames with first and last frame,
 8 seconds, 9:16.

@@ -3,9 +3,10 @@ Create one continuous 8-second, 9:16 Frames-to-Video clip using Veo 3.1 Lite.
 Use M2_CP10.png as the exact first frame and M2_CP11.png as the exact last
 frame.
 
-Begin exactly on M2_CP10.png. The Founder closes his hand around the key without
-passing it over. The accountant turns back toward her files as the two doors
-slide into a glass-divided office and the corridor papers become calendar pages.
+Begin exactly on M2_CP10.png. The Founder lowers the portal screen without
+entering or handing over the password. The accountant turns back toward her
+files as the two doors slide into a glass-divided office and the corridor papers
+become calendar pages.
 
 Time advances from late summer into late autumn. A deadline passes while three
 versions of the same short return move through the accountant's workspace and
