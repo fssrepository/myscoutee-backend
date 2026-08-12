@@ -813,11 +813,14 @@ The return was two pages long. By March, it had been alive for seven months. It
 had outlasted my work, the tax debt and the operation. Now it had found the bed.
 
 The investigation later pulled a second sentence from that period, one I had
-never regarded as a threat. I priced twenty lost years at ten billion euros and
-gave the impossible invoice a crude punchline. If they could act as though
-anything were permitted, then, on the page at least, so could I. My operated
-foot still could not carry me; depression had narrowed the world to the room.
-From there I sent the system a bill for twenty years and the rule of law.
+never regarded as a threat. That spring, nearly the same figure was in the news:
+almost ten billion euros in Hungarian cohesion funding was being withheld
+behind rule-of-law conditions. Perhaps that was how ten billion stayed in my
+mind. I priced twenty lost years at that amount and gave the impossible invoice
+a crude punchline. If they could act as though anything were permitted, then,
+on the page at least, so could I. My operated foot still could not carry me;
+depression had narrowed the world to the room. From there I sent the system a
+bill for twenty years and the rule of law.
 
 At one point I sent the tax administration a close photograph of the swollen,
 operated area itself. It was not a photograph of a bandage. The incision was
@@ -2899,16 +2902,14 @@ a political allegation, not a finding that the new government was or was not
 authoritarian. The narrative retains the image because language once used
 against the old order had moved to the other side of Parliament.
 
-The 2022 timing forms part of the public background. The Council's December
-suspension of €6.3 billion under the rule-of-law conditionality mechanism was
-only one part of the blocked funding, not the total. Reimbursement from
-Hungary's nearly €22 billion 2021–2027 cohesion allocation was also held behind
-unfulfilled horizontal enabling conditions, while no payment could be made
-from the €5.8 billion recovery-plan allocation until 27 “super milestones” had
-been met. By March 2023, the broader amount commonly described as blocked was
-therefore already almost €28 billion—well above ten billion. These measures
-were not connected to the private case; they show what was already happening
-around the same words in national life.
+The 2022 timing forms part of the public background. Other operational
+programmes accounted for nearly €10 billion in EU budget funding—another part
+of the cohesion funds—that was withheld because the enabling conditions had
+not been met. The rule-of-law condition attached to this part included judicial
+independence. The wider framework also contained requirements concerning public
+procurement and academic freedom. The measures had no connection to the private
+case. The only possible thread is the number itself: it may have remained from
+a report read at the time.
 
 Also in July 2026, the Council of the European Union approved a new Hungarian
 recovery plan expected to allow €10 billion to be disbursed. Public reporting
@@ -2957,9 +2958,8 @@ Sources:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
-- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
-- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
-- https://www.europarl.europa.eu/resources/library/media/20230517RES90802/20230517RES90802.pdf
+- https://employment-social-affairs.ec.europa.eu/news/commission-considers-hungarys-judicial-reform-addressed-deficiencies-judicial-independence-maintains-2023-12-13_en
+- https://www.europarl.europa.eu/doceo/document/TA-9-2023-0216_EN.html
 - https://www.consilium.europa.eu/en/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
 - https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/

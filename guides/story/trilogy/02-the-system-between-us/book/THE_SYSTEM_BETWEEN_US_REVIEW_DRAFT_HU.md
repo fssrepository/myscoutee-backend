@@ -351,7 +351,7 @@ Az előrelátás megtöltötte az éléskamrát. A megtakarításom fizette a ma
 
 A bevallás mindössze két oldalból állt. Márciusra hét hónapja élt. Túlélte a munkámat, az adótartozást és a műtétet. Most megtalálta az ágyat is.
 
-A nyomozás később ebből az időszakból is kiemelt egy mondatot, amelyet soha nem tekintettem fenyegetésnek. Húsz elveszett évemet tízmilliárd euróra áraztam, majd egy nyers poénnal zártam le a képtelen számlát. Ha nekik mindent szabad, akkor legalább a papíron nekem is. A megműtött lábamon még járni sem tudtam; a depresszió egyetlen szobára szűkítette a világot. Onnan küldtem a rendszernek egy számlát húsz évről és a jogállamról.
+A nyomozás később ebből az időszakból is kiemelt egy mondatot, amelyet soha nem tekintettem fenyegetésnek. Azon a tavaszon majdnem ugyanez a szám járta a híreket: közel tízmilliárd eurónyi magyar kohéziós pénzt tartottak vissza jogállamisági feltételek miatt. Talán innen maradt meg bennem a tízmilliárd. Húsz elveszett évemet erre az összegre áraztam, majd egy nyers poénnal zártam le a képtelen számlát. Ha nekik mindent szabad, akkor legalább a papíron nekem is. A megműtött lábamon még járni sem tudtam; a depresszió egyetlen szobára szűkítette a világot. Onnan küldtem a rendszernek egy számlát húsz évről és a jogállamról.
 
 Egy ponton közelről készült fényképet küldtem az adóhatóságnak a feldagadt, megműtött területről. Nem a kötés látszott rajta, hanem maga a vágás: a felnyitott, még gyógyuló test nyers és intim képe, miközben a közigazgatási ügy tovább haladt. Egy obszcén viccet írtam mellé arról, hogy ezzel a félig szétvágott, feldagadt lábbal rúgom fenékbe a dolgát nem végző intézményt.
 
@@ -2164,16 +2164,14 @@ hogy az új kormány tekintélyelvű volt vagy sem. Az elbeszélés azért őrzi
 képet, mert a korábbi rend ellen használt nyelv átkerült a Parlament másik
 oldalára.
 
-A 2022-es időzítés a nyilvános háttér része. A Tanács decemberi, 6,3 milliárd
-eurós felfüggesztése csak az egyik része volt a blokkolt forrásoknak, nem a
-teljes összeg. A közel 22 milliárd eurós, 2021–2027-es magyar kohéziós keret
-kifizetéseit is teljesítetlen horizontális feljogosító feltételek akadályozták,
-az 5,8 milliárd eurós helyreállítási keretből pedig a 27 „szupermérföldkő”
-teljesítéséig semmit sem lehetett folyósítani. Így 2023 márciusára a tágabb
-értelemben blokkoltként emlegetett összeg már közel 28 milliárd euró volt —
-vagyis jóval meghaladta a tízmilliárdot. Ezeknek az intézkedéseknek nem volt közük a
-magánügyhöz; azt mutatják meg, mi történt ugyanebben az időszakban ugyanezekkel
-a szavakkal az ország életében.
+A 2022-es időzítés a nyilvános háttér része. Egyéb operatív programok: közel
+10 milliárd eurónyi uniós költségvetési forrást — vagyis a kohéziós pénzek egy
+további részét — azért tartottak vissza, mert a feljogosító feltételek nem
+teljesültek. Ehhez a részhez az igazságszolgáltatás függetlenségét érintő
+jogállamisági feltétel is kapcsolódott. A szélesebb feltételrendszer a
+közbeszerzéseket és az akadémiai szabadságot érintő előírásokat is tartalmazott.
+Az intézkedéseknek nem volt közük a magánügyhöz. Az egyetlen lehetséges szál maga
+a szám: megmaradhatott egy akkor olvasott hírből.
 
 Ugyancsak 2026 júliusában az Európai Unió Tanácsa olyan új magyar
 helyreállítási tervet hagyott jóvá, amely tízmilliárd euró folyósítását tette
@@ -2223,9 +2221,8 @@ Források:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
-- https://www.consilium.europa.eu/hu/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
-- https://www.consilium.europa.eu/hu/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
-- https://www.europarl.europa.eu/resources/library/media/20230517RES90802/20230517RES90802.pdf
+- https://employment-social-affairs.ec.europa.eu/news/commission-considers-hungarys-judicial-reform-addressed-deficiencies-judicial-independence-maintains-2023-12-13_en
+- https://www.europarl.europa.eu/doceo/document/TA-9-2023-0216_HU.html
 - https://www.consilium.europa.eu/hu/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
 - https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
