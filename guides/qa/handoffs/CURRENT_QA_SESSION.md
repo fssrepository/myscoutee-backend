@@ -161,6 +161,12 @@ the user.
 
 ### 1.2 Exact manual producer instructions
 
+- The resume block's `required_resume` and **Next manual action** are declarative
+  instructions for Codex to issue next; their presence does not prove that the
+  user has already received or performed them. A stop phrase counts for a
+  producer action only when Codex's latest explicit manual instruction named
+  that same action and asked for that phrase. Never bind a bare `megvan` to an
+  unissued resume action from the file or from remembered conversation state.
 - Before handing a producer action to the user, verify the exact actionable
   surface from the implementation and, when the current UI is ambiguous, from
   the managed browser's read-only DOM. Name the complete interaction path,
@@ -168,13 +174,15 @@ the user.
 - Treat Notifications as persisted evidence by default, not as a domain action
   surface. A notification menu owns a business transition only when its actual
   converter/menu implementation exposes that action.
-- After the stop phrase, pair the persisted oracle with the access log. If no
-  expected modifying request left the browser because the instruction never
-  reached the real action control, the transaction is **not executed**, not a
-  product FAIL: retain the checkpoint, correct the instruction and do not add
-  false failure evidence to the QA pack or matrix. If the verified control was
-  activated but its binding emits no request, that is a client defect and must
-  enter the normal diagnose/fix/replay loop.
+- Before the producer instruction has actually been issued, an unchanged
+  oracle is only the intact pre-action boundary. After a correctly matched stop
+  phrase, pair the persisted oracle with the access log. If no expected
+  modifying request left the browser because the instruction did not reach the
+  real action control, the transaction is **not executed**, not a product FAIL:
+  retain the checkpoint, correct the instruction and do not add false failure
+  evidence to the QA pack or matrix. If the verified control was activated but
+  its binding emits no request, that is a client defect and must enter the
+  normal diagnose/fix/replay loop.
 - `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
   read-only managed-session tool for resolving an ambiguous current surface;
   it must never be used to perform the user's manual producer action.
