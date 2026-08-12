@@ -926,15 +926,16 @@ with me. On 19 February, the appointed lawyer asked to be released because the
 office was overloaded. The police accepted the request. Only after he had
 ceased to be my lawyer did he return one of my calls. He told me to leave the
 police to their work and suggested that I say I had not done it. Then the line
-closed, and I did not know whether I had another defender.
+closed. For the months after 19 February, I did not know whether another
+defender had been appointed—or whether I had one at all. I complained in
+writing. Nobody replied.
 
 On 11 June 2024, I was summoned back to the police station. A lawyer I had
 never met appeared beside me. Only then did I learn that, on paper, he had been
-my appointed defender since 30 May. Nobody had told me. The policewoman
-conducting the hearing was called Kata. When the earlier absence of defence
-came up, she answered at once: the appointed defender had not had time. I
-understood her to mean the lawyer who had been unavailable in February. The
-hearing continued.
+my new appointed defender since 30 May. Nobody had told me. The policewoman
+conducting the hearing was called Kata. Calmly, as though nothing unusual had
+happened, she said that the original appointed defender had not had time. The
+new appointed defender was already sitting beside me. The hearing continued.
 
 The officers carrying the file changed as well. I could not reach them
 directly. I called the central number and first had to find out which
@@ -954,8 +955,8 @@ myself.
 The glance returned the obscene visual joke I had made while trying to force
 the tax administration to see the body behind its process. Where was the grave
 threat in that image? It had been a huge symbolic kick in an institution's
-backside. The association arrived as the papers I had been waiting for were
-finally handed over.
+backside. The association arrived as she handed over the papers I was still
+waiting to receive.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of
