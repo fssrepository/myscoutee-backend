@@ -4,7 +4,8 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Public edition 1.0.0 · Published 20 August 2026
+> First English edition
+> Published 20 August 2026
 > (Hungary’s State Foundation Day)
 
 <!-- pagebreak -->
@@ -869,7 +870,8 @@ the wall caught my weight, and metal closed behind my back. Then a boot found
 the foot that had already been cut open and put back together. Pain ran white
 through the narrow hall.
 
-The handcuffs would come off that day. The injury kept repeating the moment.
+They took me to the police station in handcuffs and released me later that day.
+The injury kept repeating the moment.
 The nail came away three times, as if even the body had been pulled into the
 system's habit of beginning again.
 
@@ -905,6 +907,10 @@ assistant was carrying the case. I had been searched, questioned and separated
 from my devices without receiving the complete material from which I could
 understand the accusation.
 
+Five days later, police rang my bell again. They personally delivered a summons
+for three days later. It was urgent for them. They did not say why I had to
+appear.
+
 Eight days later, I walked through the city to the police station. The loose
 nail travelled inside my shoe, shifting under the toe at every step. Saint
 Nicholas Day was approaching; shop windows were beginning to show the little
@@ -916,6 +922,10 @@ Then the next step put the nail under me again.
 Two forensic experts questioned me. The state already had a
 room in which to interpret my mind. I still did not have a stable person helping
 me interpret the case.
+
+By the time I gave my actual police statement roughly a month later, in
+December, I was already suspected on two counts. The tax authority's two
+internal departments had been treated separately.
 
 The later police interviews took place in ordinary rooms, not cinematic
 interrogation chambers. An officer sat opposite me behind a desktop computer.
@@ -962,7 +972,7 @@ happening in the investigation.
 Around 12 November, I returned alone to collect the investigation material. No
 lawyer sat beside me. A policewoman looked towards the waiting area almost
 timidly, checking that I was there and that the handover could begin. She seemed
-to freeze. A male officer smiled and glanced towards my operated leg. By then I
+to freeze. A male officer glanced towards my operated leg and smiled. By then I
 trusted the continuity of no later account, so I made an undisclosed audio
 recording of the encounter. The act was not a victory over the process. It
 measured the low-trust condition: I no longer believed that even an ordinary
@@ -972,8 +982,8 @@ myself.
 The glance returned the obscene visual joke I had made while trying to force
 the tax administration to see the body behind its process. Where was the grave
 threat in that image? It had been a huge symbolic kick in an institution's
-backside. The association arrived as she handed over the papers I was still
-waiting to receive.
+backside. The association arrived as the papers I had been waiting for were
+finally handed over.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of
@@ -2889,12 +2899,16 @@ a political allegation, not a finding that the new government was or was not
 authoritarian. The narrative retains the image because language once used
 against the old order had moved to the other side of Parliament.
 
-The 2022 timing forms part of the public background. In December of that year,
-the Council suspended €6.3 billion in budget commitments under the rule-of-law
-conditionality mechanism. It also approved Hungary's recovery plan on terms
-that required 27 rule-of-law “super milestones” to be completed before any
-payment could be made. Those measures were not connected to the private case;
-they show what was already happening around the same words in national life.
+The 2022 timing forms part of the public background. The Council's December
+suspension of €6.3 billion under the rule-of-law conditionality mechanism was
+only one part of the blocked funding, not the total. Reimbursement from
+Hungary's nearly €22 billion 2021–2027 cohesion allocation was also held behind
+unfulfilled horizontal enabling conditions, while no payment could be made
+from the €5.8 billion recovery-plan allocation until 27 “super milestones” had
+been met. By March 2023, the broader amount commonly described as blocked was
+therefore already almost €28 billion—well above ten billion. These measures
+were not connected to the private case; they show what was already happening
+around the same words in national life.
 
 Also in July 2026, the Council of the European Union approved a new Hungarian
 recovery plan expected to allow €10 billion to be disbursed. Public reporting
@@ -2945,6 +2959,7 @@ Sources:
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
 - https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
 - https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
+- https://www.europarl.europa.eu/resources/library/media/20230517RES90802/20230517RES90802.pdf
 - https://www.consilium.europa.eu/en/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
 - https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/

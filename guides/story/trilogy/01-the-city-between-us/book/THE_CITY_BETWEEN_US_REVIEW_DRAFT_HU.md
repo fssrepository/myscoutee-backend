@@ -4,7 +4,8 @@
 
 *Egy alapító története szobákról, utazásokról és egymás megtalálásáról*
 
-> Magyar kiadás 1.0.0 · Megjelent: 2026. augusztus 20.
+> Első magyar kiadás
+> Megjelent: 2026. augusztus 20.
 > (a magyar államalapítás ünnepe)
 
 <!-- pagebreak -->
@@ -15,7 +16,7 @@ Ez a visszaemlékezésen alapuló történet egyes szám első személyben szól
 
 A szobák, utazások, beszélgetések, hibák és kedves pillanatok az emlékeimből származnak. A neveket eltávolítottam, egyes eseménysorokat tömörítettem, néhány bizonytalan helyszínt pedig szándékosan nem nevezek meg. Ahol az emlékeim nem egyeznek pontosan a nyilvánosan ellenőrizhető földrajzi adatokkal, nem teszek úgy, mintha biztos volnék a részletekben.
 
-A könyv valamennyi szereplő- és jelenetillusztrációja mesterséges intelligenciával (MI) létrehozott vizuális értelmezés. Nem a tényleges résztvevőket ábrázolják.
+A könyv minden szereplő- és jelenetillusztrációja mesterséges intelligenciával (MI) készült vizuális értelmezés. Egyik sem a tényleges résztvevőket ábrázolja.
 
 Ez a történet évtizedeket sűrít össze. Az egymás melletti oldalak — és különösen a kísérőfilm egymást követő másodpercei — nem feltétlenül ugyanannak az évnek az eseményeit mutatják, és az sem biztos, hogy a valóságban közvetlenül egymás után történtek. Ahol az évszám megváltoztatja a jelentést, ott leírom. Ahol csak az érzelmi kapcsolat számít, ott összekapcsolom a jeleneteket, de nem teszek úgy, mintha egy egész élet egyetlen hosszú évszakban telt volna el.
 
@@ -29,7 +30,7 @@ Az első rész ezzel a meghívással ér véget. A pályám következő fejezete
 
 A jegyzetfüzet még mindig az asztalomon van.
 
-A borítója olyan színű, mint az alkonyati ablak felé tartott konyak: barna, amíg el nem éri a fény, és borostyánszínű ott, ahol az évek simára koptatták a felületét. Olyan szobákon vittem keresztül, amelyek sohasem váltak egészen otthonná; vonatokon és buszokon nyitottam ki, és már jóval azelőtt rendszerekkel töltöttem meg, hogy tudtam volna, milyen rendszert próbálok felépíteni. Némelyik oldalon számok vannak, máshol útvonalak. Megint máshol félbeszakad egy mondat, mintha maga is arra várna, hogy valaki válaszoljon.
+A borítója olyan színű, mint az alkonyati ablak felé tartott konyak: barna, amíg el nem éri a fény, és borostyánszínű ott, ahol az évek simára koptatták a felületét. Olyan szobákon át vittem magammal, amelyek sohasem váltak egészen otthonná; vonatokon és buszokon nyitottam ki, és már jóval azelőtt rendszerekkel töltöttem meg, hogy tudtam volna, milyen rendszert próbálok felépíteni. Némelyik oldalon számok vannak, máshol útvonalak. Megint máshol félbeszakad egy mondat, mintha maga is arra várna, hogy valaki válaszoljon.
 
 Ha most visszanézek, nem egyenes vonalként emlékszem az életemre. A falusi föld vasúti sínné válik. A sín Budapest fölött futó villamosvezetékké. A vezeték a Victoria metróvonal kék-fehér útvonalává. Egy esős londoni ablak egy hegyek között haladó busz üvegévé. Egy ceruzavonás hálózattá.
 
@@ -37,7 +38,7 @@ Az emlékezet engedély nélkül vágja össze a történetet.
 
 Egy kérdés mégis túlél minden vágást: hogyan hagyhat egy emberekkel zsúfolt világ ilyen sokunkat út nélkül egymás felé?
 
-Ez a kérdés nem egy alkalmazással kezdődött. Sokkal korábban: a családom kezére tapadt földdel, az együtt tanult közgazdaságtannal, programozással és matematikával, az egyetlen hiányzó nyelvvizsga miatt ki nem adott diplomával, egy rendkívüli szépségű várossal, és azzal a különös felismeréssel, hogy az embernek lehet hol aludnia anélkül, hogy volna helye az életben.
+Ez a kérdés nem egy alkalmazással kezdődött. Sokkal korábban: a családom kezére tapadt földdel, az együtt tanult közgazdaságtannal, programozással és matematikával, az egyetlen hiányzó nyelvvizsga miatt ki nem adott diplomával, egy rendkívüli szépségű várossal és azzal a különös felismeréssel, hogy az embernek lehet hol aludnia anélkül, hogy volna helye az életben.
 
 <!-- pagebreak -->
 
@@ -55,13 +56,13 @@ Ez az örökség akkor is velem maradt, amikor a matematika és a szoftver lett 
 
 Sok vidéki fiatalhoz hasonlóan tanulni és dolgozni Budapest felé indultam. Nem azért, mert a vidéknek ne volna méltósága, és nem is azért, mert minden magyar út szükségképpen a fővárosban ér véget. Az én utam erre vezetett. A vasúti peron kicsi volt; a hozzá fűzött remény hatalmas.
 
-Az egyetem előtt szerettem futni. Versenyeken indultam, és megtanultam lélegzetben, ritmusban és távolságban gondolkodni. A természetes adottság segített, de a futás azt tanította meg, hogy a légzés és a kitartás többnyire fontosabb.
+Az egyetem előtt szerettem futni. Versenyeken indultam, és megtanultam lélegzetben, ritmusban és távolságban gondolkodni. A természetes adottságaim segítettek, de a futás azt tanította meg, hogy a légzés és a kitartás többnyire fontosabb.
 
 Egy középiskolai versenyen az osztálytársaim megragadták a karomat, és megpróbáltak visszahúzni. Így is elsőként értem célba.
 
 Nem csinálok ebből példázatot mások legyőzéséről. Arra emlékszem, ahogyan a megszakítás után visszatért a ritmus: a lélegzet ismét megtalálta a helyét, a célvonal pedig továbbra is előttem várt.
 
-Az emberek rendszerint csendesnek és visszafogottnak látnak. A vadabb részt nem várják. Sohasem voltam hirtelen haragú; talán három- vagy négyévente egyszer emeltem fel igazán a hangomat. Amikor mégis teljes erőből szólaltam meg, a meglepetés el tudott némítani egy egész szobát. A visszafogottság nem ugyanaz volt, mint a félelem.
+Az emberek rendszerint csendesnek és visszafogottnak látnak. A vadabb oldalamat nem várják. Sohasem voltam hirtelen haragú; talán három- vagy négyévente egyszer emeltem fel igazán a hangomat. Amikor mégis teljes erőből szólaltam meg, a meglepetés el tudott némítani egy egész szobát. A visszafogottság nem ugyanaz volt, mint a félelem.
 
 Közgazdaságtant, programozást és matematikát tanultam együtt. A szak magyar neve szinte úgy hangzik, mintha három hivatás próbálna egyetlen sorba beférni. Tetszett. A közgazdaságtan azt kérdezte, mit értékelnek az emberek. A matematika azt, mi bizonyítható. A programozás azt, működésre lehet-e bírni egy ötletet.
 
@@ -79,7 +80,7 @@ A szépség a városon túl is folytatódik. A Duna Szentendre, Visegrád és Es
 
 Tudtam, hogy gyönyörű helyről jövök. Ettől a magány csak még nehezebben volt érthető.
 
-2004-ben fejeztem be az egyetemet. Mivel a szakdolgozatom kicsúszott az eredeti ütemezésből, legkorábban 2005-ben vehettem volna át a diplomát. De akkor sem kaphattam még meg: hiányzott egy középfokú idegennyelv-vizsga. Valójában jóval később vettem át. Az első próbálkozásom, hogy megvessem a lábam Budapesten, nem vált végleges költözéssé. Körülbelül egy hónapig rokonok engedték, hogy nagy házukban lakjak. Fizikailag volt hely, és nem állítom, hogy rosszul bántak velem, mégis úgy éreztem, rátelepszem az életükre. A munka, amely odavitt, nem felelt meg annak, amit a munkáltató előzetesen sejtetett. Becsapva éreztem magam, és visszatértem a szüleimhez.
+2004-ben fejeztem be az egyetemet. Mivel a szakdolgozatom kicsúszott az eredeti ütemezésből, legkorábban 2005-ben vehettem volna át a diplomát. De akkor sem kaphattam még meg: hiányzott egy középfokú idegennyelv-vizsga. Valójában jóval később vettem át. Az első próbálkozásom, hogy megvessem a lábam Budapesten, nem vált végleges költözéssé. Körülbelül egy hónapig rokonok engedték, hogy nagy házukban lakjak. Fizikailag volt hely, és nem állítom, hogy rosszul bántak velem, mégis úgy éreztem, rátelepszem az életükre. A munka, amely odavitt, nem felelt meg annak a képnek, amelyet a munkáltató előzetesen felvázolt. Becsapva éreztem magam, és visszatértem a szüleimhez.
 
 Ezután Budapest egynapos próbálkozások sorává vált. Többször utaztam fel állásinterjúkra; a fővárosba vezető út költségét a munkaügyi központ térítette meg. Egy jegy elvihetett az interjúra és vissza, de a várost még nem tudta életté változtatni. Minden út lehetőséggel kezdődött, és a szüleim otthonába való újabb visszatéréssel ért véget.
 
@@ -87,13 +88,13 @@ Ezután Budapest egynapos próbálkozások sorává vált. Többször utaztam fe
 
 A szakmai ajtó végül 2005 októberében nyílt ki, mintegy másfél évvel az egyetem befejezése után. Abban a pillanatban nem irodában ültem, és nem is egy fényes recepciós pult mellett várakoztam. Kukoricasorok között kapáltam.
 
-Októberben csatlakoztam egy indiai céghez, és az út szinte azonnal Dél-Indiába vitt. Körülbelül másfél hónapot töltöttem Thiruvananthapuramban, más néven Trivandrumban, egy ír–magyar csapattal dolgozva. A város Kerala fővárosa, India szárazföldi részének távoli délnyugati peremén: alacsony tengerparti dombjai az Arab-tenger felé néznek, míg keleten és északkeleten a Nyugati-Ghátok magasabb vidéke emelkedik. Már akkor is kialakult technológiai térség része volt, de azt a helyet, amellyel találkoztam, nem lehetett egy irodára vagy szoftverparkra szűkíteni.
+Októberben csatlakoztam egy indiai céghez, és az út szinte azonnal Dél-Indiába vitt. Körülbelül másfél hónapot töltöttem Thiruvananthapuramban, más néven Trivandrumban, egy ír–magyar csapattal dolgozva. A város Kerala fővárosa, India szárazföldi részének távoli délnyugati peremén: alacsony tengerparti dombjai az Arab-tenger felé néznek, míg keleten és északkeleten a Nyugati-Ghátok magasabb vidéke emelkedik. Már akkor is egy kiépült technológiai térséghez tartozott, de azt a helyet, amellyel találkoztam, nem lehetett egy irodára vagy szoftverparkra szűkíteni.
 
-A környékhez híres turistapartok is tartoznak. Az a bizonyos partszakasz azonban, amely megmaradt az emlékezetemben, egészen másnak tűnt: gyakorlatilag egyetlen turistát sem láttam. Ez egyetlen strand emléke, nem állítás arról, hogy Kerala déli részén nem létezett turizmus. A saját életemben bekövetkező hirtelen váltás számított. Nemrég még kukoricaföldön dolgoztam; most egy dél-indiai városban tanultam meg együtt dolgozni több országból érkezett emberekkel, miközben a város szélén ott volt a tenger.
+A környékhez híres turistapartok is tartoznak. Az a bizonyos partszakasz azonban, amely megmaradt az emlékezetemben, egészen másnak tűnt: gyakorlatilag egyetlen turistát sem láttam. Ez egyetlen strand emléke, nem állítás arról, hogy Kerala déli részén nem létezett turizmus. Az én életemben a váltás volt hirtelen. Nemrég még kukoricaföldön dolgoztam; most egy dél-indiai városban tanultam meg együtt dolgozni több országból érkezett emberekkel, miközben a város szélén ott volt a tenger.
 
 Ott kezdtem el a gyakorlatban megtanulni angolul. Addig az angol a diplomám és közém álló hivatalos akadály is volt: az oklevél átvételéhez továbbra is kellett a középfokú nyelvvizsga. Trivandrumban a nyelv egyre kevésbé volt vizsgatárgy, és egyre inkább a kérdezés, a válasz, a félreértés, a javítás és a közös munka hétköznapi eszköze. Már boldogultam vele, de könnyedén még nem beszéltem. Ez volt az első nemzetközi munkahelyem, ahol a papíron még hiányzó nyelvtudásból lassan valódi készség lett.
 
-Az indiai cég kinyitotta előttem a szakmai ajtót. Papíron most már helyesnek látszott a sorrend: vidék, egyetem, nemzetközi munka, főváros. Attól azonban még fogalmam sem volt, hogyan lesz mindebből biztos felnőtt élet.
+Az indiai cég kinyitotta előttem a szakmai ajtót. Papíron most már helyesnek látszott a sorrend: vidék, egyetem, nemzetközi munka, főváros. Attól azonban még fogalmam sem volt, hogyan lesz mindebből biztos felnőtt életem.
 
 Amikor először érkeztem Budapestre dolgozni, munkásszállón laktam. Személytelen volt, de a személytelenségének megvoltak a szabályai. Az ágy ágy volt. A kulcs kulcs. A nehézséget az okozta, hogy a későig tartó munka után néha csak akkor értem vissza, amikor a szobát már bezárták. Egyes éjszakákon a folyosó maradt az egyetlen tér. Megtanultam, hogyan változik meg a neonfény, amikor az ember aludni próbál alatta.
 
@@ -107,11 +108,11 @@ Egy debreceni nő egy másik elfoglaltság miatt érkezett Budapestre — talán
 
 <!-- illustration: budapest_character_debrecen -->
 
-Már egy háromórás randevúhoz is össze kellett hangolnunk a városközi utazást és a másik elfoglaltságot, amely Budapestre hozta: mikor érkezik, hol találkozhatunk, mikorra kell odaérnünk a programjára, és melyik járattal tud hazamenni. A vonzalom nem tüntette el a távolságot és az ütköző programokat. Az utazásnak, a budapesti elfoglaltságának és az együtt töltött időnknek egymásba kellett illeszkednie.
+Már egy háromórás randevúhoz is össze kellett hangolnunk a városközi utazást és azt a programot, amely Budapestre hozta: mikor érkezik, hol találkozhatunk, mikorra kell odaérnünk, és melyik járattal tud hazamenni. A vonzalom nem tüntette el a távolságot és az ütköző programokat. Az utazásnak, a budapesti elfoglaltságának és az együtt töltött időnknek egymásba kellett illeszkednie.
 
-Azért maradt velem az üzenete, mert már azután érkezett, hogy még bármit megváltoztathatott volna. Később társat talált, és Budapestre költözött. Körülbelül egy évtized múlva újra találkoztunk. Haragot olvastam ki abból, ahogyan rám nézett, de nem tudhatom, mi volt abban a tekintetben. Az emlékezet megőrizhet egy arcot; a másik ember belső történetét nem találhatja ki büntetlenül.
+Azért maradt velem az üzenete, mert már túl későn érkezett ahhoz, hogy bármit megváltoztasson. Később társat talált, és Budapestre költözött. Körülbelül egy évtized múlva újra találkoztunk. Haragot olvastam ki abból, ahogyan rám nézett, de nem tudhatom, mi volt abban a tekintetben. Az emlékezet megőrizhet egy arcot; a másik ember belső történetét nem találhatja ki büntetlenül.
 
-Egy másik nő alkalmazás és bemutatás nélkül lépett be az életembe. Egy bevásárlóközpontban odajött hozzám, leült mellém egy padra, és a kínai, illetve a nyugati asztrológiáról kezdett beszélni. Spontán, közvetlen és szinte megtervezhetetlen volt: egy idegen maga teremtette meg a nyitást, és a beszélgetés már azelőtt létezett, hogy bármelyikünk profilt készített volna.
+Egy másik nő alkalmazás és bemutatás nélkül lépett be az életembe. Egy bevásárlóközpontban odajött hozzám, leült mellém egy padra, és a kínai, illetve a nyugati asztrológiáról kezdett beszélni. Az egész spontán és közvetlen volt, olyasmi, amit előre aligha lehetett volna megtervezni: egy idegen kezdeményezett, és a beszélgetés már azelőtt elkezdődött, hogy bármelyikünk profilt készített volna.
 
 <!-- illustration: budapest_character_spontaneous -->
 
@@ -119,11 +120,11 @@ A saját tér hiánya továbbra is meghatározta, mi lehetett volna ebből. Még
 
 Később, a családi otthonában egy ijesztő családi és egészségügyi válság mutatta meg, milyen keveset tudtam a helyzetéről. Kivettem egy szabadnapot, hogy elkísérjem egy másik városba, ahol ellátást kaphatott. A kapcsolat véget ért. A diagnózisa, kezelése és családi részletei nem az enyémek, ezért nem hozhatom nyilvánosságra őket. Ami ebből rám tartozik, ennyi: a hirtelen fellobbanó vonzalom lehet valódi, miközben két felkészületlen ember fontos szükségletei egészen a válságig rejtve maradhatnak egymás elől.
 
-Egy időre sikerült saját szobát találnom Budapesten. Nem mondták meg, hogy csak valakit helyettesítek a nyárra. Amikor a korábbi társaság vissza akarta kapni a szobát, nélkülem változtatták meg a megállapodást. A pontos cím és az emberek nem tartoznak ebbe a könyvbe. Az számított, mi a különbség egy átlátható megállapodás és a bármikor visszavonható befogadás között.
+Egy időre sikerült saját szobát találnom Budapesten. Nem mondták meg, hogy csak valakit helyettesítek a nyárra. Amikor a korábbi társaság vissza akarta kapni a szobát, nélkülem változtatták meg a megállapodást. A pontos cím és az emberek nem tartoznak ebbe a könyvbe. Az számított, mi a különbség egy átlátható megállapodás és aközött, ha valakit befogadnak, majd bármikor visszavonják a szavukat.
 
-Visszatértem a munkásszállóra. A szabályai szigorúak, a légköre névtelen volt, de a névtelenség néha biztonságosabbnak tűnt, mint egy olyan befogadás, amelyet figyelmeztetés nélkül vissza lehet vonni.
+Visszatértem a munkásszállóra. A szabályai szigorúak, a légköre névtelen volt, de a névtelenség néha biztonságosabbnak tűnt annál, mint ha valaki befogad, majd figyelmeztetés nélkül visszavonja a szavát.
 
-Később egy átlagos közös lakásba költöztem, három valóban különálló hálószobával. Nem átjárószobák voltak, amelyeken a lakóknak egymás teréhez menet keresztül kellett haladniuk. Ekkor először jutott mindenkinek természetes határ és elegendő saját tér.
+Később egy átlagos közös lakásba költöztem, három valóban különálló hálószobával. Nem kellett egymás szobáján keresztül járnunk. Ekkor először volt mindenkinek világos határa és elegendő saját tere.
 
 Egy harmadik találkozás online társkereső oldalon kezdődött, és ebben a lakásban folytatódott. Ezúttal a fizikai tér megvolt, de a másik ember már kész történettel érkezett rólam. Azonnal úgy éreztem, sztereotípiába zártak. Az első ítélet később annyit enyhült, hogy lett belőle egyetlen közös éjszaka, közös jövő azonban nem.
 
@@ -135,7 +136,7 @@ London előtt volt egy másik online ismerkedés is, amelyet a nő folytatni sze
 
 Nem hibákként mutatom be ezeket a nőket, és magamat sem a félbemaradt történetek ártatlan főszereplőjeként. A vonzalom, a habozás, a méltóság, a pénz, a lakhatás, az egészség, az időzítés és az elvárások minden esetben másként alakultak. Mindannyian hoztuk a magunk nehézségeit, és mindannyian hajlamosak lehettünk arra, hogy egyetlen látható problémából ítéljük meg a másik egész személyiségét.
 
-Egy kapcsolatban nem nehézségek nélküli embert választunk. Lassan megismerjük a másik valóságát, majd eldöntjük, el tudjuk-e fogadni egymást a nehézségeinkkel együtt. Ez nem jelenti a fontos körülmények elhallgatását, a határok feladását vagy a bántalmazás eltűrését. Csak azt, hogy nem tévesztjük össze a gyorsan ráragasztott címkét a teljes emberrel.
+Egy kapcsolatban nem olyan embert választunk, akinek nincsenek nehézségei. Lassan megismerjük a másik valóságát, majd eldöntjük, el tudjuk-e fogadni egymást a nehézségeinkkel együtt. Ez nem jelenti a fontos körülmények elhallgatását, a határok feladását vagy a bántalmazás eltűrését. Csak azt, hogy nem tévesztjük össze a gyorsan ráragasztott címkét a teljes emberrel.
 
 Ezekben az emlékekben az ítélet gyakran megelőzte a megértést, a fontos részletek pedig néha túl későn derültek ki. A kölcsönös vonzalom megvolt. Az őszinteséghez szükséges idő és biztonság hiányzott: az, hogy kiderüljön, képesek vagyunk-e együtt továbblépni.
 
@@ -330,9 +331,9 @@ A terv működött. Szinte éppen ez volt a baj.
 
 A bérelt autó lenyűgöző pontossággal követte az útitervet. Manchester utcáin téglaházak, ipari múlt, könyvtárak és új üvegépületek keveredtek. Liverpool a Mersey, a Pier Head és a régi dokkok felé nyílt meg. Az észak-walesi parton fekvő Barmouthnál két dombsor mintha a tenger felé vezette volna a tekintetet. Apálykor messz kisétálhattunk a szabaddá vált partra, és visszanézhettünk a hegyoldalnak támaszkodó városra. Cardiff várkövet, árkádokat és az öböl felé tartó széles utcákat adott mindehhez.
 
-Minden időben történt. Minden túl gyorsan történt.
+Minden pontosan időben történt. Minden túl gyorsan történt.
 
-Három napunk volt az egész útra. Egyik útitársam sem tudott szabaddá tenni egy negyediket, ez az egy hiányzó nap pedig állóképességi gyakorlattá sűrítette a gyönyörű körutat. Öten ültünk az autóban, és a terv szerint mindenhová eljutottunk. Csak időnk nem maradt sehol.
+Három napunk volt az egész útra. Egyik útitársam sem tudott egy negyedik napot szabaddá tenni, ez az egy hiányzó nap pedig állóképességi gyakorlattá sűrítette a gyönyörű körutat. Öten ültünk az autóban, és a terv szerint mindenhová eljutottunk. Csak időnk nem maradt sehol.
 
 Évekkel később, amikor olyan rendszert terveztem, amelyben egy meghívott szabadon nemet mondhat, a felszabadult helyet pedig más fogadhatja el, eszembe jutott ez az út. Nem az volt a cél, hogy úgy cseréljük le a barátokat, mintha pótalkatrészek lennének. Hanem annak elfogadása, hogy valaki szeretne eljönni, mégsem ér rá. Egy terv akkor is meghiúsulhat, ha mindenki szereti az ötletet. Egy emberséges rendszernek úgy kell megőriznie a kapcsolatot, hogy közben a program se feltétlenül maradjon el.
 
@@ -360,7 +361,7 @@ Az útvonal kitágítja a világot. A találkozás valóságossá teszi. A kett�
 
 ## 12. Egyiptom: az ideiglenes bizalom hat napja
 
-A hat egyiptomi napomat nagyrészt magam terveztem meg. WhatsAppon, egy sofőr és helyi szállodák segítségével kötöttem össze Kairót Asszuánnal, Abu Szimbellel és Luxorral. Az útiterv elég sűrű volt ahhoz, hogy észszerűtlennek tűnjön, mégis elég pontos ahhoz, hogy működjön.
+A hatnapos egyiptomi utamat nagyrészt magam terveztem meg. WhatsAppon, egy sofőr és helyi szállodák segítségével kötöttem össze Kairót Asszuánnal, Abu Szimbellel és Luxorral. Az útiterv elég sűrű volt ahhoz, hogy észszerűtlennek tűnjön, mégis elég pontos ahhoz, hogy működjön.
 
 Éjfél körül szálltam le Kairóban. A repülőtéren egy taxisofőr azt mondta, a nem hivatalos pénzváltás jobb a hivatalos pultoknál. A saját viteldíját túl drágának éreztem, így végül egy szudáni házaspárral osztoztam a fuvaron. Azonnal vonzónak találtam a nőt, és láthatóan mindketten jól szórakoztak azon, milyen kevéssé sikerült ezt eltitkolnom. A taxi aztán elindult, a tetőre rakott bőröndjeik pedig az úttestre zuhantak. Mielőtt igazán elhagytuk volna a repülőteret, a flört gyakorlati problémává vált, nekünk pedig máris volt közös történetünk.
 
@@ -378,9 +379,9 @@ Asszuánba visszatérve a szállodám a Nílus mellett állt. A szobámból a v�
 
 Asszuánból egy sofőrrel folytattam utamat Luxorba. Azért választottam a közutat, mert így a Nílus mentén több különleges helyen megállhattunk. Kom Ombo, Edfu és Eszna után értük el Luxort. Maga az út is az élmény részévé vált, nem csupán eljutottunk egyik városból a másikba.
 
-Luxorban a szokásos turistaközponton kívül, a Nílus nyugati partján szálltam meg. Az egyik irányban sírok és sivatag terült el. A víz túloldalán Luxor fényei remegtek a folyón. Komoly, fegyveres férfiak vigyáztak az éveken át tartó félelem után még mindig talpra álló idegenforgalomra. Az ősi kövek, a hétköznapi megélhetés és a biztonsági készültség ugyanannak a tájnak a részei voltak.
+Luxorban a szokásos turistaközponton kívül, a Nílus nyugati partján szálltam meg. Az egyik irányban sírok és sivatag terült el. A víz túloldalán Luxor fényei remegtek a folyón. Fegyveres őrök vigyáztak az éveken át tartó félelem után még mindig talpra álló idegenforgalomra. Az ősi kövek, a hétköznapi megélhetés és a biztonsági készültség ugyanannak a tájnak a részei voltak.
 
-Hajnalban hőlégballonnal emelkedtem a magasba. Nem egy gondosan kijelölt leszállóhelyen, hanem egy zöldségeskertben értünk földet. Egy fal megnehezítette a kijutást. Néhány utasnak egy magánházon kellett keresztülmennie, miközben a lakók, a személyzet és az utazók együtt próbálták kijuttatni a ballont a kertből.
+Hajnalban hőlégballonnal emelkedtem a magasba. Nem egy gondosan kijelölt leszállóhelyen, hanem egy zöldségeskertben értünk földet. Egy fal állta az utunkat. Néhány utasnak egy magánházon kellett keresztülmennie, miközben a lakók, a személyzet és az utazók együtt próbálták kijuttatni a ballont a kertből.
 
 Néhány percre kevésbé számított a nemzetiség, mint az, hová tegye az ember a kezét.
 
@@ -556,7 +557,7 @@ Ez még azelőtt volt, hogy 2018. november 10-én hivatalosan visszajelentkeztem
 
 A régi világ sem volt feltétlenül kedvesebb. A baráti bemutatásokból is maradhatott ki valaki, elindulhatott a pletyka, és újra kialakulhattak a zárt körök. Egy közös ismerős is tévedhetett. A múlt iránti nosztalgiából nem lehet terméket tervezni.
 
-A bemutatás egyik fontos emberi előnye hiányzott: hogy az ítélet előtt valamennyit már tudjunk egymásról.
+A bemutatás egyik fontos emberi előnye hiányzott: hogy az ítélet előtt már tudjunk valamit egymásról.
 
 ## 21. Helyek, ahol elkezdődhetett valami
 
@@ -614,7 +615,7 @@ Egy ember megtalálása csak a kezdet volt. A találkozáshoz még megfelelő t�
 
 Addigra elég lehetőséget kipróbáltam ahhoz, hogy ne mondhassam: egyszerűen nincs hol ismerkedni.
 
-Az alkalmazások elérhetővé tették az embereket. Az események egy helyre hoztak bennünket. A tánc közös tevékenységet adott, az utazás nyitottságot, a barátok barátai pedig valamennyi előzetes ismeretet. Mindegyik lehetőségnek volt valódi értéke, de mindegyik más ponton veszítette el a folytatást.
+Az alkalmazások elérhetővé tették az embereket. Az események egy helyre hoztak bennünket. A tánc közös tevékenységet adott, az utazás nyitottságot, a barátok barátai pedig némi előzetes ismeretet. Mindegyik lehetőségnek volt valódi értéke, de mindegyik más ponton veszítette el a folytatást.
 
 A közös hiány lassan kirajzolódott a jegyzetfüzet lapjain.
 
@@ -642,7 +643,7 @@ A kölcsönös érdeklődésnek kellett egy valódi alkalom, amelyen találkozá
 
 A MyScoutee alapötlete 2016-ban született.
 
-Nem kész felületként érkezett, és nem is egy gép pillanatnyi felismerése volt. Évek tapasztalataiból állt össze: zsúfolt házakból, kihasználatlan helyekből és egymáshoz nem illő időbeosztásokból, rövid életű utazási ismeretségekből, néma és túlterhelt telefonokból, beszélgetésekre váró szobákból, túl későn kiderülő részletekből, valamint olyan tervekből, amelyek egyetlen ember egyetlen hiányzó napján buktak el.
+Nem kész felületként született, és nem is egy gép pillanatnyi felismerése volt. Évek tapasztalataiból állt össze: zsúfolt házakból, kihasználatlan helyekből és egymáshoz nem illő időbeosztásokból, rövid életű utazási ismeretségekből, néma és túlterhelt telefonokból, beszélgetésekre váró szobákból, túl későn kiderülő részletekből, valamint olyan tervekből, amelyek egyetlen ember egyetlen hiányzó napján buktak el.
 
 Budapestre visszatérve hosszú időszakokat töltöttem zárt ajtók mögött a saját alkotómunkámmal. A 2015. decemberi hazatéréstől a 2018. november 10-i visszajelentkezésig annyira visszahúzódtam, hogy kívülről szinte láthatatlan volt, min dolgozom. Utaztam, társat kerestem, hazatértem, kinyitottam a jegyzetfüzetet, és újra meg újra formát próbáltam adni a problémának. A 2016-os ötlet ahhoz az időszakhoz tartozik, amikor egyszerre próbáltam őrizni a függetlenségemet, lezárni a londoni életemet és másként működő életet teremteni magamnak itthon.
 
@@ -654,7 +655,7 @@ Hanem ez:
 
 > Hogyan jut el két vagy több ismeretlen ember a puszta lehetőségtől a valódi találkozásig úgy, hogy közben mindenki maga dönthet?
 
-Ez nehezebb kérdés két profil párosításánál. Számít az érdeklődés, a kölcsönösség, az idő és az energia, az előzmények, a beszélgetés, a helyszín, a közlekedés, a szükséges eszközök, a tényleges részvétel, a korábbi találkozások és az is, hogyan változik mindez az idővel.
+Ez nehezebb kérdés két profil összepárosításánál. Számít az érdeklődés, a kölcsönösség, az idő és az energia, az előzmények, a beszélgetés, a helyszín, a közlekedés, a szükséges eszközök, a tényleges részvétel, a korábbi találkozások és az is, hogyan változik mindez idővel.
 
 Később a mesterséges intelligencia felgyorsította a megvalósítást, és lehetővé tette, hogy rövidebb idő alatt összetett szoftvermagot építsek. Az alapjául szolgáló emberi felismerést azonban nem a gép találta ki. Nem igazolta a terméket, nem hozott létre közösséget, és nem bizonyította, hogy a rendszer javítja a kapcsolatokat. Attól, hogy valamit gyorsabban építünk meg, még nem válik bizonyítottá.
 
@@ -674,7 +675,7 @@ Egyetlen ember értékelése sem dönt a következő találkozásról. Számíta
 
 Automatikus vagy a körülményekből származó jelzések is számíthatnak, de senkinek sem jár alanyi jogon találkozás. Egyetlen ember erős érdeklődése sem kényszeríthet be mást egy csoportba. Minden meghívásról külön kell dönteni.
 
-Ez azért fontos, mert a szoftver könnyen fontosabbnak mutathatja a saját számítását, mint az embereket, akikről számol. A felületnek nem kell óriási grafikonnal kijelentenie, hogy két ember összeillik. A számítás maradjon a háttérben. Elöl az arcoknak, a döntéseknek és a valódi találkozásoknak van helyük.
+Ez azért fontos, mert a szoftver könnyen fontosabbnak mutathatja a saját számításait azoknál az embereknél, akikről szólnak. A felületnek nem kell óriási grafikonnal kijelentenie, hogy két ember összeillik. A számítás maradjon a háttérben. Az előtérben az arcoknak, a döntéseknek és a valódi találkozásoknak van helyük.
 
 A rendszer gyorsan szeretné szűkíteni a lehetőségeket, nem gyorsan ítélkezni az emberek értékéről. A privát elsőbbség, a kölcsönösség, a távolság és az előzmények alapján elég szűk lehet a kör ahhoz, hogy kis csoportot lehessen javasolni. Ezután mindenki maga dönthet, a végtelen böngészés helyett pedig elindulhat a beszélgetés és a valódi találkozás felé.
 
@@ -770,9 +771,9 @@ Az alapelv azért tér vissza a végén, mert a kezdetektől jelen volt.
 
 ## 31. Ami megépült, és ami még nem bizonyított
 
-A szoftvermag sokféle feladatot lefed. Kezeli a privát elsőbbségeket, a körülményekre és kölcsönösségre épülő csoporttervezést, a meghívásokat, a csevegést, az eseményeket, az időbeosztást, a szabályokat, az erőforrásokat, a jegyeket és bejelentkezést, a visszajelzéseket, az értesítéseket, a moderációt, az adminisztrációt, a márkákat és az üzemeltetői beállításokat.
+A szoftvermag sokféle feladatot lefed. Kezeli a privát elsőbbségeket, a körülményekre és kölcsönösségre épülő csoporttervezést, a meghívásokat, a csevegést, az eseményeket, az időbeosztást, a szabályokat, az erőforrásokat, a jegyeket és a bejelentkezést, a visszajelzéseket, az értesítéseket, a moderációt, az adminisztrációt, a márkákat és az üzemeltetői beállításokat.
 
-Attól, hogy sok mindent tud, a piac még nem igazolta.
+Attól, hogy sok mindent tud, a piac még nem igazolta a terméket.
 
 A kód önmagában nem bizonyítja, hogy az idegenek elfogadják a javaslatot, elmennek az eseményre, jól érzik magukat, visszatérnek vagy kapcsolatokat alakítanak ki. Nem bizonyít nagyobb biztonságot, jobb párosítást, bevételt vagy valódi piaci igényt sem.
 
@@ -802,7 +803,7 @@ Amikor becsukom a konyakszínű jegyzetfüzetet, az útvonalak nem tűnnek el. A
 
 Éveken át azt hittem, a legfőbb probléma a megfelelő ember megtalálása.
 
-Most úgy hiszem, több lehetséges kapcsolat van a világban, mint amennyit észre tudunk venni. Gyakran a hozzájuk vezető út hiányzik: valamennyi közös háttér az ítélet előtt, az érdeklődés kifejezése nyilvános megaláztatás nélkül, szervezés kényszer nélkül, a korábbi találkozások emléke pletyka nélkül, és elegendő helyi emberség ahhoz, hogy a tervből valódi találkozás legyen.
+Most úgy hiszem, több lehetséges kapcsolat van a világban, mint amennyit észre tudunk venni. Gyakran a hozzájuk vezető út hiányzik: némi közös háttér az ítélet előtt, az érdeklődés kifejezése nyilvános megaláztatás nélkül, szervezés kényszer nélkül, a korábbi találkozások emléke pletyka nélkül, és elegendő helyi emberség ahhoz, hogy a tervből valódi találkozás legyen.
 
 Egy rendszer nem gyárthat elfogadást. Csak tisztességesebb esélyt adhat arra, hogy az kölcsönös, tájékozott és valóságos legyen.
 
@@ -918,7 +919,7 @@ Források:
 ## Életkor és digitális társkeresés
 
 - Az életkor szerinti megkülönböztetést a szöveg nem kizárólag magyar jelenségként, és nem is másutt ismeretlenként mutatja be.
-- A MyScoutee nem rejti el az életkort, és nem állítja, hogy megszünteti az életkor szerinti előítéletet. A cél mindössze az, hogy a felhasználó maga dönthessen, és a gyors ítélet előtt valamennyi hátteret is kapjon a másik emberről.
+- A MyScoutee nem rejti el az életkort, és nem állítja, hogy megszünteti az életkor szerinti előítéletet. A cél mindössze az, hogy a felhasználó maga dönthessen, és a gyors ítélet előtt némi hátteret is kapjon a másik emberről.
 
 Források:
 
@@ -933,7 +934,8 @@ A könyv termékleírásai a jelenlegi MyScoutee-forráskódon és bemutatóanya
 
 <!-- edition-colophon -->
 
-Az első illusztrált magyar kiadás, 1.0.0 verzió.
-Megjelent: 2026. augusztus 20. (a magyar államalapítás ünnepe).
+Első illusztrált magyar kiadás.
+Megjelent: 2026. augusztus 20.
+(A magyar államalapítás ünnepe.)
 
 © 2026 MyScoutee. Minden jog fenntartva.
