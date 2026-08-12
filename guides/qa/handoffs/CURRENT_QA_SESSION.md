@@ -35,8 +35,8 @@ checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
 ledger_status: FAIL retained; owning fix hot-deployed, clean replay required
-state: clean repair-replay baseline independently verified; three canonical managed actor windows ready
-required_resume: Nova performs the first Request Join; then run the persisted oracle before any reload or next action
+state: repair-replay first Join PASS with new active basket 6a7c9690f8a7d3829acd7ffa; pending reload not yet run
+required_resume: reload Nova Explore once and verify Continue booking/card retention, then run a read-only oracle proving zero writes and stable identities
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
@@ -107,10 +107,10 @@ otherwise.
 
 ### Next manual action
 
-In Nova's middle Explore window, find `QA EVENT-TICKET-005`, open its action
-menu and select **Request Join**. Complete the Join flow until the event shows
-the pending/continue-booking state, then stop. Do not reload or Cancel yet.
-Keep Casey Notifications open and do not touch Riley. Reply `megvan`.
+Reload Nova's middle Explore window once. Find `QA EVENT-TICKET-005` again and
+confirm the card is still present with **Continue booking** plus its other
+contextual actions. Do not open the checkout popup and do not Cancel yet. Keep
+Casey Notifications open and do not touch Riley. Reply `megvan`.
 
 ## QA working method
 
@@ -258,6 +258,16 @@ verify its startup plus hot-deploy log; do not launch a replacement beside it.
 Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
 process or a standalone build/test compilation. A healthy watcher build and the
 checkpoint replay are the active-session verification path.
+
+### 5.1 Git HEAD backups during the session
+
+The user may periodically commit the current work as a backup, moving the
+working state into Git HEAD. When previously modified files disappear from
+`git status` or `git diff`, do not interpret that alone as a rollback or lost
+work. Re-read the current HEAD/file contents and continue from the persisted QA
+resume pointer; never reconstruct or reapply already-backed-up changes merely
+because the worktree became clean. Treat a backup as incorrect or reverted
+only when the user explicitly says so.
 
 ### 6. Recording and communication
 

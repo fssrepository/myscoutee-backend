@@ -1429,6 +1429,13 @@ Restart evidence on 2026-08-06:
   Nova outside membership, no basket, notification or ticket, and Nova
   event/ticket counters all zero. The three canonical managed actor windows
   were replaced and identity-verified. Begin again at the first Nova Join.
+- Repair replay — first Join (2026-08-12): **PASS**. Nova created one
+  member-origin approval-pending membership and the new physical basket
+  `6a7c9690f8a7d3829acd7ffa` with `status=approval-pending`,
+  `resultState=pending` and `reservationActive=true`. Occupancy is exactly
+  `1 accepted + 1 pending / 8`, Nova pending activity is `1`, Casey has one
+  distinct Pending notification, and no ticket or ticket counter exists. Stop
+  before reload; the pending Explore reload is the next separate read test.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket
