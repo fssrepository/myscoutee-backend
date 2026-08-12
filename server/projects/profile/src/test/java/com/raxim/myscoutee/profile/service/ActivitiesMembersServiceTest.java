@@ -2351,6 +2351,53 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void inviteeResponseRequiringAdminApprovalReportsTheAppliedMutation() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(8);
+        ActivityMember host =
+                member("host-sync", "event-1", "host", "Admin", "accepted");
+        ActivityMember invitation =
+                member("invite-sync", "event-1", "viewer", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        AtomicReference<List<ActivityMember>> stored =
+                new AtomicReference<>(List.of(host, invitation));
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> stored.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            stored.set(stored.get().stream()
+                    .map(member -> saved.getUserId().equals(member.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitiesMembersService.OwnerMembersSnapshot result =
+                service.requestJoin("event-1", viewer, event, false, false, true);
+
+        assertThat(result.mutationApplied()).isTrue();
+        assertThat(result.invitedMemberUserIds()).doesNotContain("viewer");
+        assertThat(result.pendingRequestMemberUserIds()).containsExactly("viewer");
+        assertThat(stored.get())
+                .filteredOn(member -> "viewer".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("member");
+                    assertThat(member.getRequestKind()).isEqualTo("approval");
+                    assertThat(member.getInvitedByUserId()).isNull();
+                });
+    }
+
+    @Test
     void openEventAcceptanceNotifiesVisibleAcceptedAndPendingMembersButNotTheActor() {
         assertThat(acceptInvitationAndCaptureRecipients("Open Event"))
                 .containsExactly("host", "accepted-user", "pending-observer");

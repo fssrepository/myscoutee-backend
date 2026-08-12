@@ -1208,6 +1208,7 @@ public class ActivitiesMembersService {
         if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
+        boolean mutationApplied = false;
         if (accepted && isCapacityFullForJoin(eventRecord, existing, viewerUserId)) {
             accepted = false;
             waitingList = true;
@@ -1239,6 +1240,7 @@ public class ActivitiesMembersService {
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
+            mutationApplied = true;
             if (rejoiningCancelledRequest) {
                 restoreTrashedParticipationOverlays(
                         loadEventDocumentsBySourceId(List.of(normalizedEventId)),
@@ -1287,7 +1289,8 @@ public class ActivitiesMembersService {
                 }
             }
         }
-        return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        return snapshot == null ? null : snapshot.withMutationApplied(mutationApplied);
         }
     }
 

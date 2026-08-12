@@ -1935,6 +1935,44 @@ Restart evidence on 2026-08-06:
   implemented domain contract: Riley accepts first and stays pending/ticketless
   as `requestKind=approval`; Casey then performs the terminal approval that
   creates Riley's ticket. The live boundary was not reset or replayed.
+- Riley invitation-response branches (2026-08-12): initial in-place
+  observation **FAIL**; persisted/read boundary **PASS**; owning repairs plus
+  focused replay **PASS** both in-place and after a fresh document read. On the
+  first response, Riley's Invitations list emptied and the Java write correctly
+  persisted the row as pending `requestKind=approval`, `pendingSource=member`,
+  moved stored counters from Invitations `1` / Pending `0` to Invitations `0` /
+  Pending `1`, resolved the invite notification, created exactly one Casey
+  Admin join-request notification and created no Riley ticket; however the
+  already-open Activities menu still showed no Pending count. A later reload
+  reconstructed Pending `1` and the same `Waiting for approval` row, so the
+  durable transition was intact and the defect was operation-time projection.
+  Diagnosis found that `ActivitiesMembersService.requestJoin` saved the
+  invitation response but returned its post-write snapshot without
+  `mutationApplied=true`; `ActivitiesEventsService` therefore omitted the
+  Invitations-to-Pending counter directions from the response. The Java write
+  service now reports its own applied mutation, with focused member-service and
+  event-response regressions. The shared `ActivityStore` operation-delta path
+  now also advances its per-user counter revision so an older realtime result
+  cannot overwrite a newer operation-owned delta; the focused shared-store
+  regression covers that ordering for both HTTP and frontend-local adapters.
+  Existing backend and frontend hot-deploy owners compiled the changes and the
+  backend restarted successfully; no second Gradle/npm build or test process
+  was started. Guarded `prepare-ticket-invitee-response-retest` restored only
+  the Riley response boundary while preserving Nova's exact ticket and every
+  already-proven step. At `21:40:46+02:00`, the replayed join returned HTTP
+  `200` with `changed=true`, scalar Invitations `-1`, event Pending `+1` and
+  event Invitations `-1`. Before any user reload, Riley observed Pending `1`;
+  read-only DOM then showed `QA EVENT-TICKET-007` and `Waiting for approval`.
+  The independent oracle agreed: exactly one Riley pending-approval row,
+  stored event Pending `1` / Invitations `0`, ticket counters `0/0`, no Riley
+  ticket, one resolved Riley invite notification and one Casey join-request
+  notification. A subsequent full Riley document request plus fresh event
+  filter also reconstructed the same Pending `1` row. Nova's original ticket
+  ID/code/status and counters remain unchanged. The frontend-local runtime
+  branch was not executed because the active deterministic checkpoint is the
+  HTTP adapter; local contract inspection plus the shared regression is
+  evidence of compatibility, not a claimed local runtime PASS. Casey's single
+  terminal approval is now the next live boundary.
 
 ### `EVENT-TICKET-008` — two similar events keep physical tickets isolated
 

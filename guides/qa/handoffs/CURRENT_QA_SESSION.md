@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-007
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-007--ordinary-member-invitation-stays-ticketless-until-admin-approval
 scenario: event-domain
-ledger_status: IN PROGRESS; pre-invite defects repaired/PASS; Nova invite PASS and ticketless; Riley invitation acceptance pending
-state: EVENT-TICKET-006 PASS/CLOSED and reset to not-staged; EVENT-TICKET-007 staged at 2026-08-12T18:18:45.088Z; the pre-invite list and candidate fixture defects are repaired/PASS; Nova sent exactly one ordinary-member invitation through POST /api/activities/events/members/invite at 2026-08-12T20:57:41+02:00; read oracle and actor-specific UI now show Casey/Nova still accepted, Riley as the sole pending requestKind=invite row invitedBy Nova, event counts 2 accepted/1 pending, Riley Invitations counter 1 but Ticket counters 0/0 and no physical Riley ticket, while Nova's sole A ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and counters 1/1 are unchanged; the original QA sequence incorrectly expected Casey preapproval before Riley responded, but backend authorization and existing regressions explicitly forbid Admin acceptance of an invitation until the invitee accepts; the corrected sequence is Riley Accept -> pending requestKind=approval and still ticketless -> Casey Approve -> terminal accepted and ticket creation
-required_resume: in Riley's right window open Invitations, use the QA EVENT-TICKET-007 card's overflow menu, choose Accept, then confirm Accept exactly once; stop immediately for the pending-admin-approval/ticketless oracle and leave Casey/Nova untouched
+ledger_status: IN PROGRESS; pre-invite defects repaired/PASS; Nova invite PASS and ticketless; Riley response repaired/replayed PASS in-place and after reload, still ticketless; Casey terminal approval pending
+state: EVENT-TICKET-006 PASS/CLOSED and reset to not-staged; EVENT-TICKET-007 staged at 2026-08-12T18:18:45.088Z; pre-invite list and candidate fixture defects are repaired/PASS; Nova invite PASS; Riley's first response persisted correctly but its immediate Pending counter projection failed, then the Java mutation response and shared frontend stale-response guard were repaired through the existing dev hot-deploy owners; the focused replay at 2026-08-12T21:40:46+02:00 returned Invitations -1 and event Pending +1 / Invitations -1, and Riley's UI changed without reload to Pending 1 plus Waiting for approval; the independent oracle shows Riley as the sole pending requestKind=approval/pendingSource=member row, events pending 1/invitations 0, Ticket counters 0/0 and no Riley ticket; a subsequent full browser reload/fresh filter read reconstructed the same Pending 1 row; Nova's sole A ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and counters 1/1 remain unchanged; only Casey's terminal approval remains
+required_resume: in Casey's left window open My Events, open QA EVENT-TICKET-007 members through the 2 / 8 control, open Riley Outside's member action menu, choose Approve, then confirm Approve exactly once; stop immediately for the terminal accepted/ticket-creation oracle and leave Nova/Riley untouched
 event: QA EVENT-TICKET-007
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Riley Outside
+next_actor: Casey Bridge
 stop_phrase: megvan
 ```
 
@@ -107,9 +107,10 @@ otherwise.
 
 ### Next manual action
 
-In Riley's right window open **Invitations**. On the `QA EVENT-TICKET-007`
-card, open its overflow menu, choose **Accept**, then confirm **Accept** exactly
-once. Stop immediately and reply `megvan`; leave Casey and Nova untouched.
+In Casey's left window open **My Events**. On `QA EVENT-TICKET-007`, open
+members through the **2 / 8** control. Open Riley Outside's member action menu,
+choose **Approve**, then confirm **Approve** exactly once. Stop immediately and
+reply `megvan`; leave Nova and Riley untouched.
 
 ## QA working method
 
@@ -167,6 +168,14 @@ the user.
   an earlier shared transaction invariant. If a focused path needs prepared
   state, make it a versioned sub-checkpoint rather than asking the user to
   reproduce unrelated manual steps.
+- A versioned server-side replay rearm does not by itself require a full page
+  reload. First let the already-open surface reach the prepared pre-action
+  boundary through its established read behavior; when that surface loads only
+  on demand, close/reopen just that surface. Use a full document reload only
+  when the pre-action baseline cannot otherwise be reached, and record it as
+  setup. After the producer action, never reload before capturing the in-place
+  result; otherwise the immediate and reload/read branches become
+  indistinguishable.
 - A human-observed time-window checkpoint must stage into a stable, non-expiring
   precondition. Browser preparation, oracle reads and the user round trip must
   never consume the tested interval. Start the interval only through an
@@ -233,6 +242,40 @@ the user.
 - `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
   read-only managed-session tool for resolving an ambiguous current surface;
   it must never be used to perform the user's manual producer action.
+
+### 1.3 Context-dependent frontend-local parity
+
+- When a defect is owned by shared frontend code after the HTTP/local service
+  adapter boundary (for example a shared store, converter, component or
+  in-place mutation projection), treat both adapters as potentially affected.
+  Inspect both adapter contracts before closing the repair.
+- Execute the equivalent frontend-local transition when that runtime supports
+  the same business route, its deterministic fixture can reach the same
+  boundary, and doing so does not contaminate the active HTTP checkpoint. Keep
+  the HTTP and local observations separately named inside the same testcase;
+  adapter parity does not require a duplicate matrix row.
+- Static inspection only proves contract compatibility, not runtime PASS. If a
+  deterministic local transition is unavailable or would require unrelated
+  setup, add the narrowest shared/local regression coverage available and
+  record local runtime as **NOT EXECUTED**, with the exact reason. Never infer
+  local PASS from an HTTP replay, or HTTP PASS from a local replay.
+- For an adapter-specific defect, repair its owning adapter and inspect the
+  parallel adapter for the same invariant. Do not broaden the code change when
+  the parallel contract is already correct, but run its focused check when the
+  affected business boundary is readily reproducible.
+- In an HTTP-backed flow, the Java backend owns the durable business
+  transition. The operation response may update the UI immediately, but a
+  reload must reconstruct the same state from the Java read path. Verify the
+  persisted status plus a fresh query/reload independently; if either is
+  wrong, repair the Java write/read owner rather than preserving the result
+  only in frontend state.
+- In frontend-local mode, the equivalent durable owner is the local
+  repository/IndexedDB path. Apply the same immediate-versus-reload contract
+  there when the local fixture can execute the transition deterministically.
+- Record operation-time in-place state, an immediate fresh read and a later
+  reload/read as independent observations when the contract needs them. Later
+  convergence does not erase an earlier in-place FAIL; an in-place PASS does
+  not prove reload persistence.
 
 ### 2. Replayable fixtures, never ad-hoc database patches
 

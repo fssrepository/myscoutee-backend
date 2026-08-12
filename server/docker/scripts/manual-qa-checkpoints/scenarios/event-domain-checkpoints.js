@@ -1780,6 +1780,7 @@
       acceptedMemberUserIds: event.acceptedMemberUserIds || [],
       pendingMemberUserIds: event.pendingMemberUserIds || [],
       invitedMemberUserIds: event.invitedMemberUserIds || [],
+      pendingRequestMemberUserIds: event.pendingRequestMemberUserIds || [],
       mode: Q.text(event.mode),
       autoInviter: event.autoInviter === true,
       frequency: Q.text(event.frequency),
@@ -2561,6 +2562,215 @@
       candidate: Q.user(thirdUserId),
       baseline: oracle(refreshedState),
       next: "Close and reopen only Nova's Invite members popup; Riley Outside must appear as the sole selectable candidate."
+    });
+  }
+
+  function prepareTicketInviteeResponseRetest() {
+    if (checkpointId !== "EVENT-TICKET-007") {
+      Q.fail("prepare-ticket-invitee-response-retest is restricted to EVENT-TICKET-007.");
+    }
+    const state = requireMatchingState();
+    const eventId = activeEventSourceId() || EVENT_ID;
+    const eventDocuments = Q.collection("events").find({ sourceId: eventId }).toArray();
+    if (eventDocuments.length !== 2 || eventDocuments.some(event =>
+      Q.text(event.status) !== "A"
+      || Number(event.acceptedMembers || 0) !== 2
+      || Number(event.pendingMembers || 0) !== 1
+      || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId])
+      || !sameIds(event.pendingMemberUserIds, [thirdUserId])
+      || !sameIds(event.invitedMemberUserIds, [])
+      || !sameIds(event.pendingRequestMemberUserIds, [thirdUserId]))) {
+      Q.fail("EVENT-TICKET-007 is not at the exact post-invitee-response event boundary; preserve the current evidence and do not re-arm it.");
+    }
+
+    const controlledMembers = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId,
+      userId: { $in: [hostUserId, participantUserId, thirdUserId] }
+    }).toArray();
+    const memberByUserId = new Map(controlledMembers.map(member => [Q.text(member.userId), member]));
+    const hostMember = memberByUserId.get(hostUserId);
+    const participantMember = memberByUserId.get(participantUserId);
+    const inviteeMember = memberByUserId.get(thirdUserId);
+    if (controlledMembers.length !== 3
+        || Q.text(hostMember && hostMember.status) !== "accepted"
+        || Q.text(hostMember && hostMember.role) !== "Admin"
+        || Q.text(participantMember && participantMember.status) !== "accepted"
+        || Q.text(participantMember && participantMember.role) !== "Member"
+        || Q.text(inviteeMember && inviteeMember.status) !== "pending"
+        || Q.text(inviteeMember && inviteeMember.role) !== "Member"
+        || Q.text(inviteeMember && inviteeMember.requestKind) !== "approval"
+        || Q.text(inviteeMember && inviteeMember.pendingSource) !== "member"
+        || Q.text(inviteeMember && inviteeMember.invitedByUserId)) {
+      Q.fail("EVENT-TICKET-007 membership rows are not at the exact Riley pending-approval boundary; preserve the evidence and do not re-arm it.");
+    }
+
+    const tickets = Q.collection("eventTickets").find({ eventId }).toArray();
+    if (tickets.length !== 1
+        || Q.text(tickets[0].holderUserId) !== participantUserId
+        || Q.text(tickets[0].status) !== "A"
+        || Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: eventId }) !== 0
+        || Q.collection("payments").countDocuments({ sourceId: eventId }) !== 0) {
+      Q.fail("EVENT-TICKET-007 ticket/payment invariants changed after Riley's response; preserve the evidence and use a full reset if required.");
+    }
+    const eventChatCount = Q.collection("chats").countDocuments({
+      $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }]
+    });
+    const eventChatMessageCount = Q.collection("chatMessages").countDocuments({ chatId: eventId });
+    if (eventChatCount !== 0 || eventChatMessageCount !== 0) {
+      Q.fail("Riley's non-terminal response unexpectedly produced event chat state; preserve that evidence and do not re-arm it.");
+    }
+
+    const inviteeUser = Q.collection("users").findOne({
+      $or: [{ _id: thirdUserId }, { userId: thirdUserId }]
+    });
+    if (!inviteeUser
+        || nestedNumber(inviteeUser, "activities.events") !== 0
+        || nestedNumber(inviteeUser, "activities.invitations") !== 0
+        || nestedNumber(inviteeUser, "activities.tickets") !== 0
+        || nestedNumber(inviteeUser, "activities.asset.tickets") !== 0
+        || nestedNumber(inviteeUser, "activities.event.all") !== 1
+        || nestedNumber(inviteeUser, "activities.event.active") !== 0
+        || nestedNumber(inviteeUser, "activities.event.pending") !== 1
+        || nestedNumber(inviteeUser, "activities.event.invitations") !== 0) {
+      Q.fail("Riley's stored activity counters are not at the exact post-response ticketless boundary; preserve the evidence and do not re-arm it.");
+    }
+
+    const invitationNotificationSelector = {
+      recipientUserId: thirdUserId,
+      kind: "event-invite",
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    };
+    const invitationNotifications = Q.collection("userNotifications")
+      .find(invitationNotificationSelector)
+      .toArray();
+    if (invitationNotifications.length !== 1 || !Q.text(invitationNotifications[0].readAtIso)) {
+      Q.fail("Riley's single event-invite notification is not in the resolved state required for a focused response replay.");
+    }
+
+    const joinRequestOutboxSelector = {
+      notificationType: "event-admin-join-request",
+      "payload.memberUserId": thirdUserId,
+      $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+    };
+    const joinRequestNotificationSelector = {
+      recipientUserId: hostUserId,
+      kind: "event-admin-join-request",
+      "payload.memberUserId": thirdUserId,
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    };
+    const joinRequestOutbox = Q.collection("notificationOutbox")
+      .find(joinRequestOutboxSelector)
+      .toArray();
+    const joinRequestNotifications = Q.collection("userNotifications")
+      .find(joinRequestNotificationSelector)
+      .toArray();
+    if (joinRequestOutbox.length !== 1 || joinRequestNotifications.length !== 1) {
+      Q.fail("Riley's response-owned Admin join-request artifacts are not exact-once; preserve the evidence and do not re-arm it.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const eventUpdate = Q.collection("events").updateMany({
+      _id: { $in: eventDocuments.map(event => event._id) }
+    }, {
+      $set: {
+        invitedMemberUserIds: [thirdUserId],
+        pendingRequestMemberUserIds: [],
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (eventUpdate.matchedCount !== eventDocuments.length) {
+      Q.fail("the EVENT-TICKET-007 event projection changed while Riley's response replay was being prepared.");
+    }
+    const memberUpdate = Q.collection("activityMembers").updateOne({
+      _id: inviteeMember._id,
+      status: "pending",
+      requestKind: "approval",
+      pendingSource: "member"
+    }, {
+      $set: {
+        status: "pending",
+        role: "Member",
+        pendingSource: "admin",
+        requestKind: "invite",
+        invitedByUserId: participantUserId,
+        actionAtIso: preparedAtIso,
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (memberUpdate.matchedCount !== 1) {
+      Q.fail("Riley's membership changed while the response replay was being prepared.");
+    }
+    const activityUpdate = Q.collection("users").updateOne({ _id: inviteeUser._id }, {
+      $set: {
+        "activities.invitations": 1,
+        "activities.event.pending": 0,
+        "activities.event.invitations": 1
+      }
+    });
+    if (activityUpdate.matchedCount !== 1) {
+      Q.fail("Riley's user activity projection disappeared while the response replay was being prepared.");
+    }
+    const inviteReset = Q.collection("userNotifications").updateOne(
+      invitationNotificationSelector,
+      { $set: { readAtIso: null, updatedDate: preparedAtIso } }
+    );
+    if (inviteReset.matchedCount !== 1) {
+      Q.fail("Riley's invitation notification changed while the response replay was being prepared.");
+    }
+    const outboxRemoval = Q.collection("notificationOutbox").deleteMany(joinRequestOutboxSelector);
+    const notificationRemoval = Q.collection("userNotifications").deleteMany(joinRequestNotificationSelector);
+    if (outboxRemoval.deletedCount !== 1 || notificationRemoval.deletedCount !== 1) {
+      Q.fail("Riley's response-owned join-request artifacts changed while the response replay was being prepared.");
+    }
+    for (const userId of [hostUserId, participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      Q.collection("users").updateOne({
+        $or: [{ _id: userId }, { userId }]
+      }, {
+        $set: { "activities.notifications": unreadNotifications }
+      });
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { "context.actualEventSourceId": eventId },
+      $push: {
+        ticketInviteeResponseRetests: {
+          preparedAtIso,
+          eventId,
+          inviteeUserId: thirdUserId,
+          inviterUserId: participantUserId,
+          eventAdminUserId: hostUserId,
+          retainedTicketId: Q.text(tickets[0]._id),
+          retainedTicketCode: Q.text(tickets[0].code),
+          removedJoinRequestOutboxId: Q.text(joinRequestOutbox[0]._id),
+          removedJoinRequestNotificationId: Q.text(joinRequestNotifications[0]._id)
+        }
+      }
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "ticket-invitee-response-retest-ready",
+      preparedAtIso,
+      eventId,
+      invitee: Q.user(thirdUserId),
+      inviter: Q.user(participantUserId),
+      eventAdmin: Q.user(hostUserId),
+      retainedTicket: {
+        id: Q.text(tickets[0]._id),
+        code: Q.text(tickets[0].code),
+        holderUserId: Q.text(tickets[0].holderUserId),
+        status: Q.text(tickets[0].status)
+      },
+      baseline: oracle(refreshedState),
+      next: "Let Riley's existing Activities surface reach the prepared Invitations 1 baseline through its normal read, or close/reopen only Invitations if it loads on demand; use a full document reload only if that baseline cannot otherwise be reached. Accept QA EVENT-TICKET-007 exactly once, then without reloading immediately verify Invitations removal, Pending counter 1 and the same Pending row. Leave Casey and Nova untouched."
     });
   }
 
@@ -3807,6 +4017,7 @@
     case "arm-ticket-expiry": armTicketExpiry(); break;
     case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
     case "prepare-ticket-invite-candidate": prepareTicketInviteCandidate(); break;
+    case "prepare-ticket-invitee-response-retest": prepareTicketInviteeResponseRetest(); break;
     case "add-feedback-participant": addFeedbackParticipant(); break;
     case "next": next(); break;
     case "verify-ticket-poll-resume": verifyTicketPollResume(); break;

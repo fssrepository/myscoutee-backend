@@ -891,6 +891,70 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void invitationResponseReturnsInvitationToPendingCounterDirections() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent event = event("event-1", "host", 0d);
+        ActivitiesMembersService.OwnerMembersSnapshot before =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host"),
+                        List.of("viewer"),
+                        List.of("viewer"),
+                        List.of(),
+                        Set.of("host"),
+                        8);
+        ActivitiesMembersService.OwnerMembersSnapshot after =
+                new ActivitiesMembersService.OwnerMembersSnapshot(
+                        "event",
+                        "event-1",
+                        List.of(),
+                        List.of("host"),
+                        List.of("viewer"),
+                        List.of(),
+                        List.of("viewer"),
+                        Set.of("host"),
+                        8,
+                        true);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(before);
+        when(activitiesMembersService.hasPendingInvitation("event-1", "viewer")).thenReturn(true);
+        when(activitiesMembersService.pendingInvitationRequiresAdminApproval("event-1", "viewer"))
+                .thenReturn(true);
+        when(activitiesMembersService.requestJoin(
+                "event-1",
+                viewer,
+                event,
+                false,
+                false,
+                true)).thenReturn(after);
+
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                true,
+                null));
+
+        assertThat(result).isNotNull();
+        assertThat(result.membershipStatus()).isEqualTo("pending");
+        assertThat(result.pendingReason()).isEqualTo("approval");
+        assertThat(result.counterDelta()).isNotNull();
+        assertThat(result.counterDelta().invitations()).isEqualTo(-1);
+        assertThat(result.counterDelta().event().pending()).isEqualTo(1);
+        assertThat(result.counterDelta().event().invitations()).isEqualTo(-1);
+    }
+
+    @Test
     void stageActionStopsBeforeLoadWhenPolicyDenies() {
         Users host = new Users();
         host.setId("host");
