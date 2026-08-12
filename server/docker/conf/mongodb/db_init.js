@@ -319,7 +319,11 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   );
   portalDb.eventCheckoutBasketItems.createIndex(
     { userId: 1, sourceId: 1, itemId: 1 },
-    { name: 'checkout_basket_user_source_item', unique: true, sparse: true }
+    {
+      name: 'checkout_basket_active_user_source_item',
+      unique: true,
+      partialFilterExpression: { reservationActive: true }
+    }
   );
   portalDb.eventCheckoutBasketItems.createIndex(
     { expiresAtIso: 1, status: 1 },

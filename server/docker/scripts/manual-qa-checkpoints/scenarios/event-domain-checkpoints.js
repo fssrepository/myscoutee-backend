@@ -1905,6 +1905,7 @@
         eventId: Q.text(item.sourceId),
         status: Q.text(item.status),
         resultState: Q.text(item.resultState),
+        reservationActive: item.reservationActive === true,
         checkoutSessionId: Q.text(item.checkoutSessionId),
         createdAtIso: Q.text(item.createdAtIso),
         updatedAtIso: Q.text(item.updatedAtIso)

@@ -1407,6 +1407,28 @@ Restart evidence on 2026-08-06:
   Stop before the second Cancel or approval. Diagnose/fix the owning re-Join
   basket persistence boundary, then replay the complete checkpoint from a
   clean staged baseline; do not accept this partially mutated attempt.
+- Owning-contract diagnosis (2026-08-12): the backend `saveBasket` stale-marked
+  the active row, then upserted by `(userId, sourceId, itemId)`, while the same
+  tuple also had a globally unique index. This necessarily reactivated the
+  cancelled audit row. The original local adapter establishes the intended
+  contract: every `saveBasket` turns prior display items into `deleted` audit
+  versions and appends fresh incoming records; only `updateBasketState` mutates
+  the current active record. The server fix therefore makes every save create
+  a fresh physical `_id`, retains state changes on the active record, migrates
+  existing rows to an explicit `reservationActive` lifecycle field and replaces
+  the global tuple uniqueness with a partial unique index applying only while
+  `reservationActive=true`. The checkpoint oracle now exposes that field.
+  Existing hot-deploy compilation and restart passed, and the live database
+  exposes only the new partial unique index. A source regression records the
+  every-save-new-identity and Cancel-closes-active-slot contracts; per the
+  active-session resource rule no separate build is used. Clean checkpoint
+  replay remains required before the defect can be marked fixed.
+- Repair-replay baseline (2026-08-12): the versioned reset restored the failed
+  transaction, a fresh image-qualified stage completed, and a second read-only
+  oracle independently proved the Casey-only baseline: one accepted Admin,
+  Nova outside membership, no basket, notification or ticket, and Nova
+  event/ticket counters all zero. The three canonical managed actor windows
+  were replaced and identity-verified. Begin again at the first Nova Join.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

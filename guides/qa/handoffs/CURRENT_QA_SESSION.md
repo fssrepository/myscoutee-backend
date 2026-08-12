@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-ledger_status: FAIL; clean retest required after re-Join basket-identity fix
-state: first re-Join reused the cancelled basket ID; branch stopped before second Cancel
-required_resume: diagnose and fix the owning re-Join basket persistence boundary; then reset/stage and replay EVENT-TICKET-005 from its clean baseline
+ledger_status: FAIL retained; owning fix hot-deployed, clean replay required
+state: clean repair-replay baseline independently verified; three canonical managed actor windows ready
+required_resume: Nova performs the first Request Join; then run the persisted oracle before any reload or next action
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: codex
+next_actor: Nova Social
 stop_phrase: megvan
 ```
 
@@ -107,10 +107,10 @@ otherwise.
 
 ### Next manual action
 
-No further manual action is allowed on this partially mutated attempt. Retain
-the three managed browser windows as evidence, but do not reload, Cancel,
-approve or continue. The detailed failure and clean-replay requirement are in
-the linked test definition and matrix.
+In Nova's middle Explore window, find `QA EVENT-TICKET-005`, open its action
+menu and select **Request Join**. Complete the Join flow until the event shows
+the pending/continue-booking state, then stop. Do not reload or Cancel yet.
+Keep Casey Notifications open and do not touch Riley. Reply `megvan`.
 
 ## QA working method
 
@@ -122,11 +122,15 @@ delayed projection, unchanged controls and independent persisted oracle. A
 checkpoint row may contain a short causally continuous sequence of these
 boundaries under the granularity rules below. UI evidence alone is not a PASS.
 
-The user performs the named manual UI action. Codex owns fixture staging,
-isolated browser setup, server/database oracle checks, log inspection and
-status documentation. Codex gives one short instruction at a time, waits for
-the user's stated stop phrase, checks the oracle, reports PASS/FAIL, and then
-states the next exact manual action.
+This campaign is a developer-AI collaborative repair session, not a two-person
+QA handoff. Codex owns the complete machine-side loop: fixture staging,
+isolated browser setup, server/database oracle checks, diagnosis, correctly
+scoped implementation, hot-deploy/log verification, replay and status
+documentation. The user performs only the genuinely manual UI observation or
+producer action named by the checkpoint. Codex gives one short manual
+instruction at a time, waits for the stated stop phrase, checks the oracle and
+continues the repair/replay loop without handing the failure decision back to
+the user.
 
 ### 1.1 Checkpoint granularity and new rows
 
@@ -180,6 +184,11 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   reset event-domain EVENT-TICKET-005
 ```
 
+The checkpoint is the controlled precondition and replay is the post-fix proof.
+After a defect fix, restore the canonical checkpoint and replay the affected
+causal chain; do not preserve or manually massage the failed transaction into
+a substitute baseline.
+
 Use `restage` only for a checkpoint class supported by the harness; it is
 currently restricted to feedback checkpoints. For a stale ticket checkpoint,
 follow the guarded `discard-stale` plus image-URL-qualified `stage` recipe in
@@ -221,10 +230,10 @@ paths and names out of Git.
 
 ### 5. Logs and running stack
 
-The development stack and hot-deploy/watchers are already owned by existing
-processes. Do not start a second server, Angular watcher, Gradle/npm build,
-MongoDB or Compose stack. After a source change, let the owning watcher build
-and inspect its existing logs:
+The running development stack is the only build path for an active QA repair.
+Do not start a separate Gradle/npm build, test command that triggers its own
+compilation, server, Angular watcher, MongoDB or Compose stack. After a source
+change, let the owning hot-deploy watcher build and inspect its existing logs:
 
 ```bash
 docker logs --since 5m myscoutee
@@ -237,8 +246,18 @@ docker logs --since 5m nginx
 - `nginx`: HTTP request timing/routing when a UI action is in doubt.
 - Mongo truth comes from the checkpoint `status` oracle, not from log guesses.
 
-If a watcher is stuck, identify its owning process and restart only that one
-owner. Never work around a cache lock with another cache or parallel build.
+Before triggering a source rebuild, and before deciding to restart an owner,
+inspect current CPU, available memory and swap pressure (for example `free -h`,
+`ps -eo ... --sort=-pcpu` and `docker stats --no-stream`). Use that evidence to
+avoid overlapping expensive work and to choose whether to wait or restart.
+Record the relevant resource decision when it changes execution.
+
+If hot-deploy does not compile, is stuck or holds a stale cache lock, identify
+its exact owning process. Restart only the same server/container owner and then
+verify its startup plus hot-deploy log; do not launch a replacement beside it.
+Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
+process or a standalone build/test compilation. A healthy watcher build and the
+checkpoint replay are the active-session verification path.
 
 ### 6. Recording and communication
 
@@ -263,8 +282,18 @@ records second, compact resume pointer last. It prevents re-deriving completed
 methodology or mistaking a substep PASS for a closed checkpoint.
 
 On FAIL, stop that branch after collecting the smallest decisive evidence.
-Diagnose/fix separately, then restage the same checkpoint from its fixture and
-replay it. Never accept a partially mutated baseline as the next test's setup.
+During an active QA session, FAIL is not a user decision point: Codex
+immediately diagnoses and fixes the owning domain contract at the correct
+scope, uses the existing hot-deploy owner and its logs for build verification,
+then resets/stages the replayable fixture and replays the same checkpoint. A
+"minimum/local fix" is not a goal when it would preserve a broken invariant or
+create a special-case path. Before changing persistence semantics, inspect the
+parallel adapter and relevant git history so `save`, state transition, audit
+and read-model meanings are preserved consistently. Ask the user only when new
+authority or a materially different product decision is actually required.
+Never continue from or accept a partially mutated baseline as the next test's
+setup; the checkpoint and replay harness exist specifically to make this
+repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
