@@ -417,11 +417,12 @@ A kirendelt védelem közben folyamatosan változott. Az ügysegéd szólt, hogy
 szakvizsgájára készül, ezért egy ideig nem lesz elérhető. Az irodát hiába
 hívtam: fel sem vették, és közel három hónapig senki nem állt szóba velem.
 Február 19-én a kirendelt ügyvéd az iroda túlterheltségére hivatkozva kérte a
-felmentését. A rendőrség ezt elfogadta. Csak azután hívott vissza, hogy már nem
-ő volt a védőm. A rövid beszélgetésben azt mondta, hagyjam dolgozni a
-rendőröket, és inkább mondjam azt, hogy nem én tettem. Aztán véget ért a hívás.
-Február 19. után hónapokig nem tudtam, kirendeltek-e másik védőt — vagy van-e
-egyáltalán védőm. Írásban panaszt tettem. Senki nem reagált.
+felmentését. A rendőrség ezt elfogadta, és tőlük tudtam meg, hogy már nem ő a
+védőm. Csak ezután hívott vissza. A rövid beszélgetésben azt
+mondta, hagyjam dolgozni a rendőröket, és inkább mondjam azt, hogy nem én tettem.
+Aztán véget ért a hívás. Február 19. után hónapokig nem tudtam, kirendeltek-e
+másik védőt — vagy van-e egyáltalán védőm. Írásban panaszt tettem. Senki nem
+reagált.
 
 2024. június 11-én behívtak a rendőrségre. Megjelent mellettem egy ügyvéd, akivel
 azelőtt soha nem találkoztam. Csak ekkor tudtam meg, hogy papíron május 30. óta

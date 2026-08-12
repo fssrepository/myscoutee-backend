@@ -951,12 +951,13 @@ The formal defence kept changing shape. The legal assistant warned that she
 would be unavailable while preparing for her professional examination. Calls
 to the office went unanswered, and for almost three months nobody there spoke
 with me. On 19 February, the appointed lawyer asked to be released because the
-office was overloaded. The police accepted the request. Only after he had
-ceased to be my lawyer did he return one of my calls. He told me to leave the
-police to their work and suggested that I say I had not done it. Then the line
-closed. For the months after 19 February, I did not know whether another
-defender had been appointed—or whether I had one at all. I complained in
-writing. Nobody replied.
+office was overloaded. The police accepted the request, and it was from the
+police that I learned he was no longer my lawyer. Only then did he return one
+of my calls. He told me to leave the police to their work and suggested that I
+say I had not done it. Then the line closed.
+For the months after 19 February, I did not know whether another defender had
+been appointed—or whether I had one at all. I complained in writing. Nobody
+replied.
 
 On 11 June 2024, I was summoned back to the police station. A lawyer I had
 never met appeared beside me. Only then did I learn that, on paper, he had been
