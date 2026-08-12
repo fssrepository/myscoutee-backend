@@ -3,8 +3,9 @@
 Updated: 2026-08-12
 
 This is the context-saving entry point for continuing the manual QA campaign.
-Read this file first. Do not reconstruct the campaign from chat history and do
-not load the complete QA pack. Open only the linked active checkpoint section.
+It stores one minimal live resume pointer plus reusable execution lessons. It
+is not the transactional evidence ledger or a backup of the QA pack. Read this
+file first, then open only the linked active checkpoint section.
 
 ## Authoritative files
 
@@ -12,6 +13,8 @@ not load the complete QA pack. Open only the linked active checkpoint section.
   [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
 - Overall status ledger and counts:
   [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+- Reviewable ledger source; regenerate the XLSX after every status update:
+  [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
 - Replayable Mongo fixture/checkpoint implementation:
   [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
 - Harness entry point for the already-running MongoDB container:
@@ -21,8 +24,9 @@ not load the complete QA pack. Open only the linked active checkpoint section.
 - Isolated Chrome launcher:
   [`open-checkpoint-browser-sessions.sh`](../tools/open-checkpoint-browser-sessions.sh)
 
-The detailed QA pack and fixture implementation are authoritative. This handoff
-contains only the active resume point and the working method.
+The detailed QA pack owns checkpoint evidence. The CSV/XLSX matrix owns status,
+dates, next oracle and aggregate counts. This handoff owns only the active
+resume pointer and reusable working method.
 
 ## Active resume point
 
@@ -30,14 +34,10 @@ contains only the active resume point and the working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-state: first Nova Join persisted oracle PASS at 2026-08-12T15:04:20Z; before the required Explore reload
-required_resume: reload Nova's Event Explore exactly once and inspect the retained card; do not cancel yet
+ledger_status: IN PROGRESS; first Join, pending reload and first Cancel recorded in the QA pack and matrix
+state: before the required post-Cancel Explore reload
+required_resume: reload Nova's Event Explore exactly once and confirm the same card still offers fresh Join/Book; do not re-Join yet
 event: QA EVENT-TICKET-005
-event_rules: Public, Published, Ticketing On, admin approval required
-occupancy: Casey accepted plus Nova pending, 1 accepted + 1 pending / 8
-nova: one member-origin approval-pending membership; one approval-pending basket; no ticket; stored ticket counters 0/0
-casey: exactly one new Nova event-admin notification with contextual Pending
-riley: isolated unchanged control; no event ticket
 actors:
   left: Casey Bridge
   middle: Nova Social
@@ -46,22 +46,28 @@ next_actor: user
 stop_phrase: megvan
 ```
 
-### Mandatory resume gate
+### Efficient resume gate
 
-Never treat the expected fixture description above as proof of live state. If
-the resume block does not record a successful oracle for the current baseline,
-Codex must run this before giving the user a manual instruction:
+Do not repeat baseline methodology when the resume pointer and persisted oracle
+already identify an intact transaction boundary. Continue with its
+`required_resume`. If continuity is uncertain, run one read-only `status` first
+and choose exactly one route from this table:
+
+| `status` result | Action |
+| --- | --- |
+| Matching expected live boundary | Continue; do not stage, reset or relaunch browsers. |
+| `phase=not-staged` | Stage once with every checkpoint-required environment value, then verify with `status`. |
+| Matching active checkpoint but `events=[]` | Use guarded `discard-stale`, then normal `stage`, then `status`. |
+| Partial or unexpected domain state | Stop and report the exact mismatch; do not repair it through UI or ad-hoc Mongo writes. |
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status event-domain EVENT-TICKET-005
 ```
 
-For ticket checkpoints, do **not** use `restage`: the current harness restricts
-that command to feedback checkpoints. If `status` shows an active checkpoint
-record but `events=[]`, recover through the harness's stale-state guard. It
-refuses the discard if the event still exists or retained fixture documents
-would make the operation unsafe:
+Known ticket-fixture lesson: do **not** use `restage`; the current harness
+restricts it to feedback checkpoints. Ticket `stage` also requires the retained
+managed QA image URL. The already-proven stale recovery is:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
@@ -75,19 +81,15 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   status event-domain EVENT-TICKET-005
 ```
 
-If `status` already reports `phase=not-staged`, omit `discard-stale` and run the
-same image-URL-qualified `stage` directly. Ticket staging requires the retained
-managed QA image URL above; an empty `MANUAL_QA_EVENT_IMAGE_URL` fails after
-snapshot creation. If that happens, run the harness-requested `reset` before
-retrying `stage` with the URL. Never repair any of these states with an ad-hoc
-Mongo write.
+If `status` reports `phase=not-staged`, omit `discard-stale`. An empty
+`MANUAL_QA_EVENT_IMAGE_URL` fails after snapshot creation; run the
+harness-requested `reset` before retrying with the URL. `discard-stale` itself
+refuses to run when the event still exists or original fixture documents would
+make the discard unsafe.
 
-Do not launch browsers until the second `status` proves the expected clean
-baseline: one Public and Published `QA EVENT-TICKET-005`, Ticketing On, admin
-approval required, Casey alone accepted at `1/8`, and no Nova membership,
-basket or ticket. Nova's two stored ticket counters must be `0`; Riley must be
-unchanged and ticketless. If any predicate differs, stop and report the exact
-oracle mismatch instead of asking the user to compensate in the UI.
+On a new baseline, do not launch browsers until the second `status` proves the
+linked checkpoint's complete expected baseline. If any predicate differs, stop
+and report it instead of asking the user to compensate in the UI.
 
 After that proof, open or replace exactly these three managed windows with:
 
@@ -105,41 +107,28 @@ otherwise.
 
 ### Next manual action
 
-The first Nova Join boundary is persisted-oracle PASS. Tell the user exactly
-this next, without adding another test branch:
+Tell the user exactly this next, without adding another test branch:
 
 1. Nova: reload Event Explore exactly once.
-2. Find `QA EVENT-TICKET-005` again; its card must remain visible.
-3. Open the card's actions and require the orange warning-tone
-   **Continue booking** action together with the other contextual actions.
-4. Do not choose Continue booking or Cancel request yet.
-5. Leave Casey Notifications open and Riley untouched.
-6. Reply `megvan`.
+2. Find `QA EVENT-TICKET-005` again; the card must remain visible with the
+   fresh **Join/Book** action, not **Continue booking**.
+3. Do not Join again yet.
+4. Leave Casey Notifications open and Riley untouched.
+5. Reply `megvan`.
 
-After `megvan`, Codex runs the checkpoint `status` oracle before asking for any
-other click. Expected persisted state:
-
-- exactly one Nova pending membership;
-- exactly one physical approval-pending checkout basket;
-- no ticket for Nova;
-- Nova `users.activities.tickets=0` and
-  `users.activities.asset.tickets=0`;
-- still exactly one Casey admin notification from Nova with contextual
-  `Pending` and no read-created duplicate;
-- Riley unchanged and ticketless.
-
-Continue the remaining `EVENT-TICKET-005` steps only from its linked test
-definition. Do not skip directly to approval and do not combine the later
-invitation, expiry, offline or visibility branches with this checkpoint.
+After `megvan`, run the checkpoint `status` oracle before asking for another
+click. Compare it with the linked test definition, record the new evidence in
+that definition and the matrix, then update only the YAML resume pointer above.
 
 ## QA working method
 
 ### 1. One checkpoint, one transition
 
-Each checkpoint has one controlled producer action and explicitly records:
-before state, manual action, immediate state, worker expectation, delayed
-projection, unchanged controls and independent persisted oracle. UI evidence
-alone is not a PASS.
+Each transactional boundary has one controlled producer action and explicitly
+records: before state, manual action, immediate state, worker expectation,
+delayed projection, unchanged controls and independent persisted oracle. A
+checkpoint row may contain a short causally continuous sequence of these
+boundaries under the granularity rules below. UI evidence alone is not a PASS.
 
 The user performs the named manual UI action. Codex owns fixture staging,
 isolated browser setup, server/database oracle checks, log inspection and
@@ -147,13 +136,32 @@ status documentation. Codex gives one short instruction at a time, waits for
 the user's stated stop phrase, checks the oracle, reports PASS/FAIL, and then
 states the next exact manual action.
 
+### 1.1 Checkpoint granularity and new rows
+
+- One matrix row must remain a bounded, human-verifiable contract, not a
+  half-day collection of loosely related checks.
+- One producer action or a short causally continuous sequence may stay in one
+  row when it shares a baseline and finishes at one decisive oracle.
+- A longer lifecycle becomes ordered checkpoint rows. They may carry the same
+  staged state forward, but every row has its own stop point, persisted oracle
+  and PASS/FAIL decision.
+- When the user requests a newly discovered behavior as a separate case, give
+  it a new stable checkpoint ID, a QA-pack definition and a new matrix CSV row;
+  add fixture/harness/browser configuration only when that case needs it.
+- Do not silently grow the current row or create a new row merely because an
+  incidental observation occurred. First identify the independent contract
+  and follow the user's decision about splitting it.
+- On a requested split, preserve execution continuity explicitly with the
+  ordered chain and `advance`/`switch` semantics where supported; never force
+  the user to recreate already-proven setup.
+
 ### 2. Replayable fixtures, never ad-hoc database patches
 
 Every manual case must be independently replayable. New or changed checkpoint
 setup belongs in `event-domain-checkpoints.js` (or the corresponding named
-scenario file), not in a one-off Mongo edit. Its behavior and expected evidence
-belong in the QA pack; its result/status belongs in the matrix and the resume
-block above.
+scenario file), not in a one-off Mongo edit. Its behavior and transaction
+evidence belong in the QA pack; its result/status belongs in the CSV/XLSX
+matrix. The resume block contains only the next live boundary.
 
 Use the canonical harness against the already-running `mongodb` container:
 
@@ -237,16 +245,25 @@ owner. Never work around a cache lock with another cache or parallel build.
 
 ### 6. Recording and communication
 
-After every checkpoint boundary:
+After every transactional boundary, including a partial PASS inside a larger
+checkpoint:
 
 1. Run the independent `status`/named oracle.
 2. Report the result in one compact message: `PASS` or `FAIL`, the decisive
    persisted facts, and what remained unchanged.
-3. Update the active test definition/evidence and the matrix status/counts.
-4. Update only the resume block in this file with the next exact stop point.
-5. State: `Következő teszt: <ID> — <one-line purpose>`, then give the first
-   manual action. Do not ask the user to repeat already recorded setup or
-   evidence.
+3. Append the transaction evidence to the active QA-pack test definition.
+4. Update the canonical matrix CSV with the current date, evidence and next
+   oracle. Keep the row `IN PROGRESS` until the checkpoint's full chain passes.
+5. Run `python3 guides/qa/tools/sync-qa-matrix-xlsx.py`; the generated XLSX owns
+   status coloring and aggregate counts.
+6. Update only the YAML resume pointer and next manual action in this file. Do
+   not copy the detailed evidence or ledger row here.
+7. Give the next exact manual action. State `Következő teszt: <ID> — ...` only
+   when the current checkpoint is fully closed and the ledger has been updated.
+
+This order is the session-efficiency rule: persisted oracle first, canonical
+records second, compact resume pointer last. It prevents re-deriving completed
+methodology or mistaking a substep PASS for a closed checkpoint.
 
 On FAIL, stop that branch after collecting the smallest decisive evidence.
 Diagnose/fix separately, then restage the same checkpoint from its fixture and

@@ -1362,6 +1362,23 @@ Restart evidence on 2026-08-06:
   same ID/code. Before approval and during both reads, no credential may be
   created.
 - Casey and every other Admin remain without a participant ticket.
+- Active clean-chain evidence (2026-08-12, **IN PROGRESS**): the replayable
+  Casey-only baseline was independently staged and verified before browser
+  launch. Nova's first Join created exactly one member-origin approval-pending
+  membership, one physical `approval-pending` basket, one Casey **Pending**
+  notification, pending activity `1`, ticket counters `0/0` and no physical
+  ticket. The required pending Explore reload, plus one repeated operator
+  reload, retained the same card/basket/notification identities and created no
+  write. The first Cancel changed Nova's membership to `suppressed`, retained
+  her overlay as `status=T`, changed pending activity `1 -> 0` and trash
+  `0 -> 1`, returned occupancy to `1 accepted + 0 pending / 8`, created exactly
+  one separate Casey **Cancelled** notification and left every ticket/counter
+  at zero. The old physical basket row remains under the same ID only as
+  `status=cancelled`, `resultState=deleted`; "no basket" in the Explore
+  contract means no active/displayable/continuable basket, not deletion of its
+  audit row. Still required before closing this checkpoint: post-Cancel fresh
+  reload, the remaining re-Join/Cancel/re-Join identity and ID-scoped removal
+  checks, terminal Casey approval and repeated ticket-read purity.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket
