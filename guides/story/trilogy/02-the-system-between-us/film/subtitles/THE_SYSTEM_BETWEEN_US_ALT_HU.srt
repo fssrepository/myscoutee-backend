@@ -4,7 +4,7 @@ Igaz történet.
 
 2
 00:00:01,500 --> 00:00:06,225
-Az emberi kapcsolat építője belép egy rendszerbe,
+Egy kapcsolatépítő belép a rendszerbe,
 amely egy egész életből iratot csinál.
 
 3
@@ -47,7 +47,7 @@ Brüsszel távoli ajtót nyitott.
 11
 00:00:41,150 --> 00:00:46,900
 A munka gyorsabban indult be,
-mint ahogy köré rendezhettem volna az életem;
+mielőtt az életemet köré rendezhettem;
 
 12
 00:00:46,900 --> 00:00:49,250
@@ -57,11 +57,11 @@ mielőtt könyvelőm lett volna.
 13
 00:00:49,250 --> 00:00:51,753
 A KATA lett az utolsó törvényes híd,
-amelyen itthonról visszatérhettem a munkába.
+amelyen itthonról újra dolgozhattam.
 
 14
 00:00:59,833 --> 00:01:02,250
-A törvény egyetlen nap alatt változott meg.
+A törvény egy nap alatt változott meg.
 
 15
 00:01:02,250 --> 00:01:05,200
@@ -70,7 +70,7 @@ hogy újjászervezzék a munkájukat.
 
 16
 00:01:05,200 --> 00:01:08,650
-Az ügyfélnek továbbra is kellett az átadás,
+Az ügyfélnek kellett az átadás,
 ezért előlegszámlát állítottam ki.
 
 17
@@ -109,13 +109,13 @@ egy hét alatt értettem meg.
 
 24
 00:01:39,300 --> 00:01:44,850
-Egyetlen hívásban minden erre omlott össze:
+Egyetlen hívásban erre omlott minden:
 „Már nem lehet gyermekem.”
 
 25
 00:01:44,850 --> 00:01:47,281
-Helyesbítettem a bevallást,
-megfizettem az adót, és lezártam a képviseletet.
+Helyesbítettem, befizettem az adót,
+és véget vetettem a képviseletnek.
 
 26
 00:01:47,733 --> 00:01:52,350

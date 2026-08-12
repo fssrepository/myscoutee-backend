@@ -839,6 +839,7 @@ def stylesheet() -> str:
 
 
 def build_document(source: Path) -> str:
+    is_hungarian = source.name.endswith("_HU.md")
     lines = source.read_text(encoding="utf-8").splitlines()
     metadata, body_lines = extract_front(lines)
     registry = json.loads(ILLUSTRATIONS.read_text(encoding="utf-8"))
@@ -859,12 +860,20 @@ def build_document(source: Path) -> str:
     # proven chapter tails and keep the final colophon with Product Claims.
     compact_ranges = (
         (
-            'id="8-the-first-three-years-and-the-fifth"',
+            (
+                'id="8-az-els-h-rom-v-s-az-t-dik"'
+                if is_hungarian
+                else 'id="8-the-first-three-years-and-the-fifth"'
+            ),
             '<section class="part-opener opener-3">',
             "compact-chapter-8",
         ),
         (
-            'id="18-when-the-world-closed"',
+            (
+                'id="18-amikor-bez-rult-a-vil-g"'
+                if is_hungarian
+                else 'id="18-when-the-world-closed"'
+            ),
             '<section class="part-opener opener-4">',
             "compact-chapter-18",
         ),
@@ -886,7 +895,11 @@ def build_document(source: Path) -> str:
     # Keep the short Epilogue, its invitation and its closing ornament on one
     # page. The prose is unchanged; only this final chapter uses the tighter
     # rhythm needed to avoid an invitation-only spill page.
-    epilogue_marker = 'id="epilogue-the-star-above-the-open-space"'
+    epilogue_marker = (
+        'id="epil-gus-a-csillag-a-nyitott-t-r-f-l-tt"'
+        if is_hungarian
+        else 'id="epilogue-the-star-above-the-open-space"'
+    )
     epilogue_heading = body.find(epilogue_marker)
     epilogue_start = body.rfind("<h2", 0, epilogue_heading)
     epilogue_end = body.find('<section class="part-opener opener-6">', epilogue_heading)
@@ -916,7 +929,17 @@ def build_document(source: Path) -> str:
     edition_version = html.escape(str(version["version"]))
     updated = html.escape(str(version["updated"]))
     status = str(version["status"])
-    if status == "draft":
+    if is_hungarian:
+        edition = (
+            f"Magyar ellenőrző kézirat v{edition_version} · "
+            "Tervezett megjelenés: 2026. augusztus 20. "
+            "(az államalapítás ünnepe)"
+        )
+        truth = (
+            "Egyes szám első személyű nyilvános emlékirat. A személyes emlékezet "
+            "elkülönül az igazolt termékképességektől és a jövőbeli eredményektől."
+        )
+    elif status == "draft":
         edition = f"Draft v{edition_version} · Not yet published · Updated {updated}"
         truth = (
             "An unpublished first-person review draft. Autobiographical memory "
@@ -934,8 +957,25 @@ def build_document(source: Path) -> str:
             "distinct from verified product capability and future product outcomes."
         )
 
+    html_language = "hu" if is_hungarian else "en"
+    eyebrow = "MyScoutee-trilógia" if is_hungarian else "MyScoutee trilogy"
+    cover_part = "A trilógia<br>első része" if is_hungarian else "Part one<br>of the trilogy"
+    part_label = f"{part_roman}. rész" if is_hungarian else f"Part {part_roman}"
+    story_title = "A történet" if is_hungarian else "The Story"
+    title_part = (
+        "A MyScoutee-trilógia első része"
+        if is_hungarian
+        else "Part one of the MyScoutee trilogy"
+    )
+    contents = "Tartalom" if is_hungarian else "Contents"
+    emblem_alt = (
+        "Hat ember találkozik egy közös iránytű körül, egy vezető csillag alatt"
+        if is_hungarian
+        else "Six people meeting around a shared compass beneath a guiding star"
+    )
+
     return f"""<!doctype html>
-<html lang="en">
+<html lang="{html_language}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -952,14 +992,14 @@ def build_document(source: Path) -> str:
   <div class="brand-lockup" aria-label="MyScoutee">
     <img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span>
   </div>
-  <div class="eyebrow">MyScoutee trilogy</div>
-  <div class="volume-lockup" aria-label="Part {part_roman}">
+  <div class="eyebrow">{eyebrow}</div>
+  <div class="volume-lockup" aria-label="{part_label}">
     <span class="volume-roman">{part_roman}</span>
-    <span class="volume-copy">Part one<br>of the trilogy</span>
+    <span class="volume-copy">{cover_part}</span>
   </div>
-  <h1>The Story</h1>
+  <h1>{story_title}</h1>
   <h2>{subtitle}</h2>
-  <img class="story-emblem" src="{cover_emblem_url}" alt="Six people meeting around a shared compass beneath a guiding star">
+  <img class="story-emblem" src="{cover_emblem_url}" alt="{emblem_alt}">
   <div class="route"></div>
   <div class="tagline">{tagline}<span class="edition">{edition}</span></div>
 </section>
@@ -968,14 +1008,14 @@ def build_document(source: Path) -> str:
     <img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span>
   </div>
   <span class="volume-roman">{part_roman}</span>
-  <span class="volume-copy">Part one of the MyScoutee trilogy</span>
-  <h1>The Story</h1>
+  <span class="volume-copy">{title_part}</span>
+  <h1>{story_title}</h1>
   <h2>{subtitle}</h2>
   <p><em>{tagline}</em></p>
   <p class="edition">{edition}</p>
   <p class="truth">{truth}</p>
 </section>
-<nav class="toc"><h1>Contents</h1><ol>{toc}</ol></nav>
+<nav class="toc"><h1>{contents}</h1><ol>{toc}</ol></nav>
 <main>{body}</main>
 </body>
 </html>
@@ -1315,6 +1355,7 @@ def write_publication_integrity_files(
 
 
 def main() -> None:
+    global BOOK_METADATA, ILLUSTRATIONS
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--html", type=Path, default=DEFAULT_HTML)
@@ -1323,6 +1364,10 @@ def main() -> None:
     parser.add_argument("--inkscape", default="inkscape")
     parser.add_argument("--html-only", action="store_true")
     args = parser.parse_args()
+
+    if args.source.name.endswith("_HU.md"):
+        BOOK_METADATA = BOOK_DIR / "metadata.hu.json"
+        ILLUSTRATIONS = BOOK_DIR / "illustrations.hu.json"
 
     version = load_book_version()
     default_pdf = default_pdf_path(version)

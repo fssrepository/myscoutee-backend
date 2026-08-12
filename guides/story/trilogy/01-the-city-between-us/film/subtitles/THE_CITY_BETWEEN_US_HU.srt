@@ -70,7 +70,7 @@ Az olcsó szoba lehetővé tette az utazást,
 16
 00:00:52,100 --> 00:00:54,892
 de egy londoni magánlakás
-felemésztette volna a pénzem. Budapest nem.
+elvitte volna a pénzem. Budapest nem.
 
 17
 00:01:01,467 --> 00:01:05,400
@@ -125,7 +125,7 @@ A kezdő táncórák tele voltak.
 28
 00:01:35,350 --> 00:01:39,050
 A haladó termek kiürültek,
-mert a kezdetekből nem lett következő lépés.
+mert a kezdeteknek nem lett folytatása.
 
 29
 00:01:39,050 --> 00:01:42,850
@@ -196,7 +196,8 @@ alakíthatta a későbbi meghívásokat;
 
 43
 00:02:42,700 --> 00:02:45,100
-egy szabad helyet újra fel lehetett ajánlani.
+egy szabad helyet
+újra fel lehetett ajánlani.
 
 44
 00:02:45,100 --> 00:02:48,250
@@ -205,8 +206,8 @@ a 2016-os ötletemnek.
 
 45
 00:02:48,250 --> 00:02:52,900
-Az MI felgyorsított egy közös magot,
-amelyet helyi közösségek alakítanak és tesztelnek.
+Az MI felgyorsította a közös magot,
+helyi közösségek formálták, tesztelték.
 
 46
 00:02:52,900 --> 00:02:55,250
@@ -216,4 +217,3 @@ MyScoutee.
 00:02:55,250 --> 00:02:57,416
 Próbáld ki velem
 valódi közösségekben.
-

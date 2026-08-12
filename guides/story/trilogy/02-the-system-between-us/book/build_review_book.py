@@ -186,6 +186,7 @@ def stylesheet() -> str:
 
 
 def build_document(source: Path) -> str:
+    is_hungarian = source.name.endswith("_HU.md")
     lines = source.read_text(encoding="utf-8").splitlines()
     front, body_lines = book.extract_front(lines)
     dedication_start = body_lines.index("<!-- dedication -->")
@@ -209,15 +210,20 @@ def build_document(source: Path) -> str:
     )
     body = book.markdown_to_html(body_lines, registry)
     dedication = (
-        '<section class="dedication-page" aria-label="Dedication">'
+        '<section class="dedication-page" aria-label="'
+        + ("Ajánlás" if is_hungarian else "Dedication")
+        + '">'
         f'<p>{book.inline_markdown(dedication_lines[0])}<br>'
         f'{book.inline_markdown(dedication_lines[1])}</p>'
         f'<p class="shared-story">{book.inline_markdown(dedication_lines[2])}</p>'
         '</section>'
     )
-    prologue_start = body.find(
-        '<h2 class="context-0" id="prologue-the-other-biography">'
+    prologue_id = (
+        "prol-gus-a-m-sik-letrajz"
+        if is_hungarian
+        else "prologue-the-other-biography"
     )
+    prologue_start = body.find(f'<h2 class="context-0" id="{prologue_id}">')
     part_one_start = body.find(
         '<section class="part-opener opener-1">', prologue_start
     )
@@ -230,15 +236,21 @@ def build_document(source: Path) -> str:
         + "</section>"
         + body[part_one_start:]
     )
-    chapter_15_heading = body.find(
-        'id="15-the-work-the-file-could-not-explain"'
+    chapter_15_id = (
+        "15-a-munka-amelyet-az-irat-nem-tudott-megmagyar-zni"
+        if is_hungarian
+        else "15-the-work-the-file-could-not-explain"
     )
+    chapter_15_heading = body.find(f'id="{chapter_15_id}"')
     chapter_15_start = body.rfind(
         '<div class="chapter-lead">', 0, chapter_15_heading
     )
-    chapter_16_heading = body.find(
-        'id="16-the-house-as-a-human-archive"', chapter_15_heading
+    chapter_16_id = (
+        "16-a-h-z-mint-emberi-arch-vum"
+        if is_hungarian
+        else "16-the-house-as-a-human-archive"
     )
+    chapter_16_heading = body.find(f'id="{chapter_16_id}"', chapter_15_heading)
     chapter_16_start = body.rfind("<h2 ", chapter_15_heading, chapter_16_heading)
     if min(chapter_15_heading, chapter_15_start, chapter_16_start) < 0:
         raise ValueError("Could not isolate Chapter 15 for compact review layout")
@@ -249,7 +261,8 @@ def build_document(source: Path) -> str:
         + "</section>"
         + body[chapter_16_start:]
     )
-    note_start = body.find('<h2 class="context-0" id="a-note-to-the-reader">')
+    note_id = "megjegyz-s-az-olvas-nak" if is_hungarian else "a-note-to-the-reader"
+    note_start = body.find(f'<h2 class="context-0" id="{note_id}">')
     note_break = body.find('<div class="pagebreak"></div>', note_start)
     if note_start < 0 or note_break < 0:
         raise ValueError("Could not isolate the reader note for review layout")
@@ -266,7 +279,19 @@ def build_document(source: Path) -> str:
     roman = html.escape(str(version["trilogy_roman"]))
     edition_version = html.escape(str(version["version"]))
     status = html.escape(str(version["status"]))
-    if version["status"] == "public":
+    if is_hungarian:
+        edition = (
+            f"Magyar ellenőrző kézirat v{edition_version} · "
+            "Tervezett megjelenés: 2026. augusztus 20. "
+            "(az államalapítás ünnepe)"
+        )
+        truth = (
+            "Egy lezáratlan jogi és intézményi időszak egyes szám első személyű "
+            "emlékirata. Az iratanyag, a tulajdonított emlék, az emlékirat és a "
+            "későbbi nyilvános háttér elkülönül egymástól."
+        )
+        title_suffix = "magyar ellenőrző kézirat"
+    elif version["status"] == "public":
         published = html.escape(book.display_date(version["published"]))
         edition = (
             f"Public edition v{edition_version} · Published {published} "
@@ -287,8 +312,24 @@ def build_document(source: Path) -> str:
             "and later public context remain explicitly distinct."
         )
         title_suffix = "review"
+    html_language = "hu" if is_hungarian else "en"
+    eyebrow = "MyScoutee-trilógia" if is_hungarian else "MyScoutee trilogy"
+    cover_part = "A trilógia<br>második része" if is_hungarian else "Part two<br>of the trilogy"
+    part_label = f"{roman}. rész" if is_hungarian else f"Part {roman}"
+    story_title = "A történet" if is_hungarian else "The Story"
+    title_part = (
+        "A MyScoutee-trilógia második része"
+        if is_hungarian
+        else "Part two of the MyScoutee trilogy"
+    )
+    contents = "Tartalom" if is_hungarian else "Contents"
+    emblem_alt = (
+        "Két emberi útvonalat átlátható rendszer köt össze"
+        if is_hungarian
+        else "Two human paths remain connected through a transparent system"
+    )
     return f"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="{html_language}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="MyScoutee">
 <meta name="description" content="A first-person MyScoutee systems memoir.">
@@ -299,20 +340,20 @@ def build_document(source: Path) -> str:
 <style>{stylesheet()}</style></head><body>
 <section class="cover" aria-label="{title}">
   <div class="brand-lockup" aria-label="MyScoutee"><img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span></div>
-  <div class="eyebrow">MyScoutee trilogy</div>
-  <div class="volume-lockup" aria-label="Part {roman}"><span class="volume-roman">{roman}</span><span class="volume-copy">Part two<br>of the trilogy</span></div>
-  <h1>The Story</h1><h2>{subtitle}</h2>
-  <img class="story-emblem" src="{emblem_url}" alt="Two human paths remain connected through a transparent system">
+  <div class="eyebrow">{eyebrow}</div>
+  <div class="volume-lockup" aria-label="{part_label}"><span class="volume-roman">{roman}</span><span class="volume-copy">{cover_part}</span></div>
+  <h1>{story_title}</h1><h2>{subtitle}</h2>
+  <img class="story-emblem" src="{emblem_url}" alt="{emblem_alt}">
   <div class="route"></div><div class="tagline">{tagline}<span class="edition">{edition}</span></div>
 </section>
 <section class="title-page">
   <div class="brand-lockup" aria-label="MyScoutee"><img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span></div>
-  <span class="volume-roman">{roman}</span><span class="volume-copy">Part two of the MyScoutee trilogy</span>
-  <h1>The Story</h1><h2>{subtitle}</h2><p><em>{tagline}</em></p>
+  <span class="volume-roman">{roman}</span><span class="volume-copy">{title_part}</span>
+  <h1>{story_title}</h1><h2>{subtitle}</h2><p><em>{tagline}</em></p>
   <p class="edition">{edition}</p><p class="truth">{truth}</p>
 </section>
 {dedication}
-<nav class="toc"><h1>Contents</h1><ol>{toc}</ol></nav>
+<nav class="toc"><h1>{contents}</h1><ol>{toc}</ol></nav>
 <main>{body}</main></body></html>"""
 
 

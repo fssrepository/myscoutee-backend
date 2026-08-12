@@ -2,7 +2,10 @@
 
 ## A város közöttünk
 
-*Egy alapító emlékirata szobákról, útvonalakról és az emberek közötti útról*
+*Egy alapító története szobákról, útvonalakról és az egymáshoz vezető útról*
+
+> Magyar ellenőrző kézirat 1.0.0 · Tervezett megjelenés: 2026. augusztus 20.
+> (az államalapítás ünnepe)
 
 <!-- pagebreak -->
 
@@ -930,7 +933,7 @@ A könyv termékleírásai a jelenlegi MyScoutee-repozitóriumon és bemutatóan
 
 <!-- edition-colophon -->
 
-Első illusztrált magyar nyilvános kiadás, 1.0.0 verzió. Megjelent 2026. augusztus 20-án
-(az államalapítás ünnepén).
+Az első illusztrált magyar kiadás ellenőrző kézirata, 1.0.0 verzió.
+Tervezett megjelenés: 2026. augusztus 20. (az államalapítás ünnepe).
 
 © 2026 MyScoutee. Minden jog fenntartva.

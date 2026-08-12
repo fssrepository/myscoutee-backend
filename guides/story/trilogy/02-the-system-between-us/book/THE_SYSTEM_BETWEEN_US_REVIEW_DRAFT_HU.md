@@ -4,7 +4,7 @@
 
 *Egy alapító története szabályokról, nevetésről és a megértés áráról*
 
-> Nyilvános kiadás 1.0.0 · Megjelenés: 2026. augusztus 20.
+> Magyar ellenőrző kézirat 1.0.0 · Tervezett megjelenés: 2026. augusztus 20.
 > (az államalapítás ünnepe)
 
 <!-- pagebreak -->
