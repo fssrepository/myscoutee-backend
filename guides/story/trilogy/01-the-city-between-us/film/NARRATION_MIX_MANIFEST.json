@@ -19,7 +19,7 @@
     },
     "stem": {
       "path": "/home/raxim/Downloads/video/TCBU_narration_EN.wav",
-      "sha256": "9a5350ebe8f015570745b70a9498846b64499385f227678fb874b85f3b716d70",
+      "sha256": "a880a88e7370fa235e3d06325f86511a5c863e225bfafb8ae9843c84e59ce749",
       "format": "mono 48 kHz 24-bit PCM",
       "durationSeconds": 184.667
     },
@@ -36,8 +36,13 @@
       },
       {
         "startSeconds": 61.667,
-        "durationSeconds": 29.857938,
-        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_03.mp3"
+        "durationSeconds": 31.346938,
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_03.mp3",
+        "sha256": "ec62d854a5310bd5da0536faeaccddec1c197b10da5ca286ad2666f7154cd9f4",
+        "timeFit": {
+          "targetDurationSeconds": 30.833,
+          "atempo": 1.016668439659
+        }
       },
       {
         "startSeconds": 92.5,
@@ -74,22 +79,23 @@
     },
     "mastering": {
       "integratedTargetLufs": -14,
-      "truePeakTargetDbtp": -1.3,
+      "truePeakTargetDbtp": -1.7,
+      "deliveryTruePeakTargetDbtp": -1.3,
       "loudnessRangeTargetLu": 11
     },
     "stem": {
       "path": "/home/raxim/Downloads/video/TCBU_final_mix_EN.wav",
-      "sha256": "523857722b57d4d6b28d729a15d0d046c1ace2c4a6abb1a691656554d3a4ed3c",
+      "sha256": "bb093c7b85ebd2fe4afeaeb09c76f6943324fca3875ee9a8d868b76b2ec288f6",
       "format": "stereo 48 kHz 24-bit PCM"
     }
   },
   "delivery": {
     "path": "/home/raxim/Downloads/video/the_strory_I_narrated.mp4",
-    "sha256": "74ea1cb2bc5822214b42ebbaff5f301c5a14f1201f9b34d8e029f4dc79b2c7ad",
+    "sha256": "47c4659434eb77481156b381fad4f49df7839e1d75b78d394b658ff8e0e7d454",
     "durationSeconds": 184.667,
     "audio": "AAC stereo 48 kHz 320 kbit/s",
-    "measuredIntegratedLufs": -14.05,
-    "measuredTruePeakDbtp": -1.13,
+    "measuredIntegratedLufs": -13.9,
+    "measuredTruePeakDbtp": -1.3,
     "videoPacketMd5MatchesPictureLock": true
   }
 }
