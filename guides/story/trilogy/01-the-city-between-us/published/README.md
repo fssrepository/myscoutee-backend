@@ -16,7 +16,7 @@ editable working export. The builder refuses to overwrite an existing locked
 edition. The checksum detects byte-level changes; the overwrite guard, manifest
 and Git history provide the rest of the publication boundary.
 
-The first public release date is 12 August 2026. Corrections completed before
+The first public release date is 20 August 2026. Corrections completed before
 that release remain within edition `1.0.0`; its checksum and manifest identify
 the released bytes, while Git history preserves the preceding working builds.
 

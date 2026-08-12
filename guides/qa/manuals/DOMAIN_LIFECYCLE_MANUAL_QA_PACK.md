@@ -1690,6 +1690,42 @@ Restart evidence on 2026-08-06:
   ticket counters remain zero. Do not repeat this Join. Keep Nova Explore open
   and perform Casey's one terminal approval next so the popup-visible realtime
   counter transition is exercised.
+- Popup-safe counter repair focused replay — Casey approval and normal poll
+  (2026-08-12): **PASS / REPAIR VERIFIED**. The owning
+  `POST /api/activities/events/members/action` returned `200` at
+  `2026-08-12T19:20:14+02:00`. Nova became accepted at
+  `2 accepted + 0 pending / 8`; basket `6a7ca9c2f8a7d3829acd8039`
+  closed as `approved/succeeded`, `reservationActive=false`, and exactly one
+  physical `status=A` ticket `6a7cab4ef8a7d3829acd803f` with code
+  `TKT-970b4c17-dd7c-4d93-88c9-d42a1dfde12b` was issued at
+  `2026-08-12T17:20:14.659872091Z`. Nova's counters are `1/1`; Casey remains
+  `0/0`. Successful normal long polls followed at `19:20:26`, `19:20:56`,
+  `19:21:26` and `19:21:56`. Read-only DOM inspection while both Nova Explore
+  and its join-review popup were still visible showed the item-level
+  **Ticket 1** badge. This directly closes the popup-gating defect; the two
+  read-only Ticket popup opens remain before closing the checkpoint.
+- Popup-safe counter repair focused replay — first Ticket read (2026-08-12):
+  **PASS**. Nova's first manual open issued
+  `GET /api/assets/tickets?userId=650000000000000000000062&page=0&pageSize=6&order=upcoming`
+  and returned `200` at `2026-08-12T19:24:09+02:00`. The following persisted
+  oracle retained exactly the pre-read ticket `6a7cab4ef8a7d3829acd803f`
+  with code `TKT-970b4c17-dd7c-4d93-88c9-d42a1dfde12b`, unchanged issue/use
+  state, counters `1/1`, and no second credential or domain write. The Ticket
+  surface was closed by the later read-only DOM observation; its next manual
+  open is therefore the second read, not a replay of the first.
+- Popup-safe counter repair focused replay — second Ticket read and checkpoint
+  closure (2026-08-12): **PASS / CLOSED**. Nova's second manual open issued
+  the same `GET /api/assets/tickets` read and returned `200` at
+  `2026-08-12T19:29:16+02:00`. Read-only DOM showed **Assets · Ticket** with
+  exactly **1 ticketed event** and one `QA EVENT-TICKET-005` card. The final
+  persisted oracle retained the sole physical ticket
+  `6a7cab4ef8a7d3829acd803f`, code
+  `TKT-970b4c17-dd7c-4d93-88c9-d42a1dfde12b`, original
+  `issuedAtIso=2026-08-12T17:20:14.659872091Z`, `status=A` and unused state;
+  Nova stayed at counters `1/1`, Casey at `0/0`, and no second credential or
+  read-owned write appeared. Combined with the retained clean
+  Cancel/reload/re-Join evidence, verified terminal basket closure and the
+  popup-visible normal-poll proof, this closes `EVENT-TICKET-005`.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket
@@ -1739,14 +1775,27 @@ Restart evidence on 2026-08-06:
 
 ### `EVENT-TICKET-006` — expiry moves the active ticket to Past
 
-- Start shortly before the event end with Nova's physical `status=A` ticket
-  visible once under Upcoming; retain its ID and code.
+- Stage a stable pre-expiry event rather than starting the deadline during
+  fixture/browser preparation. Open Nova's physical `status=A` ticket once
+  under Upcoming and retain its ID and code. Only after this manual boundary is
+  proved, run the versioned `arm-ticket-expiry` harness action; it updates the
+  host event plus Nova overlay to one printed end time two minutes later and
+  records the arm time, deadline and ticket identity in checkpoint state.
 - After the ordinary end-time/expiry convergence, the same ticket disappears
   from Upcoming and appears once under Past. Event expiry does not change the
   ticket to `D` and does not create a replacement.
 - Scanning the retained code returns expired without consuming or mutating the
   ticket. Event time owns Upcoming/Past; Unpublish or loss of ticket
   eligibility owns `A -> D`.
+- Invalid timing attempt retained (2026-08-12): the first fixture started its
+  two-minute window during `stage`, so browser setup plus the human round trip
+  consumed the pre-expiry observation boundary. At `19:37:27+02:00`, after the
+  `19:35:19+02:00` deadline, Nova correctly showed zero Upcoming tickets. The
+  independent post-expiry oracle retained the same active physical ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-441625f4-88ee-4f4b-8984-f38486c72218`, counters `1/1` and no mutation.
+  This is **NOT EXECUTED / FIXTURE TIMING INVALID**, not a product FAIL. The
+  stable-baseline plus explicit-arm fixture replaces this race.
 
 ### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
 

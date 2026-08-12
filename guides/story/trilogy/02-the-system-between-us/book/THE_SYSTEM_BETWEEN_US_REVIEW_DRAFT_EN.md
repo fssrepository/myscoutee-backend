@@ -4,7 +4,8 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Public edition 1.0.0
+> Public edition 1.0.0 · Published 20 August 2026
+> (Hungary’s State Foundation Day)
 
 <!-- pagebreak -->
 
@@ -878,13 +879,15 @@ happened.
 I had not escaped the system by hiding from lawful work. I had walked back into
 it by daring to work at all. Now it stood in my rooms and carried the work away.
 
-At the first questioning, a trainee connected to the appointed defence appeared
-and advised me to remain silent. I believed for a time that she was the lawyer
-assigned to carry the case. She gave me a card with another number written on
-it. Calls to that number produced no conversation, only messages promising a
-return call. I had been searched, questioned and separated from my devices
-without receiving the complete material from which I could understand the
-accusation.
+At the first questioning, a woman took the defence chair. None of us knew who
+she was, and no one introduced her. Only later did I understand how far the
+substitution had travelled: the substitute for the appointed lawyer named in
+the papers had sent a legal assistant in his own place. She advised me to
+remain silent and gave me the office number. I called. Nobody answered, and
+nobody there spoke with me. The office, meanwhile, appeared to believe that the
+assistant was carrying the case. I had been searched, questioned and separated
+from my devices without receiving the complete material from which I could
+understand the accusation.
 
 Eight days later, I walked through the city to the police station. The loose
 nail travelled inside my shoe, shifting under the toe at every step. Saint
@@ -916,31 +919,43 @@ file. Her work remained professional; my mind remained human.
 
 <!-- pagebreak -->
 
-The formal defence kept changing shape. A lawyer remained unreachable for
-months and later asked to leave because he was overloaded. The trainee warned
-that she would be unavailable while preparing for an examination. Officers and
-lawyers could refer me to somebody else, but I could not make the somebody else
-appear. During the first month I did not even know the precise allegation.
+The formal defence kept changing shape. The legal assistant warned that she
+would be unavailable while preparing for her professional examination. Calls
+to the office went unanswered, and for almost three months nobody there spoke
+with me. On 19 February, the appointed lawyer asked to be released because the
+office was overloaded. The police accepted the request. Only after he had
+ceased to be my lawyer did he return one of my calls. He told me to leave the
+police to their work and suggested that I say I had not done it. Then the line
+closed, and I did not know whether I had another defender.
 
-On 11 June 2024, I went alone to collect the investigation material. No lawyer
-sat beside me. I waited quietly and fearfully in the public area while the file
-was being handed over. By then I trusted the continuity of no later account, so
-I made an undisclosed audio recording of the encounter. The act was not a
-victory over the process. It measured the low-trust condition: I no longer
-believed that even an ordinary handover would necessarily survive in one shared
-version unless I preserved it myself.
+On 11 June 2024, I was summoned back to the police station. A lawyer I had
+never met appeared beside me. Only then did I learn that, on paper, he had been
+my appointed defender since 30 May. Nobody had told me. The policewoman
+conducting the hearing was called Kata. When the earlier absence of defence
+came up, she answered at once: the appointed defender had not had time. I
+understood her to mean the lawyer who had been unavailable in February. The
+hearing continued.
 
-One policewoman looked out at me; I recognized her as the officer who had taken
-my fingerprints. Another smiled and glanced toward my operated leg.
+The officers carrying the file changed as well. I could not reach them
+directly. I called the central number and first had to find out which
+investigator was currently investigating me before I could ask what was
+happening in the investigation.
+
+Around 12 November, I returned alone to collect the investigation material. No
+lawyer sat beside me. A policewoman looked towards the waiting area almost
+timidly, checking that I was there and that the handover could begin. She seemed
+to freeze. A male officer smiled and glanced towards my operated leg. By then I
+trusted the continuity of no later account, so I made an undisclosed audio
+recording of the encounter. The act was not a victory over the process. It
+measured the low-trust condition: I no longer believed that even an ordinary
+handover would necessarily survive in one shared version unless I preserved it
+myself.
 
 The glance returned the obscene visual joke I had made while trying to force
 the tax administration to see the body behind its process. Where was the grave
 threat in that image? It had been a huge symbolic kick in an institution's
-backside. The association arrived as she handed over the papers I was still
-waiting to receive.
-
-A police explanation later reduced the earlier absence to a painfully ordinary
-phrase: the lawyer had not had time.
+backside. The association arrived as the papers I had been waiting for were
+finally handed over.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of
@@ -1177,13 +1192,13 @@ The investigation and court process created another triangle: defendant,
 appointed defence and institution.
 
 The triangle would not keep the same people in its corners. At the first
-questioning, a trainee sat beside me in place of the appointed lawyer. Later,
-one lawyer remained unreachable for months and asked to leave when his office
-became overloaded. Another was the only one who acted. Others
-delayed, withdrew or did not speak to me before a hearing. Sometimes the name
-beside my case changed on paper before the new person existed in my life. I
-eventually asked to be told when my appointed defence changed and to be given
-the new person's contact details.
+questioning, the substitute for the appointed lawyer sent a legal assistant in
+his own place. The office remained unreachable, and the appointed lawyer first
+spoke with me only after asking to leave. Another defender was appointed on
+paper before I was told he existed. He was the only one who acted. Others
+delayed, withdrew or did not speak to me before a hearing. I eventually asked
+to be told when my appointed defence changed and to be given the new person's
+contact details.
 
 The law required a defence chair. Continuity did not arrive with the chair.
 
@@ -2329,10 +2344,12 @@ judge, breached a professional duty or represented the institution instead of
 the accused.
 
 The discontinuity is not based only on a later impression. The defence speech
-and private investigation bundle record a trainee appearing at the first
-questioning, a succession of appointed lawyers, periods without accessible
-contact, withdrawal or release requests, and the Founder's complaint that later
-defenders' contact details had not been supplied. The Commissioner for
+and private investigation bundle record someone from the appointed-defence
+office appearing instead of the named lawyer at the first questioning, a
+succession of appointed lawyers, periods without accessible contact, withdrawal
+or release requests, and the Founder's complaint that later defenders' contact
+details had not been supplied. The memoir preserves his fuller recollection of
+the substitution and the confusion within the office. The Commissioner for
 Fundamental Rights summarized the same complaint as involving several appointed
 defenders, an initial defender who did not speak to him and missing contact
 information for later appointments. Private names are omitted from the memoir.
@@ -2413,8 +2430,9 @@ that later written record rather than presenting them as an independently
 verified transcript.
 
 The Founder also records that he made an undisclosed audio recording when he
-collected the investigation material alone on 11 June 2024. This edition does
-not quote or publish that private audio and does not decide its admissibility or
+collected the investigation material alone around 12 November 2024. A private
+recording dated 12 November remains in the reviewed source set. This edition
+does not quote or publish it and does not decide its admissibility or
 lawfulness. Its narrative use is narrower: it shows how far trust in a shared
 institutional account had already collapsed.
 
@@ -2848,9 +2866,8 @@ Tuzson said:
 Later that month, judges and court employees rallied for judicial independence
 and the freedom to speak.
 
-On 15 March 2025, at the state ceremony marking the 177th anniversary of the
-Hungarian Revolution and War of Independence of 1848–49, Prime Minister Viktor
-Orbán said:
+On 15 March 2025 (the anniversary of the Hungarian Revolution and War of
+Independence of 1848–49), Prime Minister Viktor Orbán said:
 
 > “After today's ceremony comes the Easter clean-up. The bugs survived the
 > winter.”

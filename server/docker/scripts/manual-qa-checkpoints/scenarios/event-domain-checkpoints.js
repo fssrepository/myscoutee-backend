@@ -679,7 +679,7 @@
     "EVENT-TICKET-006": {
       stage: "ticket-expiring",
       why: "Prove that event expiry changes ticket bucketing, not the physical ticket's A/D lifecycle.",
-      action: "Before the staged end time, open Nova's Upcoming Ticket list and capture the ticket id/code/status. Keep the session open through the end-time poll, then open Past and scan the same QR once.",
+      action: "Open Nova's Upcoming Ticket list against the stable pre-expiry baseline and capture the ticket id/code/status. Only after that manual boundary is proved, run arm-ticket-expiry to start the controlled two-minute expiry window. Keep the session open through the end-time poll, then open Past and scan the same QR once.",
       expected: "The same A ticket disappears from Upcoming and appears once in Past with unchanged id and code. Scan returns expired without changing the ticket to D or creating another object.",
       worker: "The normal event-expiry counter worker may mark event projections expired. Ticket list reads and the rejected expired scan MUST NOT create a ticket or another scheduler job."
     },
@@ -1659,7 +1659,7 @@
     }
     if (stageKind === "ticket-expiring") {
       options.startAtIso = dateIso(-60);
-      options.endAtIso = dateIso(2);
+      options.endAtIso = dateIso(24 * 60);
     }
     const event = eventDocument(EVENT_ID, EXPECTED_TITLE, options);
     if (checkpointId === "EVENT-FEEDBACK-002") {
@@ -2229,6 +2229,9 @@
       autoInviterPeriodic: checkpointId === "EVENT-EDITOR-003"
         ? autoInviterPeriodicSummary(state)
         : null,
+      ticketExpiryArm: checkpointId === "EVENT-TICKET-006"
+        ? (state.ticketExpiryArm || null)
+        : null,
       visibilityControls: checkpointId === "EVENT-VISIBILITY-001"
         ? [visibilityFriendUserId, visibilityNonFriendUserId].map(userId => ({
             user: Q.user(userId),
@@ -2460,6 +2463,64 @@
       expectedVisibleResult: selected.expected,
       workerExpectation: selected.worker,
       identities: state.context
+    });
+  }
+
+  function armTicketExpiry() {
+    config();
+    if (checkpointId !== "EVENT-TICKET-006") {
+      Q.fail("arm-ticket-expiry is only valid for EVENT-TICKET-006.");
+    }
+    const state = requireMatchingState();
+    if (state.ticketExpiryArm && state.ticketExpiryArm.armedAtIso) {
+      Q.fail("EVENT-TICKET-006 expiry is already armed; reset and stage again instead of moving the deadline.");
+    }
+    const ticket = Q.collection("eventTickets").findOne({
+      eventId: EVENT_ID,
+      holderUserId: participantUserId,
+      status: "A"
+    });
+    if (!ticket) {
+      Q.fail("the active Nova ticket disappeared before expiry could be armed.");
+    }
+    const eventRecords = Q.collection("events").find({ sourceId: EVENT_ID }).toArray();
+    if (eventRecords.length !== 2) {
+      Q.fail(`EVENT-TICKET-006 requires exactly the host event and Nova overlay, found ${eventRecords.length}.`);
+    }
+    const now = Date.now();
+    if (eventRecords.some(event => !Number.isFinite(new Date(event.endAtIso).getTime())
+        || new Date(event.endAtIso).getTime() <= now)) {
+      Q.fail("the stable pre-expiry baseline has already ended; reset and stage again before arming.");
+    }
+    const armedAtIso = Q.nowIso();
+    const expectedEndAtIso = new Date(new Date(armedAtIso).getTime() + 2 * 60000).toISOString();
+    const update = Q.collection("events").updateMany({ sourceId: EVENT_ID }, {
+      $set: {
+        endAtIso: expectedEndAtIso,
+        updatedDate: armedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (update.matchedCount !== 2 || update.modifiedCount !== 2) {
+      Q.fail(`expiry arm expected to update two event projections, matched ${update.matchedCount} and modified ${update.modifiedCount}.`);
+    }
+    const ticketExpiryArm = {
+      armedAtIso,
+      expectedEndAtIso,
+      windowSeconds: 120,
+      ticketId: Q.text(ticket._id),
+      ticketCode: Q.text(ticket.code),
+      ticketStatus: Q.text(ticket.status)
+    };
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { ticketExpiryArm }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "ticket-expiry-armed",
+      ...ticketExpiryArm,
+      next: "Keep Nova's already-open Upcoming Ticket surface open through the printed expectedEndAtIso and the next normal foreground poll; then prove the same ticket appears once under Past."
     });
   }
 
@@ -3524,6 +3585,7 @@
     case "capture-auto-inviter-baseline": captureAutoInviterBaseline(); break;
     case "prepare-periodic-auto-inviter": preparePeriodicAutoInviter(); break;
     case "schedule-auto-inviter": scheduleAutoInviter(); break;
+    case "arm-ticket-expiry": armTicketExpiry(); break;
     case "add-feedback-participant": addFeedbackParticipant(); break;
     case "next": next(); break;
     case "verify-ticket-poll-resume": verifyTicketPollResume(); break;

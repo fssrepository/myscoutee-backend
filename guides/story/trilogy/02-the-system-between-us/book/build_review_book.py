@@ -268,7 +268,10 @@ def build_document(source: Path) -> str:
     status = html.escape(str(version["status"]))
     if version["status"] == "public":
         published = html.escape(book.display_date(version["published"]))
-        edition = f"Public edition v{edition_version} · Published {published}"
+        edition = (
+            f"Public edition v{edition_version} · Published {published} "
+            "(Hungary’s State Foundation Day)"
+        )
         truth = (
             "A first-person public memoir of an unresolved legal and institutional "
             "period. Documentary record, attributed recollection, memoir and later "

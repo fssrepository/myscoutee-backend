@@ -31,18 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-TICKET-005
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
+checkpoint: EVENT-TICKET-006
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-006--expiry-moves-the-active-ticket-to-past
 scenario: event-domain
-ledger_status: historical FAILs retained; basket repairs verified; focused popup-counter replay Join PASS, Casey approval next
-state: focused Join PASS at 2026-08-12T17:13:38Z; basket 6a7ca9c2f8a7d3829acd8039 is the one active approval-pending attempt, Nova is pending 1, Casey has one Pending notification, tickets/counters remain 0/0; Nova Explore must remain open; prior clean Cancel/reload/re-Join and terminal basket-closure evidence remains valid
-required_resume: Casey approves Nova exactly once through My Events -> QA EVENT-TICKET-005 -> Members -> Nova Social -> Open actions -> Approve -> confirmation Approve while Nova Explore remains open; then prove one accepted membership, terminal basket closure, exactly one Nova ticket/counters 1/1 and wait for the normal popup-visible Ticket badge poll
-event: QA EVENT-TICKET-005
+ledger_status: NOT EXECUTED retained for first timing-invalid attempt; stable-baseline plus explicit-arm fixture implemented; clean focused replay required
+state: EVENT-TICKET-005 PASS/CLOSED and reset to not-staged; first EVENT-TICKET-006 attempt expired before the human pre-expiry observation, while the post-expiry oracle retained one unchanged A ticket and counters 1/1; current invalid fixture must be reset and restaged after the harness update
+required_resume: reset the timing-invalid EVENT-TICKET-006 attempt, stage the stable pre-expiry baseline, prove it independently, keep only the managed Casey/Nova windows, then ask Nova to open Upcoming once; run arm-ticket-expiry only after that exact manual boundary is confirmed
+event: QA EVENT-TICKET-006
 actors:
   left: Casey Bridge
-  middle: Nova Social
-  right: Riley Outside
-next_actor: Casey Bridge
+  right: Nova Social
+next_actor: Nova Social
 stop_phrase: megvan
 ```
 
@@ -107,11 +106,11 @@ otherwise.
 
 ### Next manual action
 
-Leave Nova's middle **Explore** popup open and do not reload it. In Casey's
-left window, open **My Events** -> `QA EVENT-TICKET-005` -> the
-capacity/**Members** surface -> **Nova Social** -> **Open actions for Nova
-Social** -> **Approve** -> the **Approve request?** confirmation's **Approve**
-button exactly once. Leave Riley untouched. Reply `megvan`.
+Do not issue a manual action from this handoff until the timing-invalid fixture
+has been reset and the new stable pre-expiry baseline has been staged and
+proved. Then ask Nova to open **Ticket** under **Upcoming** exactly once and
+leave it open. Only after the matching `megvan` may Codex run
+`arm-ticket-expiry`; never start the deadline during staging or browser setup.
 
 ## QA working method
 
@@ -169,6 +168,14 @@ the user.
   an earlier shared transaction invariant. If a focused path needs prepared
   state, make it a versioned sub-checkpoint rather than asking the user to
   reproduce unrelated manual steps.
+- A human-observed time-window checkpoint must stage into a stable, non-expiring
+  precondition. Browser preparation, oracle reads and the user round trip must
+  never consume the tested interval. Start the interval only through an
+  explicit versioned harness action after the user has confirmed the exact
+  pre-window UI boundary; print and persist the absolute deadline and owning
+  identity. A missed pre-window observation is **NOT EXECUTED / fixture timing
+  invalid**, not a product FAIL, and must be repaired in the fixture before
+  replay.
 
 ### 1.2 Exact manual producer instructions
 

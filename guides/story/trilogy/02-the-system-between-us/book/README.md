@@ -2,9 +2,8 @@
 
 Working title: **The System Between Us**.
 
-Status: **English public edition 1.0.0 is synchronized with the 12 August 2026
-manuscript and 109-page reading PDF. Its first publication date is 12 August
-2026.**
+Status: **English public edition 1.0.0 is synchronized with the 20 August 2026
+manuscript and reading PDF. Its first publication date is 20 August 2026.**
 
 The manuscript is [THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md).
 

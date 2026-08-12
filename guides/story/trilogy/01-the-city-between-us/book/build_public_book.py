@@ -925,7 +925,10 @@ def build_document(source: Path) -> str:
         )
     else:
         published = html.escape(display_date(version["published"]))
-        edition = f"Public edition v{edition_version} · Published {published}"
+        edition = (
+            f"Public edition v{edition_version} · Published {published} "
+            "(Hungary’s State Foundation Day)"
+        )
         truth = (
             "A first-person public edition. Autobiographical memory is kept "
             "distinct from verified product capability and future product outcomes."

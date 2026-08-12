@@ -4,7 +4,7 @@ This folder contains the English-first public edition of the MyScoutee origin
 story. It is Part `I` of a planned trilogy, a memoir-led product book, not a
 translation and not a claim of proven product outcomes.
 
-Current state: **Part I · Illustrated public edition v1.0.0 · published 12 August 2026 ·
+Current state: **Part I · Illustrated public edition v1.0.0 · published 20 August 2026 ·
 technically closed (`locked: true`)**. Its independent draft export remains
 available for later editorial work.
 
@@ -18,7 +18,7 @@ language and copyright. The builder places these values in the HTML and PDF;
 
 - Part `I` is a trilogy position, not the book's edition version.
 - The Founder approved the synchronized first illustrated public edition as
-  `1.0.0` before its first publication on 12 August 2026.
+  `1.0.0` before its first publication on 20 August 2026.
 - After publication, increment the version for every released change according
   to the patch/minor/major rules in `CHANGELOG.md`.
 - Future Parts `II` and `III` receive their own version histories. Their exact

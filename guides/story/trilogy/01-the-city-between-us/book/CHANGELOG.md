@@ -60,9 +60,9 @@ The trilogy part and the edition version are separate. This book is Part
   repeated mechanism explanations that made the origin story read like product
   documentation.
 
-## 1.0.0 — 2026-08-12
+## 1.0.0 — 2026-08-20
 
-- Founder-approved first public edition for release on LinkedIn on 12 August
+- Founder-approved first public edition for release on LinkedIn on 20 August
   2026.
 - Added the approved Founder, Budapest relationship, London household,
   global/local encounter and balanced six-person MyScoutee character plates.
