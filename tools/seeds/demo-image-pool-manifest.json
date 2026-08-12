@@ -4,8 +4,8 @@
   "generatedImages": {
     "assetCount": 50,
     "eventCount": 100,
-    "additionalProfileCount": 3,
-    "totalNewLargeImages": 153
+    "additionalProfileCount": 9,
+    "totalNewLargeImages": 159
   },
   "landscapeVariants": {
     "large": {
@@ -7444,19 +7444,55 @@
       "userId": "650000000000000000000061",
       "name": "Casey Bridge",
       "minioKey": "images/demo-profiles/650000000000000000000061/photo-01/large.webp",
-      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first dating/social profile portrait\nPrimary request: create a fully fictional, non-famous 32-year-old man from Austin, with a quiet, reliable small-group connector presence.\nScene/backdrop: casual coffee-shop terrace, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in natural editorial lifestyle photography\nPrimary request: create a fully fictional, non-famous 32-year-old man from Austin, with a quiet, reliable small-group connector presence.\nScene/backdrop: leafy Austin neighborhood park, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+    },
+    {
+      "userId": "650000000000000000000061",
+      "name": "Casey Bridge",
+      "minioKey": "images/demo-profiles/650000000000000000000061/photo-02/large.webp",
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in natural editorial lifestyle photography\nPrimary request: create a fully fictional, non-famous 32-year-old man from Austin, with a quiet, reliable small-group connector presence.\nScene/backdrop: casual coffee-shop terrace, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
     },
     {
       "userId": "650000000000000000000062",
       "name": "Nova Social",
       "minioKey": "images/demo-profiles/650000000000000000000062/photo-01/large.webp",
-      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first dating/social profile portrait\nPrimary request: create a fully fictional, non-famous 27-year-old woman from Austin, with a warm, sociable and approachable presence.\nScene/backdrop: bright neighborhood art courtyard, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in natural editorial lifestyle photography\nPrimary request: create a fully fictional, non-famous 27-year-old woman from Austin, with a warm, sociable and approachable presence.\nScene/backdrop: bright neighborhood café terrace, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+    },
+    {
+      "userId": "650000000000000000000062",
+      "name": "Nova Social",
+      "minioKey": "images/demo-profiles/650000000000000000000062/photo-02/large.webp",
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in natural editorial lifestyle photography\nPrimary request: create a fully fictional, non-famous 27-year-old woman from Austin, with a warm, sociable and approachable presence.\nScene/backdrop: lively outdoor community market, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
     },
     {
       "userId": "650000000000000000000063",
       "name": "Riley Outside",
       "minioKey": "images/demo-profiles/650000000000000000000063/photo-01/large.webp",
-      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first dating/social profile portrait\nPrimary request: create a fully fictional, non-famous 29-year-old man from Austin, with a adventurous, relaxed and outdoors-oriented presence.\nScene/backdrop: green urban trailhead, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in natural editorial lifestyle photography\nPrimary request: create a fully fictional, non-famous 29-year-old man from Austin, with a adventurous, relaxed and outdoors-oriented presence.\nScene/backdrop: green lakeside urban trail, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+    },
+    {
+      "userId": "650000000000000000000063",
+      "name": "Riley Outside",
+      "minioKey": "images/demo-profiles/650000000000000000000063/photo-02/large.webp",
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in natural editorial lifestyle photography\nPrimary request: create a fully fictional, non-famous 29-year-old man from Austin, with a adventurous, relaxed and outdoors-oriented presence.\nScene/backdrop: Austin greenbelt hiking trail, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+    },
+    {
+      "userId": "admin-demo-ava",
+      "name": "Ava Moderation",
+      "minioKey": "images/demo-profiles/admin-demo-ava/photo-01/large.webp",
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in stylized editorial avatar\nPrimary request: create a fully fictional, non-famous adult woman from the Safety desk, with a calm, fair and attentive moderator presence.\nScene/backdrop: stylized trust-and-safety operations workspace, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+    },
+    {
+      "userId": "admin-demo-noel",
+      "name": "Noel Safety",
+      "minioKey": "images/demo-profiles/admin-demo-noel/photo-01/large.webp",
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in stylized editorial avatar\nPrimary request: create a fully fictional, non-famous adult man from the Trust desk, with a steady, discreet and reassuring safety specialist presence.\nScene/backdrop: stylized trust-and-safety review workspace, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
+    },
+    {
+      "userId": "operator@myscoutee.local",
+      "name": "Demo Operator",
+      "minioKey": "images/demo-profiles/operator@myscoutee.local/photo-01/large.webp",
+      "prompt": "Use case: photorealistic-natural\nAsset type: mobile-first profile portrait in stylized editorial avatar\nPrimary request: create a fully fictional, non-famous adult woman from a deployment sandbox, with a precise, capable infrastructure operator presence.\nScene/backdrop: stylized local deployment operations workspace, softly out of focus.\nSubject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.\nComposition/framing: vertical 3:4 portrait, waist-up, face centered with safe crop room for mobile and desktop cards.\nLighting/mood: soft natural light, approachable and candid rather than studio-glamorous.\nConstraints: entirely AI-generated fictional person; must not resemble a celebrity or known person; no logos, text, watermark, beauty-filter look or identifying documents.\nAvoid: age mismatch, plastic skin, distorted hands, duplicate people, exaggerated fashion editorial styling."
     }
   ],
   "reusedNavigatorProfileImages": [

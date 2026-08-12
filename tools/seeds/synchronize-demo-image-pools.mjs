@@ -444,9 +444,15 @@ if (EVENT_IMAGE_DEFINITIONS.length !== 100) {
 assertUniqueEventImageDefinitions(EVENT_IMAGE_DEFINITIONS);
 
 const PROFILE_PROMPTS = [
-  profilePrompt('650000000000000000000061', 'Casey Bridge', '32-year-old man', 'Austin', 'quiet, reliable small-group connector', 'casual coffee-shop terrace'),
-  profilePrompt('650000000000000000000062', 'Nova Social', '27-year-old woman', 'Austin', 'warm, sociable and approachable', 'bright neighborhood art courtyard'),
-  profilePrompt('650000000000000000000063', 'Riley Outside', '29-year-old man', 'Austin', 'adventurous, relaxed and outdoors-oriented', 'green urban trailhead')
+  profilePrompt('650000000000000000000061', 'Casey Bridge', '32-year-old man', 'Austin', 'quiet, reliable small-group connector', 'leafy Austin neighborhood park', 'photo-01'),
+  profilePrompt('650000000000000000000061', 'Casey Bridge', '32-year-old man', 'Austin', 'quiet, reliable small-group connector', 'casual coffee-shop terrace', 'photo-02'),
+  profilePrompt('650000000000000000000062', 'Nova Social', '27-year-old woman', 'Austin', 'warm, sociable and approachable', 'bright neighborhood café terrace', 'photo-01'),
+  profilePrompt('650000000000000000000062', 'Nova Social', '27-year-old woman', 'Austin', 'warm, sociable and approachable', 'lively outdoor community market', 'photo-02'),
+  profilePrompt('650000000000000000000063', 'Riley Outside', '29-year-old man', 'Austin', 'adventurous, relaxed and outdoors-oriented', 'green lakeside urban trail', 'photo-01'),
+  profilePrompt('650000000000000000000063', 'Riley Outside', '29-year-old man', 'Austin', 'adventurous, relaxed and outdoors-oriented', 'Austin greenbelt hiking trail', 'photo-02'),
+  profilePrompt('admin-demo-ava', 'Ava Moderation', 'adult woman', 'the Safety desk', 'calm, fair and attentive moderator', 'stylized trust-and-safety operations workspace', 'photo-01', 'stylized editorial avatar'),
+  profilePrompt('admin-demo-noel', 'Noel Safety', 'adult man', 'the Trust desk', 'steady, discreet and reassuring safety specialist', 'stylized trust-and-safety review workspace', 'photo-01', 'stylized editorial avatar'),
+  profilePrompt('operator@myscoutee.local', 'Demo Operator', 'adult woman', 'a deployment sandbox', 'precise, capable infrastructure operator', 'stylized local deployment operations workspace', 'photo-01', 'stylized editorial avatar')
 ];
 
 let assets = JSON.parse(await readFile(ASSETS_PATH, 'utf8'));
@@ -581,10 +587,16 @@ for (const event of events) {
   if (!slotNumber) throw new Error(`No image slot for event ${eventKey(event)}`);
   event.imageUrl = mediaUrl(eventMinioKey(slotNumber));
 }
+const profileImagesByUserId = new Map();
 for (const profile of PROFILE_PROMPTS) {
-  const user = users.find(item => item.userId === profile.userId);
-  if (!user) throw new Error(`Missing profile user ${profile.userId}`);
-  user.images = [mediaUrl(profile.minioKey)];
+  const profiles = profileImagesByUserId.get(profile.userId) ?? [];
+  profiles.push(profile);
+  profileImagesByUserId.set(profile.userId, profiles);
+}
+for (const [userId, profiles] of profileImagesByUserId) {
+  const user = users.find(item => item.userId === userId);
+  if (!user) throw new Error(`Missing profile user ${userId}`);
+  user.images = profiles.map(profile => mediaUrl(profile.minioKey));
 }
 for (const record of contacts) {
   for (const contact of record.contacts ?? []) {
@@ -1584,15 +1596,15 @@ function buildFrontendHelper(eventSlots, localEventSlotBySeed, localAssetSlotByS
     `}\n`;
 }
 
-function profilePrompt(userId, name, ageAndGender, city, personality, backdrop) {
-  const minioKey = `images/demo-profiles/${userId}/photo-01/large.webp`;
+function profilePrompt(userId, name, ageAndGender, city, personality, backdrop, photoId, style = 'natural editorial lifestyle photography') {
+  const minioKey = `images/demo-profiles/${userId}/${photoId}/large.webp`;
   return {
     userId,
     name,
     minioKey,
     prompt: [
       'Use case: photorealistic-natural',
-      'Asset type: mobile-first dating/social profile portrait',
+      `Asset type: mobile-first profile portrait in ${style}`,
       `Primary request: create a fully fictional, non-famous ${ageAndGender} from ${city}, with a ${personality} presence.`,
       `Scene/backdrop: ${backdrop}, softly out of focus.`,
       'Subject: one person only, natural face and skin texture, relaxed authentic expression, contemporary casual clothing, believable age.',

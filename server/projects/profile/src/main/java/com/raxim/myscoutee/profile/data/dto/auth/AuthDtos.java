@@ -410,6 +410,7 @@ public final class AuthDtos {
             String name,
             String city,
             String initials,
+            String avatarUrl,
             String gender,
             String statusText,
             Integer completion,
