@@ -65,7 +65,30 @@
     "placementMethod": "explicit millisecond delays; each listed source segment is present exactly once with no overlaps"
   },
   "mix": {
-    "sourceSoundtrack": "preserved",
+    "sourceSoundtrack": "preserved with local seam smoothing",
+    "soundtrackSeamFades": {
+      "method": "qsin fade-out and fade-in around each hard source-audio join; no timeline overlap or duration change",
+      "fadeDurationSecondsPerSide": 0.145833,
+      "joinSeconds": [
+        7.708333,
+        15.416666,
+        23.124999,
+        30.833332,
+        37.333332,
+        44.416665,
+        52.124998,
+        59.833331,
+        67.541664,
+        75.249997,
+        82.958330,
+        90.666663,
+        98.374996,
+        106.083329,
+        113.791662,
+        121.499995,
+        129.208328
+      ]
+    },
     "ducking": {
       "filter": "sidechaincompress",
       "threshold": 0.03,
@@ -86,18 +109,18 @@
     },
     "stem": {
       "path": "/home/raxim/Downloads/video/TSBU_Part_II_ALT_final_mix_EN.wav",
-      "sha256": "6edceb45ba76045ee21cb81e80aa8f45131acd099213ee5ff74a6a5f07fb5ff9",
+      "sha256": "14687da6a38a5479aec47845b1de2a1462be98ab79e4a28d8e1cb3215fd62a00",
       "format": "stereo 48 kHz 24-bit PCM"
     }
   },
   "delivery": {
     "path": "/home/raxim/Downloads/video/the_strory_II_narrated.mp4",
-    "sha256": "a93d75da14567956dab33f48ca687ec9c0b9878b8a374fac1582d31e8732b3f1",
+    "sha256": "20678fe026b83485bd40f4a38129bacda8134009411ed3bd3a3ddad783d8c8a6",
     "durationSeconds": 137.209,
     "audio": "AAC stereo 48 kHz 320 kbit/s",
     "measuredIntegratedLufs": -17.8,
     "measuredTruePeakDbtp": -0.9,
-    "measuredLoudnessRangeLu": 5.9,
+    "measuredLoudnessRangeLu": 5.8,
     "videoPacketMd5MatchesPictureLock": true
   }
 }
