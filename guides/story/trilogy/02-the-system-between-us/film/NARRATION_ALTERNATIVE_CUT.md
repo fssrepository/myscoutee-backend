@@ -16,8 +16,11 @@ Similarity: `55`
 Style exaggeration: `32`  
 Speaker boost: `Off`
 
-Generate the five blocks separately. Request speech only: no music, effects or
-sound design. Prefer 48 kHz WAV. Keep the filenames below so the assembly is
+Generate the five blocks separately. They are credit-safe generation groups,
+not five uninterrupted placement regions: the final assembly aligns their
+natural sentence breaks to the actual picture events recorded in
+`NARRATION_MIX_MANIFEST.json`. Request speech only: no music, effects or sound
+design. Prefer 48 kHz WAV. Keep the filenames below so the assembly is
 deterministic.
 
 ## P2-ALT-01 — target 00:00.000–00:30.833

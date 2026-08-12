@@ -1,0 +1,104 @@
+{
+  "status": "review-render",
+  "renderedOn": "2026-08-12",
+  "picture": {
+    "path": "/home/raxim/Downloads/video/the_strory_II.mp4",
+    "sha256": "4bc8a1ab95ac683c929c551b78e04bab882479e43d3686f21547d3180d448d81",
+    "durationSeconds": 137.209,
+    "videoHandling": "stream-copy"
+  },
+  "narration": {
+    "voice": "Jon — Warm & Grounded Storyteller",
+    "model": "Eleven Multilingual v2",
+    "settings": {
+      "speed": 0.94,
+      "stability": 58,
+      "similarity": 55,
+      "style": 32,
+      "speakerBoost": false
+    },
+    "stem": {
+      "path": "/home/raxim/Downloads/video/TSBU_Part_II_ALT_narration_EN.wav",
+      "sha256": "5f2dbc1c2a7c2c9d85a7f6f5da40fce8a761c8990058665e8708c6d111bc6053",
+      "format": "mono 48 kHz 24-bit PCM",
+      "durationSeconds": 137.209
+    },
+    "sourceBlocks": [
+      {
+        "source": "/home/raxim/Downloads/video/Part_II_Jon_blocks/P2_ALT_JON_01.mp3",
+        "durationSeconds": 22.5175,
+        "sha256": "5db8ade183c35285a360228d4a0e454ab147ae4727b82183dd5b44276dec817c"
+      },
+      {
+        "source": "/home/raxim/Downloads/video/Part_II_Jon_blocks/P2_ALT_JON_02.mp3",
+        "durationSeconds": 21.342,
+        "sha256": "230d49d13d51381f58559b09d9e6dea572c6a5cdae42a3c6c1a2ccf8e97fe362"
+      },
+      {
+        "source": "/home/raxim/Downloads/video/Part_II_Jon_blocks/P2_ALT_JON_03.mp3",
+        "durationSeconds": 18.207313,
+        "sha256": "a61495c5926a72a005bc9fe916d1144e31131335b26b312bb74654f80c6f870a"
+      },
+      {
+        "source": "/home/raxim/Downloads/video/Part_II_Jon_blocks/P2_ALT_JON_04.mp3",
+        "durationSeconds": 22.88325,
+        "sha256": "ab7054881ee5f05e64af5c58b1f534119076ea65e456cf3b2c32db005d87eeb2"
+      },
+      {
+        "source": "/home/raxim/Downloads/video/Part_II_Jon_blocks/P2_ALT_JON_05.mp3",
+        "durationSeconds": 18.155063,
+        "sha256": "e18290a5215dc5b10039f90047110f211e32475f0ba4c34b67e599495ff66374"
+      }
+    ],
+    "pictureAlignedSegments": [
+      { "sourceBlock": 1, "sourceStart": 0.0, "sourceEnd": 6.22485, "startSeconds": 0.0 },
+      { "sourceBlock": 1, "sourceStart": 6.22485, "sourceEnd": 12.963, "startSeconds": 8.0 },
+      { "sourceBlock": 1, "sourceStart": 12.963, "sourceEnd": 15.5006, "startSeconds": 16.0 },
+      { "sourceBlock": 1, "sourceStart": 15.9299, "sourceEnd": 22.1394, "startSeconds": 24.0 },
+      { "sourceBlock": 2, "sourceStart": 0.0, "sourceEnd": 20.9196, "startSeconds": 30.833 },
+      { "sourceBlock": 3, "sourceStart": 0.0, "sourceEnd": 12.3507, "startSeconds": 59.833 },
+      { "sourceBlock": 3, "sourceStart": 12.9355, "sourceEnd": 17.8293, "startSeconds": 79.833 },
+      { "sourceBlock": 4, "sourceStart": 0.0, "sourceEnd": 22.5484, "startSeconds": 84.733 },
+      { "sourceBlock": 5, "sourceStart": 0.0, "sourceEnd": 17.7932, "startSeconds": 107.733 }
+    ],
+    "timeProcessing": "none"
+  },
+  "mix": {
+    "sourceSoundtrack": "preserved",
+    "ducking": {
+      "filter": "sidechaincompress",
+      "threshold": 0.03,
+      "ratio": 3,
+      "attackMilliseconds": 20,
+      "releaseMilliseconds": 300,
+      "knee": 2.828
+    },
+    "narrationGainDb": 2.0,
+    "premasterLimiter": {
+      "limit": 0.891,
+      "attackMilliseconds": 5,
+      "releaseMilliseconds": 100
+    },
+    "mastering": {
+      "integratedTargetLufs": -14,
+      "truePeakTargetDbtp": -3.1,
+      "deliveryTruePeakTargetDbtp": -1.3,
+      "loudnessRangeTargetLu": 11,
+      "postMasterGainDb": 0.4
+    },
+    "stem": {
+      "path": "/home/raxim/Downloads/video/TSBU_Part_II_ALT_final_mix_EN.wav",
+      "sha256": "d290b750800fb51cc9513855625694a27a864d25b0b951aefae9d2b2afaa629a",
+      "format": "stereo 48 kHz 24-bit PCM"
+    }
+  },
+  "delivery": {
+    "path": "/home/raxim/Downloads/video/the_strory_II_narrated.mp4",
+    "sha256": "988f9fd88a865dcf7a85997bfbefa48891a8db382833270c02636b57b5de52d6",
+    "durationSeconds": 137.209,
+    "audio": "AAC stereo 48 kHz 320 kbit/s",
+    "measuredIntegratedLufs": -14.3,
+    "measuredTruePeakDbtp": -1.4,
+    "videoPacketMd5MatchesPictureLock": true
+  }
+}
