@@ -1008,6 +1008,24 @@
     "value": "Choose a demo profile."
   },
   {
+    "_id": "i18n-message-en-demo-selector-status-blocked",
+    "key": "demo.selector.status.blocked",
+    "lang": "en",
+    "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-demo-selector-status-deleted",
+    "key": "demo.selector.status.deleted",
+    "lang": "en",
+    "value": "Deleted"
+  },
+  {
+    "_id": "i18n-message-en-demo-selector-status-new",
+    "key": "demo.selector.status.new",
+    "lang": "en",
+    "value": "New"
+  },
+  {
     "_id": "i18n-message-en-demo-session-ready",
     "key": "demo.session.ready",
     "lang": "en",
@@ -19438,6 +19456,24 @@
     "key": "demo.selector.subtitle",
     "lang": "hu",
     "value": "Válassz demo profilt."
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-status-blocked",
+    "key": "demo.selector.status.blocked",
+    "lang": "hu",
+    "value": "Letiltott"
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-status-deleted",
+    "key": "demo.selector.status.deleted",
+    "lang": "hu",
+    "value": "Törölt"
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-status-new",
+    "key": "demo.selector.status.new",
+    "lang": "hu",
+    "value": "Új"
   },
   {
     "_id": "i18n-message-hu-demo-session-ready",

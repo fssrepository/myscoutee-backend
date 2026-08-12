@@ -415,7 +415,7 @@ public final class AuthDtos {
             String statusText,
             Integer completion,
             Integer profileFormVersion,
-            String profileStatus,
+            String status,
             String deletedAtIso) {
     }
 

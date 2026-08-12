@@ -1234,7 +1234,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getStatusText()),
                 normalizeCount(user.getCompletion()),
                 normalizeCount(user.getProfileFormVersion()),
-                resolveProfileStatus(user),
+                safeText(user.getStatus()),
                 nullToEmpty(user.getDeletedAtIso()));
     }
 
