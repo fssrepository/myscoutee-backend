@@ -35,8 +35,8 @@ checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
 ledger_status: historical FAIL retained; basket-identity fix verified; full replay in progress
-state: second Cancel in-place and persisted oracle PASS; both basket attempts are distinct closed audits and no reservation is active
-required_resume: reload Nova Explore once and verify Request Join reconstruction with an unchanged read-only oracle
+state: second Cancel in-place and post-Cancel reload PASS; both distinct closed audits and every persisted identity stayed unchanged
+required_resume: Nova performs the final Join; then prove a third distinct active basket, fifth ordered notification and zero tickets before approval
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
@@ -107,8 +107,9 @@ otherwise.
 
 ### Next manual action
 
-Reload Nova's middle Explore window once. Find `QA EVENT-TICKET-005` and verify
-the card still offers fresh **Request Join**. Do not Join yet. Keep Casey
+In Nova's middle Explore window, use **Request Join** on
+`QA EVENT-TICKET-005` and complete the final Join flow until the card shows
+pending/**Continue booking**. Do not reload or Cancel afterward. Keep Casey
 Notifications open and do not touch Riley. Reply `megvan`.
 
 ## QA working method

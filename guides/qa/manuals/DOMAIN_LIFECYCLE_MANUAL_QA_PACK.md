@@ -1474,6 +1474,12 @@ Restart evidence on 2026-08-06:
   Casey's ordered notification sequence is Pending, Cancelled, Pending,
   Cancelled, and tickets/counters remain zero. The second post-Cancel reload is
   next as its separate reconstruction/read-purity test.
+- Repair replay — second post-Cancel reload (2026-08-12): **PASS**. The card
+  reconstructed **Request Join** while both closed audit IDs and all their
+  timestamps remained unchanged. Nova stayed suppressed with pending `0` /
+  trash `1`; Casey retained exactly four ordered Pending/Cancelled
+  notifications; tickets and ticket counters stayed zero. The final Join is
+  next and must append the third distinct physical basket before approval.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket
