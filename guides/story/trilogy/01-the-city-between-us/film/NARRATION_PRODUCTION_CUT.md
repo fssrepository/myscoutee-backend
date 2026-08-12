@@ -38,7 +38,7 @@ Museums, exhibitions, clubs and dates across cultures made London feel inexhaust
 Export as `P1_JON_03.wav`.
 
 ```text
-Across nearly fifty countries, I discovered places, and myself, through local people. Then the world closed. I had gone out to earn money. At thirty-five, I came home to find a partner. For almost two years, the same photograph brought no Tinder match. On Tinder, thirty-five had become a threshold in who could even see me. At thirty-seven, I entered thirty-three. The silence broke. Even women older than the displayed age began matching.
+Across nearly fifty countries, I discovered places, and myself, through local people. Then the world closed. But before it did, I had gone out to earn money. At thirty-five, I came home to find a partner. For almost two years, the same photograph brought no Tinder match. On Tinder, thirty-five had become a threshold in who could even see me. At thirty-seven, I entered thirty-three. The silence broke. Even women older than the displayed age began matching.
 ```
 
 ## P1-04 — target 01:32.500–02:03.333
