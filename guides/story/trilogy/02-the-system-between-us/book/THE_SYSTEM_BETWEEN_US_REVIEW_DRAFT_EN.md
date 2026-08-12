@@ -953,8 +953,7 @@ to the office went unanswered, and for almost three months nobody there spoke
 with me. On 19 February, the appointed lawyer asked to be released because the
 office was overloaded. The police accepted the request, and it was from the
 police that I learned he was no longer my lawyer. Only then did he return one
-of my calls. He told me to leave the police to their work and suggested that I
-say I had not done it. Then the line closed.
+of my calls. He told me to let the police do their job.
 For the months after 19 February, I did not know whether another defender had
 been appointed—or whether I had one at all. I complained in writing. Nobody
 replied.
@@ -2908,8 +2907,7 @@ of the cohesion funds—that was withheld because the enabling conditions had
 not been met. The rule-of-law condition attached to this part included judicial
 independence. The wider framework also contained requirements concerning public
 procurement and academic freedom. The measures had no connection to the private
-case. The only possible thread is the number itself: it may have remained from
-a report read at the time.
+case.
 
 Also in July 2026, the Council of the European Union approved a new Hungarian
 recovery plan expected to allow €10 billion to be disbursed. Public reporting

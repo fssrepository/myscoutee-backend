@@ -418,9 +418,8 @@ szakvizsgájára készül, ezért egy ideig nem lesz elérhető. Az irodát hiá
 hívtam: fel sem vették, és közel három hónapig senki nem állt szóba velem.
 Február 19-én a kirendelt ügyvéd az iroda túlterheltségére hivatkozva kérte a
 felmentését. A rendőrség ezt elfogadta, és tőlük tudtam meg, hogy már nem ő a
-védőm. Csak ezután hívott vissza. A rövid beszélgetésben azt
-mondta, hagyjam dolgozni a rendőröket, és inkább mondjam azt, hogy nem én tettem.
-Aztán véget ért a hívás. Február 19. után hónapokig nem tudtam, kirendeltek-e
+védőm. Csak ezután hívott vissza. A rövid beszélgetésben azt mondta, hagyjam
+dolgozni a rendőröket. Február 19. után hónapokig nem tudtam, kirendeltek-e
 másik védőt — vagy van-e egyáltalán védőm. Írásban panaszt tettem. Senki nem
 reagált.
 
@@ -2171,8 +2170,7 @@ további részét — azért tartottak vissza, mert a feljogosító feltételek 
 teljesültek. Ehhez a részhez az igazságszolgáltatás függetlenségét érintő
 jogállamisági feltétel is kapcsolódott. A szélesebb feltételrendszer a
 közbeszerzéseket és az akadémiai szabadságot érintő előírásokat is tartalmazott.
-Az intézkedéseknek nem volt közük a magánügyhöz. Az egyetlen lehetséges szál maga
-a szám: megmaradhatott egy akkor olvasott hírből.
+Az intézkedéseknek nem volt közük a magánügyhöz.
 
 Ugyancsak 2026 júliusában az Európai Unió Tanácsa olyan új magyar
 helyreállítási tervet hagyott jóvá, amely tízmilliárd euró folyósítását tette
