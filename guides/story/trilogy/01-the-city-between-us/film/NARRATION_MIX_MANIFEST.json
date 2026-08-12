@@ -86,17 +86,17 @@
     },
     "stem": {
       "path": "/home/raxim/Downloads/video/TCBU_final_mix_EN.wav",
-      "sha256": "99489071f30832532d448747b85eebaa075fb227dec88cbedc12f1a8246c973d",
+      "sha256": "9ff37359cbeabb6586bd8a9f86c7f853d9c1b0310f63d6f2a01b0bbb4eea8f7f",
       "format": "stereo 48 kHz 24-bit PCM"
     }
   },
   "delivery": {
     "path": "/home/raxim/Downloads/video/the_strory_I_narrated.mp4",
-    "sha256": "ed6fa8308479f2151d2ca069a955b78db379673f8235c243c2fa25c6a067fcb0",
+    "sha256": "64ed47dd18b76c3e90907d726941602e511bf82d6e428b0a7b9d158515ad158d",
     "durationSeconds": 184.667,
     "audio": "AAC stereo 48 kHz 320 kbit/s",
     "measuredIntegratedLufs": -14.0,
-    "measuredTruePeakDbtp": -1.3,
+    "measuredTruePeakDbtp": -1.4,
     "videoPacketMd5MatchesPictureLock": true
   }
 }
