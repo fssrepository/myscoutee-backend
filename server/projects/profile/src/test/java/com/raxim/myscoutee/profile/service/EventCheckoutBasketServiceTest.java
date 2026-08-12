@@ -180,6 +180,31 @@ class EventCheckoutBasketServiceTest {
     }
 
     @Test
+    void terminalAcceptanceClosesOnlyTheActiveReservationSlot() {
+        service.finalizeAcceptedReservation(" user-1 ", " event-1 ");
+
+        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(2)).updateMulti(
+                queryCaptor.capture(),
+                updateCaptor.capture(),
+                eq(EventCheckoutBasketItem.class));
+        assertThat(queryCaptor.getAllValues())
+                .allSatisfy(query -> {
+                    String predicate = query.getQueryObject().toJson();
+                    assertThat(predicate).contains("user-1", "event-1", "reservationActive", "true");
+                });
+        assertThat(updateCaptor.getAllValues())
+                .allSatisfy(update -> {
+                    Document setValues = (Document) update.getUpdateObject().get("$set");
+                    assertThat(setValues.getString("status")).isEqualTo("approved");
+                    assertThat(setValues.getString("resultState")).isEqualTo("succeeded");
+                    assertThat(setValues.getBoolean("reservationActive")).isFalse();
+                    assertThat(setValues.getBoolean("pendingCounterTracked")).isFalse();
+                });
+    }
+
+    @Test
     void purgeDoesNotReadOrWriteWhenAnotherInstanceOwnsTheScheduledRun() {
         int processed = service.purgeExpiredDraftBasketsScheduled(Instant.now());
 

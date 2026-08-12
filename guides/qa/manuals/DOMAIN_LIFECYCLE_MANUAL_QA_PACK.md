@@ -1371,7 +1371,13 @@ Restart evidence on 2026-08-06:
   row menu does not own membership approval. This is the terminal transition
   directly to accepted; there is no second participant-acceptance step. The
   approval write creates exactly one Nova participant overlay and one physical
-  `status=A` ticket.
+  `status=A` ticket. Treat basket finalization as a separately named, short
+  test inside this same approval transaction:
+  3. **Terminal approval basket-closure test:** the approval boundary must make
+     the current attempt non-active/non-displayable while retaining its
+     physical audit identity; the earlier Cancel audits remain byte-for-byte
+     unchanged. An accepted member with an issued ticket must never retain an
+     active `approval-pending` reservation.
 - Nova's normal poll exposes Ticket counter `1`; opening Ticket twice reads the
   same ID/code. Before approval and during both reads, no credential may be
   created.
@@ -1492,6 +1498,46 @@ Restart evidence on 2026-08-06:
   Casey's five ordered notifications are Pending, Cancelled, Pending,
   Cancelled, Pending. No Join produced a physical ticket or either ticket
   counter. Casey's single terminal approval is next.
+- Repair replay — terminal Casey approval (2026-08-12): **FAIL / PARTIAL DOMAIN
+  SUCCESS**. The owning `POST /api/activities/events/members/action` returned
+  `200`; Nova transitioned directly to accepted, occupancy became exactly
+  `2 accepted + 0 pending / 8`, her activity counters became active `1` /
+  pending `0`, and exactly one physical `status=A` ticket
+  `6a7c9b3ff8a7d3829acd8013` with code
+  `TKT-7b0475a4-136d-427c-beb8-b99bccb66fa6` was created. Nova's stored ticket
+  counters are `1 / 1`; Casey remains `0 / 0`, no second controlled ticket
+  exists and Riley was untouched. However, the current basket
+  `6a7c996af8a7d3829acd8007` incorrectly remained
+  `approval-pending/pending`, `reservationActive=true`; the first two Cancel
+  audits remained correctly closed. This fails the separately named
+  **Terminal approval basket-closure test** and leaves the full checkpoint
+  open. Diagnose and fix basket finalization at the approval-owning domain
+  boundary, then replay the complete checkpoint from its canonical baseline;
+  do not continue to Ticket reads from this inconsistent state.
+- Terminal basket-closure repair (2026-08-12): **IMPLEMENTATION UPDATED / CLEAN
+  REPLAY REQUIRED**. The owning `ActivitiesMembersService` now finalizes active
+  checkout reservations for every newly accepted event member before ticket
+  synchronization, including direct joins, member actions, replace flows and
+  creator-membership repair. `EventCheckoutBasketService` targets only
+  `reservationActive=true` records and transitions them to
+  `approved/succeeded`, clears reservation/pending tracking and leaves every
+  already-closed audit untouched. The HTTP join orchestrator delegates to the
+  same idempotent finalizer. Local-mode member acceptance now enforces the same
+  invariant using a reservation-only repository update. Backend main-source
+  hot deploy finished `BUILD SUCCESSFUL` and restarted healthy; the frontend
+  watcher generated the complete bundle successfully. Source regressions cover
+  active-slot-only finalization and basket-finalization-before-ticket ordering.
+  Per the dev-stack resource rule no separate build/test process was started.
+  This evidence does not replace a clean full checkpoint replay.
+- Terminal basket-closure repair replay baseline (2026-08-12): the versioned
+  reset removed the inconsistent approval attempt, `status` proved
+  `phase=not-staged`, and a fresh image-qualified stage plus an independent
+  second status read proved the canonical Casey-only baseline. Casey is the
+  sole accepted Admin at `1 + 0 / 8`; Nova has no membership, basket,
+  notification, ticket or activity/ticket counter; the ticket collection is
+  empty. The launcher replaced only this checkpoint's managed Casey, Nova and
+  Riley windows and verified all three identities. Begin the complete replay
+  again at Nova's first Join; no prior boundary may be skipped.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

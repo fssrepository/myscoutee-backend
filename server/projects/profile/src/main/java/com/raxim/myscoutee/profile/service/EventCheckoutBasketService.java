@@ -371,6 +371,35 @@ public class EventCheckoutBasketService {
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
     }
 
+    public void finalizeAcceptedReservation(String userId, String sourceId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+            return;
+        }
+
+        String nowIso = Instant.now().toString();
+        Update terminalUpdate = new Update()
+                .set("status", "approved")
+                .set("resultState", "succeeded")
+                .set("reservationActive", false)
+                .set("pendingCounterTracked", false)
+                .set("updatedAtIso", nowIso);
+        Query trackedQuery = new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(normalizedUserId),
+                Criteria.where("sourceId").is(normalizedSourceId),
+                Criteria.where("reservationActive").is(true),
+                Criteria.where("pendingCounterTracked").is(true)));
+        adjustPendingCount(-modifiedCount(
+                mongoTemplate.updateMulti(trackedQuery, terminalUpdate, EventCheckoutBasketItem.class)));
+
+        Query remainingActiveQuery = new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(normalizedUserId),
+                Criteria.where("sourceId").is(normalizedSourceId),
+                Criteria.where("reservationActive").is(true)));
+        mongoTemplate.updateMulti(remainingActiveQuery, terminalUpdate, EventCheckoutBasketItem.class);
+    }
+
     public int purgeExpiredDraftBasketsNow() {
         return purgeExpiredDraftBaskets(Instant.now(), false);
     }

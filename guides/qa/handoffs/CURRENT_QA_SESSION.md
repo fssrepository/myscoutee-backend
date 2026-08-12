@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-ledger_status: historical FAIL retained; basket-identity fix verified; full replay in progress
-state: final Join PASS with third distinct active basket 6a7c996af8a7d3829acd8007; five ordered notifications and zero tickets
-required_resume: Casey closes Notifications, opens My Events -> QA EVENT-TICKET-005 -> capacity/Members -> Nova actions -> Approve -> confirmation Approve exactly once; then prove direct acceptance and exactly one Nova A ticket
+ledger_status: FAIL retained; terminal basket-closure implementation hot-deployed; clean full replay in progress
+state: fresh Casey-only baseline independently verified; managed Casey/Nova/Riley windows replaced and identity-checked; no membership, basket, notification or ticket for Nova
+required_resume: Nova performs the first Request Join exactly once; then prove one new active approval-pending basket, one member-origin pending membership, one Casey Pending notification and zero tickets/counters
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Casey Bridge
+next_actor: Nova Social
 stop_phrase: megvan
 ```
 
@@ -107,13 +107,10 @@ otherwise.
 
 ### Next manual action
 
-In Casey's left window, close **Notifications**; its rows are evidence and their
-menus do not own membership approval. Open **My Events**, find
-`QA EVENT-TICKET-005`, click its `1 / 8` capacity/Members badge, then on the
-**Nova Social** row open **Open actions for Nova Social** and choose **Approve**.
-In the **Approve request?** confirmation choose **Approve** exactly once. Stop
-as soon as it completes. Do not open Nova's Ticket yet and do not touch Riley.
-Reply `megvan`.
+In Nova's middle window, open **Events** -> **Explore**, find
+`QA EVENT-TICKET-005`, choose **Request Join** and submit that Join exactly
+once. Stop when the pending/Continue booking state appears. Leave Casey and
+Riley untouched and do not reload yet. Reply `megvan`.
 
 ## QA working method
 
@@ -145,6 +142,11 @@ the user.
   branches when they verify different observations of the same contract and
   share the same controlled baseline. Keep their stop points and oracle results
   distinct inside the QA-pack definition.
+- When one row contains several named steps or branches, format the relevant
+  CSV cells as quoted multiline values with one short `•` item per step. The
+  XLSX synchronizer wraps cell text, aligns it to the top and gives explicit
+  multiline rows enough height. This is presentation inside one testcase row,
+  not a reason to duplicate or split the testcase.
 - A longer lifecycle becomes ordered checkpoint rows. They may carry the same
   staged state forward, but every row has its own stop point, persisted oracle
   and PASS/FAIL decision.

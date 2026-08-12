@@ -238,15 +238,20 @@ def ensure_cell_style(
     border_id: int = 0,
 ) -> int:
     for index, style in enumerate(cell_xfs.findall(f"{{{NS}}}xf")):
+        alignment = style.find(f"{{{NS}}}alignment")
         if (
             style.get("fillId") == str(fill_id)
             and style.get("fontId") == str(font_id)
             and style.get("borderId") == str(border_id)
             and style.get("applyFill") == "true"
+            and style.get("applyAlignment") == "true"
+            and alignment is not None
+            and alignment.get("wrapText") == "1"
+            and alignment.get("vertical") == "top"
         ):
             return index
 
-    ET.SubElement(cell_xfs, f"{{{NS}}}xf", {
+    style = ET.SubElement(cell_xfs, f"{{{NS}}}xf", {
         "numFmtId": "164",
         "fontId": str(font_id),
         "fillId": str(fill_id),
@@ -255,8 +260,12 @@ def ensure_cell_style(
         "applyFont": "true" if font_id else "false",
         "applyFill": "true",
         "applyBorder": "true" if border_id else "false",
-        "applyAlignment": "false",
+        "applyAlignment": "true",
         "applyProtection": "false",
+    })
+    ET.SubElement(style, f"{{{NS}}}alignment", {
+        "vertical": "top",
+        "wrapText": "1",
     })
     cell_xfs.set("count", str(len(cell_xfs.findall(f"{{{NS}}}xf"))))
     return len(cell_xfs.findall(f"{{{NS}}}xf")) - 1
@@ -291,7 +300,7 @@ def build_styles(existing: bytes) -> tuple[bytes, dict[str, int]]:
         ensure_fill(fills, TEST_SECTION_FILL_COLOR),
         header_font,
     )
-    styles["default"] = 0
+    styles["default"] = ensure_cell_style(cell_xfs, 0)
 
     border_variants = {
         "top-left": ("top", "left"),
@@ -419,6 +428,13 @@ def build_sheet(
         style_key = row_style(values, headers)
         is_overview_title = values[0] == EFFECT_MARKERS_TITLE
         is_test_section = values[0] == QA_TEST_CASES_TITLE
+        explicit_line_count = max(value.count("\n") + 1 for value in values)
+        is_multiline = explicit_line_count > 1
+        row_height = (
+            20.0
+            if is_overview_title or is_test_section
+            else min(180.0, max(12.8, explicit_line_count * 15.0))
+        )
         if is_overview_title:
             merged_ranges.append(f"A{row_index}:B{row_index}")
         elif is_test_section:
@@ -426,9 +442,9 @@ def build_sheet(
         row = ET.SubElement(sheet_data, f"{{{NS}}}row", {
             "r": str(row_index),
             "customFormat": "false",
-            "ht": "20" if is_overview_title or is_test_section else "12.8",
+            "ht": f"{row_height:g}",
             "hidden": "false",
-            "customHeight": "true" if is_overview_title or is_test_section else "false",
+            "customHeight": "true" if is_overview_title or is_test_section or is_multiline else "false",
             "outlineLevel": "0",
             "collapsed": "false",
         })

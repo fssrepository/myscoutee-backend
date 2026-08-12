@@ -96,6 +96,7 @@ public class ActivitiesMembersService {
     private final AssetsService assetsService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
+    private final EventCheckoutBasketService eventCheckoutBasketService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
@@ -116,6 +117,7 @@ public class ActivitiesMembersService {
             AssetsService assetsService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
+            EventCheckoutBasketService eventCheckoutBasketService,
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
@@ -133,6 +135,7 @@ public class ActivitiesMembersService {
         this.assetsService = assetsService;
         this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
+        this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
@@ -403,6 +406,7 @@ public class ActivitiesMembersService {
                     normalizedEventId,
                     normalizedActorUserId,
                     1L);
+            finalizeAcceptedEventReservations(normalizedEventId, List.of(creatorMembership));
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
             refreshEmbeddedEventMembers(normalizedEventId);
             userActivityCountersService.refreshEventCountersForSourceIds(List.of(normalizedEventId));
@@ -813,6 +817,7 @@ public class ActivitiesMembersService {
                     .removeManagedResourcesForRemovedEventMembers(ownerId, removedVisibleMembers, actorUserId, nowIso);
             clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
             processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
+            finalizeAcceptedEventReservations(ownerId, joinedEventMembers);
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
             postEventMembershipChangeMessages(ownerId, joinedEventMembers, removedVisibleMembers);
@@ -1082,6 +1087,9 @@ public class ActivitiesMembersService {
                 clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
                 processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
             }
+            if (STATUS_ACCEPTED.equals(nextStatus) && !STATUS_ACCEPTED.equals(currentStatus)) {
+                finalizeAcceptedEventReservations(ownerId, List.of(next));
+            }
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
             if (ACTION_ACCEPT.equals(action)) {
@@ -1240,6 +1248,7 @@ public class ActivitiesMembersService {
             adminTelemetryService.record("event.member.joined", "events", normalizedEventId, viewerUserId);
             if (accepted) {
                 processEventWaitlist(normalizedEventId, eventRecord, true);
+                finalizeAcceptedEventReservations(normalizedEventId, List.of(current));
             }
             eventParticipationTicketService.syncParticipationTicketForUser(normalizedEventId, viewerUserId);
             refreshEmbeddedEventMembers(normalizedEventId);
@@ -3049,6 +3058,23 @@ public class ActivitiesMembersService {
             }
         }
         return assignedAssetIds;
+    }
+
+    private void finalizeAcceptedEventReservations(
+            String eventId,
+            Collection<ActivityMember> acceptedMembers) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId) || acceptedMembers == null || acceptedMembers.isEmpty()) {
+            return;
+        }
+        acceptedMembers.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .forEach(userId -> eventCheckoutBasketService.finalizeAcceptedReservation(userId, normalizedEventId));
     }
 
     private int processEventWaitlist(String eventId, ActivityEvent eventRecord, boolean promoteSingle) {

@@ -65,6 +65,8 @@ class ActivitiesMembersServiceTest {
     @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
+    private EventCheckoutBasketService eventCheckoutBasketService;
+    @Mock
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -95,6 +97,7 @@ class ActivitiesMembersServiceTest {
                 assetsService,
                 activitiesResourcesService,
                 eventParticipationTicketService,
+                eventCheckoutBasketService,
                 eventInviteNotificationService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
@@ -876,7 +879,11 @@ class ActivitiesMembersServiceTest {
         verify(activityMembersRepository).save(savedMember.capture());
         assertThat(savedMember.getValue().getPendingSource()).isNull();
         assertThat(savedMember.getValue().getRequestKind()).isNull();
-        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        InOrder terminalAcceptance = inOrder(eventCheckoutBasketService, eventParticipationTicketService);
+        terminalAcceptance.verify(eventCheckoutBasketService)
+                .finalizeAcceptedReservation("target", "event-1");
+        terminalAcceptance.verify(eventParticipationTicketService)
+                .syncParticipationTicketsForEvent("event-1");
         verify(chatService).ensureMainEventChat(event, List.of("target"));
         verify(chatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
     }
