@@ -34,9 +34,9 @@ resume pointer and reusable working method.
 checkpoint: EVENT-VISIBILITY-001
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-visibility-001--friends-only-explore-discovery-boundary
 scenario: event-domain
-ledger_status: IN PROGRESS / UNPUBLISH PASS; EVENT-TICKET-007 PASS/CLOSED; EVENT-VISIBILITY-001 Friends Only draft Save pending
-state: EVENT-TICKET-007 closed after repeated Riley Ticket read PASS; final identities retained as Nova ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and Riley ticket 6a7cd3aff8a7d3829acd805a / TKT-d05cdd81-86da-430d-b166-b508cccb42c6; guarded advance at 2026-08-12T22:42:44+02:00 retained the active Ticketing On event with Casey/Nova/Riley accepted 3/8, no pending and both tickets A with counters 1/1; Casey then Unpublished exactly once and the independent oracle proved the same event DR/Public/Ticketing On, unchanged accepted membership, both exact tickets retained as D, Nova/Riley ticket counters 0/0, Casey ticketless, no new ticket and unchanged external controls; Casey's already-open My Events projection showed the single draft card; the normal event recompute task completed at 2026-08-12T22:55:46+02:00 with pendingCount 0 and no error; Lina Park remains the deterministic Casey-friend control and Liam Parker the deterministic non-friend control, neither with tracked participation; isolated Casey/Lina/Liam windows remain identity-verified with Austin geolocation
-required_resume: in Casey's left My Events card open the card actions, choose Edit, change only Visibility from Public to Friends only and press the editor Save checkmark exactly once; do not press Publish and do not touch Lina or Liam; stop for the draft visibility/no-ticket/no-membership-write oracle
+ledger_status: IN PROGRESS / UNPUBLISH + FRIENDS ONLY DRAFT SAVE PASS; EVENT-TICKET-007 PASS/CLOSED; EVENT-VISIBILITY-001 Publish pending
+state: EVENT-TICKET-007 closed after repeated Riley Ticket read PASS; final identities retained as Nova ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and Riley ticket 6a7cd3aff8a7d3829acd805a / TKT-d05cdd81-86da-430d-b166-b508cccb42c6; guarded advance at 2026-08-12T22:42:44+02:00 retained the active Ticketing On event with Casey/Nova/Riley accepted 3/8, no pending and both tickets A with counters 1/1; Casey Unpublish PASS proved the same event DR/Public/Ticketing On, unchanged accepted membership, both exact tickets D, counters 0/0, Casey ticketless and no new ticket; its recompute completed at 2026-08-12T22:55:46+02:00 with no error; Casey then edited only visibility Public to Friends only and saved once; the independent oracle proved the event remained DR/Ticketing On with visibility Friends only, both exact D tickets/counters/memberships/controls unchanged and no replacement ticket, while the already-open Casey card changed to the Friends icon without reload; the Save-owned recompute completed normally at 2026-08-12T23:04:50+02:00, attemptCount 3, empty lastError and worker pendingCount 0; Lina Park remains the deterministic Casey-friend control and Liam Parker the deterministic non-friend control, neither with tracked participation; isolated Casey/Lina/Liam windows remain identity-verified with Austin geolocation
+required_resume: in Casey's left My Events card open the card actions and choose Publish exactly once; do not touch Lina or Liam yet; stop for the active Friends only event, replacement A-ticket/counter/membership and event-task oracle
 event: QA EVENT-TICKET-007
 actors:
   left: Casey Bridge
@@ -107,12 +107,11 @@ untouched until the checkpoint says otherwise.
 
 ### Next manual action
 
-In Casey's left **My Events** card open the card actions, choose **Edit**, change
-only **Visibility** from **Public** to **Friends only**, then press the editor's
-Save checkmark exactly once. Do not press **Publish**, and do not touch Lina or
-Liam. Stop and reply `megvan` so the saved draft visibility, both retained D
-tickets, ticket counters, memberships and normal event task can be checked
-before Publish.
+In Casey's left **My Events** card open the card actions and choose **Publish**
+exactly once. Do not touch Lina or Liam yet. Stop and reply `megvan` so the active
+Friends only event, both replacement physical tickets, restored ticket
+counters, unchanged memberships/controls and owning event task can be checked
+before either Explore read.
 
 ## QA working method
 

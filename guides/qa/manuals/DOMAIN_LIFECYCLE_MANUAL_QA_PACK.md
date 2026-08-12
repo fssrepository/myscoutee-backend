@@ -251,6 +251,24 @@ Execution evidence on 2026-08-04:
   is draft **Edit -> Visibility: Friends only -> Save** only. Stop before
   Publish and prove that Save changes only the draft definition plus its normal
   event task while both D tickets, counters and memberships remain unchanged.
+- Friends Only draft-Save boundary (2026-08-12): **PASS**. Casey changed only
+  visibility from Public to Friends only and pressed Save once. The canonical
+  event remained the same `DR` identity with Ticketing configured On and now
+  persisted `visibility=Friends only`. Casey, Nova and Riley remained accepted
+  at `3 / 8` with no pending/invited/request row. Nova's and Riley's two exact
+  tickets above remained `D` with their original ID, code and issue time; no
+  replacement appeared, their ticket counters stayed `0/0`, Casey stayed
+  ticketless, and Lina/Liam retained neither participation nor ticket artifact.
+  Casey's already-open My Events card switched from the Public icon to the
+  Friends icon without reload. The Save refreshed only the normal deduplicated
+  event recompute task, due at `2026-08-12T21:04:44.684364061Z`, with empty
+  `lastError`. The existing worker completed it normally at
+  `2026-08-12T21:04:50.578245727Z`, `attemptCount=3`, and returned to
+  `pendingCount=0`; no manual worker or second process was invoked. The next
+  producer boundary is one Casey **Publish** action. Stop before using Lina or
+  Liam and prove active Friends only state plus one new A ticket ID/code for
+  each accepted non-admin member, restored counters `1/1`, retained D history
+  and unchanged memberships.
 
 ### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
 
