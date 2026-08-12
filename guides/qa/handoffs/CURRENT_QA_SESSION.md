@@ -30,21 +30,50 @@ contains only the active resume point and the working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-state: clean staged baseline, before Nova's first Join
+state: baseline absent; latest read-only status returned events=[] with no membership, basket or ticket
+required_resume: restage, verify the clean baseline, then launch browsers
 event: QA EVENT-TICKET-005
-event_rules: Public, Published, Ticketing On, admin approval required
-occupancy: Casey is the only accepted member, 1/8
-nova: not a member; no basket; no ticket; both stored ticket counters are 0
-riley: isolated unchanged control; no ticket
+expected_event_rules_after_restage: Public, Published, Ticketing On, admin approval required
+expected_occupancy_after_restage: Casey is the only accepted member, 1/8
+expected_nova_after_restage: not a member; no basket; no ticket; both stored ticket counters are 0
+expected_riley_after_restage: isolated unchanged control; no ticket
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: user
+next_actor: codex
 stop_phrase: megvan
 ```
 
-Open or replace exactly these three managed windows with:
+### Mandatory resume gate
+
+Never treat the expected fixture description above as proof of live state.
+Before giving the user a manual instruction, Codex must run:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-TICKET-005
+```
+
+The latest oracle already proved that the event is absent. Therefore the next
+session must restore the replayable fixture with:
+
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  restage event-domain EVENT-TICKET-005
+
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-TICKET-005
+```
+
+Do not launch browsers until the second `status` proves the expected clean
+baseline: one Public and Published `QA EVENT-TICKET-005`, Ticketing On, admin
+approval required, Casey alone accepted at `1/8`, and no Nova membership,
+basket or ticket. Nova's two stored ticket counters must be `0`; Riley must be
+unchanged and ticketless. If any predicate differs, stop and report the exact
+oracle mismatch instead of asking the user to compensate in the UI.
+
+After that proof, open or replace exactly these three managed windows with:
 
 ```bash
 guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005
@@ -60,7 +89,8 @@ otherwise.
 
 ### Next manual action
 
-Tell the user exactly this, without adding another test branch:
+Only after the mandatory resume gate and browser launcher both succeed, tell
+the user exactly this, without adding another test branch:
 
 1. Casey: open Notifications and leave it open.
 2. Nova: open Event Explore.
