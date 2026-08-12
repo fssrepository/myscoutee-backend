@@ -30,12 +30,13 @@ contains only the active resume point and the working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-state: clean staged baseline verified; three managed actor browsers ready; before Nova's first Join
-required_resume: perform the first manual Join steps below; do not restage or relaunch while this state remains intact
+state: first Nova Join persisted oracle PASS at 2026-08-12T15:04:20Z; before the required Explore reload
+required_resume: reload Nova's Event Explore exactly once and inspect the retained card; do not cancel yet
 event: QA EVENT-TICKET-005
 event_rules: Public, Published, Ticketing On, admin approval required
-occupancy: Casey is the only accepted member, 1/8
-nova: not a member; no basket; no ticket; both stored ticket counters are 0
+occupancy: Casey accepted plus Nova pending, 1 accepted + 1 pending / 8
+nova: one member-origin approval-pending membership; one approval-pending basket; no ticket; stored ticket counters 0/0
+casey: exactly one new Nova event-admin notification with contextual Pending
 riley: isolated unchanged control; no event ticket
 actors:
   left: Casey Bridge
@@ -104,14 +105,15 @@ otherwise.
 
 ### Next manual action
 
-Only after the mandatory resume gate and browser launcher both succeed, tell
-the user exactly this, without adding another test branch:
+The first Nova Join boundary is persisted-oracle PASS. Tell the user exactly
+this next, without adding another test branch:
 
-1. Casey: open Notifications and leave it open.
-2. Nova: open Event Explore.
-3. Find `QA EVENT-TICKET-005`.
-4. Choose Join/Book and submit the join request.
-5. Stop as soon as the UI says approval is pending. Do not reload or cancel.
+1. Nova: reload Event Explore exactly once.
+2. Find `QA EVENT-TICKET-005` again; its card must remain visible.
+3. Open the card's actions and require the orange warning-tone
+   **Continue booking** action together with the other contextual actions.
+4. Do not choose Continue booking or Cancel request yet.
+5. Leave Casey Notifications open and Riley untouched.
 6. Reply `megvan`.
 
 After `megvan`, Codex runs the checkpoint `status` oracle before asking for any
@@ -122,7 +124,8 @@ other click. Expected persisted state:
 - no ticket for Nova;
 - Nova `users.activities.tickets=0` and
   `users.activities.asset.tickets=0`;
-- exactly one new Casey admin notification from Nova with contextual `Pending`;
+- still exactly one Casey admin notification from Nova with contextual
+  `Pending` and no read-created duplicate;
 - Riley unchanged and ticketless.
 
 Continue the remaining `EVENT-TICKET-005` steps only from its linked test
