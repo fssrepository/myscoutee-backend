@@ -1204,11 +1204,12 @@ context exists to contradict it.
 
 When I returned from London in December 2015, I had just turned thirty-five. For
 almost two years, I swiped and the phone gave me no match at all. Men crowded
-one side of the screen; women were fewer on the other. They could look down the
-age scale toward younger men and still have another face waiting.
+one side of the screen; women were fewer on the other. Thirty-five was also an
+edge in Tinder's age filters. They could look down the age scale toward younger
+men and still have another face waiting.
 
-At thirty-seven, I changed one field on Tinder. I entered thirty instead of
-thirty-seven and left the photograph exactly as it was. The silence broke. I
+At thirty-seven, I changed one field on Tinder. I entered thirty-three instead
+of thirty-seven and left the photograph exactly as it was. The silence broke. I
 met women around thirty and some who had not yet reached it. Women older than
 the age displayed began matching one after another too.
 
@@ -1927,6 +1928,6 @@ product-market fit. The operator network is an intended model to be tested.
 
 <!-- edition-colophon -->
 
-First illustrated public edition, version 1.0.0. Published 8 August 2026.
+First illustrated public edition, version 1.0.0. Published 12 August 2026.
 
 © 2026 MyScoutee. All rights reserved.

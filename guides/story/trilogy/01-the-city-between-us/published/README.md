@@ -16,10 +16,9 @@ editable working export. The builder refuses to overwrite an existing locked
 edition. The checksum detects byte-level changes; the overwrite guard, manifest
 and Git history provide the rest of the publication boundary.
 
-On 9 August 2026, before the synchronized two-film production handoff, the
-Founder explicitly authorized replacement of the current `1.0.0` artifact
-without changing its edition number. The replacement receives a new checksum
-and manifest; Git history preserves the earlier bytes.
+The first public release date is 12 August 2026. Corrections completed before
+that release remain within edition `1.0.0`; its checksum and manifest identify
+the released bytes, while Git history preserves the preceding working builds.
 
 The final film will live beside the book artifacts only after picture, voice,
 music, subtitles, brand and delivery QA are approved. Its filename must say

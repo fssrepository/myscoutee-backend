@@ -3,6 +3,13 @@
 The trilogy part and the edition version are separate. This book is Part
 `I`; its first public edition is `1.0.0`.
 
+## Same-edition factual correction — 2026-08-12
+
+- Corrected the post-London Tinder sequence without changing the edition
+  version: the Founder returned at thirty-five, encountered the filter boundary
+  around that age, and at thirty-seven entered thirty-three while keeping the
+  same photograph. The synchronized P1-03 narration now states the same order.
+
 ## Final same-version correction of 1.0.0 — 2026-08-09
 
 - Completed the last copyedit by hyphenating `AI-generated`, and sharpened two
@@ -53,9 +60,10 @@ The trilogy part and the edition version are separate. This book is Part
   repeated mechanism explanations that made the origin story read like product
   documentation.
 
-## 1.0.0 — 2026-08-08
+## 1.0.0 — 2026-08-12
 
-- Founder-approved first public edition for release on LinkedIn.
+- Founder-approved first public edition for release on LinkedIn on 12 August
+  2026.
 - Added the approved Founder, Budapest relationship, London household,
   global/local encounter and balanced six-person MyScoutee character plates.
 - Rebuilt the London resident plate as one four-person row of distinct

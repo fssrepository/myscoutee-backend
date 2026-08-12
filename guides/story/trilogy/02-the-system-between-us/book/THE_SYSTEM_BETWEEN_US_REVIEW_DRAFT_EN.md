@@ -8,6 +8,14 @@
 
 <!-- pagebreak -->
 
+<!-- dedication -->
+
+For the Hungarians who,
+in one way or another, had to leave home.
+My story is theirs, too.
+
+<!-- pagebreak -->
+
 ## A Note to the Reader
 
 This is a memoir of an unresolved period.

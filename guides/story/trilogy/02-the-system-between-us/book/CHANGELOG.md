@@ -3,6 +3,12 @@
 Part `II` and the edition version are separate. This book is Part `II`; its
 first public edition is `1.0.0`.
 
+## Same-edition dedication addition — 2026-08-12
+
+- Added a separate calligraphic dedication near the front of the book for the
+  Hungarians who, in one way or another, had to leave home. Its closing line
+  makes the shared human claim directly: “My story is theirs, too.”
+
 ## Final same-version revision of 1.0.0 — 2026-08-09
 
 - Preserved one last blackly comic inner thought from the forensic interview:
@@ -212,9 +218,9 @@ first public edition is `1.0.0`.
   unapproved. Locked English narration to the approved ElevenLabs **Jon — Warm
   & Grounded Storyteller** voice for both films.
 
-## 1.0.0 — 2026-08-08
+## 1.0.0 — 2026-08-12
 
-- Published the first English edition as an unresolved first-person memoir,
+- Published the first English edition on 12 August 2026 as an unresolved first-person memoir,
   not as a final legal judgment or clinical conclusion.
 - Synchronized the book, 03:00 narration, storyboard and Flow/OpenArt prompts.
 - Preserved the documentary, attributed, memoir and later-context layers and
@@ -223,8 +229,8 @@ first public edition is `1.0.0`.
   home-inquiry illustrations.
 - Corrected the Constitutional Court sequence: seven judges initially declared
   exclusion, an eighth followed, seven remained and no quorum could form.
-- Closed the publication snapshot on 8 August 2026 while reserving the final
-  procedural and institutional outcome for Part III.
+- Closed a pre-publication working snapshot on 8 August 2026 while reserving
+  the final procedural and institutional outcome for Part III.
 - Removed slideshow production from the active route; identical endpoint pairs
   now go directly into the cross-model eight-second benchmark.
 - Clarified once in the reader note that the character and scene illustrations
