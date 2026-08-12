@@ -30,41 +30,56 @@ contains only the active resume point and the working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-state: baseline absent; latest read-only status returned events=[] with no membership, basket or ticket
-required_resume: restage, verify the clean baseline, then launch browsers
+state: clean staged baseline verified; three managed actor browsers ready; before Nova's first Join
+required_resume: perform the first manual Join steps below; do not restage or relaunch while this state remains intact
 event: QA EVENT-TICKET-005
-expected_event_rules_after_restage: Public, Published, Ticketing On, admin approval required
-expected_occupancy_after_restage: Casey is the only accepted member, 1/8
-expected_nova_after_restage: not a member; no basket; no ticket; both stored ticket counters are 0
-expected_riley_after_restage: isolated unchanged control; no ticket
+event_rules: Public, Published, Ticketing On, admin approval required
+occupancy: Casey is the only accepted member, 1/8
+nova: not a member; no basket; no ticket; both stored ticket counters are 0
+riley: isolated unchanged control; no event ticket
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: codex
+next_actor: user
 stop_phrase: megvan
 ```
 
 ### Mandatory resume gate
 
-Never treat the expected fixture description above as proof of live state.
-Before giving the user a manual instruction, Codex must run:
+Never treat the expected fixture description above as proof of live state. If
+the resume block does not record a successful oracle for the current baseline,
+Codex must run this before giving the user a manual instruction:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status event-domain EVENT-TICKET-005
 ```
 
-The latest oracle already proved that the event is absent. Therefore the next
-session must restore the replayable fixture with:
+For ticket checkpoints, do **not** use `restage`: the current harness restricts
+that command to feedback checkpoints. If `status` shows an active checkpoint
+record but `events=[]`, recover through the harness's stale-state guard. It
+refuses the discard if the event still exists or retained fixture documents
+would make the operation unsafe:
 
 ```bash
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
-  restage event-domain EVENT-TICKET-005
+  discard-stale event-domain EVENT-TICKET-005
+
+env MANUAL_QA_EVENT_IMAGE_URL='/media/public?key=images%2F650000000000000000000061%2Fmanual-qa-checkpoint-v1-event-domain-event%2F1785904818563-084b9c3d-2bec-4d84-86f6-fb7140562c60%2Flarge.webp' \
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage event-domain EVENT-TICKET-005
 
 bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
   status event-domain EVENT-TICKET-005
 ```
+
+If `status` already reports `phase=not-staged`, omit `discard-stale` and run the
+same image-URL-qualified `stage` directly. Ticket staging requires the retained
+managed QA image URL above; an empty `MANUAL_QA_EVENT_IMAGE_URL` fails after
+snapshot creation. If that happens, run the harness-requested `reset` before
+retrying `stage` with the URL. Never repair any of these states with an ad-hoc
+Mongo write.
 
 Do not launch browsers until the second `status` proves the expected clean
 baseline: one Public and Published `QA EVENT-TICKET-005`, Ticketing On, admin
@@ -157,11 +172,14 @@ bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh
   reset event-domain EVENT-TICKET-005
 ```
 
-Use `restage` only when the current checkpoint explicitly needs the same clean
-baseline again. Use `switch`/`advance` only when the QA pack says state is
-carried into the next checkpoint. Never infer fixture state from screenshots.
-First call must have Docker-socket access; a sandbox permission error is not
-evidence that MongoDB is stopped and must never cause a second stack to start.
+Use `restage` only for a checkpoint class supported by the harness; it is
+currently restricted to feedback checkpoints. For a stale ticket checkpoint,
+follow the guarded `discard-stale` plus image-URL-qualified `stage` recipe in
+the resume gate above. Use `switch`/`advance` only when the QA pack says state
+is carried into the next checkpoint. Never infer fixture state from
+screenshots. First call must have Docker-socket access; a sandbox permission
+error is not evidence that MongoDB is stopped and must never cause a second
+stack to start.
 
 ### 3. Browser actors are checkpoint data
 
