@@ -1796,6 +1796,53 @@ Restart evidence on 2026-08-06:
   `TKT-441625f4-88ee-4f4b-8984-f38486c72218`, counters `1/1` and no mutation.
   This is **NOT EXECUTED / FIXTURE TIMING INVALID**, not a product FAIL. The
   stable-baseline plus explicit-arm fixture replaces this race.
+- Stable pre-expiry repair replay baseline (2026-08-12): **READY**. The invalid
+  attempt reset cleanly to `not-staged`; the repaired stage completed at
+  `2026-08-12T17:41:04.039Z` with the host event and Nova overlay both ending
+  at `2026-08-13T17:41:04.079Z`. Two independent oracles retained one active
+  ticket `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6`, Nova counters `1/1`, no
+  outbox/recompute delta and `ticketExpiryArm=null`. The existing Nova Upcoming
+  surface first retained the invalid attempt's empty result, then its normal
+  foreground poll returned the new ticket at `19:41:25+02:00`; read-only DOM
+  showed exactly one `QA EVENT-TICKET-006` card. Manual visual confirmation is
+  still required before running `arm-ticket-expiry`.
+- Controlled expiry replay — Upcoming transition (2026-08-12): **PASS**. Nova
+  manually confirmed the single pre-expiry Upcoming card. The first attempted
+  arm was rejected by the outer harness allowlist and a read-only status proved
+  `ticketExpiryArm=null`, so no false window was counted. After wiring both
+  harness layers, `arm-ticket-expiry` succeeded at
+  `2026-08-12T17:45:25.759Z`, persisted the exact ticket identity and set both
+  event projections to `endAtIso=2026-08-12T17:47:25.759Z`. The last
+  pre-expiry foreground GET at `19:47:17+02:00` returned the ticket; the first
+  post-expiry GET at `19:47:47+02:00` returned an empty Upcoming page, and the
+  already-open DOM converged to **0 ticketed events** without reload. The
+  physical ticket remained the same unused `status=A` object
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6`, with counters `1/1` and no
+  replacement. Past classification is next; scanning must wait until that
+  identity is proved.
+- Controlled expiry replay — Past classification (2026-08-12): **PASS**. Nova
+  changed the already-open Ticket date-order selector from Upcoming to Past
+  exactly once. Read-only DOM inspection showed `Past`, `1 ticketed event` and
+  exactly one `QA EVENT-TICKET-006` card. The paired persisted oracle retained
+  the same unused physical `status=A` ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6`, with Nova counters `1/1`, no
+  replacement and no replay/audit side effects. Only the distinct expired-scan
+  rejection remains; active success/replay and revoked scans are already
+  closed by `EVENT-TICKET-003` and `EVENT-TICKET-012` and must not be repeated.
+- Controlled expiry replay — expired scan (2026-08-12): **PASS / CLOSED**.
+  Casey's authorized Android scanner reached the existing stack through the
+  verified ADB reverse `tcp:8080 -> tcp:80`. The phone sent exactly one
+  `POST /api/assets/tickets/validate` at `20:14:06+02:00`; nginx returned
+  `200`, and the user observed the exact Hungarian result **"Ez a jegy
+  lejárt."** The paired final oracle retained the same ticket ID/code as
+  unused `status=A`, Nova counters `1/1`, and zero replacement, replay audit,
+  replay outbox or replay notification. This proves expired rejection is a
+  strict no-op and is distinct from the already-closed active and revoked scan
+  branches. The fixture reset completed at
+  `2026-08-12T18:16:56.416Z`; follow-up status returned `phase=not-staged`.
 
 ### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
 

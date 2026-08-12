@@ -31,16 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-TICKET-006
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-006--expiry-moves-the-active-ticket-to-past
+checkpoint: EVENT-TICKET-007
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-007--invitation-preapproval-stays-ticketless-until-recipient-acceptance
 scenario: event-domain
-ledger_status: NOT EXECUTED retained for first timing-invalid attempt; stable-baseline plus explicit-arm fixture implemented; clean focused replay required
-state: EVENT-TICKET-005 PASS/CLOSED and reset to not-staged; first EVENT-TICKET-006 attempt expired before the human pre-expiry observation, while the post-expiry oracle retained one unchanged A ticket and counters 1/1; current invalid fixture must be reset and restaged after the harness update
-required_resume: reset the timing-invalid EVENT-TICKET-006 attempt, stage the stable pre-expiry baseline, prove it independently, keep only the managed Casey/Nova windows, then ask Nova to open Upcoming once; run arm-ticket-expiry only after that exact manual boundary is confirmed
-event: QA EVENT-TICKET-006
+ledger_status: NOT RUN; EVENT-TICKET-006 PASS/CLOSED and reset to not-staged
+state: EVENT-TICKET-006 controlled Upcoming expiry, Past classification and distinct expired/no-mutation scan all PASS; Android POST /api/assets/tickets/validate returned 200 at 20:14:06 and the user observed "Ez a jegy lejárt"; final oracle retained the same unused A ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6, counters 1/1, no replacement, replay audit, outbox or notification; reset completed at 2026-08-12T18:16:56.416Z and status proved not-staged
+required_resume: stage EVENT-TICKET-007 once with its required managed event image, prove the full Casey accepted Admin / Nova accepted Member with one stable A ticket / Riley outside and ticketless baseline by status, then replace the old managed windows with the configured Casey-Nova-Riley layout; do not issue an invite action before that proof
+event: QA EVENT-TICKET-007
 actors:
   left: Casey Bridge
-  right: Nova Social
+  middle: Nova Social
+  right: Riley Outside
 next_actor: Nova Social
 stop_phrase: megvan
 ```
@@ -106,11 +107,11 @@ otherwise.
 
 ### Next manual action
 
-Do not issue a manual action from this handoff until the timing-invalid fixture
-has been reset and the new stable pre-expiry baseline has been staged and
-proved. Then ask Nova to open **Ticket** under **Upcoming** exactly once and
-leave it open. Only after the matching `megvan` may Codex run
-`arm-ticket-expiry`; never start the deadline during staging or browser setup.
+Do not issue a manual action until Codex has staged and independently proved the
+complete `EVENT-TICKET-007` baseline and replaced the old managed windows with
+the checkpoint's configured Casey-Nova-Riley layout. The first later producer
+is Nova inviting Riley once; staging, browser setup and oracle proof remain
+Codex-owned preparation.
 
 ## QA working method
 
@@ -176,9 +177,22 @@ the user.
   identity. A missed pre-window observation is **NOT EXECUTED / fixture timing
   invalid**, not a product FAIL, and must be repaired in the fixture before
   replay.
+- A new versioned harness action is incomplete until both the scenario
+  dispatcher and the outer `manual-qa-checkpoints.sh` usage/allowlist route it.
+  Before treating an attempted action as executed, pair its structured success
+  phase with a read-only state check; usage output or a non-zero exit leaves the
+  transaction unexecuted. In particular, never infer that a time window began
+  merely because the inner scenario contains the command.
 
 ### 1.2 Exact manual producer instructions
 
+- Treat a sudden message unrelated to the active checkpoint as a possible
+  cross-window message, not as implicit authorization to change task scope.
+  Stop mutations, keep the current checkpoint intact and confirm the context
+  before touching the unrelated artifact. Never edit, restore or revert files
+  from an inferred context switch; a read-only comparison is not permission to
+  apply what it finds. Resume the QA transaction only after the user explicitly
+  returns to it.
 - The resume block's `required_resume` and **Next manual action** are declarative
   instructions for Codex to issue next; their presence does not prove that the
   user has already received or performed them. A stop phrase counts for a
