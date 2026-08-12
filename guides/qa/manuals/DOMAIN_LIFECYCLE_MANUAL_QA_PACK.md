@@ -1394,6 +1394,19 @@ Restart evidence on 2026-08-06:
   closing this checkpoint: the remaining
   re-Join/Cancel/re-Join identity and ID-scoped removal checks, terminal Casey
   approval and repeated ticket-read purity.
+- First re-Join basket-identity evidence (2026-08-12): **FAIL**. The re-Join
+  correctly reopened Nova's suppressed membership as one member-origin
+  approval-pending request, restored pending activity `0 -> 1`, returned
+  occupancy to `1 accepted + 1 pending / 8`, created a second distinct Casey
+  **Pending** notification and kept every ticket plus both ticket counters at
+  zero. However, it changed the previously cancelled/deleted basket with ID
+  `6a7c8b74d0e43ceb2c03f170` back to
+  `status=approval-pending`, `resultState=pending` instead of creating a new
+  basket identity. This violates the explicit re-Join contract even though the
+  reopened popup correctly showed **Continue booking** and **Cancel waiting**.
+  Stop before the second Cancel or approval. Diagnose/fix the owning re-Join
+  basket persistence boundary, then replay the complete checkpoint from a
+  clean staged baseline; do not accept this partially mutated attempt.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

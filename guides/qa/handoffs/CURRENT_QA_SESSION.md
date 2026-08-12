@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-ledger_status: IN PROGRESS; first Join, pending reload, first Cancel and post-Cancel fresh reload recorded in the QA pack and matrix
-state: fresh Request Join menu verified after reload; before Nova's first re-Join
-required_resume: submit Request Join once and stop as soon as approval-pending is visible
+ledger_status: FAIL; clean retest required after re-Join basket-identity fix
+state: first re-Join reused the cancelled basket ID; branch stopped before second Cancel
+required_resume: diagnose and fix the owning re-Join basket persistence boundary; then reset/stage and replay EVENT-TICKET-005 from its clean baseline
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: user
+next_actor: codex
 stop_phrase: megvan
 ```
 
@@ -107,18 +107,10 @@ otherwise.
 
 ### Next manual action
 
-Tell the user exactly this next, without adding another test branch:
-
-1. Nova: choose **Request Join** for `QA EVENT-TICKET-005` and submit the join
-   request exactly once.
-2. Stop as soon as the UI says approval is pending.
-3. Do not reload or cancel yet.
-4. Leave Casey Notifications open and Riley untouched.
-5. Reply `megvan`.
-
-After `megvan`, run the checkpoint `status` oracle before asking for another
-click. Compare it with the linked test definition, record the new evidence in
-that definition and the matrix, then update only the YAML resume pointer above.
+No further manual action is allowed on this partially mutated attempt. Retain
+the three managed browser windows as evidence, but do not reload, Cancel,
+approve or continue. The detailed failure and clean-replay requirement are in
+the linked test definition and matrix.
 
 ## QA working method
 
