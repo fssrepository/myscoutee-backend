@@ -35,14 +35,14 @@ checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
 ledger_status: historical FAIL retained; basket-identity fix verified; full replay in progress
-state: second Cancel in-place and post-Cancel reload PASS; both distinct closed audits and every persisted identity stayed unchanged
-required_resume: Nova performs the final Join; then prove a third distinct active basket, fifth ordered notification and zero tickets before approval
+state: final Join PASS with third distinct active basket 6a7c996af8a7d3829acd8007; five ordered notifications and zero tickets
+required_resume: Casey closes Notifications, opens My Events -> QA EVENT-TICKET-005 -> capacity/Members -> Nova actions -> Approve -> confirmation Approve exactly once; then prove direct acceptance and exactly one Nova A ticket
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Nova Social
+next_actor: Casey Bridge
 stop_phrase: megvan
 ```
 
@@ -107,10 +107,13 @@ otherwise.
 
 ### Next manual action
 
-In Nova's middle Explore window, use **Request Join** on
-`QA EVENT-TICKET-005` and complete the final Join flow until the card shows
-pending/**Continue booking**. Do not reload or Cancel afterward. Keep Casey
-Notifications open and do not touch Riley. Reply `megvan`.
+In Casey's left window, close **Notifications**; its rows are evidence and their
+menus do not own membership approval. Open **My Events**, find
+`QA EVENT-TICKET-005`, click its `1 / 8` capacity/Members badge, then on the
+**Nova Social** row open **Open actions for Nova Social** and choose **Approve**.
+In the **Approve request?** confirmation choose **Approve** exactly once. Stop
+as soon as it completes. Do not open Nova's Ticket yet and do not touch Riley.
+Reply `megvan`.
 
 ## QA working method
 
@@ -155,6 +158,26 @@ the user.
 - On a requested split, preserve execution continuity explicitly with the
   ordered chain and `advance`/`switch` semantics where supported; never force
   the user to recreate already-proven setup.
+
+### 1.2 Exact manual producer instructions
+
+- Before handing a producer action to the user, verify the exact actionable
+  surface from the implementation and, when the current UI is ambiguous, from
+  the managed browser's read-only DOM. Name the complete interaction path,
+  including row/menu identity and any confirmation button.
+- Treat Notifications as persisted evidence by default, not as a domain action
+  surface. A notification menu owns a business transition only when its actual
+  converter/menu implementation exposes that action.
+- After the stop phrase, pair the persisted oracle with the access log. If no
+  expected modifying request left the browser because the instruction never
+  reached the real action control, the transaction is **not executed**, not a
+  product FAIL: retain the checkpoint, correct the instruction and do not add
+  false failure evidence to the QA pack or matrix. If the verified control was
+  activated but its binding emits no request, that is a client defect and must
+  enter the normal diagnose/fix/replay loop.
+- `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
+  read-only managed-session tool for resolving an ambiguous current surface;
+  it must never be used to perform the user's manual producer action.
 
 ### 2. Replayable fixtures, never ad-hoc database patches
 

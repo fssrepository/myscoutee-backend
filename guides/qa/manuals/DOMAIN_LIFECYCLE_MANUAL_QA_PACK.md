@@ -1364,10 +1364,14 @@ Restart evidence on 2026-08-06:
   checkout session or policy selection. It creates another new **Pending**
   notification occurrence for Casey and still creates no ticket. Continue the
   approval proof from this second request.
-- As Casey, approve Nova once. This is the terminal transition directly to
-  accepted; there is no second participant-acceptance step. The approval write
-  creates exactly one Nova participant overlay and one physical `status=A`
-  ticket.
+- As Casey, approve Nova once through **My Events** ->
+  `QA EVENT-TICKET-005` -> the capacity/Members badge -> **Nova Social** row ->
+  **Open actions for Nova Social** -> **Approve** -> the **Approve request?**
+  confirmation's **Approve** button. Notifications are evidence only; their
+  row menu does not own membership approval. This is the terminal transition
+  directly to accepted; there is no second participant-acceptance step. The
+  approval write creates exactly one Nova participant overlay and one physical
+  `status=A` ticket.
 - Nova's normal poll exposes Ticket counter `1`; opening Ticket twice reads the
   same ID/code. Before approval and during both reads, no credential may be
   created.
@@ -1480,6 +1484,14 @@ Restart evidence on 2026-08-06:
   trash `1`; Casey retained exactly four ordered Pending/Cancelled
   notifications; tickets and ticket counters stayed zero. The final Join is
   next and must append the third distinct physical basket before approval.
+- Repair replay — final Join (2026-08-12): **PASS**. A third distinct physical
+  basket `6a7c996af8a7d3829acd8007` was appended as
+  `approval-pending/pending`, `reservationActive=true`; both older basket IDs
+  remained immutable closed audits. Nova again has exactly one pending
+  member-origin approval and occupancy is `1 accepted + 1 pending / 8`.
+  Casey's five ordered notifications are Pending, Cancelled, Pending,
+  Cancelled, Pending. No Join produced a physical ticket or either ticket
+  counter. Casey's single terminal approval is next.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

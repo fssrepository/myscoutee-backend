@@ -16,10 +16,11 @@ const hasFlag = name => args.includes(name);
 
 let socket = null;
 
-if (!['list', 'online', 'offline', 'open-demo', 'close'].includes(command)) {
+if (!['list', 'inspect', 'online', 'offline', 'open-demo', 'close'].includes(command)) {
   fail([
     'Usage:',
     '  chrome-target-network.mjs list [--port PORT | --endpoint-file FILE]',
+    '  chrome-target-network.mjs inspect --user-id ID [--port PORT | --endpoint-file FILE]',
     '  chrome-target-network.mjs online|offline [--user-id ID | --target ID] [--reload | --hard-reload | --navigate-root]',
     '  chrome-target-network.mjs open-demo --url ORIGIN --user-id ID [--port PORT | --endpoint-file FILE]',
     '  chrome-target-network.mjs close --target ID [--port PORT | --endpoint-file FILE]'
@@ -28,8 +29,7 @@ if (!['list', 'online', 'offline', 'open-demo', 'close'].includes(command)) {
 
 const { port, browserPath } = await resolveEndpoint();
 
-const origin = `http://localhost:${port}`;
-socket = new WebSocket(`ws://localhost:${port}${browserPath}`, { origin });
+socket = new WebSocket(`ws://localhost:${port}${browserPath}`);
 let requestId = 0;
 const pending = new Map();
 
@@ -65,6 +65,47 @@ socket.on('open', async () => {
         console.log(JSON.stringify(page));
       }
       socket.close();
+      return;
+    }
+
+    if (command === 'inspect') {
+      const selected = selectPage(pages);
+      const { sessionId } = await send('Target.attachToTarget', {
+        targetId: selected.targetId,
+        flatten: true
+      });
+      try {
+        const { result } = await send('Runtime.evaluate', {
+          expression: [
+            '(() => {',
+            "  const text = value => `${value ?? ''}`.replace(/\\s+/g, ' ').trim();",
+            "  const elements = [...document.querySelectorAll('button, [role=button], a, input, select, textarea')];",
+            '  return {',
+            '    title: document.title,',
+            '    url: location.href,',
+            "    bodyText: `${document.body?.innerText ?? ''}`.slice(0, 20000),",
+            "    dialogs: [...document.querySelectorAll('[role=dialog], dialog, .cdk-overlay-pane')].map(element => text(element.innerText)).filter(Boolean).slice(0, 20),",
+            '    interactive: elements.map(element => ({',
+            '      tag: element.tagName.toLowerCase(),',
+            "      text: text(element.innerText || element.value),",
+            "      ariaLabel: text(element.getAttribute('aria-label')),",
+            "      title: text(element.getAttribute('title')),",
+            "      disabled: element.matches(':disabled') || element.getAttribute('aria-disabled') === 'true'",
+            '    })).filter(item => item.text || item.ariaLabel || item.title).slice(0, 300)',
+            '  };',
+            '})()'
+          ].join('\n'),
+          returnByValue: true
+        }, sessionId);
+        console.log(JSON.stringify({
+          targetId: selected.targetId,
+          userId: selected.userId,
+          ...result.value
+        }));
+      } finally {
+        await send('Target.detachFromTarget', { sessionId }).catch(() => undefined);
+        socket.close();
+      }
       return;
     }
 
