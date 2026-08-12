@@ -57,7 +57,7 @@ On 23 November, a newspaper article made me check the updated tax system. One tr
 Export as `P2_ALT_JON_05.wav`.
 
 ```text
-The corrected line became the case; the dignity behind it vanished. For months of foot pain, the public answer was a shoe and another year. I borrowed from my parents for surgery, then spent three months in bed. Almost a year later, the bell would not stop.
+One sentence became the case; the dignity I was trying to defend vanished behind it. For months of foot pain, the public answer was a shoe and another year. I borrowed from my parents for surgery, then spent three months in bed. Almost a year later, the bell would not stop.
 ```
 
 End Jon by approximately `02:15.000`. Preserve the final policy/book card for
