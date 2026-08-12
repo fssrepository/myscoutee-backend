@@ -1844,7 +1844,7 @@ Restart evidence on 2026-08-06:
   branches. The fixture reset completed at
   `2026-08-12T18:16:56.416Z`; follow-up status returned `phase=not-staged`.
 
-### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
+### `EVENT-TICKET-007` — ordinary-member invitation stays ticketless until Admin approval
 
 - Stage a published Ticketing On event with Casey accepted Admin and Nova
   accepted Member. Nova already owns one physical `status=A` ticket and both
@@ -1853,17 +1853,88 @@ Restart evidence on 2026-08-06:
 - As Nova, invite Riley through the ordinary member UI. Riley becomes pending,
   but no Riley ticket is created and both Riley stored ticket counters remain
   `0`.
-- Approve Riley as Casey Admin. Because the invitation originated from an
-  ordinary member, Riley remains pending until Riley accepts; this
-  preapproval must still create no Riley ticket and increment no Riley ticket
-  counter.
-- Riley accepts the invitation once. Only this terminal transition to accepted
-  creates exactly one physical Riley `status=A` ticket and changes both Riley
-  stored ticket counters to `1`; the next normal profile poll exposes Riley's
-  Ticket red badge `1`.
+- Riley accepts the invitation once. Because the inviter was an ordinary
+  member, the same membership remains pending but changes from
+  `requestKind=invite`, `pendingSource=admin` to `requestKind=approval`,
+  `pendingSource=member`. This invitee response must still create no Riley
+  ticket and both Riley ticket counters remain `0`.
+- Approve Riley as Casey Admin only after that response. This is the terminal
+  transition to accepted: it creates exactly one physical Riley `status=A`
+  ticket and changes both Riley stored ticket counters to `1`; the next normal
+  profile poll exposes Riley's Ticket red badge `1`.
 - Nova's original ticket ID/code and counters remain unchanged throughout.
   Repeating Riley's acceptance or opening Riley Ticket twice must preserve the
   same Riley ticket ID/code and counters. Casey remains ticketless.
+- Staged baseline (2026-08-12): **READY** at
+  `2026-08-12T18:18:45.088Z`. Stage plus an independent status oracle prove
+  Casey accepted Admin with ticket counters `0/0`; Nova accepted Member with
+  sole unused `status=A` ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44`, and counters `1/1`; Riley is
+  outside membership with ticket counters `0/0`. No invitation/outbox or other
+  side effect exists. The configured isolated Casey-Nova-Riley windows are
+  identity-verified; Nova's ordinary-member invite is the next producer.
+- Pre-invite Active Events list branch (2026-08-12): initial observation
+  **FAIL**, repaired and focused replay **PASS**. At `20:23:14+02:00`, Nova's
+  Events and Active Events controls both showed count `1`, but the list showed
+  `No items`; the matching authenticated browser request returned HTTP `200`
+  with an empty 81-byte page while the membership/ticket/counter oracle stayed
+  at the untouched accepted baseline. The expanded payment oracle exposed
+  three legacy records for the reserved QA event: one older `joined` record
+  followed by two later `initiated` records, so the latest-open-payment rule
+  incorrectly classified Nova as pending. The defect was not repaired in the
+  list projection. Terminal event acceptance now finalizes the latest open
+  payment to `joined` in the owning write path, after basket finalization and
+  before ticket synchronization; regression tests cover that ordering and
+  idempotence. The fixture now snapshots, clears and reports `payments`, and
+  the guarded `repair-ticket-payment-fixture` action removed the three legacy
+  reserved-event records at `2026-08-12T18:44:01.807Z` without changing the
+  event, members, ticket, counters, outbox or tasks. The existing continuous
+  compiler reported `BUILD SUCCESSFUL`, and Spring DevTools restarted the
+  application successfully. The authenticated read then returned exactly one
+  Active Events record, and Nova's already-open popup converged in place on its
+  normal poll—without reload—to the `QA EVENT-TICKET-007` card with counts `1`
+  and the `2 / 8` members action. Nova has not invited Riley yet.
+- Pre-invite candidate branch (2026-08-12): initial observation **QA FIXTURE
+  FAIL**, guarded preparation plus authenticated API preflight **PASS**. At
+  `20:49:08+02:00`, Nova opened Invite members and saw `No invite candidates
+  right now`; the disabled confirmation button emitted no invite request, and
+  the read oracle retained the untouched two accepted members, Nova's sole A
+  ticket/counters `1/1`, Riley's zero ticket/counters, empty payments and zero
+  invitation side effects. The event candidate implementation does not select
+  every public non-member: it derives candidates from prior `mode=single`,
+  `met=true` user-rate records. Riley existed and was public/outside the event,
+  but the fixture had not staged the required Nova-Riley rate. The versioned
+  checkpoint now owns, resets and reports that source record. Guarded
+  `prepare-ticket-invite-candidate` created exactly one reset-owned rate at
+  `2026-08-12T18:54:03.858Z`; an independent status retained every other
+  baseline invariant. Nova's authenticated `POST
+  /api/activities/events/invite-candidates` then returned `total=1` with Riley
+  as the sole item. Read-only DOM inspection proved the popup that was already
+  open retained its earlier empty response, so the focused replay begins only
+  by closing and reopening Invite members. No invitation has been sent.
+- Nova invitation boundary (2026-08-12): **PASS**. Nova's reopened candidate
+  popup showed Riley and emitted exactly one `POST
+  /api/activities/events/members/invite` at `20:57:41+02:00`, returning HTTP
+  `200`. The independent oracle found exactly one Riley membership with
+  `status=pending`, `requestKind=invite`, `pendingSource=admin` and Nova as
+  `invitedByUserId`; event projection became two accepted plus one pending.
+  Riley still had no physical ticket and ticket counters `0/0`; Nova retained
+  the same sole A ticket ID/code and counters `1/1`; payments stayed empty.
+  In-place read-only DOM evidence agreed: Nova Members showed `2 members · 1
+  pending` and Riley `Invitation Pending`, Casey My Events showed `2 / 8` plus
+  pending `1`, and Riley's untouched window showed Invitations `1` with no
+  Ticket badge.
+- Sequence correction (2026-08-12): the original checkpoint text incorrectly
+  placed Casey preapproval before Riley's response. This is not a missing
+  product control. The backend explicitly rejects Admin acceptance while a
+  row is still an invitation, the event-member UI deliberately exposes
+  **Approve** only for a join/approval request, and existing regressions cover
+  both `adminCannotAcceptInvitationBeforeInvitedMemberResponds` and the later
+  ordinary-inviter approval requirement. The checkpoint now follows the
+  implemented domain contract: Riley accepts first and stays pending/ticketless
+  as `requestKind=approval`; Casey then performs the terminal approval that
+  creates Riley's ticket. The live boundary was not reset or replayed.
 
 ### `EVENT-TICKET-008` — two similar events keep physical tickets isolated
 

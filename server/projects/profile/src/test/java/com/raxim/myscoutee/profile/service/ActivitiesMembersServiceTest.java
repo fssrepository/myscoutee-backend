@@ -67,6 +67,8 @@ class ActivitiesMembersServiceTest {
     @Mock
     private EventCheckoutBasketService eventCheckoutBasketService;
     @Mock
+    private PaymentService paymentService;
+    @Mock
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -98,6 +100,7 @@ class ActivitiesMembersServiceTest {
                 activitiesResourcesService,
                 eventParticipationTicketService,
                 eventCheckoutBasketService,
+                paymentService,
                 eventInviteNotificationService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
@@ -879,9 +882,14 @@ class ActivitiesMembersServiceTest {
         verify(activityMembersRepository).save(savedMember.capture());
         assertThat(savedMember.getValue().getPendingSource()).isNull();
         assertThat(savedMember.getValue().getRequestKind()).isNull();
-        InOrder terminalAcceptance = inOrder(eventCheckoutBasketService, eventParticipationTicketService);
+        InOrder terminalAcceptance = inOrder(
+                eventCheckoutBasketService,
+                paymentService,
+                eventParticipationTicketService);
         terminalAcceptance.verify(eventCheckoutBasketService)
                 .finalizeAcceptedReservation("target", "event-1");
+        terminalAcceptance.verify(paymentService)
+                .finalizePendingEventJoin("target", "event-1");
         terminalAcceptance.verify(eventParticipationTicketService)
                 .syncParticipationTicketsForEvent("event-1");
         verify(chatService).ensureMainEventChat(event, List.of("target"));

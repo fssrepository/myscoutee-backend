@@ -463,6 +463,28 @@ class PaymentServiceTest {
         verify(repository, never()).findByUserIdAndSourceId(anyString(), anyString());
     }
 
+    @Test
+    void terminalMembershipAcceptanceFinalizesTheLatestPendingEventPaymentOnce() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        Payment payment = new Payment();
+        payment.setUserId("user-1");
+        payment.setSourceId("event-1");
+        payment.setBookingStatus("initiated");
+        payment.setCreatedDate("2026-08-12T18:00:00Z");
+        when(repository.findByUserIdAndSourceId("user-1", "event-1"))
+                .thenReturn(List.of(payment));
+        PaymentService service =
+                paymentService(repository, false, new RecordingPaymentProcessor("stripe"));
+
+        assertThat(service.finalizePendingEventJoin(" user-1 ", " event-1 ")).isTrue();
+        assertThat(service.finalizePendingEventJoin("user-1", "event-1")).isFalse();
+
+        assertThat(payment.getBookingStatus()).isEqualTo("joined");
+        assertThat(payment.getJoinedAtIso()).isNotBlank();
+        assertThat(payment.getRefundStatus()).isEqualTo("none");
+        verify(repository).save(payment);
+    }
+
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
         EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
         when(pricingService.reprice(any(EventCheckoutRequestDto.class))).thenAnswer(invocation -> invocation.getArgument(0));

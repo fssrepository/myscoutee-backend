@@ -685,10 +685,10 @@
     },
     "EVENT-TICKET-007": {
       stage: "ticket-invitation",
-      why: "Prove the complete ordinary-member invitation flow: Admin preapproval remains ticketless and only the invitee's later acceptance creates that invitee's physical ticket.",
-      action: "Keep Casey accepted Admin and Nova accepted Member. As Nova, invite Riley. Stop and prove Riley is pending with no ticket/counter. As Casey, approve Riley and prove Riley is still pending and ticketless. Then accept as Riley, keep Riley's menu open through its normal poll and open Ticket twice.",
-      expected: "Nova starts with one existing A ticket and both stored ticket counters at 1; Riley starts outside the membership with no ticket/counter. Nova's invite and Casey's preapproval leave Riley pending and ticketless. Riley's terminal acceptance creates exactly one Riley A ticket and changes both Riley users-table counters to 1 without replacing or duplicating Nova's ticket.",
-      worker: "Invite and Admin preapproval own their membership/counter effects but MUST NOT create Riley's ticket. Riley's terminal acceptance owns target-only ticket creation and its normal recompute effects. Ticket reads MUST NOT write."
+      why: "Prove the complete ordinary-member invitation flow: the invitee must respond before Admin approval, and only the later terminal Admin approval creates the invitee's physical ticket.",
+      action: "Keep Casey accepted Admin and Nova accepted Member. As Nova, invite Riley and prove Riley is pending with no ticket/counter. As Riley, accept the invitation and prove the same membership remains pending for Admin approval and ticketless. Then approve as Casey, keep Riley's menu open through its normal poll and open Ticket twice as Riley.",
+      expected: "Nova starts with one existing A ticket and both stored ticket counters at 1; Riley starts outside the membership with no ticket/counter. Nova's invite leaves Riley pending as an invitation. Riley's acceptance converts that row to a pending Admin-approval request and remains ticketless. Casey's terminal approval creates exactly one Riley A ticket and changes both Riley users-table counters to 1 without replacing or duplicating Nova's ticket.",
+      worker: "Invite and invitee acceptance own their membership/counter effects but MUST NOT create Riley's ticket. Casey's terminal Admin approval owns target-only ticket creation and its normal recompute effects. Ticket reads MUST NOT write."
     },
     "EVENT-TICKET-008": {
       stage: "ticket-isolation",
@@ -860,6 +860,16 @@
         { _id: { $in: sourceIds } },
         { sourceId: { $in: sourceIds } },
         { title: expectedTitle }
+      ]
+    };
+  }
+
+  function ticketInviteCandidateRateSelector() {
+    return {
+      mode: "single",
+      $or: [
+        { ownerUserId: participantUserId, relatedUserId: thirdUserId },
+        { ownerUserId: thirdUserId, relatedUserId: participantUserId }
       ]
     };
   }
@@ -1148,6 +1158,26 @@
     });
   }
 
+  function insertTicketInviteCandidateRate(stagedAtIso) {
+    const id = `${PREFIX}:rate:ticket-invite-candidate`;
+    const metAtIso = new Date(new Date(stagedAtIso).getTime() - 24 * 60 * 60000).toISOString();
+    Q.collection("userRates").insertOne({
+      _id: id,
+      syncKey: id,
+      mode: "single",
+      ownerUserId: participantUserId,
+      relatedUserId: thirdUserId,
+      secondaryRelatedUserId: null,
+      met: true,
+      eventName: "Manual QA prior meetup",
+      affinityScore: 1,
+      createdDate: metAtIso,
+      createdUser: Q.ACTOR,
+      updatedDate: metAtIso,
+      updatedUser: Q.ACTOR
+    });
+  }
+
   function participationOverlay(event, eventId, suffix) {
     return {
       ...event,
@@ -1223,12 +1253,16 @@
       { collection: "eventFeedbackStates", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventFeedbackAnswers", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventCheckoutBasketItems", selector: { sourceId: { $in: EVENT_IDS } } },
+      { collection: "payments", selector: { sourceId: { $in: EVENT_IDS } } },
       { collection: "eventTickets", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "eventTicketAudit", selector: { eventId: { $in: EVENT_IDS } } },
       { collection: "notificationOutbox", selector: { $or: [{ entityId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "userNotifications", selector: { $or: [{ sourceId: { $in: EVENT_IDS } }, { "payload.eventId": { $in: EVENT_IDS } }] } },
       { collection: "affinityRecomputeTasks", selector: { targetId: { $in: EVENT_IDS } } },
-      { collection: "schedulerPlanMarkers", selector: { ownerId: { $in: EVENT_IDS } } }
+      { collection: "schedulerPlanMarkers", selector: { ownerId: { $in: EVENT_IDS } } },
+      ...(checkpointId === "EVENT-TICKET-007"
+        ? [{ collection: "userRates", selector: ticketInviteCandidateRateSelector() }]
+        : [])
     ];
   }
 
@@ -1271,6 +1305,7 @@
     Q.collection("eventFeedbackStates").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventFeedbackAnswers").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventCheckoutBasketItems").deleteMany({ sourceId: { $in: eventIds } });
+    Q.collection("payments").deleteMany({ sourceId: { $in: eventIds } });
     Q.collection("eventTickets").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("eventTicketAudit").deleteMany({ eventId: { $in: eventIds } });
     Q.collection("notificationOutbox").deleteMany({ $or: [
@@ -1711,6 +1746,9 @@
       insertReadyTicket(stagedAtIso, EVENT_ID, `${PREFIX}:ticket`, context.ticketCode);
       applyTicketActivityCounterDelta(participantUserId, 1);
     }
+    if (stageKind === "ticket-invitation") {
+      insertTicketInviteCandidateRate(stagedAtIso);
+    }
   }
 
   function eventSummary() {
@@ -1783,6 +1821,16 @@
       .find({ sourceId: { $in: dynamicEventIds } })
       .sort({ createdAtIso: 1, _id: 1 })
       .toArray();
+    const payments = Q.collection("payments")
+      .find({ sourceId: { $in: dynamicEventIds } })
+      .sort({ createdDate: 1, _id: 1 })
+      .toArray();
+    const ticketInviteCandidateRates = checkpointId === "EVENT-TICKET-007"
+      ? Q.collection("userRates")
+          .find(ticketInviteCandidateRateSelector())
+          .sort({ createdDate: 1, _id: 1 })
+          .toArray()
+      : [];
     const tickets = Q.collection("eventTickets").find({ eventId: { $in: dynamicEventIds } }).toArray();
     const ticketReplayAudits = Q.collection("eventTicketAudit").find({
       eventId: { $in: dynamicEventIds },
@@ -1909,6 +1957,30 @@
         checkoutSessionId: Q.text(item.checkoutSessionId),
         createdAtIso: Q.text(item.createdAtIso),
         updatedAtIso: Q.text(item.updatedAtIso)
+      })),
+      payments: payments.map(item => ({
+        id: Q.text(item._id),
+        userId: Q.text(item.userId),
+        eventId: Q.text(item.sourceId),
+        status: Q.text(item.status),
+        bookingStatus: Q.text(item.bookingStatus),
+        checkoutSessionId: Q.text(item.checkoutSessionId),
+        gatewaySessionId: Q.text(item.gatewaySessionId),
+        joinedAtIso: Q.text(item.joinedAtIso),
+        cancelledAtIso: Q.text(item.cancelledAtIso),
+        refundStatus: Q.text(item.refundStatus),
+        createdDate: Q.text(item.createdDate)
+      })),
+      ticketInviteCandidateRates: ticketInviteCandidateRates.map(item => ({
+        id: Q.text(item._id),
+        mode: Q.text(item.mode),
+        ownerUserId: Q.text(item.ownerUserId),
+        relatedUserId: Q.text(item.relatedUserId),
+        met: item.met === true,
+        eventName: Q.text(item.eventName),
+        affinityScore: Number(item.affinityScore || 0),
+        createdDate: Q.text(item.createdDate),
+        updatedDate: Q.text(item.updatedDate)
       })),
       eventChats: eventChats.map(chat => ({
         chatId: Q.text(chat.id || chat.chatId || chat._id),
@@ -2343,6 +2415,153 @@
       Q.fail(`staged checkpoint is '${state.checkpointId}', not '${checkpointId}'.`);
     }
     return state;
+  }
+
+  function repairTicketPaymentFixture() {
+    if (checkpointId !== "EVENT-TICKET-007") {
+      Q.fail("repair-ticket-payment-fixture is restricted to EVENT-TICKET-007.");
+    }
+    const state = requireMatchingState();
+    if (state.fixtureRepairs && state.fixtureRepairs.paymentContamination) {
+      Q.fail("the EVENT-TICKET-007 payment contamination has already been repaired.");
+    }
+    const eventId = activeEventSourceId() || EVENT_ID;
+    const eventDocuments = Q.collection("events").find({ sourceId: eventId }).toArray();
+    const members = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId
+    }).toArray();
+    const tickets = Q.collection("eventTickets").find({ eventId }).toArray();
+    const baskets = Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: eventId });
+    const payments = Q.collection("payments").find({ sourceId: eventId }).toArray();
+    const acceptedByUserId = new Map(members.map(member => [
+      Q.text(member.userId),
+      Q.text(member.status)
+    ]));
+    if (eventDocuments.length !== 2
+        || acceptedByUserId.get(hostUserId) !== "accepted"
+        || acceptedByUserId.get(participantUserId) !== "accepted"
+        || acceptedByUserId.has(thirdUserId)
+        || baskets !== 0
+        || tickets.length !== 1
+        || Q.text(tickets[0].holderUserId) !== participantUserId
+        || Q.text(tickets[0].status) !== "A") {
+      Q.fail("EVENT-TICKET-007 is no longer at the untouched staged baseline; retain the evidence and do not repair payments.");
+    }
+    if (payments.length === 0) {
+      Q.fail("no checkpoint-owned payment contamination exists; use the normal status oracle.");
+    }
+    const unexpectedPayment = payments.find(payment =>
+      Q.text(payment.userId) !== participantUserId
+      || !["joined", "initiated"].includes(Q.text(payment.bookingStatus))
+      || Q.text(payment.cancelledAtIso)
+      || Q.text(payment.refundStatus) === "full"
+    );
+    if (unexpectedPayment) {
+      Q.fail("an unexpected payment is attached to the reserved checkpoint event; retain it as evidence and do not mutate it.");
+    }
+    const paymentSelector = { sourceId: eventId };
+    if ((state.snapshots || []).some(snapshot => snapshot.collection === "payments")) {
+      Q.fail("the active state already owns a payment snapshot; use normal reset/stage instead of the legacy repair.");
+    }
+    const repairedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $push: {
+        snapshots: {
+          collection: "payments",
+          selector: paymentSelector,
+          documents: []
+        }
+      },
+      $set: {
+        "fixtureRepairs.paymentContamination": {
+          repairedAtIso,
+          removedPaymentIds: payments.map(payment => Q.text(payment._id)),
+          reason: "legacy event-domain checkpoints did not own the payments collection"
+        }
+      }
+    });
+    const removal = Q.collection("payments").deleteMany(paymentSelector);
+    if (removal.deletedCount !== payments.length) {
+      Q.fail("the reserved-event payments changed during repair; use reset to restore the guarded empty payment baseline.");
+    }
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "ticket-payment-fixture-repaired",
+      repairedAtIso,
+      removedPaymentCount: removal.deletedCount,
+      baseline: oracle(refreshedState),
+      next: "Wait for the existing backend hot-deploy to finish, then replay only Nova's Active Events list before continuing the invitation."
+    });
+  }
+
+  function prepareTicketInviteCandidate() {
+    if (checkpointId !== "EVENT-TICKET-007") {
+      Q.fail("prepare-ticket-invite-candidate is restricted to EVENT-TICKET-007.");
+    }
+    const state = requireMatchingState();
+    if (state.fixturePreparations && state.fixturePreparations.ticketInviteCandidate) {
+      Q.fail("the EVENT-TICKET-007 invite candidate has already been prepared.");
+    }
+    const eventId = activeEventSourceId() || EVENT_ID;
+    const eventDocuments = Q.collection("events").find({ sourceId: eventId }).toArray();
+    const members = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId
+    }).toArray();
+    const acceptedByUserId = new Map(members.map(member => [
+      Q.text(member.userId),
+      Q.text(member.status)
+    ]));
+    const targetUser = Q.collection("users").findOne({
+      $or: [{ _id: thirdUserId }, { userId: thirdUserId }]
+    });
+    if (eventDocuments.length !== 2
+        || acceptedByUserId.get(hostUserId) !== "accepted"
+        || acceptedByUserId.get(participantUserId) !== "accepted"
+        || acceptedByUserId.has(thirdUserId)
+        || Q.collection("eventCheckoutBasketItems").countDocuments({ sourceId: eventId }) !== 0
+        || Q.collection("payments").countDocuments({ sourceId: eventId }) !== 0
+        || Q.collection("eventTickets").countDocuments({
+          eventId,
+          holderUserId: participantUserId,
+          status: "A"
+        }) !== 1
+        || !targetUser
+        || Q.text(targetUser.profileStatus).toLowerCase() !== "public") {
+      Q.fail("EVENT-TICKET-007 is no longer at the untouched pre-invite baseline; retain the evidence and do not prepare a candidate.");
+    }
+    if ((state.snapshots || []).some(snapshot => snapshot.collection === "userRates")) {
+      Q.fail("the active state already owns the invite-candidate rate snapshot; use normal reset/stage instead of the legacy preparation.");
+    }
+    const rateSnapshot = Q.snapshotSpecs([
+      { collection: "userRates", selector: ticketInviteCandidateRateSelector() }
+    ])[0];
+    const preparedAtIso = Q.nowIso();
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $push: { snapshots: rateSnapshot },
+      $set: {
+        "fixturePreparations.ticketInviteCandidate": {
+          preparedAtIso,
+          candidateUserId: thirdUserId,
+          replacedRateIds: (rateSnapshot.documents || []).map(item => Q.text(item._id))
+        }
+      }
+    });
+    Q.collection("userRates").deleteMany(ticketInviteCandidateRateSelector());
+    insertTicketInviteCandidateRate(preparedAtIso);
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "ticket-invite-candidate-ready",
+      preparedAtIso,
+      candidate: Q.user(thirdUserId),
+      baseline: oracle(refreshedState),
+      next: "Close and reopen only Nova's Invite members popup; Riley Outside must appear as the sole selectable candidate."
+    });
   }
 
   function normalizeStoredFeedbackAggregate(userId) {
@@ -3586,6 +3805,8 @@
     case "prepare-periodic-auto-inviter": preparePeriodicAutoInviter(); break;
     case "schedule-auto-inviter": scheduleAutoInviter(); break;
     case "arm-ticket-expiry": armTicketExpiry(); break;
+    case "repair-ticket-payment-fixture": repairTicketPaymentFixture(); break;
+    case "prepare-ticket-invite-candidate": prepareTicketInviteCandidate(); break;
     case "add-feedback-participant": addFeedbackParticipant(); break;
     case "next": next(); break;
     case "verify-ticket-poll-resume": verifyTicketPollResume(); break;

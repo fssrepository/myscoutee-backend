@@ -32,17 +32,17 @@ resume pointer and reusable working method.
 
 ```yaml
 checkpoint: EVENT-TICKET-007
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-007--invitation-preapproval-stays-ticketless-until-recipient-acceptance
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-007--ordinary-member-invitation-stays-ticketless-until-admin-approval
 scenario: event-domain
-ledger_status: NOT RUN; EVENT-TICKET-006 PASS/CLOSED and reset to not-staged
-state: EVENT-TICKET-006 controlled Upcoming expiry, Past classification and distinct expired/no-mutation scan all PASS; Android POST /api/assets/tickets/validate returned 200 at 20:14:06 and the user observed "Ez a jegy lejárt"; final oracle retained the same unused A ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6, counters 1/1, no replacement, replay audit, outbox or notification; reset completed at 2026-08-12T18:16:56.416Z and status proved not-staged
-required_resume: stage EVENT-TICKET-007 once with its required managed event image, prove the full Casey accepted Admin / Nova accepted Member with one stable A ticket / Riley outside and ticketless baseline by status, then replace the old managed windows with the configured Casey-Nova-Riley layout; do not issue an invite action before that proof
+ledger_status: IN PROGRESS; pre-invite defects repaired/PASS; Nova invite PASS and ticketless; Riley invitation acceptance pending
+state: EVENT-TICKET-006 PASS/CLOSED and reset to not-staged; EVENT-TICKET-007 staged at 2026-08-12T18:18:45.088Z; the pre-invite list and candidate fixture defects are repaired/PASS; Nova sent exactly one ordinary-member invitation through POST /api/activities/events/members/invite at 2026-08-12T20:57:41+02:00; read oracle and actor-specific UI now show Casey/Nova still accepted, Riley as the sole pending requestKind=invite row invitedBy Nova, event counts 2 accepted/1 pending, Riley Invitations counter 1 but Ticket counters 0/0 and no physical Riley ticket, while Nova's sole A ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and counters 1/1 are unchanged; the original QA sequence incorrectly expected Casey preapproval before Riley responded, but backend authorization and existing regressions explicitly forbid Admin acceptance of an invitation until the invitee accepts; the corrected sequence is Riley Accept -> pending requestKind=approval and still ticketless -> Casey Approve -> terminal accepted and ticket creation
+required_resume: in Riley's right window open Invitations, use the QA EVENT-TICKET-007 card's overflow menu, choose Accept, then confirm Accept exactly once; stop immediately for the pending-admin-approval/ticketless oracle and leave Casey/Nova untouched
 event: QA EVENT-TICKET-007
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Nova Social
+next_actor: Riley Outside
 stop_phrase: megvan
 ```
 
@@ -107,11 +107,9 @@ otherwise.
 
 ### Next manual action
 
-Do not issue a manual action until Codex has staged and independently proved the
-complete `EVENT-TICKET-007` baseline and replaced the old managed windows with
-the checkpoint's configured Casey-Nova-Riley layout. The first later producer
-is Nova inviting Riley once; staging, browser setup and oracle proof remain
-Codex-owned preparation.
+In Riley's right window open **Invitations**. On the `QA EVENT-TICKET-007`
+card, open its overflow menu, choose **Accept**, then confirm **Accept** exactly
+once. Stop immediately and reply `megvan`; leave Casey and Nova untouched.
 
 ## QA working method
 
@@ -203,6 +201,23 @@ the user.
   surface from the implementation and, when the current UI is ambiguous, from
   the managed browser's read-only DOM. Name the complete interaction path,
   including row/menu identity and any confirmation button.
+- Before asking the user to select a named candidate, inspect the real
+  candidate service/converter and identify its eligibility source; a visible
+  user who is outside the target membership is not by itself a selectable
+  candidate. Make the checkpoint own every required source record (for
+  example a prior `single + met=true` rate, parent membership or contact),
+  expose that record in the status oracle, and preflight the authenticated
+  candidate endpoint for the exact actor/owner. Require the named target and
+  expected total before issuing the producer instruction. If a popup was
+  already opened before fixture preparation and does not poll, replay only its
+  close/reopen boundary rather than earlier proven steps.
+- If an expected manual action is absent, inspect the actor-specific API
+  response, authorization/write service and existing behavioral regressions
+  before adding or exposing a new control. When the domain explicitly forbids
+  that transition and defines a different order, classify it as a QA-sequence
+  defect, correct the checkpoint/action order and continue from the current
+  intact boundary. Do not implement a contradictory product shortcut merely
+  to satisfy the mistaken test instruction.
 - Treat Notifications as persisted evidence by default, not as a domain action
   surface. A notification menu owns a business transition only when its actual
   converter/menu implementation exposes that action.
@@ -226,6 +241,15 @@ setup belongs in `event-domain-checkpoints.js` (or the corresponding named
 scenario file), not in a one-off Mongo edit. Its behavior and transaction
 evidence belong in the QA pack; its result/status belongs in the CSV/XLSX
 matrix. The resume block contains only the next live boundary.
+
+Fixture ownership must include every persisted object consulted by the tested
+read path, even when that object was created by an earlier checkpoint. If a
+counter/list mismatch is caused by an inconsistent persisted transaction, fix
+the terminal write owner that left the state open; do not mask it in the query
+or projection. Add the missed collection to the fixture selectors, reset
+cleanup and status oracle. For an already-active legacy state, use one guarded,
+versioned repair action that proves the untouched boundary and records a reset
+snapshot; never issue an ad-hoc Mongo update or silently restage over it.
 
 Use the canonical harness against the already-running `mongodb` container:
 
@@ -381,10 +405,10 @@ repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
-Finish `EVENT-TICKET-005` first. The next checkpoint is
-`EVENT-TICKET-006` (the same active physical ticket moves from Upcoming to Past
-when the event expires). The following planned chain is defined, not duplicated,
-in the QA pack:
+The active checkpoint is `EVENT-TICKET-007`; continue from the resume pointer
+without replaying the already-closed `EVENT-TICKET-005` and
+`EVENT-TICKET-006` branches. The retained continuation chain is defined, not
+duplicated, in the QA pack:
 
 ```text
 EVENT-TICKET-005 -> EVENT-TICKET-006 -> EVENT-TICKET-007

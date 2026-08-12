@@ -97,6 +97,7 @@ public class ActivitiesMembersService {
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
+    private final PaymentService paymentService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
@@ -118,6 +119,7 @@ public class ActivitiesMembersService {
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
             EventCheckoutBasketService eventCheckoutBasketService,
+            PaymentService paymentService,
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
@@ -136,6 +138,7 @@ public class ActivitiesMembersService {
         this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
+        this.paymentService = paymentService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
@@ -3074,7 +3077,10 @@ public class ActivitiesMembersService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
-                .forEach(userId -> eventCheckoutBasketService.finalizeAcceptedReservation(userId, normalizedEventId));
+                .forEach(userId -> {
+                    eventCheckoutBasketService.finalizeAcceptedReservation(userId, normalizedEventId);
+                    paymentService.finalizePendingEventJoin(userId, normalizedEventId);
+                });
     }
 
     private int processEventWaitlist(String eventId, ActivityEvent eventRecord, boolean promoteSingle) {
