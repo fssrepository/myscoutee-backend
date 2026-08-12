@@ -1538,6 +1538,158 @@ Restart evidence on 2026-08-06:
   empty. The launcher replaced only this checkpoint's managed Casey, Nova and
   Riley windows and verified all three identities. Begin the complete replay
   again at Nova's first Join; no prior boundary may be skipped.
+- Terminal basket-closure repair replay — first Join (2026-08-12): **PASS**.
+  Nova created exactly one member-origin approval-pending membership and one
+  new physical basket `6a7c9fdbf8a7d3829acd8028` with
+  `status=approval-pending`, `resultState=pending` and
+  `reservationActive=true`. Occupancy is `1 accepted + 1 pending / 8`, Nova's
+  pending activity is `1`, Casey has exactly one action-owned Pending
+  notification, and no ticket or ticket counter exists. The pending Explore
+  reload is next and must retain this exact basket identity and timestamps
+  without writes.
+- Terminal basket-closure repair replay — pending Explore reload (2026-08-12):
+  **PASS**. The UI retained the event card and orange **Continue booking** with
+  its other contextual actions. The read oracle retained basket
+  `6a7c9fdbf8a7d3829acd8028` with exact original
+  `createdAtIso=2026-08-12T16:31:14.482Z` and
+  `updatedAtIso=2026-08-12T16:31:23.092826959Z`; the pending membership and
+  Casey notification identities also remained unchanged. No ticket or counter
+  appeared. First Cancel in-place is next.
+- Terminal basket-closure repair replay — first Cancel in-place (2026-08-12):
+  **PASS**. Without reload, the same Explore card changed from **Continue
+  booking** to fresh **Request Join**. Basket
+  `6a7c9fdbf8a7d3829acd8028` retained its original identity and
+  `createdAtIso=2026-08-12T16:31:14.482Z`, then closed as
+  `status=cancelled`, `resultState=deleted`, `reservationActive=false` at
+  `updatedAtIso=2026-08-12T16:35:47.888144723Z`. Nova's physical membership
+  is suppressed, occupancy returned to `1 accepted + 0 pending / 8`, and her
+  activity counters are pending `0` / trash `1`. Casey has exactly the
+  original Pending notification plus one Cancelled notification created at
+  `2026-08-12T16:35:47.863869161Z`. No ticket or ticket counter exists. The
+  first post-Cancel reload is next and must reconstruct **Request Join**
+  without mutating this boundary.
+- Terminal basket-closure repair replay — first post-Cancel reload
+  (2026-08-12): **PASS**. The card reconstructed fresh **Request Join** and the
+  read-only oracle remained identical to the first Cancel boundary. Basket
+  `6a7c9fdbf8a7d3829acd8028` retained its exact create/update timestamps and
+  `cancelled/deleted`, `reservationActive=false` state; Nova's membership
+  stayed suppressed at pending `0` / trash `1`; Casey retained exactly the
+  original Pending and Cancelled notifications with unchanged timestamps; no
+  ticket or ticket counter appeared. First re-Join is next and must append a
+  distinct physical basket without mutating this closed audit.
+- Terminal basket-closure repair replay — first re-Join identity (2026-08-12):
+  **PASS / HISTORICAL FIX REVERIFIED**. Re-Join appended the distinct physical
+  basket `6a7ca1dcf8a7d3829acd8030` as `approval-pending/pending`,
+  `reservationActive=true`, created at `2026-08-12T16:39:54.779Z` and updated
+  at `2026-08-12T16:39:56.656300024Z`. The first closed audit
+  `6a7c9fdbf8a7d3829acd8028` and both of its timestamps remained unchanged.
+  Nova again has one member-origin pending approval, occupancy is
+  `1 accepted + 1 pending / 8`, and her pending activity is `1`. Casey's exact
+  notification order is Pending, Cancelled, Pending; the new Pending row was
+  created at `2026-08-12T16:39:56.783714158Z`. No ticket or ticket counter
+  exists. Second Cancel in-place is next.
+- Terminal basket-closure repair replay — second Cancel in-place (2026-08-12):
+  **PASS**. Without reload, the same card again changed from **Continue
+  booking** to fresh **Request Join**. Both physical basket attempts remain as
+  distinct closed audits: `6a7c9fdbf8a7d3829acd8028` stayed byte-for-byte
+  unchanged, while `6a7ca1dcf8a7d3829acd8030` transitioned to
+  `cancelled/deleted`, `reservationActive=false` at
+  `updatedAtIso=2026-08-12T16:41:18.371454648Z`. Nova is suppressed at pending
+  `0` / trash `1`, occupancy is `1 accepted + 0 pending / 8`, and Casey has
+  exactly four ordered Pending, Cancelled, Pending, Cancelled notifications;
+  the final Cancelled row was created at
+  `2026-08-12T16:41:18.346680104Z`. Tickets and both ticket counters remain
+  zero. The second post-Cancel reload is next.
+- Terminal basket-closure repair replay — second post-Cancel reload
+  (2026-08-12): **PASS**. The card reconstructed fresh **Request Join** while
+  both closed basket IDs, every create/update timestamp and their
+  `cancelled/deleted`, `reservationActive=false` states remained unchanged.
+  Nova stayed suppressed at pending `0` / trash `1`; Casey retained exactly
+  four ordered Pending/Cancelled/Pending/Cancelled notifications with
+  unchanged identities and timestamps; tickets and both ticket counters
+  stayed zero. The final Join is next and must append a third distinct active
+  basket before Casey's terminal approval.
+- Terminal basket-closure repair replay — final Join (2026-08-12): **PASS**.
+  The final Join appended the third distinct physical basket
+  `6a7ca61cf8a7d3829acd8035` as `approval-pending/pending`,
+  `reservationActive=true`, created at `2026-08-12T16:58:00.800Z` and updated
+  at `2026-08-12T16:58:04.003015578Z`. Both prior Cancel audit IDs and all
+  their timestamps remained unchanged. Nova again has exactly one
+  member-origin pending approval, occupancy is `1 accepted + 1 pending / 8`,
+  and her pending activity is `1`. Casey has exactly five ordered Pending,
+  Cancelled, Pending, Cancelled, Pending notifications; the fifth was created
+  at `2026-08-12T16:58:04.128038718Z`. No Join produced a ticket or ticket
+  counter. Read-only inspection verified Casey is at the open main menu and
+  source inspection verified that approval is owned by **My Events** -> event
+  **Members** -> **Open actions for Nova Social** -> **Approve** -> **Approve
+  request?** confirmation, not by Notifications. Casey's single terminal
+  approval is next.
+- Terminal basket-closure repair replay — Casey approval (2026-08-12): **PASS /
+  REPAIR VERIFIED**. The owning
+  `POST /api/activities/events/members/action` returned `200` at
+  `2026-08-12T19:01:17+02:00`. Nova transitioned directly to accepted,
+  occupancy became exactly `2 accepted + 0 pending / 8`, and exactly one
+  active physical ticket `6a7ca6ddf8a7d3829acd8038` with code
+  `TKT-be2fc931-af92-47f8-83ad-0cefc4c1d416` was issued at
+  `2026-08-12T17:01:17.343122715Z`. Nova's stored ticket counters are `1 / 1`;
+  Casey remains `0 / 0`, and no second ticket exists. The formerly failing
+  third basket `6a7ca61cf8a7d3829acd8035` now correctly closed as
+  `status=approved`, `resultState=succeeded`, `reservationActive=false` at
+  `updatedAtIso=2026-08-12T17:01:17.327197050Z`; both older Cancel audits and
+  all their timestamps remained immutable. This clean full replay verifies the
+  terminal basket-closure implementation. Ticket UI polling and two read-only
+  popup opens remain before the full checkpoint can close.
+- Terminal basket-closure repair replay — normal Ticket poll (2026-08-12):
+  **FAIL**. Nova's persisted `activities.tickets` and
+  `activities.asset.tickets` were both `1`, and an independent demo-session
+  read proved the ordinary realtime payload also carried `tickets=1` plus
+  `asset.tickets=1`. Nginx recorded repeated successful Nova long polls after
+  approval, including `19:02:21`, `19:02:51`, `19:03:21` and `19:03:51`
+  local time. Nevertheless, read-only DOM inspection showed no `1` badge on
+  the **Ticket** menu item. The avatar's total `1` belonged to Nova's existing
+  Rates counter and is not Ticket evidence. Root cause: `SideMenuComponent`
+  discarded the complete non-notification realtime snapshot whenever any
+  popup was visible; Nova's intentionally retained Explore popup therefore
+  blocked all global counters indefinitely.
+- Popup-safe realtime counter repair (2026-08-12): **IMPLEMENTATION UPDATED /
+  CLEAN REPLAY REQUIRED**. Popup-visible polls now apply their global activity
+  counter projection immediately while continuing to defer impressions and
+  cursor advancement. `ActivityStore` now owns a per-user revision token so a
+  poll captured before a newer local/optimistic counter mutation or counter
+  clear cannot overwrite that newer state. Source regressions cover popup-safe
+  ticket plus nested asset-ticket convergence, stale response rejection and
+  clear/reset invalidation. The existing frontend watcher generated the
+  complete bundle successfully; no separate build or test process was
+  started. Reloading the already-approved state would only hydrate the answer
+  and would not prove the broken transition. The backend Cancel/re-Join and
+  terminal basket-closure branches already have clean replay evidence and the
+  new change touches only frontend realtime counter synchronization, so replay
+  only its affected path from a canonical baseline: one Join, one Casey
+  approval while Nova Explore stays open, normal poll, then two Ticket reads.
+- Popup-safe counter repair replay baseline (2026-08-12): the versioned reset
+  restored the failed poll attempt and `status` proved `phase=not-staged`. A
+  fresh image-qualified stage plus an independent second status read proved
+  the canonical Casey-only baseline: Casey is the sole accepted Admin at
+  `1 + 0 / 8`; Nova has no membership, basket, notification, ticket or
+  activity/ticket counter; the ticket collection is empty. The launcher
+  replaced only this checkpoint's managed Casey, Nova and Riley windows after
+  the watcher build and verified all identities. Replay only the focused
+  popup-counter path, retaining Nova's Explore popup through terminal approval
+  so the formerly failing normal poll is exercised rather than bypassed by
+  hydration. Do not repeat the already-proven Cancel/reload/re-Join branches.
+- Popup-safe counter repair focused replay — Join (2026-08-12): **PASS**. The
+  owning `POST /api/activities/events/join` returned `200` at
+  `2026-08-12T19:13:38+02:00`. Nova has exactly one member-origin pending
+  approval and one new active physical basket
+  `6a7ca9c2f8a7d3829acd8039`, created at
+  `2026-08-12T17:13:35.424Z` and finalized to
+  `approval-pending/pending` at `2026-08-12T17:13:38.784686437Z`. Casey has
+  exactly one Pending notification for this attempt, created at
+  `2026-08-12T17:13:38.870402615Z`; occupancy is
+  `1 accepted + 1 pending / 8`, while the ticket collection and both Nova
+  ticket counters remain zero. Do not repeat this Join. Keep Nova Explore open
+  and perform Casey's one terminal approval next so the popup-visible realtime
+  counter transition is exercised.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

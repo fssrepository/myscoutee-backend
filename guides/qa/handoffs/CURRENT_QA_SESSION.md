@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-ledger_status: FAIL retained; terminal basket-closure implementation hot-deployed; clean full replay in progress
-state: fresh Casey-only baseline independently verified; managed Casey/Nova/Riley windows replaced and identity-checked; no membership, basket, notification or ticket for Nova
-required_resume: Nova performs the first Request Join exactly once; then prove one new active approval-pending basket, one member-origin pending membership, one Casey Pending notification and zero tickets/counters
+ledger_status: historical FAILs retained; basket repairs verified; focused popup-counter replay Join PASS, Casey approval next
+state: focused Join PASS at 2026-08-12T17:13:38Z; basket 6a7ca9c2f8a7d3829acd8039 is the one active approval-pending attempt, Nova is pending 1, Casey has one Pending notification, tickets/counters remain 0/0; Nova Explore must remain open; prior clean Cancel/reload/re-Join and terminal basket-closure evidence remains valid
+required_resume: Casey approves Nova exactly once through My Events -> QA EVENT-TICKET-005 -> Members -> Nova Social -> Open actions -> Approve -> confirmation Approve while Nova Explore remains open; then prove one accepted membership, terminal basket closure, exactly one Nova ticket/counters 1/1 and wait for the normal popup-visible Ticket badge poll
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Nova Social
+next_actor: Casey Bridge
 stop_phrase: megvan
 ```
 
@@ -107,10 +107,11 @@ otherwise.
 
 ### Next manual action
 
-In Nova's middle window, open **Events** -> **Explore**, find
-`QA EVENT-TICKET-005`, choose **Request Join** and submit that Join exactly
-once. Stop when the pending/Continue booking state appears. Leave Casey and
-Riley untouched and do not reload yet. Reply `megvan`.
+Leave Nova's middle **Explore** popup open and do not reload it. In Casey's
+left window, open **My Events** -> `QA EVENT-TICKET-005` -> the
+capacity/**Members** surface -> **Nova Social** -> **Open actions for Nova
+Social** -> **Approve** -> the **Approve request?** confirmation's **Approve**
+button exactly once. Leave Riley untouched. Reply `megvan`.
 
 ## QA working method
 
@@ -160,6 +161,14 @@ the user.
 - On a requested split, preserve execution continuity explicitly with the
   ordered chain and `advance`/`switch` semantics where supported; never force
   the user to recreate already-proven setup.
+- After a repair, scope the replay to the shortest causal path that can execute
+  the changed owning code and decisive oracle. Keep prior clean evidence for
+  branches untouched by that change; do not restart every subtest merely
+  because they share a matrix row. Require a full checkpoint replay only when
+  the failure contaminated the shared baseline/evidence or the repair changed
+  an earlier shared transaction invariant. If a focused path needs prepared
+  state, make it a versioned sub-checkpoint rather than asking the user to
+  reproduce unrelated manual steps.
 
 ### 1.2 Exact manual producer instructions
 
@@ -254,6 +263,17 @@ paths and names out of Git.
 - Publish synchronizes tickets for participants already accepted; later
   approval/acceptance creates only the newly eligible user's ticket.
 - Ticket reads and popup opens never create or replace a ticket.
+- A visible domain popup must not indefinitely block global realtime menu
+  counters. When popup-specific profile/impressions state must be deferred,
+  apply the global counter projection separately and keep the profile cursor
+  unadvanced so the deferred snapshot remains replayable after the popup
+  closes. Protect counter application with a per-user revision token: a poll
+  captured before a newer local/optimistic counter mutation must be rejected,
+  not allowed to overwrite it.
+- For a normal-poll badge checkpoint, keep the owning popup open across the
+  external producer action, verify the realtime response payload independently
+  from the rendered menu DOM, and require the item-level badge without reload.
+  A total avatar badge is not proof that the named menu counter converged.
 - Counters come from physical active ticket state and must agree in both
   `tickets` and `asset.tickets` fields.
 - The Riley window is an unchanged control unless a checkpoint explicitly
