@@ -1785,11 +1785,13 @@
       mode: Q.text(event.mode),
       autoInviter: event.autoInviter === true,
       frequency: Q.text(event.frequency),
+      timeframe: Q.text(event.timeframe),
       location: Q.text(event.location),
       locationCoordinates: event.locationCoordinates || null,
       hostLocationCoordinates: hostCoordinates,
       locationCoordinatesMatchHost: coordinatesMatch(event.locationCoordinates),
       slotsEnabled: event.slotsEnabled === true,
+      subEventsEnabled: event.subEventsEnabled === true,
       slotTemplates: (event.slotTemplates || []).map(item => ({
         id: Q.text(item.id),
         startAt: item.startAt,
@@ -1897,6 +1899,18 @@
     }).sort({ createdDate: 1, _id: 1 }).toArray();
     const eventMemberApprovalNotifications = Q.collection("userNotifications").find({
       kind: "event-member-approved",
+      $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).sort({ createdDate: 1, _id: 1 }).toArray();
+    const eventLifecycleTasks = Q.collection("scheduledMessageTasks").find({
+      actionKey: "event.definition.changed",
+      eventId: { $in: dynamicEventIds }
+    }).sort({ updatedDate: 1, _id: 1 }).toArray();
+    const eventLifecycleOutbox = Q.collection("notificationOutbox").find({
+      notificationType: { $in: ["event-under-review", "event-modified", "event-details-changed"] },
+      $or: [{ entityId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
+    }).sort({ createdDate: 1, _id: 1 }).toArray();
+    const eventLifecycleNotifications = Q.collection("userNotifications").find({
+      kind: { $in: ["event-under-review", "event-modified", "event-details-changed"] },
       $or: [{ sourceId: { $in: dynamicEventIds } }, { "payload.eventId": { $in: dynamicEventIds } }]
     }).sort({ createdDate: 1, _id: 1 }).toArray();
     const eventRecomputeTasks = Q.collection("affinityRecomputeTasks").find({
@@ -2175,6 +2189,40 @@
         readAtIso: Q.text(item.readAtIso),
         title: Q.text(item.title),
         message: Q.text(item.message)
+      })),
+      eventLifecycleTasks: eventLifecycleTasks.map(item => ({
+        id: Q.text(item._id),
+        taskKey: Q.text(item.taskKey),
+        eventId: Q.text(item.eventId),
+        status: Q.text(item.status),
+        dueAtIso: Q.text(item.dueAtIso),
+        audienceUserIds: Q.text(item.payload && item.payload.audienceUserIds)
+          .split(",").map(Q.text).filter(Boolean),
+        changeReasons: Q.text(item.payload && item.payload.changeReasons)
+          .split(",").map(Q.text).filter(Boolean),
+        lastRunAtIso: Q.text(item.lastRunAtIso),
+        lastRunStatus: Q.text(item.lastRunStatus),
+        lastRunDetail: Q.text(item.lastRunDetail),
+        lastRunCount: Number(item.lastRunCount || 0),
+        updatedDate: Q.text(item.updatedDate)
+      })),
+      eventLifecycleOutbox: eventLifecycleOutbox.map(item => ({
+        id: Q.text(item._id),
+        notificationType: Q.text(item.notificationType),
+        eventId: Q.text(item.entityId || item.payload && item.payload.eventId),
+        recipientUserIds: sortedUnique(item.recipientUserIds || []),
+        status: Q.text(item.status),
+        createdDate: Q.text(item.createdDate)
+      })),
+      eventLifecycleNotifications: eventLifecycleNotifications.map(item => ({
+        id: Q.text(item._id),
+        recipientUserId: Q.text(item.recipientUserId),
+        kind: Q.text(item.kind),
+        eventId: Q.text(item.sourceId || item.payload && item.payload.eventId),
+        readAtIso: Q.text(item.readAtIso),
+        title: Q.text(item.title),
+        message: Q.text(item.message),
+        createdDate: Q.text(item.createdDate)
       })),
       eventRecomputeTasks: eventRecomputeTasks.map(item => ({
         id: Q.text(item._id),
@@ -3109,6 +3157,317 @@
       },
       baseline: oracle(refreshedState),
       next: "Close and reopen only Casey's EVENT-TICKET-007 Members surface if needed so Riley is shown as pending, then Approve Riley exactly once. Before opening or clicking Riley's notification, verify its normal poll exposes one unread event-member-approved row in Notifications > New."
+    });
+  }
+
+  function prepareVisibilitySaveRetest() {
+    if (checkpointId !== "EVENT-VISIBILITY-001") {
+      Q.fail("prepare-visibility-save-retest is restricted to EVENT-VISIBILITY-001.");
+    }
+    const state = requireMatchingState();
+    const eventId = activeEventSourceId() || EVENT_ID;
+    const eventDocuments = Q.collection("events").find({ sourceId: eventId }).toArray();
+    if (eventDocuments.length !== 3
+        || eventDocuments.some(event =>
+          Q.text(event.status) !== "A"
+          || event.ticketing !== true
+          || Q.text(event.visibility).toLowerCase() !== "friends only"
+          || Number(event.acceptedMembers || 0) !== 3
+          || Number(event.pendingMembers || 0) !== 0
+          || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
+          || !sameIds(event.pendingMemberUserIds, [])
+          || !sameIds(event.invitedMemberUserIds, [])
+          || !sameIds(event.pendingRequestMemberUserIds, []))) {
+      Q.fail("EVENT-VISIBILITY-001 is not at the exact active Friends only post-Publish boundary; preserve the evidence and do not re-arm Save.");
+    }
+
+    const controlledMembers = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId,
+      userId: { $in: [hostUserId, participantUserId, thirdUserId] }
+    }).toArray();
+    if (controlledMembers.length !== 3
+        || controlledMembers.some(member => Q.text(member.status) !== "accepted")
+        || controlledMembers.filter(member => Q.text(member.role) === "Admin").length !== 1
+        || Q.text(controlledMembers.find(member => Q.text(member.role) === "Admin").userId) !== hostUserId) {
+      Q.fail("EVENT-VISIBILITY-001 membership is not the exact retained three-accepted boundary; preserve the evidence and do not re-arm Save.");
+    }
+
+    const tickets = Q.collection("eventTickets").find({ eventId }).toArray();
+    const activeTickets = tickets.filter(ticket => Q.text(ticket.status) === "A");
+    const deletedTickets = tickets.filter(ticket => Q.text(ticket.status) === "D");
+    if (tickets.length !== 4
+        || activeTickets.length !== 2
+        || deletedTickets.length !== 2
+        || !sameIds(activeTickets.map(ticket => ticket.holderUserId), [participantUserId, thirdUserId])
+        || !sameIds(deletedTickets.map(ticket => ticket.holderUserId), [participantUserId, thirdUserId])) {
+      Q.fail("EVENT-VISIBILITY-001 ticket history is not the exact two-D plus two-A post-Publish boundary; preserve the evidence and do not re-arm Save.");
+    }
+    for (const userId of [participantUserId, thirdUserId]) {
+      const user = Q.collection("users").findOne({ $or: [{ _id: userId }, { userId }] });
+      if (!user
+          || nestedNumber(user, "activities.tickets") !== 1
+          || nestedNumber(user, "activities.asset.tickets") !== 1) {
+        Q.fail(`user '${userId}' is not at the exact active-ticket counter boundary; preserve the evidence and do not re-arm Save.`);
+      }
+    }
+
+    const failedTaskSelector = {
+      taskKey: `event-definition-changed:${eventId}`,
+      actionKey: "event.definition.changed",
+      eventId
+    };
+    const failedTasks = Q.collection("scheduledMessageTasks").find(failedTaskSelector).toArray();
+    const failedOutboxSelector = {
+      notificationType: "event-details-changed",
+      $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+    };
+    const failedNotificationSelector = {
+      kind: "event-details-changed",
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    };
+    const failedOutbox = Q.collection("notificationOutbox").find(failedOutboxSelector).toArray();
+    const failedNotifications = Q.collection("userNotifications").find(failedNotificationSelector).toArray();
+    const failedReasons = failedTasks.length === 1
+      ? Q.text(failedTasks[0].payload && failedTasks[0].payload.changeReasons).split(",").map(Q.text).filter(Boolean)
+      : [];
+    if (failedTasks.length !== 1
+        || !sameIds(failedReasons, ["schedule", "sub-events"])
+        || failedOutbox.length !== 2
+        || failedNotifications.length !== 2
+        || !sameIds(failedOutbox.flatMap(item => item.recipientUserIds || []), [participantUserId, thirdUserId])
+        || !sameIds(failedNotifications.map(item => item.recipientUserId), [participantUserId, thirdUserId])) {
+      Q.fail("The visibility-only Save failure artifacts are no longer the exact one task/two-recipient occurrence; preserve the evidence and do not re-arm Save.");
+    }
+
+    const preparedAtIso = Q.nowIso();
+    const eventUpdate = Q.collection("events").updateMany({ sourceId: eventId }, {
+      $set: {
+        status: "DR",
+        published: false,
+        isTrashed: false,
+        visibility: "public",
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (eventUpdate.matchedCount !== 3) {
+      Q.fail("The retained event projections changed while the visibility Save replay was being prepared.");
+    }
+    const canonicalUpdate = Q.collection("events").updateOne({
+      sourceId: eventId,
+      ownerUserId: hostUserId
+    }, {
+      $unset: { frequency: "", slotsEnabled: "" },
+      $set: {
+        subEventsEnabled: false,
+        subEventDefinitions: [],
+        slotTemplates: []
+      }
+    });
+    if (canonicalUpdate.matchedCount !== 1) {
+      Q.fail("The canonical event disappeared while legacy-equivalent defaults were re-armed.");
+    }
+    const ticketUpdate = Q.collection("eventTickets").updateMany({
+      eventId,
+      status: "A"
+    }, {
+      $set: {
+        status: "D",
+        updatedDate: preparedAtIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (ticketUpdate.matchedCount !== 2 || ticketUpdate.modifiedCount !== 2) {
+      Q.fail("The active replacement tickets changed while the visibility Save replay was being prepared.");
+    }
+    for (const userId of [participantUserId, thirdUserId]) {
+      applyTicketActivityCounterDelta(userId, -1);
+    }
+    synchronizeHostEventActivityCounters(hostUserId);
+    Q.collection("chats").updateMany({
+      $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }]
+    }, {
+      $set: { ownerStatus: "DR" },
+      $inc: { revision: 1 }
+    });
+
+    const taskRemoval = Q.collection("scheduledMessageTasks").deleteMany(failedTaskSelector);
+    const outboxRemoval = Q.collection("notificationOutbox").deleteMany(failedOutboxSelector);
+    const notificationRemoval = Q.collection("userNotifications").deleteMany(failedNotificationSelector);
+    if (taskRemoval.deletedCount !== 1
+        || outboxRemoval.deletedCount !== 2
+        || notificationRemoval.deletedCount !== 2) {
+      Q.fail("The failed Save artifacts changed during guarded cleanup; stop before replay.");
+    }
+    for (const userId of [participantUserId, thirdUserId]) {
+      const unreadNotifications = Q.collection("userNotifications").countDocuments({
+        recipientUserId: userId,
+        $or: [{ readAtIso: { $exists: false } }, { readAtIso: null }]
+      });
+      const userUpdate = Q.collection("users").updateOne({
+        $or: [{ _id: userId }, { userId }]
+      }, {
+        $set: { "activities.notifications": unreadNotifications }
+      });
+      if (userUpdate.matchedCount !== 1) {
+        Q.fail(`user '${userId}' disappeared while the notification counter was reconciled.`);
+      }
+    }
+
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: { "context.actualEventSourceId": eventId },
+      $push: {
+        visibilitySaveRetests: {
+          preparedAtIso,
+          eventId,
+          retainedDeletedTicketIds: deletedTickets.map(ticket => Q.text(ticket._id)),
+          rearmedActiveTicketIds: activeTickets.map(ticket => Q.text(ticket._id)),
+          removedFailedTaskIds: failedTasks.map(item => Q.text(item._id)),
+          removedFailedOutboxIds: failedOutbox.map(item => Q.text(item._id)),
+          removedFailedNotificationIds: failedNotifications.map(item => Q.text(item._id))
+        }
+      }
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "visibility-save-retest-ready",
+      preparedAtIso,
+      eventId,
+      actors: [Q.user(hostUserId), Q.user(participantUserId), Q.user(thirdUserId)],
+      baseline: oracle(refreshedState),
+      next: "Open Notifications > New for Nova and Riley and record the stable baseline. In Casey My Events edit only Public to Friends only and Save once. Do not Publish. Require no new event-details-changed task/outbox/notification and no Nova/Riley unread delta before Publish."
+    });
+  }
+
+  function prepareVisibilityPublishWindow() {
+    if (checkpointId !== "EVENT-VISIBILITY-001") {
+      Q.fail("prepare-visibility-publish-window is restricted to EVENT-VISIBILITY-001.");
+    }
+    const state = requireMatchingState();
+    if ((state.visibilityPublishWindows || []).length > 0) {
+      Q.fail("EVENT-VISIBILITY-001 already has a prepared stable Publish window; do not move it again.");
+    }
+    const eventId = activeEventSourceId() || EVENT_ID;
+    const eventDocuments = Q.collection("events").find({ sourceId: eventId }).toArray();
+    const canonicalEvent = eventDocuments.find(event => Q.text(event.ownerUserId) === hostUserId);
+    const nowIso = Q.nowIso();
+    const now = new Date(nowIso).getTime();
+    if (eventDocuments.length !== 3
+        || !canonicalEvent
+        || canonicalEvent.ticketing !== true
+        || eventDocuments.some(event =>
+          Q.text(event.status) !== "DR"
+          || Q.text(event.visibility).toLowerCase() !== "friends only"
+          || Number(event.acceptedMembers || 0) !== 3
+          || Number(event.pendingMembers || 0) !== 0
+          || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId, thirdUserId])
+          || !sameIds(event.pendingMemberUserIds, [])
+          || !sameIds(event.invitedMemberUserIds, [])
+          || !sameIds(event.pendingRequestMemberUserIds, [])
+          || !Number.isFinite(new Date(event.endAtIso).getTime())
+          || new Date(event.endAtIso).getTime() > now)) {
+      Q.fail("EVENT-VISIBILITY-001 is not at the exact expired DR/Friends only post-Save boundary; preserve the evidence and do not move its window.");
+    }
+
+    const controlledMembers = Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: eventId,
+      userId: { $in: [hostUserId, participantUserId, thirdUserId] }
+    }).toArray();
+    if (controlledMembers.length !== 3
+        || controlledMembers.some(member => Q.text(member.status) !== "accepted")
+        || controlledMembers.filter(member => Q.text(member.role) === "Admin").length !== 1
+        || Q.text(controlledMembers.find(member => Q.text(member.role) === "Admin").userId) !== hostUserId) {
+      Q.fail("EVENT-VISIBILITY-001 membership changed after the fixed Save replay; preserve the evidence and do not move its window.");
+    }
+
+    const tickets = Q.collection("eventTickets").find({ eventId }).toArray();
+    if (tickets.length !== 4
+        || tickets.some(ticket => Q.text(ticket.status) !== "D")
+        || tickets.filter(ticket => Q.text(ticket.holderUserId) === participantUserId).length !== 2
+        || tickets.filter(ticket => Q.text(ticket.holderUserId) === thirdUserId).length !== 2) {
+      Q.fail("EVENT-VISIBILITY-001 ticket audit is not the exact four-D post-Save boundary; preserve the evidence and do not move its window.");
+    }
+    for (const userId of [participantUserId, thirdUserId]) {
+      const user = Q.collection("users").findOne({ $or: [{ _id: userId }, { userId }] });
+      if (!user
+          || nestedNumber(user, "activities.tickets") !== 0
+          || nestedNumber(user, "activities.asset.tickets") !== 0) {
+        Q.fail(`user '${userId}' is not at the exact zero-ticket counter boundary; preserve the evidence and do not move the window.`);
+      }
+    }
+
+    const falseTaskCount = Q.collection("scheduledMessageTasks").countDocuments({
+      taskKey: `event-definition-changed:${eventId}`,
+      actionKey: "event.definition.changed",
+      eventId
+    });
+    const falseOutboxCount = Q.collection("notificationOutbox").countDocuments({
+      notificationType: "event-details-changed",
+      $or: [{ entityId: eventId }, { "payload.eventId": eventId }]
+    });
+    const falseNotificationCount = Q.collection("userNotifications").countDocuments({
+      kind: "event-details-changed",
+      $or: [{ sourceId: eventId }, { "payload.eventId": eventId }]
+    });
+    if (falseTaskCount !== 0 || falseOutboxCount !== 0 || falseNotificationCount !== 0) {
+      Q.fail("The fixed visibility-only Save oracle regressed; preserve the evidence and do not move the window.");
+    }
+    const recomputeTasks = Q.collection("affinityRecomputeTasks").find({
+      targetType: "EVENT",
+      targetId: eventId
+    }).toArray();
+    if (recomputeTasks.length !== 1
+        || Q.text(recomputeTasks[0].status) !== "done"
+        || Q.text(recomputeTasks[0].lastError)) {
+      Q.fail("The fixed Save's normal event recompute is not at the exact clean terminal boundary; preserve the evidence and do not move the window.");
+    }
+
+    const startAtIso = new Date(now + 12 * 60 * 60000).toISOString();
+    const endAtIso = new Date(now + 36 * 60 * 60000).toISOString();
+    const previousWindows = eventDocuments.map(event => ({
+      recordId: Q.text(event._id),
+      ownerUserId: Q.text(event.ownerUserId),
+      startAtIso: Q.text(event.startAtIso),
+      endAtIso: Q.text(event.endAtIso)
+    }));
+    const eventUpdate = Q.collection("events").updateMany({ sourceId: eventId }, {
+      $set: {
+        startAtIso,
+        endAtIso,
+        updatedDate: nowIso,
+        updatedUser: Q.ACTOR
+      }
+    });
+    if (eventUpdate.matchedCount !== 3 || eventUpdate.modifiedCount !== 3) {
+      Q.fail("The retained event projections changed while the stable Publish window was being prepared.");
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $push: {
+        visibilityPublishWindows: {
+          preparedAtIso: nowIso,
+          eventId,
+          previousWindows,
+          startAtIso,
+          endAtIso,
+          reason: "fixture-expired-before-manual-publish"
+        }
+      }
+    });
+    const refreshedState = requireMatchingState();
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "visibility-publish-window-ready",
+      preparedAtIso: nowIso,
+      eventId,
+      startAtIso,
+      endAtIso,
+      baseline: oracle(refreshedState),
+      next: "Wait for Casey's already-open My Events Upcoming list to show QA EVENT-TICKET-007 again through its normal poll. Do not reload or repeat Save. Then Publish once while Nova and Riley Notifications > New remain open."
     });
   }
 
@@ -4357,6 +4716,8 @@
     case "prepare-ticket-invite-candidate": prepareTicketInviteCandidate(); break;
     case "prepare-ticket-invitee-response-retest": prepareTicketInviteeResponseRetest(); break;
     case "prepare-ticket-admin-approval-retest": prepareTicketAdminApprovalRetest(); break;
+    case "prepare-visibility-save-retest": prepareVisibilitySaveRetest(); break;
+    case "prepare-visibility-publish-window": prepareVisibilityPublishWindow(); break;
     case "add-feedback-participant": addFeedbackParticipant(); break;
     case "next": next(); break;
     case "verify-ticket-poll-resume": verifyTicketPollResume(); break;

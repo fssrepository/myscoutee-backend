@@ -850,7 +850,7 @@ public class ActivitiesEventsService {
             return null;
         }
         ActivityEvent preferred = findPreferredEventDetailRecord(sourceId);
-        return preferred == null
+        return preferred == null || !canViewerLoadEventDetail(preferred, viewer.userId())
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
                         isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
@@ -4143,7 +4143,9 @@ public class ActivitiesEventsService {
         if (!Objects.equals(safeText(previous.getStartAtIso()), safeText(next.getStartAtIso()))
                 || !Objects.equals(safeText(previous.getEndAtIso()), safeText(next.getEndAtIso()))
                 || !Objects.equals(safeText(previous.getTimeframe()), safeText(next.getTimeframe()))
-                || !Objects.equals(safeText(previous.getFrequency()), safeText(next.getFrequency()))) {
+                || !Objects.equals(
+                        normalizeEventFrequency(previous.getFrequency()),
+                        normalizeEventFrequency(next.getFrequency()))) {
             reasons.add("schedule");
         }
         if (!Objects.equals(definitionSignature(previous), definitionSignature(next))) {
@@ -4180,11 +4182,12 @@ public class ActivitiesEventsService {
             return "";
         }
         Map<String, Object> signature = new LinkedHashMap<>();
-        signature.put("subEventsEnabled", event.getSubEventsEnabled());
+        signature.put("subEventsEnabled", event.getSubEventsEnabled() == null
+                || Boolean.TRUE.equals(event.getSubEventsEnabled()));
         signature.put("subEventDefinitions", event.getSubEventDefinitions() == null ? List.of() : event.getSubEventDefinitions());
-        signature.put("slotsEnabled", event.getSlotsEnabled());
+        signature.put("slotsEnabled", Boolean.TRUE.equals(event.getSlotsEnabled()));
         signature.put("slotTemplates", event.getSlotTemplates() == null ? List.of() : event.getSlotTemplates());
-        signature.put("mode", safeText(event.getMode()));
+        signature.put("mode", normalizeEventMode(event.getMode()));
         try {
             return OBJECT_MAPPER.writeValueAsString(signature);
         } catch (Exception ignored) {
@@ -5137,6 +5140,23 @@ public class ActivitiesEventsService {
             return false;
         }
         if (hasTrackedUserParticipation(record, activeUserId) && !hasVisibleCheckoutBasket(record)) {
+            return false;
+        }
+        return isVisibleToUntrackedViewer(record, activeUserId);
+    }
+
+    private boolean canViewerLoadEventDetail(ActivityEvent record, String viewerUserId) {
+        if (record == null || !StringUtils.hasText(viewerUserId)) {
+            return false;
+        }
+        if (isViewerAdmin(record, viewerUserId) || hasTrackedUserParticipation(record, viewerUserId)) {
+            return true;
+        }
+        return isVisibleToUntrackedViewer(record, viewerUserId);
+    }
+
+    private boolean isVisibleToUntrackedViewer(ActivityEvent record, String activeUserId) {
+        if (!StringUtils.hasText(activeUserId) || !isCanonicalExploreRecord(record)) {
             return false;
         }
         String visibility = safeText(record.getVisibility());

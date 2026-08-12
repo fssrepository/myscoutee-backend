@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-08-12
+Updated: 2026-08-13
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable execution lessons. It
@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-VISIBILITY-001
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-visibility-001--friends-only-explore-discovery-boundary
+checkpoint: EVENT-TICKET-008
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-008--two-similar-events-keep-physical-tickets-isolated
 scenario: event-domain
-ledger_status: IN PROGRESS / UNPUBLISH + FRIENDS ONLY DRAFT SAVE PASS; EVENT-TICKET-007 PASS/CLOSED; EVENT-VISIBILITY-001 Publish pending
-state: EVENT-TICKET-007 closed after repeated Riley Ticket read PASS; final identities retained as Nova ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and Riley ticket 6a7cd3aff8a7d3829acd805a / TKT-d05cdd81-86da-430d-b166-b508cccb42c6; guarded advance at 2026-08-12T22:42:44+02:00 retained the active Ticketing On event with Casey/Nova/Riley accepted 3/8, no pending and both tickets A with counters 1/1; Casey Unpublish PASS proved the same event DR/Public/Ticketing On, unchanged accepted membership, both exact tickets D, counters 0/0, Casey ticketless and no new ticket; its recompute completed at 2026-08-12T22:55:46+02:00 with no error; Casey then edited only visibility Public to Friends only and saved once; the independent oracle proved the event remained DR/Ticketing On with visibility Friends only, both exact D tickets/counters/memberships/controls unchanged and no replacement ticket, while the already-open Casey card changed to the Friends icon without reload; the Save-owned recompute completed normally at 2026-08-12T23:04:50+02:00, attemptCount 3, empty lastError and worker pendingCount 0; Lina Park remains the deterministic Casey-friend control and Liam Parker the deterministic non-friend control, neither with tracked participation; isolated Casey/Lina/Liam windows remain identity-verified with Austin geolocation
-required_resume: in Casey's left My Events card open the card actions and choose Publish exactly once; do not touch Lina or Liam yet; stop for the active Friends only event, replacement A-ticket/counter/membership and event-task oracle
-event: QA EVENT-TICKET-007
+ledger_status: PRE-MUTATION UI/ORACLE PASS; A-ONLY UNPUBLISH PENDING
+state: EVENT-VISIBILITY-001 is PASS/CLOSED/reset; fresh EVENT-TICKET-008 owns active Public Ticketing On A and B with Casey+Nova accepted and Riley pending at 2/8 (1); Nova's open Ticket > Upcoming list shows A and B exactly once, and the immediate oracle retains the two exact distinct A tickets unused, Nova counters 2/2, Casey/Riley 0/0 and zero stage-relative outbox/recompute; exactly three Casey/Nova/Riley managed windows run and no fourth exists
+required_resume: In Casey's left window open Events > My Events and leave Upcoming selected; require both Manual QA EVENT-TICKET-008 A and B cards visible, but do not open a card menu or Unpublish yet; Nova keeps the two-ticket Upcoming list open and Riley remains idle; reply megvan
+event: Manual QA EVENT-TICKET-008 A / B
 actors:
   left: Casey Bridge
-  middle: Lina Park
-  right: Liam Parker
+  middle: Nova Social
+  right: Riley Outside
 next_actor: Casey Bridge
 stop_phrase: megvan
 ```
@@ -91,27 +91,27 @@ On a new baseline, do not launch browsers until the second `status` proves the
 linked checkpoint's complete expected baseline. If any predicate differs, stop
 and report it instead of asking the user to compensate in the UI.
 
-After that proof, open or replace exactly these three managed windows with:
+After that proof, open or replace exactly the checkpoint-configured managed
+windows with:
 
 ```bash
 guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005
 ```
 
-The launcher owns three separate ephemeral Chrome profiles, injects the exact
-demo user sessions, grants the configured Austin geolocation, loads `/game`,
-dismisses entry consent/guides and lays the windows out left-to-right. Do not
-open extra browsers, use personal Chrome profile names, or ask the user which
-profile to select. Re-running it replaces only this checkpoint's managed
-windows. Lina and Liam are external visibility controls and must remain
-untouched until the checkpoint says otherwise.
+The launcher owns one separate ephemeral Chrome profile per configured actor,
+injects the exact demo user sessions, grants the configured Austin
+geolocation, loads `/game`, dismisses entry consent/guides and lays the windows
+out in the configured grid. Do not open ad-hoc browsers, use personal Chrome
+profile names, or ask the user which profile to select. Re-running it replaces
+only this checkpoint's managed windows. Idle controls remain untouched until
+the checkpoint says otherwise.
 
 ### Next manual action
 
-In Casey's left **My Events** card open the card actions and choose **Publish**
-exactly once. Do not touch Lina or Liam yet. Stop and reply `megvan` so the active
-Friends only event, both replacement physical tickets, restored ticket
-counters, unchanged memberships/controls and owning event task can be checked
-before either Explore read.
+The Nova pre-mutation Ticket boundary is **PASS**. Keep Nova's two-ticket
+Upcoming list open. In Casey's left window open **Events -> My Events** and
+leave **Upcoming** selected. Do not open either card menu and do not Unpublish
+yet. Riley remains idle. Stop and reply `megvan` when Casey sees both A and B.
 
 ## QA working method
 
@@ -177,6 +177,18 @@ the user.
   an earlier shared transaction invariant. If a focused path needs prepared
   state, make it a versioned sub-checkpoint rather than asking the user to
   reproduce unrelated manual steps.
+- Before issuing any lifecycle producer instruction whose control is filtered
+  by Upcoming/Active/Past time, compare the event's absolute start/end against
+  the current wall clock and reserve enough time for the remaining manual stops,
+  worker waits and actor replacement. This applies to long continuation
+  checkpoints, not only explicit time-window tests. If the retained fixture can
+  expire during that round trip, do not issue the instruction: add one guarded,
+  versioned preparation that proves the current transaction oracle, moves the
+  whole event projection to a stable future window once and persists the old
+  and new dates. Let an already-open list recover through its normal poll when
+  possible. If expiry removed the action before a modifying request was sent,
+  classify it as **NOT EXECUTED / fixture timing invalid**, retain prior PASS
+  boundaries and continue without replaying them.
 - A versioned server-side replay rearm does not by itself require a full page
   reload. First let the already-open surface reach the prepared pre-action
   boundary through its established read behavior; when that surface loads only
@@ -344,14 +356,25 @@ stack to start.
 ### 3. Browser actors are checkpoint data
 
 Before a checkpoint is run, its exact active actors, idle controls and layout
-must exist in `browser-session-checkpoints.json`. Launch them through the
-checkpoint browser script. Actor identity is verified by the script after
-session injection; do not identify users from Google profiles, window order
-alone or remembered sessions.
+must exist in `browser-session-checkpoints.json`. A persisted server oracle
+does not substitute for an actor window when that actor's in-place,
+poll-driven, notification, counter or read/reload UI behavior is an explicit
+expectation. Conversely, do not launch actors used only as persisted negative
+controls. Actor identity is verified by the script after session injection;
+do not identify users from Google profiles, window order alone or remembered
+sessions.
 
-If a new checkpoint needs a different actor set, add a new configuration entry
-instead of reusing a larger three-window setup by habit. Keep personal profile
-paths and names out of Git.
+This workstation has exactly three usable Google-account/browser slots, so QA
+must never launch more than three managed actor windows concurrently. When one
+checkpoint needs UI evidence from more than three identities, split it into
+short causally ordered browser phases with separate configuration entries and
+replace the previous phase's windows before opening the next. For example,
+`EVENT-VISIBILITY-001` uses Casey/Nova/Riley for Save/Publish notification and
+ticket convergence, then `EVENT-VISIBILITY-001-EXPLORE` replaces them with
+Casey/Lina/Liam for friend/non-friend discovery. This is one domain checkpoint
+with two named UI phases, not two simultaneous five-actor layouts and not a new
+testcase row. Check memory/swap/CPU before and after every replacement. Keep
+personal profile paths and names out of Git.
 
 ### 4. Domain invariants behind ticket tests
 
@@ -461,16 +484,16 @@ repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
-The active checkpoint is `EVENT-VISIBILITY-001`; continue from the resume
-pointer without replaying the already-closed `EVENT-TICKET-005` through
-`EVENT-TICKET-007` branches. The retained continuation chain is defined, not
-duplicated, in the QA pack:
+The ticket/visibility continuation through `EVENT-VISIBILITY-001` is
+PASS/CLOSED and reset. The active independent checkpoint is
+`EVENT-TICKET-008`; continue only from its fresh resume pointer. The completed
+retained chain remains defined, not duplicated, in the QA pack:
 
 ```text
 EVENT-TICKET-005 -> EVENT-TICKET-006 -> EVENT-TICKET-007
--> EVENT-VISIBILITY-001
+-> EVENT-VISIBILITY-001 (closed)
 ```
 
-`EVENT-TICKET-008` (two-event ticket isolation) and `EVENT-TICKET-009`
-(offline cached QR with online scanner) remain independent ticket branches.
-Do not pull them into `EVENT-TICKET-005`.
+`EVENT-TICKET-008` is the active two-event ticket-isolation branch.
+`EVENT-TICKET-009` (offline cached QR with online scanner) remains independent.
+Do not pull either into `EVENT-TICKET-005`.

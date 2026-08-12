@@ -251,7 +251,8 @@ Execution evidence on 2026-08-04:
   is draft **Edit -> Visibility: Friends only -> Save** only. Stop before
   Publish and prove that Save changes only the draft definition plus its normal
   event task while both D tickets, counters and memberships remain unchanged.
-- Friends Only draft-Save boundary (2026-08-12): **PASS**. Casey changed only
+- Friends Only draft-Save boundary (2026-08-12): **DOMAIN PASS / NOTIFICATION
+  FAIL**. Casey changed only
   visibility from Public to Friends only and pressed Save once. The canonical
   event remained the same `DR` identity with Ticketing configured On and now
   persisted `visibility=Friends only`. Casey, Nova and Riley remained accepted
@@ -260,15 +261,158 @@ Execution evidence on 2026-08-04:
   replacement appeared, their ticket counters stayed `0/0`, Casey stayed
   ticketless, and Lina/Liam retained neither participation nor ticket artifact.
   Casey's already-open My Events card switched from the Public icon to the
-  Friends icon without reload. The Save refreshed only the normal deduplicated
+  Friends icon without reload. The Save refreshed the normal deduplicated
   event recompute task, due at `2026-08-12T21:04:44.684364061Z`, with empty
   `lastError`. The existing worker completed it normally at
   `2026-08-12T21:04:50.578245727Z`, `attemptCount=3`, and returned to
-  `pendingCount=0`; no manual worker or second process was invoked. The next
-  producer boundary is one Casey **Publish** action. Stop before using Lina or
-  Liam and prove active Friends only state plus one new A ticket ID/code for
-  each accepted non-admin member, restored counters `1/1`, retained D history
-  and unchanged memberships.
+  `pendingCount=0`; no manual worker or second process was invoked. The first
+  oracle did not yet expose generic definition-change artifacts and therefore
+  incorrectly recorded the Save as a full PASS. The strengthened oracle later
+  proved that the visibility-only Save also created one completed
+  `event-definition-changed:<eventId>` task with false reasons
+  `schedule,sub-events`, one unread `event-details-changed` notification for
+  Nova and one for Riley, plus their two pending outbox intents. Both rows said
+  **The event schedule changed.** This is a real backend write-side
+  classification defect; Nova/Riley had no open windows at this boundary, so
+  their in-place notification behavior was **NOT EXECUTED**, not UI PASS.
+- First Publish boundary (2026-08-12): **SERVER/CASEY PASS; NOVA/RILEY UI NOT
+  EXECUTED**. The same event became active with `visibility=Friends only`,
+  Ticketing On and unchanged Casey/Nova/Riley accepted membership `3 / 8`.
+  Both original D tickets remained. Nova received new A ticket
+  `6a7ce077f8a7d3829acd807b` /
+  `TKT-f9c24f1f-6b83-4d66-b0db-2bcb1ef2280b`; Riley received new A ticket
+  `6a7ce077f8a7d3829acd807d` /
+  `TKT-cf9ab939-5da5-4d42-8b13-e5402bf047af`; counters returned to `1/1` and
+  Casey remained ticketless. The lifecycle task completed for exactly Nova and
+  Riley with reason `modified`, materializing one unread **The event is
+  available again.** row per recipient. Casey's already-open My Events card
+  stayed in place. Because Nova and Riley were not open, their notification and
+  ticket UI convergence is retained only as server evidence and must be
+  replayed with Casey/Nova/Riley open.
+- Defect fix/replay plan (2026-08-13): Java definition-change comparison now
+  canonicalizes legacy/missing frequency to `One-time`, missing slots-enabled
+  to `false`, sub-event defaults/lists and event mode before deciding whether a
+  schedule/sub-event change occurred. A regression covers a visibility-only
+  Save across those legacy-equivalent defaults. Existing backend hot deploy
+  compiled successfully and restarted the same server owner; no parallel build
+  or server was used. The guarded `prepare-visibility-save-retest` action
+  preserves the completed join/approval/membership history, retains every
+  physical ticket as D audit history, reconciles ticket/unread counters, removes
+  only the failed Save-owned generic task/outbox/notification occurrence and
+  re-arms the same draft as Public with the legacy-equivalent defaults. Replay
+  with at most three windows at once: Casey/Nova/Riley prove no notification or
+  ticket delta on Save and the normal in-place notification/ticket delta on
+  Publish; then replace them with Casey/Lina/Liam for Explore friend/non-friend
+  reads. Never run five actor windows concurrently on this workstation.
+- Guarded repair-replay baseline (2026-08-13): **READY**. The versioned
+  `prepare-visibility-save-retest` action completed, and a separate read-only
+  status proved the same event at `DR`, Public, Ticketing On with unchanged
+  Casey/Nova/Riley accepted membership `3 / 8`, no pending/invited/request
+  member, and all four retained Nova/Riley physical ticket records at `D`.
+  Nova's and Riley's stored ticket counters are both `0/0`. The failed Save's
+  `event-definition-changed` task plus its two `event-details-changed` outbox
+  intents and unread notifications are absent, while the earlier real
+  under-review/modified lifecycle audit remains. The old browser manifest has
+  no live processes; launch exactly Casey/Nova/Riley for the Save/Publish phase,
+  and close that trio before launching Casey/Lina/Liam for Explore.
+  The replacement launch then identity-verified exactly those three live
+  sessions; no fourth QA browser was opened.
+- Repair-replay pre-Save UI baseline (2026-08-13): **PASS**. Nova's open
+  Notifications > New list shows exactly two unread retained real lifecycle
+  rows for the event: **The event is available again.** and **The event is
+  under review.** Riley's open New list shows exactly those two plus the prior
+  **Your request to join ... was approved.** row, for a total of three. Neither
+  list contains the removed false **The event schedule changed.** occurrence.
+  Both recipient lists remain open while Casey repeats only the visibility Save.
+- Fixed visibility-only Save replay, immediate boundary (2026-08-13): **PASS**.
+  Casey issued exactly one `POST /api/activities/events/sync` at
+  `01:13:16+02:00`. The same event is `DR`, Friends only and Ticketing On with
+  unchanged accepted membership `3 / 8`; all four retained physical tickets
+  remain `D`, and Nova/Riley ticket counters remain `0/0`. No new
+  `event-definition-changed` task, `event-details-changed` outbox intent or
+  notification was created. Nova's already-open New list stayed at the exact
+  same two rows, and Riley's stayed at the exact same three rows without reload
+  or reopen. Casey's My Events list retained the one `3 / 8` draft card. The
+  normal Save-owned event recompute task completed `done` at
+  `01:16:46+02:00`, attempt `5`, with empty `lastError`; the post-worker oracle
+  retained the exact same tickets, counters and lifecycle artifacts. The fixed
+  visibility-only Save replay is therefore full **PASS**.
+- First repair-replay Publish instruction (2026-08-13): **NOT EXECUTED /
+  FIXTURE TIMING INVALID**. The retained event's original end was `01:18` local.
+  Casey's already-open Upcoming/My Events poll returned the one card through
+  `01:17:55`, then changed to the empty response exactly at `01:18:25`; the
+  `01:19:17` screenshot shows the resulting empty list. Access logs contain no
+  Publish mutation, and the persisted oracle remained `DR`, Friends only with
+  four D tickets, counters `0/0` and unchanged lifecycle notifications. This is
+  not a product failure and the proven Save is not replayed.
+- Stable Publish/Explore fixture repair (2026-08-13): **READY**. The guarded,
+  one-shot `prepare-visibility-publish-window` action first required the exact
+  clean post-Save transaction boundary, including terminal recompute and absent
+  false notification artifacts. It then moved all three event projections to
+  `2026-08-13T11:22:23.404Z` through `2026-08-14T11:22:23.404Z`, retaining
+  every membership, ticket, counter and lifecycle artifact. Independent status
+  proved that state. Casey's same open Upcoming/My Events list regained exactly
+  one `3 / 8` card on its normal poll without reload; Nova remained at New `2`
+  and Riley at New `3`. Publish may now be executed once from this card.
+- Clean Publish replay, immediate boundary (2026-08-13): **PASS**. Casey sent
+  exactly one `POST /api/activities/events/publish` at `01:25:27+02:00`. The
+  same event became A/Friends only/Ticketing On with unchanged accepted
+  membership `3 / 8`. All four D audit tickets remain. Nova received new A
+  ticket `6a7d00e7f8a7d3829acd8084` /
+  `TKT-98fa21bc-abd4-4240-873d-09b83c4f3b3c`; Riley received new A ticket
+  `6a7d00e7f8a7d3829acd8085` /
+  `TKT-0cbd5e00-4694-4408-95bf-d21018128526`; their stored ticket counters are
+  `1/1` and Casey remains ticketless. Lifecycle task
+  `6a7d00e7f8a7d3829acd8082` completed for exactly Nova/Riley with reason
+  `modified`, producing one new unread **The event is available again.** row
+  per recipient. Nova's already-open New list changed `2 -> 3` and Riley's
+  `3 -> 4` in-place, while each top Ticket counter changed `0 -> 1`, all without
+  reload. Casey retained one active `3 / 8` My Events card. Nova and Riley then
+  closed only Notifications and opened Ticket without reload; each Upcoming
+  list showed exactly one `QA EVENT-TICKET-007` ticket card. The normal event
+  recompute completed `done` at `01:28:52+02:00`, attempt `6`, with empty
+  `lastError`; its terminal oracle retained the exact six-ticket audit,
+  counters and lifecycle notifications. The Casey/Nova/Riley Save/Publish
+  replay is full **PASS**. Close that entire managed trio before opening the
+  separate Casey/Lina/Liam Explore phase.
+- Explore phase replacement/baseline (2026-08-13): **READY**. The exact
+  manifest PIDs for Casey/Nova/Riley were validated, terminated and proven
+  absent before any replacement launch. Resources were checked, then exactly
+  three new configured sessions were started and identity-verified as Casey,
+  Lina and Liam; no fourth QA window runs. The pre-read oracle retains the
+  active Friends-only Ticketing On event at `3 / 8`. Lina is the deterministic
+  Casey-friend and Liam the deterministic non-friend; neither has membership,
+  tracked participation or a ticket on this event. Lina begins at Events `6`,
+  tickets `0`, event buckets all `10` / active `6` / pending `1` / invitations
+  `2` / hosting `1`. Liam begins at Events `9`, tickets `0`, event buckets all
+  `12` / active `9` / pending `2` / invitations `0` / hosting `1`. The normal
+  event recompute remains terminal `done`. Lina and Liam may now open Event
+  Explore without changing filters or selecting a card.
+- Explore list boundary (2026-08-13): **PASS**. In the two already-open Event
+  Explore lists, Lina saw `QA EVENT-TICKET-007` exactly once with Friends-only
+  presentation and Liam did not see the event at all. Neither actor changed a
+  filter or opened a card. The immediate read-only oracle retained Lina and
+  Liam as external controls with no membership, invitation, ticket or counter
+  delta, and retained Casey/Nova/Riley membership `3 / 8`, the six-ticket
+  audit and the terminal recompute task unchanged.
+- Direct-detail boundary and repair (2026-08-13): **FAIL -> FIXED -> FOCUSED
+  REPLAY PASS**. Before the repair, Liam's direct
+  `/api/activities/events/detail` request returned the complete Friends-only
+  event DTO even though the Explore list correctly excluded him. The first
+  wrong boundary was the Java detail read: it selected and mapped the canonical
+  record without enforcing the same external-viewer visibility rule used by
+  Explore. `ActivitiesEventsService` now authorizes detail reads for an Admin
+  or tracked participant, and otherwise reuses the canonical published
+  Public/Friends-only/Invitation-only boundary used for untracked Explore
+  viewers. Regression sources cover Lina/Liam Friends-only parity and retained
+  participant access to an Invitation-only event. The existing backend owner
+  compiled the source with `BUILD SUCCESSFUL` and performed one healthy Spring
+  restart; no parallel Gradle, test or server process was started. Focused HTTP
+  replay returned `200 / 0 bytes` for Liam and the complete same-event DTO for
+  Lina as friend, Nova as accepted participant and Casey as Admin. The terminal
+  Docker-backed status oracle again proved no read-side write: memberships,
+  tickets, counters, lifecycle artifacts and recompute state remained exactly
+  unchanged. `EVENT-VISIBILITY-001` is therefore **PASS / CLOSED**.
 
 ### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
 
@@ -2136,6 +2280,35 @@ Restart evidence on 2026-08-06:
   closing the checkpoint.
 - Repeated Ticket reads are no-ops. No physical ticket, QR, participant
   overlay or counter contribution may cross an `eventId` boundary.
+- Baseline on 2026-08-13: **READY**. `EVENT-VISIBILITY-001` was first recorded
+  PASS/CLOSED, its exact Casey/Lina/Liam managed processes were terminated and
+  proven absent, and the versioned reset returned that fixture to `not-staged`.
+  A fresh `EVENT-TICKET-008` stage plus independent status then proved two
+  active, Public, Ticketing On events: A is
+  `manual-qa-checkpoint:v1:event-domain:event` and B is
+  `manual-qa-checkpoint:v1:event-domain:ticket-isolation-control`. Each retains
+  Casey and Nova accepted, Riley pending, occupancy `2 / 8 (1)`. Nova owns
+  exactly two distinct A tickets: event A ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:a` /
+  `TKT-f7fe4c90-de37-46e2-973e-ce51695454c3` and event B control ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-a0046ee8-d818-49de-8b4c-84714b31e8ec`; both were issued at
+  `2026-08-12T23:46:59.940Z`, are unused, and Nova's stored ticket counters are
+  `2/2`. Casey and Riley are ticketless. Stage created no outbox or recompute
+  task. Resources were checked before exactly three identity-verified managed
+  Casey/Nova/Riley sessions launched; no fourth QA window runs. The first
+  manual boundary is Nova's read-only Upcoming Ticket list with both cards
+  visible exactly once.
+- Nova pre-mutation Ticket boundary (2026-08-13): **PASS**. The already-open
+  Nova **Ticket > Upcoming** surface reported `2 ticketed events` and showed
+  `Manual QA EVENT-TICKET-008 A` and `Manual QA EVENT-TICKET-008 B` exactly
+  once each, with no card or QR opened. The immediate Docker-backed oracle
+  retained both canonical events active with Ticketing On; ticket A and
+  control ticket B kept their exact staged IDs/codes, `status=A` and unused
+  state. Nova's stored counters remained `2/2`, Casey and Riley remained
+  `0/0`, and stage-relative outbox/recompute counts remained zero. Prepare
+  Casey's two-card My Events view next, but do not mutate until A and B are
+  distinguished on that owning surface.
 
 ### `EVENT-TICKET-009` — holder can present a cached QR while offline
 
