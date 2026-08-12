@@ -73,9 +73,11 @@ def append_ending_tail(parts: list[str], motif_index: int) -> None:
         )
         return
     if motif_index == 1:
-        # Chapters 2 and 3 are already indivisible short-chapter blocks. Do not
-        # also pull the final sentence of Chapter 1 onto a page of its own.
-        tail_count = min(2, len(parts))
+        # Chapter 3 is already an indivisible short-chapter block. Keep its
+        # ornament with that chapter, but leave Chapter 2's final sentence with
+        # the preceding prose instead of pulling it onto an otherwise empty
+        # page before Chapter 3.
+        tail_count = 1
         tail = parts[-tail_count:]
         del parts[-tail_count:]
         parts.append(
