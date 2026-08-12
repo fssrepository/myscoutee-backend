@@ -815,12 +815,11 @@ had outlasted my work, the tax debt and the operation. Now it had found the bed.
 The investigation later pulled a second sentence from that period, one I had
 never regarded as a threat. That spring, nearly the same figure was in the news:
 almost ten billion euros in Hungarian cohesion funding was being withheld
-behind rule-of-law conditions. Perhaps that was how ten billion stayed in my
-mind. I priced twenty lost years at that amount and gave the impossible invoice
-a crude punchline. If they could act as though anything were permitted, then,
-on the page at least, so could I. My operated foot still could not carry me;
-depression had narrowed the world to the room. From there I sent the system a
-bill for twenty years and the rule of law.
+behind rule-of-law conditions. I priced twenty lost years at that amount and
+gave the impossible invoice a crude punchline. If they could act as though
+anything were permitted, then, on the page at least, so could I. My operated
+foot still could not carry me; depression had narrowed the world to the room.
+From there I sent the system a bill for twenty years and the rule of law.
 
 At one point I sent the tax administration a close photograph of the swollen,
 operated area itself. It was not a photograph of a bandage. The incision was
