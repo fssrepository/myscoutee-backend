@@ -1436,6 +1436,12 @@ Restart evidence on 2026-08-06:
   `1 accepted + 1 pending / 8`, Nova pending activity is `1`, Casey has one
   distinct Pending notification, and no ticket or ticket counter exists. Stop
   before reload; the pending Explore reload is the next separate read test.
+- Repair replay — pending Explore reload (2026-08-12): **PASS**. The card
+  retained **Continue booking** and its contextual actions, while the persisted
+  basket remained exactly `6a7c9690f8a7d3829acd7ffa` with unchanged create and
+  update timestamps. The single pending membership, Casey Pending notification,
+  Nova counters and zero ticket/counters were also byte-for-byte equivalent at
+  the oracle boundary. First Cancel in-place is next.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

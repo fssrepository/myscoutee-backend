@@ -35,8 +35,8 @@ checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
 ledger_status: FAIL retained; owning fix hot-deployed, clean replay required
-state: repair-replay first Join PASS with new active basket 6a7c9690f8a7d3829acd7ffa; pending reload not yet run
-required_resume: reload Nova Explore once and verify Continue booking/card retention, then run a read-only oracle proving zero writes and stable identities
+state: repair-replay first Join and pending Explore reload PASS; basket 6a7c9690f8a7d3829acd7ffa and every persisted identity stayed unchanged
+required_resume: perform first Cancel and verify the same card changes in-place from Continue booking to Request Join without reload; then run the persisted oracle
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
@@ -107,10 +107,11 @@ otherwise.
 
 ### Next manual action
 
-Reload Nova's middle Explore window once. Find `QA EVENT-TICKET-005` again and
-confirm the card is still present with **Continue booking** plus its other
-contextual actions. Do not open the checkout popup and do not Cancel yet. Keep
-Casey Notifications open and do not touch Riley. Reply `megvan`.
+In Nova's middle window, open **Continue booking** for `QA EVENT-TICKET-005`
+and use **Cancel waiting**. Complete the confirmation, then verify without any
+reload that the same Explore card now offers fresh **Request Join**. Stop there;
+do not reload or re-Join yet. Keep Casey Notifications open and do not touch
+Riley. Reply `megvan`.
 
 ## QA working method
 
