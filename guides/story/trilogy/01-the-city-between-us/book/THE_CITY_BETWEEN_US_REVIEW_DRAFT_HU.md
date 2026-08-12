@@ -4,8 +4,8 @@
 
 *Egy alapító története szobákról, útvonalakról és az egymáshoz vezető útról*
 
-> Magyar ellenőrző kézirat 1.0.0 · Tervezett megjelenés: 2026. augusztus 20.
-> (az államalapítás ünnepe)
+> Magyar kiadás 1.0.0 · Megjelent: 2026. augusztus 20.
+> (a magyar államalapítás ünnepe)
 
 <!-- pagebreak -->
 
@@ -933,7 +933,7 @@ A könyv termékleírásai a jelenlegi MyScoutee-repozitóriumon és bemutatóan
 
 <!-- edition-colophon -->
 
-Az első illusztrált magyar kiadás ellenőrző kézirata, 1.0.0 verzió.
-Tervezett megjelenés: 2026. augusztus 20. (az államalapítás ünnepe).
+Az első illusztrált magyar kiadás, 1.0.0 verzió.
+Megjelent: 2026. augusztus 20. (a magyar államalapítás ünnepe).
 
 © 2026 MyScoutee. Minden jog fenntartva.

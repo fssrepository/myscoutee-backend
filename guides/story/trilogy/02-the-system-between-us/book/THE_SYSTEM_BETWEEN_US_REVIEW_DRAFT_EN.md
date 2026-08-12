@@ -932,10 +932,11 @@ writing. Nobody replied.
 
 On 11 June 2024, I was summoned back to the police station. A lawyer I had
 never met appeared beside me. Only then did I learn that, on paper, he had been
-my new appointed defender since 30 May. Nobody had told me. The policewoman
-conducting the hearing was called Kata. Calmly, as though nothing unusual had
-happened, she said that the original appointed defender had not had time. The
-new appointed defender was already sitting beside me. The hearing continued.
+my new appointed defender since 30 May. Nobody had told me. I did not need to
+ask. The policewoman conducting the hearing was called Kata. In a calm,
+ordinary voice, she said that the original appointed defender had not had time,
+as though that were the most ordinary thing in the world. The new appointed
+defender was already sitting beside me. The hearing continued.
 
 The officers carrying the file changed as well. I could not reach them
 directly. I called the central number and first had to find out which

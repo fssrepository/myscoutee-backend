@@ -281,21 +281,22 @@ def build_document(source: Path) -> str:
     status = html.escape(str(version["status"]))
     if is_hungarian:
         edition = (
-            f"Magyar ellenőrző kézirat v{edition_version} · "
-            "Tervezett megjelenés: 2026. augusztus 20. "
-            "(az államalapítás ünnepe)"
+            f"Magyar kiadás v{edition_version}<br>"
+            "Megjelent: 2026. augusztus 20."
+            "<small>(a magyar államalapítás ünnepe)</small>"
         )
         truth = (
             "Egy lezáratlan jogi és intézményi időszak egyes szám első személyű "
             "emlékirata. Az iratanyag, a tulajdonított emlék, az emlékirat és a "
             "későbbi nyilvános háttér elkülönül egymástól."
         )
-        title_suffix = "magyar ellenőrző kézirat"
+        title_suffix = "magyar kiadás"
     elif version["status"] == "public":
         published = html.escape(book.display_date(version["published"]))
         edition = (
-            f"Public edition v{edition_version} · Published {published} "
-            "(Hungary’s State Foundation Day)"
+            f"Public edition v{edition_version}<br>"
+            f"Published {published}"
+            "<small>(Hungary’s State Foundation Day)</small>"
         )
         truth = (
             "A first-person public memoir of an unresolved legal and institutional "

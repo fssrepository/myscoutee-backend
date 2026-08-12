@@ -576,7 +576,7 @@ def stylesheet() -> str:
     width: 4.22in; z-index: 2;
   }
   .cover .route {
-    position: absolute; left: .52in; right: .52in; bottom: 1.3in; height: 1px;
+    position: absolute; left: .52in; right: .52in; bottom: 1.75in; height: 1px;
     background: linear-gradient(90deg, #efb544, #e36c57, #8eaaf0); z-index: 2;
   }
   .cover .route::before, .cover .route::after {
@@ -592,6 +592,9 @@ def stylesheet() -> str:
   .cover .edition {
     display: block; margin-top: .12in; font: 7.5pt/1.3 Arial, sans-serif;
     letter-spacing: .08em; text-transform: uppercase; color: #93a5c1;
+  }
+  .cover .edition small {
+    display: block; font-size: .88em; letter-spacing: .07em;
   }
   .title-page { page-break-after: always; padding-top: 1.2in; text-align: center; }
   .title-page .brand-lockup { justify-content: center; color: var(--night); font-size: 20pt; }
@@ -609,6 +612,9 @@ def stylesheet() -> str:
   .title-page .edition {
     font: 700 7.5pt/1.4 Arial, sans-serif; letter-spacing: .08em;
     text-transform: uppercase;
+  }
+  .title-page .edition small {
+    display: block; font-size: .88em; letter-spacing: .07em;
   }
   .title-page .truth {
     margin-top: .62in; padding-top: .2in; border-top: 1px solid #d9cdbb;
@@ -931,9 +937,9 @@ def build_document(source: Path) -> str:
     status = str(version["status"])
     if is_hungarian:
         edition = (
-            f"Magyar ellenőrző kézirat v{edition_version} · "
-            "Tervezett megjelenés: 2026. augusztus 20. "
-            "(az államalapítás ünnepe)"
+            f"Magyar kiadás v{edition_version}<br>"
+            "Megjelent: 2026. augusztus 20."
+            "<small>(a magyar államalapítás ünnepe)</small>"
         )
         truth = (
             "Egyes szám első személyű nyilvános emlékirat. A személyes emlékezet "
@@ -949,8 +955,9 @@ def build_document(source: Path) -> str:
     else:
         published = html.escape(display_date(version["published"]))
         edition = (
-            f"Public edition v{edition_version} · Published {published} "
-            "(Hungary’s State Foundation Day)"
+            f"Public edition v{edition_version}<br>"
+            f"Published {published}"
+            "<small>(Hungary’s State Foundation Day)</small>"
         )
         truth = (
             "A first-person public edition. Autobiographical memory is kept "

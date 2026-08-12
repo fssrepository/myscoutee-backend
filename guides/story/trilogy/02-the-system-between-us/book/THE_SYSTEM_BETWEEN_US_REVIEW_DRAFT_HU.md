@@ -4,8 +4,8 @@
 
 *Egy alapító története szabályokról, nevetésről és a megértés áráról*
 
-> Magyar ellenőrző kézirat 1.0.0 · Tervezett megjelenés: 2026. augusztus 20.
-> (az államalapítás ünnepe)
+> Magyar kiadás 1.0.0 · Megjelent: 2026. augusztus 20.
+> (a magyar államalapítás ünnepe)
 
 <!-- pagebreak -->
 
@@ -411,14 +411,15 @@ felmentését. A rendőrség ezt elfogadta. Csak azután hívott vissza, hogy m�
 rendőröket, és inkább mondjam azt, hogy nem én tettem. Ezután megint ott
 maradtam. Február 19. után hónapokig nem tudtam, kirendeltek-e egyáltalán másik
 védőt — vagy van-e egyáltalán védőm. Írásban panaszt tettem. Senki nem
-válaszolt.
+reagált.
 
 Június 11-én behívtak a rendőrségre. Megjelent mellettem egy ügyvéd, akivel
 azelőtt soha nem találkoztam. Csak ekkor tudtam meg, hogy papíron május 30. óta
-ő az új kirendelt védőm. Engem erről senki nem értesített. A meghallgatást
-vezető rendőrnőt Katának hívták. Nyugodtan, mintha mi sem történt volna,
-közölte, hogy az eredeti kirendelt védő nem ért rá. Az új kirendelt védő
-közben már ott ült mellettem. A meghallgatás folytatódott.
+ő az új kirendelt védőm. Engem erről senki nem értesített. Kérdeznem sem
+kellett. A meghallgatást vezető rendőrnőt Katának hívták. Nyugodt,
+természetes hangon közölte, hogy az eredeti kirendelt védő nem ért rá, mintha
+ez volna a világ legtermészetesebb dolga. Az új kirendelt védő közben már ott
+ült mellettem. A meghallgatás folytatódott.
 
 A rendőrségi előadók is cserélődtek. Nem tudtam őket közvetlenül elérni, ezért a központi telefonszámot hívtam, és újra meg újra ki kellett nyomoznom, éppen melyik nyomozó nyomoz utánam. Mire nevet találtam, a név már változhatott is.
 

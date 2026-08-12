@@ -7,6 +7,11 @@ manuscript and reading PDF. Its first publication date is 20 August 2026.**
 
 The manuscript is [THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md).
 
+The Hungarian edition source is
+[THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_HU.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_HU.md).
+Its editable reading copy is
+[MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_HU.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_HU.pdf).
+
 The current editable reading copy is
 [MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf).
 The browser edition is

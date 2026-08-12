@@ -8,6 +8,11 @@ Current state: **Part I · Illustrated public edition v1.0.0 · published 20 Aug
 technically closed (`locked: true`)**. Its independent draft export remains
 available for later editorial work.
 
+The Hungarian edition source is
+[THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md](THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md).
+Its editable reading copy is
+[MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.pdf](draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.pdf).
+
 ## Versioning and trilogy rule
 
 `version.json` is the single source for the visible trilogy part, edition
@@ -53,6 +58,10 @@ The builder writes:
 - the equivalent versioned PDF plus `.pdf.sha256` and `.publication.json` files
   directly under the flat `../published/` directory only after explicit
   technical closure.
+
+When the Hungarian review manuscript is supplied with explicit `--source`,
+`--html` and `--pdf` paths, the builder uses `metadata.hu.json` and
+`illustrations.hu.json` and leaves the locked English edition untouched.
 
 Only the current editable PDF is retained under `draft/`. The matching locked
 public edition remains under `../published/` with its checksum and manifest;
