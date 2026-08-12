@@ -890,7 +890,7 @@ Eight days later, I walked through the city to the police station. The loose
 nail travelled inside my shoe, shifting under the toe at every step. Saint
 Nicholas Day was approaching; shop windows were beginning to show the little
 bundles of twigs reserved for children who had misbehaved. Halfway there, I
-almost laughed. I should have brought the police a *virgács*.
+almost laughed. I should have brought the police one of those bundles.
 
 Then the next step put the nail under me again.
 
@@ -1350,7 +1350,7 @@ Constitution that calls human dignity inviolable.
 ### Inside the curve
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
-and the life outside the case. Then the long brown institutional façade on Fő
+and the life outside the case. Then the long brown institutional façade on Fo
 Street filled the frame. Its rhythm and mass felt almost Roman: monumental,
 closed and frightening. A human story was entering stone.
 
@@ -1917,7 +1917,7 @@ attempt to end his mandate. His questions were dated 29 May and supplemented on
 4 June 2026. He argued from the position of the highest office at risk.
 
 At 14:18 on 5 June, I sent my own submission to the same institution. Seventy-eight
-minutes later, I forwarded the same letter to the Sándor Palace and the Prime
+minutes later, I forwarded the same letter to the Presidential Palace and the Prime
 Minister's press office.
 
 It was one small push from below.
@@ -2623,10 +2623,10 @@ breach in this case.
 
 ### The government account and the later two-factor change
 
-The “government account” in the narrative was **Ügyfélkapu**, Hungary's Citizen
-Portal identification service. In 2022, the relevant login was based on a
-username and password. From 16 January 2025, access to the same public-service
-surfaces required either the two-factor Ügyfélkapu+ method or the Digital
+The “government account” in the narrative was Hungary's **Citizen Portal**
+identification service. In 2022, the relevant login was based on a username and
+password. From 16 January 2025, access to the same public-service surfaces
+required either the two-factor Citizen Portal Plus method or the Digital
 Citizenship application. This later security change does not rewrite the 2022
 scene.
 
@@ -2639,7 +2639,7 @@ it does not, by itself, resolve the separate visibility problem in the
 Founder's record: who received each submission result and notice, and whether
 both sides could see the same chain.
 
-Ügyfélkapu+ installs a secret into an authenticator through a setup
+Citizen Portal Plus installs a secret into an authenticator through a setup
 quick-response (QR) code and
 then generates time-limited login codes from that secret. It follows
 technically that copying the setup QR to another device can duplicate the
@@ -2709,12 +2709,12 @@ officer does not decide the request or sentence.
 
 Official sources:
 
-- Sándor Palace, presidential interview on the clemency practice and the
+- Presidential Palace, presidential interview on the clemency practice and the
   constitutional role of expressing national unity:
   https://www.sandorpalota.hu/hu/tarsadalmi-beke-megteremteseert-dolgozom-mandiner-interjuja-dr-sulyok-tamas-koztarsasagi-elnokkel
-- Sándor Palace, clemency statistics for 2025:
+- Presidential Palace, clemency statistics for 2025:
   https://www.sandorpalota.hu/sites/default/files/2026-01/Kegyelmi%20statisztika_2025.pdf
-- Sándor Palace, clemency statistics for the first half of 2026:
+- Presidential Palace, clemency statistics for the first half of 2026:
   https://www.sandorpalota.hu/sites/default/files/2026-06/Kegyelmi%20statisztika%202026.01.01-2026.06.30.pdf
 - Euronews, contemporary account of the Novák resignation and Varga
   countersignature:
@@ -2838,10 +2838,29 @@ authoritarian. The narrative retains the image because language once used
 against the old order had moved to the other side of Parliament.
 
 A February 2025 interview records the justice minister saying that judicial
-independence was not in danger. Later that month, judges and court employees
-rallied for judicial independence and the freedom to speak. The minister is
-identified only by office in the narrative; the linked public source supplies
-the name.
+independence was not in danger. Asked in a separate Index interview whether he
+had tried to persuade the National Judicial Council, Justice Minister Bence
+Tuzson said:
+
+> “This is not a Western. We do not operate on the basis of whose arguments hit
+> harder.”
+
+Later that month, judges and court employees rallied for judicial independence
+and the freedom to speak.
+
+On 15 March 2025, at the state ceremony marking the 177th anniversary of the
+Hungarian Revolution and War of Independence of 1848–49, Prime Minister Viktor
+Orbán said:
+
+> “After today's ceremony comes the Easter clean-up. The bugs survived the
+> winter.”
+
+The next sentence began, “We will dismantle the financial machine,” then named
+politicians, judges, journalists, bogus NGOs and political activists. The
+passage continued: “We will dismantle the entire shadow army.” Two days later,
+the National Judicial Council and the Association of Hungarian Judges publicly
+rejected both the suggestion that judges had been bought with corrupt dollars
+and the comparison of judges to harmful insects.
 
 A separate 2025 controversy provides another reference-layer example of
 institutional certainty preceding completed fact-finding. In September, the
@@ -2859,8 +2878,13 @@ Sources:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
+- https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
 - https://telex.hu/belfold/2025/02/05/tuzson-bence-interju-bombariado-till-tamas-obt-beremeles-reform
 - https://enbudapestem.hu/2025/02/22/az-igazsagszolgaltatas-fuggetlensegeert-tuntetnek
+- https://www.youtube.com/watch?v=GlEbs_Da_hg
+- https://hirado.hu/belfold/cikk/2025/03/15/itt-olvashatja-orban-viktor-teljes-unnepi-beszedet
+- https://telex.hu/english/2025/03/17/bugs-cockroaches-vermin-how-dehumanising-propaganda-sets-the-stage
+- https://telex.hu/belfold/2025/03/17/obt-orszagos-biroi-tanacs-poloska-eliteles
 - https://hvg.hu/itthon/20250924_Tuzson-Bence-a-Szolo-utcai-javitointezet-ugyerol-kiskoru-sertett-nem-volt-es-politikusok-neve-sem-kerult-elo
 - https://444.hu/2025/11/04/tuzson-bence-tisztazni-kell-volt-e-kiskoru-erintett-a-szolo-utcai-igazgato-ugyeben
 
@@ -2952,10 +2976,10 @@ Sources:
 
 ## The Venice Commission
 
-The Sándor Palace publication supports the President's questions. The Founder's
+The Presidential Palace publication supports the President's questions. The Founder's
 5 June email survives in the private source package. Its Gmail export records
 the 14:18 message to the Commission and the 15:36 forwarding of the same text to
-the Sándor Palace and the Prime Minister's press office. The Commission's
+the Presidential Palace and the Prime Minister's press office. The Commission's
 official notice supports the 2 July meetings. No reviewed source proves that
 the Founder's email caused the Commission's later public posture.
 
@@ -2993,7 +3017,7 @@ claim.
 
 - MyScoutee product and production repository:
   https://github.com/fssrepository/myscoutee-backend
-- Civic Access public-service prototype (source repository: E-közig):
+- Civic Access public-service prototype:
   https://github.com/fssrepository/e-kozig
 
 The creative-work chapter is supported by the versioned research repository,

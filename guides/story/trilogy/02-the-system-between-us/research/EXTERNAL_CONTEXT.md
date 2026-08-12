@@ -5,12 +5,12 @@ Status: **current research snapshot, 8 August 2026**.
 These sources supply public context. They do not prove the Founder's account of
 private calls, delegated filings or intent.
 
-## Fő Street justice-building geography
+## Fo Street justice-building geography
 
-The Hungarian National Archive identifies the building at Budapest II, Fő
+The Hungarian National Archive identifies the building at Budapest II, Fo
 Street 61–73 as housing the Budai Central District Court's Investigating Judge
 Group, the Military Councils of the Budapest-Capital Regional Court and the
-Budapest Prosecutor's Office. This supports the Fő Street/Danube-side visual
+Budapest Prosecutor's Office. This supports the Fo Street/Danube-side visual
 orientation. The Founder's description of its long brown mass as frightening
 and almost Roman in effect remains subjective, not an architectural style
 classification.
@@ -104,9 +104,11 @@ context:
 
 - https://commission.europa.eu/strategy-and-policy/policies/justice-and-fundamental-rights/upholding-rule-law/rule-law/annual-rule-law-cycle/2025-rule-law-report_en
 
-Index reported a 2025 exchange in which the justice minister described the
-justice system as “not a Western movie,” illustrating how institutional debate
-was already becoming unusually public:
+Asked in a 2025 Index interview whether he had tried to persuade the National
+Judicial Council, Justice Minister Bence Tuzson said:
+
+> “This is not a Western. We do not operate on the basis of whose arguments hit
+> harder.”
 
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
 
@@ -117,6 +119,27 @@ office title only; source metadata may identify the office-holder.
 
 - https://telex.hu/belfold/2025/02/05/tuzson-bence-interju-bombariado-till-tamas-obt-beremeles-reform
 - https://enbudapestem.hu/2025/02/22/az-igazsagszolgaltatas-fuggetlensegeert-tuntetnek
+
+## 15 March 2025 state speech and judicial response
+
+At the state ceremony marking the 177th anniversary of the Hungarian
+Revolution and War of Independence of 1848–49, Prime Minister Viktor Orbán
+said:
+
+> “After today's ceremony comes the Easter clean-up. The bugs survived the
+> winter.”
+
+The next sentence began, “We will dismantle the financial machine,” then named
+politicians, judges, journalists, bogus NGOs and political activists. The
+passage continued: “We will dismantle the entire shadow army.” On 17 March, the
+National Judicial Council and the Association of Hungarian Judges publicly
+rejected both the suggestion that judges had been bought with corrupt dollars
+and the comparison of judges to harmful insects.
+
+- https://www.youtube.com/watch?v=GlEbs_Da_hg
+- https://hirado.hu/belfold/cikk/2025/03/15/itt-olvashatja-orban-viktor-teljes-unnepi-beszedet
+- https://telex.hu/english/2025/03/17/bugs-cockroaches-vermin-how-dehumanising-propaganda-sets-the-stage
+- https://telex.hu/belfold/2025/03/17/obt-orszagos-biroi-tanacs-poloska-eliteles
 
 A separate 2025 children's-home controversy supplies a narrow reference-layer
 example of definitive institutional language preceding completed fact-finding.
@@ -284,7 +307,7 @@ become capable of examining how it acted?
 ## The Venice Commission crossing
 
 Sulyok asked the Venice Commission to assess the constitutional conflict over
-his proposed removal. The Sándor Palace later published questions dated 29 May
+his proposed removal. The Presidential Palace later published questions dated 29 May
 and supplemented on 4 June 2026:
 
 - https://www.sandorpalota.hu/sites/default/files/2026-06/Questions%20adressed%20to%20the%20Venice%20Commission_2026_07_06.pdf
@@ -292,7 +315,7 @@ and supplemented on 4 June 2026:
 On 5 June, the Founder separately emailed the Venice Commission. The local
 source copy argues that his own KATA/NAV/criminal-procedure history illustrated
 why Sulyok's institutional record should be examined. The same Gmail export
-records forwarding the submission to the Sándor Palace and the Prime Minister's
+records forwarding the submission to the Presidential Palace and the Prime Minister's
 press office 78 minutes later. The messages are evidence that they were sent;
 they are not evidence that the recipients accepted their factual or legal
 conclusions or changed course because of them.
@@ -396,10 +419,9 @@ foreign-currency borrowers, or that Budapest's beauty made departure irrational.
 
 ## Clemency social inquiry role
 
-The correct Hungarian procedural role is **probation officer** (*pártfogó
-felügyelő*) preparing a social inquiry (*környezettanulmány*) for the clemency
-file. It is not a “clemency commissioner” and the visitor does not decide the
-request or sentence.
+The correct procedural role is **probation officer** preparing a social inquiry
+for the clemency file. It is not a “clemency commissioner,” and the visitor does
+not decide the request or sentence.
 
 The official explanatory material for the 2022 amendment states that, in an
 ordinary clemency matter not involving a prisoner or a person under
