@@ -79,6 +79,18 @@ class UserNotificationServiceTest {
     }
 
     @Test
+    void materializeCategorizesMemberApprovalAsEventAdmin() {
+        when(userNotificationPageRepository.insertIfAbsent(any(UserNotification.class))).thenReturn(true);
+
+        service.materialize(outbox("event-member-approved", List.of("member-1")));
+
+        ArgumentCaptor<UserNotification> notification = ArgumentCaptor.forClass(UserNotification.class);
+        verify(userNotificationPageRepository).insertIfAbsent(notification.capture());
+        assertThat(notification.getValue().getCategory()).isEqualTo("event-admin");
+        assertThat(notification.getValue().getReadAtIso()).isNull();
+    }
+
+    @Test
     void duplicateMaterializationDoesNotIncrementUnreadCounterAgain() {
         when(userNotificationPageRepository.insertIfAbsent(any(UserNotification.class))).thenReturn(false);
 

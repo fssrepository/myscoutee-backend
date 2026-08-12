@@ -4,7 +4,16 @@
 
 *A founder's memoir of rules, laughter, and the price of becoming legible*
 
-> Public edition 1.0.0
+> Public edition 1.0.0 · Published 20 August 2026
+> (Hungary’s State Foundation Day)
+
+<!-- pagebreak -->
+
+<!-- dedication -->
+
+For the Hungarians who,
+in one way or another, had to leave home.
+My story is theirs, too.
 
 <!-- pagebreak -->
 
@@ -769,9 +778,12 @@ practice required a person to hand over the password to his government account.
 I had refused to make that bargain, repaired the consequences and still could
 not close the door behind me.
 
-I gave advance notice of the coming foot operation, asked for peace during
-surgery and rehabilitation, and wrote that I intended to leave the country
-afterward. There was no unresolved tax debt for my body to solve.
+I documented the date and place of the coming foot operation, my request not to
+be disturbed during surgery and rehabilitation, and my intention to leave the
+country afterward. Before the operation, I called once more to make sure. The
+tax position was settled. Everything was in order. In return, I asked only to
+be left alone long enough to heal. There was no unresolved tax debt for my body
+to solve.
 
 I had already paid the tax. My foot had been painful for months. The public
 system gave me an orthopaedic shoe and told me to return in a year. At the
@@ -782,18 +794,29 @@ For roughly three months I lived mainly in bed, and the recovery continued for
 several months after that. My body could not be separated from every call
 arriving through the same phone.
 
-For much of that period I had to remain in bed with the operated leg propped
-high above me. A special elevation shoe protected its position when I had to
-move. Each day also required an anti-thrombosis injection into my abdomen. I was
-alone. Nobody came to look after me; food had simply been stocked in advance for
-several months. The routine was not an abstract reference to poor health: bed,
-raised leg, special shoe, injection, stored food, repeat.
+I had gone private for the operation. The recovery was private in another
+sense. For much of that period I had to remain in bed with the operated leg
+propped high above me. A special elevation shoe protected its position when I
+had to move. Each day also required an anti-thrombosis injection into my
+abdomen. I was alone. Nobody came to look after me; food had simply been stocked
+in advance for several months. The routine was not an abstract reference to
+poor health: bed, raised leg, special shoe, injection, stored food, repeat.
 
 Planning had stocked the food. Savings paid for private treatment. Discipline
 carried me through the injections. The chair beside the bed remained empty.
 
 A call came in March despite my documented request for quiet. The repaired tax
 matter re-entered the room while I was immobilized and alone.
+
+The return was two pages long. By March, it had been alive for seven months. It
+had outlasted my work, the tax debt and the operation. Now it had found the bed.
+
+The investigation later pulled a second sentence from that period, one I had
+never regarded as a threat. I priced twenty lost years at ten billion euros and
+gave the impossible invoice a crude punchline. If they could act as though
+anything were permitted, then, on the page at least, so could I. My operated
+foot still could not carry me; depression had narrowed the world to the room.
+From there I sent the system a bill for twenty years and the rule of law.
 
 At one point I sent the tax administration a close photograph of the swollen,
 operated area itself. It was not a photograph of a bandage. The incision was
@@ -816,9 +839,11 @@ I had corrected the return, paid the tax, withdrawn the monetary demand,
 announced the operation in advance and asked for peace. Lawful repair still did
 not feel like an exit.
 
-The photograph and the joke later travelled without the bed, the stored food,
-the advance notice or the corrected tax return. Again, the sharpest fragment
-was easier to carry than the chain around it.
+The sentence, the photograph and the joke later travelled without the bed, the
+stored food, the advance notice or the corrected tax return. By the time they
+entered the forensic account, the man lying alone and unable to walk had become
+a severe paranoid personality disorder reaching the level of pathological
+mental illness. The chair beside the bed was still empty.
 
 <!-- pagebreak -->
 
@@ -870,19 +895,21 @@ happened.
 I had not escaped the system by hiding from lawful work. I had walked back into
 it by daring to work at all. Now it stood in my rooms and carried the work away.
 
-At the first questioning, a trainee connected to the appointed defence appeared
-and advised me to remain silent. I believed for a time that she was the lawyer
-assigned to carry the case. She gave me a card with another number written on
-it. Calls to that number produced no conversation, only messages promising a
-return call. I had been searched, questioned and separated from my devices
-without receiving the complete material from which I could understand the
-accusation.
+At the first questioning, a woman took the defence chair. None of us knew who
+she was, and no one introduced her. Only later did I understand how far the
+substitution had travelled: the substitute for the appointed lawyer named in
+the papers had sent a legal assistant in his own place. She advised me to
+remain silent and gave me the office number. I called. Nobody answered, and
+nobody there spoke with me. The office, meanwhile, appeared to believe that the
+assistant was carrying the case. I had been searched, questioned and separated
+from my devices without receiving the complete material from which I could
+understand the accusation.
 
 Eight days later, I walked through the city to the police station. The loose
 nail travelled inside my shoe, shifting under the toe at every step. Saint
 Nicholas Day was approaching; shop windows were beginning to show the little
 bundles of twigs reserved for children who had misbehaved. Halfway there, I
-almost laughed. I should have brought the police a *virgács*.
+almost laughed. I should have brought the police one of those bundles.
 
 Then the next step put the nail under me again.
 
@@ -908,31 +935,45 @@ file. Her work remained professional; my mind remained human.
 
 <!-- pagebreak -->
 
-The formal defence kept changing shape. A lawyer remained unreachable for
-months and later asked to leave because he was overloaded. The trainee warned
-that she would be unavailable while preparing for an examination. Officers and
-lawyers could refer me to somebody else, but I could not make the somebody else
-appear. During the first month I did not even know the precise allegation.
+The formal defence kept changing shape. The legal assistant warned that she
+would be unavailable while preparing for her professional examination. Calls
+to the office went unanswered, and for almost three months nobody there spoke
+with me. On 19 February, the appointed lawyer asked to be released because the
+office was overloaded. The police accepted the request. Only after he had
+ceased to be my lawyer did he return one of my calls. He told me to leave the
+police to their work and suggested that I say I had not done it. Then the line
+closed. For the months after 19 February, I did not know whether another
+defender had been appointed—or whether I had one at all. I complained in
+writing. Nobody replied.
 
-On 11 June 2024, I went alone to collect the investigation material. No lawyer
-sat beside me. I waited quietly and fearfully in the public area while the file
-was being handed over. By then I trusted the continuity of no later account, so
-I made an undisclosed audio recording of the encounter. The act was not a
-victory over the process. It measured the low-trust condition: I no longer
-believed that even an ordinary handover would necessarily survive in one shared
-version unless I preserved it myself.
+On 11 June 2024, I was summoned back to the police station. A lawyer I had
+never met appeared beside me. Only then did I learn that, on paper, he had been
+my new appointed defender since 30 May. Nobody had told me. I did not need to
+ask. The policewoman conducting the hearing was called Kata. In a calm,
+ordinary voice, she said that the original appointed defender had not had time,
+as though that were the most ordinary thing in the world. The new appointed
+defender was already sitting beside me. The hearing continued.
 
-One policewoman looked out at me; I recognized her as the officer who had taken
-my fingerprints. Another smiled and glanced toward my operated leg.
+The officers carrying the file changed as well. I could not reach them
+directly. I called the central number and first had to find out which
+investigator was currently investigating me before I could ask what was
+happening in the investigation.
+
+Around 12 November, I returned alone to collect the investigation material. No
+lawyer sat beside me. A policewoman looked towards the waiting area almost
+timidly, checking that I was there and that the handover could begin. She seemed
+to freeze. A male officer smiled and glanced towards my operated leg. By then I
+trusted the continuity of no later account, so I made an undisclosed audio
+recording of the encounter. The act was not a victory over the process. It
+measured the low-trust condition: I no longer believed that even an ordinary
+handover would necessarily survive in one shared version unless I preserved it
+myself.
 
 The glance returned the obscene visual joke I had made while trying to force
 the tax administration to see the body behind its process. Where was the grave
 threat in that image? It had been a huge symbolic kick in an institution's
 backside. The association arrived as she handed over the papers I was still
 waiting to receive.
-
-A police explanation later reduced the earlier absence to a painfully ordinary
-phrase: the lawyer had not had time.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of
@@ -1169,13 +1210,13 @@ The investigation and court process created another triangle: defendant,
 appointed defence and institution.
 
 The triangle would not keep the same people in its corners. At the first
-questioning, a trainee sat beside me in place of the appointed lawyer. Later,
-one lawyer remained unreachable for months and asked to leave when his office
-became overloaded. Another was the only one who acted. Others
-delayed, withdrew or did not speak to me before a hearing. Sometimes the name
-beside my case changed on paper before the new person existed in my life. I
-eventually asked to be told when my appointed defence changed and to be given
-the new person's contact details.
+questioning, the substitute for the appointed lawyer sent a legal assistant in
+his own place. The office remained unreachable, and the appointed lawyer first
+spoke with me only after asking to leave. Another defender was appointed on
+paper before I was told he existed. He was the only one who acted. Others
+delayed, withdrew or did not speak to me before a hearing. I eventually asked
+to be told when my appointed defence changed and to be given the new person's
+contact details.
 
 The law required a defence chair. Continuity did not arrive with the chair.
 
@@ -1206,6 +1247,9 @@ from later satire, were not all where I expected them to be. The file had
 already interpreted the fragments it held. I began looking for the fragments
 it did not.
 
+One absence stood out. The chronology opened on 3 December, with the sentence.
+What had led to it was gone.
+
 When the phone was returned, I sat with its call history and rebuilt dates one
 by one. The history and correspondence showed contacts for which no audio had
 reached the file I saw. I requested the tax authority's recordings and copies
@@ -1213,6 +1257,11 @@ of my own electronic submissions. When the local route did not produce them, I
 wrote through the central directorate. Recordings arrived in stages. A later
 official letter acknowledged delay. Electronic submissions followed after
 what the letter described as an administrative error.
+
+Among the recovered papers was the tax authority's complaint-handling notice
+dated 18 December. It recorded in writing that I had settled everything. The
+forensic opinion placed pathological mental illness from 3 December onward. I
+laid the two documents side by side.
 
 I sent the recovered material to the police. Only then did the police request
 material from the tax authority again through its own route. The recordings had
@@ -1342,7 +1391,7 @@ Constitution that calls human dignity inviolable.
 ### Inside the curve
 
 Approaching court, Budapest first remained visible as home—the Danube, the city
-and the life outside the case. Then the long brown institutional façade on Fő
+and the life outside the case. Then the long brown institutional façade on Fo
 Street filled the frame. Its rhythm and mass felt almost Roman: monumental,
 closed and frightening. A human story was entering stone.
 
@@ -1892,13 +1941,15 @@ The election was not a verdict in my case. It did show that continuity no
 longer commanded enough trust. Institutions presented as fixed were now being
 judged by the public beneath them.
 
-One sentence from my 2022 messages acquired an uncanny echo. Its language about
-twenty years and the rule of law had looked detached from
-ordinary political possibility. Four years later, public actors were openly
-describing a change of regime and restoration of the rule of law.
+In July, the Council of the European Union approved a €10 billion recovery plan
+for Hungary. Access to the money was publicly tied to rule-of-law and
+anti-corruption reforms.
 
-It was not prophecy. It was irony powerful enough to make time feel badly
-edited.
+The number was the same. Its direction had reversed.
+
+In 2023, a man who could not walk had written it while asking the state to
+account for twenty years. By July 2026 it stood in national policy beside the
+same words: rule of law.
 
 ## 22. Two Letters to Venice
 
@@ -1909,7 +1960,7 @@ attempt to end his mandate. His questions were dated 29 May and supplemented on
 4 June 2026. He argued from the position of the highest office at risk.
 
 At 14:18 on 5 June, I sent my own submission to the same institution. Seventy-eight
-minutes later, I forwarded the same letter to the Sándor Palace and the Prime
+minutes later, I forwarded the same letter to the Presidential Palace and the Prime
 Minister's press office.
 
 It was one small push from below.
@@ -2277,6 +2328,12 @@ through its own channel. This supports the sequence of the search; it does not
 establish that an official deliberately deleted evidence, deliberately waited
 for the Founder or that every missing call had been recorded.
 
+The same private source inventory contains the tax authority's official
+complaint-handling notice dated 18 December, which records that the Founder had
+settled the matter, and the official forensic opinion, which places the relevant
+pathological period from 3 December onward. The narrative treats those dates and
+the positions recorded in the two official documents as documentary facts.
+
 The fundamental-rights passage in Chapter 19 refers to Hungary's Commissioner
 for Fundamental Rights, not the European Ombudsman. Letters in the same private
 bundle describe jurisdictional limits over police evidence assessment,
@@ -2321,10 +2378,12 @@ judge, breached a professional duty or represented the institution instead of
 the accused.
 
 The discontinuity is not based only on a later impression. The defence speech
-and private investigation bundle record a trainee appearing at the first
-questioning, a succession of appointed lawyers, periods without accessible
-contact, withdrawal or release requests, and the Founder's complaint that later
-defenders' contact details had not been supplied. The Commissioner for
+and private investigation bundle record someone from the appointed-defence
+office appearing instead of the named lawyer at the first questioning, a
+succession of appointed lawyers, periods without accessible contact, withdrawal
+or release requests, and the Founder's complaint that later defenders' contact
+details had not been supplied. The memoir preserves his fuller recollection of
+the substitution and the confusion within the office. The Commissioner for
 Fundamental Rights summarized the same complaint as involving several appointed
 defenders, an initial defender who did not speak to him and missing contact
 information for later appointments. Private names are omitted from the memoir.
@@ -2405,8 +2464,9 @@ that later written record rather than presenting them as an independently
 verified transcript.
 
 The Founder also records that he made an undisclosed audio recording when he
-collected the investigation material alone on 11 June 2024. This edition does
-not quote or publish that private audio and does not decide its admissibility or
+collected the investigation material alone around 12 November 2024. A private
+recording dated 12 November remains in the reviewed source set. This edition
+does not quote or publish it and does not decide its admissibility or
 lawfulness. Its narrative use is narrower: it shows how far trust in a shared
 institutional account had already collapsed.
 
@@ -2615,10 +2675,10 @@ breach in this case.
 
 ### The government account and the later two-factor change
 
-The “government account” in the narrative was **Ügyfélkapu**, Hungary's Citizen
-Portal identification service. In 2022, the relevant login was based on a
-username and password. From 16 January 2025, access to the same public-service
-surfaces required either the two-factor Ügyfélkapu+ method or the Digital
+The “government account” in the narrative was Hungary's **Citizen Portal**
+identification service. In 2022, the relevant login was based on a username and
+password. From 16 January 2025, access to the same public-service surfaces
+required either the two-factor Citizen Portal Plus method or the Digital
 Citizenship application. This later security change does not rewrite the 2022
 scene.
 
@@ -2631,7 +2691,7 @@ it does not, by itself, resolve the separate visibility problem in the
 Founder's record: who received each submission result and notice, and whether
 both sides could see the same chain.
 
-Ügyfélkapu+ installs a secret into an authenticator through a setup
+Citizen Portal Plus installs a secret into an authenticator through a setup
 quick-response (QR) code and
 then generates time-limited login codes from that secret. It follows
 technically that copying the setup QR to another device can duplicate the
@@ -2701,12 +2761,12 @@ officer does not decide the request or sentence.
 
 Official sources:
 
-- Sándor Palace, presidential interview on the clemency practice and the
+- Presidential Palace, presidential interview on the clemency practice and the
   constitutional role of expressing national unity:
   https://www.sandorpalota.hu/hu/tarsadalmi-beke-megteremteseert-dolgozom-mandiner-interjuja-dr-sulyok-tamas-koztarsasagi-elnokkel
-- Sándor Palace, clemency statistics for 2025:
+- Presidential Palace, clemency statistics for 2025:
   https://www.sandorpalota.hu/sites/default/files/2026-01/Kegyelmi%20statisztika_2025.pdf
-- Sándor Palace, clemency statistics for the first half of 2026:
+- Presidential Palace, clemency statistics for the first half of 2026:
   https://www.sandorpalota.hu/sites/default/files/2026-06/Kegyelmi%20statisztika%202026.01.01-2026.06.30.pdf
 - Euronews, contemporary account of the Novák resignation and Varga
   countersignature:
@@ -2829,11 +2889,43 @@ a political allegation, not a finding that the new government was or was not
 authoritarian. The narrative retains the image because language once used
 against the old order had moved to the other side of Parliament.
 
+The 2022 timing forms part of the public background. In December of that year,
+the Council suspended €6.3 billion in budget commitments under the rule-of-law
+conditionality mechanism. It also approved Hungary's recovery plan on terms
+that required 27 rule-of-law “super milestones” to be completed before any
+payment could be made. Those measures were not connected to the private case;
+they show what was already happening around the same words in national life.
+
+Also in July 2026, the Council of the European Union approved a new Hungarian
+recovery plan expected to allow €10 billion to be disbursed. Public reporting
+described access to the money as dependent on rule-of-law and anti-corruption
+conditions. The memoir uses the number only as an ironic echo of the 2023
+postoperative line. It does not claim that the private sentence anticipated,
+influenced or caused the public decision.
+
 A February 2025 interview records the justice minister saying that judicial
-independence was not in danger. Later that month, judges and court employees
-rallied for judicial independence and the freedom to speak. The minister is
-identified only by office in the narrative; the linked public source supplies
-the name.
+independence was not in danger. Asked in a separate Index interview whether he
+had tried to persuade the National Judicial Council, Justice Minister Bence
+Tuzson said:
+
+> “This is not a Western. We do not operate on the basis of whose arguments hit
+> harder.”
+
+Later that month, judges and court employees rallied for judicial independence
+and the freedom to speak.
+
+On 15 March 2025 (the anniversary of the Hungarian Revolution and War of
+Independence of 1848–49), Prime Minister Viktor Orbán said:
+
+> “After today's ceremony comes the Easter clean-up. The bugs survived the
+> winter.”
+
+The next sentence began, “We will dismantle the financial machine,” then named
+politicians, judges, journalists, bogus NGOs and political activists. The
+passage continued: “We will dismantle the entire shadow army.” Two days later,
+the National Judicial Council and the Association of Hungarian Judges publicly
+rejected both the suggestion that judges had been bought with corrupt dollars
+and the comparison of judges to harmful insects.
 
 A separate 2025 controversy provides another reference-layer example of
 institutional certainty preceding completed fact-finding. In September, the
@@ -2851,8 +2943,17 @@ Sources:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
+- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
+- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
+- https://www.consilium.europa.eu/en/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
+- https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
+- https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
 - https://telex.hu/belfold/2025/02/05/tuzson-bence-interju-bombariado-till-tamas-obt-beremeles-reform
 - https://enbudapestem.hu/2025/02/22/az-igazsagszolgaltatas-fuggetlensegeert-tuntetnek
+- https://www.youtube.com/watch?v=GlEbs_Da_hg
+- https://hirado.hu/belfold/cikk/2025/03/15/itt-olvashatja-orban-viktor-teljes-unnepi-beszedet
+- https://telex.hu/english/2025/03/17/bugs-cockroaches-vermin-how-dehumanising-propaganda-sets-the-stage
+- https://telex.hu/belfold/2025/03/17/obt-orszagos-biroi-tanacs-poloska-eliteles
 - https://hvg.hu/itthon/20250924_Tuzson-Bence-a-Szolo-utcai-javitointezet-ugyerol-kiskoru-sertett-nem-volt-es-politikusok-neve-sem-kerult-elo
 - https://444.hu/2025/11/04/tuzson-bence-tisztazni-kell-volt-e-kiskoru-erintett-a-szolo-utcai-igazgato-ugyeben
 
@@ -2944,10 +3045,10 @@ Sources:
 
 ## The Venice Commission
 
-The Sándor Palace publication supports the President's questions. The Founder's
+The Presidential Palace publication supports the President's questions. The Founder's
 5 June email survives in the private source package. Its Gmail export records
 the 14:18 message to the Commission and the 15:36 forwarding of the same text to
-the Sándor Palace and the Prime Minister's press office. The Commission's
+the Presidential Palace and the Prime Minister's press office. The Commission's
 official notice supports the 2 July meetings. No reviewed source proves that
 the Founder's email caused the Commission's later public posture.
 
@@ -2985,7 +3086,7 @@ claim.
 
 - MyScoutee product and production repository:
   https://github.com/fssrepository/myscoutee-backend
-- Civic Access public-service prototype (source repository: E-közig):
+- Civic Access public-service prototype:
   https://github.com/fssrepository/e-kozig
 
 The creative-work chapter is supported by the versioned research repository,

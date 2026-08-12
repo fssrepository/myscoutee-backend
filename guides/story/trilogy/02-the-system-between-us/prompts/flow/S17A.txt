@@ -18,8 +18,8 @@ so neither leg remains visible.
 
 The wall-mounted entry-phone handset is fixed at head height, only 10–20
 centimetres from the doorframe. He lifts the handset; only then does the ringing
-stop. A brief filtered male voice from downstairs says exactly one English
-word: “Delivery.” The Founder does not reply. He presses the physical
+stop. The handset produces only a brief burst of indistinct intercom static
+with no intelligible words. The Founder listens, then presses the physical
 door-release button. The ground-floor electric lock buzz and metal latch sound
 echo back through the building. End exactly on M2_CP17A.png.
 
@@ -28,10 +28,10 @@ apartment continuity and painterly cinematic 2.5D style. Keep all movement
 continuous and human. Do not generate text, lettering, logos or captions.
 
 Audio: restrained tense instrumental music with tablet movement, calendar
-paper, room tone, careful footsteps, the loud persistent doorbell, the single
-filtered English word “Delivery,” and the remote electric door-release buzz.
-Generate no other spoken words, conversation, narration, voice-over, singing,
-lyrics or intelligible human speech.
+paper, room tone, careful footsteps, the loud persistent doorbell, indistinct
+intercom static and the remote electric door-release buzz. Generate no spoken
+words, conversation, narration, voice-over, singing, lyrics or intelligible
+human speech.
 
 Generate exactly one 8-second, 9:16 result using the supplied first and last
 frames.

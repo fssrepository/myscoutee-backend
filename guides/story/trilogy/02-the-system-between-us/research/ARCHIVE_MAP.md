@@ -62,7 +62,7 @@ Before a statement is promoted from memoir to documentary layer:
   the trial court and the premature-procedure threshold.
 - The April 2026 exclusion filing documents that the challenged judge was the
   second assigned judge in the Founder's chronology and preserves the
-  “Mi az, letöltendőt akar kapni?” courtroom wording. Its 8 April annex records
+  “What—are you asking to be sent to prison?” courtroom wording. Its 8 April annex records
   the official-audio, accountant, tax-administration and outstanding-evidence
   requests and the clerk's “expensive” recording response.
 - An authored defence record preserves the swollen-leg image and vulgar

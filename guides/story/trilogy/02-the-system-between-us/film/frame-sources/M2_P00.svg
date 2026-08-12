@@ -14,11 +14,11 @@
     </filter>
   </defs>
   <image width="720" height="1280" preserveAspectRatio="xMidYMid slice"
-         xlink:href="/home/raxim/workspace/myscoutee-backend/guides/story/trilogy/02-the-system-between-us/assets/frames/CP00.png"/>
+         xlink:href="guides/story/trilogy/02-the-system-between-us/assets/frames/M2_CP00.png"/>
   <rect width="720" height="1280" fill="url(#veil)"/>
   <g filter="url(#shadow)">
     <image x="144" y="28" width="88" height="88"
-           xlink:href="/home/raxim/workspace/myscoutee-backend/frontend/src/assets/logo/heart.png"/>
+           xlink:href="frontend/src/assets/logo/heart.png"/>
     <text x="246" y="100" fill="#ffffff" font-family="DejaVu Sans, sans-serif"
           font-size="65" font-weight="700" letter-spacing="-1">yScoutee</text>
   </g>

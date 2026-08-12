@@ -3,6 +3,25 @@
 Part `II` and the edition version are separate. This book is Part `II`; its
 first public edition is `1.0.0`.
 
+## Same-edition factual correction — 2026-08-12
+
+- Corrected the defence sequence without changing the surrounding narrative:
+  the unknown woman at the first questioning, the unanswered office number,
+  the separate examination and workload explanations, the lawyer's brief call
+  only after his release, and the unannounced appointment visible by 11 June.
+- Separated the 11 June police hearing with the officer named Kata from the
+  material handover around 12 November. The November scene now carries the
+  private recording, the frozen female officer and the male officer's glance
+  toward the operated leg.
+- Added the changing police investigators and the Founder's repeated calls to
+  the central number to discover who was currently carrying his case.
+
+## Same-edition dedication addition — 2026-08-12
+
+- Added a separate calligraphic dedication near the front of the book for the
+  Hungarians who, in one way or another, had to leave home. Its closing line
+  makes the shared human claim directly: “My story is theirs, too.”
+
 ## Final same-version revision of 1.0.0 — 2026-08-09
 
 - Preserved one last blackly comic inner thought from the forensic interview:
@@ -212,9 +231,9 @@ first public edition is `1.0.0`.
   unapproved. Locked English narration to the approved ElevenLabs **Jon — Warm
   & Grounded Storyteller** voice for both films.
 
-## 1.0.0 — 2026-08-08
+## 1.0.0 — 2026-08-20
 
-- Published the first English edition as an unresolved first-person memoir,
+- Published the first English edition on 20 August 2026 as an unresolved first-person memoir,
   not as a final legal judgment or clinical conclusion.
 - Synchronized the book, 03:00 narration, storyboard and Flow/OpenArt prompts.
 - Preserved the documentary, attributed, memoir and later-context layers and
@@ -223,8 +242,8 @@ first public edition is `1.0.0`.
   home-inquiry illustrations.
 - Corrected the Constitutional Court sequence: seven judges initially declared
   exclusion, an eighth followed, seven remained and no quorum could form.
-- Closed the publication snapshot on 8 August 2026 while reserving the final
-  procedural and institutional outcome for Part III.
+- Closed a pre-publication working snapshot on 8 August 2026 while reserving
+  the final procedural and institutional outcome for Part III.
 - Removed slideshow production from the active route; identical endpoint pairs
   now go directly into the cross-model eight-second benchmark.
 - Clarified once in the reader note that the character and scene illustrations

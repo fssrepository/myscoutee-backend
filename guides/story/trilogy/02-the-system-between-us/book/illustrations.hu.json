@@ -1,0 +1,69 @@
+{
+  "part_ii_founder": {
+    "file": "assets/illustrations/founder-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Az Alapító folytatja az I. részből, kezében a konyakszínű jegyzetfüzettel",
+    "caption": "Ugyanaz az ember, most egy másik rendszert hordoz."
+  },
+  "part_ii_accountant": {
+    "file": "assets/illustrations/accountant-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Névtelenített könyvelő egy íróasztalnál, befejezetlen munkával",
+    "caption": "Az íróasztalnál ülő szakember nem értette a rövid bevallást, amelynek elkészítésére megbízást kapott."
+  },
+  "part_ii_triangle_scene": {
+    "file": "assets/illustrations/three-partial-screens.png",
+    "placement": "full",
+    "alt": "Az Alapító, a könyvelő és az adóhatósági ügyintéző ugyanazon bevallás más-más részét látja",
+    "caption": "Három ember, három részleges képernyő, közös kép nélkül."
+  },
+  "part_ii_officer": {
+    "file": "assets/illustrations/police-officer-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Egy hivatásos rendőr névtelenített portréja",
+    "caption": "Az eljárásban betöltött szerep mögött továbbra is ember áll."
+  },
+  "part_ii_police_scene": {
+    "file": "assets/illustrations/police-rooms-and-fingerprint.png",
+    "placement": "full",
+    "alt": "Hétköznapi rendőrségi kihallgatószoba, majd szakszerű ujjlenyomatvétel",
+    "caption": "A tanács egy kis szobát kapott; a személyazonosságból fénykép és vonalminta lett."
+  },
+  "part_ii_experts_scene": {
+    "file": "assets/illustrations/two-experts-one-report.png",
+    "placement": "full",
+    "alt": "Két külön igazságügyi szakértő, az Alapító és egy névtelenített szakvélemény",
+    "caption": "Két felidézett hangból egy dokumentum született; a dokumentum nem volt az egész ember."
+  },
+  "part_ii_courtroom_scene": {
+    "file": "assets/illustrations/fo-street-c-shaped-hearing-room.png",
+    "placement": "full",
+    "alt": "A Fő utcai igazságügyi épület C alakú tárgyalótermének emlékképe",
+    "caption": "Egy hosszú emberi eseménysor belépett a rögzített eljárási szerepek köré épített terembe."
+  },
+  "part_ii_ai_work_scene": {
+    "file": "assets/illustrations/work-under-the-shadow.png",
+    "placement": "full",
+    "alt": "Az Alapító MI-vel támogatott munkát ellenőriz bizonyítékokon, a Civic Accessen, a MyScoutee-n és egy véges folyadékszimuláción",
+    "caption": "Az eljárás folytatódott. A munka is."
+  },
+  "part_ii_home_inquiry_scene": {
+    "file": "assets/illustrations/what-the-case-can-reach.png",
+    "placement": "full",
+    "alt": "Előzetes bejelentés nélküli kegyelmi környezettanulmány az Alapító puritán budapesti lakásában",
+    "caption": "A külföldön felépített biztonság, amely az otthoni életet szolgálta, most az irat számára is láthatóvá vált."
+  },
+  "part_ii_judge": {
+    "file": "assets/illustrations/judge-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Névtelenített bíró egy egyszerű, korszerű tárgyalóasztalnál",
+    "caption": "Az arckifejezés benyomás marad, nem megállapítás."
+  },
+  "part_ii_housemate": {
+    "file": "assets/illustrations/london-housemate-portrait.png",
+    "placement": "portrait-right",
+    "alt": "Egy korábbi londoni lakótárs névtelenített portréja",
+    "caption": "Másik jogi ügy, egy újabb élet, amely rendszerszintű kockázatot hordoz."
+  }
+}
+

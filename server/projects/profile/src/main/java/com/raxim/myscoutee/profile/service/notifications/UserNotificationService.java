@@ -315,6 +315,9 @@ public class UserNotificationService {
     }
 
     private String resolveCategory(String kind, String recipientScope, String sourceType) {
+        if ("event-member-approved".equals(safeText(kind).toLowerCase(Locale.ROOT))) {
+            return "event-admin";
+        }
         String haystack = String.join(" ",
                 safeText(kind),
                 safeText(recipientScope),

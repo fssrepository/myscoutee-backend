@@ -2,12 +2,15 @@
 
 Working title: **The System Between Us**.
 
-Status: **English public edition 1.0.0 is synchronized with the 11 August 2026
-manuscript and 108-page reading PDF. The Founder explicitly authorized the
-same-version public artifact to be replaced before the film-production
-handoff.**
+Status: **English public edition 1.0.0 is synchronized with the 20 August 2026
+manuscript and reading PDF. Its first publication date is 20 August 2026.**
 
 The manuscript is [THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_EN.md).
+
+The Hungarian edition source is
+[THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_HU.md](THE_SYSTEM_BETWEEN_US_REVIEW_DRAFT_HU.md).
+Its editable reading copy is
+[MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_HU.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_HU.pdf).
 
 The current editable reading copy is
 [MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf](draft/MyScoutee_The_Story_Part_II_The_System_Between_Us_v1.0.0_EN.pdf).

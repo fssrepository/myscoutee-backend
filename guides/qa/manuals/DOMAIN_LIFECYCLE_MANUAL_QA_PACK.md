@@ -218,6 +218,57 @@ Execution evidence on 2026-08-04:
   event, membership, invitation, ticket, counter mutation or worker task.
 - This continuation is a visibility checkpoint. Do not add Join, approval,
   slot or tournament mutations to it; those remain separate checkpoints.
+- Retained continuation baseline (2026-08-12): **READY**. Guarded `advance`
+  moved the active harness pointer from completed `EVENT-TICKET-007` at
+  `22:42:44+02:00` without resetting its event or original snapshots. The
+  independent follow-up status retained one active Ticketing On event with
+  Casey, Nova and Riley accepted, occupancy `3 / 8`, no pending/invited
+  members, Nova A ticket `manual-qa-checkpoint:v1:event-domain:ticket` / code
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44` and Riley A ticket
+  `6a7cd3aff8a7d3829acd805a` / code
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6`; both members retain ticket
+  counters `1/1` and Casey remains ticketless. Lina Park resolves as Casey's
+  deterministic friend, Liam Parker as the deterministic non-friend, and
+  neither has tracked participation on the event. The checkpoint now owns
+  their activity snapshots. The previous three browser processes were closed
+  before the resource-conscious replacement; isolated Casey-Lina-Liam windows
+  are identity-verified with the configured Austin geolocation.
+- Unpublish boundary (2026-08-12): **PASS**. Casey selected **Unpublish** once.
+  The canonical event retained the same identity and became `status=DR` with
+  `visibility=public` and Ticketing still configured On. Casey, Nova and Riley
+  stayed accepted at `3 / 8`, with no pending, invited or request membership.
+  Nova's exact ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket` /
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44` and Riley's exact ticket
+  `6a7cd3aff8a7d3829acd805a` /
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6` were retained and changed only
+  `A -> D`; no replacement ticket appeared. Their ticket counters changed
+  `1 -> 0`, Casey remained ticketless, and Lina/Liam retained no participation
+  or ticket artifact. Casey's already-open My Events list showed the same one
+  draft card without reload. The owning event recompute task completed at
+  `2026-08-12T20:55:46.902953153Z`, `attemptCount=2`, with empty `lastError`;
+  the affinity worker returned to `pendingCount=0`. The next producer boundary
+  is draft **Edit -> Visibility: Friends only -> Save** only. Stop before
+  Publish and prove that Save changes only the draft definition plus its normal
+  event task while both D tickets, counters and memberships remain unchanged.
+- Friends Only draft-Save boundary (2026-08-12): **PASS**. Casey changed only
+  visibility from Public to Friends only and pressed Save once. The canonical
+  event remained the same `DR` identity with Ticketing configured On and now
+  persisted `visibility=Friends only`. Casey, Nova and Riley remained accepted
+  at `3 / 8` with no pending/invited/request row. Nova's and Riley's two exact
+  tickets above remained `D` with their original ID, code and issue time; no
+  replacement appeared, their ticket counters stayed `0/0`, Casey stayed
+  ticketless, and Lina/Liam retained neither participation nor ticket artifact.
+  Casey's already-open My Events card switched from the Public icon to the
+  Friends icon without reload. The Save refreshed only the normal deduplicated
+  event recompute task, due at `2026-08-12T21:04:44.684364061Z`, with empty
+  `lastError`. The existing worker completed it normally at
+  `2026-08-12T21:04:50.578245727Z`, `attemptCount=3`, and returned to
+  `pendingCount=0`; no manual worker or second process was invoked. The next
+  producer boundary is one Casey **Publish** action. Stop before using Lina or
+  Liam and prove active Friends only state plus one new A ticket ID/code for
+  each accepted non-admin member, restored counters `1/1`, retained D history
+  and unchanged memberships.
 
 ### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
 
@@ -1348,20 +1399,384 @@ Restart evidence on 2026-08-06:
   notification may be created by cancellation. Casey instead receives a
   separate new event-admin notification row with Nova as sender and the
   contextual **Cancelled** badge. The Public event remains discoverable.
+  Treat the resulting UI behavior as two separate tests inside this same
+  checkpoint, not as two new checkpoint rows:
+  1. **In-place signal test:** without reload, the same Explore card changes
+     from **Continue booking** to fresh **Request Join**, and only that event's
+     pending Activity row is removed.
+  2. **Reload reconstruction test:** after the in-place result is observed, one
+     clean Explore reload reconstructs the same visible card and fresh
+     **Request Join** action from `currentUserMembershipStatus=none` plus no
+     active/displayable basket; it creates no membership, basket, notification
+     or ticket write.
 - Nova chooses Join again. This creates exactly one new pending member-origin
   request by reopening the suppressed pending audit record and its activity
   projection, never resurrects it as accepted and does not reuse an old basket,
   checkout session or policy selection. It creates another new **Pending**
   notification occurrence for Casey and still creates no ticket. Continue the
   approval proof from this second request.
-- As Casey, approve Nova once. This is the terminal transition directly to
-  accepted; there is no second participant-acceptance step. The approval write
-  creates exactly one Nova participant overlay and one physical `status=A`
-  ticket.
+- As Casey, approve Nova once through **My Events** ->
+  `QA EVENT-TICKET-005` -> the capacity/Members badge -> **Nova Social** row ->
+  **Open actions for Nova Social** -> **Approve** -> the **Approve request?**
+  confirmation's **Approve** button. Notifications are evidence only; their
+  row menu does not own membership approval. This is the terminal transition
+  directly to accepted; there is no second participant-acceptance step. The
+  approval write creates exactly one Nova participant overlay and one physical
+  `status=A` ticket. Treat basket finalization as a separately named, short
+  test inside this same approval transaction:
+  3. **Terminal approval basket-closure test:** the approval boundary must make
+     the current attempt non-active/non-displayable while retaining its
+     physical audit identity; the earlier Cancel audits remain byte-for-byte
+     unchanged. An accepted member with an issued ticket must never retain an
+     active `approval-pending` reservation.
 - Nova's normal poll exposes Ticket counter `1`; opening Ticket twice reads the
   same ID/code. Before approval and during both reads, no credential may be
   created.
 - Casey and every other Admin remain without a participant ticket.
+- Active clean-chain evidence (2026-08-12, **IN PROGRESS**): the replayable
+  Casey-only baseline was independently staged and verified before browser
+  launch. Nova's first Join created exactly one member-origin approval-pending
+  membership, one physical `approval-pending` basket, one Casey **Pending**
+  notification, pending activity `1`, ticket counters `0/0` and no physical
+  ticket. The required pending Explore reload, plus one repeated operator
+  reload, retained the same card/basket/notification identities and created no
+  write. The first Cancel changed Nova's membership to `suppressed`, retained
+  her overlay as `status=T`, changed pending activity `1 -> 0` and trash
+  `0 -> 1`, returned occupancy to `1 accepted + 0 pending / 8`, created exactly
+  one separate Casey **Cancelled** notification and left every ticket/counter
+  at zero. The old physical basket row remains under the same ID only as
+  `status=cancelled`, `resultState=deleted`; "no basket" in the Explore
+  contract means no active/displayable/continuable basket, not deletion of its
+  audit row. Both Cancel UI tests passed independently: the same card first
+  changed in place to fresh **Request Join** without reload, then the
+  post-Cancel Explore reload reconstructed that same state. The reload retained
+  the same suppressed membership, cancelled/deleted basket audit and two Casey
+  notifications and created no ticket or counter. Still required before
+  closing this checkpoint: the remaining
+  re-Join/Cancel/re-Join identity and ID-scoped removal checks, terminal Casey
+  approval and repeated ticket-read purity.
+- First re-Join basket-identity evidence (2026-08-12): **FAIL**. The re-Join
+  correctly reopened Nova's suppressed membership as one member-origin
+  approval-pending request, restored pending activity `0 -> 1`, returned
+  occupancy to `1 accepted + 1 pending / 8`, created a second distinct Casey
+  **Pending** notification and kept every ticket plus both ticket counters at
+  zero. However, it changed the previously cancelled/deleted basket with ID
+  `6a7c8b74d0e43ceb2c03f170` back to
+  `status=approval-pending`, `resultState=pending` instead of creating a new
+  basket identity. This violates the explicit re-Join contract even though the
+  reopened popup correctly showed **Continue booking** and **Cancel waiting**.
+  Stop before the second Cancel or approval. Diagnose/fix the owning re-Join
+  basket persistence boundary, then replay the complete checkpoint from a
+  clean staged baseline; do not accept this partially mutated attempt.
+- Owning-contract diagnosis (2026-08-12): the backend `saveBasket` stale-marked
+  the active row, then upserted by `(userId, sourceId, itemId)`, while the same
+  tuple also had a globally unique index. This necessarily reactivated the
+  cancelled audit row. The original local adapter establishes the intended
+  contract: every `saveBasket` turns prior display items into `deleted` audit
+  versions and appends fresh incoming records; only `updateBasketState` mutates
+  the current active record. The server fix therefore makes every save create
+  a fresh physical `_id`, retains state changes on the active record, migrates
+  existing rows to an explicit `reservationActive` lifecycle field and replaces
+  the global tuple uniqueness with a partial unique index applying only while
+  `reservationActive=true`. The checkpoint oracle now exposes that field.
+  Existing hot-deploy compilation and restart passed, and the live database
+  exposes only the new partial unique index. A source regression records the
+  every-save-new-identity and Cancel-closes-active-slot contracts; per the
+  active-session resource rule no separate build is used. Clean checkpoint
+  replay remains required before the defect can be marked fixed.
+- Repair-replay baseline (2026-08-12): the versioned reset restored the failed
+  transaction, a fresh image-qualified stage completed, and a second read-only
+  oracle independently proved the Casey-only baseline: one accepted Admin,
+  Nova outside membership, no basket, notification or ticket, and Nova
+  event/ticket counters all zero. The three canonical managed actor windows
+  were replaced and identity-verified. Begin again at the first Nova Join.
+- Repair replay — first Join (2026-08-12): **PASS**. Nova created one
+  member-origin approval-pending membership and the new physical basket
+  `6a7c9690f8a7d3829acd7ffa` with `status=approval-pending`,
+  `resultState=pending` and `reservationActive=true`. Occupancy is exactly
+  `1 accepted + 1 pending / 8`, Nova pending activity is `1`, Casey has one
+  distinct Pending notification, and no ticket or ticket counter exists. Stop
+  before reload; the pending Explore reload is the next separate read test.
+- Repair replay — pending Explore reload (2026-08-12): **PASS**. The card
+  retained **Continue booking** and its contextual actions, while the persisted
+  basket remained exactly `6a7c9690f8a7d3829acd7ffa` with unchanged create and
+  update timestamps. The single pending membership, Casey Pending notification,
+  Nova counters and zero ticket/counters were also byte-for-byte equivalent at
+  the oracle boundary. First Cancel in-place is next.
+- Repair replay — first Cancel in-place (2026-08-12): **PASS**. Without reload,
+  the same card changed **Continue booking -> Request Join**. The persisted
+  basket kept ID `6a7c9690f8a7d3829acd7ffa` only as a `cancelled/deleted`
+  audit with `reservationActive=false`; Nova became suppressed, occupancy
+  returned to `1 + 0 / 8`, pending changed to `0`, trash to `1`, and Casey now
+  has exactly the original Pending plus one distinct Cancelled notification.
+  Tickets and both ticket counters remain zero. Post-Cancel reload is next.
+- Repair replay — first post-Cancel reload (2026-08-12): **PASS**. The card
+  reconstructed fresh **Request Join** and the read-only oracle was identical
+  to the first Cancel boundary: audit `6a7c9690f8a7d3829acd7ffa` retained its
+  exact timestamps and `reservationActive=false`; membership stayed suppressed,
+  counters stayed pending `0` / trash `1`, Casey retained exactly Pending plus
+  Cancelled, and tickets/counters remained zero. First re-Join is next and must
+  append a distinct physical basket while leaving this audit closed.
+- Repair replay — first re-Join identity (2026-08-12): **PASS / FIX VERIFIED**.
+  The closed audit `6a7c9690f8a7d3829acd7ffa` and its timestamps remained
+  unchanged, while re-Join appended the distinct physical basket
+  `6a7c9847f8a7d3829acd8002` as `approval-pending/pending` with
+  `reservationActive=true`. Nova again has exactly one pending member-origin
+  approval membership and pending counter `1`; Casey's ordered notifications
+  are Pending, Cancelled, Pending. Occupancy is `1 accepted + 1 pending / 8`
+  and all tickets/counters remain zero. This closes the historical basket-ID
+  defect proof; the full checkpoint remains in progress at second Cancel.
+- Repair replay — second Cancel in-place (2026-08-12): **PASS**. The same card
+  changed **Continue booking -> Request Join** without reload. Both physical
+  basket attempts remain present as distinct closed audits: the first
+  `6a7c9690f8a7d3829acd7ffa` stayed unchanged, while the second
+  `6a7c9847f8a7d3829acd8002` transitioned to `cancelled/deleted` with
+  `reservationActive=false`. Nova is suppressed with pending `0` / trash `1`,
+  Casey's ordered notification sequence is Pending, Cancelled, Pending,
+  Cancelled, and tickets/counters remain zero. The second post-Cancel reload is
+  next as its separate reconstruction/read-purity test.
+- Repair replay — second post-Cancel reload (2026-08-12): **PASS**. The card
+  reconstructed **Request Join** while both closed audit IDs and all their
+  timestamps remained unchanged. Nova stayed suppressed with pending `0` /
+  trash `1`; Casey retained exactly four ordered Pending/Cancelled
+  notifications; tickets and ticket counters stayed zero. The final Join is
+  next and must append the third distinct physical basket before approval.
+- Repair replay — final Join (2026-08-12): **PASS**. A third distinct physical
+  basket `6a7c996af8a7d3829acd8007` was appended as
+  `approval-pending/pending`, `reservationActive=true`; both older basket IDs
+  remained immutable closed audits. Nova again has exactly one pending
+  member-origin approval and occupancy is `1 accepted + 1 pending / 8`.
+  Casey's five ordered notifications are Pending, Cancelled, Pending,
+  Cancelled, Pending. No Join produced a physical ticket or either ticket
+  counter. Casey's single terminal approval is next.
+- Repair replay — terminal Casey approval (2026-08-12): **FAIL / PARTIAL DOMAIN
+  SUCCESS**. The owning `POST /api/activities/events/members/action` returned
+  `200`; Nova transitioned directly to accepted, occupancy became exactly
+  `2 accepted + 0 pending / 8`, her activity counters became active `1` /
+  pending `0`, and exactly one physical `status=A` ticket
+  `6a7c9b3ff8a7d3829acd8013` with code
+  `TKT-7b0475a4-136d-427c-beb8-b99bccb66fa6` was created. Nova's stored ticket
+  counters are `1 / 1`; Casey remains `0 / 0`, no second controlled ticket
+  exists and Riley was untouched. However, the current basket
+  `6a7c996af8a7d3829acd8007` incorrectly remained
+  `approval-pending/pending`, `reservationActive=true`; the first two Cancel
+  audits remained correctly closed. This fails the separately named
+  **Terminal approval basket-closure test** and leaves the full checkpoint
+  open. Diagnose and fix basket finalization at the approval-owning domain
+  boundary, then replay the complete checkpoint from its canonical baseline;
+  do not continue to Ticket reads from this inconsistent state.
+- Terminal basket-closure repair (2026-08-12): **IMPLEMENTATION UPDATED / CLEAN
+  REPLAY REQUIRED**. The owning `ActivitiesMembersService` now finalizes active
+  checkout reservations for every newly accepted event member before ticket
+  synchronization, including direct joins, member actions, replace flows and
+  creator-membership repair. `EventCheckoutBasketService` targets only
+  `reservationActive=true` records and transitions them to
+  `approved/succeeded`, clears reservation/pending tracking and leaves every
+  already-closed audit untouched. The HTTP join orchestrator delegates to the
+  same idempotent finalizer. Local-mode member acceptance now enforces the same
+  invariant using a reservation-only repository update. Backend main-source
+  hot deploy finished `BUILD SUCCESSFUL` and restarted healthy; the frontend
+  watcher generated the complete bundle successfully. Source regressions cover
+  active-slot-only finalization and basket-finalization-before-ticket ordering.
+  Per the dev-stack resource rule no separate build/test process was started.
+  This evidence does not replace a clean full checkpoint replay.
+- Terminal basket-closure repair replay baseline (2026-08-12): the versioned
+  reset removed the inconsistent approval attempt, `status` proved
+  `phase=not-staged`, and a fresh image-qualified stage plus an independent
+  second status read proved the canonical Casey-only baseline. Casey is the
+  sole accepted Admin at `1 + 0 / 8`; Nova has no membership, basket,
+  notification, ticket or activity/ticket counter; the ticket collection is
+  empty. The launcher replaced only this checkpoint's managed Casey, Nova and
+  Riley windows and verified all three identities. Begin the complete replay
+  again at Nova's first Join; no prior boundary may be skipped.
+- Terminal basket-closure repair replay — first Join (2026-08-12): **PASS**.
+  Nova created exactly one member-origin approval-pending membership and one
+  new physical basket `6a7c9fdbf8a7d3829acd8028` with
+  `status=approval-pending`, `resultState=pending` and
+  `reservationActive=true`. Occupancy is `1 accepted + 1 pending / 8`, Nova's
+  pending activity is `1`, Casey has exactly one action-owned Pending
+  notification, and no ticket or ticket counter exists. The pending Explore
+  reload is next and must retain this exact basket identity and timestamps
+  without writes.
+- Terminal basket-closure repair replay — pending Explore reload (2026-08-12):
+  **PASS**. The UI retained the event card and orange **Continue booking** with
+  its other contextual actions. The read oracle retained basket
+  `6a7c9fdbf8a7d3829acd8028` with exact original
+  `createdAtIso=2026-08-12T16:31:14.482Z` and
+  `updatedAtIso=2026-08-12T16:31:23.092826959Z`; the pending membership and
+  Casey notification identities also remained unchanged. No ticket or counter
+  appeared. First Cancel in-place is next.
+- Terminal basket-closure repair replay — first Cancel in-place (2026-08-12):
+  **PASS**. Without reload, the same Explore card changed from **Continue
+  booking** to fresh **Request Join**. Basket
+  `6a7c9fdbf8a7d3829acd8028` retained its original identity and
+  `createdAtIso=2026-08-12T16:31:14.482Z`, then closed as
+  `status=cancelled`, `resultState=deleted`, `reservationActive=false` at
+  `updatedAtIso=2026-08-12T16:35:47.888144723Z`. Nova's physical membership
+  is suppressed, occupancy returned to `1 accepted + 0 pending / 8`, and her
+  activity counters are pending `0` / trash `1`. Casey has exactly the
+  original Pending notification plus one Cancelled notification created at
+  `2026-08-12T16:35:47.863869161Z`. No ticket or ticket counter exists. The
+  first post-Cancel reload is next and must reconstruct **Request Join**
+  without mutating this boundary.
+- Terminal basket-closure repair replay — first post-Cancel reload
+  (2026-08-12): **PASS**. The card reconstructed fresh **Request Join** and the
+  read-only oracle remained identical to the first Cancel boundary. Basket
+  `6a7c9fdbf8a7d3829acd8028` retained its exact create/update timestamps and
+  `cancelled/deleted`, `reservationActive=false` state; Nova's membership
+  stayed suppressed at pending `0` / trash `1`; Casey retained exactly the
+  original Pending and Cancelled notifications with unchanged timestamps; no
+  ticket or ticket counter appeared. First re-Join is next and must append a
+  distinct physical basket without mutating this closed audit.
+- Terminal basket-closure repair replay — first re-Join identity (2026-08-12):
+  **PASS / HISTORICAL FIX REVERIFIED**. Re-Join appended the distinct physical
+  basket `6a7ca1dcf8a7d3829acd8030` as `approval-pending/pending`,
+  `reservationActive=true`, created at `2026-08-12T16:39:54.779Z` and updated
+  at `2026-08-12T16:39:56.656300024Z`. The first closed audit
+  `6a7c9fdbf8a7d3829acd8028` and both of its timestamps remained unchanged.
+  Nova again has one member-origin pending approval, occupancy is
+  `1 accepted + 1 pending / 8`, and her pending activity is `1`. Casey's exact
+  notification order is Pending, Cancelled, Pending; the new Pending row was
+  created at `2026-08-12T16:39:56.783714158Z`. No ticket or ticket counter
+  exists. Second Cancel in-place is next.
+- Terminal basket-closure repair replay — second Cancel in-place (2026-08-12):
+  **PASS**. Without reload, the same card again changed from **Continue
+  booking** to fresh **Request Join**. Both physical basket attempts remain as
+  distinct closed audits: `6a7c9fdbf8a7d3829acd8028` stayed byte-for-byte
+  unchanged, while `6a7ca1dcf8a7d3829acd8030` transitioned to
+  `cancelled/deleted`, `reservationActive=false` at
+  `updatedAtIso=2026-08-12T16:41:18.371454648Z`. Nova is suppressed at pending
+  `0` / trash `1`, occupancy is `1 accepted + 0 pending / 8`, and Casey has
+  exactly four ordered Pending, Cancelled, Pending, Cancelled notifications;
+  the final Cancelled row was created at
+  `2026-08-12T16:41:18.346680104Z`. Tickets and both ticket counters remain
+  zero. The second post-Cancel reload is next.
+- Terminal basket-closure repair replay — second post-Cancel reload
+  (2026-08-12): **PASS**. The card reconstructed fresh **Request Join** while
+  both closed basket IDs, every create/update timestamp and their
+  `cancelled/deleted`, `reservationActive=false` states remained unchanged.
+  Nova stayed suppressed at pending `0` / trash `1`; Casey retained exactly
+  four ordered Pending/Cancelled/Pending/Cancelled notifications with
+  unchanged identities and timestamps; tickets and both ticket counters
+  stayed zero. The final Join is next and must append a third distinct active
+  basket before Casey's terminal approval.
+- Terminal basket-closure repair replay — final Join (2026-08-12): **PASS**.
+  The final Join appended the third distinct physical basket
+  `6a7ca61cf8a7d3829acd8035` as `approval-pending/pending`,
+  `reservationActive=true`, created at `2026-08-12T16:58:00.800Z` and updated
+  at `2026-08-12T16:58:04.003015578Z`. Both prior Cancel audit IDs and all
+  their timestamps remained unchanged. Nova again has exactly one
+  member-origin pending approval, occupancy is `1 accepted + 1 pending / 8`,
+  and her pending activity is `1`. Casey has exactly five ordered Pending,
+  Cancelled, Pending, Cancelled, Pending notifications; the fifth was created
+  at `2026-08-12T16:58:04.128038718Z`. No Join produced a ticket or ticket
+  counter. Read-only inspection verified Casey is at the open main menu and
+  source inspection verified that approval is owned by **My Events** -> event
+  **Members** -> **Open actions for Nova Social** -> **Approve** -> **Approve
+  request?** confirmation, not by Notifications. Casey's single terminal
+  approval is next.
+- Terminal basket-closure repair replay — Casey approval (2026-08-12): **PASS /
+  REPAIR VERIFIED**. The owning
+  `POST /api/activities/events/members/action` returned `200` at
+  `2026-08-12T19:01:17+02:00`. Nova transitioned directly to accepted,
+  occupancy became exactly `2 accepted + 0 pending / 8`, and exactly one
+  active physical ticket `6a7ca6ddf8a7d3829acd8038` with code
+  `TKT-be2fc931-af92-47f8-83ad-0cefc4c1d416` was issued at
+  `2026-08-12T17:01:17.343122715Z`. Nova's stored ticket counters are `1 / 1`;
+  Casey remains `0 / 0`, and no second ticket exists. The formerly failing
+  third basket `6a7ca61cf8a7d3829acd8035` now correctly closed as
+  `status=approved`, `resultState=succeeded`, `reservationActive=false` at
+  `updatedAtIso=2026-08-12T17:01:17.327197050Z`; both older Cancel audits and
+  all their timestamps remained immutable. This clean full replay verifies the
+  terminal basket-closure implementation. Ticket UI polling and two read-only
+  popup opens remain before the full checkpoint can close.
+- Terminal basket-closure repair replay — normal Ticket poll (2026-08-12):
+  **FAIL**. Nova's persisted `activities.tickets` and
+  `activities.asset.tickets` were both `1`, and an independent demo-session
+  read proved the ordinary realtime payload also carried `tickets=1` plus
+  `asset.tickets=1`. Nginx recorded repeated successful Nova long polls after
+  approval, including `19:02:21`, `19:02:51`, `19:03:21` and `19:03:51`
+  local time. Nevertheless, read-only DOM inspection showed no `1` badge on
+  the **Ticket** menu item. The avatar's total `1` belonged to Nova's existing
+  Rates counter and is not Ticket evidence. Root cause: `SideMenuComponent`
+  discarded the complete non-notification realtime snapshot whenever any
+  popup was visible; Nova's intentionally retained Explore popup therefore
+  blocked all global counters indefinitely.
+- Popup-safe realtime counter repair (2026-08-12): **IMPLEMENTATION UPDATED /
+  CLEAN REPLAY REQUIRED**. Popup-visible polls now apply their global activity
+  counter projection immediately while continuing to defer impressions and
+  cursor advancement. `ActivityStore` now owns a per-user revision token so a
+  poll captured before a newer local/optimistic counter mutation or counter
+  clear cannot overwrite that newer state. Source regressions cover popup-safe
+  ticket plus nested asset-ticket convergence, stale response rejection and
+  clear/reset invalidation. The existing frontend watcher generated the
+  complete bundle successfully; no separate build or test process was
+  started. Reloading the already-approved state would only hydrate the answer
+  and would not prove the broken transition. The backend Cancel/re-Join and
+  terminal basket-closure branches already have clean replay evidence and the
+  new change touches only frontend realtime counter synchronization, so replay
+  only its affected path from a canonical baseline: one Join, one Casey
+  approval while Nova Explore stays open, normal poll, then two Ticket reads.
+- Popup-safe counter repair replay baseline (2026-08-12): the versioned reset
+  restored the failed poll attempt and `status` proved `phase=not-staged`. A
+  fresh image-qualified stage plus an independent second status read proved
+  the canonical Casey-only baseline: Casey is the sole accepted Admin at
+  `1 + 0 / 8`; Nova has no membership, basket, notification, ticket or
+  activity/ticket counter; the ticket collection is empty. The launcher
+  replaced only this checkpoint's managed Casey, Nova and Riley windows after
+  the watcher build and verified all identities. Replay only the focused
+  popup-counter path, retaining Nova's Explore popup through terminal approval
+  so the formerly failing normal poll is exercised rather than bypassed by
+  hydration. Do not repeat the already-proven Cancel/reload/re-Join branches.
+- Popup-safe counter repair focused replay — Join (2026-08-12): **PASS**. The
+  owning `POST /api/activities/events/join` returned `200` at
+  `2026-08-12T19:13:38+02:00`. Nova has exactly one member-origin pending
+  approval and one new active physical basket
+  `6a7ca9c2f8a7d3829acd8039`, created at
+  `2026-08-12T17:13:35.424Z` and finalized to
+  `approval-pending/pending` at `2026-08-12T17:13:38.784686437Z`. Casey has
+  exactly one Pending notification for this attempt, created at
+  `2026-08-12T17:13:38.870402615Z`; occupancy is
+  `1 accepted + 1 pending / 8`, while the ticket collection and both Nova
+  ticket counters remain zero. Do not repeat this Join. Keep Nova Explore open
+  and perform Casey's one terminal approval next so the popup-visible realtime
+  counter transition is exercised.
+- Popup-safe counter repair focused replay — Casey approval and normal poll
+  (2026-08-12): **PASS / REPAIR VERIFIED**. The owning
+  `POST /api/activities/events/members/action` returned `200` at
+  `2026-08-12T19:20:14+02:00`. Nova became accepted at
+  `2 accepted + 0 pending / 8`; basket `6a7ca9c2f8a7d3829acd8039`
+  closed as `approved/succeeded`, `reservationActive=false`, and exactly one
+  physical `status=A` ticket `6a7cab4ef8a7d3829acd803f` with code
+  `TKT-970b4c17-dd7c-4d93-88c9-d42a1dfde12b` was issued at
+  `2026-08-12T17:20:14.659872091Z`. Nova's counters are `1/1`; Casey remains
+  `0/0`. Successful normal long polls followed at `19:20:26`, `19:20:56`,
+  `19:21:26` and `19:21:56`. Read-only DOM inspection while both Nova Explore
+  and its join-review popup were still visible showed the item-level
+  **Ticket 1** badge. This directly closes the popup-gating defect; the two
+  read-only Ticket popup opens remain before closing the checkpoint.
+- Popup-safe counter repair focused replay — first Ticket read (2026-08-12):
+  **PASS**. Nova's first manual open issued
+  `GET /api/assets/tickets?userId=650000000000000000000062&page=0&pageSize=6&order=upcoming`
+  and returned `200` at `2026-08-12T19:24:09+02:00`. The following persisted
+  oracle retained exactly the pre-read ticket `6a7cab4ef8a7d3829acd803f`
+  with code `TKT-970b4c17-dd7c-4d93-88c9-d42a1dfde12b`, unchanged issue/use
+  state, counters `1/1`, and no second credential or domain write. The Ticket
+  surface was closed by the later read-only DOM observation; its next manual
+  open is therefore the second read, not a replay of the first.
+- Popup-safe counter repair focused replay — second Ticket read and checkpoint
+  closure (2026-08-12): **PASS / CLOSED**. Nova's second manual open issued
+  the same `GET /api/assets/tickets` read and returned `200` at
+  `2026-08-12T19:29:16+02:00`. Read-only DOM showed **Assets · Ticket** with
+  exactly **1 ticketed event** and one `QA EVENT-TICKET-005` card. The final
+  persisted oracle retained the sole physical ticket
+  `6a7cab4ef8a7d3829acd803f`, code
+  `TKT-970b4c17-dd7c-4d93-88c9-d42a1dfde12b`, original
+  `issuedAtIso=2026-08-12T17:20:14.659872091Z`, `status=A` and unused state;
+  Nova stayed at counters `1/1`, Casey at `0/0`, and no second credential or
+  read-owned write appeared. Combined with the retained clean
+  Cancel/reload/re-Join evidence, verified terminal basket closure and the
+  popup-visible normal-poll proof, this closes `EVENT-TICKET-005`.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket
@@ -1411,16 +1826,76 @@ Restart evidence on 2026-08-06:
 
 ### `EVENT-TICKET-006` — expiry moves the active ticket to Past
 
-- Start shortly before the event end with Nova's physical `status=A` ticket
-  visible once under Upcoming; retain its ID and code.
+- Stage a stable pre-expiry event rather than starting the deadline during
+  fixture/browser preparation. Open Nova's physical `status=A` ticket once
+  under Upcoming and retain its ID and code. Only after this manual boundary is
+  proved, run the versioned `arm-ticket-expiry` harness action; it updates the
+  host event plus Nova overlay to one printed end time two minutes later and
+  records the arm time, deadline and ticket identity in checkpoint state.
 - After the ordinary end-time/expiry convergence, the same ticket disappears
   from Upcoming and appears once under Past. Event expiry does not change the
   ticket to `D` and does not create a replacement.
 - Scanning the retained code returns expired without consuming or mutating the
   ticket. Event time owns Upcoming/Past; Unpublish or loss of ticket
   eligibility owns `A -> D`.
+- Invalid timing attempt retained (2026-08-12): the first fixture started its
+  two-minute window during `stage`, so browser setup plus the human round trip
+  consumed the pre-expiry observation boundary. At `19:37:27+02:00`, after the
+  `19:35:19+02:00` deadline, Nova correctly showed zero Upcoming tickets. The
+  independent post-expiry oracle retained the same active physical ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-441625f4-88ee-4f4b-8984-f38486c72218`, counters `1/1` and no mutation.
+  This is **NOT EXECUTED / FIXTURE TIMING INVALID**, not a product FAIL. The
+  stable-baseline plus explicit-arm fixture replaces this race.
+- Stable pre-expiry repair replay baseline (2026-08-12): **READY**. The invalid
+  attempt reset cleanly to `not-staged`; the repaired stage completed at
+  `2026-08-12T17:41:04.039Z` with the host event and Nova overlay both ending
+  at `2026-08-13T17:41:04.079Z`. Two independent oracles retained one active
+  ticket `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6`, Nova counters `1/1`, no
+  outbox/recompute delta and `ticketExpiryArm=null`. The existing Nova Upcoming
+  surface first retained the invalid attempt's empty result, then its normal
+  foreground poll returned the new ticket at `19:41:25+02:00`; read-only DOM
+  showed exactly one `QA EVENT-TICKET-006` card. Manual visual confirmation is
+  still required before running `arm-ticket-expiry`.
+- Controlled expiry replay — Upcoming transition (2026-08-12): **PASS**. Nova
+  manually confirmed the single pre-expiry Upcoming card. The first attempted
+  arm was rejected by the outer harness allowlist and a read-only status proved
+  `ticketExpiryArm=null`, so no false window was counted. After wiring both
+  harness layers, `arm-ticket-expiry` succeeded at
+  `2026-08-12T17:45:25.759Z`, persisted the exact ticket identity and set both
+  event projections to `endAtIso=2026-08-12T17:47:25.759Z`. The last
+  pre-expiry foreground GET at `19:47:17+02:00` returned the ticket; the first
+  post-expiry GET at `19:47:47+02:00` returned an empty Upcoming page, and the
+  already-open DOM converged to **0 ticketed events** without reload. The
+  physical ticket remained the same unused `status=A` object
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6`, with counters `1/1` and no
+  replacement. Past classification is next; scanning must wait until that
+  identity is proved.
+- Controlled expiry replay — Past classification (2026-08-12): **PASS**. Nova
+  changed the already-open Ticket date-order selector from Upcoming to Past
+  exactly once. Read-only DOM inspection showed `Past`, `1 ticketed event` and
+  exactly one `QA EVENT-TICKET-006` card. The paired persisted oracle retained
+  the same unused physical `status=A` ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-ba6bfa5c-b14d-48e6-bb62-3af1e245b0c6`, with Nova counters `1/1`, no
+  replacement and no replay/audit side effects. Only the distinct expired-scan
+  rejection remains; active success/replay and revoked scans are already
+  closed by `EVENT-TICKET-003` and `EVENT-TICKET-012` and must not be repeated.
+- Controlled expiry replay — expired scan (2026-08-12): **PASS / CLOSED**.
+  Casey's authorized Android scanner reached the existing stack through the
+  verified ADB reverse `tcp:8080 -> tcp:80`. The phone sent exactly one
+  `POST /api/assets/tickets/validate` at `20:14:06+02:00`; nginx returned
+  `200`, and the user observed the exact Hungarian result **"Ez a jegy
+  lejárt."** The paired final oracle retained the same ticket ID/code as
+  unused `status=A`, Nova counters `1/1`, and zero replacement, replay audit,
+  replay outbox or replay notification. This proves expired rejection is a
+  strict no-op and is distinct from the already-closed active and revoked scan
+  branches. The fixture reset completed at
+  `2026-08-12T18:16:56.416Z`; follow-up status returned `phase=not-staged`.
 
-### `EVENT-TICKET-007` — invitation preapproval stays ticketless until recipient acceptance
+### `EVENT-TICKET-007` — ordinary-member invitation stays ticketless until Admin approval
 
 - Stage a published Ticketing On event with Casey accepted Admin and Nova
   accepted Member. Nova already owns one physical `status=A` ticket and both
@@ -1428,18 +1903,217 @@ Restart evidence on 2026-08-06:
   member and has no ticket/counter.
 - As Nova, invite Riley through the ordinary member UI. Riley becomes pending,
   but no Riley ticket is created and both Riley stored ticket counters remain
-  `0`.
-- Approve Riley as Casey Admin. Because the invitation originated from an
-  ordinary member, Riley remains pending until Riley accepts; this
-  preapproval must still create no Riley ticket and increment no Riley ticket
-  counter.
-- Riley accepts the invitation once. Only this terminal transition to accepted
-  creates exactly one physical Riley `status=A` ticket and changes both Riley
-  stored ticket counters to `1`; the next normal profile poll exposes Riley's
-  Ticket red badge `1`.
+  `0`. Before Riley responds, the one persisted `event-invite` notification
+  must be unread and visible in Riley's **Notifications > New** list.
+- Riley accepts the invitation once. Because the inviter was an ordinary
+  member, the same membership remains pending but changes from
+  `requestKind=invite`, `pendingSource=admin` to `requestKind=approval`,
+  `pendingSource=member`. This invitee response must still create no Riley
+  ticket and both Riley ticket counters remain `0`.
+- Approve Riley as Casey Admin only after that response. This is the terminal
+  transition to accepted: it creates exactly one physical Riley `status=A`
+  ticket and changes both Riley stored ticket counters to `1`; the next normal
+  profile poll exposes Riley's Ticket red badge `1`. The same approval must
+  create exactly one unread `event-member-approved` notification for Riley,
+  visible through the normal notification poll in **Notifications > New**
+  before Riley opens or marks it read.
 - Nova's original ticket ID/code and counters remain unchanged throughout.
   Repeating Riley's acceptance or opening Riley Ticket twice must preserve the
   same Riley ticket ID/code and counters. Casey remains ticketless.
+- Staged baseline (2026-08-12): **READY** at
+  `2026-08-12T18:18:45.088Z`. Stage plus an independent status oracle prove
+  Casey accepted Admin with ticket counters `0/0`; Nova accepted Member with
+  sole unused `status=A` ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket`, code
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44`, and counters `1/1`; Riley is
+  outside membership with ticket counters `0/0`. No invitation/outbox or other
+  side effect exists. The configured isolated Casey-Nova-Riley windows are
+  identity-verified; Nova's ordinary-member invite is the next producer.
+- Pre-invite Active Events list branch (2026-08-12): initial observation
+  **FAIL**, repaired and focused replay **PASS**. At `20:23:14+02:00`, Nova's
+  Events and Active Events controls both showed count `1`, but the list showed
+  `No items`; the matching authenticated browser request returned HTTP `200`
+  with an empty 81-byte page while the membership/ticket/counter oracle stayed
+  at the untouched accepted baseline. The expanded payment oracle exposed
+  three legacy records for the reserved QA event: one older `joined` record
+  followed by two later `initiated` records, so the latest-open-payment rule
+  incorrectly classified Nova as pending. The defect was not repaired in the
+  list projection. Terminal event acceptance now finalizes the latest open
+  payment to `joined` in the owning write path, after basket finalization and
+  before ticket synchronization; regression tests cover that ordering and
+  idempotence. The fixture now snapshots, clears and reports `payments`, and
+  the guarded `repair-ticket-payment-fixture` action removed the three legacy
+  reserved-event records at `2026-08-12T18:44:01.807Z` without changing the
+  event, members, ticket, counters, outbox or tasks. The existing continuous
+  compiler reported `BUILD SUCCESSFUL`, and Spring DevTools restarted the
+  application successfully. The authenticated read then returned exactly one
+  Active Events record, and Nova's already-open popup converged in place on its
+  normal poll—without reload—to the `QA EVENT-TICKET-007` card with counts `1`
+  and the `2 / 8` members action. Nova has not invited Riley yet.
+- Pre-invite candidate branch (2026-08-12): initial observation **QA FIXTURE
+  FAIL**, guarded preparation plus authenticated API preflight **PASS**. At
+  `20:49:08+02:00`, Nova opened Invite members and saw `No invite candidates
+  right now`; the disabled confirmation button emitted no invite request, and
+  the read oracle retained the untouched two accepted members, Nova's sole A
+  ticket/counters `1/1`, Riley's zero ticket/counters, empty payments and zero
+  invitation side effects. The event candidate implementation does not select
+  every public non-member: it derives candidates from prior `mode=single`,
+  `met=true` user-rate records. Riley existed and was public/outside the event,
+  but the fixture had not staged the required Nova-Riley rate. The versioned
+  checkpoint now owns, resets and reports that source record. Guarded
+  `prepare-ticket-invite-candidate` created exactly one reset-owned rate at
+  `2026-08-12T18:54:03.858Z`; an independent status retained every other
+  baseline invariant. Nova's authenticated `POST
+  /api/activities/events/invite-candidates` then returned `total=1` with Riley
+  as the sole item. Read-only DOM inspection proved the popup that was already
+  open retained its earlier empty response, so the focused replay begins only
+  by closing and reopening Invite members. No invitation has been sent.
+- Nova invitation boundary (2026-08-12): **PASS**. Nova's reopened candidate
+  popup showed Riley and emitted exactly one `POST
+  /api/activities/events/members/invite` at `20:57:41+02:00`, returning HTTP
+  `200`. The independent oracle found exactly one Riley membership with
+  `status=pending`, `requestKind=invite`, `pendingSource=admin` and Nova as
+  `invitedByUserId`; event projection became two accepted plus one pending.
+  Riley still had no physical ticket and ticket counters `0/0`; Nova retained
+  the same sole A ticket ID/code and counters `1/1`; payments stayed empty.
+  In-place read-only DOM evidence agreed: Nova Members showed `2 members · 1
+  pending` and Riley `Invitation Pending`, Casey My Events showed `2 / 8` plus
+  pending `1`, and Riley's untouched window showed Invitations `1` with no
+  Ticket badge.
+- Sequence correction (2026-08-12): the original checkpoint text incorrectly
+  placed Casey preapproval before Riley's response. This is not a missing
+  product control. The backend explicitly rejects Admin acceptance while a
+  row is still an invitation, the event-member UI deliberately exposes
+  **Approve** only for a join/approval request, and existing regressions cover
+  both `adminCannotAcceptInvitationBeforeInvitedMemberResponds` and the later
+  ordinary-inviter approval requirement. The checkpoint now follows the
+  implemented domain contract: Riley accepts first and stays pending/ticketless
+  as `requestKind=approval`; Casey then performs the terminal approval that
+  creates Riley's ticket. The live boundary was not reset or replayed.
+- Riley invitation-response branches (2026-08-12): initial in-place
+  observation **FAIL**; persisted/read boundary **PASS**; owning repairs plus
+  focused replay **PASS** both in-place and after a fresh document read. On the
+  first response, Riley's Invitations list emptied and the Java write correctly
+  persisted the row as pending `requestKind=approval`, `pendingSource=member`,
+  moved stored counters from Invitations `1` / Pending `0` to Invitations `0` /
+  Pending `1`, resolved the invite notification, created exactly one Casey
+  Admin join-request notification and created no Riley ticket; however the
+  already-open Activities menu still showed no Pending count. A later reload
+  reconstructed Pending `1` and the same `Waiting for approval` row, so the
+  durable transition was intact and the defect was operation-time projection.
+  Diagnosis found that `ActivitiesMembersService.requestJoin` saved the
+  invitation response but returned its post-write snapshot without
+  `mutationApplied=true`; `ActivitiesEventsService` therefore omitted the
+  Invitations-to-Pending counter directions from the response. The Java write
+  service now reports its own applied mutation, with focused member-service and
+  event-response regressions. The shared `ActivityStore` operation-delta path
+  now also advances its per-user counter revision so an older realtime result
+  cannot overwrite a newer operation-owned delta; the focused shared-store
+  regression covers that ordering for both HTTP and frontend-local adapters.
+  Existing backend and frontend hot-deploy owners compiled the changes and the
+  backend restarted successfully; no second Gradle/npm build or test process
+  was started. Guarded `prepare-ticket-invitee-response-retest` restored only
+  the Riley response boundary while preserving Nova's exact ticket and every
+  already-proven step. At `21:40:46+02:00`, the replayed join returned HTTP
+  `200` with `changed=true`, scalar Invitations `-1`, event Pending `+1` and
+  event Invitations `-1`. Before any user reload, Riley observed Pending `1`;
+  read-only DOM then showed `QA EVENT-TICKET-007` and `Waiting for approval`.
+  The independent oracle agreed: exactly one Riley pending-approval row,
+  stored event Pending `1` / Invitations `0`, ticket counters `0/0`, no Riley
+  ticket, one resolved Riley invite notification and one Casey join-request
+  notification. A subsequent full Riley document request plus fresh event
+  filter also reconstructed the same Pending `1` row. Nova's original ticket
+  ID/code/status and counters remain unchanged. The frontend-local runtime
+  branch was not executed because the active deterministic checkpoint is the
+  HTTP adapter; local contract inspection plus the shared regression is
+  evidence of compatibility, not a claimed local runtime PASS.
+- Invitation notification observation clarification (2026-08-12): the
+  persisted `event-invite` row was created unread at Nova's invite boundary
+  and Riley's later response resolved it to read exactly once. The manual New
+  list was not inspected in the interval before that response, so that UI
+  observation is **NOT EXECUTED**, not a retroactive FAIL; the current read row
+  in All is consistent with the response contract. Future execution now stops
+  before Riley's response and requires that unread row in Notifications > New.
+- Casey terminal approval branch (2026-08-12): first durable transition
+  **PASS**, target notification **FAIL**, owning repair plus focused replay
+  prepared. Casey's one approval at `21:49:11+02:00` accepted Riley, created
+  Riley's sole A ticket `6a7cce37f8a7d3829acd8053` / code
+  `TKT-3d3eddd0-221f-453e-b8f2-1b40fe29d795`, changed Riley ticket counters to
+  `1/1`, added exactly one Riley participation overlay and one three-member
+  main event chat with the single `Riley Outside joined the event.` system
+  message, while Nova's original ticket remained byte-for-byte unchanged.
+  The independent oracle found zero `event-member-approved` outbox rows and
+  zero Riley approval notifications, so the approval feedback contract failed.
+  Casey's apparent Invitations `0 -> 3` / All `1 -> 4` change was separately
+  traced to three real demo invitations that the staged fixture baseline had
+  not counted; the terminal full recompute corrected that stale fixture
+  projection and no query-side masking was added. The Java terminal approval
+  path now emits one target-only `event-member-approved` intent after the
+  accepted membership, ticket synchronization and embedded event refresh; the
+  materialized row is explicitly categorized `event-admin`, starts unread and
+  carries Casey as sender. The equivalent frontend-local terminal transition
+  appends the same unread notification. Focused service/category regressions
+  were added, and the existing backend/frontend hot-deploy owners compiled and
+  restarted successfully without a second build process. Guarded
+  `prepare-ticket-admin-approval-retest` at `22:08:27+02:00` restored only the
+  pre-approval boundary: Riley is again the sole pending approval request with
+  counters Pending `1`, Tickets `0/0`, no Riley overlay/ticket/chat or active
+  event recompute task; Nova's exact original ticket, Riley's resolved invite,
+  Casey's join-request notification and every earlier PASS remain retained.
+  The focused replay now requires one Casey approval followed by the persisted
+  accepted/ticket/chat/task oracle and one unread Riley approval row visible in
+  Notifications > New before it is opened.
+- Focused Casey approval replay (2026-08-12): durable transition and
+  notification oracle **PASS** at `22:12:31+02:00`; Notifications New UI
+  observation pending. Casey's one replayed approval accepted Riley and
+  recreated exactly one Riley participation overlay, one A ticket
+  `6a7cd3aff8a7d3829acd805a` / code
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6`, stored ticket counters `1/1`,
+  and one three-member main chat with one `Riley Outside joined the event.`
+  system message. Nova retained the original ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket` / code
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44`, status A and counters `1/1`.
+  The repaired write created exactly one `event-member-approved` outbox intent
+  for Riley and exactly one materialized notification with category
+  `event-admin`, Casey as sender, `membershipAction=approved`, the checkpoint
+  event identity and empty `readAtIso`. One event recompute task was pending at
+  the immediate oracle. Riley must now open Notifications > New through the
+  normal UI poll without opening the row and confirm that one unread item;
+  after that observation the outbox/task terminal state and repeated Ticket
+  reads remain to be checked before checkpoint closure.
+- Riley approval-notification UI and delayed worker branch (2026-08-12):
+  **PASS**. Riley opened Notifications > New without opening the row; the
+  tester confirmed the item and a read-only managed-browser DOM oracle proved
+  `1 new notification`, New counter `1`, title `QA EVENT-TICKET-007`, status
+  `Approved`, sender/category text `Casey Bridge · Event admin` and the expected
+  approval message. The persisted row retained empty `readAtIso`, so merely
+  opening New did not mark it read. The approval-owned affinity task became
+  `done` at `22:18:31+02:00` on attempt `1` with no error, after its configured
+  event-members debounce and the enabled 60-second worker rule; the worker's
+  next run reported pending count `0`. The notification-outbox rule also ran
+  and reported that Firebase delivery is inactive in the current dev profile,
+  so retaining the push outbox row as `pending` is the configured result, not
+  an in-app notification failure. Riley's exact in-app row already exists and
+  stays unread. Only the repeated Ticket read/idempotence observation remains
+  before checkpoint closure.
+- Repeated Riley Ticket read and checkpoint closure (2026-08-12): **PASS /
+  CLOSED**. Riley opened Ticket > Upcoming, closed only that popup and opened
+  Ticket > Upcoming again without reload or scan. The second-open read-only DOM
+  showed exactly one ticketed event, filter count `1` and the single
+  `QA EVENT-TICKET-007` Upcoming card. The final persisted oracle retained
+  Riley ticket `6a7cd3aff8a7d3829acd805a` / code
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6`, status A, original issued time,
+  unused state and counters `1/1`; Nova's original ticket ID/code/status and
+  counters `1/1` remained unchanged; Casey remained ticketless. The Riley
+  approval notification stayed unread, the approval outbox remained the same
+  configured Firebase-disabled dev record, the one affinity task stayed done,
+  and no additional outbox, task, ticket, chat or membership record appeared.
+  The historical invite notification's pre-response New UI check remains
+  explicitly **NOT EXECUTED** for this run, with its unread creation and later
+  expected resolution proven persistently; it is now an enforced stop in the
+  reusable definition. Continue by advancing without reset to
+  `EVENT-VISIBILITY-001`, retaining both active ticket identities as its before
+  oracle.
 
 ### `EVENT-TICKET-008` — two similar events keep physical tickets isolated
 

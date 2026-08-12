@@ -6,14 +6,14 @@ legal innocence, mental health or mathematical correctness.
 
 ## Civic Access
 
-Source repository and local project name: `E-közig` (`e-kozig`).
+Source repository and local project identifier: `e-kozig`.
 
 Public-facing English name in the book and film: **Civic Access**.
 
 Local source: `/home/raxim/workspace/e-kozig/`.
 
 - public Angular prototype, first repository commits dated 2 February 2026;
-- embeds proposed tax and administrative journeys in a DÁP-shaped navigation;
+- embeds proposed tax and administrative journeys in a digital-citizenship-app-shaped navigation;
 - demonstrates documents, appointments, personal tax calendar,
   representative permissions and an editable form system;
 - its written design calls for direct notice when a representative acts,

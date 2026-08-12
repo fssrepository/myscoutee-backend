@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.mongodb.client.result.UpdateResult;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -232,10 +233,12 @@ public class EventCheckoutBasketService {
         UpdateResult trackedStaleResult = mongoTemplate.updateMulti(trackedStaleQuery, new Update()
                 .set("resultState", RESULT_STATE_DELETED)
                 .set("pendingCounterTracked", false)
+                .set("reservationActive", false)
                 .set("updatedAtIso", nowIso), EventCheckoutBasketItem.class);
         adjustPendingCount(-modifiedCount(trackedStaleResult));
         mongoTemplate.updateMulti(staleQuery, new Update()
                 .set("resultState", RESULT_STATE_DELETED)
+                .set("reservationActive", false)
                 .set("updatedAtIso", nowIso), EventCheckoutBasketItem.class);
 
         for (EventCheckoutBasketItemDto item : incomingItems) {
@@ -246,16 +249,10 @@ public class EventCheckoutBasketService {
             String expiresAtIso = firstText(item.expiresAtIso(), Instant.now()
                     .plus(20, ChronoUnit.MINUTES)
                     .toString());
-            Query itemQuery = new Query(new Criteria().andOperator(
-                    Criteria.where("userId").is(normalizedUserId),
-                    Criteria.where("sourceId").is(normalizedSourceId),
-                    Criteria.where("itemId").is(itemId)));
-            EventCheckoutBasketItem existing = mongoTemplate.findOne(itemQuery, EventCheckoutBasketItem.class);
-            String status = mergeStatus(existing == null ? null : existing.getStatus(), firstText(item.status(), requestStatus));
+            String status = normalizeStatus(firstText(item.status(), requestStatus));
             String resultState = normalizeResultState(item.resultState());
+            boolean reservationActive = isReservationActive(status, resultState);
             boolean shouldTrack = isPurgeCandidate(status, resultState, expiresAtIso);
-            boolean newlyTracked = shouldTrack
-                    && (existing == null || !Boolean.TRUE.equals(existing.getPendingCounterTracked()));
             Update update = new Update()
                     .set("itemId", itemId)
                     .set("userId", normalizedUserId)
@@ -273,6 +270,7 @@ public class EventCheckoutBasketService {
                     .set("quantity", Math.max(1, item.quantity() == null ? 1 : item.quantity()))
                     .set("status", status)
                     .set("resultState", resultState)
+                    .set("reservationActive", reservationActive)
                     .set("pendingCounterTracked", shouldTrack)
                     .set("pricingSummaryRows", item.pricingSummaryRows() == null ? List.of() : List.copyOf(item.pricingSummaryRows()))
                     .set("appliedPromoCodes", appliedPromoCodes)
@@ -280,8 +278,12 @@ public class EventCheckoutBasketService {
                     .set("updatedAtIso", nowIso)
                     .set("expiresAtIso", expiresAtIso)
                     .setOnInsert("createdAtIso", firstText(item.createdAtIso(), nowIso));
-            UpdateResult updateResult = mongoTemplate.upsert(itemQuery, update, EventCheckoutBasketItem.class);
-            if (newlyTracked
+            Query newAuditRecordQuery = Query.query(Criteria.where("_id").is(new ObjectId().toHexString()));
+            UpdateResult updateResult = mongoTemplate.upsert(
+                    newAuditRecordQuery,
+                    update,
+                    EventCheckoutBasketItem.class);
+            if (shouldTrack
                     && (modifiedCount(updateResult) > 0
                             || (updateResult != null && updateResult.getUpsertedId() != null))) {
                 adjustPendingCount(1);
@@ -302,8 +304,10 @@ public class EventCheckoutBasketService {
         String nowIso = Instant.now().toString();
         boolean terminalState = !PURGEABLE_STATUSES.contains(checkoutState)
                 || (StringUtils.hasText(resultState) && !RESERVATION_RESULT_STATES.contains(resultState));
+        boolean reservationActive = isReservationActive(checkoutState, resultState);
         Update update = new Update()
                 .set("status", checkoutState)
+                .set("reservationActive", reservationActive)
                 .set("updatedAtIso", nowIso);
         if (StringUtils.hasText(resultState)) {
             update.set("resultState", resultState);
@@ -326,6 +330,7 @@ public class EventCheckoutBasketService {
                     Criteria.where("pendingCounterTracked").is(true)));
             Update trackedUpdate = new Update()
                     .set("status", checkoutState)
+                    .set("reservationActive", reservationActive)
                     .set("pendingCounterTracked", false)
                     .set("updatedAtIso", nowIso);
             if (StringUtils.hasText(resultState)) {
@@ -350,6 +355,7 @@ public class EventCheckoutBasketService {
             Query untrackedQuery = new Query(new Criteria().andOperator(trackCriteria));
             Update trackedUpdate = new Update()
                     .set("status", checkoutState)
+                    .set("reservationActive", reservationActive)
                     .set("pendingCounterTracked", true)
                     .set("updatedAtIso", nowIso);
             if (StringUtils.hasText(resultState)) {
@@ -363,6 +369,35 @@ public class EventCheckoutBasketService {
         }
         mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class);
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
+    }
+
+    public void finalizeAcceptedReservation(String userId, String sourceId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+            return;
+        }
+
+        String nowIso = Instant.now().toString();
+        Update terminalUpdate = new Update()
+                .set("status", "approved")
+                .set("resultState", "succeeded")
+                .set("reservationActive", false)
+                .set("pendingCounterTracked", false)
+                .set("updatedAtIso", nowIso);
+        Query trackedQuery = new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(normalizedUserId),
+                Criteria.where("sourceId").is(normalizedSourceId),
+                Criteria.where("reservationActive").is(true),
+                Criteria.where("pendingCounterTracked").is(true)));
+        adjustPendingCount(-modifiedCount(
+                mongoTemplate.updateMulti(trackedQuery, terminalUpdate, EventCheckoutBasketItem.class)));
+
+        Query remainingActiveQuery = new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(normalizedUserId),
+                Criteria.where("sourceId").is(normalizedSourceId),
+                Criteria.where("reservationActive").is(true)));
+        mongoTemplate.updateMulti(remainingActiveQuery, terminalUpdate, EventCheckoutBasketItem.class);
     }
 
     public int purgeExpiredDraftBasketsNow() {
@@ -409,6 +444,7 @@ public class EventCheckoutBasketService {
             Update update = new Update()
                     .set("resultState", RESULT_STATE_DELETED)
                     .set("pendingCounterTracked", false)
+                    .set("reservationActive", false)
                     .set("updatedAtIso", nowIso);
             Query trackedQuery = new Query(new Criteria().andOperator(
                     Criteria.where("status").in(PURGEABLE_STATUSES),
@@ -455,6 +491,11 @@ public class EventCheckoutBasketService {
                 && (!StringUtils.hasText(normalizedResultState)
                         || RESERVATION_RESULT_STATES.contains(normalizedResultState))
                 && StringUtils.hasText(safeText(expiresAtIso));
+    }
+
+    private boolean isReservationActive(String status, String resultState) {
+        return ACTIVE_STATUSES.contains(normalizeStatus(status))
+                && RESERVATION_RESULT_STATES.contains(normalizeResultState(resultState));
     }
 
     private int modifiedCount(UpdateResult result) {
@@ -590,15 +631,6 @@ public class EventCheckoutBasketService {
                 .toList();
     }
 
-    private String mergeStatus(String existingStatus, String nextStatus) {
-        String existing = normalizeStatus(existingStatus);
-        String next = normalizeStatus(nextStatus);
-        if ("pay".equals(existing)) {
-            return existing;
-        }
-        return next;
-    }
-
     private Criteria displayResultStateCriteria() {
         return new Criteria().orOperator(
                 Criteria.where("resultState").exists(false),
@@ -634,4 +666,5 @@ public class EventCheckoutBasketService {
     private String safeText(String value) {
         return value == null ? "" : value.trim();
     }
+
 }

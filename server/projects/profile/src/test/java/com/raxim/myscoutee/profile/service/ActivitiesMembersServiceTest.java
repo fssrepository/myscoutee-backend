@@ -65,6 +65,10 @@ class ActivitiesMembersServiceTest {
     @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
+    private EventCheckoutBasketService eventCheckoutBasketService;
+    @Mock
+    private PaymentService paymentService;
+    @Mock
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -95,6 +99,8 @@ class ActivitiesMembersServiceTest {
                 assetsService,
                 activitiesResourcesService,
                 eventParticipationTicketService,
+                eventCheckoutBasketService,
+                paymentService,
                 eventInviteNotificationService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
@@ -876,9 +882,23 @@ class ActivitiesMembersServiceTest {
         verify(activityMembersRepository).save(savedMember.capture());
         assertThat(savedMember.getValue().getPendingSource()).isNull();
         assertThat(savedMember.getValue().getRequestKind()).isNull();
-        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        InOrder terminalAcceptance = inOrder(
+                eventCheckoutBasketService,
+                paymentService,
+                eventParticipationTicketService);
+        terminalAcceptance.verify(eventCheckoutBasketService)
+                .finalizeAcceptedReservation("target", "event-1");
+        terminalAcceptance.verify(paymentService)
+                .finalizePendingEventJoin("target", "event-1");
+        terminalAcceptance.verify(eventParticipationTicketService)
+                .syncParticipationTicketsForEvent("event-1");
         verify(chatService).ensureMainEventChat(event, List.of("target"));
         verify(chatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
+        verify(eventInviteNotificationService).notifyMemberApproved(
+                eq(event),
+                eq("target"),
+                anyString(),
+                eq("admin"));
     }
 
     @Test
@@ -2333,6 +2353,53 @@ class ActivitiesMembersServiceTest {
                         .orElseThrow()
                         .getActionAtIso(),
                 List.of("host"));
+    }
+
+    @Test
+    void inviteeResponseRequiringAdminApprovalReportsTheAppliedMutation() {
+        ActivityEvent event = event("event-1", "host", "host");
+        event.setCapacityTotal(8);
+        ActivityMember host =
+                member("host-sync", "event-1", "host", "Admin", "accepted");
+        ActivityMember invitation =
+                member("invite-sync", "event-1", "viewer", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        AtomicReference<List<ActivityMember>> stored =
+                new AtomicReference<>(List.of(host, invitation));
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> stored.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            stored.set(stored.get().stream()
+                    .map(member -> saved.getUserId().equals(member.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitiesMembersService.OwnerMembersSnapshot result =
+                service.requestJoin("event-1", viewer, event, false, false, true);
+
+        assertThat(result.mutationApplied()).isTrue();
+        assertThat(result.invitedMemberUserIds()).doesNotContain("viewer");
+        assertThat(result.pendingRequestMemberUserIds()).containsExactly("viewer");
+        assertThat(stored.get())
+                .filteredOn(member -> "viewer".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getStatus()).isEqualTo("pending");
+                    assertThat(member.getPendingSource()).isEqualTo("member");
+                    assertThat(member.getRequestKind()).isEqualTo("approval");
+                    assertThat(member.getInvitedByUserId()).isNull();
+                });
     }
 
     @Test

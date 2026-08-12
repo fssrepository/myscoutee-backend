@@ -73,9 +73,11 @@ def append_ending_tail(parts: list[str], motif_index: int) -> None:
         )
         return
     if motif_index == 1:
-        # Chapters 2 and 3 are already indivisible short-chapter blocks. Do not
-        # also pull the final sentence of Chapter 1 onto a page of its own.
-        tail_count = min(2, len(parts))
+        # Chapter 3 is already an indivisible short-chapter block. Keep its
+        # ornament with that chapter, but leave Chapter 2's final sentence with
+        # the preceding prose instead of pulling it onto an otherwise empty
+        # page before Chapter 3.
+        tail_count = 1
         tail = parts[-tail_count:]
         del parts[-tail_count:]
         parts.append(
@@ -149,6 +151,24 @@ def stylesheet() -> str:
   .compact-chapter-15 > p { margin-bottom: .09in; }
   .compact-chapter-15 .illustration.portrait-right { margin-bottom: .08in; }
   .drop-cap { background-position: center 88%; background-size: .5in auto; }
+  .dedication-page {
+    align-items: center; display: flex; flex-direction: column;
+    height: 7.62in; justify-content: center; page: part;
+    page-break-after: always; position: relative; text-align: center;
+  }
+  .dedication-page::before,
+  .dedication-page::after {
+    background: linear-gradient(90deg, transparent, rgba(118,82,143,.58), transparent);
+    content: ""; display: block; height: 1px; width: 2.6in;
+  }
+  .dedication-page::before { margin-bottom: .42in; }
+  .dedication-page::after { margin-top: .42in; }
+  .dedication-page p {
+    color: #43354d; font-family: "URW Chancery L", "Apple Chancery",
+      "Segoe Script", cursive; font-size: 22pt; font-style: italic;
+    line-height: 1.48; margin: 0; max-width: 4.2in;
+  }
+  .dedication-page .shared-story { color: #76528f; margin-top: .17in; }
   @media print {
     .ending-tail:has(> .closing-invitation) {
       height: 7.62in;
@@ -168,8 +188,19 @@ def stylesheet() -> str:
 
 
 def build_document(source: Path) -> str:
+    is_hungarian = source.name.endswith("_HU.md")
     lines = source.read_text(encoding="utf-8").splitlines()
     front, body_lines = book.extract_front(lines)
+    dedication_start = body_lines.index("<!-- dedication -->")
+    dedication_end = body_lines.index("<!-- pagebreak -->", dedication_start + 1)
+    dedication_lines = [
+        line.strip()
+        for line in body_lines[dedication_start + 1 : dedication_end]
+        if line.strip()
+    ]
+    if len(dedication_lines) != 3:
+        raise ValueError("The Part II dedication requires exactly three lines")
+    del body_lines[dedication_start : dedication_end + 1]
     registry = json.loads(book.ILLUSTRATIONS.read_text(encoding="utf-8"))
     version = book.load_book_version()
     toc_items = book.collect_toc(body_lines)
@@ -180,9 +211,21 @@ def build_document(source: Path) -> str:
         for level, title, anchor in toc_items
     )
     body = book.markdown_to_html(body_lines, registry)
-    prologue_start = body.find(
-        '<h2 class="context-0" id="prologue-the-other-biography">'
+    dedication = (
+        '<section class="dedication-page" aria-label="'
+        + ("Ajánlás" if is_hungarian else "Dedication")
+        + '">'
+        f'<p>{book.inline_markdown(dedication_lines[0])}<br>'
+        f'{book.inline_markdown(dedication_lines[1])}</p>'
+        f'<p class="shared-story">{book.inline_markdown(dedication_lines[2])}</p>'
+        '</section>'
     )
+    prologue_id = (
+        "prol-gus-a-m-sik-letrajz"
+        if is_hungarian
+        else "prologue-the-other-biography"
+    )
+    prologue_start = body.find(f'<h2 class="context-0" id="{prologue_id}">')
     part_one_start = body.find(
         '<section class="part-opener opener-1">', prologue_start
     )
@@ -195,15 +238,21 @@ def build_document(source: Path) -> str:
         + "</section>"
         + body[part_one_start:]
     )
-    chapter_15_heading = body.find(
-        'id="15-the-work-the-file-could-not-explain"'
+    chapter_15_id = (
+        "15-a-munka-amelyet-az-irat-nem-tudott-megmagyar-zni"
+        if is_hungarian
+        else "15-the-work-the-file-could-not-explain"
     )
+    chapter_15_heading = body.find(f'id="{chapter_15_id}"')
     chapter_15_start = body.rfind(
         '<div class="chapter-lead">', 0, chapter_15_heading
     )
-    chapter_16_heading = body.find(
-        'id="16-the-house-as-a-human-archive"', chapter_15_heading
+    chapter_16_id = (
+        "16-a-h-z-mint-emberi-arch-vum"
+        if is_hungarian
+        else "16-the-house-as-a-human-archive"
     )
+    chapter_16_heading = body.find(f'id="{chapter_16_id}"', chapter_15_heading)
     chapter_16_start = body.rfind("<h2 ", chapter_15_heading, chapter_16_heading)
     if min(chapter_15_heading, chapter_15_start, chapter_16_start) < 0:
         raise ValueError("Could not isolate Chapter 15 for compact review layout")
@@ -214,7 +263,8 @@ def build_document(source: Path) -> str:
         + "</section>"
         + body[chapter_16_start:]
     )
-    note_start = body.find('<h2 class="context-0" id="a-note-to-the-reader">')
+    note_id = "megjegyz-s-az-olvas-nak" if is_hungarian else "a-note-to-the-reader"
+    note_start = body.find(f'<h2 class="context-0" id="{note_id}">')
     note_break = body.find('<div class="pagebreak"></div>', note_start)
     if note_start < 0 or note_break < 0:
         raise ValueError("Could not isolate the reader note for review layout")
@@ -231,9 +281,25 @@ def build_document(source: Path) -> str:
     roman = html.escape(str(version["trilogy_roman"]))
     edition_version = html.escape(str(version["version"]))
     status = html.escape(str(version["status"]))
-    if version["status"] == "public":
+    if is_hungarian:
+        edition = (
+            f"Magyar kiadás v{edition_version}<br>"
+            "Megjelent: 2026. augusztus 20."
+            "<small>(a magyar államalapítás ünnepe)</small>"
+        )
+        truth = (
+            "Egy lezáratlan jogi és intézményi időszak egyes szám első személyű "
+            "emlékirata. Az iratanyag, a tulajdonított emlék, az emlékirat és a "
+            "későbbi nyilvános háttér elkülönül egymástól."
+        )
+        title_suffix = "magyar kiadás"
+    elif version["status"] == "public":
         published = html.escape(book.display_date(version["published"]))
-        edition = f"Public edition v{edition_version} · Published {published}"
+        edition = (
+            f"Public edition v{edition_version}<br>"
+            f"Published {published}"
+            "<small>(Hungary’s State Foundation Day)</small>"
+        )
         truth = (
             "A first-person public memoir of an unresolved legal and institutional "
             "period. Documentary record, attributed recollection, memoir and later "
@@ -249,8 +315,24 @@ def build_document(source: Path) -> str:
             "and later public context remain explicitly distinct."
         )
         title_suffix = "review"
+    html_language = "hu" if is_hungarian else "en"
+    eyebrow = "MyScoutee-trilógia" if is_hungarian else "MyScoutee trilogy"
+    cover_part = "A trilógia<br>második része" if is_hungarian else "Part two<br>of the trilogy"
+    part_label = f"{roman}. rész" if is_hungarian else f"Part {roman}"
+    story_title = "A történet" if is_hungarian else "The Story"
+    title_part = (
+        "A MyScoutee-trilógia második része"
+        if is_hungarian
+        else "Part two of the MyScoutee trilogy"
+    )
+    contents = "Tartalom" if is_hungarian else "Contents"
+    emblem_alt = (
+        "Két emberi útvonalat átlátható rendszer köt össze"
+        if is_hungarian
+        else "Two human paths remain connected through a transparent system"
+    )
     return f"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="{html_language}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="MyScoutee">
 <meta name="description" content="A first-person MyScoutee systems memoir.">
@@ -261,19 +343,20 @@ def build_document(source: Path) -> str:
 <style>{stylesheet()}</style></head><body>
 <section class="cover" aria-label="{title}">
   <div class="brand-lockup" aria-label="MyScoutee"><img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span></div>
-  <div class="eyebrow">MyScoutee trilogy</div>
-  <div class="volume-lockup" aria-label="Part {roman}"><span class="volume-roman">{roman}</span><span class="volume-copy">Part two<br>of the trilogy</span></div>
-  <h1>The Story</h1><h2>{subtitle}</h2>
-  <img class="story-emblem" src="{emblem_url}" alt="Two human paths remain connected through a transparent system">
+  <div class="eyebrow">{eyebrow}</div>
+  <div class="volume-lockup" aria-label="{part_label}"><span class="volume-roman">{roman}</span><span class="volume-copy">{cover_part}</span></div>
+  <h1>{story_title}</h1><h2>{subtitle}</h2>
+  <img class="story-emblem" src="{emblem_url}" alt="{emblem_alt}">
   <div class="route"></div><div class="tagline">{tagline}<span class="edition">{edition}</span></div>
 </section>
 <section class="title-page">
   <div class="brand-lockup" aria-label="MyScoutee"><img src="{logo_url}" alt="" aria-hidden="true"><span>yScoutee</span></div>
-  <span class="volume-roman">{roman}</span><span class="volume-copy">Part two of the MyScoutee trilogy</span>
-  <h1>The Story</h1><h2>{subtitle}</h2><p><em>{tagline}</em></p>
+  <span class="volume-roman">{roman}</span><span class="volume-copy">{title_part}</span>
+  <h1>{story_title}</h1><h2>{subtitle}</h2><p><em>{tagline}</em></p>
   <p class="edition">{edition}</p><p class="truth">{truth}</p>
 </section>
-<nav class="toc"><h1>Contents</h1><ol>{toc}</ol></nav>
+{dedication}
+<nav class="toc"><h1>{contents}</h1><ol>{toc}</ol></nav>
 <main>{body}</main></body></html>"""
 
 

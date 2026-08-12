@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="720" height="1280" viewBox="0 0 720 1280">
   <defs>
     <linearGradient id="veil" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#071522" stop-opacity="0.86"/>
-      <stop offset="0.5" stop-color="#17394a" stop-opacity="0.72"/>
-      <stop offset="1" stop-color="#0b1127" stop-opacity="0.94"/>
+      <stop offset="0" stop-color="#020817" stop-opacity="0.90"/>
+      <stop offset="0.48" stop-color="#071630" stop-opacity="0.76"/>
+      <stop offset="1" stop-color="#020817" stop-opacity="0.94"/>
     </linearGradient>
     <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
@@ -14,20 +14,20 @@
     </filter>
   </defs>
   <image width="720" height="1280" preserveAspectRatio="xMidYMid slice"
-         xlink:href="/home/raxim/workspace/myscoutee-backend/guides/story/trilogy/02-the-system-between-us/assets/frames/CP38.png"/>
+         xlink:href="guides/story/trilogy/01-the-city-between-us/assets/frames/M1_CP22.png"/>
   <rect width="720" height="1280" fill="url(#veil)"/>
   <g filter="url(#shadow)">
     <image x="145" y="132" width="88" height="88"
-           xlink:href="/home/raxim/workspace/myscoutee-backend/frontend/src/assets/logo/heart.png"/>
+           xlink:href="frontend/src/assets/logo/heart.png"/>
     <text x="247" y="204" fill="#ffffff" font-family="DejaVu Sans, sans-serif"
           font-size="65" font-weight="700" letter-spacing="-1">yScoutee</text>
   </g>
   <g text-anchor="middle" font-family="DejaVu Sans, sans-serif" filter="url(#shadow)">
-    <text x="360" y="608" fill="#ffffff" font-size="34" font-weight="700" letter-spacing="1.0">TEST THE SYSTEM</text>
-    <text x="360" y="657" fill="#bfe4e9" font-size="30" font-weight="600" letter-spacing="0.8">BETWEEN US</text>
-    <line x1="226" y1="718" x2="494" y2="718" stroke="#f2b84b" stroke-width="2" opacity="0.9"/>
-    <circle cx="226" cy="718" r="5" fill="#8a63ff"/>
-    <circle cx="494" cy="718" r="5" fill="#f2b84b"/>
+    <text x="360" y="596" fill="#ffffff" font-size="33" font-weight="700" letter-spacing="1.1">TEST IT WITH ME</text>
+    <text x="360" y="644" fill="#bed8ff" font-size="28" font-weight="600" letter-spacing="0.7">IN REAL COMMUNITIES</text>
+    <line x1="226" y1="707" x2="494" y2="707" stroke="#f2b84b" stroke-width="2" opacity="0.9"/>
+    <circle cx="226" cy="707" r="5" fill="#8a63ff"/>
+    <circle cx="494" cy="707" r="5" fill="#f2b84b"/>
     <text x="360" y="1090" fill="#ffc95a" font-size="31" font-weight="700" letter-spacing="2.2">TO BE CONTINUED</text>
   </g>
 </svg>

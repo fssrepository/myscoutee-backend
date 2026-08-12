@@ -14,12 +14,12 @@
   </defs>
 
   <image x="0" y="0" width="720" height="1280" preserveAspectRatio="xMidYMid slice"
-         xlink:href="/home/raxim/.codex/generated_images/019fd763-142d-7621-bd5b-7d8da7c29fc3/exec-c2dbba95-b9d5-4262-99d1-82c9a2d5ce09.png"/>
+         xlink:href="guides/story/trilogy/01-the-city-between-us/film/frame-sources/M1_P00-background.png"/>
 
   <!-- Exact repository M/heart mark, never regenerated. -->
   <g filter="url(#softShadow)">
     <image x="144" y="26" width="88" height="88" preserveAspectRatio="xMidYMid meet"
-           xlink:href="/home/raxim/workspace/myscoutee-backend/frontend/src/assets/logo/heart.png"/>
+           xlink:href="frontend/src/assets/logo/heart.png"/>
     <text x="246" y="98" fill="#ffffff" font-family="DejaVu Sans, sans-serif"
           font-size="65" font-weight="700" letter-spacing="-1">yScoutee</text>
   </g>

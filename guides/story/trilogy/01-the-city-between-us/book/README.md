@@ -4,9 +4,14 @@ This folder contains the English-first public edition of the MyScoutee origin
 story. It is Part `I` of a planned trilogy, a memoir-led product book, not a
 translation and not a claim of proven product outcomes.
 
-Current state: **Part I · Illustrated public edition v1.0.0 · published 8 August 2026 ·
+Current state: **Part I · Illustrated public edition v1.0.0 · published 20 August 2026 ·
 technically closed (`locked: true`)**. Its independent draft export remains
 available for later editorial work.
+
+The Hungarian edition source is
+[THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md](THE_CITY_BETWEEN_US_REVIEW_DRAFT_HU.md).
+Its editable reading copy is
+[MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.pdf](draft/MyScoutee_The_Story_Part_I_The_City_Between_Us_v1.0.0_HU.pdf).
 
 ## Versioning and trilogy rule
 
@@ -18,7 +23,7 @@ language and copyright. The builder places these values in the HTML and PDF;
 
 - Part `I` is a trilogy position, not the book's edition version.
 - The Founder approved the synchronized first illustrated public edition as
-  `1.0.0` on 8 August 2026.
+  `1.0.0` before its first publication on 20 August 2026.
 - After publication, increment the version for every released change according
   to the patch/minor/major rules in `CHANGELOG.md`.
 - Future Parts `II` and `III` receive their own version histories. Their exact
@@ -53,6 +58,10 @@ The builder writes:
 - the equivalent versioned PDF plus `.pdf.sha256` and `.publication.json` files
   directly under the flat `../published/` directory only after explicit
   technical closure.
+
+When the Hungarian review manuscript is supplied with explicit `--source`,
+`--html` and `--pdf` paths, the builder uses `metadata.hu.json` and
+`illustrations.hu.json` and leaves the locked English edition untouched.
 
 Only the current editable PDF is retained under `draft/`. The matching locked
 public edition remains under `../published/` with its checksum and manifest;

@@ -1229,12 +1229,22 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getName()),
                 nullToEmpty(user.getCity()),
                 nullToEmpty(user.getInitials()),
+                resolveDemoUserAvatarUrl(user),
                 normalizeUserListGender(user.getGender()),
                 nullToEmpty(user.getStatusText()),
                 normalizeCount(user.getCompletion()),
                 normalizeCount(user.getProfileFormVersion()),
-                resolveProfileStatus(user),
+                safeText(user.getStatus()),
                 nullToEmpty(user.getDeletedAtIso()));
+    }
+
+    private String resolveDemoUserAvatarUrl(Users user) {
+        return normalizeStrings(user.getImages()).stream()
+                .findFirst()
+                .map(imageUrl -> imageUrl.endsWith("/large.webp")
+                        ? imageUrl.substring(0, imageUrl.length() - "/large.webp".length()) + "/small.webp"
+                        : imageUrl)
+                .orElse("");
     }
 
     public Users resolveCurrentUser(String requestedUserId) {

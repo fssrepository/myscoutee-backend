@@ -149,6 +149,55 @@ public class EventInviteNotificationService {
                 memberUserId));
     }
 
+    public void notifyMemberApproved(
+            ActivityEvent event,
+            String approvedUserId,
+            String approvedAtIso,
+            String actorUserId) {
+        if (event == null) {
+            return;
+        }
+        String memberUserId = safeText(approvedUserId);
+        String senderUserId = safeText(actorUserId);
+        if (!StringUtils.hasText(memberUserId) || memberUserId.equals(senderUserId)) {
+            return;
+        }
+
+        String eventId = safeText(event.getSourceId());
+        String eventTitle = resolveTitle(event);
+        String normalizedApprovedAtIso = safeText(approvedAtIso);
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "members");
+        payload.put("memberUserId", memberUserId);
+        payload.put("membershipAction", "approved");
+        payload.put("notification_tone", "success");
+        payload.put("notification_status_badge_fallback", "Approved");
+        payload.put("notification_status_badge_tone", "success");
+        payload.put("approvalOccurrenceId", UUID.randomUUID().toString());
+        if (StringUtils.hasText(senderUserId)) {
+            payload.put("senderUserId", senderUserId);
+        }
+        if (StringUtils.hasText(normalizedApprovedAtIso)) {
+            payload.put("approvedAtIso", normalizedApprovedAtIso);
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-member-approved",
+                "event",
+                eventId,
+                "event-member",
+                List.of(memberUserId),
+                eventTitle,
+                "Your request to join " + eventTitle + " was approved.",
+                DEFAULT_CLICK_URL,
+                resolveImageUrl(event),
+                APP_BADGE_URL,
+                "event-member-approved-" + eventId + "-" + memberUserId,
+                payload,
+                StringUtils.hasText(senderUserId) ? senderUserId : null));
+    }
+
     public void notifyJoinRequested(
             ActivityEvent event,
             String memberUserId,

@@ -15,7 +15,6 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPrici
 @CompoundIndexes({
         @CompoundIndex(name = "checkout_basket_user_source_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'updatedAtIso': -1}"),
         @CompoundIndex(name = "checkout_basket_user_source_result_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'resultState': 1, 'updatedAtIso': -1}"),
-        @CompoundIndex(name = "checkout_basket_user_source_item", def = "{'userId': 1, 'sourceId': 1, 'itemId': 1}", unique = true, sparse = true),
         @CompoundIndex(name = "checkout_basket_expiry_status", def = "{'expiresAtIso': 1, 'status': 1}")
 })
 public class EventCheckoutBasketItem {
@@ -24,6 +23,8 @@ public class EventCheckoutBasketItem {
 
     @Indexed(name = "checkout_basket_item_id", sparse = true)
     private String itemId;
+
+    private Boolean reservationActive;
 
     private String userId;
     private String sourceId;
@@ -53,6 +54,9 @@ public class EventCheckoutBasketItem {
 
     public String getItemId() { return itemId; }
     public void setItemId(String itemId) { this.itemId = itemId; }
+
+    public Boolean getReservationActive() { return reservationActive; }
+    public void setReservationActive(Boolean reservationActive) { this.reservationActive = reservationActive; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }

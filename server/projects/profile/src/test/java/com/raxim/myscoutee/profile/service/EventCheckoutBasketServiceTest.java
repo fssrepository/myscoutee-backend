@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +27,7 @@ import com.raxim.myscoutee.profile.data.document.EventCheckoutBasketItem;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.repository.EventCheckoutBasketItemsRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
@@ -44,6 +46,12 @@ class EventCheckoutBasketServiceTest {
                 repository,
                 mongoTemplate,
                 notificationRuleRegistryService);
+        when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
+                any(String.class),
+                any(String.class),
+                anyList(),
+                anyList()))
+                .thenReturn(List.of());
     }
 
     @Test
@@ -119,6 +127,84 @@ class EventCheckoutBasketServiceTest {
     }
 
     @Test
+    void everySaveCreatesANewPhysicalAuditRecord() {
+        service.saveBasket(request(itemDto(
+                "approval-pending",
+                "pending",
+                "2026-08-12T08:00:00Z")));
+        service.saveBasket(request(itemDto(
+                "approval-pending",
+                "pending",
+                "2026-08-12T09:00:00Z")));
+
+        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(2)).upsert(
+                queryCaptor.capture(),
+                updateCaptor.capture(),
+                eq(EventCheckoutBasketItem.class));
+        assertThat(queryCaptor.getAllValues())
+                .extracting(query -> query.getQueryObject().getString("_id"))
+                .allSatisfy(id -> assertThat(id).hasSize(24))
+                .doesNotHaveDuplicates();
+        assertThat(updateCaptor.getAllValues())
+                .extracting(update -> (Document) update.getUpdateObject().get("$set"))
+                .allSatisfy(setValues -> assertThat(setValues.getBoolean("reservationActive")).isTrue());
+        assertThat(updateCaptor.getAllValues())
+                .extracting(update -> (Document) update.getUpdateObject().get("$setOnInsert"))
+                .extracting(setOnInsert -> setOnInsert.getString("createdAtIso"))
+                .containsExactly("2026-08-12T08:00:00Z", "2026-08-12T09:00:00Z");
+        verify(mongoTemplate, never()).findOne(any(Query.class), eq(EventCheckoutBasketItem.class));
+    }
+
+    @Test
+    void cancelClosesTheReservationUniquenessSlot() {
+        service.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                "user-1",
+                "event-1",
+                "cancelled",
+                "deleted",
+                null,
+                null));
+
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, atLeastOnce()).updateMulti(
+                any(Query.class),
+                updateCaptor.capture(),
+                eq(EventCheckoutBasketItem.class));
+        assertThat(updateCaptor.getAllValues())
+                .allSatisfy(update -> {
+                    Document setValues = (Document) update.getUpdateObject().get("$set");
+                    assertThat(setValues.getBoolean("reservationActive")).isFalse();
+                });
+    }
+
+    @Test
+    void terminalAcceptanceClosesOnlyTheActiveReservationSlot() {
+        service.finalizeAcceptedReservation(" user-1 ", " event-1 ");
+
+        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate, times(2)).updateMulti(
+                queryCaptor.capture(),
+                updateCaptor.capture(),
+                eq(EventCheckoutBasketItem.class));
+        assertThat(queryCaptor.getAllValues())
+                .allSatisfy(query -> {
+                    String predicate = query.getQueryObject().toJson();
+                    assertThat(predicate).contains("user-1", "event-1", "reservationActive", "true");
+                });
+        assertThat(updateCaptor.getAllValues())
+                .allSatisfy(update -> {
+                    Document setValues = (Document) update.getUpdateObject().get("$set");
+                    assertThat(setValues.getString("status")).isEqualTo("approved");
+                    assertThat(setValues.getString("resultState")).isEqualTo("succeeded");
+                    assertThat(setValues.getBoolean("reservationActive")).isFalse();
+                    assertThat(setValues.getBoolean("pendingCounterTracked")).isFalse();
+                });
+    }
+
+    @Test
     void purgeDoesNotReadOrWriteWhenAnotherInstanceOwnsTheScheduledRun() {
         int processed = service.purgeExpiredDraftBasketsScheduled(Instant.now());
 
@@ -169,6 +255,10 @@ class EventCheckoutBasketServiceTest {
     }
 
     private EventCheckoutBasketItemDto itemDto() {
+        return itemDto("draft", "pending", null);
+    }
+
+    private EventCheckoutBasketItemDto itemDto(String status, String resultState, String createdAtIso) {
         return new EventCheckoutBasketItemDto(
                 "event:event-1:main",
                 "event",
@@ -183,12 +273,30 @@ class EventCheckoutBasketServiceTest {
                 25d,
                 "USD",
                 1,
-                "draft",
-                "pending",
+                status,
+                resultState,
                 List.of(),
                 null,
-                null,
+                createdAtIso,
                 null,
                 null);
+    }
+
+    private EventCheckoutRequestDto request(EventCheckoutBasketItemDto item) {
+        return new EventCheckoutRequestDto(
+                "user-1",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(item),
+                List.of(),
+                item.status(),
+                List.of(),
+                25d,
+                "USD",
+                null,
+                List.of());
     }
 }

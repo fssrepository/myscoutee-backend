@@ -4326,7 +4326,8 @@
     "name": "Ava Hale",
     "physique": "Athletic",
     "profileStatus": "public",
-    "statusText": "Recently Active",
+    "status": "B",
+    "statusText": "Blocked",
     "traitLabel": "Empatikus",
     "syncKey": "9174d349-67a3-5e8d-8711-9313952caaca",
     "partitionKey": "country:hu",
@@ -4409,7 +4410,9 @@
     "name": "Ryan Hale",
     "physique": "Lean",
     "profileStatus": "friends only",
-    "statusText": "Recently Active",
+    "status": "D",
+    "statusText": "Deleted",
+    "deletedAtIso": "2026-08-12T00:00:00.000Z",
     "traitLabel": "Megbízható",
     "syncKey": "4cffc1d1-a0a2-5287-bcc7-763f87e91188",
     "partitionKey": "country:hu",
@@ -4477,7 +4480,8 @@
     "horoscope": "Aries",
     "hostTier": "Member",
     "images": [
-      "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp"
+      "/media/public?key=images/demo-profiles/650000000000000000000061/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/650000000000000000000061/photo-02/large.webp"
     ],
     "initials": "CB",
     "languages": [
@@ -4559,7 +4563,8 @@
     "horoscope": "Leo",
     "hostTier": "Member",
     "images": [
-      "/media/public?key=images/demo-profiles/650000000000000000000062/photo-01/large.webp"
+      "/media/public?key=images/demo-profiles/650000000000000000000062/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/650000000000000000000062/photo-02/large.webp"
     ],
     "initials": "NS",
     "languages": [
@@ -4642,7 +4647,8 @@
     "horoscope": "Libra",
     "hostTier": "Member",
     "images": [
-      "/media/public?key=images/demo-profiles/650000000000000000000063/photo-01/large.webp"
+      "/media/public?key=images/demo-profiles/650000000000000000000063/photo-01/large.webp",
+      "/media/public?key=images/demo-profiles/650000000000000000000063/photo-02/large.webp"
     ],
     "initials": "RO",
     "languages": [
@@ -4681,7 +4687,9 @@
     "about": "Reviews reports, feedback, and support chats.",
     "status": "A",
     "profileStatus": "public",
-    "images": [],
+    "images": [
+      "/media/public?key=images/demo-profiles/admin-demo-ava/photo-01/large.webp"
+    ],
     "activities": {
       "game": 0,
       "chats": 0,
@@ -4746,7 +4754,9 @@
     "about": "Reviews reports, feedback, and support chats.",
     "status": "A",
     "profileStatus": "public",
-    "images": [],
+    "images": [
+      "/media/public?key=images/demo-profiles/admin-demo-noel/photo-01/large.webp"
+    ],
     "activities": {
       "game": 0,
       "chats": 0,
@@ -4812,7 +4822,9 @@
     "operator": true,
     "status": "A",
     "profileStatus": "public",
-    "images": [],
+    "images": [
+      "/media/public?key=images/demo-profiles/operator@myscoutee.local/photo-01/large.webp"
+    ],
     "activities": {
       "game": 0,
       "chats": 0,

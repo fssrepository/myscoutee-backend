@@ -346,6 +346,20 @@ public class PaymentService {
                 .orElse(false);
     }
 
+    public boolean finalizePendingEventJoin(String userId, String sourceId) {
+        Payment payment = findLatestOpenEventPayment(userId, sourceId).orElse(null);
+        if (payment == null || BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus()))) {
+            return false;
+        }
+        payment.setBookingStatus(BOOKING_STATUS_JOINED);
+        payment.setJoinedAtIso(nowIso());
+        if (!hasText(payment.getRefundStatus())) {
+            payment.setRefundStatus(REFUND_STATUS_NONE);
+        }
+        paymentsRepository.save(payment);
+        return true;
+    }
+
     public Set<String> findPendingEventJoinSourceIds(String userId, Collection<String> sourceIds) {
         String normalizedUserId = normalizeId(userId);
         List<String> normalizedSourceIds = sourceIds == null

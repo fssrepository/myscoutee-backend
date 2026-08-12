@@ -36,6 +36,23 @@
         }
       ]
     },
+    "EVENT-TICKET-006": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        }
+      ]
+    },
     "EVENT-TICKET-007": {
       "layout": {
         "columns": 3
@@ -55,6 +72,28 @@
           "actor": "Riley",
           "userId": "650000000000000000000063",
           "expectedName": "Riley Outside"
+        }
+      ]
+    },
+    "EVENT-VISIBILITY-001": {
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Lina",
+          "userId": "178e8d0cbe164fa3fede5884",
+          "expectedName": "Lina Park"
+        },
+        {
+          "actor": "Liam",
+          "userId": "2d520f3c98b0440c1556f4af",
+          "expectedName": "Liam Parker"
         }
       ]
     },

@@ -1,445 +1,476 @@
-# Current QA session handoff
+# Current manual QA session
 
-Updated: 2026-08-06
-Purpose: this is the first and normally the only file to read after context
-compaction. Load a linked detailed document only when its checkpoint becomes
-active. Do not reconstruct current state from the full conversation.
+Updated: 2026-08-12
 
-## Resume block
+This is the context-saving entry point for continuing the manual QA campaign.
+It stores one minimal live resume pointer plus reusable execution lessons. It
+is not the transactional evidence ledger or a backup of the QA pack. Read this
+file first, then open only the linked active checkpoint section.
+
+## Authoritative files
+
+- Test definitions, checkpoint order and expected domain effects:
+  [`DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md)
+- Overall status ledger and counts:
+  [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+- Reviewable ledger source; regenerate the XLSX after every status update:
+  [`ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv`](../matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+- Replayable Mongo fixture/checkpoint implementation:
+  [`event-domain-checkpoints.js`](../../../server/docker/scripts/manual-qa-checkpoints/scenarios/event-domain-checkpoints.js)
+- Harness entry point for the already-running MongoDB container:
+  [`manual-qa-checkpoints-docker.sh`](../../../server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh)
+- Browser actor/layout configuration:
+  [`browser-session-checkpoints.json`](../tools/browser-session-checkpoints.json)
+- Isolated Chrome launcher:
+  [`open-checkpoint-browser-sessions.sh`](../tools/open-checkpoint-browser-sessions.sh)
+
+The detailed QA pack owns checkpoint evidence. The CSV/XLSX matrix owns status,
+dates, next oracle and aggregate counts. This handoff owns only the active
+resume pointer and reusable working method.
+
+## Active resume point
 
 ```yaml
-active_checkpoint: EVENT-TICKET-005
-state: EVENT-TICKET-001, EVENT-TICKET-002, EVENT-TICKET-POLL-001, EVENT-TICKET-003, EVENT-TICKET-004, EVENT-TICKET-010, EVENT-TICKET-012, EVENT-NOTIFICATION-001 and EVENT-CHAT-LIFECYCLE-001 are PASS/CLOSED. EVENT-TICKET-005 is active. Join now carries the physical approval-pending basket in the authoritative Join write. Repeated Cancel/Join exposed a second frontend signal FAIL: both Cancel entry points cleared the last event upsert signal instead of emitting an ID-scoped removal, so the pending Activity row underneath could survive and receive a later approval refresh. Both paths now emit remove(eventId), and frontend hot-deploy is green. Clean baseline staged at 2026-08-06T17:04:52.576Z: Casey alone accepted at 1/8; Nova has event/active/pending/ticket/asset-ticket counters 0; no Nova membership, basket or ticket exists. EVENT-TICKET-011 separately records the unimplemented Event Members attendance projection
-next_actor: user
-next_action: open the configured Casey, Nova and isolated Riley-control sessions with guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005, then reload Nova once and Join; stop before reload so Codex can prove one pending membership, one physical approval-pending basket and zero tickets. Continue with Cancel -> Join -> Cancel -> Join, checking each removal before terminal approval
-next_codex_action: run the member/basket/ticket oracle after the first corrected Join, then after every Cancel/Join boundary; hand Casey the terminal approval only after the repeated-cycle signal proof
-queued_checkpoint: [EVENT-TICKET-005, EVENT-TICKET-006, EVENT-TICKET-007, EVENT-TICKET-008, EVENT-TICKET-009, EVENT-TICKET-011, EVENT-VISIBILITY-001, AUTH-SESSION-001, LANDING-ELIGIBILITY-001, OPERATOR-PAYMENT-001, OPERATOR-PAYMENT-IP-001]
+checkpoint: EVENT-VISIBILITY-001
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-visibility-001--friends-only-explore-discovery-boundary
+scenario: event-domain
+ledger_status: IN PROGRESS / UNPUBLISH + FRIENDS ONLY DRAFT SAVE PASS; EVENT-TICKET-007 PASS/CLOSED; EVENT-VISIBILITY-001 Publish pending
+state: EVENT-TICKET-007 closed after repeated Riley Ticket read PASS; final identities retained as Nova ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and Riley ticket 6a7cd3aff8a7d3829acd805a / TKT-d05cdd81-86da-430d-b166-b508cccb42c6; guarded advance at 2026-08-12T22:42:44+02:00 retained the active Ticketing On event with Casey/Nova/Riley accepted 3/8, no pending and both tickets A with counters 1/1; Casey Unpublish PASS proved the same event DR/Public/Ticketing On, unchanged accepted membership, both exact tickets D, counters 0/0, Casey ticketless and no new ticket; its recompute completed at 2026-08-12T22:55:46+02:00 with no error; Casey then edited only visibility Public to Friends only and saved once; the independent oracle proved the event remained DR/Ticketing On with visibility Friends only, both exact D tickets/counters/memberships/controls unchanged and no replacement ticket, while the already-open Casey card changed to the Friends icon without reload; the Save-owned recompute completed normally at 2026-08-12T23:04:50+02:00, attemptCount 3, empty lastError and worker pendingCount 0; Lina Park remains the deterministic Casey-friend control and Liam Parker the deterministic non-friend control, neither with tracked participation; isolated Casey/Lina/Liam windows remain identity-verified with Austin geolocation
+required_resume: in Casey's left My Events card open the card actions and choose Publish exactly once; do not touch Lina or Liam yet; stop for the active Friends only event, replacement A-ticket/counter/membership and event-task oracle
+event: QA EVENT-TICKET-007
+actors:
+  left: Casey Bridge
+  middle: Lina Park
+  right: Liam Parker
+next_actor: Casey Bridge
+stop_phrase: megvan
 ```
 
-Active detail: [`EVENT-TICKET-005`](../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation).
+### Efficient resume gate
 
-## Hard constraints
+Do not repeat baseline methodology when the resume pointer and persisted oracle
+already identify an intact transaction boundary. Continue with its
+`required_resume`. If continuity is uncertain, run one read-only `status` first
+and choose exactly one route from this table:
 
-- Before starting any manual checkpoint, record its exact active actors and
-  idle controls in `guides/qa/tools/browser-session-checkpoints.json`, and name
-  the launcher command in that checkpoint's QA steps. Do not reuse a larger
-  actor set by habit: the configured list and layout are part of the test
-  precondition and evidence.
-- This QA session already has an owning dev hot-deploy pipeline: use it as the
-  only compile/build path and inspect its existing logs. Do not duplicate its
-  work with separate Gradle/npm/build processes. For a cache lock or stuck
-  deploy, identify and restart only the single owning process.
-- Use the already-running dev stack and its hot-deploy watchers.
-- Do not start, rebuild, stop or duplicate a server, Angular watcher, database
-  or Compose stack.
-- Do not reset fixtures or Git state unless the active checkpoint explicitly
-  requires it and the user asks for that step.
-- Parent and frontend are separate Git repositories. Inspect both before any
-  edit and preserve unrelated changes.
-- One operation owns only one `+1` or `-1` delta. A later poll reconciles the
-  absolute state and concurrent work; the operation must not manufacture a
-  larger correction.
-- Menu bar and dropdown bucket counters consume the same signal. Do not create
-  a second signal for the same activity bucket.
-- Run the smallest focused test only after code changes. A manual checkpoint
-  does not authorize a broad suite.
+| `status` result | Action |
+| --- | --- |
+| Matching expected live boundary | Continue; do not stage, reset or relaunch browsers. |
+| `phase=not-staged` | Stage once with every checkpoint-required environment value, then verify with `status`. |
+| Matching active checkpoint but `events=[]` | Use guarded `discard-stale`, then normal `stage`, then `status`. |
+| Partial or unexpected domain state | Stop and report the exact mismatch; do not repair it through UI or ad-hoc Mongo writes. |
 
-## Repository state at this handoff
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-TICKET-005
+```
 
-- Parent worktree contains the in-progress Ticket physical-object implementation,
-  fixture and QA-documentation changes; preserve them.
-- Frontend submodule contains the in-progress local physical Ticket,
-  repository/service/mapper and SeedBuilder parity implementation; no component
-  file is part of that implementation.
-- Existing backend hot-deploy compiled the Ticket changes and remained healthy;
-  the two focused Ticket service test classes pass.
-- No Codex-started server, watcher, Gradle, Angular-test or Vitest process is
-  intentionally left running.
+Known ticket-fixture lesson: do **not** use `restage`; the current harness
+restricts it to feedback checkpoints. Ticket `stage` also requires the retained
+managed QA image URL. The already-proven stale recovery is:
 
-Recheck these facts with `git status --short` and
-`git -C frontend status --short`; do not assume they remain true after later
-work.
+```bash
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  discard-stale event-domain EVENT-TICKET-005
 
-## Proven behavior — do not repeat without a related code change
+env MANUAL_QA_EVENT_IMAGE_URL='/media/public?key=images%2F650000000000000000000061%2Fmanual-qa-checkpoint-v1-event-domain-event%2F1785904818563-084b9c3d-2bec-4d84-86f6-fb7140562c60%2Flarge.webp' \
+  bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage event-domain EVENT-TICKET-005
 
-### `EVENT-TICKET-001` — PASS / CLOSED
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-TICKET-005
+```
 
-- The ticket fixture now projects the same shared event-counter signal consumed
-  by the menu and popup: Casey received hosting/event.hosting/all `+1`, Nova
-  events/event.active/all `+1`, and reset owns both activity snapshots.
-- Casey's My Events badge was `1` and the event survived repeated polls. After
-  unpublish-for-edit, Ticketing On persisted across save/reopen; Casey remained
-  accepted Admin, Nova accepted Member, and exactly one event recompute followed
-  the save.
+If `status` reports `phase=not-staged`, omit `discard-stale`. An empty
+`MANUAL_QA_EVENT_IMAGE_URL` fails after snapshot creation; run the
+harness-requested `reset` before retrying with the URL. `discard-stale` itself
+refuses to run when the event still exists or original fixture documents would
+make the discard unsafe.
 
-## Completed checkpoint — `EVENT-TICKET-002`
+On a new baseline, do not launch browsers until the second `status` proves the
+linked checkpoint's complete expected baseline. If any predicate differs, stop
+and report it instead of asking the user to compensate in the UI.
 
-- The clean reset baseline contains no physical ticket and both Casey and Nova
-  have `activities.tickets=0` and `activities.asset.tickets=0`. The next normal
-  poll must therefore remove any stale Ticket red badge.
-- The fixture baseline is Casey accepted Admin + Nova accepted Member + Riley
-  pending join: every event projection must show accepted occupancy `2 / 8`
-  with one pending control. Riley's two stored `users` ticket counters remain
-  zero before and after publish.
-- Casey must perform the real `Unpublish -> Ticketing On -> Publish` UI flow.
-  Stop before opening Nova's Ticket list so the write side can be proved first.
-- Publish must create exactly one physical `A` ticket for accepted Member Nova,
-  none for Admin Casey or pending Riley, and exactly one normal event recompute.
-- The first publish attempt after the corrected `2 / 8` fixture failed this
-  oracle before any Ticket read: Nova still had no physical ticket and both
-  stored counters were zero. The missing lifecycle-publish ticket sync was
-  added before counter refresh and hot-deploy compilation passed. The active
-  baseline is the clean restage from `2026-08-06T05:01:50.062Z`.
-- Opening Nova's Ticket list twice must preserve the same ticket id, QR code and
-  `issuedAt`; reads must create no ticket or side effect.
-- The canonical Event image is the retained MinIO `large.webp`; the Ticket card
-  must request its derived `medium.webp`, not the external fallback URL.
-- Local/SeedBuilder behavior is a parity subcase: compare lifecycle,
-  eligibility, counters and QR scan outcome with the HTTP-backed flow before
-  changing it.
-- Local parity implementation now persists physical A/D ticket records and
-  keeps both `users.activities.tickets` and
-  `users.activities.asset.tickets` synchronized from those records. Publish
-  performs the full accepted-participant sync; a membership write evaluates
-  only its target user. Ticket list/open and QR reads never issue a ticket.
-  The targeted seed checkpoint passes, and the ticket repository plus event
-  service suites pass 17/17. No component file contains ticket lifecycle logic.
-- Keep the two later acceptance producers separate: `EVENT-TICKET-005` starts
-  with Casey alone on a Public, approval-required event; Nova discovers it in
-  Explore, Join creates only a pending membership, and Casey approval directly
-  makes Nova accepted and creates Nova's ticket. `EVENT-TICKET-007` starts with
-  Casey and ticketed Nova accepted; Nova invites Riley, Casey preapproval
-  leaves Riley pending and ticketless, and only Riley's later acceptance
-  creates Riley's physical ticket and updates both Riley `users` table
-  counters. After 007 is complete, `EVENT-VISIBILITY-001` retains the same
-  event, memberships and pre-transition ticket identities while Casey performs
-  Unpublish -> Friends Only -> Publish. Unpublish retains the old tickets as
-  `D`; republish creates new `A` ticket IDs/codes. External non-member Lina Park is the friend Explore control
-  and external non-member Liam Parker the non-friend control. Nova and Riley
-  are not visibility controls because their tracked participation excludes
-  them from Explore. Slot/tournament evolution is only a later planned branch
-  and is not part of the current run.
+After that proof, open or replace exactly these three managed windows with:
 
-## Closed checkpoint — `EVENT-TICKET-POLL-001`
+```bash
+guides/qa/tools/open-checkpoint-browser-sessions.sh EVENT-TICKET-005
+```
 
-- The existing Ticket SmartList 30-second poll is now wired to the same shared
-  `ActivityStore` counter signal pattern as Activity/Event; `tickets` and
-  `asset.tickets` change together and the dropdown no longer reads a separate
-  popup-only red counter. Existing `frontend-sync` hot-deploy compilation is
-  green.
-- Baseline restaged at `2026-08-06T05:42:44.447Z`: published + Ticketing Off,
-  Casey Admin and Nova accepted at
-  `2 / 8`, Riley pending as the ticketless control, no physical tickets, and
-  all three users' stored ticket counters at `0 / 0`.
-- Nova opens Ticket in Upcoming mode and leaves the empty popup open. Casey then
-  performs real Unpublish -> Ticketing On -> Publish in an isolated session.
-- Without closing or reloading Nova, one 30-second SmartList poll must make the
-  list and shared Ticket dropdown/menu counter converge together from `0` to
-  `1`. This phase is PASS.
-- Shared `UiPollCoordinator` owns scheduling: the popup SmartList has
-  foreground priority, the side-menu realtime poll is background, and only one
-  poll may execute at once. Popup presence suppresses or aborts background
-  ownership; an aborted background response must not touch `ActivityStore`.
-  Closing the popup returns ownership to the normal side-menu poll. The same
-  rule covers Activity/Event SmartLists.
-- Casey's publish must create exactly one Nova status `A` physical ticket and
-  one normal recompute. Riley must remain pending and ticketless at `0 / 0`.
-  The poll itself is read-only: no ticket replacement, recompute, notification
-  or outbox write.
-- Phase 2 closed Nova's Ticket popup, left the side menu open, and performed
-  Casey **Unpublish** once. Without reopening or reloading Nova, the resumed
-  background side-menu poll changed Events and Ticket from `1 -> 0` within one
-  30-second interval.
-- Unpublish preserves Ticketing On in the draft but owns the write-side ticket
-  revocation: Nova's physical ticket changes `A -> D`; her stored event/ticket
-  counters become zero; Casey and pending Riley remain ticketless.
-- Persisted oracle proved the same ticket became `D`, all controlled ticket
-  counters became zero, and membership remained exact. PASS/CLOSED; reset
-  completed at `2026-08-06T06:09:19.840Z`.
+The launcher owns three separate ephemeral Chrome profiles, injects the exact
+demo user sessions, grants the configured Austin geolocation, loads `/game`,
+dismisses entry consent/guides and lays the windows out left-to-right. Do not
+open extra browsers, use personal Chrome profile names, or ask the user which
+profile to select. Re-running it replaces only this checkpoint's managed
+windows. Lina and Liam are external visibility controls and must remain
+untouched until the checkpoint says otherwise.
 
-## Completed checkpoint — `EVENT-TICKET-003` + `EVENT-TICKET-010`
+### Next manual action
 
-- Current clean retest baseline staged at `2026-08-06T10:12:01.825Z` after the
-  aggregate-upsert fix: fresh code
-  `TKT-1a7df4b6-c8a6-44bd-b859-dac4cd412d15`, `status=A`, unused, Casey Admin
-  plus Nova Member accepted at `2 / 8`, and zero replay audits/outbox/warning
-  rows. The retained canonical MinIO `large.webp` image is present. The old QR
-  screenshot is invalid; Nova must retain this newly issued complete QR.
-- Current post-fix evidence: Casey's first scan set
-  `usedAtIso=2026-08-06T10:16:50.744525385Z`. The first saved-QR replay at
-  `2026-08-06T10:18:11.470491618Z` preserved it and produced one immutable
-  Casey audit, one sanitized pending outbox row, and one unread Nova warning
-  with `occurrenceCount=1`. Nova visibly received the row and red badge;
-  persisted `users.activities.notifications=2` is the unread check-in row plus
-  this warning. The fixed aggregate write therefore materializes the inbox row
-  and increments the users-table counter together.
-- Final manual closure: Nova marked the first warning occurrence read and Casey
-  replayed the same retained QR. The exact ticket use remained unchanged; two
-  immutable replay audits now exist, while one and only one Nova warning row
-  advanced to `occurrenceCount=2`, `revision=3` and unread. Persisted
-  `users.activities.notifications=2` is again the unread check-in plus warning.
-  The user accepted this physical check-in/replay checkpoint as PASS/CLOSED.
-- Clean baseline restaged at `2026-08-06T09:29:57.060Z`: active Ticketing On,
-  Casey accepted Admin, Nova accepted Member, one Nova `A` physical ticket and
-  users counters `1 / 1`; the ticket is unused and Nova's participant-owned
-  event overlay is present.
-- Ticket code is the newly generated UUID-v4 value
-  `TKT-fbfd8c02-af26-4812-b314-ef754ee6b82c`; the canonical event image is the
-  retained managed MinIO `large.webp` URL. A later reset/stage or republish must
-  produce a different code/QR.
-- The retained QR was captured before use. Casey's first scan persisted the
-  canonical use at `2026-08-06T09:54:28.300791752Z`; ticket status remains `A`.
-  Replay audits/outbox/warnings were still empty immediately after first use.
-- The first saved-QR replay at `2026-08-06T10:01:10.053713457Z` correctly
-  returned **already used**, preserved the canonical use and wrote one Casey
-  replay audit plus one sanitized pending outbox row. It exposed a backend
-  aggregate-upsert defect: no Nova warning row was materialized and the
-  users-table unread/red counter did not increment. Reload therefore could not
-  repair the UI. `UserNotificationPageRepository.upsertAggregated` incorrectly
-  targeted `revision` in both `$setOnInsert` and `$inc`; the fix retains only
-  `$inc`, which initializes an absent revision and increments existing rows.
-  This partially executed baseline must be reset/restaged before retest.
-- Physical Android `aer8vgcmyd9lzxv8` is authorized. The existing reverse is
-  `tcp:8080 tcp:80`; do not restart the dev stack.
-- Before scanning, Nova displays the QR on desktop and saves a screenshot with
-  the complete QR; retain it because the consumed credential has no UI surface
-  from which to display the QR again. Casey then opens `http://localhost:8080`
-  on the phone, enters Ticket -> Scan Ticket, grants camera permission and
-  scans once. Capture the first success, then reuse the saved screenshot for
-  the repeat scan before invalid and unauthorized no-op scans.
-- The first physical scan persisted one use at
-  `2026-08-06T06:18:07.529719781Z` by Casey, but the checkpoint is restarting
-  because the required pre-scan QR screenshot was not retained.
-- The preceding used baseline's first scan is retained PASS evidence: the
-  revised scanner UI worked on the
-  physical phone and the persisted ticket has
-  `usedAtIso=2026-08-06T06:59:21.130578868Z` and `usedByUserId=Casey`. Reuse the
-  saved QR next and prove those values do not change before running invalid and
-  unauthorized branches.
-- On that preceding baseline the user also completed the saved-QR repeat and
-  saw **already used**. The
-  persisted oracle still reports the exact same `status=A`, `usedAtIso` and
-  Casey `usedByUserId`, so the original repeat no-op is PASS.
-- The scanner UI now uses one contextual `app-menu` Kamera be/ki toggle. Off
-  stops detection and MediaStream tracks and shows the white/red-X state;
-  successful validation stops the stream and retains the recognized frame;
-  Kamera be owns restart, with no separate retry button. Frontend hot-deploy
-  compilation completed successfully after the source sync.
-- Scanner reading/validating text now occupies a centered top badge overlay in
-  the camera target. The toggle remains in one stable layout position and is
-  merely disabled during validation, so state changes cannot move it vertically.
-- Canonical roles `Manager`, `Admin` and `Member` render verbatim on Casey's
-  scanner as contextual badges beneath the avatar; the scanner must not
-  localize `Member` to `Tag`. Nova's own QR surface may retain its localized
-  contextual badge. The event title is always a separate unprefixed line.
-- The four camera labels are present in both frontend local bundles and the
-  generated `demo_db`/`e2e_db`/`myscoutee_db` Mongo JSON seeds. Bundle versions
-  are `2026.08.06.en.51` and `2026.08.06.hu.51`; the i18n seed audit passed
-  `6126` messages, the existing Mongo watcher imported the active demo seed,
-  and the live API returned all four English and Hungarian values.
-- `EVENT-TICKET-009` is a later separate asymmetric-connectivity checkpoint:
-  warm Nova's Ticket/QR surface, put only Nova's desktop browser target offline
-  and reload it from cache while the backend and Casey's physical-phone scanner
-  remain online. Casey scans Nova's cached QR and the server must apply the use
-  exact-once. Prefer Codex target-scoped CDP control and record target metadata;
-  otherwise use the documented Nova-tab DevTools Network Offline procedure.
-  Always restore Nova online afterward. Never stop the shared server for this
-  case.
-- The first offline reload exposed a real session-route defect: the cached
-  anonymous landing loaded, but an already-open member session was not routed
-  back into the app. Session restore, root routing and warmed HTTP-demo cache
-  fallback are hot-deployed; the dedicated 009 retest must start with one
-  online reload so the new bundle and member cache are warm. This result is
-  not part of the online notification checkpoint.
-- `EVENT-TICKET-010` is hot-deployed on the same used fixture. Every
-  server-confirmed replay writes an immutable actor audit, while Nova gets one
-  aggregated warning row whose occurrence badge increments. The required
-  sequence is replay -> mark read -> replay -> replay, proving read-to-unread
-  reactivation and no unread-counter inflation while already unread. The
-  baseline is zero audits/outbox/warning rows.
-  Nova remains online for the complete replay/read/replay sequence.
-  Neither audit nor notification may expose the raw QR or alter the canonical
-  ticket use.
-- `EVENT-TICKET-011` is a newly captured GAP: successful ticket use currently
-  leaves Nova's membership merely `accepted`, with no separate attendance
-  projection. The intended contract keeps membership acceptance unchanged but
-  adds event-scoped checked-in time/actor/ticket identity and a localized
-  Beléptetve/Checked in badge to the Event Members row. Replay and negative
-  scans are exact no-ops for attendance.
+In Casey's left **My Events** card open the card actions and choose **Publish**
+exactly once. Do not touch Lina or Liam yet. Stop and reply `megvan` so the active
+Friends only event, both replacement physical tickets, restored ticket
+counters, unchanged memberships/controls and owning event task can be checked
+before either Explore read.
 
-## Completed checkpoint — `EVENT-TICKET-004`
+## QA working method
 
-- Reuse the just-closed active event and its used physical Nova ticket; do not
-  reset or manufacture another credential before the lifecycle mutation.
-- Casey Unpublishes once while Ticketing remains configured On in the draft.
-  Stop before republish. The oracle must retain the existing ticket object with
-  `status=D`, remove only its active Nova Ticket projection/counter, and keep
-  Casey Admin plus Nova Member accepted at `2 / 8`.
-- Unpublish midpoint PASS: persisted canonical event is `DR` with Ticketing On;
-  the retained used Nova ticket is `status=D`, Nova active Ticket counters are
-  `0 / 0`, and membership remains `2 / 8`. Do not republish until the saved-QR
-  revocation checkpoint below completes.
-- After that persisted midpoint passes, Casey publishes again. Republish must
-  create a different physical object/code/issued time rather than reactivate
-  the old D ticket.
-- PASS/CLOSED: Republish kept the old used object D and created one new unused
-  A ticket `6a74645b7c85995dcf3955eb`, code
-  `TKT-942126c0-4c90-44b0-8017-baf5c0810a82`, issued at
-  `2026-08-06T10:39:23.880809028Z`. Nova counters returned to `1 / 1` and
-  membership stayed `2 / 8`. The missing available-again notification is the
-  separate active checkpoint below.
+### 1. One checkpoint, one transition
 
-## Completed inserted checkpoint — `EVENT-TICKET-012`
+Each transactional boundary has one controlled producer action and explicitly
+records: before state, manual action, immediate state, worker expectation,
+delayed projection, unchanged controls and independent persisted oracle. A
+checkpoint row may contain a short causally continuous sequence of these
+boundaries under the granularity rules below. UI evidence alone is not a PASS.
 
-- Casey scans the saved QR of the now-D Nova ticket before Republish. Expected
-  visible result is revoked/inactive, not already-used.
-- Unpublish itself created one ordinary unread `event-under-review` notification
-  for Nova at `2026-08-06T10:30:47.791763232Z`; this correctly changed the
-  users-table notification counter `2 -> 3` before the QR rejection oracle.
-- The later saved-QR scan returned revoked/inactive. No notification was created
-  by the scan: the only post-Unpublish row is the lifecycle notification above.
-  Two replay audits, two sanitized replay outbox rows, the single aggregated
-  warning at `occurrenceCount=2`, users notification counter `3`, and the D
-  ticket's identity/original use all remained unchanged. PASS/CLOSED.
+This campaign is a developer-AI collaborative repair session, not a two-person
+QA handoff. Codex owns the complete machine-side loop: fixture staging,
+isolated browser setup, server/database oracle checks, diagnosis, correctly
+scoped implementation, hot-deploy/log verification, replay and status
+documentation. The user performs only the genuinely manual UI observation or
+producer action named by the checkpoint. Codex gives one short manual
+instruction at a time, waits for the stated stop phrase, checks the oracle and
+continues the repair/replay loop without handing the failure decision back to
+the user.
 
-## Active checkpoint — `EVENT-NOTIFICATION-001`
+### 1.1 Checkpoint granularity and new rows
 
-- The failed observation is exact: the first Republish created the replacement
-  ticket but no `event-modified` task or Nova inbox row. The only lifecycle row
-  in the screenshot/database was the earlier Unpublish `event-under-review`.
-- Backend root cause: Publish skipped lifecycle notification scheduling whenever
-  main-chat materialization reported that Casey's owner copy was created. The
-  write now additionally schedules accepted non-actor participants in that
-  branch; Nova receives available-again, Casey does not.
-- Frontend root cause: the closed notification center relied on the background
-  side-menu long poll, which popup presence suppresses. Notification realtime
-  now owns a separate shared-coordinator lane that runs during popup ownership
-  and concurrently with foreground SmartList polling. While a popup is open it
-  applies only the notification count; ordinary side-menu reconciliation waits
-  until close and then reuses the unadvanced cursor.
-- Existing backend hot-deploy reports `BUILD SUCCESSFUL` and restarted healthy;
-  existing frontend-sync reports successful bundle generation/sync.
-- Manual retest: restage/reload, keep Nova's event chat open, Casey Unpublish,
-  observe the independent
-  under-review count/attention without reload, then Casey Publish and observe
-  exactly one `event-modified` available-again contribution the same way. Both
-  notification titles must be only the compact fixture event name
-  `QA EVENT-TICKET-003`, without `Manual` or `changed`. Close Chat only
-  afterward and prove ordinary event/ticket counters resume.
-- The same lifecycle mutations also own `EVENT-CHAT-LIFECYCLE-001`: before the
-  Unpublish capture physical main/optional/group/service chat owner-copy and
-  message identities. Unpublish must batch only `ownerStatus=DR` by indexed
-  `eventId`, keep every accepted chat usable and show a compact **Under review**
-  badge; Publish batches `ownerStatus=A`, removes the badge and preserves all
-  captured identities/history. Chat reads do not query-project Event status.
+- One matrix row must remain a bounded, human-verifiable contract, not a
+  half-day collection of loosely related checks.
+- One producer action or a short causally continuous sequence may stay in one
+  row when it shares a baseline and finishes at one decisive oracle.
+- One test case/matrix row may contain two or more named, short tests or
+  branches when they verify different observations of the same contract and
+  share the same controlled baseline. Keep their stop points and oracle results
+  distinct inside the QA-pack definition.
+- When one row contains several named steps or branches, format the relevant
+  CSV cells as quoted multiline values with one short `•` item per step. The
+  XLSX synchronizer wraps cell text, aligns it to the top and gives explicit
+  multiline rows enough height. This is presentation inside one testcase row,
+  not a reason to duplicate or split the testcase.
+- A longer lifecycle becomes ordered checkpoint rows. They may carry the same
+  staged state forward, but every row has its own stop point, persisted oracle
+  and PASS/FAIL decision.
+- When the user requests a newly discovered behavior as a separate case, give
+  it a new stable checkpoint ID, a QA-pack definition and a new matrix CSV row;
+  add fixture/harness/browser configuration only when that case needs it.
+- Do not create a new row merely because one test case has multiple branches
+  or an incidental observation occurred. A new row requires a genuinely new
+  test case and the user's requested split; otherwise name the tests inside the
+  existing QA-pack checkpoint.
+- When the user adds an expectation to the active test, place it immediately
+  at the earliest causal observation boundary in the QA-pack definition,
+  matrix oracle and replay checkpoint. If that boundary has already passed,
+  use retained persisted evidence where it is decisive, but classify an
+  omitted manual UI observation as **NOT EXECUTED**, not as a retroactive
+  product FAIL. Do not replay already-proven earlier transactions solely to
+  manufacture that missed observation unless the new expectation changes the
+  correctness of the active boundary or the user explicitly requests it.
+- On a requested split, preserve execution continuity explicitly with the
+  ordered chain and `advance`/`switch` semantics where supported; never force
+  the user to recreate already-proven setup.
+- After a repair, scope the replay to the shortest causal path that can execute
+  the changed owning code and decisive oracle. Keep prior clean evidence for
+  branches untouched by that change; do not restart every subtest merely
+  because they share a matrix row. Require a full checkpoint replay only when
+  the failure contaminated the shared baseline/evidence or the repair changed
+  an earlier shared transaction invariant. If a focused path needs prepared
+  state, make it a versioned sub-checkpoint rather than asking the user to
+  reproduce unrelated manual steps.
+- A versioned server-side replay rearm does not by itself require a full page
+  reload. First let the already-open surface reach the prepared pre-action
+  boundary through its established read behavior; when that surface loads only
+  on demand, close/reopen just that surface. Use a full document reload only
+  when the pre-action baseline cannot otherwise be reached, and record it as
+  setup. After the producer action, never reload before capturing the in-place
+  result; otherwise the immediate and reload/read branches become
+  indistinguishable.
+- A human-observed time-window checkpoint must stage into a stable, non-expiring
+  precondition. Browser preparation, oracle reads and the user round trip must
+  never consume the tested interval. Start the interval only through an
+  explicit versioned harness action after the user has confirmed the exact
+  pre-window UI boundary; print and persist the absolute deadline and owning
+  identity. A missed pre-window observation is **NOT EXECUTED / fixture timing
+  invalid**, not a product FAIL, and must be repaired in the fixture before
+  replay.
+- A new versioned harness action is incomplete until both the scenario
+  dispatcher and the outer `manual-qa-checkpoints.sh` usage/allowlist route it.
+  Before treating an attempted action as executed, pair its structured success
+  phase with a read-only state check; usage output or a non-zero exit leaves the
+  transaction unexecuted. In particular, never infer that a time window began
+  merely because the inner scenario contains the command.
 
-### `CHAT-AUTH-001` — PASS / CLOSED
+### 1.2 Exact manual producer instructions
 
-- Casey Admin and accepted Riley share one `mainEvent` chat; pending Nova has no
-  chat owner copy, no chat-message notification and direct history access
-  returns `404 Chat not found`.
-- A WebSocket query-param defect encoded `:` as `%3A` and caused the first send
-  to fail without persistence. The handshake now decodes query parameters; its
-  focused regression passed and hot deploy was verified.
-- Two deliberate Riley messages each persisted once and produced one Casey-only
-  notification/outbox row. The second message separately proved the Event
-  bucket after the first was read.
-- Casey UI proved Chats, All and Event unread cycles `0 -> 1 -> 0`, shared
-  two-message history, and Notification Center `5 -> 6`; both chat owner copies
-  finished at unread `0`.
+- Treat a sudden message unrelated to the active checkpoint as a possible
+  cross-window message, not as implicit authorization to change task scope.
+  Stop mutations, keep the current checkpoint intact and confirm the context
+  before touching the unrelated artifact. Never edit, restore or revert files
+  from an inferred context switch; a read-only comparison is not permission to
+  apply what it finds. Resume the QA transaction only after the user explicitly
+  returns to it.
+- The resume block's `required_resume` and **Next manual action** are declarative
+  instructions for Codex to issue next; their presence does not prove that the
+  user has already received or performed them. A stop phrase counts for a
+  producer action only when Codex's latest explicit manual instruction named
+  that same action and asked for that phrase. Never bind a bare `megvan` to an
+  unissued resume action from the file or from remembered conversation state.
+- Before handing a producer action to the user, verify the exact actionable
+  surface from the implementation and, when the current UI is ambiguous, from
+  the managed browser's read-only DOM. Name the complete interaction path,
+  including row/menu identity and any confirmation button.
+- Before asking the user to select a named candidate, inspect the real
+  candidate service/converter and identify its eligibility source; a visible
+  user who is outside the target membership is not by itself a selectable
+  candidate. Make the checkpoint own every required source record (for
+  example a prior `single + met=true` rate, parent membership or contact),
+  expose that record in the status oracle, and preflight the authenticated
+  candidate endpoint for the exact actor/owner. Require the named target and
+  expected total before issuing the producer instruction. If a popup was
+  already opened before fixture preparation and does not poll, replay only its
+  close/reopen boundary rather than earlier proven steps.
+- If an expected manual action is absent, inspect the actor-specific API
+  response, authorization/write service and existing behavioral regressions
+  before adding or exposing a new control. When the domain explicitly forbids
+  that transition and defines a different order, classify it as a QA-sequence
+  defect, correct the checkpoint/action order and continue from the current
+  intact boundary. Do not implement a contradictory product shortcut merely
+  to satisfy the mistaken test instruction.
+- Treat Notifications as persisted evidence by default, not as a domain action
+  surface. A notification menu owns a business transition only when its actual
+  converter/menu implementation exposes that action.
+- For an unread/New notification assertion, stop and inspect New before any
+  later action that intentionally resolves or marks that row read. A later
+  read row in All can prove persistence and resolution, but it is not evidence
+  that the earlier New UI was manually observed.
+- Before the producer instruction has actually been issued, an unchanged
+  oracle is only the intact pre-action boundary. After a correctly matched stop
+  phrase, pair the persisted oracle with the access log. If no expected
+  modifying request left the browser because the instruction did not reach the
+  real action control, the transaction is **not executed**, not a product FAIL:
+  retain the checkpoint, correct the instruction and do not add false failure
+  evidence to the QA pack or matrix. If the verified control was activated but
+  its binding emits no request, that is a client defect and must enter the
+  normal diagnose/fix/replay loop.
+- `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
+  read-only managed-session tool for resolving an ambiguous current surface;
+  it must never be used to perform the user's manual producer action.
 
-### `EVENT-FEEDBACK-001` — PASS / CLOSED
+### 1.3 Context-dependent frontend-local parity
 
-- The popup exposed exactly one accepted, non-admin, non-trashed event only
-  after `start + 2h`; locked, trashed, admin and pending-member controls stayed
-  absent.
-- Eligibility is materialized once by the bounded scheduled write path. Menu
-  and popup reads do not recalculate or send deltas.
-- A fresh reload showed the profile-menu Feedback badge `1`. The persisted
-  exact main counter was `feedback=1`, with four buckets
-  `ownEvents/pending/feedbacked/removed = 0/1/0/0` and one
-  `eligible/counterTracked` state.
+- When a defect is owned by shared frontend code after the HTTP/local service
+  adapter boundary (for example a shared store, converter, component or
+  in-place mutation projection), treat both adapters as potentially affected.
+  Inspect both adapter contracts before closing the repair.
+- Execute the equivalent frontend-local transition when that runtime supports
+  the same business route, its deterministic fixture can reach the same
+  boundary, and doing so does not contaminate the active HTTP checkpoint. Keep
+  the HTTP and local observations separately named inside the same testcase;
+  adapter parity does not require a duplicate matrix row.
+- Static inspection only proves contract compatibility, not runtime PASS. If a
+  deterministic local transition is unavailable or would require unrelated
+  setup, add the narrowest shared/local regression coverage available and
+  record local runtime as **NOT EXECUTED**, with the exact reason. Never infer
+  local PASS from an HTTP replay, or HTTP PASS from a local replay.
+- For an adapter-specific defect, repair its owning adapter and inspect the
+  parallel adapter for the same invariant. Do not broaden the code change when
+  the parallel contract is already correct, but run its focused check when the
+  affected business boundary is readily reproducible.
+- In an HTTP-backed flow, the Java backend owns the durable business
+  transition. The operation response may update the UI immediately, but a
+  reload must reconstruct the same state from the Java read path. Verify the
+  persisted status plus a fresh query/reload independently; if either is
+  wrong, repair the Java write/read owner rather than preserving the result
+  only in frontend state.
+- In frontend-local mode, the equivalent durable owner is the local
+  repository/IndexedDB path. Apply the same immediate-versus-reload contract
+  there when the local fixture can execute the transition deterministically.
+- Record operation-time in-place state, an immediate fresh read and a later
+  reload/read as independent observations when the contract needs them. Later
+  convergence does not erase an earlier in-place FAIL; an in-place PASS does
+  not prove reload persistence.
 
-### `EVENT-FEEDBACK-002` — PASS / CLOSED
+### 2. Replayable fixtures, never ad-hoc database patches
 
-- Casey, Nova and Riley remained exact accepted membership `3/8` on one staged
-  event with the retained canonical image.
-- Nova and Riley submitted separately. Casey ended with stored main
-  `feedback=2` and `eventFeedback.ownEvents=2`; the Own Events list still had
-  one event card and its response badge was `2`.
-- Casey's visible counters changed through the existing realtime auto-poll
-  without reload or a second popup-specific polling loop.
-- The final oracle matched two submitted viewer states and three card answers
-  from the two viewers; the previously proven event opinion, target recompute
-  and first-submit notification paths remained intact.
+Every manual case must be independently replayable. New or changed checkpoint
+setup belongs in `event-domain-checkpoints.js` (or the corresponding named
+scenario file), not in a one-off Mongo edit. Its behavior and transaction
+evidence belong in the QA pack; its result/status belongs in the CSV/XLSX
+matrix. The resume block contains only the next live boundary.
 
-### `EVENT-FEEDBACK-005` — PASS / CLOSED
+Fixture ownership must include every persisted object consulted by the tested
+read path, even when that object was created by an earlier checkpoint. If a
+counter/list mismatch is caused by an inconsistent persisted transaction, fix
+the terminal write owner that left the state open; do not mask it in the query
+or projection. Add the missed collection to the fixture selectors, reset
+cleanup and status oracle. For an already-active legacy state, use one guarded,
+versioned repair action that proves the untouched boundary and records a reset
+snapshot; never issue an ad-hoc Mongo update or silently restage over it.
 
-- Add note and Edit note worked on Nova's already-submitted feedback.
-- Nova's own-feedback view and Casey's received-feedback view displayed the
-  saved organizer note separately from the structured event answer.
-- The oracle proved the answer and counters unchanged and found no recompute,
-  notification or outbox effect from the note mutation.
+Use the canonical harness against the already-running `mongodb` container:
 
-### `EVENT-IMPRESSION-002` — PASS / CLOSED
+```bash
+# create a clean independent baseline
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  stage event-domain EVENT-TICKET-005
 
-- This remains a separate QA checkpoint for the Impressions-section Feedback
-  tile; it is not folded into the trait-propagation checkpoint.
-- Nova's stored badge was `1`, the UI acknowledged the tile open by hiding the
-  badge immediately, and the next authoritative realtime poll restored `1`.
-- This `1 -> hidden -> 1` presentation cycle is accepted UI behavior. Opening
-  the tile did not submit, remove or otherwise mutate event feedback.
+# inspect the current persisted oracle without mutation
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  status event-domain EVENT-TICKET-005
 
-### `EVENT-INV-003` — PASS / CLOSED
+# advance only when the checkpoint definition explicitly owns that transition
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  next event-domain EVENT-TICKET-005
 
-- Riley accepted exactly once; Casey and Riley share the main-event chat.
-- Nova remains pending and has no chat access.
-- The chat avatar stack contains accepted users only; it has no pending `+1`.
-- Sub-events > Members carries the single pending badge.
-- There is exactly one `member-joined` chat row and it creates no Notification
-  Center chat-message item.
-- For the Open event, Casey and visible pending Nova received one acceptance
-  event notification; actor Riley received none.
-- Riley's invite was resolved/read. Do not rerun acceptance before
-  `CHAT-AUTH-001` merely to prove these facts again.
+# remove the checkpoint-owned fixture state
+bash server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh \
+  reset event-domain EVENT-TICKET-005
+```
 
-### `MEDIA-IMG-001` — PASS / CLOSED Event Editor subcase
+The checkpoint is the controlled precondition and replay is the post-fix proof.
+After a defect fix, restore the canonical checkpoint and replay the affected
+causal chain; do not preserve or manually massage the failed transaction into
+a substitute baseline.
 
-- Managed images keep one canonical domain URL.
-- The tested 1853 x 919 PNG produced distinct original, 128 x 63 small,
-  640 x 317 medium and 1280 x 635 large objects; all returned HTTP 200.
-- The saved Event retained one canonical `large.webp` URL after reopen and no
-  second upload; the ordinary card requested `medium.webp`.
-- A fresh editor proved that stretching `small.webp` across its large image slot
-  was visibly blurred. The owning frontend fix lets the Event Editor request
-  `medium.webp`; its focused regression passed 3/3 and hot deploy was verified.
-- The Event Activities card exposes no fullscreen presentation, so no Event
-  fullscreen claim is recorded.
-- This remains a separate Event Editor media subcase and does not merge into or
-  reopen the already closed Event Editor create/save/reopen checkpoint.
+Use `restage` only for a checkpoint class supported by the harness; it is
+currently restricted to feedback checkpoints. For a stale ticket checkpoint,
+follow the guarded `discard-stale` plus image-URL-qualified `stage` recipe in
+the resume gate above. Use `switch`/`advance` only when the QA pack says state
+is carried into the next checkpoint. Never infer fixture state from
+screenshots. First call must have Docker-socket access; a sandbox permission
+error is not evidence that MongoDB is stopped and must never cause a second
+stack to start.
 
-### Media implementation — prior focused automated PASS
+### 3. Browser actors are checkpoint data
 
-- Default compact carousel slots derive `small.webp`; configured large editor
-  slots and selected previews derive `medium.webp`.
-- Ordinary cards derive `medium.webp`; fullscreen-capable cards and Article
-  body/viewers derive `large.webp`.
-- Article HTML is rewritten only while rendering; three URLs are not persisted
-  in the Article.
-- External, data, blob and local-mode URLs remain unchanged.
-- A partial backend rendition set is deleted and the upload fails; it is not
-  reported as three copies of the original.
-- Focused frontend result: 3 files, 11/11 tests passed.
+Before a checkpoint is run, its exact active actors, idle controls and layout
+must exist in `browser-session-checkpoints.json`. Launch them through the
+checkpoint browser script. Actor identity is verified by the script after
+session injection; do not identify users from Google profiles, window order
+alone or remembered sessions.
 
-Detailed contract and split cases:
-[`MEDIA_IMAGE_VARIANTS_MANUAL_QA.md`](../manuals/MEDIA_IMAGE_VARIANTS_MANUAL_QA.md).
+If a new checkpoint needs a different actor set, add a new configuration entry
+instead of reusing a larger three-window setup by habit. Keep personal profile
+paths and names out of Git.
 
-## Update rule
+### 4. Domain invariants behind ticket tests
 
-After every checkpoint, change this file before starting another one:
+- Membership, checkout basket, ticket, users-table counters and notification
+  are separate persisted objects/projections; verify each independently.
+- A pending membership or admin preapproval is not a ticket.
+- A physical ticket is created only at the terminal accepted transition for an
+  eligible non-admin participant.
+- Admins do not receive participant tickets.
+- Publish synchronizes tickets for participants already accepted; later
+  approval/acceptance creates only the newly eligible user's ticket.
+- Ticket reads and popup opens never create or replace a ticket.
+- A visible domain popup must not indefinitely block global realtime menu
+  counters. When popup-specific profile/impressions state must be deferred,
+  apply the global counter projection separately and keep the profile cursor
+  unadvanced so the deferred snapshot remains replayable after the popup
+  closes. Protect counter application with a per-user revision token: a poll
+  captured before a newer local/optimistic counter mutation must be rejected,
+  not allowed to overwrite it.
+- For a normal-poll badge checkpoint, keep the owning popup open across the
+  external producer action, verify the realtime response payload independently
+  from the rendered menu DOM, and require the item-level badge without reload.
+  A total avatar badge is not proof that the named menu counter converged.
+- Counters come from physical active ticket state and must agree in both
+  `tickets` and `asset.tickets` fields.
+- The Riley window is an unchanged control unless a checkpoint explicitly
+  makes Riley an actor.
+- An action emits only its own ID-scoped delta. Normal polling reconciles
+  absolute state; it must not manufacture domain writes.
 
-1. replace the five values in the resume block;
-2. move newly proven facts into `Proven behavior`;
-3. record only the next unproven observable;
-4. link detailed evidence instead of copying screenshots or long histories;
-5. keep this handoff short enough to read without loading the full QA pack.
+### 5. Logs and running stack
+
+The running development stack is the only build path for an active QA repair.
+Do not start a separate Gradle/npm build, test command that triggers its own
+compilation, server, Angular watcher, MongoDB or Compose stack. After a source
+change, let the owning hot-deploy watcher build and inspect its existing logs:
+
+```bash
+docker logs --since 5m myscoutee
+docker logs --since 5m frontend-sync
+docker logs --since 5m nginx
+```
+
+- `myscoutee`: backend compilation/startup and request-path failures.
+- `frontend-sync`: frontend hot-deploy/build result.
+- `nginx`: HTTP request timing/routing when a UI action is in doubt.
+- Mongo truth comes from the checkpoint `status` oracle, not from log guesses.
+
+Before triggering a source rebuild, and before deciding to restart an owner,
+inspect current CPU, available memory and swap pressure (for example `free -h`,
+`ps -eo ... --sort=-pcpu` and `docker stats --no-stream`). Use that evidence to
+avoid overlapping expensive work and to choose whether to wait or restart.
+Record the relevant resource decision when it changes execution.
+
+If hot-deploy does not compile, is stuck or holds a stale cache lock, identify
+its exact owning process. Restart only the same server/container owner and then
+verify its startup plus hot-deploy log; do not launch a replacement beside it.
+Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
+process or a standalone build/test compilation. A healthy watcher build and the
+checkpoint replay are the active-session verification path.
+
+### 5.1 Git HEAD backups during the session
+
+The user may periodically commit the current work as a backup, moving the
+working state into Git HEAD. When previously modified files disappear from
+`git status` or `git diff`, do not interpret that alone as a rollback or lost
+work. Re-read the current HEAD/file contents and continue from the persisted QA
+resume pointer; never reconstruct or reapply already-backed-up changes merely
+because the worktree became clean. Treat a backup as incorrect or reverted
+only when the user explicitly says so.
+
+### 6. Recording and communication
+
+After every transactional boundary, including a partial PASS inside a larger
+checkpoint:
+
+1. Run the independent `status`/named oracle.
+2. Report the result in one compact message: `PASS` or `FAIL`, the decisive
+   persisted facts, and what remained unchanged.
+3. Append the transaction evidence to the active QA-pack test definition.
+4. Update the canonical matrix CSV with the current date, evidence and next
+   oracle. Keep the row `IN PROGRESS` until the checkpoint's full chain passes.
+5. Run `python3 guides/qa/tools/sync-qa-matrix-xlsx.py`; the generated XLSX owns
+   status coloring and aggregate counts.
+6. Update only the YAML resume pointer and next manual action in this file. Do
+   not copy the detailed evidence or ledger row here.
+7. Give the next exact manual action. State `Következő teszt: <ID> — ...` only
+   when the current checkpoint is fully closed and the ledger has been updated.
+
+This order is the session-efficiency rule: persisted oracle first, canonical
+records second, compact resume pointer last. It prevents re-deriving completed
+methodology or mistaking a substep PASS for a closed checkpoint.
+
+On FAIL, stop that branch after collecting the smallest decisive evidence.
+During an active QA session, FAIL is not a user decision point: Codex
+immediately diagnoses and fixes the owning domain contract at the correct
+scope, uses the existing hot-deploy owner and its logs for build verification,
+then resets/stages the replayable fixture and replays the same checkpoint. A
+"minimum/local fix" is not a goal when it would preserve a broken invariant or
+create a special-case path. Before changing persistence semantics, inspect the
+parallel adapter and relevant git history so `save`, state transition, audit
+and read-model meanings are preserved consistently. Ask the user only when new
+authority or a materially different product decision is actually required.
+Never continue from or accept a partially mutated baseline as the next test's
+setup; the checkpoint and replay harness exist specifically to make this
+repair-and-clean-replay loop deterministic.
+
+## Ordered continuation
+
+The active checkpoint is `EVENT-VISIBILITY-001`; continue from the resume
+pointer without replaying the already-closed `EVENT-TICKET-005` through
+`EVENT-TICKET-007` branches. The retained continuation chain is defined, not
+duplicated, in the QA pack:
+
+```text
+EVENT-TICKET-005 -> EVENT-TICKET-006 -> EVENT-TICKET-007
+-> EVENT-VISIBILITY-001
+```
+
+`EVENT-TICKET-008` (two-event ticket isolation) and `EVENT-TICKET-009`
+(offline cached QR with online scanner) remain independent ticket branches.
+Do not pull them into `EVENT-TICKET-005`.

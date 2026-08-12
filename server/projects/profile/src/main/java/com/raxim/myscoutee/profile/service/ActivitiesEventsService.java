@@ -2579,7 +2579,7 @@ public class ActivitiesEventsService {
                         activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
                 boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
                 if (joinedSlot) {
-                    markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, slotSourceId);
+                    markAcceptedCheckoutBasketSucceeded(viewer.userId(), sourceId);
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                 } else if (checkoutBasketUpdateRequested) {
                     enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
@@ -2614,7 +2614,7 @@ public class ActivitiesEventsService {
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
         if (joined) {
-            markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, null);
+            markAcceptedCheckoutBasketSucceeded(viewer.userId(), sourceId);
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
         } else if (checkoutBasketUpdateRequested) {
             enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
@@ -2640,23 +2640,8 @@ public class ActivitiesEventsService {
                         : null);
     }
 
-    private void markAcceptedCheckoutBasketSucceeded(
-            EventActionRequestDto request,
-            String userId,
-            String sourceId,
-            String slotSourceId) {
-        String checkoutState = safeText(request == null ? null : request.checkoutState());
-        if (!StringUtils.hasText(checkoutState)) {
-            return;
-        }
-        eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
-                userId,
-                sourceId,
-                slotSourceId,
-                checkoutState,
-                "succeeded",
-                null,
-                request.paymentSessionId()));
+    private void markAcceptedCheckoutBasketSucceeded(String userId, String sourceId) {
+        eventCheckoutBasketService.finalizeAcceptedReservation(userId, sourceId);
     }
 
     public EventParticipationActionResultDto payEventCheckout(EventCheckoutStateChangeRequestDto request, String provider) {
