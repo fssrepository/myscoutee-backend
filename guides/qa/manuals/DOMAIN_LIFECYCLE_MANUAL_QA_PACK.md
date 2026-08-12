@@ -1442,6 +1442,38 @@ Restart evidence on 2026-08-06:
   update timestamps. The single pending membership, Casey Pending notification,
   Nova counters and zero ticket/counters were also byte-for-byte equivalent at
   the oracle boundary. First Cancel in-place is next.
+- Repair replay — first Cancel in-place (2026-08-12): **PASS**. Without reload,
+  the same card changed **Continue booking -> Request Join**. The persisted
+  basket kept ID `6a7c9690f8a7d3829acd7ffa` only as a `cancelled/deleted`
+  audit with `reservationActive=false`; Nova became suppressed, occupancy
+  returned to `1 + 0 / 8`, pending changed to `0`, trash to `1`, and Casey now
+  has exactly the original Pending plus one distinct Cancelled notification.
+  Tickets and both ticket counters remain zero. Post-Cancel reload is next.
+- Repair replay — first post-Cancel reload (2026-08-12): **PASS**. The card
+  reconstructed fresh **Request Join** and the read-only oracle was identical
+  to the first Cancel boundary: audit `6a7c9690f8a7d3829acd7ffa` retained its
+  exact timestamps and `reservationActive=false`; membership stayed suppressed,
+  counters stayed pending `0` / trash `1`, Casey retained exactly Pending plus
+  Cancelled, and tickets/counters remained zero. First re-Join is next and must
+  append a distinct physical basket while leaving this audit closed.
+- Repair replay — first re-Join identity (2026-08-12): **PASS / FIX VERIFIED**.
+  The closed audit `6a7c9690f8a7d3829acd7ffa` and its timestamps remained
+  unchanged, while re-Join appended the distinct physical basket
+  `6a7c9847f8a7d3829acd8002` as `approval-pending/pending` with
+  `reservationActive=true`. Nova again has exactly one pending member-origin
+  approval membership and pending counter `1`; Casey's ordered notifications
+  are Pending, Cancelled, Pending. Occupancy is `1 accepted + 1 pending / 8`
+  and all tickets/counters remain zero. This closes the historical basket-ID
+  defect proof; the full checkpoint remains in progress at second Cancel.
+- Repair replay — second Cancel in-place (2026-08-12): **PASS**. The same card
+  changed **Continue booking -> Request Join** without reload. Both physical
+  basket attempts remain present as distinct closed audits: the first
+  `6a7c9690f8a7d3829acd7ffa` stayed unchanged, while the second
+  `6a7c9847f8a7d3829acd8002` transitioned to `cancelled/deleted` with
+  `reservationActive=false`. Nova is suppressed with pending `0` / trash `1`,
+  Casey's ordered notification sequence is Pending, Cancelled, Pending,
+  Cancelled, and tickets/counters remain zero. The second post-Cancel reload is
+  next as its separate reconstruction/read-purity test.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket
