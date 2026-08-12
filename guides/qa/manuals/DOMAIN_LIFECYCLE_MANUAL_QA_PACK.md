@@ -218,6 +218,39 @@ Execution evidence on 2026-08-04:
   event, membership, invitation, ticket, counter mutation or worker task.
 - This continuation is a visibility checkpoint. Do not add Join, approval,
   slot or tournament mutations to it; those remain separate checkpoints.
+- Retained continuation baseline (2026-08-12): **READY**. Guarded `advance`
+  moved the active harness pointer from completed `EVENT-TICKET-007` at
+  `22:42:44+02:00` without resetting its event or original snapshots. The
+  independent follow-up status retained one active Ticketing On event with
+  Casey, Nova and Riley accepted, occupancy `3 / 8`, no pending/invited
+  members, Nova A ticket `manual-qa-checkpoint:v1:event-domain:ticket` / code
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44` and Riley A ticket
+  `6a7cd3aff8a7d3829acd805a` / code
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6`; both members retain ticket
+  counters `1/1` and Casey remains ticketless. Lina Park resolves as Casey's
+  deterministic friend, Liam Parker as the deterministic non-friend, and
+  neither has tracked participation on the event. The checkpoint now owns
+  their activity snapshots. The previous three browser processes were closed
+  before the resource-conscious replacement; isolated Casey-Lina-Liam windows
+  are identity-verified with the configured Austin geolocation.
+- Unpublish boundary (2026-08-12): **PASS**. Casey selected **Unpublish** once.
+  The canonical event retained the same identity and became `status=DR` with
+  `visibility=public` and Ticketing still configured On. Casey, Nova and Riley
+  stayed accepted at `3 / 8`, with no pending, invited or request membership.
+  Nova's exact ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket` /
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44` and Riley's exact ticket
+  `6a7cd3aff8a7d3829acd805a` /
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6` were retained and changed only
+  `A -> D`; no replacement ticket appeared. Their ticket counters changed
+  `1 -> 0`, Casey remained ticketless, and Lina/Liam retained no participation
+  or ticket artifact. Casey's already-open My Events list showed the same one
+  draft card without reload. The owning event recompute task completed at
+  `2026-08-12T20:55:46.902953153Z`, `attemptCount=2`, with empty `lastError`;
+  the affinity worker returned to `pendingCount=0`. The next producer boundary
+  is draft **Edit -> Visibility: Friends only -> Save** only. Stop before
+  Publish and prove that Save changes only the draft definition plus its normal
+  event task while both D tickets, counters and memberships remain unchanged.
 
 ### `EVENT-PUBLISH-CHAT-001` — publish materializes the accepted Admin chat
 
@@ -1852,7 +1885,8 @@ Restart evidence on 2026-08-06:
   member and has no ticket/counter.
 - As Nova, invite Riley through the ordinary member UI. Riley becomes pending,
   but no Riley ticket is created and both Riley stored ticket counters remain
-  `0`.
+  `0`. Before Riley responds, the one persisted `event-invite` notification
+  must be unread and visible in Riley's **Notifications > New** list.
 - Riley accepts the invitation once. Because the inviter was an ordinary
   member, the same membership remains pending but changes from
   `requestKind=invite`, `pendingSource=admin` to `requestKind=approval`,
@@ -1861,7 +1895,10 @@ Restart evidence on 2026-08-06:
 - Approve Riley as Casey Admin only after that response. This is the terminal
   transition to accepted: it creates exactly one physical Riley `status=A`
   ticket and changes both Riley stored ticket counters to `1`; the next normal
-  profile poll exposes Riley's Ticket red badge `1`.
+  profile poll exposes Riley's Ticket red badge `1`. The same approval must
+  create exactly one unread `event-member-approved` notification for Riley,
+  visible through the normal notification poll in **Notifications > New**
+  before Riley opens or marks it read.
 - Nova's original ticket ID/code and counters remain unchanged throughout.
   Repeating Riley's acceptance or opening Riley Ticket twice must preserve the
   same Riley ticket ID/code and counters. Casey remains ticketless.
@@ -1971,8 +2008,94 @@ Restart evidence on 2026-08-06:
   ID/code/status and counters remain unchanged. The frontend-local runtime
   branch was not executed because the active deterministic checkpoint is the
   HTTP adapter; local contract inspection plus the shared regression is
-  evidence of compatibility, not a claimed local runtime PASS. Casey's single
-  terminal approval is now the next live boundary.
+  evidence of compatibility, not a claimed local runtime PASS.
+- Invitation notification observation clarification (2026-08-12): the
+  persisted `event-invite` row was created unread at Nova's invite boundary
+  and Riley's later response resolved it to read exactly once. The manual New
+  list was not inspected in the interval before that response, so that UI
+  observation is **NOT EXECUTED**, not a retroactive FAIL; the current read row
+  in All is consistent with the response contract. Future execution now stops
+  before Riley's response and requires that unread row in Notifications > New.
+- Casey terminal approval branch (2026-08-12): first durable transition
+  **PASS**, target notification **FAIL**, owning repair plus focused replay
+  prepared. Casey's one approval at `21:49:11+02:00` accepted Riley, created
+  Riley's sole A ticket `6a7cce37f8a7d3829acd8053` / code
+  `TKT-3d3eddd0-221f-453e-b8f2-1b40fe29d795`, changed Riley ticket counters to
+  `1/1`, added exactly one Riley participation overlay and one three-member
+  main event chat with the single `Riley Outside joined the event.` system
+  message, while Nova's original ticket remained byte-for-byte unchanged.
+  The independent oracle found zero `event-member-approved` outbox rows and
+  zero Riley approval notifications, so the approval feedback contract failed.
+  Casey's apparent Invitations `0 -> 3` / All `1 -> 4` change was separately
+  traced to three real demo invitations that the staged fixture baseline had
+  not counted; the terminal full recompute corrected that stale fixture
+  projection and no query-side masking was added. The Java terminal approval
+  path now emits one target-only `event-member-approved` intent after the
+  accepted membership, ticket synchronization and embedded event refresh; the
+  materialized row is explicitly categorized `event-admin`, starts unread and
+  carries Casey as sender. The equivalent frontend-local terminal transition
+  appends the same unread notification. Focused service/category regressions
+  were added, and the existing backend/frontend hot-deploy owners compiled and
+  restarted successfully without a second build process. Guarded
+  `prepare-ticket-admin-approval-retest` at `22:08:27+02:00` restored only the
+  pre-approval boundary: Riley is again the sole pending approval request with
+  counters Pending `1`, Tickets `0/0`, no Riley overlay/ticket/chat or active
+  event recompute task; Nova's exact original ticket, Riley's resolved invite,
+  Casey's join-request notification and every earlier PASS remain retained.
+  The focused replay now requires one Casey approval followed by the persisted
+  accepted/ticket/chat/task oracle and one unread Riley approval row visible in
+  Notifications > New before it is opened.
+- Focused Casey approval replay (2026-08-12): durable transition and
+  notification oracle **PASS** at `22:12:31+02:00`; Notifications New UI
+  observation pending. Casey's one replayed approval accepted Riley and
+  recreated exactly one Riley participation overlay, one A ticket
+  `6a7cd3aff8a7d3829acd805a` / code
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6`, stored ticket counters `1/1`,
+  and one three-member main chat with one `Riley Outside joined the event.`
+  system message. Nova retained the original ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket` / code
+  `TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44`, status A and counters `1/1`.
+  The repaired write created exactly one `event-member-approved` outbox intent
+  for Riley and exactly one materialized notification with category
+  `event-admin`, Casey as sender, `membershipAction=approved`, the checkpoint
+  event identity and empty `readAtIso`. One event recompute task was pending at
+  the immediate oracle. Riley must now open Notifications > New through the
+  normal UI poll without opening the row and confirm that one unread item;
+  after that observation the outbox/task terminal state and repeated Ticket
+  reads remain to be checked before checkpoint closure.
+- Riley approval-notification UI and delayed worker branch (2026-08-12):
+  **PASS**. Riley opened Notifications > New without opening the row; the
+  tester confirmed the item and a read-only managed-browser DOM oracle proved
+  `1 new notification`, New counter `1`, title `QA EVENT-TICKET-007`, status
+  `Approved`, sender/category text `Casey Bridge · Event admin` and the expected
+  approval message. The persisted row retained empty `readAtIso`, so merely
+  opening New did not mark it read. The approval-owned affinity task became
+  `done` at `22:18:31+02:00` on attempt `1` with no error, after its configured
+  event-members debounce and the enabled 60-second worker rule; the worker's
+  next run reported pending count `0`. The notification-outbox rule also ran
+  and reported that Firebase delivery is inactive in the current dev profile,
+  so retaining the push outbox row as `pending` is the configured result, not
+  an in-app notification failure. Riley's exact in-app row already exists and
+  stays unread. Only the repeated Ticket read/idempotence observation remains
+  before checkpoint closure.
+- Repeated Riley Ticket read and checkpoint closure (2026-08-12): **PASS /
+  CLOSED**. Riley opened Ticket > Upcoming, closed only that popup and opened
+  Ticket > Upcoming again without reload or scan. The second-open read-only DOM
+  showed exactly one ticketed event, filter count `1` and the single
+  `QA EVENT-TICKET-007` Upcoming card. The final persisted oracle retained
+  Riley ticket `6a7cd3aff8a7d3829acd805a` / code
+  `TKT-d05cdd81-86da-430d-b166-b508cccb42c6`, status A, original issued time,
+  unused state and counters `1/1`; Nova's original ticket ID/code/status and
+  counters `1/1` remained unchanged; Casey remained ticketless. The Riley
+  approval notification stayed unread, the approval outbox remained the same
+  configured Firebase-disabled dev record, the one affinity task stayed done,
+  and no additional outbox, task, ticket, chat or membership record appeared.
+  The historical invite notification's pre-response New UI check remains
+  explicitly **NOT EXECUTED** for this run, with its unread creation and later
+  expected resolution proven persistently; it is now an enforced stop in the
+  reusable definition. Continue by advancing without reset to
+  `EVENT-VISIBILITY-001`, retaining both active ticket identities as its before
+  oracle.
 
 ### `EVENT-TICKET-008` — two similar events keep physical tickets isolated
 

@@ -894,6 +894,11 @@ class ActivitiesMembersServiceTest {
                 .syncParticipationTicketsForEvent("event-1");
         verify(chatService).ensureMainEventChat(event, List.of("target"));
         verify(chatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
+        verify(eventInviteNotificationService).notifyMemberApproved(
+                eq(event),
+                eq("target"),
+                anyString(),
+                eq("admin"));
     }
 
     @Test

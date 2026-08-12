@@ -109,4 +109,39 @@ class EventInviteNotificationServiceTest {
                 .containsEntry("notification_tone", "accent")
                 .containsEntry("acceptedAtIso", "2026-08-04T13:49:00Z");
     }
+
+    @Test
+    void notifiesTheMemberWhenAnAdminApprovesTheJoinRequest() {
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        UserNotificationService userNotificationService = mock(UserNotificationService.class);
+        EventInviteNotificationService service = new EventInviteNotificationService(
+                notificationOutboxService,
+                userNotificationService);
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setTitle("Weekend hike");
+
+        service.notifyMemberApproved(
+                event,
+                "member-1",
+                "2026-08-12T19:49:11Z",
+                "admin-1");
+
+        ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(intentCaptor.capture());
+        NotificationIntent intent = intentCaptor.getValue();
+        assertThat(intent.type()).isEqualTo("event-member-approved");
+        assertThat(intent.recipientScope()).isEqualTo("event-member");
+        assertThat(intent.recipientUserIds()).containsExactly("member-1");
+        assertThat(intent.title()).isEqualTo("Weekend hike");
+        assertThat(intent.body()).isEqualTo("Your request to join Weekend hike was approved.");
+        assertThat(intent.createdUser()).isEqualTo("admin-1");
+        assertThat(intent.payload())
+                .containsEntry("eventId", "event-1")
+                .containsEntry("memberUserId", "member-1")
+                .containsEntry("membershipAction", "approved")
+                .containsEntry("senderUserId", "admin-1")
+                .containsEntry("approvedAtIso", "2026-08-12T19:49:11Z")
+                .containsEntry("notification_status_badge_fallback", "Approved");
+    }
 }

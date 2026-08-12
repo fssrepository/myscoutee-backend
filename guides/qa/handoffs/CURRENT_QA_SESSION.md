@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-TICKET-007
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-007--ordinary-member-invitation-stays-ticketless-until-admin-approval
+checkpoint: EVENT-VISIBILITY-001
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-visibility-001--friends-only-explore-discovery-boundary
 scenario: event-domain
-ledger_status: IN PROGRESS; pre-invite defects repaired/PASS; Nova invite PASS and ticketless; Riley response repaired/replayed PASS in-place and after reload, still ticketless; Casey terminal approval pending
-state: EVENT-TICKET-006 PASS/CLOSED and reset to not-staged; EVENT-TICKET-007 staged at 2026-08-12T18:18:45.088Z; pre-invite list and candidate fixture defects are repaired/PASS; Nova invite PASS; Riley's first response persisted correctly but its immediate Pending counter projection failed, then the Java mutation response and shared frontend stale-response guard were repaired through the existing dev hot-deploy owners; the focused replay at 2026-08-12T21:40:46+02:00 returned Invitations -1 and event Pending +1 / Invitations -1, and Riley's UI changed without reload to Pending 1 plus Waiting for approval; the independent oracle shows Riley as the sole pending requestKind=approval/pendingSource=member row, events pending 1/invitations 0, Ticket counters 0/0 and no Riley ticket; a subsequent full browser reload/fresh filter read reconstructed the same Pending 1 row; Nova's sole A ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and counters 1/1 remain unchanged; only Casey's terminal approval remains
-required_resume: in Casey's left window open My Events, open QA EVENT-TICKET-007 members through the 2 / 8 control, open Riley Outside's member action menu, choose Approve, then confirm Approve exactly once; stop immediately for the terminal accepted/ticket-creation oracle and leave Nova/Riley untouched
+ledger_status: IN PROGRESS / UNPUBLISH PASS; EVENT-TICKET-007 PASS/CLOSED; EVENT-VISIBILITY-001 Friends Only draft Save pending
+state: EVENT-TICKET-007 closed after repeated Riley Ticket read PASS; final identities retained as Nova ticket manual-qa-checkpoint:v1:event-domain:ticket / TKT-d6bd7582-1849-46bb-ba09-24dd7fb92b44 and Riley ticket 6a7cd3aff8a7d3829acd805a / TKT-d05cdd81-86da-430d-b166-b508cccb42c6; guarded advance at 2026-08-12T22:42:44+02:00 retained the active Ticketing On event with Casey/Nova/Riley accepted 3/8, no pending and both tickets A with counters 1/1; Casey then Unpublished exactly once and the independent oracle proved the same event DR/Public/Ticketing On, unchanged accepted membership, both exact tickets retained as D, Nova/Riley ticket counters 0/0, Casey ticketless, no new ticket and unchanged external controls; Casey's already-open My Events projection showed the single draft card; the normal event recompute task completed at 2026-08-12T22:55:46+02:00 with pendingCount 0 and no error; Lina Park remains the deterministic Casey-friend control and Liam Parker the deterministic non-friend control, neither with tracked participation; isolated Casey/Lina/Liam windows remain identity-verified with Austin geolocation
+required_resume: in Casey's left My Events card open the card actions, choose Edit, change only Visibility from Public to Friends only and press the editor Save checkmark exactly once; do not press Publish and do not touch Lina or Liam; stop for the draft visibility/no-ticket/no-membership-write oracle
 event: QA EVENT-TICKET-007
 actors:
   left: Casey Bridge
-  middle: Nova Social
-  right: Riley Outside
+  middle: Lina Park
+  right: Liam Parker
 next_actor: Casey Bridge
 stop_phrase: megvan
 ```
@@ -102,15 +102,17 @@ demo user sessions, grants the configured Austin geolocation, loads `/game`,
 dismisses entry consent/guides and lays the windows out left-to-right. Do not
 open extra browsers, use personal Chrome profile names, or ask the user which
 profile to select. Re-running it replaces only this checkpoint's managed
-windows. Riley is a control and must remain untouched until the checkpoint says
-otherwise.
+windows. Lina and Liam are external visibility controls and must remain
+untouched until the checkpoint says otherwise.
 
 ### Next manual action
 
-In Casey's left window open **My Events**. On `QA EVENT-TICKET-007`, open
-members through the **2 / 8** control. Open Riley Outside's member action menu,
-choose **Approve**, then confirm **Approve** exactly once. Stop immediately and
-reply `megvan`; leave Nova and Riley untouched.
+In Casey's left **My Events** card open the card actions, choose **Edit**, change
+only **Visibility** from **Public** to **Friends only**, then press the editor's
+Save checkmark exactly once. Do not press **Publish**, and do not touch Lina or
+Liam. Stop and reply `megvan` so the saved draft visibility, both retained D
+tickets, ticket counters, memberships and normal event task can be checked
+before Publish.
 
 ## QA working method
 
@@ -157,6 +159,14 @@ the user.
   or an incidental observation occurred. A new row requires a genuinely new
   test case and the user's requested split; otherwise name the tests inside the
   existing QA-pack checkpoint.
+- When the user adds an expectation to the active test, place it immediately
+  at the earliest causal observation boundary in the QA-pack definition,
+  matrix oracle and replay checkpoint. If that boundary has already passed,
+  use retained persisted evidence where it is decisive, but classify an
+  omitted manual UI observation as **NOT EXECUTED**, not as a retroactive
+  product FAIL. Do not replay already-proven earlier transactions solely to
+  manufacture that missed observation unless the new expectation changes the
+  correctness of the active boundary or the user explicitly requests it.
 - On a requested split, preserve execution continuity explicitly with the
   ordered chain and `advance`/`switch` semantics where supported; never force
   the user to recreate already-proven setup.
@@ -230,6 +240,10 @@ the user.
 - Treat Notifications as persisted evidence by default, not as a domain action
   surface. A notification menu owns a business transition only when its actual
   converter/menu implementation exposes that action.
+- For an unread/New notification assertion, stop and inspect New before any
+  later action that intentionally resolves or marks that row read. A later
+  read row in All can prove persistence and resolution, but it is not evidence
+  that the earlier New UI was manually observed.
 - Before the producer instruction has actually been issued, an unchanged
   oracle is only the intact pre-action boundary. After a correctly matched stop
   phrase, pair the persisted oracle with the access log. If no expected
@@ -448,9 +462,9 @@ repair-and-clean-replay loop deterministic.
 
 ## Ordered continuation
 
-The active checkpoint is `EVENT-TICKET-007`; continue from the resume pointer
-without replaying the already-closed `EVENT-TICKET-005` and
-`EVENT-TICKET-006` branches. The retained continuation chain is defined, not
+The active checkpoint is `EVENT-VISIBILITY-001`; continue from the resume
+pointer without replaying the already-closed `EVENT-TICKET-005` through
+`EVENT-TICKET-007` branches. The retained continuation chain is defined, not
 duplicated, in the QA pack:
 
 ```text

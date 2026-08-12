@@ -48,6 +48,7 @@ Usage:
   bash manual-qa-checkpoints.sh repair-ticket-payment-fixture event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh prepare-ticket-invite-candidate event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh prepare-ticket-invitee-response-retest event-domain EVENT-TICKET-007
+  bash manual-qa-checkpoints.sh prepare-ticket-admin-approval-retest event-domain EVENT-TICKET-007
   bash manual-qa-checkpoints.sh verify-ticket-poll-resume event-domain EVENT-TICKET-POLL-001
   bash manual-qa-checkpoints.sh verify-ticket-isolation-unpublish event-domain EVENT-TICKET-008
   bash manual-qa-checkpoints.sh verify-ticket-isolation-republish event-domain EVENT-TICKET-008
@@ -220,7 +221,7 @@ case "${scenario}:${command}" in
     [ "$#" -le 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" "${3:-30}"
     ;;
-  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|\
+  event-domain:stage|event-domain:restage|event-domain:next|event-domain:status|event-domain:reset|event-domain:discard-stale|event-domain:add-feedback-participant|event-domain:hold-auto-inviter|event-domain:prepare-auto-inviter|event-domain:capture-auto-inviter-baseline|event-domain:prepare-periodic-auto-inviter|event-domain:prepare-invitation-acceptance-retest|event-domain:arm-ticket-expiry|event-domain:repair-ticket-payment-fixture|event-domain:prepare-ticket-invite-candidate|event-domain:prepare-ticket-invitee-response-retest|event-domain:prepare-ticket-admin-approval-retest|event-domain:verify-ticket-poll-resume|event-domain:verify-ticket-isolation-unpublish|event-domain:verify-ticket-isolation-republish|\
   asset-domain:stage|asset-domain:next|asset-domain:status|asset-domain:reset|\
   operator-domain:stage|operator-domain:next|operator-domain:status|operator-domain:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

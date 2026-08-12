@@ -778,9 +778,12 @@ practice required a person to hand over the password to his government account.
 I had refused to make that bargain, repaired the consequences and still could
 not close the door behind me.
 
-I gave advance notice of the coming foot operation, asked for peace during
-surgery and rehabilitation, and wrote that I intended to leave the country
-afterward. There was no unresolved tax debt for my body to solve.
+I documented the date and place of the coming foot operation, my request not to
+be disturbed during surgery and rehabilitation, and my intention to leave the
+country afterward. Before the operation, I called once more to make sure. The
+tax position was settled. Everything was in order. In return, I asked only to
+be left alone long enough to heal. There was no unresolved tax debt for my body
+to solve.
 
 I had already paid the tax. My foot had been painful for months. The public
 system gave me an orthopaedic shoe and told me to return in a year. At the
@@ -791,18 +794,29 @@ For roughly three months I lived mainly in bed, and the recovery continued for
 several months after that. My body could not be separated from every call
 arriving through the same phone.
 
-For much of that period I had to remain in bed with the operated leg propped
-high above me. A special elevation shoe protected its position when I had to
-move. Each day also required an anti-thrombosis injection into my abdomen. I was
-alone. Nobody came to look after me; food had simply been stocked in advance for
-several months. The routine was not an abstract reference to poor health: bed,
-raised leg, special shoe, injection, stored food, repeat.
+I had gone private for the operation. The recovery was private in another
+sense. For much of that period I had to remain in bed with the operated leg
+propped high above me. A special elevation shoe protected its position when I
+had to move. Each day also required an anti-thrombosis injection into my
+abdomen. I was alone. Nobody came to look after me; food had simply been stocked
+in advance for several months. The routine was not an abstract reference to
+poor health: bed, raised leg, special shoe, injection, stored food, repeat.
 
 Planning had stocked the food. Savings paid for private treatment. Discipline
 carried me through the injections. The chair beside the bed remained empty.
 
 A call came in March despite my documented request for quiet. The repaired tax
 matter re-entered the room while I was immobilized and alone.
+
+The return was two pages long. By March, it had been alive for seven months. It
+had outlasted my work, the tax debt and the operation. Now it had found the bed.
+
+The investigation later pulled a second sentence from that period, one I had
+never regarded as a threat. I priced twenty lost years at ten billion euros and
+gave the impossible invoice a crude punchline. If they could act as though
+anything were permitted, then, on the page at least, so could I. My operated
+foot still could not carry me; depression had narrowed the world to the room.
+From there I sent the system a bill for twenty years and the rule of law.
 
 At one point I sent the tax administration a close photograph of the swollen,
 operated area itself. It was not a photograph of a bandage. The incision was
@@ -825,9 +839,11 @@ I had corrected the return, paid the tax, withdrawn the monetary demand,
 announced the operation in advance and asked for peace. Lawful repair still did
 not feel like an exit.
 
-The photograph and the joke later travelled without the bed, the stored food,
-the advance notice or the corrected tax return. Again, the sharpest fragment
-was easier to carry than the chain around it.
+The sentence, the photograph and the joke later travelled without the bed, the
+stored food, the advance notice or the corrected tax return. By the time they
+entered the forensic account, the man lying alone and unable to walk had become
+a severe paranoid personality disorder reaching the level of pathological
+mental illness. The chair beside the bed was still empty.
 
 <!-- pagebreak -->
 
@@ -1231,6 +1247,9 @@ from later satire, were not all where I expected them to be. The file had
 already interpreted the fragments it held. I began looking for the fragments
 it did not.
 
+One absence stood out. The chronology opened on 3 December, with the sentence.
+What had led to it was gone.
+
 When the phone was returned, I sat with its call history and rebuilt dates one
 by one. The history and correspondence showed contacts for which no audio had
 reached the file I saw. I requested the tax authority's recordings and copies
@@ -1238,6 +1257,11 @@ of my own electronic submissions. When the local route did not produce them, I
 wrote through the central directorate. Recordings arrived in stages. A later
 official letter acknowledged delay. Electronic submissions followed after
 what the letter described as an administrative error.
+
+Among the recovered papers was the tax authority's complaint-handling notice
+dated 18 December. It recorded in writing that I had settled everything. The
+forensic opinion placed pathological mental illness from 3 December onward. I
+laid the two documents side by side.
 
 I sent the recovered material to the police. Only then did the police request
 material from the tax authority again through its own route. The recordings had
@@ -1917,13 +1941,15 @@ The election was not a verdict in my case. It did show that continuity no
 longer commanded enough trust. Institutions presented as fixed were now being
 judged by the public beneath them.
 
-One sentence from my 2022 messages acquired an uncanny echo. Its language about
-twenty years and the rule of law had looked detached from
-ordinary political possibility. Four years later, public actors were openly
-describing a change of regime and restoration of the rule of law.
+In July, the Council of the European Union approved a €10 billion recovery plan
+for Hungary. Access to the money was publicly tied to rule-of-law and
+anti-corruption reforms.
 
-It was not prophecy. It was irony powerful enough to make time feel badly
-edited.
+The number was the same. Its direction had reversed.
+
+In 2023, a man who could not walk had written it while asking the state to
+account for twenty years. By July 2026 it stood in national policy beside the
+same words: rule of law.
 
 ## 22. Two Letters to Venice
 
@@ -2301,6 +2327,12 @@ performing the first reconstruction before the authority repeated the request
 through its own channel. This supports the sequence of the search; it does not
 establish that an official deliberately deleted evidence, deliberately waited
 for the Founder or that every missing call had been recorded.
+
+The same private source inventory contains the tax authority's official
+complaint-handling notice dated 18 December, which records that the Founder had
+settled the matter, and the official forensic opinion, which places the relevant
+pathological period from 3 December onward. The narrative treats those dates and
+the positions recorded in the two official documents as documentary facts.
 
 The fundamental-rights passage in Chapter 19 refers to Hungary's Commissioner
 for Fundamental Rights, not the European Ombudsman. Letters in the same private
@@ -2857,6 +2889,20 @@ a political allegation, not a finding that the new government was or was not
 authoritarian. The narrative retains the image because language once used
 against the old order had moved to the other side of Parliament.
 
+The 2022 timing forms part of the public background. In December of that year,
+the Council suspended €6.3 billion in budget commitments under the rule-of-law
+conditionality mechanism. It also approved Hungary's recovery plan on terms
+that required 27 rule-of-law “super milestones” to be completed before any
+payment could be made. Those measures were not connected to the private case;
+they show what was already happening around the same words in national life.
+
+Also in July 2026, the Council of the European Union approved a new Hungarian
+recovery plan expected to allow €10 billion to be disbursed. Public reporting
+described access to the money as dependent on rule-of-law and anti-corruption
+conditions. The memoir uses the number only as an ironic echo of the 2023
+postoperative line. It does not claim that the private sentence anticipated,
+influenced or caused the public decision.
+
 A February 2025 interview records the justice minister saying that judicial
 independence was not in danger. Asked in a separate Index interview whether he
 had tried to persuade the National Judicial Council, Justice Minister Bence
@@ -2897,6 +2943,10 @@ Sources:
 - https://apnews.com/article/5c4e6ea328c1ab178a9609c918626ed0
 - https://telex.hu/belfold/2026/06/04/karacsony-gergely-budapest-pride-vadejtes-ugyeszseg
 - https://telex.hu/belfold/2026/07/09/fidesz-stop-onkeny-tuntetes-ader-janos
+- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/rule-of-law-conditionality-mechanism/
+- https://www.consilium.europa.eu/en/press/press-releases/2022/12/12/nextgenerationeu-member-states-approve-national-plan-of-hungary/
+- https://www.consilium.europa.eu/en/press/press-releases/2026/07/10/recovery-and-resilience-facility-council-greenlights-new-plan-for-hungary/
+- https://telex.hu/belfold/2026/06/09/orszaggyules-korrupcioellenes-es-atlathatosagi-csomag-eu-helyreallitasi-alap-vagyonnyilatkozat-kekva-1
 - https://index.hu/belfold/2025/02/05/tuzson-bence-igazsagszolgaltatas-igazsagugyi-miniszterium-orszagos-birosagi-hivatal-orszagos-biroi-tanacs-kuria-birosag/
 - https://telex.hu/belfold/2025/02/05/tuzson-bence-interju-bombariado-till-tamas-obt-beremeles-reform
 - https://enbudapestem.hu/2025/02/22/az-igazsagszolgaltatas-fuggetlensegeert-tuntetnek

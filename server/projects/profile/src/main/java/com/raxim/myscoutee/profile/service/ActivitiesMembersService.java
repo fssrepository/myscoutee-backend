@@ -958,6 +958,10 @@ public class ActivitiesMembersService {
                 && ACTION_REMOVE.equals(action)
                 && STATUS_PENDING.equals(currentStatus)
                 && isInvitationMembership(current);
+        boolean approvingEventJoinRequest = OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_ACCEPT.equals(action)
+                && STATUS_PENDING.equals(currentStatus)
+                && isAdminApprovalMembership(current);
         String nextStatus;
         boolean requiresManagerApproval = acceptingOwnManagedInvitation
                 && !canManageOwnerMembers(
@@ -1095,6 +1099,13 @@ public class ActivitiesMembersService {
             }
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
+            if (approvingEventJoinRequest && STATUS_ACCEPTED.equals(nextStatus)) {
+                eventInviteNotificationService.notifyMemberApproved(
+                        findPreferredEventRecord(ownerId),
+                        targetUserId,
+                        next.getActionAtIso(),
+                        actorUserId);
+            }
             if (ACTION_ACCEPT.equals(action)) {
                 postEventMembershipChangeMessages(ownerId, List.of(next), List.of());
             } else if (ACTION_REMOVE.equals(action)) {
