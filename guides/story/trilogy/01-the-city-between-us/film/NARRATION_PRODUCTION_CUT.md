@@ -3,10 +3,7 @@
 Picture lock:
 `/home/raxim/Downloads/video/the_strory_I.mp4`  
 Duration: `03:04.667`  
-SHA-256: `d5cb3affefda1975cab87dbe0b2e8d03d26ab6ace803bc037beac202309c3b6b`
-
-The opening title remains fully readable through `00:03.000` and then fades;
-the picture-lock duration and all narration timings are unchanged.
+SHA-256: `75b23e0f2ad02b70e4598a6ad6d099acd9eba17d095daad39821837abf394801`
 
 Voice: **Jon — Warm & Grounded Storyteller**  
 Model: `Eleven Multilingual v2`  
