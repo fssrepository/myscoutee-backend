@@ -1,6 +1,5 @@
 {
-  "status": "superseded-pending-p1-03-regeneration",
-  "supersededReason": "P1-03 omitted that the Founder returned at thirty-five and that thirty-five was a Tinder visibility threshold, and it stated thirty instead of thirty-three.",
+  "status": "review-render",
   "renderedOn": "2026-08-12",
   "picture": {
     "path": "/home/raxim/Downloads/video/the_strory_I.mp4",
@@ -20,7 +19,7 @@
     },
     "stem": {
       "path": "/home/raxim/Downloads/video/TCBU_narration_EN.wav",
-      "sha256": "51110c32e9b326a3b88435d699c1482b719c8994ff11dd9cfd5d6b7035d31579",
+      "sha256": "9a5350ebe8f015570745b70a9498846b64499385f227678fb874b85f3b716d70",
       "format": "mono 48 kHz 24-bit PCM",
       "durationSeconds": 184.667
     },
@@ -28,32 +27,32 @@
       {
         "startSeconds": 0.0,
         "durationSeconds": 22.282438,
-        "source": "/home/raxim/Downloads/ElevenLabs_2026-08-12T00_34_10_Jon - Warm & Grounded Storyteller_pvc_sp97_s62_sb55_se20_m2.mp3"
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_01.mp3"
       },
       {
         "startSeconds": 30.833,
         "durationSeconds": 24.05875,
-        "source": "/home/raxim/Downloads/ElevenLabs_2026-08-12T00_37_55_Jon - Warm & Grounded Storyteller_pvc_sp97_s62_sb55_se20_m2.mp3"
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_02.mp3"
       },
       {
         "startSeconds": 61.667,
-        "durationSeconds": 22.804875,
-        "source": "/home/raxim/Downloads/ElevenLabs_2026-08-12T00_39_03_Jon - Warm & Grounded Storyteller_pvc_sp97_s62_sb55_se20_m2.mp3"
+        "durationSeconds": 29.857938,
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_03.mp3"
       },
       {
         "startSeconds": 92.5,
         "durationSeconds": 21.551,
-        "source": "/home/raxim/Downloads/ElevenLabs_2026-08-12T00_40_07_Jon - Warm & Grounded Storyteller_pvc_sp97_s62_sb55_se20_m2.mp3"
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_04.mp3"
       },
       {
         "startSeconds": 123.333,
         "durationSeconds": 22.98775,
-        "source": "/home/raxim/Downloads/ElevenLabs_2026-08-12T00_41_06_Jon - Warm & Grounded Storyteller_pvc_sp97_s62_sb55_se20_m2.mp3"
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_05.mp3"
       },
       {
         "startSeconds": 154.167,
         "durationSeconds": 23.248938,
-        "source": "/home/raxim/Downloads/ElevenLabs_2026-08-12T00_42_03_Jon - Warm & Grounded Storyteller_pvc_sp97_s62_sb55_se20_m2.mp3"
+        "source": "/home/raxim/Downloads/video/Part_I_Jon_blocks/P1_JON_06.mp3"
       }
     ]
   },
@@ -80,17 +79,17 @@
     },
     "stem": {
       "path": "/home/raxim/Downloads/video/TCBU_final_mix_EN.wav",
-      "sha256": "7e6b69582d2aa14645da500a6285066a216931d5af3245a024095e9276f11921",
+      "sha256": "523857722b57d4d6b28d729a15d0d046c1ace2c4a6abb1a691656554d3a4ed3c",
       "format": "stereo 48 kHz 24-bit PCM"
     }
   },
   "delivery": {
     "path": "/home/raxim/Downloads/video/the_strory_I_narrated.mp4",
-    "sha256": "de25791420cced0be26cd55bb1193e2cc6861d4b8c1336f88593817bd75831a6",
+    "sha256": "74ea1cb2bc5822214b42ebbaff5f301c5a14f1201f9b34d8e029f4dc79b2c7ad",
     "durationSeconds": 184.667,
     "audio": "AAC stereo 48 kHz 320 kbit/s",
     "measuredIntegratedLufs": -14.05,
-    "measuredTruePeakDbtp": -1.12,
+    "measuredTruePeakDbtp": -1.13,
     "videoPacketMd5MatchesPictureLock": true
   }
 }
