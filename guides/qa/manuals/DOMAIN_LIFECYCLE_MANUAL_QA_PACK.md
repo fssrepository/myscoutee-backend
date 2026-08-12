@@ -1348,6 +1348,16 @@ Restart evidence on 2026-08-06:
   notification may be created by cancellation. Casey instead receives a
   separate new event-admin notification row with Nova as sender and the
   contextual **Cancelled** badge. The Public event remains discoverable.
+  Treat the resulting UI behavior as two separate tests inside this same
+  checkpoint, not as two new checkpoint rows:
+  1. **In-place signal test:** without reload, the same Explore card changes
+     from **Continue booking** to fresh **Request Join**, and only that event's
+     pending Activity row is removed.
+  2. **Reload reconstruction test:** after the in-place result is observed, one
+     clean Explore reload reconstructs the same visible card and fresh
+     **Request Join** action from `currentUserMembershipStatus=none` plus no
+     active/displayable basket; it creates no membership, basket, notification
+     or ticket write.
 - Nova chooses Join again. This creates exactly one new pending member-origin
   request by reopening the suppressed pending audit record and its activity
   projection, never resurrects it as accepted and does not reuse an old basket,
@@ -1376,9 +1386,14 @@ Restart evidence on 2026-08-06:
   at zero. The old physical basket row remains under the same ID only as
   `status=cancelled`, `resultState=deleted`; "no basket" in the Explore
   contract means no active/displayable/continuable basket, not deletion of its
-  audit row. Still required before closing this checkpoint: post-Cancel fresh
-  reload, the remaining re-Join/Cancel/re-Join identity and ID-scoped removal
-  checks, terminal Casey approval and repeated ticket-read purity.
+  audit row. Both Cancel UI tests passed independently: the same card first
+  changed in place to fresh **Request Join** without reload, then the
+  post-Cancel Explore reload reconstructed that same state. The reload retained
+  the same suppressed membership, cancelled/deleted basket audit and two Casey
+  notifications and created no ticket or counter. Still required before
+  closing this checkpoint: the remaining
+  re-Join/Cancel/re-Join identity and ID-scoped removal checks, terminal Casey
+  approval and repeated ticket-read purity.
 - First-join pre-cancel evidence (2026-08-06): the persisted event was `1/8`
   accepted plus `1` pending; Nova had exactly one `pendingSource=member`,
   `requestKind=approval` membership, pending activity `1`, both stored ticket

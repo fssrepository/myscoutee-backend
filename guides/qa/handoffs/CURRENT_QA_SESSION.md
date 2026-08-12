@@ -34,9 +34,9 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-005
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-005--join-request-approval-owns-ticket-creation
 scenario: event-domain
-ledger_status: IN PROGRESS; first Join, pending reload and first Cancel recorded in the QA pack and matrix
-state: before the required post-Cancel Explore reload
-required_resume: reload Nova's Event Explore exactly once and confirm the same card still offers fresh Join/Book; do not re-Join yet
+ledger_status: IN PROGRESS; first Join, pending reload, first Cancel and post-Cancel fresh reload recorded in the QA pack and matrix
+state: fresh Request Join menu verified after reload; before Nova's first re-Join
+required_resume: submit Request Join once and stop as soon as approval-pending is visible
 event: QA EVENT-TICKET-005
 actors:
   left: Casey Bridge
@@ -109,10 +109,10 @@ otherwise.
 
 Tell the user exactly this next, without adding another test branch:
 
-1. Nova: reload Event Explore exactly once.
-2. Find `QA EVENT-TICKET-005` again; the card must remain visible with the
-   fresh **Join/Book** action, not **Continue booking**.
-3. Do not Join again yet.
+1. Nova: choose **Request Join** for `QA EVENT-TICKET-005` and submit the join
+   request exactly once.
+2. Stop as soon as the UI says approval is pending.
+3. Do not reload or cancel yet.
 4. Leave Casey Notifications open and Riley untouched.
 5. Reply `megvan`.
 
@@ -142,15 +142,20 @@ states the next exact manual action.
   half-day collection of loosely related checks.
 - One producer action or a short causally continuous sequence may stay in one
   row when it shares a baseline and finishes at one decisive oracle.
+- One test case/matrix row may contain two or more named, short tests or
+  branches when they verify different observations of the same contract and
+  share the same controlled baseline. Keep their stop points and oracle results
+  distinct inside the QA-pack definition.
 - A longer lifecycle becomes ordered checkpoint rows. They may carry the same
   staged state forward, but every row has its own stop point, persisted oracle
   and PASS/FAIL decision.
 - When the user requests a newly discovered behavior as a separate case, give
   it a new stable checkpoint ID, a QA-pack definition and a new matrix CSV row;
   add fixture/harness/browser configuration only when that case needs it.
-- Do not silently grow the current row or create a new row merely because an
-  incidental observation occurred. First identify the independent contract
-  and follow the user's decision about splitting it.
+- Do not create a new row merely because one test case has multiple branches
+  or an incidental observation occurred. A new row requires a genuinely new
+  test case and the user's requested split; otherwise name the tests inside the
+  existing QA-pack checkpoint.
 - On a requested split, preserve execution continuity explicitly with the
   ordered chain and `advance`/`switch` semantics where supported; never force
   the user to recreate already-proven setup.
