@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-LIFE-002
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-002--organizer-trash-moves-the-event-to-trash-only
+checkpoint: EVENT-LIFE-003
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-003--organizer-restore-returns-to-the-preserved-bucket
 scenario: event-domain
-ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002's single Delete producer and terminal persisted verifier are complete. Casey's producer response removed My Events; Nova's still-open Active Events foreground poll removed the card without reload. Casey later opened Trash and saw the event exactly once; this is a read PASS, while the unwatched immediate Trash +1 timing remains NOT EXECUTED. Nova Notifications New also PASS: the exact unread QA EVENT-LIFE-002 / The event was deleted. row was visible and was not opened. The guarded terminal verifier repeated at 2026-08-13T21:05:00.659Z and retained T/statusBeforeSuppression=A/trashedAtIso, unchanged Casey Admin + Nova Member 2/8 audit rows, Casey organizer Trash=1, Nova Active/All/Trash=0, exactly one unread notification, one matching dev-mode pending Firebase outbox and one terminal EVENT_CHANGED recompute. Nova exposed a foreground counter FAIL: Active poll removed the card and corrected Active/Events, but inclusive All stayed 1 until switching to All loaded an empty list and corrected it to 0. The proper-scope fix transports the full stored Java event-counter snapshot on every list page through HTTP and frontend-local adapters and applies it atomically; SmartList remains unchanged. Backend read oracle and both existing owner builds are green. Nova's fresh-bundle reconstruction now PASS: after one reload Events > All was empty and neither Events nor All had a red counter, matching stored Active/All 0/0 without a corrective bucket switch. Casey still holds the old bundle and needs the final organizer fresh read. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Do not restage, reset, relaunch or replay the Delete producer. Keep exactly the two managed browsers. Nova's fresh-bundle participant All read is PASS and must not be repeated. Reload Casey once, open Activities > Events > Trash and prove exactly one QA EVENT-LIFE-002 card with Trash counter 1. Keep Nova untouched. After that fresh organizer read, EVENT-LIFE-003 Restore is the focused inverse replay of full-snapshot foreground counter synchronization. Casey Trash +1 immediate action-delta timing remains NOT EXECUTED and must not be inferred from either Trash read
+ledger_status: NOT RUN
+state: EVENT-LIFE-002 is PASS/CLOSED, including its Activity Events counter defect repair. Casey executed Delete once; canonical T/statusBeforeSuppression=A/trashedAtIso and unchanged Casey Admin + Nova Member 2/8 passed the guarded verifier twice. Casey organizer Trash=1 with exactly one event, Nova participant Active/All/Trash=0, the exact unread deletion notification, one pending dev-mode outbox and one terminal EVENT_CHANGED recompute all passed. The initial stale inclusive All counter was fixed by transporting the complete stored Java event-counter snapshot through HTTP and frontend-local routes and applying it atomically without changing SmartList. Final fresh-bundle reads passed: Nova All empty with no Events/All counter; Casey Trash1 with one exact event. The user explicitly classified the deletion and Activity Events counter fix as fully executed/PASS; no pending replay and no NOT EXECUTED branch remains. No EVENT-LIFE-003 producer or checkpoint advance has been executed. The retained domain state is still the closed EVENT-LIFE-002 trashed identity. Two managed Casey/Nova browsers remain open but may be stale by the next session. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Tomorrow, do not replay EVENT-LIFE-002 Delete and do not restage/reset the retained identity. Start with the handoff read-only resume gate: status event-domain EVENT-LIFE-002 and verify-lifecycle-trash must still match the closed boundary. Check current browser/runtime continuity; relaunch only the two managed Casey/Nova sessions if stale. Then advance the retained checkpoint exactly once from EVENT-LIFE-002 to EVENT-LIFE-003, capture a dedicated pre-Restore baseline before any UI mutation, and begin Restore as a new transaction. Do not treat Restore as unfinished counter-fix replay: the Activity Events counter repair is already PASS/CLOSED
 event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; trashed T with statusBeforeSuppression=A and trashedAtIso 2026-08-13T20:40:43.192579877Z, ticketing off, Casey owner/Admin and Nova accepted Member audit rows retained
 actors:
-  active: Casey and Nova in two managed browser windows
+  active: Casey and Nova in two managed browser windows; validate/relaunch tomorrow only if stale
   controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
-next_actor: User uses Casey only: reload the page once, open Activities > Events > Trash, and confirm exactly one QA EVENT-LIFE-002 card with Trash counter 1; leave Nova untouched
-stop_phrase: megvan after Casey's fresh-bundle Trash read contains the exact event once
+next_actor: Codex tomorrow runs the read-only closed-boundary gate, then advances EVENT-LIFE-002 -> EVENT-LIFE-003 and captures the Restore baseline before asking for the first UI action
+stop_phrase: session intentionally stopped before any EVENT-LIFE-003 producer
 ```
 
 ### Efficient resume gate
@@ -109,18 +109,14 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and all three
 `ENTRY-CONSENT-*` checkpoints are PASS/CLOSED and their retained evidence must
-not be replayed or deleted. `EVENT-LIFE-002` has completed its single Delete
-producer and terminal persisted verifier. Pre-action counters, list identity,
-canonical `2 / 8` occupancy, immediate card removal and worker effects are
-already PASS and must not be replayed. Casey's later organizer Trash read is
-also PASS with the same event exactly once; the immediate Trash-counter timing
-remains NOT EXECUTED. Nova's Active foreground poll removed the card but exposed
-a stale inclusive All counter until All's own load corrected it. The full stored
-snapshot transport fix is compiled and synced. Nova's exact unread deletion
-notification is PASS and stayed unread under the repeated terminal verifier.
-Nova's first fresh-bundle ownership reconstruction is also PASS: empty All with
-no Events/All counter. Reload Casey once for the matching organizer Trash read;
-`EVENT-LIFE-003` Restore is then the inverse foreground snapshot replay.
+not be replayed or deleted. `EVENT-LIFE-002` is PASS/CLOSED. Its single Delete
+producer, terminal persisted verifier, organizer/participant ownership reads,
+unread deletion notification and final fresh-bundle Activity Events counter
+verification must not be replayed. The user explicitly closed the deletion and
+counter branch as fully executed; do not carry a pending replay or NOT EXECUTED
+marker into the next session. Tomorrow run only the read-only closed-boundary
+gate, then advance the retained trashed identity once into `EVENT-LIFE-003`,
+capture a new Restore baseline and start that independent transaction.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -262,6 +258,14 @@ the user.
   an earlier shared transaction invariant. If a focused path needs prepared
   state, make it a versioned sub-checkpoint rather than asking the user to
   reproduce unrelated manual steps.
+- Do not leave an active QA defect in `fix compiled / replay pending` state and
+  move to the next independent test. Before closing or pausing the current
+  session, give the affected branch a decisive runtime **PASS** or **FAIL** using
+  the shortest valid replay/read oracle in the current checkpoint. A later test
+  may add coverage, but it must not be made a hidden prerequisite for closing
+  today's fix. When the user explicitly performs the decisive check and accepts
+  the branch, record it as executed/PASS consistently in the QA pack, ledger and
+  resume pointer; remove stale pending or NOT EXECUTED wording for that branch.
 - Before issuing any lifecycle producer instruction whose control is filtered
   by Upcoming/Active/Past time, compare the event's absolute start/end against
   the current wall clock and reserve enough time for the remaining manual stops,

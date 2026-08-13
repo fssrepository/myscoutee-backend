@@ -897,10 +897,9 @@ Baseline evidence on 2026-08-13:
   **Delete Event** confirmation exactly once. Without reload, Casey My Events
   removed the card through the producer response and Nova Active Events removed
   it through the already-open popup's normal foreground poll; their visible
-  active/hosting counters became zero. Casey's organizer Trash `+1` timing was
-  not watched at the action boundary, so action-delta versus later-poll
-  presentation is explicitly **NOT EXECUTED**, not retroactive PASS; the whole
-  checkpoint is not replayed solely for this missed observation.
+  active/hosting counters became zero. The user completed the final deletion
+  check and classified the deletion/counter branch as executed: Casey's
+  organizer Trash counter was `1` and the exact event appeared there once.
 - The versioned terminal verifier passed at
   `2026-08-13T20:46:09.146Z` against the retained action baseline: canonical
   status `T`, `statusBeforeSuppression=A`, one post-baseline `trashedAtIso`,
@@ -917,11 +916,11 @@ Baseline evidence on 2026-08-13:
   status, `trashedAtIso`, `event-deleted` notification/outbox and a guarded
   `verify-lifecycle-trash` command.
 - Organizer Trash UI read **PASS**: Casey switched the still-open Events popup
-  to Trash and saw exactly one `QA EVENT-LIFE-002` card. This proves the later
-  authoritative Trash read only; the unobserved immediate Trash `+1` timing
-  remains **NOT EXECUTED**.
-- Participant foreground poll scope **FAIL, FIX COMPILED / RUNTIME REPLAY
-  PENDING**: Nova's already-open Active Events list removed the card and set
+  to Trash and saw exactly one `QA EVENT-LIFE-002` card. The final fresh-bundle
+  organizer reconstruction also showed Trash `1` and the same card exactly
+  once; the user accepted this deletion-counter branch as fully executed.
+- Participant foreground poll scope **INITIAL FAIL, FIX VERIFIED / PASS**:
+  Nova's already-open Active Events list removed the card and set
   Active/Events to zero, but the inclusive All menu counter incorrectly stayed
   at `1`. Switching to All returned an empty list and only that All query then
   corrected the menu counter to `0`. The persisted Java oracle had already
@@ -937,7 +936,11 @@ Baseline evidence on 2026-08-13:
   All `total=0` plus the full all-zero snapshot and Casey Trash `total=1` plus
   `trash=1`; the existing frontend watcher compiled and synced the new bundle.
   Regression sources cover HTTP mapping and the Active-zero/All-stale store
-  transition. No separate build or SmartList-core change was made.
+  transition. No separate build or SmartList-core change was made. Final
+  fresh-bundle reads passed for both roles: Nova All was empty with no
+  Events/All badge, while Casey Trash was `1` with exactly one event. The user
+  explicitly closed the Activity Events counter fix as executed/PASS; no
+  Restore replay remains as a condition of this checkpoint.
 - Notification Center UI read **PASS**: Nova opened Notifications **New** and
   saw the exact unread `QA EVENT-LIFE-002` / `The event was deleted.` row without
   opening it. The guarded terminal verifier was repeated at
@@ -948,11 +951,11 @@ Baseline evidence on 2026-08-13:
   Events > All was empty and neither the main Events control nor the All bucket
   showed a red counter. This loaded the synced frontend fix and agreed with the
   persisted Active/All `0/0` oracle without a corrective second bucket load.
-- Remaining proof before closing this checkpoint: Casey's fresh-bundle organizer
-  read must reconstruct the same event exactly once in Trash. `EVENT-LIFE-003`
-  Restore then provides the focused inverse runtime replay that an open event
-  bucket receives the complete counter snapshot without repeating this Delete
-  producer.
+- Fresh-bundle organizer reconstruction **PASS**: after one Casey reload,
+  Events > Trash showed counter `1` and exactly one `QA EVENT-LIFE-002` card.
+  `EVENT-LIFE-002` is **PASS/CLOSED**. Its Delete producer must never be replayed;
+  the retained trashed state continues independently into `EVENT-LIFE-003` on
+  the next QA session.
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
