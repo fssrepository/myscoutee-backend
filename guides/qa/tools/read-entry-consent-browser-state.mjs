@@ -47,7 +47,8 @@ for (const session of manifest.sessions ?? []) {
         : null;
       const revision = entry?.privacyPolicy?.activeRevision?.() ?? null;
       const visibleDocumentViewers = [...document.querySelectorAll('app-document-viewer')]
-        .filter(element => element.getClientRects().length > 0);
+        .filter(element => element.getClientRects().length > 0
+          || [...element.querySelectorAll('*')].some(child => child.getClientRects().length > 0));
       const visibleDocumentViewer = visibleDocumentViewers[0] ?? null;
       const visibleDocumentComponent = visibleDocumentViewer
         ? globalThis.ng?.getComponent?.(visibleDocumentViewer)

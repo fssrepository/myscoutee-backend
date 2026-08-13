@@ -34,14 +34,14 @@ resume pointer and reusable working method.
 checkpoint: ENTRY-CONSENT-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
 scenario: core-coverage-expansion
-ledger_status: DESIGN CAPTURED / FIXTURE PREPARATION PENDING
-state: The original 106-test workflow spine remains unchanged and its completed ticket, invitation and chat checkpoints must not be replayed. The authoritative CSV/XLSX contains 188 real tests: 132 Core and 56 EXT. Core-first remains selected. ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001 are PASS/CLOSED. ENTRY-CONSENT-001 reset completed at 2026-08-13T18:54:01.813Z: privacy-default-v1 is again the sole active English revision, while the inactive QA revision, disposable profile and exact consent remain evidence. ENTRY-FIREBASE-REG-001 still requires a verified Firebase prerequisite. The next independently runnable Core case is ENTRY-CONSENT-002. Payment, operator, registry and deployment EXT execution remains deferred
-required_resume: Do not repeat the coverage audit, rewrite the original 106 rows, replay either closed entry checkpoint or delete their retained evidence. Run one read-only entry-consent status if runtime continuity is uncertain; it must show not-staged and privacy-default-v1 active. Inspect the rejection, session-prevention, active-revision recheck and historical-consent contracts, then extend the versioned entry-consent harness for ENTRY-CONSENT-002 and prove its exact baseline before asking for a user action. Do not start ENTRY-FIREBASE-REG-001 until its verified Firebase configuration prerequisite exists, and do not start an EXT row unless the user changes Core-first
+ledger_status: MANUAL UI / IN PROGRESS
+state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001 remain PASS/CLOSED. ENTRY-CONSENT-002 staged at 2026-08-13T19:03:26.065Z for Nova. The previous controlled revision manual-qa-entry-consent-002-20260813190326065-previous v3 is the sole active English revision; controlled newer v4 is inactive. Baseline is Nova consents 2, total consents 26, ownerless 0 and no controlled-revision consent. One fresh anonymous managed browser shows exact v3 at /entry with no optional selection, consent, audit or session. No rejection/acceptance has occurred. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
+required_resume: Do not restage, reset, relaunch, accept consent, activate v4 or replay closed entry checkpoints. If continuity is uncertain, run read-only status entry-consent ENTRY-CONSENT-002 and read-entry-consent-browser-state.mjs ENTRY-CONSENT-002; expect phase previous-active, v3 sole active, all server deltas 0, /entry, v3 popup, no consent/audit/session. The next action is exactly one Cancel click. After the user reports completion, prove one rejected v3 audit, no browser consent/session and unchanged server cardinality before asking for any acceptance. Do not start Firebase or EXT work
 event: none; ENTRY-CONSENT-002 must use disposable privacy revisions and identity/consent evidence without mutating retained event fixtures
 actors:
   active: one disposable browser session after the ENTRY-CONSENT-002 fixture proves its baseline
   controls: rejection/no-session proof, old acceptance versus newer active revision, current immutable consent and audit-history oracle; no extra Google-account window
-next_actor: Codex extends and stages ENTRY-CONSENT-002; the user performs no action until the versioned status oracle proves the exact baseline
+next_actor: User clicks Cancel once in the visible v3 privacy popup and makes no other selection or login action; then reports megvan
 stop_phrase: none
 ```
 
@@ -109,9 +109,10 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and `ENTRY-CONSENT-001`
 are PASS/CLOSED and their retained evidence must not be replayed or deleted.
-The next independently runnable Core case is `ENTRY-CONSENT-002`; extend its
-versioned rejection/newer-revision fixture and prove the exact baseline before
-asking for a browser action.
+The active Core case is `ENTRY-CONSENT-002`. Its v3/v4 fixture and anonymous
+browser baseline are proven. Click Cancel exactly once in the visible v3
+privacy popup; do not select an optional section or start login yet. Then run
+the browser and server rejection oracles before issuing the acceptance step.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed

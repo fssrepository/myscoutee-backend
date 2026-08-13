@@ -3394,6 +3394,18 @@ restored. Reset completed at `2026-08-13T18:54:01.813Z`; the follow-up status
 was `not-staged`, with `privacy-default-v1` again the sole active English
 revision, 2 retained disposable registration users and 26 total consents.
 
+`ENTRY-CONSENT-002` in-progress execution checkpoint (2026-08-13): the
+versioned `entry-consent` fixture staged at `2026-08-13T19:03:26.065Z` for
+Nova (`650000000000000000000062`). The controlled previous revision
+`manual-qa-entry-consent-002-20260813190326065-previous` v3 is the sole active
+English revision; the newer controlled v4 exists but is inactive. The baseline
+has 2 pre-existing Nova consents, 26 total consents, zero ownerless consents,
+and no consent for either controlled revision. A fresh anonymous managed
+browser loaded `/entry` with the exact v3 required section and
+`qa-previous-analytics`, no selected optional IDs, consent, audit or session,
+and a visible Cancel/Accept boundary. The next named branch is the rejection
+proof; no acceptance or revision activation has occurred yet.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |
