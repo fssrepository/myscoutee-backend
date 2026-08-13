@@ -510,15 +510,45 @@ Execution state on 2026-08-04:
   loading/calendar policy regressions were added. The existing Angular watcher
   rebuilt successfully in 6.6 seconds and hot-synced the new bundle; no second
   build or test process ran.
+- FRONTEND CAUSAL REPLAY **PASS**: with My Events loaded at `1`, switching to
+  Invitations and back produced the SmartList's normal transient reset totals,
+  but neither reset changed the stored Invitations `3` or My Events `1` bucket.
+  Each completed matching load then retained its authoritative server total.
+  This used the hot-deployed bundle and changed no domain data.
+- CHECKPOINT BASELINE DEFECT / HARNESS FIX: the earlier stage helper recomputed
+  only Casey Hosting and Drafts while preserving stale global Invitations and
+  All values. A correct Publish-side Java recompute therefore looked like an
+  unrelated `+3` action delta. Direct authenticated list loads proved those
+  three invitations were legitimate pre-existing events. The fixture now
+  mirrors the complete Java event-counter projection for every controlled
+  actor before capturing the action baseline; production Java was not changed.
 - CLEAN FIX REPLAY BASELINE: the contaminated fixture was reset, independently
-  verified `not-staged`, then staged again at `2026-08-13T13:34:21.092Z`.
-  Persisted state is exactly one `DR` event, Casey My Events `1` and Drafts
-  `1`, Nova/Riley pending, zero chats/messages/chat notification artifacts,
-  zero lifecycle artifacts and zero action deltas. The launcher replaced the
-  old windows with exactly three fresh Casey/Nova/Riley sessions loading the
-  hot-deployed bundle. Read-only Casey DOM shows My Events `1`. Only the short
-  Draft Publish counter branch is next; earlier Chat All baseline steps are not
-  repeated before this counter repair replay.
+  verified `not-staged`, then staged again at `2026-08-13T14:02:06.075Z`.
+  Persisted state is exactly one `DR` event. Casey is All `4`, Invitations `3`,
+  My Events/Hosting `1` and Drafts `1`; Nova and Riley are pending fixture
+  invitees but correctly remain at zero active-event invitation counters until
+  Publish. Chats/messages/chat notifications, lifecycle artifacts and every
+  captured action delta are zero. Only the short Draft Publish counter branch
+  is next; the already-proven Chat All baseline is not repeated.
+- CLEAN DRAFT PUBLISH COUNTER REPLAY **PASS**: Casey published exactly once at
+  `2026-08-13T14:12:42Z`. Without reload or a My Events click, Drafts changed
+  `1 -> 0` while My Events remained `1`; later switching among event buckets
+  retained the correct menu counts. Read-only client state and MongoDB agree:
+  Casey is All `4`, Invitations `3`, Hosting/My Events `1`, Drafts `0`, and the
+  only Casey action delta is `eventDrafts=-1`.
+- EXPECTED IN-PLACE INVITATION CONVERGENCE: after Publish, Nova and Riley each
+  changed from Invitations `0 -> 1` and received exactly one `event-invite`
+  notification for the controlled event. Those two later-visible entries are
+  the staged draft invitees becoming active-event invitations through normal
+  client polling; Casey stayed at his three unrelated pre-existing invitations
+  and no duplicate invitation was persisted.
+- The same immediate oracle contains exactly one Casey-owned main-event chat
+  with unread `0`, no chat message/outbox/notification, and zero chat-counter
+  delta for all three actors. The normal recompute completed `done` at
+  `2026-08-13T14:16:28.796916646Z`, attempt `1`, empty `lastError`, without
+  changing that oracle. The remaining manual step is the three-client
+  post-Publish chat-list visibility check; do not repeat Publish or the counter
+  branch.
 
 ### `EVENT-EDITOR-003` — save feeds the real auto-inviter
 

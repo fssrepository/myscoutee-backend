@@ -254,60 +254,146 @@
     return Number.isFinite(count) ? Math.max(0, Math.trunc(count)) : 0;
   }
 
-  function synchronizeHostEventActivityCounters(userId) {
-    const directEvents = Q.collection("events").find({
-      $or: [
-        { ownerUserId: userId },
-        { creatorUserId: userId },
-        { admins: userId }
-      ]
-    }).toArray();
-    const preferredBySourceId = new Map();
-    for (const event of directEvents) {
-      const parentEventId = Q.text(event.parentEventId);
-      const sourceId = parentEventId || Q.text(event.sourceId || event._id);
-      if (!sourceId) continue;
-      const current = preferredBySourceId.get(sourceId);
-      const preference = item => {
-        if (!item) return -1;
-        const status = Q.text(item.status).toUpperCase();
-        const trashed = item.isTrashed === true || status === "T";
-        const generated = item.generated === true || Q.text(item.parentEventId) || Q.text(item.eventType) === "slot";
-        return (generated ? 0 : 4) + (trashed ? 0 : 2) + (Q.text(item.ownerUserId) === userId ? 1 : 0);
-      };
-      if (!current || preference(event) > preference(current)) {
-        preferredBySourceId.set(sourceId, event);
+  function synchronizeEventActivityCounters(requestedUserIds) {
+    const userIds = sortedUnique(Array.isArray(requestedUserIds) ? requestedUserIds : [requestedUserIds]);
+    const deletedMembershipSourceIdsByUserId = new Map(userIds.map(userId => [userId, new Set()]));
+    for (const member of Q.collection("activityMembers").find({
+      ownerType: "event",
+      userId: { $in: userIds }
+    }).toArray()) {
+      const userId = Q.text(member.userId);
+      if (!deletedMembershipSourceIdsByUserId.has(userId)) continue;
+      const status = Q.text(member.status).toUpperCase();
+      if (status === "DELETED" || status === "D") {
+        const sourceId = Q.text(member.ownerId);
+        if (sourceId) deletedMembershipSourceIdsByUserId.get(userId).add(sourceId);
       }
     }
 
-    let hosting = 0;
-    let drafts = 0;
-    for (const event of preferredBySourceId.values()) {
+    const relevantEvents = Q.collection("events").find({
+      generated: { $ne: true },
+      sourceId: { $exists: true, $ne: "" },
+      $or: [
+        { ownerUserId: { $in: userIds } },
+        { admins: { $in: userIds } },
+        { acceptedMemberUserIds: { $in: userIds } },
+        { invitedMemberUserIds: { $in: userIds }, status: "A" },
+        { pendingRequestMemberUserIds: { $in: userIds } }
+      ]
+    }).toArray();
+    const sourceIdsByUserId = new Map(userIds.map(userId => [
+      userId,
+      new Set(deletedMembershipSourceIdsByUserId.get(userId))
+    ]));
+    for (const event of relevantEvents) {
+      const ownerUserId = Q.text(event.ownerUserId);
+      const admins = sortedUnique(event.admins || []);
+      const accepted = sortedUnique(event.acceptedMemberUserIds || []);
+      const invited = sortedUnique(event.invitedMemberUserIds || []);
+      const pending = sortedUnique(event.pendingRequestMemberUserIds || []);
       const status = Q.text(event.status).toUpperCase();
-      if (event.isTrashed === true || status === "T") continue;
-      hosting += 1;
-      if (event.published === false || status === "DR") drafts += 1;
+      const generated = event.generated === true
+        || Q.text(event.parentEventId)
+        || Q.text(event.eventType).toLowerCase() === "slot";
+      const sourceId = generated
+        ? Q.text(event.parentEventId)
+        : Q.text(event.sourceId);
+      if (!sourceId) continue;
+      for (const userId of userIds) {
+        if (ownerUserId === userId
+            || admins.includes(userId)
+            || accepted.includes(userId)
+            || (status === "A" && invited.includes(userId))
+            || pending.includes(userId)) {
+          sourceIdsByUserId.get(userId).add(sourceId);
+        }
+      }
     }
 
-    const user = Q.collection("users").findOne({
-      $or: [{ _id: userId }, { userId }]
-    });
-    if (!user) Q.fail(`user '${userId}' disappeared while baseline activity counters were synchronized.`);
-    const eventCounters = user.activities && user.activities.event || {};
-    const eventAll = normalizeActivityCount(eventCounters.active)
-      + normalizeActivityCount(eventCounters.pending)
-      + normalizeActivityCount(eventCounters.invitations)
-      + hosting;
-    const result = Q.collection("users").updateOne({
-      $or: [{ _id: userId }, { userId }]
-    }, { $set: {
-      "activities.hosting": hosting,
-      "activities.event.all": eventAll,
-      "activities.event.hosting": hosting,
-      "activities.event.drafts": drafts
-    } });
-    if (result.matchedCount !== 1) {
-      Q.fail(`user '${userId}' disappeared while baseline activity counters were synchronized.`);
+    const allSourceIds = sortedUnique(
+      [...sourceIdsByUserId.values()].flatMap(sourceIds => [...sourceIds])
+    );
+    const eventsBySourceId = new Map();
+    if (allSourceIds.length > 0) {
+      for (const event of Q.collection("events").find({ sourceId: { $in: allSourceIds } }).toArray()) {
+        const sourceId = Q.text(event.sourceId);
+        if (!eventsBySourceId.has(sourceId)) eventsBySourceId.set(sourceId, []);
+        eventsBySourceId.get(sourceId).push(event);
+      }
+    }
+
+    const eventStatus = event => Q.text(event && event.status).toUpperCase();
+    const eventAdmins = event => sortedUnique(event && event.admins || []);
+    const isTrash = event => event && (event.isTrashed === true || eventStatus(event) === "T");
+    const isActive = event => event && (eventStatus(event) === "A" || !eventStatus(event));
+    const isHosting = (event, userId) => event && userId
+      && (Q.text(event.creatorUserId) === userId || eventAdmins(event).includes(userId));
+    const preference = (event, userId) => {
+      if (!event) return 0;
+      const creatorUserId = Q.text(event.creatorUserId);
+      return (Q.text(event.ownerUserId) === userId ? 64 : 0)
+        + (isTrash(event) ? 0 : 16)
+        + (isHosting(event, creatorUserId) ? 8 : 0)
+        + (isActive(event) ? 2 : 0)
+        + (eventAdmins(event).length > 0 ? 1 : 0);
+    };
+
+    for (const userId of userIds) {
+      const counters = {
+        active: 0,
+        pending: 0,
+        invitations: 0,
+        hosting: 0,
+        drafts: 0,
+        trash: 0
+      };
+      for (const sourceId of sourceIdsByUserId.get(userId)) {
+        let preferred = null;
+        for (const event of eventsBySourceId.get(sourceId) || []) {
+          if (!preferred || preference(event, userId) > preference(preferred, userId)) preferred = event;
+        }
+        if (!preferred) continue;
+        if (isTrash(preferred) || deletedMembershipSourceIdsByUserId.get(userId).has(sourceId)) {
+          counters.trash += 1;
+          continue;
+        }
+        if (sortedUnique(preferred.invitedMemberUserIds || []).includes(userId)) {
+          counters.invitations += 1;
+          continue;
+        }
+        if (isHosting(preferred, userId)) {
+          counters.hosting += 1;
+          if (preferred.published === false || eventStatus(preferred) === "DR") counters.drafts += 1;
+          if (["UR", "B"].includes(eventStatus(preferred))) counters.pending += 1;
+          continue;
+        }
+        if (sortedUnique(preferred.pendingRequestMemberUserIds || []).includes(userId)
+            || ["UR", "B"].includes(eventStatus(preferred))) {
+          counters.pending += 1;
+          continue;
+        }
+        if (sortedUnique(preferred.acceptedMemberUserIds || []).includes(userId) || isActive(preferred)) {
+          counters.active += 1;
+        }
+      }
+      const all = counters.active + counters.pending + counters.invitations + counters.hosting;
+      const result = Q.collection("users").updateOne({
+        $or: [{ _id: userId }, { userId }]
+      }, { $set: {
+        "activities.invitations": counters.invitations,
+        "activities.events": counters.active,
+        "activities.hosting": counters.hosting,
+        "activities.event.all": all,
+        "activities.event.active": counters.active,
+        "activities.event.pending": counters.pending,
+        "activities.event.invitations": counters.invitations,
+        "activities.event.hosting": counters.hosting,
+        "activities.event.drafts": counters.drafts,
+        "activities.event.trash": counters.trash
+      } });
+      if (result.matchedCount !== 1) {
+        Q.fail(`user '${userId}' disappeared while baseline activity counters were synchronized.`);
+      }
     }
   }
 
@@ -1386,7 +1472,7 @@
         memberDocument(EVENT_ID, participantUserId, "Member", "pending", "invite"),
         memberDocument(EVENT_ID, thirdUserId, "Member", "pending", "invite")
       ]);
-      synchronizeHostEventActivityCounters(hostUserId);
+      synchronizeEventActivityCounters([hostUserId, participantUserId, thirdUserId]);
       return;
     }
     if (stageKind === "slot-editor-draft") {
@@ -3488,7 +3574,7 @@
     for (const userId of [participantUserId, thirdUserId]) {
       applyTicketActivityCounterDelta(userId, -1);
     }
-    synchronizeHostEventActivityCounters(hostUserId);
+    synchronizeEventActivityCounters(hostUserId);
     Q.collection("chats").updateMany({
       $or: [{ chatId: eventId }, { eventId }, { ownerId: eventId }]
     }, {

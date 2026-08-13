@@ -34,15 +34,15 @@ resume pointer and reusable working method.
 checkpoint: EVENT-PUBLISH-CHAT-001
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-publish-chat-001--publish-materializes-the-accepted-admin-chat
 scenario: event-domain
-ledger_status: FIX HOT-DEPLOYED / CLEAN REPLAY STAGED
-state: The Draft Publish stale-scope counter failure is recorded. Activities popup now rejects list totals whose query scope differs from the current scope; shared SmartList is untouched and the existing Angular watcher rebuilt/hot-synced green. The contaminated fixture was reset, verified not-staged and staged cleanly at 2026-08-13T13:34:21.092Z. Persisted baseline is DR, Casey My Events 1 plus Drafts 1, Nova/Riley pending, zero chat/lifecycle artifacts and zero action deltas. Exactly three fresh managed sessions load the new bundle; Casey DOM shows My Events 1
-required_resume: Replay only the failed Draft Publish counter branch. In Casey open Activities -> Events -> Drafts and confirm Drafts 1 plus My Events 1. Publish QA EVENT-PUBLISH-CHAT-001 exactly once from Drafts. Do not click My Events and do not reload. The Draft row and Drafts counter must disappear/decrement to 0 while the My Events counter remains visibly 1. Report the immediate two counter values before any navigation; Nova and Riley remain untouched
+ledger_status: DRAFT PUBLISH COUNTER REPLAY PASS / CHAT UI CHECK NEXT
+state: The corrected clean Draft Publish ran once at 2026-08-13T14:12:42Z. Without reload or My Events click, the user confirmed Drafts 0 and My Events 1; subsequent bucket switching retained correct menu counts. Read-only UI and persisted oracles agree: Casey All 4 / Invitations 3 / My Events 1 / Drafts 0, with only eventDrafts -1. Nova and Riley each converged in-place to Invitations 1 plus exactly one event-invite notification; these were the two staged draft invitees becoming active invitations, not duplicates. Exactly one empty Casey main-event chat exists with unread 0, no chat message or actor chat notification; Nova/Riley chat counters remain zero. The normal recompute completed done at 2026-08-13T14:16:28.796916646Z on attempt 1 with empty lastError and retained the exact state
+required_resume: Continue the same post-Publish boundary; do not repeat Publish or the counter replay. In Casey close Events and open Activities -> Chats -> All. Require QA EVENT-PUBLISH-CHAT-001 exactly once with no Chats attention-count increase; open it and require an empty channel with no automatic Publish message. Then check Nova and Riley Chats -> All: the QA chat must be absent for both pending invitees. Do not accept an invitation yet and do not reload before reporting the three list results
 event: QA EVENT-PUBLISH-CHAT-001 / manual-qa-checkpoint:v1:event-domain:event
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: User replays only the Casey Draft Publish counter branch without clicking My Events or reloading
+next_actor: User verifies the already-published chat projection in Casey, Nova and Riley without repeating Publish
 stop_phrase: megvan
 ```
 
@@ -108,13 +108,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`EVENT-PUBLISH-CHAT-001` is cleanly restaged with the stale-scope counter fix
-hot-deployed. Casey shows My Events `1`; the persisted oracle has Drafts `1`.
-In Casey open Activities -> Events -> Drafts, confirm both counters are `1`,
-then Publish `QA EVENT-PUBLISH-CHAT-001` exactly once from the Draft card. Do
-not click My Events and do not reload. The Draft row and Drafts counter must
-become `0`, while My Events must remain visibly `1`. Report both immediate
-values with `megvan`.
+The clean Draft Publish counter replay is **PASS**. Do not Publish again. In
+Casey close Events and open Activities -> Chats -> All. Require `QA
+EVENT-PUBLISH-CHAT-001` exactly once and open it: it must be empty and Chats
+attention counts must remain zero. Then open Nova and Riley Chats -> All; the
+same chat must be absent for both pending invitees. Do not accept either
+invitation and do not reload before reporting the three list results.
 
 ## QA working method
 

@@ -4,25 +4,38 @@ Resume new work from [`CURRENT_QA_SESSION.md`](CURRENT_QA_SESSION.md). This file
 is retained as detailed fixture/evidence history and is not the canonical
 current-state summary.
 
-Status: implementation updated; a clean manual Publish retest is required before
-the retained event continues into the invitation-acceptance chat branch.
+Status: clean Draft Publish counter replay passed; the retained event now needs
+only the post-Publish three-client chat visibility check before continuing into
+the invitation-acceptance branch.
 
 Do not start or rebuild the stack. The existing dev stack and both hot-deploy watchers are already running.
 
 ## Exact staged state
 
 - Event: `manual-qa-checkpoint:v1:event-domain:event`
-- Title: `Manual QA EVENT-PUBLISH-CHAT-001`
+- Title: `QA EVENT-PUBLISH-CHAT-001`
 - Lifecycle: Draft (`DR`), one canonical event
 - Casey Bridge (`650000000000000000000061`): accepted Admin
 - Nova Social (`650000000000000000000062`): pending invite
 - Riley Outside (`650000000000000000000063`): pending invite
 - Event chats: none
 - Casey/Nova/Riley persisted chat counters: `0`; checkpoint action deltas: all `0`
-- Casey `My Events` / `hosting`: `1`; `event.drafts`: `1`
+- Casey event buckets: All `4`, Invitations `3`, My Events / Hosting `1`,
+  Drafts `1`
+- Nova/Riley event buckets: `0` before Publish; the draft invitation is not an
+  active-event invitation until the lifecycle transition
 - Scheduler: not involved
 
 ## Publish evidence captured
+
+The corrected clean Publish ran once at `2026-08-13T14:12:42Z`. Without reload
+or a My Events click, Casey retained My Events `1` while Drafts changed to `0`;
+subsequent scope switching retained correct counters. Casey stayed at his three
+pre-existing invitations, while Nova and Riley each converged to the one staged
+event invitation and one matching `event-invite` notification. The persisted
+chat oracle is one empty Casey main-event chat with unread `0` and no chat
+message or actor notification. Do not Publish again; verify the three chat
+lists next.
 
 Casey published `Manual QA EVENT-PUBLISH-CHAT-001` exactly once. The read-only
 oracle confirmed one Casey event chat, Drafts `-1`, unchanged Hosting/My Events,
