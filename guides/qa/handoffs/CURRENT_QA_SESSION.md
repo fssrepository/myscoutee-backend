@@ -34,14 +34,14 @@ resume pointer and reusable working method.
 checkpoint: ENTRY-CONSENT-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
 scenario: core-coverage-expansion
-ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001 remain PASS/CLOSED. ENTRY-CONSENT-002 is phase current-active. Rejection, exact v3 acceptance/transfer and guarded v4 activation passed. Reload retained Nova session and local v3 consent/accepted-then-rejected audit history, but correctly forced a non-backdrop-dismissible v4 popup with required-v4, qa-current-analytics, qa-current-marketing and empty selection. Server still has no v4 consent; v3 consent 6a7e170d67960971c52a31b6 is unchanged and cardinality remains target/total +1, ownerless 0. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
-required_resume: Do not restage, reset, relaunch, activate again or replay closed checkpoints. If continuity is uncertain, browser state must show /game, Nova session, v4 popup closeOnBackdrop=false with empty selection, retained local v3 evidence and two old audits; server status must show current-active, v4 sole active, unchanged v3 consent, target/total +1, ownerless 0 and no v4 consent. The next action is select only Current analytics and click Approve privacy. After the user reports completion, run browser and terminal verify; expect exactly one settings-source v4 consent, immutable v3 document, target/total +2 and ownerless 0. Do not start Firebase or EXT work
+ledger_status: MANUAL UI + SERVER ORACLE PASS / CLOSED; VISUAL V5 PREVIEW ACTIVE
+state: ENTRY-DEMO-REG-001, ENTRY-CONSENT-001 and ENTRY-CONSENT-002 are PASS/CLOSED. ENTRY-CONSENT-002 terminal verify passed at 2026-08-13T19:19:53.689Z with immutable v3 consent 6a7e170d67960971c52a31b6 and exact v4 consent 6a7e188067960971c52a31b8. At user request, preview-v5 snapshot the verified v4 revision and temporarily exposed the same controlled revision as active v5 at 2026-08-13T19:21:48.358Z. This is only a header visual aid, not a testcase or consent transition. The same Nova browser has not reloaded since preview activation. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
+required_resume: Do not rerun a closed branch, approve the v5 preview, restage, relaunch or create another testcase. The next action is reload the same Nova browser once and only view the header v5 badge. After the user confirms viewing, run reset entry-consent ENTRY-CONSENT-002; reset must first restore the snapshotted verified v4 revision, then deactivate the QA revisions and restore the original active privacy revision while retaining both exact consent records. Verify not-staged afterward
 event: none; ENTRY-CONSENT-002 must use disposable privacy revisions and identity/consent evidence without mutating retained event fixtures
 actors:
   active: one disposable browser session after the ENTRY-CONSENT-002 fixture proves its baseline
   controls: rejection/no-session proof, old acceptance versus newer active revision, current immutable consent and audit-history oracle; no extra Google-account window
-next_actor: User selects only Current analytics in the v4 popup and clicks Approve privacy; then reports megvan
+next_actor: User reloads the same Nova browser once, views the v5 header badge and does not approve; then reports megvan
 stop_phrase: none
 ```
 
@@ -109,9 +109,10 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and `ENTRY-CONSENT-001`
 are PASS/CLOSED and their retained evidence must not be replayed or deleted.
-The active Core case is `ENTRY-CONSENT-002`. Its v3 history and forced v4 gate
-are proven. Select only Current analytics in the open v4 popup and click
-Approve privacy. Then run the browser and terminal final oracles before reset.
+`ENTRY-CONSENT-002` is PASS/CLOSED and its temporary v5 header preview is
+active. Reload the same Nova browser only to view the v5 badge; do not approve.
+After confirmation, reset must restore verified v4 internally and then restore
+the original active privacy revision.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed

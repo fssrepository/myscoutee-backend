@@ -3432,7 +3432,15 @@ and the non-backdrop-dismissible v4 popup opened with required v4 plus
 `qa-current-analytics` and `qa-current-marketing`, empty selection and only the
 Approve privacy action. The local v3 consent/approval and accepted-then-rejected
 audit history remained intact, while the server still had no v4 consent and
-kept the v3 record and `+1/+1/0` cardinality unchanged.
+kept the v3 record and `+1/+1/0` cardinality unchanged. Selecting only
+`qa-current-analytics` and approving closed the popup. The terminal oracle
+passed at `2026-08-13T19:19:53.689Z`: settings-source v4 consent
+`6a7e188067960971c52a31b8` contains only `qa-current-analytics`; the v3 consent
+remains byte-identical, `qa-current-marketing` is absent, Nova and total consent
+deltas are exactly `+2`, and ownerless delta is `0`. Event fixtures and payment
+runtime remained untouched. This closes `ENTRY-CONSENT-002`; the requested v5
+header preview after closure is a temporary visual aid inside the same harness,
+not another testcase or acceptance oracle.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |

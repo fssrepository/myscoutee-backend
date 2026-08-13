@@ -474,6 +474,84 @@
     });
   }
 
+  function previewV5() {
+    config();
+    const state = requireState();
+    if (Q.text(state.phase) !== "verified") {
+      Q.fail(`preview-v5 requires phase verified, found '${Q.text(state.phase)}'.`);
+    }
+    assertSoleActive(state.currentRevisionId);
+    const revision = Q.collection("helpCenterRevisions").findOne({
+      _id: Q.text(state.currentRevisionId)
+    });
+    if (!revision || Q.number(revision.version) !== Q.number(state.currentRevisionVersion)) {
+      Q.fail("current controlled revision no longer matches the verified v4 snapshot.");
+    }
+    if (!consentForRevision(state.currentRevisionId)
+        || !Q.sameJson(consentForRevision(state.previousRevisionId), state.previousConsentSnapshot)) {
+      Q.fail("verified v3/v4 consent evidence changed before the visual version preview.");
+    }
+
+    const previewVersion = Q.number(state.currentRevisionVersion) + 1;
+    if (previewVersion !== 5) {
+      Q.fail(`preview-v5 expected the next controlled version to be 5, found ${previewVersion}.`);
+    }
+    const previewAtIso = Q.nowIso();
+    const previewRevision = { ...revision };
+    previewRevision.version = previewVersion;
+    previewRevision.updatedDate = previewAtIso;
+    previewRevision.updatedUser = Q.ACTOR;
+    previewRevision.sections = (revision.sections || []).map(section => {
+      if (Q.text(section.id) !== `qa-required-v${Q.number(state.currentRevisionVersion)}`) {
+        return section;
+      }
+      return {
+        ...section,
+        id: `qa-required-v${previewVersion}`,
+        title: `Required privacy v${previewVersion}`,
+        contentHtml: `<p>This required section is the visual header preview for privacy revision v${previewVersion}.</p>`
+      };
+    });
+    Q.collection("helpCenterRevisions").replaceOne(
+      { _id: revision._id },
+      previewRevision
+    );
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      {
+        $set: {
+          phase: "verified-preview-v5",
+          previewAtIso,
+          previewVersion,
+          currentRevisionBeforePreview: revision
+        }
+      }
+    );
+
+    const active = activeEnglishPrivacyRevisions();
+    if (active.length !== 1
+        || Q.text(active[0]._id) !== Q.text(state.currentRevisionId)
+        || Q.number(active[0].version) !== previewVersion) {
+      Q.fail("visual v5 preview did not become the sole active English privacy revision.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "verified-preview-v5",
+      previewAtIso,
+      previewRevision: {
+        id: Q.text(state.currentRevisionId),
+        version: previewVersion,
+        active: true
+      },
+      retainedVerifiedConsents: {
+        previousConsentId: Q.text(state.previousConsentId),
+        currentConsentId: Q.text(state.currentConsentId)
+      },
+      next: "Reload the same Nova browser only to view the v5 header badge. Do not approve the preview; reset will restore the retained QA revision to verified v4 before deactivating it."
+    });
+  }
+
   function reset() {
     config();
     const state = requireState();
@@ -493,6 +571,13 @@
     }
 
     const resetAtIso = Q.nowIso();
+    if (state.currentRevisionBeforePreview) {
+      Q.collection("helpCenterRevisions").replaceOne(
+        { _id: Q.text(state.currentRevisionId) },
+        state.currentRevisionBeforePreview,
+        { upsert: true }
+      );
+    }
     Q.collection("helpCenterRevisions").updateMany(
       { _id: { $in: [Q.text(state.previousRevisionId), Q.text(state.currentRevisionId)] } },
       { $set: { active: false, updatedDate: resetAtIso, updatedUser: Q.ACTOR } }
@@ -531,6 +616,7 @@
     case "status": status(); break;
     case "activate-newer": activateNewer(); break;
     case "verify": verify(); break;
+    case "preview-v5": previewV5(); break;
     case "reset": reset(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }
