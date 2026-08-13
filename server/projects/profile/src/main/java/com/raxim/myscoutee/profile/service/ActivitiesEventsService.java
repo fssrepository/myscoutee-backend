@@ -52,6 +52,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationCon
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutAssetSelectionDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutOptionalSubEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
@@ -61,6 +62,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotD
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
+import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -2580,7 +2582,14 @@ public class ActivitiesEventsService {
                 boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
                 if (joinedSlot) {
                     markAcceptedCheckoutBasketSucceeded(viewer.userId(), sourceId);
-                    recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
+                    recordJoinPayment(
+                            request,
+                            viewer.userId(),
+                            sourceId,
+                            slotSourceId,
+                            slotRecord.getStartAtIso(),
+                            slotRecord.getEndAtIso(),
+                            preferred);
                 } else if (checkoutBasketUpdateRequested) {
                     enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
@@ -2615,7 +2624,14 @@ public class ActivitiesEventsService {
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
         if (joined) {
             markAcceptedCheckoutBasketSucceeded(viewer.userId(), sourceId);
-            recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
+            recordJoinPayment(
+                    request,
+                    viewer.userId(),
+                    sourceId,
+                    null,
+                    preferred.getStartAtIso(),
+                    preferred.getEndAtIso(),
+                    preferred);
         } else if (checkoutBasketUpdateRequested) {
             enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
         }
@@ -2689,6 +2705,42 @@ public class ActivitiesEventsService {
         }
         EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
         EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
+        if (session != null
+                && "gateway".equals(safeText(session.mode()))
+                && !Set.of("authorized", "captured", "approved").contains(safeText(session.status()))) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    slotSourceId,
+                    "pay",
+                    "pending",
+                    null,
+                    session.id()));
+            EventParticipationActionResultDto pending = toParticipationActionResult(
+                    request.sourceId(),
+                    slotSourceId,
+                    "payment_pending",
+                    null,
+                    paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
+                    acceptedBeforePaymentSnapshot,
+                    null);
+            return new EventParticipationActionResultDto(
+                    pending.sourceId(),
+                    pending.slotSourceId(),
+                    pending.action(),
+                    pending.membershipStatus(),
+                    pending.pendingReason(),
+                    pending.acceptedMembers(),
+                    pending.pendingMembers(),
+                    pending.capacityTotal(),
+                    pending.full(),
+                    session.id(),
+                    false,
+                    "payment_authorization_pending",
+                    null,
+                    session.status(),
+                    session.paymentUrl());
+        }
         EventActionRequestDto joinRequest = new EventActionRequestDto(
                 request.userId(),
                 request.sourceId(),
@@ -2756,6 +2808,37 @@ public class ActivitiesEventsService {
                     session == null ? null : session.id()));
             throw exception;
         }
+    }
+
+    public EventParticipationActionResultDto finalizeAuthorizedPayment(Payment payment) {
+        if (payment == null || !StringUtils.hasText(payment.getCheckoutSessionId())) {
+            return null;
+        }
+        List<EventCheckoutAssetSelectionDto> assetSelections = payment.getBasketItems() == null
+                ? List.of()
+                : payment.getBasketItems().stream()
+                        .filter(Objects::nonNull)
+                        .filter(item -> StringUtils.hasText(item.subEventId()) && StringUtils.hasText(item.resourceType()))
+                        .map(item -> new EventCheckoutAssetSelectionDto(item.subEventId(), item.resourceType()))
+                        .distinct()
+                        .toList();
+        return requestJoin(new EventActionRequestDto(
+                payment.getUserId(),
+                payment.getSourceId(),
+                payment.getSlotSourceId(),
+                payment.getOptionalSubEventIds(),
+                assetSelections,
+                payment.getAcceptedPolicyIds(),
+                payment.getCheckoutSessionId(),
+                Boolean.TRUE,
+                null,
+                "pay",
+                payment.getBasketItems(),
+                payment.getPricingSummaryRows(),
+                payment.getLineItems(),
+                payment.getAmount(),
+                payment.getCurrency(),
+                payment.getAppliedPromoCodes()));
     }
 
     private EventCheckoutBasketDto saveSubmittedPaymentBasket(EventCheckoutStateChangeRequestDto request) {
@@ -3955,6 +4038,7 @@ public class ActivitiesEventsService {
             String sourceId,
             String slotSourceId,
             String bookingStartAtIso,
+            String bookingEndAtIso,
             ActivityEvent preferred) {
         String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
         if (!StringUtils.hasText(paymentSessionId)) {
@@ -3966,6 +4050,7 @@ public class ActivitiesEventsService {
                 sourceId,
                 slotSourceId,
                 bookingStartAtIso,
+                bookingEndAtIso,
                 preferred == null || preferred.getPricing() == null ? null : preferred.getPricing().cancellationPolicy());
     }
 
@@ -4097,12 +4182,16 @@ public class ActivitiesEventsService {
             String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
                     ? request.nextSlot().startAtIso()
                     : request.startAtIso();
+            String bookingEndAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().endAtIso())
+                    ? request.nextSlot().endAtIso()
+                    : request.endAtIso();
             paymentService.recordEventJoin(
                     paymentSessionId,
                     null,
                     sourceId,
                     request.nextSlot() == null ? null : normalizeId(request.nextSlot().id()),
                     bookingStartAtIso,
+                    bookingEndAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
         return toEventDto(selectSyncedResponseRecord(sourceId, savedDocuments, List.of(), baseRecord), actor);

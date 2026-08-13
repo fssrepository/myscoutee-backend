@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-PUBLISH-CHAT-001
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-publish-chat-001--publish-materializes-the-accepted-admin-chat
-scenario: event-domain
-ledger_status: PASS / CLOSED; RETAINED FOR EVENT-INV-003
-state: The clean Draft Publish branch is complete. In-place and reload states agree: Casey Chats 0 / Invitations 3 / My Events 1 / Drafts 0; one Casey-only main-event chat unread 0; no messages/outbox/chat notification; Nova/Riley each have exactly one active invitation and event-invite notification but no chat; recompute done attempt 1 with empty lastError. The fixture remains active only for the documented EVENT-INV-003 continuation. The next work item is the operator/admin/registration/mobile/deployment QA coverage audit, which must not mutate this retained event
-required_resume: Do not repeat or reset EVENT-PUBLISH-CHAT-001. Resume the QA coverage audit and create its detailed handoff/checkpoints. If the audit is already complete and lifecycle QA is requested, advance the retained fixture to EVENT-INV-003 through the documented guarded harness command rather than rebuilding the Publish baseline
-event: QA EVENT-PUBLISH-CHAT-001 / manual-qa-checkpoint:v1:event-domain:event
+checkpoint: QA-EXPANSION-CP01
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp01--payment-authorization-and-provider-callbacks
+scenario: coverage-expansion
+ledger_status: DESIGNED / IMPLEMENTATION FOUNDATION PASS / RUNTIME NOT STARTED
+state: The original 106-test workflow spine is unchanged. Eighty-two bounded cases were appended in eleven resumable checkpoints, bringing the authoritative CSV/XLSX total to 188 real tests. The provider-neutral Java payment foundation and isolated Stripe/Barion simulator tests pass, while Compose and payment runtime execution were deliberately not started under the user's laptop-resource constraint. PAYMENT-REPLACEMENT-001 and PAYMENT-EXPIRY-001 remain explicit design gaps. The retained EVENT-PUBLISH-CHAT-001 fixture was not mutated or reset and remains available for the separate EVENT-INV-003 continuation
+required_resume: Do not repeat the coverage audit, rewrite the original 106 rows or reset EVENT-PUBLISH-CHAT-001. First run the handoff resource/process gate and inspect the existing dev-stack owner without starting a second build or Compose stack. When the user authorizes runtime continuation, configure only the documented dev payment simulator switches, start or restart only the existing owning process as needed, and execute PAYMENT-STRIPE-001. If the user instead asks to resume the retained event lifecycle, use the guarded EVENT-INV-003 continuation without rebuilding the Publish baseline
+event: none for QA-EXPANSION-CP01; retained QA EVENT-PUBLISH-CHAT-001 remains untouched
 actors:
-  left: Casey Bridge
-  middle: Nova Social
-  right: Riley Outside
-next_actor: Codex audits existing QA coverage; no manual browser action is currently pending
+  left: Casey Bridge / event administrator and payment control
+  middle: Nova Social / payer
+  right: Riley Outside / unchanged control when required
+next_actor: Codex performs the read-only resource/dev-stack gate; the user starts PAYMENT-STRIPE-001 only after runtime is explicitly authorized
 stop_phrase: none
 ```
 
@@ -108,10 +108,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-`EVENT-PUBLISH-CHAT-001` is **PASS / CLOSED** and retained for the guarded
-`EVENT-INV-003` continuation. No manual browser action is pending. Continue the
-operator/admin/registration/mobile/deployment QA coverage audit without
-mutating or resetting the retained event.
+The coverage audit is complete and no manual browser action is pending while
+the heavy runtime stack remains intentionally stopped. The next expansion case
+is `PAYMENT-STRIPE-001`; start it only after the user authorizes runtime work.
+`EVENT-PUBLISH-CHAT-001` remains **PASS / CLOSED** and retained for the separate
+guarded `EVENT-INV-003` continuation; do not mutate or reset it while starting
+the payment checkpoint.
 
 ## QA working method
 
@@ -135,6 +137,33 @@ the user.
 
 ### 1.1 Checkpoint granularity and new rows
 
+- Treat the already-versioned testcase set as an immutable workflow spine
+  during a coverage-expansion audit. Do not split, merge, rename, renumber or
+  rewrite those rows merely to make the new plan look more uniform. Count
+  logical CSV records rather than physical lines because quoted multiline
+  cells span several file lines; ignore `LEGEND-*` records when quoting the
+  testcase total. Capture a canonical serialized hash of every pre-existing
+  logical row before appending, then prove the same prefix and hash after CSV
+  and XLSX synchronization. New coverage is appended after that prefix with
+  new stable IDs and ordered checkpoint groups. The target count is an audit
+  result, not a quota: record all materially distinct bounded contracts, but
+  never manufacture row splits only to reach an estimate.
+- After appending matrix rows, run the repository's versioned
+  `guides/qa/tools/sync-qa-matrix-xlsx.py` automation instead of hand-editing
+  workbook totals. Verify the CSV has 16 columns per logical record, unique
+  testcase IDs, the locked pre-existing logical-row prefix/hash, and the
+  expected non-`LEGEND-*` testcase count. The generator writes a hidden
+  per-test `IF(...)` status formula and visible `COUNTA`/`COUNTIF` overview
+  formulas into the XLSX, with automatic recalculation on open, so changing a
+  status in Excel immediately updates `Total`, `Done` (including its completion
+  percentage), `Pending`, `Not started` and `Failed`. It also classifies stable IDs beginning
+  `OPERATOR-`, `PAYMENT-` or `DEPLOY-` as teal `EXT` scope without rewriting
+  testcase rows, adds `EXT` to the left overview legend, and calculates `Core`
+  and `External` totals in the right overview block. Scope is orthogonal to
+  status. Read the generated formulas and cached totals back after
+  synchronization and prove they match the CSV classifiers.
+  This summary synchronization is part of every append/status update, not a
+  later cleanup step.
 - One matrix row must remain a bounded, human-verifiable contract, not a
   half-day collection of loosely related checks.
 - One producer action or a short causally continuous sequence may stay in one

@@ -49,7 +49,16 @@ operator:
 
 payment:
   enablePay: ${PAYMENT_ENABLE_PAY:false}
+  settlement:
+    pollDelay: ${PAYMENT_SETTLEMENT_POLL_DELAY:PT1M}
+  operations:
+    pollDelay: ${PAYMENT_OPERATIONS_POLL_DELAY:PT5S}
   stripe:
     apiKey: ${PAYMENT_STRIPE_API_KEY:}
+    apiBaseUrl: ${PAYMENT_STRIPE_API_BASE_URL:}
+    testGatewayEnabled: ${PAYMENT_STRIPE_TEST_GATEWAY_ENABLED:false}
+    webhookSecret: ${PAYMENT_STRIPE_WEBHOOK_SECRET:}
   barion:
     apiKey: ${PAYMENT_BARION_API_KEY:}
+    apiBaseUrl: ${PAYMENT_BARION_API_BASE_URL:}
+    testGatewayEnabled: ${PAYMENT_BARION_TEST_GATEWAY_ENABLED:false}

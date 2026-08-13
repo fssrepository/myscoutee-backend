@@ -433,6 +433,34 @@ class PaymentServiceTest {
     }
 
     @Test
+    void cancelAuthorizedBookingKeepsTheGatewayAuthorizationForDurableReleaseInsteadOfInventingARefund() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        PaymentService service = paymentService(repository, true, new RecordingPaymentProcessor("stripe"));
+        Payment payment = joinedPayment(
+                "checkout-authorized",
+                "gateway-authorized",
+                "user-authorized",
+                "event-authorized",
+                Instant.now().plus(Duration.ofDays(3)).toString(),
+                new PricingCancellationPolicyDto(true, List.of(
+                        new PricingCancellationRuleDto("full-7d", "days", 7, "full", 100d))));
+        payment.setStatus("authorized");
+        savePayment(paymentsBySession, payment);
+        when(repository.findByUserIdAndSourceId("user-authorized", "event-authorized"))
+                .thenReturn(List.of(payment));
+
+        service.cancelEventBooking("user-authorized", "event-authorized", null, null);
+
+        assertThat(payment.getBookingStatus()).isEqualTo("cancelled");
+        assertThat(payment.getStatus()).isEqualTo("authorized");
+        assertThat(payment.getRefundStatus()).isEqualTo("none");
+        assertThat(payment.getRefundedAmount()).isNull();
+        assertThat(payment.getRefundedAtIso()).isNull();
+        assertThat(payment.getRefundNote()).isEqualTo("Authorization release pending.");
+    }
+
+    @Test
     void pendingEventJoinStatesAreResolvedByOneBatchRead() {
         PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
         Payment pending = new Payment();

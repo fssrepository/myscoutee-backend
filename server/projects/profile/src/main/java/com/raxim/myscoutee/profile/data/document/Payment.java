@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -26,6 +27,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 public class Payment {
     @Id
     private String id;
+    @Version
+    private Long version;
     private String userId;
     private String sourceId;
     private String provider;
@@ -36,8 +39,21 @@ public class Payment {
     private String checkoutSessionId;
     @Indexed(name = "payment_gateway_session", unique = true, sparse = true)
     private String gatewaySessionId;
+    @Indexed(name = "payment_gateway_authorization", unique = true, sparse = true)
+    private String gatewayAuthorizationId;
+    private String gatewayStatus;
+    private String gatewayActionUrl;
+    private String authorizationExpiresAtIso;
+    private String capturedAtIso;
+    private String releasedAtIso;
+    private String failedAtIso;
+    private String fulfillmentStatus;
+    private String lastGatewayError;
+    private String predecessorPaymentId;
+    private String successorPaymentId;
     private String slotSourceId;
     private String bookingStartAtIso;
+    private String bookingEndAtIso;
     private List<String> optionalSubEventIds = new ArrayList<>();
     private List<String> acceptedPolicyIds = new ArrayList<>();
     private List<EventCheckoutBasketItemDto> basketItems = new ArrayList<>();
@@ -60,10 +76,15 @@ public class Payment {
     private Integer revisionNumber;
     private Double adjustmentAmount;
     private Integer bookingQuantity;
+    private String gatewayApprovedAtIso;
+    private List<String> processedGatewayEventIds = new ArrayList<>();
     private String createdDate;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
@@ -89,11 +110,47 @@ public class Payment {
     public String getGatewaySessionId() { return gatewaySessionId; }
     public void setGatewaySessionId(String gatewaySessionId) { this.gatewaySessionId = gatewaySessionId; }
 
+    public String getGatewayAuthorizationId() { return gatewayAuthorizationId; }
+    public void setGatewayAuthorizationId(String gatewayAuthorizationId) { this.gatewayAuthorizationId = gatewayAuthorizationId; }
+
+    public String getGatewayStatus() { return gatewayStatus; }
+    public void setGatewayStatus(String gatewayStatus) { this.gatewayStatus = gatewayStatus; }
+
+    public String getGatewayActionUrl() { return gatewayActionUrl; }
+    public void setGatewayActionUrl(String gatewayActionUrl) { this.gatewayActionUrl = gatewayActionUrl; }
+
+    public String getAuthorizationExpiresAtIso() { return authorizationExpiresAtIso; }
+    public void setAuthorizationExpiresAtIso(String authorizationExpiresAtIso) { this.authorizationExpiresAtIso = authorizationExpiresAtIso; }
+
+    public String getCapturedAtIso() { return capturedAtIso; }
+    public void setCapturedAtIso(String capturedAtIso) { this.capturedAtIso = capturedAtIso; }
+
+    public String getReleasedAtIso() { return releasedAtIso; }
+    public void setReleasedAtIso(String releasedAtIso) { this.releasedAtIso = releasedAtIso; }
+
+    public String getFailedAtIso() { return failedAtIso; }
+    public void setFailedAtIso(String failedAtIso) { this.failedAtIso = failedAtIso; }
+
+    public String getFulfillmentStatus() { return fulfillmentStatus; }
+    public void setFulfillmentStatus(String fulfillmentStatus) { this.fulfillmentStatus = fulfillmentStatus; }
+
+    public String getLastGatewayError() { return lastGatewayError; }
+    public void setLastGatewayError(String lastGatewayError) { this.lastGatewayError = lastGatewayError; }
+
+    public String getPredecessorPaymentId() { return predecessorPaymentId; }
+    public void setPredecessorPaymentId(String predecessorPaymentId) { this.predecessorPaymentId = predecessorPaymentId; }
+
+    public String getSuccessorPaymentId() { return successorPaymentId; }
+    public void setSuccessorPaymentId(String successorPaymentId) { this.successorPaymentId = successorPaymentId; }
+
     public String getSlotSourceId() { return slotSourceId; }
     public void setSlotSourceId(String slotSourceId) { this.slotSourceId = slotSourceId; }
 
     public String getBookingStartAtIso() { return bookingStartAtIso; }
     public void setBookingStartAtIso(String bookingStartAtIso) { this.bookingStartAtIso = bookingStartAtIso; }
+
+    public String getBookingEndAtIso() { return bookingEndAtIso; }
+    public void setBookingEndAtIso(String bookingEndAtIso) { this.bookingEndAtIso = bookingEndAtIso; }
 
     public List<String> getOptionalSubEventIds() { return optionalSubEventIds; }
     public void setOptionalSubEventIds(List<String> optionalSubEventIds) {
@@ -172,6 +229,16 @@ public class Payment {
 
     public Integer getBookingQuantity() { return bookingQuantity; }
     public void setBookingQuantity(Integer bookingQuantity) { this.bookingQuantity = bookingQuantity; }
+
+    public String getGatewayApprovedAtIso() { return gatewayApprovedAtIso; }
+    public void setGatewayApprovedAtIso(String gatewayApprovedAtIso) { this.gatewayApprovedAtIso = gatewayApprovedAtIso; }
+
+    public List<String> getProcessedGatewayEventIds() { return processedGatewayEventIds; }
+    public void setProcessedGatewayEventIds(List<String> processedGatewayEventIds) {
+        this.processedGatewayEventIds = processedGatewayEventIds == null
+                ? new ArrayList<>()
+                : new ArrayList<>(processedGatewayEventIds);
+    }
 
     public String getCreatedDate() { return createdDate; }
     public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }

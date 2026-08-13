@@ -3282,6 +3282,167 @@ Status: **DESIGN CAPTURED / NOT IMPLEMENTED**.
   prior policy, prove access changes exactly once and no stale browser state
   overrides the authoritative server decision.
 
+## Coverage-expansion checkpoints appended after the original 106-case spine
+
+The 106 testcases that existed at the start of the 2026-08-13 coverage audit
+remain the immutable workflow spine. The following 82 cases are new rows, not
+splits or rewrites of that spine. They are deliberately grouped into resumable
+checkpoint sequences, while every row still owns one bounded producer action
+and one decisive persisted oracle. Runtime execution must use at most three
+browser identities at once; mobile observations replace, rather than add to,
+one desktop phase when three desktop accounts are already active.
+
+The XLSX uses the teal `EXT` scope marker for cases whose stable ID starts with
+`OPERATOR-`, `PAYMENT-` or `DEPLOY-`. These cover operator control-plane,
+payment-provider, Registry/network and deployment boundaries outside the core
+application workflow. Scope and execution status remain independent: an `EXT`
+row is still counted by the normal Done/Pending/Not-started/Failed formulas,
+and the overview reports separate Core and External totals.
+
+```text
+QA-EXPANSION-CP01 -> QA-EXPANSION-CP02 -> QA-EXPANSION-CP03
+-> QA-EXPANSION-CP04 -> QA-EXPANSION-CP05 -> QA-EXPANSION-CP06
+-> QA-EXPANSION-CP07 -> QA-EXPANSION-CP08 -> QA-EXPANSION-CP09
+-> QA-EXPANSION-CP10 -> QA-EXPANSION-CP11
+```
+
+### `QA-EXPANSION-CP01` — payment authorization and provider callbacks
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `PAYMENT-STRIPE-001` | Select Stripe and press the existing Checkout action once. | One stable internal payment creates one manual-capture Checkout/PaymentIntent and redirects to the simulator; basket is `pay/pending`, membership/ticket/counters remain unchanged. |
+| `PAYMENT-STRIPE-002` | Choose the 3DS route and approve it once. | Signed `requires_capture` webhook produces one `authorized` payment and one membership fulfillment; the amount is held but not captured and a duplicate callback is a no-op. |
+| `PAYMENT-STRIPE-003` | Run decline, customer-cancel and timeout from independent clean sessions. | Each payment reaches its exact failed/expired terminal state without membership, ticket, counter, capture or leaked provider data. |
+| `PAYMENT-STRIPE-WEBHOOK-001` | Send valid, invalid-signature, wrong-provider, wrong-amount and wrong-currency callback variants. | Only the correctly signed, scope-matching PaymentIntent mutates the payment; every rejected request leaves payment, booking and gateway-operation collections unchanged. |
+| `PAYMENT-STRIPE-WEBHOOK-002` | Replay one accepted callback and then deliver older/later states out of order. | Processed event identity and legal transition guards prevent repeated join, regression from a terminal state or duplicate release/capture work. |
+| `PAYMENT-BARION-001` | Select Barion, start DelayedCapture and authorize once; separately call the public callback with a malformed `PaymentId`. | Valid callback contains only a GUID `PaymentId`; MyScoutee reads v4 PaymentState, persists `Authorized`, fulfills once and retains provider-local transaction IDs without capture. Malformed IDs fail before credential resolution or provider traffic. |
+| `PAYMENT-BARION-002` | Exercise direct approval plus bank-challenge approve, decline, cancel and timeout independently. | Each branch maps to the provider-neutral state once; unsuccessful branches create no membership/ticket/capture and callback replay is idempotent. |
+
+### `QA-EXPANSION-CP02` — payment settlement, compensation and isolation
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `PAYMENT-CAPTURE-001` | Move one fulfilled authorized booking across its event end and run the real settlement worker; retry with the same payload and probe the same key with a changed amount. | One durable operation captures the exact authorized amount once; retry/restart reuses its operation/idempotency key, while changed content under that key fails closed and cannot charge. |
+| `PAYMENT-RELEASE-001` | Cancel one joined booking before capture. | Booking becomes cancelled while payment remains authorized until one queued provider release completes; no refund record pretends that uncaptured money was charged. |
+| `PAYMENT-COMPENSATE-001` | Fill/remove the last place after authorization but before membership fulfillment. | Fulfillment persists failed and one durable release is queued; callback replay repairs missing queue work without retrying the membership write. |
+| `PAYMENT-REPLACEMENT-001` | Authorize a successor with the other provider, transfer one place, then release the predecessor. | Successor authorization must exist before ownership changes; after exact one seat transfer, each provider operates only on its own ID and predecessor release is durable. **BLOCKED / DESIGN GAP:** provider fields exist, but the replacement saga/seat-transfer writer is not implemented. |
+| `PAYMENT-EXPIRY-001` | Place an event outside the provider hold window, then cross authorization expiry. | The system must never claim an indefinite hold; it stores a payment method or requests fresh authorization before fulfillment and an expired hold cannot capture. **BLOCKED / DESIGN GAP:** setup/reauthorization scheduling is not implemented. |
+| `PAYMENT-PARTIAL-001` | Capture a controlled smaller amount, then retry and attempt over-capture. | Provider and MyScoutee agree on the partial amount/currency; retry is exact-once and zero/negative/over-authorized or currency-mismatched capture fails closed. |
+| `PAYMENT-SIMULATOR-001` | Restart only the future simulator container between authorization and callback replay. | SQLite restores sessions, intents, Barion payments, event order and delivery audit; the same idempotency key returns the same resource and a changed request conflicts. |
+| `PAYMENT-SIMULATOR-SEC-001` | Inspect dev and production-resolved payment configuration and call test controls without capabilities. | Simulator accepts only test credentials, protects outcome/audit controls, binds only as configured in dev, is absent from production topology and production rejects custom API bases. |
+| `PAYMENT-PROVIDER-ROUTING-001` | Repeat equivalent checkout once with Stripe and once with Barion through operator selection. | The user action remains provider-neutral while provider resource IDs, callbacks and operations remain separate; changing selection never reuses the other provider's authorization. |
+
+### `QA-EXPANSION-CP03` — entry, registration and operator configuration
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |
+| `ENTRY-FIREBASE-REG-001` | Register/onboard a new Firebase identity after a verified revision is activated. | One verified Firebase subject links to one user/profile; reload/login reuses it and cannot collide with an existing demo or global identity. |
+| `ENTRY-CONSENT-001` | Accept required privacy plus a controlled optional section before registration. | Exact active revision/version and selected optional IDs persist; anonymous entry evidence transfers once to the authenticated user without broadening consent. |
+| `ENTRY-CONSENT-002` | Reject once, then activate a newer privacy revision and revisit. | Rejection creates no session; an old acceptance cannot satisfy the newer revision, while reacceptance creates one current immutable consent and leaves old audit history intact. |
+| `OPERATOR-BOOTSTRAP-001` | Use a disposable bootstrap credential once, then retry and recover through the documented boundary. | First use creates the operator session and consumes/rotates bootstrap authority; replay and ordinary user access fail closed without exposing the secret. |
+| `OPERATOR-CONFIG-001` | Add/reorder one admin email, save, reopen and restore. | Server-normalized unique admin list persists once; role access follows the active configuration and invalid/empty/duplicate inputs preserve the prior revision. |
+| `OPERATOR-BRANDING-001` | Change product name, logo character/image, home label and theme, then observe open and fresh clients. | Public configuration revision changes once; header/entry/PWA branding converges without stale cross-revision cache and rollback restores the prior revision exactly. |
+| `OPERATOR-PRIVACY-001` | Save valid controller/contact values, test invalid partial/email input and restore. | Public deployment config exposes only the valid pair; invalid save is atomic and neither operator secrets nor unrelated branding changes. |
+| `OPERATOR-SOCIAL-001` | Add, reorder and remove one HTTPS social link while trying an invalid scheme. | Valid normalized links appear in declared order; unsafe/malformed URL is rejected server-side and restore returns the exact prior list. |
+
+### `QA-EXPANSION-CP04` — Firebase activation and real mobile push
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-FIREBASE-002` | Save a new Firebase revision, fail one capability test and attempt activation. | Any configuration change clears prior tested revisions; unverified activation fails and the currently active login/messaging runtime remains untouched. |
+| `OPERATOR-FIREBASE-003` | Run the messaging capability test with a real disposable browser/device token. | Token/readiness inputs are write-only and absent from DTO/log/audit; one test message reaches only the target and records the tested revision/time. |
+| `MOBILE-PUSH-001` | Keep the phone app visible and produce one target notification from a desktop actor. | Foreground listener shows one in-app notification/counter, no duplicate system notification and the backend inbox/outbox/token identities agree. |
+| `MOBILE-PUSH-002` | Background, then fully close the phone app and produce one target notification. | FCM displays one system notification while the app is not open; no desktop actor receives it and the persisted unread count stays one. |
+| `MOBILE-PUSH-003` | Tap the closed-app notification and let the WebView cold-start. | The authenticated target route opens once, matching inbox row becomes read only after the intentional open, and back/relaunch does not repeat the action. |
+| `MOBILE-PUSH-004` | Deny permission, rotate/revoke the token and later grant permission. | Denial is non-blocking, stale token failure is safely retired/replaced, and a later message reaches only the new token without leaking token text. |
+
+### `QA-EXPANSION-CP05` — registry, claims and operator network
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-REGISTRY-001` | Inspect a candidate registry endpoint and confirm its identity once. | Inspection is read-only; confirmation pins the expected endpoint/key/semantic version and a changed candidate requires a new explicit decision. |
+| `OPERATOR-REGISTRY-002` | Register the deployment with the local Go registry. | One signed deployment membership is created; backend/operator UI and registry state agree without copying private keys into DTOs or logs. |
+| `OPERATOR-REGISTRY-003` | Make registration delivery fail, then use Retry once. | Failure retains a resumable receipt; retry reuses logical identity/idempotency and creates no duplicate deployment/group membership. |
+| `OPERATOR-REGISTRY-004` | Replace or disconnect an existing binding and simulate replacement failure. | Replacement disconnects only under the documented guarded order; failure reports the retained/disconnected state honestly and never invents a local success. |
+| `OPERATOR-CLAIM-001` | Create a claim and withdraw it before redemption. | Claim state, expiry and audit change exactly once; withdrawn/expired claim cannot be redeemed. |
+| `OPERATOR-CLAIM-002` | Issue, use and revoke one client token. | Raw token is shown only at issuance, stored only as verifier/commitment, grants only declared scope and stops authorizing immediately after revoke. |
+| `OPERATOR-CLAIM-003` | Redeem a valid claim into a group, then revoke the group link. | Deployment/group membership and registry receipt agree; replay is idempotent and unlink does not delete unrelated deployment identity. |
+| `OPERATOR-DEPLOYMENT-STATE-001` | Deactivate and reactivate the registered deployment. | Consumer/admin routes fail closed while operator recovery stays reachable; registry and local state converge once on reactivation. |
+| `OPERATOR-LEADERBOARD-001` | Load groups and one group deployment page after controlled measurement/revenue inputs. | Ranking, membership state and paging agree with registry data; repeated reads are side-effect free and do not leak private deployment details. |
+| `OPERATOR-ANNOUNCEMENT-001` | Publish/receive one controlled registry announcement. | Eligible deployment receives it once in order; acknowledgement/cursor does not hide it from another deployment or create a local notification duplicate. |
+| `OPERATOR-COMMUNITY-001` | Load available community/payment providers with one unavailable control. | Only registry-advertised compatible providers appear; unavailable/malformed metadata cannot become active configuration. |
+
+### `QA-EXPANSION-CP06` — TLS, updates and deployment emulation
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-TLS-001` | Save an emulated domain/contact/challenge configuration and run validation. | Normalized config persists without private key exposure; invalid host/contact/challenge preserves the prior active revision. |
+| `OPERATOR-TLS-002` | Run the real TLS worker through issue and renewal against the local/emulated challenge boundary. | Job events progress once to a valid cert/key pair, nginx uses the new generation, permissions are restricted and renewal is idempotent. |
+| `OPERATOR-TLS-003` | Fail issuance/renewal after staging new material. | Current valid certificate remains active, partial files are not promoted and retry resumes from durable job state without exposing ACME/account secrets. |
+| `OPERATOR-UPDATE-001` | Offer and apply one correctly signed compatible release. | Signature/content fingerprint/version are verified before replacement; job events survive restart and active version changes once. |
+| `OPERATOR-UPDATE-002` | Offer invalid-signature, corrupted and downgrade releases. | Every variant fails before activation, current services/data remain intact and audit/log contains no release private key or credentials. |
+| `OPERATOR-UPDATE-003` | Interrupt the update worker and reconnect to job events. | Durable phase and event sequence resume without double extraction/restart; operator UI reconstructs terminal truth after reload. |
+| `DEPLOY-EMU-001` | Render dev and production Compose/config with simulator and registry settings without starting them. | Dev topology resolves named services/health dependencies; production contains neither simulator nor dev endpoint switches and no secret value is baked into config. |
+| `DEPLOY-INSTALL-001` | Install the versioned package on a disposable local VM/container-host analogue. | Prerequisites, numeric ownership, systemd unit, env/secrets split, deployment identity and health qualification pass from a clean host. |
+| `DEPLOY-UPGRADE-001` | Upgrade the disposable install with a signed next release. | Backup/preflight precede mutation; version/data/identity advance once and an injected failure rolls binaries/config back coherently. |
+| `DEPLOY-BACKUP-001` | Back up Mongo/media/config identity and restore into an isolated target. | Counts, selected hashes, ownership and registry/deployment identity match; secrets remain permission-restricted and restore never touches the live source. |
+| `DEPLOY-TLS-001` | Exercise HTTP-to-HTTPS, hostname, certificate chain and renewal presentation on the disposable deployment. | Only intended public ports/routes are reachable, redirects preserve safe paths and renewed certificate is served without mixed old/new material. |
+| `DEPLOY-RESTART-001` | Reboot/restart the disposable host and services in dependency order. | Mongo/Redis/object store/backend/nginx become healthy once, no duplicate worker ownership appears and persisted sessions/tasks recover according to policy. |
+| `DEPLOY-RESOURCE-001` | Inject bounded low-disk, low-memory and unavailable dependency conditions one at a time. | Health and diagnostics identify the owner, writes fail safely, no retry storm/second build appears and recovery clears only the induced condition. |
+| `DEPLOY-SECURITY-001` | Scan resolved listeners, headers, CORS, images/artifacts and filesystem permissions. | Only declared ports are public; security headers/origin policy hold and live/test credentials, private keys and simulator capabilities are absent from images/logs/public files. |
+
+### `QA-EXPANSION-CP07` — operator revenue and measurement
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `OPERATOR-REVENUE-001` | Synchronize one known captured payment set. | Provider, period, currency and payment counts aggregate once; authorized/released/dummy/audit-revision records do not become revenue. |
+| `OPERATOR-REVENUE-002` | Produce one failed report then requeue it. | Failure is durable and secret-safe; requeue creates one controlled new attempt and the terminal report is reconstructible after reload. |
+| `OPERATOR-REVENUE-003` | Open settlements around one capture and one release. | Settlement rows reconcile provider operation/payment/booking identities and amounts without combining different providers or currencies. |
+| `OPERATOR-MEASUREMENT-001` | Synchronize one controlled deployment measurement period. | Exact source period, counts and valuation inputs persist once; leaderboard reads consume it without rewriting the report. |
+| `OPERATOR-MEASUREMENT-002` | Fail and requeue one measurement report. | Attempt history remains ordered, duplicate work is prevented and the successful replacement leaves the failed record immutable. |
+
+### `QA-EXPANSION-CP08` — admin access and moderation
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ADMIN-ACCESS-001` | Call each admin route as admin, operator and member in separate sessions. | Admin succeeds within policy; operator/member receive backend denial even for direct HTTP calls and no denied read/mutation leaks data. |
+| `ADMIN-REPORT-001` | Resolve one user/content report once and replay. | Exact report becomes resolved with actor/time/reason, target policy effect occurs once and adjacent report/control remains unchanged. |
+| `ADMIN-FEEDBACK-001` | Resolve one pending feedback item once. | Feedback moderation state changes once, creator-facing effect matches policy and no unrelated impression/rating/report changes. |
+| `ADMIN-USER-WARN-001` | Warn one controlled member. | One warning/audit/target notification is created; admin receives no self-notification and replay does not duplicate or increment unrelated counters. |
+| `ADMIN-USER-BLOCK-001` | Block, test active access, then unblock one member. | New and existing protected requests fail according to session policy, public visibility follows block state, operator/admin controls remain usable and unblock restores only authorized access. |
+
+### `QA-EXPANSION-CP09` — admin notification and content revisions
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ADMIN-NOTIFICATION-RULE-001` | Save/reopen one safe notification rule change, test invalid input, then restore. | Version/history and runtime config agree; invalid save is atomic and unrelated rules/outbox rows stay unchanged. |
+| `ADMIN-NOTIFICATION-RUN-001` | Manually run one armed rule with one eligible target. | One named task/outbox/inbox delivery occurs with exact attribution; second unchanged run respects dedupe/idempotency. |
+| `ADMIN-CONTENT-REV-001` | Create and reopen one draft revision for Help/Privacy/Terms/Explanation. | Body, language, version and author persist once while active public content remains unchanged. |
+| `ADMIN-CONTENT-REV-002` | Activate the draft revision once. | Public/landing/settings clients receive exactly the new active revision; Privacy activation invalidates only stale consent and keeps historical consents immutable. |
+| `ADMIN-CONTENT-REV-003` | Delete an inactive revision and attempt to delete the active one. | Inactive revision is removed once; active/bound revision fails closed and public content never disappears. |
+| `ADMIN-IDEA-LIFECYCLE-001` | Trash and restore one idea/article while a public control remains open. | Admin buckets and fresh public inclusion change once per transition; identity/media stay stable and an already-open non-live surface is recorded honestly. |
+| `ADMIN-SUPPORT-SESSION-001` | Open and close one scoped admin support session. | Capability is time/actor/scope bound, sensitive actions remain separately authorized, audit is immutable and expiry/revoke immediately denies reuse. |
+
+### `QA-EXPANSION-CP10` — Android WebView cache and ADB recovery
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `MOBILE-WEBVIEW-001` | Cold-start after a frontend version change with the previous shell/cache installed. | Service worker/WebView serves a coherent single build, promotes the new cache only after success and never mixes old HTML with new chunk names. |
+| `MOBILE-WEBVIEW-002` | Background during a server-side mutation, then resume without manual refresh. | App-state/resume path reconciles user, counters and the open surface once; a stale WebView snapshot cannot overwrite the newer server revision. |
+| `MOBILE-WEBVIEW-003` | Logout/account-switch with populated ticket, image and notification caches. | User-scoped data/QR/counters disappear before the next identity renders; shared public assets may remain, but no authenticated cache crosses users. |
+| `MOBILE-ADB-001` | Use ADB to inspect connectivity, reverse tunnel, WebView console/network and one deliberate offline/online cycle. | Device route and certificate state are explicit, errors identify cache versus transport, offline mode exposes only its supported contract and reconnect converges without app-data clearing. |
+
+### `QA-EXPANSION-CP11` — three-role compound workflows
+
+| Testcase | Controlled action | Decisive oracle |
+| --- | --- | --- |
+| `ROLE-TRIAD-001` | Keep member, admin and operator sessions open and probe each other's route families. | Each role sees only its own capabilities; direct cross-role calls are denied and activity/admin/operator counters remain independently scoped. |
+| `ROLE-TRIAD-002` | Operator changes branding while member home and admin workspace are already open. | Public revision converges on both consumers without logging out, losing admin state or allowing either consumer to edit operator config. |
+| `ROLE-TRIAD-003` | Operator activates verified Firebase while admin stays in moderation and member starts a new login. | New login uses Firebase, existing authorized admin work remains stable, and activation creates no member/admin notification or role mutation. |
+| `ROLE-TRIAD-004` | Admin blocks the member while the operator monitors deployment state. | Member protected access closes according to policy; operator session/network remains intact and admin action cannot alter deployment/operator authority. |
+| `ROLE-TRIAD-005` | Operator deactivates the deployment while member and admin have open authenticated screens, then reactivates. | Both consumer/admin paths fail closed without stale cached writes; operator recovery remains usable and all three reconstruct correct roles after reactivation. |
+
 ## Execution and evidence rules
 
 1. Begin every human action with why the step exists, what it tests and the

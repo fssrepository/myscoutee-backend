@@ -187,7 +187,41 @@ public final class EventsDtos {
             String paymentSessionId,
             Boolean changed,
             String reason,
-            UserActivityCounterDeltaDto counterDelta) {
+            UserActivityCounterDeltaDto counterDelta,
+            String paymentStatus,
+            String paymentUrl) {
+        public EventParticipationActionResultDto(
+                String sourceId,
+                String slotSourceId,
+                String action,
+                String membershipStatus,
+                String pendingReason,
+                Integer acceptedMembers,
+                Integer pendingMembers,
+                Integer capacityTotal,
+                Boolean full,
+                String paymentSessionId,
+                Boolean changed,
+                String reason,
+                UserActivityCounterDeltaDto counterDelta) {
+            this(
+                    sourceId,
+                    slotSourceId,
+                    action,
+                    membershipStatus,
+                    pendingReason,
+                    acceptedMembers,
+                    pendingMembers,
+                    capacityTotal,
+                    full,
+                    paymentSessionId,
+                    changed,
+                    reason,
+                    counterDelta,
+                    null,
+                    null);
+        }
+
         public EventParticipationActionResultDto(
                 String sourceId,
                 String slotSourceId,
@@ -214,6 +248,8 @@ public final class EventsDtos {
                     paymentSessionId,
                     changed,
                     reason,
+                    null,
+                    null,
                     null);
         }
     }

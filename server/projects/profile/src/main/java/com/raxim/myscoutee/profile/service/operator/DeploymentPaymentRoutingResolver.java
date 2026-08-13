@@ -79,5 +79,23 @@ public class DeploymentPaymentRoutingResolver {
         public String callbackUrl() {
             return publicBaseUrl + "/api/payment/callback";
         }
+
+        public String successUrl(String providerId) {
+            return "stripe".equalsIgnoreCase(providerId)
+                    ? publicBaseUrl + "/game?payment=success&session_id={CHECKOUT_SESSION_ID}"
+                    : publicBaseUrl + "/game?payment=success";
+        }
+
+        public String cancelUrl(String providerId) {
+            return publicBaseUrl + "/game?payment=cancel";
+        }
+
+        public String callbackUrl(String providerId) {
+            String normalizedProvider = providerId == null ? "" : providerId.trim().toLowerCase(Locale.ROOT);
+            if (!"stripe".equals(normalizedProvider) && !"barion".equals(normalizedProvider)) {
+                throw new IllegalArgumentException("Unsupported payment callback provider: " + providerId);
+            }
+            return publicBaseUrl + "/api/payment/webhooks/" + normalizedProvider;
+        }
     }
 }
