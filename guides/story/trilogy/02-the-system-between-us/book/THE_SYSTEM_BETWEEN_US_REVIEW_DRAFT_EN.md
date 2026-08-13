@@ -952,8 +952,9 @@ would be unavailable while preparing for her professional examination. Calls
 to the office went unanswered, and for almost three months nobody there spoke
 with me. On 19 February, the appointed lawyer asked to be released because the
 office was overloaded. The police accepted the request, and it was from the
-police that I learned he was no longer my lawyer. Only then did he return one
-of my calls. He told me to let the police do their job.
+police that I learned he was no longer my lawyer. I then tried to reach him by
+phone. Only then did he return my call. He told me to let the police do their
+job.
 For the months after 19 February, I did not know whether another defender had
 been appointed—or whether I had one at all. I complained in writing. Nobody
 replied.
@@ -981,11 +982,11 @@ measured the low-trust condition: I no longer believed that even an ordinary
 handover would necessarily survive in one shared version unless I preserved it
 myself.
 
-The glance returned the obscene visual joke I had made while trying to force
-the tax administration to see the body behind its process. Where was the grave
-threat in that image? It had been a huge symbolic kick in an institution's
-backside. The association arrived as the papers I had been waiting for were
-finally handed over.
+The male officer's smile brought back the obscene visual joke I had used to
+show the tax administration that behind the case was a man recovering from
+surgery. Where was the grave threat in that image? It had been a huge symbolic
+kick aimed at an institution's backside. That was what came back to me as they
+finally handed over the papers I had been waiting for.
 
 The sentence had time. The search had time. The experts had time eight days
 after the search. Defence was the part of the system that repeatedly ran out of

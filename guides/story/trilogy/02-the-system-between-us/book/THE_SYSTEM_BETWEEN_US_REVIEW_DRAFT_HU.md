@@ -456,8 +456,9 @@ szakvizsgájára készül, ezért egy ideig nem lesz elérhető. Az irodát hiá
 hívtam: fel sem vették, és közel három hónapig senki nem állt szóba velem.
 Február 19-én a kirendelt ügyvéd az iroda túlterheltségére hivatkozva kérte a
 felmentését. A rendőrség ezt elfogadta, és tőlük tudtam meg, hogy már nem ő a
-védőm. Csak ezután hívott vissza. A rövid beszélgetésben azt mondta, hagyjam
-dolgozni a rendőröket. Február 19. után hónapokig nem tudtam, kirendeltek-e
+védőm. Ezután telefonon próbáltam elérni. Csak ekkor hívott vissza. A rövid
+beszélgetésben azt mondta, hagyjam dolgozni a rendőröket. Február 19. után
+hónapokig nem tudtam, kirendeltek-e
 másik védőt — vagy van-e egyáltalán védőm. Írásban panaszt tettem. Senki nem
 reagált.
 

@@ -34,9 +34,9 @@ resume pointer and reusable working method.
 checkpoint: EVENT-TICKET-008
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-008--two-similar-events-keep-physical-tickets-isolated
 scenario: event-domain
-ledger_status: PRE-MUTATION UI/ORACLE PASS; A-ONLY UNPUBLISH PENDING
-state: EVENT-VISIBILITY-001 is PASS/CLOSED/reset; fresh EVENT-TICKET-008 owns active Public Ticketing On A and B with Casey+Nova accepted and Riley pending at 2/8 (1); Nova's open Ticket > Upcoming list shows A and B exactly once, and the immediate oracle retains the two exact distinct A tickets unused, Nova counters 2/2, Casey/Riley 0/0 and zero stage-relative outbox/recompute; exactly three Casey/Nova/Riley managed windows run and no fourth exists
-required_resume: In Casey's left window open Events > My Events and leave Upcoming selected; require both Manual QA EVENT-TICKET-008 A and B cards visible, but do not open a card menu or Unpublish yet; Nova keeps the two-ticket Upcoming list open and Riley remains idle; reply megvan
+ledger_status: A-ONLY UNPUBLISH FULL PASS; A-ONLY REPUBLISH PRODUCER PENDING
+state: A Unpublish made only A DR/ticket D; B remains active with byte-stable A ticket; Nova converged 2/2->1/1 B-only both in-place and after fresh Ticket GET/reopen; repeated reads preserved the isolation oracle; exact under-review notification full PASS for Nova accepted + Riley pending, Casey actor/B none; A recompute done attempt1 empty-error; Nova Ticket B-only, Riley New one A under-review row and Casey My Events are open; exactly three windows run
+required_resume: In Casey's left My Events list use Manual QA EVENT-TICKET-008 A card menu, choose Publish, then confirm Publish exactly once; do not reload/reopen; keep Nova Ticket Upcoming open until it changes from one B card/count1 to A+B/count2 and Nova notification count changes 1->2; Riley keeps Notifications New open and must remain exactly one under-review row/count1; reply megvan
 event: Manual QA EVENT-TICKET-008 A / B
 actors:
   left: Casey Bridge
@@ -108,10 +108,13 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The Nova pre-mutation Ticket boundary is **PASS**. Keep Nova's two-ticket
-Upcoming list open. In Casey's left window open **Events -> My Events** and
-leave **Upcoming** selected. Do not open either card menu and do not Unpublish
-yet. Riley remains idle. Stop and reply `megvan` when Casey sees both A and B.
+The complete A-only Unpublish branch is **PASS**, including fresh Ticket
+reconstruction. In Casey's left My Events list, on **Manual QA
+EVENT-TICKET-008 A**, choose **three dots -> Publish**, then confirm **Publish**
+exactly once. Do not reload or reopen anything. Keep Nova Ticket > Upcoming
+open until it changes from B-only/count `1` to A+B/count `2`, and Nova's top
+notification count changes `1 -> 2`. Riley keeps Notifications > New open and
+must remain at exactly its one under-review row/count `1`. Then reply `megvan`.
 
 ## QA working method
 
@@ -231,6 +234,18 @@ the user.
   surface from the implementation and, when the current UI is ambiguous, from
   the managed browser's read-only DOM. Name the complete interaction path,
   including row/menu identity and any confirmation button.
+- Do not turn obvious navigation or opening an unambiguous card menu into its
+  own manual stop. A stop must either produce evidence or protect against a
+  real destructive ambiguity. When stable titles/IDs already distinguish the
+  target, combine menu navigation and confirmation into the single producer
+  instruction; spend the saved stops on meaningful in-place convergence,
+  close/reopen or reload reconstruction, negative-control identity stability
+  and the independent persisted oracle.
+- For isolation checkpoints, prove more than the selected record's expected
+  delta: retain one exact adjacent control identity byte-for-byte, observe the
+  affected visible count/list without reload, reconstruct the same result on a
+  fresh read, verify unrelated actors remain unchanged and prove repeated reads
+  create no cross-scope object, counter, outbox or worker effect.
 - Before asking the user to select a named candidate, inspect the real
   candidate service/converter and identify its eligibility source; a visible
   user who is outside the target membership is not by itself a selectable

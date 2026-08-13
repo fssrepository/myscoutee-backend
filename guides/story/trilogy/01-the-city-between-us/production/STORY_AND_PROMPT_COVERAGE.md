@@ -11,8 +11,8 @@ uncertainty and public boundaries.
 
 ## 1. Canonical hierarchy
 
-1. `book/THE_CITY_BETWEEN_US_PUBLIC_EDITION_EN.md` is the full English public
-   first-person narrative and product-origin book.
+1. `book/THE_CITY_BETWEEN_US_REVIEW_DRAFT_EN.md` is the full English
+   first-person narrative and product-origin book draft.
 2. `../film/SCRIPT.md` is the time-coded spoken compression for the 03:12 hero
    film. Its English master is authoritative for the international film.
 3. `../storyboard/STORYBOARD.md` and `../prompts/shot-prompts.txt` convert that script into

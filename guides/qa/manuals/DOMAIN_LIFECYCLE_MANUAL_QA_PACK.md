@@ -2309,6 +2309,70 @@ Restart evidence on 2026-08-06:
   `0/0`, and stage-relative outbox/recompute counts remained zero. Prepare
   Casey's two-card My Events view next, but do not mutate until A and B are
   distinguished on that owning surface.
+- Casey pre-Unpublish owning-surface boundary (2026-08-13): **PASS**. Casey's
+  open **Events > My Events** list shows A and B exactly once, both with
+  occupancy `2 / 8` and pending badge `1`. Nova keeps the unchanged two-ticket
+  Upcoming surface open while Riley remains idle. A second immediate status
+  retained both canonical events active/Ticketing On, both exact active ticket
+  IDs/codes, Nova counters `2/2` and zero stage-relative outbox/recompute. The
+  stable A/B titles make a separate menu-only stop unnecessary: execute A's
+  card-menu Unpublish plus its confirmation as one producer action, then spend
+  the next stop on Nova's no-reload `2 -> 1` / B-only convergence.
+- Event-A Unpublish immediate boundary (2026-08-13): **PASS**. Casey executed
+  exactly one `POST /api/activities/events/unpublish` for A at
+  `02:01:34+02:00`. Nova's already-open Ticket > Upcoming list converged by its
+  normal poll from two cards/count `2` to exactly one B card/count `1` without
+  reload or reopen. The dedicated isolation oracle proved A alone changed to
+  `DR`, its exact original ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:a` /
+  `TKT-f7fe4c90-de37-46e2-973e-ce51695454c3` changed only `A -> D`, and Nova's
+  stored counters became `1/1`. Control B remained active/Ticketing On with the
+  byte-stable ticket
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-a0046ee8-d818-49de-8b4c-84714b31e8ec`, `status=A`; Casey and Riley
+  remained ticketless. Casey's open My Events retained both cards because the
+  owning My Events scope includes active and draft records; the A card is
+  patched to draft in-place while B remains published.
+- Unpublish notification boundary (2026-08-13): **SERVER + IN-PLACE COUNTER +
+  ROW UI PASS**. The lifecycle task
+  `6a7d095ef8a7d3829acd808f` completed once for exactly Nova and Riley with
+  reason `under-review` and count `2`. It created one unread
+  `event-under-review` / **The event is under review.** occurrence and one
+  retained Firebase-disabled outbox intent for each recipient, all bound only
+  to event A. Nova and Riley each changed to one New notification in-place.
+  Casey was correctly excluded as actor, and event B received no lifecycle
+  task, notification or outbox. The current backend contract deliberately
+  includes accepted, pending, invited and pending-request identities in an
+  Unpublish audience while removing the acting user; the existing regression
+  explicitly covers accepted plus pending recipients. Nova's and Riley's open
+  **Notifications > New** lists each showed exactly one `Manual QA
+  EVENT-TICKET-008 A` row with **The event is under review.** and no B row.
+  Neither row was clicked, and the post-UI oracle retained both `readAtIso`
+  values empty, proving list open is read-only. The normal A recompute also
+  completed `done` at `02:05:08+02:00` on attempt `1` with empty `lastError`,
+  while tickets and counters retained the exact A-D/B-A isolation boundary.
+  Close Nova's notification surface and reopen Ticket > Upcoming next to prove
+  the same B-only result from a fresh read, not only the previous in-place list.
+- Post-Unpublish fresh Ticket-read boundary (2026-08-13): **PASS**. Nova closed
+  only Notifications and newly opened **Ticket > Upcoming**. The new request at
+  `02:09:54+02:00` returned exactly one ticket and the reconstructed popup
+  showed `1 ticketed event`, only control B, without opening its card or QR.
+  A later normal poll retained the same one-row response. Re-running the
+  dedicated isolation oracle after those reads retained A=`DR` with its exact
+  D ticket, B=`A` with its byte-stable A ticket and Nova counters `1/1`.
+  Therefore both the no-reload and fresh-read branches pass, and repeated
+  Ticket reads remain non-producers.
+- Republish observation contract (2026-08-13): keep Nova's B-only Ticket popup
+  and Riley's one-row New list open while Casey publishes only A. Nova is an
+  accepted non-actor, so the existing lifecycle contract requires one new
+  `event-modified` / **The event is available again.** occurrence even when
+  Publish materializes the missing accepted-member main chat. Nova's
+  notification count must change `1 -> 2` independently while its Ticket list
+  changes `1 -> 2`. Riley is a pending join-request control, not an invited
+  pending recipient; it receives neither an event-invite nor this
+  accepted-participant lifecycle row, so its already-open New list must remain
+  exactly the one A under-review row. Casey actor and control event B receive
+  no Republish notification or ticket delta.
 
 ### `EVENT-TICKET-009` — holder can present a cached QR while offline
 
