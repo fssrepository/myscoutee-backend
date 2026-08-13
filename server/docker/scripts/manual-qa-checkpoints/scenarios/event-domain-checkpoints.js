@@ -5280,7 +5280,7 @@
       notification: notificationDelta[0],
       recompute: recomputeDelta[0],
       immediateTrashCounterObservation: "NOT EXECUTED: the user did not observe whether Casey Trash +1 came from the action delta or a later poll.",
-      next: "Open Casey Events > Trash and prove the same event exactly once. Keep Nova untouched; then EVENT-LIFE-003 may carry this state forward for Restore."
+      next: "Persisted Trash transaction is verified. Follow CURRENT_QA_SESSION.md for the remaining UI/read branch; do not replay Delete."
     });
   }
 

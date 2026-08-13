@@ -938,12 +938,16 @@ Baseline evidence on 2026-08-13:
   `trash=1`; the existing frontend watcher compiled and synced the new bundle.
   Regression sources cover HTTP mapping and the Active-zero/All-stale store
   transition. No separate build or SmartList-core change was made.
-- Remaining UI proof before closing this checkpoint: Nova opens Notifications
-  **New** and sees the one unread deletion row without opening/marking it read.
-  A later fresh-bundle/read branch must reconstruct the same bucket ownership;
-  `EVENT-LIFE-003` Restore provides the focused inverse runtime replay that an
-  open event bucket receives the complete counter snapshot without repeating
-  this Delete producer.
+- Notification Center UI read **PASS**: Nova opened Notifications **New** and
+  saw the exact unread `QA EVENT-LIFE-002` / `The event was deleted.` row without
+  opening it. The guarded terminal verifier was repeated at
+  `2026-08-13T21:05:00.659Z` and still found exactly that one row with an empty
+  `readAtIso`, one matching pending dev-mode outbox and no duplicate lifecycle
+  effect.
+- Remaining proof before closing this checkpoint: a fresh-bundle/read branch
+  must reconstruct the same bucket ownership. `EVENT-LIFE-003` Restore then
+  provides the focused inverse runtime replay that an open event bucket receives
+  the complete counter snapshot without repeating this Delete producer.
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
