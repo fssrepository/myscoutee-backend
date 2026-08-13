@@ -2765,12 +2765,17 @@
             ? (checkpointId === "EVENT-FEEDBACK-002"
                 ? [hostUserId, participantUserId, thirdUserId]
                 : [hostUserId, participantUserId]).map(userActivitiesSnapshot)
+            : checkpointId.startsWith("EVENT-LIFE-")
+              ? [hostUserId, participantUserId].map(userActivitiesSnapshot)
             : []
     };
     Q.collection(Q.STATE_COLLECTION).insertOne(state);
     try {
       clearFixture();
       stageData(selected.stage, stagedAtIso, runtimeContext);
+      if (checkpointId.startsWith("EVENT-LIFE-")) {
+        synchronizeEventActivityCounters([hostUserId, participantUserId]);
+      }
       stageFeedbackProjection(selected.stage, stagedAtIso, state);
       if (checkpointId === "EVENT-TICKET-011") {
         state.ticketAttendanceBaseline = ticketAttendanceSnapshot();
@@ -4926,6 +4931,58 @@
     });
   }
 
+  function repairLifecycleCounterBaseline() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-002") {
+      Q.fail("repair-lifecycle-counter-baseline currently supports only EVENT-LIFE-002.");
+    }
+    const state = requireMatchingState();
+    if ((state.userActivitySnapshots || []).length > 0) {
+      Q.fail("lifecycle activity snapshots already exist; refusing to replace the reset baseline.");
+    }
+    const event = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    if (!event
+        || Q.text(event.status).toUpperCase() !== "A"
+        || event.published !== true
+        || event.isTrashed === true
+        || Q.text(event.statusBeforeSuppression)) {
+      Q.fail("EVENT-LIFE-002 is no longer at the untouched active baseline; do not repair counters after the Trash action.");
+    }
+
+    const snapshots = [hostUserId, participantUserId].map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne(
+      { _id: state._id },
+      { $set: { userActivitySnapshots: snapshots } }
+    );
+    synchronizeEventActivityCounters([hostUserId, participantUserId]);
+
+    const summary = [hostUserId, participantUserId].map(userId => {
+      const current = userActivitiesSnapshot(userId).activities.value || {};
+      return {
+        user: Q.user(userId),
+        events: nestedNumber(current, "events"),
+        hosting: nestedNumber(current, "hosting"),
+        event: current.event || {}
+      };
+    });
+    const host = summary.find(item => Q.text(item.user && item.user.userId) === hostUserId);
+    const participant = summary.find(item => Q.text(item.user && item.user.userId) === participantUserId);
+    if (!host || host.hosting < 1 || !participant || participant.events < 1) {
+      Q.fail("lifecycle counter projection did not expose the staged host/member event on both users.");
+    }
+
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "baseline-counter-projection-repaired",
+      activitySnapshotsCaptured: snapshots.length,
+      counters: summary,
+      smartListChanged: false,
+      eventChanged: false,
+      next: "Reload Casey and Nova once. My Events and Events counters must already be visible before either popup is opened."
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5017,6 +5074,7 @@
     case "verify-ticket-attendance-replay": verifyTicketAttendanceReplay(); break;
     case "status": status(); break;
     case "reset": reset(); break;
+    case "repair-lifecycle-counter-baseline": repairLifecycleCounterBaseline(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

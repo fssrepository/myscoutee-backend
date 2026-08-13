@@ -816,6 +816,35 @@ Execution evidence on 2026-08-04:
 - Require one event recompute signal. Any auto-inviter eligibility, reminder,
   active attachment or ticket presentation must become unavailable.
 
+Baseline evidence on 2026-08-13:
+
+- The versioned fixture staged at `2026-08-13T19:44:57.209Z` with canonical
+  event/source ID `manual-qa-checkpoint:v1:event-domain:event`, title
+  `QA EVENT-LIFE-002`, status `A`, `published=true`, public/Open visibility and
+  no suppression fields. Casey is the accepted Admin/owner and Nova is the
+  single accepted Member; capacity is `2/8` including Casey's canonical admin
+  membership.
+- No ticket, payment, lifecycle task/outbox/notification, recompute task or
+  event chat existed at baseline. The affinity worker was completed with
+  pending count `0`; notification-outbox was also at pending count `0` for this
+  fixture boundary. Two managed browser sessions, Casey and Nova, replaced the
+  prior consent session.
+- FAIL before the producer action: after reload Casey's main menu showed no red
+  My Events counter; it appeared only after the popup loaded. Direct
+  `/api/auth/me` evidence agreed, returning top-level `hosting=0` and an all-zero
+  nested event counter. The event and membership were present, so this was a
+  fixture write/projection omission rather than a SmartList race or Trash
+  defect.
+- The lifecycle stage now snapshots Casey/Nova activities and invokes the
+  existing canonical event-counter projection after inserting its controlled
+  event. A guarded repair captured the two missing reset snapshots and applied
+  that same projection to the live untouched baseline without changing the
+  event or SmartList. The post-repair reload source returns Casey
+  `hosting=1`, `event.all=1`, `event.hosting=1`; Nova returns `events=1`,
+  `event.all=1`, `event.active=1`, with identical `counterOverrides`. Replaying
+  only the closed-popup reload display is next; no prior consent or event
+  transaction is repeated.
+
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
 - Restore the same controlled event once from Trash.

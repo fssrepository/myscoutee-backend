@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ENTRY-CONSENT-003
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
-scenario: core-coverage-expansion
+checkpoint: EVENT-LIFE-002
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-002--organizer-trash-moves-the-event-to-trash-only
+scenario: event-domain
 ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001, ENTRY-CONSENT-001 and ENTRY-CONSENT-002 are PASS/CLOSED. ENTRY-CONSENT-003 staged at 2026-08-13T19:34:55.567Z from Nova's exact retained v4 consent 6a7e188067960971c52a31b8, which contains only qa-current-analytics. Distinct v5 revision manual-qa-entry-consent-003-20260813193455567 is sole active; baseline Nova/total/ownerless counts are 4/28/0 and all deltas 0. A fresh managed Nova browser with bootstrap consent disabled shows mandatory v5 with exactly qa-current-analytics selected; prior-unselected qa-current-marketing and new qa-product-research are both unselected, and v5 consent is absent. The ledger contains 189 real tests: 133 Core and 56 EXT. Core-first remains selected; Firebase prerequisite and all EXT execution remain deferred
-required_resume: Do not restage, reset, relaunch, alter v4 evidence or replay closed checkpoints. If continuity is uncertain, server status must show baseline, distinct v5 sole active, exact v4 source consent, no v5 consent and all deltas 0; browser state must show Nova session, mandatory v5 popup, selected IDs exactly [qa-current-analytics], all four expected section IDs and no local entry consent/audit. The next action is select Product research while leaving Current analytics selected and Current marketing empty, then Approve privacy. After the user reports completion, run browser and terminal verify; expect one separate settings-source v5 consent with exactly analytics plus product research, byte-identical v4 revision/consent, target/total +1 and ownerless 0
-event: none; ENTRY-CONSENT-003 uses Nova's retained v4 privacy evidence and a new v5 revision without mutating event fixtures
+state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002 is still at its untouched active baseline. Reload initially omitted Casey's My Events badge because the fixture stage had not projected stored activities; /api/auth/me proved hosting=0. The stage now snapshots lifecycle actors and applies the canonical event-counter projection. Guarded repair captured the current two reset snapshots without changing the event/SmartList. HTTP reload oracle now returns Casey hosting/event.hosting/event.all=1 and Nova events/event.active/event.all=1 with matching counterOverrides. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Do not restage, reset, relaunch, open either Activities popup or replay closed checkpoints. If continuity is uncertain, status must still show the active public EVENT-LIFE-002 identity with Casey/Nova accepted and no lifecycle producer effects; /api/auth/me must return Casey hosting/event.hosting/event.all=1 and Nova events/event.active/event.all=1. Keep exactly the two managed browsers. Replay only the failed display boundary: close any already-open popup, reload both windows once and inspect the main menu before opening anything. Casey My Events and Nova Events must each show red counter 1. The Trash instruction comes only after this replay passes
+event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; active public, ticketing off, Casey owner/Admin and Nova accepted Member
 actors:
-  active: one managed Nova browser after the ENTRY-CONSENT-003 fixture proves its baseline
-  controls: exact retained v4 consent/revision snapshot, v5 initial selection and separate v5 consent cardinality oracle; no extra Google-account window
-next_actor: User selects Product research, keeps Current analytics selected, leaves Current marketing unselected and clicks Approve privacy; then reports megvan
+  active: Casey and Nova in two managed browser windows
+  controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
+next_actor: User closes any open popup, reloads Casey and Nova once, and before opening either popup confirms Casey My Events=1 and Nova Events=1; then reports megvan
 stop_phrase: none
 ```
 
@@ -107,12 +107,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The coverage audit is complete; `ENTRY-DEMO-REG-001` and `ENTRY-CONSENT-001`
-are PASS/CLOSED and their retained evidence must not be replayed or deleted.
-`ENTRY-CONSENT-003` is active. Its distinct v5 baseline and display-inheritance
-branch are proven. Select Product research, retain Current analytics, leave
-Current marketing unselected and click Approve privacy. Then run the browser
-and terminal final oracles before reset.
+The coverage audit is complete; `ENTRY-DEMO-REG-001` and all three
+`ENTRY-CONSENT-*` checkpoints are PASS/CLOSED and their retained evidence must
+not be replayed or deleted. `EVENT-LIFE-002` is active from a clean staged
+baseline. Open Casey My Events and Nova Active Events without mutation and
+confirm both show `QA EVENT-LIFE-002`; only after that baseline display is
+recorded may Casey receive the one Trash instruction.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -194,6 +194,21 @@ the user.
   choices may be prefilled. Filter the latest prior consent through the new
   revision's IDs, default every newly introduced ID to unselected, and require
   Save to create a separate new-revision consent without rewriting history.
+- A fixture that activates a new revision may mutate only the currently active
+  record required by that transition; never bulk-update already inactive
+  historical revisions merely to make the new one sole active. Snapshot
+  immutability checks start immediately after stage so a setup defect is not
+  misattributed to the later application write. If such a stage defect is
+  found after the manual action, use a guarded versioned repair command to
+  restore exact inactive snapshots without touching transaction records, then
+  repeat the terminal oracle instead of replaying unrelated UI steps.
+- A fixture that inserts a canonical event/member/payment record must also
+  stage every persisted projection that a normal owning write would have
+  produced, while snapshotting those fields for reset. Validate reload-owned
+  menu counters before opening the popup. A popup SmartList correcting a badge
+  after its own query does not prove the reload contract and must not be used
+  to conceal a missing stored write-side projection. Reuse the existing
+  canonical counter projector; do not add a SmartList special case.
 - Do not create a new row merely because one test case has multiple branches
   or an incidental observation occurred. A new row requires a genuinely new
   test case and the user's requested split; otherwise name the tests inside the
@@ -651,7 +666,8 @@ checkpoints remain closed. The active Core expansion continuation is:
 
 ```text
 ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
--> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (active)
+-> ENTRY-CONSENT-002 (closed) -> ENTRY-CONSENT-003 (closed)
+-> EVENT-LIFE-002 (active)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
