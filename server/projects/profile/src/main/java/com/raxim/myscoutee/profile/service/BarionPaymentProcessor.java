@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,7 @@ public class BarionPaymentProcessor implements PaymentProcessor {
     private final String environmentPosKey;
     private final RestTemplate restTemplate;
 
+    @Autowired
     public BarionPaymentProcessor(
             DeploymentPaymentCredentialResolver credentialResolver,
             DeploymentPaymentRoutingResolver routingResolver,

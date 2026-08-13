@@ -29,6 +29,8 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Service
 public class StripePaymentProcessor implements PaymentProcessor {
 
@@ -37,6 +39,7 @@ public class StripePaymentProcessor implements PaymentProcessor {
     private final StripeApiEndpointResolver endpointResolver;
     private final String environmentApiKey;
 
+    @Autowired
     public StripePaymentProcessor(
             DeploymentPaymentCredentialResolver credentialResolver,
             DeploymentPaymentRoutingResolver routingResolver,
