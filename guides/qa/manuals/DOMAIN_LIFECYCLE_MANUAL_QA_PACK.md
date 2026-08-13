@@ -3416,7 +3416,23 @@ accepting at `2026-08-13T19:10:22.951Z` then stored the exact v3 consent and
 optional revision key locally. The accepted audit was prepended without
 altering the earlier rejected audit; the popup closed, no session appeared,
 and all server consent deltas remained `0`. No login or revision activation
-has occurred yet.
+had occurred at that boundary. Login as Nova then opened `/game` with the same
+local v3 acceptance/audit history and no privacy popup. Server consent
+`6a7e170d67960971c52a31b6` was created once at
+`2026-08-13T19:12:13.224610973Z`, source `entry`, exact v3 and only
+`qa-previous-analytics`. Nova and total consent deltas became `+1`, ownerless
+delta remained `0`, and no v4 consent existed. The v3 document is the immutable
+snapshot for the newer-revision branch. The harness activated only the
+controlled v4 at `2026-08-13T19:13:40.771Z`; its post-transition status kept
+the v3 consent byte-for-byte unchanged, still showed target/total deltas `+1`
+and ownerless delta `0`, and showed no v4 consent. The next boundary is a reload
+of the same Nova session, which must force the newer-revision privacy popup
+before v4 can be accepted. That reload passed: Nova's session remained active
+and the non-backdrop-dismissible v4 popup opened with required v4 plus
+`qa-current-analytics` and `qa-current-marketing`, empty selection and only the
+Approve privacy action. The local v3 consent/approval and accepted-then-rejected
+audit history remained intact, while the server still had no v4 consent and
+kept the v3 record and `+1/+1/0` cardinality unchanged.
 
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |

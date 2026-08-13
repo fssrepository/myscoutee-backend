@@ -83,6 +83,7 @@ for (const session of manifest.sessions ?? []) {
         visibleDocument: visibleDocumentConfig ? {
           title: visibleDocumentConfig.title ?? null,
           versionLabel: visibleDocumentConfig.versionLabel ?? null,
+          closeOnBackdrop: visibleDocumentConfig.closeOnBackdrop !== false,
           selectedSectionIds: [...(visibleDocumentConfig.selectedSectionIds ?? [])].sort(),
           sectionIds: [...(visibleDocumentConfig.sections ?? [])].map(section => section.id)
         } : null,
