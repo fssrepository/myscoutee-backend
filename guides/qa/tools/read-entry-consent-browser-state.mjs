@@ -41,8 +41,19 @@ for (const session of manifest.sessions ?? []) {
         if (!raw) return null;
         try { return JSON.parse(raw); } catch { return { invalidJson: true }; }
       };
-      const entry = globalThis.ng?.getComponent?.(document.querySelector('app-entry-page'));
+      const entryElement = document.querySelector('app-entry-page');
+      const entry = entryElement
+        ? globalThis.ng?.getComponent?.(entryElement)
+        : null;
       const revision = entry?.privacyPolicy?.activeRevision?.() ?? null;
+      const visibleDocumentViewers = [...document.querySelectorAll('app-document-viewer')]
+        .filter(element => element.getClientRects().length > 0);
+      const visibleDocumentViewer = visibleDocumentViewers[0] ?? null;
+      const visibleDocumentComponent = visibleDocumentViewer
+        ? globalThis.ng?.getComponent?.(visibleDocumentViewer)
+        : null;
+      const visibleDocumentConfig = visibleDocumentComponent?.activeConfig?.() ?? null;
+      const storedSession = parse(sessionKey);
       return {
         pathname: location.pathname,
         activeRevision: revision ? {
@@ -61,7 +72,19 @@ for (const session of manifest.sessions ?? []) {
         consent: parse(consentKey),
         optionalApprovals: parse(optionalKey),
         audit: parse(auditKey),
-        hasSession: Boolean(localStorage.getItem(sessionKey)),
+        hasSession: Boolean(storedSession),
+        session: storedSession ? {
+          kind: storedSession.kind ?? null,
+          userId: storedSession.userId ?? storedSession.profile?.id ?? null,
+          name: storedSession.profile?.name ?? null
+        } : null,
+        privacyPopupVisible: visibleDocumentViewers.length > 0,
+        visibleDocument: visibleDocumentConfig ? {
+          title: visibleDocumentConfig.title ?? null,
+          versionLabel: visibleDocumentConfig.versionLabel ?? null,
+          selectedSectionIds: [...(visibleDocumentConfig.selectedSectionIds ?? [])].sort(),
+          sectionIds: [...(visibleDocumentConfig.sections ?? [])].map(section => section.id)
+        } : null,
         visibleActions: [...document.querySelectorAll('.document-viewer-actions button')]
           .filter(button => button.offsetParent !== null)
           .map(button => button.textContent?.trim() ?? '')

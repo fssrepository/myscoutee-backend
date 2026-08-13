@@ -3368,6 +3368,32 @@ registration is transaction evidence. `ENTRY-FIREBASE-REG-001` must instead
 prove that a Firebase registration persists the real verified identity email
 and reuses the same user on login.
 
+`ENTRY-CONSENT-001` completed execution checkpoint (2026-08-13): the
+versioned `entry-consent` fixture staged at `2026-08-13T18:25:11.953Z` with
+one pre-existing disposable registration user, 25 privacy consents and zero
+ownerless consent records. It made
+`manual-qa-entry-consent-001-20260813182511953` v2 the sole active English
+privacy revision, with one required section, selected target
+`qa-analytics`, and deliberately unselected `qa-marketing`. The anonymous
+browser accepted that exact revision at `2026-08-13T18:42:17.656Z` with only
+`qa-analytics`; read-only browser evidence showed one accepted `entry` audit,
+the exact revision key and no session. The server still had zero post-baseline
+users and no consent delta before Save.
+
+One Save created
+`demo-profile-5b569629-0a7b-46c8-b7e3-044f8f8f80dd` (`QA Consent Transfer`),
+active/public with profile form v2 and three images. The terminal oracle passed
+at `2026-08-13T18:52:00.070Z`: that user owns exactly one consent,
+`6a7e11b267960971c52a31b5`, for the controlled revision/version; its optional
+IDs are exactly `[qa-analytics]`, its source is `entry`, total consent delta is
+`+1`, and ownerless consent delta is `0`. The authenticated `/game` session
+did not reopen the privacy popup. Event fixtures and payment runtime remained
+untouched. The disposable profile, inactive QA revision and consent remain
+transaction evidence after the original active English privacy revision is
+restored. Reset completed at `2026-08-13T18:54:01.813Z`; the follow-up status
+was `not-staged`, with `privacy-default-v1` again the sole active English
+revision, 2 retained disposable registration users and 26 total consents.
+
 | Testcase | Controlled action | Decisive oracle |
 | --- | --- | --- |
 | `ENTRY-DEMO-REG-001` | Register/onboard a fresh disposable identity with Firebase inactive. | Demo/bootstrap authentication reaches the same required profile/onboarding boundary once, persists one user and never manufactures Firebase identity/token state. |

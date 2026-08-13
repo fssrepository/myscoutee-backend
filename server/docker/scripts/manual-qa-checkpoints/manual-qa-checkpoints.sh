@@ -75,6 +75,11 @@ Usage:
   bash manual-qa-checkpoints.sh status entry-consent ENTRY-CONSENT-001
   bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-001
   bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-001
+  bash manual-qa-checkpoints.sh stage entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh status entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh activate-newer entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh verify entry-consent ENTRY-CONSENT-002
+  bash manual-qa-checkpoints.sh reset entry-consent ENTRY-CONSENT-002
 
 The default schedule delay is 30 seconds; accepted values are 10..120.
 Only demo_db and e2e_db are accepted. This tool never starts or restarts Mongo,
@@ -131,7 +136,13 @@ run_scenario() {
     asset-domain) scenario_script="${SCRIPT_DIR}/scenarios/asset-domain-checkpoints.js" ;;
     operator-domain) scenario_script="${SCRIPT_DIR}/scenarios/operator-domain-checkpoints.js" ;;
     entry-domain) scenario_script="${SCRIPT_DIR}/scenarios/entry-domain-checkpoints.js" ;;
-    entry-consent) scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-checkpoints.js" ;;
+    entry-consent)
+      if [ "${checkpoint_id}" = "ENTRY-CONSENT-002" ]; then
+        scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-revision-checkpoints.js"
+      else
+        scenario_script="${SCRIPT_DIR}/scenarios/entry-consent-checkpoints.js"
+      fi
+      ;;
     *) fail "Unknown manual scenario '${scenario}'." ;;
   esac
 
@@ -242,7 +253,7 @@ case "${scenario}:${command}" in
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   entry-domain:stage|entry-domain:status|entry-domain:verify|entry-domain:reset|\
-  entry-consent:stage|entry-consent:status|entry-consent:verify|entry-consent:reset)
+  entry-consent:stage|entry-consent:status|entry-consent:activate-newer|entry-consent:verify|entry-consent:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

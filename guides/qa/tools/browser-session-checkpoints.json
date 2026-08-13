@@ -43,6 +43,21 @@
         }
       ]
     },
+    "ENTRY-CONSENT-002": {
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Nova revision consent",
+          "sessionKind": "anonymous",
+          "expectedName": "Anonymous rejection then Nova revision reconsent"
+        }
+      ]
+    },
     "EVENT-TICKET-005": {
       "layout": {
         "columns": 3

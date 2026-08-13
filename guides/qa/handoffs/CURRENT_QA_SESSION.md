@@ -31,17 +31,17 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: ENTRY-CONSENT-001
+checkpoint: ENTRY-CONSENT-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#qa-expansion-cp03--entry-registration-and-operator-configuration
 scenario: core-coverage-expansion
 ledger_status: DESIGN CAPTURED / FIXTURE PREPARATION PENDING
-state: The original 106-test workflow spine remains unchanged and its completed ticket, invitation and chat checkpoints must not be replayed. The authoritative CSV/XLSX contains 188 real tests: 132 Core and 56 EXT. Core-first remains selected. ENTRY-DEMO-REG-001 is PASS/CLOSED and its pointer was reset at 2026-08-13T18:16:50.795Z without deleting retained profile evidence. Its shared FormFlow numeric paste defect was repaired and the fresh-bundle focused replay passed. ENTRY-FIREBASE-REG-001 requires a verified Firebase revision that is not prepared, so the next independently runnable Core case is ENTRY-CONSENT-001. Payment, operator, registry and deployment EXT execution remains deferred
-required_resume: Do not repeat the coverage audit, rewrite the original 106 rows, replay ENTRY-DEMO-REG-001 or delete its retained disposable profile. Inspect the current consent implementation and persisted evidence boundary, then add/stage the versioned ENTRY-CONSENT-001 fixture and read-only baseline before asking for a user action. Do not treat the launcher-bootstrapped default consent as proof of the test's controlled optional selection and transfer. Do not start ENTRY-FIREBASE-REG-001 until its verified Firebase configuration prerequisite exists, and do not start an EXT row unless the user changes Core-first
-event: none; ENTRY-CONSENT-001 must use disposable consent/identity evidence and must not mutate retained event fixtures
+state: The original 106-test workflow spine remains unchanged and its completed ticket, invitation and chat checkpoints must not be replayed. The authoritative CSV/XLSX contains 188 real tests: 132 Core and 56 EXT. Core-first remains selected. ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001 are PASS/CLOSED. ENTRY-CONSENT-001 reset completed at 2026-08-13T18:54:01.813Z: privacy-default-v1 is again the sole active English revision, while the inactive QA revision, disposable profile and exact consent remain evidence. ENTRY-FIREBASE-REG-001 still requires a verified Firebase prerequisite. The next independently runnable Core case is ENTRY-CONSENT-002. Payment, operator, registry and deployment EXT execution remains deferred
+required_resume: Do not repeat the coverage audit, rewrite the original 106 rows, replay either closed entry checkpoint or delete their retained evidence. Run one read-only entry-consent status if runtime continuity is uncertain; it must show not-staged and privacy-default-v1 active. Inspect the rejection, session-prevention, active-revision recheck and historical-consent contracts, then extend the versioned entry-consent harness for ENTRY-CONSENT-002 and prove its exact baseline before asking for a user action. Do not start ENTRY-FIREBASE-REG-001 until its verified Firebase configuration prerequisite exists, and do not start an EXT row unless the user changes Core-first
+event: none; ENTRY-CONSENT-002 must use disposable privacy revisions and identity/consent evidence without mutating retained event fixtures
 actors:
-  active: one disposable anonymous-to-member browser session after the fixture proves its baseline
-  controls: server-side privacy revision, anonymous evidence, authenticated consent and user cardinality oracle; no extra Google-account window
-next_actor: Codex prepares and stages ENTRY-CONSENT-001; the user performs no action until the versioned status oracle proves the exact baseline
+  active: one disposable browser session after the ENTRY-CONSENT-002 fixture proves its baseline
+  controls: rejection/no-session proof, old acceptance versus newer active revision, current immutable consent and audit-history oracle; no extra Google-account window
+next_actor: Codex extends and stages ENTRY-CONSENT-002; the user performs no action until the versioned status oracle proves the exact baseline
 stop_phrase: none
 ```
 
@@ -107,10 +107,11 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The coverage audit is complete, `ENTRY-DEMO-REG-001` is PASS/CLOSED and the dev
-stack is healthy. The next independently runnable Core case is
-`ENTRY-CONSENT-001`; prepare its versioned privacy-revision, anonymous-evidence
-and user-cardinality baseline before asking for a browser action.
+The coverage audit is complete; `ENTRY-DEMO-REG-001` and `ENTRY-CONSENT-001`
+are PASS/CLOSED and their retained evidence must not be replayed or deleted.
+The next independently runnable Core case is `ENTRY-CONSENT-002`; extend its
+versioned rejection/newer-revision fixture and prove the exact baseline before
+asking for a browser action.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -641,8 +642,8 @@ The completed ticket, visibility, invitation, chat and demo-registration
 checkpoints remain closed. The active Core expansion continuation is:
 
 ```text
-ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (prepare next)
--> ENTRY-CONSENT-002
+ENTRY-DEMO-REG-001 (closed) -> ENTRY-CONSENT-001 (closed)
+-> ENTRY-CONSENT-002 (prepare next)
 ```
 
 `ENTRY-FIREBASE-REG-001` remains in CP03 but waits for its verified Firebase
