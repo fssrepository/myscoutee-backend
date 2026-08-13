@@ -549,6 +549,26 @@ Execution state on 2026-08-04:
   changing that oracle. The remaining manual step is the three-client
   post-Publish chat-list visibility check; do not repeat Publish or the counter
   branch.
+- THREE-CLIENT CHAT VISIBILITY **PASS** at 16:19 local: Casey Chats > All
+  displayed `QA EVENT-PUBLISH-CHAT-001` exactly once, while Nova and Riley
+  Chats > All both displayed no items. The immediate persisted oracle remained
+  one Casey-only main-event chat with unread `0`, no messages, chat outbox or
+  chat notifications, and zero chat attention/action deltas for every actor.
+  Opening the Casey row and observing the empty channel is the only remaining
+  pre-reload UI check.
+- EMPTY CHANNEL **PASS**: Casey opened the single event-chat row and the UI
+  displayed `No messages yet` / `Start the conversation`. Read-only browser
+  state and MongoDB agreed on one member (Casey), unread `0`, no messages,
+  chat outbox or chat notifications, and zero Chats/All/Event attention delta
+  for Casey, Nova and Riley. Only Casey reload parity remains for this Publish
+  branch.
+- RELOAD PARITY **PASS / CHECKPOINT CLOSED**: after one Casey-only reload, the
+  client restored Chats `0`, Invitations `3`, My Events `1` and Drafts `0`,
+  and retained the same single empty event chat. The terminal database oracle
+  remained bit-for-bit equivalent for the controlled event, chat, message,
+  notification and counter identities. Keep the fixture only for the guarded
+  `EVENT-INV-003` continuation; do not repeat Publish or reconstruct this
+  baseline.
 
 ### `EVENT-EDITOR-003` — save feeds the real auto-inviter
 

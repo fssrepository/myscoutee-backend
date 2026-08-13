@@ -34,16 +34,16 @@ resume pointer and reusable working method.
 checkpoint: EVENT-PUBLISH-CHAT-001
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-publish-chat-001--publish-materializes-the-accepted-admin-chat
 scenario: event-domain
-ledger_status: DRAFT PUBLISH COUNTER REPLAY PASS / CHAT UI CHECK NEXT
-state: The corrected clean Draft Publish ran once at 2026-08-13T14:12:42Z. Without reload or My Events click, the user confirmed Drafts 0 and My Events 1; subsequent bucket switching retained correct menu counts. Read-only UI and persisted oracles agree: Casey All 4 / Invitations 3 / My Events 1 / Drafts 0, with only eventDrafts -1. Nova and Riley each converged in-place to Invitations 1 plus exactly one event-invite notification; these were the two staged draft invitees becoming active invitations, not duplicates. Exactly one empty Casey main-event chat exists with unread 0, no chat message or actor chat notification; Nova/Riley chat counters remain zero. The normal recompute completed done at 2026-08-13T14:16:28.796916646Z on attempt 1 with empty lastError and retained the exact state
-required_resume: Continue the same post-Publish boundary; do not repeat Publish or the counter replay. In Casey close Events and open Activities -> Chats -> All. Require QA EVENT-PUBLISH-CHAT-001 exactly once with no Chats attention-count increase; open it and require an empty channel with no automatic Publish message. Then check Nova and Riley Chats -> All: the QA chat must be absent for both pending invitees. Do not accept an invitation yet and do not reload before reporting the three list results
+ledger_status: PASS / CLOSED; RETAINED FOR EVENT-INV-003
+state: The clean Draft Publish branch is complete. In-place and reload states agree: Casey Chats 0 / Invitations 3 / My Events 1 / Drafts 0; one Casey-only main-event chat unread 0; no messages/outbox/chat notification; Nova/Riley each have exactly one active invitation and event-invite notification but no chat; recompute done attempt 1 with empty lastError. The fixture remains active only for the documented EVENT-INV-003 continuation. The next work item is the operator/admin/registration/mobile/deployment QA coverage audit, which must not mutate this retained event
+required_resume: Do not repeat or reset EVENT-PUBLISH-CHAT-001. Resume the QA coverage audit and create its detailed handoff/checkpoints. If the audit is already complete and lifecycle QA is requested, advance the retained fixture to EVENT-INV-003 through the documented guarded harness command rather than rebuilding the Publish baseline
 event: QA EVENT-PUBLISH-CHAT-001 / manual-qa-checkpoint:v1:event-domain:event
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: User verifies the already-published chat projection in Casey, Nova and Riley without repeating Publish
-stop_phrase: megvan
+next_actor: Codex audits existing QA coverage; no manual browser action is currently pending
+stop_phrase: none
 ```
 
 ### Efficient resume gate
@@ -108,12 +108,10 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The clean Draft Publish counter replay is **PASS**. Do not Publish again. In
-Casey close Events and open Activities -> Chats -> All. Require `QA
-EVENT-PUBLISH-CHAT-001` exactly once and open it: it must be empty and Chats
-attention counts must remain zero. Then open Nova and Riley Chats -> All; the
-same chat must be absent for both pending invitees. Do not accept either
-invitation and do not reload before reporting the three list results.
+`EVENT-PUBLISH-CHAT-001` is **PASS / CLOSED** and retained for the guarded
+`EVENT-INV-003` continuation. No manual browser action is pending. Continue the
+operator/admin/registration/mobile/deployment QA coverage audit without
+mutating or resetting the retained event.
 
 ## QA working method
 

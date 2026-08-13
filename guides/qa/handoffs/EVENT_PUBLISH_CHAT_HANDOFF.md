@@ -4,9 +4,8 @@ Resume new work from [`CURRENT_QA_SESSION.md`](CURRENT_QA_SESSION.md). This file
 is retained as detailed fixture/evidence history and is not the canonical
 current-state summary.
 
-Status: clean Draft Publish counter replay passed; the retained event now needs
-only the post-Publish three-client chat visibility check before continuing into
-the invitation-acceptance branch.
+Status: **PASS / CLOSED**. The retained event is ready for the guarded
+invitation-acceptance continuation; do not repeat Publish or reset it.
 
 Do not start or rebuild the stack. The existing dev stack and both hot-deploy watchers are already running.
 
