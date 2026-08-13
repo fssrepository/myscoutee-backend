@@ -266,8 +266,18 @@ public class UserActivityCountersService {
             if (!countedSources.add(sourceId)) {
                 continue;
             }
-            if (isTrashScopeStatus(event) || deletedMembershipSourceIds.contains(sourceId)) {
+            if (deletedMembershipSourceIds.contains(sourceId)) {
                 trash += 1;
+                continue;
+            }
+            if (isTrashScopeStatus(event)) {
+                // A globally trashed event belongs only to its organizer/admin
+                // Trash bucket. Accepted participants lose the active event;
+                // their personal Trash is reserved for an explicitly deleted
+                // membership, handled above.
+                if (isHostingRecordForUser(event, userId)) {
+                    trash += 1;
+                }
                 continue;
             }
             if (isInvitationForUser(event, userId)) {

@@ -974,9 +974,13 @@
   function eventDocument(id, title, options = {}) {
     const now = Q.nowIso();
     const status = options.status || "A";
-    const accepted = Array.isArray(options.acceptedUserIds)
+    const requestedAccepted = Array.isArray(options.acceptedUserIds)
       ? [...options.acceptedUserIds]
       : options.accepted === false ? [] : [participantUserId];
+    // Production materializes the event creator as an accepted Admin member.
+    // Keep the embedded occupancy projection consistent with that canonical
+    // activityMembers record, including host-only manual-QA fixtures.
+    const accepted = sortedUnique([hostUserId, ...requestedAccepted]);
     const pending = Array.isArray(options.pendingUserIds)
       ? [...options.pendingUserIds]
       : options.pending === true ? [participantUserId] : [];
@@ -2230,6 +2234,34 @@
                     removed: nestedNumber(currentActivities, "eventFeedback.removed")
                   }
                 }
+              };
+            })
+        : checkpointId.startsWith("EVENT-LIFE-")
+          ? [hostUserId, participantUserId].map(userId => {
+              const current = userActivitiesSnapshot(userId);
+              const baseline = (state.lifecycleActionBaselineUserActivitySnapshots || [])
+                .find(saved => saved.userId === userId);
+              const currentActivities = current.activities.value || {};
+              const baselineActivities = baseline && baseline.activities.value || {};
+              const delta = path => nestedNumber(currentActivities, path) - nestedNumber(baselineActivities, path);
+              return {
+                user: Q.user(userId),
+                current: {
+                  events: nestedNumber(currentActivities, "events"),
+                  hosting: nestedNumber(currentActivities, "hosting"),
+                  event: currentActivities.event || {}
+                },
+                actionDelta: baseline ? {
+                  events: delta("events"),
+                  hosting: delta("hosting"),
+                  eventAll: delta("event.all"),
+                  eventActive: delta("event.active"),
+                  eventPending: delta("event.pending"),
+                  eventInvitations: delta("event.invitations"),
+                  eventHosting: delta("event.hosting"),
+                  eventDrafts: delta("event.drafts"),
+                  eventTrash: delta("event.trash")
+                } : null
               };
             })
         : [],
@@ -4983,6 +5015,150 @@
     });
   }
 
+  function repairLifecycleOccupancyBaseline() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-002") {
+      Q.fail("repair-lifecycle-occupancy-baseline currently supports only EVENT-LIFE-002.");
+    }
+    requireMatchingState();
+    const event = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    if (!event
+        || Q.text(event.status).toUpperCase() !== "A"
+        || event.published !== true
+        || event.isTrashed === true
+        || Q.text(event.statusBeforeSuppression)) {
+      Q.fail("EVENT-LIFE-002 is no longer at the untouched active baseline; do not repair occupancy after the Trash action.");
+    }
+    const acceptedMembershipUserIds = sortedUnique(Q.collection("activityMembers").find({
+      ownerType: "event",
+      ownerId: EVENT_ID,
+      status: "accepted"
+    }).toArray().map(member => member.userId));
+    if (!sameIds(acceptedMembershipUserIds, [hostUserId, participantUserId])) {
+      Q.fail("EVENT-LIFE-002 must retain exactly Casey Admin and Nova Member as accepted memberships before occupancy repair.");
+    }
+
+    const alreadyCanonical = Number(event.acceptedMembers || 0) === 2
+      && sameIds(event.acceptedMemberUserIds, acceptedMembershipUserIds);
+    if (!alreadyCanonical) {
+      const update = Q.collection("events").updateOne({
+        _id: event._id,
+        sourceId: EVENT_ID,
+        status: "A"
+      }, {
+        $set: {
+          acceptedMembers: acceptedMembershipUserIds.length,
+          acceptedMemberUserIds: acceptedMembershipUserIds,
+          updatedDate: Q.nowIso(),
+          updatedUser: Q.ACTOR
+        }
+      });
+      if (update.matchedCount !== 1) {
+        Q.fail("EVENT-LIFE-002 occupancy repair lost its guarded active event target.");
+      }
+    }
+
+    const repaired = Q.collection("events").findOne({ sourceId: EVENT_ID });
+    if (!repaired
+        || Number(repaired.acceptedMembers || 0) !== 2
+        || !sameIds(repaired.acceptedMemberUserIds, acceptedMembershipUserIds)) {
+      Q.fail("EVENT-LIFE-002 embedded occupancy still disagrees with its canonical accepted memberships.");
+    }
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: alreadyCanonical ? "baseline-occupancy-already-canonical" : "baseline-occupancy-repaired",
+      eventId: EVENT_ID,
+      acceptedMembers: Number(repaired.acceptedMembers || 0),
+      acceptedMemberUserIds: repaired.acceptedMemberUserIds || [],
+      capacityTotal: Number(repaired.capacityTotal || 0),
+      membershipChanged: false,
+      smartListChanged: false,
+      next: "Keep both event popups open. Their normal popup poll must converge from 1 / 8 to 2 / 8 without a browser reload."
+    });
+  }
+
+  function captureLifecycleActionBaseline() {
+    config();
+    if (checkpointId !== "EVENT-LIFE-002") {
+      Q.fail("capture-lifecycle-action-baseline currently supports only EVENT-LIFE-002.");
+    }
+    const state = requireMatchingState();
+    if (state.lifecycleActionBaseline) {
+      Q.fail("EVENT-LIFE-002 action baseline is already captured; do not move the attribution boundary.");
+    }
+    const current = oracle(state);
+    const event = (current.events || []).find(item => item.eventId === EVENT_ID);
+    const acceptedMemberIds = sortedUnique((current.members || [])
+      .filter(member => member.eventId === EVENT_ID && member.status === "accepted")
+      .map(member => member.userId));
+    if (!event
+        || event.status !== "A"
+        || event.published !== true
+        || event.isTrashed === true
+        || event.statusBeforeSuppression
+        || event.acceptedMembers !== 2
+        || event.capacityTotal !== 8
+        || !sameIds(event.acceptedMemberUserIds, [hostUserId, participantUserId])
+        || !sameIds(acceptedMemberIds, [hostUserId, participantUserId])) {
+      Q.fail("EVENT-LIFE-002 must be the canonical active Casey/Nova 2 / 8 baseline before attribution capture.");
+    }
+    const unfinishedRecompute = (current.eventRecomputeTasks || []).filter(task =>
+      ["pending", "running", "in_progress"].includes(Q.text(task.status).toLowerCase()));
+    if (unfinishedRecompute.length > 0) {
+      Q.fail("EVENT-LIFE-002 still has an unfinished pre-action recompute; wait for the existing worker before baseline capture.");
+    }
+
+    const capturedAtIso = Q.nowIso();
+    const lifecycleActionBaseline = {
+      capturedAtIso,
+      event: {
+        eventId: event.eventId,
+        status: event.status,
+        published: event.published,
+        isTrashed: event.isTrashed,
+        statusBeforeSuppression: event.statusBeforeSuppression,
+        acceptedMembers: event.acceptedMembers,
+        acceptedMemberUserIds: event.acceptedMemberUserIds,
+        capacityTotal: event.capacityTotal
+      },
+      members: (current.members || []).filter(member => member.eventId === EVENT_ID),
+      eventLifecycleTasks: current.eventLifecycleTasks || [],
+      eventLifecycleOutbox: current.eventLifecycleOutbox || [],
+      eventLifecycleNotifications: current.eventLifecycleNotifications || [],
+      eventRecomputeTasks: current.eventRecomputeTasks || []
+    };
+    const lifecycleActionBaselineUserActivitySnapshots = [hostUserId, participantUserId]
+      .map(userActivitiesSnapshot);
+    Q.collection(Q.STATE_COLLECTION).updateOne({ _id: state._id }, {
+      $set: {
+        lifecycleActionBaseline,
+        lifecycleActionBaselineUserActivitySnapshots
+      }
+    });
+    Q.printObject({
+      scenario: SCENARIO,
+      checkpointId,
+      phase: "lifecycle-action-baseline-captured",
+      capturedAtIso,
+      event: lifecycleActionBaseline.event,
+      memberCount: lifecycleActionBaseline.members.length,
+      preActionArtifacts: {
+        lifecycleTasks: lifecycleActionBaseline.eventLifecycleTasks.length,
+        lifecycleOutbox: lifecycleActionBaseline.eventLifecycleOutbox.length,
+        lifecycleNotifications: lifecycleActionBaseline.eventLifecycleNotifications.length,
+        recomputeTasks: lifecycleActionBaseline.eventRecomputeTasks.length
+      },
+      userCounters: lifecycleActionBaselineUserActivitySnapshots.map(snapshot => ({
+        user: Q.user(snapshot.userId),
+        events: nestedNumber(snapshot.activities.value || {}, "events"),
+        hosting: nestedNumber(snapshot.activities.value || {}, "hosting"),
+        event: snapshot.activities.value && snapshot.activities.value.event || {}
+      })),
+      next: "Casey opens QA EVENT-LIFE-002 card actions and chooses Delete Event exactly once. Nova does not interact."
+    });
+  }
+
   function resetState(state) {
     clearDynamicEventEffects(currentEventIds());
     Q.restoreSnapshots(state.snapshots);
@@ -5075,6 +5251,8 @@
     case "status": status(); break;
     case "reset": reset(); break;
     case "repair-lifecycle-counter-baseline": repairLifecycleCounterBaseline(); break;
+    case "repair-lifecycle-occupancy-baseline": repairLifecycleOccupancyBaseline(); break;
+    case "capture-lifecycle-action-baseline": captureLifecycleActionBaseline(); break;
     case "discard-stale": discardStale(); break;
     default: Q.fail(`unsupported command '${command}'.`);
   }

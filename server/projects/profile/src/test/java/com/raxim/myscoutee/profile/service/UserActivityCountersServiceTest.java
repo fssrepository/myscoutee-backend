@@ -134,6 +134,29 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
+    void refreshEventCountersDoesNotProjectOrganizerTrashIntoAcceptedParticipantTrash() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent organizerTrash = event("event-trash", "host", "T");
+        organizerTrash.setOwnerUserId("host");
+        organizerTrash.setAdmins(List.of("host"));
+        organizerTrash.setAcceptedMemberUserIds(List.of("host", "viewer"));
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityEventsRepository.findAcceptedMembershipEvents("viewer"))
+                .thenReturn(List.of(organizerTrash));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(organizerTrash));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isZero();
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
+        assertThat(fields.getInteger("activities.hosting")).isZero();
+    }
+
+    @Test
     void applyFeedbackStateTransitionMovesStoredMenuAndPopupBuckets() {
         ActivityEvent event = event("event-feedback", "host", "A");
         event.setOwnerUserId("host");

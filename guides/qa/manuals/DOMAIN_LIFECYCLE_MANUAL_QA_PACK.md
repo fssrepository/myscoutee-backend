@@ -841,9 +841,57 @@ Baseline evidence on 2026-08-13:
   that same projection to the live untouched baseline without changing the
   event or SmartList. The post-repair reload source returns Casey
   `hosting=1`, `event.all=1`, `event.hosting=1`; Nova returns `events=1`,
-  `event.all=1`, `event.active=1`, with identical `counterOverrides`. Replaying
-  only the closed-popup reload display is next; no prior consent or event
-  transaction is repeated.
+  `event.all=1`, `event.active=1`, with identical `counterOverrides`.
+- Focused reload/list replay: **PASS**. Before either popup query could repair a
+  display value, Casey's main My Events and Nova's main Events controls each
+  showed red counter `1`. The subsequently opened My Events and Active Events
+  lists contained the same `QA EVENT-LIFE-002` identity exactly once.
+- The first card oracle exposed a second fixture inconsistency: the fixture had
+  inserted Casey's accepted Admin membership but omitted Casey from the
+  event's embedded `acceptedMemberUserIds`, so both cards initially showed
+  `1 / 8`. The shared fixture event builder now always includes the canonical
+  creator/Admin in its accepted projection. Guarded repair changed only the
+  staged embedded occupancy to Casey+Nova `2 / 8`; both already-open lists
+  converged to `2 / 8` through their normal popup poll without reload, while
+  the two membership records and SmartList implementation stayed unchanged.
+- Pre-action code review found a real backend projection defect: a globally
+  trashed organizer event would have incremented every accepted participant's
+  personal Trash counter although participant Trash is reserved for an
+  explicitly deleted membership and its list would remain empty. The common
+  `UserActivityCountersService` projector now gives global-event Trash only to
+  an organizer/admin and continues to count explicit deleted memberships for
+  participants. A focused regression source covers the accepted-participant
+  exclusion; the existing dev owner compiled the Java change with `BUILD
+  SUCCESSFUL` and Spring restarted healthy without a parallel build.
+- The exact producer attribution boundary was captured at
+  `2026-08-13T20:16:21.233Z`: active/public `A`, no suppression, Casey+Nova
+  `2 / 8`, two unchanged accepted memberships, Casey counters Hosting/All
+  `1/1`, Nova Active/All `1/1`, and zero lifecycle task/outbox/notification.
+  One already-completed pre-action recompute from the earlier read/location
+  boundary is retained in the baseline and must not be attributed to Trash.
+  Casey's one **Delete Event** action is next; Nova must not interact.
+- **NOT EXECUTED / AI runtime failure before the producer:** neither the user
+  nor Codex activated Delete Event, and the persisted oracle remained the
+  exact active/public action baseline. During the preceding Java hot deploy,
+  Gradle's existing continuous `classes` owner temporarily removed compiled
+  classes and Spring DevTools restarted before the build had recreated the
+  controller set. Consequently `/api/activities/events/filter` returned `404`;
+  the open Casey and Nova popup polls then showed an empty page and zeroed the
+  visible bucket badges. This disappearance is not a user Trash action and
+  contributes no product-transition evidence.
+- The runtime owner is repaired without changing SmartList: DevTools now uses
+  a `.reloadtrigger` that the existing `classes` task touches only after a
+  successful owner build. The event HTTP adapter now preserves transport/server
+  failure as an error, while a successful `200` empty page remains a real empty
+  result, so the SmartList scheduler can retain its last good snapshot and
+  retry. The frontend owner build completed successfully; only the existing
+  backend container was restarted after a RAM/swap/CPU check.
+- Focused pre-action recovery **PASS without reload or user interaction**:
+  both authenticated list endpoints returned the same active/public event at
+  `2 / 8`, then the already-open Casey My Events and Nova Active Events lists
+  recovered through their normal poll. Casey again showed My Events `1`; Nova
+  showed Events/Active Events `1`. The saved action baseline remains the sole
+  producer attribution boundary, and Delete Event is still the next action.
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 

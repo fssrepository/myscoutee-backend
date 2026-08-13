@@ -35,13 +35,13 @@ checkpoint: EVENT-LIFE-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-002--organizer-trash-moves-the-event-to-trash-only
 scenario: event-domain
 ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002 is still at its untouched active baseline. Reload initially omitted Casey's My Events badge because the fixture stage had not projected stored activities; /api/auth/me proved hosting=0. The stage now snapshots lifecycle actors and applies the canonical event-counter projection. Guarded repair captured the current two reset snapshots without changing the event/SmartList. HTTP reload oracle now returns Casey hosting/event.hosting/event.all=1 and Nova events/event.active/event.all=1 with matching counterOverrides. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Do not restage, reset, relaunch, open either Activities popup or replay closed checkpoints. If continuity is uncertain, status must still show the active public EVENT-LIFE-002 identity with Casey/Nova accepted and no lifecycle producer effects; /api/auth/me must return Casey hosting/event.hosting/event.all=1 and Nova events/event.active/event.all=1. Keep exactly the two managed browsers. Replay only the failed display boundary: close any already-open popup, reload both windows once and inspect the main menu before opening anything. Casey My Events and Nova Events must each show red counter 1. The Trash instruction comes only after this replay passes
+state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002 remains at its active pre-producer boundary. The missing reload counters were repaired through the canonical persisted projection; closed-popup reload replay passed Casey My Events=1 and Nova Events=1. Both opened lists showed the same event once. A second fixture defect omitted Casey's accepted Admin from embedded occupancy; the shared builder and guarded live fixture are repaired, and both already-open lists converged from 1/8 to canonical 2/8 without reload. Static review also fixed the common Java counter projector so global organizer Trash cannot leak into an accepted participant's personal Trash counter, with a regression source added. The action baseline was captured at 2026-08-13T20:16:21.233Z with A/public, Casey+Nova 2/8, lifecycle task/outbox/notification 0 and one completed pre-action recompute retained as an excluded control. Before any producer action, Codex's Java hot restart briefly left the event-list controller unmapped; both open polls showed empty and zeroed visible badges, but the persisted event/counters/action baseline never changed. This is NOT EXECUTED and not attributed to the user. The existing owner was repaired with a post-classes DevTools trigger; list adapters no longer translate transport/server failure into an authoritative empty page. After the sole backend-container restart, both endpoints returned 200 and both already-open lists recovered in place to the same event 2/8 plus Casey My Events=1 and Nova Events/Active Events=1, with no reload or interaction. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Do not restage, reset, relaunch, reload, close/reopen either Activities popup or replay any proven baseline branch. If continuity is uncertain, read-only status must still show active public EVENT-LIFE-002 with Casey/Nova accepted at 2/8, no suppression, Casey Hosting/All=1, Nova Active/All=1, and the saved lifecycleActionBaseline timestamp 2026-08-13T20:16:21.233Z. The two already-open lists must show that same identity after normal poll; a transient empty state caused by Codex's pre-action runtime restart is documented as NOT EXECUTED and must never be bound to the user's stop phrase. Keep exactly the two managed browsers. Continue with the single producer action: Casey opens the QA EVENT-LIFE-002 card overflow menu and chooses Delete Event once; Nova does not interact
 event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; active public, ticketing off, Casey owner/Admin and Nova accepted Member
 actors:
   active: Casey and Nova in two managed browser windows
   controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
-next_actor: User closes any open popup, reloads Casey and Nova once, and before opening either popup confirms Casey My Events=1 and Nova Events=1; then reports megvan
+next_actor: User uses Casey only: on the visible QA EVENT-LIFE-002 card, open the three-dot card menu and choose Delete Event exactly once; leave Nova untouched; then report megvan
 stop_phrase: none
 ```
 
@@ -109,10 +109,10 @@ the checkpoint says otherwise.
 
 The coverage audit is complete; `ENTRY-DEMO-REG-001` and all three
 `ENTRY-CONSENT-*` checkpoints are PASS/CLOSED and their retained evidence must
-not be replayed or deleted. `EVENT-LIFE-002` is active from a clean staged
-baseline. Open Casey My Events and Nova Active Events without mutation and
-confirm both show `QA EVENT-LIFE-002`; only after that baseline display is
-recorded may Casey receive the one Trash instruction.
+not be replayed or deleted. `EVENT-LIFE-002` is active at its captured
+pre-producer boundary. Reload counters, list identity and canonical `2 / 8`
+occupancy are already PASS and must not be replayed. Casey's one **Delete
+Event** action is next while Nova stays untouched.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -209,6 +209,20 @@ the user.
   after its own query does not prove the reload contract and must not be used
   to conceal a missing stored write-side projection. Reuse the existing
   canonical counter projector; do not add a SmartList special case.
+- An event fixture that inserts the creator's accepted Admin membership must
+  include that same creator in `acceptedMemberUserIds` and `acceptedMembers`;
+  validate card occupancy against the canonical membership rows. A list poll
+  correcting fixture data in place is useful replay evidence only after the
+  persisted projection itself has been repaired.
+- Global organizer Trash and personal participant Trash are different
+  projections. A globally trashed event belongs in the organizer/admin Trash
+  counter and list only; an ordinary participant enters personal Trash only
+  through an explicitly deleted membership. Keep the stored counter projector
+  and list query aligned on that distinction.
+- If read/setup activity creates a completed task after staging but before the
+  producer, retain it as evidence and capture a versioned action baseline only
+  after it is terminal. Attribute the producer by exact post-minus-action
+  baseline identities instead of deleting the earlier task or restaging.
 - Do not create a new row merely because one test case has multiple branches
   or an incidental observation occurred. A new row requires a genuinely new
   test case and the user's requested split; otherwise name the tests inside the
@@ -398,6 +412,13 @@ the user.
   evidence to the QA pack or matrix. If the verified control was activated but
   its binding emits no request, that is a client defect and must enter the
   normal diagnose/fix/replay loop.
+- A visible card disappearance does not identify its producer. Before
+  attributing it to the user or advancing a lifecycle checkpoint, compare the
+  persisted event/membership/counter oracle and the access log with the saved
+  action baseline. If no modifying request exists and the persisted boundary
+  is unchanged, classify the observation as **NOT EXECUTED**. In particular,
+  an AI-triggered restart or setup failure belongs to Codex's repair evidence,
+  never to the user's manual action.
 - `chrome-target-network.mjs inspect --user-id ... --endpoint-file ...` is the
   read-only managed-session tool for resolving an ambiguous current surface;
   it must never be used to perform the user's manual producer action.
@@ -603,6 +624,23 @@ verify its startup plus hot-deploy log; do not launch a replacement beside it.
 Never work around the lock with a different cache, `/tmp`, a second Gradle/npm
 process or a standalone build/test compilation. A healthy watcher build and the
 checkpoint replay are the active-session verification path.
+
+For the profile backend, Gradle continuous `classes` may temporarily remove
+compiled outputs before recreating them. Spring DevTools must therefore use a
+classpath `.reloadtrigger`, and the existing owner build must touch that marker
+only after its successful `classes` completion. A deletion wave is not a safe
+restart boundary: if DevTools restarts during it, component scanning can omit
+controllers even though the process later reports healthy. Verify at least one
+checkpoint-relevant mapped endpoint after the restart, not only container
+health or `Started Main`.
+
+Background list adapters must keep transport/server failure distinct from a
+successful empty response. Do not catch a `404`, restart disconnect or other
+failed request and return `[]`/`total=0`; propagate the failure to the existing
+popup task scheduler so it retains the last successful snapshot and retries.
+A real successful empty response remains authoritative. Apply this invariant
+at the owning HTTP/local adapter boundary and leave the shared SmartList core
+unchanged unless cross-consumer evidence proves a shared defect.
 
 Treat watched Mongo seed files as runtime-mutating inputs, not passive test
 sources. Before editing one during an active checkpoint, inspect the running
