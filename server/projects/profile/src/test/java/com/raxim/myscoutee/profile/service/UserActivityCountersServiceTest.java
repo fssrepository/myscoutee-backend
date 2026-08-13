@@ -106,6 +106,41 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
+    void readStoredEventCountersReturnsTheCompleteWriteSideSnapshot() {
+        Users.UserActivitiesRecord base = activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0);
+        Users user = user("viewer", new Users.UserActivitiesRecord(
+                base.game(),
+                base.chats(),
+                2,
+                3,
+                4,
+                base.cars(),
+                base.accommodation(),
+                base.supplies(),
+                base.tickets(),
+                base.contacts(),
+                base.feedback(),
+                base.chat(),
+                new Users.UserEventCountersRecord(9, 3, 1, 2, 4, 5, 6),
+                base.asset(),
+                base.eventFeedback(),
+                base.adminJobs(),
+                base.adminMetrics(),
+                base.notifications()));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+
+        var snapshot = service.readStoredEventCounters("viewer");
+
+        assertThat(snapshot.all()).isEqualTo(9);
+        assertThat(snapshot.active()).isEqualTo(3);
+        assertThat(snapshot.pending()).isEqualTo(1);
+        assertThat(snapshot.invitations()).isEqualTo(2);
+        assertThat(snapshot.hosting()).isEqualTo(4);
+        assertThat(snapshot.drafts()).isEqualTo(5);
+        assertThat(snapshot.trash()).isEqualTo(6);
+    }
+
+    @Test
     void refreshEventCountersPersistsGlobalTrashAndEventsLeftByTheUser() {
         Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
         ActivityEvent globalTrash = event("event-trash", "viewer", "T");

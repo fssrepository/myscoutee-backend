@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.data.dto.events;
 import java.util.List;
 import java.util.Map;
 
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
@@ -547,9 +548,14 @@ public final class EventsDtos {
             List<EventDto> records,
             Integer total,
             String nextCursor,
-            List<EventDto> items) {
+            List<EventDto> items,
+            UserEventCountersDto eventCounters) {
         public EventListPageDto(List<EventDto> records, Integer total, String nextCursor) {
-            this(records, total, nextCursor, List.of());
+            this(records, total, nextCursor, List.of(), null);
+        }
+
+        public EventListPageDto(List<EventDto> records, Integer total, String nextCursor, List<EventDto> items) {
+            this(records, total, nextCursor, items, null);
         }
     }
 

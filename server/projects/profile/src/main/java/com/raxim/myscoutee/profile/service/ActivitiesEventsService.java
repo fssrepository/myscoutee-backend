@@ -826,23 +826,29 @@ public class ActivitiesEventsService {
         }
         String filter = normalizeActivityListFilter(request == null ? null : request.filter());
         String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        EventListPageDto page;
         if ("trash".equals(filter)) {
             EventQueryContext context = buildUserListCardQueryContext(
                     viewer,
                     needsActivitiesAffinityEdges(request),
                     true,
                     false);
-            return withEventQueryContext(context, () ->
+            page = withEventQueryContext(context, () ->
+                    pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
+        } else if (usesDirectOwnerListFilter(filter)) {
+            page = withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
+                    pageEventListRecords(viewer, queryDirectFilteredRecords(viewer, filter, hostingPublicationFilter), request));
+        } else {
+            EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request));
+            page = withEventQueryContext(context, () ->
                     pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
         }
-        if (usesDirectOwnerListFilter(filter)) {
-            return withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
-                    pageEventListRecords(viewer, queryDirectFilteredRecords(viewer, filter, hostingPublicationFilter), request));
-        }
-
-        EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request));
-        return withEventQueryContext(context, () ->
-                pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
+        return new EventListPageDto(
+                page.records(),
+                page.total(),
+                page.nextCursor(),
+                page.items(),
+                userActivityCountersService.readStoredEventCounters(viewer.userId()));
     }
 
     public EventDetailDto loadEventDetailById(String requestedUserId, String eventId) {

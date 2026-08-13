@@ -24,6 +24,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
@@ -102,6 +103,35 @@ public class UserActivityCountersService {
                 }
             });
         }
+    }
+
+    public UserEventCountersDto readStoredEventCounters(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return emptyEventCountersDto();
+        }
+        return usersRepository.findByUserId(normalizedUserId)
+                .map(Users::getActivities)
+                .map(Users.UserActivitiesRecord::event)
+                .map(this::toEventCountersDto)
+                .orElseGet(this::emptyEventCountersDto);
+    }
+
+    private UserEventCountersDto toEventCountersDto(Users.UserEventCountersRecord event) {
+        return event == null
+                ? emptyEventCountersDto()
+                : new UserEventCountersDto(
+                        count(event.all()),
+                        count(event.active()),
+                        count(event.pending()),
+                        count(event.invitations()),
+                        count(event.hosting()),
+                        count(event.drafts()),
+                        count(event.trash()));
+    }
+
+    private UserEventCountersDto emptyEventCountersDto() {
+        return new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0);
     }
 
     public void refreshAssetCountersForUser(String userId) {

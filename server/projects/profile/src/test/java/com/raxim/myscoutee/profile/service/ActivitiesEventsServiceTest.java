@@ -37,6 +37,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
@@ -1557,6 +1558,8 @@ class ActivitiesEventsServiceTest {
         ActivityEvent third = event("event-3", "host", 0d);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(userActivityCountersService.readStoredEventCounters("viewer"))
+                .thenReturn(new UserEventCountersDto(3, 3, 0, 0, 0, 0, 0));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
         AtomicInteger findCalls = new AtomicInteger();
@@ -1574,6 +1577,7 @@ class ActivitiesEventsServiceTest {
         assertThat(page.items()).extracting(EventDto::id)
                 .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
+        assertThat(page.eventCounters()).isEqualTo(new UserEventCountersDto(3, 3, 0, 0, 0, 0, 0));
         verify(activityEventsRepository, never()).findAll();
         verify(activityEventsRepository, never()).saveAll(anyList());
         verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());

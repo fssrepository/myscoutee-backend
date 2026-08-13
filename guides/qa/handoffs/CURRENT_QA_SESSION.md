@@ -35,14 +35,14 @@ checkpoint: EVENT-LIFE-002
 detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-life-002--organizer-trash-moves-the-event-to-trash-only
 scenario: event-domain
 ledger_status: MANUAL UI / IN PROGRESS
-state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002 producer action is complete but its UI read branches remain in progress. The saved action baseline is 2026-08-13T20:16:21.233Z. Before the producer, Codex's Java hot restart caused a documented NOT EXECUTED transient empty state; it was repaired and both open lists recovered without reload. The user then confirmed Casey Delete Event exactly once. Immediate UI PASS: Casey My Events and Nova Active Events removed the card without reload and active/hosting badges became zero. Casey Trash +1 timing was not manually watched, so action delta versus later poll is NOT EXECUTED and must not be retroactively passed or cause a full replay. The guarded terminal verifier passed at 2026-08-13T20:46:09.146Z: T/statusBeforeSuppression=A/post-baseline trashedAtIso, unchanged Casey Admin + Nova Member 2/8 audit rows, Casey organizer Trash=1, Nova Active/All/Trash=0, one completed Nova-only deleted lifecycle task, one unread event-deleted notification, one matching dev-mode pending Firebase outbox and one terminal EVENT_CHANGED recompute. The oracle now exposes these fields and command. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
-required_resume: Do not restage, reset, relaunch or replay the Delete producer. Keep exactly the two managed browsers. Casey's open My Events list is empty and Nova's open Active Events list is empty; that immediate branch is already PASS. Next use Casey only to switch the Events popup bucket to Trash and prove QA EVENT-LIFE-002 appears exactly once. Do not reload and do not touch Nova yet. After that proof, inspect Nova Notifications New for the exact unread event-deleted row without opening it. Casey Trash +1 immediate action-delta timing remains NOT EXECUTED; do not infer it from the later Trash read
+state: ENTRY-DEMO-REG-001 and ENTRY-CONSENT-001/002/003 are PASS/CLOSED. EVENT-LIFE-002's single Delete producer and terminal persisted verifier are complete. Casey's producer response removed My Events; Nova's still-open Active Events foreground poll removed the card without reload. Casey later opened Trash and saw the event exactly once; this is a read PASS, while the unwatched immediate Trash +1 timing remains NOT EXECUTED. The guarded terminal verifier passed at 2026-08-13T20:46:09.146Z: T/statusBeforeSuppression=A/post-baseline trashedAtIso, unchanged Casey Admin + Nova Member 2/8 audit rows, Casey organizer Trash=1, Nova Active/All/Trash=0, one completed Nova-only deleted lifecycle task, one unread event-deleted notification, one matching dev-mode pending Firebase outbox and one terminal EVENT_CHANGED recompute. Nova exposed a foreground counter FAIL: Active poll removed the card and corrected Active/Events, but inclusive All stayed 1 until switching to All loaded an empty list and corrected it to 0. The proper-scope fix transports the full stored Java event-counter snapshot on every list page through HTTP and frontend-local adapters and applies it atomically; SmartList remains unchanged. Backend read oracle and both existing owner builds are green, but the currently open browsers still hold the old bundle, so runtime replay waits for the fresh-bundle Restore inverse transition. Two managed Casey/Nova browsers remain open. The ledger contains 189 real tests: 133 Core and 56 EXT; Core-first remains selected
+required_resume: Do not restage, reset, relaunch or replay the Delete producer. Keep exactly the two managed browsers. Casey currently has the exact organizer Trash row open; Nova switched to All, saw no card and its own query corrected the stale All menu counter to 0. Next inspect Nova Notifications New for the exact unread event-deleted row without opening or marking it read; keep Casey untouched. After that notification proof, take the checkpoint's fresh-bundle/read branch, then use EVENT-LIFE-003 Restore as the focused inverse replay of full-snapshot foreground counter synchronization. Casey Trash +1 immediate action-delta timing remains NOT EXECUTED and must not be inferred from the later Trash read
 event: manual-qa-checkpoint:v1:event-domain:event / QA EVENT-LIFE-002; trashed T with statusBeforeSuppression=A and trashedAtIso 2026-08-13T20:40:43.192579877Z, ticketing off, Casey owner/Admin and Nova accepted Member audit rows retained
 actors:
   active: Casey and Nova in two managed browser windows
   controls: Nova remains a participant control and must never receive organizer Trash authority; no third browser is needed
-next_actor: User uses Casey only: in the already-open Events popup switch My Events to Trash and confirm QA EVENT-LIFE-002 appears exactly once; leave Nova untouched; then report megvan
-stop_phrase: megvan after Casey sees the one QA EVENT-LIFE-002 row in Events > Trash
+next_actor: User uses Nova only: close the Events popup, open Notifications, select New if necessary and confirm the exact unread QA EVENT-LIFE-002 / The event was deleted. row without opening it; leave Casey untouched
+stop_phrase: megvan after Nova sees the unread deletion notification row without opening it
 ```
 
 ### Efficient resume gate
@@ -112,10 +112,14 @@ The coverage audit is complete; `ENTRY-DEMO-REG-001` and all three
 not be replayed or deleted. `EVENT-LIFE-002` has completed its single Delete
 producer and terminal persisted verifier. Pre-action counters, list identity,
 canonical `2 / 8` occupancy, immediate card removal and worker effects are
-already PASS and must not be replayed. Casey now switches the already-open
-Events popup from My Events to Trash and proves the same event once while Nova
-stays untouched. Then Nova's unread deletion notification remains the final
-in-place UI branch before a fresh-read reconstruction.
+already PASS and must not be replayed. Casey's later organizer Trash read is
+also PASS with the same event exactly once; the immediate Trash-counter timing
+remains NOT EXECUTED. Nova's Active foreground poll removed the card but exposed
+a stale inclusive All counter until All's own load corrected it. The full stored
+snapshot transport fix is compiled and synced, but the open browser still has
+the old bundle. Nova's unread deletion notification is the final old-bundle UI
+branch before fresh-bundle reconstruction and the `EVENT-LIFE-003` Restore
+inverse replay.
 `ENTRY-FIREBASE-REG-001` waits for its verified Firebase revision prerequisite.
 `PAYMENT-STRIPE-001` and every other EXT row remain deferred until the user
 explicitly switches away from Core-first execution. Never replay a closed
@@ -222,6 +226,14 @@ the user.
   counter and list only; an ordinary participant enters personal Trash only
   through an explicitly deleted membership. Keep the stored counter projector
   and list query aligned on that distinction.
+- When a foreground popup bucket poll returns a persisted full counter snapshot,
+  apply that snapshot atomically to every related menu and nested bucket counter.
+  Updating only the selected bucket can leave inclusive or sibling counters stale
+  until the user opens them. Do not derive inclusive counts from the page total,
+  do not use the aside-menu poll while the popup owns polling, and do not modify
+  SmartList to repair a transport omission. HTTP and frontend-local routes must
+  expose the same snapshot contract; local parity is checked when the affected
+  flow can run in local mode.
 - If read/setup activity creates a completed task after staging but before the
   producer, retain it as evidence and capture a versioned action baseline only
   after it is terminal. Attribute the producer by exact post-minus-action

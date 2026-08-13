@@ -892,14 +892,15 @@ Baseline evidence on 2026-08-13:
   recovered through their normal poll. Casey again showed My Events `1`; Nova
   showed Events/Active Events `1`. The saved action baseline remains the sole
   producer attribution boundary, and Delete Event is still the next action.
-- Producer and immediate removal **PASS** at
+- Producer and foreground removal **PASS** at
   `2026-08-13T20:40:43.192579877Z`: the user activated Casey's card
   **Delete Event** confirmation exactly once. Without reload, Casey My Events
-  and Nova Active Events both removed the card and their visible active/hosting
-  counters became zero. Casey's organizer Trash `+1` timing was not watched at
-  the action boundary, so action-delta versus later-poll presentation is
-  explicitly **NOT EXECUTED**, not retroactive PASS; the whole checkpoint is
-  not replayed solely for this missed observation.
+  removed the card through the producer response and Nova Active Events removed
+  it through the already-open popup's normal foreground poll; their visible
+  active/hosting counters became zero. Casey's organizer Trash `+1` timing was
+  not watched at the action boundary, so action-delta versus later-poll
+  presentation is explicitly **NOT EXECUTED**, not retroactive PASS; the whole
+  checkpoint is not replayed solely for this missed observation.
 - The versioned terminal verifier passed at
   `2026-08-13T20:46:09.146Z` against the retained action baseline: canonical
   status `T`, `statusBeforeSuppression=A`, one post-baseline `trashedAtIso`,
@@ -915,10 +916,34 @@ Baseline evidence on 2026-08-13:
   error. The reusable oracle now exposes canonical `isTrashed/published` from
   status, `trashedAtIso`, `event-deleted` notification/outbox and a guarded
   `verify-lifecycle-trash` command.
-- Remaining UI proof before closing this checkpoint: Casey opens the organizer
-  Trash bucket and sees the same identity exactly once; Nova opens Notifications
+- Organizer Trash UI read **PASS**: Casey switched the still-open Events popup
+  to Trash and saw exactly one `QA EVENT-LIFE-002` card. This proves the later
+  authoritative Trash read only; the unobserved immediate Trash `+1` timing
+  remains **NOT EXECUTED**.
+- Participant foreground poll scope **FAIL, FIX COMPILED / RUNTIME REPLAY
+  PENDING**: Nova's already-open Active Events list removed the card and set
+  Active/Events to zero, but the inclusive All menu counter incorrectly stayed
+  at `1`. Switching to All returned an empty list and only that All query then
+  corrected the menu counter to `0`. The persisted Java oracle had already
+  stored Active/All `0/0`, so the defect was the frontend applying only the
+  currently queried bucket total.
+- Correct-scope repair keeps SmartList unchanged and does not project counters
+  from query results. Every Java event-list page now carries the complete
+  `users.activities.event` snapshot already materialized by the owning write;
+  both HTTP and frontend-local adapters transport the same contract, and the
+  foreground popup applies the snapshot atomically to Events, Invitations,
+  My Events and all nested event buckets. Legacy responses without a snapshot
+  retain the current-bucket fallback. The existing backend runtime returns Nova
+  All `total=0` plus the full all-zero snapshot and Casey Trash `total=1` plus
+  `trash=1`; the existing frontend watcher compiled and synced the new bundle.
+  Regression sources cover HTTP mapping and the Active-zero/All-stale store
+  transition. No separate build or SmartList-core change was made.
+- Remaining UI proof before closing this checkpoint: Nova opens Notifications
   **New** and sees the one unread deletion row without opening/marking it read.
-  A later fresh-read/reload branch must reconstruct the same bucket ownership.
+  A later fresh-bundle/read branch must reconstruct the same bucket ownership;
+  `EVENT-LIFE-003` Restore provides the focused inverse runtime replay that an
+  open event bucket receives the complete counter snapshot without repeating
+  this Delete producer.
 
 ### `EVENT-LIFE-003` — organizer restore returns to the preserved bucket
 
