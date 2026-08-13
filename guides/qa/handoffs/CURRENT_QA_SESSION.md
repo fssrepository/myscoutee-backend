@@ -31,18 +31,18 @@ resume pointer and reusable working method.
 ## Active resume point
 
 ```yaml
-checkpoint: EVENT-TICKET-008
-detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-008--two-similar-events-keep-physical-tickets-isolated
+checkpoint: EVENT-TICKET-009
+detail: ../manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#event-ticket-009--holder-can-present-a-cached-qr-while-offline
 scenario: event-domain
-ledger_status: UNPUBLISH SERVER PASS; TICKET POPUP POLL FAIL; SHARED CORE REVERTED; TICKET HTTP+LOCAL DELTA REPAIR BUILT; CLEAN BASELINE READY / REPLAY PENDING
-state: The failed midpoint was reset and image-staged. Independent status proves A+B active/Ticketing On through 2026-08-13T15:07:37.047Z, Nova exact active tickets TKT-cc7f973d-f97b-471a-9559-7dde22e12086 and TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5 with counters2/2, Casey/Riley0/0, and no lifecycle task/outbox/notification or stage-relative recompute residue. The versioned fixture cleanup now owns scheduledMessageTasks, closing the reset gap exposed by the first attempted restage. Only the same three managed pages were reloaded; read-only DOM proved Casey/Nova/Riley identities and Ticket counters0/2/0. The broad SmartList core page-size change remains exactly reverted. Ticket uses the established Notification-style pollDelta/cacheable/sort contract with a Java /assets/tickets/sync owner and equivalent frontend-local repository; open popups defer side-menu domain snapshots while notification count remains independent. Existing backend and frontend watchers built green; authenticated Java sync preflight returned removed A, B upsert, total1 against the failed midpoint
-required_resume: Issue the fully labelled manual step: Nova opens Ticket > Upcoming A+B/count2 and keeps it open; Casey Unpublishes only A and immediately requires Publish in A's menu; Nova must reach B-only/header1/red Ticket1 through POST /assets/tickets/sync without reload. Riley stays idle. Reply megvan
-event: Manual QA EVENT-TICKET-008 A / B
+ledger_status: OFFLINE SHELL + AUTO-WARM + SNAPSHOT B QR PASS / FIRST PHYSICAL SCAN PENDING
+state: EVENT-TICKET-009 owns the dev-only http://localhost/game?pwa=on switch; production ignores the query override. Held Offline+reload shell/policy and automatic no-popup Upcoming warm pass. The first B QR result was retracted because app-sw.js had returned its separate cached GET /api/assets/tickets response. The product fix removed that route from the service-worker API cache and the existing watcher synced at 13:37:19+02; online SmartList still owns /assets/tickets plus /assets/tickets/sync, while offline failure reaches the user-scoped snapshot cache. The waiting worker was explicitly activated through the QA helper. Corrected shortest replay now passes: Nova remains held target-offline by agent-owned process session 56217 with active/no-waiting worker; Ticket -> Upcoming shows A+B and exact B full QR; cache timestamp stayed byte-for-byte 2026-08-13T11:40:47.443Z; nginx logged no /api/assets/tickets request; persisted oracle retained B code TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5 status A with null use/actor. The visible shared medium.webp card image is also a service-worker CacheStorage hit. This proves the already-cached image serves offline, not that offlineTicketSnapshot automatically prefetches a previously unseen image; snapshot warming currently owns data/code only. Casey phone/backend remain online and Riley is idle
+required_resume: Keep Nova's current offline B QR visible. On Casey's already-open physical phone scanner, scan it exactly once and reply megvan. Codex proves one canonical B use with Casey actor and documents it. Then scan the same still-visible QR exactly once more; Codex proves already-used with no second mutation, restores Nova online by releasing process session 56217 in finally, reloads once and checks no replacement or duplicate
+event: Manual QA EVENT-TICKET-008 B
 actors:
   left: Casey Bridge
   middle: Nova Social
   right: Riley Outside
-next_actor: Nova Social baseline, then Casey Bridge producer
+next_actor: Casey Bridge physical phone scanner; Nova keeps the offline cached B QR visible
 stop_phrase: megvan
 ```
 
@@ -108,16 +108,12 @@ the checkpoint says otherwise.
 
 ### Next manual action
 
-The clean `EVENT-TICKET-008` A+B baseline is restored and independently
-verified. Only the existing three managed pages were reloaded onto the repaired
-bundle and identity-checked. Issue
-`EVENT-TICKET-008 — Ticket delta removal + immediate Unpublish menu replay`:
-Nova opens **Ticket > Upcoming** at exactly A+B/count `2` and leaves it open;
-Casey Unpublishes only A and immediately requires **Publish** in A's reopened
-menu; Nova must reach B-only/header `1`/red Ticket `1` through the Ticket
-foreground delta poll without reload. The decisive access-log request is
-`POST /api/assets/tickets/sync`; the side-menu realtime path must not apply
-domain counters while the popup owns foreground polling. Riley stays idle.
+For `EVENT-TICKET-009 — cached B QR while offline`, Nova's corrected
+snapshot-source replay passed and exact B's complete QR is already visible
+while Nova remains held offline. On Casey's already-open physical phone
+scanner, scan that QR **exactly once**, then reply `megvan`. PASS at this stop
+means one canonical B use by Casey; the already-used replay remains a separate
+next producer action.
 
 ## QA working method
 
@@ -220,6 +216,48 @@ the user.
 
 ### 1.2 Exact manual producer instructions
 
+- For an offline checkpoint in a dev stack, first prove the checkpoint-specific
+  service-worker switch is enabled, the worker is activated and controls the
+  current page. The dev override must be ignored in production; production
+  enablement belongs only to its build configuration. A one-shot CDP command
+  that detaches is not an offline interval: keep the target session attached,
+  apply both request blocking and `navigator.onLine=false`, and restore online
+  explicitly in cleanup. Before testing cached domain data, require the
+  offline shell policy itself: only the intentionally supported Ticket action
+  remains enabled, while profile editing and every other menu are disabled.
+- Keep offline presentation separate from profile visibility and invalid
+  presentation. Profile visibility may color the ordinary page, while offline
+  overrides only the page background with its own stronger gray and an explicit
+  status label. Do not recolor menu palettes to represent offline; retain their
+  normal palettes and express unavailability through real disabled state. Rate
+  mode, filter/history controls and editable inputs follow the same rule.
+- In an offline member header, hide actions whose popup cannot serve the
+  checkpoint contract rather than rendering misleading disabled affordances:
+  no profile pencil, notification header entry or notification attention FAB.
+  Hiding launchers must not mark notifications read or change their counters.
+  Override the visibility color only on the page and the profile/visibility
+  part of the open menu; leave the menu content surface and item palettes alone.
+- Record in-place connectivity transition and offline-cache reload as distinct
+  observations when both matter. A synthetic CDP event that changes
+  `navigator.onLine` but is not consumed by the application is harness evidence,
+  not a product PASS or FAIL. The cache-reload branch must start the application
+  with `navigator.onLine=false`, prove an activated controlling worker and read
+  both the computed page state and interactive disabled states. Always release
+  the held target back online in cleanup.
+- For Ticket offline warming, inspect the actual DTO/cache boundary before
+  asking for a detail action. The authenticated side-menu realtime response
+  carries one bounded `offlineTicketSnapshot` for the first **Upcoming**
+  SmartList window, including each complete `AssetTicketDTO` and `scanCode`;
+  the shared user-service poll layer writes it to the user-scoped Upcoming
+  offline cache even when Ticket has never been opened. Past is intentionally
+  not auto-warmed. This snapshot is never an online SmartList data source:
+  online continues through `/assets/tickets` and `/assets/tickets/sync`, while
+  the HTTP adapter reads the snapshot cache only after an offline transport
+  failure. If Ticket is already open, its own coordinated SmartList page/delta
+  poll remains the cache refresher and the ordinary side-menu domain lane need
+  not compete. Opening the QR online is never a separate warm requirement: the
+  QR popup performs no detail read and renders locally from the cached code.
+  Opening the QR offline remains the presentation assertion, not setup.
 - Start every manual instruction with the active testcase ID and short name,
   then name the current subtest. In plain language state what the user should
   do, why that observation belongs at this boundary, and the exact visible

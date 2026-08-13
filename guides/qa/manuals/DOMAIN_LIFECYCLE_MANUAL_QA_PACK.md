@@ -2496,16 +2496,167 @@ Restart evidence on 2026-08-06:
   read-only DOM proved Casey/Nova/Riley identities and Ticket counters `0/2/0`.
   Replay A removal through `POST /api/assets/tickets/sync` before the insertion
   direction.
+- Ticket delta removal replay (2026-08-13): **PASS**. Casey sent exactly one A
+  Unpublish at `12:14:59+02:00`; the matched manual stop confirmed A's menu
+  changed immediately to **Publish**. Nova's already-open Upcoming popup made
+  `POST /api/assets/tickets/sync` at `12:15:24+02:00` and converged without
+  reload/reopen to B-only, header `1`, red Ticket `1`; a later no-op sync
+  retained it. The dedicated persisted oracle proved A=`DR`, exact staged A
+  ticket `TKT-cc7f973d-f97b-471a-9559-7dde22e12086` changed to D, control B
+  retained exact active ticket `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`,
+  and Nova counters became `1/1`. Notification polling remained independent:
+  Nova and idle Riley each visibly reached unread `1`. Replay only the inverse
+  insertion plus immediate Publish-menu flip next.
+- Ticket delta insertion replay (2026-08-13): **PASS / CLOSED**. Casey
+  Published only A at `12:18:36+02:00`; the matched manual stop confirmed A's
+  immediately reopened menu showed **Unpublish**. Nova's already-open popup
+  called `POST /api/assets/tickets/sync` at `12:18:54+02:00` and reached A+B,
+  header `2`, red Ticket `2` without reload/reopen and without losing B. The
+  persisted oracle proved a distinct new active A ticket
+  `6a7d99fce90c0afb4dd44fdb` /
+  `TKT-d5034907-9acd-42b3-bfec-4707fb2e700a`; original A remained D, and
+  control B retained exact active code
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`. Nova counters returned to
+  `2/2`. Nova notification visibly became `2`, while idle Riley stayed `1`.
+  Both removal and insertion now pass through the scoped Java HTTP delta owner;
+  the shared SmartList remains unchanged and the frontend-local adapter has
+  the equivalent contract.
 
 ### `EVENT-TICKET-009` — holder can present a cached QR while offline
 
+- Preflight on 2026-08-13: **NOT EXECUTED / ADB DEVICE ABSENT**. The existing
+  ADB daemon started, but `adb devices -l` returned no connected device and
+  `adb reverse --list` could not run. Nova was deliberately left online and no
+  QR was warmed or scanned. Reconnect/unlock and authorize the phone, then
+  prove the device and required reverse path before starting this checkpoint;
+  this environmental precondition is not a product FAIL.
+- ADB recovery on 2026-08-13: **READY / PRODUCT ACTION NOT EXECUTED**. Device
+  `aer8vgcmyd9lzxv8` / `22126RN91Y` is authorized as `device`; the required
+  `UsbFfs tcp:8080 tcp:80` reverse was restored and listed. ADB launched
+  `http://localhost:8080/game` in the phone browser. Nova remains online and no
+  QR or scanner action has run. Confirm Casey's phone session and warm the
+  exact active A QR next.
+- First warm attempt on 2026-08-13: **OFFLINE BOUNDARY NOT EXECUTED / TARGET
+  SWITCHED TO B**. Before any Nova offline override, Casey's phone sent
+  `POST /api/assets/tickets/validate` at `12:25:40+02:00`. Persisted ticket A
+  `6a7d99fce90c0afb4dd44fdb` /
+  `TKT-d5034907-9acd-42b3-bfec-4707fb2e700a` now has exact `usedAtIso`
+  `2026-08-13T10:25:40.200998988Z` and `usedByUserId=Casey`. An online scan
+  cannot satisfy or fail the offline checkpoint. Do not reset the closed
+  isolation case: ticket B
+  `manual-qa-checkpoint:v1:event-domain:ticket:isolation:b` /
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5` remains active and unused, so B
+  becomes the fresh offline target. Nova is still online and no offline
+  override has run.
+- B warm and first offline attempt on 2026-08-13: **DEV QA CONFIG FAIL / PRIOR
+  APP-SHELL PASS RETRACTED**. The matched stop and read-only DOM
+  captured the online QR dialog for `Manual QA EVENT-TICKET-008 B`; independent
+  status retained exact B code `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`
+  active and unused. The first CDP helper detached immediately, so its apparent
+  app-shell result was not a sustained offline interval and is NOT EXECUTED.
+  A corrected held session then produced the `12:35:39+02:00` screenshot with
+  Chrome `ERR_INTERNET_DISCONNECTED`: the dev environment had
+  `serviceWorkerEnabled=false`, and `PwaService` had unregistered the worker and
+  runtime caches. No application shell loaded, so the Ticket/profile policy and
+  cached QR were not executed.
+- Dev PWA repair boundary on 2026-08-13: **BUILT / REPLAY REQUIRED**.
+  `EVENT-TICKET-009` now owns `http://localhost/game?pwa=on`; the existing
+  query switch is explicitly ignored whenever `environment.production=true`,
+  where service-worker enablement remains build-config owned. A focused pure
+  regression covers dev on/off and production ignore. The CDP helper keeps the
+  Nova target attached, uses Chrome 151 `Network.overrideNetworkState` plus
+  `emulateNetworkConditionsByRule`, and restores online on release. The existing
+  watcher built/synced at `12:40:22+02:00`; read-only DOM proves Nova online on
+  the checkpoint URL with one activated controlling worker. Rewarm exact unused
+  B, then require offline authenticated shell, only Ticket enabled, profile
+  editor and every other menu disabled, cached B QR complete.
+- Offline shell-policy repair and replay on 2026-08-13: **PASS / QR AND SCANS
+  PENDING**. The page now gives offline its own stronger dark-gray background
+  and explicit **Offline** status instead of retaining Nova's mint Public
+  visibility color. This is separate from the lighter inactive/invalid visual
+  state. The normal menu palettes remain unchanged; Preferences/rate mode,
+  filter, history, profile edit and every member domain item except Ticket use
+  real disabled state, while Ticket remains active. The existing watcher built
+  and synced `home.component-C6E5CT7Q.js` and
+  `side-menu.component-T5MI6DGP.js` at `12:55:38+02:00`; no parallel build ran.
+  After an online hard reload loaded those exact chunks, a normal online reload
+  restored service-worker control. The authoritative held Offline+reload oracle
+  then proved `navigator.onLine=false`, activated controlling worker,
+  `game-page-status-offline`, computed background `#cbd0d7 -> #aeb5bf`, visible
+  **Offline**, disabled Preferences/filter/history/profile edit and all member
+  domain actions except active Ticket. A pre-action persisted read retained B
+  exact A/unused with code `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`.
+  Nova remains held offline. Open cached B and its complete QR next without a
+  scan; then run Casey's one successful and one already-used phone scan before
+  restoring Nova online.
+- Offline header refinement replay on 2026-08-13: **PASS**. The final existing
+  watcher build synced `side-menu.component-NWMCSRZB.js` at `13:04:29+02:00`.
+  Offline now overrides only the visibility-carrying profile header to the same
+  `#cbd0d7 -> #aeb5bf` gray and places a compact **Offline** badge at its right;
+  the menu content background and item palettes remain ordinary. The profile
+  pencil, notification header entry and notification attention FAB are absent,
+  not disabled. Read oracle found no notification attention launcher and no
+  edit/notification interactive entries; retained notification data was not
+  read or mutated. The information note remains. All prior offline policy
+  assertions and active Ticket remained unchanged.
+- Automatic Upcoming cache warm repair/replay on 2026-08-13: **PASS**. The
+  authenticated Java side-menu realtime response now includes one bounded
+  18-row `offlineTicketSnapshot` for Upcoming. It obtains active credentials in
+  one holder query and pairs them with ticket event records without a
+  credential query per row. The HTTP and frontend-local realtime contracts are
+  equivalent, and the shared user-service poll layer writes the snapshot to
+  Nova's user-scoped Upcoming offline cache. The online Ticket SmartList remains
+  unchanged and continues to use `/assets/tickets` plus
+  `/assets/tickets/sync`; only its existing offline transport fallback reads
+  the cache. Past is deliberately not auto-warmed. The existing watchers built,
+  restarted and synced `users.service-3VAB3CS6.js` by `13:20:03+02:00`; no
+  parallel build ran. After one online reload, Ticket remained closed and was
+  never opened. The next normal side-menu realtime cycle advanced the cache
+  timestamp from `2026-08-13T10:46:45.096Z` to
+  `2026-08-13T11:22:56.950Z` and retained exactly A used once plus B active and
+  unused, both with complete `scanCode`. This proves automatic warming without
+  using the list as a hidden setup action.
+- Offline source-integrity attempt and repair on 2026-08-13: **PASS AFTER FIRST
+  RESULT RETRACTED AND PRODUCT FIX**. Nova visually
+  opened exact B and its complete QR while the page reported offline, and the
+  persisted oracle retained B active and unused. However, opening Ticket moved
+  the user-scoped cache timestamp to `2026-08-13T11:33:33.668Z`. Nginx proved
+  no backend request: the active service worker's separate cached
+  `GET /api/assets/tickets` response had satisfied the online adapter as HTTP
+  success, so this did not prove the required `offlineTicketSnapshot` fallback.
+  `app-sw.js` now excludes `/api/assets/tickets` from its API cache; online
+  SmartList still uses the page/delta APIs, while their failed offline request
+  reaches the user-scoped snapshot cache. The existing frontend watcher built
+  and synced at `13:37:19+02:00`; no parallel build ran. The QA helper then
+  activated the installed waiting worker in Nova's existing isolated browser.
+  With Ticket closed, the normal side-menu cycle rewarmed exact A+B with full
+  codes. Nova is held offline again with active/no-waiting worker and stable
+  pre-open timestamp `2026-08-13T11:40:47.443Z`. The corrected shortest replay
+  opened only Ticket -> Upcoming -> B -> full QR. DOM retained
+  `navigator.onLine=false`, complete B member/event/time QR content and the
+  exact unchanged cache timestamp. Nginx logged no `/api/assets/tickets`
+  request; the persisted oracle retained exact B code
+  `TKT-e5230543-0bd6-4c03-9375-b271e32bd9a5`, status A, null use and null actor.
+  The common A/B `medium.webp` card background was also a CacheStorage hit, so
+  an already-cached card image serves offline. This does not prove that the
+  realtime snapshot automatically fetches a previously unseen image:
+  `offlineTicketSnapshot` currently prewarms ticket data/code, while image
+  bytes remain owned independently by the service-worker media cache. Keep
+  Nova's B QR visible and let Casey perform the first physical scan next.
 - Run this as a separate physical-phone checkpoint after the online check-in
   contract is closed. Start with a fresh active Nova ticket. The backend and
   Casey Admin's physical-phone scanner remain online throughout this case.
-- In Nova's desktop browser, open the Ticket card and QR while online so the
-  application shell, ticket record and QR presentation are warmed. Record the
-  ticket ID/code and the online QR. A cold client that has never loaded the
-  ticket is not equivalent.
+- Keep Nova online with Ticket closed and let one normal side-menu realtime
+  cycle return the authenticated Upcoming `offlineTicketSnapshot`. Prove its
+  cache timestamp advances and the exact target row includes `scanCode`; do not
+  open Ticket or its QR as a hidden warm step. The snapshot covers the first
+  18-row Upcoming window, matching the Ticket SmartList page size. Past is out
+  of scope. Online SmartList loads continue to use their own ticket page/delta
+  APIs and may also refresh the same cache, but never read the side-menu
+  snapshot while transport is available. After Offline+reload the HTTP
+  adapter's existing fallback reads the cache, and the QR renders locally from
+  the cached code without a detail request. Opening the target QR offline is
+  the presentation assertion itself.
 - This checkpoint owns offline session restoration as well as the cached QR.
   A persisted, warmed member session must survive reload and route from `/`
   back into the cached application; it must not be treated as logout merely

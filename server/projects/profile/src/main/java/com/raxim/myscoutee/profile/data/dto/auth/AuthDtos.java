@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.data.dto.auth;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 
@@ -423,6 +424,7 @@ public final class AuthDtos {
             String userId,
             UserRealtimeCountersDto counters,
             UserImpressionsDto impressions,
+            AssetTicketsPageDto offlineTicketSnapshot,
             String cursor,
             String serverTsIso) {
     }

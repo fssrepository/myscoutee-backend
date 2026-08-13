@@ -42,10 +42,24 @@ The trust protocol is project context, not an optional skill. A skill or
 harness may automate it but does not override the selected mode or the current
 user instruction.
 
-## QA session continuity
+## Optional manual-QA continuation route
 
-When resuming the active manual QA campaign, read
+Treat manual-QA continuation as an opt-in repository workflow skill, not as
+default context for ordinary engineering tasks. Activate it only when the user
+explicitly asks to continue/resume the manual QA campaign (for example,
+`folytasd a QA-t`), even if the request arrives months after the previous
+session.
+
+When this route is active, read
 [`guides/qa/handoffs/CURRENT_QA_SESSION.md`](guides/qa/handoffs/CURRENT_QA_SESSION.md)
-first. Treat its resume block as the current checkpoint and load only the
-detailed document it links. Do not preload the full QA pack or reconstruct
-already-proven checkpoints from conversation history.
+first. Treat its resume block as the sole current checkpoint pointer and load
+only the detailed checkpoint document it links. Do not preload the full QA
+pack or reconstruct already-proven checkpoints from conversation history. If
+the saved runtime boundary may be stale, use the handoff's read-only resume
+gate before any fixture mutation, browser relaunch or replay.
+
+While the campaign is active, keep the handoff's reusable methodology and live
+resume pointer current, and keep transactional checkpoint evidence/status in
+the QA pack and CSV/XLSX ledger named by that handoff. This preserves a
+future-session entry point without turning the handoff into a backup of those
+authoritative evidence files.

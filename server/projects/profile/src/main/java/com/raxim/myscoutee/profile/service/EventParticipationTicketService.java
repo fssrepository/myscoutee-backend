@@ -43,12 +43,24 @@ public class EventParticipationTicketService {
     }
 
     public List<ActivityEvent> queryTicketRecordsForUser(String userId) {
+        return queryTicketSnapshotRecordsForUser(userId).stream()
+                .map(TicketSnapshotRecord::event)
+                .toList();
+    }
+
+    public List<TicketSnapshotRecord> queryTicketSnapshotRecordsForUser(String userId) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        Set<String> activeTicketSourceIds = eventTicketService.findActiveEventIdsForHolder(normalizedUserId);
-        if (activeTicketSourceIds.isEmpty()) {
+        Map<String, EventTicket> activeCredentialByEventId = new LinkedHashMap<>();
+        for (EventTicket credential : eventTicketService.findActiveForHolder(normalizedUserId)) {
+            String eventId = normalizeId(credential == null ? null : credential.getEventId());
+            if (StringUtils.hasText(eventId)) {
+                activeCredentialByEventId.putIfAbsent(eventId, credential);
+            }
+        }
+        if (activeCredentialByEventId.isEmpty()) {
             return List.of();
         }
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
@@ -61,7 +73,7 @@ public class EventParticipationTicketService {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());
-            if (!StringUtils.hasText(sourceId) || !activeTicketSourceIds.contains(sourceId)) {
+            if (!StringUtils.hasText(sourceId) || !activeCredentialByEventId.containsKey(sourceId)) {
                 continue;
             }
             ActivityEvent current = preferredBySourceId.get(sourceId);
@@ -69,7 +81,12 @@ public class EventParticipationTicketService {
                 preferredBySourceId.put(sourceId, record);
             }
         }
-        return new ArrayList<>(preferredBySourceId.values());
+        return preferredBySourceId.entrySet().stream()
+                .map(entry -> new TicketSnapshotRecord(entry.getValue(), activeCredentialByEventId.get(entry.getKey())))
+                .toList();
+    }
+
+    public record TicketSnapshotRecord(ActivityEvent event, EventTicket credential) {
     }
 
     public EventTicket findActiveCredential(ActivityEvent ticketRecord) {

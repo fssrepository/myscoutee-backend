@@ -74,23 +74,26 @@ public class EventTicketService {
     }
 
     public Set<String> findActiveEventIdsForHolder(String holderUserId) {
-        String normalizedHolderUserId = normalizeId(holderUserId);
-        if (!StringUtils.hasText(normalizedHolderUserId)) {
-            return Set.of();
-        }
         LinkedHashSet<String> eventIds = new LinkedHashSet<>();
-        for (EventTicket ticket : eventTicketsRepository.findByHolderUserIdAndStatus(
-                normalizedHolderUserId,
-                EventTicket.STATUS_ACTIVE)) {
-            if (!isUsableCredential(ticket)) {
-                continue;
-            }
+        for (EventTicket ticket : findActiveForHolder(holderUserId)) {
             String eventId = normalizeId(ticket.getEventId());
             if (StringUtils.hasText(eventId)) {
                 eventIds.add(eventId);
             }
         }
         return eventIds;
+    }
+
+    public List<EventTicket> findActiveForHolder(String holderUserId) {
+        String normalizedHolderUserId = normalizeId(holderUserId);
+        if (!StringUtils.hasText(normalizedHolderUserId)) {
+            return List.of();
+        }
+        return eventTicketsRepository.findByHolderUserIdAndStatus(
+                        normalizedHolderUserId,
+                        EventTicket.STATUS_ACTIVE).stream()
+                .filter(this::isUsableCredential)
+                .toList();
     }
 
     public void synchronizeForEvent(

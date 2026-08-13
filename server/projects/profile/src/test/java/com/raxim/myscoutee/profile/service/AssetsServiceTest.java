@@ -71,10 +71,12 @@ class AssetsServiceTest {
         EventTicket ticketB = activeTicket("ticket-b", "event-b", "holder-user", "TKT-b");
 
         when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
-        when(ticketService.queryTicketRecordsForUser("holder-user"))
-                .thenReturn(List.of(eventA, eventB), List.of(eventB));
-        when(ticketService.findActiveCredential(eventA)).thenReturn(ticketA);
-        when(ticketService.findActiveCredential(eventB)).thenReturn(ticketB);
+        when(ticketService.queryTicketSnapshotRecordsForUser("holder-user"))
+                .thenReturn(
+                        List.of(
+                                new EventParticipationTicketService.TicketSnapshotRecord(eventA, ticketA),
+                                new EventParticipationTicketService.TicketSnapshotRecord(eventB, ticketB)),
+                        List.of(new EventParticipationTicketService.TicketSnapshotRecord(eventB, ticketB)));
         AssetsService service = ticketValidationService(
                 mock(UsersRepository.class),
                 mock(ActivityMembersRepository.class),

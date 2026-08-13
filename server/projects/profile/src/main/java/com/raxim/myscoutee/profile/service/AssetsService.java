@@ -322,7 +322,7 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<AssetTicketDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
+        List<AssetTicketDto> ordered = eventParticipationTicketService.queryTicketSnapshotRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
                 .map(this::toAssetTicketDto)
                 .filter(Objects::nonNull)
@@ -1773,13 +1773,17 @@ public class AssetsService {
         return clone;
     }
 
-    private AssetTicketDto toAssetTicketDto(ActivityEvent event) {
+    private AssetTicketDto toAssetTicketDto(EventParticipationTicketService.TicketSnapshotRecord snapshot) {
+        ActivityEvent event = snapshot == null ? null : snapshot.event();
+        EventTicket credential = snapshot == null ? null : snapshot.credential();
+        if (event == null) {
+            return null;
+        }
         String sourceId = normalizeId(event.getSourceId());
         String holderUserId = normalizeId(event.getOwnerUserId());
         if (!StringUtils.hasText(sourceId) || !StringUtils.hasText(holderUserId)) {
             return null;
         }
-        EventTicket credential = eventParticipationTicketService.findActiveCredential(event);
         if (credential == null || !StringUtils.hasText(credential.getCode())) {
             return null;
         }

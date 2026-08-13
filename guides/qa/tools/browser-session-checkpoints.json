@@ -97,6 +97,29 @@
         }
       ]
     },
+    "EVENT-TICKET-009": {
+      "targetUrl": "http://localhost/game?pwa=on",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Casey",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge"
+        },
+        {
+          "actor": "Nova",
+          "userId": "650000000000000000000062",
+          "expectedName": "Nova Social"
+        },
+        {
+          "actor": "Riley",
+          "userId": "650000000000000000000063",
+          "expectedName": "Riley Outside"
+        }
+      ]
+    },
     "EVENT-VISIBILITY-001": {
       "layout": {
         "columns": 3
